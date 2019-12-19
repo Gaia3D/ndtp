@@ -4,7 +4,7 @@ import java.util.Base64;
 
 public class KeyManager {
 
-	private static final String randomKeyword = "Z25hcmlyYUAgc2kgZW1hbiB5bSAuaXJhayByb2YgYWVkaSBkYWIgYSBla2FtIHRvbiBvZCBlc2FlbHAgLHllayBpcGEjIGRudW9mIGV2YWggdW95IGZJ";
+	private static final String randomKeyword = "ZDNhaWFnQCBzaSBlbWFuIHltIC5wc2NuIHJvZiBhZWRpIGRhYiBhIGVrYW0gdG9uIG9kIGVzYWVscCAseWVrIHRlcmNzIyBkbnVvZiBldmFoIHVveSBmSQ==";
 
 	public static String getInitKey() {
 		String result = null;
@@ -25,6 +25,6 @@ public class KeyManager {
 	}
 	
 	private static String parse(String value) {
-		return value.substring(79, 87) + value.substring(62, 66) + value.substring(18, 22);
+		return value.substring(81, 87) + value.substring(64, 68) + value.substring(18, 24);
 	}
 }
