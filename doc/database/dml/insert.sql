@@ -71,9 +71,9 @@ insert into policy(	policy_id, password_exception_char)
 -- Role
 insert into role(role_id, role_name, role_key, role_target, role_type, use_yn, default_yn)
 values
-    (NEXTVAL('role_seq'), '관리자 페이지 접근 권한', 'ADMIN_SIGNIN', '1', '0', 'Y', 'Y'),
-    (NEXTVAL('role_seq'), '사용자 관리 권한', 'ADMIN_USER_MANAGE', '1', '0', 'Y', 'Y'),
-    (NEXTVAL('role_seq'), '사용자 페이지 접근 권한', 'ADMIN_USER_SIGNIN', '0', '0', 'Y', 'Y');
+    (NEXTVAL('role_seq'), '[ADMIN] 관리자 페이지 SIGN IN 권한', 'ADMIN_SIGNIN', '1', '0', 'Y', 'Y'),
+    (NEXTVAL('role_seq'), '[ADMIN] 관리자 페이지 사용자 관리 권한', 'ADMIN_USER_MANAGE', '1', '0', 'Y', 'Y'),
+    (NEXTVAL('role_seq'), '[ADMIN] 사용자 페이지 SIGN IN 권한', 'USER_SIGNIN', '0', '0', 'Y', 'Y');
 
 
 commit;

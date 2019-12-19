@@ -17,8 +17,7 @@ create table user_info(
 	mobile_phone				varchar(256),
 	email						varchar(256),
 	messanger					varchar(100),
-	employee_id 				varchar(20),
-  	postal_code					varchar(6),
+	postal_code					varchar(6),
 	address						varchar(256),
 	address_etc					varchar(1000),
 	status						char(1)								default '0',
@@ -45,12 +44,12 @@ comment on column user_info.messanger is '메신저 아이디';
 comment on column user_info.postal_code is '우편번호';
 comment on column user_info.address is '주소';
 comment on column user_info.address_etc is '상세주소';
-comment on column user_info.user_role_check_yn is '최초 로그인시 사용자 Role 권한 체크 패스 기능. 기본값 Y : 체크';
-comment on column user_info.status is '사용자 상태. 0:사용중, 1:사용중지(관리자), 2:잠금(비밀번호 실패횟수 초과), 3:휴면(로그인 기간), 4:만료(사용기간 종료), 5:삭제(화면 비표시, policy.user_delete_type=0), 6:임시비밀번호';
-comment on column user_info.signin_count is '로그인 횟수';
-comment on column user_info.fail_signin_count is '로그인 실패 횟수';
-comment on column user_info.last_signin_date is '마지막 로그인 날짜';
-comment on column user_info.last_password_change_date is '마지막 로그인 비밀번호 변경 날짜';
+comment on column user_info.user_role_check_yn is '최초 사인인시 사용자 Role 권한 체크 패스 기능. 기본값 Y : 체크';
+comment on column user_info.status is '사용자 상태. 0:사용중, 1:사용중지(관리자), 2:잠금(비밀번호 실패횟수 초과), 3:휴면(사인인 기간), 4:만료(사용기간 종료), 5:삭제(화면 비표시, policy.user_delete_type=0), 6:임시비밀번호';
+comment on column user_info.signin_count is '사인인 횟수';
+comment on column user_info.fail_signin_count is '사인인 실패 횟수';
+comment on column user_info.last_signin_date is '마지막 사인인 날짜';
+comment on column user_info.last_password_change_date is '마지막 사인인 비밀번호 변경 날짜';
 comment on column user_info.update_date is '개인정보 수정 날짜';
 comment on column user_info.insert_date is '등록일';
 

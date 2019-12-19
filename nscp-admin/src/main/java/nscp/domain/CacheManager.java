@@ -22,12 +22,22 @@ public class CacheManager {
     // 사용자 그룹별 Role 목록
     private Map<Integer, List<String>> userGroupRoleMap = null;
 
-    
-
-//	public static Policy getPolicy() {
-//        return cacheManager.policy;
-//    }
-//    public static void setPolicy(Policy policy) {
-//        cacheManager.policy = policy;
-//    }
+    public static Map<Integer, List<UserGroupMenu>> getUserGroupMenuMap() {
+        return cacheManager.userGroupMenuMap;
+    }
+    public static List<UserGroupMenu> getUserGroupMenuList(Integer userGroupId) {
+        return cacheManager.userGroupMenuMap.get(userGroupId);
+    }
+    public static void setUserGroupMenuMap(Map<Integer, List<UserGroupMenu>> userGroupMenuMap) {
+        cacheManager.userGroupMenuMap = userGroupMenuMap;
+    }
+    public static List<String> getUserGroupRoleKeyList(Integer userGroupId) {
+        return cacheManager.userGroupRoleMap.get(userGroupId);
+    }
+    public static Map<Integer, List<String>> getUserGroupRoleMap() {
+        return cacheManager.userGroupRoleMap;
+    }
+    public static void setUserGroupRoleMap(Map<Integer, List<String>> userGroupRoleMap) {
+        cacheManager.userGroupRoleMap = userGroupRoleMap;
+    }
 }

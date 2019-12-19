@@ -68,6 +68,17 @@
 		SELECT * FROM role WHERE role_id = #{roleId}
 	</select>
 	
+	<!-- 사용자 그룹 Role 목록을 사용자 아이디로 조회 -->
+	<select id="getListUserGroupRoleByUserId" parameterType="userGroupRole" resultType="String">
+		/* getListUserGroupRoleByUserId */
+		SELECT role_key
+		FROM user_info A, role B, user_group_role C
+		WHERE A.user_id = #{user_id}
+			AND A.user_group_id = C.user_group_id
+			AND B.role_id = C.role_id
+			AND B.use_yn = 'Y'
+	</select>
+	
 	<!-- Role 등록 -->
 	<insert id="insertRole" parameterType="role" >
 		/* insertRole */

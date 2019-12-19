@@ -11,6 +11,7 @@
 
     <typeAliases>
     	<typeAlias type="nscp.domain.UserInfo" alias="userInfo" />
+    	<typeAlias type="nscp.domain.UserGroupRole" alias="userGroupRole" />
     	<typeAlias type="nscp.domain.UserSession" alias="userSession" />
     </typeAliases>
 

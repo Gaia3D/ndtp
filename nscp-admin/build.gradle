@@ -34,6 +34,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.1'
 	
+	implementation 'org.springframework.security:spring-security-core:5.2.1.RELEASE'
 	implementation 'org.apache.taglibs:taglibs-standard-jstlel:1.2.5'
 	
 	compileOnly 'org.projectlombok:lombok'

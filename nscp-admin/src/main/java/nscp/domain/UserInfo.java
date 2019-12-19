@@ -1,10 +1,8 @@
 package nscp.domain;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -39,7 +37,7 @@ public class UserInfo implements Serializable {
 	private String methodMode;
 	
 	/********** Policy ************/
-	// 사용자 로그인 실패 잠금 해제 기간
+	// 사용자 사인인 실패 잠금 해제 기간
 	private String userFailLockRelease;
 	
 	/********** DB 사용 *************/
@@ -47,7 +45,7 @@ public class UserInfo implements Serializable {
 	@NotBlank
 	private String userId;
 	// 사용자 그룹 고유번호
-	private Long userGroupId;
+	private Integer userGroupId;
 	// 사용자 그룹명(화면용)
 	private String userGroupName;
 	// 이름
@@ -89,18 +87,18 @@ public class UserInfo implements Serializable {
 	private String address;
 	// 상세주소
 	private String addressEtc;
-	// 로그인 횟수
+	// 사인인 횟수
 	private Long signinCount;
-	// 로그인 실패 횟수
+	// 사인인 실패 횟수
 	private Integer failSigninCount;
-	// 마지막 로그인 비밀번호 변경 날짜
+	// 마지막 사인인 비밀번호 변경 날짜
 	private String lastPasswordChangeDate;
-	// 마지막 로그인 날짜
+	// 마지막 사인인 날짜
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
 	private String lastSigninDate;
-	// 최초 로그인시 사용자 Role 권한 체크 패스 기능
+	// 최초 사인인시 사용자 Role 권한 체크 패스 기능
 	private String userRoleCheckYn;
-	// 사용자 상태. 0:사용중, 1:사용중지(관리자), 2:잠금(비밀번호 실패횟수 초과), 3:휴면(로그인 기간), 4:만료(사용기간 종료), 5:삭제(화면 비표시, policy.user_delete_method=0), 6:임시비밀번호
+	// 사용자 상태. 0:사용중, 1:사용중지(관리자), 2:잠금(비밀번호 실패횟수 초과), 3:휴면(사인인 기간), 4:만료(사용기간 종료), 5:삭제(화면 비표시, policy.user_delete_method=0), 6:임시비밀번호
 	private String status;
 	// 현재 사용자 상태값
 	private String dbStatus;
@@ -118,6 +116,8 @@ public class UserInfo implements Serializable {
 	private String subject;
 	// 임시 비밀번호
 	private String tempPassword;
+	// 일정 기간 동안 미 접속시 잠금 처리 결과 값
+	private Boolean userLastSigninLockOver;
 	
 	// 개인정보 수정 날짜
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
