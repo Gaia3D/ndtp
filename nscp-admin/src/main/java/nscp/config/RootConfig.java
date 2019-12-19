@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import nscp.security.Crypt;
 
 @Slf4j
-@MapperScan(basePackages="nscp.persistence", sqlSessionFactoryRef = "sessionFactory")
+@MapperScan(basePackages="nscp.persistence")
 @Configuration
 @ComponentScan(	basePackages = {"nscp.service, nscp.persistence"},
               includeFilters = {	@Filter(type = FilterType.ANNOTATION, value = Component.class),

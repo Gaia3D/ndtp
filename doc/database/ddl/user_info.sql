@@ -23,9 +23,9 @@ create table user_info(
 	address_etc					varchar(1000),
 	status						char(1)								default '0',
 	user_role_check_yn			char(1)								default 'Y',
-	login_count					bigint								default 0,
-	fail_login_count			int									default 0,
-	last_login_date				timestamp with time zone,
+	signin_count				bigint								default 0,
+	fail_signin_count			int									default 0,
+	last_signin_date			timestamp with time zone,
 	last_password_change_date	timestamp with time zone			default now(),
 	update_date					timestamp with time zone,
 	insert_date					timestamp with time zone			default now(),
@@ -47,9 +47,9 @@ comment on column user_info.address is '주소';
 comment on column user_info.address_etc is '상세주소';
 comment on column user_info.user_role_check_yn is '최초 로그인시 사용자 Role 권한 체크 패스 기능. 기본값 Y : 체크';
 comment on column user_info.status is '사용자 상태. 0:사용중, 1:사용중지(관리자), 2:잠금(비밀번호 실패횟수 초과), 3:휴면(로그인 기간), 4:만료(사용기간 종료), 5:삭제(화면 비표시, policy.user_delete_type=0), 6:임시비밀번호';
-comment on column user_info.login_count is '로그인 횟수';
-comment on column user_info.fail_login_count is '로그인 실패 횟수';
-comment on column user_info.last_login_date is '마지막 로그인 날짜';
+comment on column user_info.signin_count is '로그인 횟수';
+comment on column user_info.fail_signin_count is '로그인 실패 횟수';
+comment on column user_info.last_signin_date is '마지막 로그인 날짜';
 comment on column user_info.last_password_change_date is '마지막 로그인 비밀번호 변경 날짜';
 comment on column user_info.update_date is '개인정보 수정 날짜';
 comment on column user_info.insert_date is '등록일';

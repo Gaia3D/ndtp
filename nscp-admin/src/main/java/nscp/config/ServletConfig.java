@@ -54,13 +54,13 @@ public class ServletConfig implements WebMvcConfigurer {
 		
 //		registry.addInterceptor(securityInterceptor)
 //				.addPathPatterns("/**")
-//				.excludePathPatterns("/login/**", "/css/**", "/externlib/**", "/images/**", "/js/**");
+//				.excludePathPatterns("/signin/**", "/css/**", "/externlib/**", "/images/**", "/js/**");
 //		registry.addInterceptor(logInterceptor)
 //				.addPathPatterns("/**")
-//				.excludePathPatterns("/login/**", "/css/**", "/externlib/**", "/images/**", "/js/**");
+//				.excludePathPatterns("/signin/**", "/css/**", "/externlib/**", "/images/**", "/js/**");
 //		registry.addInterceptor(configInterceptor)
 //				.addPathPatterns("/**")
-//				.excludePathPatterns("/login/**", "/css/**", "/externlib/**", "/images/**", "/js/**");
+//				.excludePathPatterns("/signin/**", "/css/**", "/externlib/**", "/images/**", "/js/**");
     }
 	
 	@Bean
@@ -107,7 +107,7 @@ public class ServletConfig implements WebMvcConfigurer {
 	
 	@Override
     public void addViewControllers(ViewControllerRegistry registry) {
-		registry.addViewController("/").setViewName("forward:/login/login");
+		registry.addViewController("/").setViewName("forward:/sign/signin");
         registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
     }
 	

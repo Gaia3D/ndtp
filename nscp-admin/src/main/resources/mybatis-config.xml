@@ -9,8 +9,9 @@
         <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
 
-    <!-- <typeAliases>
-    	<typeAlias type="arirang.domain.APIUser" alias="aPIUser" />
-    </typeAliases> -->
+    <typeAliases>
+    	<typeAlias type="nscp.domain.UserInfo" alias="userInfo" />
+    	<typeAlias type="nscp.domain.UserSession" alias="userSession" />
+    </typeAliases>
 
 </configuration>
