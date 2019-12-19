@@ -52,10 +52,10 @@
 		SET geo_view_library = #{geoVieLibrary},
 			geo_cesium_ion_token = #{geoCesiumIonToken},
 			geo_data_path = #{geo_data_path},
-			<if test="geo_data_default_projects == null or geo_data_default_projects == ''">
+			<if test="geoDataDefaultProjects == null or geoDataDefaultProjects == ''">
 			geo_data_default_projects = null,
 			</if>
-			<if test="geo_data_default_projects != null and geo_data_default_projects != ''">
+			<if test="geoDataDefaultProjects != null and geoDataDefaultProjects != ''">
 			geo_data_default_projects = STRING_TO_ARRAY(#{geoDataDefaultProjects}, ','),
 			</if>
 			geo_data_change_request_decision = #{geoDataChangeRequestDecision},
