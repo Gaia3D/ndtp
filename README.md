@@ -1,2 +1,2 @@
-# nscp
-스마티 시티 디지털 트윈 플랫폼
+# NDTP
+National Digital Twin Platform Pilot Service
