@@ -107,7 +107,7 @@ public class ServletConfig implements WebMvcConfigurer {
 	
 	@Override
     public void addViewControllers(ViewControllerRegistry registry) {
-		registry.addViewController("/").setViewName("forward:/sign/signin");
+		registry.addViewController("/").setViewName("forward:/signin/signin");
         registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
     }
 	
