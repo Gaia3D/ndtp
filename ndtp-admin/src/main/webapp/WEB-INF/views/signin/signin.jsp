@@ -16,6 +16,18 @@
 	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 	<script type="text/javascript" src="/js/${lang}/common.js"></script>
 	<script type="text/javascript" src="/js/${lang}/message.js"></script>
+	<style type="text/css">
+		::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+			color: white;
+			opacity: 1; /* Firefox */
+		}
+		:-ms-input-placeholder { /* Internet Explorer 10-11 */
+			color: white;
+		}
+		::-ms-input-placeholder { /* Microsoft Edge */
+			color: white;
+		}	
+	</style>
 </head>
 <body class="sign">
 	<div class="site-body">

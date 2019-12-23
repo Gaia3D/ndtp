@@ -134,7 +134,7 @@ public class SigninController {
 		}
 
 		// 패스워드 변경 기간이 오버 되었거나 , 6:임시 비밀번호(비밀번호 찾기, 관리자 설정에 의한 임시 비밀번호 발급 시)
-		if(userSession.getPasswordChangeTermOver() || UserStatus.TEMP_PASSWORD == UserStatus.valueOf(userSession.getStatus())){
+		if(userSession.getPasswordChangeTermOver() || UserStatus.TEMP_PASSWORD == UserStatus.findBy(userSession.getStatus())){
 			return "redirect:/user/modify-password";
 		}
 		
@@ -174,7 +174,7 @@ public class SigninController {
 		
 		
 		// 회원 상태 체크
-		if(UserStatus.USE != UserStatus.valueOf(userSession.getStatus()) && UserStatus.TEMP_PASSWORD != UserStatus.valueOf(userSession.getStatus())) {
+		if(UserStatus.USE != UserStatus.findBy(userSession.getStatus()) && UserStatus.TEMP_PASSWORD != UserStatus.findBy(userSession.getStatus())) {
 			// 0:사용중, 1:사용중지(관리자), 2:잠금(비밀번호 실패횟수 초과), 3:휴면(사인인 기간), 4:만료(사용기간 종료), 5:삭제(화면 비표시)
 			signinForm.setStatus(userSession.getStatus());
 			return "usersession.status.invalid";

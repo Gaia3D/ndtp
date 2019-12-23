@@ -28,15 +28,12 @@
 		SET 
 		<if test="status != null and status != ''">
 			status = #{status},
-		</if>
-		<if test="status != null and status == '0'.toString()">
-			last_signin_date = NOW(),
+			update_date = NOW(),
 		</if>
 		<if test="failSigninCount != null and failSigninCount > 0">
 			fail_signin_count = #{failSigninCount},
 		</if>
-			last_signin_date = NOW(),
-			update_date = NOW()
+			last_signin_date = NOW()
 		WHERE user_id = #{userId}
 	</update>
 </mapper>
