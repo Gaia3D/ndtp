@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ndtp.persistence.PolicyMapper">
+
+	<!-- 운영 정책 정보 -->
+	<select id="getPolicy" resultType="policy">
+		/* getPolicy */
+		SELECT * FROM policy ORDER BY policy_id DESC LIMIT 1
+	</select>
+
+	<!-- 운영 정책 사용자 수정 -->	
+	<update id="updatePolicyUser" parameterType="policy">
+		/* updatePolicyUser */
+		UPDATE policy
+		SET user_id_min_length = #{userIdMinLength},
+			user_fail_signin_count = #{userFailSigninCount},
+		<if test="userFailLockRelease != null and userFailLockRelease != ''">
+			user_fail_lock_release = #{userFailLockRelease},
+		</if>
+			user_last_signin_lock = #{userLastSigninLock},
+			user_duplication_signin_yn = #{userDuplicationSigninYn},
+			user_signin_type = #{userSigninType},
+			user_update_check = #{userUpdateCheck},
+			user_delete_check = #{userDeleteCheck},
+			user_delete_type = #{userDeleteType}
+		WHERE policy_id = #{policyId}
+	</update>
+	
+	<!-- 운영 정책 패스워드 수정 -->	
+	<update id="updatePolicyPassword" parameterType="policy">
+		/* updatePolicyPassword */
+		UPDATE policy
+		SET password_change_term = #{passwordChangeTerm},
+			password_min_length = #{passwordMinLength},
+			password_max_length = #{passwordMaxLength},
+			password_eng_upper_count = #{passwordEngUpperCount},
+			password_eng_lower_count = #{passwordEngLowerCount},
+			password_number_count = #{passwordNumberCount},
+			password_special_char_count = #{passwordSpecialCharCount},
+			password_continuous_char_count = #{passwordContinuousCharCount},
+			password_create_type = #{passwordCreateType},
+			password_create_char = #{passwordCreateChar},
+			password_exception_char = #{passwordExceptionChar}
+		WHERE policy_id = #{policyId}
+	</update>
+	
+	<!-- 공간 정보 기본 수정 -->	
+	<update id="updatePolicyGeo" parameterType="policy">
+		/* updatePolicyGeo */
+		UPDATE policy
+		SET geo_view_library = #{geoVieLibrary},
+			geo_cesium_ion_token = #{geoCesiumIonToken},
+			geo_data_path = #{geo_data_path},
+			<if test="geoDataDefaultProjects == null or geoDataDefaultProjects == ''">
+			geo_data_default_projects = null,
+			</if>
+			<if test="geoDataDefaultProjects != null and geoDataDefaultProjects != ''">
+			geo_data_default_projects = STRING_TO_ARRAY(#{geoDataDefaultProjects}, ','),
+			</if>
+			geo_data_change_request_decision = #{geoDataChangeRequestDecision},
+			geo_cull_face_enable = #{geoCullFaceEnable},
+			geo_time_line_enable = #{geoTimeLineEnable},
+			geo_init_camera_enable = #{geoInitCameraEnable},
+			geo_init_latitude = #{geoInitLatitude},
+			geo_init_longitude = #{geoInitLongitude},
+			geo_init_height = #{geoInitHeight},
+			geo_init_duration = #{geoInitDuration},
+			geo_init_default_terrain = #{geoInitDefaultTerrain},
+			geo_init_default_fov = #{geoInitDefaultFov},
+			geo_lod0 = #{geoLod0},
+			geo_lod1 = #{geoLod1},
+			geo_lod2 = #{geoLod2},
+			geo_lod3 = #{geoLod3},
+			geo_lod4 = #{geoLod4},
+			geo_lod5 = #{geoLod5},
+			geo_ambient_reflection_coef = #{geoAmbientReflectionCoef},
+			geo_diffuse_reflection_coef = #{geoDiffuseReflectionCoef},
+			geo_specular_reflection_coef = #{geoSpecularReflectionCoef},
+			geo_specular_color = #{geoSpecularColor},
+			geo_ambient_color = #{geoAmbientColor},
+			geo_ssao_radius = #{geoSsaoRadius}
+		WHERE policy_id = #{policyId}
+	</update>
+	
+	<!-- Geo Server 수정 -->	
+	<update id="updatePolicyGeoServer" parameterType="policy">
+		/* updatePolicyGeoServer */
+		UPDATE policy
+		SET geo_server_enable = #{geoServerEnable},
+			geo_server_url = #{geoServerUrl},
+			geo_server_layers = #{geoserverLayers},
+			geo_server_parameters_service = #{geoServerParametersService},
+			geo_server_parameters_version = #{geoServerParametersversion},
+			geo_server_parameters_request = #{geoServerParametersRequest},
+			geo_server_parameters_transparent = #{geoServerParametersTransparent},
+			geo_server_parameters_format = #{geoServerParametersFormat},
+			geo_server_add_url = #{geoServerAddUrl},
+			geo_server_add_layers = #{geoServerAddLayers},
+			geo_server_add_parameters_service = #{geoServerAddParametersService},
+			geo_server_add_parameters_version = #{geoServerAddParametersVersion},
+			geo_server_add_parameters_request = #{geoServerAddParametersRequest},
+			geo_server_add_parameters_transparent = #{geoServerAddParametersTransparent},
+			geo_server_add_parameters_format = #{geoServerAddParametersFormat}
+		WHERE policy_id = #{policyId}
+	</update>
+	
+	<!-- CallBack Function 수정 -->	
+	<update id="updatePolicyGeoCallBack" parameterType="policy">
+		/* updatePolicyGeoCallBack */
+		UPDATE policy
+		SET geo_callback_enable = #{geoCallbackEnable},
+			geo_callback_apiresult = #{geoCallbackApiresult},
+			geo_callback_dataInfo = #{geoCallbackDataInfo},
+			geo_callback_moveddata = #{geoCallbackMoveddata},
+			geo_callback_selectedobject = #{geoCallbackSelectedobject},
+			geo_callback_insertissue = #{geoCallbackInsertissue},
+			geo_callback_listissue = #{geoCallback_listissue},
+			geo_callback_clickposition = #{geoCallbackClickposition}
+		WHERE policy_id = #{policyId}
+	</update>
+	
+	<!-- 운영 정책 알림 수정 -->	
+	<update id="updatePolicyNotice" parameterType="policy">
+		/* updatePolicyNotice */
+		UPDATE policy
+		SET notice_service_yn = #{noticeServiceYn},
+			notice_service_send_type = #{noticeServiceSendType},
+			notice_approval_request_yn = #{noticeApprovalRequestYn},
+			notice_approval_sign_yn = #{noticeApprovalSignYn},
+			notice_password_update_yn = #{noticePasswordUpdateYn},
+			notice_approval_delay_yn = #{noticeApprovalDelayYn},
+			notice_risk_yn = #{noticeRiskYn},
+			notice_risk_send_type = #{noticeRiskSendType},
+			notice_risk_grade = #{noticeRiskGrade}
+		WHERE policy_id = #{policyId}
+	</update>
+	
+	<!-- 운영 정책 보안 수정 -->	
+	<update id="updatePolicySecurity" parameterType="policy">
+		/* updatePolicySecurity */
+		UPDATE policy
+		SET security_session_timeout_yn = #{securitySessionTimeoutYn},
+			security_session_timeout = #{securitySessionTimeout},
+			security_user_ip_check_yn = #{securityUserIpCheckYn},
+			security_session_hijacking = #{securitySessionHijacking},
+			security_sso = #{securitySso},
+			security_sso_token_verify_time = #{securitySsoTokenVerifyTime},
+			security_log_save_type = #{securityLogSaveType},
+			security_log_save_term = #{securityLogSaveTerm},
+			security_dynamic_block_yn = #{securityDynamicBlockYn},
+			security_api_result_secure_yn = #{securityApiResultSecureYn},
+			security_masking_yn = #{securityMaskingYn}
+		WHERE policy_id = #{policyId}
+	</update>
+	
+	<!-- 운영 정책 컨텐트 수정 -->	
+	<update id="updatePolicyContent" parameterType="policy">
+		/* updatePolicyContent */
+		UPDATE policy
+		SET content_cache_version = #{contentCacheVersion},
+			content_main_widget_count = #{contentMainWidgetCount},
+			content_main_widget_interval = #{contentMainWidgetInterval},
+			content_statistics_interval = #{contentStatisticsInterval},
+			content_load_balancing_interval = #{contentLoadBalancingInterval},
+			content_menu_group_root = #{contentMenuGroupRoot},
+			content_user_group_root = #{contentUserGroupRoot},
+			content_server_group_root = #{contentServerGroupRoot},
+			content_data_group_root = #{contentDataGroupRoot}
+		WHERE policy_id = #{policyId}
+	</update>
+	
+	<!-- 사용자 업로드 파일 정책 수정 -->
+	<update id="updatePolicyUserUpload" parameterType="policy">
+		/* updatePolicyUserUpload */
+		UPDATE policy
+		SET user_upload_type = #{userUploadType},
+			user_upload_max_filesize = #{userUploadMaxFilesize},
+			user_upload_max_count = #{userUploadMaxCount}
+		WHERE policy_id = #{policyId}
+	</update>
+	
+</mapper>

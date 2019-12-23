@@ -7,18 +7,18 @@
  * in the user manual at https://docs.gradle.org/5.6.3/userguide/multi_project_builds.html
  */
 
-rootProject.name = 'nscp'
+rootProject.name = 'ndtp'
 
 include ':common'
-include ':nscp-admin'
-include ':nscp-user'
-include ':nscp-converter'
+include ':ndtp-admin'
+include ':ndtp-user'
+include ':ndtp-converter'
 include ':html'
 include ':doc'
 
 project(':common').projectDir = "$rootDir/common" as File
-project(':nscp-admin').projectDir = "$rootDir/nscp-admin" as File
-project(':nscp-user').projectDir = "$rootDir/nscp-user" as File
-project(':nscp-converter').projectDir = "$rootDir/nscp-converter" as File
+project(':ndtp-admin').projectDir = "$rootDir/ndtp-admin" as File
+project(':ndtp-user').projectDir = "$rootDir/ndtp-user" as File
+project(':ndtp-converter').projectDir = "$rootDir/ndtp-converter" as File
 project(':html').projectDir = "$rootDir/html" as File
 project(':doc').projectDir = "$rootDir/doc" as File
