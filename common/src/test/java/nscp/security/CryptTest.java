@@ -12,6 +12,7 @@ public class CryptTest {
 		System.out.println("url : " + Crypt.encrypt("jdbc:postgresql://localhost:5432/postgres"));
 		System.out.println("user : " + Crypt.encrypt("postgres"));
 		System.out.println("password : " + Crypt.encrypt("postgres"));
-		System.out.println(Crypt.decrypt("b+qpJGas3zhrkBob5IXKGIkE5ieXxNczvHC6DMXU6iTptUTTSY89RhklLR3hS/2g"));
+		
+		System.out.println(Crypt.decrypt("sYJU8UaMdyaSX5Oo8BkIOpJQiKY1K0QJsRnwZ1A9ialfnBs7vBjQ1l7bQevNEDNt"));
 	}
 }

@@ -1,6 +1,6 @@
 package nscp.domain;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 
@@ -254,5 +254,5 @@ public class Policy {
  	
  	// 등록일
  	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
-    private LocalDateTime insertDate;
+    private Date insertDate;
 }

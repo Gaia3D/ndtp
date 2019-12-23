@@ -21,7 +21,6 @@ import nscp.domain.CacheManager;
 import nscp.domain.Key;
 import nscp.domain.Policy;
 import nscp.domain.RoleKey;
-import nscp.domain.UserGroupRole;
 import nscp.domain.UserInfo;
 import nscp.domain.UserSession;
 import nscp.domain.UserStatus;

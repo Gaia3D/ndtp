@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="hmd.persistence.postgresql.UserGroupMapper">
+<mapper namespace="nscp.persistence.UserGroupMapper">
 
 	<!-- 사용자 그룹 목록 -->
 	<select id="getListUserGroup" parameterType="userGroup" resultType="userGroup">
 		/* getListUserGroup */
 		WITH RECURSIVE user_group_tree (
-			user_group_id, group_key, group_name, dept_no, ancestor, parent, depth, view_order, default_yn, use_yn, child_yn, 
+			user_group_id, group_key, group_name, ancestor, parent, depth, view_order, default_yn, use_yn, child_yn, 
 			description, insert_date, path, cycle
 		) AS (
-	        SELECT A.user_group_id, A.group_key, A.group_name, A.dept_no, A.ancestor, A.parent, A.depth, A.view_order, A.default_yn, A.use_yn, A.child_yn,
+	        SELECT A.user_group_id, A.group_key, A.group_name, A.ancestor, A.parent, A.depth, A.view_order, A.default_yn, A.use_yn, A.child_yn,
 	        	A.description, A.insert_date, ARRAY[A.view_order], false
 			FROM user_group A
 			WHERE A.parent = 0
@@ -18,12 +18,12 @@
 				AND A.use_yn = 'Y'
 			</if>
 			UNION ALL
-	        SELECT A.user_group_id, A.group_key, A.group_name, A.dept_no, A.ancestor, A.parent, A.depth, A.view_order, A.default_yn, A.use_yn, A.child_yn,
+	        SELECT A.user_group_id, A.group_key, A.group_name, A.ancestor, A.parent, A.depth, A.view_order, A.default_yn, A.use_yn, A.child_yn,
 	        	A.description, A.insert_date, path || A.view_order, A.user_group_id = ANY(path)
 	        FROM user_group A, user_group_tree B
 	        WHERE A.parent = B.user_group_id AND not cycle
 		)
-	    SELECT user_group_id, group_key, group_name, dept_no, ancestor, parent, depth, view_order, default_yn, use_yn, child_yn, description, insert_date, path
+	    SELECT user_group_id, group_key, group_name, ancestor, parent, depth, view_order, default_yn, use_yn, child_yn, description, insert_date, path
 	    FROM user_group_tree
 	    ORDER BY path
 	</select>
@@ -179,9 +179,9 @@
 			SELECT NEXTVAL('user_group_seq')
         </selectKey>
         INSERT INTO user_group (
-        	user_group_id, group_key, group_name, dept_no, ancestor, parent, depth, view_order, default_yn, use_yn, child_yn, description
+        	user_group_id, group_key, group_name, ancestor, parent, depth, view_order, default_yn, use_yn, child_yn, description
         ) VALUES (
-            #{userGroupId}, #{groupKey}, #{groupName}, #{deptNo}, #{ancestor}, #{parent}, #{depth}, #{viewOrder}, #{defaultYn}, #{useYn}, #{childYn}, #{description}
+            #{userGroupId}, #{groupKey}, #{groupName}, #{ancestor}, #{parent}, #{depth}, #{viewOrder}, #{defaultYn}, #{useYn}, #{childYn}, #{description}
         )
     </insert>
     
@@ -217,7 +217,6 @@
         UPDATE user_group
         SET group_key = #{groupKey},
         	group_name = #{groupName},
-            dept_no = #{deptNo},
             ancestor = #{ancestor},
             parent = #{parent},
             depth = #{depth},

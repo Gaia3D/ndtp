@@ -1,8 +1,8 @@
 package nscp.domain;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -37,9 +37,9 @@ public class UserPolicy implements Serializable {
 	private String layerLabel;
 
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
-	private LocalDateTime updateDate;
+	private Date updateDate;
 
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
-	private LocalDateTime insertDate;
+	private Date insertDate;
 
 }

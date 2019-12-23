@@ -1,6 +1,7 @@
 package nscp.domain;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -59,5 +60,5 @@ public class UserSession implements Serializable {
 	
 	// 마지막 사인인 날짜
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
-	private String lastSigninDate;
+	private Date lastSigninDate;
 }

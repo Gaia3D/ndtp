@@ -1,6 +1,6 @@
 package nscp.domain;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -70,9 +70,9 @@ public class UserGroup {
 	private String description;
 	
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
-	private LocalDateTime updateDate;
+	private Date updateDate;
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
-	private LocalDateTime insertDate;
+	private Date insertDate;
 	
 //	public String getViewInsertDate() {
 //		if(getInsertDate() == null) {

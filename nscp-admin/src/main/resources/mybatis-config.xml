@@ -8,11 +8,19 @@
         <setting name="lazyLoadingEnabled" value="false" />
         <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
-
+    
     <typeAliases>
+    	<typeAlias type="nscp.domain.Policy" alias="policy" />
+    	<typeAlias type="nscp.domain.Role" alias="role" />
     	<typeAlias type="nscp.domain.UserInfo" alias="userInfo" />
+    	<typeAlias type="nscp.domain.UserGroup" alias="userGroup" />
+    	<typeAlias type="nscp.domain.UserGroupMenu" alias="userGroupMenu" />
     	<typeAlias type="nscp.domain.UserGroupRole" alias="userGroupRole" />
     	<typeAlias type="nscp.domain.UserSession" alias="userSession" />
     </typeAliases>
+
+	<!-- <typeHandlers>
+    	<typeHandler handler="org.apache.ibatis.type.LocalDateTimeTypeHandler" />
+    </typeHandlers> -->
 
 </configuration>
