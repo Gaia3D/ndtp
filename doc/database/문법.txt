@@ -1,5 +1,5 @@
 
-psql -U postgres nscp;
+psql -U postgres ndtp;
 
 
 

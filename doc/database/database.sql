@@ -1,4 +1,4 @@
-CREATE DATABASE nscp
+CREATE DATABASE ndtp
 WITH OWNER = postgres
 	ENCODING = 'UTF8'
 	TEMPLATE = template0
