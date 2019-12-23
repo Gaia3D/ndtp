@@ -1,5 +1,0 @@
-
-Java Home 오류 문제
- - 로컬에 JAVA_HOME 설정이 다른 버전으로 설정되어 있을 경우, gradle은 이 자바를 가지고 실행한다.
-   이 경우 오류가 발생,
-   윈도우 > Preferences > Gradle 에서 java home 을 openjdk11 로 설정
