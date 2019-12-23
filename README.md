@@ -1,5 +1,6 @@
 # NDTP
-NDTP(National Digital Twin Platform Pilot Service)는  지속 가능한 확장형 시범도시(세종, 부산) 디지털트윈 플렛폼 개발 및 파일럿 서비스 개발
+<strong>NDTP(National Digital Twin Platform Pilot Service)는  지속 가능한 확장형 시범도시(세종, 부산)의 디지털트윈 플랫폼 및 파일럿 서비스입니다.</strong>
+
 ## 사업 개요
 ### 1. 사업 일반
  - 사업명 : 2019년 스마트시트 시범도시(세종, 부산) 디지털트윈 마스터플랜 수립 및 시범시스템 구축 용역
@@ -10,10 +11,11 @@ NDTP(National Digital Twin Platform Pilot Service)는  지속 가능한 확장�
 
 ### 3. 목표
 #### 스마트시티의 활용 기반이 되는 도시 공간 데이터 수집 시스템 기능을 포함하는 디지털트윈 플랫폼을 설계하고, 이를 기반으로 대상 구역의 디지털 트윈을 개발
- - 파일럿 시스템 및 데이터 구축을 위한 개발 타당성 검증 및 사용자 참여 기반 마련
-< 그림 >
-## Features
+ - 파일럿 시스템 및 데이터 구축을 위한 개발 타당성 검증 및 사용자 참여 기반 마련 <br><br>
+ 
+![object](object.png)
 
+## Features
 
 ## Development Environment
 - Spring
@@ -21,6 +23,7 @@ NDTP(National Digital Twin Platform Pilot Service)는  지속 가능한 확장�
 - lombok
 - PostgreSQL
 - PostGIS
+- GDAL
 - Gradle
 
 ## Getting Started
