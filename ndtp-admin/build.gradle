@@ -5,7 +5,7 @@ plugins {
 	id 'war'
 }
 
-group = 'com.nscp'
+group = 'com.ndtp'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
