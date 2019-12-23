@@ -13,8 +13,6 @@
 #### 스마트시티의 활용 기반이 되는 도시 공간 데이터 수집 시스템 기능을 포함하는 디지털트윈 플랫폼을 설계하고, 이를 기반으로 대상 구역의 디지털 트윈을 개발
  - 파일럿 시스템 및 데이터 구축을 위한 개발 타당성 검증 및 사용자 참여 기반 마련 <br><br>
  
-![object](object.png)
-
 ## Features
 - 2차원 공간정보 관리 기능
 - 3차원 데이터 포맷 지원 기능
@@ -25,11 +23,12 @@
 - 시뮬레이션 서비스 기능
 
 ## Development Environment
-- Spring
+- JAVA(OpenJDK) 11.0.2
+- Spring Boot 2.2.1
+- PostgreSQL 11.6
+- PostGIS 3.0
 - mybatis
 - lombok
-- PostgreSQL
-- PostGIS
 - GDAL
 - Gradle
 
@@ -49,10 +48,8 @@
 #### [PostgreSQL](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
 - PostgreSQL11.6 버전으로 설정
 - 설치경로 C:/PostgreSQL/11 <br>
-  doc/database/doc/database/ 참조
-  
-#### [PostGIS](https://postgis.net/)
-- PostGIS 최신 SQL 버전으로 설정
+  doc/database/doc/database/ 참조 
+- [PostGIS](https://postgis.net/) 최신 SQL 버전으로 설정
 - 설치경로 C:/PostGIS
 
 #### [GDAL](https://trac.osgeo.org/osgeo4w/)
@@ -82,12 +79,6 @@
 	  PosGIS Extensions이 성공적으로 끝나면 데이터베이스 생성 및 초기 데이더 등록 후 spatial_ref_sys라는 테이블이 자동 생성됩니다.
 
 - 데이터 등록
-	- download 한 소스의 /doc/database/ 폴더로 이동합니다.
-	- PostgreSQL에서 database 폴더에 있는 쿼리를 실행해 줍니다. (windows 자동 실행 script는 개발 중입니다.) <br>
-	   - ddl 폴더의 sql 파일을 실행하여 table을 생성합니다. <br>
-	   - ddl 폴더의 sequence sql 실행하여 sequence 생성합니다.<br>
-	   - index, trigger 폴더의 sql을 실행하여 index 및 partition 생성합니다.<br>
-	   - dml 폴더의 sql을 실행하여 초기 데이터 등록합니다.
 	   
 ### 3. Execution
 - ndtp-admin project spring boot 실행 <br>
