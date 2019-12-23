@@ -24,10 +24,8 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Role {
+public class Role extends Search {
 	
-	private Search search;
-
 	/****** validator ********/
 	private String methodMode;
 	

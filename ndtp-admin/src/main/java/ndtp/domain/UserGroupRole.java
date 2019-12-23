@@ -1,6 +1,5 @@
 package ndtp.domain;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -24,8 +23,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserGroupRole {
-	
-	private Search search;
 	
 	/****** validator ********/
 	private String methodMode;

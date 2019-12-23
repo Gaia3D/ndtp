@@ -20,7 +20,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserInfo implements Serializable {
+public class UserInfo extends Search implements Serializable {
 
     private static final long serialVersionUID = 8349597082356588759L;
 
