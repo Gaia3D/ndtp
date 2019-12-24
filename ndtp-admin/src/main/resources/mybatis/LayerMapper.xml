@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ndtp.persistence.LayerMapper">
+
+    <!-- layer tree 구조 -->
+    <select id="getListLayer" parameterType="layer" resultType="layer">
+        /* getListLayer */
+        WITH RECURSIVE layer_tree (
+            layer_id, layer_key, layer_name, view_type, layer_style, geometry_type,
+            ancestor,  parent, depth, view_order, z_index, shape_insert_yn, use_yn, coordinate,
+            user_id, update_date, insert_date, path, cycle, mobile_default_yn, label_display_yn
+        ) AS (
+            SELECT A.layer_id, A.layer_key, A.layer_name, A.view_type, A.layer_style, A.geometry_type,
+                A.ancestor, A.parent, A.depth, A.view_order, A.z_index, A.shape_insert_yn, A.use_yn, A.coordinate,
+                A.user_id, A.update_date, A.insert_date, ARRAY[A.view_order], false, A.mobile_default_yn, A.label_display_yn
+            FROM layer A
+            WHERE use_yn = 'Y'
+            <if test="parent == null or parent lte 0">
+                AND A.parent = 0
+            </if>
+            <if test="parent != null and parent gt 0">
+                AND A.parent = #{parent}
+            </if>
+            <if test="status != null and status != ''">
+                AND A.status = #{status}
+            </if>
+            <if test="ancestor != null and ancestor != ''">
+                AND A.ancestor = #{ancestor}
+            </if>
+            <if test="shapeInsertYn != null and shapeInsertYn != ''">
+                AND A.shape_insert_yn = #{shapeInsertYn}
+            </if>
+            <if test="labelDisplayYn != null and labelDisplayYn != ''">
+                AND A.label_display_yn = #{labelDisplayYn}
+            </if>
+            UNION ALL
+            SELECT A.layer_id, A.layer_key, A.layer_name, A.view_type, A.layer_style, A.geometry_type,
+                A.ancestor, A.parent, A.depth, A.view_order, A.z_index, A.shape_insert_yn, A.use_yn, A.coordinate,
+                A.user_id, A.update_date, A.insert_date, path || A.view_order, A.layer_id = ANY(path), A.mobile_default_yn, A.label_display_yn
+            FROM layer A, layer_tree B
+            WHERE A.use_yn = 'Y'
+                AND A.parent = B.layer_id
+                AND not cycle
+        )
+        SELECT layer_id, layer_key, layer_name, view_type, layer_style, geometry_type,
+            ancestor, parent, depth, view_order, z_index, shape_insert_yn, use_yn, coordinate,
+            user_id, update_date, insert_date, path, mobile_default_yn, label_display_yn
+        FROM layer_tree
+        ORDER BY path
+    </select>
+
+    <!-- layer 정보 취득 -->
+    <select id="getLayer" parameterType="int" resultType="layer">
+        /* getLayer */
+        SELECT * FROM layer WHERE layer_id = #{layerId}
+    </select>
+
+    <!-- 자식 레이어 중 순서가 최대인 레이어를 검색 -->
+    <select id="getMaxViewOrderChildLayer" parameterType="int" resultType="layer">
+        /* getMaxViewOrderChildLayer */
+        SELECT * FROM layer WHERE parent = #{parent} ORDER BY view_order DESC LIMIT 1
+    </select>
+
+    <!-- 자식 레이어 개수 -->
+    <select id="getChildLayerCount" parameterType="int" resultType="int">
+        /* getChildLayerCount */
+        SELECT COUNT(layer_id) FROM layer WHERE parent = #{layerId}
+    </select>
+
+    <!-- 레이어 트리 부모와 순서로 그룹 정보 취득 -->
+    <select id="getLayerByParentAndViewOrder" parameterType="layer" resultType="layer">
+        /* getLayerByParentAndViewOrder */
+        SELECT *
+        FROM layer
+        WHERE parent = #{parent}
+        <if test="updateType == 'up'.toString()">
+            <![CDATA[
+            AND view_order < #{viewOrder}
+            ]]>
+        ORDER BY view_order DESC
+        </if>
+        <if test="updateType == 'down'.toString()">
+            <![CDATA[
+            AND view_order > #{viewOrder}
+            ]]>
+        ORDER BY view_order
+        </if>
+        LIMIT 1
+    </select>
+
+    <!-- 레이어 테이블의 컬럼 타입이 어떤 geometry 타입인지를 구함 -->
+    <select id="getGeometryType" parameterType="string" resultType="string">
+        /* getGeometryType */
+        SELECT ST_GeometryType(wkb_geometry) AS geometryType
+        FROM ${value}
+        WHERE enable_yn = 'Y'
+        LIMIT 1
+    </select>
+
+    <!-- layer 등록 -->
+    <insert id="insertLayer" parameterType="layer">
+        <selectKey keyProperty="layerId" resultType="int" order="BEFORE">
+            SELECT NEXTVAL('layer_seq')
+        </selectKey>
+        INSERT INTO layer (
+            layer_id, layer_key, layer_name,
+            <if test="viewType != null and viewType != ''">
+                view_type,
+            </if>
+            ancestor, parent, depth, view_order, shape_insert_yn, use_yn
+        ) VALUES (
+            #{layerId}, #{layerKey}, #{layerName},
+            <if test="viewType != null and viewType != ''">
+                #{viewType},
+            </if>
+            #{ancestor}, #{parent}, #{depth}, #{viewOrder}, #{shapeInsertYn}, #{useYn}
+        )
+    </insert>
+
+    <!-- 레이어 트리 정보 수정 -->
+    <update id="updateTreeLayer" parameterType="layer">
+        /* updateTreeLayer */
+        UPDATE layer
+        SET layer_name = #{layerName},
+            layer_key = #{layerKey},
+            <if test="viewType != null and viewType != ''">
+                view_type = #{viewType},
+            </if>
+            use_yn = #{useYn},
+            shape_insert_yn = #{shapeInsertYn}
+        WHERE layer_id = #{layerId}
+    </update>
+
+    <!-- 레이어 트리  순서 수정 -->
+    <update id="updateViewOrderLayer" parameterType="layer">
+        /* updateViewOrderLayer */
+        UPDATE layer SET view_order = #{viewOrder} WHERE layer_id = #{layerId}
+    </update>
+
+    <!-- layer 정보 수정 -->
+    <update id="updateLayer" parameterType="layer">
+        /* updateLayer */
+        UPDATE layer
+        SET layer_name = #{layerName},
+        <if test="viewType != null and viewType != ''">
+            view_type = #{viewType},
+        </if>
+        <if test="layerStyle != null and layerStyle != ''">
+            layer_style = #{layerStyle},
+        </if>
+            z_index = #{zIndex},
+            geometry_type = #{geometryType},
+            coordinate = #{coordinate},
+            use_yn = #{useYn},
+            mobile_default_yn = #{mobileDefaultYn},
+            label_display_yn = #{labelDisplayYn},
+        <if test="status != null and status != ''">
+            status = #{status},
+        </if>
+            description = #{description},
+            user_id = #{userId},
+            update_date = NOW()
+        WHERE layer_id = #{layerId}
+    </update>
+
+    <!-- 레이어 삭제 -->
+    <delete id="deleteLayer" parameterType="int">
+        /* deleteLayer */
+        DELETE FROM layer WHERE layer_id = #{layerId}
+    </delete>
+    
+    <select id="getLayerColumn" parameterType="string" resultType="string">
+    	/* getLayerColumn */
+    	SELECT  array_to_string(ARRAY(SELECT ''||A.column_name||''
+        FROM information_schema.columns As A
+            WHERE table_name = #{value} 
+            AND  A.column_name NOT IN ('enable_yn', 'file_version')
+    		), ',') 
+    </select>
+</mapper>

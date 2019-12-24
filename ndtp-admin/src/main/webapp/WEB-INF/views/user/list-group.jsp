@@ -32,8 +32,8 @@
 							<div class="list-header row">
 								<div class="list-desc u-pull-left">
 									<div class="button-group">
-										<a href="#" onclick="openAllLayer(); return false;" class="button">펼치기</a>
-										<a href="#" onclick="closeAllLayer(); return false;" class="button">접기</a>
+										<a href="#" onclick="openAll(); return false;" class="button">펼치기</a>
+										<a href="#" onclick="closeAll(); return false;" class="button">접기</a>
 										<a href="/user/tree-group" class="button">그룹 수정/등록</a>
 									</div>
 								</div>
@@ -107,7 +107,7 @@
 					                            onclick="childrenDisplayToggle('${userGroup.depth}', '${userGroup.userGroupId}', '${userGroup.ancestor}');">
 					                            <i id="oneDepthArrow-${userGroup.userGroupId }" class="fa fa-caret-right oneArrow" aria-hidden="true"></i>
 					                        </span>&nbsp;
-					                        <span style="font-size: 1.5em; color: Mediumslateblue;">
+					                        <span style="font-size: 1.5em; color: Dodgerblue;">
 					                            <i id="oneDepthFolder-${userGroup.userGroupId }" class="fa fa-folder oneFolder" aria-hidden="true"></i>
 					                        </span>
         </c:if>
@@ -180,9 +180,92 @@
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript" src="/js/navigation.js"></script>
 <script type="text/javascript">
-	$(document).ready(function() {
-		
-	});
+	//펼치기
+	function openAll() {
+	    $(".threeDepthClass").show();
+	    $(".twoDepthClass").show();
+	
+	    // fa-caret-right
+	    // fa-caret-down
+	    $(".oneArrow").removeClass("fa-caret-right");
+	    $(".oneArrow").addClass("fa-caret-down");
+	    $(".twoArrow").removeClass("fa-caret-right");
+	    $(".twoArrow").addClass("fa-caret-down");
+	
+	    $(".oneFolder").removeClass("fa-folder");
+	    $(".oneFolder").addClass("fa-folder-open");
+	    $(".twoFolder").removeClass("fa-folder");
+	    $(".twoFolder").addClass("fa-folder-open");
+	}
+	
+	// 접기
+	function closeAll() {
+	    $(".threeDepthClass").hide();
+	    $(".twoDepthClass").hide();
+	
+	    $(".oneArrow").removeClass("fa-caret-down");
+	    $(".oneArrow").addClass("fa-caret-right");
+	    $(".twoArrwo").removeClass("fa-caret-down");
+	    $(".twoArrwo").addClass("fa-caret-right");
+	
+	    $(".oneFolder").removeClass("fa-folder-open");
+	    $(".oneFolder").addClass("fa-folder");
+	    $(".twoFolder").removeClass("fa-folder-open");
+	    $(".twoFolder").addClass("fa-folder");
+	}
+	
+	// 화살표 클릭시
+	function childrenDisplayToggle(depth, userGroupId, ancestor) {
+	    if(depth === "1") {
+	        console.log("--------- depth 1 = " + $(".oneDepthParent-" + userGroupId).css("display"));
+	        if( $(".oneDepthParent-" + userGroupId).css("display") === "none" ) {
+	            // 접힌 상태
+	            $(".oneDepthParent-" + userGroupId).show();
+	
+	            $("#oneDepthArrow-" + userGroupId).removeClass("fa-caret-right");
+	            $("#oneDepthArrow-" + userGroupId).addClass("fa-caret-down");
+	            $("#oneDepthFolder-" + userGroupId).removeClass("fa-folder");
+	            $("#oneDepthFolder-" + userGroupId).addClass("fa-folder-open");
+	
+	            $(".ancestorArrow-" + ancestor).removeClass("fa-caret-down");
+	            $(".ancestorArrow-" + ancestor).addClass("fa-caret-right");
+	            $(".ancestorFolder-" + ancestor).removeClass("fa-folder-open");
+	            $(".ancestorFolder-" + ancestor).addClass("fa-folder");
+	        } else {
+	            // 펼친 상태
+	            $(".ancestor-" + ancestor).hide();
+	            $(".oneDepthParent-" + userGroupId).hide();
+	
+	            $("#oneDepthArrow-" + userGroupId).removeClass("fa-caret-down");
+	            $("#oneDepthArrow-" + userGroupId).addClass("fa-caret-right");
+	            $("#oneDepthFolder-" + userGroupId).removeClass("fa-folder-open");
+	            $("#oneDepthFolder-" + userGroupId).addClass("fa-folder");
+	
+	            $(".ancestorArrow-" + ancestor).removeClass("fa-caret-down");
+	            $(".ancestorArrow-" + ancestor).addClass("fa-caret-right");
+	            $(".ancestorFolder-" + ancestor).removeClass("fa-folder-open");
+	            $(".ancestorFolder-" + ancestor).addClass("fa-folder");
+	        }
+	    } else if(depth === "2") {
+	        if( $(".twoDepthParent-" + userGroupId).css("display") === "none" ) {
+	            // 접힌 상태
+	            $(".twoDepthParent-" + userGroupId).show();
+	
+	            $("#twoDepthArrow-" + userGroupId).removeClass("fa-caret-right");
+	            $("#twoDepthArrow-" + userGroupId).addClass("fa-caret-down");
+	            $("#twoDepthFolder-" + userGroupId).removeClass("fa-folder");
+	            $("#twoDepthFolder-" + userGroupId).addClass("fa-folder-open");
+	        } else {
+	            // 펼친 상태
+	            $(".twoDepthParent-" + userGroupId).hide();
+	
+	            $("#twoDepthArrow-" + userGroupId).removeClass("fa-caret-down");
+	            $("#twoDepthArrow-" + userGroupId).addClass("fa-caret-right");
+	            $("#twoDepthFolder-" + userGroupId).removeClass("fa-folder-open");
+	            $("#twoDepthFolder-" + userGroupId).addClass("fa-folder");
+	        }
+	    }
+	}
 </script>
 </body>
 </html>
