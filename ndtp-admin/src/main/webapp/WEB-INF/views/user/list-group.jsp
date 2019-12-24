@@ -25,6 +25,9 @@
 				<div class="page-area">
 					<%@ include file="/WEB-INF/views/layouts/page_header.jsp" %>
 					<div class="page-content">
+						<!-- <div class="filters">
+						</div> -->
+						<div style="height: 30px;"></div>
 						<div class="list">
 							<div class="list-header row">
 								<div class="list-desc u-pull-left">
