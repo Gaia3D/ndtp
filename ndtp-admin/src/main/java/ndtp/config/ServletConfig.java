@@ -25,6 +25,9 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import lombok.extern.slf4j.Slf4j;
+import ndtp.interceptor.ConfigInterceptor;
+import ndtp.interceptor.LogInterceptor;
+import ndtp.interceptor.SecurityInterceptor;
 
 @Slf4j
 @EnableWebMvc
@@ -37,11 +40,13 @@ public class ServletConfig implements WebMvcConfigurer {
 	
 	@Autowired
 	private PropertiesConfig propertiesConfig;
-//	
-//	@Autowired
-//	private ConfigInterceptor configInterceptor;
-//	@Autowired
-//	private SecurityInterceptor securityInterceptor;
+	
+	@Autowired
+	private ConfigInterceptor configInterceptor;
+	@Autowired
+	private LogInterceptor logInterceptor;
+	@Autowired
+	private SecurityInterceptor securityInterceptor;
 	
 	@Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
@@ -52,15 +57,15 @@ public class ServletConfig implements WebMvcConfigurer {
 	public void addInterceptors(InterceptorRegistry registry) {
 		log.info(" @@@ ServletConfig addInterceptors @@@@ ");
 		
-//		registry.addInterceptor(securityInterceptor)
-//				.addPathPatterns("/**")
-//				.excludePathPatterns("/signin/**", "/css/**", "/externlib/**", "/images/**", "/js/**");
-//		registry.addInterceptor(logInterceptor)
-//				.addPathPatterns("/**")
-//				.excludePathPatterns("/signin/**", "/css/**", "/externlib/**", "/images/**", "/js/**");
-//		registry.addInterceptor(configInterceptor)
-//				.addPathPatterns("/**")
-//				.excludePathPatterns("/signin/**", "/css/**", "/externlib/**", "/images/**", "/js/**");
+		registry.addInterceptor(securityInterceptor)
+				.addPathPatterns("/**")
+				.excludePathPatterns("/sign/**", "/css/**", "/externlib/**", "/images/**", "/js/**");
+		registry.addInterceptor(logInterceptor)
+				.addPathPatterns("/**")
+				.excludePathPatterns("/sign/**", "/css/**", "/externlib/**", "/images/**", "/js/**");
+		registry.addInterceptor(configInterceptor)
+				.addPathPatterns("/**")
+				.excludePathPatterns("/sign/**", "/css/**", "/externlib/**", "/images/**", "/js/**");
     }
 	
 	@Bean
@@ -107,7 +112,7 @@ public class ServletConfig implements WebMvcConfigurer {
 	
 	@Override
     public void addViewControllers(ViewControllerRegistry registry) {
-		registry.addViewController("/").setViewName("forward:/signin/signin");
+		registry.addViewController("/").setViewName("forward:/sign/signin");
         registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
     }
 	

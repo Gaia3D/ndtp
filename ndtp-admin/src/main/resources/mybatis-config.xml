@@ -11,6 +11,7 @@
     
     <typeAliases>
     	<typeAlias type="ndtp.domain.AccessLog" alias="accessLog" />
+    	<typeAlias type="ndtp.domain.Menu" alias="menu" />
     	<typeAlias type="ndtp.domain.Policy" alias="policy" />
     	<typeAlias type="ndtp.domain.Role" alias="role" />
     	<typeAlias type="ndtp.domain.UserInfo" alias="userInfo" />

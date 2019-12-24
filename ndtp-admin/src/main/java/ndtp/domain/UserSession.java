@@ -1,9 +1,9 @@
 package ndtp.domain;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.sql.Timestamp;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -59,6 +59,6 @@ public class UserSession implements Serializable {
 	private Boolean passwordChangeTermOver;
 	
 	// 마지막 사인인 날짜
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
-	private Date lastSigninDate;
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Timestamp lastSigninDate;
 }

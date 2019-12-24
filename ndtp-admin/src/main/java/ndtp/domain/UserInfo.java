@@ -1,11 +1,11 @@
 package ndtp.domain;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.sql.Timestamp;
 
 import javax.validation.constraints.NotBlank;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -95,8 +95,8 @@ public class UserInfo extends Search implements Serializable {
 	// 마지막 사인인 비밀번호 변경 날짜
 	private String lastPasswordChangeDate;
 	// 마지막 사인인 날짜
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
-	private Date lastSigninDate;
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Timestamp lastSigninDate;
 	// 최초 사인인시 사용자 Role 권한 체크 패스 기능
 	private String userRoleCheckYn;
 	// 사용자 상태. 0:사용중, 1:사용중지(관리자), 2:잠금(비밀번호 실패횟수 초과), 3:휴면(사인인 기간), 4:만료(사용기간 종료), 5:삭제(화면 비표시, policy.user_delete_method=0), 6:임시비밀번호
@@ -121,9 +121,9 @@ public class UserInfo extends Search implements Serializable {
 	private Boolean userLastSigninLockOver;
 	
 	// 개인정보 수정 날짜
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
-	private Date updateDate;
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Timestamp updateDate;
 	// 등록일
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
-	private Date insertDate;
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Timestamp insertDate;
 }

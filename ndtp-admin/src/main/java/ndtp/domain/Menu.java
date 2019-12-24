@@ -1,8 +1,8 @@
 package ndtp.domain;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -90,8 +90,8 @@ public class Menu {
 	// 설명
 	private String description;
 	
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
-	private Date insertDate;
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Timestamp insertDate;
 	
 //	public String getViewInsertDate() {
 //		if(getInsertDate() == null) {

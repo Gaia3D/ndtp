@@ -14,21 +14,21 @@ insert into user_info(
 -- 관리자 메뉴
 insert into menu(menu_id, menu_type, menu_target, name, name_en, ancestor, parent, depth, view_order, url, url_alias, html_id, css_class, default_yn, use_yn, display_yn)
 values
-	(1, '0', '1', '홈', 'HOME', 0, 0, 1, 1, '/main/index.do', null, null, 'glyph-home', 'Y', 'Y', 'Y'),
-	(2, '0', '1', '사용자', 'USER', 0, 0, 1, 2, '/user/list-user.do', null, null, 'glyph-users', 'Y', 'Y', 'Y'),
-	(21, '0', '1', '사용자 그룹', 'USER', 0, 2, 2, 1, '/user/list-user-group.do', null, null, 'glyph-users', 'Y', 'Y', 'Y'),
-	(22, '0', '1', '사용자 목록', 'USER', 0, 2, 2, 2, '/user/list-user.do', null, null, 'glyph-users', 'Y', 'Y', 'Y'),
-	(23, '0', '1', '사용자 등록', 'USER', 0, 2, 2, 3, '/user/input-user.do', null, null, 'glyph-users', 'Y', 'Y', 'Y'),
-	(24, '0', '1', '사용자 비밀번호 변경', 'USER', 0, 2, 2, 4, '/user/modify-password.do', '/user/list-user.do', null, 'glyph-users', 'N', 'Y', 'N'),
-	(25, '0', '1', '사용자 비밀번호 변경', 'USER', 0, 2, 2, 5, '/user/update-password.do', '/user/list-user.do', null, 'glyph-users', 'N', 'Y', 'N'),
-	(26, '0', '1', '사용자 정보 수정', 'USER', 0, 2, 2, 6, '/user/modify-user.do', '/user/list-user.do', null, 'glyph-users', 'N', 'Y', 'N'),
-	(27, '0', '1', '사용자 상세 정보', 'USER', 0, 2, 2, 7, '/user/detail-user.do', '/user/list-user.do', null, 'glyph-users', 'N', 'Y', 'N'),
-	(8, '0', '1', '환경설정', 'CONFIGURATION', 0, 0, 1, 8, '/config/modify-policy.do', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
-	(81, '0', '1', '운영정책', 'CONFIGURATION', 0, 8, 2, 1, '/config/modify-policy.do', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
-	(82, '0', '1', '메뉴설정', 'CONFIGURATION', 0, 8, 2, 2, '/config/list-menu.do', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
-	(84, '0', '1', '위젯설정', 'CONFIGURATION', 0, 8, 2, 4, '/config/modify-widget.do', null, null, 'glyph-settings', 'Y', 'N', 'Y'),
-	(85, '0', '1', '권한설정', 'CONFIGURATION', 0, 8, 2, 5, '/role/list-role.do', null, null, 'glyph-settings', 'Y', 'N', 'Y'),
-	(87, '0', '1', '권한 설정 수정', 'CONFIGURATION', 0, 8, 2, 7, '/role/modify-role.do', '/role/list-role.do', null, 'glyph-settings', 'N', 'Y', 'N');
+	(1, '0', '1', '홈', 'HOME', 0, 0, 1, 1, '/main/index', null, null, 'glyph-home', 'Y', 'Y', 'Y'),
+	(2, '0', '1', '사용자', 'USER', 0, 0, 1, 2, '/user/list', null, null, 'glyph-users', 'Y', 'Y', 'Y'),
+	(21, '0', '1', '사용자 그룹', 'USER', 0, 2, 2, 1, '/user/list-group', null, null, 'glyph-users', 'Y', 'Y', 'Y'),
+	(22, '0', '1', '사용자 목록', 'USER', 0, 2, 2, 2, '/user/list', null, null, 'glyph-users', 'Y', 'Y', 'Y'),
+	(23, '0', '1', '사용자 등록', 'USER', 0, 2, 2, 3, '/user/input', null, null, 'glyph-users', 'Y', 'Y', 'Y'),
+	(24, '0', '1', '사용자 비밀번호 변경', 'USER', 0, 2, 2, 4, '/user/modify-password', '/user/list-user.do', null, 'glyph-users', 'N', 'Y', 'N'),
+	(25, '0', '1', '사용자 비밀번호 변경', 'USER', 0, 2, 2, 5, '/user/update-password', '/user/list-user.do', null, 'glyph-users', 'N', 'Y', 'N'),
+	(26, '0', '1', '사용자 정보 수정', 'USER', 0, 2, 2, 6, '/user/modify', '/user/list-user.do', null, 'glyph-users', 'N', 'Y', 'N'),
+	(27, '0', '1', '사용자 상세 정보', 'USER', 0, 2, 2, 7, '/user/detail', '/user/list-user.do', null, 'glyph-users', 'N', 'Y', 'N'),
+	(8, '0', '1', '환경설정', 'CONFIGURATION', 0, 0, 1, 8, '/config/modify-policy', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
+	(81, '0', '1', '운영정책', 'CONFIGURATION', 0, 8, 2, 1, '/config/modify-policy', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
+	(82, '0', '1', '메뉴설정', 'CONFIGURATION', 0, 8, 2, 2, '/config/list-menu', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
+	(84, '0', '1', '위젯설정', 'CONFIGURATION', 0, 8, 2, 4, '/config/modify-widget', null, null, 'glyph-settings', 'Y', 'N', 'Y'),
+	(85, '0', '1', '권한설정', 'CONFIGURATION', 0, 8, 2, 5, '/role/list-role', null, null, 'glyph-settings', 'Y', 'N', 'Y'),
+	(87, '0', '1', '권한 설정 수정', 'CONFIGURATION', 0, 8, 2, 7, '/role/modify-role', '/role/list-role.do', null, 'glyph-settings', 'N', 'Y', 'N');
 	
 
 -- 사용자 그룹별 메뉴
@@ -49,6 +49,12 @@ insert into user_group_menu(user_group_menu_id, user_group_id, menu_id)
 		(84, 1, 84),
 		(85, 1, 85),
 		(87, 1, 87);
+		
+insert into user_group_role(user_group_role_id, user_group_id, role_id)
+	values
+		(1, 1, 1),
+		(2, 1, 2),
+		(3, 1, 3);		
 
 
 -- 메인 화면 위젯
@@ -71,9 +77,9 @@ insert into policy(	policy_id, password_exception_char)
 -- Role
 insert into role(role_id, role_name, role_key, role_target, role_type, use_yn, default_yn)
 values
-    (NEXTVAL('role_seq'), '[ADMIN] 관리자 페이지 SIGN IN 권한', 'ADMIN_SIGNIN', '1', '0', 'Y', 'Y'),
-    (NEXTVAL('role_seq'), '[ADMIN] 관리자 페이지 사용자 관리 권한', 'ADMIN_USER_MANAGE', '1', '0', 'Y', 'Y'),
-    (NEXTVAL('role_seq'), '[ADMIN] 사용자 페이지 SIGN IN 권한', 'USER_SIGNIN', '0', '0', 'Y', 'Y');
+    (1, '[ADMIN] 관리자 페이지 SIGN IN 권한', 'ADMIN_SIGNIN', '1', '0', 'Y', 'Y'),
+    (2, '[ADMIN] 관리자 페이지 사용자 관리 권한', 'ADMIN_USER_MANAGE', '1', '0', 'Y', 'Y'),
+    (3, '[ADMIN] 사용자 페이지 SIGN IN 권한', 'USER_SIGNIN', '0', '0', 'Y', 'Y');
 
 
 commit;

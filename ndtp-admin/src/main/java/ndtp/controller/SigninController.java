@@ -40,7 +40,7 @@ import ndtp.utils.WebUtils;
  */
 @Slf4j
 @Controller
-@RequestMapping("/signin/")
+@RequestMapping("/sign/")
 public class SigninController {
 	
 	@Autowired
@@ -65,7 +65,7 @@ public class SigninController {
 		model.addAttribute("signinForm", signinForm);
 		model.addAttribute("policy", policy);
 		
-		return "/signin/signin";
+		return "/sign/signin";
 	}
 	
 	/**
@@ -113,7 +113,7 @@ public class SigninController {
 			model.addAttribute("signinForm", signinForm);
 			model.addAttribute("policy", policy);
 			
-			return "/signin/signin";
+			return "/sign/signin";
 		}
 		
 		// 사용자 정보를 갱신
@@ -138,7 +138,7 @@ public class SigninController {
 			return "redirect:/user/modify-password";
 		}
 		
-		return "redirect:/main/index";
+		return "redirect:/user/list-group";
 	}
 	
 	/**
@@ -239,13 +239,13 @@ public class SigninController {
 		UserSession userSession = (UserSession)session.getAttribute(Key.USER_SESSION.name());
 		
 		if(userSession == null) {
-			return "redirect:/signin/signin";
+			return "redirect:/sign/signin";
 		}
 		
 		session.removeAttribute(userSession.getUserId());
 		session.removeAttribute(Key.USER_SESSION.name());
 		session.invalidate();
 		
-		return "redirect:/signin/signin";
+		return "redirect:/sign/signin";
 	}
 }

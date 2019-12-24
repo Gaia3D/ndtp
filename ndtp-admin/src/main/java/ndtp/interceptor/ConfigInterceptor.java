@@ -66,7 +66,6 @@ public class ConfigInterceptor extends HandlerInterceptorAdapter {
 			
 			menu = CacheManager.getMenuMap().get(clickMenuId);
 			parentMenu = CacheManager.getMenuMap().get(clickParentId);
-			
 			if(menu != null) {
 				if(YOrN.Y == YOrN.valueOf(menu.getDisplayYn())) {
 					menu.setAliasName(null);

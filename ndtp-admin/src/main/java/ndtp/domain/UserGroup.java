@@ -1,8 +1,8 @@
 package ndtp.domain;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import ndtp.utils.FormatUtils;
 
 /**
  * 사용자 그룹
@@ -69,17 +70,17 @@ public class UserGroup {
 	// 설명
 	private String description;
 	
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
-	private Date updateDate;
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
-	private Date insertDate;
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Timestamp updateDate;
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Timestamp insertDate;
 	
-//	public String getViewInsertDate() {
-//		if(getInsertDate() == null) {
-//			return "";
-//		}
-//		
-//		String tempDate = FormatUtil.getViewDateyyyyMMddHHmmss(getInsertDate());
-//		return tempDate.substring(0, 19);
-//	}
+	public String getViewInsertDate() {
+		if(getInsertDate() == null) {
+			return "";
+		}
+		
+		String tempDate = FormatUtils.getViewDateyyyyMMddHHmmss(getInsertDate());
+		return tempDate.substring(0, 19);
+	}
 }
