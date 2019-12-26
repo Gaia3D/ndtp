@@ -31,7 +31,8 @@ values
 	(71, '0', '1', '이슈목록', 'ISSUE', 0, 7, 2, 1, '/issue/list', null, null, 'glyph-dashboard', 'Y', 'Y', 'Y'),
 	(8, '0', '1', '환경설정', 'CONFIGURATION', 0, 0, 1, 8, '/config/modify-policy', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
 	(81, '0', '1', '운영정책', 'CONFIGURATION', 0, 8, 2, 1, '/config/modify-policy', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
-	(82, '0', '1', '메뉴설정', 'CONFIGURATION', 0, 8, 2, 2, '/config/list-menu', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
+	(82, '0', '1', '관리자 메뉴설정', 'ADMIN MENU', 0, 8, 2, 2, '/config/admin-menu', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
+	(83, '0', '1', '사용자 메뉴설정', 'USER MENU', 0, 8, 2, 2, '/config/user-menu', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
 	(84, '0', '1', '위젯설정', 'CONFIGURATION', 0, 8, 2, 4, '/config/modify-widget', null, null, 'glyph-settings', 'Y', 'N', 'Y'),
 	(85, '0', '1', '권한설정', 'CONFIGURATION', 0, 8, 2, 5, '/role/list-role', null, null, 'glyph-settings', 'Y', 'N', 'Y'),
 	(87, '0', '1', '권한 설정 수정', 'CONFIGURATION', 0, 8, 2, 7, '/role/modify-role', '/role/list-role.do', null, 'glyph-settings', 'N', 'Y', 'N');
@@ -58,6 +59,7 @@ insert into user_group_menu(user_group_menu_id, user_group_id, menu_id)
 		(8, 1, 8),
 		(81, 1, 81),
 		(82, 1, 82),
+		(83, 1, 83),
 		(84, 1, 84),
 		(85, 1, 85),
 		(87, 1, 87);
