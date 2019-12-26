@@ -55,7 +55,14 @@ create table policy(
 	geo_ambient_color						varchar(11)			default '#d8d8d8',
 	geo_ssao_radius							varchar(20)			default '0.15',
 	
-	geo_server_enable						varchar(5)			default 'false',
+	geoserver_enable				varchar(1)					default 'Y',
+	geoserver_wms_version			varchar(5)         			default '1.1.1',
+	geoserver_data_url				varchar(256),
+	geoserver_data_workspace		varchar(60),
+	geoserver_data_store			varchar(60),
+	geoserver_user					varchar(256),
+	geoserver_password				varchar(256),
+	
 	geo_server_url							varchar(256),
 	geo_server_layers						varchar(60),
 	geo_server_parameters_service			varchar(30),
@@ -70,6 +77,9 @@ create table policy(
 	geo_server_add_parameters_request		varchar(30),
 	geo_server_add_parameters_transparent	varchar(30),
 	geo_server_add_parameters_format		varchar(30),
+	
+	layer_source_coordinate					varchar(100)				default 'EPSG:4326',
+	layer_target_coordinate					varchar(100)				default 'EPSG:4326',
 	
 	geo_callback_enable 					varchar(5)			default 'false',
 	geo_callback_apiresult					varchar(64),
@@ -171,8 +181,15 @@ comment on column policy.geo_specular_reflection_coef is '표면의 반질거림
 comment on column policy.geo_ambient_color is '다이렉트 빛이 아닌 반사율 RGB, 콤마로 연결';
 comment on column policy.geo_specular_color is '표면의 반질거림 색깔. RGB, 콤마로 연결';
 comment on column policy.geo_ssao_radius is '그림자 반경';
+
+comment on column policy.geoserver_enable is 'geoserver 사용유무';
+comment on column policy.geoserver_wms_version is 'geoserver wms 버전';
+comment on column policy.geoserver_data_url is 'geoserver 데이터 URL';
+comment on column policy.geoserver_data_workspace is 'geoserver 데이터 작업공간';
+comment on column policy.geoserver_data_store is 'geoserver 데이터 저장소';
+comment on column policy.geoserver_user is 'geoserver 사용자 계정';
+comment on column policy.geoserver_password is 'geoserver 비밀번호';
 	
-comment on column policy.geo_server_enable is 'geo server 사용유무';
 comment on column policy.geo_server_url is 'geo server 기본 Layers url';
 comment on column policy.geo_server_layers is 'geo server 기본 layers';
 comment on column policy.geo_server_parameters_service is 'geo server 기본 Layers service 변수값';
@@ -187,6 +204,9 @@ comment on column policy.geo_server_add_parameters_version is 'geo server 추가
 comment on column policy.geo_server_add_parameters_request is 'geo server 추가 Layers request 변수값';
 comment on column policy.geo_server_add_parameters_transparent is 'geo server 추가 Layers transparent 변수값';
 comment on column policy.geo_server_add_parameters_format is 'geo server 추가 Layers format 변수값';
+
+comment on column policy.layer_source_coordinate is 'Layer 원본 좌표계';
+comment on column policy.layer_target_coordinate is 'Layer 좌표계 정의';
 	
 comment on column policy.geo_callback_enable is '콜백 function 사용유무. 기본값 false';
 comment on column policy.geo_callback_apiresult is 'api 처리 결과 callback function 이름';

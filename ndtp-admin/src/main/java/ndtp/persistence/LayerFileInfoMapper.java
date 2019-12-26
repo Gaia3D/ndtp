@@ -117,7 +117,7 @@ public interface LayerFileInfoMapper {
 	 * @param map
 	 * @return
 	 */
-	int updateOgr2OgrDataVersion(Map<String, String> map);
+	int updateOgr2OgrDataFileVersion(Map<String, String> map);
 	
 	/**
 	 * shape 테이블 데이터 상태 변경

@@ -41,8 +41,8 @@
     </select>
 
     <!-- 레이어별 shape 파일 version 최대값 + 1 을 취득 -->
-    <select id="getMaxVersion" parameterType="int" resultType="int">
-        /* getMaxVersion */
+    <select id="getMaxFileVersion" parameterType="int" resultType="int">
+        /* getMaxFileVersion */
         SELECT MAX(file_version) FROM layer_file_info WHERE layer_id = #{layerId}
     </select>
 
@@ -115,8 +115,8 @@
     </update>
 
     <!-- org2org를 이용해서 생성한 테이블을 데이터 버전 갱신 -->
-    <update id="updateOgr2OgrDataVersion" parameterType="map">
-        /* updateOgr2OgrDataVersion */
+    <update id="updateOgr2OgrDataFileVersion" parameterType="map">
+        /* updateOgr2OgrDataFileVersion */
         UPDATE ${tableName}
         SET enable_yn = 'Y',
             <!-- update = #{updateDate} -->

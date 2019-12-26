@@ -17,6 +17,11 @@ public enum RoleTarget {
 		return this.value;
 	}
 	
+	/**
+	 * TODO values for loop 로 변환
+	 * @param value
+	 * @return
+	 */
 	public static RoleTarget findBy(String value) {
 		if("0".equals(value)) return RoleTarget.USER;
 		else if("1".equals(value)) return RoleTarget.ADMIN;

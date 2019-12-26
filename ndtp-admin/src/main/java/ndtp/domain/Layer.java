@@ -57,6 +57,9 @@ public class Layer implements Serializable {
     private String layerName;
     // 레이어 표시 타입. wms(기본), wfs, canvas
     private String viewType;
+    // 공유 타입. 0 : 공개, 1 : 개인, 2 : 그룹
+    private String sharedType;
+    
     // layer 스타일. 임시(현재는 색깔만 넣고, 추후 확장 예정)
     private String layerStyle;
     // geometry type

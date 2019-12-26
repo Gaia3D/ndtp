@@ -7,11 +7,11 @@
     <select id="getListLayer" parameterType="layer" resultType="layer">
         /* getListLayer */
         WITH RECURSIVE layer_tree (
-            layer_id, layer_key, layer_name, view_type, layer_style, geometry_type,
+            layer_id, layer_key, layer_name, view_type, shared_type, layer_style, geometry_type,
             ancestor,  parent, depth, view_order, z_index, shape_insert_yn, use_yn, coordinate,
             user_id, update_date, insert_date, path, cycle, mobile_default_yn, label_display_yn
         ) AS (
-            SELECT A.layer_id, A.layer_key, A.layer_name, A.view_type, A.layer_style, A.geometry_type,
+            SELECT A.layer_id, A.layer_key, A.layer_name, A.view_type, A.shared_type, A.layer_style, A.geometry_type,
                 A.ancestor, A.parent, A.depth, A.view_order, A.z_index, A.shape_insert_yn, A.use_yn, A.coordinate,
                 A.user_id, A.update_date, A.insert_date, ARRAY[A.view_order], false, A.mobile_default_yn, A.label_display_yn
             FROM layer A
@@ -35,7 +35,7 @@
                 AND A.label_display_yn = #{labelDisplayYn}
             </if>
             UNION ALL
-            SELECT A.layer_id, A.layer_key, A.layer_name, A.view_type, A.layer_style, A.geometry_type,
+            SELECT A.layer_id, A.layer_key, A.layer_name, A.view_type, A.shared_type, A.layer_style, A.geometry_type,
                 A.ancestor, A.parent, A.depth, A.view_order, A.z_index, A.shape_insert_yn, A.use_yn, A.coordinate,
                 A.user_id, A.update_date, A.insert_date, path || A.view_order, A.layer_id = ANY(path), A.mobile_default_yn, A.label_display_yn
             FROM layer A, layer_tree B
@@ -43,7 +43,7 @@
                 AND A.parent = B.layer_id
                 AND not cycle
         )
-        SELECT layer_id, layer_key, layer_name, view_type, layer_style, geometry_type,
+        SELECT layer_id, layer_key, layer_name, view_type, shared_type, layer_style, geometry_type,
             ancestor, parent, depth, view_order, z_index, shape_insert_yn, use_yn, coordinate,
             user_id, update_date, insert_date, path, mobile_default_yn, label_display_yn
         FROM layer_tree
@@ -97,6 +97,18 @@
         WHERE enable_yn = 'Y'
         LIMIT 1
     </select>
+    
+    <select id="getLayerColumn" parameterType="string" resultType="string">
+    	/* getLayerColumn */
+    	SELECT ARRAY_TO_STRING(
+    		ARRAY(
+	    		SELECT ''||A.column_name||''
+	        	FROM information_schema.columns As A
+	            WHERE table_name = #{value} 
+	            	AND  A.column_name NOT IN ('enable_yn', 'file_version')
+	    		), ','
+	    	) 
+    </select>
 
     <!-- layer 등록 -->
     <insert id="insertLayer" parameterType="layer">
@@ -108,11 +120,17 @@
             <if test="viewType != null and viewType != ''">
                 view_type,
             </if>
+            <if test="sharedType != null and sharedType != ''">
+                shared_type,
+            </if>
             ancestor, parent, depth, view_order, shape_insert_yn, use_yn
         ) VALUES (
             #{layerId}, #{layerKey}, #{layerName},
             <if test="viewType != null and viewType != ''">
                 #{viewType},
+            </if>
+            <if test="sharedType != null and sharedType != ''">
+                shared_type,
             </if>
             #{ancestor}, #{parent}, #{depth}, #{viewOrder}, #{shapeInsertYn}, #{useYn}
         )
@@ -126,6 +144,9 @@
             layer_key = #{layerKey},
             <if test="viewType != null and viewType != ''">
                 view_type = #{viewType},
+            </if>
+            <if test="sharedType != null and sharedType != ''">
+                shared_type,
             </if>
             use_yn = #{useYn},
             shape_insert_yn = #{shapeInsertYn}
@@ -146,6 +167,9 @@
         <if test="viewType != null and viewType != ''">
             view_type = #{viewType},
         </if>
+        <if test="sharedType != null and sharedType != ''">
+			shared_type,
+		</if>
         <if test="layerStyle != null and layerStyle != ''">
             layer_style = #{layerStyle},
         </if>
@@ -169,13 +193,4 @@
         /* deleteLayer */
         DELETE FROM layer WHERE layer_id = #{layerId}
     </delete>
-    
-    <select id="getLayerColumn" parameterType="string" resultType="string">
-    	/* getLayerColumn */
-    	SELECT  array_to_string(ARRAY(SELECT ''||A.column_name||''
-        FROM information_schema.columns As A
-            WHERE table_name = #{value} 
-            AND  A.column_name NOT IN ('enable_yn', 'file_version')
-    		), ',') 
-    </select>
 </mapper>

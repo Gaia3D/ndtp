@@ -26,6 +26,11 @@ public enum UserStatus {
 		return this.value;
 	}
 	
+	/**
+	 * TODO values for loop 로 변환
+	 * @param value
+	 * @return
+	 */
 	public static UserStatus findBy(String value) {
 		if("0".equals(value)) return UserStatus.USE;
 		else if("1".equals(value)) return UserStatus.FORBID;

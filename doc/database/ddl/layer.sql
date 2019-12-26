@@ -7,6 +7,7 @@ create table layer(
 	layer_key					varchar(100)					not null,
 	layer_name					varchar(256)					not null,
 	view_type					varchar(30)						default 'wms',
+	shared_type					char(1)							default '0',
 	layer_style					varchar(100),
 	geometry_type				varchar(30),
 	ancestor					varchar(1000),
@@ -32,6 +33,7 @@ comment on column layer.layer_id is '레이어 고유번호';
 comment on column layer.layer_key is '레이어 고유키(API용)';
 comment on column layer.layer_name is '레이어명';
 comment on column layer.view_type is '레이어 표시 타입. wms(기본), wfs, canvas';
+comment on column layer.shared_type is '공유 타입. 0 : 공개, 1 : 개인, 2 : 그룹';
 comment on column layer.layer_style is '레이어 스타일. 임시(현재는 색깔만)';
 comment on column layer.geometry_type is 'shape 파일 geometry 타입';
 comment on column layer.ancestor is '조상';

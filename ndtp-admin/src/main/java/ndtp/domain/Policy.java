@@ -138,8 +138,21 @@ public class Policy {
  	// 그림자 반경
  	private String geoSsaoRadius;
  	
- 	// geo server 사용유무
- 	private String geoServerEnable;
+ // geoserver 사용유무. Y : 사용(기본값), N : 미사용
+ 	private String geoserverEnable;
+ 	// geoserver wms 버전. 기본 1.1.1
+ 	private String geoserverWmsVersion;
+ 	// geoserver 데이터 URL
+ 	private String geoserverDataUrl;
+ 	// geoserver 데이터 작업공간
+ 	private String geoserverDataWorkspace;
+ 	// geoserver 데이터 저장소
+ 	private String geoserverDataStore;
+ 	// geoserver 계정
+ 	private String geoserverUser;
+ 	// geoserver 비밀번호
+ 	private String geoserverPassword;
+ 	
  	// geo server 기본 layers url
  	private String geoServerUrl;
  	// geo server 기본 layers
@@ -168,6 +181,11 @@ public class Policy {
  	private String geoServerAddParametersTransparent;
  	// geo server 추가 layers format 변수값
  	private String geoServerAddParametersFormat;
+ 	
+ 	// 레이어 원본 좌표계
+ 	private String layerSourceCoordinate;
+ 	// 레이어 좌표계 정의
+ 	private String layerTargetCoordinate;
  	
  	// 콜백 function 사용유무. 기본값 false
  	private String geoCallbackEnable;
