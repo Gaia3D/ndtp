@@ -3,6 +3,25 @@ package ndtp.utils;
 import javax.servlet.http.HttpServletRequest;
 
 public class WebUtils {
+	
+	public static String getBrowser(HttpServletRequest request) {
+		String header = request.getHeader("User-Agent");
+		
+		if (header.indexOf("MSIE") > -1) {
+			return "MSIE";
+		} else if (header.indexOf("Trident") > -1) {
+			// IE11 문자열 깨짐 방지
+			return "Trident";
+		} else if (header.indexOf("Chrome") > -1) {
+			return "Chrome";
+		} else if (header.indexOf("Opera") > -1) {
+			return "Opera";
+		} else if (header.indexOf("Safari") > -1) {
+			return "Safari";
+		}
+		
+		return "Firefox";
+	}
 
 	/**
 	 * 사용자 IP 를 획득

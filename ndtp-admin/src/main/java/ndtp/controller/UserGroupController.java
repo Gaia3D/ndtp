@@ -53,13 +53,8 @@ public class UserGroupController implements AuthorizationController {
 	 */
 	@GetMapping(value = "/list-group")
 	public String list(HttpServletRequest request, Model model) {
-		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-		int httpStatusCode = roleStatusCode(userSession.getUserGroupId(), RoleKey.ADMIN_USER_MANAGE.name());
-		if(httpStatusCode > 200) {
-			log.info("@@ httpStatusCode = {}", httpStatusCode);
-			request.setAttribute("httpStatusCode", httpStatusCode);
-			return "/error/error";
-		}
+		String roleCheckResult = roleValidate(request);
+    	if(roleValidate(request) != null) return roleCheckResult;
 		
 		List<UserGroup> userGroupList = userGroupService.getListUserGroup(new UserGroup());
 		model.addAttribute("userGroupList", userGroupList);
@@ -479,4 +474,16 @@ public class UserGroupController implements AuthorizationController {
 //		
 //		return buffer.toString();
 //	}
+	
+	private String roleValidate(HttpServletRequest request) {
+    	UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		int httpStatusCode = getRoleStatusCode(userSession.getUserGroupId(), RoleKey.ADMIN_USER_MANAGE.name());
+		if(httpStatusCode > 200) {
+			log.info("@@ httpStatusCode = {}", httpStatusCode);
+			request.setAttribute("httpStatusCode", httpStatusCode);
+			return "/error/error";
+		}
+		
+		return null;
+    }
 }

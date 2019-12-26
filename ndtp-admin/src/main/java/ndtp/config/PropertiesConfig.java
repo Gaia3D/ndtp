@@ -31,4 +31,5 @@ public class PropertiesConfig {
 
     private String gisRestServer;
     
+    private String layerUploadDir;
 }

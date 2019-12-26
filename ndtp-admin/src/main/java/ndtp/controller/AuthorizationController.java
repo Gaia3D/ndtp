@@ -18,7 +18,7 @@ public interface AuthorizationController {
 	 * @param roleKey
 	 * @return
 	 */
-	default int roleStatusCode(Integer userGroupId, String roleKey) {
+	default int getRoleStatusCode(Integer userGroupId, String roleKey) {
 		int statusCode  = 0;
 		List<String> userGroupRoleKeyList = CacheManager.getUserGroupRoleKeyList(userGroupId);
         if(!RoleSupport.isUserGroupRoleValid(userGroupRoleKeyList, roleKey)) {

@@ -150,6 +150,18 @@ public class AccessLogController {
 		return result;
 	}
 	
+//	private String roleValidate(HttpServletRequest request) {
+//    	UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+//		int httpStatusCode = getRoleStatusCode(userSession.getUserGroupId(), RoleKey.ADMIN_LAYER_MANAGE.name());
+//		if(httpStatusCode > 200) {
+//			log.info("@@ httpStatusCode = {}", httpStatusCode);
+//			request.setAttribute("httpStatusCode", httpStatusCode);
+//			return "/error/error";
+//		}
+//		
+//		return null;
+//    }
+	
 	/**
 	 * 검색 조건
 	 * @param search

@@ -66,7 +66,8 @@ insert into user_group_role(user_group_role_id, user_group_id, role_id)
 	values
 		(1, 1, 1),
 		(2, 1, 2),
-		(3, 1, 3);		
+		(3, 1, 3),		
+		(4, 1, 4);		
 
 
 -- 메인 화면 위젯
@@ -91,7 +92,9 @@ insert into role(role_id, role_name, role_key, role_target, role_type, use_yn, d
 values
     (1, '[ADMIN] 관리자 페이지 SIGN IN 권한', 'ADMIN_SIGNIN', '1', '0', 'Y', 'Y'),
     (2, '[ADMIN] 관리자 페이지 사용자 관리 권한', 'ADMIN_USER_MANAGE', '1', '0', 'Y', 'Y'),
-    (3, '[ADMIN] 사용자 페이지 SIGN IN 권한', 'USER_SIGNIN', '0', '0', 'Y', 'Y');
-
+    (3, '[ADMIN] 관리자 페이지 Layer 관리 권한', 'ADMIN_LAYER_MANAGE', '1', '0', 'Y', 'Y'),
+    
+    (4, '[ADMIN] 사용자 페이지 SIGN IN 권한', 'USER_SIGNIN', '0', '0', 'Y', 'Y');
+	
 
 commit;
