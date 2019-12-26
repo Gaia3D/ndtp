@@ -82,7 +82,8 @@ public class AccessLogController {
 		
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
-		String error = null;
+		String errorCode = null;
+		String message = null;
 		List<AccessLog> accessLogList = new ArrayList<>();
 		try {
 			String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
@@ -111,11 +112,11 @@ public class AccessLogController {
 		} catch(Exception e) {
 			e.printStackTrace();
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-			error = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			errorCode = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 		}
 		
 		result.put("statusCode", statusCode);
-		result.put("error", error);
+		result.put("errorCode", errorCode);
 		result.put("accessLogList", accessLogList);
 		
 		return result;
@@ -127,9 +128,10 @@ public class AccessLogController {
 	@GetMapping(value = "accesses/{accessLogId}")
 	public Map<String, Object>  detail(@PathVariable Long accessLogId) {
 		
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
-		String error = null;
+		String errorCode = null;
+		String message = null;
 		AccessLog accessLog = null;
 		try {
 			accessLog = accessLogService.getAccessLog(accessLogId);
@@ -138,14 +140,14 @@ public class AccessLogController {
 		} catch(Exception e) {
 			e.printStackTrace();
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-			error = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			errorCode = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 		}
 		
-		map.put("statusCode", statusCode);
-		map.put("error", error);
-		map.put("accessLog", accessLog);
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("accessLog", accessLog);
 		
-		return map;
+		return result;
 	}
 	
 	/**
