@@ -19,6 +19,11 @@ public enum RoleType {
 		return this.value;
 	}
 	
+	/**
+	 * TODO values for loop 로 변환
+	 * @param value
+	 * @return
+	 */
 	public static RoleType findBy(String value) {
 		if("0".equals(value)) return RoleType.USER;
 		else if("1".equals(value)) return RoleType.SERVER;

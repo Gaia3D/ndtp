@@ -80,7 +80,7 @@ public class AccessLogController {
 		
 		log.info("@@ accessLog = {}", accessLog);
 		
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String error = null;
 		List<AccessLog> accessLogList = new ArrayList<>();
@@ -114,11 +114,11 @@ public class AccessLogController {
 			error = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 		}
 		
-		map.put("statusCode", statusCode);
-		map.put("error", error);
-		map.put("accessLogList", accessLogList);
+		result.put("statusCode", statusCode);
+		result.put("error", error);
+		result.put("accessLogList", accessLogList);
 		
-		return map;
+		return result;
 	}
 	
 	/**
