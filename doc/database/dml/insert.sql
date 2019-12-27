@@ -31,11 +31,11 @@ values
 	(71, '0', '1', '이슈목록', 'ISSUE', 0, 7, 2, 1, '/issue/list', null, null, 'glyph-dashboard', 'Y', 'Y', 'Y'),
 	(8, '0', '1', '환경설정', 'CONFIGURATION', 0, 0, 1, 8, '/policy/modify', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
 	(81, '0', '1', '운영정책', 'CONFIGURATION', 0, 8, 2, 1, '/policy/modify', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
-	(82, '0', '1', '관리자 메뉴설정', 'ADMIN MENU', 0, 8, 2, 2, '/menu/admin-menu', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
-	(83, '0', '1', '사용자 메뉴설정', 'USER MENU', 0, 8, 2, 3, '/menu/user-menu', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
-	(84, '0', '1', '위젯설정', 'WIDGET', 0, 8, 2, 4, '/widget/modify', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
-	(85, '0', '1', '권한설정', 'ROLE', 0, 8, 2, 5, '/role/list', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
-	(87, '0', '1', '권한 설정 수정', 'ROLE', 0, 8, 2, 6, '/role/modify', '/role/list-role.do', null, 'glyph-settings', 'N', 'Y', 'N');
+	(82, '0', '1', '관리자 메뉴', 'ADMIN MENU', 0, 8, 2, 2, '/menu/admin-menu', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
+	(83, '0', '1', '사용자 메뉴', 'USER MENU', 0, 8, 2, 3, '/menu/user-menu', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
+	(84, '0', '1', '위젯', 'WIDGET', 0, 8, 2, 4, '/widget/modify', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
+	(85, '0', '1', '권한', 'ROLE', 0, 8, 2, 5, '/role/list', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
+	(87, '0', '1', '권한 수정', 'ROLE', 0, 8, 2, 6, '/role/modify', '/role/list-role.do', null, 'glyph-settings', 'N', 'Y', 'N');
 	
 
 -- 사용자 그룹별 메뉴
