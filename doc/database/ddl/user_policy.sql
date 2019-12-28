@@ -1,10 +1,10 @@
 drop table if exists user_policy cascade;
 
 create table user_policy (
-	user_policy_id				int,
+	user_policy_id				integer,
 	user_id						varchar(100)					not null,
 	label_yn					char(1)							default 'Y',
-	base_layers					varchar(4000),
+	base_layers					varchar(1000),
 	update_date					timestamp with time zone,
 	insert_date					timestamp with time zone		default now(),
 	constraint user_policy_pk	primary key (user_policy_id)

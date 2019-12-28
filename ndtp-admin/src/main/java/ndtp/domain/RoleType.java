@@ -25,9 +25,9 @@ public enum RoleType {
 	 * @return
 	 */
 	public static RoleType findBy(String value) {
-		if("0".equals(value)) return RoleType.USER;
-		else if("1".equals(value)) return RoleType.SERVER;
-		else if("2".equals(value)) return RoleType.API;
-		else return null;
+		for(RoleType roleType : values()) {
+			if(roleType.getValue().equals(value)) return roleType; 
+		}
+		return null;
 	}
 }

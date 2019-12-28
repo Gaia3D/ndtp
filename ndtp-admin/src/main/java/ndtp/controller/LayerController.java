@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
@@ -42,7 +41,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
-import ndtp.domain.CacheManager;
 import ndtp.domain.Key;
 import ndtp.domain.Layer;
 import ndtp.domain.LayerFileInfo;
@@ -52,7 +50,6 @@ import ndtp.domain.UserSession;
 import ndtp.service.LayerFileInfoService;
 import ndtp.service.LayerService;
 import ndtp.service.PolicyService;
-import ndtp.support.RoleSupport;
 import ndtp.support.ZipSupport;
 import ndtp.utils.WebUtils;
 
@@ -81,7 +78,7 @@ public class LayerController implements AuthorizationController {
     * @return
     */
     @GetMapping(value = "list")
-    public String listLayer(HttpServletRequest request, Model model) {
+    public String list(HttpServletRequest request, Model model) {
     	String roleCheckResult = roleValidate(request);
     	if(roleValidate(request) != null) return roleCheckResult;
         
@@ -90,6 +87,21 @@ public class LayerController implements AuthorizationController {
         model.addAttribute("layerList", layerList);
         return "/layer/list";
     }
+    
+    /**
+     * layer 수정
+     * @param model
+     * @return
+     */
+     @GetMapping(value = "input")
+     public String input(HttpServletRequest request, Model model) {
+     	String roleCheckResult = roleValidate(request);
+     	if(roleValidate(request) != null) return roleCheckResult;
+
+         Policy policy = policyService.getPolicy();
+         model.addAttribute("policy", policy);
+         return "/layer/input";
+     }
 
     /**
     * layer 수정
@@ -97,7 +109,7 @@ public class LayerController implements AuthorizationController {
     * @return
     */
     @GetMapping(value = "modify/{layerId}")
-    public String modifyLayer(HttpServletRequest request, @PathVariable("layerId") Integer layerId, Model model) {
+    public String modify(HttpServletRequest request, @PathVariable("layerId") Integer layerId, Model model) {
     	String roleCheckResult = roleValidate(request);
     	if(roleValidate(request) != null) return roleCheckResult;
 
@@ -128,7 +140,7 @@ public class LayerController implements AuthorizationController {
     */
     @SuppressWarnings("unchecked")
 	@PostMapping(value = "update/{layerId}")
-    public Map<String, Object> updateLayer(MultipartHttpServletRequest request, @PathVariable("layerId") Integer layerId) {
+    public Map<String, Object> update(MultipartHttpServletRequest request, @PathVariable("layerId") Integer layerId) {
 
     	Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
@@ -569,7 +581,7 @@ public class LayerController implements AuthorizationController {
     * @return
     */
     @PostMapping(value = "{layerId}/layer-file-infos/{layerFileInfoId}")
-    public Map<String, Object> updateLayerByLayerFileInfoId(HttpServletRequest request,
+    public Map<String, Object> updateByLayerFileInfoId(HttpServletRequest request,
                                                             @PathVariable Integer layerId,
                                                             @PathVariable Integer layerFileInfoId,
                                                             Integer layerFileInfoGroupId) {

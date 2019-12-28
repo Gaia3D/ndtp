@@ -2,10 +2,10 @@ drop table if exists policy cascade;
 
 -- 운영정책
 create table policy(
-	policy_id								int,
+	policy_id								integer,
 	
-	user_id_min_length						int					default 5,
-	user_fail_signin_count					int					default 3,
+	user_id_min_length						integer				default 5,
+	user_fail_signin_count					integer				default 3,
 	user_fail_lock_release					varchar(3)			default '30',
 	user_last_signin_lock					varchar(3)			default '90',
 	user_duplication_signin_yn				char(1)				default 'N',
@@ -15,13 +15,13 @@ create table policy(
 	user_delete_type						char(1)				default '0',
 	
 	password_change_term 					varchar(3)			default '30',
-	password_min_length						int					default 8,
-	password_max_length						int					default 32,
-	password_eng_upper_count 				int					default 1,
-	password_eng_lower_count 				int					default 1,
-	password_number_count 					int					default 1,
-	password_special_char_count 			int					default 1,
-	password_continuous_char_count 			int					default 3,
+	password_min_length						integer				default 8,
+	password_max_length						integer				default 32,
+	password_eng_upper_count 				integer				default 1,
+	password_eng_lower_count 				integer				default 1,
+	password_number_count 					integer				default 1,
+	password_special_char_count 			integer				default 1,
+	password_continuous_char_count 			integer				default 3,
 	password_create_type					char(1)				default '0',
 	password_create_char					varchar(32)			default '!@#',
 	password_exception_char					varchar(10)			default '<>&',
@@ -38,9 +38,9 @@ create table policy(
 	geo_init_latitude						varchar(30)			default '37.521168',
 	geo_init_longitude						varchar(30)			default '126.924185',
 	geo_init_height							varchar(30)			default '3000.0',
-	geo_init_duration						int					default 3,
+	geo_init_duration						integer				default 3,
 	geo_init_default_terrain				varchar(64),
-	geo_init_default_fov					int					default 0,
+	geo_init_default_fov					integer				default 0,
 	
 	geo_lod0								varchar(20)			default '15',
 	geo_lod1								varchar(20)			default '60',
@@ -81,7 +81,7 @@ create table policy(
 	layer_source_coordinate					varchar(100)				default 'EPSG:4326',
 	layer_target_coordinate					varchar(100)				default 'EPSG:4326',
 	
-	geo_callback_enable 					varchar(5)			default 'false',
+	geo_callback_enable 					varchar(5)					default 'false',
 	geo_callback_apiresult					varchar(64),
 	geo_callback_dataInfo					varchar(64),
 	geo_callback_selectedobject				varchar(64),
@@ -110,20 +110,20 @@ create table policy(
 	security_api_result_secure_yn			char(1)				default 'N',
 	security_masking_yn						char(1)				default 'Y',
 	
-	content_cache_version					int					default 1,
-	content_main_widget_count				int					default 6,
-	content_main_widget_interval			int					default 65,
-	content_monitoring_interval				int					default 1,
+	content_cache_version					integer				default 1,
+	content_main_widget_count				integer				default 6,
+	content_main_widget_interval			integer				default 65,
+	content_monitoring_interval				integer				default 1,
 	content_statistics_interval				char(1)				default '0',
-	content_load_balancing_interval			int					default 10,
+	content_load_balancing_interval			integer				default 10,
 	content_menu_group_root					varchar(60)			default 'Mago3D',
 	content_user_group_root					varchar(60)			default 'Mago3D',
 	content_server_group_root				varchar(60)			default 'Mago3D',
 	content_data_group_root					varchar(60)			default 'Mago3D',
 	
 	user_upload_type						varchar(256)		default '3ds,obj,ifc,dae',
-	user_upload_max_filesize				int					default 500,
-	user_upload_max_count					int					default 50,
+	user_upload_max_filesize				integer				default 500,
+	user_upload_max_count					integer				default 50,
 	
 	insert_date								timestamp with time zone			default now(),
 	constraint policy_pk primary key (policy_id)	

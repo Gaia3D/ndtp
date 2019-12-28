@@ -9,7 +9,7 @@ drop table if exists user_group_menu cascade;
 -- 사용자 기본정보
 create table user_info(
 	user_id						varchar(32),
-	user_group_id				int									not null,
+	user_group_id				integer								not null,
 	user_name					varchar(64)							not null,
 	password					varchar(512)						not null,
 	salt						varchar(256),
@@ -23,7 +23,7 @@ create table user_info(
 	status						char(1)								default '0',
 	user_role_check_yn			char(1)								default 'Y',
 	signin_count				bigint								default 0,
-	fail_signin_count			int									default 0,
+	fail_signin_count			integer								default 0,
 	last_signin_date			timestamp with time zone,
 	last_password_change_date	timestamp with time zone			default now(),
 	update_date					timestamp with time zone,
@@ -61,31 +61,31 @@ create table user_device (
 	device_name1				varchar(60)							not null,
 	device_type1				char(1)								default '0',
 	device_ip1					varchar(45),
-	device_priority1			int									default 1,
+	device_priority1			integer								default 1,
 	use_yn1						char(1)								default 'Y',
 	description1				varchar(256),
 	device_name2				varchar(60)							not null,
 	device_type2				char(1)								default '0',
 	device_ip2					varchar(45),
-	device_priority2			int									default 2,
+	device_priority2			integer								default 2,
 	use_yn2						char(1)								default 'Y',
 	description2				varchar(256),
 	device_name3				varchar(60)							not null,
 	device_type3				char(1)								default '0',
 	device_ip3					varchar(45),
-	device_priority3			int									default 3,
+	device_priority3			integer								default 3,
 	use_yn3						char(1)								default 'Y',
 	description3				varchar(256),
 	device_name4				varchar(60)							not null,
 	device_type4				char(1)								default '0',
 	device_ip4					varchar(45),
-	device_priority4			int									default 4,
+	device_priority4			integer								default 4,
 	use_yn4						char(1)								default 'Y',
 	description4				varchar(256),
 	device_name5				varchar(60)							not null,
 	device_type5				char(1)								default '0',
 	device_ip5					varchar(45),
-	device_priority5			int									default 5,
+	device_priority5			integer								default 5,
 	use_yn5						char(1)								default 'Y',
 	description5				varchar(256),
 	insert_date				timestamp with time zone				default now(),
@@ -132,13 +132,13 @@ comment on column user_device.insert_date is '등록일';
 
 -- 사용자 그룹
 create table user_group(
-	user_group_id				int,
+	user_group_id				integer,
 	group_key					varchar(60)							not null ,
 	group_name					varchar(100)						not null,
-	ancestor					int									default 0,
-	parent						int									default 1,
-	depth						int									default 1,
-	view_order					int									default 1,
+	ancestor					integer								default 0,
+	parent						integer								default 1,
+	depth						integer								default 1,
+	view_order					integer								default 1,
 	child_yn					char(1)								default 'N',
 	default_yn					char(1)								default 'N',
 	use_yn						char(1)								default 'Y',
@@ -163,10 +163,10 @@ comment on column user_group.insert_date is '등록일';
 
 -- 사용자 그룹별 Role
 create table user_group_role (
-	user_group_role_id				int,
-	user_group_id					int 								not null,
-	role_id							int	 								not null,
-	insert_date						timestamp with time zone			default now(),
+	user_group_role_id				integer,
+	user_group_id					integer 								not null,
+	role_id							integer	 								not null,
+	insert_date						timestamp with time zone				default now(),
 	constraint user_group_role_pk 	primary key (user_group_role_id)
 );
 
@@ -178,9 +178,9 @@ comment on column user_group_role.insert_date is '등록일';
 
 -- 사용자 그룹 권한
 create table user_group_menu(
-	user_group_menu_id				int,
-	user_group_id					int 							not null,
-	menu_id							int 							not null,
+	user_group_menu_id				integer,
+	user_group_id					integer 							not null,
+	menu_id							integer 							not null,
 	all_yn							char(1)								default 'N',
 	read_yn							char(1)								default 'N',
 	write_yn						char(1)								default 'N',

@@ -32,13 +32,9 @@ public enum UserStatus {
 	 * @return
 	 */
 	public static UserStatus findBy(String value) {
-		if("0".equals(value)) return UserStatus.USE;
-		else if("1".equals(value)) return UserStatus.FORBID;
-		else if("2".equals(value)) return UserStatus.FAIL_LOGIN_COUNT_OVER;
-		else if("3".equals(value)) return UserStatus.SLEEP;
-		else if("4".equals(value)) return UserStatus.TERM_END;
-		else if("5".equals(value)) return UserStatus.LOGICAL_DELETE;
-		else if("6".equals(value)) return UserStatus.TEMP_PASSWORD;
-		else return null;
+		for(UserStatus userStatus : values()) {
+			if(userStatus.getValue().equals(value)) return userStatus; 
+		}
+		return null;
 	}
 }

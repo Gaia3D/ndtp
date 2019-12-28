@@ -2,16 +2,16 @@ drop table if exists menu cascade;
 
 -- 메뉴
 create table menu(
-	menu_id				int,
+	menu_id				integer,
 	menu_type			char(1)									default '0',
 	menu_target			char(1),
 	name				varchar(100)							not null,
 	name_en				varchar(30)								not null,
 	lang				varchar(10)								default 'ko',
-	ancestor			int,
-	parent				int										default '1',
-	depth				int										default '1',
-	view_order			int										default '1',
+	ancestor			integer,
+	parent				integer									default 1,
+	depth				integer									default 1,
+	view_order			integer									default 1,
 	url					varchar(256),
 	url_alias			varchar(256),
 	html_id				varchar(100),

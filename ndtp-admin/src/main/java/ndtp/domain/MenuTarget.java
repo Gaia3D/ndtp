@@ -17,8 +17,9 @@ public enum MenuTarget {
 	}
 	
 	public static MenuTarget findBy(String value) {
-		if("0".equals(value)) return MenuTarget.USER;
-		else if("1".equals(value)) return MenuTarget.ADMIN;
-		else return null;
+		for(MenuTarget menuTarget : values()) {
+			if(menuTarget.getValue().equals(value)) return menuTarget;
+		}
+		return null;
 	}
 }
