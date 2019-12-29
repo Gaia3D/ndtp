@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.AccessLog;
@@ -76,6 +77,7 @@ public class AccessLogController {
 	 * @return
 	 */
 	@GetMapping(value = "accesses")
+	@ResponseBody
 	public Map<String, Object> listAccessLog(HttpServletRequest request, AccessLog accessLog, @RequestParam(defaultValue="1") String pageNo) {
 		
 		log.info("@@ accessLog = {}", accessLog);
@@ -112,11 +114,13 @@ public class AccessLogController {
 		} catch(Exception e) {
 			e.printStackTrace();
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-			errorCode = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 		}
 		
 		result.put("statusCode", statusCode);
 		result.put("errorCode", errorCode);
+		result.put("message", message);
 		result.put("accessLogList", accessLogList);
 		
 		return result;
@@ -126,6 +130,7 @@ public class AccessLogController {
 	 *  Access Log 상세
 	 */
 	@GetMapping(value = "accesses/{accessLogId}")
+	@ResponseBody
 	public Map<String, Object>  detail(@PathVariable Long accessLogId) {
 		
 		Map<String, Object> result = new HashMap<>();
@@ -140,11 +145,13 @@ public class AccessLogController {
 		} catch(Exception e) {
 			e.printStackTrace();
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-			errorCode = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 		}
 		
 		result.put("statusCode", statusCode);
 		result.put("errorCode", errorCode);
+		result.put("message", message);
 		result.put("accessLog", accessLog);
 		
 		return result;

@@ -47,14 +47,14 @@ public interface LayerGroupMapper {
 //	 * @return
 //	 */
 //    List<LayerGroup> readChild(int layerGroupId);
-//    
-//    /**
-//     * 레이어 그룹을 등록한다.
-//     * @param layerGroup
-//     * @return
-//     */
-//    int create(LayerGroup layerGroup);
-//    
+    
+    /**
+     * 레이어 그룹 등록
+     * @param layerGroup
+     * @return
+     */
+    int insert(LayerGroup layerGroup);
+    
 //    /**
 //	 * 레이어 그룹의 하위 레이어 그룹 갯수를 수정한다.
 //	 * @param layerGroup

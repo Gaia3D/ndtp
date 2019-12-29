@@ -28,6 +28,15 @@ public class LayerGroupServiceImpl implements LayerGroupService {
 		return layerGroupMapper.getListLayerGroup();
 	}
 	
+	/**
+     * 레이어 그룹 목록 및 하위 레이어를 조회
+     * @return
+     */
+	@Transactional(readOnly = true)
+	public List<LayerGroup> getListLayerGroupAndLayer() {
+		return null;
+	}
+	
 //	/** 
 //	 * Depth에 따라 레이어 그룹 목록 조회한다.
 //	 */
@@ -67,22 +76,16 @@ public class LayerGroupServiceImpl implements LayerGroupService {
 //		}
 //		return layerGroupDto.fromEntity(layerGroup);
 //	}
-//
-//	/** 
-//	 * 레이어 그룹을 등록한다.
-//	 */
-//	@Transactional
-//	public int create(LayerGroupDto layerGroupDto) {
-//		int result = 0;
-//		LayerGroup layerGroup = new LayerGroup();
-//		layerGroup = layerGroupDto.toEntityLayer(layerGroupDto);
-//		// 레이어 그룹 등록
-//		result += layerGroupMapper.create(layerGroup);
-//		// 자식 갯수 업데이트
-//		result += layerGroupMapper.updateChildCount(layerGroup);
-//		return result;
-//	}
-//	
+
+	/** 
+	 * 레이어 그룹 등록
+	 */
+	@Transactional
+	public int insert(LayerGroup layerGroup) {
+		// TODO 자식 존재 유무 부분은 나중에 추가 하자.
+		return layerGroupMapper.insert(layerGroup);
+	}
+	
 //	/**
 //	 * 레이어 그룹의 하위 레이어 그룹 갯수를 수정한다.
 //	 */

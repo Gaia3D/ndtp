@@ -52,16 +52,21 @@ public class Layer implements Serializable {
     
     // 화면 ui
     private Integer parent;
+    private String parentName;
     private Integer depth;
     // 순서
     private Integer viewOrder;
     
+    // shape file 인코딩
+    private String shapeEncoding;
     
     // DB
     // layer 아이디
     private Integer layerId;
     // layer 그룹 아이디
-    private Integer layerGroupid;
+    private Integer layerGroupId;
+    //
+    private String layerGroupName;
     // layer 키
     private String layerKey;
     // layer 명

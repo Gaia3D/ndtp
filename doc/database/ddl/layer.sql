@@ -10,7 +10,7 @@ create table layer_group (
 	parent                		int								default 0,	
 	depth                	  	int								default 1,	
 	view_order					int								default 1,	
-	child_exist					boolean							default false,
+	children					int								default 0,
 	available					boolean							default true,
 	description					varchar(1000),	
 	update_date             	timestamp with time zone,	
@@ -25,7 +25,7 @@ comment on column layer_group.ancestor is '조상';
 comment on column layer_group.parent is '부모';
 comment on column layer_group.depth is '깊이';
 comment on column layer_group.view_order is '나열 순서';
-comment on column layer_group.child_exist is '자식 존재 여부';
+comment on column layer_group.children is '자식 존재 개수';
 comment on column layer_group.available is '사용 여부';
 comment on column layer_group.description is '설명';
 comment on column layer_group.update_date is '수정일';
@@ -71,6 +71,10 @@ comment on column layer.shared_type is 'public : 공개, private : 개인, group
 comment on column layer.service_type is '서비스 타입 (wms, wfs, wcs, wps)';
 comment on column layer.layer_type is '레이어 타입 (Raster, Vector)';
 comment on column layer.geometry_type is '도형 타입';
+comment on column layer.layer_fill_color is '외곽선 색상';
+comment on column layer.layer_line_color is '외곽선 두께';
+comment on column layer.layer_line_style is '채우기 색상';
+comment on column layer.layer_alpha_style is '투명도';
 comment on column layer.z_index is '지도위에 노출 순위(css z-index와 동일)';
 comment on column layer.default_display is '기본 표시';
 comment on column layer.available is '사용유무.';

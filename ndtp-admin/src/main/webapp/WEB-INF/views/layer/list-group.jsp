@@ -106,10 +106,10 @@
 					                        </span>
         </c:if>
         <c:if test="${layerGroup.depth eq '2' }">
-            <c:if test="!${layerGroup.childExist}">
+            <c:if test="${layerGroup.children == 0}">
                         					<span style="padding-left: ${paddingLeftValue}; font-size: 1.5em; color: Tomato;"><i class="fa fa-file-alt" aria-hidden="true"></i></span>
             </c:if>
-            <c:if test="${layerGroup.childExist}">
+            <c:if test="${layerGroup.children > 0}">
 					                        <span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;" 
 					                        	onclick="childrenDisplayToggle('${layerGroup.depth}', '${layerGroup.layerGroupId}', '${layerGroup.ancestor}');">
 					                            <i id="twoDepthArrow-${layerGroup.layerGroupId }" class="fa fa-caret-right twoArrow ${ancestorArrowClass }" aria-hidden="true"></i></span>&nbsp;

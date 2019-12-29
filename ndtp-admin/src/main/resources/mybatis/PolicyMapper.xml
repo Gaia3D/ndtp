@@ -165,7 +165,7 @@
 			content_load_balancing_interval = #{contentLoadBalancingInterval},
 			content_menu_group_root = #{contentMenuGroupRoot},
 			content_user_group_root = #{contentUserGroupRoot},
-			content_server_group_root = #{contentServerGroupRoot},
+			content_layer_group_root = #{contentLayerGroupRoot},
 			content_data_group_root = #{contentDataGroupRoot}
 		WHERE policy_id = #{policyId}
 	</update>

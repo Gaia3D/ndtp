@@ -7,10 +7,16 @@ import ndtp.domain.LayerGroup;
 public interface LayerGroupService {
 	
 	/**
-     * 레이어 그룹 목록 조회한다.
+     * 레이어 그룹 목록
      * @return
      */
     List<LayerGroup> getListLayerGroup();
+    
+    /**
+     * 레이어 그룹 목록 및 하위 레이어를 조회
+     * @return
+     */
+    List<LayerGroup> getListLayerGroupAndLayer();
     
 //    /**
 //     * Depth에 따라 레이어 그룹 목록 조회한다.
@@ -39,13 +45,13 @@ public interface LayerGroupService {
 //      */
 //	LayerGroup readParent(int parnet);
 //     
-//     /**
-//     * 레이어 그룹을 등록한다.
-//     * @param layerGroupDto
-//     * @return
-//     */
-//    int create(LayerGroup layerGroupDto);
-//    
+     /**
+     * 레이어 그룹 등록
+     * @param layerGroup
+     * @return
+     */
+    int insert(LayerGroup layerGroup);
+    
 //	/**
 //	 * 레이어 그룹의 하위 레이어 그룹 갯수를 수정한다.
 //	 * @param layerGroupDto

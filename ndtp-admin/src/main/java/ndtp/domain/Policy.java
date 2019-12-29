@@ -258,9 +258,9 @@ public class Policy {
  	private String contentMenuGroupRoot;
  	// 사용자 그룹 최상위 그룹명
  	private String contentUserGroupRoot;
- 	// 서버 그룹 최상위 그룹명
- 	private String contentServerGroupRoot;
- 	// 계정 그룹 최상위 그룹명
+ 	// Layer 그룹 최상위 그룹명
+ 	private String contentLayerGroupRoot;
+ 	// data 그룹 최상위 그룹명
  	private String contentDataGroupRoot;
  	
  	// 업로딩 가능 확장자. 3ds,obj,ifc,dae 등

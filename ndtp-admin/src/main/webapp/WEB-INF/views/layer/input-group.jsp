@@ -37,7 +37,7 @@
 									<span class="icon-glyph glyph-emark-dot color-warning"></span>
 								</th>
 								<td class="col-input">
-									<form:input path="layerGroupName" cssClass="l" readonly="true" />
+									<form:input path="layerGroupName" cssClass="l" />
 								</td>
 							</tr>
 							<tr>
@@ -71,7 +71,7 @@
 						<div class="button-group">
 							<div class="center-buttons">
 								<input type="submit" value="<spring:message code='save'/>" onclick="insertLayerGroup();"/>
-								<a href="/role/list-role.do?pageNo=${pagination.pageNo }" class="button">목록</a>
+								<a href="/layer/list-group" class="button">목록</a>
 							</div>
 						</div>
 						</form:form>
@@ -82,6 +82,83 @@
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
 	
+	<!-- Dialog -->
+	<div id="layerGroupDialog" class="dialog">
+		<table class="list-table scope-col">
+			<col class="col-number" />
+			<col class="col-name" />
+			<col class="col-toggle" />
+			<col class="col-id" />
+			<col class="col-function" />
+			<col class="col-date" />
+			<col class="col-toggle" />
+			<thead>
+				<tr>
+					<th scope="col" class="col-number">Depth</th>
+					<th scope="col" class="col-name">Layer 그룹명</th>
+					<th scope="col" class="col-toggle">사용 여부</th>
+					<th scope="col" class="col-toggle">사용자 아이디</th>
+					<th scope="col" class="col-toggle">설명</th>
+					<th scope="col" class="col-date">등록일</th>
+					<th scope="col" class="col-date">선택</th>
+				</tr>
+			</thead>
+			<tbody>
+<c:if test="${empty layerGroupList }">
+			<tr>
+				<td colspan="7" class="col-none">Layer 그룹이 존재하지 않습니다.</td>
+			</tr>
+</c:if>								
+<c:if test="${!empty layerGroupList }">
+	<c:set var="paddingLeftValue" value="0" />
+	<c:forEach var="layerGroup" items="${layerGroupList}" varStatus="status">
+		<c:if test="${layerGroup.depth eq '1' }">
+            <c:set var="depthClass" value="oneDepthClass" />
+            <c:set var="paddingLeftValue" value="0px" />
+        </c:if>
+        <c:if test="${layerGroup.depth eq '2' }">
+            <c:set var="depthClass" value="twoDepthClass" />
+            <c:set var="paddingLeftValue" value="40px" />
+        </c:if>
+        <c:if test="${layerGroup.depth eq '3' }">
+            <c:set var="depthClass" value="threeDepthClass" />
+            <c:set var="paddingLeftValue" value="80px" />
+        </c:if>
+			
+			<tr class="${depthClass } ${depthParentClass} ${ancestorClass }" style="${depthStyleDisplay}">
+				<td class="col-key" style="text-align: left;" nowrap="nowrap">
+					<span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"></span> 
+					${layerGroup.depth }
+				</td>
+				<td class="col-name">
+					${layerGroup.layerGroupName }
+				</td>
+				<td class="col-type">
+        <c:if test="${layerGroup.available eq 'true' }">
+                	사용
+        </c:if>
+        <c:if test="${layerGroup.available eq 'false' }">
+        			미사용
+        </c:if>
+			    </td>
+			    <td class="col-key">${layerGroup.userId }</td>
+			    <td class="col-key">${layerGroup.description }</td>
+			    <td class="col-date">
+			    	<fmt:parseDate value="${layerGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
+					<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
+			    </td>
+			    <td class="col-toggle">
+			    	<a href="#" onclick="confirmParent('${layerGroup.layerGroupId}', '${layerGroup.layerGroupName}'); return false;">확인</a></td>
+			</tr>	
+	</c:forEach>
+</c:if>
+			</tbody>
+		</table>
+		<div class="button-group">
+			<input type="button" id="rootParentSelect" class="button" value="최상위(ROOT) 그룹으로 저장"/>
+		</div>
+	</div>
+	
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
@@ -91,51 +168,47 @@
 	$(document).ready(function() {
 	});
 	
-	function check() {
-		if ($("#role_name").val() == "") {
-			alert(JS_MESSAGE["role.insert.name"]);
-			$("#role_name").focus();
+	function validate() {
+		var number = /^[0-9]+$/;
+		if ($("#layerGroupName").val() === null || $("#layerGroupName").val() == "") {
+			alert("레이어 그룹명을 입력해 주세요.");
+			$("#layerGroupName").focus();
 			return false;
 		}
-		if ($("#role_key").val() == "") {
-			alert(JS_MESSAGE["role.insert.key"]);
-			$("#role_key").focus();
-			return false;
-		}
-		if ($("#role_type").val() == "") {
-			alert(JS_MESSAGE["role.insert.type"]);
-			$("#role_type").focus();
+		if($("#parent").val() === null || $("#parent").val() === "" || !number.test($("#parent").val())) {
+			alert("상위 레이어 그룹을 선택해 주세요.");
+			$("#parent").focus();
 			return false;
 		}
 	}
 	
 	// 저장
-	var insertRoleFlag = true;
-	function insertRole() {
-		if (check() == false) {
+	var insertLayerGroupFlag = true;
+	function insertLayerGroup() {
+		if (validate() == false) {
 			return false;
 		}
-		if(insertRoleFlag) {
-			insertRoleFlag = false;
-			var info = $("#role").serialize();		
+		if(insertLayerGroupFlag) {
+			insertLayerGroupFlag = false;
+			var formData = $("#layerGroup").serialize();		
 			$.ajax({
-				url: "/role/ajax-insert-role.do",
+				url: "/layer/insert-group",
 				type: "POST",
-				data: info,
-				cache: false,
-				dataType: "json",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+		        data: formData,
 				success: function(msg){
-					if(msg.result == "success") {
+					if(msg.statusCode <= 200) {
 						alert(JS_MESSAGE["insert"]);
-						$("#insertRoleLink").empty();
+						window.location.reload();
 					} else {
-						alert(JS_MESSAGE[msg.result]);
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
 					}
-					insertRoleFlag = true;
+					insertLayerGroupFlag = true;
 				},
-				error:function(request,status,error){
+				error:function(request, status, error){
 			        alert(JS_MESSAGE["ajax.error.message"]);
-			        insertRoleFlag = true;
+			        insertLayerGroupFlag = true;
 				}
 			});
 		} else {
@@ -143,6 +216,34 @@
 			return;
 		}
 	}
+	
+	var layerGroupDialog = $( ".dialog" ).dialog({
+		autoOpen: false,
+		height: 600,
+		width: 1200,
+		modal: true,
+		overflow : "auto",
+		resizable: false
+	});
+	
+	// 상위 Layer Group 찾기
+	$( "#layerGroupButtion" ).on( "click", function() {
+		layerGroupDialog.dialog( "open" );
+		layerGroupDialog.dialog( "option", "title", "Layer 그룹 선택");
+	});
+	
+	// 상위 Node
+	function confirmParent(parent, parentName) {
+		$("#parent").val(parent);
+		$("#parentName").val(parentName);
+		layerGroupDialog.dialog( "close" );
+	}
+	
+	$( "#rootParentSelect" ).on( "click", function() {
+		$("#parent").val(0);
+		$("#parentName").val("${layerGroup.parentName}");
+		layerGroupDialog.dialog( "close" );
+	});
 </script>
 </body>
 </html>

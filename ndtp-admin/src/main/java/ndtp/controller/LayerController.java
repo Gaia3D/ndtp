@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -44,10 +45,12 @@ import ndtp.config.PropertiesConfig;
 import ndtp.domain.Key;
 import ndtp.domain.Layer;
 import ndtp.domain.LayerFileInfo;
+import ndtp.domain.LayerGroup;
 import ndtp.domain.Policy;
 import ndtp.domain.RoleKey;
 import ndtp.domain.UserSession;
 import ndtp.service.LayerFileInfoService;
+import ndtp.service.LayerGroupService;
 import ndtp.service.LayerService;
 import ndtp.service.PolicyService;
 import ndtp.support.ZipSupport;
@@ -62,6 +65,8 @@ public class LayerController implements AuthorizationController {
     private LayerService layerService;
     @Autowired
     private LayerFileInfoService layerFileInfoService;
+    @Autowired
+    private LayerGroupService layerGroupService;
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
@@ -89,19 +94,24 @@ public class LayerController implements AuthorizationController {
     }
     
     /**
-     * layer 수정
+     * layer 등록
      * @param model
      * @return
      */
-     @GetMapping(value = "input")
-     public String input(HttpServletRequest request, Model model) {
-     	String roleCheckResult = roleValidate(request);
-     	if(roleValidate(request) != null) return roleCheckResult;
+    @GetMapping(value = "input")
+    public String input(HttpServletRequest request, Model model) {
+    	String roleCheckResult = roleValidate(request);
+    	if(roleValidate(request) != null) return roleCheckResult;
 
-         Policy policy = policyService.getPolicy();
-         model.addAttribute("policy", policy);
-         return "/layer/input";
-     }
+    	Policy policy = policyService.getPolicy();
+    	List<LayerGroup> layerGroupList = layerGroupService.getListLayerGroup();
+    	
+    	model.addAttribute("policy", policy);
+    	model.addAttribute("layer", new Layer());
+    	model.addAttribute("layerGroupList", layerGroupList);
+    	
+    	return "/layer/input";
+    }
 
     /**
     * layer 수정
@@ -131,198 +141,200 @@ public class LayerController implements AuthorizationController {
         return "/layer/modify";
     }
 
-    /**
-    * shape 파일 변환
-    * TODO dropzone 이 파일 갯수만큼 form data를 전송해 버려서 command 패턴을(Layer layer) 사용할 수 없음
-    * dropzone 이 예외 처리가 이상해서 BAD_REQUEST 를 던지지 않고 OK 를 넣짐
-    * @param model
-    * @return
-    */
-    @SuppressWarnings("unchecked")
-	@PostMapping(value = "update/{layerId}")
-    public Map<String, Object> update(MultipartHttpServletRequest request, @PathVariable("layerId") Integer layerId) {
-
-    	Map<String, Object> result = new HashMap<>();
-		int statusCode = 0;
-		String errorCode = null;
-		String message = null;
-    	
-        boolean isRollback = false;
-        Layer rollbackLayer = new Layer();
-        boolean isLayerFileInfoExist = false;
-        LayerFileInfo rollbackLayerFileInfo = null;
-        Integer deleteLayerFileInfoGroupId = null;
-
-        try {
-            errorCode = layerValidate(request);
-            if(!StringUtils.isEmpty(errorCode)) {
-                result.put("statusCode", HttpStatus.OK.value());
-                result.put("errorCode", errorCode);
-                return result;
-            }
-
-            UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-            String userId = userSession.getUserId();
-
-            List<LayerFileInfo> layerFileInfoList = new ArrayList<>();
-            Map<String, MultipartFile> fileMap = request.getFileMap();
-
-            Policy policy = policyService.getPolicy();
-            String shapeEncoding = replaceInvalidValue(request.getParameter("shapeEncoding"));
-            String comment = replaceInvalidValue(request.getParameter("comment"));
-            String today = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-
-            // layer 변경 횟수가 많지 않아서 년 단위로 관리할 예정
-            String makedDirectory = propertiesConfig.getLayerUploadDir();
-            createDirectory(makedDirectory);
-            makedDirectory = makedDirectory + today.substring(0,4) + File.separator;
-            createDirectory(makedDirectory);
-            log.info("@@@@@@@ = {}", makedDirectory);
-
-            Layer layer = layerService.getLayer(layerId);
-            BeanUtils.copyProperties(layer, rollbackLayer);
-            // layer 파일의 경우 한 세트가 같은 이름에 확장자만 달라야 한다.
-            String groupFileName = layer.getLayerKey() + "_" + today;
-
-            // 한건이면서 zip 의 경우
-            boolean isZipFile = false;
-            int fileCount = fileMap.values().size();
-            log.info("********************************************* fileCount = {}", fileCount);
-            if(fileCount == 1) {
-                for (MultipartFile multipartFile : fileMap.values()) {
-                    String[] divideNames = multipartFile.getOriginalFilename().split("\\.");
-                    String fileExtension = divideNames[divideNames.length - 1];
-                    if(LayerFileInfo.ZIP_EXTENSION.equals(fileExtension.toLowerCase())) {
-                        isZipFile = true;
-                        // zip 파일
-                        Map<String, Object> uploadMap = unzip(policy, groupFileName, multipartFile, shapeEncoding, comment, makedDirectory);
-                        layerFileInfoList = (List<LayerFileInfo>)uploadMap.get("layerFileInfoList");
-                    }
-                }
-            }
-
-            if(!isZipFile) {
-                for (MultipartFile multipartFile : fileMap.values()) {
-                    log.info("@@@@@@@@@@@@@@@ name = {}, original_name = {}", multipartFile.getName(), multipartFile.getOriginalFilename());
-
-                    String saveFileName = groupFileName;
-                    LayerFileInfo layerFileInfo = new LayerFileInfo();
-
-                    // 파일 기본 validation 체크
-                    errorCode = fileValidate(policy, multipartFile);
-                    if(!StringUtils.isEmpty(errorCode)) {
-                        result.put("statusCode", HttpStatus.OK.value());
-                        result.put("errorCode", errorCode);
-                        return result;
-                    }
-
-                    String originalName = multipartFile.getOriginalFilename();
-                    String[] divideFileName = originalName.split("\\.");
-                    String extension = null;
-                    if(divideFileName != null && divideFileName.length != 0) {
-                        extension = divideFileName[divideFileName.length - 1];
-                        if(LayerFileInfo.ZIP_EXTENSION.equals(extension.toLowerCase())) {
-                            log.info("@@@@@@@@@@@@ upload.file.type.invalid");
-                            result.put("statusCode", HttpStatus.OK.value());
-                            result.put("errorCode", "upload.file.type.invalid");
-                            return result;
-                        }
-                        saveFileName = saveFileName + "." + extension;
-                    }
-
-                    long size = 0L;
-                    try (	InputStream inputStream = multipartFile.getInputStream();
-                            OutputStream outputStream = new FileOutputStream(makedDirectory + saveFileName)) {
-
-                        int bytesRead = 0;
-                        byte[] buffer = new byte[BUFFER_SIZE];
-                        while ((bytesRead = inputStream.read(buffer, 0, BUFFER_SIZE)) != -1) {
-                            size += bytesRead;
-                            outputStream.write(buffer, 0, bytesRead);
-                        }
-                        layerFileInfo.setFileExt(extension);
-                        layerFileInfo.setFileName(multipartFile.getOriginalFilename());
-                        layerFileInfo.setFileRealName(saveFileName);
-                        layerFileInfo.setFilePath(makedDirectory);
-                        layerFileInfo.setFileSize(String.valueOf(size));
-                        layerFileInfo.setShapeEncoding(shapeEncoding);
-                        layerFileInfo.setComment(comment);
-
-                    } catch(Exception e) {
-                        e.printStackTrace();
-                        layerFileInfo.setErrorMessage(e.getMessage());
-                    }
-
-                    layerFileInfoList.add(layerFileInfo);
-                }
-            }
-
-            // TODO dropzone 이 form data를 파일 횟수 만큼 전송을 해 버림. 원인 찾는중
-            layer.setLayerId(layerId);
-            layer.setLayerName(request.getParameter("layerName"));
-            layer.setViewType(replaceInvalidValue(request.getParameter("viewType")));
-            layer.setCoordinate(replaceInvalidValue(request.getParameter("coordinate")));
-            layer.setGeometryType(replaceInvalidValue(request.getParameter("geometryType")));
-            layer.setUseYn(request.getParameter("useYn"));
-            layer.setMobileDefaultYn(request.getParameter("mobileDefaultYn"));
-            layer.setLabelDisplayYn(request.getParameter("labelDisplayYn"));
-            layer.setZIndex(Integer.valueOf(request.getParameter("zIndex")));
-            // TODO shape 파일을 등록해야 1로 설정하는게 맞는데... 애매하네...
-            layer.setStatus("1");
-            layer.setDescription(replaceInvalidValue(request.getParameter("description")));
-            layer.setUserId(userId);
-            log.info("@@ layer = {}", layer);
-
-            // TODO geoserver 에서 postgresql 로 hang 걸리는게 있어서 우선 이럻게 처리 함. 추후 개선 예정
-            // 여기서 부터 문제가 생기는 것은 rollback 처리를 합니다.
-            // 1. 레이어 이력 파일이 존재하는 검사
-            isLayerFileInfoExist = layerFileInfoService.isLayerFileInfoExist(layer.getLayerId());
-            if(isLayerFileInfoExist) {
-                // 2. 존재하면 백업을 위해 조회
-                rollbackLayerFileInfo = layerFileInfoService.getEnableLayerFileInfo(layerId);
-            }
-            log.info("----- isLayerFileInfoExist = {}", isLayerFileInfoExist);
-            // 3. 레이어 기본 정보 및 레이어 이력 정보 등록
-            Map<String, Object> updateLayerMap = layerService.updateLayer(layer, isLayerFileInfoExist, layerFileInfoList);
-            if(!layerFileInfoList.isEmpty()) {
-                isRollback = true;
-
-                deleteLayerFileInfoGroupId = (Integer)updateLayerMap.get("layerFileInfoGroupId");
-                // 4. org2ogr 실행
-                layerService.insertOgr2Ogr(layer, isLayerFileInfoExist, (String)updateLayerMap.get("shapeFileName"), (String)updateLayerMap.get("shapeEncoding"));
-
-                // org2ogr 로 등록한 데이터의 version을 갱신
-                Map<String, String> orgMap = new HashMap<>();
-                orgMap.put("fileVersion", ((Integer)updateLayerMap.get("fileVersion")).toString());
-                orgMap.put("tableName", layer.getLayerKey());
-                orgMap.put("enableYn", "Y");
-                // 5. shape 파일 테이블의 현재 데이터의 활성화 하고 날짜를 업데이트
-                layerFileInfoService.updateOgr2OgrDataFileVersion(orgMap);
-                // 6. geoserver에 신규 등록일 경우 등록, 아닐경우 통과
-                layerService.registerLayer(policy, layer.getLayerKey());
-
-                //업로드 하는 데이터가 지번일 경우 오라클 테이블을 비우고 insert
-                //상수를 앞에 쓰면 NullPointerException이 발생하지 않는다.
-                //뒤에 비즈니스 로직에 layerKey가 필요하다면  layerKey를 앞에써서  exception을 발생시켜 처리하는게 좋다~
-            }
-
-            statusCode = HttpStatus.OK.value();
-        } catch(Exception e) {
-            if(isRollback) {
-                // rollback 처리
-                layerService.rollbackLayer(rollbackLayer, isLayerFileInfoExist, rollbackLayerFileInfo, deleteLayerFileInfoGroupId);
-            }
-
-            e.printStackTrace();
-            statusCode = HttpStatus.OK.value();
-            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-        }
-        
-        result.put("statusCode", statusCode);
-		result.put("errorCode", errorCode);
-		result.put("message", message);
-		return result;
-    }
+//    /**
+//    * shape 파일 변환
+//    * TODO dropzone 이 파일 갯수만큼 form data를 전송해 버려서 command 패턴을(Layer layer) 사용할 수 없음
+//    * dropzone 이 예외 처리가 이상해서 BAD_REQUEST 를 던지지 않고 OK 를 넣짐
+//    * @param model
+//    * @return
+//    */
+//    @SuppressWarnings("unchecked")
+//	@PostMapping(value = "update/{layerId}")
+//    @ResponseBody
+//    public Map<String, Object> update(MultipartHttpServletRequest request, @PathVariable("layerId") Integer layerId) {
+//
+//    	Map<String, Object> result = new HashMap<>();
+//		int statusCode = 0;
+//		String errorCode = null;
+//		String message = null;
+//    	
+//        boolean isRollback = false;
+//        Layer rollbackLayer = new Layer();
+//        boolean isLayerFileInfoExist = false;
+//        LayerFileInfo rollbackLayerFileInfo = null;
+//        Integer deleteLayerFileInfoGroupId = null;
+//
+//        try {
+//            errorCode = layerValidate(request);
+//            if(!StringUtils.isEmpty(errorCode)) {
+//                result.put("statusCode", HttpStatus.OK.value());
+//                result.put("errorCode", errorCode);
+//                return result;
+//            }
+//
+//            UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+//            String userId = userSession.getUserId();
+//
+//            List<LayerFileInfo> layerFileInfoList = new ArrayList<>();
+//            Map<String, MultipartFile> fileMap = request.getFileMap();
+//
+//            Policy policy = policyService.getPolicy();
+//            String shapeEncoding = replaceInvalidValue(request.getParameter("shapeEncoding"));
+//            String comment = replaceInvalidValue(request.getParameter("comment"));
+//            String today = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+//
+//            // layer 변경 횟수가 많지 않아서 년 단위로 관리할 예정
+//            String makedDirectory = propertiesConfig.getLayerUploadDir();
+//            createDirectory(makedDirectory);
+//            makedDirectory = makedDirectory + today.substring(0,4) + File.separator;
+//            createDirectory(makedDirectory);
+//            log.info("@@@@@@@ = {}", makedDirectory);
+//
+//            Layer layer = layerService.getLayer(layerId);
+//            BeanUtils.copyProperties(layer, rollbackLayer);
+//            // layer 파일의 경우 한 세트가 같은 이름에 확장자만 달라야 한다.
+//            String groupFileName = layer.getLayerKey() + "_" + today;
+//
+//            // 한건이면서 zip 의 경우
+//            boolean isZipFile = false;
+//            int fileCount = fileMap.values().size();
+//            log.info("********************************************* fileCount = {}", fileCount);
+//            if(fileCount == 1) {
+//                for (MultipartFile multipartFile : fileMap.values()) {
+//                    String[] divideNames = multipartFile.getOriginalFilename().split("\\.");
+//                    String fileExtension = divideNames[divideNames.length - 1];
+//                    if(LayerFileInfo.ZIP_EXTENSION.equals(fileExtension.toLowerCase())) {
+//                        isZipFile = true;
+//                        // zip 파일
+//                        Map<String, Object> uploadMap = unzip(policy, groupFileName, multipartFile, shapeEncoding, comment, makedDirectory);
+//                        layerFileInfoList = (List<LayerFileInfo>)uploadMap.get("layerFileInfoList");
+//                    }
+//                }
+//            }
+//
+//            if(!isZipFile) {
+//                for (MultipartFile multipartFile : fileMap.values()) {
+//                    log.info("@@@@@@@@@@@@@@@ name = {}, original_name = {}", multipartFile.getName(), multipartFile.getOriginalFilename());
+//
+//                    String saveFileName = groupFileName;
+//                    LayerFileInfo layerFileInfo = new LayerFileInfo();
+//
+//                    // 파일 기본 validation 체크
+//                    errorCode = fileValidate(policy, multipartFile);
+//                    if(!StringUtils.isEmpty(errorCode)) {
+//                        result.put("statusCode", HttpStatus.OK.value());
+//                        result.put("errorCode", errorCode);
+//                        return result;
+//                    }
+//
+//                    String originalName = multipartFile.getOriginalFilename();
+//                    String[] divideFileName = originalName.split("\\.");
+//                    String extension = null;
+//                    if(divideFileName != null && divideFileName.length != 0) {
+//                        extension = divideFileName[divideFileName.length - 1];
+//                        if(LayerFileInfo.ZIP_EXTENSION.equals(extension.toLowerCase())) {
+//                            log.info("@@@@@@@@@@@@ upload.file.type.invalid");
+//                            result.put("statusCode", HttpStatus.OK.value());
+//                            result.put("errorCode", "upload.file.type.invalid");
+//                            return result;
+//                        }
+//                        saveFileName = saveFileName + "." + extension;
+//                    }
+//
+//                    long size = 0L;
+//                    try (	InputStream inputStream = multipartFile.getInputStream();
+//                            OutputStream outputStream = new FileOutputStream(makedDirectory + saveFileName)) {
+//
+//                        int bytesRead = 0;
+//                        byte[] buffer = new byte[BUFFER_SIZE];
+//                        while ((bytesRead = inputStream.read(buffer, 0, BUFFER_SIZE)) != -1) {
+//                            size += bytesRead;
+//                            outputStream.write(buffer, 0, bytesRead);
+//                        }
+//                        layerFileInfo.setFileExt(extension);
+//                        layerFileInfo.setFileName(multipartFile.getOriginalFilename());
+//                        layerFileInfo.setFileRealName(saveFileName);
+//                        layerFileInfo.setFilePath(makedDirectory);
+//                        layerFileInfo.setFileSize(String.valueOf(size));
+//                        layerFileInfo.setShapeEncoding(shapeEncoding);
+//                        layerFileInfo.setComment(comment);
+//
+//                    } catch(Exception e) {
+//                        e.printStackTrace();
+//                        layerFileInfo.setErrorMessage(e.getMessage());
+//                    }
+//
+//                    layerFileInfoList.add(layerFileInfo);
+//                }
+//            }
+//
+//            // TODO dropzone 이 form data를 파일 횟수 만큼 전송을 해 버림. 원인 찾는중
+//            layer.setLayerId(layerId);
+//            layer.setLayerName(request.getParameter("layerName"));
+//            layer.setViewType(replaceInvalidValue(request.getParameter("viewType")));
+//            layer.setCoordinate(replaceInvalidValue(request.getParameter("coordinate")));
+//            layer.setGeometryType(replaceInvalidValue(request.getParameter("geometryType")));
+//            layer.setUseYn(request.getParameter("useYn"));
+//            layer.setMobileDefaultYn(request.getParameter("mobileDefaultYn"));
+//            layer.setLabelDisplayYn(request.getParameter("labelDisplayYn"));
+//            layer.setZIndex(Integer.valueOf(request.getParameter("zIndex")));
+//            // TODO shape 파일을 등록해야 1로 설정하는게 맞는데... 애매하네...
+//            layer.setStatus("1");
+//            layer.setDescription(replaceInvalidValue(request.getParameter("description")));
+//            layer.setUserId(userId);
+//            log.info("@@ layer = {}", layer);
+//
+//            // TODO geoserver 에서 postgresql 로 hang 걸리는게 있어서 우선 이럻게 처리 함. 추후 개선 예정
+//            // 여기서 부터 문제가 생기는 것은 rollback 처리를 합니다.
+//            // 1. 레이어 이력 파일이 존재하는 검사
+//            isLayerFileInfoExist = layerFileInfoService.isLayerFileInfoExist(layer.getLayerId());
+//            if(isLayerFileInfoExist) {
+//                // 2. 존재하면 백업을 위해 조회
+//                rollbackLayerFileInfo = layerFileInfoService.getEnableLayerFileInfo(layerId);
+//            }
+//            log.info("----- isLayerFileInfoExist = {}", isLayerFileInfoExist);
+//            // 3. 레이어 기본 정보 및 레이어 이력 정보 등록
+//            Map<String, Object> updateLayerMap = layerService.updateLayer(layer, isLayerFileInfoExist, layerFileInfoList);
+//            if(!layerFileInfoList.isEmpty()) {
+//                isRollback = true;
+//
+//                deleteLayerFileInfoGroupId = (Integer)updateLayerMap.get("layerFileInfoGroupId");
+//                // 4. org2ogr 실행
+//                layerService.insertOgr2Ogr(layer, isLayerFileInfoExist, (String)updateLayerMap.get("shapeFileName"), (String)updateLayerMap.get("shapeEncoding"));
+//
+//                // org2ogr 로 등록한 데이터의 version을 갱신
+//                Map<String, String> orgMap = new HashMap<>();
+//                orgMap.put("fileVersion", ((Integer)updateLayerMap.get("fileVersion")).toString());
+//                orgMap.put("tableName", layer.getLayerKey());
+//                orgMap.put("enableYn", "Y");
+//                // 5. shape 파일 테이블의 현재 데이터의 활성화 하고 날짜를 업데이트
+//                layerFileInfoService.updateOgr2OgrDataFileVersion(orgMap);
+//                // 6. geoserver에 신규 등록일 경우 등록, 아닐경우 통과
+//                layerService.registerLayer(policy, layer.getLayerKey());
+//
+//                //업로드 하는 데이터가 지번일 경우 오라클 테이블을 비우고 insert
+//                //상수를 앞에 쓰면 NullPointerException이 발생하지 않는다.
+//                //뒤에 비즈니스 로직에 layerKey가 필요하다면  layerKey를 앞에써서  exception을 발생시켜 처리하는게 좋다~
+//            }
+//
+//            statusCode = HttpStatus.OK.value();
+//        } catch(Exception e) {
+//            if(isRollback) {
+//                // rollback 처리
+//                layerService.rollbackLayer(rollbackLayer, isLayerFileInfoExist, rollbackLayerFileInfo, deleteLayerFileInfoGroupId);
+//            }
+//
+//            e.printStackTrace();
+//            statusCode = HttpStatus.OK.value();
+//            errorCode = "db.exception";
+//            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+//        }
+//        
+//        result.put("statusCode", statusCode);
+//		result.put("errorCode", errorCode);
+//		result.put("message", message);
+//		return result;
+//    }
 
     private String replaceInvalidValue(String value) {
         if("null".equals(value)) value = null;
@@ -503,6 +515,7 @@ public class LayerController implements AuthorizationController {
     * @return
     */
     @GetMapping(value = "{layerId}/layer-fileinfos")
+    @ResponseBody
     public Map<String, Object> listLayerFileInfo(HttpServletRequest request, @PathVariable Integer layerId) {
 
     	Map<String, Object> result = new HashMap<>();
@@ -517,6 +530,7 @@ public class LayerController implements AuthorizationController {
         } catch(Exception e) {
             e.printStackTrace();
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
             message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
         }
         
@@ -581,6 +595,7 @@ public class LayerController implements AuthorizationController {
     * @return
     */
     @PostMapping(value = "{layerId}/layer-file-infos/{layerFileInfoId}")
+    @ResponseBody
     public Map<String, Object> updateByLayerFileInfoId(HttpServletRequest request,
                                                             @PathVariable Integer layerId,
                                                             @PathVariable Integer layerFileInfoId,
@@ -601,6 +616,7 @@ public class LayerController implements AuthorizationController {
 
             e.printStackTrace();
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
             message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
         }
         
@@ -611,6 +627,7 @@ public class LayerController implements AuthorizationController {
     }
 
     @GetMapping(value = "/file-info/{layerFileInfoId}")
+    @ResponseBody
     public Map<String, Object> viewFileDetail(@PathVariable Integer layerFileInfoId) {
     	
     	Map<String, Object> result = new HashMap<>();
@@ -626,6 +643,7 @@ public class LayerController implements AuthorizationController {
         } catch (Exception e) {
             e.printStackTrace();
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
             message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
         }
     	

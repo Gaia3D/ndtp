@@ -59,7 +59,7 @@ public class LayerGroup implements Serializable {
 	private Integer viewOrder;
 	
 	// 자식 존재 유무
-	private Boolean childExist;
+	private Integer children;
 	
 	/**
 	 * 사용 유무

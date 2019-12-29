@@ -7,9 +7,9 @@
 	<select id="getListLayerGroup" resultType="layerGroup">
 		/* getListLayerGroup */
 		WITH RECURSIVE layer_group_tree (
-			layer_group_id, layer_group_name, user_id, ancestor, parent, depth, view_order, child_exist, available, description, insert_date, path, cycle
+			layer_group_id, layer_group_name, user_id, ancestor, parent, depth, view_order, children, available, description, insert_date, path, cycle
 		) AS (
-	        SELECT A.layer_group_id, A.layer_group_name, A.user_id, A.ancestor, A.parent, A.depth, A.view_order, A.child_exist, A.available,
+	        SELECT A.layer_group_id, A.layer_group_name, A.user_id, A.ancestor, A.parent, A.depth, A.view_order, A.children, A.available,
 	        	A.description, A.insert_date, ARRAY[A.view_order], false
 			FROM layer_group A
 			WHERE A.parent = 0
@@ -17,13 +17,50 @@
 				AND A.available = #{available}
 			</if>
 			UNION ALL
-	        SELECT A.layer_group_id, A.layer_group_name, A.user_id, A.ancestor, A.parent, A.depth, A.view_order, A.child_exist, A.available,
+	        SELECT A.layer_group_id, A.layer_group_name, A.user_id, A.ancestor, A.parent, A.depth, A.view_order, A.children, A.available,
 	        	A.description, A.insert_date, path || A.view_order, A.layer_group_id = ANY(path)
 	        FROM layer_group A, layer_group_tree B
 	        WHERE A.parent = B.layer_group_id AND not cycle
 		)
-	    SELECT layer_group_id, layer_group_name, user_id, ancestor, parent, depth, view_order, child_exist, available, description, insert_date, path
+	    SELECT layer_group_id, layer_group_name, user_id, ancestor, parent, depth, view_order, children, available, description, insert_date, path
 	    FROM layer_group_tree
 	    ORDER BY path
 	</select>
+	
+	<!-- 레이어 그룹 등록 -->
+	<insert id="insert" parameterType="layerGroup">
+		/* insert */
+		<selectKey keyProperty="layerGroupId" resultType="int" order="BEFORE">
+    		SELECT NEXTVAL('layer_group_seq')
+  		</selectKey>
+		INSERT INTO layer_group (
+			layer_group_id, layer_group_name, user_id, ancestor, parent, depth, view_order, children, available, description
+		) VALUES (
+			#{layerGroupId}, #{layerGroupName}, #{userId},
+			(
+				SELECT COALESCE(MAX(ancestor), #{layerGroupId}) 
+				FROM layer_group 
+				WHERE layer_group_id = #{parent}
+					AND layer_group_id != 0
+			),
+			#{parent},
+			(
+				SELECT COALESCE(MAX(depth),  0 ) + 1
+				FROM layer_group 
+				WHERE layer_group_id = #{parent}
+			),
+			(
+				SELECT COALESCE(MAX(view_order), 0) + 1
+				FROM layer_group
+				WHERE parent = #{parent}
+			),
+			(
+				SELECT COUNT(*) 
+				FROM layer_group
+				WHERE parent = #{layerGroupId}
+			),
+			#{available},
+			trim(#{description})
+		)
+	</insert>
 </mapper>
