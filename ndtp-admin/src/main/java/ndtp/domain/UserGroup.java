@@ -45,9 +45,9 @@ public class UserGroup {
 	// 고유번호
 	private Integer userGroupId;
 	// 링크 활용 등을 위한 확장 컬럼
-	private String groupKey;
+	private String userGroupKey;
 	// 그룹명
-	private String groupName;
+	private String userGroupName;
 	// 부서번호
 	private String deptNo;
 	// 부서명

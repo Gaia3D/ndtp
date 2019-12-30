@@ -128,9 +128,9 @@
                         					<span style="padding-left: ${paddingLeftValue}; font-size: 1.5em; color: Tomato;"><i class="fa fa-file-alt" aria-hidden="true"></i></span>
         </c:if>
 
-                        					${userGroup.groupName }
+                        					${userGroup.userGroupName }
 										</td>
-					                    <td class="col-key" style="text-align: left;" nowrap="nowrap">${userGroup.groupKey }</td>
+					                    <td class="col-key" style="text-align: left;" nowrap="nowrap">${userGroup.userGroupKey }</td>
 					                    <td class="col-type">
         <c:if test="${userGroup.defaultYn eq 'Y' }">
                         					기본

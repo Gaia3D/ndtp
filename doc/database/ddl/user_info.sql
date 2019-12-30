@@ -133,8 +133,8 @@ comment on column user_device.insert_date is '등록일';
 -- 사용자 그룹
 create table user_group(
 	user_group_id				integer,
-	group_key					varchar(60)							not null ,
-	group_name					varchar(100)						not null,
+	user_group_key				varchar(60)							not null ,
+	user_group_name				varchar(100)						not null,
 	ancestor					integer								default 0,
 	parent						integer								default 1,
 	depth						integer								default 1,
@@ -149,8 +149,8 @@ create table user_group(
 
 comment on table user_group is '사용자 그룹';
 comment on column user_group.user_group_id is '고유번호';
-comment on column user_group.group_key is '링크 활용 등을 위한 확장 컬럼';
-comment on column user_group.group_name is '그룹명';
+comment on column user_group.user_group_key is '링크 활용 등을 위한 확장 컬럼';
+comment on column user_group.user_group_name is '그룹명';
 comment on column user_group.ancestor is '조상 고유번호';
 comment on column user_group.parent is '부모 고유번호';
 comment on column user_group.depth is '깊이';

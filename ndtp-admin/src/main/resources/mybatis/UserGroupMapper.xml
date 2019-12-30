@@ -7,10 +7,10 @@
 	<select id="getListUserGroup" parameterType="userGroup" resultType="userGroup">
 		/* getListUserGroup */
 		WITH RECURSIVE user_group_tree (
-			user_group_id, group_key, group_name, ancestor, parent, depth, view_order, default_yn, use_yn, child_yn, 
+			user_group_id, user_group_key, user_group_name, ancestor, parent, depth, view_order, default_yn, use_yn, child_yn, 
 			description, insert_date, path, cycle
 		) AS (
-	        SELECT A.user_group_id, A.group_key, A.group_name, A.ancestor, A.parent, A.depth, A.view_order, A.default_yn, A.use_yn, A.child_yn,
+	        SELECT A.user_group_id, A.user_group_key, A.user_group_name, A.ancestor, A.parent, A.depth, A.view_order, A.default_yn, A.use_yn, A.child_yn,
 	        	A.description, A.insert_date, ARRAY[A.view_order], false
 			FROM user_group A
 			WHERE A.parent = 0
@@ -18,12 +18,12 @@
 				AND A.use_yn = 'Y'
 			</if>
 			UNION ALL
-	        SELECT A.user_group_id, A.group_key, A.group_name, A.ancestor, A.parent, A.depth, A.view_order, A.default_yn, A.use_yn, A.child_yn,
+	        SELECT A.user_group_id, A.user_group_key, A.user_group_name, A.ancestor, A.parent, A.depth, A.view_order, A.default_yn, A.use_yn, A.child_yn,
 	        	A.description, A.insert_date, path || A.view_order, A.user_group_id = ANY(path)
 	        FROM user_group A, user_group_tree B
 	        WHERE A.parent = B.user_group_id AND not cycle
 		)
-	    SELECT user_group_id, group_key, group_name, ancestor, parent, depth, view_order, default_yn, use_yn, child_yn, description, insert_date, path
+	    SELECT user_group_id, user_group_key, user_group_name, ancestor, parent, depth, view_order, default_yn, use_yn, child_yn, description, insert_date, path
 	    FROM user_group_tree
 	    ORDER BY path
 	</select>
@@ -179,9 +179,9 @@
 			SELECT NEXTVAL('user_group_seq')
         </selectKey>
         INSERT INTO user_group (
-        	user_group_id, group_key, group_name, ancestor, parent, depth, view_order, default_yn, use_yn, child_yn, description
+        	user_group_id, user_group_key, user_group_name, ancestor, parent, depth, view_order, default_yn, use_yn, child_yn, description
         ) VALUES (
-            #{userGroupId}, #{groupKey}, #{groupName}, #{ancestor}, #{parent}, #{depth}, #{viewOrder}, #{defaultYn}, #{useYn}, #{childYn}, #{description}
+            #{userGroupId}, #{userGroupKey}, #{userGroupName}, #{ancestor}, #{parent}, #{depth}, #{viewOrder}, #{defaultYn}, #{useYn}, #{childYn}, #{description}
         )
     </insert>
     
@@ -215,8 +215,8 @@
     <update id="updateUserGroup" parameterType="userGroup">
         /* updateUserGroup */
         UPDATE user_group
-        SET group_key = #{groupKey},
-        	group_name = #{groupName},
+        SET user_group_key = #{userGroupKey},
+        	user_group_name = #{userGroupName},
             ancestor = #{ancestor},
             parent = #{parent},
             depth = #{depth},
