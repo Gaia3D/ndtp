@@ -25,17 +25,54 @@
 				<div class="page-area">
 					<%@ include file="/WEB-INF/views/layouts/page_header.jsp" %>
 					<div class="page-content">
-						<!-- <div class="filters">
-						</div> -->
-						<div style="height: 30px;"></div>
+						<div class="filters">
+							<form:form id="layer" modelAttribute="layer" method="post" action="/layer/list" onsubmit="return searchCheck();">
+							<div class="input-group row">
+								<div class="input-set">
+									<label for="searchWord">검색어</label>
+									<select id="searchWord" name="searchWord" class="select">
+										<option value="">선택</option>
+										<option value="layerName">이름</option>
+									</select>
+									<select id="searchOption" name="searchOption" class="select">
+										<option value="0">일치</option>
+										<option value="1">포함</option>
+									</select>
+									<form:input path="searchValue" cssClass="m" />
+								</div>
+								<div class="input-set">
+									<label for="start_date">기간</label>
+									<input type="text" id="startDate" name="startDate" class="s date" />
+									<span class="delimeter tilde">~</span>
+									<input type="text" id="endDate" name="endDate" class="s date" />
+								</div>
+							
+								<div class="input-set">
+									<label for="orderWord">표시순서</label>
+									<select id="orderWord" name="orderWord" class="select">
+										<option value="">기본</option>
+										<option value="layerName">이름</option>
+										<option value="insertDate">등록일</option>
+									</select>
+									<select id="orderValue" name="orderValue" class="select">
+										<option value="">기본</option>
+										<option value="ASC">오름차순</option>
+										<option value="DESC">내림차순</option>
+									</select>
+								</div>
+								<div class="input-set">
+									<input type="submit" value="검색" />
+								</div>
+							</div>
+							</form:form>
+						</div>
 						<div class="list">
+							<form:form id="listForm" modelAttribute="layer" method="post">
 							<div class="list-header row">
 								<div class="list-desc u-pull-left">
-									<div class="button-group">
-										<a href="#" onclick="openAll(); return false;" class="button">펼치기</a>
-										<a href="#" onclick="closeAll(); return false;" class="button">접기</a>
-										<a href="/layer/tree" class="button">그룹 수정/등록</a>
-									</div>
+									<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/>
+									<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> 
+									<spring:message code='search.page'/>
 								</div>
 							</div>
 							<table class="list-table scope-col">
@@ -64,91 +101,26 @@
 									</tr>
 </c:if>								
 <c:if test="${!empty layerList }">
-	<c:set var="paddingLeftValue" value="0" />
-    <!-- depth 별 css 제어를 위한 변수 -->
-    <c:set var="depthClass" value="" />
-    <c:set var="depthStyleDisplay" value="" />
-    <!-- 클릭 이벤트 발생시 자손 css 를 제어하기 위한 변수 -->
-    <c:set var="ancestorClass" value="" />
-    <!-- 클릭 이벤트 발생시 자식 css 를 제어하기 위한 변수 -->
-    <c:set var="depthParentClass" value="" />
-    <c:set var="ancestorArrowClass" value="" />
-    <c:set var="ancestorFolderClass" value="" />
-    <c:forEach var="layer" items="${layerList}" varStatus="status">
-        <c:if test="${layer.depth eq '1' }">
-            <c:set var="depthClass" value="oneDepthClass" />
-            <c:set var="paddingLeftValue" value="0px" />
-            <c:set var="depthStyleDisplay" value="" />
-            <c:set var="ancestorClass" value="" />
-            <c:set var="depthParentClass" value="" />
-        </c:if>
-        <c:if test="${layer.depth eq '2' }">
-            <c:set var="depthClass" value="twoDepthClass" />
-            <c:set var="paddingLeftValue" value="40px" />
-            <c:set var="depthStyleDisplay" value="display: none;" />
-            <c:set var="depthParentClass" value="oneDepthParent-${layer.parent }" />
-            <c:set var="ancestorClass" value="" />
-            <c:set var="ancestorArrowClass" value="ancestorArrow-${layer.ancestor }" />
-            <c:set var="ancestorFolderClass" value="ancestorFolder-${layer.ancestor }" />
-        </c:if>
-        <c:if test="${layer.depth eq '3' }">
-            <c:set var="depthClass" value="threeDepthClass" />
-            <c:set var="paddingLeftValue" value="80px" />
-            <c:set var="depthStyleDisplay" value="display: none;" />
-            <c:set var="depthParentClass" value="twoDepthParent-${layer.parent }" />
-            <c:set var="ancestorClass" value="ancestor-${layer.ancestor }" />
-        </c:if>
+	<c:forEach var="layer" items="${layerList}" varStatus="status">
 									<tr class="${depthClass } ${depthParentClass} ${ancestorClass }" style="${depthStyleDisplay}">
-										<td class="col-key" style="text-align: left;" nowrap="nowrap">
-        <c:if test="${layer.depth eq '1' }">
-					                        <span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;" onclick="childrenDisplayToggle('${layer.depth}', '${layer.layerId}', '${layer.ancestor}');">
-					                            <i id="oneDepthArrow-${layer.layerId }" class="fa fa-caret-right oneArrow" aria-hidden="true"></i>
-					                        </span>&nbsp;
-					                        <span style="font-size: 1.5em; color: Dodgerblue;">
-					                            <i id="oneDepthFolder-${layer.layerId }" class="fa fa-folder oneFolder" aria-hidden="true"></i>
-					                        </span>
-        </c:if>
-        <c:if test="${layer.depth eq '2' }">
-            <c:if test="${layer.childYn eq 'N' }">
-                        					<span style="padding-left: ${paddingLeftValue}; font-size: 1.5em; color: Tomato;"><i class="fa fa-file-alt" aria-hidden="true"></i></span>
-            </c:if>
-            <c:if test="${layer.childYn eq 'Y' }">
-					                        <span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;" onclick="childrenDisplayToggle('${layer.depth}', '${layer.layerId}', '${layer.ancestor}');">
-					                            <i id="twoDepthArrow-${layer.layerId }" class="fa fa-caret-right twoArrow ${ancestorArrowClass }" aria-hidden="true"></i></span>&nbsp;
-					                        <span style="font-size: 1.5em; color: Mediumslateblue;">
-					                            <i id="twoDepthFolder-${layer.layerId }" class="fa fa-folder twoFolder ${ancestorFolderClass }" aria-hidden="true"></i>
-					                        </span>
-            </c:if>
-        </c:if>
-        <c:if test="${layer.depth eq '3' }">
-                        					<span style="padding-left: ${paddingLeftValue}; font-size: 1.5em; color: Tomato;"><i class="fa fa-file-alt" aria-hidden="true"></i></span>
-        </c:if>
-
+										<td class="col-key">
                         					${layer.layerName }
 										</td>
 					                    <td class="col-key" style="text-align: left;" nowrap="nowrap">${layer.layerKey }</td>
                     					<td class="col-key" nowrap="nowrap">${layer.viewZIndex }</td>
 					                    <td class="col-type">
-        <c:if test="${layer.useYn eq 'Y' }">
+        <c:if test="${layer.available eq 'true' }">
                         					사용
         </c:if>
-        <c:if test="${layer.useYn eq 'N' }">
+        <c:if test="${layer.available eq 'false' }">
                         					미사용
         </c:if>
 					                    </td>
 					                    <td class="col-key">
-        <c:if test="${layer.shapeInsertYn eq 'Y' }">
                         					<a href="#" onclick="viewLayer('${layer.layerId}', '${layer.layerName}'); return false;" class="linkButton">보기</a>
-        </c:if>
-        <c:if test="${layer.shapeInsertYn eq 'N' }">
-        </c:if>
 					                    </td>
 					                    <td class="col-key">
-        <c:if test="${layer.shapeInsertYn eq 'Y' }">
                         					<a href="/layers/${layer.layerId }" class="linkButton">수정</a>
-        </c:if>
-        <c:if test="${layer.shapeInsertYn eq 'N' }">
-        </c:if>
                     					</td>
 					                    <td class="col-date">
 					                    	<fmt:parseDate value="${layer.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
@@ -159,6 +131,7 @@
 </c:if>
 								</tbody>
 							</table>
+							</form:form>
 						</div>
 						<%@ include file="/WEB-INF/views/common/pagination.jsp" %>
 					</div>
@@ -174,93 +147,6 @@
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript" src="/js/navigation.js"></script>
 <script type="text/javascript">
-	//펼치기
-	function openAll() {
-	    $(".threeDepthClass").show();
-	    $(".twoDepthClass").show();
-	
-	    // fa-caret-right
-	    // fa-caret-down
-	    $(".oneArrow").removeClass("fa-caret-right");
-	    $(".oneArrow").addClass("fa-caret-down");
-	    $(".twoArrow").removeClass("fa-caret-right");
-	    $(".twoArrow").addClass("fa-caret-down");
-	
-	    $(".oneFolder").removeClass("fa-folder");
-	    $(".oneFolder").addClass("fa-folder-open");
-	    $(".twoFolder").removeClass("fa-folder");
-	    $(".twoFolder").addClass("fa-folder-open");
-	}
-	
-	// 접기
-	function closeAll() {
-	    $(".threeDepthClass").hide();
-	    $(".twoDepthClass").hide();
-	
-	    $(".oneArrow").removeClass("fa-caret-down");
-	    $(".oneArrow").addClass("fa-caret-right");
-	    $(".twoArrwo").removeClass("fa-caret-down");
-	    $(".twoArrwo").addClass("fa-caret-right");
-	
-	    $(".oneFolder").removeClass("fa-folder-open");
-	    $(".oneFolder").addClass("fa-folder");
-	    $(".twoFolder").removeClass("fa-folder-open");
-	    $(".twoFolder").addClass("fa-folder");
-	}
-	
-	// 화살표 클릭시
-	function childrenDisplayToggle(depth, userGroupId, ancestor) {
-	    if(depth === "1") {
-	        console.log("--------- depth 1 = " + $(".oneDepthParent-" + userGroupId).css("display"));
-	        if( $(".oneDepthParent-" + userGroupId).css("display") === "none" ) {
-	            // 접힌 상태
-	            $(".oneDepthParent-" + userGroupId).show();
-	
-	            $("#oneDepthArrow-" + userGroupId).removeClass("fa-caret-right");
-	            $("#oneDepthArrow-" + userGroupId).addClass("fa-caret-down");
-	            $("#oneDepthFolder-" + userGroupId).removeClass("fa-folder");
-	            $("#oneDepthFolder-" + userGroupId).addClass("fa-folder-open");
-	
-	            $(".ancestorArrow-" + ancestor).removeClass("fa-caret-down");
-	            $(".ancestorArrow-" + ancestor).addClass("fa-caret-right");
-	            $(".ancestorFolder-" + ancestor).removeClass("fa-folder-open");
-	            $(".ancestorFolder-" + ancestor).addClass("fa-folder");
-	        } else {
-	            // 펼친 상태
-	            $(".ancestor-" + ancestor).hide();
-	            $(".oneDepthParent-" + userGroupId).hide();
-	
-	            $("#oneDepthArrow-" + userGroupId).removeClass("fa-caret-down");
-	            $("#oneDepthArrow-" + userGroupId).addClass("fa-caret-right");
-	            $("#oneDepthFolder-" + userGroupId).removeClass("fa-folder-open");
-	            $("#oneDepthFolder-" + userGroupId).addClass("fa-folder");
-	
-	            $(".ancestorArrow-" + ancestor).removeClass("fa-caret-down");
-	            $(".ancestorArrow-" + ancestor).addClass("fa-caret-right");
-	            $(".ancestorFolder-" + ancestor).removeClass("fa-folder-open");
-	            $(".ancestorFolder-" + ancestor).addClass("fa-folder");
-	        }
-	    } else if(depth === "2") {
-	        if( $(".twoDepthParent-" + userGroupId).css("display") === "none" ) {
-	            // 접힌 상태
-	            $(".twoDepthParent-" + userGroupId).show();
-	
-	            $("#twoDepthArrow-" + userGroupId).removeClass("fa-caret-right");
-	            $("#twoDepthArrow-" + userGroupId).addClass("fa-caret-down");
-	            $("#twoDepthFolder-" + userGroupId).removeClass("fa-folder");
-	            $("#twoDepthFolder-" + userGroupId).addClass("fa-folder-open");
-	        } else {
-	            // 펼친 상태
-	            $(".twoDepthParent-" + userGroupId).hide();
-	
-	            $("#twoDepthArrow-" + userGroupId).removeClass("fa-caret-down");
-	            $("#twoDepthArrow-" + userGroupId).addClass("fa-caret-right");
-	            $("#twoDepthFolder-" + userGroupId).removeClass("fa-folder-open");
-	            $("#twoDepthFolder-" + userGroupId).addClass("fa-folder");
-	        }
-	    }
-	}
-	
 	// 지도 보기
     function viewLayer(layerId, layerName) {
         var url = "/layer/" + layerId + "/map";

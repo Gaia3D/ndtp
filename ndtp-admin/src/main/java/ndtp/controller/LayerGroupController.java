@@ -42,7 +42,8 @@ public class LayerGroupController {
 	 */
 	@GetMapping(value = "list-group")
 	public String list(HttpServletRequest request, @ModelAttribute LayerGroup layerGroup, Model model) {
-		List<LayerGroup> layerGroupList = layerGroupService.getListLayerGroup();
+		List<LayerGroup> layerGroupList = layerGroupService.getListLayerGroupAndLayer();
+		//List<LayerGroup> layerGroupList = layerGroupService.getListLayerGroup();
 		
 		model.addAttribute("layerGroupList", layerGroupList);
 		

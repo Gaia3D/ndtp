@@ -9,6 +9,13 @@ import ndtp.domain.Policy;
 
 public interface LayerService {
 
+	/**
+	 * Layer 총 건수
+	 * @param accessLog
+	 * @return
+	 */
+	Long getLayerTotalCount(Layer layer);
+	
     /**
     * layer 목록
     * @return

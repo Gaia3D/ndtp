@@ -7,13 +7,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
+import ndtp.domain.Layer;
 import ndtp.domain.LayerGroup;
 import ndtp.persistence.LayerGroupMapper;
 import ndtp.service.LayerGroupService;
+import ndtp.service.LayerService;
 
 @Slf4j
 @Service
 public class LayerGroupServiceImpl implements LayerGroupService {
+	
+	@Autowired
+	private LayerService layerService;
+	
 	@Autowired
 	private LayerGroupMapper layerGroupMapper;
 	
@@ -29,12 +35,19 @@ public class LayerGroupServiceImpl implements LayerGroupService {
 	}
 	
 	/**
-     * 레이어 그룹 목록 및 하위 레이어를 조회
+	 * 레이어 그룹 목록 및 하위 레이어를 조회
      * @return
      */
 	@Transactional(readOnly = true)
 	public List<LayerGroup> getListLayerGroupAndLayer() {
-		return null;
+		List<LayerGroup> layerGroupList = layerGroupMapper.getListLayerGroup();
+		for(LayerGroup layerGroup : layerGroupList) {
+			Layer layer = new Layer();
+			layer.setLayerGroupId(layerGroup.getLayerGroupId());
+			layerGroup.setLayerList(layerService.getListLayer(layer));
+		}
+		
+		return layerGroupList;
 	}
 	
 //	/** 

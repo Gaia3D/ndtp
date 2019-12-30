@@ -34,7 +34,7 @@
 									<div class="button-group">
 										<a href="#" onclick="openAll(); return false;" class="button">펼치기</a>
 										<a href="#" onclick="closeAll(); return false;" class="button">접기</a>
-										<a href="/layer/tree" class="button">그룹 수정/등록</a>
+										<!-- <a href="/layer/tree" class="button">그룹 수정/등록</a> -->
 									</div>
 								</div>
 							</div>
@@ -43,6 +43,9 @@
 								<col class="col-toggle" />
 								<col class="col-name" />
 								<col class="col-functions" />
+								<col class="col-functions" />
+								<col class="col-functions" />
+								<col class="col-functions" />
 								<col class="col-date" />
 								<thead>
 									<tr>
@@ -50,13 +53,16 @@
 					                    <th scope="col">사용유무</th>
 					                    <th scope="col">등록자</th>
 					                    <th scope="col">설명</th>
+					                    <th scope="col">레이어</th>
+					                    <th scope="col">상세정보</th>
+					                    <th scope="col">순서</th>
 					                    <th scope="col">등록일</th>
 									</tr>
 								</thead>
 								<tbody>
 <c:if test="${empty layerGroupList }">
 									<tr>
-										<td colspan="5" class="col-none">Layer 그룹이 존재하지 않습니다.</td>
+										<td colspan="8" class="col-none">Layer 그룹이 존재하지 않습니다.</td>
 									</tr>
 </c:if>								
 <c:if test="${!empty layerGroupList }">
@@ -125,21 +131,60 @@
                         					${layerGroup.layerGroupName }
 										</td>
 					                    <td class="col-type">
-        <c:if test="!${layerGroup.available }">
+        <c:if test="${layerGroup.available eq 'true' }">
                         					사용
         </c:if>
-        <c:if test="${layerGroup.available }">
+        <c:if test="${layerGroup.available eq 'false' }">
                         					미사용
         </c:if>
 					                    </td>
-					                    <td class="col-key">${layerGroup.userId }
-					                    <td class="col-key">${layerGroup.description }
-                    					</td>
+					                    <td class="col-key">${layerGroup.userId }</td>
+					                    <td class="col-key">${layerGroup.description }</td>
+					                    <td class="col-type"><a href="/layer/modify/${layerGroup.layerGroupId }" class="linkButton">보기</a>
+					                    </td>
+					                    <td class="col-type"><a href="/layer/modify/${layerGroup.layerGroupId }" class="linkButton">수정</a>
+					                    </td>
+					                    <td class="col-type">
+					                    	<button>위로</button>
+					                    	<button>아래로</button>
+					                    </td>
 					                    <td class="col-date">
 					                    	<fmt:parseDate value="${layerGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
 											<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
 					                    </td>
 					                </tr>
+		<c:if test="${!empty layerGroup.layerList }">
+			<c:forEach var="layer" items="${layerGroup.layerList}" varStatus="status">
+									<tr class="${depthClass } ${depthParentClass} ${ancestorClass }">
+										<td class="col-key" style="text-align: left;" nowrap="nowrap">
+                        					<span style="padding-left: ${paddingLeftValue}; font-size: 1.5em; color: Tomato;"><i class="fa fa-file-alt" aria-hidden="true"></i></span>
+                        					${layer.layerName }
+										</td>
+					                    <td class="col-type">
+        <c:if test="${layer.available eq 'true' }">
+                        					사용
+        </c:if>
+        <c:if test="${layer.available eq 'false' }">
+                        					미사용
+        </c:if>
+					                    </td>
+					                    <td class="col-key">${layer.userId }</td>
+					                    <td class="col-key">${layer.description }</td>
+					                    <td class="col-type"><a href="/layer/modify/${layer.layerId }" class="linkButton">지도 보기</a>
+					                    </td>
+					                    <td class="col-type"><a href="/layer/modify/${layer.layerId }" class="linkButton">수정</a>
+					                    </td>
+					                    <td class="col-type">
+					                    	<button>위로</button>
+					                    	<button>아래로</button>
+					                    </td>
+					                    <td class="col-date">
+					                    	<fmt:parseDate value="${layer.insertDate}" var="viewLayerInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
+											<fmt:formatDate value="${viewLayerInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
+					                    </td>
+					                </tr>	
+			</c:forEach>
+		</c:if>
     </c:forEach>
 </c:if>
 								</tbody>

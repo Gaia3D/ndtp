@@ -2,6 +2,7 @@ package ndtp.domain;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -76,4 +77,9 @@ public class LayerGroup implements Serializable {
 
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Timestamp insertDate;
+	
+	/**
+	 * 자식 레이어 목록
+	 */
+	private List<Layer> layerList;
 }

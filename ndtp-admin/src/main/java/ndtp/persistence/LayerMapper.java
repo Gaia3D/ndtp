@@ -8,6 +8,13 @@ import ndtp.domain.Layer;
 
 @Repository
 public interface LayerMapper {
+	
+	/**
+	 * Layer 총 건수
+	 * @param accessLog
+	 * @return
+	 */
+	Long getLayerTotalCount(Layer layer);
 
     /**
     * layer 목록

@@ -24,7 +24,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Layer implements Serializable {
+public class Layer extends Search implements Serializable {
 
     /**
     * 레이어 목록 표시

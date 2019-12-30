@@ -174,7 +174,7 @@
 			                    </th>
 			                    <td class="col-input radio-set">
 			                        <form:radiobutton id="defaultDisplayTrue"  path="defaultDisplay" value="true" label="사용" />
-									<form:radiobutton id="defaultDisplayFlase" path="sharedType" value="false" label="미사용" />
+									<form:radiobutton id="defaultDisplayFlase" path="defaultDisplay" value="false" label="미사용" />
 			                    </td>
 			                    <th class="col-label" scope="row">
 			                        <label for="useY">사용유무</label>

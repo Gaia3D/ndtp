@@ -3,51 +3,70 @@
 
 <mapper namespace="ndtp.persistence.LayerMapper">
 
-    <!-- layer tree 구조 -->
+    <!-- Layer 총 건수 -->
+    <select id="getLayerTotalCount" parameterType="layer" resultType="long">
+        /* getLayerTotalCount */
+        SELECT COUNT(layer_id) 
+        FROM layer
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="layerGroupId != null and layerGroupId > 0">
+			layer_group_id = #{layerGroupId}
+			</if>
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
+			${searchWord} = #{searchValue}
+			</if>
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
+			${searchWord} LIKE '%' || #{searchValue} || '%'
+			</if>
+			<if test="startDate != null and startDate != ''">
+			<![CDATA[
+			AND insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+			]]>
+			</if>
+			<if test="endDate != null and endDate != ''">
+			<![CDATA[
+			AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+			]]>
+			</if>
+		</trim>
+    </select>
+
+    <!-- Layer 목록 -->
     <select id="getListLayer" parameterType="layer" resultType="layer">
         /* getListLayer */
-        WITH RECURSIVE layer_tree (
-            layer_id, layer_key, layer_name, view_type, shared_type, layer_style, geometry_type,
-            ancestor,  parent, depth, view_order, z_index, shape_insert_yn, use_yn, coordinate,
-            user_id, update_date, insert_date, path, cycle, mobile_default_yn, label_display_yn
-        ) AS (
-            SELECT A.layer_id, A.layer_key, A.layer_name, A.view_type, A.shared_type, A.layer_style, A.geometry_type,
-                A.ancestor, A.parent, A.depth, A.view_order, A.z_index, A.shape_insert_yn, A.use_yn, A.coordinate,
-                A.user_id, A.update_date, A.insert_date, ARRAY[A.view_order], false, A.mobile_default_yn, A.label_display_yn
-            FROM layer A
-            WHERE use_yn = 'Y'
-            <if test="parent == null or parent lte 0">
-                AND A.parent = 0
-            </if>
-            <if test="parent != null and parent gt 0">
-                AND A.parent = #{parent}
-            </if>
-            <if test="status != null and status != ''">
-                AND A.status = #{status}
-            </if>
-            <if test="ancestor != null and ancestor != ''">
-                AND A.ancestor = #{ancestor}
-            </if>
-            <if test="shapeInsertYn != null and shapeInsertYn != ''">
-                AND A.shape_insert_yn = #{shapeInsertYn}
-            </if>
-            <if test="labelDisplayYn != null and labelDisplayYn != ''">
-                AND A.label_display_yn = #{labelDisplayYn}
-            </if>
-            UNION ALL
-            SELECT A.layer_id, A.layer_key, A.layer_name, A.view_type, A.shared_type, A.layer_style, A.geometry_type,
-                A.ancestor, A.parent, A.depth, A.view_order, A.z_index, A.shape_insert_yn, A.use_yn, A.coordinate,
-                A.user_id, A.update_date, A.insert_date, path || A.view_order, A.layer_id = ANY(path), A.mobile_default_yn, A.label_display_yn
-            FROM layer A, layer_tree B
-            WHERE A.use_yn = 'Y'
-                AND A.parent = B.layer_id
-                AND not cycle
-        )
-        SELECT layer_id, layer_key, layer_name, view_type, shared_type, layer_style, geometry_type,
-            ancestor, parent, depth, view_order, z_index, shape_insert_yn, use_yn, coordinate,
-            user_id, update_date, insert_date, path, mobile_default_yn, label_display_yn
-        FROM layer_tree
-        ORDER BY path
+        SELECT A.*, B.layer_group_name
+        FROM layer A, layer_group B
+        WHERE A.layer_group_id = B.layer_group_id
+        <trim prefix="WHERE" prefixOverrides="AND">
+        	<if test="layerGroupId != null and layerGroupId > 0">
+			layer_group_id = #{layerGroupId}
+			</if>
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
+			${searchWord} = #{searchValue}
+			</if>
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
+			${searchWord} LIKE '%' || #{searchValue} || '%'
+			</if>
+			<if test="startDate != null and startDate != ''">
+			<![CDATA[
+			AND A.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+			]]>
+			</if>
+			<if test="endDate != null and endDate != ''">
+			<![CDATA[
+			AND A.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+			]]>
+			</if>
+		</trim> 
+        <choose>
+		<when test="orderWord != null and orderWord != '' and orderValue != null and orderValue != ''">
+		ORDER BY A.${orderWord} ${orderValue}
+		</when>
+		<otherwise>
+		ORDER BY A.insert_date DESC, layer_id DESC
+		</otherwise>
+		</choose>
+		OFFSET #{offset} LIMIT #{limit}
     </select>
 
     <!-- layer 정보 취득 -->

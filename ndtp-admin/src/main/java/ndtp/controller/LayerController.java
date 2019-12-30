@@ -7,7 +7,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
@@ -23,7 +22,6 @@ import java.util.zip.ZipFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -34,6 +32,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -46,6 +45,7 @@ import ndtp.domain.Key;
 import ndtp.domain.Layer;
 import ndtp.domain.LayerFileInfo;
 import ndtp.domain.LayerGroup;
+import ndtp.domain.Pagination;
 import ndtp.domain.Policy;
 import ndtp.domain.RoleKey;
 import ndtp.domain.UserSession;
@@ -54,6 +54,8 @@ import ndtp.service.LayerGroupService;
 import ndtp.service.LayerService;
 import ndtp.service.PolicyService;
 import ndtp.support.ZipSupport;
+import ndtp.utils.DateUtils;
+import ndtp.utils.FormatUtils;
 import ndtp.utils.WebUtils;
 
 @Slf4j
@@ -78,20 +80,45 @@ public class LayerController implements AuthorizationController {
     public static final int BUFFER_SIZE = 8192;
 
     /**
-    * layer 목록
-    * @param model
-    * @return
-    */
-    @GetMapping(value = "list")
-    public String list(HttpServletRequest request, Model model) {
-    	String roleCheckResult = roleValidate(request);
+	 * layer 목록
+	 */
+	@GetMapping(value = "list")
+	public String list(HttpServletRequest request, @RequestParam(defaultValue="1") String pageNo, Layer layer, Model model) {
+		log.info("@@ layer = {}", layer);
+		
+		String roleCheckResult = roleValidate(request);
     	if(roleValidate(request) != null) return roleCheckResult;
-        
-        List<Layer> layerList = layerService.getListLayer(new Layer());
-
-        model.addAttribute("layerList", layerList);
-        return "/layer/list";
-    }
+		
+		String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
+		if(StringUtils.isEmpty(layer.getStartDate())) {
+			layer.setStartDate(today.substring(0,4) + DateUtils.START_DAY_TIME);
+		} else {
+			layer.setStartDate(layer.getStartDate().substring(0, 8) + DateUtils.START_TIME);
+		}
+		if(StringUtils.isEmpty(layer.getEndDate())) {
+			layer.setEndDate(today + DateUtils.END_TIME);
+		} else {
+			layer.setEndDate(layer.getEndDate().substring(0, 8) + DateUtils.END_TIME);
+		}
+		
+		Long totalCount = layerService.getLayerTotalCount(layer);
+		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(layer), totalCount, Long.valueOf(pageNo).longValue());
+		log.info("@@ pagination = {}", pagination);
+		
+		layer.setOffset(pagination.getOffset());
+		layer.setLimit(pagination.getPageRows());
+		List<Layer> layerList = new ArrayList<>();
+		if(totalCount > 0l) {
+			layerList = layerService.getListLayer(layer);
+		}
+		
+		model.addAttribute(pagination);
+		model.addAttribute("layer", layer);
+		model.addAttribute("totalCount", totalCount);
+		model.addAttribute("layerList", layerList);
+		
+		return "/layer/list";
+	}
     
     /**
      * layer 등록
@@ -753,4 +780,13 @@ public class LayerController implements AuthorizationController {
 		
 		return null;
     }
+    
+    /**
+	 * 검색 조건
+	 * @param search
+	 * @return
+	 */
+	private String getSearchParameters(Layer layer) {
+		return layer.getParameters();
+	}
 }

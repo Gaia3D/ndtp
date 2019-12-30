@@ -9,20 +9,20 @@
         SELECT COUNT(access_log_id) 
         FROM access_log
 		<trim prefix="WHERE" prefixOverrides="AND">
-			<if test="search.searchWord != null and search.searchWord != '' and search.searchValue != null and search.searchValue != '' and search.searchOption == '0'.toString()">
-			${search.searchWord} = #{search.searchValue}
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
+			${searchWord} = #{searchValue}
 			</if>
-			<if test="search.searchWord != null and search.searchWord != '' and search.searchValue != null and search.searchValue != '' and search.searchOption == '1'.toString()">
-			${search.searchWord} LIKE '%' || #{search.searchValue} || '%'
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
+			${searchWord} LIKE '%' || #{searchValue} || '%'
 			</if>
-			<if test="search.startDate != null and search.startDate != ''">
+			<if test="startDate != null and startDate != ''">
 			<![CDATA[
-			AND insert_date >= TO_TIMESTAMP(#{search.startDate}, 'YYYYMMDDHH24MISSUS')
+			AND insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
-			<if test="search.endDate != null and search.endDate != ''">
+			<if test="endDate != null and endDate != ''">
 			<![CDATA[
-			AND insert_date <= TO_TIMESTAMP(#{search.endDate}, 'YYYYMMDDHH24MISSUS')
+			AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
 		</trim>
@@ -34,32 +34,32 @@
         SELECT *
         FROM access_log
         <trim prefix="WHERE" prefixOverrides="AND">
-			<if test="search.searchWord != null and search.searchWord != '' and search.searchValue != null and search.searchValue != '' and search.searchOption == '0'.toString()">
-			${search.searchWord} = #{search.searchValue}
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
+			${searchWord} = #{searchValue}
 			</if>
-			<if test="search.searchWord != null and search.searchWord != '' and search.searchValue != null and search.searchValue != '' and search.searchOption == '1'.toString()">
-			${search.searchWord} LIKE '%' || #{search.searchValue} || '%'
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
+			${searchWord} LIKE '%' || #{searchValue} || '%'
 			</if>
-			<if test="search.startDate != null and search.startDate != ''">
+			<if test="startDate != null and startDate != ''">
 			<![CDATA[
-			AND insert_date >= TO_TIMESTAMP(#{search.startDate}, 'YYYYMMDDHH24MISSUS')
+			AND insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
-			<if test="search.endDate != null and search.endDate != ''">
+			<if test="endDate != null and endDate != ''">
 			<![CDATA[
-			AND insert_date <= TO_TIMESTAMP(#{search.endDate}, 'YYYYMMDDHH24MISSUS')
+			AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
 		</trim> 
         <choose>
-		<when test="search.orderWord != null and search.orderWord != '' and search.orderValue != null and search.orderValue != ''">
-		ORDER BY ${search.orderWord} ${search.orderValue}
+		<when test="orderWord != null and orderWord != '' and orderValue != null and orderValue != ''">
+		ORDER BY ${orderWord} ${orderValue}
 		</when>
 		<otherwise>
 		ORDER BY insert_date DESC, access_log_id DESC
 		</otherwise>
 		</choose>
-		OFFSET #{search.offset} LIMIT #{search.limit}
+		OFFSET #{offset} LIMIT #{limit}
     </select>
 	
 	<!-- 서비스 요청 이력 정보 -->

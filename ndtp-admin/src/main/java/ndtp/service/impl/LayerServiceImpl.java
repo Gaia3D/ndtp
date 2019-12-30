@@ -61,6 +61,16 @@ public class LayerServiceImpl implements LayerService {
     private LayerFileInfoMapper layerFileInfoMapper;
 
     /**
+	 * Layer 총 건수
+	 * @param accessLog
+	 * @return
+	 */
+    @Transactional(readOnly=true)
+	public Long getLayerTotalCount(Layer layer) {
+    	return layerMapper.getLayerTotalCount(layer);
+    }
+    
+    /**
     * layer 목록
     * @return
     */
