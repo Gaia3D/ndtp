@@ -6,7 +6,7 @@
 	<!-- 세션 정보 -->
 	<select id="getUserSession" parameterType="userInfo" resultType="userSession">
 		/* getUserSession */
-		SELECT A.*, B.user_group_name AS user_group_name,
+		SELECT A.*, B.user_group_name AS userGroupName,
 			<![CDATA[
 			CASE WHEN A.last_password_change_date < (NOW() - INTERVAL '${passwordChangeTerm} DAY') THEN true
 				ELSE false

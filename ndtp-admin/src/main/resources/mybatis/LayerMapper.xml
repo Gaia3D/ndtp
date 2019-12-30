@@ -37,15 +37,14 @@
         SELECT A.*, B.layer_group_name
         FROM layer A, layer_group B
         WHERE A.layer_group_id = B.layer_group_id
-        <trim prefix="WHERE" prefixOverrides="AND">
         	<if test="layerGroupId != null and layerGroupId > 0">
-			layer_group_id = #{layerGroupId}
+			AND A.layer_group_id = #{layerGroupId}
 			</if>
 			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
-			${searchWord} = #{searchValue}
+			AND ${searchWord} = #{searchValue}
 			</if>
 			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
-			${searchWord} LIKE '%' || #{searchValue} || '%'
+			AND ${searchWord} LIKE '%' || #{searchValue} || '%'
 			</if>
 			<if test="startDate != null and startDate != ''">
 			<![CDATA[
@@ -57,8 +56,7 @@
 			AND A.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
-		</trim> 
-        <choose>
+		<choose>
 		<when test="orderWord != null and orderWord != '' and orderValue != null and orderValue != ''">
 		ORDER BY A.${orderWord} ${orderValue}
 		</when>
