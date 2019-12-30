@@ -3,14 +3,14 @@ drop table if exists layer_group;
 drop table if exists layer_file_info;
 
 create table layer_group (
-	layer_group_id				int,
+	layer_group_id				integer,
 	layer_group_name      		varchar(256)					not null,
 	user_id						varchar(32),
-	ancestor					int								default 0,	
-	parent                		int								default 0,	
-	depth                	  	int								default 1,	
-	view_order					int								default 1,	
-	children					int								default 0,
+	ancestor					integer							default 0,	
+	parent                		integer							default 0,	
+	depth                	  	integer							default 1,	
+	view_order					integer							default 1,	
+	children					integer							default 0,
 	available					boolean							default true,
 	description					varchar(1000),	
 	update_date             	timestamp with time zone,	
@@ -67,7 +67,7 @@ comment on column layer.layer_group_id is '레이어 그룹 고유번호';
 comment on column layer.layer_key is '레이어 고유키(API용)';
 comment on column layer.layer_name is '레이어명';
 comment on column layer.user_id is '사용자명';
-comment on column layer.shared_type is 'public : 공개, private : 개인, group : 그룹';
+comment on column layer.shared_type is 'common : 공통, public : 공개, private : 개인, group : 그룹';
 comment on column layer.service_type is '서비스 타입 (wms, wfs, wcs, wps)';
 comment on column layer.layer_type is '레이어 타입 (Raster, Vector)';
 comment on column layer.geometry_type is '도형 타입';
