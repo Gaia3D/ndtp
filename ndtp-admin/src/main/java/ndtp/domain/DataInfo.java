@@ -34,6 +34,11 @@ public class DataInfo extends Search implements Serializable {
 	// 아이디 중복 확인 hidden 값
 	private String duplicationValue;
 	
+	// 위도
+	private BigDecimal latitude;
+	// 경도
+	private BigDecimal longitude;
+	
 	// 사용자명
 	private String userId;
 	private String userName;
@@ -62,6 +67,7 @@ public class DataInfo extends Search implements Serializable {
 	
 	// origin : latitude, longitude, height 를 origin에 맟춤. boundingboxcenter : latitude, longitude, height 를 boundingboxcenter에 맟춤.
 	private String mapping_type;
+
 	// POINT(위도, 경도). 공간 검색 속도 때문에 altitude는 분리
 	private String location;
 	// 높이

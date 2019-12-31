@@ -9,7 +9,7 @@ import ndtp.domain.LayerGroup;
 @Repository
 public interface LayerGroupMapper {
 	/**
-     * 레이어 그룹 목록 조회한다.
+     * 레이어 그룹 목록 조회
      * @return
      */
     List<LayerGroup> getListLayerGroup();
@@ -53,7 +53,7 @@ public interface LayerGroupMapper {
      * @param layerGroup
      * @return
      */
-    int insert(LayerGroup layerGroup);
+    int insertLayerGroup(LayerGroup layerGroup);
     
 //    /**
 //	 * 레이어 그룹의 하위 레이어 그룹 갯수를 수정한다.

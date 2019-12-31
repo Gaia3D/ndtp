@@ -94,9 +94,9 @@ public class LayerGroupServiceImpl implements LayerGroupService {
 	 * 레이어 그룹 등록
 	 */
 	@Transactional
-	public int insert(LayerGroup layerGroup) {
+	public int insertLayerGroup(LayerGroup layerGroup) {
 		// TODO 자식 존재 유무 부분은 나중에 추가 하자.
-		return layerGroupMapper.insert(layerGroup);
+		return layerGroupMapper.insertLayerGroup(layerGroup);
 	}
 	
 //	/**

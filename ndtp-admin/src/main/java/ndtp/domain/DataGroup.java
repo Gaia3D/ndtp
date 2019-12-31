@@ -29,6 +29,10 @@ public class DataGroup {
 	private String parentName;
 	// up : 위로, down : 아래로
 	private String updateType;
+	// 위도
+	private BigDecimal latitude;
+	// 경도
+	private BigDecimal longitude;
 	
 	/****** validator ********/
 	private String methodMode;
@@ -65,6 +69,10 @@ public class DataGroup {
 	private Boolean basic;
 	// true : 사용, false : 사용안함
 	private Boolean available;
+	
+	// 데이터 총 건수
+	private Integer dataCount;
+	
 	// POINT(위도, 경도). 공간 검색 속도 때문에 altitude는 분리
 	private String location;
 	// 높이

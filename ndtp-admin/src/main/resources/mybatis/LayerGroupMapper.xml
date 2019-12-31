@@ -28,8 +28,8 @@
 	</select>
 	
 	<!-- 레이어 그룹 등록 -->
-	<insert id="insert" parameterType="layerGroup">
-		/* insert */
+	<insert id="insertLayerGroup" parameterType="layerGroup">
+		/* insertLayerGroup */
 		<selectKey keyProperty="layerGroupId" resultType="int" order="BEFORE">
     		SELECT NEXTVAL('layer_group_seq')
   		</selectKey>

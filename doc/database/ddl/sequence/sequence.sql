@@ -14,7 +14,7 @@ drop sequence if exists user_device_seq;
 drop sequence if exists widget_seq;
 
 create sequence access_log_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
-create sequence data_group_seq increment 1 minvalue 1 maxvalue 999999999999 start 1 cache 1;
+create sequence data_group_seq increment 1 minvalue 1 maxvalue 999999999999 start 100 cache 1;
 create sequence data_info_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
 create sequence layer_seq increment 1 minvalue 1 maxvalue 999999999999 start 10000 cache 1;
 create sequence layer_group_seq increment 1 minvalue 1 maxvalue 999999999999 start 10000 cache 1;

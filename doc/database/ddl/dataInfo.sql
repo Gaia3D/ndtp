@@ -82,7 +82,7 @@ comment on column data_info.heading is 'heading';
 comment on column data_info.pitch is 'pitch';
 comment on column data_info.roll is 'roll';
 comment on column data_info.attributes is 'Data Control 속성';
-comment on column data_info.status is 'Data 상태. 0:사용중, 1:사용중지(관리자), 2:삭제(비표시)';
+comment on column data_info.status is '상태. 0:사용중, 1:사용중지(관리자), 2:삭제(비표시)';
 comment on column data_info.description is '설명';
 comment on column data_info.update_date is '수정일';
 comment on column data_info.insert_date is '등록일';

@@ -7,7 +7,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Layer 그룹 등록 | NDTP</title>
+	<title>데이터 그룹 등록 | NDTP</title>
 	<link rel="stylesheet" href="/css/${lang}/font/font.css" />
 	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
 	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
@@ -27,18 +27,27 @@
 						<div class="input-header row">
 							<div class="content-desc u-pull-right"><span class="icon-glyph glyph-emark-dot color-warning"></span><spring:message code='check'/></div>
 						</div>
-						<form:form id="layerGroup" modelAttribute="layerGroup" method="post" onsubmit="return false;">
+						<form:form id="dataGroup" modelAttribute="dataGroup" method="post" onsubmit="return false;">
 						<table class="input-table scope-row">
 							<col class="col-label l" />
 							<col class="col-input" />
 							<tr>
 								<th class="col-label" scope="row">
-									<form:label path="layerGroupName">Layer 그룹명</form:label>
+									<form:label path="dataGroupName">데이터 그룹명</form:label>
 									<span class="icon-glyph glyph-emark-dot color-warning"></span>
 								</th>
 								<td class="col-input">
-									<form:input path="layerGroupName" cssClass="l" />
-									<form:errors path="layerGroupName" cssClass="error" />
+									<form:input path="dataGroupName" cssClass="l" />
+									<form:errors path="dataGroupName" cssClass="error" />
+								</td>
+							</tr>
+							<tr>
+								<th class="col-label" scope="row">
+									<form:label path="dataGroupKey">데이터 그룹 Key</form:label>
+								</th>
+								<td class="col-input">
+									<form:input path="dataGroupKey" cssClass="l" />
+									<form:errors path="dataGroupKey" cssClass="error" />
 								</td>
 							</tr>
 							<tr>
@@ -49,12 +58,47 @@
 								<td class="col-input">
 									<form:hidden path="parent" />
 		 							<form:input path="parentName" cssClass="l" readonly="true" />
-									<input type="button" id="layerGroupButtion" value="상위 그룹 선택" />
+									<input type="button" id="dataGroupButtion" value="상위 그룹 선택" />
+								</td>
+							</tr>
+							<tr>
+								<th class="col-label" scope="row">
+									<form:label path="dataGroupPath">Layer 그룹 경로</form:label>
+								</th>
+								<td class="col-input">
+									<form:input path="dataGroupPath" cssClass="l" />
+									<form:errors path="dataGroupPath" cssClass="error" />
+								</td>
+							</tr>
+							<tr>
+			                    <th class="col-label" scope="row">
+			                        <form:label path="sharedType">공유 타입</form:label>
+			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
+			                    </th>
+			                    <td class="col-input">
+			                        <select name="sharedType">
+										<option value="common">공통</option>
+										<option value="public">공개</option>
+										<option value="private">개인</option>
+										<option value="group">그룹</option>
+									</select>
+			                    </td>
+			                </tr>
+			                <tr>
+								<th class="col-label l" scope="row">
+									기본 여부
+									<span class="icon-glyph glyph-emark-dot color-warning"></span>
+								</th>
+								<td class="col-input radio-set">
+									<input type="radio" id="basicTrue" name="basic" value="true" checked>
+									<label for="basicTrue">기본</label>
+									<input type="radio" id="basicFalse" name="basic" value="false">
+									<label for="basicFalse">선택</label>
 								</td>
 							</tr>
 							<tr>
 								<th class="col-label l" scope="row">
-									<span>사용여부</span>
+									사용 여부
 									<span class="icon-glyph glyph-emark-dot color-warning"></span>
 								</th>
 								<td class="col-input radio-set">
@@ -65,17 +109,51 @@
 								</td>
 							</tr>
 							<tr>
-								<th class="col-label l" scope="row"><form:label path="description"><spring:message code='description'/></form:label></th>
+								<th class="col-label" scope="row">
+									<form:label path="latitude">위도</form:label>
+								</th>
 								<td class="col-input">
-									<form:input path="description" cssClass="xl" />
-									<form:errors path="description" cssClass="error" />
+									<form:input path="latitude" cssClass="m" />
+									<input type="button" id="mapButtion" value="지도에서 찾기" />
+									<form:errors path="latitude" cssClass="error" />
 								</td>
+							</tr>
+							<tr>
+								<th class="col-label" scope="row">
+									<form:label path="longitude">경도</form:label>
+								</th>
+								<td class="col-input">
+									<form:input path="longitude" cssClass="m" />
+									<form:errors path="longitude" cssClass="error" />
+								</td>
+							</tr>
+							<tr>
+								<th class="col-label" scope="row">
+									<form:label path="altitude">높이</form:label>
+								</th>
+								<td class="col-input">
+									<form:input path="altitude" cssClass="m" />
+									<form:errors path="altitude" cssClass="error" />
+								</td>
+							</tr>
+							<tr>
+								<th class="col-label" scope="row">
+									<form:label path="duration">이동시간</form:label>
+								</th>
+								<td class="col-input">
+									<form:input path="duration" cssClass="s" />&nbsp;&nbsp;ms
+									<form:errors path="duration" cssClass="error" />
+								</td>
+							</tr>
+							<tr>
+								<th class="col-label l" scope="row"><form:label path="description"><spring:message code='description'/></form:label></th>
+								<td class="col-input"><form:input path="description" cssClass="xl" /></td>
 							</tr>
 						</table>
 						<div class="button-group">
 							<div class="center-buttons">
-								<input type="submit" value="<spring:message code='save'/>" onclick="insertLayerGroup();"/>
-								<a href="/layer/list-group" class="button">목록</a>
+								<input type="submit" value="<spring:message code='save'/>" onclick="insertDataGroup();"/>
+								<a href="/data/list-group" class="button">목록</a>
 							</div>
 						</div>
 						</form:form>
@@ -87,7 +165,7 @@
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
 	
 	<!-- Dialog -->
-	<div id="layerGroupDialog" class="dialog">
+	<div id="dataGroupDialog" class="dialog">
 		<table class="list-table scope-col">
 			<col class="col-number" />
 			<col class="col-name" />
@@ -99,32 +177,32 @@
 			<thead>
 				<tr>
 					<th scope="col" class="col-number">Depth</th>
-					<th scope="col" class="col-name">Layer 그룹명</th>
+					<th scope="col" class="col-name">데이터 그룹명</th>
 					<th scope="col" class="col-toggle">사용 여부</th>
-					<th scope="col" class="col-toggle">사용자 아이디</th>
+					<th scope="col" class="col-toggle">공유 유형</th>
 					<th scope="col" class="col-toggle">설명</th>
 					<th scope="col" class="col-date">등록일</th>
 					<th scope="col" class="col-date">선택</th>
 				</tr>
 			</thead>
 			<tbody>
-<c:if test="${empty layerGroupList }">
+<c:if test="${empty dataGroupList }">
 			<tr>
-				<td colspan="7" class="col-none">Layer 그룹이 존재하지 않습니다.</td>
+				<td colspan="7" class="col-none">데이터 그룹이 존재하지 않습니다.</td>
 			</tr>
 </c:if>								
-<c:if test="${!empty layerGroupList }">
+<c:if test="${!empty dataGroupList }">
 	<c:set var="paddingLeftValue" value="0" />
-	<c:forEach var="layerGroup" items="${layerGroupList}" varStatus="status">
-		<c:if test="${layerGroup.depth eq '1' }">
+	<c:forEach var="dataGroup" items="${dataGroupList}" varStatus="status">
+		<c:if test="${dataGroup.depth eq '1' }">
             <c:set var="depthClass" value="oneDepthClass" />
             <c:set var="paddingLeftValue" value="0px" />
         </c:if>
-        <c:if test="${layerGroup.depth eq '2' }">
+        <c:if test="${dataGroup.depth eq '2' }">
             <c:set var="depthClass" value="twoDepthClass" />
             <c:set var="paddingLeftValue" value="40px" />
         </c:if>
-        <c:if test="${layerGroup.depth eq '3' }">
+        <c:if test="${dataGroup.depth eq '3' }">
             <c:set var="depthClass" value="threeDepthClass" />
             <c:set var="paddingLeftValue" value="80px" />
         </c:if>
@@ -132,27 +210,27 @@
 			<tr class="${depthClass } ${depthParentClass} ${ancestorClass }" style="${depthStyleDisplay}">
 				<td class="col-key" style="text-align: left;" nowrap="nowrap">
 					<span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"></span> 
-					${layerGroup.depth }
+					${dataGroup.depth }
 				</td>
 				<td class="col-name">
-					${layerGroup.layerGroupName }
+					${dataGroup.dataGroupName }
 				</td>
 				<td class="col-type">
-        <c:if test="${layerGroup.available eq 'true' }">
+        <c:if test="${dataGroup.available eq 'true' }">
                 	사용
         </c:if>
-        <c:if test="${layerGroup.available eq 'false' }">
+        <c:if test="${dataGroup.available eq 'false' }">
         			미사용
         </c:if>
 			    </td>
-			    <td class="col-key">${layerGroup.userId }</td>
-			    <td class="col-key">${layerGroup.description }</td>
+			    <td class="col-key">${dataGroup.sharedType }</td>
+			    <td class="col-key">${dataGroup.description }</td>
 			    <td class="col-date">
-			    	<fmt:parseDate value="${layerGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
+			    	<fmt:parseDate value="${dataGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
 					<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
 			    </td>
 			    <td class="col-toggle">
-			    	<a href="#" onclick="confirmParent('${layerGroup.layerGroupId}', '${layerGroup.layerGroupName}'); return false;">확인</a></td>
+			    	<a href="#" onclick="confirmParent('${dataGroup.dataGroupId}', '${dataGroup.dataGroupName}'); return false;">확인</a></td>
 			</tr>	
 	</c:forEach>
 </c:if>
@@ -174,29 +252,29 @@
 	
 	function validate() {
 		var number = /^[0-9]+$/;
-		if ($("#layerGroupName").val() === null || $("#layerGroupName").val() === "") {
-			alert("레이어 그룹명을 입력해 주세요.");
-			$("#layerGroupName").focus();
+		if ($("#dataGroupName").val() === null || $("#dataGroupName").val() === "") {
+			alert("데이터 그룹명을 입력해 주세요.");
+			$("#dataGroupName").focus();
 			return false;
 		}
 		if($("#parent").val() === null || $("#parent").val() === "" || !number.test($("#parent").val())) {
-			alert("상위 레이어 그룹을 선택해 주세요.");
+			alert("상위 데이터 그룹을 선택해 주세요.");
 			$("#parent").focus();
 			return false;
 		}
 	}
 	
 	// 저장
-	var insertLayerGroupFlag = true;
-	function insertLayerGroup() {
+	var insertDataGroupFlag = true;
+	function insertDataGroup() {
 		if (validate() == false) {
 			return false;
 		}
-		if(insertLayerGroupFlag) {
-			insertLayerGroupFlag = false;
-			var formData = $("#layerGroup").serialize();		
+		if(insertDataGroupFlag) {
+			insertDataGroupFlag = false;
+			var formData = $("#dataGroup").serialize();		
 			$.ajax({
-				url: "/layer/insert-group",
+				url: "/data/insert-group",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 		        data: formData,
@@ -208,11 +286,11 @@
 						alert(JS_MESSAGE[msg.errorCode]);
 						console.log("---- " + msg.message);
 					}
-					insertLayerGroupFlag = true;
+					insertDataGroupFlag = true;
 				},
 				error:function(request, status, error){
 			        alert(JS_MESSAGE["ajax.error.message"]);
-			        insertLayerGroupFlag = true;
+			        insertDataGroupFlag = true;
 				}
 			});
 		} else {
@@ -221,7 +299,7 @@
 		}
 	}
 	
-	var layerGroupDialog = $( ".dialog" ).dialog({
+	var dataGroupDialog = $( ".dialog" ).dialog({
 		autoOpen: false,
 		height: 600,
 		width: 1200,
@@ -231,22 +309,22 @@
 	});
 	
 	// 상위 Layer Group 찾기
-	$( "#layerGroupButtion" ).on( "click", function() {
-		layerGroupDialog.dialog( "open" );
-		layerGroupDialog.dialog( "option", "title", "Layer 그룹 선택");
+	$( "#dataGroupButtion" ).on( "click", function() {
+		dataGroupDialog.dialog( "open" );
+		dataGroupDialog.dialog( "option", "title", "데이터 그룹 선택");
 	});
 	
 	// 상위 Node
 	function confirmParent(parent, parentName) {
 		$("#parent").val(parent);
 		$("#parentName").val(parentName);
-		layerGroupDialog.dialog( "close" );
+		dataGroupDialog.dialog( "close" );
 	}
 	
 	$( "#rootParentSelect" ).on( "click", function() {
 		$("#parent").val(0);
-		$("#parentName").val("${layerGroup.parentName}");
-		layerGroupDialog.dialog( "close" );
+		$("#parentName").val("${dataGroup.parentName}");
+		dataGroupDialog.dialog( "close" );
 	});
 </script>
 </body>

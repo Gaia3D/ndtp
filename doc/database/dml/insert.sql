@@ -19,12 +19,19 @@ values
 	(21, '0', '1', '사용자 그룹', 'USER', 0, 2, 2, 1, '/user/list-group', null, null, 'glyph-users', 'Y', 'Y', 'Y'),
 	(22, '0', '1', '사용자 목록', 'USER', 0, 2, 2, 2, '/user/list', null, null, 'glyph-users', 'Y', 'Y', 'Y'),
 	(23, '0', '1', '사용자 등록', 'USER', 0, 2, 2, 3, '/user/input', null, null, 'glyph-users', 'Y', 'Y', 'Y'),
-	(24, '0', '1', '사용자 비밀번호 변경', 'USER', 0, 2, 2, 4, '/user/modify-password', '/user/list-user.do', null, 'glyph-users', 'N', 'Y', 'N'),
-	(25, '0', '1', '사용자 비밀번호 변경', 'USER', 0, 2, 2, 5, '/user/update-password', '/user/list-user.do', null, 'glyph-users', 'N', 'Y', 'N'),
-	(26, '0', '1', '사용자 정보 수정', 'USER', 0, 2, 2, 6, '/user/modify', '/user/list-user.do', null, 'glyph-users', 'N', 'Y', 'N'),
-	(27, '0', '1', '사용자 상세 정보', 'USER', 0, 2, 2, 7, '/user/detail', '/user/list-user.do', null, 'glyph-users', 'N', 'Y', 'N'),
-	(3, '0', '1', '데이터', 'DATA', 0, 0, 1, 3, '/data/list', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
-	(31, '0', '1', '데이터', 'DATA', 0, 3, 2, 1, '/data/list', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
+	(24, '0', '1', '사용자 비밀번호 변경', 'USER', 0, 2, 2, 4, '/user/modify-password', '/user/list-user', null, 'glyph-users', 'N', 'Y', 'N'),
+	(25, '0', '1', '사용자 비밀번호 변경', 'USER', 0, 2, 2, 5, '/user/update-password', '/user/list-user', null, 'glyph-users', 'N', 'Y', 'N'),
+	(26, '0', '1', '사용자 정보 수정', 'USER', 0, 2, 2, 6, '/user/modify', '/user/list-user', null, 'glyph-users', 'N', 'Y', 'N'),
+	(27, '0', '1', '사용자 상세 정보', 'USER', 0, 2, 2, 7, '/user/detail', '/user/list-user', null, 'glyph-users', 'N', 'Y', 'N'),
+	(3, '0', '1', '데이터', 'DATA', 0, 0, 1, 3, '/data/list-group', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
+	(31, '0', '1', '데이터 그룹', 'DATA', 0, 3, 2, 1, '/data/list-group', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
+	(32, '0', '1', '데이터 그룹 등록', 'DATA', 0, 3, 2, 2, '/data/input-group', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
+	(33, '0', '1', '사용자 데이터 그룹', 'DATA', 0, 3, 2, 3, '/data/list-user-group', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
+	(34, '0', '1', '데이터 목록', 'DATA', 0, 3, 2, 4, '/data/list', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
+	(35, '0', '1', '데이터 등록', 'DATA', 0, 3, 2, 5, '/data/input', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
+	(36, '0', '1', '데이터 변환', 'DATA', 0, 3, 2, 6, '/data/list-upload', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
+	(37, '0', '1', '데이터 변환 결과', 'DATA', 0, 3, 2, 7, '/data/convert-log', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
+	(38, '0', '1', '데이터 위치 변경 이력', 'DATA', 0, 3, 2, 8, '/data/list-data-log', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
 	(5, '0', '1', '레이어', 'LAYER', 0, 0, 1, 5, '/layer/list-group', null, null, 'glyph-check', 'Y', 'Y', 'Y'),
 	(51, '0', '1', '2D 레이어 그룹', 'LAYER', 0, 5, 2, 1, '/layer/list-group', null, null, 'glyph-check', 'Y', 'Y', 'Y'),
 	(52, '0', '1', '2D 레이어 그룹 등록', 'LAYER', 0, 5, 2, 2, '/layer/input-group', null, null, 'glyph-check', 'Y', 'Y', 'Y'),
@@ -38,7 +45,7 @@ values
 	(83, '0', '1', '사용자 메뉴', 'USER MENU', 0, 8, 2, 3, '/menu/user-menu', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
 	(84, '0', '1', '위젯', 'WIDGET', 0, 8, 2, 4, '/widget/modify', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
 	(85, '0', '1', '권한', 'ROLE', 0, 8, 2, 5, '/role/list', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
-	(87, '0', '1', '권한 수정', 'ROLE', 0, 8, 2, 6, '/role/modify', '/role/list-role.do', null, 'glyph-settings', 'N', 'Y', 'N');
+	(87, '0', '1', '권한 수정', 'ROLE', 0, 8, 2, 6, '/role/modify', '/role/list-role', null, 'glyph-settings', 'N', 'Y', 'N');
 	
 
 -- 사용자 그룹별 메뉴
@@ -55,6 +62,13 @@ insert into user_group_menu(user_group_menu_id, user_group_id, menu_id)
 		(27, 1, 27),
 		(3, 1, 3),
 		(31, 1, 31),
+		(32, 1, 32),
+		(33, 1, 33),
+		(34, 1, 34),
+		(35, 1, 35),
+		(36, 1, 36),
+		(37, 1, 37),
+		(38, 1, 38),
 		(5, 1, 5),
 		(51, 1, 51),
 		(52, 1, 52),
@@ -104,5 +118,22 @@ values
     
     (4, '[ADMIN] 사용자 페이지 SIGN IN 권한', 'USER_SIGNIN', '0', '0', 'Y', 'Y');
 	
-
+insert into data_group (data_group_id, data_group_name, data_group_key, 
+			data_group_path, shared_type, ancestor, parent, depth, view_order, basic, available)
+	values
+		(1, '기본', 'BASIC', '/basic', 'common', 1, 0, 1, 1, true, true);
+    
+    
 commit;
+
+
+
+
+
+
+
+
+
+
+
+

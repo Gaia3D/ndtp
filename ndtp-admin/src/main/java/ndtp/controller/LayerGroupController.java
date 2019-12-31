@@ -98,7 +98,7 @@ public class LayerGroupController {
 			
 			layerGroup.setUserId(userSession.getUserId());
 			
-			layerGroupService.insert(layerGroup);
+			layerGroupService.insertLayerGroup(layerGroup);
 		} catch (Exception e) {
 			e.printStackTrace();
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();

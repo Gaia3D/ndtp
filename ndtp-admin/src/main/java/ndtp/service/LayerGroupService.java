@@ -50,7 +50,7 @@ public interface LayerGroupService {
      * @param layerGroup
      * @return
      */
-    int insert(LayerGroup layerGroup);
+    int insertLayerGroup(LayerGroup layerGroup);
     
 //	/**
 //	 * 레이어 그룹의 하위 레이어 그룹 갯수를 수정한다.

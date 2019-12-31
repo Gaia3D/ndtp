@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ndtp.persistence.DataGroupMapper">
+
+	<!-- 데이터 그룹 목록 조회 -->
+	<select id="getListDataGroup" resultType="dataGroup">
+		/* getListLayerGroup */
+		WITH RECURSIVE data_group_tree (
+			data_group_id, data_group_name, data_group_key, data_group_path, shared_type, user_id, ancestor, parent, depth, view_order,
+			children, basic, available, data_count, location, altitude, duration, description, update_date, insert_date,
+			path, cycle
+		) AS (
+	        SELECT A.data_group_id, A.data_group_name, A.data_group_key, A.data_group_path, A.shared_type, A.user_id, A.ancestor, A.parent, A.depth, A.view_order,
+	        	A.children, A.basic, A.available, A.data_count, A.location, A.altitude, A.duration, A.description, A.update_date, A.insert_date,
+	        	ARRAY[A.view_order], false
+			FROM data_group A
+			WHERE A.parent = 0
+			<if test="available != null">
+				AND A.available = #{available}
+			</if>
+			UNION ALL
+	        SELECT A.data_group_id, A.data_group_name, A.data_group_key, A.data_group_path, A.shared_type, A.user_id, A.ancestor, A.parent, A.depth, A.view_order,
+	        	A.children, A.basic, A.available, A.data_count, A.location, A.altitude, A.duration, A.description, A.update_date, A.insert_date,
+	        	path || A.view_order, A.data_group_id = ANY(path)
+	        FROM data_group A, data_group_tree B
+	        WHERE A.parent = B.data_group_id AND not cycle
+		)
+	    SELECT data_group_id, data_group_name, data_group_key, data_group_path, shared_type, user_id, ancestor, parent, depth, view_order,
+	    	children, basic, available, data_count, location, altitude, duration, description, update_date, insert_date,
+	    	path
+	    FROM data_group_tree
+	    ORDER BY path
+	</select>
+	
+	<!-- 데이터 그룹 등록 -->
+	<insert id="insertDataGroup" parameterType="dataGroup">
+		/* insertDataGroup */
+		<selectKey keyProperty="dataGroupId" resultType="int" order="BEFORE">
+    		SELECT NEXTVAL('data_group_seq')
+  		</selectKey>
+		INSERT INTO data_group (
+			data_group_id, data_group_name, data_group_key, 
+			data_group_path, shared_type, user_id, ancestor, parent, depth, view_order, children, basic, available, data_count, 
+			<if test="location != null">
+			location,
+			</if>
+			altitude, duration, description
+		) VALUES (
+			#{dataGroupId}, #{dataGroupName},
+			<if test="dataGroupKey == null or dataGroupKey == ''">
+			#{dataGroupId},
+			</if>
+			<if test="dataGroupKey != null and dataGroupKey != ''">
+			#{dataGroupKey}, 
+			</if>
+			#{dataGroupPath}, #{sharedType}, #{userId},
+			(
+				SELECT COALESCE(MAX(ancestor), #{dataGroupId}) 
+				FROM data_group 
+				WHERE data_group_id = #{parent}
+					AND data_group_id != 0
+			),
+			#{parent},
+			(
+				SELECT COALESCE(MAX(depth),  0 ) + 1
+				FROM data_group 
+				WHERE data_group_id = #{parent}
+			),
+			(
+				SELECT COALESCE(MAX(view_order), 0) + 1
+				FROM data_group
+				WHERE parent = #{parent}
+			),
+			(
+				SELECT COUNT(*) 
+				FROM data_group
+				WHERE parent = #{dataGroupId}
+			),
+			#{basic}, #{available}, #{dataCount},
+			<if test="location != null">
+			ST_GeographyFromText(#{location}),
+			</if>
+			#{altitude}, #{duration}, trim(#{description})
+		)
+	</insert>
+	
+	<!-- 데이터 그룹 수정 -->
+	<update id="updateDataGroup" parameterType="dataGroup">
+		/* updateDataGroup */
+		UPDATE data_group
+		SET 
+			<if test="dataGroupName != null and dataGroupName != ''">
+			project_name = #{dataGroupName},
+			</if>
+			<if test="dataGroupKey != null and dataGroupKey != ''">
+			data_group_key = #{dataGroupKey},
+			</if>
+			<if test="dataGroupPath != null and dataGroupPath != ''">
+			data_group_path = #{dataGroupPath},
+			</if>
+			<if test="sharingType != null and sharingType != ''">
+			sharing_type = #{sharingType},
+			</if>
+			<if test="userId != null and userId != ''">
+			user_id = #{userId},
+			</if>
+			<if test="ancestor != null and ancestor lt 0">
+			ancestor = #{ancestor},
+			</if>
+			<if test="parent != null and parent lt 0">
+			parent = #{parent},
+			</if>
+			<if test="depth != null and depth lt 0">
+			depth = #{depth},
+			</if>
+			<if test="viewOrder != null and viewOrder lt 0">
+			view_order = #{viewOrder},
+			</if>
+			<if test="children != null and children lt 0">
+			children = #{children},
+			</if>
+			<if test="basic != null">
+			basic = #{basic},
+			</if>
+			<if test="available != null">
+			available = #{available},
+			</if>
+			<if test="dataCount != null and dataCount lt 0">
+			data_count = #{dataCount},
+			</if>
+			<if test="location != null">
+			location = ST_GeographyFromText(#{location}),
+			</if>
+			<if test="altitude != null">
+			altitude = #{altitude},
+			</if>
+			<if test="duration != null">
+			duration = #{duration},
+			</if>
+			<if test="description != null and description != ''">
+			description = #{description},
+			</if>
+			update_date = NOW()
+		WHERE data_group_id = #{dataGroupId}
+		<if test="userId != null and userId != ''">
+			AND user_id = #{userId}
+		</if>
+	</update>
+	
+	<!-- 데이터 그룹 삭제 -->
+	<delete id="deleteDataGroup" parameterType="dataGroup">
+		/* deleteDataGroup */
+		DELETE 
+		FROM data_group 
+		WHERE data_group_id = #{dataGroupId} 
+		<if test="userId != null and userId != ''">
+			AND user_id = #{userId}
+		</if> 
+	</delete>
+</mapper>
