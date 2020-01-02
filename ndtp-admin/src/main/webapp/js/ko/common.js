@@ -233,3 +233,13 @@ function changeLanguage(lang) {
 	}
 }
 
+//한글인지 검사
+function isHangul(value) {
+	var pattern_kor = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+	if( pattern_kor.test(value) ) {
+		return true
+	} else {
+		return false
+	}
+}
+

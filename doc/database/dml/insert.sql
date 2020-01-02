@@ -45,7 +45,8 @@ values
 	(83, '0', '1', '사용자 메뉴', 'USER MENU', 0, 8, 2, 3, '/menu/user-menu', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
 	(84, '0', '1', '위젯', 'WIDGET', 0, 8, 2, 4, '/widget/modify', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
 	(85, '0', '1', '권한', 'ROLE', 0, 8, 2, 5, '/role/list', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
-	(87, '0', '1', '권한 수정', 'ROLE', 0, 8, 2, 6, '/role/modify', '/role/list-role', null, 'glyph-settings', 'N', 'Y', 'N');
+	(86, '0', '1', '권한 수정', 'ROLE', 0, 8, 2, 6, '/role/modify', '/role/list', null, 'glyph-settings', 'N', 'Y', 'N'),
+	(87, '0', '1', '권한 삭제', 'ROLE', 0, 8, 2, 7, '/role/delete', '/role/list', null, 'glyph-settings', 'N', 'Y', 'N');
 	
 
 -- 사용자 그룹별 메뉴
@@ -82,6 +83,7 @@ insert into user_group_menu(user_group_menu_id, user_group_id, menu_id)
 		(83, 1, 83),
 		(84, 1, 84),
 		(85, 1, 85),
+		(86, 1, 86),
 		(87, 1, 87);
 		
 insert into user_group_role(user_group_role_id, user_group_id, role_id)
