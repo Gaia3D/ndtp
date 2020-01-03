@@ -14,18 +14,20 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.DataGroup;
 import ndtp.domain.Key;
-import ndtp.domain.LayerGroup;
 import ndtp.domain.Policy;
 import ndtp.domain.UserSession;
 import ndtp.service.DataGroupService;
-import ndtp.service.LayerGroupService;
 import ndtp.service.PolicyService;
 
 @Slf4j
@@ -36,6 +38,9 @@ public class DataGroupController {
 	@Autowired
 	private DataGroupService dataGroupService;
 
+	@Autowired
+	private ObjectMapper objectMapper;
+	
 	@Autowired
 	private PolicyService policyService;
 	
@@ -78,7 +83,7 @@ public class DataGroupController {
 	@ResponseBody
 	public Map<String, Object> insert(HttpServletRequest request, @Valid @ModelAttribute DataGroup dataGroup, BindingResult bindingResult) {
 		
-		log.info("@@@@@ insert dataGroup = {}", dataGroup);
+		log.info("@@@@@ insert-group dataGroup = {}", dataGroup);
 		
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
@@ -111,5 +116,83 @@ public class DataGroupController {
 		result.put("errorCode", errorCode);
 		result.put("message", message);
 		return result;
+	}
+	
+	/**
+	 * 사용자 그룹 트리 순서 수정, up, down
+	 * @param model
+	 * @return
+	 */
+	@PostMapping(value = "group/view-order/{dataGroupId}")
+	@ResponseBody
+	public Map<String, Object> moveUserGroup(HttpServletRequest request, @PathVariable Integer dataGroupId, @ModelAttribute DataGroup dataGroup) {
+		log.info("@@ dataGroup = {}", dataGroup);
+		
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		try {
+			dataGroup.setDataGroupId(dataGroupId);
+			
+			int updateCount = dataGroupService.updateDataGroupViewOrder(dataGroup);
+			if(updateCount == 0) {
+				statusCode = HttpStatus.BAD_REQUEST.value();
+				errorCode = "data.group.view-order.invalid";
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+		
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
+	}
+	
+	/**
+    * 지도에서 위치 찾기
+    * @param model
+    * @return
+    */
+    @GetMapping(value = "location-map")
+    public String locationMap(HttpServletRequest request, Model model) {
+
+        log.info("@@ locationMap");
+
+        Policy policy = policyService.getPolicy();
+        String policyJson = "";
+
+        try {
+            policyJson = objectMapper.writeValueAsString(policy);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        model.addAttribute("policy", policy);
+        model.addAttribute("policyJson", policyJson);
+
+        return "/data/location-map";
+    }
+    
+    /**
+	 * 데이터 그룹 삭제
+	 * @param dataGroupId
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "delete-data-group")
+	public String deleteData(@RequestParam("dataGroupId") Integer dataGroupId, Model model) {
+		
+		// TODO validation 체크 해야 함
+		DataGroup dataGroup = new DataGroup();
+		dataGroup.setDataGroupId(dataGroupId);
+		
+		dataGroupService.deleteDataGroup(dataGroup);
+		
+		return "redirect:/data/list-group";
 	}
 }

@@ -75,9 +75,27 @@ public class Policy {
  	
  	// Cesium ion token 발급. 기본 mago3D
  	private String geoCesiumIonToken;
+ 	
+ 	// 
+ 	@Builder.Default
+ 	private String geo_cesium_ion_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIyNmNjOWZkOC03NjdlLTRiZTktYWQ3NS1hNmQ0YjA1ZjIzYWEiLCJpZCI6Mzk5Miwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0NDYwNDQ3M30.AwvoVAuMRwjcMMJ9lEG2v4CPUp8gfltJqZARHgxGv_k";
+ 	
  	// view library. 기본 cesium
  	private String geoViewLibrary;
- 	// data 폴더. 기본 /data
+ 	
+ 	@Getter(AccessLevel.NONE)
+ 	@Setter(AccessLevel.NONE)
+ 	private String geo_view_library;
+ 	
+ 	public String getGeo_view_library() {
+		return geoViewLibrary;
+	}
+
+	public void setGeo_view_library(String geo_view_library) {
+		this.geo_view_library = geoViewLibrary;
+	}
+
+	// data 폴더. 기본 /data
  	private String geoDataPath;
  	// 초기 로딩 프로젝트
  	@Getter(AccessLevel.NONE)
@@ -189,6 +207,10 @@ public class Policy {
  	
  	// 콜백 function 사용유무. 기본값 false
  	private String geoCallbackEnable;
+ 	
+ 	@Builder.Default
+ 	private String geo_callback_enable = "true";
+ 	
  	// api 처리 결과 callback function 이름
  	private String geoCallbackApiresult;
  	// data info 표시 callback function 이름
@@ -204,7 +226,20 @@ public class Policy {
  	// mouse click 시 위치 정보 callback function 이름
  	private String geoCallbackClickposition;
  	
- 	// 알림 서비스 사용 유무. Y : 사용, N : 미사용(기본값)
+ 	@Getter(AccessLevel.NONE)
+ 	@Setter(AccessLevel.NONE)
+ 	@Builder.Default
+ 	private String geo_callback_clickposition = "showClickPosition";
+ 	
+ 	public String getGeo_callback_clickposition() {
+		return geo_callback_clickposition;
+	}
+
+	public void setGeo_callback_clickposition(String geo_callback_clickposition) {
+		this.geo_callback_clickposition = geo_callback_clickposition;
+	}
+
+	// 알림 서비스 사용 유무. Y : 사용, N : 미사용(기본값)
  	private String noticeServiceYn;
  	// 알림 발송 매체. 0 : SMS(기본값), 1 : 이메일, 2 : 메신저
  	private String noticeServiceSendType;

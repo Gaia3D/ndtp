@@ -56,6 +56,8 @@ public class DataGroup {
 	private String userId;
 	private String userName;
 	
+	// 조상
+	private Integer ancestor;
 	// 부모
 	private Integer parent;
 	// 깊이

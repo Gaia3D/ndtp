@@ -9,6 +9,6 @@ public enum RoleKey {
 	ADMIN_LAYER_MANAGE,
 	
 	// 사용자 페이지 sign int
-	USER_SIGNIN,
+	USER_SIGNIN;
 	
 }

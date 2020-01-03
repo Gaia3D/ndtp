@@ -2,6 +2,8 @@ package ndtp.controller;
 
 import java.util.List;
 
+import org.apache.http.HttpStatus;
+
 import ndtp.domain.CacheManager;
 import ndtp.support.RoleSupport;
 
@@ -22,7 +24,7 @@ public interface AuthorizationController {
 		int statusCode  = 0;
 		List<String> userGroupRoleKeyList = CacheManager.getUserGroupRoleKeyList(userGroupId);
         if(!RoleSupport.isUserGroupRoleValid(userGroupRoleKeyList, roleKey)) {
-			statusCode = 403;
+			statusCode = HttpStatus.SC_FORBIDDEN;
 		}
         
 		return statusCode;

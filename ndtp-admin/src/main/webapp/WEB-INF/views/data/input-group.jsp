@@ -63,7 +63,7 @@
 							</tr>
 							<tr>
 								<th class="col-label" scope="row">
-									<form:label path="dataGroupPath">Layer 그룹 경로</form:label>
+									<form:label path="dataGroupPath">데이터 그룹 경로</form:label>
 								</th>
 								<td class="col-input">
 									<form:input path="dataGroupPath" cssClass="l" />
@@ -167,7 +167,6 @@
 	<!-- Dialog -->
 	<div id="dataGroupDialog" class="dialog">
 		<table class="list-table scope-col">
-			<col class="col-number" />
 			<col class="col-name" />
 			<col class="col-toggle" />
 			<col class="col-id" />
@@ -176,7 +175,6 @@
 			<col class="col-toggle" />
 			<thead>
 				<tr>
-					<th scope="col" class="col-number">Depth</th>
 					<th scope="col" class="col-name">데이터 그룹명</th>
 					<th scope="col" class="col-toggle">사용 여부</th>
 					<th scope="col" class="col-toggle">공유 유형</th>
@@ -188,7 +186,7 @@
 			<tbody>
 <c:if test="${empty dataGroupList }">
 			<tr>
-				<td colspan="7" class="col-none">데이터 그룹이 존재하지 않습니다.</td>
+				<td colspan="6" class="col-none">데이터 그룹이 존재하지 않습니다.</td>
 			</tr>
 </c:if>								
 <c:if test="${!empty dataGroupList }">
@@ -208,11 +206,8 @@
         </c:if>
 			
 			<tr class="${depthClass } ${depthParentClass} ${ancestorClass }" style="${depthStyleDisplay}">
-				<td class="col-key" style="text-align: left;" nowrap="nowrap">
+				<td class="col-name" style="text-align: left;" nowrap="nowrap">
 					<span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"></span> 
-					${dataGroup.depth }
-				</td>
-				<td class="col-name">
 					${dataGroup.dataGroupName }
 				</td>
 				<td class="col-type">
@@ -325,6 +320,17 @@
 		$("#parent").val(0);
 		$("#parentName").val("${dataGroup.parentName}");
 		dataGroupDialog.dialog( "close" );
+	});
+	
+	// 지도에서 찾기
+	$( "#mapButtion" ).on( "click", function() {
+		var url = "/data/location-map";
+		var width = 800;
+		var height = 700;
+
+        var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height
+                + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
+        //popWin.document.title = layerName;
 	});
 </script>
 </body>

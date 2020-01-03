@@ -30,7 +30,7 @@
 			status = #{status},
 			update_date = NOW(),
 		</if>
-		<if test="failSigninCount != null and failSigninCount > 0">
+		<if test="failSigninCount != null and failSigninCount gte 0">
 			fail_signin_count = #{failSigninCount},
 		</if>
 			last_signin_date = NOW()

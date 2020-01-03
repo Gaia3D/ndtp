@@ -11,6 +11,13 @@ public interface DataGroupService {
      * @return
      */
     List<DataGroup> getListDataGroup();
+    
+    /**
+     * 데이터 정보 조회
+     * @param dataGroup
+     * @return
+     */
+    DataGroup getDataGroup(DataGroup dataGroup);
 
     /**
      * 데이터 그룹 등록
@@ -25,11 +32,18 @@ public interface DataGroupService {
 	 * @return
 	 */
 	int updateDataGroup(DataGroup dataGroup);
+	
+	/**
+	 * 데이터 그룹 표시 순서 수정. UP, DOWN
+	 * @param dataGroup
+	 * @return
+	 */
+	int updateDataGroupViewOrder(DataGroup dataGroup);
     
 	/**
 	 * 데이터 그룹 삭제
-	 * @param dataGroupId
+	 * @param dataGroup
 	 * @return
 	 */
-	int deleteDataGroup(int dataGroupId);
+	int deleteDataGroup(DataGroup dataGroup);
 }

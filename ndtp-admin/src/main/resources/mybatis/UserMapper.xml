@@ -9,7 +9,7 @@
 		SELECT COUNT(user_id) 
 		FROM user_info
 		<trim prefix="WHERE" prefixOverrides="AND">
-			<if test="userGroupId != null and userGroupId > 0">
+			<if test="userGroupId != null and userGroupId gt 0">
 			user_group_id = #{userGroupId}
 			</if>
 			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
@@ -47,7 +47,7 @@
 			SELECT *
 			FROM user_info
 			<trim prefix="WHERE" prefixOverrides="AND">
-				<if test="userGroupId != null and userGroupId > 0">
+				<if test="userGroupId != null and userGroupId gt 0">
 				user_group_id = #{userGroupId}
 				</if>
 				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
@@ -111,7 +111,7 @@
 		/* updateUser */
 		UPDATE user_info
 		SET 
-			<if test="userGroupId != null and userGroupId > 0">
+			<if test="userGroupId != null and userGroupId gt 0">
 			user_group_id = #{userGroupId},
 			</if>
 			<if test="userName != null and userName != ''">
@@ -143,7 +143,7 @@
 			last_signin_date = NOW(),
 				</if>
 			</if>
-			<if test="failSigninCount != null and failSigninCount >= 0">
+			<if test="failSigninCount != null and failSigninCount gte 0">
 			fail_signin_count = #{failSigninCount},
 			</if>
 			update_date = NOW()

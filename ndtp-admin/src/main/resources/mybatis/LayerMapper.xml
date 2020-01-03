@@ -9,7 +9,7 @@
         SELECT COUNT(layer_id) 
         FROM layer
 		<trim prefix="WHERE" prefixOverrides="AND">
-			<if test="layerGroupId != null and layerGroupId > 0">
+			<if test="layerGroupId != null and layerGroupId gt 0">
 			layer_group_id = #{layerGroupId}
 			</if>
 			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
@@ -37,7 +37,7 @@
         SELECT A.*, B.layer_group_name
         FROM layer A, layer_group B
         WHERE A.layer_group_id = B.layer_group_id
-        	<if test="layerGroupId != null and layerGroupId > 0">
+        	<if test="layerGroupId != null and layerGroupId gt 0">
 			AND A.layer_group_id = #{layerGroupId}
 			</if>
 			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">

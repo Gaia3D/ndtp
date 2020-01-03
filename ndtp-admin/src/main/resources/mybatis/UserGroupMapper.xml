@@ -149,7 +149,7 @@
 			B.role_key, B.role_name, B.role_type, B.use_yn, B.description
 		FROM user_group_role A, role B
 		WHERE A.role_id = B.role_id
-			<if test="userGroupId != null and userGroupId > 0">
+			<if test="userGroupId != null and userGroupId gt 0">
 			AND A.user_group_id = #{userGroupId}
 			</if>
 			<if test="roleType != null and roleType != ''">
@@ -163,7 +163,7 @@
 		SELECT B.role_key
 		FROM user_group_role A, role B
 		WHERE A.role_id = B.role_id
-			<if test="userGroupId != null and userGroupId > 0">
+			<if test="userGroupId != null and userGroupId gt 0">
 			AND A.user_group_id = #{userGroupId}
 			</if>
 			<if test="roleType != null and roleType != ''">

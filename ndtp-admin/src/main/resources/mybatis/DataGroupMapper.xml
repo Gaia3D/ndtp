@@ -33,6 +33,38 @@
 	    ORDER BY path
 	</select>
 	
+	<!-- 데이터 그룹 정보 -->
+	<select id="getDataGroup" parameterType="dataGroup" resultType="dataGroup">
+		/* getDataGroup */
+		SELECT * 
+		FROM data_group 
+		WHERE data_group_id = #{dataGroupId} 
+		<if test="userId != null and userId != ''">
+			AND user_id = #{userId}
+		</if> 
+	</select>
+	
+	<!-- 부모와 순서를 가지고 데이터 그룹 정보를 취득 -->
+	<select id="getDataGroupByParentAndViewOrder" parameterType="dataGroup" resultType="dataGroup">
+		/* getUserGroupByParentAndViewOrder */
+		SELECT * 
+		FROM data_group 
+		WHERE parent = #{parent} 
+		<if test="updateType == 'UP'.toString()">
+			<![CDATA[
+			AND view_order < #{viewOrder}
+			]]>
+		ORDER BY view_order DESC 
+		</if>
+		<if test="updateType == 'DOWN'.toString()">
+			<![CDATA[
+			AND view_order > #{viewOrder}
+			]]>
+		ORDER BY view_order 
+		</if>
+		LIMIT 1 
+	</select>
+	
 	<!-- 데이터 그룹 등록 -->
 	<insert id="insertDataGroup" parameterType="dataGroup">
 		/* insertDataGroup */
@@ -91,7 +123,7 @@
 		UPDATE data_group
 		SET 
 			<if test="dataGroupName != null and dataGroupName != ''">
-			project_name = #{dataGroupName},
+			data_group_name = #{dataGroupName},
 			</if>
 			<if test="dataGroupKey != null and dataGroupKey != ''">
 			data_group_key = #{dataGroupKey},
@@ -99,25 +131,25 @@
 			<if test="dataGroupPath != null and dataGroupPath != ''">
 			data_group_path = #{dataGroupPath},
 			</if>
-			<if test="sharingType != null and sharingType != ''">
-			sharing_type = #{sharingType},
+			<if test="sharedType != null and sharedType != ''">
+			shared_type = #{sharedType},
 			</if>
 			<if test="userId != null and userId != ''">
 			user_id = #{userId},
 			</if>
-			<if test="ancestor != null and ancestor lt 0">
+			<if test="ancestor != null and ancestor gt 0">
 			ancestor = #{ancestor},
 			</if>
-			<if test="parent != null and parent lt 0">
+			<if test="parent != null and parent gt 0">
 			parent = #{parent},
 			</if>
-			<if test="depth != null and depth lt 0">
+			<if test="depth != null and depth gt 0">
 			depth = #{depth},
 			</if>
-			<if test="viewOrder != null and viewOrder lt 0">
+			<if test="viewOrder != null and viewOrder gt 0">
 			view_order = #{viewOrder},
 			</if>
-			<if test="children != null and children lt 0">
+			<if test="children != null and children gte 0">
 			children = #{children},
 			</if>
 			<if test="basic != null">
@@ -126,7 +158,7 @@
 			<if test="available != null">
 			available = #{available},
 			</if>
-			<if test="dataCount != null and dataCount lt 0">
+			<if test="dataCount != null and dataCount gte 0">
 			data_count = #{dataCount},
 			</if>
 			<if test="location != null">
@@ -148,12 +180,42 @@
 		</if>
 	</update>
 	
+	<!-- 데이터 그룹 순서 수정 -->
+	<update id="updateDataGroupViewOrder" parameterType="dataGroup">
+		/* updateDataGroupViewOrder */
+		UPDATE data_group 
+		SET view_order = #{viewOrder} 
+		WHERE data_group_id = #{dataGroupId}
+	</update>
+	
 	<!-- 데이터 그룹 삭제 -->
 	<delete id="deleteDataGroup" parameterType="dataGroup">
 		/* deleteDataGroup */
 		DELETE 
 		FROM data_group 
 		WHERE data_group_id = #{dataGroupId} 
+		<if test="userId != null and userId != ''">
+			AND user_id = #{userId}
+		</if> 
+	</delete>
+	
+	<!-- ancestor를 이용하여 데이터 그룹 삭제 -->
+	<delete id="deleteDataGroupByAncestor" parameterType="dataGroup">
+		/* deleteDataGroupByAncestor */
+		DELETE 
+		FROM data_group 
+		WHERE ancestor = #{ancestor} 
+		<if test="userId != null and userId != ''">
+			AND user_id = #{userId}
+		</if> 
+	</delete>
+	
+	<!-- parent를 이용하여 데이터 그룹 삭제 -->
+	<delete id="deleteDataGroupByParent" parameterType="dataGroup">
+		/* deleteDataGroupByParent */
+		DELETE 
+		FROM data_group 
+		WHERE parent = #{parent} 
 		<if test="userId != null and userId != ''">
 			AND user_id = #{userId}
 		</if> 
