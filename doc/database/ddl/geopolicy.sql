@@ -56,6 +56,21 @@ create table geopolicy(
 	ssao_radius							varchar(20)			default '0.15',
 	
 	insert_date							timestamp with time zone			default now(),
+	
+	max_partitions_lod0 						integer			default 4,
+	max_partitions_lod1 						integer			default 2,
+	max_partitions_lod2_or_less": 					integer			default 1,
+	max_ratio_points_dist_0m 						integer			default 10,
+	max_ratio_points_dist_100m 					integer			default 120,
+	max_ratio_points_dist_200m 					integer			default 240,
+	max_ratio_points_dist_400m 					integer			default 480,
+	max_ratio_points_dist_800m 					integer			default 960,
+	max_ratio_points_dist_1600m 					integer			default 1920,
+	max_ratio_points_dist_over_1600m 				integer			default 3840,
+	max_point_size_for_pc						numeric(4,1)		default 40.0,
+	min_point_size_for_pc						numeric(4,1)		default 3.0,
+	pendent_point_size_for_pc					numeric(4,1)		default 60.0,
+	
 	constraint geopolicy_pk primary key (geopolicy_id)	
 );
 
@@ -110,6 +125,20 @@ comment on column geopolicy.specular_reflection_coef is '표면의 반질거림 
 comment on column geopolicy.ambient_color is '다이렉트 빛이 아닌 반사율 RGB, 콤마로 연결';
 comment on column geopolicy.specular_color is '표면의 반질거림 색깔. RGB, 콤마로 연결';
 comment on column geopolicy.ssao_radius is '그림자 반경';
+
+comment on column geopolicy.max_partitions_lod0 is 'LOD0일시 PointCloud 데이터 파티션 개수. 기본값 4';
+comment on column geopolicy.max_partitions_lod1 is 'LOD1일시 PointCloud 데이터 파티션 개수. 기본값 2';
+comment on column geopolicy.max_partitions_lod2_or_less is 'LOD2 이상 일시 PointCloud 데이터 파티션 개수. 기본값 1';
+comment on column geopolicy.max_ratio_points_dist_0m is '카메라와의 거리가 10미터 미만일때, PointCloud 점의 갯수의 비율의 분모, 기본값 10';
+comment on column geopolicy.max_ratio_points_dist_100m is '카메라와의 거리가 100미터 미만일때, PointCloud 점의 갯수의 비율의 분모, 기본값 120';
+comment on column geopolicy.max_ratio_points_dist_200m is '카메라와의 거리가 200미터 미만일때, PointCloud 점의 갯수의 비율의 분모, 기본값 240';
+comment on column geopolicy.max_ratio_points_dist_400m is '카메라와의 거리가 400미터 미만일때, PointCloud 점의 갯수의 비율의 분모, 기본값 480';
+comment on column geopolicy.max_ratio_points_dist_800m is '카메라와의 거리가 800미터 미만일때, PointCloud 점의 갯수의 비율의 분모, 기본값 960';
+comment on column geopolicy.max_ratio_points_dist_1600m is '카메라와의 거리가 1600미터 미만일때, PointCloud 점의 갯수의 비율의 분모, 기본값 1920';
+comment on column geopolicy.max_ratio_points_dist_over_1600m is '카메라와의 거리가 1600미터 이상일때, PointCloud 점의 갯수의 비율의 분모, 기본값 3840';
+comment on column geopolicy.max_point_size_for_pc is 'PointCloud 점의 최대 크기. 기본값 40.0';
+comment on column geopolicy.min_point_size_for_pc is 'PointCloud 점의 최소 크기. 기본값 3.0';
+comment on column geopolicy.pendent_point_size_for_pc is 'PointCloud 점의 크기 보정치. 높아질수록 점이 커짐. 기본값 60.0';
 
 comment on column geopolicy.insert_date is '등록일';
 
