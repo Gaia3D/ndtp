@@ -60,7 +60,7 @@ create table geopolicy(
 	max_partitions_lod0 						integer			default 4,
 	max_partitions_lod1 						integer			default 2,
 	max_partitions_lod2_or_less": 					integer			default 1,
-	max_ratio_points_dist_0m 						integer			default 10,
+	max_ratio_points_dist_0m 					integer			default 10,
 	max_ratio_points_dist_100m 					integer			default 120,
 	max_ratio_points_dist_200m 					integer			default 240,
 	max_ratio_points_dist_400m 					integer			default 480,
