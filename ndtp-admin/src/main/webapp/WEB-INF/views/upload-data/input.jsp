@@ -386,8 +386,6 @@
                 formData.append("description", $("#description").val());
                 formData.append("shapeEncoding", $("#shapeEncoding").val());
                 formData.append("useYn", $(':radio[name="useYn"]:checked').val());
-                formData.append("blockDefaultYn", $(':radio[name="blockDefaultYn"]:checked').val());
-                formData.append("facilityDefaultYn", $(':radio[name="facilityDefaultYn"]:checked').val());
                 formData.append("mobileDefaultYn", $(':radio[name="mobileDefaultYn"]:checked').val());
                 formData.append("labelDisplayYn", $(':radio[name="labelDisplayYn"]:checked').val());
                 var zIndex = 0;
