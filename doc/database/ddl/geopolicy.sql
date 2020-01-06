@@ -30,8 +30,8 @@ create table geopolicy(
 	
 	data_change_request_decision		char(1)				default '1',
 	
-	cull_face_enable					boolean				false,
-	time_line_enable					boolean				false,
+	cull_face_enable					boolean				default false,
+	time_line_enable					boolean				default false,
 	
 	init_camera_enable					boolean				default true,
 	init_latitude						varchar(30)			default '37.521168',

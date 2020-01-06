@@ -1,5 +1,7 @@
 package ndtp.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
+import ndtp.domain.DataGroup;
 import ndtp.domain.PageType;
 import ndtp.domain.UploadData;
 import ndtp.service.DataGroupService;
@@ -45,7 +48,11 @@ public class UploadDataController {
 	 */
 	@GetMapping(value = "input")
 	public String input(HttpServletRequest request, Model model) {
+		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup();
+		
 		model.addAttribute("uploadData", new UploadData());
+		model.addAttribute("dataGroupList", dataGroupList);
+		
 		return "/upload-data/input";
 	}
 	

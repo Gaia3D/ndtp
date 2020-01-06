@@ -16,8 +16,8 @@
     <link rel="stylesheet" href="/css/${lang}/style.css" />
     <script type="text/javascript" src="/externlib/dropzone/dropzone.min.js"></script>
     
-    <script src="/externlib/jquery/jquery.js"></script>
-	<script src="/externlib/jquery-ui/jquery-ui.js"></script>	
+    <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
+	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
     <style type="text/css">
         .dropzone .dz-preview.lp-preview {
             width: 150px;
@@ -75,12 +75,12 @@
 			  						<form:errors path="dataKey" cssClass="error" />
 								</td> --%>
 								<th class="col-label" scope="row">
-									<form:label path="parentName">데이터 그룹</form:label>
+									<form:label path="dataGroupName">데이터 그룹</form:label>
 									<span class="icon-glyph glyph-emark-dot color-warning"></span>
 								</th>
 								<td class="col-input">
 									<form:hidden path="dataGroupId" />
-		 							<form:input path="dataGroupName" cssClass="l" readonly="true" />
+		 							<form:input path="dataGroupName" cssClass="ml" readonly="true" />
 									<input type="button" id="dataGroupButtion" value="데이터 그룹 선택" />
 								</td>
 							</tr>
@@ -118,7 +118,7 @@
 								<form:label path="latitude">위도 / 경도</form:label>
 								</th>
 								<td class="col-input">
-									<form:input path="latitude" cssClass="m" /> /
+									<form:input path="latitude" cssClass="m" />
 									<form:input path="longitude" cssClass="m" /> 
 									<input type="button" id="mapButtion" value="지도에서 찾기" />
 									<form:errors path="latitude" cssClass="error" />
@@ -128,7 +128,7 @@
 									<form:label path="altitude">높이</form:label>
 								</th>
 								<td class="col-input">
-									<form:input path="altitude" cssClass="m" />
+									<form:input path="altitude" cssClass="s" />
 									<form:errors path="altitude" cssClass="error" />
 								</td>
 							</tr>
@@ -223,26 +223,22 @@
 					<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
 			    </td>
 			    <td class="col-toggle">
-			    	<a href="#" onclick="confirmParent('${dataGroup.dataGroupId}', '${dataGroup.dataGroupName}'); return false;">확인</a></td>
+			    	<a href="#" onclick="confirmDataGroup('${dataGroup.dataGroupId}', '${dataGroup.dataGroupName}'); return false;">확인</a></td>
 			</tr>	
 	</c:forEach>
 </c:if>
 			</tbody>
 		</table>
-		<div class="button-group">
-			<input type="button" id="rootParentSelect" class="button" value="최상위(ROOT) 그룹으로 저장"/>
-		</div>
 	</div>
 	
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-		$(".tabs").tabs();
-		$(".select").selectmenu();
+		
 	});
 	
-	var dataDialog = $( ".dataDialog" ).dialog({
+	var dataGroupDialog = $( ".dialog" ).dialog({
 		autoOpen: false,
 		height: 600,
 		width: 1200,
@@ -251,187 +247,21 @@
 		resizable: false
 	});
 	
-	// 부모 찾기
-	$( "#parentFind" ).on( "click", function() {
-		dataDialog.dialog( "open" );
-		dataDialog.dialog( "option", "title", $("#project_id option:selected").prop("label"));
-		drawDataList($("#project_id").val());
+	// 상위 Layer Group 찾기
+	$( "#dataGroupButtion" ).on( "click", function() {
+		dataGroupDialog.dialog( "open" );
+		dataGroupDialog.dialog( "option", "title", "데이터 그룹 선택");
 	});
 	
-	function drawDataList(projectId) {
-		if(projectId === "") {
-			alert(JS_MESSAGE["project.project_id.empty"]);
-			return false;
-		}
-		var info = "project_id=" + projectId;
-		$.ajax({
-			url: "/data/ajax-list-data-by-project-id.do",
-			type: "POST",
-			data: info,
-			cache: false,
-			dataType: "json",
-			success: function(msg){
-				if(msg.result == "success") {
-					var content = "";
-					var dataList = msg.dataList;
-					var projectDataNone = "<spring:message code='data.does.not.exist'/>";
-					if(dataList == null || dataList.length == 0) {
-						content = content
-							+ 	"<tr>"
-							+ 	"	<td colspan=\"9\" class=\"col-none\">" + projectDataNone + "</td>"
-							+ 	"</tr>";
-					} else {
-						dataListCount = dataList.length;
-						var preViewDepth = "";
-						var preDataId = 0;
-						var preDepth = 0;
-						var select = "<spring:message code='select'/>";
-						for(i=0; i<dataListCount; i++ ) {
-							var dataInfo = dataList[i];
-							var viewAttributes = dataInfo.attributes;
-							var viewDepth = getViewDepth(preViewDepth, dataInfo.data_id, preDepth, dataInfo.depth);
-							if(viewAttributes !== null && viewAttributes !== "" && viewAttributes.length > 20) viewAttributes = viewAttributes.substring(0, 20) + "...";
-							content = content 
-								+ 	"<tr>"
-								+ 	"	<td class=\"col-number\">" + (i + 1) + " </td>"
-								+ 	"	<td class=\"col-id\">" + viewDepth + "</td>"
-								+ 	"	<td class=\"col-id\">" + dataInfo.data_key + "</td>"
-								+ 	"	<td class=\"col-name\">" + dataInfo.data_name + "</td>"
-								+ 	"	<td class=\"col-toggle\">" + dataInfo.latitude + "</td>"
-								+ 	"	<td class=\"col-toggle\">" + dataInfo.longitude + "</td>"
-								+ 	"	<td class=\"col-toggle\">" + dataInfo.height + "</td>"
-								+ 	"	<td class=\"col-toggle\">" + viewAttributes + "</td>"
-								+ 	"	<td class=\"col-toggle\"><a href=\"#\" onclick=\"confirmParent('" 
-								+ 									dataInfo.data_id + "', '" + dataInfo.data_name + "', '" + dataInfo.depth + "'); return false;\">" + select + "</a></td>"
-								+ 	"</tr>";
-								
-							preDataId = dataInfo.data_id;
-							preDepth = dataInfo.depth;
-							preViewDepth = viewDepth;
-						}
-					}
-					
-					$("#projectDataList").empty();
-					$("#projectDataList").html(content);
-				} else {
-					alert(JS_MESSAGE[msg.result]);
-				}
-			},
-			error:function(request, status, error) {
-				//alert(JS_MESSAGE["ajax.error.message"]);
-				alert(" code : " + request.status + "\n" + ", message : " + request.responseText + "\n" + ", error : " + error);
-    		}
-		});
+	// 데이터 그룹 선택
+	function confirmDataGroup(dataGroupId, dataGroupName) {
+		$("#dataGroupId").val(dataGroupId);
+		$("#dataGroupName").val(dataGroupName);
+		dataGroupDialog.dialog( "close" );
 	}
 	
-	function getViewDepth(preViewDepth, dataId, preDepth, depth) {
-		var result = "";
-		if(depth === 1) return result + dataId;
-		
-		if(preDepth === depth) {
-			// 형제
-			if(preViewDepth.indexOf(".") >= 0) {
-				result =  preViewDepth.substring(0, preViewDepth.lastIndexOf(".") + 1) + dataId;
-			} else {
-				result = dataId;
-			}
-		} else if(preDepth < depth) {
-			// 자식
-			result = preViewDepth + "." + dataId;				
-		} else {
-			result =  preViewDepth.substring(0, preViewDepth.lastIndexOf("."));
-			result =  result.substring(0, result.lastIndexOf(".") + 1) + dataId;
-		}
-		return result;
-	}
 	
-	// 상위 Node
-	function confirmParent(dataId, dataName, depth) {
-		$("#parent").val(dataId);
-		$("#parent_name").val(dataName);
-		$("#parent_depth").val(depth);
-		dataDialog.dialog( "close" );
-	}
 	
-	$( "#rootParentSelect" ).on( "click", function() {
-		$("#parent").val(0);
-		$("#parent_name").val("최상위 Node");
-		$("#parent_depth").val(1);
-		dataDialog.dialog( "close" );
-	});
-	
-	// 아이디 중복 확인
-	$( "#data_duplication_buttion" ).on( "click", function() {
-		var dataKey = $("#data_key").val();
-		if (dataKey == "") {
-			alert(JS_MESSAGE["data.key.empty"]);
-			$("#data_id").focus();
-			return false;
-		}
-		var info = "project_id=" + $("#project_id").val() + "&data_key=" + dataKey;
-		$.ajax({
-			url: "/data/ajax-data-key-duplication-check.do",
-			type: "POST",
-			data: info,
-			cache: false,
-			dataType: "json",
-			success: function(msg){
-				if(msg.result == "success") {
-					if(msg.duplication_value != "0") {
-						alert(JS_MESSAGE["data.key.duplication"]);
-						$("#data_key").focus();
-						return false;
-					} else {
-						alert(JS_MESSAGE["data.key.enable"]);
-						$("#duplication_value").val(msg.duplication_value);
-					}
-				} else {
-					alert(JS_MESSAGE[msg.result]);
-				}
-			},
-			error:function(request, status, error) {
-				//alert(JS_MESSAGE["ajax.error.message"]);
-				alert(" code : " + request.status + "\n" + ", message : " + request.responseText + "\n" + ", error : " + error);
-    		}
-		});
-	});
-	
-	// Data 정보 저장
-	var insertDataFlag = true;
-	function insertData() {
-		if (checkData() == false) {
-			return false;
-		}
-		if(insertDataFlag) {
-			insertDataFlag = false;
-			var info = $("#dataInfo").serialize();
-			$.ajax({
-				url: "/data/ajax-insert-data-info.do",
-				type: "POST",
-				data: info,
-				cache: false,
-				dataType: "json",
-				success: function(msg){
-					if(msg.result == "success") {
-						alert(JS_MESSAGE["data.insert"]);
-						$("#parent").val("");
-						$("#duplication_value").val("");
-					} else {
-						alert(JS_MESSAGE[msg.result]);
-					}
-					insertDataFlag = true;
-				},
-				error:function(request,status,error){
-			        alert(JS_MESSAGE["ajax.error.message"]);
-			        alert(" code : " + request.status + "\n" + ", message : " + request.responseText + "\n" + ", error : " + error);
-			        insertDataFlag = true;
-				}
-			});
-		} else {
-			alert(JS_MESSAGE["button.dobule.click"]);
-			return;
-		}
-	}
 	
 	function checkData() {
 		if ($("#parent").val() == "") {
@@ -457,6 +287,17 @@
 			return false;
 		}
 	}
+	
+	// 지도에서 찾기
+	$( "#mapButtion" ).on( "click", function() {
+		var url = "/data/location-map";
+		var width = 800;
+		var height = 700;
+
+        var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height
+                + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
+        //popWin.document.title = layerName;
+	});
 </script>
 </body>
 </html>

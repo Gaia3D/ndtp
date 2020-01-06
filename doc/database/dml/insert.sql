@@ -28,7 +28,7 @@ values
 	(32, '0', '1', '데이터 그룹 등록', 'DATA', 0, 3, 2, 2, '/data/input-group', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
 	(33, '0', '1', '사용자 데이터 그룹', 'DATA', 0, 3, 2, 3, '/data/list-user-group', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
 	(34, '0', '1', '데이터 목록', 'DATA', 0, 3, 2, 4, '/data/list', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
-	(35, '0', '1', '데이터 등록', 'DATA', 0, 3, 2, 5, '/data/input', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
+	(35, '0', '1', '데이터 등록', 'DATA', 0, 3, 2, 5, '/upload-data/input', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
 	(36, '0', '1', '데이터 변환', 'DATA', 0, 3, 2, 6, '/data/list-upload', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
 	(37, '0', '1', '데이터 변환 결과', 'DATA', 0, 3, 2, 7, '/data/convert-log', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
 	(38, '0', '1', '데이터 위치 변경 이력', 'DATA', 0, 3, 2, 8, '/data/list-data-log', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
