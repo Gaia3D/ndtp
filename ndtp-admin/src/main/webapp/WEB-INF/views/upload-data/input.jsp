@@ -298,6 +298,140 @@
                 + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
         //popWin.document.title = layerName;
 	});
+	
+	// 업로딩 파일 개수
+    var uploadFileCount = 0;
+    // dropzone 업로딩 결과(n개 파일을 올리면 n개 리턴이 옴)
+    var uploadFileResultCount = 0;
+    Dropzone.options.myDropzone = {
+		url: "/upload-data/insert",	
+		//paramName: "file",
+		// Prevents Dropzone from uploading dropped files immediately
+		timeout: 3600000,
+        autoProcessQueue: false,
+        // 여러개의 파일 허용
+		uploadMultiple: true,
+		method: "post",
+		// 병렬 처리
+		parallelUploads: 100,
+		// 최대 파일 업로드 갯수
+		maxFiles: 100,
+		// 최대 업로드 용량 Mb단위
+		maxFilesize: 2000,
+		dictDefaultMessage: "업로딩 하려면 파일을 올리거나 클릭 하십시오.",
+		/* headers: {
+			"x-csrf-token": document.querySelectorAll("meta[name=csrf-token]")[0].getAttributeNode("content").value,
+		}, */
+		// 허용 확장자
+		acceptedFiles: ".3ds, .obj, .dae, .collada, .ifc, .citygml, .indoorgml, .jpg, .jpeg, .gif, .png, .bmp, .zip",
+		// 업로드 취소 및 추가 삭제 미리 보기 그림 링크 를 기본 추가 하지 않음
+		// 기본 true false 로 주면 아무 동작 못함
+		//clickable: true,
+		fallback: function() {
+	    	// 지원하지 않는 브라우저인 경우
+	    	alert("죄송합니다. 최신의 브라우저로 Update 후 사용해 주십시오.");
+	    	return;
+	    },
+		init: function() {
+			var magoDropzone = this; // closure
+			var uploadTask = document.querySelector("#allFileUpload");
+			var clearTask = document.querySelector("#allFileClear");
+			
+			uploadTask.addEventListener("click", function(e) {
+				if (checkData() === false) {
+					return;
+				}
+				
+				uploadFileCount = 0;
+                uploadFileResultCount = 0;
+                e.preventDefault();
+                e.stopPropagation();
+				
+                if (myDropzone.getQueuedFiles().length > 0) {
+                    uploadFileCount = myDropzone.getQueuedFiles().length;
+                    myDropzone.processQueue();
+                    //startSpinner("fileUploadSpinner");
+                    fileUploadDialog.dialog( "open" );
+                } else {
+                    alert("업로딩 할 파일이 존재하지 않습니다.");
+                    return;
+                }
+			});
+
+			clearTask.addEventListener("click", function () {
+                // Using "_this" here, because "this" doesn't point to the dropzone anymore
+                if (confirm("정말 전체 항목을 삭제하겠습니까?")) {
+                	// true 주면 업로드 중인 파일도 다 같이 삭제
+                	magoDropzone.removeAllFiles(true);
+                }
+            });
+			
+			this.on("sending", function(file, xhr, formData) {
+				formData.append("sharing_type", $("#sharing_type").val());
+				formData.append("data_type", $("#data_type").val());
+				formData.append("project_id", $("#project_id").val());
+				formData.append("data_name", $("#data_name").val());
+				formData.append("latitude", $("#latitude").val());
+				formData.append("longitude", $("#longitude").val());
+				formData.append("height", $("#height").val());
+				formData.append("description", $("#description").val());
+				
+				formData.append("layerName", $("#layerName").val());
+                formData.append("viewType", $("#viewType").val());
+                formData.append("coordinate", $("#coordinate").val());
+                formData.append("geometryType", $("#geometryType").val());
+                formData.append("managementDept", $("#managementDept").val());
+                formData.append("managementUserId", $("#managementUserId").val());
+                formData.append("managementSubUserId", $("#managementSubUserId").val());
+                formData.append("description", $("#description").val());
+                formData.append("shapeEncoding", $("#shapeEncoding").val());
+                formData.append("useYn", $(':radio[name="useYn"]:checked').val());
+                formData.append("blockDefaultYn", $(':radio[name="blockDefaultYn"]:checked').val());
+                formData.append("facilityDefaultYn", $(':radio[name="facilityDefaultYn"]:checked').val());
+                formData.append("mobileDefaultYn", $(':radio[name="mobileDefaultYn"]:checked').val());
+                formData.append("labelDisplayYn", $(':radio[name="labelDisplayYn"]:checked').val());
+                var zIndex = 0;
+                if($("#zIndex").val() !== null && $("#zIndex").val() !== "") zIndex = $("#zIndex").val();
+                formData.append("zIndex", zIndex);
+                formData.append("comment", $("#comment").val());
+			});
+			
+			// maxFiles 카운터를 초과하면 경고창
+			this.on("maxfilesexceeded", function (data) {
+				alert("최대 업로드 파일 수는 100개 입니다.");
+				return;
+			});
+			
+			this.on("success", function(file, response) {
+                if(file !== undefined && file.name !== undefined) {
+                    console.log("file name = " + file.name);
+                    $("#fileUploadSpinner").empty();
+                    fileUploadDialog.dialog( "close" );
+
+                    if(response.error === undefined) {
+                        if(uploadFileCount === 0) {
+                            alert("수정 하였습니다.");
+                        } else {
+                            uploadFileResultCount ++;
+                            if(uploadFileCount === uploadFileResultCount) {
+                                alert("업로딩을 완료 하였습니다.");
+                                reloadLayerFileInfoList();
+                            }
+                        }
+                    } else {
+                        alertMessage(response);
+                    }
+                } else {
+                    console.log("------- success response = " + response);
+                    if(response === 200) {
+                        alert("수정하였습니다.");
+                    } else {
+                        alert("수정에 실패 하였습니다. \n" + response);
+                    }
+                }
+            });
+		}
+	};
 </script>
 </body>
 </html>
