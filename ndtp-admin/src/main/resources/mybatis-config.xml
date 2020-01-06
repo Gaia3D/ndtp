@@ -19,6 +19,8 @@
     	<typeAlias type="ndtp.domain.Menu" alias="menu" />
     	<typeAlias type="ndtp.domain.Policy" alias="policy" />
     	<typeAlias type="ndtp.domain.Role" alias="role" />
+		<typeAlias type="ndtp.domain.UploadData" alias="uploadData" />
+		<typeAlias type="ndtp.domain.UploadDataFile" alias="uploadDataFile" />
     	<typeAlias type="ndtp.domain.UserInfo" alias="userInfo" />
     	<typeAlias type="ndtp.domain.UserGroup" alias="userGroup" />
     	<typeAlias type="ndtp.domain.UserGroupMenu" alias="userGroupMenu" />

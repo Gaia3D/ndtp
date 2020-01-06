@@ -75,7 +75,7 @@
 			data_group_id, data_group_name, data_group_key, 
 			data_group_path, shared_type, user_id, ancestor, parent, depth, view_order, children, basic, available, data_count, 
 			<if test="location != null">
-			location,
+			ST_GeographyFromText(#{location}),
 			</if>
 			altitude, duration, description
 		) VALUES (

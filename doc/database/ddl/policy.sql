@@ -121,7 +121,7 @@ create table policy(
 	content_layer_group_root				varchar(60)			default 'NDTP',
 	content_data_group_root					varchar(60)			default 'NDTP',
 	
-	user_upload_type						varchar(256)		default '3ds,obj,ifc,dae',
+	user_upload_type						varchar(256)		default 'ZIP,3DS,OBJ,DAE,COLLADA,IFC,LAS,GITYGML,INDOORGML',
 	user_upload_max_filesize				integer				default 500,
 	user_upload_max_count					integer				default 50,
 	

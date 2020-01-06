@@ -49,13 +49,4 @@ public class Role extends Search {
 	private String description;
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Timestamp insertDate;
-	
-//	public String getViewInsertDate() {
-//		if(getInsertDate() == null) {
-//			return "";
-//		}
-//		
-//		String tempDate = FormatUtil.getViewDateyyyyMMddHHmmss(getInsertDate());
-//		return tempDate.substring(0, 19);
-//	}
 }

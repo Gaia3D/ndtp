@@ -39,6 +39,9 @@ public class DataController {
 	
 //	@Autowired
 //	private DataService dataService;
+	
+	@Autowired
+	private DataGroupService dataGroupService;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -66,7 +69,10 @@ public class DataController {
 		Policy policy = policyService.getPolicy();
 		UploadData uploadData = new UploadData();
 		
+		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup();
+		
 		model.addAttribute("policy", policy);
+		model.addAttribute("dataGroupList", dataGroupList);
 		model.addAttribute("uploadData", uploadData);
 		
 		return "/data/input";
