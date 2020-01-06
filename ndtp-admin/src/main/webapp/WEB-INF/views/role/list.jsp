@@ -136,7 +136,7 @@
 									</td>
 									<td class="col-date-time">${role.insertDate }</td>
 									<td class="col-functions">
-										<a href="/role/modify/${role.roleId }" class="linkButton">수정</a>
+										<a href="/role/modify?roleId=${role.roleId}" class="linkButton">수정</a>
 									</td>
 									<td class="col-functions">
 										<a href="#" onclick="deleteRole('${role.roleId}'); return false;" class="linkButton">삭제</a>
@@ -197,7 +197,7 @@ function deleteRole(roleId) {
 		if(confirm(JS_MESSAGE["delete.confirm"])) {
 			deleteRoleFlag = false;
 			$.ajax({
-				url: "/role/delete/" + roleId,
+				url: "/role/delete?roleId=" + roleId,
 				type: "DELETE",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				dataType: "json",

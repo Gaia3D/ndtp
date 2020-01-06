@@ -140,8 +140,8 @@ public class RoleController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = "modify/{roleId}")
-	public String modify(HttpServletRequest request, @PathVariable Integer roleId, Model model) {		
+	@RequestMapping(value = "modify")
+	public String modify(HttpServletRequest request, @RequestParam Integer roleId, Model model) {		
 		
 		Role role = roleService.getRole(roleId);
 
@@ -156,9 +156,9 @@ public class RoleController {
 	 * @param bindingResult
 	 * @return
 	 */
-	@PostMapping(value = "update/{roleId}")
+	@PostMapping(value = "update")
 	@ResponseBody
-	public Map<String, Object> update(HttpServletRequest request, @Valid Role role, @PathVariable Integer roleId, BindingResult bindingResult) {
+	public Map<String, Object> update(HttpServletRequest request, @Valid Role role, BindingResult bindingResult) {
 		log.info("@@ role = {}", role);
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
@@ -166,8 +166,6 @@ public class RoleController {
 		String message = null;
 		
 		try {
-			role.setRoleId(roleId);
-			
 			if(bindingResult.hasErrors()) {
 				message = bindingResult.getAllErrors().get(0).getDefaultMessage();
 				log.info("@@@@@ message = {}", message);
@@ -196,9 +194,9 @@ public class RoleController {
 	 * @param roleId
 	 * @return
 	 */
-	@DeleteMapping(value = "delete/{roleId}")
+	@DeleteMapping(value = "delete")
 	@ResponseBody
-	public Map<String, Object> delete(@PathVariable Integer roleId) {
+	public Map<String, Object> delete(@RequestParam Integer roleId) {
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String errorCode = null;

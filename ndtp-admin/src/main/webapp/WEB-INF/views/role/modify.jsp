@@ -25,7 +25,87 @@
 				<div class="page-area">
 					<%@ include file="/WEB-INF/views/layouts/page_header.jsp" %>
 					<div class="page-content">
-						test
+						<form:form id="role" modelAttribute="role" method="post" onsubmit="return false;">
+						<input type="hidden" id="roleId" name="roleId" />
+						<table class="input-table scope-row">
+							<col class="col-label l" />
+							<col class="col-input" />
+							<tr>
+								<th class="col-label l" scope="row">
+									<form:label path="roleName">Role 명</form:label>
+									<span class="must">*</span>
+								</th>
+								<td class="col-input"><form:input path="roleName" cssClass="l" size="70" /></td>
+							</tr>
+							<tr>
+								<th class="col-label l" scope="row">
+									<form:label path="roleKey">Role Key</form:label>
+									<span class="must">*</span>
+								</th>
+								<td class="col-input"><form:input path="roleKey" size="70" /></td>
+							</tr>
+							<tr>
+								<th class="col-label l" scope="row">
+									<form:label path="roleTarget">Role Target</form:label>
+									<span class="must">*</span>
+								</th>
+								<td class="col-input">
+									<select id="roleTarget" name="roleTarget" class="select" >
+										<option value="0"> 사용자 사이트 </option>
+										<option value="1"> 관리자 사이트 </option>
+										<option value="2"> 서버 </option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<th class="col-label l" scope="row">
+									<form:label path="roleType">Role 유형</form:label>
+									<span class="must">*</span>
+								</th>
+								<td class="col-input">
+									<select id="roleType" name="roleType" class="select" >
+										<option value="0"> 사용자 </option>
+										<option value="1"> 서버 </option>
+										<option value="2"> API </option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<th class="col-label l" scope="row">
+									<span>사용 유무</span>
+									<span class="must">*</span>
+								</th>
+								<td class="col-input radio-set">
+									<input type="radio" id="useY" name="useYn" value="Y" />
+									<label for="useY">사용</label>&nbsp;&nbsp;
+									<input type="radio" id="useN" name="useYn" value="N" />
+									<label for="useN">미사용</label>
+								</td>
+							</tr>
+							<tr>
+								<th class="col-label l" scope="row">
+									<span>기본사용 유무</span>
+									<span class="must">*</span>
+								</th>
+								<td class="col-input radio-set">
+									<input type="radio" id="defaultY" name="defaultYn" value="Y" />
+									<label for="defaultY">사용</label>&nbsp;&nbsp;
+									<input type="radio" id="defaultN" name="defaultYn" value="N" />
+									<label for="defaultN">미사용</label>
+								</td>
+							</tr>
+							<tr>
+								<th class="col-label l" scope="row"><form:label path="description">설명</form:label></th>
+								<td class="col-input"><form:input path="description" cssClass="xl" size="100" /></td>
+							</tr>
+						</table>
+						<div class="button-group">
+							<div id="insertRoleLink" class="center-buttons">
+								<a href="/role/list" class="button">목록</a>
+								<button class="point" type="submit" onclick="update();">수정</button>
+							</div>
+						</div>
+						</form:form>
 					</div>
 				</div>
 			</div>
@@ -39,6 +119,71 @@
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript" src="/js/navigation.js"></script>
 <script type="text/javascript">
+$(document).ready(function() {
+	$("#roleTarget").val("${role.roleTarget}");
+	$("#roleType").val("${role.roleType}");
+	$("input[name='useYn']").filter("[value='${role.useYn}']").prop("checked", true);
+	$("input[name='defaultYn']").filter("[value='${role.defaultYn}']").prop("checked", true);
+});
+
+function check() {
+	if( $("#roleName").val().trim() === "" ) {
+		alert("Role 명을 입력하여 주십시오.");
+		$("#roleName").focus();
+		return false;
+	}
+	else if( $("#roleKey").val().trim() === "" ) {
+		alert("Role Key를 입력하여 주십시오.");
+		$("#roleKey").focus();
+		return false;
+	}
+	else if($("#roleTarget").val() === "") {
+		alert("Role Target을 선택하여 주십시오.");
+		return false;
+	}
+	else if( $("#roleType").val() === "") {
+		alert("Role 유형을 선택하여 주십시오.");
+		return false;
+	}
+	else if( $("[name=useYn]:checked").val() === "" || $("[name=useYn]:checked").val() === undefined) {
+		alert("사용 유무를 선택하여 주십시오.");
+		return false;
+	}
+	else if( $("[name=defaultYn]:checked").val() === "" || $("[name=defaultYn]:checked").val() === undefined ) {
+		alert("기본사용 유무를 선택하여 주십시오.");
+		return false;
+	}
+}
+
+var updateRoleFlag = true;
+function update() {
+	if(check() === false) return false;
+
+	if(updateRoleFlag) {
+		updateRoleFlag = false;
+		var url = "/role/update?roleId=${role.roleId}";
+		var formData = $("#role").serialize();
+		$.ajax({
+			url: url,
+			type: "POST",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			data: formData,
+			dataType: "json",
+			success: function(msg) {
+				alert("수정 하였습니다.");
+				updateRoleFlag = true;
+			},
+	        error: function(request, status, error) {
+	        	// alert message, 세션이 없는 경우 로그인 페이지로 이동 - common.js
+	        	ajaxErrorHandler(request);
+	        	updateRoleFlag = true;
+	        }
+		});
+	} else {
+		alert("진행 중입니다.");
+		return;
+	}
+}
 </script>
 </body>
 </html>
