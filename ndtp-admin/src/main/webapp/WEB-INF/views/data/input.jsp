@@ -86,11 +86,11 @@
 										<input type="button" id="dataGroupButtion" value="데이터 그룹 선택" />
 									</td>
 									<th class="col-label" scope="row">
-				                        <form:label path="sharedType">공유 유형</form:label>
+				                        <form:label path="sharing">공유 유형</form:label>
 				                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 				                    </th>
 				                    <td class="col-input">
-				                        <select name="sharedType">
+				                        <select name="sharing">
 											<option value="common">공통</option>
 											<option value="public">공개</option>
 											<option value="private">비공개</option>

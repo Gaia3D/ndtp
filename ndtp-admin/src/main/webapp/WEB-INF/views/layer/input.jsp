@@ -59,12 +59,12 @@
 									<input type="button" id="layerGroupButtion" value="Layer 그룹 찾기" />
 								</td>
 								<th class="col-label" scope="row">
-			                        <label for="sharedType">공유 유형</label>
+			                        <label for="sharing">공유 유형</label>
 			                    </th>
 			                    <td class="col-input radio-set">
-			                        <form:radiobutton id="sharedTypePublic"  path="sharedType" value="public" label="공개" />
-									<form:radiobutton id="sharedTypePrivate" path="sharedType" value="private" label="비공개" />
-									<form:radiobutton id="sharedTypeGroup" path="sharedType" value="group" label="그룹" />
+			                        <form:radiobutton id="sharingPublic"  path="sharing" value="public" label="공개" />
+									<form:radiobutton id="sharingPrivate" path="sharing" value="private" label="비공개" />
+									<form:radiobutton id="sharingGroup" path="sharing" value="group" label="그룹" />
 			                    </td>
 							</tr>
 							<tr>
@@ -328,7 +328,7 @@
 		//changeLayerType(null);
 		//changeGeometryType(null);
 		
-		$("input[name='sharedType']").filter("[value='public']").prop("checked", true);
+		$("input[name='sharing']").filter("[value='public']").prop("checked", true);
 		$("input[name='defaultDisplay']").filter("[value='true']").prop("checked", true);
 		$("input[name='available']").filter("[value='true']").prop("checked", true);
         $("input[name='labelDisplay']").filter("[value='true']").prop("checked", true);

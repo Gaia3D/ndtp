@@ -72,11 +72,11 @@
 							</tr>
 							<tr>
 			                    <th class="col-label" scope="row">
-			                        <form:label path="sharedType">공유 타입</form:label>
+			                        <form:label path="sharing">공유 타입</form:label>
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 			                    <td class="col-input">
-			                        <select name="sharedType">
+			                        <select name="sharing">
 										<option value="common">공통</option>
 										<option value="public">공개</option>
 										<option value="private">개인</option>
@@ -218,7 +218,7 @@
         			미사용
         </c:if>
 			    </td>
-			    <td class="col-key">${dataGroup.sharedType }</td>
+			    <td class="col-key">${dataGroup.sharing }</td>
 			    <td class="col-key">${dataGroup.description }</td>
 			    <td class="col-date">
 			    	<fmt:parseDate value="${dataGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>

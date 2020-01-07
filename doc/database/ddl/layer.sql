@@ -39,7 +39,7 @@ create table layer (
 	layer_name					varchar(256)					not null,
 	user_id						varchar(32),
 	
-	shared_type					varchar(30)						default 'public',
+	sharing					varchar(30)						default 'public',
 	service_type				varchar(30),	
 	layer_type					varchar(30),
 	geometry_type				varchar(30),
@@ -67,7 +67,7 @@ comment on column layer.layer_group_id is '레이어 그룹 고유번호';
 comment on column layer.layer_key is '레이어 고유키(API용)';
 comment on column layer.layer_name is '레이어명';
 comment on column layer.user_id is '사용자명';
-comment on column layer.shared_type is '공유 유형. common : 공통, public : 공개, private : 개인, group : 그룹';
+comment on column layer.sharing is '공유 유형. common : 공통, public : 공개, private : 개인, group : 그룹';
 comment on column layer.service_type is '서비스 타입 (wms, wfs, wcs, wps)';
 comment on column layer.layer_type is '레이어 타입 (Raster, Vector)';
 comment on column layer.geometry_type is '도형 타입';
