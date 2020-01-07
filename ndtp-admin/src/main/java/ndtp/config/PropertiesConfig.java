@@ -32,4 +32,8 @@ public class PropertiesConfig {
     private String gisRestServer;
     
     private String layerUploadDir;
+    
+    private String uploadDataDir;
+    // Converted f4d file directory
+    private String userConverterDir;
 }

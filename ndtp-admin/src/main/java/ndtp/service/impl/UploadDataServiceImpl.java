@@ -1,13 +1,11 @@
 package ndtp.service.impl;
 
-import java.io.File;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import ndtp.domain.FileType;
 import ndtp.domain.UploadData;
 import ndtp.domain.UploadDataFile;
 import ndtp.persistence.UploadDataMapper;
@@ -58,6 +56,7 @@ public class UploadDataServiceImpl implements UploadDataService {
 	 * @param uploadDataFile
 	 * @return
 	 */
+	@Transactional(readOnly=true)
 	public Long getUploadDataFileTotalCount(UploadDataFile uploadDataFile) {
 		return uploadDataMapper.getUploadDataFileTotalCount(uploadDataFile);
 	}
@@ -67,6 +66,7 @@ public class UploadDataServiceImpl implements UploadDataService {
 	 * @param uploadDataFile
 	 * @return
 	 */
+	@Transactional(readOnly=true)
 	public Long getUploadDataFileTotalSize(UploadDataFile uploadDataFile) {
 		return uploadDataMapper.getUploadDataFileTotalSize(uploadDataFile);
 	}
@@ -91,59 +91,56 @@ public class UploadDataServiceImpl implements UploadDataService {
 	public int insertUploadData(UploadData uploadData, List<UploadDataFile> uploadDataFileList) {
 		int result = uploadDataMapper.insertUploadData(uploadData);
 		
-		Long upload_data_id = uploadData.getUpload_data_id();
-		Integer project_id = uploadData.getProject_id();
-		String sharing_type = uploadData.getSharing_type();
-		String data_type = uploadData.getData_type();
-		String user_id = uploadData.getUser_id();
+		Long uploadDataId = uploadData.getUploadDataId();
+//		Integer dataGroupId = uploadData.getDataGroupId();
+//		String sharing = uploadData.getSharing();
+//		String dataType = uploadData.getDataType();
+		String userId = uploadData.getUserId();
 		for(UploadDataFile uploadDataFile : uploadDataFileList) {
-			uploadDataFile.setUpload_data_id(upload_data_id);
-			uploadDataFile.setProject_id(project_id);
-			uploadDataFile.setSharing_type(sharing_type);
-			uploadDataFile.setData_type(data_type);
-			uploadDataFile.setUser_id(user_id);
+			uploadDataFile.setUploadDataId(uploadDataId);
+			uploadDataFile.setUserId(userId);
 			uploadDataMapper.insertUploadDataFile(uploadDataFile);
 			result++;
 		}
 		return result;
 	}
 	
-	/**
-	 * 업로딩 데이터 삭제
-	 * @param check_ids
-	 * @return
-	 */
-	@Transactional
-	public int deleteUploadDatas(String userId, String checkIds) {
-		String[] uploadDatas = checkIds.split(",");
-		
-		for(String upload_data_id : uploadDatas) {
-			UploadData uploadData = new UploadData();
-			uploadData.setUser_id(userId);
-			uploadData.setUpload_data_id(Long.valueOf(upload_data_id));
-			uploadData.setOrder_word("depth");
-			uploadData.setOrder_value("DESC");
-			
-			List<UploadDataFile> uploadDataFileList = uploadDataMapper.getListUploadDataFile(uploadData);
-			uploadDataMapper.deleteUploadDataFile(uploadData);
-			// 2 upload_data 삭제
-			uploadDataMapper.deleteUploadData(uploadData);
-			
-			for(UploadDataFile deleteUploadDataFile : uploadDataFileList) {
-				String fileName = null;
-				if(FileType.DIRECTORY.getValue().equals(deleteUploadDataFile.getFile_type())) {
-					fileName = deleteUploadDataFile.getFile_path();
-				} else {
-					fileName = deleteUploadDataFile.getFile_path() + deleteUploadDataFile.getFile_real_name();
-				}
-				
-				File file = new File(fileName);
-				if(file.exists()) {
-					file.delete();
-				}
-			}
-		}
-			
-		return uploadDatas.length;
-	}
+//	/**
+//	 * 업로딩 데이터 삭제
+//	 * @param check_ids
+//	 * @return
+//	 */
+//	@Transactional
+//	public int deleteUploadDatas(String userId, String checkIds) {
+//		String[] uploadDatas = checkIds.split(",");
+//		
+//		for(String upload_data_id : uploadDatas) {
+//			UploadData uploadData = new UploadData();
+//			uploadData.setUser_id(userId);
+//			uploadData.setUpload_data_id(Long.valueOf(upload_data_id));
+//			uploadData.setOrder_word("depth");
+//			uploadData.setOrder_value("DESC");
+//			
+//			List<UploadDataFile> uploadDataFileList = uploadDataMapper.getListUploadDataFile(uploadData);
+//			uploadDataMapper.deleteUploadDataFile(uploadData);
+//			// 2 upload_data 삭제
+//			uploadDataMapper.deleteUploadData(uploadData);
+//			
+//			for(UploadDataFile deleteUploadDataFile : uploadDataFileList) {
+//				String fileName = null;
+//				if(FileType.DIRECTORY.getValue().equals(deleteUploadDataFile.getFile_type())) {
+//					fileName = deleteUploadDataFile.getFile_path();
+//				} else {
+//					fileName = deleteUploadDataFile.getFile_path() + deleteUploadDataFile.getFile_real_name();
+//				}
+//				
+//				File file = new File(fileName);
+//				if(file.exists()) {
+//					file.delete();
+//				}
+//			}
+//		}
+//			
+//		return uploadDatas.length;
+//	}
 }

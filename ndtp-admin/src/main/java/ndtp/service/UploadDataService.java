@@ -49,12 +49,13 @@ public interface UploadDataService {
 	 */
 	List<UploadDataFile> getListUploadDataFile(UploadData uploadData);
 	
-//	/**
-//	 * 사용자 파일 정보 업로딩
-//	 * @param uploadData
-//	 * @return
-//	 */
-//	int insertUploadData(UploadData uploadData);
+	/**
+	 * 사용자 파일 정보 업로딩
+	 * @param uploadData
+	 * @param uploadDataFileList
+	 * @return
+	 */
+	int insertUploadData(UploadData uploadData, List<UploadDataFile> uploadDataFileList);
 //	
 //	/**
 //	 * 사용자 파일 업로딩

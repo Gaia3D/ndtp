@@ -23,6 +23,12 @@ public interface DataGroupMapper {
     DataGroup getDataGroup(DataGroup dataGroup);
     
     /**
+     * 기본 데이터 그룹 정보 조회
+     * @return
+     */
+    DataGroup getBasicDataGroup();
+    
+    /**
      * 부모와 표시 순서로 메뉴 조회
      * @param dataGroup
      * @return

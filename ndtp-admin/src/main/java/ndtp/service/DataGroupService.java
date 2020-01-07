@@ -18,6 +18,12 @@ public interface DataGroupService {
      * @return
      */
     DataGroup getDataGroup(DataGroup dataGroup);
+    
+    /**
+     * 기본 데이터 그룹 정보 조회
+     * @return
+     */
+    DataGroup getBasicDataGroup();
 
     /**
      * 데이터 그룹 등록

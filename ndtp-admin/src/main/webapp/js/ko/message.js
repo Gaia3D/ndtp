@@ -24,6 +24,7 @@ JS_MESSAGE["use"] = "사용";
 JS_MESSAGE["not.use"] = "미사용";
 
 JS_MESSAGE["file.name.empty"] = "파일명을 입력하여 주십시오.";
+JS_MESSAGE["file.name.invalid"] = "파일명이 유효하지 않습니다.";
 JS_MESSAGE["file.ext.invalid"] = "파일 확장자가 유효하지 않습니다.";
 JS_MESSAGE["fileinfo.size.invalid"] = "업로딩 가능한 파일 사이즈를 초과 하였습니다.";
 
@@ -140,3 +141,23 @@ JS_MESSAGE["config.widget.dormancy"] = "휴면";
 JS_MESSAGE["config.widget.expires"] = "기간만료";
 JS_MESSAGE["config.temporary.password"] = "임시비밀번호";
 JS_MESSAGE["config.widget.content.does.not.exit"] = "수정된 컨텐츠가 존재하지 않습니다.";
+
+JS_MESSAGE["data.name.empty"] = "데이터명을 입력하여 주십시오.";
+JS_MESSAGE["data.group.id.empty"] = "데이터 그룹명 입력하여 주십시오.";
+JS_MESSAGE["data.sharing.empty"] = "공유 유형을 선택하여 주십시오.";
+JS_MESSAGE["data.type.empty"] = "데이터 타입을 선택하여 주십시오.";
+JS_MESSAGE["data.latitude.empty"] = "위도를 입력하여 주십시오.";
+JS_MESSAGE["data.longitude.empty"] = "경도를  입력하여 주십시오.";
+JS_MESSAGE["data.altitude.empty"] = "높이를  입력하여 주십시오.";
+JS_MESSAGE["data.file.empty"] = "파일을 입력하여 주십시오.";
+JS_MESSAGE["data.insert"] = "데이터를 등록 하였습니다.";
+
+JS_MESSAGE["upload.file.type.invalid"] = "업로드 파일 타입이 유효하지 않습니다.";
+
+
+
+
+
+
+
+

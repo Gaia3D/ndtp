@@ -90,9 +90,9 @@
 									<span class="icon-glyph glyph-emark-dot color-warning"></span>
 								</th>
 								<td class="col-input radio-set">
-									<input type="radio" id="basicTrue" name="basic" value="true" checked>
+									<input type="radio" id="basicTrue" name="basic" value="true" >
 									<label for="basicTrue">기본</label>
-									<input type="radio" id="basicFalse" name="basic" value="false">
+									<input type="radio" id="basicFalse" name="basic" value="false" checked >
 									<label for="basicFalse">선택</label>
 								</td>
 							</tr>

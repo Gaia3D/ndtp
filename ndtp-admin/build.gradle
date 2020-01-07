@@ -23,6 +23,9 @@ configurations {
 }
 
 repositories {
+	maven {
+        url "http://download.osgeo.org/webdav/geotools/"
+    }
 	mavenCentral()
 }
 
@@ -42,20 +45,30 @@ dependencies {
     implementation 'org.geotools:gt-shapefile:20.2'
     implementation 'org.apache.commons:commons-compress:1.18'
 	
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'org.postgresql:postgresql'
-	annotationProcessor 'org.projectlombok:lombok'
 	
 	providedRuntime 'org.apache.tomcat.embed:tomcat-embed-jasper'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude module: 'junit'
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
+	
+	testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testCompile 'org.junit.jupiter:junit-jupiter-params'
+    testRuntime 'org.junit.jupiter:junit-jupiter-engine'
+    
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+	testCompileOnly 'org.projectlombok:lombok'
+	
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 }
 
 test {
 	useJUnitPlatform()
 	ignoreFailures = true
+	//exclude '**/*'
 }

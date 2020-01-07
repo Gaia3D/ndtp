@@ -38,7 +38,14 @@ public class DataGroupServiceImpl implements DataGroupService {
 		return dataGroupMapper.getDataGroup(dataGroup);
 	}
 	
-	
+	/**
+     * 기본 데이터 그룹 정보 조회
+     * @return
+     */
+	@Transactional(readOnly = true)
+	public DataGroup getBasicDataGroup() {
+		return dataGroupMapper.getBasicDataGroup();
+	}
 
     /**
      * 데이터 그룹 등록

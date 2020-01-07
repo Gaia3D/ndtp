@@ -44,6 +44,17 @@
 		</if> 
 	</select>
 	
+	<!-- 기본 데이터 그룹 정보 -->
+	<select id="getBasicDataGroup" parameterType="dataGroup" resultType="dataGroup">
+		/* getBasicDataGroup */
+		SELECT * 
+		FROM data_group 
+		WHERE basic = 'true' 
+			AND depth = 1
+		ORDER BY view_order
+		LIMIT 1 
+	</select>
+	
 	<!-- 부모와 순서를 가지고 데이터 그룹 정보를 취득 -->
 	<select id="getDataGroupByParentAndViewOrder" parameterType="dataGroup" resultType="dataGroup">
 		/* getUserGroupByParentAndViewOrder */
