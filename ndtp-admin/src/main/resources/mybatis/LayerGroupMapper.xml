@@ -65,14 +65,11 @@
 	</insert>
 	
 	<!-- 레이어 그룹 정보 -->
-	<select id="getLayerGroup" parameterType="layerGroup" resultType="layerGroup">
+	<select id="getLayerGroup" parameterType="int" resultType="layerGroup">
 		/* getLayerGroup */
 		SELECT * 
 		FROM layer_group 
 		WHERE layer_group_id = #{layerGroupId} 
-		<if test="userId != null and userId != ''">
-			AND user_id = #{userId}
-		</if> 
 	</select>
 	
 	<!-- 부모와 순서를 가지고 레이어 그룹 정보를 취득 -->
@@ -103,4 +100,76 @@
 		SET view_order = #{viewOrder} 
 		WHERE layer_group_id = #{layerGroupId}
 	</update>
+	
+	<!-- 데이터 그룹 수정 -->
+	<update id="updateLayerGroup" parameterType="layerGroup">
+		/* updateLayerGroup */
+		UPDATE layer_group
+		SET 
+			<if test="layerGroupName != null and layerGroupName != ''">
+			layer_group_name = #{layerGroupName},
+			</if>
+			<if test="userId != null and userId != ''">
+			user_id = #{userId},
+			</if>
+			<if test="ancestor != null and ancestor gt 0">
+			ancestor = #{ancestor},
+			</if>
+			<if test="parent != null and parent gt 0">
+			parent = #{parent},
+			</if>
+			<if test="depth != null and depth gt 0">
+			depth = #{depth},
+			</if>
+			<if test="viewOrder != null and viewOrder gt 0">
+			view_order = #{viewOrder},
+			</if>
+			<if test="children != null and children gte 0">
+			children = #{children},
+			</if>
+			<if test="available != null">
+			available = #{available},
+			</if>
+			<if test="description != null and description != ''">
+			description = #{description},
+			</if>
+			update_date = NOW()
+		WHERE layer_group_id = #{layerGroupId}
+		<if test="userId != null and userId != ''">
+			AND user_id = #{userId}
+		</if>
+	</update>
+	
+	<!-- 데이터 그룹 삭제 -->
+	<delete id="deleteLayerGroup" parameterType="layerGroup">
+		/* deleteLayerGroup */
+		DELETE 
+		FROM layer_group 
+		WHERE layer_group_id = #{layerGroupId} 
+		<if test="userId != null and userId != ''">
+			AND user_id = #{userId}
+		</if> 
+	</delete>
+	
+	<!-- ancestor를 이용하여 데이터 그룹 삭제 -->
+	<delete id="deleteLayerGroupByAncestor" parameterType="layerGroup">
+		/* deleteLayerGroupByAncestor */
+		DELETE 
+		FROM layer_group 
+		WHERE ancestor = #{ancestor} 
+		<if test="userId != null and userId != ''">
+			AND user_id = #{userId}
+		</if> 
+	</delete>
+	
+	<!-- parent를 이용하여 데이터 그룹 삭제 -->
+	<delete id="deleteLayerGroupByParent" parameterType="layerGroup">
+		/* deleteLayerGroupByParent */
+		DELETE 
+		FROM layer_group 
+		WHERE parent = #{parent} 
+		<if test="userId != null and userId != ''">
+			AND user_id = #{userId}
+		</if> 
+	</delete>
 </mapper>

@@ -151,9 +151,8 @@
 					                    	</div>
 					                    </td>
 					                    <td class="col-type">
-											<a href="#" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;
-											<a href="/data/delete-data-group?dataGroupId=${layerGroup.layerGroupId }" onclick="return deleteWarning();" 
-														class="linkButton"><spring:message code='delete'/></a>
+											<a href="/layer/modify-group?layerGroupId=${layerGroup.layerGroupId}" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;
+											<a href="#" onclick="deleteLayerGroup('${layerGroup.layerGroupId}'); return false;" class="linkButton">삭제</a>
 					                    </td>
 					                    <td class="col-date">
 					                    	<fmt:parseDate value="${layerGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
@@ -174,20 +173,6 @@
         <c:if test="${layer.available eq 'false' }">
                         					미사용
         </c:if>
-					                    </td>
-					                    <td class="col-key">${layer.userId }</td>
-					                    <td class="col-key">${layer.description }</td>
-					                    <td class="col-type"><a href="/layer/modify/${layer.layerId }" class="linkButton">지도 보기</a>
-					                    </td>
-					                    <td class="col-type"><a href="/layer/modify/${layer.layerId }" class="linkButton">수정</a>
-					                    </td>
-					                    <td class="col-type">
-					                    	<button>위로</button>
-					                    	<button>아래로</button>
-					                    </td>
-					                    <td class="col-date">
-					                    	<fmt:parseDate value="${layer.insertDate}" var="viewLayerInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
-											<fmt:formatDate value="${viewLayerInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
 					                    </td>
 					                </tr>	
 			</c:forEach>
@@ -311,7 +296,7 @@
             
             var formData = "updateType=UP";
     	    $.ajax({
-    			url: "/layer/group/view-order/" + id,
+    			url: "/layer/view-order-group/" + id,
     			type: "POST",
     			headers: {"X-Requested-With": "XMLHttpRequest"},
     	        data: formData,
@@ -349,7 +334,7 @@
             downFlag = false;
             var formData = "updateType=DOWN";
     	    $.ajax({
-    			url: "/layer/group/view-order/" + id,
+    			url: "/layer/view-order-group/" + id,
     			type: "POST",
     			headers: {"X-Requested-With": "XMLHttpRequest"},
     	        data: formData,
@@ -378,6 +363,35 @@
             alert("진행 중입니다.");
             return;
         }
+    }
+    
+    var deleteLayerGroupFlag = true;
+    function deleteLayerGroup(layerGroupId) {
+    	if(deleteLayerGroupFlag) {
+    		if(confirm(JS_MESSAGE["delete.confirm"])) {
+    			deleteLayerGroupFlag = false;
+    			$.ajax({
+    				url: "/layer/delete-group/" + layerGroupId,
+    				type: "DELETE",
+    				headers: {"X-Requested-With": "XMLHttpRequest"},
+    				dataType: "json",
+    				success: function(msg) {
+    					alert(JS_MESSAGE["delete"]);
+    					location.reload();
+    				},
+    		        error: function(request, status, error) {
+    		        	// alert message, 세션이 없는 경우 로그인 페이지로 이동 - common.js
+    		        	ajaxErrorHandler(request);
+    		        	deleteLayerGroupFlag = true;
+    		        }
+    			});
+    		} else {
+    			deleteRoleFlag = true;
+    		}
+    	} else {
+    		alert(JS_MESSAGE["button.dobule.click"]);
+    		return;
+    	}
     }
 </script>
 </body>

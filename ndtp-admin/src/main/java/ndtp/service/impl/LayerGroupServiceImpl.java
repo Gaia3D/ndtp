@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
+import ndtp.domain.Depth;
 import ndtp.domain.Layer;
 import ndtp.domain.LayerGroup;
 import ndtp.domain.Move;
@@ -36,6 +37,16 @@ public class LayerGroupServiceImpl implements LayerGroupService {
 	}
 	
 	/**
+     * 데이터 정보 조회
+     * @param layerGroupId
+     * @return
+     */
+	@Transactional(readOnly = true)
+    public LayerGroup getLayerGroup(Integer layerGroupId) {
+		return layerGroupMapper.getLayerGroup(layerGroupId);
+	}
+	
+	/**
 	 * 레이어 그룹 목록 및 하위 레이어를 조회
      * @return
      */
@@ -51,126 +62,6 @@ public class LayerGroupServiceImpl implements LayerGroupService {
 		return layerGroupList;
 	}
 	
-//	/** 
-//	 * Depth에 따라 레이어 그룹 목록 조회한다.
-//	 */
-//	@Transactional(readOnly = true)
-//	public List<LayerGroupDto> getListByDepth(int depth) {
-//		List<LayerGroupDto> layerGroupDtoList = new ArrayList<>();
-//		List<LayerGroup> layerGroupList = layerGroupMapper.getListByDepth(depth);
-//		for(LayerGroup layerGroup : layerGroupList) {
-//			LayerGroupDto layerGroupDto = new LayerGroupDto();
-//			layerGroupDto = layerGroupDto.fromEntity(layerGroup);
-//			layerGroupDtoList.add(layerGroupDto);
-//		}
-//		
-//		return layerGroupDtoList;
-//	}
-//
-//	/** 
-//	 * 레이어 그룹 정보(1건)를 조회한다.
-//	 */
-//	@Transactional(readOnly = true)
-//	public LayerGroupDto read(int layerGroupId) {
-//		LayerGroupDto layerGroupDto = new  LayerGroupDto();
-//		LayerGroup layerGroup  = layerGroupMapper.read(layerGroupId);
-//		
-//		return layerGroupDto.fromEntity(layerGroup);
-//	}
-//	
-//	/** 
-//	 * 부모 레이어 그룹 정보(1건)를 조회한다.
-//	 */
-//	@Transactional(readOnly = true)
-//	public LayerGroupDto readParent(int parnet) {
-//		LayerGroupDto layerGroupDto = new  LayerGroupDto();
-//		LayerGroup layerGroup  = layerGroupMapper.readParent(parnet);
-//		if(layerGroup == null) {
-//			return null;
-//		}
-//		return layerGroupDto.fromEntity(layerGroup);
-//	}
-
-	/** 
-	 * 레이어 그룹 등록
-	 */
-	@Transactional
-	public int insertLayerGroup(LayerGroup layerGroup) {
-		// TODO 자식 존재 유무 부분은 나중에 추가 하자.
-		return layerGroupMapper.insertLayerGroup(layerGroup);
-	}
-	
-//	/**
-//	 * 레이어 그룹의 하위 레이어 그룹 갯수를 수정한다.
-//	 */
-//	@Transactional
-//	public int updateChildCount(LayerGroupDto layerGroupDto) {
-//		LayerGroup layerGroup = new LayerGroup();
-//		layerGroup = layerGroupDto.toEntityLayer(layerGroupDto);
-//		return layerGroupMapper.updateChildCount(layerGroup);
-//	}
-//
-//	/** 
-//	 * 레이어 그룹을 수정한다.
-//	 */
-//	@Transactional
-//	public int update(LayerGroupDto layerGroupDto) {
-//		LayerGroup layerGroup = new LayerGroup();
-//		layerGroup = layerGroupDto.toEntityLayer(layerGroupDto);
-//		// 레이어 그룹 수정
-//		int result = layerGroupMapper.update(layerGroup);
-//		// 레이어에 있는 그룹명 수정
-//		result += layerMapper.updateGroupName(layerGroup);
-//		return result;
-//	}
-//	
-//
-//	/** 
-//	 * 레이어 그룹을 삭제한다.
-//	 */
-//	@Transactional
-//	public int delete(int layerGroupId) {
-//		int result = 0;
-//		// 삭제할 레이어 조회
-//		LayerGroupDto layerGroupDto = new LayerGroupDto();
-//		LayerGroup layerGroup = layerGroupMapper.read(layerGroupId);
-//		int childCount = layerGroupDto.fromEntity(layerGroup).getChild();
-//		if(childCount == 0) {
-//			// 해당 그룹의 레이어 삭제
-//			layerMapper.deleteAll(layerGroupId);
-//			// 해당 그룹만 삭제
-//			result += layerGroupMapper.delete(layerGroupId);
-//			
-//		} else {
-//			// 해당 그룹의 레이어 삭제
-//			layerMapper.deleteAll(layerGroupId);
-//			// 해당 그룹의 자식 레이어 삭제
-//			List<LayerGroup> childGroupList = layerGroupMapper.readChild(layerGroupId);
-//			for(LayerGroup childGroup : childGroupList) {
-//				LayerGroupDto dto = new LayerGroupDto();
-//				dto = dto.fromEntity(childGroup);
-//				layerMapper.deleteAll(dto.getLayerGroupId());
-//			}
-//			// 자식 그룹 삭제
-//			result += layerGroupMapper.deleteChild(layerGroupId);
-//			result += layerGroupMapper.delete(layerGroupId);
-//		}
-//		// 자식 갯수 업데이트
-//		result += layerGroupMapper.updateChildCount(layerGroup);
-//		
-//		return result;
-//	}
-//
-//	/**
-//	 * 레이어 그룹명을 조회한다.
-//	 * @param layerGroupId
-//	 * @return
-//	 */
-//	@Transactional
-//	public String getGroupName(int layerGroupId) {
-//		return layerGroupMapper.getGroupName(layerGroupId);
-//	}
-	
 	/**
 	 * 데이터 그룹 표시 순서 수정. UP, DOWN
 	 * @param layerGroup
@@ -179,10 +70,10 @@ public class LayerGroupServiceImpl implements LayerGroupService {
     @Transactional
 	public int updateLayerGroupViewOrder(LayerGroup layerGroup) {
     	
-    	LayerGroup dbLayerGroup = layerGroupMapper.getLayerGroup(layerGroup);
+    	LayerGroup dbLayerGroup = layerGroupMapper.getLayerGroup(layerGroup.getLayerGroupId());
     	dbLayerGroup.setUpdateType(layerGroup.getUpdateType());
     	
-    	Integer modifyViewOrder = layerGroup.getViewOrder();
+    	Integer modifyViewOrder = dbLayerGroup.getViewOrder();
     	LayerGroup searchLayerGroup = new LayerGroup();
     	searchLayerGroup.setUpdateType(dbLayerGroup.getUpdateType());
     	searchLayerGroup.setParent(dbLayerGroup.getParent());
@@ -209,6 +100,73 @@ public class LayerGroupServiceImpl implements LayerGroupService {
     	
     	updateViewOrderLayerGroup(searchLayerGroup);
 		return updateViewOrderLayerGroup(dbLayerGroup);
+    }
+    
+    /** 
+	 * 레이어 그룹 등록
+	 */
+	@Transactional
+	public int insertLayerGroup(LayerGroup layerGroup) {
+		// TODO 자식 존재 유무 부분은 나중에 추가 하자.
+		return layerGroupMapper.insertLayerGroup(layerGroup);
+	}
+	
+	/**
+	 * 데이터 그룹 수정
+	 * @param dataGroup
+	 * @return
+	 */
+    @Transactional
+	public int updateLayerGroup(LayerGroup layerGroup) {
+    	return layerGroupMapper.updateLayerGroup(layerGroup);
+    }
+    
+    /**
+	 * 데이터 그룹 삭제
+	 * @param layerGroup
+	 * @return
+	 */
+    @Transactional
+	public int deleteLayerGroup(Integer layerGroupId) {
+    	// 삭제하고, children update
+    	
+    	LayerGroup layerGroup = layerGroupMapper.getLayerGroup(layerGroupId);
+    	log.info("--- 111111111 delete dataGroup = {}", layerGroup);
+    	
+    	int result = 0;
+    	if(Depth.ONE == Depth.findBy(layerGroup.getDepth())) {
+    		log.info("--- one ================");
+    		result = layerGroupMapper.deleteLayerGroupByAncestor(layerGroup);
+    	} else if(Depth.TWO == Depth.findBy(layerGroup.getDepth())) {
+    		log.info("--- two ================");
+    		result = layerGroupMapper.deleteLayerGroupByParent(layerGroup);
+    		
+    		LayerGroup ancestorLayerGroup = new LayerGroup();
+    		ancestorLayerGroup.setLayerGroupId(layerGroup.getAncestor());
+    		ancestorLayerGroup = layerGroupMapper.getLayerGroup(ancestorLayerGroup.getLayerGroupId());
+    		ancestorLayerGroup.setChildren(ancestorLayerGroup.getChildren() + 1);
+	    	
+    		log.info("--- delete ancestorDataGroup = {}", ancestorLayerGroup);
+    		
+	    	layerGroupMapper.updateLayerGroup(ancestorLayerGroup);
+    		// ancestor - 1
+    	} else if(Depth.THREE == Depth.findBy(layerGroup.getDepth())) {
+    		log.info("--- three ================");
+    		result = layerGroupMapper.deleteLayerGroup(layerGroup);
+    		log.info("--- dataGroup ================ {}", layerGroup);
+    		
+    		LayerGroup parentDataGroup = new LayerGroup();
+	    	parentDataGroup.setLayerGroupId(layerGroup.getParent());
+	    	parentDataGroup = layerGroupMapper.getLayerGroup(parentDataGroup.getLayerGroupId());
+	    	log.info("--- parentDataGroup ================ {}", parentDataGroup);
+	    	parentDataGroup.setChildren(parentDataGroup.getChildren() - 1);
+	    	log.info("--- parentDataGroup children ================ {}", parentDataGroup);
+	    	layerGroupMapper.updateLayerGroup(parentDataGroup);
+    	} else {
+    		
+    	}
+    	
+    	return result;
     }
     
     /**

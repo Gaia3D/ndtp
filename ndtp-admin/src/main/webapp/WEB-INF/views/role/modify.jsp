@@ -26,7 +26,7 @@
 					<%@ include file="/WEB-INF/views/layouts/page_header.jsp" %>
 					<div class="page-content">
 						<form:form id="role" modelAttribute="role" method="post" onsubmit="return false;">
-						<input type="hidden" id="roleId" name="roleId" />
+						<form:hidden path="roleId"/>
 						<table class="input-table scope-row">
 							<col class="col-label l" />
 							<col class="col-input" />
@@ -101,8 +101,8 @@
 						</table>
 						<div class="button-group">
 							<div id="insertRoleLink" class="center-buttons">
+								<button class="point" type="submit" onclick="update();">저장</button>
 								<a href="/role/list" class="button">목록</a>
-								<button class="point" type="submit" onclick="update();">수정</button>
 							</div>
 						</div>
 						</form:form>
@@ -161,7 +161,7 @@ function update() {
 
 	if(updateRoleFlag) {
 		updateRoleFlag = false;
-		var url = "/role/update?roleId=${role.roleId}";
+		var url = "/role/update";
 		var formData = $("#role").serialize();
 		$.ajax({
 			url: url,
