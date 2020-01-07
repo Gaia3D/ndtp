@@ -2,75 +2,78 @@ drop table if exists geopolicy cascade;
 
 -- 2D, 3D 운영 정책
 create table geopolicy(
-	geopolicy_id							integer,
+	geopolicy_id										integer,
+
+	view_library										varchar(20)			default 'cesium',
+	cesium_ion_token									varchar(256)		default '',
+
+	geoserver_enable									boolean				default true,
+	geoserver_wms_version								varchar(5)         	default '1.1.1',
+	geoserver_data_url									varchar(256),
+	geoserver_data_workspace							varchar(60),
+	geoserver_data_store								varchar(60),
+	geoserver_user										varchar(256),
+	geoserver_password									varchar(256),
 	
-	view_library							varchar(20)			default 'cesium',
-	cesium_ion_token						varchar(256)		default '',
-	
-	geoserver_enable						boolean						default true,
-	geoserver_wms_version					varchar(5)         			default '1.1.1',
-	geoserver_data_url						varchar(256),
-	geoserver_data_workspace				varchar(60),
-	geoserver_data_store					varchar(60),
-	geoserver_user							varchar(256),
-	geoserver_password						varchar(256),
-	
-	-- 배책임님 url, layers 는 다른 이름으로 추가해 주세요. 이름도 geoserver 다음에 prefix 고민해 주세요.
-	geoserver_parameters_service			varchar(30),
-	geoserver_parameters_version			varchar(30),
-	geoserver_parameters_request			varchar(30),
-	geoserver_parameters_transparent		varchar(30),
-	geoserver_parameters_format				varchar(30),
-	-- 배책임님 url, layers 는 다른 이름으로 추가해 주세요. 이름도 geoserver 다음에 prefix 고민해 주세요.
-	geoserver_add_parameters_service		varchar(30),
-	geoserver_add_parameters_version		varchar(30),
-	geoserver_add_parameters_request		varchar(30),
-	geoserver_add_parameters_transparent	varchar(30),
-	geoserver_add_parameters_format			varchar(30),
-	
-	data_change_request_decision		char(1)				default '1',
-	
-	cull_face_enable					boolean				default false,
-	time_line_enable					boolean				default false,
-	
-	init_camera_enable					boolean				default true,
-	init_latitude						varchar(30)			default '37.521168',
-	init_longitude						varchar(30)			default '126.924185',
-	init_height							varchar(30)			default '3000.0',
-	init_duration						integer				default 3,
-	init_default_terrain				varchar(64),
-	init_default_fov					integer				default 0,
-	
-	lod0								varchar(20)			default '15',
-	lod1								varchar(20)			default '60',
-	lod2								varchar(20)			default '90',
-	lod3								varchar(20)			default '200',
-	lod4								varchar(20)			default '1000',
-	lod5								varchar(20)			default '50000',
-	
-	ambient_reflection_coef				varchar(10)			default '0.5',
-	diffuse_reflection_coef				varchar(10)			default '1.0',
-	specular_reflection_coef			varchar(10)			default '1.0',
-	specular_color						varchar(11)			default '#d8d8d8',
-	ambient_color						varchar(11)			default '#d8d8d8',
-	ssao_radius							varchar(20)			default '0.15',
-	
-	insert_date							timestamp with time zone			default now(),
-	
-	max_partitions_lod0 						integer			default 4,
-	max_partitions_lod1 						integer			default 2,
-	max_partitions_lod2_or_less 					integer			default 1,
-	max_ratio_points_dist_0m 					integer			default 10,
-	max_ratio_points_dist_100m 					integer			default 120,
-	max_ratio_points_dist_200m 					integer			default 240,
-	max_ratio_points_dist_400m 					integer			default 480,
-	max_ratio_points_dist_800m 					integer			default 960,
-	max_ratio_points_dist_1600m 					integer			default 1920,
-	max_ratio_points_dist_over_1600m 				integer			default 3840,
-	max_point_size_for_pc						numeric(4,1)		default 40.0,
-	min_point_size_for_pc						numeric(4,1)		default 3.0,
-	pendent_point_size_for_pc					numeric(4,1)		default 60.0,
-	
+	geoserver_imageprovider_enable						boolean				default false,
+	geoserver_imageprovider_url							varchar(256),
+	geoserver_imageprovider_layer_name					varchar(60),
+	geoserver_imageprovider_style_name					varchar(60),
+	geoserver_imageprovider_parameters_width			integer				default 256,
+	geoserver_imageprovider_parameters_height			integer				default 256,
+	geoserver_imageprovider_parameters_format			varchar(30),
+
+	geoserver_terrainprovider_enable					boolean				default false,
+	geoserver_terrainprovider_url						varchar(256),
+	geoserver_terrainprovider_layer_name				varchar(60),
+	geoserver_terrainprovider_style_name				varchar(60),
+	geoserver_terrainprovider_parameters_width			integer				default 256,
+	geoserver_terrainprovider_parameters_height			integer				default 256,
+	geoserver_terrainprovider_parameters_format			varchar(30),
+
+	data_change_request_decision						char(1)				default '1',
+
+	cull_face_enable									boolean				default false,
+	time_line_enable									boolean				default false,
+
+	init_camera_enable									boolean				default true,
+	init_latitude										varchar(30)			default '37.521168',
+	init_longitude										varchar(30)			default '126.924185',
+	init_height											varchar(30)			default '3000.0',
+	init_duration										integer				default 3,
+	init_default_terrain								varchar(64),
+	init_default_fov									integer				default 0,
+
+	lod0												varchar(20)			default '15',
+	lod1												varchar(20)			default '60',
+	lod2												varchar(20)			default '90',
+	lod3												varchar(20)			default '200',
+	lod4												varchar(20)			default '1000',
+	lod5												varchar(20)			default '50000',
+
+	ambient_reflection_coef								varchar(10)			default '0.5',
+	diffuse_reflection_coef								varchar(10)			default '1.0',
+	specular_reflection_coef							varchar(10)			default '1.0',
+	specular_color										varchar(11)			default '#d8d8d8',
+	ambient_color										varchar(11)			default '#d8d8d8',
+	ssao_radius											varchar(20)			default '0.15',
+
+	max_partitions_lod0 								integer			default 4,
+	max_partitions_lod1 								integer			default 2,
+	max_partitions_lod2_or_less 						integer			default 1,
+	max_ratio_points_dist_0m 							integer			default 10,
+	max_ratio_points_dist_100m 							integer			default 120,
+	max_ratio_points_dist_200m 							integer			default 240,
+	max_ratio_points_dist_400m 							integer			default 480,
+	max_ratio_points_dist_800m 							integer			default 960,
+	max_ratio_points_dist_1600m 						integer			default 1920,
+	max_ratio_points_dist_over_1600m 					integer			default 3840,
+	max_point_size_for_pc								numeric(4,1)		default 40.0,
+	min_point_size_for_pc								numeric(4,1)		default 3.0,
+	pendent_point_size_for_pc							numeric(4,1)		default 60.0,
+
+	insert_date											timestamp with time zone			default now(),
+
 	constraint geopolicy_pk primary key (geopolicy_id)	
 );
 
@@ -88,16 +91,21 @@ comment on column geopolicy.geoserver_data_store is 'geoserver 데이터 저장�
 comment on column geopolicy.geoserver_user is 'geoserver 사용자 계정';
 comment on column geopolicy.geoserver_password is 'geoserver 비밀번호';
 
-comment on column geopolicy.geoserver_parameters_service is 'geo server 기본 Layers service 변수값';
-comment on column geopolicy.geoserver_parameters_version is 'geo server 기본 Layers version 변수값';
-comment on column geopolicy.geoserver_parameters_request is 'geo server 기본 Layers request 변수값';
-comment on column geopolicy.geoserver_parameters_transparent is 'geo server 기본 Layers transparent 변수값';
-comment on column geopolicy.geoserver_parameters_format is 'geo server 기본 Layers format 변수값';
-comment on column geopolicy.geoserver_add_parameters_service is 'geo server 추가 Layers service 변수값';
-comment on column geopolicy.geoserver_add_parameters_version is 'geo server 추가 Layers version 변수값';
-comment on column geopolicy.geoserver_add_parameters_request is 'geo server 추가 Layers request 변수값';
-comment on column geopolicy.geoserver_add_parameters_transparent is 'geo server 추가 Layers transparent 변수값';
-comment on column geopolicy.geoserver_add_parameters_format is 'geo server 추가 Layers format 변수값';
+comment on column geopolicy.geoserver_imageprovider_enable is 'geoserver imageprovider 사용 유무. 기본 false';
+comment on column geopolicy.geoserver_imageprovider_url is 'geoserver imageprovider 요청 URL';
+comment on column geopolicy.geoserver_imageprovider_layer_name is 'geoserver imageprovider 로 사용할 레이어명';
+comment on column geopolicy.geoserver_imageprovider_style_name is 'geoserver imageprovider 에 사용할 스타일명';
+comment on column geopolicy.geoserver_imageprovider_parameters_width is 'geoserver 레이어 이미지 가로크기';
+comment on column geopolicy.geoserver_imageprovider_parameters_height is 'geoserver 레이어 이미지 세로크기';
+comment on column geopolicy.geoserver_imageprovider_parameters_format is 'geoserver 레이어 포맷형식';
+
+comment on column geopolicy.geoserver_terrainprovider_enable is 'geoserver terrainprovider 사용 유무. 기본 false';
+comment on column geopolicy.geoserver_terrainprovider_url is 'geoserver terrainprovider 요청 URL';
+comment on column geopolicy.geoserver_terrainprovider_layer_name is 'geoserver terrainprovider 로 사용할 레이어명';
+comment on column geopolicy.geoserver_terrainprovider_style_name  is 'geoserver terrainprovider 에 사용할 스타일명';
+comment on column geopolicy.geoserver_terrainprovider_parameters_width is 'geoserver 레이어 이미지 가로크기';
+comment on column geopolicy.geoserver_terrainprovider_parameters_height is 'geoserver 레이어 이미지 세로크기';
+comment on column geopolicy.geoserver_terrainprovider_parameters_format is 'geoserver 레이어 포맷형식';
 
 comment on column geopolicy.data_change_request_decision is '데이터 정보 변경 요청에 대한 처리. 0 : 자동승인, 1 : 결재(초기값)';
 
@@ -141,4 +149,3 @@ comment on column geopolicy.min_point_size_for_pc is 'PointCloud 점의 최소 �
 comment on column geopolicy.pendent_point_size_for_pc is 'PointCloud 점의 크기 보정치. 높아질수록 점이 커짐. 기본값 60.0';
 
 comment on column geopolicy.insert_date is '등록일';
-
