@@ -101,7 +101,7 @@ comment on column geopolicy.geoserver_imageprovider_parameters_format is 'geoser
 
 comment on column geopolicy.geoserver_terrainprovider_enable is 'geoserver terrainprovider 사용 유무. 기본 false';
 comment on column geopolicy.geoserver_terrainprovider_url is 'geoserver terrainprovider 요청 URL';
-comment on column geopolicy.geoserver_terrainprovider_layer_name is 'geoserver terrainprovider 로 사용할 레이어명'
+comment on column geopolicy.geoserver_terrainprovider_layer_name is 'geoserver terrainprovider 로 사용할 레이어명';
 comment on column geopolicy.geoserver_terrainprovider_style_name  is 'geoserver terrainprovider 에 사용할 스타일명';
 comment on column geopolicy.geoserver_terrainprovider_parameters_width is 'geoserver 레이어 이미지 가로크기';
 comment on column geopolicy.geoserver_terrainprovider_parameters_height is 'geoserver 레이어 이미지 세로크기';
