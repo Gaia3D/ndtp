@@ -325,8 +325,8 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		showRange(100);
-		//changeLayerType(null);
-		//changeGeometryType(null);
+		changeLayerType(null);
+		changeGeometryType(null);
 		
 		$("input[name='sharing']").filter("[value='public']").prop("checked", true);
 		$("input[name='defaultDisplay']").filter("[value='true']").prop("checked", true);
@@ -341,6 +341,37 @@
 	$('[name=geometryType]').on('change', function() {
 		changeGeometryType($("[name=geometryType]").val());
 	});
+	
+	// 레이어 타입 Raster 선택 시 입력폼 변경
+	function changeLayerType(layerType) {
+		if(layerType == 'Vector') {
+			$('.forRaster').attr('disabled', false);
+			$('.forRaster').removeClass('disabled');
+			$('.picker').attr('disabled', false);
+			changeGeometryType(null);
+			$('#layerLineStyle').val(Number(1.0));
+		} else {
+			$('.forRaster').attr('disabled', true);
+			$('.forRaster').addClass('disabled');
+			$('.picker').attr('disabled', true);
+			$('.forRaster').val('');
+			$('.picker').val(null);
+		}
+	}
+
+	// 도형 타입 Polygon 선택시 선택폼 변경
+	function changeGeometryType(geometryType) {
+		if(geometryType == 'Polygon') {
+			$('.forPolygon').attr('disabled', false);
+			$('.forPolygon').removeClass("disabled");
+			$('.picker.forPolygon').attr('disabled', false);
+		} else {
+			$('.forPolygon').attr('disabled', true);
+			$('.forPolygon').addClass("disabled");
+			$('.picker.forPolygon').attr('disabled', true);
+			$('.forPolygon').val(null);
+		}
+	}
 	
 	// 슬라이더
 	function showRange(valus) {
