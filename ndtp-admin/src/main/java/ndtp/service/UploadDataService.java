@@ -56,25 +56,13 @@ public interface UploadDataService {
 	 * @return
 	 */
 	int insertUploadData(UploadData uploadData, List<UploadDataFile> uploadDataFileList);
-//	
-//	/**
-//	 * 사용자 파일 업로딩
-//	 * @param uploadDataFile
-//	 * @return
-//	 */
-//	int insertUploadDataFile(UploadDataFile uploadDataFile);
-//
-//	/**
-//	 * 업로딩 데이터 정보 삭제
-//	 * @param uploadData
-//	 * @return
-//	 */
-//	int deleteUploadData(UploadData uploadData);
-//	
-//	/**
-//	 * 업로딩 데이터 파일 삭제
-//	 * @param uploadData
-//	 * @return
-//	 */
-//	int deleteUploadDataFile(UploadData uploadData);
+
+	/**
+	 * 업로딩 데이터 삭제
+	 * @param userId
+	 * @param checkIds
+	 * @return
+	 */
+	int deleteUploadDatas(String userId, String checkIds);
+
 }

@@ -26,6 +26,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -37,6 +38,7 @@ import ndtp.domain.DataType;
 import ndtp.domain.FileType;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
+import ndtp.domain.Pagination;
 import ndtp.domain.Policy;
 import ndtp.domain.UploadData;
 import ndtp.domain.UploadDataFile;
@@ -407,58 +409,50 @@ public class UploadDataController {
 		return result;
 	}
 	
-//	/**
-//	 * 업로딩 파일 목록
-//	 * @param request
-//	 * @param uploadData
-//	 * @param pageNo
-//	 * @param model
-//	 * @return
-//	 */
-//	@RequestMapping(value = "list-upload-data.do")
-//	public String listUploadData(HttpServletRequest request, UploadData uploadData, @RequestParam(defaultValue="1") String pageNo, Model model) {
-//		log.info("@@ uploadData = {}", uploadData);
-//		
-//		UserSession userSession = (UserSession)request.getSession().getAttribute(UserSession.KEY);
-//		uploadData.setUser_id(userSession.getUser_id());
-//		
-//		if(StringUtil.isNotEmpty(uploadData.getStart_date())) {
-//			uploadData.setStart_date(uploadData.getStart_date().substring(0, 8) + DateUtil.START_TIME);
-//		}
-//		if(StringUtil.isNotEmpty(uploadData.getEnd_date())) {
-//			uploadData.setEnd_date(uploadData.getEnd_date().substring(0, 8) + DateUtil.END_TIME);
-//		}
-//		long totalCount = uploadDataService.getUploadDataTotalCount(uploadData);
-//		
-//		Pagination pagination = new Pagination(	request.getRequestURI(), 
-//				getSearchParameters(PageType.LIST, request, uploadData), 
-//				totalCount, 
-//				Long.valueOf(pageNo).longValue(), 
-//				uploadData.getList_counter());
-//		log.info("@@ pagination = {}", pagination);
-//		
-//		uploadData.setOffset(pagination.getOffset());
-//		uploadData.setLimit(pagination.getPageRows());
-//		List<UploadData> uploadDataList = new ArrayList<>();
-//		if(totalCount > 0l) {
-//			uploadDataList = uploadDataService.getListUploadData(uploadData);
-//		}
-//		
-//		model.addAttribute(pagination);
-//		model.addAttribute("uploadDataList", uploadDataList);
-//		
-//		return "/upload-data/list-upload-data";
-//	}
-//	
-////	/**
-////	 * 테스트용
-////	 * @param request
-////	 * @return
-////	 */
-////	@Async
-////    public Future<Void> asyncInsertUpload(MultipartHttpServletRequest request) {
-////		return new AsyncResult<Void>(null);
-////    }
+	/**
+	 * 업로딩 파일 목록
+	 * @param request
+	 * @param uploadData
+	 * @param pageNo
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "list-upload-data")
+	public String listUploadData(HttpServletRequest request, UploadData uploadData, @RequestParam(defaultValue="1") String pageNo, Model model) {
+		log.info("@@ uploadData = {}", uploadData);
+		
+//		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+//		uploadData.setUserId(userSession.getUserId());
+		
+		String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
+		if(StringUtils.isEmpty(uploadData.getStartDate())) {
+			uploadData.setStartDate(today.substring(0,4) + DateUtils.START_DAY_TIME);
+		} else {
+			uploadData.setStartDate(uploadData.getStartDate().substring(0, 8) + DateUtils.START_TIME);
+		}
+		if(StringUtils.isEmpty(uploadData.getEndDate())) {
+			uploadData.setEndDate(today + DateUtils.END_TIME);
+		} else {
+			uploadData.setEndDate(uploadData.getEndDate().substring(0, 8) + DateUtils.END_TIME);
+		}
+		
+		long totalCount = uploadDataService.getUploadDataTotalCount(uploadData);
+		
+		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, uploadData), totalCount, Long.valueOf(pageNo).longValue());
+		log.info("@@ pagination = {}", pagination);
+		
+		uploadData.setOffset(pagination.getOffset());
+		uploadData.setLimit(pagination.getPageRows());
+		List<UploadData> uploadDataList = new ArrayList<>();
+		if(totalCount > 0l) {
+			uploadDataList = uploadDataService.getListUploadData(uploadData);
+		}
+		
+		model.addAttribute(pagination);
+		model.addAttribute("uploadDataList", uploadDataList);
+		
+		return "/upload-data/list-upload-data";
+	}
 	
 	/**
 	 * @param policy
@@ -510,59 +504,66 @@ public class UploadDataController {
 		return null;
 	}
 	
-//	/**
-//	 * data upload 수정
-//	 * @param model
-//	 * @return
-//	 */
-//	@GetMapping(value = "modify-upload-data.do")
-//	public String modifyUploadData(HttpServletRequest request, UploadData uploadData, Model model) {
-//		
-//		UserSession userSession = (UserSession)request.getSession().getAttribute(UserSession.KEY);
-//		uploadData.setUser_id(userSession.getUser_id());
-//		
-//		uploadData = uploadDataService.getUploadData(uploadData);
-//		List<UploadDataFile> uploadDataFileList = uploadDataService.getListUploadDataFile(uploadData);
-//		
-//		model.addAttribute("uploadData", uploadData);
-//		model.addAttribute("uploadDataFileList", uploadDataFileList);
-//		return "/upload-data/modify-upload-data";
-//	}
-//	
-//	/**
-//	 * 선택 upload-data 삭제
-//	 * @param request
-//	 * @param check_ids
-//	 * @param model
-//	 * @return
-//	 */
-//	@PostMapping(value = "ajax-delete-upload-data.do")
-//	@ResponseBody
-//	public Map<String, Object> ajaxDeleteDatas(HttpServletRequest request, @RequestParam("check_ids") String check_ids) {
-//		
-//		log.info("@@@@@@@ check_ids = {}", check_ids);
-//		Map<String, Object> result = new HashMap<>();
-//		int statusCode = 0;
-//		String errorCode = null;
-//		String message = null;
-//		try {
-//			if(check_ids.length() <= 0) {
-//				map.put("result", "check.value.required");
-//				return map;
-//			}
-//			
-//			UserSession userSession = (UserSession)request.getSession().getAttribute(UserSession.KEY);
-//			
-//			uploadDataService.deleteUploadDatas(userSession.getUser_id(), check_ids);
-//		} catch(Exception e) {
-//			e.printStackTrace();
-//			map.put("result", "db.exception");
-//		}
-//		
-//		map.put("result", result	);
-//		return map;
-//	}
-//	
+	/**
+	 * 데이터 upload 수정
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "modify-upload-data")
+	public String modifyUploadData(HttpServletRequest request, UploadData uploadData, Model model) {
+		
+//		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+//		uploadData.setUserId(userSession.getUserId());
+		
+		uploadData = uploadDataService.getUploadData(uploadData);
+		List<UploadDataFile> uploadDataFileList = uploadDataService.getListUploadDataFile(uploadData);
+		
+		model.addAttribute("uploadData", uploadData);
+		model.addAttribute("uploadDataFileList", uploadDataFileList);
+		return "/upload-data/modify-upload-data";
+	}
+	
+	/**
+	 * 선택 upload-data 삭제
+	 * @param request
+	 * @param checkIds
+	 * @param model
+	 * @return
+	 */
+	@PostMapping(value = "delete-upload-data")
+	@ResponseBody
+	public Map<String, Object> deleteDatas(HttpServletRequest request, @RequestParam("checkIds") String checkIds) {
+		
+		log.info("@@@@@@@ checkIds = {}", checkIds);
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		try {
+			if(checkIds.length() <= 0) {
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "check.value.required");
+				result.put("message", message);
+	            return result;
+			}
+			
+			UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+			
+			uploadDataService.deleteUploadDatas(userSession.getUserId(), checkIds);
+		} catch(Exception e) {
+			e.printStackTrace();
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+		
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		
+		return result;
+	}
+	
 	/**
 	 * validation 체크
 	 * @param request
