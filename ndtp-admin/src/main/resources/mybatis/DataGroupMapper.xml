@@ -7,11 +7,11 @@
 	<select id="getListDataGroup" resultType="dataGroup">
 		/* getListLayerGroup */
 		WITH RECURSIVE data_group_tree (
-			data_group_id, data_group_name, data_group_key, data_group_path, shared_type, user_id, ancestor, parent, depth, view_order,
+			data_group_id, data_group_name, data_group_key, data_group_path, sharing, user_id, ancestor, parent, depth, view_order,
 			children, basic, available, data_count, location, altitude, duration, description, update_date, insert_date,
 			path, cycle
 		) AS (
-	        SELECT A.data_group_id, A.data_group_name, A.data_group_key, A.data_group_path, A.shared_type, A.user_id, A.ancestor, A.parent, A.depth, A.view_order,
+	        SELECT A.data_group_id, A.data_group_name, A.data_group_key, A.data_group_path, A.sharing, A.user_id, A.ancestor, A.parent, A.depth, A.view_order,
 	        	A.children, A.basic, A.available, A.data_count, A.location, A.altitude, A.duration, A.description, A.update_date, A.insert_date,
 	        	ARRAY[A.view_order], false
 			FROM data_group A
@@ -20,13 +20,13 @@
 				AND A.available = #{available}
 			</if>
 			UNION ALL
-	        SELECT A.data_group_id, A.data_group_name, A.data_group_key, A.data_group_path, A.shared_type, A.user_id, A.ancestor, A.parent, A.depth, A.view_order,
+	        SELECT A.data_group_id, A.data_group_name, A.data_group_key, A.data_group_path, A.sharing, A.user_id, A.ancestor, A.parent, A.depth, A.view_order,
 	        	A.children, A.basic, A.available, A.data_count, A.location, A.altitude, A.duration, A.description, A.update_date, A.insert_date,
 	        	path || A.view_order, A.data_group_id = ANY(path)
 	        FROM data_group A, data_group_tree B
 	        WHERE A.parent = B.data_group_id AND not cycle
 		)
-	    SELECT data_group_id, data_group_name, data_group_key, data_group_path, shared_type, user_id, ancestor, parent, depth, view_order,
+	    SELECT data_group_id, data_group_name, data_group_key, data_group_path, sharing, user_id, ancestor, parent, depth, view_order,
 	    	children, basic, available, data_count, location, altitude, duration, description, update_date, insert_date,
 	    	path
 	    FROM data_group_tree
@@ -73,7 +73,7 @@
   		</selectKey>
 		INSERT INTO data_group (
 			data_group_id, data_group_name, data_group_key, 
-			data_group_path, shared_type, user_id, ancestor, parent, depth, view_order, children, basic, available, data_count, 
+			data_group_path, sharing, user_id, ancestor, parent, depth, view_order, children, basic, available, data_count, 
 			<if test="location != null">
 			ST_GeographyFromText(#{location}),
 			</if>
@@ -86,7 +86,7 @@
 			<if test="dataGroupKey != null and dataGroupKey != ''">
 			#{dataGroupKey}, 
 			</if>
-			#{dataGroupPath}, #{sharedType}, #{userId},
+			#{dataGroupPath}, #{sharing}, #{userId},
 			(
 				SELECT COALESCE(MAX(ancestor), #{dataGroupId}) 
 				FROM data_group 
@@ -131,8 +131,8 @@
 			<if test="dataGroupPath != null and dataGroupPath != ''">
 			data_group_path = #{dataGroupPath},
 			</if>
-			<if test="sharedType != null and sharedType != ''">
-			shared_type = #{sharedType},
+			<if test="sharing != null and sharing != ''">
+			sharing = #{sharing},
 			</if>
 			<if test="userId != null and userId != ''">
 			user_id = #{userId},

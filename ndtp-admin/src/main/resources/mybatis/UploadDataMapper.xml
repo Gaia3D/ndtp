@@ -9,8 +9,8 @@
 		SELECT COUNT(upload_data_id) 
 		FROM upload_data
 		<trim prefix="WHERE" prefixOverrides="AND">
-			<if test="sharedType != null and sharedType != ''">
-			shared_type = #{sharedType}
+			<if test="sharing != null and sharing != ''">
+			sharing = #{sharing}
 			</if>
 			<if test="dataType != null and dataType != ''">
 			data_type = #{dataType}
@@ -46,8 +46,8 @@
 		<if test="dataGroupName != null and dataGroupName != ''">
 		B.data_group_name = #{dataGroupName}
 		</if>
-		<if test="sharedType != null and sharedType != ''">
-		A.shared_type = #{sharedType}
+		<if test="sharing != null and sharing != ''">
+		A.sharing = #{sharing}
 		</if>
 		<if test="dataType != null and dataType != ''">
 		A.data_type = #{dataType}
@@ -144,10 +144,10 @@
     		SELECT NEXTVAL('upload_data_seq')
   		</selectKey>
 		INSERT INTO upload_data(
-			upload_data_id, data_group_id, shared_type, data_type, data_name, user_id, location,
+			upload_data_id, data_group_id, sharing, data_type, data_name, user_id, location,
 			altitude, file_count, description
 		) VALUES (
-			#{uploadDataId}, #{dataGroupId}, #{sharedType}, #{dataType}, #{dataName}, #{userId}, ST_GeographyFromText(#{location}),
+			#{uploadDataId}, #{dataGroupId}, #{sharing}, #{dataType}, #{dataName}, #{userId}, ST_GeographyFromText(#{location}),
 			#{altitude}, #{fileCount}, #{description}
 		)
 	</insert>
