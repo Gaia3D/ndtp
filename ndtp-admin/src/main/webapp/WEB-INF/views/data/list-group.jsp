@@ -132,7 +132,7 @@
                         					${dataGroup.dataGroupName }
 										</td>
 										<td class="col-key">${dataGroup.dataGroupKey }</td>
-										<td class="col-key">${dataGroup.sharedType }</td>
+										<td class="col-key">${dataGroup.sharing }</td>
 					                    <td class="col-type">
         <c:if test="${dataGroup.basic eq 'true' }">
                         					기본

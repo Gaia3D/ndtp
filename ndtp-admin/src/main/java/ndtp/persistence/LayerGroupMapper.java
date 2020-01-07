@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import ndtp.domain.DataGroup;
 import ndtp.domain.LayerGroup;
 
 @Repository
@@ -13,6 +14,21 @@ public interface LayerGroupMapper {
      * @return
      */
     List<LayerGroup> getListLayerGroup();
+    
+    /**
+     * 데이터 정보 조회
+     * @param layerGroup
+     * @return
+     */
+    LayerGroup getLayerGroup(LayerGroup layerGroup);
+    
+    /**
+     * 부모와 표시 순서로 메뉴 조회
+     * @param layerGroup
+     * @return
+     */
+    LayerGroup getLayerGroupByParentAndViewOrder(LayerGroup layerGroup);
+
     
 //    /**
 //     * Depth에 따라 레이어 그룹 목록 조회한다.
@@ -69,33 +85,12 @@ public interface LayerGroupMapper {
 //	 */
 //	int update(LayerGroup layerGroup);
 //	
-//	/**
-//	 * 레이어 그룹의 나열 순서를 위로 변경한다.
-//	 * @param layerGroup
-//	 * @return
-//	 */
-//	int moveToUpper(LayerGroup layerGroup);
-//	
-//	/**
-//	 * 레이어 그룹의 나열 순서를 위로 변경할 때, 나머지 레이어 그룹의 나열 순서를 재정렬 한다.
-//	 * @param layerGroup
-//	 * @return
-//	 */
-//	int updateUpper(LayerGroup layerGroup);
-//	
-//	/**
-//	 * 레이어 그룹의 나열 순서를 아래로 변경한다.
-//	 * @param layerGroup
-//	 * @return
-//	 */
-//	int moveToLower(LayerGroup layerGroup);
-//	
-//	/**
-//	 * 레이어 그룹의 나열 순서를 아래로 변경할 때, 나머지 레이어 그룹의 나열 순서를 재정렬 한다.
-//	 * @param layerGroup
-//	 * @return
-//	 */
-//	int updateLower(LayerGroup layerGroup);
+    /**
+	 * 데이터 그룹 표시 순서 수정. UP, DOWN
+	 * @param dataGroup
+	 * @return
+	 */
+	int updateLayerGroupViewOrder(LayerGroup layerGroup);
 //    
 //    /**
 //     * 레이어 그룹을 삭제한다.

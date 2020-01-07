@@ -51,7 +51,7 @@ public class DataGroup {
 	// 서비스 경로
 	private String dataGroupPath;
 	// 공유 타입. common : 공통, public : 공개, private : 개인, group : 그룹
-	private String sharedType;
+	private String sharing;
 	// 사용자명
 	private String userId;
 	private String userName;

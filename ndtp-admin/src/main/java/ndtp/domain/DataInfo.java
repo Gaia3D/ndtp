@@ -59,7 +59,7 @@ public class DataInfo extends Search implements Serializable {
 	// data 이름
 	private String dataName;
 	// common : 공통, public : 공개, private : 개인, group : 그룹
-	private String sharedType;
+	private String sharing;
 	// 부모 고유번호
 	private Long parent;
 	// 부모 이름(화면 표시용)

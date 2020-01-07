@@ -137,8 +137,8 @@
             <if test="viewType != null and viewType != ''">
                 view_type,
             </if>
-            <if test="sharedType != null and sharedType != ''">
-                shared_type,
+            <if test="sharing != null and sharing != ''">
+                sharing,
             </if>
             ancestor, parent, depth, view_order, shape_insert_yn, use_yn
         ) VALUES (
@@ -146,8 +146,8 @@
             <if test="viewType != null and viewType != ''">
                 #{viewType},
             </if>
-            <if test="sharedType != null and sharedType != ''">
-                shared_type,
+            <if test="sharing != null and sharing != ''">
+                sharing,
             </if>
             #{ancestor}, #{parent}, #{depth}, #{viewOrder}, #{shapeInsertYn}, #{useYn}
         )
@@ -162,8 +162,8 @@
             <if test="viewType != null and viewType != ''">
                 view_type = #{viewType},
             </if>
-            <if test="sharedType != null and sharedType != ''">
-                shared_type,
+            <if test="sharing != null and sharing != ''">
+                sharing,
             </if>
             use_yn = #{useYn},
             shape_insert_yn = #{shapeInsertYn}
@@ -184,8 +184,8 @@
         <if test="viewType != null and viewType != ''">
             view_type = #{viewType},
         </if>
-        <if test="sharedType != null and sharedType != ''">
-			shared_type,
+        <if test="sharing != null and sharing != ''">
+			sharing,
 		</if>
         <if test="layerStyle != null and layerStyle != ''">
             layer_style = #{layerStyle},

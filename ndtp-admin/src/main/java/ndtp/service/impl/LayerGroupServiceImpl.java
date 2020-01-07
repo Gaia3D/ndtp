@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.Layer;
 import ndtp.domain.LayerGroup;
+import ndtp.domain.Move;
 import ndtp.persistence.LayerGroupMapper;
 import ndtp.service.LayerGroupService;
 import ndtp.service.LayerService;
@@ -123,57 +124,6 @@ public class LayerGroupServiceImpl implements LayerGroupService {
 //		return result;
 //	}
 //	
-//	/** 
-//	 * 레이어 그룹의 나열 순서를 위로 변경한다.
-//	 */
-//	@Transactional
-//	public LayerGroupDto moveToUpper(int layerGroupId) {
-//		LayerGroupDto layerGroupDto = new LayerGroupDto();
-//		LayerGroup layerGroup = new LayerGroup();
-//		layerGroup = layerGroupMapper.read(layerGroupId);
-//		int beforeOrder = layerGroupDto.fromEntity(layerGroup).getViewOrder();
-//		
-//		// 해당 레이어 그룹의 나열 순서를 위(-1)로 변경
-//		layerGroupMapper.moveToUpper(layerGroup);
-//		layerGroup = layerGroupMapper.read(layerGroupId);
-//		int afterOrder = layerGroupDto.fromEntity(layerGroup).getViewOrder();
-//		
-//		if(beforeOrder == afterOrder) {
-//			layerGroupDto.setMessage("레이어 그룹의 처음입니다.");
-//		} else {
-//			layerGroupDto.setMessage(null);
-//			// 기존 레이어 그룹의 나열 순서를 변경 (-1)
-//			layerGroupMapper.updateUpper(layerGroup);
-//		}
-//		
-//		return layerGroupDto;
-//	}
-//	
-//	/** 
-//	 * 레이어 그룹의 나열 순서를 아래로 변경한다.
-//	 */
-//	@Transactional
-//	public LayerGroupDto moveToLower(int layerGroupId) {
-//		LayerGroupDto layerGroupDto = new LayerGroupDto();
-//		LayerGroup layerGroup = new LayerGroup();
-//		layerGroup = layerGroupMapper.read(layerGroupId);
-//		int beforeOrder = layerGroupDto.fromEntity(layerGroup).getViewOrder();
-//		
-//		// 해당 레이어 그룹의 나열 순서를 위(-1)로 변경
-//		layerGroupMapper.moveToLower(layerGroup);
-//		layerGroup = layerGroupMapper.read(layerGroupId);
-//		int afterOrder = layerGroupDto.fromEntity(layerGroup).getViewOrder();
-//		
-//		if(beforeOrder == afterOrder) {
-//			layerGroupDto.setMessage("레이어 그룹의 마지막입니다.");
-//		} else {
-//			layerGroupDto.setMessage(null);
-//			// 기존 레이어 그룹의 나열 순서를 변경 (-1)
-//			layerGroupMapper.updateLower(layerGroup);
-//		}
-//		
-//		return layerGroupDto;
-//	}
 //
 //	/** 
 //	 * 레이어 그룹을 삭제한다.
@@ -220,5 +170,63 @@ public class LayerGroupServiceImpl implements LayerGroupService {
 //	public String getGroupName(int layerGroupId) {
 //		return layerGroupMapper.getGroupName(layerGroupId);
 //	}
+	
+	/**
+	 * 데이터 그룹 표시 순서 수정. UP, DOWN
+	 * @param layerGroup
+	 * @return
+	 */
+    @Transactional
+	public int updateLayerGroupViewOrder(LayerGroup layerGroup) {
+    	
+    	LayerGroup dbLayerGroup = layerGroupMapper.getLayerGroup(layerGroup);
+    	dbLayerGroup.setUpdateType(layerGroup.getUpdateType());
+    	
+    	Integer modifyViewOrder = layerGroup.getViewOrder();
+    	LayerGroup searchLayerGroup = new LayerGroup();
+    	searchLayerGroup.setUpdateType(dbLayerGroup.getUpdateType());
+    	searchLayerGroup.setParent(dbLayerGroup.getParent());
+    	
+    	if(Move.UP == Move.valueOf(dbLayerGroup.getUpdateType())) {
+    		// 바로 위 메뉴의 view_order 를 +1
+    		searchLayerGroup.setViewOrder(dbLayerGroup.getViewOrder());
+    		searchLayerGroup = getDataLayerByParentAndViewOrder(searchLayerGroup);
+    		
+    		if(searchLayerGroup == null) return 0;
+    		
+	    	dbLayerGroup.setViewOrder(searchLayerGroup.getViewOrder());
+	    	searchLayerGroup.setViewOrder(modifyViewOrder);
+    	} else {
+    		// 바로 아래 메뉴의 view_order 를 -1 함
+    		searchLayerGroup.setViewOrder(dbLayerGroup.getViewOrder());
+    		searchLayerGroup = getDataLayerByParentAndViewOrder(searchLayerGroup);
+    		
+    		if(searchLayerGroup == null) return 0;
+    		
+    		dbLayerGroup.setViewOrder(searchLayerGroup.getViewOrder());
+    		searchLayerGroup.setViewOrder(modifyViewOrder);
+    	}
+    	
+    	updateViewOrderLayerGroup(searchLayerGroup);
+		return updateViewOrderLayerGroup(dbLayerGroup);
+    }
+    
+    /**
+     * 부모와 표시 순서로 메뉴 조회
+     * @param layerGroup
+     * @return
+     */
+    private LayerGroup getDataLayerByParentAndViewOrder(LayerGroup layerGroup) {
+    	return layerGroupMapper.getLayerGroupByParentAndViewOrder(layerGroup);
+    }
+    
+    /**
+	 * 
+	 * @param layerGroup
+	 * @return
+	 */
+	private int updateViewOrderLayerGroup(LayerGroup layerGroup) {
+		return layerGroupMapper.updateLayerGroupViewOrder(layerGroup);
+	}
 
 }

@@ -86,11 +86,11 @@
 							</tr>
 							<tr>
 								<th class="col-label" scope="row">
-			                        <form:label path="sharedType">공유 유형</form:label>
+			                        <form:label path="sharing">공유 유형</form:label>
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 			                    <td class="col-input">
-			                        <select name="sharedType">
+			                        <select name="sharing">
 										<option value="common">공통</option>
 										<option value="public">공개</option>
 										<option value="private">비공개</option>
@@ -128,7 +128,7 @@
 									<form:label path="altitude">높이</form:label>
 								</th>
 								<td class="col-input">
-									<form:input path="altitude" cssClass="s" />
+									<form:input path="altitude" cssClass="m" />
 									<form:errors path="altitude" cssClass="error" />
 								</td>
 							</tr>
@@ -216,7 +216,7 @@
         			미사용
         </c:if>
 			    </td>
-			    <td class="col-key">${dataGroup.sharedType }</td>
+			    <td class="col-key">${dataGroup.sharing }</td>
 			    <td class="col-key">${dataGroup.description }</td>
 			    <td class="col-date">
 			    	<fmt:parseDate value="${dataGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
@@ -258,34 +258,6 @@
 		$("#dataGroupId").val(dataGroupId);
 		$("#dataGroupName").val(dataGroupName);
 		dataGroupDialog.dialog( "close" );
-	}
-	
-	
-	
-	
-	function checkData() {
-		if ($("#parent").val() == "") {
-			alert(JS_MESSAGE["data.parent.empty"]);
-			$("#parent_name").focus();
-			return false;
-		}
-		if ($("#data_key").val() == "") {
-			alert(JS_MESSAGE["data.key.empty"]);
-			$("#data_key").focus();
-			return false;
-		}
-		if($("#duplication_value").val() == null || $("#duplication_value").val() == "") {
-			alert(JS_MESSAGE["data.key.duplication_value.check"]);
-			return false;
-		} else if($("#duplication_value").val() == "1") {
-			alert(JS_MESSAGE["data.key.duplication_value.already"]);
-			return false;
-		}
-		if ($("#data_name").val() == "") {
-			alert(JS_MESSAGE["data.name.empty"]);
-			$("#data_name").focus();
-			return false;
-		}
 	}
 	
 	// 지도에서 찾기
@@ -367,10 +339,12 @@
             });
 			
 			this.on("sending", function(file, xhr, formData) {
-				formData.append("sharing_type", $("#sharing_type").val());
+				formData.append("dataName", $("#dataName").val());
+				formData.append("dataGroupId", $("#dataGroupId").val());
+				formData.append("sharing", $("#sharing").val());
 				formData.append("data_type", $("#data_type").val());
-				formData.append("project_id", $("#project_id").val());
-				formData.append("data_name", $("#data_name").val());
+				
+				
 				formData.append("latitude", $("#latitude").val());
 				formData.append("longitude", $("#longitude").val());
 				formData.append("height", $("#height").val());
@@ -430,6 +404,31 @@
             });
 		}
 	};
+    
+    function checkData() {
+		if ($("#parent").val() == "") {
+			alert(JS_MESSAGE["data.parent.empty"]);
+			$("#parent_name").focus();
+			return false;
+		}
+		if ($("#data_key").val() == "") {
+			alert(JS_MESSAGE["data.key.empty"]);
+			$("#data_key").focus();
+			return false;
+		}
+		if($("#duplication_value").val() == null || $("#duplication_value").val() == "") {
+			alert(JS_MESSAGE["data.key.duplication_value.check"]);
+			return false;
+		} else if($("#duplication_value").val() == "1") {
+			alert(JS_MESSAGE["data.key.duplication_value.already"]);
+			return false;
+		}
+		if ($("#data_name").val() == "") {
+			alert(JS_MESSAGE["data.name.empty"]);
+			$("#data_name").focus();
+			return false;
+		}
+	}
 </script>
 </body>
 </html>

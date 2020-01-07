@@ -6,7 +6,7 @@ drop table if exists upload_data_file cascade;
 create table upload_data(
 	upload_data_id					bigint,
 	data_group_id					int,
-	shared_type						varchar(30)							default 'public',
+	sharing						varchar(30)							default 'public',
 	data_type						varchar(30),
 	data_name						varchar(256),
 	user_id							varchar(32),
@@ -31,7 +31,7 @@ create table upload_data(
 comment on table upload_data is '사용자 업로드 정보';
 comment on column upload_data.upload_data_id is '고유번호';
 comment on column upload_data.data_group_id is '데이터 그룹 고유번호';
-comment on column upload_data.shared_type is '공유 유형. 0 : common, 1: public, 2 : private, 3 : sharing';
+comment on column upload_data.sharing is '공유 유형. 0 : common, 1: public, 2 : private, 3 : sharing';
 comment on column upload_data.data_type is '데이터 타입. 3ds,obj,dae,collada,ifc,las,citygml,indoorgml';
 comment on column upload_data.data_name is '파일명';
 comment on column upload_data.user_id is '사용자 아이디';

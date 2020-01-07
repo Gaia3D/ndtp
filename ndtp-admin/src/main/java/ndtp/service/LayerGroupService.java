@@ -2,6 +2,7 @@ package ndtp.service;
 
 import java.util.List;
 
+import ndtp.domain.DataGroup;
 import ndtp.domain.LayerGroup;
 
 public interface LayerGroupService {
@@ -66,24 +67,17 @@ public interface LayerGroupService {
 //	 */
 //	int update(LayerGroup layerGroupDto);
 //	
-//	/**
-//	 * 레이어 그룹의 나열 순서를 위로 변경한다.
-//	 * @param layerGroupId
-//	 * @return
-//	 */
-//	LayerGroup moveToUpper(int layerGroupId);
-//	
-//	/**
-//	 * 레이어 그룹의 나열 순서를 아래로 변경한다.
-//	 * @param layerGroupId
-//	 * @return
-//	 */
-//	LayerGroup moveToLower(int layerGroupId);
-//	
 //    /**
 //     * 레이어 그룹을 삭제한다.
 //     * @param layerGroupId
 //     * @return
 //     */
 //    int delete(int layerGroupId);
+    
+    /**
+	 * 데이터 그룹 표시 순서 수정. UP, DOWN
+	 * @param layerGroup
+	 * @return
+	 */
+	int updateLayerGroupViewOrder(LayerGroup layerGroup);
 }

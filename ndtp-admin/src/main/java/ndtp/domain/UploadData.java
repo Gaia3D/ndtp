@@ -43,7 +43,7 @@ public class UploadData extends Search implements Serializable {
 	// 데이트 그룹명
 	private String dataGroupName;
 	// common : 공통, public : 공개, private : 개인, group : 그룹
-	private String sharedType;
+	private String sharing;
 	// 데이터 타입. 3ds,obj, dae, collada, ifc, las, citygml, indoorgml
 	private String dataType;
 	// 데이터명

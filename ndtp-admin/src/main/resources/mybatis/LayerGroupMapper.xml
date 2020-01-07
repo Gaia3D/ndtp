@@ -63,4 +63,44 @@
 			trim(#{description})
 		)
 	</insert>
+	
+	<!-- 레이어 그룹 정보 -->
+	<select id="getLayerGroup" parameterType="layerGroup" resultType="layerGroup">
+		/* getLayerGroup */
+		SELECT * 
+		FROM layer_group 
+		WHERE layer_group_id = #{layerGroupId} 
+		<if test="userId != null and userId != ''">
+			AND user_id = #{userId}
+		</if> 
+	</select>
+	
+	<!-- 부모와 순서를 가지고 레이어 그룹 정보를 취득 -->
+	<select id="getLayerGroupByParentAndViewOrder" parameterType="layerGroup" resultType="layerGroup">
+		/* getLayerGroupByParentAndViewOrder */
+		SELECT * 
+		FROM layer_group 
+		WHERE parent = #{parent} 
+		<if test="updateType == 'UP'.toString()">
+			<![CDATA[
+			AND view_order < #{viewOrder}
+			]]>
+		ORDER BY view_order DESC 
+		</if>
+		<if test="updateType == 'DOWN'.toString()">
+			<![CDATA[
+			AND view_order > #{viewOrder}
+			]]>
+		ORDER BY view_order 
+		</if>
+		LIMIT 1 
+	</select>
+	
+	<!-- 레이어 그룹 순서 수정 -->
+	<update id="updateLayerGroupViewOrder" parameterType="layerGroup">
+		/* updateLayerGroupViewOrder */
+		UPDATE layer_group 
+		SET view_order = #{viewOrder} 
+		WHERE layer_group_id = #{layerGroupId}
+	</update>
 </mapper>

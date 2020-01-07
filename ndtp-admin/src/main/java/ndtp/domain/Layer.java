@@ -76,7 +76,7 @@ public class Layer extends Search implements Serializable {
     private String userId;
     
     // 공유 타입. 0 : 공개, 1 : 개인, 2 : 그룹
-    private String sharedType;
+    private String sharing;
     // 서비스 타입 (wms, wfs, wcs, wps)
     private String serviceType;
     // 레이어 타입 (Raster, Vector)	

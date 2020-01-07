@@ -54,8 +54,8 @@
 					                    <th scope="col">등록자</th>
 					                    <th scope="col">설명</th>
 					                    <th scope="col">레이어</th>
-					                    <th scope="col">상세정보</th>
 					                    <th scope="col">순서</th>
+					                    <th scope="col">편집</th>
 					                    <th scope="col">등록일</th>
 									</tr>
 								</thead>
@@ -142,11 +142,18 @@
 					                    <td class="col-key">${layerGroup.description }</td>
 					                    <td class="col-type"><a href="/layer/modify/${layerGroup.layerGroupId }" class="linkButton">보기</a>
 					                    </td>
-					                    <td class="col-type"><a href="/layer/modify/${layerGroup.layerGroupId }" class="linkButton">수정</a>
+					                    <td class="col-type">
+					                    	<div class="button-group">
+					                    		<a href="#" onclick="moveUp('${layerGroup.layerGroupId }', '${layerGroup.viewOrder }'); return false;" 
+					                    			class="button" style="text-decoration:none;">위로</a>
+												<a href="#" onclick="moveDown('${layerGroup.layerGroupId }', '${layerGroup.viewOrder }'); return false;" 
+													class="button" style="text-decoration:none;">아래로</a>
+					                    	</div>
 					                    </td>
 					                    <td class="col-type">
-					                    	<button>위로</button>
-					                    	<button>아래로</button>
+											<a href="#" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;
+											<a href="/data/delete-data-group?dataGroupId=${layerGroup.layerGroupId }" onclick="return deleteWarning();" 
+														class="linkButton"><spring:message code='delete'/></a>
 					                    </td>
 					                    <td class="col-date">
 					                    	<fmt:parseDate value="${layerGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
@@ -291,16 +298,86 @@
 	    }
 	}
 	
-	// 지도 보기
-    function viewLayer(layerId, layerName) {
-        var url = "/layer/" + layerId + "/map";
-        //popupOpen(url, layerName, 1000, 700);
-        var width = 800;
-        var height = 700;
+	// 위로 이동
+    var upFlag = true;
+    function moveUp(id, viewOrder) {
+        if(upFlag) {
+            upFlag = false;
+            if(viewOrder === "1") {
+                alert("제일 처음 입니다.");
+                upFlag = true;
+                return;
+            }
+            
+            var formData = "updateType=UP";
+    	    $.ajax({
+    			url: "/layer/group/view-order/" + id,
+    			type: "POST",
+    			headers: {"X-Requested-With": "XMLHttpRequest"},
+    	        data: formData,
+    			success: function(msg){
+    				if(msg.statusCode <= 200) {
+    					alert(JS_MESSAGE["update"]);
+    					window.location.reload();
+    					upFlag = true;
+    					openAll();
+    				} else {
+						if(msg.errorCode === "data.group.view-order.invalid") {
+							alert("순서를 변경할 수 없습니다.");
+						} else {
+							alert(JS_MESSAGE[msg.errorCode]);
+						}
+    					console.log("---- " + msg.message);
+    					upFlag = true;
+    				}
+    			},
+    			error:function(request, status, error){
+    		        alert(JS_MESSAGE["ajax.error.message"]);
+    		        upFlag = true;
+    			}
+    		});
+        } else {
+            alert("진행 중입니다.");
+            return;
+        }
+    }
 
-        var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height
-                + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
-        popWin.document.title = layerName;
+    // 아래로 이동
+    var downFlag = true;
+    function moveDown(id, viewOrder) {
+        if(downFlag) {
+            downFlag = false;
+            var formData = "updateType=DOWN";
+    	    $.ajax({
+    			url: "/layer/group/view-order/" + id,
+    			type: "POST",
+    			headers: {"X-Requested-With": "XMLHttpRequest"},
+    	        data: formData,
+    			success: function(msg){
+    				if(msg.statusCode <= 200) {
+    					alert(JS_MESSAGE["update"]);
+    					window.location.reload();
+    					downFlag = true;
+    					openAll();
+    				} else {
+    					if(msg.errorCode === "data.group.view-order.invalid") {
+							alert("순서를 변경할 수 없습니다.");
+						} else {
+							alert(JS_MESSAGE[msg.errorCode]);
+						}
+    					console.log("---- " + msg.message);
+    					downFlag = true;
+    				}
+    			},
+    			error:function(request, status, error){
+    		        alert(JS_MESSAGE["ajax.error.message"]);
+    		        downFlag = true;
+    			}
+    		});
+        } else {
+            alert("진행 중입니다.");
+            return;
+        }
     }
 </script>
 </body>

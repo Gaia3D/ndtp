@@ -14,11 +14,13 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.extern.slf4j.Slf4j;
+import ndtp.domain.DataGroup;
 import ndtp.domain.Key;
 import ndtp.domain.LayerGroup;
 import ndtp.domain.Policy;
@@ -194,62 +196,6 @@ public class LayerGroupController {
 //	}
 //	
 //	/**
-//	 * 레이어 그룹의 나열 순서를 위로 변경한다.
-//	 */
-//	@ResponseBody
-//	@PutMapping(value = "group/move-up/{layerGroupId}")
-//	public Map<String, Object> moveToUpper(@PathVariable int layerGroupId, LayerGroupDto layerGroupDto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-//		String result = "success";
-//		Map<String, Object> map = new HashMap<>();
-//		
-//		if(bindingResult.hasErrors()) {
-//			String errorMessage = bindingResult.getAllErrors().get(0).getDefaultMessage();
-//			log.info("@@@@@ errorMessage = {}", errorMessage);
-//		}
-//		
-//		try {
-//			layerGroupDto = layerGroupService.moveToUpper(layerGroupId);
-//			map.put("layerGroup", layerGroupDto);
-//			
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			result = "db.exception";
-//		}
-//			
-//		map.put("result", result);
-//		
-//		return map;
-//	}
-//	
-//	/**
-//	 * 레이어 그룹의 나열 순서를 아래로 변경한다.
-//	 */
-//	@ResponseBody
-//	@PutMapping(value = "group/move-low/{layerGroupId}")
-//	public Map<String, Object> moveToLower(@PathVariable int layerGroupId, LayerGroupDto layerGroupDto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-//		String result = "success";
-//		Map<String, Object> map = new HashMap<>();
-//		
-//		if(bindingResult.hasErrors()) {
-//			String errorMessage = bindingResult.getAllErrors().get(0).getDefaultMessage();
-//			log.info("@@@@@ errorMessage = {}", errorMessage);
-//		}
-//		
-//		try {
-//			layerGroupDto = layerGroupService.moveToLower(layerGroupId);
-//			map.put("layerGroup", layerGroupDto);
-//			
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			result = "db.exception";
-//		}
-//			
-//		map.put("result", result);
-//		
-//		return map;
-//	}
-//	
-//	/**
 //	 * 레이어 그룹을 삭제한다.
 //	 */
 //	@ResponseBody
@@ -268,4 +214,39 @@ public class LayerGroupController {
 //		redirectAttributes.addFlashAttribute("result", result);
 //		return "redirect:/layer/groups";
 //	}
+	
+	/**
+	 * 사용자 그룹 트리 순서 수정, up, down
+	 * @param model
+	 * @return
+	 */
+	@PostMapping(value = "group/view-order/{layerGroupId}")
+	@ResponseBody
+	public Map<String, Object> moveLayerGroup(HttpServletRequest request, @PathVariable Integer layerGroupId, @ModelAttribute LayerGroup layerGroup) {
+		log.info("@@ dataGroup = {}", layerGroup);
+		
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		try {
+			layerGroup.setLayerGroupId(layerGroupId);
+			
+			int updateCount = layerGroupService.updateLayerGroupViewOrder(layerGroup);
+			if(updateCount == 0) {
+				statusCode = HttpStatus.BAD_REQUEST.value();
+				errorCode = "data.group.view-order.invalid";
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+		
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
+	}
 }
