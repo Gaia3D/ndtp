@@ -26,6 +26,10 @@ public class LayerGroup implements Serializable {
 	 */
 	private static final long serialVersionUID = 784422683223454122L;
 	
+	/****** 화면 표시용 *******/
+	// up : 위로, down : 아래로
+	private String updateType;
+	
 	/**
 	 * 레이어 그룹 고유번호 
 	 */
