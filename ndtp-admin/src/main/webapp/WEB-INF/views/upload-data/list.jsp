@@ -126,7 +126,7 @@
 											</td>
 											<td class="col-number">${pagination.rowNumber - status.index }</td>
 						
-											<td class="col-name" style="text-align: center;">
+											<td class="col-type">
 				<c:if test="${uploadData.sharing eq 'common' }">
 												공통
 				</c:if>
@@ -140,15 +140,15 @@
 												공유
 				</c:if>
 											</td>
-											<td class="col-name" style="text-align: center;">${uploadData.dataType }</td>
+											<td class="col-type">${uploadData.dataType }</td>
 											<td class="col-name">${uploadData.dataGroupName }</td>
 											<td class="col-name">
 												<a href="/upload-data/modify-upload-data?uploadDataId=${uploadData.uploadDataId }">
 												${uploadData.dataName }
 												</a>
 											</td>
-											<td class="col-name" style="text-align: right;"><fmt:formatNumber value="${uploadData.fileCount}" type="number"/> 개</td>
-											<td class="col-name" style="text-align: right;">${uploadData.converterCount} 건</td>
+											<td class="col-count"><fmt:formatNumber value="${uploadData.fileCount}" type="number"/> 개</td>
+											<td class="col-count">${uploadData.converterCount} 건</td>
 											<td class="col-functions">
 												<span class="button-group">
 													<a href="#" onclick="converterFile('${uploadData.uploadDataId}', '${uploadData.dataName}'); return false;" 
@@ -163,7 +163,7 @@
 														class="image-button button-delete"><spring:message code='delete'/></a>
 												</span>
 											</td>
-											<td class="col-name" style="text-align: center;">
+											<td class="col-name">
 												<fmt:parseDate value="${uploadData.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
 												<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
 											</td>
