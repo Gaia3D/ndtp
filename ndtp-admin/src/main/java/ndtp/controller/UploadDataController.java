@@ -39,7 +39,6 @@ import ndtp.domain.DataGroup;
 import ndtp.domain.DataType;
 import ndtp.domain.FileType;
 import ndtp.domain.Key;
-import ndtp.domain.LayerGroup;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
 import ndtp.domain.Policy;
