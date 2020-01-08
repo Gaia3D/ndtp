@@ -63,6 +63,7 @@ create table geopolicy(
 	max_point_size_for_pc								numeric(4,1)		default 40.0,
 	min_point_size_for_pc								numeric(4,1)		default 3.0,
 	pendent_point_size_for_pc							numeric(4,1)		default 60.0,
+	enable_memory_management							boolean			default false,
 	insert_date									timestamp with time zone	default now(),
 
 	constraint geopolicy_pk primary key (geopolicy_id)	
@@ -130,5 +131,6 @@ comment on column geopolicy.max_ratio_points_dist_over_1600m is '카메라와의
 comment on column geopolicy.max_point_size_for_pc is 'PointCloud 점의 최대 크기. 기본값 40.0';
 comment on column geopolicy.min_point_size_for_pc is 'PointCloud 점의 최소 크기. 기본값 3.0';
 comment on column geopolicy.pendent_point_size_for_pc is 'PointCloud 점의 크기 보정치. 높아질수록 점이 커짐. 기본값 60.0';
+comment on column geopolicy.enable_memory_management is 'GPU Memory Pool 사용유무. 기본값 false';
 
 comment on column geopolicy.insert_date is '등록일';
