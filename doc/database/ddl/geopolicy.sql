@@ -33,9 +33,6 @@ create table geopolicy(
 
 	data_change_request_decision						char(1)				default '1',
 
-	cull_face_enable									boolean				default false,
-	time_line_enable									boolean				default false,
-
 	init_camera_enable									boolean				default true,
 	init_latitude										varchar(30)			default '37.521168',
 	init_longitude										varchar(30)			default '126.924185',
@@ -51,11 +48,6 @@ create table geopolicy(
 	lod4												varchar(20)			default '1000',
 	lod5												varchar(20)			default '50000',
 
-	ambient_reflection_coef								varchar(10)			default '0.5',
-	diffuse_reflection_coef								varchar(10)			default '1.0',
-	specular_reflection_coef							varchar(10)			default '1.0',
-	specular_color										varchar(11)			default '#d8d8d8',
-	ambient_color										varchar(11)			default '#d8d8d8',
 	ssao_radius											varchar(20)			default '0.15',
 
 	max_partitions_lod0 								integer			default 4,
@@ -71,8 +63,7 @@ create table geopolicy(
 	max_point_size_for_pc								numeric(4,1)		default 40.0,
 	min_point_size_for_pc								numeric(4,1)		default 3.0,
 	pendent_point_size_for_pc							numeric(4,1)		default 60.0,
-
-	insert_date											timestamp with time zone			default now(),
+	insert_date									timestamp with time zone	default now(),
 
 	constraint geopolicy_pk primary key (geopolicy_id)	
 );
@@ -109,9 +100,6 @@ comment on column geopolicy.geoserver_terrainprovider_parameters_format is 'geos
 
 comment on column geopolicy.data_change_request_decision is '데이터 정보 변경 요청에 대한 처리. 0 : 자동승인, 1 : 결재(초기값)';
 
-comment on column geopolicy.cull_face_enable is 'cullFace 사용유무. 기본 false';
-comment on column geopolicy.time_line_enable is 'timeLine 사용유무. 기본 false';
-	
 comment on column geopolicy.init_camera_enable is '초기 카메라 이동 유무. true : 기본, false : 없음';
 comment on column geopolicy.init_latitude is '초기 카메라 이동 위도';
 comment on column geopolicy.init_longitude is '초기 카메라 이동 경도';
@@ -127,11 +115,6 @@ comment on column geopolicy.lod3 is 'LOD3. 기본값 200M';
 comment on column geopolicy.lod4 is 'LOD4. 기본값 1000M';
 comment on column geopolicy.lod5 is 'LOD5. 기본값 50000M';
 
-comment on column geopolicy.ambient_reflection_coef is '다이렉트 빛이 아닌 반사율 범위. 기본값 0.5';
-comment on column geopolicy.diffuse_reflection_coef is '자기 색깔의 반사율 범위. 기본값 1.0';
-comment on column geopolicy.specular_reflection_coef is '표면의 반질거림 범위. 기본값 1.0';
-comment on column geopolicy.ambient_color is '다이렉트 빛이 아닌 반사율 RGB, 콤마로 연결';
-comment on column geopolicy.specular_color is '표면의 반질거림 색깔. RGB, 콤마로 연결';
 comment on column geopolicy.ssao_radius is '그림자 반경';
 
 comment on column geopolicy.max_partitions_lod0 is 'LOD0일시 PointCloud 데이터 파티션 개수. 기본값 4';
