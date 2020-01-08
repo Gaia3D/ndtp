@@ -25,6 +25,43 @@
             white-space: nowrap;
             border: 1px solid #e5e5e5;
         }
+        
+        .loader-txt p {
+            font-size: 13px;
+            color: #666;
+        }
+    
+        .loader-txt p small {
+            font-size: 11.5px;
+            color: #999;
+        }
+        
+        .loader {
+            position: relative;
+            text-align: center;
+            margin: 15px auto 35px auto;
+            z-index: 9999;
+            display: block;
+            width: 80px;
+            height: 80px;
+            border: 10px solid rgba(0, 0, 0, 0.3);
+            border-radius: 50%;
+            border-top-color: #000;
+            animation: spin 1s ease-in-out infinite;
+            -webkit-animation: spin 1s ease-in-out infinite;
+        }
+    
+        @keyframes spin {
+            to {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+    
+        @-webkit-keyframes spin {
+            to {
+                -webkit-transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body>
@@ -100,7 +137,7 @@
 									</select>
 			                    </td>
 			                    <th class="col-label" scope="row">
-			                        <form:label path="layerType">Layer 터압</form:label>
+			                        <form:label path="layerType">Layer 타입</form:label>
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 			                    <td class="col-input">
@@ -228,7 +265,7 @@
 				        </div>
 				        <div class="button-group">
 							<div class="center-buttons">
-								<input type="submit" id="allFileUpload" value="<spring:message code='save'/>" onclick="insertLayerGroup();" />
+								<input type="submit" id="allFileUpload" value="<spring:message code='save'/>"/>
 								<input type="submit" id="allFileClear" value="초기화" />
 								<a href="/layer/list" class="button">목록</a>
 							</div>
@@ -239,6 +276,7 @@
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
+	<%@ include file="/WEB-INF/views/layer/spinner-dialog.jsp" %>
 	
 	<!-- Dialog -->
 	<div id="layerGroupDialog" class="dialog">
@@ -412,13 +450,49 @@
 	}
 	pickerColor();
 	
+	var layerGroupDialog = $( ".dialog" ).dialog({
+		autoOpen: false,
+		height: 600,
+		width: 1200,
+		modal: true,
+		overflow : "auto",
+		resizable: false
+	});
+	
+	// Layer Group 찾기
+	$( "#layerGroupButtion" ).on( "click", function() {
+		layerGroupDialog.dialog( "open" );
+		layerGroupDialog.dialog( "option", "title", "Layer 그룹 선택");
+	});
+	
+	// 상위 Node
+	function confirmParent(parent, parentName) {
+		$("#layerGroupId").val(parent);
+		$("#parentName").val(parentName);
+		layerGroupDialog.dialog( "close" );
+	}
+	
+	$( "#rootParentSelect" ).on( "click", function() {
+		$("#layerGroupId").val(0);
+		$("#parentName").val("${layerGroup.parentName}");
+		layerGroupDialog.dialog( "close" );
+	});
+	
+	function check() {
+		if ($("#layerName").val() == "") {
+			alert("Layer 명을 입력하여 주십시오.");
+			$("#layerName").focus();
+			return false;
+		}
+	}
+	
 	var fileUploadDialog = $( ".spinner-dialog" ).dialog({
-        autoOpen: false,
-        width: 300,
-        height: 200,
-        modal: true,
-        resizable: false
-    });
+		autoOpen: false,
+		width: 250,
+		height: 290,
+		modal: true,
+		resizable: false
+	});
 
     // 업로딩 파일 개수
     var uploadFileCount = 0;
@@ -489,24 +563,27 @@
             });
 
             this.on("sending", function(file, xhr, formData) {
+                formData.append("layerGroupId", $("#layerGroupId").val());
+                formData.append("sharing", $(':radio[name="sharing"]:checked').val());
                 formData.append("layerName", $("#layerName").val());
-                formData.append("viewType", $("#viewType").val());
+                formData.append("layerKey", $("#layerKey").val());
+                formData.append("serviceType", $("select[name=serviceType]").val());
+                formData.append("layerType", $("select[name=layerType]").val());
+                formData.append("geometryType", $("select[name=geometryType]").val());
+                formData.append("layerLineColor", $("#layerLineColor").val());
+                formData.append("layerLineStyle", $("#layerLineStyle").val());
+                formData.append("layerFillColor", $("#layerFillColor").val());
+                formData.append("layerAlphaStyle", $("#sliderRange").val());
+                formData.append("layerFillColor", $("#layerFillColor").val());
+                formData.append("defaultDisplay", $(':radio[name="defaultDisplay"]:checked').val());
+                formData.append("available", $(':radio[name="available"]:checked').val());
+                formData.append("labelDisplay", $(':radio[name="labelDisplay"]:checked').val());
                 formData.append("coordinate", $("#coordinate").val());
-                formData.append("geometryType", $("#geometryType").val());
-                formData.append("managementDept", $("#managementDept").val());
-                formData.append("managementUserId", $("#managementUserId").val());
-                formData.append("managementSubUserId", $("#managementSubUserId").val());
                 formData.append("description", $("#description").val());
                 formData.append("shapeEncoding", $("#shapeEncoding").val());
-                formData.append("useYn", $(':radio[name="useYn"]:checked').val());
-                formData.append("blockDefaultYn", $(':radio[name="blockDefaultYn"]:checked').val());
-                formData.append("facilityDefaultYn", $(':radio[name="facilityDefaultYn"]:checked').val());
-                formData.append("mobileDefaultYn", $(':radio[name="mobileDefaultYn"]:checked').val());
-                formData.append("labelDisplayYn", $(':radio[name="labelDisplayYn"]:checked').val());
                 var zIndex = 0;
                 if($("#zIndex").val() !== null && $("#zIndex").val() !== "") zIndex = $("#zIndex").val();
                 formData.append("zIndex", zIndex);
-                formData.append("comment", $("#comment").val());
             });
 
             // maxFiles 카운터를 초과하면 경고창
@@ -551,35 +628,6 @@
         }
     };
 	
-	
-	
-	var layerGroupDialog = $( ".dialog" ).dialog({
-		autoOpen: false,
-		height: 600,
-		width: 1200,
-		modal: true,
-		overflow : "auto",
-		resizable: false
-	});
-	
-	// Layer Group 찾기
-	$( "#layerGroupButtion" ).on( "click", function() {
-		layerGroupDialog.dialog( "open" );
-		layerGroupDialog.dialog( "option", "title", "Layer 그룹 선택");
-	});
-	
-	// 상위 Node
-	function confirmParent(parent, parentName) {
-		$("#parent").val(parent);
-		$("#parentName").val(parentName);
-		layerGroupDialog.dialog( "close" );
-	}
-	
-	$( "#rootParentSelect" ).on( "click", function() {
-		$("#parent").val(0);
-		$("#parentName").val("${layerGroup.parentName}");
-		layerGroupDialog.dialog( "close" );
-	});
 </script>
 </body>
 </html>
