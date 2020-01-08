@@ -123,7 +123,7 @@ create table policy(
 	
 	user_upload_type						varchar(256)		default '3ds,obj,dae,collada,ifc,las,citygml,indoorgml,jpg,jpeg,gif,png,bmp,zip',
 	user_upload_max_filesize				integer				default 10000,
-	user_upload_max_count					integer				default 100,
+	user_upload_max_count					integer				default 500,
 	
 	insert_date								timestamp with time zone			default now(),
 	constraint policy_pk primary key (policy_id)	

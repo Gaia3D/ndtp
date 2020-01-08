@@ -143,7 +143,7 @@
 											<td class="col-type">${uploadData.dataType }</td>
 											<td class="col-name">${uploadData.dataGroupName }</td>
 											<td class="col-name">
-												<a href="/upload-data/modify-upload-data?uploadDataId=${uploadData.uploadDataId }">
+												<a href="/upload-data/modify?uploadDataId=${uploadData.uploadDataId }">
 												${uploadData.dataName }
 												</a>
 											</td>
@@ -186,7 +186,7 @@
 	<%-- F4D Converter Job 등록 --%>
 	<div class=dialogConverterJob title="F4D Converter Job 등록">
 		<form id="converterJobForm" name="converterJobForm" action="" method="post">
-			<input type="hidden" id="checkIds" name="checkIds" value="" />
+			<input type="hidden" id="converterCheckIds" name="converterCheckIds" value="" />
 			<table class="inner-table scope-row">
 				<col class="col-sub-label xl" />
 				<col class="col-data" />

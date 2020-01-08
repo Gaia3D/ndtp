@@ -14,6 +14,7 @@ create table menu(
 	view_order			integer									default 1,
 	url					varchar(256),
 	url_alias			varchar(256),
+	alias_menu_id		integer,
 	html_id				varchar(100),
 	html_content_id		varchar(100),
 	image				varchar(256),
@@ -41,6 +42,7 @@ comment on column menu.depth is '깊이';
 comment on column menu.view_order is '나열 순서';
 comment on column menu.url is 'URL';
 comment on column menu.url_alias is 'URL Alias';
+comment on column menu.alias_menu_id is 'URL Alias Menu id, 현재 선택 메뉴를 표시하기 위함';
 comment on column menu.html_id is '메뉴 타입이 HTML ID 일 경우 id값';
 comment on column menu.html_content_id is '메뉴 타입이 HTML ID 일 경우 메뉴와 한쌍으로 묶이는 content id값';
 comment on column menu.image is '이미지';

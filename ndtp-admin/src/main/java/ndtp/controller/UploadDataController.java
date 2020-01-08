@@ -17,12 +17,14 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +39,7 @@ import ndtp.domain.DataGroup;
 import ndtp.domain.DataType;
 import ndtp.domain.FileType;
 import ndtp.domain.Key;
+import ndtp.domain.LayerGroup;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
 import ndtp.domain.Policy;
@@ -251,17 +254,19 @@ public class UploadDataController {
 				uploadData.setDataGroupId(Integer.valueOf(request.getParameter("dataGroupId")));
 				uploadData.setSharing(request.getParameter("sharing"));
 				uploadData.setDataType(request.getParameter("dataType"));
-				//uploadData.setLocation("POINT(" + request.getParameter("longitude") + " " + request.getParameter("latitude") + ")");
 				uploadData.setUserId(userId);
 				if(request.getParameter("latitude") != null && !"".equals(request.getParameter("latitude"))
 						&& request.getParameter("longitude") != null && !"".equals(request.getParameter("longitude"))) {
 					uploadData.setLatitude(new BigDecimal(request.getParameter("latitude")) );
 					uploadData.setLongitude(new BigDecimal(request.getParameter("longitude")) );
 					uploadData.setAltitude(new BigDecimal(request.getParameter("altitude")) );
+					
+					uploadData.setLocation("POINT(" + request.getParameter("longitude") + " " + request.getParameter("latitude") + ")");
 				}
 				uploadData.setDescription(request.getParameter("description"));
 				uploadData.setFileCount(uploadDataFileList.size());
 				
+				log.info("@@@@@@@@@@@@ uploadData = {}", uploadData);
 				uploadDataService.insertUploadData(uploadData, uploadDataFileList);       
 			} catch(Exception e) {
 				e.printStackTrace();
@@ -517,10 +522,59 @@ public class UploadDataController {
 		
 		uploadData = uploadDataService.getUploadData(uploadData);
 		List<UploadDataFile> uploadDataFileList = uploadDataService.getListUploadDataFile(uploadData);
+		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup();
 		
 		model.addAttribute("uploadData", uploadData);
 		model.addAttribute("uploadDataFileList", uploadDataFileList);
+		model.addAttribute("dataGroupList", dataGroupList);
+		
 		return "/upload-data/modify";
+	}
+	
+	/**
+	 * 업로드 데이트 수정
+	 * @param request
+	 * @param uploadData
+	 * @param bindingResult
+	 * @return
+	 */
+	@PostMapping(value = "update")
+	@ResponseBody
+	public Map<String, Object> update(HttpServletRequest request, @Valid UploadData uploadData, BindingResult bindingResult) {
+		log.info("@@ uploadData = {}", uploadData);
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		
+		try {
+			if(bindingResult.hasErrors()) {
+				message = bindingResult.getAllErrors().get(0).getDefaultMessage();
+				log.info("@@@@@ message = {}", message);
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", errorCode);
+				result.put("message", message);
+	            return result;
+			}
+		
+			if(uploadData.getLongitude() != null && uploadData.getLatitude() != null ) {
+				uploadData.setLatitude(new BigDecimal(request.getParameter("latitude")) );
+				uploadData.setLongitude(new BigDecimal(request.getParameter("longitude")) );
+				uploadData.setAltitude(new BigDecimal(request.getParameter("altitude")) );
+				uploadData.setLocation("POINT(" + uploadData.getLongitude() + " " + uploadData.getLatitude() + ")");
+			}
+			uploadDataService.updateUploadData(uploadData);
+		} catch (Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+		
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
 	}
 	
 	/**
@@ -594,7 +648,7 @@ public class UploadDataController {
 			if(StringUtils.isEmpty(request.getParameter("longitude"))) {
 				return "data.longitude.empty";
 			}
-			if(StringUtils.isEmpty(request.getParameter("height"))) {
+			if(StringUtils.isEmpty(request.getParameter("altitude"))) {
 				return "data.altitude.empty";
 			}
 		}

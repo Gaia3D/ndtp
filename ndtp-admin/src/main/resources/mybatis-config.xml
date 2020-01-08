@@ -11,6 +11,7 @@
     
     <typeAliases>
     	<typeAlias type="ndtp.domain.AccessLog" alias="accessLog" />
+    	<typeAlias type="ndtp.domain.ConverterJob" alias="converterJob" />
 		<typeAlias type="ndtp.domain.DataGroup" alias="dataGroup" />
 		<typeAlias type="ndtp.domain.DataInfo" alias="dataInfo" />
     	<typeAlias type="ndtp.domain.Layer" alias="layer" />
