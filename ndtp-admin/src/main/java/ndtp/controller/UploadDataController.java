@@ -107,7 +107,7 @@ public class UploadDataController {
 	@SuppressWarnings("unchecked")
 	@PostMapping(value = "insert")
 	@ResponseBody
-	public Callable<Map<String, Object>> insertUploadData(MultipartHttpServletRequest request) {
+	public Callable<Map<String, Object>> insert(MultipartHttpServletRequest request) {
 		return () -> {
 			// TODO 파일 목록에 zip 파일이 포함되어 있는 경우 어떻게 가져갈지
 			
@@ -417,8 +417,8 @@ public class UploadDataController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = "list-upload-data")
-	public String listUploadData(HttpServletRequest request, UploadData uploadData, @RequestParam(defaultValue="1") String pageNo, Model model) {
+	@RequestMapping(value = "list")
+	public String list(HttpServletRequest request, UploadData uploadData, @RequestParam(defaultValue="1") String pageNo, Model model) {
 		log.info("@@ uploadData = {}", uploadData);
 		
 //		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
@@ -451,7 +451,7 @@ public class UploadDataController {
 		model.addAttribute(pagination);
 		model.addAttribute("uploadDataList", uploadDataList);
 		
-		return "/upload-data/list-upload-data";
+		return "/upload-data/list";
 	}
 	
 	/**
@@ -509,8 +509,8 @@ public class UploadDataController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "modify-upload-data")
-	public String modifyUploadData(HttpServletRequest request, UploadData uploadData, Model model) {
+	@GetMapping(value = "modify")
+	public String modify(HttpServletRequest request, UploadData uploadData, Model model) {
 		
 //		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 //		uploadData.setUserId(userSession.getUserId());
@@ -520,7 +520,7 @@ public class UploadDataController {
 		
 		model.addAttribute("uploadData", uploadData);
 		model.addAttribute("uploadDataFileList", uploadDataFileList);
-		return "/upload-data/modify-upload-data";
+		return "/upload-data/modify";
 	}
 	
 	/**
@@ -530,7 +530,7 @@ public class UploadDataController {
 	 * @param model
 	 * @return
 	 */
-	@PostMapping(value = "delete-upload-data")
+	@PostMapping(value = "delete")
 	@ResponseBody
 	public Map<String, Object> deleteDatas(HttpServletRequest request, @RequestParam("checkIds") String checkIds) {
 		

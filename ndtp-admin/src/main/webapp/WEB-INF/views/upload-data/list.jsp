@@ -26,39 +26,39 @@
 					<%@ include file="/WEB-INF/views/layouts/page_header.jsp" %>
 					<div class="page-content">
 						<div class="filters">
-							<form:form id="searchForm" modelAttribute="uploadData" method="post" action="/upload-data/list-upload-data.do" onsubmit="return searchCheck();">
+							<form:form id="searchForm" modelAttribute="uploadData" method="post" action="/upload-data/list-upload-data" onsubmit="return searchCheck();">
 							<div class="input-group row">
 								<div class="input-set">
-									<label for="search_word"><spring:message code='search.word'/></label>
-									<select id="search_word" name="search_word" class="select" style="height: 30px;">
+									<label for="searchWord"><spring:message code='search.word'/></label>
+									<select id="searchWord" name="searchWord" class="select" style="height: 30px;">
 										<option value=""><spring:message code='select'/></option>
 					          			<option value="data_name">파일명</option>
 									</select>
-									<select id="search_option" name="search_option" class="select" style="height: 30px;">
+									<select id="searchOption" name="searchOption" class="select" style="height: 30px;">
 										<option value="0"><spring:message code='search.same'/></option>
 										<option value="1"><spring:message code='search.include'/></option>
 									</select>
-									<form:input path="search_value" type="search" cssClass="m" cssStyle="float: right;" />
+									<form:input path="searchValue" type="search" cssClass="m" cssStyle="float: right;" />
 								</div>
 								<div class="input-set">
-									<label for="start_date"><spring:message code='search.date'/></label>
-									<input type="text" class="s date" id="start_date" name="start_date" />
+									<label for="startDate"><spring:message code='search.date'/></label>
+									<input type="text" class="s date" id="startDate" name="startDate" />
 									<span class="delimeter tilde">~</span>
-									<input type="text" class="s date" id="end_date" name="end_date" />
+									<input type="text" class="s date" id="endDate" name="endDate" />
 								</div>
 								<div class="input-set">
-									<label for="order_word"><spring:message code='search.order'/></label>
-									<select id="order_word" name="order_word" class="select" style="height: 30px;">
+									<label for="orderWord"><spring:message code='search.order'/></label>
+									<select id="orderWord" name="orderWord" class="select" style="height: 30px;">
 										<option value=""> <spring:message code='search.basic'/> </option>
 										<option value="data_name">파일명</option>
-										<option value="insert_date"> <spring:message code='search.insert.date'/> </option>
+										<option value="insertDate"> <spring:message code='search.insert.date'/> </option>
 									</select>
-									<select id="order_value" name="order_value" class="select" style="height: 30px;">
+									<select id="orderValue" name="orderValue" class="select" style="height: 30px;">
 				                		<option value=""> <spring:message code='search.basic'/> </option>
 					                	<option value="ASC"> <spring:message code='search.ascending'/> </option>
 										<option value="DESC"> <spring:message code='search.descending.order'/> </option>
 									</select>
-									<select id="list_counter" name="list_counter" class="select" style="height: 30px;">
+									<select id="listCounter" name="listCounter" class="select" style="height: 30px;">
 				                		<option value="10"> <spring:message code='search.ten.count'/> </option>
 					                	<option value="50"> <spring:message code='search.fifty.count'/> </option>
 										<option value="100"> <spring:message code='search.hundred.count'/> </option>
@@ -72,7 +72,7 @@
 						</div>
 						<div class="list">
 							<form:form id="listForm" modelAttribute="uploadData" method="post">
-								<input type="hidden" id="check_ids" name="check_ids" value="" />
+								<input type="hidden" id="checkIds" name="checkIds" value="" />
 							<div class="list-header">
 								<div class="list-desc u-pull-left">
 									<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/> 
@@ -90,7 +90,6 @@
 									<col class="col-name" />
 									<col class="col-name" />
 									<col class="col-name" />
-									<col class="col-name" />
 									<col class="col-number" />
 									<col class="col-number" />
 									<col class="col-number" />
@@ -99,61 +98,60 @@
 									<col class="col-functions" />
 									<thead>
 										<tr>
-											<th scope="col" class="col-checkbox"><input type="checkbox" id="chk_all" name="chk_all" /></th>
+											<th scope="col" class="col-checkbox"><input type="checkbox" id="chkAll" name="chkAll" /></th>
 											<th scope="col" class="col-number"><spring:message code='number'/></th>
-											<th scope="col" class="col-name">공유 타입</th>
+											<th scope="col" class="col-name">공유 유형</th>
 											<th scope="col" class="col-name">데이터 타입</th>
-											<th scope="col" class="col-name">프로젝트명</th>
-											<th scope="col" class="col-name">대표 데이터명</th>
-											<th scope="col" class="col-name">압축 유무</th>
+											<th scope="col" class="col-name">그룹명</th>
+											<th scope="col" class="col-name">데이터명</th>
 											<th scope="col" class="col-name">파일 개수</th>
 											<th scope="col" class="col-name">Converter 횟수</th>
-											<th scope="col" class="col-date"><spring:message code='insert.date'/></th>
 											<th scope="col" class="col-functions">Converter</th>
 											<th scope="col" class="col-functions">삭제</th>
+											<th scope="col" class="col-date">등록일</th>
 										</tr>
 									</thead>
 									<tbody>
 		<c:if test="${empty uploadDataList }">
 										<tr>
-											<td colspan="12" class="col-none">파일 업로딩 이력이 존재하지 않습니다.</td>
+											<td colspan="11" class="col-none">파일 업로딩 이력이 존재하지 않습니다.</td>
 										</tr>
 		</c:if>
 		<c:if test="${!empty uploadDataList }">
 			<c:forEach var="uploadData" items="${uploadDataList}" varStatus="status">
-				<c:if test="${uploadData.sharing_type eq '0' }">
-					<c:set var="viewSharingType" value="공통 프로젝트" />
-				</c:if>
-				<c:if test="${uploadData.sharing_type eq '1' }">
-					<c:set var="viewSharingType" value="공개 프로젝트" />
-				</c:if>
-				<c:if test="${uploadData.sharing_type eq '2' }">
-					<c:set var="viewSharingType" value="개인 프로젝트" />
-				</c:if>
-				<c:if test="${uploadData.sharing_type eq '3' }">
-					<c:set var="viewSharingType" value="공유 프로젝트" />
-				</c:if>
+				
 										<tr>
 											<td class="col-checkbox">
-												<input type="checkbox" id="upload_data_id_${uploadData.upload_data_id}" name="upload_data_id" value="${uploadData.upload_data_id}" />
+												<input type="checkbox" id="uploadDataId_${uploadData.uploadDataId}" name="uploadDataId" value="${uploadData.uploadDataId}" />
 											</td>
 											<td class="col-number">${pagination.rowNumber - status.index }</td>
 						
-											<td class="col-name" style="text-align: center;">${viewSharingType }</td>
-											<td class="col-name" style="text-align: center;">${uploadData.data_type }</td>
-											<td class="col-name">${uploadData.project_name }</td>
+											<td class="col-name" style="text-align: center;">
+				<c:if test="${uploadData.sharing eq 'common' }">
+												공통
+				</c:if>
+				<c:if test="${uploadData.sharing eq 'public' }">
+												공개
+				</c:if>
+				<c:if test="${uploadData.sharing eq '2' }">
+												개인
+				</c:if>
+				<c:if test="${uploadData.sharing eq '3' }">
+												공유
+				</c:if>
+											</td>
+											<td class="col-name" style="text-align: center;">${uploadData.dataType }</td>
+											<td class="col-name">${uploadData.dataGroupName }</td>
 											<td class="col-name">
-												<a href="/upload-data/modify-upload-data.do?upload_data_id=${uploadData.upload_data_id }">
-												${uploadData.data_name }
+												<a href="/upload-data/modify-upload-data?uploadDataId=${uploadData.uploadDataId }">
+												${uploadData.dataName }
 												</a>
 											</td>
-											<td class="col-name" style="text-align: center;">${uploadData.compress_yn }</td>
-											<td class="col-name" style="text-align: right;"><fmt:formatNumber value="${uploadData.file_count}" type="number"/> 개</td>
-											<td class="col-name" style="text-align: right;">${uploadData.converter_count} 건</td>
-											<td class="col-name" style="text-align: center;">${uploadData.viewInsertDate }</td>
+											<td class="col-name" style="text-align: right;"><fmt:formatNumber value="${uploadData.fileCount}" type="number"/> 개</td>
+											<td class="col-name" style="text-align: right;">${uploadData.converterCount} 건</td>
 											<td class="col-functions">
 												<span class="button-group">
-													<a href="#" onclick="converterFile('${uploadData.upload_data_id}', '${uploadData.data_name}'); return false;" 
+													<a href="#" onclick="converterFile('${uploadData.uploadDataId}', '${uploadData.dataName}'); return false;" 
 														class="button" style="text-decoration: none;">
 														F4D 변환
 													</a>
@@ -161,9 +159,13 @@
 											</td>
 											<td class="col-functions">
 												<span class="button-group">
-													<a href="#" onclick="deleteUploadData(${uploadData.upload_data_id }); return false;" 
+													<a href="#" onclick="deleteUploadData(${uploadData.uploadDataId }); return false;" 
 														class="image-button button-delete"><spring:message code='delete'/></a>
 												</span>
+											</td>
+											<td class="col-name" style="text-align: center;">
+												<fmt:parseDate value="${uploadData.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
+												<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
 											</td>
 										</tr>
 			</c:forEach>
@@ -182,9 +184,9 @@
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
 
 	<%-- F4D Converter Job 등록 --%>
-	<div class=dialog_converter_job title="F4D Converter Job 등록">
+	<div class=dialogConverterJob title="F4D Converter Job 등록">
 		<form id="converterJobForm" name="converterJobForm" action="" method="post">
-			<input type="hidden" id="check_ids" name="check_ids" value="" />
+			<input type="hidden" id="checkIds" name="checkIds" value="" />
 			<table class="inner-table scope-row">
 				<col class="col-sub-label xl" />
 				<col class="col-data" />
@@ -226,11 +228,11 @@
 <script type="text/javascript">
 	
 	//전체 선택 
-	$("#chk_all").click(function() {
-		$(":checkbox[name=upload_data_id]").prop("checked", this.checked);
+	$("#chkAll").click(function() {
+		$(":checkbox[name=uploadDataId]").prop("checked", this.checked);
 	});
 	
-	var dialogConverterJob = $( ".dialog_converter_job" ).dialog({
+	var dialogConverterJob = $( ".dialogConverterJob" ).dialog({
 		autoOpen: false,
 		height: 280,
 		width: 600,
@@ -245,7 +247,7 @@
 	
 	// F4D Converter Button Click
 	function converterFile(converter_upload_log_id, data_name) {
-		$("#check_ids").val(converter_upload_log_id + ",");
+		$("#checkIds").val(converter_upload_log_id + ",");
 		$("#title").val(data_name);
 		
 		dialogConverterJob.dialog( "open" );
@@ -254,14 +256,14 @@
 	// All F4D Converter Button Click
 	function converterFiles() {
 		var checkedValue = "";
-		$("input:checkbox[name=upload_data_id]:checked").each(function(index){
+		$("input:checkbox[name=uploadDataId]:checked").each(function(index){
 			checkedValue += $(this).val() + ",";
 		});
 		if(checkedValue === "") {
 			alert("파일을 선택해 주십시오.");
 			return;
 		}
-		$("#check_ids").val(checkedValue);
+		$("#checkIds").val(checkedValue);
 		
 		dialogConverterJob.dialog( "open" );
 	}
@@ -278,7 +280,7 @@
 			saveConverterJobFlag = false;
 			var info =$("#converterJobForm").serialize();
 			$.ajax({
-				url: "/converter/ajax-insert-converter-job.do",
+				url: "/converter/insert-converter-job",
 				type: "POST",
 				data: info,
 				dataType: "json",

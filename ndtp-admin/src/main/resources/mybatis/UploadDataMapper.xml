@@ -13,25 +13,25 @@
 			sharing = #{sharing}
 			</if>
 			<if test="dataType != null and dataType != ''">
-			data_type = #{dataType}
+			AND data_type = #{dataType}
 			</if>
 			<if test="userId != null and userId != ''">
-			user_id = #{userId}
+			AND user_id = #{userId}
 			</if>
 			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
-			${searchWord} = #{searchValue}
+			AND ${searchWord} = #{searchValue}
 			</if>
 			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
-			${searchWord} LIKE '%' || #{searchValue} || '%'
+			AND ${searchWord} LIKE '%' || #{searchValue} || '%'
 			</if>
 			<if test="startDate != null and startDate != ''">
 			<![CDATA[
-			insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+			AND insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
 			<if test="endDate != null and endDate != ''">
 			<![CDATA[
-			insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+			AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
 		</trim>
@@ -44,31 +44,31 @@
 		FROM upload_data A, data_group B
 		WHERE A.data_group_id = B.data_group_id
 		<if test="dataGroupName != null and dataGroupName != ''">
-		B.data_group_name = #{dataGroupName}
+			AND B.data_group_name = #{dataGroupName}
 		</if>
 		<if test="sharing != null and sharing != ''">
-		A.sharing = #{sharing}
+			AND A.sharing = #{sharing}
 		</if>
 		<if test="dataType != null and dataType != ''">
-		A.data_type = #{dataType}
+			AND A.data_type = #{dataType}
 		</if>
 		<if test="userId != null and userId != ''">
-		A.user_id = #{userId}
+			AND A.user_id = #{userId}
 		</if>
 		<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
-		${searchWord} = #{searchValue}
+			AND ${searchWord} = #{searchValue}
 		</if>
 		<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
-		${searchWord} LIKE '%' || #{searchValue} || '%'
+			AND ${searchWord} LIKE '%' || #{searchValue} || '%'
 		</if>
 		<if test="startDate != null and startDate != ''">
 		<![CDATA[
-		A.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+			AND A.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
 		]]>
 		</if>
 		<if test="endDate != null and endDate != ''">
 		<![CDATA[
-		A.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+			AND A.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
 		]]>
 		</if>
 		<choose>

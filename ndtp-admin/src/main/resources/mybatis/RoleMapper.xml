@@ -13,7 +13,7 @@
 			${searchWord} = #{searchValue}
 			</if>
 			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
-			${searchWord} LIKE '%' || #{searchValue} || '%'
+			AND ${searchWord} LIKE '%' || #{searchValue} || '%'
 			</if>
 			<if test="startDate != null and startDate != ''">
 			<![CDATA[
@@ -38,7 +38,7 @@
 			${searchWord} = #{searchValue}
 			</if>
 			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
-			${searchWord} LIKE '%' || #{searchValue} || '%'
+			AND ${searchWord} LIKE '%' || #{searchValue} || '%'
 			</if>
 			<if test="startDate != null and startDate != ''">
 			<![CDATA[

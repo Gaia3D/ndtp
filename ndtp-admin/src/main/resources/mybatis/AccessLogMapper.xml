@@ -10,10 +10,10 @@
         FROM access_log
 		<trim prefix="WHERE" prefixOverrides="AND">
 			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
-			${searchWord} = #{searchValue}
+			AND ${searchWord} = #{searchValue}
 			</if>
 			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
-			${searchWord} LIKE '%' || #{searchValue} || '%'
+			AND ${searchWord} LIKE '%' || #{searchValue} || '%'
 			</if>
 			<if test="startDate != null and startDate != ''">
 			<![CDATA[
@@ -35,10 +35,10 @@
         FROM access_log
         <trim prefix="WHERE" prefixOverrides="AND">
 			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
-			${searchWord} = #{searchValue}
+			AND ${searchWord} = #{searchValue}
 			</if>
 			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
-			${searchWord} LIKE '%' || #{searchValue} || '%'
+			AND ${searchWord} LIKE '%' || #{searchValue} || '%'
 			</if>
 			<if test="startDate != null and startDate != ''">
 			<![CDATA[
