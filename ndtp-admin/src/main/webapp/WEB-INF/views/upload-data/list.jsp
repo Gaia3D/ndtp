@@ -163,7 +163,7 @@
 														class="image-button button-delete"><spring:message code='delete'/></a>
 												</span>
 											</td>
-											<td class="col-name">
+											<td class="col-type">
 												<fmt:parseDate value="${uploadData.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
 												<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
 											</td>
@@ -192,24 +192,23 @@
 				<col class="col-data" />
 				<tbody>
 					<tr>
+						<th class="col-sub-label x">변환 템플릿</th>
+						<td class="col-input">
+							<select id="converterTemplate" name="converterTemplate" class="select" style="height: 30px;">
+		                		<option value="basic"> 기본 </option>
+			                	<option value="building"> 빌딩 </option>
+								<option value="extra-big-building"> 초대형 빌딩 </option>
+								<option value="single-realistic-mesh"> 단일 Point Cloud </option>
+								<option value="splitted-realistic-mesh"> 분할 Point Cloud </option>
+							</select>
+						</td>
+					</tr>
+					<tr>
 						<th class="col-sub-label x">제목</th>
 						<td>
 							<div class="inner-data">
 								<input type="text" id="title" name="title" class="l" />
 							</div>
-						</td>
-					</tr>
-					<tr>
-						<th class="col-sub-label x">변환 템플릿</th>
-						<td class="col-input">
-							<input type="radio" id="converter_type_line" name="converter_type" value="0" disabled="disabled" />
-							<label for="converter_type_line">정밀(공장 배관)</label>
-							<input type="radio" id="converter_type_default" name="converter_type" value="1" checked="checked" />
-							<label for="converter_type_default">기본</label>
-							<input type="radio" id="converter_type_large" name="converter_type" value="2" disabled="disabled" />
-							<label for="converter_type_large">큰 건물</label>
-							<input type="radio" id="converter_type_super_large" name="converter_type" value="3" disabled="disabled" />
-							<label for="converter_type_super_large">초 대형 건물</label>
 						</td>
 					</tr>
 				</tbody>
@@ -248,7 +247,7 @@
 	// F4D Converter Button Click
 	function converterFile(uploadDataId, dataName) {
 		$("#converterCheckIds").val(uploadDataId + ",");
-		$("#title").val(data_name);
+		$("#title").val(dataName);
 		
 		dialogConverterJob.dialog( "open" );
 	}
@@ -271,8 +270,9 @@
 	// F4D Converter 일괄 변환
 	var saveConverterJobFlag = true;
 	function saveConverterJob() {
-		if($("#title").val() == null || $("#title").val() == "") {
+		if($("#title").val() === null || $("#title").val() === "") {
 			alert("제목을 입력하여 주십시오.");
+			$("#title").focus();
 			return false;
 		}
 		
@@ -280,7 +280,7 @@
 			saveConverterJobFlag = false;
 			var formData =$("#converterJobForm").serialize();
 			$.ajax({
-				url: "/converter/insert-job",
+				url: "/converter/insert",
 				type: "POST",
 				data: info,
 				dataType: "json",

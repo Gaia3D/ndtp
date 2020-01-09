@@ -330,7 +330,6 @@ public class FileUtils {
 		if(UploadDirectoryType.YEAR_USERID == uploadDirectoryType
 				|| UploadDirectoryType.YEAR_MONTH_USERID == uploadDirectoryType 
 				|| UploadDirectoryType.YEAR_MONTH_DAY_USERID == uploadDirectoryType) {
-			log.info("==================== day user");
 			sourceDirectory = sourceDirectory + userId + File.separator;
 			File userDirectory = new File(sourceDirectory);
 			if(!userDirectory.exists()) {

@@ -24,6 +24,11 @@ import lombok.ToString;
 @AllArgsConstructor
 public class ConverterJob extends Search {
 	
+	/**
+	 * F4D 변환 대상 업로딩 목록. uploadDataId 를 ,로 연결
+	 */
+	private String converterCheckIds;
+	
 	// job에 포함된 변환 파일 갯수
 	private Integer converterFileCount;
 	

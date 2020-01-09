@@ -149,6 +149,8 @@
 								</th>
 								<td colspan="3" class="col-input">
 									<ul style="list-style: none; margin-bottom: 20px;">
+
+<c:set var="converterFileStyle" value="" />									
 <c:forEach var="uploadDataFile" items="${uploadDataFileList}" varStatus="status">
 	<c:if test="${uploadDataFile.depth == 1 }">
 		<c:set var="paddingLeft" value="0px;" />
@@ -163,10 +165,19 @@
 		<c:set var="paddingLeft" value="150px" />
 	</c:if>
 	<c:if test="${uploadDataFile.fileType eq 'DIRECTORY' }">
-										<li style="padding-left: ${paddingLeft}; height: 25px;">[ ${uploadDataFile.fileType } ] ${uploadDataFile.fileUubPath }</li>
+										<li style="padding-left: ${paddingLeft}; height: 25px;">[ ${uploadDataFile.fileType } ] ${uploadDataFile.fileSubPath }</li>
 	</c:if>
+	
+	<c:if test="${uploadDataFile.converterTarget eq 'true' }">
+		<c:set var="converterFileStyle" value="color:blue; font-weight: bold;" />
+	</c:if>
+	<c:if test="${uploadDataFile.converterTarget eq 'false' }">
+		<c:set var="converterFileStyle" value="" />
+	</c:if>
+	
+	
 	<c:if test="${uploadDataFile.fileType eq 'FILE' }">
-										<li style="padding-left: ${paddingLeft}; height: 25px;">
+										<li style="padding-left: ${paddingLeft}; height: 25px; ${converterFileStyle}">
 											[ ${uploadDataFile.fileType } ] ${uploadDataFile.fileName } 
 											(<fmt:formatNumber value="${uploadDataFile.viewFileSizeUnitKB }" type="number"/>)KB
 										</li>
