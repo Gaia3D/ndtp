@@ -143,7 +143,7 @@
 											<td class="col-type">${uploadData.dataType }</td>
 											<td class="col-name">${uploadData.dataGroupName }</td>
 											<td class="col-name">
-												<a href="/upload-data/modify-upload-data?uploadDataId=${uploadData.uploadDataId }">
+												<a href="/upload-data/modify?uploadDataId=${uploadData.uploadDataId }">
 												${uploadData.dataName }
 												</a>
 											</td>
@@ -186,7 +186,7 @@
 	<%-- F4D Converter Job 등록 --%>
 	<div class=dialogConverterJob title="F4D Converter Job 등록">
 		<form id="converterJobForm" name="converterJobForm" action="" method="post">
-			<input type="hidden" id="checkIds" name="checkIds" value="" />
+			<input type="hidden" id="converterCheckIds" name="converterCheckIds" value="" />
 			<table class="inner-table scope-row">
 				<col class="col-sub-label xl" />
 				<col class="col-data" />
@@ -239,15 +239,15 @@
 		modal: true,
 		resizable: false,
 		close: function() {
-			$("#check_ids").val("");
+			$("#converterCheckIds").val("");
 			$("#title").val("");
 			//location.reload(); 
 		}
 	});
 	
 	// F4D Converter Button Click
-	function converterFile(converter_upload_log_id, data_name) {
-		$("#checkIds").val(converter_upload_log_id + ",");
+	function converterFile(uploadDataId, dataName) {
+		$("#converterCheckIds").val(uploadDataId + ",");
 		$("#title").val(data_name);
 		
 		dialogConverterJob.dialog( "open" );
@@ -256,14 +256,14 @@
 	// All F4D Converter Button Click
 	function converterFiles() {
 		var checkedValue = "";
-		$("input:checkbox[name=uploadDataId]:checked").each(function(index){
+		$("input:checkbox[name=uploadDataId]:checked").each(function(index) {
 			checkedValue += $(this).val() + ",";
 		});
 		if(checkedValue === "") {
 			alert("파일을 선택해 주십시오.");
 			return;
 		}
-		$("#checkIds").val(checkedValue);
+		$("#converterCheckIds").val(checkedValue);
 		
 		dialogConverterJob.dialog( "open" );
 	}
@@ -278,22 +278,22 @@
 		
 		if(saveConverterJobFlag) {
 			saveConverterJobFlag = false;
-			var info =$("#converterJobForm").serialize();
+			var formData =$("#converterJobForm").serialize();
 			$.ajax({
-				url: "/converter/insert-converter-job",
+				url: "/converter/insert-job",
 				type: "POST",
 				data: info,
 				dataType: "json",
 				success: function(msg){
-					if(msg.result == "success") {
+					if(msg.statusCode <= 200) {
 						alert(JS_MESSAGE["insert"]);	
 					} else {
 						alert(JS_MESSAGE[msg.result]);
 					}
 					
-					$("#check_ids").val("");
+					$("#converterCheckIds").val("");
 					$("#title").val("");
-					$(":checkbox[name=upload_data_id]").prop("checked", false);
+					$(":checkbox[name=uploadDataId]").prop("checked", false);
 					dialogConverterJob.dialog( "close" );
 					saveConverterJobFlag = true;
 				},
@@ -309,47 +309,44 @@
 		}
 	}
 	
-	function deleteUploadData(upload_data_id) {
-		deleteAllUploadData(upload_data_id);
+	function deleteUploadData(uploadDataId) {
+		deleteAllUploadData(uploadDataId);
 	}
 	
 	// 삭제
 	var deleteUploadDataFlag = true;
-	function deleteAllUploadData(upload_data_id) {
-		
-		var info = null;
-		if(upload_data_id === undefined) {
-			if($("input:checkbox[name=upload_data_id]:checked").length == 0) {
+	function deleteAllUploadData(uploadDataId) {
+		var formData = null;
+		if(uploadDataId === undefined) {
+			if($("input:checkbox[name=uploadDataId]:checked").length == 0) {
 				alert(JS_MESSAGE["check.value.required"]);
 				return false;
 			} else {
 				var checkedValue = "";
-				$("input:checkbox[name=upload_data_id]:checked").each(function(index){
+				$("input:checkbox[name=uploadDataId]:checked").each(function(index){
 					checkedValue += $(this).val() + ",";
 				});
-				$("#check_ids").val(checkedValue);
+				$("#checkIds").val(checkedValue);
 			}
-			info = "check_ids=" + $("#check_ids").val();
+			formData = "checkIds=" + $("#checkIds").val();
 		} else {
-			info = "check_ids=" + upload_data_id;
+			formData = "checkIds=" + uploadDataId;
 		}
 		
 		if(confirm(JS_MESSAGE["delete.confirm"])) {
 			if(deleteUploadDataFlag) {
 				deleteUploadDataFlag = false;
 				$.ajax({
-					url: "/upload-data/ajax-delete-upload-data.do",
+					url: "/upload-data/delete",
 					type: "POST",
-					data: info,
-					cache: false,
+					data: formData,
 					dataType: "json",
 					success: function(msg){
-						if(msg.result == "success") {
+						if(msg.statusCode <= 200) {
 							alert(JS_MESSAGE["delete"]);	
 							location.reload();
-							$(":checkbox[name=data_id]").prop("checked", false);
 						} else {
-							alert(JS_MESSAGE[msg.result]);
+							alert(JS_MESSAGE[msg.errorCode]);
 						}
 						deleteDatasFlag = true;
 					},

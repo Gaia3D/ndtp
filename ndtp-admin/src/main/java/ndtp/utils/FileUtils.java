@@ -262,23 +262,21 @@ public class FileUtils {
 	}
 	
 	public static String makeDirectory(String userId, UploadDirectoryType uploadDirectoryType, String targetDirectory) {
-		log.info("---------------------- userId = {}, uploadDirectoryType = {}, targetDirectory = {} ", userId, uploadDirectoryType, targetDirectory);
 		String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY_TIME14);
 		String year = today.substring(0,4);
 		String month = today.substring(4,6);
 		String day = today.substring(6,8);
 		String sourceDirectory = targetDirectory;
 		
-		log.info("---------------------- sourceDirectory = {} ", sourceDirectory);
 		File rootDirectory = new File(sourceDirectory);
 		if(!rootDirectory.exists()) {
 			rootDirectory.mkdir();
 		}
 		
 		// 사용자 디렉토리
-		if(UploadDirectoryType.USERID_YEAR.equals(uploadDirectoryType) 
-				|| UploadDirectoryType.USERID_YEAR_MONTH.equals(uploadDirectoryType)
-				|| UploadDirectoryType.USERID_YEAR_MONTH_DAY.equals(uploadDirectoryType)) {
+		if(UploadDirectoryType.USERID_YEAR == uploadDirectoryType 
+				|| UploadDirectoryType.USERID_YEAR_MONTH == uploadDirectoryType
+				|| UploadDirectoryType.USERID_YEAR_MONTH_DAY == uploadDirectoryType) {
 			sourceDirectory = sourceDirectory + userId + File.separator;
 			File userDirectory = new File(sourceDirectory);
 			if(!userDirectory.exists()) {
@@ -287,15 +285,15 @@ public class FileUtils {
 		}
 		
 		// 년
-		if(UploadDirectoryType.USERID_YEAR.equals(uploadDirectoryType) 
-				|| UploadDirectoryType.USERID_YEAR_MONTH.equals(uploadDirectoryType)
-				|| UploadDirectoryType.USERID_YEAR_MONTH_DAY.equals(uploadDirectoryType)
-				|| UploadDirectoryType.YEAR.equals(uploadDirectoryType)
-				|| UploadDirectoryType.YEAR_MONTH .equals(uploadDirectoryType)
-				|| UploadDirectoryType.YEAR_MONTH_DAY .equals(uploadDirectoryType)
-				|| UploadDirectoryType.YEAR_USERID .equals(uploadDirectoryType)
-				|| UploadDirectoryType.YEAR_MONTH_USERID .equals(uploadDirectoryType)
-				|| UploadDirectoryType.YEAR_MONTH_DAY_USERID .equals(uploadDirectoryType)) {
+		if(UploadDirectoryType.USERID_YEAR == uploadDirectoryType 
+				|| UploadDirectoryType.USERID_YEAR_MONTH == uploadDirectoryType
+				|| UploadDirectoryType.USERID_YEAR_MONTH_DAY == uploadDirectoryType
+				|| UploadDirectoryType.YEAR  == uploadDirectoryType
+				|| UploadDirectoryType.YEAR_MONTH == uploadDirectoryType
+				|| UploadDirectoryType.YEAR_MONTH_DAY == uploadDirectoryType
+				|| UploadDirectoryType.YEAR_USERID == uploadDirectoryType
+				|| UploadDirectoryType.YEAR_MONTH_USERID == uploadDirectoryType
+				|| UploadDirectoryType.YEAR_MONTH_DAY_USERID == uploadDirectoryType) {
 			sourceDirectory = sourceDirectory + year + File.separator;
 			File yearDirectory = new File(sourceDirectory);
 			if(!yearDirectory.exists()) {
@@ -304,12 +302,12 @@ public class FileUtils {
 		}
 		
 		// 월
-		if(UploadDirectoryType.USERID_YEAR_MONTH.equals(uploadDirectoryType)
-				|| UploadDirectoryType.USERID_YEAR_MONTH_DAY.equals(uploadDirectoryType)
-				|| UploadDirectoryType.YEAR_MONTH .equals(uploadDirectoryType)
-				|| UploadDirectoryType.YEAR_MONTH_DAY .equals(uploadDirectoryType)
-				|| UploadDirectoryType.YEAR_MONTH_USERID .equals(uploadDirectoryType)
-				|| UploadDirectoryType.YEAR_MONTH_DAY_USERID .equals(uploadDirectoryType)) {
+		if(UploadDirectoryType.USERID_YEAR_MONTH == uploadDirectoryType
+				|| UploadDirectoryType.USERID_YEAR_MONTH_DAY == uploadDirectoryType
+				|| UploadDirectoryType.YEAR_MONTH == uploadDirectoryType
+				|| UploadDirectoryType.YEAR_MONTH_DAY == uploadDirectoryType
+				|| UploadDirectoryType.YEAR_MONTH_USERID == uploadDirectoryType
+				|| UploadDirectoryType.YEAR_MONTH_DAY_USERID == uploadDirectoryType) {
 			sourceDirectory = sourceDirectory + month + File.separator;
 			File monthDirectory = new File(sourceDirectory);
 			if(!monthDirectory.exists()) {
@@ -318,9 +316,9 @@ public class FileUtils {
 		}
 		
 		// 일
-		if(UploadDirectoryType.USERID_YEAR_MONTH_DAY.equals(uploadDirectoryType)
-				|| UploadDirectoryType.YEAR_MONTH_DAY .equals(uploadDirectoryType)
-				|| UploadDirectoryType.YEAR_MONTH_DAY_USERID .equals(uploadDirectoryType)) {
+		if(UploadDirectoryType.USERID_YEAR_MONTH_DAY == uploadDirectoryType
+				|| UploadDirectoryType.YEAR_MONTH_DAY == uploadDirectoryType
+				|| UploadDirectoryType.YEAR_MONTH_DAY_USERID == uploadDirectoryType) {
 			sourceDirectory = sourceDirectory + day + File.separator;
 			File dayDirectory = new File(sourceDirectory);
 			if(!dayDirectory.exists()) {
@@ -329,9 +327,10 @@ public class FileUtils {
 		}
 		
 		// 사용자 디렉토리
-		if(UploadDirectoryType.YEAR_USERID.equals(uploadDirectoryType)
-				|| UploadDirectoryType.YEAR_MONTH_USERID.equals(uploadDirectoryType) 
-				|| UploadDirectoryType.YEAR_MONTH_DAY_USERID .equals(uploadDirectoryType)) {
+		if(UploadDirectoryType.YEAR_USERID == uploadDirectoryType
+				|| UploadDirectoryType.YEAR_MONTH_USERID == uploadDirectoryType 
+				|| UploadDirectoryType.YEAR_MONTH_DAY_USERID == uploadDirectoryType) {
+			log.info("==================== day user");
 			sourceDirectory = sourceDirectory + userId + File.separator;
 			File userDirectory = new File(sourceDirectory);
 			if(!userDirectory.exists()) {

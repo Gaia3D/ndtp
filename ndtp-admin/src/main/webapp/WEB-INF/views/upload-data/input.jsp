@@ -7,7 +7,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
-	<title>데이터 등록 | NDTP</title>
+	<title>데이터 업로드 | NDTP</title>
 	<link rel="stylesheet" href="/css/${lang}/font/font.css" />
 	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
 	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
@@ -266,11 +266,11 @@
 		uploadMultiple: true,
 		method: "post",
 		// 병렬 처리
-		parallelUploads: 100,
+		parallelUploads: 500,
 		// 최대 파일 업로드 갯수
-		maxFiles: 100,
+		maxFiles: 500,
 		// 최대 업로드 용량 Mb단위
-		maxFilesize: 2000,
+		maxFilesize: 5000,
 		dictDefaultMessage: "업로딩 하려면 파일을 올리거나 클릭 하십시오.",
 		/* headers: {
 			"x-csrf-token": document.querySelectorAll("meta[name=csrf-token]")[0].getAttributeNode("content").value,
@@ -332,32 +332,27 @@
 			
 			// maxFiles 카운터를 초과하면 경고창
 			this.on("maxfilesexceeded", function (data) {
+				magoDropzone.removeAllFiles(true);
 				alert("최대 업로드 파일 수는 100개 입니다.");
 				return;
 			});
 			
 			this.on("success", function(file, response) {
-				errorCode: "file.ext.invalid"
-					message: null
-					statusCode: 400
-					__proto__: Object
-				
-				
-				
 				if(file !== undefined && file.name !== undefined) {
                     console.log("file name = " + file.name);
                     fileUploadDialog.dialog( "close" );
-
-                    if(response.errorCode === undefined) {
+					if(response.errorCode === undefined || response.errorCode === null) {
 						uploadFileResultCount ++;
 						if(uploadFileCount === uploadFileResultCount) {
 						    alert("업로딩을 완료 하였습니다.");
+						    uploadFileCount = 0;
+						    uploadFileResultCount = 0;
 						}
                     } else {
                         alertMessage(response);
                     }
                 } else {
-                    console.log("------- success response = " + response);
+					console.log("------- success response = " + response);
                 }
             });
 		}
@@ -375,22 +370,17 @@
 		if(uploadFileResultCount === 0) {
         	if(response.errorCode === "data.name.empty") {
         		alert("데이터명이 유효하지 않습니다.");
-				return;
         	} else if(response.errorCode === "file.name.invalid") {
 				alert("파일명이 유효하지 않습니다.");
-				return;
         	} else if(response.errorCode === "file.ext.invalid") {
 				alert("파일 확장자가 유효하지 않습니다.");
-				return;
             } else if(response.errorCode === "file.size.invalid") {
                 alert("파일 용량이 너무 커서 업로딩 할 수 없습니다.");
-                return;
             } else if(response.errorCode === "db.exception") {
                 alert("죄송 합니다. 서버 실행중에 오류가 발생 하였습니다. \n 로그를 확인하여 주십시오.");
-                return;
             }
             uploadFileResultCount++;
-        }
+		}
         return;
     }
 </script>

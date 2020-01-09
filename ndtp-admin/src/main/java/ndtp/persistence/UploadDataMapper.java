@@ -65,6 +65,13 @@ public interface UploadDataMapper {
 	 * @return
 	 */
 	int insertUploadDataFile(UploadDataFile uploadDataFile);
+	
+	/**
+	 * 사용자 파일 정보 수정
+	 * @param uploadData
+	 * @return
+	 */
+	int updateUploadData(UploadData uploadData);
 
 	/**
 	 * 업로딩 데이터 정보 삭제

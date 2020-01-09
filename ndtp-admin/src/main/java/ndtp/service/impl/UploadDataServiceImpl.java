@@ -108,6 +108,16 @@ public class UploadDataServiceImpl implements UploadDataService {
 	}
 	
 	/**
+	 * 사용자 파일 정보 수정
+	 * @param uploadData
+	 * @return
+	 */
+	@Transactional
+	public int updateUploadData(UploadData uploadData) {
+		return uploadDataMapper.updateUploadData(uploadData);
+	}
+	
+	/**
 	 * 업로딩 데이터 삭제
 	 * @param checkIds
 	 * @return

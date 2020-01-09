@@ -71,6 +71,8 @@ public class Menu {
 	private String url;
 	// URL Alias
 	private String urlAlias;
+	// URL Alias Menu id, 현재 선택 메뉴를 표시하기 위함
+	private Integer aliasMenuId;
 	// 메뉴 타입이 HTML ID 일 경우 id값
 	private String htmlId;
 	// 메뉴 타입이 HTML ID 일 경우 메뉴와 한쌍으로 묶이는 content id값

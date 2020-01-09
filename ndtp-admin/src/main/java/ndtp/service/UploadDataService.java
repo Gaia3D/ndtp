@@ -56,6 +56,13 @@ public interface UploadDataService {
 	 * @return
 	 */
 	int insertUploadData(UploadData uploadData, List<UploadDataFile> uploadDataFileList);
+	
+	/**
+	 * 사용자 파일 정보 수정
+	 * @param uploadData
+	 * @return
+	 */
+	int updateUploadData(UploadData uploadData);
 
 	/**
 	 * 업로딩 데이터 삭제
