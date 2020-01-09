@@ -94,29 +94,29 @@ public class LayerServiceImpl implements LayerService {
     * @param layerId
     * @return
     */
-    @Transactional(readOnly=true)
-    public Layer getMaxViewOrderChildLayer(Integer layerId) {
-        return layerMapper.getMaxViewOrderChildLayer(layerId);
-    }
+//    @Transactional(readOnly=true)
+//    public Layer getMaxViewOrderChildLayer(Integer layerId) {
+//        return layerMapper.getMaxViewOrderChildLayer(layerId);
+//    }
 
     /**
     * 자식 레이어 개수
     * @param layerId
     * @return
     */
-    @Transactional(readOnly=true)
-    public int getChildLayerCount(Integer layerId) {
-        return layerMapper.getChildLayerCount(layerId);
-    }
+//    @Transactional(readOnly=true)
+//    public int getChildLayerCount(Integer layerId) {
+//        return layerMapper.getChildLayerCount(layerId);
+//    }
 
     /**
     * 부모와 표시 순서로 레이어 조회
     * @param layer
     * @return
     */
-    private Layer getLayerByParentAndViewOrder(Layer layer) {
-        return layerMapper.getLayerByParentAndViewOrder(layer);
-    }
+//    private Layer getLayerByParentAndViewOrder(Layer layer) {
+//        return layerMapper.getLayerByParentAndViewOrder(layer);
+//    }
 
     /**
     * 레이어 테이블의 컬럼 타입이 어떤 geometry 타입인지를 구함
@@ -139,8 +139,50 @@ public class LayerServiceImpl implements LayerService {
     * @return
     */
     @Transactional
-    public int insertLayer(Layer layer) {
-        return layerMapper.insertLayer(layer);
+    public Map<String, Object> insertLayer(Layer layer, List<LayerFileInfo> layerFileInfoList) {
+    	Map<String, Object> layerFileInfoGroupMap = new HashMap<>();
+
+        // layer 정보 수정
+        layerMapper.insertLayer(layer);
+
+        // shape 파일이 있을 경우
+        if(!layerFileInfoList.isEmpty()) {
+            String shapeFileName = null;
+            String shapeEncoding = null;
+            Integer layerId = layer.getLayerId();
+            String userId = layer.getUserId();
+
+            Integer layerFileInfoGroupId = 0;
+            List<Integer> layerFileInfoGroupIdList = new ArrayList<>();
+            for(LayerFileInfo layerFileInfo : layerFileInfoList) {
+                layerFileInfo.setLayerId(layerId);
+                layerFileInfo.setUserId(userId);
+                layerFileInfo.setEnableYn("Y");
+
+                layerFileInfoMapper.insertLayerFileInfoMapper(layerFileInfo);
+                layerFileInfoGroupIdList.add(layerFileInfo.getLayerFileInfoId());
+
+                if(LayerFileInfo.SHAPE_EXTENSION.equals(layerFileInfo.getFileExt().toLowerCase())) {
+                    layerFileInfoGroupId = layerFileInfo.getLayerFileInfoId();
+                    shapeFileName = layerFileInfo.getFilePath() + layerFileInfo.getFileRealName();
+                    shapeEncoding = layerFileInfo.getShapeEncoding();
+                }
+            }
+            log.info("---- shapeFileName = {}", shapeFileName);
+
+            Integer fileVersion = layerFileInfoMapper.getMaxFileVersion(layerId);
+            if(fileVersion == null) fileVersion = 0;
+            fileVersion = fileVersion + 1;
+            layerFileInfoGroupMap.put("fileVersion", fileVersion);
+            layerFileInfoGroupMap.put("shapeFileName", shapeFileName);
+            layerFileInfoGroupMap.put("shapeEncoding", shapeEncoding);
+            layerFileInfoGroupMap.put("layerFileInfoGroupId", layerFileInfoGroupId);
+            layerFileInfoGroupMap.put("layerFileInfoGroupIdList", layerFileInfoGroupIdList);
+            log.info("+++ layerFileInfoGroupMap = {}", layerFileInfoGroupMap);
+            layerFileInfoMapper.updateLayerFileInfoGroup(layerFileInfoGroupMap);
+        }
+
+        return layerFileInfoGroupMap;
     }
 
     /**
@@ -148,10 +190,10 @@ public class LayerServiceImpl implements LayerService {
     * @param layer
     * @return
     */
-    @Transactional
-    public int updateTreeLayer(Layer layer) {
-        return layerMapper.updateTreeLayer(layer);
-    }
+//    @Transactional
+//    public int updateTreeLayer(Layer layer) {
+//        return layerMapper.updateTreeLayer(layer);
+//    }
 
     /**
     * shape 파일을 이용한 layer 정보 수정
@@ -398,7 +440,7 @@ public class LayerServiceImpl implements LayerService {
             layerFileInfoMapper.updateLayerFileInfoByGroupId(layerFileInfo);
             // 이전 shape 데이터를 활성화
             Map<String, String> orgMap = new HashMap<>();
-            orgMap.put("fileVersion", layerFileInfo.getFileVersion().toString());
+            orgMap.put("fileVersion", layerFileInfo.getVersionId().toString());
             orgMap.put("tableName", layer.getLayerKey());
             orgMap.put("enableYn", "Y");
             layerFileInfoMapper.updateOgr2OgrStatus(orgMap);
@@ -451,39 +493,39 @@ public class LayerServiceImpl implements LayerService {
     * @param layer
     * @return
     */
-    @Transactional
-    public int updateMoveTreeLayer(Layer layer) {
-        Integer modifyViewOrder = layer.getViewOrder();
-        Layer searchLayer = new Layer();
-        searchLayer.setUpdateType(layer.getUpdateType());
-        searchLayer.setParent(layer.getParent());
-
-        if ("up".equals(layer.getUpdateType())) {
-            // 바로 위 메뉴의 view_order 를 +1
-            searchLayer.setViewOrder(layer.getViewOrder());
-            searchLayer = getLayerByParentAndViewOrder(searchLayer);
-            layer.setViewOrder(searchLayer.getViewOrder());
-            searchLayer.setViewOrder(modifyViewOrder);
-        } else {
-            // 바로 아래 메뉴의 view_order 를 -1 함
-            searchLayer.setViewOrder(layer.getViewOrder());
-            searchLayer = getLayerByParentAndViewOrder(searchLayer);
-            layer.setViewOrder(searchLayer.getViewOrder());
-            searchLayer.setViewOrder(modifyViewOrder);
-        }
-        updateViewOrderLayer(searchLayer);
-
-        return updateViewOrderLayer(layer);
-    }
+//    @Transactional
+//    public int updateMoveTreeLayer(Layer layer) {
+//        Integer modifyViewOrder = layer.getViewOrder();
+//        Layer searchLayer = new Layer();
+//        searchLayer.setUpdateType(layer.getUpdateType());
+//        searchLayer.setParent(layer.getParent());
+//
+//        if ("up".equals(layer.getUpdateType())) {
+//            // 바로 위 메뉴의 view_order 를 +1
+//            searchLayer.setViewOrder(layer.getViewOrder());
+//            searchLayer = getLayerByParentAndViewOrder(searchLayer);
+//            layer.setViewOrder(searchLayer.getViewOrder());
+//            searchLayer.setViewOrder(modifyViewOrder);
+//        } else {
+//            // 바로 아래 메뉴의 view_order 를 -1 함
+//            searchLayer.setViewOrder(layer.getViewOrder());
+//            searchLayer = getLayerByParentAndViewOrder(searchLayer);
+//            layer.setViewOrder(searchLayer.getViewOrder());
+//            searchLayer.setViewOrder(modifyViewOrder);
+//        }
+//        updateViewOrderLayer(searchLayer);
+//
+//        return updateViewOrderLayer(layer);
+//    }
 
     /**
     *
     * @param userGroup
     * @return
     */
-    private int updateViewOrderLayer(Layer layer) {
-        return layerMapper.updateViewOrderLayer(layer);
-    }
+//    private int updateViewOrderLayer(Layer layer) {
+//        return layerMapper.updateViewOrderLayer(layer);
+//    }
 
     /**
     * 레이어 삭제
@@ -520,7 +562,7 @@ public class LayerServiceImpl implements LayerService {
             //fileInfoId와 fileInfoGroupId가 같을 경우 shp파일
             if(fileInfo.getLayerFileInfoId().equals(fileInfo.getLayerFileInfoGroupId())) {
                 exportPath = filePath;
-                fileVersion = fileInfo.getFileVersion();
+                fileVersion = fileInfo.getVersionId();
                 shpEncoding = fileInfo.getShapeEncoding();
             }
         }

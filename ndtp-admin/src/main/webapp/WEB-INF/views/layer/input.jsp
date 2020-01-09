@@ -479,9 +479,36 @@
 	});
 	
 	function check() {
-		if ($("#layerName").val() == "") {
+		var number = /^[0-9]+$/;
+		
+		if(!$("#layerGroupId").val() || !number.test($("#layerGroupId").val())) {
+			alert("상위 레이어 그룹을 선택해 주세요.");
+			$("#layerGroupName").focus();
+			return false;
+		}
+		if (!$("#layerName").val()) {
 			alert("Layer 명을 입력하여 주십시오.");
 			$("#layerName").focus();
+			return false;
+		}
+		if (!$("#layerKey").val()) {
+			alert("Layer key를 입력하여 주십시오.");
+			$("#layerKey").focus();
+			return false;
+		}
+		if (!$("select[name=serviceType]").val()) {
+			alert("서비스 타입을 선택해 주십시오.");
+			$("#serviceType").focus();
+			return false;
+		}
+		if (!$("select[name=layerType]").val()) {
+			alert("layer 타입을 선택해 주십시오.");
+			$("#layerType").focus();
+			return false;
+		}
+		if ($("select[name=layerType]").val().toLowerCase() === 'vector') {
+			alert("도형 타입을 선택해 주십시오.");
+			$("#geometryType").focus();
 			return false;
 		}
 	}
@@ -571,10 +598,8 @@
                 formData.append("layerType", $("select[name=layerType]").val());
                 formData.append("geometryType", $("select[name=geometryType]").val());
                 formData.append("layerLineColor", $("#layerLineColor").val());
-                formData.append("layerLineStyle", $("#layerLineStyle").val());
                 formData.append("layerFillColor", $("#layerFillColor").val());
                 formData.append("layerAlphaStyle", $("#sliderRange").val());
-                formData.append("layerFillColor", $("#layerFillColor").val());
                 formData.append("defaultDisplay", $(':radio[name="defaultDisplay"]:checked').val());
                 formData.append("available", $(':radio[name="available"]:checked').val());
                 formData.append("labelDisplay", $(':radio[name="labelDisplay"]:checked').val());
@@ -582,8 +607,11 @@
                 formData.append("description", $("#description").val());
                 formData.append("shapeEncoding", $("#shapeEncoding").val());
                 var zIndex = 0;
-                if($("#zIndex").val() !== null && $("#zIndex").val() !== "") zIndex = $("#zIndex").val();
+                if($("#zIndex").val()) zIndex = $("#zIndex").val();
                 formData.append("zIndex", zIndex);
+                var layerLineStyle = 0;
+                if($("#layerLineStyle").val()) layerLineStyle = $("#layerLineStyle").val();
+                formData.append("layerLineStyle", layerLineStyle);
             });
 
             // maxFiles 카운터를 초과하면 경고창
@@ -597,7 +625,6 @@
                     console.log("file name = " + file.name);
                     $("#fileUploadSpinner").empty();
                     fileUploadDialog.dialog( "close" );
-
                     if(response.error === undefined) {
                         if(uploadFileCount === 0) {
                             alert("수정 하였습니다.");

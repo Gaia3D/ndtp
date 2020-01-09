@@ -34,14 +34,14 @@ public interface LayerService {
     * @param layerId
     * @return
     */
-    Layer getMaxViewOrderChildLayer(Integer layerId);
+//    Layer getMaxViewOrderChildLayer(Integer layerId);
 
     /**
     * 자식 레이어 개수
     * @param layerId
     * @return
     */
-    int getChildLayerCount(Integer layerId);
+//    int getChildLayerCount(Integer layerId);
 
     /**
     * 레이어 테이블의 컬럼 타입이 어떤 geometry 타입인지를 구함
@@ -62,14 +62,14 @@ public interface LayerService {
     * @param layer
     * @return
     */
-    int insertLayer(Layer layer);
+    Map<String, Object> insertLayer(Layer layer, List<LayerFileInfo> layerFileInfoList);
 
     /**
     * 레이어 트리 정보 수정
     * @param layer
     * @return
     */
-    int updateTreeLayer(Layer layer);
+//    int updateTreeLayer(Layer layer);
 
     /**
     * shape 파일을 이용한 layer 정보 수정
@@ -127,7 +127,7 @@ public interface LayerService {
     * @param layer
     * @return
     */
-    int updateMoveTreeLayer(Layer layer);
+//    int updateMoveTreeLayer(Layer layer);
 
     /**
     * 레이어 삭제

@@ -106,7 +106,7 @@ public class Layer extends Search implements Serializable {
     // 사용 유무
     private Boolean available;
     // 레이블 표시 유무. Y : 표시, N : 비표시(기본값)
-    private String labelDisplay;
+    private Boolean labelDisplay;
     
     // 좌표계
     private String coordinate;

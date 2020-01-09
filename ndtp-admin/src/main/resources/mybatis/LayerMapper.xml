@@ -86,25 +86,25 @@
     </select>
 
     <!-- 레이어 트리 부모와 순서로 그룹 정보 취득 -->
-    <select id="getLayerByParentAndViewOrder" parameterType="layer" resultType="layer">
-        /* getLayerByParentAndViewOrder */
-        SELECT *
-        FROM layer
-        WHERE parent = #{parent}
-        <if test="updateType == 'up'.toString()">
-            <![CDATA[
-            AND view_order < #{viewOrder}
-            ]]>
-        ORDER BY view_order DESC
-        </if>
-        <if test="updateType == 'down'.toString()">
-            <![CDATA[
-            AND view_order > #{viewOrder}
-            ]]>
-        ORDER BY view_order
-        </if>
-        LIMIT 1
-    </select>
+<!--     <select id="getLayerByParentAndViewOrder" parameterType="layer" resultType="layer"> -->
+<!--         /* getLayerByParentAndViewOrder */ -->
+<!--         SELECT * -->
+<!--         FROM layer -->
+<!--         WHERE parent = #{parent} -->
+<!--         <if test="updateType == 'up'.toString()"> -->
+<!--             <![CDATA[ -->
+<!--             AND view_order < #{viewOrder} -->
+<!--             ]]> -->
+<!--         ORDER BY view_order DESC -->
+<!--         </if> -->
+<!--         <if test="updateType == 'down'.toString()"> -->
+<!--             <![CDATA[ -->
+<!--             AND view_order > #{viewOrder} -->
+<!--             ]]> -->
+<!--         ORDER BY view_order -->
+<!--         </if> -->
+<!--         LIMIT 1 -->
+<!--     </select> -->
 
     <!-- 레이어 테이블의 컬럼 타입이 어떤 geometry 타입인지를 구함 -->
     <select id="getGeometryType" parameterType="string" resultType="string">
@@ -133,48 +133,38 @@
             SELECT NEXTVAL('layer_seq')
         </selectKey>
         INSERT INTO layer (
-            layer_id, layer_key, layer_name,
-            <if test="viewType != null and viewType != ''">
-                view_type,
-            </if>
-            <if test="sharing != null and sharing != ''">
-                sharing,
-            </if>
-            ancestor, parent, depth, view_order, shape_insert_yn, use_yn
+            layer_id, layer_group_id, sharing, layer_name, layer_key, service_type, layer_type, geometry_type, 
+            layer_line_color, layer_line_style, layer_fill_color, layer_alpha_style, default_display, available, 
+            label_display, coordinate, description, z_index, user_id   
         ) VALUES (
-            #{layerId}, #{layerKey}, #{layerName},
-            <if test="viewType != null and viewType != ''">
-                #{viewType},
-            </if>
-            <if test="sharing != null and sharing != ''">
-                sharing,
-            </if>
-            #{ancestor}, #{parent}, #{depth}, #{viewOrder}, #{shapeInsertYn}, #{useYn}
+         #{layerId}, #{layerGroupId}, #{sharing}, #{layerName}, #{layerKey}, #{serviceType}, #{layerType}, #{geometryType}, 
+         #{layerLineColor}, #{layerLineStyle}, #{layerFillColor}, #{layerAlphaStyle}, #{defaultDisplay}, #{available}, 
+         #{labelDisplay}, #{coordinate}, #{description}, #{zIndex}, #{userId}   
         )
     </insert>
 
     <!-- 레이어 트리 정보 수정 -->
-    <update id="updateTreeLayer" parameterType="layer">
-        /* updateTreeLayer */
-        UPDATE layer
-        SET layer_name = #{layerName},
-            layer_key = #{layerKey},
-            <if test="viewType != null and viewType != ''">
-                view_type = #{viewType},
-            </if>
-            <if test="sharing != null and sharing != ''">
-                sharing,
-            </if>
-            use_yn = #{useYn},
-            shape_insert_yn = #{shapeInsertYn}
-        WHERE layer_id = #{layerId}
-    </update>
+<!--     <update id="updateTreeLayer" parameterType="layer"> -->
+<!--         /* updateTreeLayer */ -->
+<!--         UPDATE layer -->
+<!--         SET layer_name = #{layerName}, -->
+<!--             layer_key = #{layerKey}, -->
+<!--             <if test="viewType != null and viewType != ''"> -->
+<!--                 view_type = #{viewType}, -->
+<!--             </if> -->
+<!--             <if test="sharing != null and sharing != ''"> -->
+<!--                 sharing, -->
+<!--             </if> -->
+<!--             use_yn = #{useYn}, -->
+<!--             shape_insert_yn = #{shapeInsertYn} -->
+<!--         WHERE layer_id = #{layerId} -->
+<!--     </update> -->
 
     <!-- 레이어 트리  순서 수정 -->
-    <update id="updateViewOrderLayer" parameterType="layer">
-        /* updateViewOrderLayer */
-        UPDATE layer SET view_order = #{viewOrder} WHERE layer_id = #{layerId}
-    </update>
+<!--     <update id="updateViewOrderLayer" parameterType="layer"> -->
+<!--         /* updateViewOrderLayer */ -->
+<!--         UPDATE layer SET view_order = #{viewOrder} WHERE layer_id = #{layerId} -->
+<!--     </update> -->
 
     <!-- layer 정보 수정 -->
     <update id="updateLayer" parameterType="layer">

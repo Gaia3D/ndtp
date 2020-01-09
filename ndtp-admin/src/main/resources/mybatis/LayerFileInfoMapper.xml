@@ -35,7 +35,7 @@
     <!-- layer shape 파일 version -->
     <select id="getLayerShapeFileVersion" parameterType="int" resultType="int">
         /* getLayerShapeFileVersion */
-        SELECT file_version
+        SELECT version_id
         FROM layer_file_info
         WHERE layer_file_info_id = #{layerFileInfoId}
     </select>
@@ -43,13 +43,13 @@
     <!-- 레이어별 shape 파일 version 최대값 + 1 을 취득 -->
     <select id="getMaxFileVersion" parameterType="int" resultType="int">
         /* getMaxFileVersion */
-        SELECT MAX(file_version) FROM layer_file_info WHERE layer_id = #{layerId}
+        SELECT MAX(version_id) FROM layer_file_info WHERE layer_id = #{layerId}
     </select>
 
     <!-- 레이어 이력내 활성화 된 데이터 정보를 취득 -->
     <select id="getEnableLayerFileInfo" parameterType="int" resultType="layerFileInfo">
         /* getEnableLayerFileInfo */
-        SELECT layer_file_info_id, layer_id, layer_file_info_group_id, file_version
+        SELECT layer_file_info_id, layer_id, layer_file_info_group_id, version_id
         FROM layer_file_info
         WHERE layer_id = #{layerId}
             AND enable_yn = 'Y'
@@ -62,9 +62,9 @@
             SELECT NEXTVAL('layer_file_info_seq')
         </selectKey>
         INSERT INTO layer_file_info (
-            layer_file_info_id, layer_id, user_id, enable_yn, file_name, file_real_name, file_path, file_size, file_ext, shape_encoding, comment, update_date
+            layer_file_info_id, layer_id, user_id, enable_yn, file_name, file_real_name, file_path, file_size, file_ext, shape_encoding, update_date
         ) VALUES (
-            #{layerFileInfoId}, #{layerId}, #{userId}, #{enableYn}, #{fileName}, #{fileRealName}, #{filePath}, #{fileSize}, #{fileExt}, #{shapeEncoding}, #{comment}, NOW()
+            #{layerFileInfoId}, #{layerId}, #{userId}, #{enableYn}, #{fileName}, #{fileRealName}, #{filePath}, #{fileSize}, #{fileExt}, #{shapeEncoding}, NOW()
         )
     </insert>
 
@@ -98,7 +98,7 @@
         /* updateLayerFileInfoGroup */
         UPDATE layer_file_info
         SET layer_file_info_group_id = #{layerFileInfoGroupId},
-            file_version = CAST(#{fileVersion} AS integer),
+            version_id = CAST(#{fileVersion} AS integer),
             enable_yn = 'Y',
             update_date = NOW()
             <!-- update_date = TO_TIMESTAMP(#{updateDate}, 'YYYYMMDDHH24MISSUS') -->
@@ -120,7 +120,7 @@
         UPDATE ${tableName}
         SET enable_yn = 'Y',
             <!-- update = #{updateDate} -->
-            file_version = CAST(#{fileVersion} AS integer)
+            version_id = CAST(#{fileVersion} AS integer)
         WHERE enable_yn IS NULL OR enable_yn = 'Y'
     </update>
 
@@ -130,7 +130,7 @@
         UPDATE ${tableName}
         SET enable_yn = 'Y'
         <!-- WHERE update = #{updateDate} -->
-        WHERE file_version = CAST(#{fileVersion} AS integer)
+        WHERE version_id = CAST(#{fileVersion} AS integer)
     </update>
 
     <!-- 레이어 삭제 -->

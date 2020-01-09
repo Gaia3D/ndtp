@@ -35,12 +35,10 @@ public class LayerFileInfo extends FileInfo {
 	private String enableYn;
 	// shape 파일 인코딩
 	private String shapeEncoding;
-	// 수정 사항
-	private String comment;
 	
 	// shape 파일 update용, sysc 컬럼
 	private String update;
 	// shape 파일 버전 정보
-	private Integer fileVersion;
+	private Integer versionId;
 	
 }

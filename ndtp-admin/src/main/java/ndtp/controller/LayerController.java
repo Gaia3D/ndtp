@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
@@ -167,6 +168,176 @@ public class LayerController implements AuthorizationController {
         model.addAttribute("layerFileInfoListSize", layerFileInfoList.size());
         return "/layer/modify";
     }
+    
+	/**
+	 * shape 파일 변환 TODO dropzone 이 파일 갯수만큼 form data를 전송해 버려서 command 패턴을(Layer
+	 * layer) 사용할 수 없음 dropzone 이 예외 처리가 이상해서 BAD_REQUEST 를 던지지 않고 OK 를 넣짐
+	 * 
+	 * @param model
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	@PostMapping(value = "insert")
+	@ResponseBody
+	public Map<String, Object> insert(MultipartHttpServletRequest request) {
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		boolean isLayerFileInfoExist = false;
+
+		try {
+			errorCode = layerValidate(request);
+			if (!StringUtils.isEmpty(errorCode)) {
+				result.put("statusCode", HttpStatus.OK.value());
+				result.put("errorCode", errorCode);
+				return result;
+			}
+
+			UserSession userSession = (UserSession) request.getSession().getAttribute(Key.USER_SESSION.name());
+			String userId = userSession.getUserId();
+
+			List<LayerFileInfo> layerFileInfoList = new ArrayList<>();
+			Map<String, MultipartFile> fileMap = request.getFileMap();
+
+			Policy policy = policyService.getPolicy();
+			String shapeEncoding = replaceInvalidValue(request.getParameter("shapeEncoding"));
+			String today = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+			// 레이어 객체 생성 
+			Layer layer = Layer.builder()
+							.layerGroupId(Integer.valueOf(request.getParameter("layerGroupId")))
+							.sharing(request.getParameter("sharing"))
+							.layerName(request.getParameter("layerName"))
+							.layerKey(request.getParameter("layerKey"))
+							.serviceType(request.getParameter("serviceType"))
+							.layerType(request.getParameter("layerType"))
+							.geometryType(request.getParameter("geometryType"))
+							.layerLineColor(request.getParameter("layerLineColor"))
+							.layerLineStyle(Float.valueOf(request.getParameter("layerLineStyle")))
+							.layerFillColor(request.getParameter("layerFillColor"))
+							.layerAlphaStyle(Float.valueOf(request.getParameter("layerAlphaStyle")))
+							.defaultDisplay(Boolean.valueOf(request.getParameter("defaultDisplay")))
+							.available(Boolean.valueOf(request.getParameter("available")))
+							.labelDisplay(Boolean.valueOf(request.getParameter("labelDisplay")))
+							.coordinate(request.getParameter("coordinate"))
+							.description(request.getParameter("description"))
+							.zIndex(Integer.valueOf(request.getParameter("zIndex")))
+							.userId(userId)
+							.build();
+			log.info("@@ layer = {}", layer);
+
+			// layer 변경 횟수가 많지 않아서 년 단위로 관리할 예정
+			String makedDirectory = propertiesConfig.getLayerUploadDir();
+			createDirectory(makedDirectory);
+			makedDirectory = makedDirectory + today.substring(0, 4) + File.separator;
+			createDirectory(makedDirectory);
+			log.info("@@@@@@@ = {}", makedDirectory);
+
+			String groupFileName = request.getParameter("layerKey") + "_" + today;
+
+			// 한건이면서 zip 의 경우
+			boolean isZipFile = false;
+			int fileCount = fileMap.values().size();
+			log.info("********************************************* fileCount = {}", fileCount);
+			if (fileCount == 1) {
+				for (MultipartFile multipartFile : fileMap.values()) {
+					String[] divideNames = multipartFile.getOriginalFilename().split("\\.");
+					String fileExtension = divideNames[divideNames.length - 1];
+					if (LayerFileInfo.ZIP_EXTENSION.equals(fileExtension.toLowerCase())) {
+						isZipFile = true;
+						// zip 파일
+						Map<String, Object> uploadMap = unzip(policy, groupFileName, multipartFile, shapeEncoding, makedDirectory);
+						layerFileInfoList = (List<LayerFileInfo>) uploadMap.get("layerFileInfoList");
+					}
+				}
+			}
+
+			if (!isZipFile) {
+				for (MultipartFile multipartFile : fileMap.values()) {
+					log.info("@@@@@@@@@@@@@@@ name = {}, original_name = {}", multipartFile.getName(), multipartFile.getOriginalFilename());
+
+					String saveFileName = groupFileName;
+					LayerFileInfo layerFileInfo = new LayerFileInfo();
+
+					// 파일 기본 validation 체크
+					errorCode = fileValidate(policy, multipartFile);
+					if (!StringUtils.isEmpty(errorCode)) {
+						result.put("statusCode", HttpStatus.OK.value());
+						result.put("errorCode", errorCode);
+						return result;
+					}
+
+					String originalName = multipartFile.getOriginalFilename();
+					String[] divideFileName = originalName.split("\\.");
+					String extension = null;
+					if (divideFileName != null && divideFileName.length != 0) {
+						extension = divideFileName[divideFileName.length - 1];
+						if (LayerFileInfo.ZIP_EXTENSION.equals(extension.toLowerCase())) {
+							log.info("@@@@@@@@@@@@ upload.file.type.invalid");
+							result.put("statusCode", HttpStatus.OK.value());
+							result.put("errorCode", "upload.file.type.invalid");
+							return result;
+						}
+						saveFileName = saveFileName + "." + extension;
+					}
+
+					long size = 0L;
+					try (InputStream inputStream = multipartFile.getInputStream();
+							OutputStream outputStream = new FileOutputStream(makedDirectory + saveFileName)) {
+
+						int bytesRead = 0;
+						byte[] buffer = new byte[BUFFER_SIZE];
+						while ((bytesRead = inputStream.read(buffer, 0, BUFFER_SIZE)) != -1) {
+							size += bytesRead;
+							outputStream.write(buffer, 0, bytesRead);
+						}
+						layerFileInfo.setFileExt(extension);
+						layerFileInfo.setFileName(multipartFile.getOriginalFilename());
+						layerFileInfo.setFileRealName(saveFileName);
+						layerFileInfo.setFilePath(makedDirectory);
+						layerFileInfo.setFileSize(String.valueOf(size));
+						layerFileInfo.setShapeEncoding(shapeEncoding);
+
+					} catch (Exception e) {
+						e.printStackTrace();
+						layerFileInfo.setErrorMessage(e.getMessage());
+					}
+
+					layerFileInfoList.add(layerFileInfo);
+				}
+			}
+
+			// 3. 레이어 기본 정보 및 레이어 이력 정보 등록
+			Map<String, Object> updateLayerMap = layerService.insertLayer(layer, layerFileInfoList);
+			if (!layerFileInfoList.isEmpty()) {
+				// 4. org2ogr 실행
+				layerService.insertOgr2Ogr(layer, isLayerFileInfoExist, (String) updateLayerMap.get("shapeFileName"),
+						(String) updateLayerMap.get("shapeEncoding"));
+
+				// org2ogr 로 등록한 데이터의 version을 갱신
+				Map<String, String> orgMap = new HashMap<>();
+				orgMap.put("fileVersion", ((Integer) updateLayerMap.get("fileVersion")).toString());
+				orgMap.put("tableName", layer.getLayerKey());
+				orgMap.put("enableYn", "Y");
+				// 5. shape 파일 테이블의 현재 데이터의 활성화 하고 날짜를 업데이트
+				layerFileInfoService.updateOgr2OgrDataFileVersion(orgMap);
+				// 6. geoserver에 신규 등록일 경우 등록, 아닐경우 통과
+				layerService.registerLayer(policy, layer.getLayerKey());
+			}
+
+			statusCode = HttpStatus.OK.value();
+		} catch (Exception e) {
+			e.printStackTrace();
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
+	}
 
 //    /**
 //    * shape 파일 변환
@@ -363,178 +534,6 @@ public class LayerController implements AuthorizationController {
 //		return result;
 //    }
 
-    private String replaceInvalidValue(String value) {
-        if("null".equals(value)) value = null;
-        return value;
-    }
-
-    /**
-    * 업로딩 파일을 압축 해제
-    * @param policy
-    * @param groupFileName layer 의 경우 한 세트가 같은 이름에 확장자만 달라야 함
-    * @param userId
-    * @param multipartFile
-    * @param targetDirectory
-    * @return
-    * @throws Exception
-    */
-    private Map<String, Object> unzip(Policy policy, String groupFileName, MultipartFile multipartFile, String shapeEncoding, String comment, String targetDirectory) throws Exception {
-        Map<String, Object> result = new HashMap<>();
-        String errorCode = fileValidate(policy, multipartFile);
-        if(!StringUtils.isEmpty(errorCode)) {
-            result.put("errorCode", errorCode);
-            return result;
-        }
-
-        // temp 디렉토리에 압축을 해제 함
-        String tempDirectory = targetDirectory + "temp" + File.separator;
-        createDirectory(tempDirectory);
-
-        List<LayerFileInfo> layerFileInfoList = new ArrayList<>();
-
-        File uploadedFile = new File(tempDirectory + multipartFile.getOriginalFilename());
-        multipartFile.transferTo(uploadedFile);
-
-        try ( ZipFile zipFile = new ZipFile(uploadedFile);) {
-            String directoryPath = targetDirectory;
-            Enumeration<? extends ZipEntry> entries = zipFile.entries();
-            while( entries.hasMoreElements() ) {
-                LayerFileInfo layerFileInfo = new LayerFileInfo();
-                ZipEntry entry = entries.nextElement();
-                if( entry.isDirectory() ) {
-                    String unzipfileName = directoryPath + entry.getName();
-                    log.info("--------- unzip directory = {}", unzipfileName);
-                    File file = new File(unzipfileName);
-                    file.mkdirs();
-                } else {
-                    String fileName = null;
-                    String extension = null;
-                    String[] divideFileName = null;
-                    String saveFileName = null;
-
-                    fileName = entry.getName();
-                    divideFileName = fileName.split("\\.");
-                    if(divideFileName != null && divideFileName.length != 0) {
-                        extension = divideFileName[divideFileName.length - 1];
-                        saveFileName = groupFileName + "." + extension;
-                        log.info("--------- unzip saveFileName = {}", saveFileName);
-                    }
-
-                    try ( 	InputStream inputStream = zipFile.getInputStream(entry);
-                            FileOutputStream outputStream = new FileOutputStream(targetDirectory + saveFileName); ) {
-                        int data = inputStream.read();
-                        while(data != -1){
-                            outputStream.write(data);
-                            data = inputStream.read();
-                        }
-
-                        layerFileInfo.setFileExt(extension);
-                        layerFileInfo.setFileName(fileName);
-                        layerFileInfo.setFileRealName(saveFileName);
-                        layerFileInfo.setFilePath(directoryPath);
-                        layerFileInfo.setShapeEncoding(shapeEncoding);
-                        layerFileInfo.setComment(comment);
-
-                    } catch(Exception e) {
-                        e.printStackTrace();
-                        layerFileInfo.setErrorMessage(e.getMessage());
-                    }
-                }
-                layerFileInfo.setFileSize(String.valueOf(entry.getSize()));
-                if( !entry.isDirectory() ) {
-                    layerFileInfoList.add(layerFileInfo);
-                }
-            }
-        } catch(IOException ex) {
-            ex.printStackTrace();
-        }
-
-        log.info("##################### unzip layerFileInfoList = {}", layerFileInfoList.size());
-        result.put("layerFileInfoList", layerFileInfoList);
-        return result;
-    }
-
-    /**
-    * @param policy
-    * @param multipartFile
-    * @return
-    */
-    private static String fileValidate(Policy policy, MultipartFile multipartFile) {
-
-        // 2 파일 이름
-        String fileName = multipartFile.getOriginalFilename();
-//		if(fileName == null) {
-//			log.info("@@ fileName is null");
-//			uploadLog.setError_code("fileinfo.name.invalid");
-//			return uploadLog;
-//		} else if(fileName.indexOf("..") >= 0 || fileName.indexOf("/") >= 0) {
-//			// TODO File.seperator 정규 표현식이 안 먹혀서 이렇게 처리함
-//			log.info("@@ fileName = {}", fileName);
-//			uploadLog.setError_code("fileinfo.name.invalid");
-//			return uploadLog;
-//		}
-
-        // 3 파일 확장자
-        String[] fileNameValues = fileName.split("\\.");
-//		if(fileNameValues.length != 2) {
-//			log.info("@@ fileNameValues.length = {}, fileName = {}", fileNameValues.length, fileName);
-//			uploadLog.setError_code("fileinfo.name.invalid");
-//			return uploadLog;
-//		}
-//		if(fileNameValues[0].indexOf(".") >= 0 || fileNameValues[0].indexOf("..") >= 0) {
-//			log.info("@@ fileNameValues[0] = {}", fileNameValues[0]);
-//			uploadLog.setError_code("fileinfo.name.invalid");
-//			return uploadLog;
-//		}
-        // LowerCase로 비교
-        String extension = fileNameValues[fileNameValues.length - 1];
-//		List<String> extList = new ArrayList<String>();
-//		if(policy.getUser_upload_type() != null && !"".equals(policy.getUser_upload_type())) {
-//			String[] uploadTypes = policy.getUser_upload_type().toLowerCase().split(",");
-//			extList = Arrays.asList(uploadTypes);
-//		}
-//		if(!extList.contains(extension.toLowerCase())) {
-//			log.info("@@ extList = {}, extension = {}", extList, extension);
-//			uploadLog.setError_code("fileinfo.ext.invalid");
-//			return uploadLog;
-//		}
-
-        // 4 파일 사이즈
-        long fileSize = multipartFile.getSize();
-        log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@ upload file size = {} KB", (fileSize / 1000));
-        if( fileSize > (policy.getUserUploadMaxFilesize() * 1000000l)) {
-            log.info("@@ fileSize = {}, user upload max filesize = {} M", (fileSize / 1000), policy.getUserUploadMaxFilesize());
-            return "fileinfo.size.invalid";
-        }
-
-        return null;
-    }
-
-    /**
-    * @param userId
-    * @param today
-    * @param targetDirectory
-    * @return
-    */
-    private void createDirectory(String targetDirectory) {
-        File directory = new File(targetDirectory);
-        if(!directory.exists()) {
-            directory.mkdir();
-        }
-    }
-
-    /**
-    * validation 체크
-    * @param request
-    * @return
-    */
-    private String layerValidate(MultipartHttpServletRequest request) {
-
-        if(StringUtils.isEmpty(request.getParameter("layerName"))) {
-            return "layer.name.empty";
-        }
-        return null;
-    }
 
     /**
     * shape 파일 목록
@@ -724,6 +723,178 @@ public class LayerController implements AuthorizationController {
         model.addAttribute("baseLayerKeysJson", baseLayerKeysJson);
 
         return "/layer/popup-map";
+    }
+    
+    private String replaceInvalidValue(String value) {
+        if("null".equals(value)) value = null;
+        return value;
+    }
+
+    /**
+    * 업로딩 파일을 압축 해제
+    * @param policy
+    * @param groupFileName layer 의 경우 한 세트가 같은 이름에 확장자만 달라야 함
+    * @param userId
+    * @param multipartFile
+    * @param targetDirectory
+    * @return
+    * @throws Exception
+    */
+    private Map<String, Object> unzip(Policy policy, String groupFileName, MultipartFile multipartFile, String shapeEncoding, String targetDirectory) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        String errorCode = fileValidate(policy, multipartFile);
+        if(!StringUtils.isEmpty(errorCode)) {
+            result.put("errorCode", errorCode);
+            return result;
+        }
+
+        // temp 디렉토리에 압축을 해제 함
+        String tempDirectory = targetDirectory + "temp" + File.separator;
+        createDirectory(tempDirectory);
+
+        List<LayerFileInfo> layerFileInfoList = new ArrayList<>();
+
+        File uploadedFile = new File(tempDirectory + multipartFile.getOriginalFilename());
+        multipartFile.transferTo(uploadedFile);
+
+        try ( ZipFile zipFile = new ZipFile(uploadedFile);) {
+            String directoryPath = targetDirectory;
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            while( entries.hasMoreElements() ) {
+                LayerFileInfo layerFileInfo = new LayerFileInfo();
+                ZipEntry entry = entries.nextElement();
+                if( entry.isDirectory() ) {
+                    String unzipfileName = directoryPath + entry.getName();
+                    log.info("--------- unzip directory = {}", unzipfileName);
+                    File file = new File(unzipfileName);
+                    file.mkdirs();
+                } else {
+                    String fileName = null;
+                    String extension = null;
+                    String[] divideFileName = null;
+                    String saveFileName = null;
+
+                    fileName = entry.getName();
+                    divideFileName = fileName.split("\\.");
+                    if(divideFileName != null && divideFileName.length != 0) {
+                        extension = divideFileName[divideFileName.length - 1];
+                        saveFileName = groupFileName + "." + extension;
+                        log.info("--------- unzip saveFileName = {}", saveFileName);
+                    }
+
+                    try ( 	InputStream inputStream = zipFile.getInputStream(entry);
+                            FileOutputStream outputStream = new FileOutputStream(targetDirectory + saveFileName); ) {
+                        int data = inputStream.read();
+                        while(data != -1){
+                            outputStream.write(data);
+                            data = inputStream.read();
+                        }
+
+                        layerFileInfo.setFileExt(extension);
+                        layerFileInfo.setFileName(fileName);
+                        layerFileInfo.setFileRealName(saveFileName);
+                        layerFileInfo.setFilePath(directoryPath);
+                        layerFileInfo.setShapeEncoding(shapeEncoding);
+
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                        layerFileInfo.setErrorMessage(e.getMessage());
+                    }
+                }
+                layerFileInfo.setFileSize(String.valueOf(entry.getSize()));
+                if( !entry.isDirectory() ) {
+                    layerFileInfoList.add(layerFileInfo);
+                }
+            }
+        } catch(IOException ex) {
+            ex.printStackTrace();
+        }
+
+        log.info("##################### unzip layerFileInfoList = {}", layerFileInfoList.size());
+        result.put("layerFileInfoList", layerFileInfoList);
+        return result;
+    }
+
+    /**
+    * @param policy
+    * @param multipartFile
+    * @return
+    */
+    private static String fileValidate(Policy policy, MultipartFile multipartFile) {
+
+        // 2 파일 이름
+        String fileName = multipartFile.getOriginalFilename();
+//		if(fileName == null) {
+//			log.info("@@ fileName is null");
+//			uploadLog.setError_code("fileinfo.name.invalid");
+//			return uploadLog;
+//		} else if(fileName.indexOf("..") >= 0 || fileName.indexOf("/") >= 0) {
+//			// TODO File.seperator 정규 표현식이 안 먹혀서 이렇게 처리함
+//			log.info("@@ fileName = {}", fileName);
+//			uploadLog.setError_code("fileinfo.name.invalid");
+//			return uploadLog;
+//		}
+
+        // 3 파일 확장자
+        String[] fileNameValues = fileName.split("\\.");
+//		if(fileNameValues.length != 2) {
+//			log.info("@@ fileNameValues.length = {}, fileName = {}", fileNameValues.length, fileName);
+//			uploadLog.setError_code("fileinfo.name.invalid");
+//			return uploadLog;
+//		}
+//		if(fileNameValues[0].indexOf(".") >= 0 || fileNameValues[0].indexOf("..") >= 0) {
+//			log.info("@@ fileNameValues[0] = {}", fileNameValues[0]);
+//			uploadLog.setError_code("fileinfo.name.invalid");
+//			return uploadLog;
+//		}
+        // LowerCase로 비교
+        String extension = fileNameValues[fileNameValues.length - 1];
+//		List<String> extList = new ArrayList<String>();
+//		if(policy.getUser_upload_type() != null && !"".equals(policy.getUser_upload_type())) {
+//			String[] uploadTypes = policy.getUser_upload_type().toLowerCase().split(",");
+//			extList = Arrays.asList(uploadTypes);
+//		}
+//		if(!extList.contains(extension.toLowerCase())) {
+//			log.info("@@ extList = {}, extension = {}", extList, extension);
+//			uploadLog.setError_code("fileinfo.ext.invalid");
+//			return uploadLog;
+//		}
+
+        // 4 파일 사이즈
+        long fileSize = multipartFile.getSize();
+        log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@ upload file size = {} KB", (fileSize / 1000));
+        if( fileSize > (policy.getUserUploadMaxFilesize() * 1000000l)) {
+            log.info("@@ fileSize = {}, user upload max filesize = {} M", (fileSize / 1000), policy.getUserUploadMaxFilesize());
+            return "fileinfo.size.invalid";
+        }
+
+        return null;
+    }
+
+    /**
+    * @param userId
+    * @param today
+    * @param targetDirectory
+    * @return
+    */
+    private void createDirectory(String targetDirectory) {
+        File directory = new File(targetDirectory);
+        if(!directory.exists()) {
+            directory.mkdir();
+        }
+    }
+
+    /**
+    * validation 체크
+    * @param request
+    * @return
+    */
+    private String layerValidate(MultipartHttpServletRequest request) {
+
+        if(StringUtils.isEmpty(request.getParameter("layerName"))) {
+            return "layer.name.empty";
+        }
+        return null;
     }
 
     /**
