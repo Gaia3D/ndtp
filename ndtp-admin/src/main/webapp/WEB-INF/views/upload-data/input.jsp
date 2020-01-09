@@ -341,11 +341,12 @@
 				if(file !== undefined && file.name !== undefined) {
                     console.log("file name = " + file.name);
                     fileUploadDialog.dialog( "close" );
-
-                    if(response.errorCode === undefined) {
+					if(response.errorCode === undefined || response.errorCode === null) {
 						uploadFileResultCount ++;
 						if(uploadFileCount === uploadFileResultCount) {
 						    alert("업로딩을 완료 하였습니다.");
+						    uploadFileCount = 0;
+						    uploadFileResultCount = 0;
 						}
                     } else {
                         alertMessage(response);

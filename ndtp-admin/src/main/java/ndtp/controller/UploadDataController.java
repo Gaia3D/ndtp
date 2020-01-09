@@ -173,6 +173,8 @@ public class UploadDataController {
 				}
 				
 				if(!isZipFile) {
+					// zip 파일이 아니면 기본적으로 한 폴더에 넣어야 함
+					
 					// 3 그 외의 경우는 재귀적으로 파일 복사
 					for (MultipartFile multipartFile : fileMap.values()) {
 						log.info("@@@@@@@@@@@@@@@ name = {}, original_name = {}", multipartFile.getName(), multipartFile.getOriginalFilename());

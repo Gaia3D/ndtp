@@ -300,9 +300,11 @@ public class Policy {
  	
  	// 업로딩 가능 확장자. 3ds,obj,ifc,dae 등
  	private String userUploadType;
- 	// 최대 업로딩 사이즈(단위M). 기본값 500M
+ 	// user_converter_type is '변환 가능 확장자. 3ds,obj,dae,collada,ifc,las,citygml,indoorgml';
+  	private String userConverterType;
+ 	// 최대 업로딩 사이즈(단위M). 기본값 10000M
  	private Long userUploadMaxFilesize;
- 	// 1회, 최대 업로딩 파일 수. 기본값 50개
+ 	// 1회, 최대 업로딩 파일 수. 기본값 500개
  	private Integer userUploadMaxCount;	
  	
  	// 등록일
