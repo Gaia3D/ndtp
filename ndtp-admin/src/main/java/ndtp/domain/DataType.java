@@ -12,6 +12,7 @@ public enum DataType {
 	COLLADA("collada"),
 	IFC("ifc"),
 	LAS("las"),
+	GML("gml"),
 	CITYGML("citygml"),
 	INDOORGML("indoorgml"),
 	

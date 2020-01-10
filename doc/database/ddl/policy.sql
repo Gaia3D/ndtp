@@ -121,8 +121,8 @@ create table policy(
 	content_layer_group_root				varchar(60)			default 'NDTP',
 	content_data_group_root					varchar(60)			default 'NDTP',
 	
-	user_upload_type						varchar(256)		default '3ds,obj,dae,collada,ifc,las,citygml,indoorgml,jpg,jpeg,gif,png,bmp,zip',
-	user_converter_type						varchar(256)		default '3ds,obj,dae,collada,ifc,las,citygml,indoorgml',
+	user_upload_type						varchar(256)		default '3ds,obj,dae,collada,ifc,las,gml,citygml,indoorgml,jpg,jpeg,gif,png,bmp,zip',
+	user_converter_type						varchar(256)		default '3ds,obj,dae,collada,ifc,las,gml,citygml,indoorgml',
 	user_upload_max_filesize				integer				default 10000,
 	user_upload_max_count					integer				default 500,
 	
@@ -242,8 +242,8 @@ comment on column policy.content_menu_group_root is '메뉴 그룹 최상위 그
 comment on column policy.content_user_group_root is '사용자 그룹 최상위 그룹명';
 comment on column policy.content_data_group_root is '데이터 그룹 최상위 그룹명';
 
-comment on column policy.user_upload_type is '업로딩 가능 확장자. 3ds,obj,dae,collada,ifc,las,citygml,indoorgml,jpg,jpeg,gif,png,bmp,zip';
-comment on column policy.user_converter_type is '변환 가능 확장자. 3ds,obj,dae,collada,ifc,las,citygml,indoorgml';
+comment on column policy.user_upload_type is '업로딩 가능 확장자. 3ds,obj,dae,collada,ifc,las,gml,citygml,indoorgml,jpg,jpeg,gif,png,bmp,zip';
+comment on column policy.user_converter_type is '변환 가능 확장자. 3ds,obj,dae,collada,ifc,las,gml,citygml,indoorgml';
 comment on column policy.user_upload_max_filesize is '최대 업로딩 사이즈(단위M). 500M';
 comment on column policy.user_upload_max_count is '1회, 최대 업로딩 파일 수. 50개';
 	
