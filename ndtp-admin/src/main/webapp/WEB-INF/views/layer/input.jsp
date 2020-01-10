@@ -350,9 +350,6 @@
 </c:if>
 			</tbody>
 		</table>
-		<div class="button-group">
-			<input type="button" id="rootParentSelect" class="button" value="최상위(ROOT) 그룹으로 저장"/>
-		</div>
 	</div>
 	
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
@@ -472,17 +469,11 @@
 		layerGroupDialog.dialog( "close" );
 	}
 	
-	$( "#rootParentSelect" ).on( "click", function() {
-		$("#layerGroupId").val(0);
-		$("#parentName").val("${layerGroup.parentName}");
-		layerGroupDialog.dialog( "close" );
-	});
-	
 	function check() {
 		var number = /^[0-9]+$/;
 		
 		if(!$("#layerGroupId").val() || !number.test($("#layerGroupId").val())) {
-			alert("상위 레이어 그룹을 선택해 주세요.");
+			alert("레이어 그룹을 선택해 주세요.");
 			$("#layerGroupName").focus();
 			return false;
 		}
