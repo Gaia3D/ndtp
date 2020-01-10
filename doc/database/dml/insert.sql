@@ -115,6 +115,10 @@ values
 insert into policy(	policy_id, password_exception_char) 
 			values( 1, '<>&''"');
 
+-- 2D, 3D 운영 정책
+insert into geopolicy(	geopolicy_id) 
+			values( 1 );			
+			
 -- Role
 insert into role(role_id, role_name, role_key, role_target, role_type, use_yn, default_yn)
 values

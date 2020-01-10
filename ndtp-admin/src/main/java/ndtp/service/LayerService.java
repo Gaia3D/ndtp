@@ -3,9 +3,9 @@ package ndtp.service;
 import java.util.List;
 import java.util.Map;
 
+import ndtp.domain.GeoPolicy;
 import ndtp.domain.Layer;
 import ndtp.domain.LayerFileInfo;
-import ndtp.domain.Policy;
 
 public interface LayerService {
 
@@ -28,21 +28,7 @@ public interface LayerService {
     * @return
     */
     Layer getLayer(Integer layerId);
-
-    /**
-    * 자식 레이어 중 순서가 최대인 레이어를 검색
-    * @param layerId
-    * @return
-    */
-//    Layer getMaxViewOrderChildLayer(Integer layerId);
-
-    /**
-    * 자식 레이어 개수
-    * @param layerId
-    * @return
-    */
-//    int getChildLayerCount(Integer layerId);
-
+    
     /**
     * 레이어 테이블의 컬럼 타입이 어떤 geometry 타입인지를 구함
     * @param layerKey
@@ -63,13 +49,6 @@ public interface LayerService {
     * @return
     */
     Map<String, Object> insertLayer(Layer layer, List<LayerFileInfo> layerFileInfoList);
-
-    /**
-    * 레이어 트리 정보 수정
-    * @param layer
-    * @return
-    */
-//    int updateTreeLayer(Layer layer);
 
     /**
     * shape 파일을 이용한 layer 정보 수정
@@ -100,9 +79,11 @@ public interface LayerService {
     
     /**
     * layer 가 등록 되어 있지 않은 경우 rest api 를 이용해서 layer를 등록
-    * @throws Exception
-    */
-    void registerLayer(Policy policy, String layerKey) throws Exception;
+     * @param geoPolicy
+     * @param layerKey
+     * @throws Exception
+     */
+    void registerLayer(GeoPolicy geoPolicy, String layerKey) throws Exception;
     
     /**
 	 * 레이어의 스타일 정보를 수정
@@ -129,14 +110,7 @@ public interface LayerService {
     */
     int updateLayerByLayerFileInfoId(Integer layerId, Integer layerFileInfoGroupId, Integer layerFileInfoId);
 
-    /**
-    * 레이어 트리 순서 수정, up, down
-    * @param layer
-    * @return
-    */
-//    int updateMoveTreeLayer(Layer layer);
-
-    /**
+     /**
     * 레이어 삭제
     * @param layerId
     * @return

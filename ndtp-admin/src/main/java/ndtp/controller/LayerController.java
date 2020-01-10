@@ -42,6 +42,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
+import ndtp.domain.GeoPolicy;
 import ndtp.domain.Key;
 import ndtp.domain.Layer;
 import ndtp.domain.LayerFileInfo;
@@ -50,6 +51,7 @@ import ndtp.domain.Pagination;
 import ndtp.domain.Policy;
 import ndtp.domain.RoleKey;
 import ndtp.domain.UserSession;
+import ndtp.service.GeoPolicyService;
 import ndtp.service.LayerFileInfoService;
 import ndtp.service.LayerGroupService;
 import ndtp.service.LayerService;
@@ -64,7 +66,9 @@ import ndtp.utils.WebUtils;
 @RequestMapping("/layer/")
 public class LayerController implements AuthorizationController {
 
-    @Autowired
+	@Autowired
+	private GeoPolicyService geoPolicyService;
+	@Autowired
     private LayerService layerService;
     @Autowired
     private LayerFileInfoService layerFileInfoService;
@@ -201,6 +205,7 @@ public class LayerController implements AuthorizationController {
 			Map<String, MultipartFile> fileMap = request.getFileMap();
 
 			Policy policy = policyService.getPolicy();
+			GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
 			String shapeEncoding = replaceInvalidValue(request.getParameter("shapeEncoding"));
 			String today = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 			// 레이어 객체 생성 
@@ -322,7 +327,7 @@ public class LayerController implements AuthorizationController {
 				// 5. shape 파일 테이블의 현재 데이터의 활성화 하고 날짜를 업데이트
 				layerFileInfoService.updateOgr2OgrDataFileVersion(orgMap);
 				// 6. geoserver에 신규 등록일 경우 등록, 아닐경우 통과
-				layerService.registerLayer(policy, layer.getLayerKey());
+				layerService.registerLayer(geoPolicy, layer.getLayerKey());
 				layerService.updateLayerStyle(layer);
 			}
 

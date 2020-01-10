@@ -23,16 +23,16 @@ import org.springframework.web.client.RestTemplate;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
+import ndtp.domain.GeoPolicy;
 import ndtp.domain.Layer;
 import ndtp.domain.LayerFileInfo;
-import ndtp.domain.Policy;
 import ndtp.geospatial.LayerStyleParser;
 import ndtp.geospatial.Ogr2OgrExecute;
 import ndtp.persistence.LayerFileInfoMapper;
 import ndtp.persistence.LayerMapper;
 import ndtp.security.Crypt;
+import ndtp.service.GeoPolicyService;
 import ndtp.service.LayerService;
-import ndtp.service.PolicyService;
 
 /**
  * 여기서는 Geoserver Rest API 결과를 가지고 파싱 하기 때문에 RestTemplate을 커스트마이징하면 안됨
@@ -51,7 +51,7 @@ public class LayerServiceImpl implements LayerService {
 	private String password;
 
     @Autowired
-    private PolicyService policyService;
+    private GeoPolicyService geoPolicyService;
 
     @Autowired
     private PropertiesConfig propertiesConfig;
@@ -89,35 +89,6 @@ public class LayerServiceImpl implements LayerService {
     public Layer getLayer(Integer layerId) {
         return layerMapper.getLayer(layerId);
     }
-
-    /**
-    * 자식 레이어 중 순서가 최대인 레이어를 검색
-    * @param layerId
-    * @return
-    */
-//    @Transactional(readOnly=true)
-//    public Layer getMaxViewOrderChildLayer(Integer layerId) {
-//        return layerMapper.getMaxViewOrderChildLayer(layerId);
-//    }
-
-    /**
-    * 자식 레이어 개수
-    * @param layerId
-    * @return
-    */
-//    @Transactional(readOnly=true)
-//    public int getChildLayerCount(Integer layerId) {
-//        return layerMapper.getChildLayerCount(layerId);
-//    }
-
-    /**
-    * 부모와 표시 순서로 레이어 조회
-    * @param layer
-    * @return
-    */
-//    private Layer getLayerByParentAndViewOrder(Layer layer) {
-//        return layerMapper.getLayerByParentAndViewOrder(layer);
-//    }
 
     /**
     * 레이어 테이블의 컬럼 타입이 어떤 geometry 타입인지를 구함
@@ -185,16 +156,6 @@ public class LayerServiceImpl implements LayerService {
 
         return layerFileInfoGroupMap;
     }
-
-    /**
-    * 레이어 트리 정보 수정
-    * @param layer
-    * @return
-    */
-//    @Transactional
-//    public int updateTreeLayer(Layer layer) {
-//        return layerMapper.updateTreeLayer(layer);
-//    }
 
     /**
     * shape 파일을 이용한 layer 정보 수정
@@ -285,9 +246,9 @@ public class LayerServiceImpl implements LayerService {
             updateOption = "insert";
         }
 
-        Policy policy = policyService.getPolicy();
-        String layerSourceCoordinate = policy.getLayerSourceCoordinate();
-        String layerTargetCoordinate = policy.getLayerTargetCoordinate();
+        GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
+        String layerSourceCoordinate = geoPolicy.getLayerSourceCoordinate();
+        String layerTargetCoordinate = geoPolicy.getLayerTargetCoordinate();
 //		ShapeFileParser shapeFileParser = new ShapeFileParser();
 //		shapeFileParser.parse(shapeFileName);
 
@@ -322,9 +283,9 @@ public class LayerServiceImpl implements LayerService {
         String dbName = Crypt.decrypt(url);
         dbName = dbName.substring(dbName.lastIndexOf("/") + 1);
         String driver = "PG:host=localhost dbname=" + dbName + " user=" + Crypt.decrypt(username) + " password=" + Crypt.decrypt(password);
-        Policy policy = policyService.getPolicy();
-        String layerSourceCoordinate = policy.getLayerSourceCoordinate();
-        String layerTargetCoordinate = policy.getLayerTargetCoordinate();
+        GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
+        String layerSourceCoordinate = geoPolicy.getLayerSourceCoordinate();
+        String layerTargetCoordinate = geoPolicy.getLayerTargetCoordinate();
         String layerColumn = getLayerColumn(tableName);
         String sql = "SELECT "+ layerColumn + ", null::text AS enable_yn, null::int AS version FROM "+tableName+" WHERE file_version="+fileVersion;
 
@@ -409,10 +370,10 @@ public class LayerServiceImpl implements LayerService {
 	@Transactional
 	public int deleteLayer(Integer layerId) {
 		// geoserver layer 삭제
-		Policy policy = policyService.getPolicy();
+		GeoPolicy geopolicy = geoPolicyService.getGeoPolicy();
 		Layer layer = layerMapper.getLayer(layerId);
 
-		deleteGeoserverLayer(policy, layer.getLayerKey());
+		deleteGeoserverLayer(geopolicy, layer.getLayerKey());
 		layerFileInfoMapper.deleteLayerFileInfo(layerId);
 		return layerMapper.deleteLayer(layerId);
 	}
@@ -425,8 +386,8 @@ public class LayerServiceImpl implements LayerService {
     * @throws Exception
     */
     @Transactional
-    public void registerLayer(Policy policy, String layerKey) throws Exception {
-        HttpStatus httpStatus = getLayerStatus(policy, layerKey);
+    public void registerLayer(GeoPolicy geoPolicy, String layerKey) throws Exception {
+        HttpStatus httpStatus = getLayerStatus(geoPolicy, layerKey);
         if(HttpStatus.INTERNAL_SERVER_ERROR == httpStatus) {
             throw new Exception();
         }
@@ -439,7 +400,7 @@ public class LayerServiceImpl implements LayerService {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.TEXT_XML);
             // geoserver basic 암호화 아이디:비밀번호 를 base64로 encoding
-            headers.add("Authorization", "Basic " + Base64.getEncoder().encodeToString( (policy.getGeoserverUser() + ":" + policy.getGeoserverPassword()).getBytes()));
+            headers.add("Authorization", "Basic " + Base64.getEncoder().encodeToString( (geoPolicy.getGeoserverUser() + ":" + geoPolicy.getGeoserverPassword()).getBytes()));
 
             // body
             String xmlString = "<?xml version=\"1.0\" encoding=\"utf-8\"?><featureType><name>" + layerKey + "</name></featureType>";
@@ -453,8 +414,8 @@ public class LayerServiceImpl implements LayerService {
             restTemplate.setMessageConverters(messageConverters);
 
             HttpEntity<String> entity = new HttpEntity<>(xmlString, headers);
-            String url = policy.getGeoserverDataUrl() + "/rest/workspaces/"
-                    + policy.getGeoserverDataWorkspace() + "/datastores/" + policy.getGeoserverDataStore() + "/featuretypes?recalculate=nativebbox,latlonbbox";
+            String url = geoPolicy.getGeoserverDataUrl() + "/rest/workspaces/"
+                    + geoPolicy.getGeoserverDataWorkspace() + "/datastores/" + geoPolicy.getGeoserverDataStore() + "/featuretypes?recalculate=nativebbox,latlonbbox";
 
             ResponseEntity<?> response = restTemplate.postForEntity(url, entity, String.class);
 
@@ -476,11 +437,11 @@ public class LayerServiceImpl implements LayerService {
      @Transactional
      public int updateLayerStyle(Layer layer) throws Exception {
 
-         Policy policy = policyService.getPolicy();
+         GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
          Layer dbLayer = layerMapper.getLayer(layer.getLayerId());
          layer.setLayerKey(dbLayer.getLayerKey());
          String xmlData = getLayerStyleFileData(layer.getLayerId());
-         HttpStatus httpStatus = getLayerStyle(policy, layer.getLayerKey());
+         HttpStatus httpStatus = getLayerStyle(geoPolicy, layer.getLayerKey());
          if(HttpStatus.INTERNAL_SERVER_ERROR.equals(httpStatus)) {
              throw new Exception();
          }
@@ -490,7 +451,7 @@ public class LayerServiceImpl implements LayerService {
              // 이미 등록 되어 있음, update
          } else if(HttpStatus.NOT_FOUND.equals(httpStatus)) {
              // 신규 등록
-             insertGeoserverLayerStyle(policy, layer);
+             insertGeoserverLayerStyle(geoPolicy, layer);
              // 기본 지오메트리타입 스타일 get
              xmlData = getLayerDefaultStyleFileData(layer.getGeometryType());
          } else {
@@ -502,8 +463,8 @@ public class LayerServiceImpl implements LayerService {
          layerStyleParser.updateLayerStyle();
          layer.setStyleFileContent(layerStyleParser.getStyleData());
 
-         updateGeoserverLayerStyle(policy, layer);
-         reloadGeoserverLayerStyle(policy, layer);
+         updateGeoserverLayerStyle(geoPolicy, layer);
+         reloadGeoserverLayerStyle(geoPolicy, layer);
          
          return 0;
 
@@ -512,19 +473,19 @@ public class LayerServiceImpl implements LayerService {
 	/**
 	 * 레이어가 존재 하는지를 검사
 	 * 
-	 * @param policy
+	 * @param geopolicy
 	 * @param layerKey
 	 * @return
 	 * @throws Exception
 	 */
-	private HttpStatus getLayerStatus(Policy policy, String layerKey) {
+	private HttpStatus getLayerStatus(GeoPolicy geopolicy, String layerKey) {
 		HttpStatus httpStatus = null;
 		try {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.TEXT_XML);
 			// geoserver basic 암호화 아이디:비밀번호 를 base64로 encoding
 			headers.add("Authorization", "Basic " + Base64.getEncoder()
-					.encodeToString((policy.getGeoserverUser() + ":" + policy.getGeoserverPassword()).getBytes()));
+					.encodeToString((geopolicy.getGeoserverUser() + ":" + geopolicy.getGeoserverPassword()).getBytes()));
 
 			List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
 			// Add the String Message converter
@@ -534,8 +495,8 @@ public class LayerServiceImpl implements LayerService {
 			restTemplate.setMessageConverters(messageConverters);
 
 			HttpEntity<String> entity = new HttpEntity<>(headers);
-			String url = policy.getGeoserverDataUrl() + "/rest/workspaces/" + policy.getGeoserverDataWorkspace()
-					+ "/datastores/" + policy.getGeoserverDataStore() + "/featuretypes/" + layerKey;
+			String url = geopolicy.getGeoserverDataUrl() + "/rest/workspaces/" + geopolicy.getGeoserverDataWorkspace()
+					+ "/datastores/" + geopolicy.getGeoserverDataStore() + "/featuretypes/" + layerKey;
 			log.info("-------- url = {}", url);
 			ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 			httpStatus = response.getStatusCode();
@@ -557,11 +518,11 @@ public class LayerServiceImpl implements LayerService {
 	/**
 	 * 레이어 스타일 정보 등록
 	 * 
-	 * @param policy
+	 * @param geopolicy
 	 * @param layer
 	 * @throws Exception
 	 */
-	private void insertGeoserverLayerStyle(Policy policy, Layer layer) throws Exception {
+	private void insertGeoserverLayerStyle(GeoPolicy geopolicy, Layer layer) throws Exception {
 		RestTemplate restTemplate = new RestTemplate();
 
 		HttpHeaders headers = new HttpHeaders();
@@ -573,7 +534,7 @@ public class LayerServiceImpl implements LayerService {
 		headers.setContentType(MediaType.TEXT_XML);
 		// geoserver basic 암호화 아이디:비밀번호 를 base64로 encoding
 		headers.add("Authorization", "Basic " + Base64.getEncoder()
-				.encodeToString((policy.getGeoserverUser() + ":" + policy.getGeoserverPassword()).getBytes()));
+				.encodeToString((geopolicy.getGeoserverUser() + ":" + geopolicy.getGeoserverPassword()).getBytes()));
 
 		List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
 		// Add the String Message converter
@@ -583,7 +544,7 @@ public class LayerServiceImpl implements LayerService {
 
 		HttpEntity<String> entity = new HttpEntity<>(getEmptyStyleFile(layer.getLayerKey()), headers);
 
-		String url = policy.getGeoserverDataUrl() + "/rest/workspaces/" + policy.getGeoserverDataWorkspace()
+		String url = geopolicy.getGeoserverDataUrl() + "/rest/workspaces/" + geopolicy.getGeoserverDataWorkspace()
 				+ "/styles";
 		ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 		log.info("-------- insertGeoserverLayerStyle statusCode = {}, body = {}", response.getStatusCodeValue(),
@@ -592,11 +553,11 @@ public class LayerServiceImpl implements LayerService {
 	
 	/**
 	 * 기존에 존재하는 스타일의 정보를 취득 
-	 * @param policy
+	 * @param geopolicy
 	 * @param layerKey
 	 * @return
 	 */
-    private HttpStatus getLayerStyle(Policy policy, String layerKey) {
+    private HttpStatus getLayerStyle(GeoPolicy geopolicy, String layerKey) {
         HttpStatus httpStatus = null;
         try {
             RestTemplate restTemplate = new RestTemplate();
@@ -610,7 +571,7 @@ public class LayerServiceImpl implements LayerService {
             // 클라이언트가 request에 실어 보내는 데이타(body)의 형식(MediaType)를 표현
             headers.setContentType(MediaType.TEXT_XML);
             // geoserver basic 암호화 아이디:비밀번호 를 base64로 encoding
-            headers.add("Authorization", "Basic " + Base64.getEncoder().encodeToString( (policy.getGeoserverUser() + ":" + policy.getGeoserverPassword()).getBytes()));
+            headers.add("Authorization", "Basic " + Base64.getEncoder().encodeToString( (geopolicy.getGeoserverUser() + ":" + geopolicy.getGeoserverPassword()).getBytes()));
 
             List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
             //Add the String Message converter
@@ -619,7 +580,7 @@ public class LayerServiceImpl implements LayerService {
             restTemplate.setMessageConverters(messageConverters);
 
             HttpEntity<String> entity = new HttpEntity<>(headers);
-            String url = policy.getGeoserverDataUrl() + "/rest/workspaces/" + policy.getGeoserverDataWorkspace() + "/styles/" + layerKey;
+            String url = geopolicy.getGeoserverDataUrl() + "/rest/workspaces/" + geopolicy.getGeoserverDataWorkspace() + "/styles/" + layerKey;
 
             ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
             httpStatus = response.getStatusCode();
@@ -648,7 +609,7 @@ public class LayerServiceImpl implements LayerService {
 		String layerStyleFileData = null;
 		HttpStatus httpStatus = null;
 		try {
-			Policy policy = policyService.getPolicy();
+			GeoPolicy geopolicy = geoPolicyService.getGeoPolicy();
 
 			RestTemplate restTemplate = new RestTemplate();
 
@@ -662,7 +623,7 @@ public class LayerServiceImpl implements LayerService {
 			headers.setContentType(MediaType.TEXT_XML);
 			// geoserver basic 암호화 아이디:비밀번호 를 base64로 encoding
 			headers.add("Authorization", "Basic " + Base64.getEncoder()
-					.encodeToString((policy.getGeoserverUser() + ":" + policy.getGeoserverPassword()).getBytes()));
+					.encodeToString((geopolicy.getGeoserverUser() + ":" + geopolicy.getGeoserverPassword()).getBytes()));
 
 			List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
 			// Add the String Message converter
@@ -672,7 +633,7 @@ public class LayerServiceImpl implements LayerService {
 
 			HttpEntity<String> entity = new HttpEntity<>(headers);
 
-			String url = policy.getGeoserverDataUrl() + "/rest/styles/" + geometryType.toLowerCase() + ".sld";
+			String url = geopolicy.getGeoserverDataUrl() + "/rest/styles/" + geometryType.toLowerCase() + ".sld";
 			ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 			httpStatus = response.getStatusCode();
 			layerStyleFileData = response.getBody().toString();
@@ -703,7 +664,7 @@ public class LayerServiceImpl implements LayerService {
 		String layerStyleFileData = null;
 		HttpStatus httpStatus = null;
 		try {
-			Policy policy = policyService.getPolicy();
+			GeoPolicy geopolicy = geoPolicyService.getGeoPolicy();
 			Layer layer = layerMapper.getLayer(layerId);
 
 			RestTemplate restTemplate = new RestTemplate();
@@ -718,7 +679,7 @@ public class LayerServiceImpl implements LayerService {
 			headers.setContentType(MediaType.TEXT_XML);
 			// geoserver basic 암호화 아이디:비밀번호 를 base64로 encoding
 			headers.add("Authorization", "Basic " + Base64.getEncoder()
-					.encodeToString((policy.getGeoserverUser() + ":" + policy.getGeoserverPassword()).getBytes()));
+					.encodeToString((geopolicy.getGeoserverUser() + ":" + geopolicy.getGeoserverPassword()).getBytes()));
 
 			List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
 			// Add the String Message converter
@@ -728,7 +689,7 @@ public class LayerServiceImpl implements LayerService {
 
 			HttpEntity<String> entity = new HttpEntity<>(headers);
 
-			String url = policy.getGeoserverDataUrl() + "/rest/workspaces/" + policy.getGeoserverDataWorkspace()
+			String url = geopolicy.getGeoserverDataUrl() + "/rest/workspaces/" + geopolicy.getGeoserverDataWorkspace()
 					+ "/styles/" + layer.getLayerKey() + ".sld";
 			ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 			httpStatus = response.getStatusCode();
@@ -753,11 +714,11 @@ public class LayerServiceImpl implements LayerService {
 	/**
 	 * 레이어 스타일 정보를 수정
 	 * 
-	 * @param policy
+	 * @param geopolicy
 	 * @param layer
 	 * @throws Exception
 	 */
-	private void updateGeoserverLayerStyle(Policy policy, Layer layer) throws Exception {
+	private void updateGeoserverLayerStyle(GeoPolicy geopolicy, Layer layer) throws Exception {
 		RestTemplate restTemplate = new RestTemplate();
 
 		HttpHeaders headers = new HttpHeaders();
@@ -769,7 +730,7 @@ public class LayerServiceImpl implements LayerService {
 		headers.setContentType(new MediaType("application", "vnd.ogc.sld+xml"));
 		// geoserver basic 암호화 아이디:비밀번호 를 base64로 encoding
 		headers.add("Authorization", "Basic " + Base64.getEncoder()
-				.encodeToString((policy.getGeoserverUser() + ":" + policy.getGeoserverPassword()).getBytes()));
+				.encodeToString((geopolicy.getGeoserverUser() + ":" + geopolicy.getGeoserverPassword()).getBytes()));
 
 		List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
 		// Add the String Message converter
@@ -779,7 +740,7 @@ public class LayerServiceImpl implements LayerService {
 
 		HttpEntity<String> entity = new HttpEntity<>(layer.getStyleFileContent().trim(), headers);
 
-		String url = policy.getGeoserverDataUrl() + "/rest/workspaces/" + policy.getGeoserverDataWorkspace()
+		String url = geopolicy.getGeoserverDataUrl() + "/rest/workspaces/" + geopolicy.getGeoserverDataWorkspace()
 				+ "/styles/" + layer.getLayerKey();
 		log.info("-------- url = {}, xmlData = {}", url, layer.getStyleFileContent().trim());
 		ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
@@ -790,19 +751,19 @@ public class LayerServiceImpl implements LayerService {
 	/**
 	 * geoserver에 존재하는 레이어를 삭제
 	 * 
-	 * @param policy
+	 * @param geopolicy
 	 * @param layerKey
 	 * @return
 	 * @throws Exception
 	 */
-	private HttpStatus deleteGeoserverLayer(Policy policy, String layerKey) {
+	private HttpStatus deleteGeoserverLayer(GeoPolicy geopolicy, String layerKey) {
 		HttpStatus httpStatus = null;
 		try {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.TEXT_XML);
 			// geoserver basic 암호화 아이디:비밀번호 를 base64로 encoding
 			headers.add("Authorization", "Basic " + Base64.getEncoder()
-					.encodeToString((policy.getGeoserverUser() + ":" + policy.getGeoserverPassword()).getBytes()));
+					.encodeToString((geopolicy.getGeoserverUser() + ":" + geopolicy.getGeoserverPassword()).getBytes()));
 
 			List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
 			// Add the String Message converter
@@ -813,8 +774,8 @@ public class LayerServiceImpl implements LayerService {
 
 			HttpEntity<String> entity = new HttpEntity<>(headers);
 
-			String url = policy.getGeoserverDataUrl() + "/rest/workspaces/" + policy.getGeoserverDataWorkspace()
-					+ "/datastores/" + policy.getGeoserverDataStore() + "/featuretypes/" + layerKey + "?recurse=true";
+			String url = geopolicy.getGeoserverDataUrl() + "/rest/workspaces/" + geopolicy.getGeoserverDataWorkspace()
+					+ "/datastores/" + geopolicy.getGeoserverDataStore() + "/featuretypes/" + layerKey + "?recurse=true";
 			log.info("-------- url = {}", url);
 			ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.DELETE, entity, String.class);
 			httpStatus = response.getStatusCode();
@@ -828,7 +789,7 @@ public class LayerServiceImpl implements LayerService {
 		return httpStatus;
 	}
        
-	private void reloadGeoserverLayerStyle(Policy policy, Layer layer) throws Exception {
+	private void reloadGeoserverLayerStyle(GeoPolicy geopolicy, Layer layer) throws Exception {
 		RestTemplate restTemplate = new RestTemplate();
 
 		HttpHeaders headers = new HttpHeaders();
@@ -840,7 +801,7 @@ public class LayerServiceImpl implements LayerService {
 		headers.setContentType(MediaType.TEXT_XML);
 		// geoserver basic 암호화 아이디:비밀번호 를 base64로 encoding
 		headers.add("Authorization", "Basic " + Base64.getEncoder()
-				.encodeToString((policy.getGeoserverUser() + ":" + policy.getGeoserverPassword()).getBytes()));
+				.encodeToString((geopolicy.getGeoserverUser() + ":" + geopolicy.getGeoserverPassword()).getBytes()));
 
 		List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
 		// Add the String Message converter
@@ -849,8 +810,8 @@ public class LayerServiceImpl implements LayerService {
 		restTemplate.setMessageConverters(messageConverters);
 
 		HttpEntity<String> entity = new HttpEntity<>(
-				getReloadLayerStyle(policy.getGeoserverDataWorkspace(), layer.getLayerKey()), headers);
-		String url = policy.getGeoserverDataUrl() + "/rest/layers/" + policy.getGeoserverDataWorkspace() + ":"
+				getReloadLayerStyle(geopolicy.getGeoserverDataWorkspace(), layer.getLayerKey()), headers);
+		String url = geopolicy.getGeoserverDataUrl() + "/rest/layers/" + geopolicy.getGeoserverDataWorkspace() + ":"
 				+ layer.getLayerKey();
 		ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
 		log.info("-------- statusCode = {}, body = {}", response.getStatusCodeValue(), response.getBody());
@@ -885,43 +846,4 @@ public class LayerServiceImpl implements LayerService {
                 .append("</layer>");
         return builder.toString();
 	}
-
-    /**
-    * 레이어 트리 순서 수정, up, down
-    * @param layer
-    * @return
-    */
-//    @Transactional
-//    public int updateMoveTreeLayer(Layer layer) {
-//        Integer modifyViewOrder = layer.getViewOrder();
-//        Layer searchLayer = new Layer();
-//        searchLayer.setUpdateType(layer.getUpdateType());
-//        searchLayer.setParent(layer.getParent());
-//
-//        if ("up".equals(layer.getUpdateType())) {
-//            // 바로 위 메뉴의 view_order 를 +1
-//            searchLayer.setViewOrder(layer.getViewOrder());
-//            searchLayer = getLayerByParentAndViewOrder(searchLayer);
-//            layer.setViewOrder(searchLayer.getViewOrder());
-//            searchLayer.setViewOrder(modifyViewOrder);
-//        } else {
-//            // 바로 아래 메뉴의 view_order 를 -1 함
-//            searchLayer.setViewOrder(layer.getViewOrder());
-//            searchLayer = getLayerByParentAndViewOrder(searchLayer);
-//            layer.setViewOrder(searchLayer.getViewOrder());
-//            searchLayer.setViewOrder(modifyViewOrder);
-//        }
-//        updateViewOrderLayer(searchLayer);
-//
-//        return updateViewOrderLayer(layer);
-//    }
-
-    /**
-    *
-    * @param userGroup
-    * @return
-    */
-//    private int updateViewOrderLayer(Layer layer) {
-//        return layerMapper.updateViewOrderLayer(layer);
-//    }
 }
