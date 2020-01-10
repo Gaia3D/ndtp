@@ -63,10 +63,10 @@ public class DataInfo extends Search implements Serializable {
 	// 부모 고유번호
 	private Long parent;
 	// 부모 이름(화면 표시용)
-	private String parent_name;
+	private String parentName;
 	
 	// origin : latitude, longitude, height 를 origin에 맟춤. boundingboxcenter : latitude, longitude, height 를 boundingboxcenter에 맟춤.
-	private String mapping_type;
+	private String mappingType;
 
 	// POINT(위도, 경도). 공간 검색 속도 때문에 altitude는 분리
 	private String location;
@@ -86,10 +86,10 @@ public class DataInfo extends Search implements Serializable {
 	private String description;
 	// 수정일 
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	private Timestamp update_date;
+	private Timestamp updateDate;
 	// 등록일
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	private Timestamp insert_date;
+	private Timestamp insertDate;
 	
 	public String getViewAttributes() {
 		if(this.attributes == null || "".equals( attributes) || attributes.length() < 20) {

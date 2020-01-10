@@ -21,7 +21,7 @@ public class AMQPSubscribe {
 		
 		Runnable connverterRun = () -> {
 			List<String> command = new ArrayList<>();
-			command.add(propertiesConfig.getUserConverterDir());
+			command.add(propertiesConfig.getConverterDir());
 			command.add("-inputFolder");
 			command.add(queueMessage.getInputFolder());
 			command.add("-outputFolder");

@@ -282,13 +282,13 @@
 			$.ajax({
 				url: "/converter/insert",
 				type: "POST",
-				data: info,
+				data: formData,
 				dataType: "json",
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						alert(JS_MESSAGE["insert"]);	
 					} else {
-						alert(JS_MESSAGE[msg.result]);
+						alert(JS_MESSAGE[msg.errorCode]);
 					}
 					
 					$("#converterCheckIds").val("");

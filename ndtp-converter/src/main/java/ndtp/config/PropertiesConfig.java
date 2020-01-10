@@ -27,6 +27,8 @@ public class PropertiesConfig {
 	
 	// User excel batch registration
 	private String uploadDataDir;
-	private String userConverterDir;	
+	
+	// F4D Converter.exe 가 있는 경로
+	private String converterDir;	
 	
 }

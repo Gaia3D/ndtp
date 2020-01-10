@@ -1,7 +1,5 @@
 package ndtp.persistence;
 
-import java.util.List;
-
 import org.springframework.stereotype.Repository;
 
 import ndtp.domain.ConverterJob;

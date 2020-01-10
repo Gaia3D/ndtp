@@ -36,9 +36,11 @@ public class GeoPolicy {
 	// ceisum ion token
 	private String cesiumIonToken;
 	
-	//
+	// F4D converter file 정보 취득 api url
 	private String dataApiUrl;
-	// 데이터 정보 변경 요청에 대한 처리. 0 : 자동승인, 1 : 결재(초기값)
+	// 데이터 서비스 Root Path
+	private String dataServicePath;
+	// 데이터 정보 변경 요청에 대한 처리. auto : 자동승인, approval : 결재(초기값)
 	private String dataChangeRequestDecision;
 	
 	// geoserver 사용유무. Y : 사용(기본값), N : 미사용

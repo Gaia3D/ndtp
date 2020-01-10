@@ -46,6 +46,8 @@ public class ConverterJobFile extends Search {
 	private String dataGroupName;
 	// user id
 	private String userId;
+	// 상태. ready : 준비, success : 성공, fail : 실패
+	private String status;
 	// 에러 코드
 	private String errorCode;
 	

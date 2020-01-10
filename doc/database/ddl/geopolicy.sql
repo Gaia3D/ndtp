@@ -8,6 +8,7 @@ create table geopolicy(
 	cesium_ion_token									varchar(256),
 
 	data_api_url										varchar(256),
+	data_service_path									varchar(256)		default '/f4d',
 	data_change_request_decision						varchar(20)			default 'approval',
 	
 	geoserver_enable									boolean				default true,
@@ -83,6 +84,7 @@ comment on column geopolicy.basic_globe is 'javascript library 3D globe. 기본 
 comment on column geopolicy.cesium_ion_token is 'Cesium ion token 발급. 기본 mago3D';
 
 comment on column geopolicy.data_api_url is 'F4D converter file 정보 취득 api url';
+comment on column geopolicy.data_service_path is '데이터 서비스 Root Path';
 comment on column geopolicy.data_change_request_decision is '데이터 정보 변경 요청에 대한 처리. auto : 자동승인, approval : 결재(초기값)';
 
 comment on column geopolicy.geoserver_enable is 'geoserver 사용유무. true : 사용, false : 미사용';

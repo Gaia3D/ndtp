@@ -31,6 +31,9 @@ public class UploadDataFile extends Search implements Serializable {
 	 */
 	private static final long serialVersionUID = 4068618702385916892L;
 	
+	private Integer dataGroupId;
+	private String sharing;
+	
 	/****** validator ********/
 	private String methodMode;
 	
@@ -42,7 +45,7 @@ public class UploadDataFile extends Search implements Serializable {
 	// 경도
 	private BigDecimal longitude;
 	// 높이
-	private BigDecimal height;
+	private BigDecimal altitude;
 		
 	// 고유번호
 	private Long uploadDataFileId;

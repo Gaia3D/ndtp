@@ -51,6 +51,7 @@ create table converter_job_file(
 	upload_data_file_id					bigint,
 	data_group_id						int,
 	user_id								varchar(32),
+	status								varchar(20)							default 'ready',
 	error_code							varchar(4000),
 	year								char(4)								default to_char(now(), 'yyyy'),
 	month								varchar(2)							default to_char(now(), 'MM'),
@@ -70,6 +71,7 @@ comment on column converter_job_file.upload_data_id is '데이터 업로드 고�
 comment on column converter_job_file.upload_data_file_id is '데이터 업로드 파일 고유번호';
 comment on column converter_job_file.data_group_id is '데이터 그룹 고유번호(중복)';
 comment on column converter_job_file.user_id is '사용자 아이디';
+comment on column converter_job_file.status is '상태. ready : 준비, success : 성공, fail : 실패';
 comment on column converter_job_file.error_code is '에러 코드';
 comment on column converter_job_file.year is '년';
 comment on column converter_job_file.month is '월';

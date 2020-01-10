@@ -6,7 +6,7 @@
 	<!-- converter job 등록 -->
 	<insert id="insertConverterJob" parameterType="converterJob">
 		/* insertConverterJob */
-		<selectKey keyProperty="converter_job_id" resultType="long" order="BEFORE">
+		<selectKey keyProperty="converterJobId" resultType="long" order="BEFORE">
     		SELECT NEXTVAL('converter_job_seq')
   		</selectKey>
 		INSERT INTO converter_job(
@@ -27,7 +27,7 @@
 	<!-- converter job file 등록 -->
 	<insert id="insertConverterJobFile" parameterType="converterJobFile">
 		/* insertConverterJobFile */
-		<selectKey keyProperty="converter_job_file_id" resultType="long" order="BEFORE">
+		<selectKey keyProperty="converterJobFileId" resultType="long" order="BEFORE">
     		SELECT NEXTVAL('converter_job_file_seq')
   		</selectKey>
 		INSERT INTO converter_job_file(

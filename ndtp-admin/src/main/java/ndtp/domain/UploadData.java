@@ -33,6 +33,9 @@ public class UploadData extends Search implements Serializable {
 
 	public static final String ZIP_EXTENSION = "zip";
 	
+	// converter 대상 파일 유무. true : 대상, false : 대상아님(기본값)
+	private Boolean converterTarget;
+	
 	/****** validator ********/
 	private String methodMode;
 	

@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ndtp.persistence.DataMapper">
+
+	<!-- Data 총 건수 -->
+	<select id="getDataTotalCount" parameterType="dataInfo" resultType="long">
+		/* getDataTotalCount */
+		SELECT COUNT(data_id) 
+		FROM data_info
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="project_id != null and project_id > 0">
+			project_id = #{project_id}
+			</if>
+			<if test="sharing_type != null and sharing_type != ''">
+			AND sharing_type = #{sharing_type}
+			</if>
+			<if test="user_id != null and user_id != ''">
+			AND	user_id = #{user_id}
+			</if>
+			<if test="search_word != null and search_word != '' and search_value != null and search_value != '' and search_option == '0'.toString()">
+			AND ${search_word} = #{search_value}
+			</if>
+			<if test="search_word != null and search_word != '' and search_value != null and search_value != '' and search_option == '1'.toString()">
+			AND ${search_word} LIKE '%' || #{search_value} || '%'
+			</if>
+			<if test="status != null and status != ''">
+			AND status = #{status}
+			</if>
+			<if test="start_date != null and start_date != ''">
+			<![CDATA[
+			AND insert_date >= TO_TIMESTAMP(#{start_date}, 'YYYYMMDDHH24MISSUS')
+			]]>
+			</if>
+			<if test="end_date != null and end_date != ''">
+			<![CDATA[
+			AND insert_date <= TO_TIMESTAMP(#{end_date}, 'YYYYMMDDHH24MISSUS')
+			]]>
+			</if>
+		</trim>
+	</select>
+	
+	<!-- 데이터 상태별 통계 정보 -->
+	<select id="getDataTotalCountByStatus" parameterType="dataInfo" resultType="long">
+		/* getDataTotalCountByStatus */
+		SELECT COUNT(data_id) 
+		FROM data_info
+		WHERE status = #{status} 
+			AND parent > 0
+			<if test="user_id != null and user_id != ''">
+			AND user_id = #{user_id}
+			</if>
+	</select>
+	
+	<!-- Data 목록 -->
+	<select id="getListData" parameterType="dataInfo" resultType="dataInfo">
+		/* getListData */
+		SELECT X.*, 
+			(SELECT project_name FROM project WHERE project_id = X.project_id) AS project_name
+		FROM (
+			SELECT *
+			FROM data_info
+			<trim prefix="WHERE" prefixOverrides="AND">
+				<if test="project_id != null and project_id > 0">
+				project_id = #{project_id}
+				</if>
+				<if test="sharing_type != null and sharing_type != ''">
+				AND sharing_type = #{sharing_type}
+				</if>
+				<if test="user_id != null and user_id != ''">
+				AND user_id = #{user_id}
+				</if>
+				<if test="search_word != null and search_word != '' and search_value != null and search_value != '' and search_option == '0'.toString()">
+				AND ${search_word} = #{search_value}
+				</if>
+				<if test="search_word != null and search_word != '' and search_value != null and search_value != '' and search_option == '1'.toString()">
+				AND ${search_word} LIKE '%' || #{search_value} || '%'
+				</if>
+				<if test="status != null and status != ''">
+				AND status = #{status}
+				</if>
+				<if test="start_date != null and start_date != ''">
+				<![CDATA[
+				AND insert_date >= TO_TIMESTAMP(#{start_date}, 'YYYYMMDDHH24MISSUS')
+				]]>
+				</if>
+				<if test="end_date != null and end_date != ''">
+				<![CDATA[
+				AND insert_date <= TO_TIMESTAMP(#{end_date}, 'YYYYMMDDHH24MISSUS')
+				]]>
+				</if>
+			</trim>
+			<choose>
+			<when test="order_word != null and order_word != '' and order_value != null and order_value != ''">
+			ORDER BY ${order_word} ${order_value}
+			</when>
+			<otherwise>
+			ORDER BY insert_date DESC, data_id DESC
+			</otherwise>
+			</choose>
+			OFFSET #{offset} LIMIT #{limit}
+		) X
+	</select>
+	
+	<!-- 프로젝트별 Data 목록 -->
+	<select id="getListDataByDataGroupId" parameterType="dataInfo" resultType="dataInfo">
+		/* getListDataByDataGroupId */
+		WITH RECURSIVE project_data_info (
+			data_id, data_key, data_name, parent, depth, view_order, mapping_type, latitude, longitude, height, heading, pitch, roll, public_yn, child_yn, attributes, insert_date, path, cycle
+		) AS (
+	        SELECT A.data_id, A.data_key, A.data_name, A.parent, A.depth, A.view_order, A.mapping_type,
+	        	A.latitude, A.longitude, A.height, A.heading, A.pitch, A.roll,
+	        	A.public_yn, A.child_yn, A.attributes, A.insert_date, ARRAY[A.view_order], false
+			FROM data_info A
+	        WHERE A.parent = 0 AND A.project_id = #{project_id} 
+	        	<if test="user_id != null and user_id != ''">
+	        	AND A.user_id = #{user_id}
+	        	</if>
+	        UNION ALL
+	        SELECT A.data_id, A.data_key, A.data_name, A.parent, A.depth, A.view_order, A.mapping_type,
+	        	A.latitude, A.longitude, A.height, A.heading, A.pitch, A.roll,  
+	        	A.public_yn, A.child_yn, A.attributes, A.insert_date, path || A.view_order, A.parent = ANY(path)
+	        FROM data_info A, project_data_info B
+	        WHERE A.parent = B.data_id AND not cycle
+		)
+	    SELECT data_id, data_key, data_name, parent, depth, view_order, mapping_type, latitude, longitude, height, heading, pitch, roll, public_yn, child_yn, attributes, insert_date, path
+	    FROM project_data_info
+	    ORDER BY path
+	</select>
+	
+	<!-- Data 정보 -->
+	<select id="getData" parameterType="dataInfo" resultType="dataInfo">
+		/* getData */
+		SELECT A.*, B.project_name,
+			CASE WHEN A.parent = 0 THEN 'TOP Node'
+				ELSE (SELECT data_name FROM data_info WHERE data_id = A.parent)
+			END AS parent_name
+		FROM data_info A, project B
+		WHERE data_id = #{data_id}
+			AND A.project_id = B.project_id
+			<if test="user_id != null and user_id != ''">
+			AND A.user_id = #{user_id}
+			</if>
+	</select>
+	
+	<!-- Project Data 정보 -->
+	<select id="getDataByDataKey" parameterType="dataInfo" resultType="dataInfo">
+		/* getDataByDataKey */
+		SELECT *
+		FROM data_info
+		WHERE project_id = #{project_id} 
+			AND data_key = #{data_key}
+			<if test="user_id != null and user_id != ''">
+			AND user_id = #{user_id}
+			</if>
+	</select>
+	
+	<!-- 최상위 root dataInfo 정보 취득 -->
+	<select id="getRootDataByDataGroupId" parameterType="int" resultType="dataInfo">
+		/* getRootDataByDataGroupId */
+		SELECT *
+		FROM data_info
+		WHERE project_id = #{projectId}
+			AND parent = 0
+			AND depth = 1
+	</select>
+	
+	
+	<!-- Data 아이디 중복 체크 -->
+	<select id="getDuplicationKeyCount" parameterType="dataInfo" resultType="int">
+		/* getDuplicationKeyCount */
+		SELECT COUNT(data_key) AS count 
+		FROM data_info 
+		WHERE project_id = #{project_id} 
+			AND data_key = #{data_key}
+	</select>
+	
+	<!-- 표시 순서 -->
+	<select id="getViewOrderByParent" parameterType="dataInfo" resultType="int">
+		/* getViewOrderByParent */
+		SELECT COALESCE(MAX(view_order), 0) + 1 
+		FROM data_info
+		WHERE parent = #{parent}
+	</select>
+	
+	<!-- 한 프로젝트 내 Root Parent 개수를 체크 -->
+	<select id="getRootParentCount" parameterType="dataInfo" resultType="int">
+		/* getRootParentCount */
+		SELECT COUNT(data_id) 
+		FROM data_info 
+		WHERE project_id = #{project_id} 
+			AND parent = 0 
+			AND depth = 1
+			AND data_id != #{data_id}
+	</select>
+	
+	<!-- Data 등록 -->
+	<insert id="insertData" parameterType="dataInfo">
+		/* insertData */
+		<selectKey keyProperty="data_id" resultType="long" order="BEFORE">
+    		SELECT NEXTVAL('data_info_seq')
+  		</selectKey>
+		INSERT INTO data_info(
+			data_id, sharing_type, project_id, data_key, data_name, user_id, parent, depth, view_order, 
+			location, latitude, longitude, height, heading, pitch, roll, description
+			<if test="mapping_type != null and mapping_type != ''">
+			, mapping_type
+			</if>
+			<if test="attributes != null and attributes != ''">
+			, attributes
+			</if>
+		) VALUES (
+			#{data_id}, #{sharing_type}, #{project_id}, #{data_key}, #{data_name}, #{user_id}, #{parent}, #{depth}, #{view_order}, 
+			ST_GeographyFromText(#{location}), #{latitude}, #{longitude}, #{height}, #{heading}, #{pitch}, #{roll}, #{description}
+			<if test="mapping_type != null and mapping_type != ''">
+			, #{mapping_type}
+			</if>
+			<if test="attributes != null and attributes != ''">
+			, TO_JSON(#{attributes}::json)
+			</if>
+		)
+	</insert>
+	
+	<!-- Data 수정 -->	
+	<update id="updateData" parameterType="dataInfo">
+		/* updateData */
+		UPDATE data_info
+		SET 
+			<if test="project_id != null and project_id > 0">
+			project_id = #{project_id},
+			</if>
+			<if test="parent != null and parent > 0">
+			parent = #{parent},
+			</if>
+			<if test="data_key != null and data_key != ''">
+			data_key = #{data_key},
+			</if>
+			<if test="data_name != null and data_name != ''">
+			data_name = #{data_name},
+			</if>
+			<if test="mapping_type != null and mapping_type != ''">
+			mapping_type = #{mapping_type},
+			</if>
+			<if test="location != null">
+			location = ST_GeographyFromText(#{location}),
+			</if>
+			<if test="latitude != null">
+			latitude = #{latitude},
+			</if>
+			<if test="longitude != null">
+			longitude = #{longitude},
+			</if>
+			<if test="height != null">
+			height = #{height},
+			</if>
+			<if test="heading != null">
+			heading = #{heading},
+			</if>
+			<if test="pitch != null">
+			pitch = #{pitch},
+			</if>
+			<if test="roll != null">
+			roll = #{roll},
+			</if>
+			<if test="public_yn != null and public_yn != ''">
+			public_yn = #{public_yn},
+			</if>
+			<if test="attributes != null and attributes != ''">
+			attributes = TO_JSON(#{attributes}::json),
+			</if>
+			<if test="description != null and description != ''">
+			description = #{description},
+			</if>
+			update_date = now()
+		WHERE data_id = #{data_id}
+			<if test="user_id != null and user_id != ''">
+			AND user_id = #{user_id}
+			</if>
+	</update>
+	
+	<!-- Data 상태 수정 -->	
+	<update id="updateDataStatus" parameterType="dataInfo">
+		/* updateDataStatus */
+		UPDATE data_info
+		SET status = #{status},
+			update_date = NOW()
+		WHERE data_id = #{data_id}
+			<if test="user_id != null and user_id != ''">
+			AND user_id = #{user_id}
+			</if>
+	</update>
+	
+	<!-- Data 삭제 -->
+	<delete id="deleteData" parameterType="dataInfo">
+		/* deleteData */
+		DELETE 
+		FROM data_info 
+		WHERE data_id = #{data_id}
+			<if test="user_id != null and user_id != ''">
+			AND user_id = #{user_id}
+			</if>
+	</delete>
+	
+	<!-- Data 에 속하는 모든 Object ID를 삭제 -->
+	<delete id="deleteDataByDataGroupId" parameterType="dataGroup">
+		/* deleteDataByProjectId */
+		DELETE 
+		FROM data_info 
+		WHERE project_id = #{project_id} 
+			AND parent = 0 
+			AND depth = 1
+			<if test="user_id != null and user_id != ''">
+			AND user_id = #{user_id}
+			</if>
+	</delete>
+</mapper>

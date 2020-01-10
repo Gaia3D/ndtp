@@ -117,12 +117,15 @@
 	<!-- 업로딩한 파일 목록 -->
 	<select id="getListUploadDataFile" parameterType="uploadData" resultType="uploadDataFile">
 		/* getListUploadDataFile */
-		SELECT A.data_name, A.location, A.altitude, B.*
+		SELECT A.data_group_id, A.sharing, A.data_name, A.location, A.altitude, B.*
 		FROM upload_data A, upload_data_file B
 		WHERE A.upload_data_id = B.upload_data_id
 		<if test="userId != null and userId != ''">
 			AND B.user_id =#{userId} 
 		</if> 
+		<if test="converterTarget != null">
+			AND B.converter_target = #{converterTarget}
+		</if>
 			AND A.upload_data_id = #{uploadDataId}
 		<choose>
 		<when test="orderWord != null and orderWord != '' and orderValue != null and orderValue != ''">
