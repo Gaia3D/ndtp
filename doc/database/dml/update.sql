@@ -1,4 +1,4 @@
-update policy
+update geopolicy
 set geo_init_latitude = '37.58199267183209',
 	geo_init_longitude = '126.60856869381428',
 	geo_init_height = '550',

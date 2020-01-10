@@ -4,9 +4,12 @@ drop table if exists geopolicy cascade;
 create table geopolicy(
 	geopolicy_id										integer,
 
-	view_library										varchar(20)			default 'cesium',
-	cesium_ion_token									varchar(256)		default '',
+	basic_globe											varchar(20)			default 'cesium',
+	cesium_ion_token									varchar(256),
 
+	data_api_url										varchar(256),
+	data_change_request_decision						varchar(20)			default 'approval',
+	
 	geoserver_enable									boolean				default true,
 	geoserver_wms_version								varchar(5)         	default '1.1.1',
 	geoserver_data_url									varchar(256),
@@ -31,12 +34,10 @@ create table geopolicy(
 	geoserver_terrainprovider_parameters_height			integer				default 256,
 	geoserver_terrainprovider_parameters_format			varchar(30),
 
-	data_change_request_decision						char(1)				default '1',
-
 	init_camera_enable									boolean				default true,
 	init_latitude										varchar(30)			default '37.521168',
 	init_longitude										varchar(30)			default '126.924185',
-	init_height											varchar(30)			default '3000.0',
+	init_altitude										varchar(30)			default '3000.0',
 	init_duration										integer				default 3,
 	init_default_terrain								varchar(64),
 	init_default_fov									integer				default 0,
@@ -49,22 +50,28 @@ create table geopolicy(
 	lod5												varchar(20)			default '50000',
 
 	ssao_radius											varchar(20)			default '0.15',
-
-	max_partitions_lod0 								integer			default 4,
-	max_partitions_lod1 								integer			default 2,
-	max_partitions_lod2_or_less 						integer			default 1,
-	max_ratio_points_dist_0m 							integer			default 10,
-	max_ratio_points_dist_100m 							integer			default 120,
-	max_ratio_points_dist_200m 							integer			default 240,
-	max_ratio_points_dist_400m 							integer			default 480,
-	max_ratio_points_dist_800m 							integer			default 960,
-	max_ratio_points_dist_1600m 						integer			default 1920,
-	max_ratio_points_dist_over_1600m 					integer			default 3840,
+	cull_face_enable									boolean				default false,
+	time_line_enable									boolean				default false,
+	
+	max_partitions_lod0 								integer				default 4,
+	max_partitions_lod1 								integer				default 2,
+	max_partitions_lod2_or_less 						integer				default 1,
+	max_ratio_points_dist_0m 							integer				default 10,
+	max_ratio_points_dist_100m 							integer				default 120,
+	max_ratio_points_dist_200m 							integer				default 240,
+	max_ratio_points_dist_400m 							integer				default 480,
+	max_ratio_points_dist_800m 							integer				default 960,
+	max_ratio_points_dist_1600m 						integer				default 1920,
+	max_ratio_points_dist_over_1600m 					integer				default 3840,
 	max_point_size_for_pc								numeric(4,1)		default 40.0,
 	min_point_size_for_pc								numeric(4,1)		default 3.0,
 	pendent_point_size_for_pc							numeric(4,1)		default 60.0,
-	memory_management							boolean			default false,
-	insert_date									timestamp with time zone	default now(),
+	memory_management									boolean				default false,
+	
+	layer_source_coordinate								varchar(50)			default 'EPSG:4326',
+	layer_target_coordinate								varchar(50)			default 'EPSG:4326',
+	
+	insert_date											timestamp with time zone	default now(),
 
 	constraint geopolicy_pk primary key (geopolicy_id)	
 );
@@ -72,8 +79,11 @@ create table geopolicy(
 comment on table geopolicy is '2D, 3D 운영정책';
 comment on column geopolicy.geopolicy_id is '고유번호';
 
-comment on column geopolicy.view_library is 'view library. 기본 cesium';
+comment on column geopolicy.basic_globe is 'javascript library 3D globe. 기본 cesium';
 comment on column geopolicy.cesium_ion_token is 'Cesium ion token 발급. 기본 mago3D';
+
+comment on column geopolicy.data_api_url is 'F4D converter file 정보 취득 api url';
+comment on column geopolicy.data_change_request_decision is '데이터 정보 변경 요청에 대한 처리. auto : 자동승인, approval : 결재(초기값)';
 
 comment on column geopolicy.geoserver_enable is 'geoserver 사용유무. true : 사용, false : 미사용';
 comment on column geopolicy.geoserver_wms_version is 'geoserver wms 버전';
@@ -99,12 +109,10 @@ comment on column geopolicy.geoserver_terrainprovider_parameters_width is 'geose
 comment on column geopolicy.geoserver_terrainprovider_parameters_height is 'geoserver 레이어 이미지 세로크기';
 comment on column geopolicy.geoserver_terrainprovider_parameters_format is 'geoserver 레이어 포맷형식';
 
-comment on column geopolicy.data_change_request_decision is '데이터 정보 변경 요청에 대한 처리. 0 : 자동승인, 1 : 결재(초기값)';
-
 comment on column geopolicy.init_camera_enable is '초기 카메라 이동 유무. true : 기본, false : 없음';
 comment on column geopolicy.init_latitude is '초기 카메라 이동 위도';
 comment on column geopolicy.init_longitude is '초기 카메라 이동 경도';
-comment on column geopolicy.init_height is '초기 카메라 이동 높이';
+comment on column geopolicy.init_altitude is '초기 카메라 이동 높이';
 comment on column geopolicy.init_duration is '초기 카메라 이동 시간. 초 단위';
 comment on column geopolicy.init_default_terrain is '기본 Terrain';
 comment on column geopolicy.init_default_fov is 'field of view. 기본값 0(1.8 적용)';
@@ -117,6 +125,8 @@ comment on column geopolicy.lod4 is 'LOD4. 기본값 1000M';
 comment on column geopolicy.lod5 is 'LOD5. 기본값 50000M';
 
 comment on column geopolicy.ssao_radius is '그림자 반경';
+comment on column geopolicy.cull_face_enable is 'cullFace 사용유무. 기본 false';
+comment on column geopolicy.time_line_enable is 'timeLine 사용유무. 기본 false';
 
 comment on column geopolicy.max_partitions_lod0 is 'LOD0일시 PointCloud 데이터 파티션 개수. 기본값 4';
 comment on column geopolicy.max_partitions_lod1 is 'LOD1일시 PointCloud 데이터 파티션 개수. 기본값 2';
@@ -132,5 +142,8 @@ comment on column geopolicy.max_point_size_for_pc is 'PointCloud 점의 최대 �
 comment on column geopolicy.min_point_size_for_pc is 'PointCloud 점의 최소 크기. 기본값 3.0';
 comment on column geopolicy.pendent_point_size_for_pc is 'PointCloud 점의 크기 보정치. 높아질수록 점이 커짐. 기본값 60.0';
 comment on column geopolicy.memory_management is 'GPU Memory Pool 사용유무. 기본값 false';
+
+comment on column geopolicy.layer_source_coordinate is 'Layer 원본 좌표계';
+comment on column geopolicy.layer_target_coordinate is 'Layer 좌표계 정의';
 
 comment on column geopolicy.insert_date is '등록일';

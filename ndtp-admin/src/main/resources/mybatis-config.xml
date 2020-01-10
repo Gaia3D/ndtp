@@ -15,6 +15,7 @@
     	<typeAlias type="ndtp.domain.ConverterJobFile" alias="converterJobFile" />
 		<typeAlias type="ndtp.domain.DataGroup" alias="dataGroup" />
 		<typeAlias type="ndtp.domain.DataInfo" alias="dataInfo" />
+    	<typeAlias type="ndtp.domain.GeoPolicy" alias="geoPolicy" />
     	<typeAlias type="ndtp.domain.Layer" alias="layer" />
     	<typeAlias type="ndtp.domain.LayerGroup" alias="layerGroup" />
     	<typeAlias type="ndtp.domain.LayerFileInfo" alias="layerFileInfo" />
