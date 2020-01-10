@@ -29,6 +29,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -534,7 +535,33 @@ public class LayerController implements AuthorizationController {
 //		result.put("message", message);
 //		return result;
 //    }
-
+	
+	/**
+	 * 레이어 삭제 삭제
+	 * @param roleId
+	 * @return
+	 */
+	@DeleteMapping(value = "delete/{layerId}")
+	@ResponseBody
+	public Map<String, Object> delete(@PathVariable Integer layerId) {
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		try {
+			layerService.deleteLayer(layerId);
+		} catch (Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+		
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
+	}
 
     /**
     * shape 파일 목록

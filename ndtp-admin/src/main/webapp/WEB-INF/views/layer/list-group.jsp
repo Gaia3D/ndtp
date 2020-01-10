@@ -386,7 +386,7 @@
     		        }
     			});
     		} else {
-    			deleteRoleFlag = true;
+    			deleteLayerGroupFlag = true;
     		}
     	} else {
     		alert(JS_MESSAGE["button.dobule.click"]);

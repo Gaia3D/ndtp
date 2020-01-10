@@ -23,6 +23,13 @@ public interface LayerFileInfoMapper {
 	Integer getLayerShapeFileVersion(Integer layerFileInfoId);
 	
 	/**
+	 * layerId에 해당하는 모든 파일 경로 목록 
+	 * @param layerId
+	 * @return
+	 */
+	List<String> getListLayerFilePath(Integer layerId);
+	
+	/**
 	 * layer shape 파일 목록
 	 * @return
 	 */

@@ -14,6 +14,13 @@ public interface LayerFileInfoService {
 	List<LayerFileInfo> getListLayerFileInfo(Integer layerId);
 	
 	/**
+	 * layerId에 해당하는 모든 파일 경로 목록 
+	 * @param layerId
+	 * @return
+	 */
+	List<String> getListLayerFilePath(Integer layerId);
+	
+	/**
 	 * 파일 정보 취득
 	 * @param layerId
 	 * @return

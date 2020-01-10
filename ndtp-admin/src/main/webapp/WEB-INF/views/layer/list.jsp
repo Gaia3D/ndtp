@@ -117,12 +117,13 @@
                         					미사용
         </c:if>
 					                    </td>
-					                    <td class="col-key">
+					                    <td class="col-type">
                         					<a href="#" onclick="viewLayer('${layer.layerId}', '${layer.layerName}'); return false;" class="linkButton">보기</a>
 					                    </td>
-					                    <td class="col-key">
-                        					<a href="/layers/${layer.layerId }" class="linkButton">수정</a>
-                    					</td>
+					                    <td class="col-type">
+											<a href="/layer/modify?layerId=${layer.layerId}" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;
+											<a href="#" onclick="deleteLayer('${layer.layerId}'); return false;" class="linkButton">삭제</a>
+					                    </td>
 					                    <td class="col-date">
 					                    	<fmt:parseDate value="${layer.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
 											<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
@@ -178,6 +179,35 @@ function searchCheck() {
 		}
 	}
 	return true;
+}
+
+var deleteLayerFlag = true;
+function deleteLayer(layerId) {
+	if(deleteLayerFlag) {
+		if(confirm(JS_MESSAGE["delete.confirm"])) {
+			deleteLayerFlag = false;
+			$.ajax({
+				url: "/layer/delete/" + layerId,
+				type: "DELETE",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+				dataType: "json",
+				success: function(msg) {
+					alert(JS_MESSAGE["delete"]);
+					location.reload();
+				},
+		        error: function(request, status, error) {
+		        	// alert message, 세션이 없는 경우 로그인 페이지로 이동 - common.js
+		        	ajaxErrorHandler(request);
+		        	deleteLayerFlag = true;
+		        }
+			});
+		} else {
+			deleteLayerFlag = true;
+		}
+	} else {
+		alert(JS_MESSAGE["button.dobule.click"]);
+		return;
+	}
 }
 // 지도 보기
 function viewLayer(layerId, layerName) {

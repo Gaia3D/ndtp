@@ -27,6 +27,16 @@ public class LayerFileInfoServiceImpl implements LayerFileInfoService {
 	}
 	
 	/**
+	 * layerId에 해당하는 모든 파일 경로 목록 
+	 * @param layerId
+	 * @return
+	 */
+	@Transactional
+	public List<String> getListLayerFilePath(Integer layerId) {
+		return layerFileInfoMapper.getListLayerFilePath(layerId);
+	}
+	
+	/**
 	 * 파일 정보 취득
 	 * @param layerId
 	 * @return

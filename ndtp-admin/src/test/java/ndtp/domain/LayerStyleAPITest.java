@@ -1,16 +1,9 @@
 package ndtp.domain;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
-import org.geotools.sld.SLDConfiguration;
-import org.geotools.styling.NamedLayer;
-import org.geotools.styling.SLDTransformer;
-import org.geotools.styling.StyledLayerDescriptor;
-import org.geotools.xml.Parser;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -29,7 +22,6 @@ import ndtp.geospatial.LayerStyleParser;
 public class LayerStyleAPITest {
 	
 	
-	@Test
 	public void stylesInsert() {
 		try {
 			RestTemplate restTemplate = new RestTemplate();
@@ -62,7 +54,6 @@ public class LayerStyleAPITest {
 		}
 	}
 	
-	@Test
 	public void updateGeoserverLayerStyle() throws Exception {
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -91,6 +82,34 @@ public class LayerStyleAPITest {
 		ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
 		log.info("-------- updateGeoserverLayerStyle statusCode = {}, body = {}", response.getStatusCodeValue(),
 				response.getBody());
+	}
+	
+	@Test
+	public void deleteGeoserverLayer() {
+		HttpStatus httpStatus = null;
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.TEXT_XML);
+			// geoserver basic 암호화 아이디:비밀번호 를 base64로 encoding
+			headers.add("Authorization", "Basic " + Base64.getEncoder().encodeToString( ("admin:geoserver").getBytes()) );
+
+			List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
+			// Add the String Message converter
+			messageConverters.add(new StringHttpMessageConverter());
+			// Add the message converters to the restTemplate
+			RestTemplate restTemplate = new RestTemplate();
+			restTemplate.setMessageConverters(messageConverters);
+
+			HttpEntity<String> entity = new HttpEntity<>(headers);
+
+			String url = "http://localhost:8080/geoserver/rest/workspaces/ndtp/styles/layer_poly?recurse=true";
+			log.info("-------- url = {}", url);
+			ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.DELETE, entity, String.class);
+			httpStatus = response.getStatusCode();
+		} catch (Exception e) {
+			log.info("-------- exception message = {}", e.getMessage());
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
 	}
 	
 	private String getLayerDefaultStyleFileData(String geometryType) {

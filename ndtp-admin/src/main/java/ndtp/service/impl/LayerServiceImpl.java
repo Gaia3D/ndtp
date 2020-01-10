@@ -411,9 +411,21 @@ public class LayerServiceImpl implements LayerService {
 		// geoserver layer 삭제
 		Policy policy = policyService.getPolicy();
 		Layer layer = layerMapper.getLayer(layerId);
-
+		// 업로드 파일 삭제
+		List<String> layerFilePath = layerFileInfoMapper.getListLayerFilePath(layerId);
+		layerFilePath.stream()
+					.forEach( path -> {
+						File directory = new File(path);
+				        if(directory.exists()) { directory.delete();}
+					});
+		
+		// geoserver layer 삭제
 		deleteGeoserverLayer(policy, layer.getLayerKey());
+		// geoserver style 삭제
+		deleteGeoserverLayerStyle(policy, layer.getLayerKey());
+		// layer_file_info 히스토리 삭제
 		layerFileInfoMapper.deleteLayerFileInfo(layerId);
+		// 레이어 삭제 
 		return layerMapper.deleteLayer(layerId);
 	}
 
@@ -826,6 +838,34 @@ public class LayerServiceImpl implements LayerService {
 		}
 
 		return httpStatus;
+	}
+	
+	private void deleteGeoserverLayerStyle(Policy policy, String layerKey) {
+		HttpStatus httpStatus = null;
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.TEXT_XML);
+			// geoserver basic 암호화 아이디:비밀번호 를 base64로 encoding
+			headers.add("Authorization", "Basic " + Base64.getEncoder()
+					.encodeToString((policy.getGeoserverUser() + ":" + policy.getGeoserverPassword()).getBytes()));
+
+			List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
+			// Add the String Message converter
+			messageConverters.add(new StringHttpMessageConverter());
+			// Add the message converters to the restTemplate
+			RestTemplate restTemplate = new RestTemplate();
+			restTemplate.setMessageConverters(messageConverters);
+
+			HttpEntity<String> entity = new HttpEntity<>(headers);
+
+			String url = policy.getGeoserverDataUrl() + "/rest/workspaces/" + policy.getGeoserverDataWorkspace() + "/styles/" + layerKey + "?recurse=true";
+			log.info("-------- url = {}", url);
+			ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.DELETE, entity, String.class);
+			httpStatus = response.getStatusCode();
+		} catch (Exception e) {
+			log.info("-------- exception message = {}", e.getMessage());
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
 	}
        
 	private void reloadGeoserverLayerStyle(Policy policy, Layer layer) throws Exception {
