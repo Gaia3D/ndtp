@@ -306,7 +306,7 @@ public class LayerController implements AuthorizationController {
 					layerFileInfoList.add(layerFileInfo);
 				}
 			}
-
+			
 			// 3. 레이어 기본 정보 및 레이어 이력 정보 등록
 			Map<String, Object> updateLayerMap = layerService.insertLayer(layer, layerFileInfoList);
 			if (!layerFileInfoList.isEmpty()) {
@@ -323,6 +323,7 @@ public class LayerController implements AuthorizationController {
 				layerFileInfoService.updateOgr2OgrDataFileVersion(orgMap);
 				// 6. geoserver에 신규 등록일 경우 등록, 아닐경우 통과
 				layerService.registerLayer(policy, layer.getLayerKey());
+				layerService.updateLayerStyle(layer);
 			}
 
 			statusCode = HttpStatus.OK.value();

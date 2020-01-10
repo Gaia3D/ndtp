@@ -32,12 +32,12 @@ public class LayerStyleParser {
 
     private String geometryType;
     private String fillValue;
-    private String fillOpacityValue;
+    private Float fillOpacityValue;
     private String strokeValue;
-    private String strokeWidthValue;
+    private Float strokeWidthValue;
     private String styleData;
-
-    public LayerStyleParser(String geometryType, String fillValue, String fillOpacityValue, String strokeValue, String strokeWidthValue, String styleData) {
+    
+    public LayerStyleParser(String geometryType, String fillValue, Float fillOpacityValue, String strokeValue, Float strokeWidthValue, String styleData) {
         this.geometryType = geometryType;
         this.fillValue = fillValue;
         this.fillOpacityValue = fillOpacityValue;
@@ -45,19 +45,19 @@ public class LayerStyleParser {
         this.strokeWidthValue = strokeWidthValue;
         this.styleData = styleData;
 
-        if("".equals(this.fillOpacityValue) || this.fillOpacityValue == null) {
-            this.fillOpacityValue="1.0";
-        }
-        if("".equals(this.strokeWidthValue) || this.strokeWidthValue == null) {
-            this.strokeWidthValue="1.0";
-        }
+//        if("".equals(this.fillOpacityValue) || this.fillOpacityValue == null) {
+//            this.fillOpacityValue="1.0";
+//        }
+//        if("".equals(this.strokeWidthValue) || this.strokeWidthValue == null) {
+//            this.strokeWidthValue="1.0";
+//        }
     }
 
     public String getFillValue() {
         return fillValue;
     }
 
-    public String getFillOpacityValue() {
+    public Float getFillOpacityValue() {
         return fillOpacityValue;
     }
 
@@ -65,7 +65,7 @@ public class LayerStyleParser {
         return strokeValue;
     }
 
-    public String getStrokeWidthValue() {
+    public Float getStrokeWidthValue() {
         return strokeWidthValue;
     }
 

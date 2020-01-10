@@ -60,6 +60,9 @@ public class Layer extends Search implements Serializable {
     // shape file 인코딩
     private String shapeEncoding;
     
+	// style file 내용
+	private String styleFileContent;
+    
     // DB
     // layer 아이디
     private Integer layerId;

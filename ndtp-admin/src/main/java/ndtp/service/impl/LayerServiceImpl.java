@@ -23,9 +23,11 @@ import org.springframework.web.client.RestTemplate;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
+import ndtp.domain.GeometryType;
 import ndtp.domain.Layer;
 import ndtp.domain.LayerFileInfo;
 import ndtp.domain.Policy;
+import ndtp.geospatial.LayerStyleParser;
 import ndtp.geospatial.Ogr2OgrExecute;
 import ndtp.persistence.LayerFileInfoMapper;
 import ndtp.persistence.LayerMapper;
@@ -293,6 +295,43 @@ public class LayerServiceImpl implements LayerService {
         Ogr2OgrExecute ogr2OgrExecute = new Ogr2OgrExecute(osType, driver, shapeFileName, shapeEncoding, layer.getLayerKey(), updateOption, layerSourceCoordinate, layerTargetCoordinate);
         ogr2OgrExecute.insert();
     }
+    
+    /**
+     * shp파일 정보를 db 정보 기준으로 export
+     */
+    @Transactional
+    public void exportOgr2Ogr(List<LayerFileInfo> layerFileInfoList, Layer layer) throws Exception {
+        String tableName = layer.getLayerKey();
+        String exportPath = null;
+        String shpEncoding = null;
+        Integer fileVersion = null;
+
+        for(LayerFileInfo fileInfo : layerFileInfoList) {
+            String filePath = fileInfo.getFilePath()+fileInfo.getFileRealName();
+            File file = new File(filePath);
+            if(file.exists()) {
+                file.delete();
+            }
+            //fileInfoId와 fileInfoGroupId가 같을 경우 shp파일
+            if(fileInfo.getLayerFileInfoId().equals(fileInfo.getLayerFileInfoGroupId())) {
+                exportPath = filePath;
+                fileVersion = fileInfo.getVersionId();
+                shpEncoding = fileInfo.getShapeEncoding();
+            }
+        }
+        String osType = propertiesConfig.getOsType().toUpperCase();
+        String dbName = Crypt.decrypt(url);
+        dbName = dbName.substring(dbName.lastIndexOf("/") + 1);
+        String driver = "PG:host=localhost dbname=" + dbName + " user=" + Crypt.decrypt(username) + " password=" + Crypt.decrypt(password);
+        Policy policy = policyService.getPolicy();
+        String layerSourceCoordinate = policy.getLayerSourceCoordinate();
+        String layerTargetCoordinate = policy.getLayerTargetCoordinate();
+        String layerColumn = getLayerColumn(tableName);
+        String sql = "SELECT "+ layerColumn + ", null::text AS enable_yn, null::int AS version FROM "+tableName+" WHERE file_version="+fileVersion;
+
+        Ogr2OgrExecute ogr2OgrExecute = new Ogr2OgrExecute(osType, driver, shpEncoding, exportPath, sql, layerSourceCoordinate, layerTargetCoordinate);
+        ogr2OgrExecute.export();
+    }
 
     /**
     * layer 를 이 shape 파일로 활성화
@@ -375,48 +414,47 @@ public class LayerServiceImpl implements LayerService {
             throw new Exception("http status code = " + httpStatus.toString());
         }
     }
-
+    
     /**
-    * 레이어가 존재 하는지를 검사
-    * @param policy
-    * @param layerKey
-    * @return
-    * @throws Exception
-    */
-    private HttpStatus getLayerStatus(Policy policy, String layerKey) {
-        HttpStatus httpStatus = null;
-        try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.TEXT_XML);
-            // geoserver basic 암호화 아이디:비밀번호 를 base64로 encoding
-            headers.add("Authorization", "Basic " + Base64.getEncoder().encodeToString( (policy.getGeoserverUser() + ":" + policy.getGeoserverPassword()).getBytes()) );
+     * 레이어의 스타일 정보를 수정
+     * @param layer
+     * @return
+     */
+     @Transactional
+     public int updateLayerStyle(Layer layer) throws Exception {
 
-            List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
-            //Add the String Message converter
-            messageConverters.add(new StringHttpMessageConverter());
-            //Add the message converters to the restTemplate
-            RestTemplate restTemplate = new RestTemplate();
-            restTemplate.setMessageConverters(messageConverters);
+         Policy policy = policyService.getPolicy();
+         Layer dbLayer = layerMapper.getLayer(layer.getLayerId());
+         layer.setLayerKey(dbLayer.getLayerKey());
+         String xmlData = getLayerStyleFileData(layer.getLayerId());
+         HttpStatus httpStatus = getLayerStyle(policy, layer.getLayerKey());
+         if(HttpStatus.INTERNAL_SERVER_ERROR.equals(httpStatus)) {
+             throw new Exception();
+         }
 
-            HttpEntity<String> entity = new HttpEntity<>(headers);
-            String url = policy.getGeoserverDataUrl() + "/rest/workspaces/"
-                        + policy.getGeoserverDataWorkspace() + "/datastores/" + policy.getGeoserverDataStore() + "/featuretypes/" + layerKey;
-            log.info("-------- url = {}", url);
-            ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-            httpStatus = response.getStatusCode();
-            log.info("-------- layerKey = {}, statusCode = {}, body = {}", layerKey, response.getStatusCodeValue(), response.getBody());
-        } catch(Exception e) {
-            log.info("-------- exception message = {}", e.getMessage());
-            String message = e.getMessage();
-            if(message.indexOf("404") >= 0) {
-                httpStatus = HttpStatus.NOT_FOUND;
-            } else {
-                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-            }
-        }
+         if(HttpStatus.OK.equals(httpStatus)) {
+             log.info("styleName = {} 는 이미 존재하는 layerStyle 입니다.", layer.getLayerKey());
+             // 이미 등록 되어 있음, update
+         } else if(HttpStatus.NOT_FOUND.equals(httpStatus)) {
+             // 신규 등록
+             insertGeoserverLayerStyle(policy, layer);
+             // 기본 지오메트리타입 스타일 get
+             xmlData = getLayerDefaultStyleFileData(layer.getGeometryType());
+         } else {
+             throw new Exception("http status code = " + httpStatus.toString());
+         }
 
-        return httpStatus;
-    }
+         LayerStyleParser layerStyleParser = new LayerStyleParser(
+                 layer.getGeometryType(), layer.getLayerFillColor(), layer.getLayerAlphaStyle(), layer.getLayerLineColor(), layer.getLayerLineStyle(), xmlData.trim());
+         layerStyleParser.updateLayerStyle();
+         layer.setStyleFileContent(layerStyleParser.getStyleData());
+
+         updateGeoserverLayerStyle(policy, layer);
+         reloadGeoserverLayerStyle(policy, layer);
+         
+         return 0;
+
+     }
 
     /**
     * 레이어 롤백 처리
@@ -449,6 +487,64 @@ public class LayerServiceImpl implements LayerService {
             // TODO shape 파일에도 이력이 있음 지워 줘야 하나?
         }
     }
+    
+    /**
+     * 레이어 삭제
+     * @param layerId
+     * @return
+     */
+     @Transactional
+     public int deleteLayer(Integer layerId) {
+         // geoserver layer 삭제
+         Policy policy = policyService.getPolicy();
+         Layer layer = layerMapper.getLayer(layerId);
+
+         deleteGeoserverLayer(policy, layer.getLayerKey());
+         layerFileInfoMapper.deleteLayerFileInfo(layerId);
+         return layerMapper.deleteLayer(layerId);
+     }
+    
+    /**
+     * 레이어가 존재 하는지를 검사
+     * @param policy
+     * @param layerKey
+     * @return
+     * @throws Exception
+     */
+     private HttpStatus getLayerStatus(Policy policy, String layerKey) {
+         HttpStatus httpStatus = null;
+         try {
+             HttpHeaders headers = new HttpHeaders();
+             headers.setContentType(MediaType.TEXT_XML);
+             // geoserver basic 암호화 아이디:비밀번호 를 base64로 encoding
+             headers.add("Authorization", "Basic " + Base64.getEncoder().encodeToString( (policy.getGeoserverUser() + ":" + policy.getGeoserverPassword()).getBytes()) );
+
+             List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
+             //Add the String Message converter
+             messageConverters.add(new StringHttpMessageConverter());
+             //Add the message converters to the restTemplate
+             RestTemplate restTemplate = new RestTemplate();
+             restTemplate.setMessageConverters(messageConverters);
+
+             HttpEntity<String> entity = new HttpEntity<>(headers);
+             String url = policy.getGeoserverDataUrl() + "/rest/workspaces/"
+                         + policy.getGeoserverDataWorkspace() + "/datastores/" + policy.getGeoserverDataStore() + "/featuretypes/" + layerKey;
+             log.info("-------- url = {}", url);
+             ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+             httpStatus = response.getStatusCode();
+             log.info("-------- layerKey = {}, statusCode = {}, body = {}", layerKey, response.getStatusCodeValue(), response.getBody());
+         } catch(Exception e) {
+             log.info("-------- exception message = {}", e.getMessage());
+             String message = e.getMessage();
+             if(message.indexOf("404") >= 0) {
+                 httpStatus = HttpStatus.NOT_FOUND;
+             } else {
+                 httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+             }
+         }
+
+         return httpStatus;
+     }
 
     /**
     * geoserver에 존재하는 레이어를 삭제
@@ -487,6 +583,270 @@ public class LayerServiceImpl implements LayerService {
 
         return httpStatus;
     }
+    
+    private HttpStatus getLayerStyle(Policy policy, String layerKey) {
+        HttpStatus httpStatus = null;
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+
+            HttpHeaders headers = new HttpHeaders();
+            // 클라이언트가 서버에 어떤 형식(MediaType)으로 달라는 요청을 할 수 있는데 이게 Accpet 헤더를 뜻함.
+            List<MediaType> acceptList = new ArrayList<>();
+            acceptList.add(MediaType.APPLICATION_JSON);
+            headers.setAccept(acceptList);
+
+            // 클라이언트가 request에 실어 보내는 데이타(body)의 형식(MediaType)를 표현
+            headers.setContentType(MediaType.TEXT_XML);
+            // geoserver basic 암호화 아이디:비밀번호 를 base64로 encoding
+            headers.add("Authorization", "Basic " + Base64.getEncoder().encodeToString( (policy.getGeoserverUser() + ":" + policy.getGeoserverPassword()).getBytes()));
+
+            List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
+            //Add the String Message converter
+            messageConverters.add(new StringHttpMessageConverter());
+            //Add the message converters to the restTemplate
+            restTemplate.setMessageConverters(messageConverters);
+
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+            String url = policy.getGeoserverDataUrl() + "/rest/workspaces/" + policy.getGeoserverDataWorkspace() + "/styles/" + layerKey;
+
+            ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+            httpStatus = response.getStatusCode();
+            log.info("-------- getLayerStyle styleName = {}, statusCode = {}, body = {}", layerKey, response.getStatusCodeValue(), response.getBody());
+        } catch(Exception e) {
+            log.info("-------- exception message = {}", e.getMessage());
+            String message = e.getMessage();
+            if(message.indexOf("404") >= 0) {
+                httpStatus = HttpStatus.NOT_FOUND;
+            } else {
+                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            }
+        }
+
+        log.info("########### getLayerStyle end");
+        return httpStatus;
+    }
+    
+    /**
+     * 레이어 스타일 정보 등록
+     * @param policy
+     * @param layer
+     * @throws Exception
+     */
+     private void insertGeoserverLayerStyle(Policy policy, Layer layer) throws Exception {
+         RestTemplate restTemplate = new RestTemplate();
+
+         HttpHeaders headers = new HttpHeaders();
+         // 클라이언트가 서버에 어떤 형식(MediaType)으로 달라는 요청을 할 수 있는데 이게 Accpet 헤더를 뜻함.
+         List<MediaType> acceptList = new ArrayList<>();
+         acceptList.add(MediaType.ALL);
+         headers.setAccept(acceptList);
+         // 클라이언트가 request에 실어 보내는 데이타(body)의 형식(MediaType)를 표현
+         headers.setContentType(MediaType.TEXT_XML);
+         // geoserver basic 암호화 아이디:비밀번호 를 base64로 encoding
+         headers.add("Authorization", "Basic " + Base64.getEncoder().encodeToString( (policy.getGeoserverUser() + ":" + policy.getGeoserverPassword()).getBytes()));
+
+         List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
+         //Add the String Message converter
+         messageConverters.add(new StringHttpMessageConverter());
+         //Add the message converters to the restTemplate
+         restTemplate.setMessageConverters(messageConverters);
+
+         HttpEntity<String> entity = new HttpEntity<>(getEmptyStyleFile(layer.getLayerKey()),  headers);
+
+         String url = policy.getGeoserverDataUrl() + "/rest/workspaces/" + policy.getGeoserverDataWorkspace() + "/styles";
+         ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+         log.info("-------- insertGeoserverLayerStyle statusCode = {}, body = {}", response.getStatusCodeValue(), response.getBody());
+     }
+     
+     /**
+      * 레이어 스타일 파일을 취득
+      * @param layerId
+      * @return
+      */
+      private String getLayerDefaultStyleFileData(String geometryType) {
+          String layerStyleFileData = null;
+          HttpStatus httpStatus = null;
+          try {
+              Policy policy = policyService.getPolicy();
+
+              RestTemplate restTemplate = new RestTemplate();
+
+              HttpHeaders headers = new HttpHeaders();
+              // 클라이언트가 서버에 어떤 형식(MediaType)으로 달라는 요청을 할 수 있는데 이게 Accpet 헤더를 뜻함.
+              List<MediaType> acceptList = new ArrayList<>();
+              acceptList.add(MediaType.TEXT_XML);
+              headers.setAccept(acceptList);
+
+              // 클라이언트가 request에 실어 보내는 데이타(body)의 형식(MediaType)를 표현
+              headers.setContentType(MediaType.TEXT_XML);
+              // geoserver basic 암호화 아이디:비밀번호 를 base64로 encoding
+              headers.add("Authorization", "Basic " + Base64.getEncoder().encodeToString( (policy.getGeoserverUser() + ":" + policy.getGeoserverPassword()).getBytes()));
+
+              List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
+              //Add the String Message converter
+              messageConverters.add(new StringHttpMessageConverter());
+              //Add the message converters to the restTemplate
+              restTemplate.setMessageConverters(messageConverters);
+
+              HttpEntity<String> entity = new HttpEntity<>(headers);
+
+              String url = policy.getGeoserverDataUrl() + "/rest/styles/"+geometryType.toLowerCase()+".sld";
+              ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+              httpStatus = response.getStatusCode();
+              layerStyleFileData = response.getBody().toString();
+              log.info("-------- getLayerStyle geometry type = {}, statusCode = {}, body = {}", geometryType , response.getStatusCodeValue(), response.getBody());
+          } catch(Exception e) {
+              log.info("-------- exception message = {}", e.getMessage());
+              String message = e.getMessage();
+              if(message.indexOf("404") >= 0) {
+                  httpStatus = HttpStatus.NOT_FOUND;
+                  layerStyleFileData = null;
+              } else {
+                  httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                  layerStyleFileData = null;
+              }
+          }
+
+          return layerStyleFileData;
+      }
+     
+     /**
+      * 레이어 스타일 파일을 취득
+      * @param layerId
+      * @return
+      */
+      private String getLayerStyleFileData(Integer layerId) {
+          String layerStyleFileData = null;
+          HttpStatus httpStatus = null;
+          try {
+              Policy policy = policyService.getPolicy();
+              Layer layer = layerMapper.getLayer(layerId);
+
+              RestTemplate restTemplate = new RestTemplate();
+
+              HttpHeaders headers = new HttpHeaders();
+              // 클라이언트가 서버에 어떤 형식(MediaType)으로 달라는 요청을 할 수 있는데 이게 Accpet 헤더를 뜻함.
+              List<MediaType> acceptList = new ArrayList<>();
+              acceptList.add(MediaType.TEXT_XML);
+              headers.setAccept(acceptList);
+
+              // 클라이언트가 request에 실어 보내는 데이타(body)의 형식(MediaType)를 표현
+              headers.setContentType(MediaType.TEXT_XML);
+              // geoserver basic 암호화 아이디:비밀번호 를 base64로 encoding
+              headers.add("Authorization", "Basic " + Base64.getEncoder().encodeToString( (policy.getGeoserverUser() + ":" + policy.getGeoserverPassword()).getBytes()));
+
+              List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
+              //Add the String Message converter
+              messageConverters.add(new StringHttpMessageConverter());
+              //Add the message converters to the restTemplate
+              restTemplate.setMessageConverters(messageConverters);
+
+              HttpEntity<String> entity = new HttpEntity<>(headers);
+
+              String url = policy.getGeoserverDataUrl() + "/rest/workspaces/" + policy.getGeoserverDataWorkspace() + "/styles/" + layer.getLayerKey() + ".sld";
+              ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+              httpStatus = response.getStatusCode();
+              layerStyleFileData = response.getBody().toString();
+              log.info("-------- getLayerStyle styleName = {}, statusCode = {}, body = {}", layer.getLayerKey(), response.getStatusCodeValue(), response.getBody());
+          } catch(Exception e) {
+              log.info("-------- exception message = {}", e.getMessage());
+              String message = e.getMessage();
+              if(message.indexOf("404") >= 0) {
+                  httpStatus = HttpStatus.NOT_FOUND;
+                  layerStyleFileData = null;
+              } else {
+                  httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                  layerStyleFileData = null;
+              }
+          }
+
+          return layerStyleFileData;
+      }
+      
+      /**
+       * 레이어 스타일 정보를 수정
+       * @param policy
+       * @param layer
+       * @throws Exception
+       */
+       private void updateGeoserverLayerStyle(Policy policy, Layer layer) throws Exception {
+           RestTemplate restTemplate = new RestTemplate();
+
+           HttpHeaders headers = new HttpHeaders();
+           // 클라이언트가 서버에 어떤 형식(MediaType)으로 달라는 요청을 할 수 있는데 이게 Accpet 헤더를 뜻함.
+           List<MediaType> acceptList = new ArrayList<>();
+           acceptList.add(MediaType.APPLICATION_JSON);
+           headers.setAccept(acceptList);
+           // 클라이언트가 request에 실어 보내는 데이타(body)의 형식(MediaType)를 표현
+           headers.setContentType(new MediaType("application", "vnd.ogc.sld+xml"));
+           // geoserver basic 암호화 아이디:비밀번호 를 base64로 encoding
+           headers.add("Authorization", "Basic " + Base64.getEncoder().encodeToString( (policy.getGeoserverUser() + ":" + policy.getGeoserverPassword()).getBytes()));
+
+           List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
+           //Add the String Message converter
+           messageConverters.add(new StringHttpMessageConverter());
+           //Add the message converters to the restTemplate
+           restTemplate.setMessageConverters(messageConverters);
+
+           HttpEntity<String> entity = new HttpEntity<>(layer.getStyleFileContent().trim(),  headers);
+
+           String url = policy.getGeoserverDataUrl() + "/rest/workspaces/" + policy.getGeoserverDataWorkspace() + "/styles/" + layer.getLayerKey();
+           log.info("-------- url = {}, xmlData = {}", url, layer.getStyleFileContent().trim());
+           ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
+           log.info("-------- updateGeoserverLayerStyle statusCode = {}, body = {}", response.getStatusCodeValue(), response.getBody());
+       }
+       
+       private void reloadGeoserverLayerStyle(Policy policy, Layer layer) throws Exception {
+           RestTemplate restTemplate = new RestTemplate();
+
+           HttpHeaders headers = new HttpHeaders();
+           // 클라이언트가 서버에 어떤 형식(MediaType)으로 달라는 요청을 할 수 있는데 이게 Accpet 헤더를 뜻함.
+           List<MediaType> acceptList = new ArrayList<>();
+           acceptList.add(MediaType.APPLICATION_JSON);
+           headers.setAccept(acceptList);
+           // 클라이언트가 request에 실어 보내는 데이타(body)의 형식(MediaType)를 표현
+           headers.setContentType(MediaType.TEXT_XML);
+           // geoserver basic 암호화 아이디:비밀번호 를 base64로 encoding
+           headers.add("Authorization", "Basic " + Base64.getEncoder().encodeToString( (policy.getGeoserverUser() + ":" + policy.getGeoserverPassword()).getBytes()));
+
+           List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
+           //Add the String Message converter
+           messageConverters.add(new StringHttpMessageConverter());
+           //Add the message converters to the restTemplate
+           restTemplate.setMessageConverters(messageConverters);
+
+           HttpEntity<String> entity = new HttpEntity<>(getReloadLayerStyle(policy.getGeoserverDataWorkspace(), layer.getLayerKey()),  headers);
+           String url = policy.getGeoserverDataUrl() + "/rest/layers/" + policy.getGeoserverDataWorkspace() + ":" + layer.getLayerKey();
+           ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
+           log.info("-------- statusCode = {}, body = {}", response.getStatusCodeValue(), response.getBody());
+       }
+     
+     /**
+      * geoserver rest api 가 빈 파일을 등록하고 update 해야 함
+      * @param layerKey
+      * @return
+      */
+      private String getEmptyStyleFile(String layerKey) {
+          String fileName = layerKey + ".sld";
+          StringBuilder builder = new StringBuilder()
+                  .append("<style>")
+                  .append("<name>" + layerKey + "</name>")
+                  .append("<filename>" + fileName + "</filename>")
+                  .append("</style>");
+          return builder.toString();
+      }
+      
+      private String getReloadLayerStyle(String workspace, String layerKey) {
+          StringBuilder builder = new StringBuilder()
+                  .append("<layer>")
+                  .append("<enabled>true</enabled>")
+                  .append("<defaultStyle>")
+                  .append("<name>" + layerKey + "</name>")
+                  .append("<workspace>" + workspace + "</workspace>")
+                  .append("</defaultStyle>")
+                  .append("</layer>");
+          return builder.toString();
+      }
 
     /**
     * 레이어 트리 순서 수정, up, down
@@ -526,57 +886,4 @@ public class LayerServiceImpl implements LayerService {
 //    private int updateViewOrderLayer(Layer layer) {
 //        return layerMapper.updateViewOrderLayer(layer);
 //    }
-
-    /**
-    * 레이어 삭제
-    * @param layerId
-    * @return
-    */
-    @Transactional
-    public int deleteLayer(Integer layerId) {
-        // geoserver layer 삭제
-        Policy policy = policyService.getPolicy();
-        Layer layer = layerMapper.getLayer(layerId);
-
-        deleteGeoserverLayer(policy, layer.getLayerKey());
-        layerFileInfoMapper.deleteLayerFileInfo(layerId);
-        return layerMapper.deleteLayer(layerId);
-    }
-
-    /**
-     * shp파일 정보를 db 정보 기준으로 export
-     */
-    @Transactional
-    public void exportOgr2Ogr(List<LayerFileInfo> layerFileInfoList, Layer layer) throws Exception {
-        String tableName = layer.getLayerKey();
-        String exportPath = null;
-        String shpEncoding = null;
-        Integer fileVersion = null;
-
-        for(LayerFileInfo fileInfo : layerFileInfoList) {
-            String filePath = fileInfo.getFilePath()+fileInfo.getFileRealName();
-            File file = new File(filePath);
-            if(file.exists()) {
-                file.delete();
-            }
-            //fileInfoId와 fileInfoGroupId가 같을 경우 shp파일
-            if(fileInfo.getLayerFileInfoId().equals(fileInfo.getLayerFileInfoGroupId())) {
-                exportPath = filePath;
-                fileVersion = fileInfo.getVersionId();
-                shpEncoding = fileInfo.getShapeEncoding();
-            }
-        }
-        String osType = propertiesConfig.getOsType().toUpperCase();
-        String dbName = Crypt.decrypt(url);
-        dbName = dbName.substring(dbName.lastIndexOf("/") + 1);
-        String driver = "PG:host=localhost dbname=" + dbName + " user=" + Crypt.decrypt(username) + " password=" + Crypt.decrypt(password);
-        Policy policy = policyService.getPolicy();
-        String layerSourceCoordinate = policy.getLayerSourceCoordinate();
-        String layerTargetCoordinate = policy.getLayerTargetCoordinate();
-        String layerColumn = getLayerColumn(tableName);
-        String sql = "SELECT "+ layerColumn + ", null::text AS enable_yn, null::int AS version FROM "+tableName+" WHERE file_version="+fileVersion;
-
-        Ogr2OgrExecute ogr2OgrExecute = new Ogr2OgrExecute(osType, driver, shpEncoding, exportPath, sql, layerSourceCoordinate, layerTargetCoordinate);
-        ogr2OgrExecute.export();
-    }
 }

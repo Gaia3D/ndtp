@@ -506,7 +506,7 @@
 			$("#layerType").focus();
 			return false;
 		}
-		if ($("select[name=layerType]").val().toLowerCase() === 'vector') {
+		if ($("select[name=geometryType]").val().toLowerCase() === 'vector') {
 			alert("도형 타입을 선택해 주십시오.");
 			$("#geometryType").focus();
 			return false;
@@ -599,7 +599,7 @@
                 formData.append("geometryType", $("select[name=geometryType]").val());
                 formData.append("layerLineColor", $("#layerLineColor").val());
                 formData.append("layerFillColor", $("#layerFillColor").val());
-                formData.append("layerAlphaStyle", $("#sliderRange").val());
+                formData.append("layerAlphaStyle", $("#sliderRange").val() / 100);
                 formData.append("defaultDisplay", $(':radio[name="defaultDisplay"]:checked').val());
                 formData.append("available", $(':radio[name="available"]:checked').val());
                 formData.append("labelDisplay", $(':radio[name="labelDisplay"]:checked').val());

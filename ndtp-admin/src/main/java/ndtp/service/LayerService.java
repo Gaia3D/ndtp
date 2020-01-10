@@ -103,6 +103,13 @@ public interface LayerService {
     * @throws Exception
     */
     void registerLayer(Policy policy, String layerKey) throws Exception;
+    
+    /**
+	 * 레이어의 스타일 정보를 수정
+	 * @param layer
+	 * @return
+	 */
+	int updateLayerStyle(Layer layer) throws Exception;
 
     /**
     * 레이어 롤백 처리
