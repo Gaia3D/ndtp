@@ -33,6 +33,13 @@ public class PropertiesConfig {
     
     private String layerUploadDir;
     
+    private String queueServerHost;
+	private String queueServerPort;
+	private String queueUser;
+	private String queuePassword;
+	private String queueName;
+	private String exchange;
+    
     private String uploadDataDir;
     // Converted f4d file directory
     private String userConverterDir;

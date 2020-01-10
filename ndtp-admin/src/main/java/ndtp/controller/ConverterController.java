@@ -1,81 +1,88 @@
-//package ndtp.controller;
-//
-//import java.net.URLEncoder;
-//import java.text.SimpleDateFormat;
-//import java.util.ArrayList;
-//import java.util.Calendar;
-//import java.util.HashMap;
-//import java.util.List;
-//import java.util.Map;
-//
-//import javax.servlet.http.HttpServletRequest;
-//
-//import org.geotools.feature.type.DateUtil;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.ui.Model;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RequestParam;
-//import org.springframework.web.bind.annotation.ResponseBody;
-//
-//import com.gaia3d.service.ConverterService;
-//import com.gaia3d.util.FormatUtil;
-//
-//import lombok.extern.slf4j.Slf4j;
-//import ndtp.config.PropertiesConfig;
-//import ndtp.domain.ConverterJob;
-//import ndtp.domain.ConverterJobFile;
-//import ndtp.domain.Pagination;
-//import ndtp.domain.UserSession;
-//
-///**
-// * Data Converter
-// * @author jeongdae
-// *
-// */
-//@Slf4j
-//@Controller
-//@RequestMapping("/converter/")
-//public class ConverterController {
-//	
-//	@Autowired
-//	private PropertiesConfig propertiesConfig;
-//	
-//	@Autowired
-//	private ConverterService converterService;
-//	
-//	/**
-//	 * TODO 우선은 여기서 적당히 구현해 두고... 나중에 좀 깊이 생각해 보자. converter에 어디까지 넘겨야 할지
-//	 * converter job insert
-//	 * @param model
-//	 * @return
-//	 */
-//	@RequestMapping(value = "insert-job")
-//	@ResponseBody
-//	public Map<String, Object> insertConverterJob(HttpServletRequest request, ConverterJob converterJob, @RequestParam("check_ids") String check_ids) {
-//		Map<String, Object> map = new HashMap<>();
-//		String result = "success";
-//		try {
-//			if(check_ids.length() <= 0) {
-//				map.put("result", "check.value.required");
-//				return map;
-//			}
-//			if(converterJob.getTitle() == null || converterJob.getTitle().isEmpty()) {
-//				map.put("result", "input.invalid");
-//				return map;
-//			}
-//			
-//			UserSession userSession = (UserSession)request.getSession().getAttribute(UserSession.KEY);
-//			converterService.insertConverter(userSession.getUser_id(), check_ids, converterJob);
-//		} catch(Exception e) {
-//			e.printStackTrace();
-//			result = "db.exception";
-//		}
-//	
-//		map.put("result", result);
-//		return map;
-//	}
-//	
+package ndtp.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import lombok.extern.slf4j.Slf4j;
+import ndtp.config.PropertiesConfig;
+import ndtp.domain.ConverterJob;
+import ndtp.domain.Key;
+import ndtp.domain.UserSession;
+import ndtp.service.ConverterService;
+
+/**
+ * Data Converter
+ * @author jeongdae
+ *
+ */
+@Slf4j
+@Controller
+@RequestMapping("/converter/")
+public class ConverterController {
+	
+	@Autowired
+	private PropertiesConfig propertiesConfig;
+	
+	@Autowired
+	private ConverterService converterService;
+	
+	/**
+	 * TODO 우선은 여기서 적당히 구현해 두고... 나중에 좀 깊이 생각해 보자. converter에 어디까지 넘겨야 할지
+	 * converter job insert
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "insert")
+	@ResponseBody
+	public Map<String, Object> insert(HttpServletRequest request, ConverterJob converterJob) {
+		log.info("@@@ converterJob = {}", converterJob);
+		
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		try {
+			if(converterJob.getConverterCheckIds().length() <= 0) {
+				log.info("@@@@@ message = {}", message);
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "check.value.required");
+				result.put("message", message);
+	            return result;
+			}
+			if(StringUtils.isEmpty(converterJob.getTitle())) {
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "converter.title.empty");
+				result.put("message", message);
+	            return result;
+			}
+			
+			UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+			converterJob.setUserId(userSession.getUserId());
+			
+			converterService.insertConverter(converterJob);
+		} catch(Exception e) {
+			e.printStackTrace();
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+		
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		
+		return result;
+	}
+	
 //	/**
 //	 * converter job 목록
 //	 * @param request
@@ -151,79 +158,7 @@
 //		model.addAttribute("converterJobFileList", converterJobFileList);
 //		return "/converter/list-converter-job-file";
 //	}
-//	
-//	/**
-//	 * 최근 converter-job
-//	 * @param request
-//	 * @return
-//	 */
-//	@RequestMapping(value = "ajax-converter-job-widget.do")
-//	@ResponseBody
-//	public Map<String, Object> converterJobWidget(HttpServletRequest request) {
-//		
-//		log.info(" >>>>>>>>>>>>>>>>>>>>>>>>>>>> converterJobWidget");
-//		Map<String, Object> map = new HashMap<>();
-//		String result = "success";
-//		try {
-//			UserSession userSession = (UserSession)request.getSession().getAttribute(UserSession.KEY);
-//			
-//			ConverterJob converterJob = new ConverterJob();
-//			converterJob.setUser_id(userSession.getUser_id());
-//			converterJob.setOffset(0l);
-//			converterJob.setLimit(10l);
-//			List<ConverterJob> converterJobList = converterService.getListConverterJob(converterJob);
-//			
-//			map.put("converterJobList", converterJobList);
-//			map.put("converterJobListSize", converterJobList.size());
-//		} catch(Exception e) {
-//			e.printStackTrace();
-//			result = "db.exception";
-//		}
-//		
-//		map.put("result", result);
-//		return map;
-//	}
-//	
-//	/**
-//	 * 최근 converter-job-file
-//	 * @param request
-//	 * @return
-//	 */
-//	@RequestMapping(value = "ajax-converter-job-file-widget.do")
-//	@ResponseBody
-//	public Map<String, Object> converterJobFileWidget(HttpServletRequest request) {
-//		
-//		log.info(" >>>>>>>>>>>>>>>>>>>>>>>>>>>> converterJobFileWidget");
-//		Map<String, Object> map = new HashMap<>();
-//		String result = "success";
-//		try {
-//			UserSession userSession = (UserSession)request.getSession().getAttribute(UserSession.KEY);
-//			String today = DateUtil.getToday(FormatUtil.YEAR_MONTH_DAY);
-//			Calendar calendar = Calendar.getInstance();
-//			calendar.add(Calendar.DATE, -30);
-//			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
-//			String searchDay = simpleDateFormat.format(calendar.getTime());
-//			String startDate = searchDay + DateUtil.START_TIME;
-//			String endDate = today + DateUtil.END_TIME;
-//			
-//			ConverterJobFile converterJobFile = new ConverterJobFile();
-//			converterJobFile.setUser_id(userSession.getUser_id());
-//			converterJobFile.setStart_date(startDate);
-//			converterJobFile.setEnd_date(endDate);
-//			converterJobFile.setOffset(0l);
-//			converterJobFile.setLimit(7l);
-//			List<ConverterJobFile> converterJobFileList = converterService.getListConverterJobFile(converterJobFile);
-//			
-//			map.put("converterJobFileList", converterJobFileList);
-//		} catch(Exception e) {
-//			e.printStackTrace();
-//			result = "db.exception";
-//		}
-//		
-//		map.put("result", result);
-//		return map;
-//	}
-//	
+	
 //	/**
 //	 * 검색 조건
 //	 * @param dataInfo
@@ -281,4 +216,4 @@
 //		buffer.append("order_value=" + StringUtil.getDefaultValue(converterJobFile.getOrder_value()));
 //		return buffer.toString();
 //	}
-//}
+}

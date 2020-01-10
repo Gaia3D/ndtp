@@ -189,7 +189,7 @@
 							<div class="center-buttons">
 								<button id="allFileUpload">업로드</button>
 								<button id="allFileClear">All Clear</button>
-								<a href="/layer/list" class="button">목록</a>
+								<a href="/upload-data/list" class="button">목록</a>
 							</div>
 						</div>
 					</div>
@@ -315,7 +315,7 @@
                 // Using "_this" here, because "this" doesn't point to the dropzone anymore
                 if (confirm("정말 전체 항목을 삭제하겠습니까?")) {
                 	// true 주면 업로드 중인 파일도 다 같이 삭제
-                	magoDropzone.removeAllFiles(true);
+                	myDropzone.removeAllFiles(true);
                 }
             });
 			
@@ -332,7 +332,7 @@
 			
 			// maxFiles 카운터를 초과하면 경고창
 			this.on("maxfilesexceeded", function (data) {
-				magoDropzone.removeAllFiles(true);
+				myDropzone.removeAllFiles(true);
 				alert("최대 업로드 파일 수는 100개 입니다.");
 				return;
 			});
