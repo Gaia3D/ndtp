@@ -632,7 +632,6 @@
                             uploadFileResultCount ++;
                             if(uploadFileCount === uploadFileResultCount) {
                                 alert("업로딩을 완료 하였습니다.");
-                                reloadLayerFileInfoList();
                             }
                         }
                     } else {
