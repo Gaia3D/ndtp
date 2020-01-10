@@ -26,13 +26,14 @@
 					<%@ include file="/WEB-INF/views/layouts/page_header.jsp" %>
 					<div class="page-content">
 						<div class="filters">
-							<form:form id="layer" modelAttribute="layer" method="post" action="/layer/list" onsubmit="return searchCheck();">
+							<form:form id="layer" modelAttribute="layer" method="get" action="/layer/list" onsubmit="return searchCheck();">
 							<div class="input-group row">
 								<div class="input-set">
 									<label for="searchWord">검색어</label>
 									<select id="searchWord" name="searchWord" class="select">
 										<option value="">선택</option>
-										<option value="layerName">이름</option>
+										<option value="layer_name">Layer 명</option>
+										<option value="layer_key">Layer Key</option>
 									</select>
 									<select id="searchOption" name="searchOption" class="select">
 										<option value="0">일치</option>
@@ -147,17 +148,48 @@
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript" src="/js/navigation.js"></script>
 <script type="text/javascript">
-	// 지도 보기
-    function viewLayer(layerId, layerName) {
-        var url = "/layer/" + layerId + "/map";
-        //popupOpen(url, layerName, 1000, 700);
-        var width = 800;
-        var height = 700;
+$(document).ready(function() {
+	initJqueryCalendar();
 
-        var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height
-                + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
-        popWin.document.title = layerName;
-    }
+	$("#searchWord").val("${layer.searchWord}");
+	$("#searchValue").val("${layer.searchValue}");
+	$("#orderWord").val("${layer.orderWord}");
+	$("#orderValue").val("${layer.orderValue}");
+
+	initCalendar(new Array("startDate", "endDate"), new Array("${layer.startDate}", "${layer.endDate}"));
+});
+
+function searchCheck() {
+	if($("#searchOption").val() == "1") {
+		if(confirm(JS_MESSAGE["search.option.warning"])) {
+			// go
+		} else {
+			return false;
+		}
+	}
+
+	var startDate = $("#startDate").val();
+	var endDate = $("#endDate").val();
+	if(startDate != null && startDate != "" && endDate != null && endDate != "") {
+		if(parseInt(startDate) > parseInt(endDate)) {
+			alert(JS_MESSAGE["search.date.warning"]);
+			$("#startDate").focus();
+			return false;
+		}
+	}
+	return true;
+}
+// 지도 보기
+function viewLayer(layerId, layerName) {
+    var url = "/layer/" + layerId + "/map";
+    //popupOpen(url, layerName, 1000, 700);
+    var width = 800;
+    var height = 700;
+
+    var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height
+            + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
+    popWin.document.title = layerName;
+}
 </script>
 </body>
 </html>
