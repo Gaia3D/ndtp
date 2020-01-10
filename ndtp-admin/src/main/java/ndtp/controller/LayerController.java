@@ -783,18 +783,21 @@ public class LayerController implements AuthorizationController {
                         log.info("--------- unzip saveFileName = {}", saveFileName);
                     }
 
+                    long size = 0L;
                     try ( 	InputStream inputStream = zipFile.getInputStream(entry);
                             FileOutputStream outputStream = new FileOutputStream(targetDirectory + saveFileName); ) {
-                        int data = inputStream.read();
-                        while(data != -1){
-                            outputStream.write(data);
-                            data = inputStream.read();
+                    	int bytesRead = 0;
+                        byte[] buffer = new byte[BUFFER_SIZE];
+                        while ((bytesRead = inputStream.read(buffer, 0, BUFFER_SIZE)) != -1) {
+                            size += bytesRead;
+                            outputStream.write(buffer, 0, bytesRead);
                         }
 
                         layerFileInfo.setFileExt(extension);
                         layerFileInfo.setFileName(fileName);
                         layerFileInfo.setFileRealName(saveFileName);
                         layerFileInfo.setFilePath(directoryPath);
+                        layerFileInfo.setFileSize(String.valueOf(size));
                         layerFileInfo.setShapeEncoding(shapeEncoding);
 
                     } catch(Exception e) {
