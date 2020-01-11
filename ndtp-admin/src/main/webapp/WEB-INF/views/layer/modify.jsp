@@ -14,6 +14,7 @@
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
 	<link rel="stylesheet" href="/externlib/dropzone/dropzone.min.css">
     <link rel="stylesheet" href="/css/${lang}/style.css" />
+    <script type="text/javascript" src="../externlib/handlebars-4.1.2/handlebars.js"></script>
     <script type="text/javascript" src="/externlib/dropzone/dropzone.min.js"></script>
     <style type="text/css">
         .dropzone .dz-preview.lp-preview {
@@ -270,6 +271,68 @@
 								<a href="/layer/list" class="button">목록</a>
 							</div>
 						</div>
+						
+						<h4 style="margin-top: 30px; margin-bottom: 5px;">레이어 변경 이력</h4>
+						<div class="list">
+							<table class="list-table scope-col">
+								<thead>
+									<tr>
+										<th scope="col">번호</th>
+										<th scope="col">파일명</th>
+										<th scope="col">상세</th>
+										<th scope="col">지도</th>
+										<th scope="col">활성화 여부</th>
+										<th scope="col">다운로드</th>
+										<th scope="col">수정자</th>
+										<th scope="col">수정일</th>
+										<th scope="col">등록일</th>
+									</tr>
+								</thead>
+								<tbody id="layerFileInfoListArea">
+				<c:if test="${empty layerFileInfoList }">
+									<tr style="height:50px;">
+										<td colspan="9" style="padding-top:15px; text-align:center;">첨부 파일이 존재하지 않습니다.</td>
+									</tr>
+				</c:if>
+				<c:if test="${!empty layerFileInfoList }">
+					<c:forEach var="layerFileInfo" items="${layerFileInfoList}" varStatus="status">
+						<c:if test="${layerFileInfo.enableYn eq 'Y'}">
+							<c:set var="cssClass" value="selected"></c:set>
+						</c:if>
+						<c:if test="${layerFileInfo.enableYn ne 'Y'}">
+							<c:set var="cssClass" value=""></c:set>
+						</c:if>
+									<tr class="${cssClass}">
+										<td class="col-key">${layerFileInfoListSize - status.index}</td>
+										<td class="col-key" style="max-width:315px; word-wrap:break-word;">${layerFileInfo.fileName}</td>
+										<td class="col-type"><button type="button" onclick="viewFileDetail('${layerFileInfo.layerFileInfoId}');" title="보기" class="detailBtn">보기</button></td>
+										<td class="col-type"><button type="button" onclick="viewLayerMap('${layerFileInfo.layerId}', '${layerFileInfo.layerName}',
+											'${layerFileInfo.layerFileInfoId}');" title="보기" class="textBtn">보기</button></td>
+										<td class="col-type">
+						<c:if test="${layerFileInfo.enableYn eq 'Y'}">
+											<p style="font-size:14px;">적용중</p>
+						</c:if>
+						<c:if test="${layerFileInfo.enableYn ne 'Y'}">
+											<button type="button" onclick="changeStatus('${layerFileInfo.layerId }', '${layerFileInfo.layerFileInfoGroupId}', '${layerFileInfo.layerFileInfoId}');"
+												title="적용하기" class="textBtn">적용하기</button>
+						</c:if>
+										</td>
+										<td class="col-type"><a href="/layer/${layer.layerId}/layer-file-info/${layerFileInfo.layerFileInfoGroupId}/download" class="linkButton">다운로드</a></td>
+										<td>${layerFileInfo.userId}</td>
+										<td>						
+											<fmt:parseDate value="${layerFileInfo.viewUpdateDate}" var="viewUpdateDate" pattern="yyyy-MM-dd HH:mm:ss"/>
+											<fmt:formatDate value="${viewUpdateDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
+										</td>
+										<td>
+											<fmt:parseDate value="${layerFileInfo.viewInsertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
+											<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
+										</td>
+									</tr>
+					</c:forEach>
+				</c:if>
+				                </tbody>
+				            </table>
+				        </div>
 					</div>
 				</div>
 			</div>
@@ -351,6 +414,32 @@
 			</tbody>
 		</table>
 	</div>
+
+<script id="templateLayerFileInfoList" type="text/x-handlebars-template">
+{{#each layerFileInfoList}}
+	{{#if enableYn}}
+        <tr class="selected">
+    {{else}}
+        <tr>
+    {{/if}}
+            <td class="col-key">{{subtract ../layerFileInfoList.length @index}}</td>
+            <td class="col-key" style="max-width:315px; word-wrap:break-word;">{{fileName}}</td>
+            <td class="col-type"><button type="button" class="detailBtn" title="보기" onclick="viewFileDetail('{{layerFileInfoId}}'); return false;" >보기</button>
+            <td class="col-type"><button type="button" class="textBtn" title="보기" onclick="viewLayerMap('{{layerId}}', '{{layerName}}', '{{layerFileInfoId}}'); return false;" >보기</button></td>
+            <td class="col-type">
+    {{#if enableYn}}
+               	<p style="font-size:14px;">적용중</p>
+    {{else}}
+                <button type="button" onclick="changeStatus('{{layerId}}', '{{layerFileInfoGroupId}}', '{{layerFileInfoId}}'); return false;" title="적용하기" class="textBtn">적용하기</button>
+    {{/if}}
+            </td>
+            <td class="col-type"><a href="/layer/{{layerId }}/layer-file-info/{{layerFileInfoGroupId}}/download" download class="linkButton">다운로드</button></td>
+            <td class="col-key">{{userId}}</td>
+            <td class="col-key">{{viewUpdateDate}}</td>
+			<td class="col-key">{{viewInsertDate}}</td>
+		</tr>
+{{/each}}
+</script>
 	
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
@@ -520,13 +609,27 @@
 		modal: true,
 		resizable: false
 	});
+	
+	function alertMessage(response) {
+		if(uploadFileResultCount === 0) {
+			if(response.result === "upload.file.type.invalid") {
+				alert("복수의 파일을 업로딩 할 경우 zip 파일은 사용할 수 없습니다.");
+			} else if(response.result === "layer.name.empty") {
+				alert("Layer 명이 유효하지 않습니다.");
+			} else if("db.exception") {
+				alert("죄송 합니다. 서버 실행중에 오류가 발생 하였습니다. \n 로그를 확인하여 주십시오.");
+			}
+			uploadFileResultCount++;
+		}
+		return;
+	}
 
     // 업로딩 파일 개수
     var uploadFileCount = 0;
     // dropzone 업로딩 결과(n개 파일을 올리면 n개 리턴이 옴)
     var uploadFileResultCount = 0;
     Dropzone.options.myDropzone = {
-        url: "/layer/insert",
+   		url: "/layer/update/${layer.layerId}",
         //paramName: "file",
         // Prevents Dropzone from uploading dropped files immediately
         timeout: 3600000,
@@ -621,31 +724,33 @@
             });
 
             this.on("success", function(file, response) {
-                if(file !== undefined && file.name !== undefined) {
-                    console.log("file name = " + file.name);
-                    $("#fileUploadSpinner").empty();
-                    fileUploadDialog.dialog( "close" );
-                    if(response.error === undefined) {
-                        if(uploadFileCount === 0) {
-                            alert("수정 하였습니다.");
-                        } else {
-                            uploadFileResultCount ++;
-                            if(uploadFileCount === uploadFileResultCount) {
-                                alert("업로딩을 완료 하였습니다.");
-                            }
-                        }
-                    } else {
-                        alertMessage(response);
-                    }
-                } else {
-                    console.log("------- success response = " + response);
-                    if(response === 200) {
-                        alert("수정하였습니다.");
-                    } else {
-                        alert("수정에 실패 하였습니다. \n" + response);
-                    }
-                }
-            });
+				if(file !== undefined && file.name !== undefined) {
+					console.log("file name = " + file.name);
+					$("#fileUploadSpinner").empty();
+					fileUploadDialog.dialog( "close" );
+
+					if(response.error === undefined) {
+						if(uploadFileCount === 0) {
+							alert("수정 하였습니다.");
+						} else {
+							uploadFileResultCount ++;
+							if(uploadFileCount === uploadFileResultCount) {
+								alert("업로딩을 완료 하였습니다.");
+								reloadLayerFileInfoList();
+							}
+						}
+					} else {
+						alertMessage(response);
+					}
+				} else {
+					console.log("------- success response = " + response);
+					if(response.statusCode === 200) {
+						alert("수정하였습니다.");
+					} else {
+						alert("수정에 실패 하였습니다. \n" + response.message);
+					}
+				}
+			});
 
             // 무한 루프 빠지네....
             /* this.on("error", function(response) {
@@ -653,6 +758,121 @@
             }); */
         }
     };
+    
+    var reloadLayerFileInfoListCount = 0;
+	function reloadLayerFileInfoList() {
+    	console.log("reloadLayerFileInfoListCount = " + reloadLayerFileInfoListCount);
+    	$.ajax({
+            url: "/layer/${layer.layerId}/layer-fileinfos",
+            type: "GET",
+            headers: {"X-Requested-With": "XMLHttpRequest"},
+            dataType: "json",
+            success: function(msg){
+           		var source = $("#templateLayerFileInfoList").html();
+				//핸들바 템플릿 컴파일
+				var template = Handlebars.compile(source);
+
+				// if helper
+				Handlebars.registerHelper('if', function(conditional, options) {
+					if(conditional === 'Y') {
+						return options.fn(this);
+					} else {
+						return options.inverse(this);
+					}
+				});
+
+				// 빼기 helper
+				Handlebars.registerHelper("subtract", function(value1, value2) {
+					return value1 - value2;
+				});
+
+				//핸들바 템플릿에 데이터를 바인딩해서 HTML 생성
+				var reloadData = { layerFileInfoList: msg.layerFileInfoList };
+				var layerFileInfoListHtml = template(reloadData);
+				$("#layerFileInfoListArea").html("");
+				$("#layerFileInfoListArea").append(layerFileInfoListHtml);
+
+                reloadLayerFileInfoListCount++;
+            },
+            error: function(request, status, error) {
+            	alert(" code : " + request.status + "\n" + ", message : " + request.responseText + "\n" + ", error : " + error);
+            }
+        });
+    }
+
+	// 비활성화 상태의 layer를 활성화 함
+	function changeStatus(layerId, layerFileInfoGroupId, layerFileInfoId) {
+		var info = "layerFileInfoGroupId=" + layerFileInfoGroupId;
+		if(confirm("이 파일을 layer Shape 파일로 사용하시겠습니까?")) {
+            $.ajax({
+                url: "/layer/${layer.layerId}/layer-file-infos/" + layerFileInfoId,
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+				data: info,
+                dataType: "json",
+                success: function(msg){
+					reloadLayerFileInfoList();
+					alert("적용 되었습니다.");
+                },
+                error: function(request, status, error) {
+                	alert(" code : " + request.status + "\n" + ", message : " + request.responseText + "\n" + ", error : " + error);
+                }
+            });
+        }
+    }
+
+    var fileInfoDetailDialog = $( "#fileInfoDetailDialog" ).dialog({
+		autoOpen: false,
+		width: 600,
+		height: 310,
+		modal: true,
+		resizable: false
+	});
+
+ 	// 상세 정보 보기
+    function viewFileDetail(layerFileInfoId) {
+    	fileInfoDetailDialog.dialog("open");
+
+        $.ajax({
+        	url: "/layer/file-info/" + layerFileInfoId,
+        	type: "GET",
+        	headers: {"X-Requested-With": "XMLHttpRequest"},
+        	dataType: "json",
+        	success: function(msg) {
+        		var source = $("#templateFileInfoDetail").html();
+				//핸들바 템플릿 컴파일
+				var template = Handlebars.compile(source);
+
+				// 빼기 helper
+				Handlebars.registerHelper("multiply", function(value1, value2) {
+					return value1 * value2;
+				});
+				Handlebars.registerHelper('ifEquals', function(arg1, arg2) {
+				    return (arg1 === arg2) ? "" : arg1;
+				});
+
+				//핸들바 템플릿에 데이터를 바인딩해서 HTML 생성
+				var fileInfoDetailHtml = template(msg);
+				$("#fileInfoDetailDialog").html("");
+				$("#fileInfoDetailDialog").append(fileInfoDetailHtml);
+        	},
+            error: function(request, status, error) {
+            	alert(" code : " + request.status + "\n" + ", message : " + request.responseText + "\n" + ", error : " + error);
+            }
+        });
+    }
+ 	
+ 	// 지도 보기
+    function viewLayerMap(layerId, layerName, layerFileInfoId) {
+    	var url = "/layer/" + layerId + "/map?layerFileInfoId=" + layerFileInfoId;
+		//popupOpen(url, layerName, 1000, 700);
+		var width = 1000;
+		var height = 700;
+
+		var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height
+				+ ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
+		popWin.document.title = layerName;
+    }
 	
 </script>
 </body>

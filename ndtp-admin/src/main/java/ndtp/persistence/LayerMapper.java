@@ -94,6 +94,13 @@ public interface LayerMapper {
     int deleteLayer(Integer layerId);
     
     /**
+     * 공간정보 테이블 삭제
+     * @param layerId
+     * @return
+     */
+    int deleteLayerTable(String layerKey);
+    
+    /**
      * 레이어의 칼럼 목록을 조회 
      * @param layerKey
      * @return

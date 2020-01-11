@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@ToString
+@ToString(callSuper = true)
 @Builder
 @Getter
 @Setter
@@ -40,5 +40,4 @@ public class LayerFileInfo extends FileInfo {
 	private String update;
 	// shape 파일 버전 정보
 	private Integer versionId;
-	
 }

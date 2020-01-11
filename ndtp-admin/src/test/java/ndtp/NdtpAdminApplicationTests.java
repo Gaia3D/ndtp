@@ -1,13 +1,19 @@
 package ndtp;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import java.util.EnumMap;
+import java.util.Map;
 
-@SpringBootTest
+import org.junit.jupiter.api.Test;
+
+import ndtp.domain.MenuTarget;
+import ndtp.domain.ShapeFileExt;
+
 class NdtpAdminApplicationTests {
 
 	@Test
 	void contextLoads() {
+		
+		 System.out.println(ShapeFileExt.findBy("shp"));
 	}
 
 }

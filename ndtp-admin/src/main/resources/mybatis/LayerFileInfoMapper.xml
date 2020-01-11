@@ -80,7 +80,6 @@
         UPDATE layer_file_info
         SET user_id = #{userId},
             shape_encoding = #{shapeEncoding},
-            comment = #{comment},
             update_date = NOW()
         WHERE layer_file_info_id = #{layerFileInfoId}
     </update>

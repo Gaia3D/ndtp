@@ -511,6 +511,20 @@
 		modal: true,
 		resizable: false
 	});
+	
+	function alertMessage(response) {
+		if(uploadFileResultCount === 0) {
+			if(response.result === "upload.file.type.invalid") {
+				alert("복수의 파일을 업로딩 할 경우 zip 파일은 사용할 수 없습니다.");
+			} else if(response.result === "layer.name.empty") {
+				alert("Layer 명이 유효하지 않습니다.");
+			} else if("db.exception") {
+				alert("죄송 합니다. 서버 실행중에 오류가 발생 하였습니다. \n 로그를 확인하여 주십시오.");
+			}
+			uploadFileResultCount++;
+		}
+		return;
+	}
 
     // 업로딩 파일 개수
     var uploadFileCount = 0;
@@ -629,13 +643,13 @@
                         alertMessage(response);
                     }
                 } else {
-                    console.log("------- success response = " + response);
-                    if(response === 200) {
-                        alert("수정하였습니다.");
-                    } else {
-                        alert("수정에 실패 하였습니다. \n" + response);
-                    }
-                }
+					console.log("------- success response = " + response);
+					if(response.statusCode === 200) {
+						alert("수정하였습니다.");
+					} else {
+						alert("수정에 실패 하였습니다. \n" + response.message);
+					}
+				}
             });
 
             // 무한 루프 빠지네....
@@ -644,7 +658,7 @@
             }); */
         }
     };
-	
+    
 </script>
 </body>
 </html>

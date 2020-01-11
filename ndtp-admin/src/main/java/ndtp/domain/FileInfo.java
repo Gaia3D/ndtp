@@ -4,11 +4,14 @@ import java.sql.Timestamp;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * 파일 기본 정보 관리 클래스
  * @author Cheon JeongDae
  *
  */
+
 public class FileInfo {
 	
 	public FileInfo() {
@@ -31,6 +34,10 @@ public class FileInfo {
 	private Timestamp updateDate;
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Timestamp insertDate;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+	private Timestamp viewUpdateDate;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+	private Timestamp viewInsertDate;
 	
 	public String getUserId() {
 		return userId;
@@ -79,6 +86,13 @@ public class FileInfo {
 	}
 	public void setInsertDate(Timestamp insertDate) {
 		this.insertDate = insertDate;
+	}
+	
+	public Timestamp getViewUpdateDate() {
+		return this.updateDate;
+	}
+	public Timestamp getViewInsertDate() {
+		return this.insertDate;
 	}
 	@Override
 	public String toString() {

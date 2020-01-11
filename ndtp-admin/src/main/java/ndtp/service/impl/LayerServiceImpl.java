@@ -287,7 +287,7 @@ public class LayerServiceImpl implements LayerService {
         String layerSourceCoordinate = geoPolicy.getLayerSourceCoordinate();
         String layerTargetCoordinate = geoPolicy.getLayerTargetCoordinate();
         String layerColumn = getLayerColumn(tableName);
-        String sql = "SELECT "+ layerColumn + ", null::text AS enable_yn, null::int AS version FROM "+tableName+" WHERE file_version="+fileVersion;
+        String sql = "SELECT "+ layerColumn + ", null::text AS enable_yn, null::int AS version FROM "+tableName+" WHERE version_id="+fileVersion;
 
         Ogr2OgrExecute ogr2OgrExecute = new Ogr2OgrExecute(osType, driver, shpEncoding, exportPath, sql, layerSourceCoordinate, layerTargetCoordinate);
         ogr2OgrExecute.export();
@@ -386,7 +386,9 @@ public class LayerServiceImpl implements LayerService {
 		deleteGeoserverLayerStyle(geopolicy, layer.getLayerKey());
 		// layer_file_info 히스토리 삭제
 		layerFileInfoMapper.deleteLayerFileInfo(layerId);
-		// 레이어 삭제 
+		// 공간정보 테이블 삭제
+		layerMapper.deleteLayerTable(layer.getLayerKey());
+		// 레이어 메타정보 삭제 
 		return layerMapper.deleteLayer(layerId);
 	}
 
@@ -448,7 +450,8 @@ public class LayerServiceImpl implements LayerService {
      */
      @Transactional
      public int updateLayerStyle(Layer layer) throws Exception {
-
+    	 log.info("==============update layer style");
+    	 
          GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
          Layer dbLayer = layerMapper.getLayer(layer.getLayerId());
          layer.setLayerKey(dbLayer.getLayerKey());
