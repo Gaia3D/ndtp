@@ -1,5 +1,6 @@
 package ndtp.service.impl;
 
+import java.io.File;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.DataGroup;
 import ndtp.domain.Depth;
+import ndtp.domain.GeoPolicy;
 import ndtp.domain.Move;
 import ndtp.persistence.DataGroupMapper;
 import ndtp.service.DataGroupService;
+import ndtp.service.GeoPolicyService;
+import ndtp.utils.FileUtils;
 
 @Slf4j
 @Service
@@ -19,6 +23,8 @@ public class DataGroupServiceImpl implements DataGroupService {
 	
 	@Autowired
 	private DataGroupMapper dataGroupMapper;
+	@Autowired
+	private GeoPolicyService geoPolicyService;
 
 	/**
      * 데이터 그룹 목록
@@ -55,6 +61,8 @@ public class DataGroupServiceImpl implements DataGroupService {
     @Transactional
 	public int insertDataGroup(DataGroup dataGroup) {
     	
+    	GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
+    	
     	DataGroup parentDataGroup = new DataGroup();
     	Integer depth = 0;
     	if(dataGroup.getParent() > 0) {
@@ -62,7 +70,10 @@ public class DataGroupServiceImpl implements DataGroupService {
 	    	parentDataGroup = dataGroupMapper.getDataGroup(parentDataGroup);
 	    	depth = parentDataGroup.getDepth() + 1;
     	}
-	    	
+	    
+    	// TODO 여기서 디렉토리를 만들어야 하나? 말아야 하나? 도저히 모르겠다.
+    	FileUtils.makeDirectory(geoPolicy.getDataServicePath() + File.separator + dataGroup.getDataGroupKey());
+    	dataGroup.setDataGroupPath(dataGroup.getDataGroupKey() + File.separator);
     	int result = dataGroupMapper.insertDataGroup(dataGroup);
     	
     	if(depth > 1) {

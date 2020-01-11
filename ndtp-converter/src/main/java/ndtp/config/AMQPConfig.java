@@ -26,6 +26,10 @@ import ndtp.security.Crypt;
 		@Filter(type = FilterType.ANNOTATION, value = RestController.class)})
 @EnableRabbit
 public class AMQPConfig {
+	
+	@Autowired
+	private AMQPSubscribe aMQPSubscribe;
+	
 	@Autowired
 	private PropertiesConfig propertiesConfig;
 
@@ -52,7 +56,7 @@ public class AMQPConfig {
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 		container.setConnectionFactory(connectionFactory());
 		container.setQueueNames(propertiesConfig.getQueueName());
-		container.setMessageListener(new MessageListenerAdapter(new AMQPSubscribe(propertiesConfig)));
+		container.setMessageListener(new MessageListenerAdapter(aMQPSubscribe));
 		return container;
 	}
 

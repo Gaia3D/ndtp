@@ -78,10 +78,22 @@ public class DataInfo extends Search implements Serializable {
 	private BigDecimal pitch;
 	// roll
 	private BigDecimal roll;
-	// Data Control 속성
-	private String attributes;
+	
+	// 조상
+	private Integer childrenAncestor;
+	// 부모
+	private Integer childrenParent;
+	// 깊이
+	private Integer childrenDepth;
+	// 순서
+	private Integer childrenViewOrder;
+	
+	// 기본 정보
+	private String metainfo;
 	// data 상태. 0:사용중, 1:사용중지(관리자), 2:삭제(화면 비표시)
 	private String status;
+	// 속성 존재 유무. true : 존재, false : 존재하지 않음(기본값)
+	private Boolean attributeExist;
 	// 설명
 	private String description;
 	// 수정일 
@@ -91,10 +103,10 @@ public class DataInfo extends Search implements Serializable {
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Timestamp insertDate;
 	
-	public String getViewAttributes() {
-		if(this.attributes == null || "".equals( attributes) || attributes.length() < 20) {
-			return attributes;
+	public String getViewMetainfo() {
+		if(this.metainfo == null || "".equals( metainfo) || metainfo.length() < 20) {
+			return metainfo;
 		}
-		return attributes.substring(0, 20) + "...";
+		return metainfo.substring(0, 20) + "...";
 	}
 }

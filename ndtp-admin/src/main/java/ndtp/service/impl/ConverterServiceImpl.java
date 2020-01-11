@@ -60,7 +60,8 @@ public class ConverterServiceImpl implements ConverterService {
 	@Transactional
 	public int insertConverter(ConverterJob converterJob) {
 		
-		String dataGroupRootPath = geoPolicyService.getGeoPolicy().getDataServicePath() + File.separator;
+		String dataGroupRootPath = propertiesConfig.getDataServiceDir();
+		
 		String title = converterJob.getTitle();
 		String converterTemplate = converterJob.getConverterTemplate();
 		String userId = converterJob.getUserId();
@@ -116,12 +117,22 @@ public class ConverterServiceImpl implements ConverterService {
 		dataGroup.setDataGroupId(uploadDataFile.getDataGroupId());
 		dataGroup = dataGroupService.getDataGroup(dataGroup);
 		
+		log.info("-------------------------------------------------------");
+		log.info("----------- dataGroupRootPath = {}", dataGroupRootPath);
+		log.info("----------- dataGroup.getDataGroupPath() = {}", dataGroup.getDataGroupPath());
+		
+		log.info("----------- input = {}", uploadDataFile.getFilePath());
+		log.info("----------- output = {}", dataGroupRootPath + dataGroup.getDataGroupPath());
+		log.info("----------- log = {}", dataGroupRootPath + dataGroup.getDataGroupPath() + File.separator + "logTest.txt");
+		
+		log.info("-------------------------------------------------------");
+		
 		QueueMessage queueMessage = new QueueMessage();
 		queueMessage.setConverterJobId(converterJobFile.getConverterJobId());
 		queueMessage.setInputFolder(uploadDataFile.getFilePath());
 		queueMessage.setOutputFolder(dataGroupRootPath + dataGroup.getDataGroupPath());
 		queueMessage.setMeshType("0");
-		queueMessage.setLogPath(dataGroupRootPath + dataGroup.getDataGroupPath() + "logTest.txt");
+		queueMessage.setLogPath(dataGroupRootPath + dataGroup.getDataGroupPath() + File.separator + "logTest.txt");
 		queueMessage.setIndexing("y");
 		
 		// TODO
@@ -143,7 +154,7 @@ public class ConverterServiceImpl implements ConverterService {
 	private void insertData(String userId, UploadDataFile uploadDataFile) {
 		int order = 1;
 		// TODO nodeType 도 입력해야 함
-		String attributes = "{\"isPhysical\": true}";
+		String metainfo = "{\"isPhysical\": true}";
 		
 		DataInfo dataInfo = new DataInfo();
 		dataInfo.setDataGroupId(uploadDataFile.getDataGroupId());
@@ -154,8 +165,20 @@ public class ConverterServiceImpl implements ConverterService {
 		dataInfo.setLatitude(uploadDataFile.getLatitude());
 		dataInfo.setLongitude(uploadDataFile.getLongitude());
 		dataInfo.setAltitude(uploadDataFile.getAltitude());
-		dataInfo.setLocation("POINT(" + dataInfo.getLongitude() + " " + dataInfo.getLatitude() + ")");
-		dataInfo.setAttributes(attributes);
+		if(dataInfo.getLongitude() != null && dataInfo.getLatitude() != null) {
+			dataInfo.setLocation("POINT(" + dataInfo.getLongitude() + " " + dataInfo.getLatitude() + ")");
+		}
+		dataInfo.setMetainfo(metainfo);
 		dataService.insertData(dataInfo);
+	}
+	
+	/**
+	 * 데이터 변환 작업 상태를 변경
+	 * @param converterJob
+	 * @return
+	 */
+	@Transactional
+	public int updateConverterJob(ConverterJob converterJob) {
+		return converterMapper.updateConverterJob(converterJob);
 	}
 }

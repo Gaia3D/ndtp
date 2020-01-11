@@ -19,4 +19,10 @@ public interface ConverterService {
 	 */
 	public int insertConverter(ConverterJob converterJob);
 	
+	/**
+	 * 데이터 변환 작업 상태를 변경
+	 * @param converterJob
+	 * @return
+	 */
+	public int updateConverterJob(ConverterJob converterJob);
 }

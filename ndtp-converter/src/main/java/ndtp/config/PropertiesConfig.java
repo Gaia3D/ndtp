@@ -18,6 +18,8 @@ public class PropertiesConfig {
 	private String serverPort;
 	private String restAuthKey;
 	
+	private String cmsRestServer;
+	
 	private String queueServerHost;
 	private String queueServerPort;
 	private String queueUser;
