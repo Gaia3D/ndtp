@@ -7,7 +7,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Layer 등록 | NDTP</title>
+	<title>Layer 수정 | NDTP</title>
 	<link rel="stylesheet" href="/css/${lang}/font/font.css" />
 	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
 	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
@@ -166,8 +166,8 @@
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 								<td class="col-input">
-									<input id="lineColorValue" placeholder="RGB" class="forRaster" />
-									<input type="color" id="layerLineColor" name="layerLineColor" class="picker" alt="외곽선 색상" />
+									<input id="lineColorValue" placeholder="RGB" class="forRaster forLineColor" />
+									<input type="color" id="layerLineColor" name="layerLineColor" class="picker forLineColor" alt="외곽선 색상" />
 								</td>
 							</tr>
 							<tr>	
@@ -359,14 +359,23 @@
 <script type="text/javascript" src="/js/navigation.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-		showRange(100);
-		changeLayerType(null);
-		changeGeometryType(null);
-		
-		$("input[name='sharing']").filter("[value='public']").prop("checked", true);
-		$("input[name='defaultDisplay']").filter("[value='true']").prop("checked", true);
-		$("input[name='available']").filter("[value='true']").prop("checked", true);
-        $("input[name='labelDisplay']").filter("[value='true']").prop("checked", true);
+		showRange(parseInt('${layer.layerAlphaStyle * 100}'));
+		changeLayerType('${layer.layerType}');
+		changeGeometryType('${layer.geometryType}');
+		$("#sliderRange").val(parseInt('${layer.layerAlphaStyle * 100}'));
+		$("#layerLineStyle").val('${layer.layerLineStyle}');
+		$("input[name='sharing']").filter("[value='${layer.sharing}']").prop("checked", true);
+		$("input[name='defaultDisplay']").filter("[value='${layer.defaultDisplay}']").prop("checked", true);
+		$("input[name='available']").filter("[value='${layer.available}']").prop("checked", true);
+        $("input[name='labelDisplay']").filter("[value='${layer.labelDisplay}']").prop("checked", true);
+        $("input[name='layerFillColor']").filter("[value='${layer.layerFillColor}']").prop("checked", true);
+        $("input[name='labelDisplay']").filter("[value='${layer.labelDisplay}']").prop("checked", true);
+        $("select[name=serviceType] option[value='${layer.serviceType}'").prop('selected',true);
+        $("select[name=geometryType] option[value='${layer.geometryType}'").prop('selected',true);
+        $("select[name=layerType] option[value='${layer.layerType}'").prop('selected',true);
+        $("select[name=shapeEncoding] option[value='${layer.shapeEncoding}'").prop('selected',true);
+        $(".forLineColor").val("${layer.layerLineColor}");
+        $(".forPolygon").val("${layer.layerFillColor}");
 	});
 	
 	$('[name=layerType]').on('change', function() {

@@ -151,8 +151,8 @@ public class LayerController implements AuthorizationController {
     * @param model
     * @return
     */
-    @GetMapping(value = "modify/{layerId}")
-    public String modify(HttpServletRequest request, @PathVariable("layerId") Integer layerId, Model model) {
+    @GetMapping(value = "modify")
+    public String modify(HttpServletRequest request, @RequestParam Integer layerId, Model model) {
     	String roleCheckResult = roleValidate(request);
     	if(roleValidate(request) != null) return roleCheckResult;
 

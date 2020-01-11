@@ -70,7 +70,9 @@
     <!-- layer 정보 취득 -->
     <select id="getLayer" parameterType="int" resultType="layer">
         /* getLayer */
-        SELECT * FROM layer WHERE layer_id = #{layerId}
+        SELECT A.*, B.layer_group_name
+        FROM layer A, layer_group B
+        WHERE A.layer_id = #{layerId}
     </select>
 
     <!-- 자식 레이어 중 순서가 최대인 레이어를 검색 -->
