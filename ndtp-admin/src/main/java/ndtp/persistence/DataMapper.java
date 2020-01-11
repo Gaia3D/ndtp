@@ -44,13 +44,6 @@ public interface DataMapper {
 	List<DataInfo> getListData(DataInfo dataInfo);
 	
 	/**
-	 * 프로젝트별 Data 목록
-	 * @param dataInfo
-	 * @return
-	 */
-	List<DataInfo> getListDataByDataGroupId(DataInfo dataInfo);
-	
-	/**
 	 * DataGroupId를 제외한 Data 목록
 	 * @param dataInfo
 	 * @return

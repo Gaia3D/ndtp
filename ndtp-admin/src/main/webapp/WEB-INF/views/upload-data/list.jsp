@@ -85,92 +85,91 @@
 								</div>
 							</div>
 							<table class="list-table scope-col">
-									<col class="col-checkbox" />
-									<col class="col-number" />
-									<col class="col-name" />
-									<col class="col-name" />
-									<col class="col-name" />
-									<col class="col-number" />
-									<col class="col-number" />
-									<col class="col-number" />
-									<col class="col-functions" />
-									<col class="col-functions" />
-									<col class="col-functions" />
-									<thead>
-										<tr>
-											<th scope="col" class="col-checkbox"><input type="checkbox" id="chkAll" name="chkAll" /></th>
-											<th scope="col" class="col-number"><spring:message code='number'/></th>
-											<th scope="col" class="col-name">공유 유형</th>
-											<th scope="col" class="col-name">데이터 타입</th>
-											<th scope="col" class="col-name">그룹명</th>
-											<th scope="col" class="col-name">데이터명</th>
-											<th scope="col" class="col-name">파일 개수</th>
-											<th scope="col" class="col-name">Converter 횟수</th>
-											<th scope="col" class="col-functions">Converter</th>
-											<th scope="col" class="col-functions">삭제</th>
-											<th scope="col" class="col-date">등록일</th>
-										</tr>
-									</thead>
-									<tbody>
-		<c:if test="${empty uploadDataList }">
-										<tr>
-											<td colspan="11" class="col-none">파일 업로딩 이력이 존재하지 않습니다.</td>
-										</tr>
-		</c:if>
-		<c:if test="${!empty uploadDataList }">
-			<c:forEach var="uploadData" items="${uploadDataList}" varStatus="status">
+								<col class="col-checkbox" />
+								<col class="col-number" />
+								<col class="col-name" />
+								<col class="col-name" />
+								<col class="col-name" />
+								<col class="col-number" />
+								<col class="col-number" />
+								<col class="col-number" />
+								<col class="col-functions" />
+								<col class="col-functions" />
+								<col class="col-functions" />
+								<thead>
+									<tr>
+										<th scope="col" class="col-checkbox"><input type="checkbox" id="chkAll" name="chkAll" /></th>
+										<th scope="col" class="col-number"><spring:message code='number'/></th>
+										<th scope="col" class="col-name">공유 유형</th>
+										<th scope="col" class="col-name">데이터 타입</th>
+										<th scope="col" class="col-name">그룹명</th>
+										<th scope="col" class="col-name">데이터명</th>
+										<th scope="col" class="col-name">파일 개수</th>
+										<th scope="col" class="col-name">Converter 횟수</th>
+										<th scope="col" class="col-functions">Converter</th>
+										<th scope="col" class="col-functions">삭제</th>
+										<th scope="col" class="col-date">등록일</th>
+									</tr>
+								</thead>
+								<tbody>
+<c:if test="${empty uploadDataList }">
+									<tr>
+										<td colspan="11" class="col-none">파일 업로딩 이력이 존재하지 않습니다.</td>
+									</tr>
+</c:if>
+<c:if test="${!empty uploadDataList }">
+	<c:forEach var="uploadData" items="${uploadDataList}" varStatus="status">
 				
-										<tr>
-											<td class="col-checkbox">
-												<input type="checkbox" id="uploadDataId_${uploadData.uploadDataId}" name="uploadDataId" value="${uploadData.uploadDataId}" />
-											</td>
-											<td class="col-number">${pagination.rowNumber - status.index }</td>
-						
-											<td class="col-type">
-				<c:if test="${uploadData.sharing eq 'common' }">
-												공통
-				</c:if>
-				<c:if test="${uploadData.sharing eq 'public' }">
-												공개
-				</c:if>
-				<c:if test="${uploadData.sharing eq '2' }">
-												개인
-				</c:if>
-				<c:if test="${uploadData.sharing eq '3' }">
-												공유
-				</c:if>
-											</td>
-											<td class="col-type">${uploadData.dataType }</td>
-											<td class="col-name">${uploadData.dataGroupName }</td>
-											<td class="col-name">
-												<a href="/upload-data/modify?uploadDataId=${uploadData.uploadDataId }">
-												${uploadData.dataName }
-												</a>
-											</td>
-											<td class="col-count"><fmt:formatNumber value="${uploadData.fileCount}" type="number"/> 개</td>
-											<td class="col-count">${uploadData.converterCount} 건</td>
-											<td class="col-functions">
-												<span class="button-group">
-													<a href="#" onclick="converterFile('${uploadData.uploadDataId}', '${uploadData.dataName}'); return false;" 
-														class="button" style="text-decoration: none;">
-														F4D 변환
-													</a>
-												</span>
-											</td>
-											<td class="col-functions">
-												<span class="button-group">
-													<a href="#" onclick="deleteUploadData(${uploadData.uploadDataId }); return false;" 
-														class="image-button button-delete"><spring:message code='delete'/></a>
-												</span>
-											</td>
-											<td class="col-type">
-												<fmt:parseDate value="${uploadData.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
-												<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
-											</td>
-										</tr>
-			</c:forEach>
+									<tr>
+										<td class="col-checkbox">
+											<input type="checkbox" id="uploadDataId_${uploadData.uploadDataId}" name="uploadDataId" value="${uploadData.uploadDataId}" />
+										</td>
+										<td class="col-number">${pagination.rowNumber - status.index }</td>
+										<td class="col-type">
+		<c:if test="${uploadData.sharing eq 'common' }">
+											공통
 		</c:if>
-									</tbody>
+		<c:if test="${uploadData.sharing eq 'public' }">
+											공개
+		</c:if>
+		<c:if test="${uploadData.sharing eq '2' }">
+											개인
+		</c:if>
+		<c:if test="${uploadData.sharing eq '3' }">
+											공유
+		</c:if>
+										</td>
+										<td class="col-type">${uploadData.dataType }</td>
+										<td class="col-name">${uploadData.dataGroupName }</td>
+										<td class="col-name">
+											<a href="/upload-data/modify?uploadDataId=${uploadData.uploadDataId }">
+											${uploadData.dataName }
+											</a>
+										</td>
+										<td class="col-count"><fmt:formatNumber value="${uploadData.fileCount}" type="number"/> 개</td>
+										<td class="col-count">${uploadData.converterCount} 건</td>
+										<td class="col-functions">
+											<span class="button-group">
+												<a href="#" onclick="converterFile('${uploadData.uploadDataId}', '${uploadData.dataName}'); return false;" 
+													class="button" style="text-decoration: none;">
+													F4D 변환
+												</a>
+											</span>
+										</td>
+										<td class="col-functions">
+											<span class="button-group">
+												<a href="#" onclick="deleteUploadData(${uploadData.uploadDataId }); return false;" 
+													class="image-button button-delete"><spring:message code='delete'/></a>
+											</span>
+										</td>
+										<td class="col-type">
+											<fmt:parseDate value="${uploadData.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
+											<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
+										</td>
+									</tr>
+	</c:forEach>
+</c:if>
+								</tbody>
 							</table>
 							</form:form>
 								

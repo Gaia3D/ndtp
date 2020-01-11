@@ -53,6 +53,46 @@ public class ConverterServiceImpl implements ConverterService {
 	private ConverterMapper converterMapper;
 	
 	/**
+	 * converter job 총 건수
+	 * @param converterJob
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public Long getListConverterJobTotalCount(ConverterJob converterJob) {
+		return converterMapper.getListConverterJobTotalCount(converterJob);
+	}
+	
+	/**
+	 * converter job file 총 건수
+	 * @param converterJobFile
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public Long getListConverterJobFileTotalCount(ConverterJobFile converterJobFile) {
+		return converterMapper.getListConverterJobFileTotalCount(converterJobFile);
+	}
+	
+	/**
+	 * converter job 목록
+	 * @param converterLog
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public List<ConverterJob> getListConverterJob(ConverterJob converterJob) {
+		return converterMapper.getListConverterJob(converterJob);
+	}
+	
+	/**
+	 * converter job file 목록
+	 * @param converterJobFile
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public List<ConverterJobFile> getListConverterJobFile(ConverterJobFile converterJobFile) {
+		return converterMapper.getListConverterJobFile(converterJobFile);
+	}
+	
+	/**
 	 * converter 변환
 	 * @param converterJob
 	 * @return

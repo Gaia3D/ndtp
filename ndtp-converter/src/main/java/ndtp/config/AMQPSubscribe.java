@@ -53,10 +53,10 @@ public class AMQPSubscribe {
 			try {
 				int exitCode = ProcessBuilderSupport.execute(command);
 				
-				if(exitCode == 0) result = ConverterJobStatus.SUCCESS.name();
-				else result = ConverterJobStatus.FAIL.name();
+				if(exitCode == 0) result = ConverterJobStatus.SUCCESS.name().toLowerCase();
+				else result = ConverterJobStatus.FAIL.name().toLowerCase();
 			} catch (Exception e1) {
-				result = ConverterJobStatus.FAIL.name();
+				result = ConverterJobStatus.FAIL.name().toLowerCase();
 				log.info(" handleMessage exception = {}", e1.getMessage());
 				e1.printStackTrace();
 			}
@@ -64,7 +64,7 @@ public class AMQPSubscribe {
         })
 		.exceptionally(e -> {
         	log.info("exceptionally exception = {}", e.getMessage());
-        	updateConverterJobStatus(converterJobId, ConverterJobStatus.FAIL.name(), e.getMessage());
+        	updateConverterJobStatus(converterJobId, ConverterJobStatus.FAIL.name().toLowerCase(), e.getMessage());
         	return null;
         })
 		// 앞의 비동기 작업의 결과를 받아 사용하며 return이 없다.

@@ -64,16 +64,6 @@ public class DataServiceImpl implements DataService {
 	}
 	
 	/**
-	 * 그룹별 Data 목록
-	 * @param dataInfo
-	 * @return
-	 */
-	@Transactional(readOnly=true)
-	public List<DataInfo> getListDataByDataGroupId(DataInfo dataInfo) {
-		return dataMapper.getListDataByDataGroupId(dataInfo);
-	}
-	
-	/**
 	 * Data 정보 취득
 	 * @param data_id
 	 * @return
@@ -290,17 +280,5 @@ public class DataServiceImpl implements DataService {
 	@Transactional
 	public int deleteDataObjects(Long dataId) {
 		return dataMapper.deleteDataObjects(dataId);
-	}
-
-	@Override
-	public List<DataInfo> getListDataByDataGroupIdId(DataInfo dataInfo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public DataInfo getRootDataByDataGroupIdId(Integer dataGroupIdId) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

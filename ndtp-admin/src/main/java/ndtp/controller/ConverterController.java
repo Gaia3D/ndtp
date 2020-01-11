@@ -1,6 +1,8 @@
 package ndtp.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,16 +10,23 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
 import ndtp.domain.ConverterJob;
 import ndtp.domain.Key;
+import ndtp.domain.PageType;
+import ndtp.domain.Pagination;
+import ndtp.domain.UploadData;
 import ndtp.domain.UserSession;
 import ndtp.service.ConverterService;
+import ndtp.utils.DateUtils;
+import ndtp.utils.FormatUtils;
 
 /**
  * Data Converter
@@ -83,44 +92,50 @@ public class ConverterController {
 		return result;
 	}
 	
-//	/**
-//	 * converter job 목록
-//	 * @param request
-//	 * @param membership_id
-//	 * @param pageNo
-//	 * @param model
-//	 * @return
-//	 */
-//	@RequestMapping(value = "list-converter-job.do")
-//	public String listConverterJob(HttpServletRequest request, ConverterJob converterJob, @RequestParam(defaultValue="1") String pageNo, Model model) {
-//		
-//		UserSession userSession = (UserSession)request.getSession().getAttribute(UserSession.KEY);
-//		converterJob.setUser_id(userSession.getUser_id());		
-//		log.info("@@ converterJob = {}", converterJob);
-//		
-//		if(StringUtil.isNotEmpty(converterJob.getStart_date())) {
-//			converterJob.setStart_date(converterJob.getStart_date().substring(0, 8) + DateUtil.START_TIME);
-//		}
-//		if(StringUtil.isNotEmpty(converterJob.getEnd_date())) {
-//			converterJob.setEnd_date(converterJob.getEnd_date().substring(0, 8) + DateUtil.END_TIME);
-//		}
-//		long totalCount = converterService.getListConverterJobTotalCount(converterJob);
-//		
-//		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(converterJob), totalCount, Long.valueOf(pageNo).longValue());
-//		log.info("@@ pagination = {}", pagination);
-//		
-//		converterJob.setOffset(pagination.getOffset());
-//		converterJob.setLimit(pagination.getPageRows());
-//		List<ConverterJob> converterJobList = new ArrayList<>();
-//		if(totalCount > 0l) {
-//			converterJobList = converterService.getListConverterJob(converterJob);
-//		}
-//		
-//		model.addAttribute(pagination);
-//		model.addAttribute("converterJobList", converterJobList);
-//		return "/converter/list-converter-job";
-//	}
-//	
+	/**
+	 * converter job 목록
+	 * @param request
+	 * @param membership_id
+	 * @param pageNo
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "list")
+	public String list(HttpServletRequest request, ConverterJob converterJob, @RequestParam(defaultValue="1") String pageNo, Model model) {
+		
+//		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+//		converterJob.setUserId(userSession.getUserId());		
+		log.info("@@ converterJob = {}", converterJob);
+		
+		String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
+		if(StringUtils.isEmpty(converterJob.getStartDate())) {
+			converterJob.setStartDate(today.substring(0,4) + DateUtils.START_DAY_TIME);
+		} else {
+			converterJob.setStartDate(converterJob.getStartDate().substring(0, 8) + DateUtils.START_TIME);
+		}
+		if(StringUtils.isEmpty(converterJob.getEndDate())) {
+			converterJob.setEndDate(today + DateUtils.END_TIME);
+		} else {
+			converterJob.setEndDate(converterJob.getEndDate().substring(0, 8) + DateUtils.END_TIME);
+		}
+		
+		long totalCount = converterService.getListConverterJobTotalCount(converterJob);
+		
+		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, converterJob), totalCount, Long.valueOf(pageNo).longValue());
+		log.info("@@ pagination = {}", pagination);
+		
+		converterJob.setOffset(pagination.getOffset());
+		converterJob.setLimit(pagination.getPageRows());
+		List<ConverterJob> converterJobList = new ArrayList<>();
+		if(totalCount > 0l) {
+			converterJobList = converterService.getListConverterJob(converterJob);
+		}
+		
+		model.addAttribute(pagination);
+		model.addAttribute("converterJobList", converterJobList);
+		return "/converter/list";
+	}
+	
 //	/**
 //	 * converter job 파일 목록
 //	 * @param request
@@ -159,61 +174,24 @@ public class ConverterController {
 //		return "/converter/list-converter-job-file";
 //	}
 	
-//	/**
-//	 * 검색 조건
-//	 * @param dataInfo
-//	 * @return
-//	 */
-//	private String getSearchParameters(ConverterJob converterJob) {
-//		StringBuffer buffer = new StringBuffer();
-//		buffer.append("&");
-//		buffer.append("search_word=" + StringUtil.getDefaultValue(converterJob.getSearch_word()));
-//		buffer.append("&");
-//		buffer.append("search_option=" + StringUtil.getDefaultValue(converterJob.getSearch_option()));
-//		buffer.append("&");
-//		try {
-//			buffer.append("search_value=" + URLEncoder.encode(StringUtil.getDefaultValue(converterJob.getSearch_value()), "UTF-8"));
-//		} catch(Exception e) {
-//			e.printStackTrace();
-//			buffer.append("search_value=");
+	/**
+	 * 검색 조건
+	 * @param search
+	 * @return
+	 */
+	private String getSearchParameters(PageType pageType, ConverterJob converterJob) {
+		StringBuffer buffer = new StringBuffer(converterJob.getParameters());
+		boolean isListPage = true;
+		if(pageType == PageType.MODIFY || pageType == PageType.DETAIL) {
+			isListPage = false;
+		}
+		
+//		if(!isListPage) {
+//			buffer.append("pageNo=" + request.getParameter("pageNo"));
+//			buffer.append("&");
+//			buffer.append("list_count=" + uploadData.getList_counter());
 //		}
-//		buffer.append("&");
-//		buffer.append("start_date=" + StringUtil.getDefaultValue(converterJob.getStart_date()));
-//		buffer.append("&");
-//		buffer.append("end_date=" + StringUtil.getDefaultValue(converterJob.getEnd_date()));
-//		buffer.append("&");
-//		buffer.append("order_word=" + StringUtil.getDefaultValue(converterJob.getOrder_word()));
-//		buffer.append("&");
-//		buffer.append("order_value=" + StringUtil.getDefaultValue(converterJob.getOrder_value()));
-//		return buffer.toString();
-//	}
-//	
-//	/**
-//	 * 파일 검색 조건
-//	 * @param dataInfo
-//	 * @return
-//	 */
-//	private String getSearchParametersConverterJobFile(ConverterJobFile converterJobFile) {
-//		StringBuffer buffer = new StringBuffer();
-//		buffer.append("&");
-//		buffer.append("search_word=" + StringUtil.getDefaultValue(converterJobFile.getSearch_word()));
-//		buffer.append("&");
-//		buffer.append("search_option=" + StringUtil.getDefaultValue(converterJobFile.getSearch_option()));
-//		buffer.append("&");
-//		try {
-//			buffer.append("search_value=" + URLEncoder.encode(StringUtil.getDefaultValue(converterJobFile.getSearch_value()), "UTF-8"));
-//		} catch(Exception e) {
-//			e.printStackTrace();
-//			buffer.append("search_value=");
-//		}
-//		buffer.append("&");
-//		buffer.append("start_date=" + StringUtil.getDefaultValue(converterJobFile.getStart_date()));
-//		buffer.append("&");
-//		buffer.append("end_date=" + StringUtil.getDefaultValue(converterJobFile.getEnd_date()));
-//		buffer.append("&");
-//		buffer.append("order_word=" + StringUtil.getDefaultValue(converterJobFile.getOrder_word()));
-//		buffer.append("&");
-//		buffer.append("order_value=" + StringUtil.getDefaultValue(converterJobFile.getOrder_value()));
-//		return buffer.toString();
-//	}
+		
+		return buffer.toString();
+	}
 }

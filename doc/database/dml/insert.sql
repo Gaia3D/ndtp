@@ -31,7 +31,7 @@ values
 	(35, '0', '1', '업로드', 'DATA', 0, 3, 2, 5, '/upload-data/input', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
 	(36, '0', '1', '업로드 목록', 'DATA', 0, 3, 2, 6, '/upload-data/list', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
 	(37, '0', '1', '업로드 수정', 'DATA', 0, 3, 2, 7, '/upload-data/modify', '/upload-data/list', null, 'glyph-monitor', 'N', 'Y', 'N'),
-	(43, '0', '1', '데이터 변환 결과', 'DATA', 0, 3, 2, 12, '/data/convert-log', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
+	(43, '0', '1', '데이터 변환 결과', 'DATA', 0, 3, 2, 12, '/converter/list', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
 	(44, '0', '1', '데이터 위치 변경 이력', 'DATA', 0, 3, 2, 13, '/data/list-data-log', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
 	(5, '0', '1', '레이어', 'LAYER', 0, 0, 1, 5, '/layer/list-group', null, null, 'glyph-check', 'Y', 'Y', 'Y'),
 	(51, '0', '1', '2D 레이어 그룹', 'LAYER', 0, 5, 2, 1, '/layer/list-group', null, null, 'glyph-check', 'Y', 'Y', 'Y'),

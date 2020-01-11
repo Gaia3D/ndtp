@@ -3,6 +3,154 @@
 
 <mapper namespace="ndtp.persistence.ConverterMapper">
 
+	<!-- converter job 총 건수 -->
+	<select id="getListConverterJobTotalCount" parameterType="converterJob" resultType="long">
+		/* getListConverterJobTotalCount */
+		SELECT COUNT(converter_job_id) 
+		FROM converter_job
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="userId != null and userId != ''">
+			user_id = #{userId}
+			</if>
+			<if test="status != null and status != ''">
+			AND status = #{status}
+			</if>
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
+			AND ${searchWord} = #{searchValue}
+			</if>
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
+			AND ${searchWord} LIKE '%' || #{searchValue} || '%'
+			</if>
+			<if test="startDate != null and startDate != ''">
+			<![CDATA[
+			AND insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+			]]>
+			</if>
+			<if test="endDate != null and endDate != ''">
+			<![CDATA[
+			AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+			]]>
+			</if>
+		</trim>
+	</select>
+	
+	<!-- converter job file 총 건수 -->
+	<select id="getListConverterJobFileTotalCount" parameterType="converterJobFile" resultType="long">
+		/* getListConverterJobFileTotalCount */
+		SELECT COUNT(converter_job_file_id) 
+		FROM converter_job_file
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="userId != null and userId != ''">
+			user_id = #{userId}
+			</if>
+			<if test="status != null and status != ''">
+			AND status = #{status}
+			</if>
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
+			AND ${searchWord} = #{searchValue}
+			</if>
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
+			AND ${searchWord} LIKE '%' || #{searchValue} || '%'
+			</if>
+			<if test="startDate != null and startDate != ''">
+			<![CDATA[
+			AND insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+			]]>
+			</if>
+			<if test="endDate != null and endDate != ''">
+			<![CDATA[
+			AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+			]]>
+			</if>
+		</trim>
+	</select>
+	
+	<!-- converter job 목록 -->
+	<select id="getListConverterJob" parameterType="converterJob" resultType="converterJob">
+		/* getListConverterJob */
+		SELECT X.*, 
+			(SELECT COUNT(converter_job_file_id) FROM converter_job_file WHERE converter_job_id = X.converter_job_id) AS converter_file_count
+		FROM (
+			SELECT A.*
+			FROM converter_job A
+			<trim prefix="WHERE" prefixOverrides="AND">
+				<if test="userId != null and userId != ''">
+				user_id = #{userId}
+				</if>
+				<if test="status != null and status != ''">
+				AND A.status = #{status}
+				</if>
+				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
+				AND A.${searchWord} = #{searchValue}
+				</if>
+				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
+				AND A.${searchWord} LIKE '%' || #{searchValue} || '%'
+				</if>
+				<if test="startDate != null and startDate != ''">
+				<![CDATA[
+				AND A.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+				]]>
+				</if>
+				<if test="endDate != null and endDate != ''">
+				<![CDATA[
+				AND A.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+				]]>
+				</if>
+			</trim>
+			<choose>
+			<when test="orderWord != null and orderWord != '' and orderValue != null and orderValue != ''">
+			ORDER BY A.${orderWord} ${orderValue}
+			</when>
+			<otherwise>
+			ORDER BY A.insert_date DESC, A.converter_job_id DESC
+			</otherwise>
+			</choose>
+			OFFSET #{offset} LIMIT #{limit}
+		) X
+	</select>
+	
+	<!-- converter job file 목록 -->
+	<select id="getListConverterJobFile" parameterType="converterJobFile" resultType="converterJobFile">
+		/* getListConverterJobFile */
+		SELECT X.*
+		FROM (
+			SELECT A.*, B.file_name
+			FROM converter_job_file A, upload_data_file B
+			WHERE A.upload_data_file_id = B.upload_data_file_id
+				<if test="userId != null and userId != ''">
+				AND user_id = #{userId}
+				</if>
+				<if test="status != null and status != ''">
+				AND A.status = #{status}
+				</if>
+				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
+				AND B.${searchWord} = #{searchValue}
+				</if>
+				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
+				AND B.${searchWord} LIKE '%' || #{searchValue} || '%'
+				</if>
+				<if test="startDate != null and startDate != ''">
+				<![CDATA[
+				AND A.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+				]]>
+				</if>
+				<if test="endDate != null and endDate != ''">
+				<![CDATA[
+				AND A.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+				]]>
+				</if>
+			<choose>
+			<when test="orderWord != null and orderWord != '' and orderValue != null and orderValue != ''">
+			ORDER BY A.${orderWord} ${orderValue}
+			</when>
+			<otherwise>
+			ORDER BY A.insert_date DESC, A.converter_job_id DESC
+			</otherwise>
+			</choose>
+			OFFSET #{offset} LIMIT #{limit}
+		) X
+	</select>
+
 	<!-- converter job 등록 -->
 	<insert id="insertConverterJob" parameterType="converterJob">
 		/* insertConverterJob */

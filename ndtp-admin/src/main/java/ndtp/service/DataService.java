@@ -40,13 +40,6 @@ public interface DataService {
 	List<DataInfo> getListData(DataInfo dataInfo);
 	
 	/**
-	 * 그룹별 Data 목록
-	 * @param dataInfo
-	 * @return
-	 */
-	List<DataInfo> getListDataByDataGroupIdId(DataInfo dataInfo);
-	
-	/**
 	 * Data 정보 취득
 	 * @param dataInfo
 	 * @return
@@ -59,13 +52,6 @@ public interface DataService {
 	 * @return
 	 */
 	DataInfo getDataByDataKey(DataInfo dataInfo);
-	
-	/**
-	 * 최상위 root dataInfo 정보 취득
-	 * @param dataGroupIdId
-	 * @return
-	 */
-	public DataInfo getRootDataByDataGroupIdId(Integer dataGroupIdId);
 	
 //	/**
 //	 * Data Attribute 정보 취득
