@@ -44,6 +44,7 @@
 							<tr>
 								<th class="col-label" scope="row">
 									<form:label path="dataGroupKey">데이터 그룹 Key</form:label>
+									<span class="icon-glyph glyph-emark-dot color-warning"></span>
 								</th>
 								<td class="col-input">
 									<form:input path="dataGroupKey" cssClass="l" />
@@ -61,7 +62,7 @@
 									<input type="button" id="dataGroupButtion" value="상위 그룹 선택" />
 								</td>
 							</tr>
-							<tr>
+							<%-- <tr>
 								<th class="col-label" scope="row">
 									<form:label path="dataGroupPath">데이터 그룹 경로</form:label>
 								</th>
@@ -69,7 +70,7 @@
 									<form:input path="dataGroupPath" cssClass="l" />
 									<form:errors path="dataGroupPath" cssClass="error" />
 								</td>
-							</tr>
+							</tr> --%>
 							<tr>
 			                    <th class="col-label" scope="row">
 			                        <form:label path="sharing">공유 타입</form:label>
@@ -250,6 +251,11 @@
 		if ($("#dataGroupName").val() === null || $("#dataGroupName").val() === "") {
 			alert("데이터 그룹명을 입력해 주세요.");
 			$("#dataGroupName").focus();
+			return false;
+		}
+		if ($("#dataGroupKey").val() === null || $("#dataGroupKey").val() === "") {
+			alert("데이터 그룹명(한글불가)을 입력해 주세요.");
+			$("#dataGroupKey").focus();
 			return false;
 		}
 		if($("#parent").val() === null || $("#parent").val() === "" || !number.test($("#parent").val())) {

@@ -90,13 +90,7 @@
 			</if>
 			altitude, duration, description
 		) VALUES (
-			#{dataGroupId}, #{dataGroupName},
-			<if test="dataGroupKey == null or dataGroupKey == ''">
-			#{dataGroupId},
-			</if>
-			<if test="dataGroupKey != null and dataGroupKey != ''">
-			#{dataGroupKey}, 
-			</if>
+			#{dataGroupId}, #{dataGroupName}, #{dataGroupKey}, 
 			#{dataGroupPath}, #{sharing}, #{userId},
 			(
 				SELECT COALESCE(MAX(ancestor), #{dataGroupId}) 

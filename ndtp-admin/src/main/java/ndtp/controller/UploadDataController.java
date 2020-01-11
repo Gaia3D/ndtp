@@ -269,7 +269,10 @@ public class UploadDataController {
 					&& request.getParameter("longitude") != null && !"".equals(request.getParameter("longitude"))) {
 				uploadData.setLatitude(new BigDecimal(request.getParameter("latitude")) );
 				uploadData.setLongitude(new BigDecimal(request.getParameter("longitude")) );
-				uploadData.setAltitude(new BigDecimal(request.getParameter("altitude")) );
+				
+				if(request.getParameter("altitude") == null || "".equals(request.getParameter("altitude"))) {
+					uploadData.setAltitude(BigDecimal.valueOf(0l));
+				} else uploadData.setAltitude(new BigDecimal(request.getParameter("altitude")) );
 				
 				uploadData.setLocation("POINT(" + request.getParameter("longitude") + " " + request.getParameter("latitude") + ")");
 			}
@@ -455,7 +458,7 @@ public class UploadDataController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = "list")
+	@GetMapping(value = "list")
 	public String list(HttpServletRequest request, UploadData uploadData, @RequestParam(defaultValue="1") String pageNo, Model model) {
 		log.info("@@ uploadData = {}", uploadData);
 		

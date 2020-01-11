@@ -31,5 +31,5 @@ public interface ConverterMapper {
 	 * update
 	 * @param converterJob
 	 */
-	public void updateConverterJob(ConverterJob converterJob);
+	public int updateConverterJob(ConverterJob converterJob);
 }

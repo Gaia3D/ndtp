@@ -5,7 +5,7 @@ drop table if exists data_info cascade;
 -- data의 논리적인 그룹
 create table data_group (
 	data_group_id				integer,
-	data_group_key				varchar(60),
+	data_group_key				varchar(60)							not null,
 	data_group_name				varchar(100)						not null,
 	data_group_path				varchar(256),
 	sharing					varchar(30)							default 'public',
@@ -52,7 +52,7 @@ create table data_info(
 	data_group_id				integer								not null,
 	data_key					varchar(128)						not null,
 	data_name					varchar(256),
-	sharing					varchar(30)							default 'public',
+	sharing						varchar(30)							default 'public',
 	user_id						varchar(32),
 	mapping_type				varchar(30)							default 'origin',
 	location		 			GEOMETRY(POINT, 4326),
@@ -60,12 +60,13 @@ create table data_info(
 	heading						numeric(8,5),
 	pitch						numeric(8,5),
 	roll						numeric(8,5),
-	child_ancestor				integer								default 0,
-	child_parent				integer								default 1,
-	child_depth					integer								default 1,
-	child_view_order			integer								default 1,
-	attributes					jsonb,
-	status						char(1)								default '0',
+	children_ancestor			integer								default 0,
+	children_parent				integer								default 1,
+	children_depth				integer								default 1,
+	children_view_order			integer								default 1,
+	metainfo					jsonb,
+	status						varchar(20)							default 'use',
+	attribute_exist				boolean								default false,
 	description					varchar(256),
 	update_date					timestamp with time zone,
 	insert_date					timestamp with time zone			default now(),
@@ -85,12 +86,13 @@ comment on column data_info.altitude is '높이';
 comment on column data_info.heading is 'heading';
 comment on column data_info.pitch is 'pitch';
 comment on column data_info.roll is 'roll';
-comment on column data_info.child_ancestor is '조상';
-comment on column data_info.child_parent is '부모';
-comment on column data_info.child_depth is '깊이';
-comment on column data_info.child_view_order is '표시 순서';
-comment on column data_info.attributes is 'Data Control 속성';
-comment on column data_info.status is '상태. 0:사용중, 1:사용중지(관리자), 2:삭제(비표시)';
+comment on column data_info.children_ancestor is '조상';
+comment on column data_info.children_parent is '부모';
+comment on column data_info.children_depth is '깊이';
+comment on column data_info.children_view_order is '표시 순서';
+comment on column data_info.metainfo is 'Data Control 속성';
+comment on column data_info.status is '상태. use : 사용중, unused : 사용중지(관리자), delete : 삭제(비표시)';
+comment on column data_info.attribute_exist is '속성 존재 유무. true : 존재, false : 존재하지 않음(기본값)';
 comment on column data_info.description is '설명';
 comment on column data_info.update_date is '수정일';
 comment on column data_info.insert_date is '등록일';
