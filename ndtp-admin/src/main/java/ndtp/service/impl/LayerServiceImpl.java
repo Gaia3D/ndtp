@@ -26,6 +26,7 @@ import ndtp.config.PropertiesConfig;
 import ndtp.domain.GeoPolicy;
 import ndtp.domain.Layer;
 import ndtp.domain.LayerFileInfo;
+import ndtp.domain.ShapeFileExt;
 import ndtp.geospatial.LayerStyleParser;
 import ndtp.geospatial.Ogr2OgrExecute;
 import ndtp.persistence.LayerFileInfoMapper;
@@ -260,25 +261,12 @@ public class LayerServiceImpl implements LayerService {
      * shp파일 정보를 db 정보 기준으로 export
      */
     @Transactional
-    public void exportOgr2Ogr(List<LayerFileInfo> layerFileInfoList, Layer layer) throws Exception {
+    public void exportOgr2Ogr(LayerFileInfo layerFileInfo, Layer layer) throws Exception {
         String tableName = layer.getLayerKey();
-        String exportPath = null;
-        String shpEncoding = null;
-        Integer fileVersion = null;
+        Integer versionId = layerFileInfo.getVersionId();
+        String shpEncoding = layerFileInfo.getShapeEncoding();
+        String exportPath = layerFileInfo.getFilePath() + layerFileInfo.getFileRealName()+ "." + ShapeFileExt.SHP.getValue();
 
-        for(LayerFileInfo fileInfo : layerFileInfoList) {
-            String filePath = fileInfo.getFilePath()+fileInfo.getFileRealName();
-            File file = new File(filePath);
-            if(file.exists()) {
-                file.delete();
-            }
-            //fileInfoId와 fileInfoGroupId가 같을 경우 shp파일
-            if(fileInfo.getLayerFileInfoId().equals(fileInfo.getLayerFileInfoGroupId())) {
-                exportPath = filePath;
-                fileVersion = fileInfo.getVersionId();
-                shpEncoding = fileInfo.getShapeEncoding();
-            }
-        }
         String osType = propertiesConfig.getOsType().toUpperCase();
         String dbName = Crypt.decrypt(url);
         dbName = dbName.substring(dbName.lastIndexOf("/") + 1);
@@ -287,7 +275,7 @@ public class LayerServiceImpl implements LayerService {
         String layerSourceCoordinate = geoPolicy.getLayerSourceCoordinate();
         String layerTargetCoordinate = geoPolicy.getLayerTargetCoordinate();
         String layerColumn = getLayerColumn(tableName);
-        String sql = "SELECT "+ layerColumn + ", null::text AS enable_yn, null::int AS version FROM "+tableName+" WHERE version_id="+fileVersion;
+        String sql = "SELECT "+ layerColumn + ", null::text AS enable_yn, null::int AS version FROM "+tableName+" WHERE version_id="+versionId;
 
         Ogr2OgrExecute ogr2OgrExecute = new Ogr2OgrExecute(osType, driver, shpEncoding, exportPath, sql, layerSourceCoordinate, layerTargetCoordinate);
         ogr2OgrExecute.export();

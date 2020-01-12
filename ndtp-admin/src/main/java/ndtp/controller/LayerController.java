@@ -312,9 +312,7 @@ public class LayerController implements AuthorizationController {
 						layerFileInfo.setErrorMessage(e.getMessage());
 					}
 					
-					if(ShapeFileExt.findBy(extension.toLowerCase()) != null) {
-						layerFileInfoList.add(layerFileInfo);
-					}
+					layerFileInfoList.add(layerFileInfo);
 				}
 			}
 			
@@ -473,9 +471,7 @@ public class LayerController implements AuthorizationController {
                         layerFileInfo.setErrorMessage(e.getMessage());
                     }
 
-                    if(ShapeFileExt.findBy(extension.toLowerCase()) != null) {
-						layerFileInfoList.add(layerFileInfo);
-					}
+					layerFileInfoList.add(layerFileInfo);
                 }
             }
             
@@ -621,22 +617,29 @@ public class LayerController implements AuthorizationController {
         try {
 
             Layer layer = layerService.getLayer(layerId);
-            List<LayerFileInfo> layerFileInfoList = layerFileInfoService.getLayerFileInfoGroup(layerFileInfoGroupId);
-
-            //db정보를 기준으로 shp파일 정보를 업데이트
-            layerService.exportOgr2Ogr(layerFileInfoList, layer);
-
             String today = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+            String filePath = propertiesConfig.getLayerExportDir() + today.substring(0, 6) + File.separator;
+            String fileRealName = layer.getLayerKey() + "_" + today + "_" + System.nanoTime();
+            createDirectory(filePath);
+            log.info("@@@@@@@ zip directory = {}", filePath);
+            
+            List<LayerFileInfo> layerFileInfoList = layerFileInfoService.getLayerFileInfoGroup(layerFileInfoGroupId);
+            LayerFileInfo layerFileInfo = layerFileInfoList.get(0);
+            layerFileInfo.setFilePath(filePath);
+            layerFileInfo.setFileRealName(fileRealName);
+            // db에 해당 versionId의 데이터를 shape으로 export
+            layerService.exportOgr2Ogr(layerFileInfo, layer);
 
-            String makedDirectory = propertiesConfig.getLayerUploadDir();
-            makedDirectory = makedDirectory + "zip" + File.separator;
-            createDirectory(makedDirectory);
-            log.info("@@@@@@@ zip directory = {}", makedDirectory);
+            String zipFileName = filePath + fileRealName + ".zip";
+            List<LayerFileInfo> makeFileList = new ArrayList<>();
+            for(ShapeFileExt shapeFileExt : ShapeFileExt.values()) {
+				LayerFileInfo fileInfo = new LayerFileInfo(); 
+				fileInfo.setFilePath(filePath);
+				fileInfo.setFileRealName(fileRealName + "." + shapeFileExt.getValue());
+				makeFileList.add(fileInfo);
+			}
 
-            // layer 파일의 경우 한 세트가 같은 이름에 확장자만 달라야 한다.
-            String zipFileName = makedDirectory + layer.getLayerKey() + "_" + today + "_" + System.nanoTime() + ".zip";
-
-            ZipSupport.makeZip(zipFileName, layerFileInfoList);
+            ZipSupport.makeZip(zipFileName, makeFileList);
 
             response.setContentType("application/force-download");
             response.setHeader("Content-Transfer-Encoding", "binary");

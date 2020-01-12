@@ -75,7 +75,7 @@ public interface LayerService {
      * @param version
      * @return
      */
-    void exportOgr2Ogr(List<LayerFileInfo> layerFileInfoList, Layer layer) throws Exception;
+    void exportOgr2Ogr(LayerFileInfo layerFileInfo, Layer layer) throws Exception;
     
     /**
     * layer 가 등록 되어 있지 않은 경우 rest api 를 이용해서 layer를 등록

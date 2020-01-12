@@ -33,6 +33,8 @@ public class PropertiesConfig {
     
     private String layerUploadDir;
     
+    private String layerExportDir;
+    
     private String queueServerHost;
 	private String queueServerPort;
 	private String queueUser;
