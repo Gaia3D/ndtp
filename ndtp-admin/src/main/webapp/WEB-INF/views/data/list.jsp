@@ -137,8 +137,8 @@
 		<c:if test="${dataInfo.status eq 'unused'}">사용중지</c:if>
 		<c:if test="${dataInfo.status eq 'delete'}">삭제(비표시)</c:if>
 									</td>
-									<td class="col-name">
-										<a href="#" class="view-group-detail" onclick="detailData('${dataInfo.dataId }'); return false;">보기</a></td>	
+									<td class="col-type">
+										<a href="#" class="view-group-detail" onclick="viewMapData('${dataInfo.dataId }'); return false;">보기</a></td>	
 									<td class="col-functions">
 										<span class="button-group">
 											<a href="#" class="image-button button-edit" onclick="detailDataAttribute('${dataInfo.dataId }'); return false;">
@@ -209,7 +209,7 @@
 	
 	// 데이터 그룹 정보
 	function detailDataGroup(dataGroupId) {
-		detailDataGroup.dialog( "open" );
+		dataGroupDialog.dialog( "open" );
 		
 		$.ajax({
 			url: "/data/detail-group",
@@ -218,13 +218,13 @@
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 			dataType: "json",
 			success: function(msg){
-				if (msg.result == "success") {
-					$("#project_name_info").html(msg.project.project_name);
-					$("#sharing_type_info").html(msg.project.sharing_type);
-					$("#use_yn_info").html(msg.project.use_yn);
-					$("#description_info").html(msg.project.description);
+				if(msg.statusCode <= 200) {
+					$("#dataGroupNameInfo").html(msg.dataGroup.dataGroupName);
+					$("#sharingInfo").html(msg.dataGroup.sharing);
+					$("#availableInfo").html(msg.dataGroup.available);
+					$("#descriptionInfo").html(msg.dataGroup.description);
 				} else {
-					alert(JS_MESSAGE[msg.result]);
+					alert(JS_MESSAGE[msg.errorCode]);
 				}
 			},
 			error:function(request,status,error){
@@ -244,10 +244,10 @@
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 			dataType: "json",
 			success: function(msg){
-				if (msg.result == "success") {
+				if(msg.statusCode <= 200) {
 					$("#data_control_attribute").html(msg.dataInfo.attributes);
 				} else {
-					alert(JS_MESSAGE[msg.result]);
+					alert(JS_MESSAGE[msg.errorCode]);
 				}
 			},
 			error:function(request,status,error){
@@ -268,12 +268,12 @@
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 			dataType: "json",
 			success: function(msg){
-				if (msg.result == "success") {
+				if(msg.statusCode <= 200) {
 					if(msg.dataInfoAttribute !== null) {
 						$("#data_attribute_for_origin").html(msg.dataInfoAttribute.attributes);
 					}
 				} else {
-					alert(JS_MESSAGE[msg.result]);
+					alert(JS_MESSAGE[msg.errorCode]);
 				}
 			},
 			error:function(request,status,error){
@@ -319,7 +319,7 @@
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				dataType: "json",
 				success: function(msg){
-					if(msg.result == "success") {
+					if(msg.statusCode <= 200) {
 						if(msg.parse_error_count != 0 || msg.insert_error_count != 0) {
 							$("#data_file_name").val("");
 							alert(JS_MESSAGE["error.exist.in.processing"]);
@@ -357,7 +357,7 @@
 							$("#dataAttributeUploadLog > tbody:last").html("");
 							$("#dataAttributeUploadLog > tbody:last").append(content);
 					} else {
-	    				alert(JS_MESSAGE[msg.result]);
+						alert(JS_MESSAGE[msg.errorCode]);
 	    			}
 					dataAttributeFileUploadFlag = true;
 				},
@@ -411,7 +411,7 @@
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				dataType: "json",
 				success: function(msg){
-					if(msg.result == "success") {
+					if(msg.statusCode <= 200) {
 						if(msg.parse_error_count != 0 || msg.insert_error_count != 0) {
 							$("#data_file_name").val("");
 							alert(JS_MESSAGE["error.exist.in.processing"]);
@@ -449,7 +449,7 @@
 							$("#dataObjectAttributeUploadLog > tbody:last").html("");
 							$("#dataObjectAttributeUploadLog > tbody:last").append(content);
 					} else {
-	    				alert(JS_MESSAGE[msg.result]);
+						alert(JS_MESSAGE[msg.errorCode]);
 	    			}
 					dataObjectAttributeFileUploadFlag = true;
 				},
@@ -489,12 +489,12 @@
 					headers: {"X-Requested-With": "XMLHttpRequest"},
 					dataType: "json",
 					success: function(msg){
-						if(msg.result == "success") {
+						if(msg.statusCode <= 200) {
 							alert(JS_MESSAGE["delete"]);	
 							location.reload();
 							$(":checkbox[name=data_id]").prop("checked", false);
 						} else {
-							alert(JS_MESSAGE[msg.result]);
+							alert(JS_MESSAGE[msg.errorCode]);
 						}
 						deleteDatasFlag = true;
 					},
@@ -575,7 +575,7 @@
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				dataType: "json",
 				success: function(msg){
-					if(msg.result == "success") {
+					if(msg.statusCode <= 200) {
 						if(msg.parse_error_count != 0 || msg.insert_error_count != 0) {
 							$("#data_file_name").val("");
 							alert(JS_MESSAGE["error.exist.in.processing"]);
@@ -613,7 +613,7 @@
 						$("#dataFileUploadLog > tbody:last").html("");
 						$("#dataFileUploadLog > tbody:last").append(content);
 					} else {
-	    				alert(JS_MESSAGE[msg.result]);
+						alert(JS_MESSAGE[msg.errorCode]);
 	    			}
 					dataFileUploadFlag = true;
 				},
@@ -654,6 +654,9 @@
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				dataType: "json",
 				success: function(msg){
+					//if(msg.statusCode <= 200) {
+					//} alert(JS_MESSAGE[msg.errorCode]);
+					
 					if(msg.insert_error_count != 0) {
 						$("#project_data_attribute_path").val("");
 						alert(JS_MESSAGE["error.exist.in.processing"]);
@@ -720,6 +723,9 @@
 				data: info,
 				dataType: "json",
 				success: function(msg){
+					// if(msg.statusCode <= 200) {
+					// alert(JS_MESSAGE[msg.errorCode]);
+						
 					if(msg.insert_error_count != 0) {
 						$("#project_data_object_attribute_path").val("");
 						alert(JS_MESSAGE["error.exist.in.processing"]);
@@ -826,6 +832,17 @@
 		modal: true,
 		resizable: false
 	});
+	
+	// Map 에 데이터 표시
+	function viewMapData(dataId) {
+		var url = "/data/map-data?dataId=" + dataId;
+		var width = 800;
+		var height = 700;
+
+        var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height
+                + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
+        //popWin.document.title = layerName;
+	}
 </script>
 </body>
 </html>

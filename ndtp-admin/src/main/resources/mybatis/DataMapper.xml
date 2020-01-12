@@ -105,7 +105,7 @@
 	<!-- Data 정보 -->
 	<select id="getData" parameterType="dataInfo" resultType="dataInfo">
 		/* getData */
-		SELECT A.*, B.data_grou_name, parent_name
+		SELECT A.*, B.data_group_name
 		FROM data_info A, data_group B
 		WHERE data_id = #{dataId}
 			AND A.data_group_id = B.data_group_id
