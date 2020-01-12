@@ -21,9 +21,9 @@
 			<td id="afterLongitude" class="col-data" style="color: blue"></td>
 		</tr>
 		<tr style="height: 30px;">
-			<th class="col-label" scope="row" style="text-align: left"><spring:message code='height'/></th>
-			<td id="beforeHeight" class="col-data"></td>
-			<td id="afterHeight" class="col-data" style="color: blue"></td>
+			<th class="col-label" scope="row" style="text-align: left">높이</th>
+			<td id="beforeAltitude" class="col-data"></td>
+			<td id="afterAltitude" class="col-data" style="color: blue"></td>
 		</tr>
 		<tr style="height: 30px;">
 			<th class="col-label" scope="row" style="text-align: left"><spring:message code='heading'/></th>

@@ -4,14 +4,20 @@ import java.sql.Timestamp;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+@ToString
+@Builder
 @Getter
 @Setter
-@ToString
-public class APILog {
+@NoArgsConstructor
+@AllArgsConstructor
+public class APILog extends Search {
 	
 	private Search search;
 	

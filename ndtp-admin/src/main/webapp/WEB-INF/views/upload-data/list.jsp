@@ -283,6 +283,7 @@
 				type: "POST",
 				data: formData,
 				dataType: "json",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						alert(JS_MESSAGE["insert"]);	
@@ -340,6 +341,7 @@
 					type: "POST",
 					data: formData,
 					dataType: "json",
+					headers: {"X-Requested-With": "XMLHttpRequest"},
 					success: function(msg){
 						if(msg.statusCode <= 200) {
 							alert(JS_MESSAGE["delete"]);	

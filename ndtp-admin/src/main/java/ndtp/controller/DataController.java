@@ -13,17 +13,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
+import ndtp.domain.GeoPolicy;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
 import ndtp.domain.Policy;
 import ndtp.domain.UploadData;
 import ndtp.service.DataGroupService;
 import ndtp.service.DataService;
+import ndtp.service.GeoPolicyService;
 import ndtp.service.PolicyService;
 import ndtp.utils.DateUtils;
 import ndtp.utils.FormatUtils;
@@ -41,6 +44,9 @@ public class DataController {
 	@Autowired
 	private DataService dataService;
 
+	@Autowired
+	private GeoPolicyService geoPolicyService;
+	
 	@Autowired
 	private ObjectMapper objectMapper;
 	
@@ -107,6 +113,56 @@ public class DataController {
 		
 		return "/data/input";
 	}
+	
+	/**
+	 * Data 정보
+	 * @param data_id
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "detail")
+	public String detail(HttpServletRequest request, DataInfo dataInfo, Model model) {
+		
+		log.info("@@@ detail-info dataInfo = {}", dataInfo);
+		
+		String listParameters = getSearchParameters(PageType.DETAIL, dataInfo);
+		
+		dataInfo =  dataService.getData(dataInfo);
+		Policy policy = policyService.getPolicy();
+		
+		model.addAttribute("policy", policy);
+		model.addAttribute("listParameters", listParameters);
+		model.addAttribute("dataInfo", dataInfo);
+		
+		return "/data/detail-data";
+	}
+	
+	/**
+    * Map 에 데이터 표시
+    * @param model
+    * @return
+	 * @throws JsonProcessingException 
+    */
+    @GetMapping(value = "map-data")
+    public String mapData(HttpServletRequest request, DataInfo dataInfo, Model model) throws JsonProcessingException {
+    	
+    	log.info("@@ map-data. dataInfo = {}", dataInfo);
+
+    	dataInfo = dataService.getData(dataInfo);
+    	
+    	GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
+    	String geoPolicyJson = "";
+        try {
+        	geoPolicyJson = objectMapper.writeValueAsString(geoPolicy);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        model.addAttribute("geoPolicyJson", geoPolicyJson);
+        model.addAttribute("dataInfo", dataInfo);
+
+        return "/data/map-data";
+    }
 	
 	/**
 	 * 검색 조건

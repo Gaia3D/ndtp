@@ -92,7 +92,6 @@
 							<col class="col-number" />
 							<col class="col-name" />
 							<col class="col-name" />
-							<col class="col-name" />
 							<col class="col-number" />
 							<col class="col-number" />
 							<col class="col-number" />
@@ -102,11 +101,10 @@
 							<col class="col-functions" />
 							<thead>
 								<tr>
-									<th scope="col" class="col-checkbox"><input type="checkbox" id="chk_all" name="chk_all" /></th>
+									<th scope="col" class="col-checkbox"><input type="checkbox" id="chkAll" name="chkAll" /></th>
 									<th scope="col" class="col-number"><spring:message code='number'/></th>
 									<th scope="col" class="col-name">그룹명</th>
 									<th scope="col" class="col-name">데이터명</th>
-									<th scope="col" class="col-name">경도/위도/높이</th>
 									<th scope="col" class="col-name">상태</th>
 									<th scope="col" class="col-name">지도</th>
 									<th scope="col" class="col-name">메타정보</th>
@@ -119,7 +117,7 @@
 							<tbody>
 <c:if test="${empty dataList }">
 								<tr>
-									<td colspan="12" class="col-none"><spring:message code='data.does.not.exist'/></td>
+									<td colspan="11" class="col-none"><spring:message code='data.does.not.exist'/></td>
 								</tr>
 </c:if>
 <c:if test="${!empty dataList }">
@@ -127,23 +125,20 @@
 		
 								<tr>
 									<td class="col-checkbox">
-									<input type="checkbox" id="dataId_${dataInfo.dataId}" name="dataId" value="${dataInfo.dataId}" />
+										<input type="checkbox" id="dataId_${dataInfo.dataId}" name="dataId" value="${dataInfo.dataId}" />
 									</td>
 									<td class="col-number">${pagination.rowNumber - status.index }</td>
 									<td class="col-name">
 										<a href="#" class="view-group-detail" onclick="detailDataGroup('${dataInfo.dataGroupId }'); return false;">${dataInfo.dataGroupName }</a></td>
 									<td class="col-name"><a href="/data/detail?dataId=${dataInfo.dataId }&amp;pageNo=${pagination.pageNo }${pagination.searchParameters}">
 										${dataInfo.dataName }</a></td>
-									<td>
-										${dataInfo.longitude } / ${dataInfo.latitude } / ${dataInfo.altitude }
-									</td>
 									<td class="col-type">
 		<c:if test="${dataInfo.status eq 'use'}">사용중</c:if>
 		<c:if test="${dataInfo.status eq 'unused'}">사용중지</c:if>
 		<c:if test="${dataInfo.status eq 'delete'}">삭제(비표시)</c:if>
 									</td>
-									<td class="col-name">
-										<a href="#" class="view-group-detail" onclick="detailData('${dataInfo.dataId }'); return false;">보기</a></td>	
+									<td class="col-type">
+										<a href="#" class="view-group-detail" onclick="viewMapData('${dataInfo.dataId }'); return false;">보기</a></td>	
 									<td class="col-functions">
 										<span class="button-group">
 											<a href="#" class="image-button button-edit" onclick="detailDataAttribute('${dataInfo.dataId }'); return false;">
@@ -192,8 +187,8 @@
 </div>	
 <%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
 
-<%-- <%@ include file="/WEB-INF/views/data/group-dialog.jsp" %>
-<%@ include file="/WEB-INF/views/data/data-file-dialog.jsp" %>
+<%@ include file="/WEB-INF/views/data/group-dialog.jsp" %>
+<%-- <%@ include file="/WEB-INF/views/data/data-file-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/data-control-attribute-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/data-attribute-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/data-attribute-file-dialog.jsp" %>
@@ -207,28 +202,29 @@
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript">
 	
-	//전체 선택 
-	$("#chk_all").click(function() {
+	// 전체 선택 
+	$("#chkAll").click(function() {
 		$(":checkbox[name=dataGroupid]").prop("checked", this.checked);
 	});
 	
-	// project 정보
-	function detailProject(projectId) {
-		projectDialog.dialog( "open" );
+	// 데이터 그룹 정보
+	function detailDataGroup(dataGroupId) {
+		dataGroupDialog.dialog( "open" );
 		
 		$.ajax({
-			url: "/project/ajax-project.do",
-			data: { "project_id" : projectId },
+			url: "/data/detail-group",
+			data: { "dataGroupId" : dataGroupId },
 			type: "GET",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
 			dataType: "json",
 			success: function(msg){
-				if (msg.result == "success") {
-					$("#project_name_info").html(msg.project.project_name);
-					$("#sharing_type_info").html(msg.project.sharing_type);
-					$("#use_yn_info").html(msg.project.use_yn);
-					$("#description_info").html(msg.project.description);
+				if(msg.statusCode <= 200) {
+					$("#dataGroupNameInfo").html(msg.dataGroup.dataGroupName);
+					$("#sharingInfo").html(msg.dataGroup.sharing);
+					$("#availableInfo").html(msg.dataGroup.available);
+					$("#descriptionInfo").html(msg.dataGroup.description);
 				} else {
-					alert(JS_MESSAGE[msg.result]);
+					alert(JS_MESSAGE[msg.errorCode]);
 				}
 			},
 			error:function(request,status,error){
@@ -245,12 +241,13 @@
 			url: "/data/ajax-detail-data.do",
 			data: { data_id : dataId },
 			type: "GET",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
 			dataType: "json",
 			success: function(msg){
-				if (msg.result == "success") {
+				if(msg.statusCode <= 200) {
 					$("#data_control_attribute").html(msg.dataInfo.attributes);
 				} else {
-					alert(JS_MESSAGE[msg.result]);
+					alert(JS_MESSAGE[msg.errorCode]);
 				}
 			},
 			error:function(request,status,error){
@@ -268,14 +265,15 @@
 			url: "/data/ajax-detail-data-attribute.do",
 			data: { data_id : dataId },
 			type: "GET",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
 			dataType: "json",
 			success: function(msg){
-				if (msg.result == "success") {
+				if(msg.statusCode <= 200) {
 					if(msg.dataInfoAttribute !== null) {
 						$("#data_attribute_for_origin").html(msg.dataInfoAttribute.attributes);
 					}
 				} else {
-					alert(JS_MESSAGE[msg.result]);
+					alert(JS_MESSAGE[msg.errorCode]);
 				}
 			},
 			error:function(request,status,error){
@@ -285,10 +283,10 @@
 	}
 		
 	// origin 속성 수정
-		function uploadDataAttribute(dataId, dataName) {
-			uploadDataAttributeDialog.dialog( "open" );
-			$("#attribute_file_name").val("");
-			$("#dataAttributeUploadLog > tbody:last").html("");
+	function uploadDataAttribute(dataId, dataName) {
+		uploadDataAttributeDialog.dialog( "open" );
+		$("#attribute_file_name").val("");
+		$("#dataAttributeUploadLog > tbody:last").html("");
 		$("#attribute_file_data_id").val(dataId);
 		$("#attributeDataName").html(dataName);
 	}
@@ -310,17 +308,18 @@
 		
 		if(dataAttributeFileUploadFlag) {
 			dataAttributeFileUploadFlag = false;
-			var totalNumber = "<spring:message code='total.number'/>";
-			var successParsing = "<spring:message code='data.success.parsing'/>";
-			var failedParsing = "<spring:message code='data.fail.parsing'/>";
-			var insertSuccessCount = "<spring:message code='data.insert.success.db'/>";
-			var updateSuccessCount = "<spring:message code='data.update.success.db'/>";
-			var failCount = "<spring:message code='data.insert.fail.db'/>";
+			var totalNumber = "총건수";
+			var successParsing = "성공 건수";
+			var failedParsing = "실패 건수";
+			var insertSuccessCount = "DB 등록 건수'/>";
+			var updateSuccessCount = "DB 수정 건수'/>";
+			var failCount = "DB 실패 건수'/>";
 			$("#dataAttributeInfo").ajaxSubmit({
 				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
 				dataType: "json",
 				success: function(msg){
-					if(msg.result == "success") {
+					if(msg.statusCode <= 200) {
 						if(msg.parse_error_count != 0 || msg.insert_error_count != 0) {
 							$("#data_file_name").val("");
 							alert(JS_MESSAGE["error.exist.in.processing"]);
@@ -358,7 +357,7 @@
 							$("#dataAttributeUploadLog > tbody:last").html("");
 							$("#dataAttributeUploadLog > tbody:last").append(content);
 					} else {
-	    				alert(JS_MESSAGE[msg.result]);
+						alert(JS_MESSAGE[msg.errorCode]);
 	    			}
 					dataAttributeFileUploadFlag = true;
 				},
@@ -400,17 +399,19 @@
 		
 		if(dataObjectAttributeFileUploadFlag) {
 			dataObjectAttributeFileUploadFlag = false;
-			var totalNumber = "<spring:message code='total.number'/>";
-			var successParsing = "<spring:message code='data.success.parsing'/>";
-			var failedParsing = "<spring:message code='data.fail.parsing'/>";
-			var insertSuccessCount = "<spring:message code='data.insert.success.db'/>";
-			var updateSuccessCount = "<spring:message code='data.update.success.db'/>";
-			var failCount = "<spring:message code='data.insert.fail.db'/>";
+			
+			var totalNumber = "총건수";
+			var successParsing = "성공 건수";
+			var failedParsing = "실패 건수";
+			var insertSuccessCount = "DB 등록 건수'/>";
+			var updateSuccessCount = "DB 수정 건수'/>";
+			var failCount = "DB 실패 건수'/>";
 			$("#dataObjectAttributeInfo").ajaxSubmit({
 				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
 				dataType: "json",
 				success: function(msg){
-					if(msg.result == "success") {
+					if(msg.statusCode <= 200) {
 						if(msg.parse_error_count != 0 || msg.insert_error_count != 0) {
 							$("#data_file_name").val("");
 							alert(JS_MESSAGE["error.exist.in.processing"]);
@@ -448,7 +449,7 @@
 							$("#dataObjectAttributeUploadLog > tbody:last").html("");
 							$("#dataObjectAttributeUploadLog > tbody:last").append(content);
 					} else {
-	    				alert(JS_MESSAGE[msg.result]);
+						alert(JS_MESSAGE[msg.errorCode]);
 	    			}
 					dataObjectAttributeFileUploadFlag = true;
 				},
@@ -485,15 +486,15 @@
 					url: "/data/ajax-delete-datas.do",
 					type: "POST",
 					data: info,
-					cache: false,
+					headers: {"X-Requested-With": "XMLHttpRequest"},
 					dataType: "json",
 					success: function(msg){
-						if(msg.result == "success") {
+						if(msg.statusCode <= 200) {
 							alert(JS_MESSAGE["delete"]);	
 							location.reload();
 							$(":checkbox[name=data_id]").prop("checked", false);
 						} else {
-							alert(JS_MESSAGE[msg.result]);
+							alert(JS_MESSAGE[msg.errorCode]);
 						}
 						deleteDatasFlag = true;
 					},
@@ -563,17 +564,18 @@
 		
 		if(dataFileUploadFlag) {
 			dataFileUploadFlag = false;
-			var totalNumber = "<spring:message code='total.number'/>";
-			var successParsing = "<spring:message code='data.success.parsing'/>";
-			var failedParsing = "<spring:message code='data.fail.parsing'/>";
-			var insertSuccessCount = "<spring:message code='data.insert.success.db'/>";
-			var updateSuccessCount = "<spring:message code='data.update.success.db'/>";
-			var failCount = "<spring:message code='data.insert.fail.db'/>";
+			var totalNumber = "총건수";
+			var successParsing = "성공 건수";
+			var failedParsing = "실패 건수";
+			var insertSuccessCount = "DB 등록 건수'/>";
+			var updateSuccessCount = "DB 수정 건수'/>";
+			var failCount = "DB 실패 건수'/>";
 			$("#dataFileInfo").ajaxSubmit({
 				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
 				dataType: "json",
 				success: function(msg){
-					if(msg.result == "success") {
+					if(msg.statusCode <= 200) {
 						if(msg.parse_error_count != 0 || msg.insert_error_count != 0) {
 							$("#data_file_name").val("");
 							alert(JS_MESSAGE["error.exist.in.processing"]);
@@ -611,7 +613,7 @@
 						$("#dataFileUploadLog > tbody:last").html("");
 						$("#dataFileUploadLog > tbody:last").append(content);
 					} else {
-	    				alert(JS_MESSAGE[msg.result]);
+						alert(JS_MESSAGE[msg.errorCode]);
 	    			}
 					dataFileUploadFlag = true;
 				},
@@ -638,19 +640,23 @@
 	function projectDataAttributeFileUpload() {
 		if(projectDataAttributeFileUploadFlag) {
 			projectDataAttributeFileUploadFlag = false;
-			var totalNumber = "<spring:message code='total.number'/>";
-			var successParsing = "<spring:message code='data.success.parsing'/>";
-			var failedParsing = "<spring:message code='data.fail.parsing'/>";
-			var insertSuccessCount = "<spring:message code='data.insert.success.db'/>";
-			var updateSuccessCount = "<spring:message code='data.update.success.db'/>";
-			var failCount = "<spring:message code='data.insert.fail.db'/>";
+			var totalNumber = "총건수";
+			var successParsing = "성공 건수";
+			var failedParsing = "실패 건수";
+			var insertSuccessCount = "DB 등록 건수'/>";
+			var updateSuccessCount = "DB 수정 건수'/>";
+			var failCount = "DB 실패 건수'/>";
 			var info = $("#projectDataAttributeInfo").serialize();
 			$.ajax({
 				url: "/data/ajax-insert-project-data-attribute.do",
 				type: "POST",
 				data: info,
+				headers: {"X-Requested-With": "XMLHttpRequest"},
 				dataType: "json",
 				success: function(msg){
+					//if(msg.statusCode <= 200) {
+					//} alert(JS_MESSAGE[msg.errorCode]);
+					
 					if(msg.insert_error_count != 0) {
 						$("#project_data_attribute_path").val("");
 						alert(JS_MESSAGE["error.exist.in.processing"]);
@@ -704,12 +710,12 @@
 	function projectDataObjectAttributeFileUpload() {
 		if(projectDataObjectAttributeFileUploadFlag) {
 			projectDataObjectAttributeFileUploadFlag = false;
-			var totalNumber = "<spring:message code='total.number'/>";
-			var successParsing = "<spring:message code='data.success.parsing'/>";
-			var failedParsing = "<spring:message code='data.fail.parsing'/>";
-			var insertSuccessCount = "<spring:message code='data.insert.success.db'/>";
-			var updateSuccessCount = "<spring:message code='data.update.success.db'/>";
-			var failCount = "<spring:message code='data.insert.fail.db'/>";
+			var totalNumber = "총건수";
+			var successParsing = "성공 건수";
+			var failedParsing = "실패 건수";
+			var insertSuccessCount = "DB 등록 건수'/>";
+			var updateSuccessCount = "DB 수정 건수'/>";
+			var failCount = "DB 실패 건수'/>";
 			var info = $("#projectDataObjectAttributeInfo").serialize();
 			$.ajax({
 				url: "/data/ajax-insert-project-data-object-attribute.do",
@@ -717,6 +723,9 @@
 				data: info,
 				dataType: "json",
 				success: function(msg){
+					// if(msg.statusCode <= 200) {
+					// alert(JS_MESSAGE[msg.errorCode]);
+						
 					if(msg.insert_error_count != 0) {
 						$("#project_data_object_attribute_path").val("");
 						alert(JS_MESSAGE["error.exist.in.processing"]);
@@ -758,8 +767,8 @@
 		}
 	}
 	
-	// 프로젝트 다이얼 로그
-	var projectDialog = $( ".projectDialog" ).dialog({
+	// 데이터 그룹 정보
+	var dataGroupDialog = $( ".dataGroupDialog" ).dialog({
 		autoOpen: false,
 		width: 400,
 		height: 300,
@@ -808,7 +817,7 @@
 		resizable: false
 	});
 	// 데이터 속성 프로젝트 전체 등록 다이얼 로그
-	var uploadProjectDataAttributeDialog = $( ".uploadProjectDataAttributeDialog" ).dialog({
+	var uploadDataGroupDataAttributeDialog = $( ".uploadDataGroupDataAttributeDialog" ).dialog({
 		autoOpen: false,
 		width: 600,
 		height: 445,
@@ -816,13 +825,24 @@
 		resizable: false
 	});
 	// 프로젝트 데이터 Object 속성 하나 등록
-	var uploadProjectDataObjectAttributeDialog = $( ".uploadProjectDataObjectAttributeDialog" ).dialog({
+	var uploadDataGroupDataObjectAttributeDialog = $( ".uploadDataGrouptDataObjectAttributeDialog" ).dialog({
 		autoOpen: false,
 		width: 600,
 		height: 445,
 		modal: true,
 		resizable: false
 	});
+	
+	// Map 에 데이터 표시
+	function viewMapData(dataId) {
+		var url = "/data/map-data?dataId=" + dataId;
+		var width = 800;
+		var height = 700;
+
+        var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height
+                + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
+        //popWin.document.title = layerName;
+	}
 </script>
 </body>
 </html>
