@@ -26,7 +26,7 @@ values
 	(3, '0', '1', '데이터', 'DATA', 0, 0, 1, 3, '/data/list-group', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
 	(31, '0', '1', '데이터 그룹', 'DATA', 0, 3, 2, 1, '/data/list-group', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
 	(32, '0', '1', '데이터 그룹 등록', 'DATA', 0, 3, 2, 2, '/data/input-group', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
-	(33, '0', '1', '사용자 데이터 그룹', 'DATA', 0, 3, 2, 3, '/data/list-user-group', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
+	(33, '0', '1', '사용자 데이터 그룹', 'DATA', 0, 3, 2, 3, '/data/list-user-group', null, null, 'glyph-monitor', 'Y', 'N', 'Y'),
 	(34, '0', '1', '데이터 목록', 'DATA', 0, 3, 2, 4, '/data/list', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
 	(35, '0', '1', '업로드', 'DATA', 0, 3, 2, 5, '/upload-data/input', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
 	(36, '0', '1', '업로드 목록', 'DATA', 0, 3, 2, 6, '/upload-data/list', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),

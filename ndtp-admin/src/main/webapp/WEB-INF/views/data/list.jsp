@@ -102,7 +102,7 @@
 							<col class="col-functions" />
 							<thead>
 								<tr>
-									<th scope="col" class="col-checkbox"><input type="checkbox" id="chk_all" name="chk_all" /></th>
+									<th scope="col" class="col-checkbox"><input type="checkbox" id="chkAll" name="chkAll" /></th>
 									<th scope="col" class="col-number"><spring:message code='number'/></th>
 									<th scope="col" class="col-name">그룹명</th>
 									<th scope="col" class="col-name">데이터명</th>
@@ -127,7 +127,7 @@
 		
 								<tr>
 									<td class="col-checkbox">
-									<input type="checkbox" id="dataId_${dataInfo.dataId}" name="dataId" value="${dataInfo.dataId}" />
+										<input type="checkbox" id="dataId_${dataInfo.dataId}" name="dataId" value="${dataInfo.dataId}" />
 									</td>
 									<td class="col-number">${pagination.rowNumber - status.index }</td>
 									<td class="col-name">
@@ -208,7 +208,7 @@
 <script type="text/javascript">
 	
 	//전체 선택 
-	$("#chk_all").click(function() {
+	$("#chkAll").click(function() {
 		$(":checkbox[name=dataGroupid]").prop("checked", this.checked);
 	});
 	
@@ -310,12 +310,12 @@
 		
 		if(dataAttributeFileUploadFlag) {
 			dataAttributeFileUploadFlag = false;
-			var totalNumber = "<spring:message code='total.number'/>";
-			var successParsing = "<spring:message code='data.success.parsing'/>";
-			var failedParsing = "<spring:message code='data.fail.parsing'/>";
-			var insertSuccessCount = "<spring:message code='data.insert.success.db'/>";
-			var updateSuccessCount = "<spring:message code='data.update.success.db'/>";
-			var failCount = "<spring:message code='data.insert.fail.db'/>";
+			var totalNumber = "총건수";
+			var successParsing = "성공 건수";
+			var failedParsing = "실패 건수";
+			var insertSuccessCount = "DB 등록 건수'/>";
+			var updateSuccessCount = "DB 수정 건수'/>";
+			var failCount = "DB 실패 건수'/>";
 			$("#dataAttributeInfo").ajaxSubmit({
 				type: "POST",
 				dataType: "json",
@@ -400,12 +400,13 @@
 		
 		if(dataObjectAttributeFileUploadFlag) {
 			dataObjectAttributeFileUploadFlag = false;
-			var totalNumber = "<spring:message code='total.number'/>";
-			var successParsing = "<spring:message code='data.success.parsing'/>";
-			var failedParsing = "<spring:message code='data.fail.parsing'/>";
-			var insertSuccessCount = "<spring:message code='data.insert.success.db'/>";
-			var updateSuccessCount = "<spring:message code='data.update.success.db'/>";
-			var failCount = "<spring:message code='data.insert.fail.db'/>";
+			
+			var totalNumber = "총건수";
+			var successParsing = "성공 건수";
+			var failedParsing = "실패 건수";
+			var insertSuccessCount = "DB 등록 건수'/>";
+			var updateSuccessCount = "DB 수정 건수'/>";
+			var failCount = "DB 실패 건수'/>";
 			$("#dataObjectAttributeInfo").ajaxSubmit({
 				type: "POST",
 				dataType: "json",
@@ -563,12 +564,12 @@
 		
 		if(dataFileUploadFlag) {
 			dataFileUploadFlag = false;
-			var totalNumber = "<spring:message code='total.number'/>";
-			var successParsing = "<spring:message code='data.success.parsing'/>";
-			var failedParsing = "<spring:message code='data.fail.parsing'/>";
-			var insertSuccessCount = "<spring:message code='data.insert.success.db'/>";
-			var updateSuccessCount = "<spring:message code='data.update.success.db'/>";
-			var failCount = "<spring:message code='data.insert.fail.db'/>";
+			var totalNumber = "총건수";
+			var successParsing = "성공 건수";
+			var failedParsing = "실패 건수";
+			var insertSuccessCount = "DB 등록 건수'/>";
+			var updateSuccessCount = "DB 수정 건수'/>";
+			var failCount = "DB 실패 건수'/>";
 			$("#dataFileInfo").ajaxSubmit({
 				type: "POST",
 				dataType: "json",
@@ -638,12 +639,12 @@
 	function projectDataAttributeFileUpload() {
 		if(projectDataAttributeFileUploadFlag) {
 			projectDataAttributeFileUploadFlag = false;
-			var totalNumber = "<spring:message code='total.number'/>";
-			var successParsing = "<spring:message code='data.success.parsing'/>";
-			var failedParsing = "<spring:message code='data.fail.parsing'/>";
-			var insertSuccessCount = "<spring:message code='data.insert.success.db'/>";
-			var updateSuccessCount = "<spring:message code='data.update.success.db'/>";
-			var failCount = "<spring:message code='data.insert.fail.db'/>";
+			var totalNumber = "총건수";
+			var successParsing = "성공 건수";
+			var failedParsing = "실패 건수";
+			var insertSuccessCount = "DB 등록 건수'/>";
+			var updateSuccessCount = "DB 수정 건수'/>";
+			var failCount = "DB 실패 건수'/>";
 			var info = $("#projectDataAttributeInfo").serialize();
 			$.ajax({
 				url: "/data/ajax-insert-project-data-attribute.do",
@@ -704,12 +705,12 @@
 	function projectDataObjectAttributeFileUpload() {
 		if(projectDataObjectAttributeFileUploadFlag) {
 			projectDataObjectAttributeFileUploadFlag = false;
-			var totalNumber = "<spring:message code='total.number'/>";
-			var successParsing = "<spring:message code='data.success.parsing'/>";
-			var failedParsing = "<spring:message code='data.fail.parsing'/>";
-			var insertSuccessCount = "<spring:message code='data.insert.success.db'/>";
-			var updateSuccessCount = "<spring:message code='data.update.success.db'/>";
-			var failCount = "<spring:message code='data.insert.fail.db'/>";
+			var totalNumber = "총건수";
+			var successParsing = "성공 건수";
+			var failedParsing = "실패 건수";
+			var insertSuccessCount = "DB 등록 건수'/>";
+			var updateSuccessCount = "DB 수정 건수'/>";
+			var failCount = "DB 실패 건수'/>";
 			var info = $("#projectDataObjectAttributeInfo").serialize();
 			$.ajax({
 				url: "/data/ajax-insert-project-data-object-attribute.do",
