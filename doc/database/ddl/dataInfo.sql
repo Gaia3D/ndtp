@@ -67,6 +67,7 @@ create table data_info(
 	metainfo					jsonb,
 	status						varchar(20)							default 'use',
 	attribute_exist				boolean								default false,
+	object_attribute_exist		boolean								default false,
 	description					varchar(256),
 	update_date					timestamp with time zone,
 	insert_date					timestamp with time zone			default now(),
@@ -90,9 +91,10 @@ comment on column data_info.children_ancestor is '조상';
 comment on column data_info.children_parent is '부모';
 comment on column data_info.children_depth is '깊이';
 comment on column data_info.children_view_order is '표시 순서';
-comment on column data_info.metainfo is 'Data Control 속성';
+comment on column data_info.metainfo is '데이터 메타 정보';
 comment on column data_info.status is '상태. use : 사용중, unused : 사용중지(관리자), delete : 삭제(비표시)';
 comment on column data_info.attribute_exist is '속성 존재 유무. true : 존재, false : 존재하지 않음(기본값)';
+comment on column data_info.object_attribute_exist is 'Object 속성 존재 유무. true : 존재, false : 존재하지 않음(기본값)';
 comment on column data_info.description is '설명';
 comment on column data_info.update_date is '수정일';
 comment on column data_info.insert_date is '등록일';

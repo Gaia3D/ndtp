@@ -80,8 +80,9 @@
 							</div>
 							<div class="list-functions u-pull-right">
 								<div class="button-group">
+									<a href="#" onclick="updateDataStatus('DATA', 'USE'); return false;" class="button">사용</a>
+									<a href="#" onclick="updateDataStatus('DATA', 'UNUSED'); return false;" class="button">사용중지</a>
 									<a href="#" onclick="deleteDatas(); return false;" class="button"><spring:message code='data.all.delete'/></a>
-									<a href="#" onclick="uploadDataFile(); return false;" class="button"><spring:message code='data.all.insert'/></a>
 									<a href="#" onclick="uploadDataGroupDataAttribute(); return false;" class="button"><spring:message code='data.attribute.insert'/></a>
 									<a href="#" onclick="uploadDataGroupDataObjectAttribute(); return false;" class="button"><spring:message code='data.object.attribute.insert'/></a>
 								</div>
@@ -108,8 +109,8 @@
 									<th scope="col" class="col-name">상태</th>
 									<th scope="col" class="col-name">지도</th>
 									<th scope="col" class="col-name">메타정보</th>
-									<th scope="col" class="col-name">원본속성</th>
-									<th scope="col" class="col-name">오브젝트속성</th>
+									<th scope="col" class="col-name">속성</th>
+									<th scope="col" class="col-name">오브젝트 속성</th>
 									<th scope="col" class="col-name">편집</th>
 									<th scope="col" class="col-date">등록일</th>
 								</tr>
@@ -133,20 +134,28 @@
 									<td class="col-name"><a href="/data/detail?dataId=${dataInfo.dataId }&amp;pageNo=${pagination.pageNo }${pagination.searchParameters}">
 										${dataInfo.dataName }</a></td>
 									<td class="col-type">
-		<c:if test="${dataInfo.status eq 'use'}">사용중</c:if>
-		<c:if test="${dataInfo.status eq 'unused'}">사용중지</c:if>
-		<c:if test="${dataInfo.status eq 'delete'}">삭제(비표시)</c:if>
+		<c:if test="${dataInfo.status eq 'use'}">
+										<span class="icon-glyph glyph-on on"></span>
+										<span class="icon-text">사용중</span>
+		</c:if>
+		<c:if test="${dataInfo.status eq 'unused'}">
+										<span class="icon-glyph glyph-off off"></span>
+										<span class="icon-text">사용중지</span>
+		</c:if>
+		<c:if test="${dataInfo.status eq 'delete'}">
+										<span class="icon-glyph glyph-off off"></span>
+										<span class="icon-text">삭제(비표시)</span>
+		</c:if>
 									</td>
 									<td class="col-type">
-										<a href="#" class="view-group-detail" onclick="viewMapData('${dataInfo.dataId }'); return false;">보기</a></td>	
-									<td class="col-functions">
-										<span class="button-group">
-											<a href="#" class="image-button button-edit" onclick="detailDataAttribute('${dataInfo.dataId }'); return false;">
-												<spring:message code='modified'/></a>
-										</span>
+										<a href="#" onclick="viewMapData('${dataInfo.dataId }'); return false;">보기</a></td>	
+									<td class="col-type">
+										<a href="#" onclick="detailMetainfo('${dataInfo.dataId }'); return false;">보기</a>
+										
 									</td>
 									<td class="col-functions">
 										<span class="button-group">
+											<a href="#" onclick="detailDataAttribute('${dataInfo.dataId }', '${dataInfo.dataName }'); return false;">보기</a>
 											<a href="#" class="image-button button-edit" 
 												onclick="uploadDataAttribute('${dataInfo.dataId }', '${dataInfo.dataName }'); return false;">
 												<spring:message code='modified'/></a>
@@ -161,10 +170,10 @@
 									</td>
 									<td class="col-functions">
 										<span class="button-group">
-											<a href="/data/modify?dataId=${dataInfo.dataId }&amp;pageNo=${pagination.pageNo }${pagination.searchParameters}" 
-												class="image-button button-edit"><spring:message code='modified'/></a>
-											<a href="/data/delete?dataId=${dataInfo.dataId }" onclick="return deleteWarning();" 
-												class="image-button button-delete"><spring:message code='delete'/></a>
+											<a href="/data/modify?dataId=${dataInfo.dataId }&amp;pageNo=${pagination.pageNo }${pagination.searchParameters}" >
+												<spring:message code='modified'/></a>&nbsp;&nbsp;
+											<a href="/data/delete?dataId=${dataInfo.dataId }" onclick="return deleteWarning();" >
+												<spring:message code='delete'/></a>
 										</span>
 									</td>
 									<td class="col-type">
@@ -188,11 +197,11 @@
 <%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
 
 <%@ include file="/WEB-INF/views/data/group-dialog.jsp" %>
-<%-- <%@ include file="/WEB-INF/views/data/data-file-dialog.jsp" %>
-<%@ include file="/WEB-INF/views/data/data-control-attribute-dialog.jsp" %>
+<%@ include file="/WEB-INF/views/data/data-metainfo-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/data-attribute-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/data-attribute-file-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/data-object-attribute-file-dialog.jsp" %>
+<%--
 <%@ include file="/WEB-INF/views/data/group-data-attribute-file-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/group-data-object-attribute-file-dialog.jsp" %> --%>
 
@@ -234,18 +243,18 @@
 	}
 	
 		// 제어 속성
-	function detailDataControlAttribute(dataId) {
-		dataControlAttributeDialog.dialog( "open" );
+	function detailMetainfo(dataId) {
+		dataMetainfoDialog.dialog( "open" );
 		
 		$.ajax({
-			url: "/data/ajax-detail-data.do",
-			data: { data_id : dataId },
+			url: "/data/detail-data-info",
+			data: { dataId : dataId },
 			type: "GET",
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 			dataType: "json",
 			success: function(msg){
 				if(msg.statusCode <= 200) {
-					$("#data_control_attribute").html(msg.dataInfo.attributes);
+					$("#dataMetainfo").html(msg.dataInfo.metainfo);
 				} else {
 					alert(JS_MESSAGE[msg.errorCode]);
 				}
@@ -256,13 +265,13 @@
 		});
 	}
 	
-	// Origin 속성
+	// 데이터 속성
 	function detailDataAttribute(dataId, dataName) {
 		dataAttributeDialog.dialog( "open" );
 		$("#data_name_for_origin").html(dataName);
 		
 		$.ajax({
-			url: "/data/ajax-detail-data-attribute.do",
+			url: "/data/detail-data-attribute",
 			data: { data_id : dataId },
 			type: "GET",
 			headers: {"X-Requested-With": "XMLHttpRequest"},
@@ -270,7 +279,7 @@
 			success: function(msg){
 				if(msg.statusCode <= 200) {
 					if(msg.dataInfoAttribute !== null) {
-						$("#data_attribute_for_origin").html(msg.dataInfoAttribute.attributes);
+						$("#dataAttributeForOrigin").html(msg.dataInfoAttribute.attributes);
 					}
 				} else {
 					alert(JS_MESSAGE[msg.errorCode]);
@@ -285,24 +294,27 @@
 	// origin 속성 수정
 	function uploadDataAttribute(dataId, dataName) {
 		uploadDataAttributeDialog.dialog( "open" );
-		$("#attribute_file_name").val("");
+		$("#attributeFileName").val("");
 		$("#dataAttributeUploadLog > tbody:last").html("");
-		$("#attribute_file_data_id").val(dataId);
+		$("#attributeFileDataId").val(dataId);
 		$("#attributeDataName").html(dataName);
 	}
 	
 	// origin 속성 파일 upload
 	var dataAttributeFileUploadFlag = true;
 	function dataAttributeFileUpload() {
-		var fileName = $("#attribute_file_name").val();
+		alert("준비 중입니다.");
+		return;
+		
+		var fileName = $("#attributeFileName").val();
 		if(fileName === "") {
 			alert(JS_MESSAGE["file.name.empty"]);
-			$("#attribute_file_name").focus();
+			$("#attributeFileName").focus();
 			return false;
 		}
 		if( fileName.lastIndexOf("json") <=0 && fileName.lastIndexOf("txt") <=0 ) {
 			alert(JS_MESSAGE["file.ext.invalid"]);
-			$("#file_name").focus();
+			$("#fileName").focus();
 			return false;
 		}
 		
@@ -320,8 +332,8 @@
 				dataType: "json",
 				success: function(msg){
 					if(msg.statusCode <= 200) {
-						if(msg.parse_error_count != 0 || msg.insert_error_count != 0) {
-							$("#data_file_name").val("");
+						if(msg.parseErrorCount != 0 || msg.insertErrorCount != 0) {
+							$("#dataFileName").val("");
 							alert(JS_MESSAGE["error.exist.in.processing"]);
 						} else {
 							alert(JS_MESSAGE["update"]);
@@ -332,19 +344,19 @@
 							+ "</tr>"
 							+ "<tr>"
 							+ 	"<td> " + totalNumber + "</td>"
-							+ 	"<td> " + msg.total_count + "</td>"
+							+ 	"<td> " + msg.totalCount + "</td>"
 							+ "</tr>"
 							+ "<tr>"
 							+ 	"<td> " + successParsing + "</td>"
-							+ 	"<td> " + msg.parse_success_count + "</td>"
+							+ 	"<td> " + msg.parseSuccessCount + "</td>"
 							+ "</tr>"
 							+ "<tr>"
 							+ 	"<td> " + failedParsing + "</td>"
-							+ 	"<td> " + msg.parse_error_count + "</td>"
+							+ 	"<td> " + msg.parseErrorCount + "</td>"
 							+ "</tr>"
 							+ "<tr>"
 							+ 	"<td> " + insertSuccessCount + "</td>"
-							+ 	"<td> " + msg.insert_success_count + "</td>"
+							+ 	"<td> " + msg.insertSuccessCount + "</td>"
 							+ "</tr>"
 							/* + "<tr>"
 							+ 	"<td> " + updateSuccessCount + "</td>"
@@ -352,7 +364,7 @@
 							+ "</tr>" */
 							+ "<tr>"
 							+ 	"<td> " + failCount + "</td>"
-							+ 	"<td> " + msg.insert_error_count + "</td>"
+							+ 	"<td> " + msg.insertErrorCount + "</td>"
 							+ "</tr>";
 							$("#dataAttributeUploadLog > tbody:last").html("");
 							$("#dataAttributeUploadLog > tbody:last").append(content);
@@ -375,15 +387,18 @@
 	// Data Object Attribute 파일 수정
 	function uploadDataObjectAttribute(dataId, dataName) {
 		uploadDataObjectAttributeDialog.dialog( "open" );
-		$("#object_attribute_file_name").val("");
+		$("#objectAttributeFileName").val("");
 			$("#dataObjectAttributeUploadLog > tbody:last").html("");
-		$("#object_attribute_file_data_id").val(dataId);
+		$("#objectAttributeFileDataId").val(dataId);
 		$("#objectAttributeDataName").html(dataName);
 	}
 	
 	// Data Object 속성 파일 upload
 	var dataObjectAttributeFileUploadFlag = true;
 	function dataObjectAttributeFileUpload() {
+		alert("준비 중입니다.");
+		return;
+		
 		var fileName = $("#object_attribute_file_name").val();
 		if(fileName === "") {
 			alert(JS_MESSAGE["file.name.empty"]);
@@ -529,18 +544,6 @@
 			}
 		}
 		return true;
-	}
-	
-	// Data 일괄 등록 Layer 생성
-	function uploadDataFile() {
-		uploadDataFileDialog.dialog( "open" );
-		$("#data_file_name").val("");
-			$("#dataFileUploadLog > tbody:last").html("");
-	}
-	// Data 일괄 등록 Layer 닫기
-	function popClose() {
-		uploadDataFileDialog.dialog( "close" );
-		location.reload();
 	}
 	
 	// 일괄등록(파일)
@@ -775,17 +778,8 @@
 		modal: true,
 		resizable: false
 	});
-	// 데이터 일괄 등록 다이얼 로그
-	var uploadDataFileDialog = $( ".uploadDataFileDialog" ).dialog({
-		autoOpen: false,
-		width: 600,
-		height: 445,
-		modal: true,
-		resizable: false,
-		close: function() { location.reload(); }
-	});
 	// 데이터 제어 속성 다이얼 로그
-	var dataControlAttributeDialog = $( ".dataControlAttributeDialog" ).dialog({
+	var dataMetainfoDialog = $( ".dataMetainfoDialog" ).dialog({
 		autoOpen: false,
 		width: 500,
 		height: 255,

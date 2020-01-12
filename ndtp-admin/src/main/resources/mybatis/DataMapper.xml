@@ -164,6 +164,14 @@
 			AND data_id != #{dataId}
 	</select>
 	
+	<!-- Data Attribute 정보 -->
+	<select id="getDataAttribute" parameterType="long" resultType="dataInfoAttribute">
+		/* getDataAttribute */
+		SELECT *
+		FROM data_info_attribute
+		WHERE data_id = #{dataId}
+	</select>
+	
 	<!-- Data 등록 -->
 	<insert id="insertData" parameterType="dataInfo">
 		/* insertData */
@@ -230,6 +238,9 @@
 			</if>
 			<if test="attributeExist != null">
 			attribute_exist = #{attributeExist},
+			</if>
+			<if test="objectAttributeExist != null">
+			object_attribute_exist = #{objectAttributeExist},
 			</if>
 			<if test="metainfo != null and metainfo != ''">
 			metainfo = TO_JSON(#{metainfo}::json),

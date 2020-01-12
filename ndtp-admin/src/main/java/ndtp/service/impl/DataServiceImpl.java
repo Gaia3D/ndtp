@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ndtp.domain.DataInfo;
+import ndtp.domain.DataInfoAttribute;
 import ndtp.persistence.DataMapper;
 import ndtp.service.DataService;
 
@@ -93,16 +94,16 @@ public class DataServiceImpl implements DataService {
 		return dataMapper.getRootDataByDataGroupId(dataGroupId);
 	}
 	
-//	/**
-//	 * Data Attribute 정보 취득
-//	 * @param data_id
-//	 * @return
-//	 */
-//	@Transactional(readOnly=true)
-//	public DataInfoAttribute getDataAttribute(Long data_id) {
-//		return dataMapper.getDataAttribute(data_id);
-//	}
-//	
+	/**
+	 * Data Attribute 정보 취득
+	 * @param dataId
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public DataInfoAttribute getDataAttribute(Long dataId) {
+		return dataMapper.getDataAttribute(dataId);
+	}
+	
 //	/**
 //	 * Data Object Attribute 정보 취득
 //	 * @param data_object_attribute_id

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
+import ndtp.domain.DataInfoAttribute;
 
 /**
  * Data
@@ -78,12 +79,12 @@ public interface DataMapper {
 	 */
 	DataInfo getRootDataByDataGroupId(Integer dataGroupId);
 	
-//	/**
-//	 * Data Attribute 정보 취득
-//	 * @param dataId
-//	 * @return
-//	 */
-//	DataInfoAttribute getDataAttribute(Long dataId);
+	/**
+	 * Data Attribute 정보 취득
+	 * @param dataId
+	 * @return
+	 */
+	DataInfoAttribute getDataAttribute(Long dataId);
 //	
 //	/**
 //	 * Data Object Attribute 정보 취득

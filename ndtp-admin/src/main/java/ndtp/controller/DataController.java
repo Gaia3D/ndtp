@@ -1,34 +1,50 @@
 package ndtp.controller;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
+import ndtp.config.PropertiesConfig;
+import ndtp.domain.DataAttributeFileInfo;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
+import ndtp.domain.DataInfoAttribute;
+import ndtp.domain.FileInfo;
 import ndtp.domain.GeoPolicy;
+import ndtp.domain.Key;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
 import ndtp.domain.Policy;
 import ndtp.domain.UploadData;
+import ndtp.domain.UserSession;
+import ndtp.service.DataAttributeFileInfoService;
 import ndtp.service.DataGroupService;
 import ndtp.service.DataService;
 import ndtp.service.GeoPolicyService;
 import ndtp.service.PolicyService;
 import ndtp.utils.DateUtils;
+import ndtp.utils.FileUtils;
 import ndtp.utils.FormatUtils;
 
 @Slf4j
@@ -36,9 +52,8 @@ import ndtp.utils.FormatUtils;
 @RequestMapping("/data/")
 public class DataController {
 	
-//	@Autowired
-//	private DataService dataService;
-	
+	@Autowired
+	private DataAttributeFileInfoService dataAttributeFileInfoService;
 	@Autowired
 	private DataGroupService dataGroupService;
 	@Autowired
@@ -49,9 +64,11 @@ public class DataController {
 	
 	@Autowired
 	private ObjectMapper objectMapper;
-	
 	@Autowired
 	private PolicyService policyService;
+	
+	@Autowired
+	private PropertiesConfig propertiesConfig;
 	
 	/**
 	 * converter job 목록
@@ -116,7 +133,7 @@ public class DataController {
 	
 	/**
 	 * Data 정보
-	 * @param data_id
+	 * @param dataInfo
 	 * @param model
 	 * @return
 	 */
@@ -135,6 +152,126 @@ public class DataController {
 		model.addAttribute("dataInfo", dataInfo);
 		
 		return "/data/detail-data";
+	}
+	
+	/**
+	 * Data 정보(ajax용) - 중복이라 맘이 안 편함... 뭔가 좋은 방법이 없을까?
+	 * @param request
+	 * @param dataInfo
+	 * @return
+	 */
+	@GetMapping(value = "detail-data-info")
+	@ResponseBody
+	public Map<String, Object> detailDataInfo(HttpServletRequest request, DataInfo dataInfo) {
+		log.info("@@ dataInfo = {}", dataInfo);
+		
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		try {
+			dataInfo =  dataService.getData(dataInfo);
+			result.put("dataInfo", dataInfo);
+		} catch(Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+		
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
+	}
+	
+	/**
+	 * Data Attribute 정보
+	 * @param request
+	 * @param dataInfoAttribute
+	 * @return
+	 */
+	@GetMapping(value = "detail-data-attribute")
+	@ResponseBody
+	public Map<String, Object> detailDataAttribute(HttpServletRequest request, DataInfoAttribute dataInfoAttribute) {
+		log.info("@@ dataInfoAttribute = {}", dataInfoAttribute);
+		
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		try {
+			dataInfoAttribute = dataService.getDataAttribute(dataInfoAttribute.getDataId());
+			result.put("dataInfoAttribute", dataInfoAttribute);
+		} catch(Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+		
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
+	}
+	
+	/**
+	 * Data Origin Attribute 한건 등록
+	 * @param request
+	 * @param dataInfoAttribute
+	 * @return
+	 */
+	@PostMapping(value = "insert-data-attribute-file")
+	@ResponseBody
+	public Map<String, Object> insertDataAttributeFile(MultipartHttpServletRequest request) {
+		log.info("@@ insert-data-attribute-file start");
+		
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		try {
+			Long dataId = Long.valueOf(request.getParameter("attributeFileDataId"));
+			MultipartFile multipartFile = request.getFile("attributeFileName");
+			// TODO
+			FileInfo fileInfo = FileUtils.upload(multipartFile, FileUtils.DATA_ATTRIBUTE_UPLOAD, propertiesConfig.getDataAttributeUploadDir());
+			if(fileInfo.getErrorCode() != null && !"".equals(fileInfo.getErrorCode())) {
+				log.info("@@@@@@@@@@@@@@@@@@@@ error_code = {}", fileInfo.getErrorCode());
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", fileInfo.getErrorCode());
+				result.put("message", message);
+				return result;
+			}
+			
+//			UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+//			fileInfo.setUserId(userSession.getUserId());
+//			
+//			DataAttributeFileInfo dataFileInfo = getDataFileInfoFromFileInfo(fileInfo);
+//			dataFileInfo = dataFileInfoService.insertDataAttributeFile(dataId, dataFileInfo);
+//			
+//			result.put("total_count", dataFileInfo.getTotalCount());
+//			result.put("parse_success_count", dataFileInfo.getParseSuccessCount());
+//			result.put("parse_error_count", dataFileInfo.getParseErrorCount());
+//			result.put("insert_success_count", dataFileInfo.getInsertSuccessCount());
+//			result.put("insert_error_count", dataFileInfo.getInsertErrorCount());
+//			
+//			// 파일 삭제
+//			File copyFile = new File(dataFileInfo.getFilePath() + dataFileInfo.getFileRealName());
+//			if(copyFile.exists()) {
+//				copyFile.delete();
+//			}
+		} catch(Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+		
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
 	}
 	
 	/**
@@ -162,6 +299,28 @@ public class DataController {
         model.addAttribute("dataInfo", dataInfo);
 
         return "/data/map-data";
+    }
+    
+    /**
+     * TODO 고쳐야 함... .급해서
+     * @param fileInfo
+     * @return
+     */
+    private DataAttributeFileInfo getDataFileInfoFromFileInfo(FileInfo fileInfo) {
+    	
+    	DataAttributeFileInfo dataFileInfo = new DataAttributeFileInfo();
+    	
+    	dataFileInfo.setErrorCode(fileInfo.getErrorCode());
+    	dataFileInfo.setErrorMessage(fileInfo.getErrorMessage());
+    	dataFileInfo.setJobType(fileInfo.getJobType());
+    	dataFileInfo.setUserId(fileInfo.getUserId());
+    	dataFileInfo.setFileName(fileInfo.getFileName());
+    	dataFileInfo.setFileRealName(fileInfo.getFileRealName());
+    	dataFileInfo.setFilePath(fileInfo.getFilePath());
+    	dataFileInfo.setFileSize(fileInfo.getFileSize());
+    	dataFileInfo.setFileExt(fileInfo.getFileExt());
+    	
+    	return dataFileInfo;
     }
 	
 	/**

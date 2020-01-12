@@ -18,11 +18,6 @@ public class LayerFileInfo extends FileInfo {
 	public static final String ZIP_EXTENSION = "zip";
 	public static final String SHAPE_EXTENSION = "shp";
 	
-	// 에러 코드
-	private String errorCode;
-	// 에러 메시지 
-	private String errorMessage;
-	
 	// 고유 번호
 	private Integer layerFileInfoId;
 	// 레이어 고유번호

@@ -13,7 +13,7 @@ create table data_info_attribute(
 	constraint data_info_attribute_pk 	primary key(data_attribute_id)
 );
 
-comment on table data_info_attribute is 'Data 설계 파일 속성 정보';
+comment on table data_info_attribute is 'Data 속성 정보';
 comment on column data_info_attribute.data_attribute_id is '고유번호';
 comment on column data_info_attribute.data_id is 'Data 고유번호';
 comment on column data_info_attribute.attributes is '속성';
@@ -31,7 +31,7 @@ create table data_info_object_attribute(
 	constraint data_info_object_attribute_pk 	primary key(data_object_attribute_id)
 );
 
-comment on table data_info_object_attribute is 'Object 속성 정보';
+comment on table data_info_object_attribute is '데이터 Object 속성 정보';
 comment on column data_info_object_attribute.data_object_attribute_id is '고유번호';
 comment on column data_info_object_attribute.data_id is 'Data 고유번호';
 comment on column data_info_object_attribute.attributes is 'Object 속성';

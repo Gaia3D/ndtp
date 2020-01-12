@@ -17,6 +17,13 @@ public class FileInfo {
 	public FileInfo() {
 	}
 	
+	// 에러 코드
+	private String errorCode;
+	// 에러 메시지 
+	private String errorMessage;
+	
+	// 업무 유형
+	private String jobType;
 	// 사용자 ID
 	private String userId;
 	// 파일명 : 실제파일명 + date
@@ -39,6 +46,24 @@ public class FileInfo {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 	private Timestamp viewInsertDate;
 	
+	public String getErrorCode() {
+		return errorCode;
+	}
+	public void setErrorCode(String errorCode) {
+		this.errorCode = errorCode;
+	}
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+	public String getJobType() {
+		return jobType;
+	}
+	public void setJobType(String jobType) {
+		this.jobType = jobType;
+	}
 	public String getUserId() {
 		return userId;
 	}
@@ -94,10 +119,11 @@ public class FileInfo {
 	public Timestamp getViewInsertDate() {
 		return this.insertDate;
 	}
+	
 	@Override
 	public String toString() {
-		return "FileInfo [userId=" + userId + ", fileName=" + fileName + ", fileRealName=" + fileRealName
-				+ ", filePath=" + filePath + ", fileSize=" + fileSize + ", fileExt=" + fileExt + ", updateDate="
-				+ updateDate + ", insertDate=" + insertDate + "]";
+		return "FileInfo [errorCode=" + errorCode + ", errorMessage=" + errorMessage + ", jobType=" + jobType + ", userId=" + userId 
+				+ ", fileName=" + fileName + ", fileRealName=" + fileRealName + ", filePath=" + filePath + ", fileSize=" + fileSize 
+				+ ", fileExt=" + fileExt + ", updateDate=" + updateDate + ", insertDate=" + insertDate + "]";
 	}
 }

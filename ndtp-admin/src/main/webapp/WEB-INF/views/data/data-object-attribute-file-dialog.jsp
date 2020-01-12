@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%-- data object attribute 등록 --%>
 <div class="uploadDataObjectAttributeDialog" title="Data Object Attribute">
-	<form id="dataObjectAttributeInfo" name="dataObjectAttributeInfo" action="/data/ajax-insert-data-object-attribute-file.do" method="post" enctype="multipart/form-data">
-		<input type="hidden" id="object_attribute_file_data_id" name="object_attribute_file_data_id" value="" />
+	<form id="dataObjectAttributeInfo" name="dataObjectAttributeInfo" action="/data/insert-data-object-attribute-file" method="post" enctype="multipart/form-data">
+		<input type="hidden" id="objectAttributeFileDataId" name="objectAttributeFileDataId" value="" />
 		<table class="inner-table scope-row" style="width: 95%;">
 			<col class="col-sub-label xl" />
 			<col class="col-data" />
@@ -13,10 +13,10 @@
 				</tr>
 				
 				<tr>
-					<th class="col-sub-label"><spring:message code='data.upload.file'/></th>
+					<th class="col-sub-label">업로딩 파일</th>
 					<td>
 						<div class="inner-data">
-							<input type="file" id="object_attribute_file_name" name="object_attribute_file_name" class="col-data" />
+							<input type="file" id="objectAttributeFileName" name="objectAttributeFileName" class="col-data" />
 						</div>
 					</td>
 				</tr>

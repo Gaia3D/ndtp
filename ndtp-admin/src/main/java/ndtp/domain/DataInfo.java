@@ -94,6 +94,8 @@ public class DataInfo extends Search implements Serializable {
 	private String status;
 	// 속성 존재 유무. true : 존재, false : 존재하지 않음(기본값)
 	private Boolean attributeExist;
+	// object 속성 존재 유무. true : 존재, false : 존재하지 않음(기본값)
+	private Boolean objectAttributeExist;
 	// 설명
 	private String description;
 	// 수정일 
