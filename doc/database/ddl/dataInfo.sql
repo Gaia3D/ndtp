@@ -8,7 +8,7 @@ create table data_group (
 	data_group_key				varchar(60)							not null,
 	data_group_name				varchar(100)						not null,
 	data_group_path				varchar(256),
-	sharing					varchar(30)							default 'public',
+	sharing						varchar(30)							default 'public',
 	user_id						varchar(32),
 	ancestor					integer								default 0,
 	parent						integer								default 1,
