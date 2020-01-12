@@ -271,7 +271,7 @@
 			url: "/data/ajax-list-data-by-project-id.do",
 			type: "POST",
 			data: info,
-			cache: false,
+			headers: {"X-Requested-With": "XMLHttpRequest"},
 			dataType: "json",
 			success: function(msg){
 				if(msg.result == "success") {
@@ -376,7 +376,7 @@
 			url: "/data/ajax-data-key-duplication-check.do",
 			type: "POST",
 			data: info,
-			cache: false,
+			headers: {"X-Requested-With": "XMLHttpRequest"},
 			dataType: "json",
 			success: function(msg){
 				if(msg.result == "success") {
@@ -412,7 +412,7 @@
 				url: "/data/ajax-insert-data-info.do",
 				type: "POST",
 				data: info,
-				cache: false,
+				headers: {"X-Requested-With": "XMLHttpRequest"},
 				dataType: "json",
 				success: function(msg){
 					if(msg.result == "success") {

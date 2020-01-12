@@ -92,7 +92,6 @@
 							<col class="col-number" />
 							<col class="col-name" />
 							<col class="col-name" />
-							<col class="col-name" />
 							<col class="col-number" />
 							<col class="col-number" />
 							<col class="col-number" />
@@ -106,7 +105,6 @@
 									<th scope="col" class="col-number"><spring:message code='number'/></th>
 									<th scope="col" class="col-name">그룹명</th>
 									<th scope="col" class="col-name">데이터명</th>
-									<th scope="col" class="col-name">경도/위도/높이</th>
 									<th scope="col" class="col-name">상태</th>
 									<th scope="col" class="col-name">지도</th>
 									<th scope="col" class="col-name">메타정보</th>
@@ -119,7 +117,7 @@
 							<tbody>
 <c:if test="${empty dataList }">
 								<tr>
-									<td colspan="12" class="col-none"><spring:message code='data.does.not.exist'/></td>
+									<td colspan="11" class="col-none"><spring:message code='data.does.not.exist'/></td>
 								</tr>
 </c:if>
 <c:if test="${!empty dataList }">
@@ -134,9 +132,6 @@
 										<a href="#" class="view-group-detail" onclick="detailDataGroup('${dataInfo.dataGroupId }'); return false;">${dataInfo.dataGroupName }</a></td>
 									<td class="col-name"><a href="/data/detail?dataId=${dataInfo.dataId }&amp;pageNo=${pagination.pageNo }${pagination.searchParameters}">
 										${dataInfo.dataName }</a></td>
-									<td>
-										${dataInfo.longitude } / ${dataInfo.latitude } / ${dataInfo.altitude }
-									</td>
 									<td class="col-type">
 		<c:if test="${dataInfo.status eq 'use'}">사용중</c:if>
 		<c:if test="${dataInfo.status eq 'unused'}">사용중지</c:if>
@@ -192,8 +187,8 @@
 </div>	
 <%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
 
-<%-- <%@ include file="/WEB-INF/views/data/group-dialog.jsp" %>
-<%@ include file="/WEB-INF/views/data/data-file-dialog.jsp" %>
+<%@ include file="/WEB-INF/views/data/group-dialog.jsp" %>
+<%-- <%@ include file="/WEB-INF/views/data/data-file-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/data-control-attribute-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/data-attribute-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/data-attribute-file-dialog.jsp" %>
@@ -207,19 +202,20 @@
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript">
 	
-	//전체 선택 
+	// 전체 선택 
 	$("#chkAll").click(function() {
 		$(":checkbox[name=dataGroupid]").prop("checked", this.checked);
 	});
 	
-	// project 정보
-	function detailProject(projectId) {
-		projectDialog.dialog( "open" );
+	// 데이터 그룹 정보
+	function detailDataGroup(dataGroupId) {
+		detailDataGroup.dialog( "open" );
 		
 		$.ajax({
-			url: "/project/ajax-project.do",
-			data: { "project_id" : projectId },
+			url: "/data/detail-group",
+			data: { "dataGroupId" : dataGroupId },
 			type: "GET",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
 			dataType: "json",
 			success: function(msg){
 				if (msg.result == "success") {
@@ -245,6 +241,7 @@
 			url: "/data/ajax-detail-data.do",
 			data: { data_id : dataId },
 			type: "GET",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
 			dataType: "json",
 			success: function(msg){
 				if (msg.result == "success") {
@@ -268,6 +265,7 @@
 			url: "/data/ajax-detail-data-attribute.do",
 			data: { data_id : dataId },
 			type: "GET",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
 			dataType: "json",
 			success: function(msg){
 				if (msg.result == "success") {
@@ -285,10 +283,10 @@
 	}
 		
 	// origin 속성 수정
-		function uploadDataAttribute(dataId, dataName) {
-			uploadDataAttributeDialog.dialog( "open" );
-			$("#attribute_file_name").val("");
-			$("#dataAttributeUploadLog > tbody:last").html("");
+	function uploadDataAttribute(dataId, dataName) {
+		uploadDataAttributeDialog.dialog( "open" );
+		$("#attribute_file_name").val("");
+		$("#dataAttributeUploadLog > tbody:last").html("");
 		$("#attribute_file_data_id").val(dataId);
 		$("#attributeDataName").html(dataName);
 	}
@@ -318,6 +316,7 @@
 			var failCount = "DB 실패 건수'/>";
 			$("#dataAttributeInfo").ajaxSubmit({
 				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
 				dataType: "json",
 				success: function(msg){
 					if(msg.result == "success") {
@@ -409,6 +408,7 @@
 			var failCount = "DB 실패 건수'/>";
 			$("#dataObjectAttributeInfo").ajaxSubmit({
 				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
 				dataType: "json",
 				success: function(msg){
 					if(msg.result == "success") {
@@ -486,7 +486,7 @@
 					url: "/data/ajax-delete-datas.do",
 					type: "POST",
 					data: info,
-					cache: false,
+					headers: {"X-Requested-With": "XMLHttpRequest"},
 					dataType: "json",
 					success: function(msg){
 						if(msg.result == "success") {
@@ -572,6 +572,7 @@
 			var failCount = "DB 실패 건수'/>";
 			$("#dataFileInfo").ajaxSubmit({
 				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
 				dataType: "json",
 				success: function(msg){
 					if(msg.result == "success") {
@@ -650,6 +651,7 @@
 				url: "/data/ajax-insert-project-data-attribute.do",
 				type: "POST",
 				data: info,
+				headers: {"X-Requested-With": "XMLHttpRequest"},
 				dataType: "json",
 				success: function(msg){
 					if(msg.insert_error_count != 0) {
@@ -759,8 +761,8 @@
 		}
 	}
 	
-	// 프로젝트 다이얼 로그
-	var projectDialog = $( ".projectDialog" ).dialog({
+	// 데이터 그룹 정보
+	var dataGroupDialog = $( ".dataGroupDialog" ).dialog({
 		autoOpen: false,
 		width: 400,
 		height: 300,
@@ -809,7 +811,7 @@
 		resizable: false
 	});
 	// 데이터 속성 프로젝트 전체 등록 다이얼 로그
-	var uploadProjectDataAttributeDialog = $( ".uploadProjectDataAttributeDialog" ).dialog({
+	var uploadDataGroupDataAttributeDialog = $( ".uploadDataGroupDataAttributeDialog" ).dialog({
 		autoOpen: false,
 		width: 600,
 		height: 445,
@@ -817,7 +819,7 @@
 		resizable: false
 	});
 	// 프로젝트 데이터 Object 속성 하나 등록
-	var uploadProjectDataObjectAttributeDialog = $( ".uploadProjectDataObjectAttributeDialog" ).dialog({
+	var uploadDataGroupDataObjectAttributeDialog = $( ".uploadDataGrouptDataObjectAttributeDialog" ).dialog({
 		autoOpen: false,
 		width: 600,
 		height: 445,
