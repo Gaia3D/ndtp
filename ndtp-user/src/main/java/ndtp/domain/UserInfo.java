@@ -1,11 +1,11 @@
 package ndtp.domain;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 import javax.validation.constraints.NotBlank;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,7 +20,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserInfo implements Serializable {
+public class UserInfo extends Search implements Serializable {
 
     private static final long serialVersionUID = 8349597082356588759L;
 
@@ -28,7 +28,7 @@ public class UserInfo implements Serializable {
 	private String message;
 	private String errorCode;
 	// 일정 기간 동안 미 접속시 잠금 처리(예 3개월 90일)
-	private String userLastLoginLock;
+	private String userLastSigninLock;
 	// 아이디 중복 확인 hidden 값
 	private String duplicationValue;
 	// 논리 삭제 
@@ -38,19 +38,21 @@ public class UserInfo implements Serializable {
 	private String methodMode;
 	
 	/********** Policy ************/
-	// 사용자 로그인 실패 잠금 해제 기간
+	// 사용자 사인인 실패 잠금 해제 기간
 	private String userFailLockRelease;
 	
 	/********** DB 사용 *************/
 	// 고유번호
+	@NotBlank
 	private String userId;
 	// 사용자 그룹 고유번호
-	private Long userGroupId;
+	private Integer userGroupId;
 	// 사용자 그룹명(화면용)
 	private String userGroupName;
 	// 이름
 	private String userName;
 	// 비밀번호
+	@NotBlank
 	private String password;
 	// 비밀번호 확인
 	private String passwordConfirm;
@@ -86,18 +88,18 @@ public class UserInfo implements Serializable {
 	private String address;
 	// 상세주소
 	private String addressEtc;
-	// 로그인 횟수
-	private Long loginCount;
-	// 로그인 실패 횟수
-	private Integer failLoginCount;
-	// 마지막 로그인 비밀번호 변경 날짜
+	// 사인인 횟수
+	private Long signinCount;
+	// 사인인 실패 횟수
+	private Integer failSigninCount;
+	// 마지막 사인인 비밀번호 변경 날짜
 	private String lastPasswordChangeDate;
-	// 마지막 로그인 날짜
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
-	private String lastLoginDate;
-	// 최초 로그인시 사용자 Role 권한 체크 패스 기능
+	// 마지막 사인인 날짜
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Timestamp lastSigninDate;
+	// 최초 사인인시 사용자 Role 권한 체크 패스 기능
 	private String userRoleCheckYn;
-	// 사용자 상태. 0:사용중, 1:사용중지(관리자), 2:잠금(비밀번호 실패횟수 초과), 3:휴면(로그인 기간), 4:만료(사용기간 종료), 5:삭제(화면 비표시, policy.user_delete_method=0), 6:임시비밀번호
+	// 사용자 상태. 0:사용중, 1:사용중지(관리자), 2:잠금(비밀번호 실패횟수 초과), 3:휴면(사인인 기간), 4:만료(사용기간 종료), 5:삭제(화면 비표시, policy.user_delete_method=0), 6:임시비밀번호
 	private String status;
 	// 현재 사용자 상태값
 	private String dbStatus;
@@ -115,11 +117,13 @@ public class UserInfo implements Serializable {
 	private String subject;
 	// 임시 비밀번호
 	private String tempPassword;
+	// 일정 기간 동안 미 접속시 잠금 처리 결과 값
+	private Boolean userLastSigninLockOver;
 	
 	// 개인정보 수정 날짜
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
-	private String updateDate;
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Timestamp updateDate;
 	// 등록일
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
-	private String insert_date;
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Timestamp insertDate;
 }

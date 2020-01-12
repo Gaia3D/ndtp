@@ -1,14 +1,11 @@
 package ndtp.domain;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,21 +27,22 @@ import lombok.ToString;
 @AllArgsConstructor
 public class Policy {
     
+	// 고유번호
 	@NotNull
-    private Long policyId;	// 고유번호
+    private Long policyId;
 
 	// 사용자 아이디 최소 길이. 기본값 5
  	private Integer userIdMinLength;
  	// 사용자 로그인 실패 횟수
- 	private Integer userFailLoginCount;
+ 	private Integer userFailSigninCount;
  	// 사용자 로그인 실패 잠금 해제 기간
  	private String userFailLockRelease;
  	// 사용자 마지막 로그인으로 부터 잠금 기간
- 	private String userLastLoginLock;
+ 	private String userLastSigninLock;
  	// 사용자 중복 로그인 허용 여부. Y : 허용, N : 허용안함(기본값)
- 	private String userDuplicationLoginYn;
+ 	private String userDuplicationSigninYn;
  	// 사용자 로그인 인증 방법. 0 : 일반(아이디/비밀번호(기본값)), 1 : 기업용(사번추가), 2 : 일반 + OTP, 3 : 일반 + 인증서, 4 : OTP + 인증서, 5 : 일반 + OTP + 인증서
- 	private String userLoginType;
+ 	private String userSigninType;
  	// 사용자 정보 수정시 확인
  	private String userUpdateCheck;
  	// 사용자 정보 삭제시 확인
@@ -74,119 +72,6 @@ public class Policy {
  	private String passwordCreateChar;
  	// 패스워드로 사용할수 없는 특수문자(XSS). <,>,&,작은따음표,큰따움표
  	private String passwordExceptionChar;
- 	
- 	// Cesium ion token 발급. 기본 mago3D
- 	private String geoCesiumIonToken;
- 	// view library. 기본 cesium
- 	private String geoViewLibrary;
- 	// data 폴더. 기본 /data
- 	private String geoDataPath;
- 	// 초기 로딩 프로젝트
- 	@Getter(AccessLevel.NONE)
- 	@Setter(AccessLevel.NONE)
- 	private String geoDataDefaultProjects;
- 	private String geoDataDefaultProjectsView;
- 	// 데이터 정보 변경 요청에 대한 처리. 0 : 자동승인, 1 : 결재(초기값)
- 	private String geoDataChangeRequestDecision;
- 	// cullFace 사용유무. 기본 false
- 	private String geoCullFaceEnable;
- 	// timeLine 사용유무. 기본 false
- 	private String geoTimeLineEnable;
- 	
- 	// 초기 카메라 이동 유무. 기본 true
- 	private String geoInitCameraEnable;
- 	// 초기 카메라 이동 위도
- 	private String geoInitLatitude;
- 	// 초기 카메라 이동 경도
- 	private String geoInitLongitude;
- 	// 초기 카메라 이동 높이
- 	private String geoInitHeight;
- 	// 초기 카메라 이동 시간. 초 단위
- 	private Long geoInitDuration;
- 	// 기본 Terrain
- 	private String geoInitDefaultTerrain;
- 	// field of view. 기본값 0(1.8 적용)
- 	private Long geoInitDefaultFov;
- 	
- 	// LOD0. 기본값 15M
- 	private String geoLod0;
- 	// LOD1. 기본값 60M
- 	private String geoLod1;
- 	// LOD2. 기본값 900M
- 	private String geoLod2;
- 	// LOD3. 기본값 200M
- 	private String geoLod3;
- 	// LOD3. 기본값 1000M
- 	private String geoLod4;
- 	// LOD3. 기본값 50000M
- 	private String geoLod5;
- 	
- 	// 다이렉트 빛이 아닌 반사율 범위. 기본값 0.5
- 	private String geoAmbientReflectionCoef;
- 	// 자기 색깔의 반사율 범위. 기본값 1.0
- 	private String geoDiffuseReflectionCoef;
- 	// 표면의 반질거림 범위. 기본값 1.0
- 	private String geoSpecularReflectionCoef;
- 	// 다이렉트 빛이 아닌 반사율 RGB, 콤마로 연결
- 	private String geoAmbientColor;
- 	private String geoAmbientColorR;
- 	private String geoAmbientColorG;
- 	private String geoAmbientColorB;
- 	// 표면의 반질거림 색깔. RGB, 콤마로 연결
- 	private String geoSpecularColor;
- 	private String geoSpecularColorR;
- 	private String geoSpecularColorG;
- 	private String geoSpecularColorB;
- 	// 그림자 반경
- 	private String geoSsaoRadius;
- 	
- 	// geo server 사용유무
- 	private String geoServerEnable;
- 	// geo server 기본 layers url
- 	private String geoServerUrl;
- 	// geo server 기본 layers
- 	private String geoServerLayers;
- 	// geo server 기본 layers service 변수값
- 	private String geoServerParametersService;
- 	// geo server 기본 layers version 변수값
- 	private String geoServerParametersVersion;
- 	// geo server 기본 layers request 변수값
- 	private String geoServerParametersRequest;
- 	// geo server 기본 layers transparent 변수값
- 	private String geoServerParametersTransparent;
- 	// geo server 기본 layers format 변수값
- 	private String geoServerParametersFormat;
- 	// geo server 추가 layers url
- 	private String geoServerAddUrl;
- 	// geo server 추가 layers layers
- 	private String geoServerAddLayers;
- 	// geo server 추가 layers service 변수값
- 	private String geoServerAddParametersService;
- 	// geo server 추가 layers version 변수값
- 	private String geoServerAddParametersVersion;
- 	// geo server 추가 layers request 변수값
- 	private String geoServerAddParametersRequest;
- 	// geo server 추가 layers transparent 변수값
- 	private String geoServerAddParametersTransparent;
- 	// geo server 추가 layers format 변수값
- 	private String geoServerAddParametersFormat;
- 	
- 	// 콜백 function 사용유무. 기본값 false
- 	private String geoCallbackEnable;
- 	// api 처리 결과 callback function 이름
- 	private String geoCallbackApiresult;
- 	// data info 표시 callback function 이름
- 	private String geoCallbackDataInfo;
- 	// moved data callback function 이름
- 	private String geoCallbackMoveddata;
- 	// object 선택 callback function 이름
- 	private String geoCallbackSelectedobject;
- 	// issue 등록 callback function 이름
- 	private String geoCallbackInsertissue;
- 	// issue list callback function 이름
- 	private String geoCallbackListissue;
- 	// mouse click 시 위치 정보 callback function 이름
- 	private String geoCallbackClickposition;
  	
  	// 알림 서비스 사용 유무. Y : 사용, N : 미사용(기본값)
  	private String noticeServiceYn;
@@ -242,19 +127,21 @@ public class Policy {
  	private String contentMenuGroupRoot;
  	// 사용자 그룹 최상위 그룹명
  	private String contentUserGroupRoot;
- 	// 서버 그룹 최상위 그룹명
- 	private String contentServerGroupRoot;
- 	// 계정 그룹 최상위 그룹명
+ 	// Layer 그룹 최상위 그룹명
+ 	private String contentLayerGroupRoot;
+ 	// data 그룹 최상위 그룹명
  	private String contentDataGroupRoot;
  	
- 	// 업로딩 가능 확장자. 3ds,obj,ifc,dae 등
+ 	// 업로딩 가능 확장자. 3ds,obj,dae,collada,ifc,las,gml,citygml,indoorgml,jpg,jpeg,gif,png,bmp,zip
  	private String userUploadType;
- 	// 최대 업로딩 사이즈(단위M). 기본값 500M
+ 	// 변환 가능 확장자. 3ds,obj,dae,collada,ifc,las, gml, citygml,indoorgml
+  	private String userConverterType;
+ 	// 최대 업로딩 사이즈(단위M). 기본값 10000M
  	private Long userUploadMaxFilesize;
- 	// 1회, 최대 업로딩 파일 수. 기본값 50개
+ 	// 1회, 최대 업로딩 파일 수. 기본값 500개
  	private Integer userUploadMaxCount;	
  	
  	// 등록일
- 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
-    private LocalDateTime insertDate;
+ 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Timestamp insertDate;
 }

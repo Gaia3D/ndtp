@@ -5,20 +5,17 @@ import java.util.Date;
 
 public class DateUtils {
 	
-	// 시작일 Timestamp mm-dd hh:mi:ss.mmm
+	// 시작일 Timestamp MMDDHH24MISSUS
 	public static final String START_DAY_TIME = "0101000000000000";
-	// 시작일 Timestamp hhmiss.mmm
+	// 시작일 Timestamp HH24MISSUS
 	public static final String START_TIME = "000000000000";
-	// 종료일 Timestamp hhmiss.mmm
+	// 종료일 Timestamp HH24MISSUS
 	public static final String END_TIME = "235959999999";
 	// Timestamp US
 	public static final String MICROSECOND  = "00000";
-	
-	// 데이터 포맷을 맞추기 위한 공백
-	public static final String SPACE = " ";
 
 	/**
-	 * 현재 날짜 yyyy-mm-dd hh:mi:ss
+	 * 현재 날짜 yyyy-MM-dd HH:mm:ss
 	 * @return
 	 */
 	public static String getToday() {

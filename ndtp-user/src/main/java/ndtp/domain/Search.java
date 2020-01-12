@@ -1,5 +1,7 @@
 package ndtp.domain;
 
+import java.net.URLEncoder;
+
 /**
  * 검색 공통 항목
  * @author Jeongdae
@@ -110,6 +112,43 @@ public class Search {
 	}
 	public void setListCounter(Long listCounter) {
 		this.listCounter = listCounter;
+	}
+	
+	/**
+	 * 검색 조건
+	 * @param search
+	 * @return
+	 */
+	public String getParameters() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("&");
+		buffer.append("searchWord=" + getDefaultValue(this.searchWord));
+		buffer.append("&");
+		buffer.append("searchOption=" + getDefaultValue(this.searchOption));
+		buffer.append("&");
+		try {
+			buffer.append("searchValue=" + URLEncoder.encode(getDefaultValue(this.searchValue), "UTF-8"));
+		} catch(Exception e) {
+			e.printStackTrace();
+			buffer.append("searchValue=");
+		}
+		buffer.append("&");
+		buffer.append("startDate=" + getDefaultValue(this.startDate));
+		buffer.append("&");
+		buffer.append("endDate=" + getDefaultValue(this.endDate));
+		buffer.append("&");
+		buffer.append("orderWord=" + getDefaultValue(this.orderWord));
+		buffer.append("&");
+		buffer.append("orderValue=" + getDefaultValue(this.orderValue));
+		return buffer.toString();
+	}
+	
+	private String getDefaultValue(String value) {
+		if(value == null || "".equals(value.trim())) {
+			return "";
+		}
+		
+		return value;
 	}
 	
 	@Override
