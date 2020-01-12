@@ -73,7 +73,7 @@
 					<div class="list">
 						<form:form id="listForm" modelAttribute="dataInfo" method="post">
 							<input type="hidden" id="checkIds" name="checkIds" value="" />
-						<div class="list-header">
+						<div class="list-header row">
 							<div class="list-desc u-pull-left">
 								<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/> 
 								<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/>
