@@ -340,7 +340,7 @@
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
 	<%@ include file="/WEB-INF/views/layer/spinner-dialog.jsp" %>
-	
+	<%@ include file="/WEB-INF/views/layer/fileInfo-deatil-dialog.jsp"%>
 	<!-- Dialog -->
 	<div id="layerGroupDialog" class="dialog">
 		<table class="list-table scope-col">
@@ -852,7 +852,7 @@
 				});
 
 				//핸들바 템플릿에 데이터를 바인딩해서 HTML 생성
-				var fileInfoDetailHtml = template(msg);
+				var fileInfoDetailHtml = template(msg.layerFileInfo);
 				$("#fileInfoDetailDialog").html("");
 				$("#fileInfoDetailDialog").append(fileInfoDetailHtml);
         	},
@@ -865,7 +865,6 @@
  	// 지도 보기
     function viewLayerMap(layerId, layerName, layerFileInfoId) {
     	var url = "/layer/" + layerId + "/map?layerFileInfoId=" + layerFileInfoId;
-		//popupOpen(url, layerName, 1000, 700);
 		var width = 1000;
 		var height = 700;
 

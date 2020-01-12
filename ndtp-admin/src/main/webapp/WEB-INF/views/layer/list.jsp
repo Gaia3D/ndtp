@@ -212,7 +212,6 @@ function deleteLayer(layerId) {
 // 지도 보기
 function viewLayer(layerId, layerName) {
     var url = "/layer/" + layerId + "/map";
-    //popupOpen(url, layerName, 1000, 700);
     var width = 800;
     var height = 700;
 

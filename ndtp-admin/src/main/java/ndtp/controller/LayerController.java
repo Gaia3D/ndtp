@@ -734,37 +734,24 @@ public class LayerController implements AuthorizationController {
 
         log.info("@@ layerId = {}, layerFileInfoId = {}", layerId, layerFileInfoId);
 
-        Policy policy = policyService.getPolicy();
+        GeoPolicy policy = geoPolicyService.getGeoPolicy();
         Layer layer = layerService.getLayer(layerId);
-        Integer fileVersion = 0;
+        Integer versionId = 0;
         if(layerFileInfoId != null)	{
-        	fileVersion = layerFileInfoService.getLayerShapeFileVersion(layerFileInfoId);
+        	versionId = layerFileInfoService.getLayerShapeFileVersion(layerFileInfoId);
         }
-
-        // TODO 좀 무식하군... 쿼리 하나 더 만들기 귀찮아서....
-        Layer baseLayer = new Layer();
-        List<Layer> baseLayerList = layerService.getListLayer(baseLayer);
-        List<String> baseLayerKeyList = new ArrayList<>();
-        for(Layer tempLayer : baseLayerList) {
-            baseLayerKeyList.add(tempLayer.getLayerKey());
-        }
-
-        String[] baseLayerKeys = baseLayerKeyList.toArray(new String[baseLayerKeyList.size()]);
 
         String policyJson = "";
-        String baseLayerKeysJson = "";
 
         try {
             policyJson = objectMapper.writeValueAsString(policy);
-            baseLayerKeysJson = objectMapper.writeValueAsString(baseLayerKeys);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         model.addAttribute("policyJson", policyJson);
         model.addAttribute("layer", layer);
-        model.addAttribute("fileVersion", fileVersion);
-        model.addAttribute("baseLayerKeysJson", baseLayerKeysJson);
+        model.addAttribute("versionId", versionId);
 
         return "/layer/popup-map";
     }
