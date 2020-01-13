@@ -143,10 +143,8 @@ public class ConverterServiceImpl implements ConverterService {
 				executeConverter(dataGroupRootPath, converterJobFile, uploadDataFile);
 			}
 			
-			// TODO 이걸 왜 추가 했지? 삭제해야 할듯
-			DataGroup dataGroup = new DataGroup();
-			//project.setProject_id(project_id);
-			dataGroupService.updateDataGroup(dataGroup);
+			uploadData.setConverterCount(1);
+			uploadDataService.updateUploadData(uploadData);
 		}
 		
 		return uploadDataIds.length;

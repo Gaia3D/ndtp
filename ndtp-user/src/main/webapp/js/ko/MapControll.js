@@ -115,7 +115,6 @@ function MapControll(viewer, option) {
 
             lengthInMeters += Cesium.Cartesian3.distance(startPoint, endPoint);
         }
-        updateDistance(lengthInMeters);
         return formatDistance(lengthInMeters);
     }
 
@@ -145,7 +144,6 @@ function MapControll(viewer, option) {
                 areaInMeters += calArea(points[triangles[i]], points[triangles[i + 1]], points[triangles[i + 2]]);
             }
         }
-        updateArea(areaInMeters);
         return formatArea(areaInMeters);
     }
     function calArea(t1, t2, t3, i) {
@@ -262,7 +260,6 @@ function MapControll(viewer, option) {
     });
     
     $('#rotateLeft').click(function(){
-    	console.log("맵컨트롤 : 좌측 회전");
     	that._scene.camera.twistLeft(Cesium.Math.toRadians(10));
     	console.log(Cesium.Math.toDegrees(viewer.camera.heading));
     	var currentHeading = Math.round(Cesium.Math.toDegrees(viewer.camera.heading));
@@ -273,7 +270,6 @@ function MapControll(viewer, option) {
     });
     
     $('#rotateRight').click(function(){
-    	console.log("맵컨트롤 : 우측 회전");
     	that._scene.camera.twistRight(Cesium.Math.toRadians(10));
     	console.log(Cesium.Math.toDegrees(viewer.camera.heading));
     	var currentHeading = Math.round(Cesium.Math.toDegrees(viewer.camera.heading));
@@ -310,72 +306,47 @@ function MapControll(viewer, option) {
     	  
     	 $('#pitchInput').val(deg);
     	  
-    })
-    
-    
-    
-    $('#mapCtrlCompass').click(function () {
-        console.log("맵컨트롤 : 나침반");
-        $(this).addClass('on');
-        var camera = viewer.scene.camera;
-        camera.flyTo({
-            destination: camera.position,
-            orientation: {
-                heading: 0,
-                pitch: Cesium.Math.toRadians(-90),
-                roll: 0
-            }
-        });
-    });
-
-    // $('#mapCtrlModeling').click(function () {
-    $('#mapCtrlModeling').bind("afterClick", function () {
-        console.log("맵컨트롤 : 전환");
-        if ($(this).hasClass('on')) {
-            viewer.scene.screenSpaceCameraController.enableTilt = true;
-            viewer.scene.screenSpaceCameraController.enableLook = true;
-        }
-        else {
-            viewer.scene.screenSpaceCameraController.enableTilt = false;
-            viewer.scene.screenSpaceCameraController.enableLook = false;
-            var camera = viewer.scene.camera;
-            camera.flyTo({
-                destination: camera.position,
-                orientation: {
-                    heading: 0,
-                    pitch: Cesium.Math.toRadians(-90),
-                    roll: 0
-                }
-            });
-        }
     });
 
     $('#mapCtrlReset').click(function () {
         console.log("맵컨트롤 : 초기화");
         that._scene.camera.flyTo({
-			destination: Cesium.Cartesian3.fromDegrees(parseFloat(Mago3D.MagoConfig.getPolicy().geo_init_longitude),
-				parseFloat(Mago3D.MagoConfig.getPolicy().geo_init_latitude),
-				parseFloat(Mago3D.MagoConfig.getPolicy().geo_init_height)),
-			duration: parseInt(Mago3D.MagoConfig.getPolicy().geo_init_duration)
+			destination: Cesium.Cartesian3.fromDegrees(parseFloat(Mago3D.MagoConfig.getPolicy().initLongitude),
+				parseFloat(Mago3D.MagoConfig.getPolicy().initLatitude),
+				parseFloat(Mago3D.MagoConfig.getPolicy().initHeight)),
+			duration: parseInt(Mago3D.MagoConfig.getPolicy().initDuration)
 		});
     });
+    
+    // 거리 측정 버튼
+	$('#mapCtrlDistance').click(function() {
+		$(this).toggleClass('on'); // 버튼 색 변경
+		$(this).trigger('afterClick');
+	});
 
     $('#mapCtrlDistance').bind('afterClick', function () {
         console.log("맵컨트롤 : 거리");
         that.clearMap();
         drawingMode = 'line';
-        updateDistance(0);
         
         if ($(this).hasClass('on')) {
             startDrawPolyLine();
         }
     });
+    
+    
+    // 	면적 측정 버튼
+	$('#mapCtrlArea').click(function() {
+		alert('기능수정중입니다.');
+		return;
+		$(this).toggleClass('on'); // 버튼 색 변경
+		$(this).trigger('afterClick');
+	});
 
     $('#mapCtrlArea').bind('afterClick', function () {
         console.log("맵컨트롤 : 면적");
         that.clearMap();
         drawingMode = 'polygon';
-        updateArea(0);
 
         if ($(this).hasClass('on')) {
             startDrawPolyLine();
@@ -408,30 +379,31 @@ function MapControll(viewer, option) {
         var dynamicPositions = new Cesium.CallbackProperty(function () {
             return activeShapePoints;
         }, false);
-
+        
         handler.setInputAction(function (event) {
             var earthPosition = viewer.scene.pickPosition(event.position);
             if (Cesium.defined(earthPosition)) {
                 var cartographic = Cesium.Cartographic.fromCartesian(earthPosition);
                 var tempPosition = Cesium.Cartesian3.fromDegrees(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude));
-
+                console.info(dynamicCenter);
+                console.info(dynamicLabel);
                 activeShapePoints.push(tempPosition);
                 if (activeShapePoints.length === 1) {
                     activeShape = drawShape(dynamicPositions);
                     if (drawingMode === 'polygon') {
-                    activeLabel = viewer.entities.add({
-                        name     : "TempLabel for area measurement",
-                        position: dynamicCenter,
-                        label: {
-                            text: dynamicLabel,
-                            font: 'bold 20px sans-serif',
-                            fillColor: Cesium.Color.BLUE,
-                            style: Cesium.LabelStyle.FILL,
-                            verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-                            disableDepthTestDistance: Number.POSITIVE_INFINITY,
-                            heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
-                        }
-                    });
+	                    activeLabel = viewer.entities.add({
+	                        name     : "TempLabel for area measurement",
+	                        position: dynamicCenter,
+	                        label: {
+	                            text: dynamicLabel,
+	                            font: 'bold 20px sans-serif',
+	                            fillColor: Cesium.Color.BLUE,
+	                            style: Cesium.LabelStyle.FILL,
+	                            verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+	                            disableDepthTestDistance: Number.POSITIVE_INFINITY,
+	                            heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+	                        }
+	                    });
                     }
                 }
                 else {
@@ -449,37 +421,15 @@ function MapControll(viewer, option) {
 }
 
 var formatDistance = function (_length) {
-    var unitFactor = parseFloat($('#distanceFactor option:selected').val());
-    var unitName = $('#distanceFactor option:selected').text();
+    var unitFactor = 1;//parseFloat($('#distanceFactor option:selected').val());
+    var unitName = 'm (미터)';//$('#distanceFactor option:selected').text();
     var output= Math.round(_length / unitFactor * 100) / 100 + " " + unitName.substring(0, unitName.indexOf('('));
     return output;
 };
 
 var formatArea = function (_area) {
-    var unitFactor = parseFloat($('#areaFactor option:selected').val());
-    var unitName = $('#areaFactor option:selected').text();
+    var unitFactor = 1;//parseFloat($('#areaFactor option:selected').val());
+    var unitName = 'm² (제곱미터)' //$('#areaFactor option:selected').text();
     var output= Math.round(_area / unitFactor * 100) / 100 + " " + unitName.substring(0, unitName.indexOf('('));
     return output;
 };
-
-
-function adjustHeightForTerrain() {
-	var camera = HMD.Viewer.camera;
-	var carto = Cesium.Cartographic.fromCartesian(camera.positionWC);
-	
-	if(!Cesium.Rectangle.contains(LIMIT_RECTANGLE, carto)) {
-		/*var pt = turf.point([carto.latitude, carto.longitude]);
-		var snapped = turf.nearestPointOnLine(LIMIT_RECTANGLE_LINE, pt, {units: 'degrees'});
-		var coords = snapped.geometry.coordinates;
-		camera.flyTo({
-			destination : Cesium.Cartesian3.fromDegrees(coords[0],coords[1],150),
-			duration : 0.5
-		});*/
-		camera._adjustOrthographicFrustum();
-	}
-	var height = carto.height;
-	if (height < 0 || (camera._suspendTerrainAdjustment && HMD.Viewer.scene.mode === Cesium.SceneMode.SCENE3D)) {
-		camera._suspendTerrainAdjustment = false;
-		camera._adjustHeightForTerrain();
-	}
-}

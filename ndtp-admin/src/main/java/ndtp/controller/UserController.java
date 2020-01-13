@@ -16,9 +16,13 @@ import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
+import ndtp.domain.Policy;
 import ndtp.domain.RoleKey;
+import ndtp.domain.UserGroup;
 import ndtp.domain.UserInfo;
 import ndtp.domain.UserSession;
+import ndtp.service.PolicyService;
+import ndtp.service.UserGroupService;
 import ndtp.service.UserService;
 
 /**
@@ -28,11 +32,17 @@ import ndtp.service.UserService;
  */
 @Slf4j
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/user/")
 public class UserController implements AuthorizationController {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private UserGroupService userGroupService;
+
+	@Autowired
+	private PolicyService policyService;
 	
 	/**
 	 * 사용자 목록
@@ -42,7 +52,7 @@ public class UserController implements AuthorizationController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "/list")
+	@GetMapping(value = "list")
 	public String list(HttpServletRequest request, UserInfo userInfo, @RequestParam(defaultValue="1") String pageNo, Model model) {
 		String roleCheckResult = roleValidate(request);
     	if(roleValidate(request) != null) return roleCheckResult;
@@ -69,17 +79,31 @@ public class UserController implements AuthorizationController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "/detail")
+	@GetMapping(value = "detail")
 	public String detail(HttpServletRequest request, UserInfo userInfo, Model model) {
 		String listParameters = getSearchParameters(PageType.DETAIL, userInfo);
 		
 		userInfo =  userService.getUser(userInfo.getUserId());
-		//Policy policy = policyService.getPolicy();
+		Policy policy = policyService.getPolicy();
 		
-		//model.addAttribute("policy", policy);
+		model.addAttribute("policy", policy);
 		model.addAttribute("listParameters", listParameters);
 		model.addAttribute("userInfo", userInfo);
 		return "/user/detail";
+	}
+	
+	/**
+	 * 사용자 등록 화면
+	 */
+	@GetMapping(value = "input")
+	public String input(Model model) {
+		Policy policy = policyService.getPolicy();
+		List<UserGroup> userGroupList = userGroupService.getListUserGroup(new UserGroup());
+		
+		model.addAttribute("policy", policy);
+		model.addAttribute("dataGroupList", userGroupList);
+		model.addAttribute("userInfo", new UserInfo());
+		return "/user/input";
 	}
 	
 	/**
