@@ -12,6 +12,8 @@
 	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
 	<link rel="stylesheet" href="/css/${lang}/user-style.css" />
+	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
+	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 	<style type="text/css">
 	    .mapWrap {
 	    	float:right;
@@ -21,10 +23,6 @@
 		}
 		.ctrlWrap {
 			z-index:10000;
-		}
-		.ctrlWrap div.zoom button, .ctrlWrap div.rotate button  {
-			width:47px;
-			height:47px;
 		}
     </style>
 </head>
@@ -36,63 +34,20 @@
 	<!-- S: NAVWRAP -->
 	<div class="navWrap">
 	 	<%@ include file="/WEB-INF/views/layouts/menu.jsp" %> 
-		
-		<!-- E: NAVWRAP -->	
-		
-		<div id="contentsWrap" class="contentsWrap" style="display: block;">
-			<div id="dataContent" class="contents">
-				dataContent
-			</div>
-			<div id="convertContent" class="contents" style="display:none;">
-				convertContent
-			</div>
-			<div id="spatialContent" class="contentsList yScroll" style="display:none;height: 798px;background-color: #fff;">
-				<%@ include file="/WEB-INF/views/spatial/spatial.jsp" %> 
-			</div>
-			<div id="simulationContent" class="contents" style="display:none;">
-				simulationContent
-			</div>
-			<div id="joininContent" class="contents" style="display:none;">
-				joininContent
-			</div>
-			<div id="setupContent" class="contents" style="display:none;">
-				setupContent
-			</div>
-			<!-- E: CONTENTS -->
-			
-			<div class="contentsBtn">
-				<button type="button" id="closeLeftBtn" title="닫기">Close</button>
-			</div>
-			<!-- E: CONTENTSBTN -->
-		</div>
-		<!-- E: CONTENTSWRAP -->
-
 	</div>
 	<!-- E: NAVWRAP -->
 	
-	<!-- S: GNB WRAP -->	
-	<%@ include file="/WEB-INF/views/layouts/global-search.jsp" %>
-	<!-- E: GNB WRAP -->
-
-	<!-- CTRLWRAP -->
-	<%@ include file="/WEB-INF/views/layouts/toolbar.jsp" %>
-	<!-- E: CTRLWRAP -->
-
-	<!-- MAP -->
-	<div id="magoContainer" class="mapWrap">
+	<div>
+		test
 	</div>
-	<!-- E: MAP -->
 </div>
 <!-- E: WRAP -->
 
-<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
-<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>
 <script type="text/javascript" src="/js/mago3d.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript" src="/js/${lang}/MapControll.js"></script>
-<script type="text/javascript" src="/js/${lang}/uiControll.js"></script>
 <script type="text/javascript">
 	//Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIyNmNjOWZkOC03NjdlLTRiZTktYWQ3NS1hNmQ0YjA1ZjIzYWEiLCJpZCI6Mzk5Miwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0NDYwNDQ3M30.AwvoVAuMRwjcMMJ9lEG2v4CPUp8gfltJqZARHgxGv_k';
 	//var viewer = new Cesium.Viewer('magoContainer');
@@ -137,13 +92,12 @@
 	function magoLoadEnd(e) {
 		var magoInstance = e;
 
-		
+		// TODO : 세슘 MAP 선택 UI 제거,엔진에서 처리로 변경 예정.
 		
 		var viewer = magoInstance.getViewer(); 
 		var magoManager = magoInstance.getMagoManager();
 		var f4dController = magoInstance.getF4dController();
 
-		// TODO : 세슘 MAP 선택 UI 제거,엔진에서 처리로 변경 예정.
 		viewer.baseLayerPicker.destroy();
 		
 		magoManager.on(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {

@@ -244,6 +244,10 @@ padding: 10px;
 border: 1px solid #e0e0e0;
 background-color: #fff;
 }
+.contentsList {
+margin: 10px;
+background-color: #eaeaea;
+}
 
 .contentsCover {
 position: absolute;
@@ -258,7 +262,6 @@ box-sizing: border-box;
 .contentsCover > div {
 height: 100%;
 }
-
 /* MAP / CTRLBTNS */
 .ctrlWrap {
 position: absolute;
@@ -340,4 +343,233 @@ text-align: center;
 border: none;
 border-bottom: 2px solid #fff;
 background-color: transparent;
+}
+
+
+
+
+/* FROM NIPA 국방부, 권재현*/
+.btnText {
+padding: 2px 5px;
+font-size: 0.9em;
+color: #888;
+border: 1px solid #ccc;
+border-radius: 2px;
+background-image: none;
+background-color: #fff;
+}
+.btnText:hover {
+color: #477cdb;
+border: 1px solid #477cdb;
+background-color: #fff;
+background-image: none;
+}
+.btnTextF {
+padding: 2px 10px;
+font-size: 0.9em;
+color: #fff;
+border-radius: 2px;
+border: 1px solid #51515b;
+background-color: #51515b;
+background-image: none;
+}
+.btnTextF:hover {
+color: #477cdb;
+border: 1px solid #477cdb;
+background-color: #fff;
+background-image: none;
+}
+/* LIST DROP  / 검색결과 */
+ul.listDrop > li {
+margin-bottom: 3px;
+cursor: pointer;
+}
+ul.listDrop li > p {
+padding: 8px;
+font-weight: bold;
+border:1px solid #e0e0e0;
+background-image: url(../images/ico.png);
+background-repeat: no-repeat;
+background-position: right -255px;
+background-color: #fff;
+}
+ul.listDrop li > p > span {
+font-weight: normal;
+}
+ul.listDrop li > ul {
+display: none;
+}
+ul.listDrop li.on > p {
+color: #fff;
+border-bottom: 3px solid #eaeaea;
+background-color: #287be4;
+background-image: url(../images/ico.png);
+background-repeat: no-repeat;
+background-position: right -210px;
+}
+ul.listDrop li p span {
+display: inline-block;
+margin-left: 10px;
+}
+ul.listDrop li.on > ul {
+overflow-x: hidden;
+overflow-y: auto;
+display: block;
+background-color: #fff;
+}
+ul.listDrop li.on > ul li {
+padding: 10px;
+}
+ul.listDrop li.on ul li > span {
+display: block;
+}
+ul.listDrop li.on ul li > span.title {
+text-decoration: underline;
+}
+ul.listDrop li.on > ul > li:hover {
+background-color: #dbf1ff;
+}
+/* LIST DROP  / 분석 */
+ul.listDrop li > div.listContents {
+display: none;
+}
+ul.listDrop li.on > div.listContents {
+display: block;
+padding: 10px;
+border:1px solid #e0e0e0;
+background-color: #fff;
+}
+/* LIST DROP  / 분석 */
+ul.listDrop li > div.listContents {
+display: none;
+}
+ul.listDrop li.on > div.listContents {
+display: block;
+padding: 10px;
+border:1px solid #e0e0e0;
+background-color: #fff;
+}
+/*  CONTENTS / 분석 */
+.analysisGroup {
+/* margin: 10px 0;
+padding-left: 10px;
+padding-right: 10px; */
+cursor: pointer;
+}
+.analysisGroup.on {
+background-position: -755px -555px;
+}
+.analysisGroup.plus {
+background-position: -386px -555px;
+}
+.analysisGroup li {
+position: relative;
+padding: 5px 0;
+}
+.analysisGroup li label {
+display: inline-block;
+width: 120px;
+/* width: 35%; */
+padding: 3px 0;
+}
+.analysisGroup li input {
+width: 124px;
+/* width: 62%; */
+padding: 3px 0;
+border: none;
+border-bottom: 1px solid #e0e0e0;
+}
+.analysisGroup li input.withBtn {
+width: 120px;
+}
+
+.analysisGroup li span.coordText {
+padding-left: 123px;
+}
+.analysisGroup li button.coordBtn {
+margin-left: 30px;
+border: 0;
+text-decoration: underline;
+}
+.analysisGroup li input:hover {
+border-bottom: 1px solid #477cdb;
+}
+.analysisGroup li.btns {
+padding-top: 25px;
+text-align: right;
+}
+.analysisGroup li select {
+width: 124px;
+padding: 3px 0;
+border: none;
+border: 1px solid #e0e0e0;
+}
+.analysisGroup li select:hover {
+border: 1px solid #477cdb;
+}
+
+.analysisGroup .profileInfo {
+	display: none;
+}
+.analysisGroup .profileInfo .legend {
+}
+.analysisGraphic {
+	position: absolute;
+	bottom: 20px;
+	left: 410px;
+	right: 0;
+	height: 200px;
+	padding: 20px;
+	margin: 10px;
+	background-color: #fff;
+	z-index: 9;
+	display: none;
+}
+.analysisGraphic canvas {
+	border: 1px dotted red;
+}
+
+.analysisGroup .routeInfo {
+	margin-top: 20px;
+	border-top: 2px solid #e0e0e0;
+	display: none;
+}
+.analysisGroup .routeResult .cover {
+	padding: 10px 0 15px;
+	text-align: left;
+	border-bottom: 1px solid #e0e0e0;
+}
+.analysisGroup .routeResult .time {
+	font-size: 24px;
+	color: #2196F3;
+}
+.analysisGroup .routeResult .length {
+	font-size: 20px;
+	color: #fe6c59;
+}
+.analysisGroup .routeList .r_row {
+	display: flex;
+	border-bottom: 1px solid #e0e0e0;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+.analysisGroup .routeList .r_row .num {
+	width: 20px;
+	border: 1px solid;
+	border-radius: 18px;
+	padding: 6px;
+	margin-left: 10px;
+	margin-right: 16px;
+	text-align: center;
+}
+.analysisGroup .routeList .r_row .name {
+	line-height: 33px;
+}
+.analysisGroup .routeList .r_row.on {
+	background-color: #eee;
+}
+/* SCROLL */
+.yScroll {
+overflow-x: hidden;
+overflow-y: auto;
 }

@@ -94,7 +94,7 @@ public class UserGroupServiceImpl implements UserGroupService {
 	public List<UserGroupRole> getListUserGroupRole(UserGroupRole userGroupRole) {
 		return userGroupMapper.getListUserGroupRole(userGroupRole);
 	}
-
+	
 	/**
 	 * 사용자 그룹 Role Key 목록
 	 * @param userGroupRole
