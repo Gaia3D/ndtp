@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<div class="navWrap">
 	<ul class="nav">
 		<li class="search" title="검색">검색</li>
 		<li class="data" title="데이터">데이터</li>
@@ -12,17 +11,4 @@
 	</ul>
 	<!-- E: NAVWRAP -->	
 	
-	<div id="contentsWrap" class="contentsWrap" style="display: none;">
-		<div class="contents">
-			내용
-		</div>
-		<!-- E: CONTENTS -->
-		
-		<div class="contentsBtn">
-			<button type="button" id="closeLeftBtn" title="닫기">Close</button>
-		</div>
-		<!-- E: CONTENTSBTN -->
-	</div>
-	<!-- E: CONTENTSWRAP -->
-
-</div>
+	

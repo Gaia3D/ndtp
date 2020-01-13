@@ -34,7 +34,25 @@
 
 <div id="wrap">
 	<!-- S: NAVWRAP -->
-	<%@ include file="/WEB-INF/views/layouts/menu.jsp" %>
+	<div class="navWrap">
+	 	<%@ include file="/WEB-INF/views/layouts/menu.jsp" %> 
+		
+		<!-- E: NAVWRAP -->	
+		
+		<div id="contentsWrap" class="contentsWrap" style="display: block;">
+			<div class="contents">
+				내용
+			</div>
+			<!-- E: CONTENTS -->
+			
+			<div class="contentsBtn">
+				<button type="button" id="closeLeftBtn" title="닫기">Close</button>
+			</div>
+			<!-- E: CONTENTSBTN -->
+		</div>
+		<!-- E: CONTENTSWRAP -->
+
+	</div>
 	<!-- E: NAVWRAP -->
 	
 	<!-- S: GNB WRAP -->	
