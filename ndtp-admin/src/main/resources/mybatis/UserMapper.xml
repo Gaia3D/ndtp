@@ -88,7 +88,7 @@
 	<!-- 사용자 정보 -->
 	<select id="getUser" parameterType="string" resultType="userInfo">
 		/* getUser */
-		SELECT A.*, B.group_key, B.group_name AS user_group_name 
+		SELECT A.*, B.user_group_key, B.user_group_name AS user_group_name 
 		FROM user_info A, user_group B
 		WHERE A.user_id = #{userId}
 			AND A.user_group_id = B.user_group_id

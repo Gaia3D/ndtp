@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -254,6 +255,15 @@ public class FileUtils {
 	
 	public static boolean makeDirectory(String targetDirectory) {
 		File directory = new File(targetDirectory);
+		if(directory.exists()) {
+			return true;
+		} else {
+			return directory.mkdir();
+		}
+	}
+	
+	public static boolean makeDirectoryByPath(String dataServicePath, String dataGroupKey) {
+		File directory = Paths.get(dataServicePath, dataGroupKey).toFile();
 		if(directory.exists()) {
 			return true;
 		} else {

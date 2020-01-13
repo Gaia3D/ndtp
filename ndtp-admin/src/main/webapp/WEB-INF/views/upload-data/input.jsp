@@ -378,6 +378,8 @@
                 alert("파일 용량이 너무 커서 업로딩 할 수 없습니다.");
             } else if(response.errorCode === "db.exception") {
                 alert("죄송 합니다. 서버 실행중에 오류가 발생 하였습니다. \n 로그를 확인하여 주십시오.");
+            } else {
+            	alert(response.errorCode);
             }
             uploadFileResultCount++;
 		}

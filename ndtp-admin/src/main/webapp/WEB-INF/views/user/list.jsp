@@ -124,7 +124,7 @@
 				
 									<tr>
 										<td class="col-checkbox">
-											<input type="checkbox" id="uploadDataId_${user.userId}" name="uploadDataId" value="${user.userId}" />
+											<input type="checkbox" id="userId_${user.userId}" name="userId" value="${user.userId}" />
 										</td>
 										<td class="col-number">${pagination.rowNumber - status.index}</td>
 										<td class="col-name">
@@ -132,9 +132,17 @@
 										</td>
 										<td class="col-name">${user.userId}</td>
 										<td class="col-name">
-											<a href="/user/group/${user.userId}/menu" class="linkButton">${user.userName}</a>
+											<a href="/user/detail?userId=${user.userId}&amp;pageNo=${pagination.pageNo }${pagination.searchParameters}" class="linkButton">${user.userName}</a>
 										</td>
-										<td class="col-type">${user.status}</td>
+										<td class="col-type">
+											<c:if test="${user.status eq '0' }">사용중</c:if>
+											<c:if test="${user.status eq '1' }">사용중지</c:if>
+											<c:if test="${user.status eq '2' }">잠금</c:if>
+											<c:if test="${user.status eq '3' }">휴면</c:if>
+											<c:if test="${user.status eq '4' }">만료</c:if>
+											<c:if test="${user.status eq '5' }">삭제</c:if>
+											<c:if test="${user.status eq '6' }">임시비밀번호</c:if>
+										</td>
 										<td class="col-type">${user.status}</td>
 										<td class="col-type">
 											<fmt:parseDate value="${user.lastSigninDate}" var="viewLastSigninDate" pattern="yyyy-MM-dd HH:mm:ss"/>

@@ -36,6 +36,9 @@ public class UserController implements AuthorizationController {
 	
 	/**
 	 * 사용자 목록
+	 * @param request
+	 * @param userInfo
+	 * @param pageNo
 	 * @param model
 	 * @return
 	 */
@@ -60,12 +63,43 @@ public class UserController implements AuthorizationController {
 	}
 
 	/**
+	 * 사용자 상세 정보
+	 * @param request
+	 * @param userInfo
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "/detail")
+	public String detail(HttpServletRequest request, UserInfo userInfo, Model model) {
+		String listParameters = getSearchParameters(PageType.DETAIL, userInfo);
+		
+		userInfo =  userService.getUser(userInfo.getUserId());
+		//Policy policy = policyService.getPolicy();
+		
+		//model.addAttribute("policy", policy);
+		model.addAttribute("listParameters", listParameters);
+		model.addAttribute("userInfo", userInfo);
+		return "/user/detail";
+	}
+	
+	/**
 	 * 검색 조건
 	 * @param search
 	 * @return
 	 */
 	private String getSearchParameters(PageType pageType, UserInfo userInfo) {
 		StringBuffer buffer = new StringBuffer(userInfo.getParameters());
+		boolean isListPage = true;
+		if(pageType == PageType.MODIFY || pageType == PageType.DETAIL) {
+			isListPage = false;
+		}
+		
+//		if(!isListPage) {
+//			buffer.append("pageNo=" + request.getParameter("pageNo"));
+//			buffer.append("&");
+//			buffer.append("list_count=" + uploadData.getList_counter());
+//		}
+		
 		return buffer.toString();
 	}
 	
