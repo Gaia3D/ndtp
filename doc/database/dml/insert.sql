@@ -6,8 +6,8 @@ values
 
 -- 슈퍼 관리자 등록
 insert into user_info(
-	user_id, user_group_id, user_name, password, user_role_check_yn, last_signin_date
-) values (
+	user_id, user_group_id, user_name, password, user_role_check_yn, last_signin_date)
+values
 	('admin', 1, '슈퍼관리자', '비밀번호', 'N', now()),
 	('ndtp', 2, '스마트시티', '비밀번호', 'N', now());
 
