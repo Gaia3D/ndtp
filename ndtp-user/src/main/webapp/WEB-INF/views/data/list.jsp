@@ -36,8 +36,24 @@
 		<!-- E: NAVWRAP -->	
 		
 		<div id="contentsWrap" class="contentsWrap" style="display: block;">
-			<div class="contents">
-				내용
+			
+			<div id="dataContent" class="contents">
+				dataContent
+			</div>
+			<div id="convertContent" class="contents" style="display:none;">
+				convertContent
+			</div>
+			<div id="spatialContent" class="contents" style="display:none;">
+				spatialContent
+			</div>
+			<div id="simulationContent" class="contents" style="display:none;">
+				simulationContent
+			</div>
+			<div id="joininContent" class="contents" style="display:none;">
+				joininContent
+			</div>
+			<div id="setupContent" class="contents" style="display:none;">
+				setupContent
 			</div>
 			<!-- E: CONTENTS -->
 			
@@ -73,6 +89,7 @@
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript" src="/js/${lang}/MapControll.js"></script>
+<script type="text/javascript" src="/js/${lang}/uiControll.js"></script>
 <script type="text/javascript">
 	//Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIyNmNjOWZkOC03NjdlLTRiZTktYWQ3NS1hNmQ0YjA1ZjIzYWEiLCJpZCI6Mzk5Miwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0NDYwNDQ3M30.AwvoVAuMRwjcMMJ9lEG2v4CPUp8gfltJqZARHgxGv_k';
 	//var viewer = new Cesium.Viewer('magoContainer');
