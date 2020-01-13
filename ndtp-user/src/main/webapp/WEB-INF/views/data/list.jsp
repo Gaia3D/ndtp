@@ -22,6 +22,10 @@
 		.ctrlWrap {
 			z-index:10000;
 		}
+		.ctrlWrap div.zoom button, .ctrlWrap div.rotate button  {
+			width:47px;
+			height:47px;
+		}
     </style>
 </head>
 <body>
@@ -99,12 +103,13 @@
 	function magoLoadEnd(e) {
 		var magoInstance = e;
 
-		// TODO : 세슘 MAP 선택 UI 제거,엔진에서 처리로 변경 예정.
+		
 		
 		var viewer = magoInstance.getViewer(); 
 		var magoManager = magoInstance.getMagoManager();
 		var f4dController = magoInstance.getF4dController();
 
+		// TODO : 세슘 MAP 선택 UI 제거,엔진에서 처리로 변경 예정.
 		viewer.baseLayerPicker.destroy();
 		
 		magoManager.on(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
