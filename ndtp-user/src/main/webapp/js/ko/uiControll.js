@@ -5,7 +5,10 @@ $(function() {
     $("ul.nav li[data-nav]:not(:empty)").click(function() {
         var active = $(this).attr('data-nav');
         var display = $(this).toggleClass('on').hasClass('on');
-
+        if(active === "dataContent") {
+        	window.location="../upload-data/list";
+        }
+        
         $("ul.nav li[data-nav]:not(:empty)").not($(this)).each(function() {
             $(this).removeClass('on');
             $('#' + $(this).attr('data-nav')).hide();
