@@ -211,6 +211,8 @@ right: -25px;
 top: 50%;	
 }
 .contentsBtn > button {
+position:fixed;
+margin-left:-25px;
 display: inline-block;
 width: 25px;
 height: 50px;
@@ -225,6 +227,7 @@ background-color: #ccc;
 
 /* CONTENTSWRAP */
 .contentsWrap {
+position:absolute;
 float: left;
 overflow-y: auto;
 height: 100%;
@@ -232,6 +235,8 @@ width: 370px;
 padding-top: 50px;
 box-sizing: border-box;
 background-color: #eaeaea;
+margin-left:60px;
+z-index:10;
 }
 .contents {
 margin: 7px;
