@@ -45,13 +45,14 @@ values
 	(7, '0', '1', '시민참여', 'CIVIL VOICE', 7, 0, 1, 7, '/civil-voice/list', null, null, 'glyph-dashboard', 'Y', 'Y', 'Y'),
 	(71, '0', '1', '시민참여', 'CIVIL VOICE', 7, 7, 2, 1, '/civil-voice/list', null, null, 'glyph-dashboard', 'Y', 'Y', 'Y'),
 	(8, '0', '1', '환경설정', 'CONFIGURATION', 8, 0, 1, 8, '/policy/modify', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
-	(81, '0', '1', '운영정책', 'CONFIGURATION', 8, 8, 2, 1, '/policy/modify', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
-	(82, '0', '1', '관리자 메뉴', 'ADMIN MENU', 8, 8, 2, 2, '/menu/admin-menu', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
-	(83, '0', '1', '사용자 메뉴', 'USER MENU', 8, 8, 2, 3, '/menu/user-menu', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
-	(84, '0', '1', '위젯', 'WIDGET', 8, 8, 2, 4, '/widget/modify', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
-	(85, '0', '1', '권한', 'ROLE', 8, 8, 2, 5, '/role/list', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
-	(86, '0', '1', '권한 등록', 'ROLE', 8, 8, 2, 6, '/role/input', '/role/list', null, 'glyph-settings', 'N', 'Y', 'N'),
-	(87, '0', '1', '권한 수정', 'ROLE', 8, 8, 2, 7, '/role/modify', '/role/list', null, 'glyph-settings', 'N', 'Y', 'N');
+	(81, '0', '1', '일반 운영정책', 'CONFIGURATION', 8, 8, 2, 1, '/policy/modify', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
+	(82, '0', '1', '공간정보 운영정책', 'CONFIGURATION', 8, 8, 2, 2, '/geopolicy/modify', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
+	(83, '0', '1', '관리자 메뉴', 'ADMIN MENU', 8, 8, 2, 3, '/menu/admin-menu', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
+	(84, '0', '1', '사용자 메뉴', 'USER MENU', 8, 8, 2, 4, '/menu/user-menu', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
+	(85, '0', '1', '위젯', 'WIDGET', 8, 8, 2, 5, '/widget/modify', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
+	(86, '0', '1', '권한', 'ROLE', 8, 8, 2, 6, '/role/list', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
+	(87, '0', '1', '권한 등록', 'ROLE', 8, 8, 2, 7, '/role/input', '/role/list', null, 'glyph-settings', 'N', 'Y', 'N'),
+	(88, '0', '1', '권한 수정', 'ROLE', 8, 8, 2, 8, '/role/modify', '/role/list', null, 'glyph-settings', 'N', 'Y', 'N');
 	
 
 -- 사용자 메뉴
@@ -108,6 +109,7 @@ insert into user_group_menu(user_group_menu_id, user_group_id, menu_id)
 		(85, 1, 85),
 		(86, 1, 86),
 		(87, 1, 87),
+		(88, 1, 88),
 		(NEXTVAL('user_group_menu_seq'), 1, 1001),
 		(NEXTVAL('user_group_menu_seq'), 1, 1002),
 		(NEXTVAL('user_group_menu_seq'), 1, 1003),

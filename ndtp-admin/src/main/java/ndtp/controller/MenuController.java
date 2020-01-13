@@ -406,7 +406,7 @@ public class MenuController {
 				
 				if(i == (count-1)) {
 					// 맨 마지막의 경우 괄호를 닫음
-					if(bigParentheses == 0) {
+					if(bigParentheses == 0 && preParent != 0) {
 						buffer.append("}");
 					} else {
 						for(int k=0; k<bigParentheses; k++) {
@@ -435,7 +435,7 @@ public class MenuController {
 			menu.setMenuType(MenuType.URL.getValue());
 			menu.setMenuTarget(MenuTarget.ADMIN.getValue());
 			menuList.addAll(menuService.getListMenu(menu));
-		} else if (target.equals(MenuTarget.ADMIN.getValue())) {
+		} else if (target.equals(MenuTarget.USER.getValue())) {
 			menu.setMenuType(MenuType.HTMLID.getValue());
 			menu.setMenuTarget(MenuTarget.USER.getValue());
 			menuList.addAll(menuService.getListMenu(menu));
