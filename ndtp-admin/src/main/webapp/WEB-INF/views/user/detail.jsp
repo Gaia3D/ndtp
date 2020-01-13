@@ -24,6 +24,7 @@
 				<div class="page-area">
 					<%@ include file="/WEB-INF/views/layouts/page_header.jsp" %>
 					<div class="page-content">
+						<div class="content-desc u-pull-right"><span class="icon-glyph glyph-emark-dot color-warning"></span><spring:message code='check'/></div>
 						<div class="tabs">
 							<ul>
 								<li><a href="#userInfoTab"><spring:message code='user.input.information'/></a></li>
@@ -216,7 +217,10 @@
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript">
-	
+	$(document).ready(function() {
+		$( ".tabs" ).tabs();
+	});
+
 	//전체 선택 
 	$("#chkAll").click(function() {
 		$(":checkbox[name=uploadDataId]").prop("checked", this.checked);
