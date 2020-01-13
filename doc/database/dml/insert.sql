@@ -8,9 +8,8 @@ values
 insert into user_info(
 	user_id, user_group_id, user_name, password, user_role_check_yn, last_signin_date
 ) values (
-	'admin', 1, '슈퍼관리자', '비밀번호', 'N', now(),
-	'ndtp', 2, '스마트시티', '비밀번호', 'N', now()
-);
+	('admin', 1, '슈퍼관리자', '비밀번호', 'N', now()),
+	('ndtp', 2, '스마트시티', '비밀번호', 'N', now());
 
 -- 관리자 메뉴
 insert into menu(menu_id, menu_type, menu_target, name, name_en, ancestor, parent, depth, view_order, url, url_alias, html_id, css_class, default_yn, use_yn, display_yn)
