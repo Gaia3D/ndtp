@@ -42,7 +42,7 @@
 	<select id="getListUser" parameterType="userInfo" resultType="userInfo">
 		/* getListUser */
 		SELECT X.*, 
-			(SELECT group_name FROM user_group WHERE user_group_id = X.user_group_id) AS user_group_name
+			(SELECT user_group_name FROM user_group WHERE user_group_id = X.user_group_id) AS user_group_name
 		FROM (
 			SELECT *
 			FROM user_info

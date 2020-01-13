@@ -10,9 +10,9 @@
 		<button type="button" class="area" title="면적">면적</button>
 	</div>
 	<div class="rotate"> 
-		<button type="button" class="rotateReset on" title="방향초기화">방향 초기화</button>
+		<button type="button" class="rotateReset on" id="rotateReset" title="방향초기화">방향 초기화</button>
 		<input type="text" placeholder="0">&deg; 
-		<button type="button" class="rotateLeft" title="왼쪽으로 회전">왼쪽으로 회전</button>
-		<button type="button" class="rotateRight" title="오른쪽으로 회전">오른쪽으로 회전</button>
+		<button type="button" class="rotateLeft" id="rotateLeft" title="왼쪽으로 회전">왼쪽으로 회전</button>
+		<button type="button" class="rotateRight" id="rotateRight" title="오른쪽으로 회전">오른쪽으로 회전</button>
 	</div>
 </div>

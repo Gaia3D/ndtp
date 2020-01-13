@@ -1,68 +1,87 @@
-//package ndtp.controller;
-//
-//import java.io.BufferedInputStream;
-//import java.io.BufferedOutputStream;
-//import java.io.File;
-//import java.io.FileInputStream;
-//import java.io.PrintWriter;
-//import java.net.URLEncoder;
-//import java.util.ArrayList;
-//import java.util.HashMap;
-//import java.util.List;
-//import java.util.Map;
-//
-//import javax.annotation.Resource;
-//import javax.servlet.http.HttpServletRequest;
-//import javax.servlet.http.HttpServletResponse;
-//
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
-//import org.springframework.security.crypto.bcrypt.BCrypt;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.ui.Model;
-//import org.springframework.util.FileCopyUtils;
-//import org.springframework.validation.BindingResult;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.ModelAttribute;
-//import org.springframework.web.bind.annotation.PostMapping;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RequestParam;
-//import org.springframework.web.bind.annotation.ResponseBody;
-//import org.springframework.web.multipart.MultipartFile;
-//import org.springframework.web.multipart.MultipartHttpServletRequest;
-//import org.springframework.web.servlet.ModelAndView;
-//
-//import com.gaia3d.config.PropertiesConfig;
-//import com.gaia3d.domain.CacheManager;
-//import com.gaia3d.domain.CommonCode;
-//import com.gaia3d.domain.FileInfo;
-//import com.gaia3d.domain.Pagination;
-//import com.gaia3d.domain.Policy;
-//import com.gaia3d.domain.UserDevice;
-//import com.gaia3d.domain.UserGroup;
-//import com.gaia3d.domain.UserInfo;
-//import com.gaia3d.domain.UserSession;
-//import com.gaia3d.helper.PasswordHelper;
-//import com.gaia3d.security.Crypt;
-//import com.gaia3d.service.UserDeviceService;
-//import com.gaia3d.service.UserGroupService;
-//import com.gaia3d.service.UserService;
-//import com.gaia3d.util.DateUtil;
-//import com.gaia3d.util.FileUtil;
-//import com.gaia3d.util.StringUtil;
-//import com.gaia3d.validator.UserValidator;
-//
-//import lombok.extern.slf4j.Slf4j;
-//
-///**
-// * 사용자
-// * @author jeongdae
-// *
-// */
-//@Slf4j
-//@Controller
-//@RequestMapping("/user/")
-//public class UserController {
+package ndtp.controller;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import lombok.extern.slf4j.Slf4j;
+import ndtp.domain.Key;
+import ndtp.domain.PageType;
+import ndtp.domain.Pagination;
+import ndtp.domain.RoleKey;
+import ndtp.domain.UserInfo;
+import ndtp.domain.UserSession;
+import ndtp.service.UserService;
+
+/**
+ * 사용자
+ * @author kimhj
+ *
+ */
+@Slf4j
+@Controller
+@RequestMapping("/user")
+public class UserController implements AuthorizationController {
+
+	@Autowired
+	private UserService userService;
+	
+	/**
+	 * 사용자 목록
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "/list")
+	public String list(HttpServletRequest request, UserInfo userInfo, @RequestParam(defaultValue="1") String pageNo, Model model) {
+		String roleCheckResult = roleValidate(request);
+    	if(roleValidate(request) != null) return roleCheckResult;
+    	
+    	long totalCount = userService.getUserTotalCount(userInfo);
+    	Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, userInfo), totalCount, Long.valueOf(pageNo).longValue());
+		userInfo.setOffset(pagination.getOffset());
+		userInfo.setLimit(pagination.getPageRows());
+		
+		List<UserInfo> userList = new ArrayList<>();
+		if(totalCount > 0l) {
+			userList = userService.getListUser(userInfo);
+		}
+		
+		model.addAttribute(pagination);
+		model.addAttribute("userList", userList);
+		return "/user/list";
+	}
+
+	/**
+	 * 검색 조건
+	 * @param search
+	 * @return
+	 */
+	private String getSearchParameters(PageType pageType, UserInfo userInfo) {
+		StringBuffer buffer = new StringBuffer(userInfo.getParameters());
+		return buffer.toString();
+	}
+	
+	private String roleValidate(HttpServletRequest request) {
+    	UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		int httpStatusCode = getRoleStatusCode(userSession.getUserGroupId(), RoleKey.ADMIN_USER_MANAGE.name());
+		if(httpStatusCode > 200) {
+			log.info("@@ httpStatusCode = {}", httpStatusCode);
+			request.setAttribute("httpStatusCode", httpStatusCode);
+			return "/error/error";
+		}
+		
+		return null;
+    }
+}
+
 //	
 //	@Autowired
 //	private PropertiesConfig propertiesConfig;
