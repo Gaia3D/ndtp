@@ -41,7 +41,7 @@
 		
 		<div id="contentsWrap" class="contentsWrap" style="display: block;">
 			<div class="contents">
-				내용
+				<%@ include file="/WEB-INF/views/analysis/analysis.jsp" %> 
 			</div>
 			<!-- E: CONTENTS -->
 			
