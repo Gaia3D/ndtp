@@ -153,14 +153,6 @@
 		//우측 상단 지도 컨트롤러
 		MapControll(viewer);
 	}
-	
-	// 상세 메뉴 닫기
-	$('button#closeLeftBtn').click(function() {
-		//$('ul.nav li[data-nav]').removeClass('on');
-		
-		$('#contentsWrap').hide();
-		//$('#closeLeftBtn').toggle();
-	});
 </script>
 </body>
 </html>

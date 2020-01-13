@@ -1,4 +1,12 @@
 $(function() {
+	// 상세 메뉴 닫기
+	$('button#closeLeftBtn').click(function() {
+		//$('ul.nav li[data-nav]').removeClass('on');
+		
+		$('#contentsWrap').hide();
+		$('ul.nav li.on').removeClass('on');
+		//$('#closeLeftBtn').toggle();
+	});
 
 /***** NAV WRAP: 메뉴 *****/
     // 상세 메뉴 클릭 시 기본 동작
@@ -15,4 +23,11 @@ $(function() {
         $('#contentsWrap').toggle(display);
     });
 
+    
+/***** Contents Wrap: 공간분석 *****/	
+	// 공간분석 그룹 클릭 시	
+	$('#spatialContent ul.listDrop li').click(function() {
+		var index = $(this).index();
+		$('#spatialContent ul.listDrop > li:eq('+ index +')').toggleClass('on');
+	});
 });
