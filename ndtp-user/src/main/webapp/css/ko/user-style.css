@@ -1,0 +1,338 @@
+@charset "utf-8";
+/* RESET CSS */
+* { margin:0; padding:0; outline:0; vertical-align:top; }
+article, aside, details, figcaption, figure, footer, header, hgroup, menu nav, section { display:block; }
+ul, ol, dl { list-style:none; }
+img, video { max-width:100%; border:0; vertical-align:top; }
+a {vertical-align:top; text-decoration:none; color:#000; }
+table { border-collapse:collapse; border-spacing:0; }
+input, select { vertical-align:middle; }
+html, body { margin:0; padding:0; height:100%; }
+body, th, td, input, select, textarea { color:#444; font-family:'Malgun Gothic','돋움',dotum, sans-serif; font-size:13px; line-height:1.5em;}
+button { cursor:pointer; font-family:'Malgun Gothic','돋움'; }
+
+/* ////////// LAYOUT ////////// */
+header {
+display: flex;
+height: 50px;
+background-color: #287be4;
+}
+#wrap {
+position: relative;
+height: calc(100% - 50px);
+}
+.map {
+height: 100%;
+}
+
+/* ////////// HEADER ////////// */
+h1 {
+width: 500px;
+height: 50px;
+margin: 13px;
+padding: 0 0 0 80px;
+font-size: 22px;
+letter-spacing: -1px;
+color: #fff;
+cursor: pointer;
+font-weight: normal;
+background: url(/images/ko/logo.png) no-repeat 0 0;
+}
+
+.signArea {
+position: absolute;
+right: 0;
+margin: 10px;
+font-size: 15px;
+color: #fff;
+}
+.signArea > span {
+border-bottom: 1px solid #fff;
+}
+.signArea * {
+vertical-align: middle;
+}
+.signArea > span * {
+vertical-align: middle;
+}
+.signArea > .signButton {
+	margin: 2px 10px 0px 20px;
+	padding: 3px 20px 10px;
+	color: #fff;
+	border-radius: 15px;
+	border: none;
+	background-color: #262b3f;
+}
+
+
+/* ///// GNB WRAP ///// */
+/* 통합검색 */
+#gnbWrap {
+position: absolute;
+left: 60px;
+}
+#gnbWrap div {
+display: inline-block;
+}
+.totalSearch > input {
+width: 301px;
+height: 50px;
+padding: 0 10px;
+font-size: 1.1em;
+border: none;
+}
+.totalSearch {
+border-bottom: 1px solid #ccc;
+}
+.totalSearch > button.btnTotalSearch {
+width: 50px;
+height: 50px;
+margin-left: -5px;
+border: none;
+text-indent: -999em;
+background-color: #fff;
+background-image: url(/images/ko/ico.png);
+background-repeat: no-repeat;
+background-position: 5px -103px;
+}
+/* 행정구역 */
+.district {
+position: relative;
+height: 50px;
+margin-left: -5px;
+padding-right: 10px;
+color: #fff;
+cursor: pointer;
+background-color: #35353d;
+background-image: url(/images/ko/ico.png);
+background-repeat: no-repeat;
+background-position: right -700px;
+}
+.district > p {
+padding: 14px 8px;
+}
+/* 행정구역 레이어 */
+.districtWrap {
+position: absolute;
+left: 371px;
+top: 50px;
+width: 355px;
+box-shadow: 1px 1px 2px 0 #333;
+background-color: #fff;
+}
+.districtLayer {
+overflow: hidden;
+border-bottom: 1px solid #555;
+}
+.districtLayer > ul {
+overflow-x: hidden;
+overflow-y: scroll;
+display: inline-block;
+width: 120px;
+height: 250px;
+margin-left: -5px;
+}
+.districtLayer > ul li {
+display: block;
+padding: 3px 0 3px 8px;
+color: #222;
+cursor: pointer;
+letter-spacing: -1px;
+}
+.districtLayer > ul li:hover {
+background-color: #eee;
+}
+.districtLayer > ul li.on {
+background-color: #dbf1ff;	
+}
+.districtBtn {
+width: 335px;
+padding: 10px;
+text-align: center;
+background-color: #eee;
+}
+.districtBtn > button:first-child {
+width: 150px;
+}
+
+/* ////////// NAVWRAP ////////// */
+/* NAV */
+.navWrap {
+float: left;
+position: relative;
+height: 100%;
+background-color: #262b3f;
+}
+ul.nav {
+float: left;
+height: 100%;
+width: 60px;
+}
+ul.nav li {
+padding: 40px 0 10px 0px;
+font-size: 13px;
+color: #fff;
+cursor: pointer;
+text-align: center;
+border-bottom: 1px dotted #444a61;
+background-image: url(/images/ko/ico.png);
+background-repeat: no-repeat;
+}
+ul.nav li.on {
+background-color: #287be4;
+}
+ul.nav li.search {
+background-position: -445px 10px;
+}
+ul.nav li.data {
+background-position: -445px -90px;
+}
+ul.nav li.convert {
+background-position: -445px -190px;
+}
+ul.nav li.spatial {
+background-position: -445px -290px;
+}
+ul.nav li.simulation {
+letter-spacing: -2px;
+background-position: -445px -390px;
+}
+ul.nav li.joinin {
+background-position: -445px -490px;
+}
+ul.nav li.setup {
+background-position: -445px -590px;
+}
+
+/* CONTENTSBTN */
+.contentsBtn {
+position: absolute;
+right: -25px;
+top: 50%;	
+}
+.contentsBtn > button {
+display: inline-block;
+width: 25px;
+height: 50px;
+color: transparent;
+border-radius: 0px 5px 5px 0;
+border: none;
+background-image: url(/images/ko/ico.png);
+background-position: 8px -405px;
+background-repeat: no-repeat;
+background-color: #ccc;
+}
+
+/* CONTENTSWRAP */
+.contentsWrap {
+float: left;
+overflow-y: auto;
+height: 100%;
+width: 370px;
+padding-top: 50px;
+box-sizing: border-box;
+background-color: #eaeaea;
+}
+.contents {
+margin: 7px;
+padding: 10px;
+border: 1px solid #e0e0e0;
+background-color: #fff;
+}
+
+.contentsCover {
+position: absolute;
+width: calc(100% - 60px);
+height: 100%;
+margin-left: 60px;
+padding: 30px;
+background-color: #fff;
+z-index: 100;
+box-sizing: border-box;
+}
+.contentsCover > div {
+height: 100%;
+}
+
+/* MAP / CTRLBTNS */
+.ctrlWrap {
+position: absolute;
+top: 3px;
+right: 3px;
+}
+.ctrlWrap div {
+display: inline-block;
+color: #fff;
+border-radius: 25px;
+background-color: #252535;
+}
+.ctrlWrap div > button {
+border: none;
+border-radius: 25px;
+background-color: transparent;
+background-image: url(/images/ko/ico.png);
+background-repeat: no-repeat;
+}
+.ctrlWrap div button:hover {
+background-color: #333446;
+}
+.ctrlWrap div.zoom button {
+width: 50px;
+height: 50px;
+text-indent: -999em;
+}
+.ctrlWrap div.rotate button {
+width: 50px;
+height: 50px;
+text-indent: -999em;
+}
+.ctrlWrap div > button.reset {
+background-position: 15px 0;
+}
+.ctrlWrap div > button.zoomall {
+background-position: -35px 0;
+}
+.ctrlWrap div > button.zoomin {
+background-position: -85px 0;
+}
+.ctrlWrap div > button.zoomout {
+background-position: -135px 0;
+}
+.ctrlWrap div > button.distance {
+background-position: -185px 0;
+}
+.ctrlWrap div > button.distance.on {
+background-position: -185px -50px;
+background-color: #fff600;
+}
+.ctrlWrap div > button.area {
+background-position: -242px 0;
+}
+.ctrlWrap div > button.area.on {
+background-position: -242px -50px;
+background-color: #fff600;
+}
+.ctrlWrap div > button.rotateReset {
+background-position: -285px 0;
+}
+.ctrlWrap div > button.rotateReset.on {
+background-color: #fff600;
+background-position: -285px -50px;
+}
+.ctrlWrap div > button.rotateLeft {
+background-position: -340px 0;
+}
+.ctrlWrap div > button.rotateRight {
+background-position: -390px 0;
+}
+.ctrlWrap div > input {
+width: 30px;
+margin-top: 3px;
+padding: 8px;
+font-size: 17px;
+color: #fff;
+text-align: center;
+border: none;
+border-bottom: 2px solid #fff;
+background-color: transparent;
+}

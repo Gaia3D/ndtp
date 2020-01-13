@@ -10,14 +10,11 @@
     </settings>
 
     <typeAliases>
-    	<!-- <typeAlias type="ndtp.domain.ConverterJob" alias="converterJob" />
+    	<typeAlias type="ndtp.domain.ConverterJob" alias="converterJob" />
     	<typeAlias type="ndtp.domain.ConverterJobFile" alias="converterJobFile" />
 		<typeAlias type="ndtp.domain.DataGroup" alias="dataGroup" />
-		<typeAlias type="ndtp.domain.DataAttributeFileInfo" alias="dataAttributeFileInfo" />
 		<typeAlias type="ndtp.domain.DataInfo" alias="dataInfo" />
 		<typeAlias type="ndtp.domain.DataInfoLog" alias="dataInfoLog" />
-		<typeAlias type="ndtp.domain.DataInfoAttribute" alias="dataInfoAttribute" />
-		<typeAlias type="ndtp.domain.DataInfoObjectAttribute" alias="dataInfoObjectAttribute" />
 		<typeAlias type="ndtp.domain.GeoPolicy" alias="geoPolicy" />
     	<typeAlias type="ndtp.domain.Layer" alias="layer" />
     	<typeAlias type="ndtp.domain.LayerGroup" alias="layerGroup" />
@@ -31,7 +28,7 @@
     	<typeAlias type="ndtp.domain.UserGroup" alias="userGroup" />
     	<typeAlias type="ndtp.domain.UserGroupMenu" alias="userGroupMenu" />
     	<typeAlias type="ndtp.domain.UserGroupRole" alias="userGroupRole" />
-    	<typeAlias type="ndtp.domain.UserSession" alias="userSession" /> -->
+    	<typeAlias type="ndtp.domain.UserSession" alias="userSession" />
     </typeAliases>
 
 </configuration>

@@ -1,8 +1,8 @@
 package ndtp.domain;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -71,6 +71,8 @@ public class Menu {
 	private String url;
 	// URL Alias
 	private String urlAlias;
+	// URL Alias Menu id, 현재 선택 메뉴를 표시하기 위함
+	private Integer aliasMenuId;
 	// 메뉴 타입이 HTML ID 일 경우 id값
 	private String htmlId;
 	// 메뉴 타입이 HTML ID 일 경우 메뉴와 한쌍으로 묶이는 content id값
@@ -90,8 +92,8 @@ public class Menu {
 	// 설명
 	private String description;
 	
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
-	private LocalDateTime insertDate;
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Timestamp insertDate;
 	
 //	public String getViewInsertDate() {
 //		if(getInsertDate() == null) {

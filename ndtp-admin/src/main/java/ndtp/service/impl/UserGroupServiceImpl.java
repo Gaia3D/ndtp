@@ -96,6 +96,16 @@ public class UserGroupServiceImpl implements UserGroupService {
 	}
 	
 	/**
+	 * 사용자 그룹 Role Key 목록
+	 * @param userGroupRole
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public List<String> getListUserGroupRoleKey(UserGroupRole userGroupRole) {
+		return userGroupMapper.getListUserGroupRoleKey(userGroupRole);
+	}
+	
+	/**
 	 * 사용자 그룹 등록
 	 * @param userGroup
 	 * @return
@@ -241,16 +251,6 @@ public class UserGroupServiceImpl implements UserGroupService {
 		}
 		
 		return roleIds.length;
-	}
-	
-	/**
-	 * 사용자 그룹 Role Key 목록
-	 * @param userGroupRole
-	 * @return
-	 */
-	@Transactional(readOnly = true)
-	public List<String> getListUserGroupRoleKey(UserGroupRole userGroupRole) {
-		return userGroupMapper.getListUserGroupRoleKey(userGroupRole);
 	}
 	
 	/**

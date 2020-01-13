@@ -16,4 +16,16 @@ public enum RoleTarget {
 	public String getValue() {
 		return this.value;
 	}
+	
+	/**
+	 * TODO values for loop 로 변환
+	 * @param value
+	 * @return
+	 */
+	public static RoleTarget findBy(String value) {
+		for(RoleTarget roleTarget : values()) {
+			if(roleTarget.getValue().equals(value)) return roleTarget; 
+		}
+		return null;
+	}
 }

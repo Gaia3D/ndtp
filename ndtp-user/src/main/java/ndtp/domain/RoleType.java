@@ -18,4 +18,16 @@ public enum RoleType {
 	public String getValue() {
 		return this.value;
 	}
+	
+	/**
+	 * TODO values for loop 로 변환
+	 * @param value
+	 * @return
+	 */
+	public static RoleType findBy(String value) {
+		for(RoleType roleType : values()) {
+			if(roleType.getValue().equals(value)) return roleType; 
+		}
+		return null;
+	}
 }

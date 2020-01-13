@@ -1,10 +1,14 @@
 package ndtp.domain;
 
 public enum RoleKey {
-	// 사용자 사이트 로그인 권한
-	USER_LOGIN,
-	// 레이어 조회 권한
-	USER_LAYER_READ,
-	// 개인별 GIS 설정 권한
-	USER_POLICY_ALL
+	// 관리자 페이지 sign in
+	ADMIN_SIGNIN,
+	// 관리자 페이지 사용자 관리
+	ADMIN_USER_MANAGE,
+	// 관리자 페이지 레이어 관리
+	ADMIN_LAYER_MANAGE,
+	
+	// 사용자 페이지 sign int
+	USER_SIGNIN;
+	
 }
