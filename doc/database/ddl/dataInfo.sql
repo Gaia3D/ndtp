@@ -21,6 +21,7 @@ create table data_group (
 	location		 			GEOMETRY(POINT, 4326),
 	altitude					numeric(7,3),
 	duration					integer,
+	metainfo					jsonb,
 	description					varchar(256),
 	update_date					timestamp with time zone,
 	insert_date					timestamp with time zone			default now(),
@@ -41,6 +42,7 @@ comment on column data_group.available is 'true : 사용, false : 사용안함';
 comment on column data_group.location is 'POINT(위도, 경도). 공간 검색 속도 때문에 altitude는 분리';
 comment on column data_group.altitude is '높이';
 comment on column data_group.duration is 'Map 이동시간';
+comment on column data_group.metainfo is '데이터 그룹 메타 정보. 그룹 control을 위해 인위적으로 만든 속성';
 comment on column data_group.description is '설명';
 comment on column data_group.update_date is '수정일';
 comment on column data_group.insert_date is '등록일';
@@ -91,7 +93,7 @@ comment on column data_info.children_ancestor is '조상';
 comment on column data_info.children_parent is '부모';
 comment on column data_info.children_depth is '깊이';
 comment on column data_info.children_view_order is '표시 순서';
-comment on column data_info.metainfo is '데이터 메타 정보';
+comment on column data_info.metainfo is '데이터 메타 정보. 데이터  control을 위해 인위적으로 만든 속성';
 comment on column data_info.status is '상태. use : 사용중, unused : 사용중지(관리자), delete : 삭제(비표시)';
 comment on column data_info.attribute_exist is '속성 존재 유무. true : 존재, false : 존재하지 않음(기본값)';
 comment on column data_info.object_attribute_exist is 'Object 속성 존재 유무. true : 존재, false : 존재하지 않음(기본값)';

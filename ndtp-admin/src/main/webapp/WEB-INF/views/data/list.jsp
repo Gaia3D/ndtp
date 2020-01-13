@@ -151,7 +151,6 @@
 										<a href="#" onclick="viewMapData('${dataInfo.dataId }'); return false;">보기</a></td>	
 									<td class="col-type">
 										<a href="#" onclick="detailMetainfo('${dataInfo.dataId }'); return false;">보기</a>
-										
 									</td>
 									<td class="col-functions">
 										<span class="button-group">

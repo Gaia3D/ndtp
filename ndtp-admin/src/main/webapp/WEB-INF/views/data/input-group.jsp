@@ -147,6 +147,16 @@
 								</td>
 							</tr>
 							<tr>
+								<th class="col-label" scope="row">
+									<form:label path="metainfo">메타정보</form:label>
+									<span class="icon-glyph glyph-emark-dot color-warning"></span>
+								</th>
+								<td class="col-input">
+									<form:input path="metainfo" class="xl" value="{\"isPhysical\": false}" />
+			  						<form:errors path="metainfo" cssClass="error" />
+								</td>
+							</tr>
+							<tr>
 								<th class="col-label l" scope="row"><form:label path="description"><spring:message code='description'/></form:label></th>
 								<td class="col-input"><form:input path="description" cssClass="xl" /></td>
 							</tr>

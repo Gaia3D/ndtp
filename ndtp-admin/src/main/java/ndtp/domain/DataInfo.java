@@ -88,7 +88,7 @@ public class DataInfo extends Search implements Serializable {
 	// 순서
 	private Integer childrenViewOrder;
 	
-	// 기본 정보
+	// 데이터 메타 정보. 데이터  control을 위해 인위적으로 만든 속성
 	private String metainfo;
 	// data 상태. 0:사용중, 1:사용중지(관리자), 2:삭제(화면 비표시)
 	private String status;
