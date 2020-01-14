@@ -14825,176 +14825,6 @@ ViewerInit.prototype.setEventHandler = function()
 'use strict';
 
 /**
- * color 처리 관련 도메인
- * @class ColorAPI
- */
-var ColorAPI = {};
-
-ColorAPI.changeColor = function(api, magoManager) 
-{
-	var projectId = api.getProjectId();
-	var dataKey = api.getDataKey();
-	var objectIds = api.getObjectIds();
-	var property = api.getProperty();
-	var propertyKey = null;
-	var propertyValue = null;
-	if (property !== null && property !== "") 
-	{
-		var properties = property.split("=");
-		propertyKey = properties[0];
-		propertyValue = properties[1];
-	}
-	var colorString = api.getColor();
-	if (colorString === undefined || colorString === 0)
-	{ return; }
-	
-	var color = api.getColor().split(",");
-	var rgbColor = [ color[0]/255, color[1]/255, color[2]/255 ] ;
-	
-	var isExistObjectIds = false;
-	if (objectIds !== null && objectIds.length !== 0) 
-	{
-		isExistObjectIds = true;
-	}
-	
-	var changeHistorys = [];
-	if (isExistObjectIds) 
-	{
-		for (var i=0, objectCount = objectIds.length; i<objectCount; i++) 
-		{
-			var changeHistory = new ChangeHistory();
-			changeHistory.setProjectId(projectId);
-			changeHistory.setDataKey(dataKey);
-			changeHistory.setObjectId(objectIds[i]);
-			changeHistory.setProperty(property);
-			changeHistory.setPropertyKey(propertyKey);
-			changeHistory.setPropertyValue(propertyValue);
-			changeHistory.setRgbColor(rgbColor);
-			
-			changeHistorys.push(changeHistory);
-		}
-	}
-	else 
-	{
-		var changeHistory = new ChangeHistory();
-		changeHistory.setProjectId(projectId);
-		changeHistory.setDataKey(dataKey);
-		changeHistory.setObjectId(null);
-		changeHistory.setProperty(property);
-		changeHistory.setPropertyKey(propertyKey);
-		changeHistory.setPropertyValue(propertyValue);
-		changeHistory.setRgbColor(rgbColor);
-		
-		changeHistorys.push(changeHistory);
-	}
-
-	var changeHistory;
-	var historiesCount = changeHistorys.length;
-	for (var i=0; i<historiesCount; i++)
-	{
-		changeHistory = changeHistorys[i];
-		MagoConfig.saveColorHistory(projectId, dataKey, changeHistory.getObjectId(), changeHistory);
-	}
-};
-'use strict';
-
-/**
- * Draw 관련 API를 담당하는 클래스
- * 원래는 이렇게 만들려고 한게 아니지만, legacy 파일이랑 이름, function 등이 중복되서 이렇게 만들었음
- * @class DrawAPI
- */
-var DrawAPI = {};
-
-DrawAPI.drawAppendData = function(api, magoManager) 
-{
-	magoManager.getObjectIndexFile(api.getProjectId(), api.getProjectDataFolder());
-};
-
-DrawAPI.drawInsertIssueImage = function(api, magoManager) 
-{
-	// pin 을 표시
-	if (magoManager.objMarkerSC === undefined || api.getDrawType() === 0) 
-	{
-		magoManager.objMarkerSC = new ObjectMarker();
-		magoManager.objMarkerSC.geoLocationData.geographicCoord = new GeographicCoord();
-		ManagerUtils.calculateGeoLocationData(parseFloat(api.getLongitude()), parseFloat(api.getLatitude()), parseFloat(api.getElevation()), 
-			undefined, undefined, undefined, magoManager.objMarkerSC.geoLocationData, magoManager);
-	}
-	
-	var objMarker = magoManager.objMarkerManager.newObjectMarker();
-	
-	magoManager.objMarkerSC.issue_id = api.getIssueId();
-	magoManager.objMarkerSC.issue_type = api.getIssueType();
-	magoManager.objMarkerSC.geoLocationData.geographicCoord.setLonLatAlt(parseFloat(api.getLongitude()), parseFloat(api.getLatitude()), parseFloat(api.getElevation()));
-	
-	objMarker.copyFrom(magoManager.objMarkerSC);
-	magoManager.objMarkerSC = undefined;
-};
-'use strict';
-
-/**
- * 변환 행렬 API
- * @class LocationAndRotationAPI
- */
-var LocationAndRotationAPI = {};
-
-LocationAndRotationAPI.changeLocationAndRotation = function(api, magoManager) 
-{
-//	var buildingId = api.getDataKey();
-//	var buildingType = "structure";
-//	var building = this.getNeoBuildingByTypeId(buildingType, buildingId);
-
-	var changeHistory = new ChangeHistory();
-	changeHistory.setProjectId(api.getProjectId());
-	changeHistory.setDataKey(api.getDataKey());
-	changeHistory.setLatitude(parseFloat(api.getLatitude()));
-	changeHistory.setLongitude(parseFloat(api.getLongitude()));
-	changeHistory.setElevation(parseFloat(api.getElevation()));
-	changeHistory.setHeading(parseFloat(api.getHeading()));
-	changeHistory.setPitch(parseFloat(api.getPitch()));
-	changeHistory.setRoll(parseFloat(api.getRoll()));
-	
-	var lat = api.getLatitude();
-	var lon = api.getLongitude();
-	var elevation = api.getElevation();
-	var heading = api.getHeading();
-	var pitch = api.getPitch();
-	var roll = api.getRoll();
-
-
-	magoManager.changeLocationAndRotation(	api.getProjectId(),
-		api.getDataKey(),
-		lat,
-		lon,
-		elevation,
-		heading,
-		pitch,
-		roll,
-		api.getAnimationOption()
-	);
-	
-	// MagoConfig에 저장......?
-};
-'use strict';
-
-/**
- * lod 처리 관련 도메인
- * @class LodAPI
- */
-var LodAPI = {};
-
-LodAPI.changeLod = function(api, magoManager) 
-{
-	if (api.getLod0DistInMeters() !== null && api.getLod0DistInMeters() !== "") { magoManager.magoPolicy.setLod0DistInMeters(api.getLod0DistInMeters()); }
-	if (api.getLod1DistInMeters() !== null && api.getLod1DistInMeters() !== "") { magoManager.magoPolicy.setLod1DistInMeters(api.getLod1DistInMeters()); }
-	if (api.getLod2DistInMeters() !== null && api.getLod2DistInMeters() !== "") { magoManager.magoPolicy.setLod2DistInMeters(api.getLod2DistInMeters()); }
-	if (api.getLod3DistInMeters() !== null && api.getLod3DistInMeters() !== "") { magoManager.magoPolicy.setLod3DistInMeters(api.getLod3DistInMeters()); }
-	if (api.getLod4DistInMeters() !== null && api.getLod4DistInMeters() !== "") { magoManager.magoPolicy.setLod4DistInMeters(api.getLod4DistInMeters()); }
-	if (api.getLod5DistInMeters() !== null && api.getLod5DistInMeters() !== "") { magoManager.magoPolicy.setLod5DistInMeters(api.getLod5DistInMeters()); }
-};
-'use strict';
-
-/**
  * save the data related with making feature move
  * @class AnimationData
  */
@@ -18391,9 +18221,9 @@ CesiumViewerInit.prototype.geoserverImageProviderBuild = function()
 	}
     
 	var wmsUrl;
-	if (!policy.geoserverImageproviderUrl && geoserverObj) 
+	if (!policy.geoserverImageproviderUrl && geoserver) 
 	{
-		wmsUrl = geoserverObj.getDataRequestUrl();
+		wmsUrl = geoserver.getDataRequestUrl();
 	}
 
 	wmsUrl = policy.geoserverImageproviderUrl;
@@ -37300,6 +37130,176 @@ VisibleObjectsController.prototype.putNodeByLod = function(node, lod)
 'use strict';
 
 /**
+ * color 처리 관련 도메인
+ * @class ColorAPI
+ */
+var ColorAPI = {};
+
+ColorAPI.changeColor = function(api, magoManager) 
+{
+	var projectId = api.getProjectId();
+	var dataKey = api.getDataKey();
+	var objectIds = api.getObjectIds();
+	var property = api.getProperty();
+	var propertyKey = null;
+	var propertyValue = null;
+	if (property !== null && property !== "") 
+	{
+		var properties = property.split("=");
+		propertyKey = properties[0];
+		propertyValue = properties[1];
+	}
+	var colorString = api.getColor();
+	if (colorString === undefined || colorString === 0)
+	{ return; }
+	
+	var color = api.getColor().split(",");
+	var rgbColor = [ color[0]/255, color[1]/255, color[2]/255 ] ;
+	
+	var isExistObjectIds = false;
+	if (objectIds !== null && objectIds.length !== 0) 
+	{
+		isExistObjectIds = true;
+	}
+	
+	var changeHistorys = [];
+	if (isExistObjectIds) 
+	{
+		for (var i=0, objectCount = objectIds.length; i<objectCount; i++) 
+		{
+			var changeHistory = new ChangeHistory();
+			changeHistory.setProjectId(projectId);
+			changeHistory.setDataKey(dataKey);
+			changeHistory.setObjectId(objectIds[i]);
+			changeHistory.setProperty(property);
+			changeHistory.setPropertyKey(propertyKey);
+			changeHistory.setPropertyValue(propertyValue);
+			changeHistory.setRgbColor(rgbColor);
+			
+			changeHistorys.push(changeHistory);
+		}
+	}
+	else 
+	{
+		var changeHistory = new ChangeHistory();
+		changeHistory.setProjectId(projectId);
+		changeHistory.setDataKey(dataKey);
+		changeHistory.setObjectId(null);
+		changeHistory.setProperty(property);
+		changeHistory.setPropertyKey(propertyKey);
+		changeHistory.setPropertyValue(propertyValue);
+		changeHistory.setRgbColor(rgbColor);
+		
+		changeHistorys.push(changeHistory);
+	}
+
+	var changeHistory;
+	var historiesCount = changeHistorys.length;
+	for (var i=0; i<historiesCount; i++)
+	{
+		changeHistory = changeHistorys[i];
+		MagoConfig.saveColorHistory(projectId, dataKey, changeHistory.getObjectId(), changeHistory);
+	}
+};
+'use strict';
+
+/**
+ * Draw 관련 API를 담당하는 클래스
+ * 원래는 이렇게 만들려고 한게 아니지만, legacy 파일이랑 이름, function 등이 중복되서 이렇게 만들었음
+ * @class DrawAPI
+ */
+var DrawAPI = {};
+
+DrawAPI.drawAppendData = function(api, magoManager) 
+{
+	magoManager.getObjectIndexFile(api.getProjectId(), api.getProjectDataFolder());
+};
+
+DrawAPI.drawInsertIssueImage = function(api, magoManager) 
+{
+	// pin 을 표시
+	if (magoManager.objMarkerSC === undefined || api.getDrawType() === 0) 
+	{
+		magoManager.objMarkerSC = new ObjectMarker();
+		magoManager.objMarkerSC.geoLocationData.geographicCoord = new GeographicCoord();
+		ManagerUtils.calculateGeoLocationData(parseFloat(api.getLongitude()), parseFloat(api.getLatitude()), parseFloat(api.getElevation()), 
+			undefined, undefined, undefined, magoManager.objMarkerSC.geoLocationData, magoManager);
+	}
+	
+	var objMarker = magoManager.objMarkerManager.newObjectMarker();
+	
+	magoManager.objMarkerSC.issue_id = api.getIssueId();
+	magoManager.objMarkerSC.issue_type = api.getIssueType();
+	magoManager.objMarkerSC.geoLocationData.geographicCoord.setLonLatAlt(parseFloat(api.getLongitude()), parseFloat(api.getLatitude()), parseFloat(api.getElevation()));
+	
+	objMarker.copyFrom(magoManager.objMarkerSC);
+	magoManager.objMarkerSC = undefined;
+};
+'use strict';
+
+/**
+ * 변환 행렬 API
+ * @class LocationAndRotationAPI
+ */
+var LocationAndRotationAPI = {};
+
+LocationAndRotationAPI.changeLocationAndRotation = function(api, magoManager) 
+{
+//	var buildingId = api.getDataKey();
+//	var buildingType = "structure";
+//	var building = this.getNeoBuildingByTypeId(buildingType, buildingId);
+
+	var changeHistory = new ChangeHistory();
+	changeHistory.setProjectId(api.getProjectId());
+	changeHistory.setDataKey(api.getDataKey());
+	changeHistory.setLatitude(parseFloat(api.getLatitude()));
+	changeHistory.setLongitude(parseFloat(api.getLongitude()));
+	changeHistory.setElevation(parseFloat(api.getElevation()));
+	changeHistory.setHeading(parseFloat(api.getHeading()));
+	changeHistory.setPitch(parseFloat(api.getPitch()));
+	changeHistory.setRoll(parseFloat(api.getRoll()));
+	
+	var lat = api.getLatitude();
+	var lon = api.getLongitude();
+	var elevation = api.getElevation();
+	var heading = api.getHeading();
+	var pitch = api.getPitch();
+	var roll = api.getRoll();
+
+
+	magoManager.changeLocationAndRotation(	api.getProjectId(),
+		api.getDataKey(),
+		lat,
+		lon,
+		elevation,
+		heading,
+		pitch,
+		roll,
+		api.getAnimationOption()
+	);
+	
+	// MagoConfig에 저장......?
+};
+'use strict';
+
+/**
+ * lod 처리 관련 도메인
+ * @class LodAPI
+ */
+var LodAPI = {};
+
+LodAPI.changeLod = function(api, magoManager) 
+{
+	if (api.getLod0DistInMeters() !== null && api.getLod0DistInMeters() !== "") { magoManager.magoPolicy.setLod0DistInMeters(api.getLod0DistInMeters()); }
+	if (api.getLod1DistInMeters() !== null && api.getLod1DistInMeters() !== "") { magoManager.magoPolicy.setLod1DistInMeters(api.getLod1DistInMeters()); }
+	if (api.getLod2DistInMeters() !== null && api.getLod2DistInMeters() !== "") { magoManager.magoPolicy.setLod2DistInMeters(api.getLod2DistInMeters()); }
+	if (api.getLod3DistInMeters() !== null && api.getLod3DistInMeters() !== "") { magoManager.magoPolicy.setLod3DistInMeters(api.getLod3DistInMeters()); }
+	if (api.getLod4DistInMeters() !== null && api.getLod4DistInMeters() !== "") { magoManager.magoPolicy.setLod4DistInMeters(api.getLod4DistInMeters()); }
+	if (api.getLod5DistInMeters() !== null && api.getLod5DistInMeters() !== "") { magoManager.magoPolicy.setLod5DistInMeters(api.getLod5DistInMeters()); }
+};
+'use strict';
+
+/**
  * mago3djs API
  * 
  * @alias API
@@ -38397,12 +38397,12 @@ MagoConfig.init = function(serverPolicy, projectIdArray, projectDataArray)
 		this.geoserver = new GeoServer();
 
 		var info = {
-			"wmsVersion"    : geopolicy.geoserverWmsVersion,
-			"dataUrl"       : geopolicy.geoserverDataUrl,
-			"dataWorkspace" : geopolicy.geoserverDataWorkspace,
-			"dataStore"     : geopolicy.geoserverDataStore,
-			"user"          : geopolicy.geoserverUser,
-			"password"      : geopolicy.geoserverPassword
+			"wmsVersion"    : serverPolicy.geoserverWmsVersion,
+			"dataUrl"       : serverPolicy.geoserverDataUrl,
+			"dataWorkspace" : serverPolicy.geoserverDataWorkspace,
+			"dataStore"     : serverPolicy.geoserverDataStore,
+			"user"          : serverPolicy.geoserverUser,
+			"password"      : serverPolicy.geoserverPassword
 		};
 		this.geoserver.setServerInfo(info);
 	}
@@ -54908,111 +54908,6 @@ TinTerrainManager.prototype.render = function(magoManager, bDepth, renderType, s
 
 
 
-
-'use strict';
-
-/**
- * 메세지
- * 
- * @class
- */
-var Message = function(i18next, message) 
-{
-	this.handle  = i18next;
-	this.message = message || MessageSource;
-};
-
-/**
- * 메세지 클래스 초기화
- *
- * @param {Function} callback
- */
-Message.prototype.init = function (callback)
-{
-	var h = this.handle;
-	this.handle.use(i18nextXHRBackend)
-		.use(i18nextBrowserLanguageDetector)
-		.init({
-			// Useful for debuging, displays which key is missing
-			debug: false,
-
-			detection: {
-				// keys or params to lookup language from
-				lookupQuerystring  : 'lang',
-				lookupCookie       : 'i18nextLang',
-				lookupLocalStorage : 'i18nextLang',
-			},
-    
-			// If translation key is missing, which lang use instead
-			fallbackLng: 'en',
-
-			resources: this.message,
-
-			// all, languageOnly
-			load: "languageOnly",
-
-			ns        : ['common'],
-			// Namespace to use by default, when not indicated
-			defaultNS : 'common',
-    
-			keySeparator     : ".",
-			nsSeparator      : ":",
-			pluralSeparator  : "_",
-			contextSeparator : "_"
-
-		}, function(err, t)
-		{
-			console.log("detected user language: " + h.language);
-			console.log("loaded languages: " + h.languages.join(', '));
-			h.changeLanguage(h.languages[0]);
-			callback(err, t);
-		});
-};
-
-/**
- * 메세지 핸들러를 가져온다.
- *
- * @returns {i18next} message handler
- */
-Message.prototype.getHandle = function ()
-{
-	return this.handle;
-};
-
-/**
- * 메세지를 가져온다.
- *
- * @returns {Object} message
- */
-Message.prototype.getMessage = function ()
-{
-	return this.message;
-};
-
-'use strict';
-var MessageSource = {};
-MessageSource.en = {
-  "common": {
-    "welcome" : "Welcome",
-    "error": {
-        "title" : "Error",
-        "construct" : {
-            "create" : "This object should be created using new."
-        }
-    }
-  }
-};
-MessageSource.ko = {
-    "common": {
-      "welcome" : "환영합니다.",
-      "error": {
-          "title" : "오류",
-          "construct" : {
-              "create" : "이 객체는 new 를 사용하여 생성해야 합니다."
-          }
-      }
-    }
-  };
 
 'use strict';
 
@@ -72894,6 +72789,111 @@ VtxSegment.prototype.intersectionWithPoint = function(point, error)
 
 
 
+
+'use strict';
+
+/**
+ * 메세지
+ * 
+ * @class
+ */
+var Message = function(i18next, message) 
+{
+	this.handle  = i18next;
+	this.message = message || MessageSource;
+};
+
+/**
+ * 메세지 클래스 초기화
+ *
+ * @param {Function} callback
+ */
+Message.prototype.init = function (callback)
+{
+	var h = this.handle;
+	this.handle.use(i18nextXHRBackend)
+		.use(i18nextBrowserLanguageDetector)
+		.init({
+			// Useful for debuging, displays which key is missing
+			debug: false,
+
+			detection: {
+				// keys or params to lookup language from
+				lookupQuerystring  : 'lang',
+				lookupCookie       : 'i18nextLang',
+				lookupLocalStorage : 'i18nextLang',
+			},
+    
+			// If translation key is missing, which lang use instead
+			fallbackLng: 'en',
+
+			resources: this.message,
+
+			// all, languageOnly
+			load: "languageOnly",
+
+			ns        : ['common'],
+			// Namespace to use by default, when not indicated
+			defaultNS : 'common',
+    
+			keySeparator     : ".",
+			nsSeparator      : ":",
+			pluralSeparator  : "_",
+			contextSeparator : "_"
+
+		}, function(err, t)
+		{
+			console.log("detected user language: " + h.language);
+			console.log("loaded languages: " + h.languages.join(', '));
+			h.changeLanguage(h.languages[0]);
+			callback(err, t);
+		});
+};
+
+/**
+ * 메세지 핸들러를 가져온다.
+ *
+ * @returns {i18next} message handler
+ */
+Message.prototype.getHandle = function ()
+{
+	return this.handle;
+};
+
+/**
+ * 메세지를 가져온다.
+ *
+ * @returns {Object} message
+ */
+Message.prototype.getMessage = function ()
+{
+	return this.message;
+};
+
+'use strict';
+var MessageSource = {};
+MessageSource.en = {
+  "common": {
+    "welcome" : "Welcome",
+    "error": {
+        "title" : "Error",
+        "construct" : {
+            "create" : "This object should be created using new."
+        }
+    }
+  }
+};
+MessageSource.ko = {
+    "common": {
+      "welcome" : "환영합니다.",
+      "error": {
+          "title" : "오류",
+          "construct" : {
+              "create" : "이 객체는 new 를 사용하여 생성해야 합니다."
+          }
+      }
+    }
+  };
 
 'use strict';
 

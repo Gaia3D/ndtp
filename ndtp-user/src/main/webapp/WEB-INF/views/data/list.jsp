@@ -94,11 +94,15 @@
 <script type="text/javascript" src="/js/${lang}/MapControll.js"></script>
 <script type="text/javascript" src="/js/${lang}/uiControll.js"></script>
 <script type="text/javascript">
-// 임시로...
-$(document).ready(function() {
-	$(".ui-slider-handle").slider({});
-	$(".${activeContent}").click();
-});
+	// 임시로...
+	$(document).ready(function() {
+		$(".ui-slider-handle").slider({});
+		var activeContent = "${activeContent}";
+		if(activeContent !== undefined && activeContent !== null && activeContent !== "") {
+			$(".${activeContent}").click();			
+		}
+	});
+	
 	//Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIyNmNjOWZkOC03NjdlLTRiZTktYWQ3NS1hNmQ0YjA1ZjIzYWEiLCJpZCI6Mzk5Miwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0NDYwNDQ3M30.AwvoVAuMRwjcMMJ9lEG2v4CPUp8gfltJqZARHgxGv_k';
 	//var viewer = new Cesium.Viewer('magoContainer');
 	var MAGO3D_INSTANCE;
@@ -106,37 +110,27 @@ $(document).ready(function() {
 
 	
 	function magoInit() {
-		$.ajax({
-			url: "/js/temp/geopolicy.json",
-			type: "GET",
-			dataType: "json",
-			success: function(serverPolicy){
-				//cesium Ion token 할당.
-				serverPolicy.cesiumIonToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIyNmNjOWZkOC03NjdlLTRiZTktYWQ3NS1hNmQ0YjA1ZjIzYWEiLCJpZCI6Mzk5Miwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0NDYwNDQ3M30.AwvoVAuMRwjcMMJ9lEG2v4CPUp8gfltJqZARHgxGv_k';
+		var geoPolicyJson = ${geoPolicyJson};
+		
+		var cesiumViewerOption = {};
+			cesiumViewerOption.infoBox = false;
+			cesiumViewerOption.navigationHelpButton = false;
+			cesiumViewerOption.scene3DOnly = true;
+			cesiumViewerOption.selectionIndicator = false;
+			cesiumViewerOption.homeButton = false;
+			cesiumViewerOption.fullscreenButton = false;
+			cesiumViewerOption.geocoder = false;
+			cesiumViewerOption.baseLayerPicker = false;
+			
+		/**
+		 * @param {Stirng} containerId container div id. required.
+		 * @param {object} serverPolicy mage3d geopolicy. required.
+		 * @param {object} callback loadstart callback, loadend callback. option.
+		 * @param {object} options Cesium viewer parameter. option.
+		 * @param {Cesium.Viewer} legacyViewer 타 시스템과의 연동의 경우 view 객체가 생성되어서 넘어 오는 경우가 있음. option.
+		*/	
+		MAGO3D_INSTANCE = new Mago3D.Mago3d('magoContainer', geoPolicyJson, {loadend : magoLoadEnd}, cesiumViewerOption);
 
-				var cesiumViewerOption = {};
- 				cesiumViewerOption.infoBox = false;
- 				cesiumViewerOption.navigationHelpButton = false;
- 				cesiumViewerOption.scene3DOnly = true;
- 				cesiumViewerOption.selectionIndicator = false;
- 				cesiumViewerOption.homeButton = false;
- 				cesiumViewerOption.fullscreenButton = false;
- 				cesiumViewerOption.geocoder = false;
- 				cesiumViewerOption.baseLayerPicker = false;
- 				
-				/**
-				 * @param {Stirng} containerId container div id. required.
-				 * @param {object} serverPolicy mage3d geopolicy. required.
-				 * @param {object} callback loadstart callback, loadend callback. option.
-				 * @param {object} options Cesium viewer parameter. option.
-				 * @param {Cesium.Viewer} legacyViewer 타 시스템과의 연동의 경우 view 객체가 생성되어서 넘어 오는 경우가 있음. option.
-				*/	
-				MAGO3D_INSTANCE = new Mago3D.Mago3d('magoContainer', serverPolicy, {loadend : magoLoadEnd}, cesiumViewerOption);
-			},
-			error: function(e){
-				alert(e.responseText);
-			}
-		});
 	}
 
 	function magoLoadEnd(e) {
@@ -155,6 +149,27 @@ $(document).ready(function() {
 
 		//우측 상단 지도 컨트롤러
 		MapControll(viewer);
+	}
+	
+	// 데이터 그룹 정보
+	function dataGroup() {
+		$.ajax({
+			url: "/data/list-group",
+			data: { "dataGroupId" : dataGroupId },
+			type: "GET",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			dataType: "json",
+			success: function(msg){
+				if(msg.statusCode <= 200) {
+					var projectDataJson = JSON.parse(msg.projectDataJson);
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+				}
+			},
+			error:function(request,status,error){
+				alert(JS_MESSAGE["ajax.error.message"]);
+			}
+		});
 	}
 </script>
 </body>

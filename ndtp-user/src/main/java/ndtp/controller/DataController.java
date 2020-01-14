@@ -5,16 +5,28 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.extern.slf4j.Slf4j;
+import ndtp.config.PropertiesConfig;
 import ndtp.domain.DataInfo;
+import ndtp.domain.GeoPolicy;
+import ndtp.domain.Key;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
+import ndtp.domain.UserSession;
+import ndtp.service.DataGroupService;
+import ndtp.service.DataService;
+import ndtp.service.GeoPolicyService;
+import ndtp.service.PolicyService;
 import ndtp.utils.DateUtils;
 import ndtp.utils.FormatUtils;
 
@@ -23,21 +35,21 @@ import ndtp.utils.FormatUtils;
 @RequestMapping("/data/")
 public class DataController {
 	
-//	@Autowired
-//	private DataGroupService dataGroupService;
-//	@Autowired
-//	private DataService dataService;
-//
-//	@Autowired
-//	private GeoPolicyService geoPolicyService;
-//	
-//	@Autowired
-//	private ObjectMapper objectMapper;
-//	@Autowired
-//	private PolicyService policyService;
-//	
-//	@Autowired
-//	private PropertiesConfig propertiesConfig;
+	@Autowired
+	private DataGroupService dataGroupService;
+	@Autowired
+	private DataService dataService;
+
+	@Autowired
+	private GeoPolicyService geoPolicyService;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
+	@Autowired
+	private PolicyService policyService;
+	
+	@Autowired
+	private PropertiesConfig propertiesConfig;
 	
 	/**
 	 * converter job 목록
@@ -47,13 +59,14 @@ public class DataController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = "list")
-	public String list(HttpServletRequest request, DataInfo dataInfo, @RequestParam(defaultValue = "1") String pageNo,
-			@RequestParam String activeContent, Model model) {
+	@GetMapping(value = "list")
+	public String list(HttpServletRequest request, DataInfo dataInfo, @RequestParam(defaultValue="1") String pageNo, 
+			@RequestParam(defaultValue="") String activeContent, Model model) throws Exception {
 		
-//		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-//		converterJob.setUserId(userSession.getUserId());		
-		log.info("@@ dataInfo = {}", dataInfo);
+		log.info("@@ activeContent = {}, dataInfo = {}", activeContent, dataInfo);
+		
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
 		
 		String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
 		if(StringUtils.isEmpty(dataInfo.getStartDate())) {
@@ -81,9 +94,9 @@ public class DataController {
 		}
 		
 		model.addAttribute(pagination);
-		model.addAttribute("dataList", dataList);
 		model.addAttribute("activeContent", activeContent);
-		
+		model.addAttribute("dataList", dataList);
+		model.addAttribute("geoPolicyJson", objectMapper.writeValueAsString(geoPolicy));
 		return "/data/list";
 	}
 	

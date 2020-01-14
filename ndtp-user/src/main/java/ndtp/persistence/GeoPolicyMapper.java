@@ -17,25 +17,4 @@ public interface GeoPolicyMapper {
 	 * @return
 	 */
 	GeoPolicy getGeoPolicy();
-	
-	/**
-	 * 공간 정보 기본 수정
-	 * @param geoPolicy
-	 * @return
-	 */
-	int updateGeoPolicy(GeoPolicy geoPolicy);
-	
-	/**
-	 * Geo Server 수정
-	 * @param geoPolicy
-	 * @return
-	 */
-	int updateGeoPolicyGeoServer(GeoPolicy geoPolicy);
-	
-	/**
-	 * CallBack Function 수정
-	 * @param geoPolicy
-	 * @return
-	 */
-	int updateGeoPolicyGeoCallBack(GeoPolicy geoPolicy);
 }
