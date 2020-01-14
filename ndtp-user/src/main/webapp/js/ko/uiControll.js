@@ -13,6 +13,14 @@ $(function() {
     $("ul.nav li[data-nav]:not(:empty)").click(function() {
         var active = $(this).attr('data-nav');
         var display = $(this).toggleClass('on').hasClass('on');
+        // 변환(upload-data)이 아닌 컨텐츠 클릭시 다시 지도 페이지로 돌아감 
+        if(location.href.indexOf("upload") > 0) {
+        	$(this).removeClass('on');
+        	var classId = $(this).attr('class');
+        	window.location="../data/list?activeContent="+classId;
+        }
+        
+        // 변환 클릭 이벤트시 url 변경 
         if(active === "convertContent") {
         	window.location="../upload-data/list";
         }

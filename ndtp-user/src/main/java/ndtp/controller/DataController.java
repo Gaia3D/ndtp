@@ -48,7 +48,8 @@ public class DataController {
 	 * @return
 	 */
 	@RequestMapping(value = "list")
-	public String list(HttpServletRequest request, DataInfo dataInfo, @RequestParam(defaultValue="1") String pageNo, Model model) {
+	public String list(HttpServletRequest request, DataInfo dataInfo, @RequestParam(defaultValue = "1") String pageNo,
+			@RequestParam String activeContent, Model model) {
 		
 //		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 //		converterJob.setUserId(userSession.getUserId());		
@@ -81,6 +82,8 @@ public class DataController {
 		
 		model.addAttribute(pagination);
 		model.addAttribute("dataList", dataList);
+		model.addAttribute("activeContent", activeContent);
+		
 		return "/data/list";
 	}
 	
