@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ndtp.persistence.CivilVoiceMapper">
+
+    <!-- CivilVoice 총 건수 -->
+    <select id="getCivilVoiceTotalCount" parameterType="civilVoice" resultType="long">
+        /* getCivilVoiceTotalCount */
+        SELECT COUNT(civil_voice_id)
+        FROM civil_voice
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
+			AND ${searchWord} = #{searchValue}
+			</if>
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
+			AND ${searchWord} LIKE '%' || #{searchValue} || '%'
+			</if>
+			<if test="startDate != null and startDate != ''">
+			<![CDATA[
+			AND insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+			]]>
+			</if>
+			<if test="endDate != null and endDate != ''">
+			<![CDATA[
+			AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+			]]>
+			</if>
+		</trim>
+    </select>
+
+    <!-- CivilVoice 목록 -->
+    <select id="getListCivilVoice" parameterType="civilVoice" resultType="civilVoice">
+        /* getListCivilVoice */
+        SELECT *
+        FROM civil_voice
+        <trim prefix="WHERE" prefixOverrides="AND">
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
+			AND ${searchWord} = #{searchValue}
+			</if>
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
+			AND ${searchWord} LIKE '%' || #{searchValue} || '%'
+			</if>
+			<if test="startDate != null and startDate != ''">
+			<![CDATA[
+			AND insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+			]]>
+			</if>
+			<if test="endDate != null and endDate != ''">
+			<![CDATA[
+			AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+			]]>
+			</if>
+		</trim>
+		<choose>
+		<when test="orderWord != null and orderWord != '' and orderValue != null and orderValue != ''">
+		ORDER BY ${orderWord} ${orderValue}
+		</when>
+		<otherwise>
+		ORDER BY insert_date DESC, civil_voice_id DESC
+		</otherwise>
+		</choose>
+		OFFSET #{offset} LIMIT #{limit}
+    </select>
+
+    <!-- 시민 참여 상세 조회 -->
+    <select id="getCivilVoice" parameterType="civilVoice" resultType="civilVoice">
+        /* getCivilVoice */
+        SELECT *
+        FROM civil_voice
+        WHERE civil_voice_id = #{civilVoiceId}
+    </select>
+
+    <!-- 시민 참여 등록 -->
+    <insert id="insertCivilVoice" parameterType="civilVoice">
+        <selectKey keyProperty="civilVoiceId" resultType="int" order="BEFORE">
+            SELECT NEXTVAL('civil_voice_seq')
+        </selectKey>
+        INSERT INTO civil_voice (
+            layer_id, layer_group_id, sharing, layer_name, layer_key, service_type, layer_type, geometry_type,
+            layer_line_color, layer_line_style, layer_fill_color, layer_alpha_style, default_display, available,
+            label_display, coordinate, description, z_index, user_id
+        ) VALUES (
+         #{layerId}, #{layerGroupId}, #{sharing}, #{layerName}, #{layerKey}, #{serviceType}, #{layerType}, #{geometryType},
+         #{layerLineColor}, #{layerLineStyle}, #{layerFillColor}, #{layerAlphaStyle}, #{defaultDisplay}, #{available},
+         #{labelDisplay}, #{coordinate}, #{description}, #{zIndex}, #{userId}
+        )
+    </insert>
+
+    <!-- 시민 참여 수정 -->
+    <update id="updateCivilVoice" parameterType="civilVoice">
+        /* updateCivilVoice */
+        UPDATE civil_voice
+        SET
+	        layer_name = #{layerName},
+	        layer_group_id = #{layerGroupId},
+	        sharing = #{sharing},
+	        layer_key = #{layerKey},
+	        service_type = #{serviceType},
+	        layer_type = #{layerType},
+	        geometry_type = #{geometryType},
+	        layer_line_color = #{layerLineColor},
+	        layer_line_style = #{layerLineStyle},
+	        layer_fill_color = #{layerFillColor},
+	        layer_alpha_style = #{layerAlphaStyle},
+	        default_display = #{defaultDisplay},
+	        available = #{available},
+	        label_display = #{labelDisplay},
+	        coordinate = #{coordinate},
+	        description = #{description},
+	        z_index = #{zIndex},
+	        user_id = #{userId},
+	        update_date = NOW()
+        WHERE layer_id = #{layerId}
+    </update>
+
+    <!-- 시민 참여 삭제 -->
+    <delete id="deleteCivilVoice" parameterType="civilVoice">
+        /* deleteCivilVoice */
+        DELETE FROM civil_voice WHERE civil_voice_id = #{civilVoiceId}
+    </delete>
+
+</mapper>
