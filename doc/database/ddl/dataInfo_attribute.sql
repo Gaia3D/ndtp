@@ -34,6 +34,7 @@ create table data_info_object_attribute(
 comment on table data_info_object_attribute is '데이터 Object 속성 정보';
 comment on column data_info_object_attribute.data_object_attribute_id is '고유번호';
 comment on column data_info_object_attribute.data_id is 'Data 고유번호';
+comment on column data_info_object_attribute.object_id is '오브젝트 번호';
 comment on column data_info_object_attribute.attributes is 'Object 속성';
 comment on column data_info_object_attribute.update_date is '수정일';
 comment on column data_info_object_attribute.insert_date is '등록일';

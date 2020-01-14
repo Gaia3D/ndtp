@@ -1,7 +1,7 @@
 drop table if exists civil_voice cascade;
 drop table if exists civil_voice_comment cascade;
 
--- 시민의 소리. 실 서비스에서는 파티션으로 전환해야 함
+-- 시민참여. 실 서비스에서는 파티션으로 전환해야 함
 create table civil_voice (
 	civil_voice_id 		bigint,
 	user_id				varchar(32)						not null,
@@ -23,7 +23,7 @@ create table civil_voice (
 	constraint civil_voice_pk 	primary key (civil_voice_id)	
 );
 
-comment on table civil_voice is '공지사항';
+comment on table civil_voice is '시민참여';
 comment on column civil_voice.civil_voice_id is '고유번호';
 comment on column civil_voice.user_id is '사용자 아이디';
 comment on column civil_voice.title is '제목';
@@ -42,7 +42,7 @@ comment on column civil_voice.hour is '시간';
 comment on column civil_voice.minute is '분';
 comment on column civil_voice.insert_date is '등록일';
 
--- 시민의 소리 Comment. 실 서비스에서는 파티션으로 전환해야 함
+-- 시민참여 Comment. 실 서비스에서는 파티션으로 전환해야 함
 create table civil_voice_comment (
 	civil_voice_comment_id		bigint,
 	civil_voice_id 					bigint,
@@ -60,9 +60,9 @@ create table civil_voice_comment (
 	constraint civil_voice_comment_pk 	primary key (civil_voice_comment_id)	
 );
 
-comment on table civil_voice_comment is '시민의 소리 Comment';
+comment on table civil_voice_comment is '시민참여리 Comment';
 comment on column civil_voice_comment.civil_voice_comment_id is '고유번호';
-comment on column civil_voice_comment.civil_voice_id is '시민의 소리 고유번호';
+comment on column civil_voice_comment.civil_voice_id is '시민참여 고유번호';
 comment on column civil_voice_comment.user_id is 'comment 사용자 아이디';
 comment on column civil_voice_comment.title is 'comment 제목';
 comment on column civil_voice_comment.client_ip is 'comment 사용자 IP';
