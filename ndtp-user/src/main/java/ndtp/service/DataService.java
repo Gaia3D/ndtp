@@ -33,6 +33,13 @@ public interface DataService {
 //	Long getDataObjectAttributeTotalCount(DataInfoObjectAttribute dataInfoObjectAttribute);
 	
 	/**
+	 * Data 전체 목록. 페이징 처리 안함
+	 * @param dataInfo
+	 * @return
+	 */
+	List<DataInfo> getAllListData(DataInfo dataInfo);
+	
+	/**
 	 * Data 목록
 	 * @param dataInfo
 	 * @return

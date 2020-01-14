@@ -54,6 +54,16 @@ public class DataServiceImpl implements DataService {
 //	}
 	
 	/**
+	 * Data 전체 목록
+	 * @param dataInfo
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public List<DataInfo> getAllListData(DataInfo dataInfo) {
+		return dataMapper.getAllListData(dataInfo);
+	}
+	
+	/**
 	 * Data 목록
 	 * @param dataInfo
 	 * @return

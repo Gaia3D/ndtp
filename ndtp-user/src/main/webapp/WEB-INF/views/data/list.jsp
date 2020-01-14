@@ -108,6 +108,8 @@
 	//var viewer = new Cesium.Viewer('magoContainer');
 	var MAGO3D_INSTANCE;
 	magoInit();
+	
+	dataGroupList();
 
 	
 	function magoInit() {
@@ -153,17 +155,19 @@
 		SpatialAnalysis(magoInstance);
 	}
 	
-	// 데이터 그룹 정보
-	function dataGroup() {
+	// 데이터 그룹 목록
+	function dataGroupList() {
 		$.ajax({
-			url: "/data/list-group",
-			data: { "dataGroupId" : dataGroupId },
+			url: "/data-groups",
 			type: "GET",
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 			dataType: "json",
 			success: function(msg){
 				if(msg.statusCode <= 200) {
-					var projectDataJson = JSON.parse(msg.projectDataJson);
+					var dataGroupList = msg.dataGroupList;
+					if(dataGroupList !== null && dataGroupList !== undefined) {
+						dataList(dataGroupList);
+					}
 				} else {
 					alert(JS_MESSAGE[msg.errorCode]);
 				}
@@ -172,6 +176,30 @@
 				alert(JS_MESSAGE["ajax.error.message"]);
 			}
 		});
+	}
+	
+	// 데이터 정보 목록
+	function dataList(dataGroupArray) {
+		for(var i=0; i<dataGroupArray.length; i++) {
+			var dataGroup = dataGroupArray[i];
+			$.ajax({
+				url: "/datas",
+				data: { "dataGroupId" : dataGroup.dataGroupId },
+				type: "GET",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+				dataType: "json",
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						var dataInfoList = msg.dataInfoList;
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+					}
+				},
+				error:function(request,status,error){
+					alert(JS_MESSAGE["ajax.error.message"]);
+				}
+			});			
+		}
 	}
 </script>
 </body>

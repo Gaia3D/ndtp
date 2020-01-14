@@ -53,6 +53,22 @@
 	</select>
 	
 	<!-- Data 목록 -->
+	<select id="getAllListData" parameterType="dataInfo" resultType="dataInfo">
+		/* getAllListData */
+		SELECT A.*, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude, B.data_group_name
+		FROM data_info A, data_group B
+		WHERE A.data_group_id = #{dataGroupId}
+			AND A.data_group_id = B.data_group_id
+			<if test="userId != null and userId != ''">
+			AND user_id = #{userId}
+			</if>
+			<if test="status != null and status != ''">
+			AND status = #{status}
+			</if>
+		ORDER BY A.insert_date DESC, A.data_id DESC
+	</select>
+	
+	<!-- Data 목록 -->
 	<select id="getListData" parameterType="dataInfo" resultType="dataInfo">
 		/* getListData */
 		SELECT X.*, ST_X(X.location) AS longitude, ST_Y(X.location) AS latitude,
@@ -207,7 +223,7 @@
 		UPDATE data_info
 		SET 
 			<if test="dataGroupId != null and dataGroupId > 0">
-			data_group_id = #{dataGroupId}
+			data_group_id = #{dataGroupId},
 			</if>
 			<if test="sharing != null and sharing != ''">
 			sharing = #{sharing},
