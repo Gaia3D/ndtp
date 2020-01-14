@@ -138,7 +138,7 @@ public class SigninController {
 			return "redirect:/user/modify-password";
 		}
 		
-		return "redirect:/user/list-group";
+		return "redirect:/main/index";
 	}
 	
 	/**
