@@ -14,7 +14,8 @@ create table layer_group (
 	available					boolean							default true,
 	description					varchar(1000),	
 	update_date             	timestamp with time zone,	
-	insert_date					timestamp with time zone		default now()
+	insert_date					timestamp with time zone		default now(),
+	constraint layer_group_pk 		primary key (layer_group_id)
 );
 
 comment on table layer_group is '레이어 그룹';
