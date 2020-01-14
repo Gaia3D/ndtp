@@ -43,7 +43,7 @@ public class DataGroupRestController {
 	@GetMapping
 	public Map<String, Object> list(HttpServletRequest request, DataGroup dataGroup) {
 		
-		log.info("@@@@@ detail-group dataGroup = {}", dataGroup);
+		log.info("@@@@@ list dataGroup = {}", dataGroup);
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		
