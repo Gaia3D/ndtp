@@ -24,7 +24,7 @@ public interface DataService {
 	 * @param dataInfo
 	 * @return
 	 */
-	Long getDataTotalCountByStatus(DataInfo dataInfo);
+	Long getDataTotalCountByStatus(String status);
 	
 //	/**
 //	 * Data Object 총건수

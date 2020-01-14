@@ -33,6 +33,7 @@
     	<typeAlias type="ndtp.domain.UserGroupMenu" alias="userGroupMenu" />
     	<typeAlias type="ndtp.domain.UserGroupRole" alias="userGroupRole" />
     	<typeAlias type="ndtp.domain.UserSession" alias="userSession" />
+    	<typeAlias type="ndtp.domain.Widget" alias="widget" />
     </typeAliases>
 
 	<!-- <typeHandlers>
