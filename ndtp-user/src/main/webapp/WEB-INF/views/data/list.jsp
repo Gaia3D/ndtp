@@ -109,7 +109,7 @@
 	var MAGO3D_INSTANCE;
 	magoInit();
 	
-	dataGroup();
+	dataGroupList();
 
 	
 	function magoInit() {
@@ -155,8 +155,8 @@
 		SpatialAnalysis(magoInstance);
 	}
 	
-	// 데이터 그룹 정보
-	function dataGroup() {
+	// 데이터 그룹 목록
+	function dataGroupList() {
 		$.ajax({
 			url: "/data-groups",
 			type: "GET",
@@ -164,7 +164,10 @@
 			dataType: "json",
 			success: function(msg){
 				if(msg.statusCode <= 200) {
-					var dataGroupList = new Array(msg.dataGroupList);
+					var dataGroupList = msg.dataGroupList;
+					if(dataGroupList !== null && dataGroupList !== undefined) {
+						dataList(dataGroupList);
+					}
 				} else {
 					alert(JS_MESSAGE[msg.errorCode]);
 				}
@@ -173,6 +176,30 @@
 				alert(JS_MESSAGE["ajax.error.message"]);
 			}
 		});
+	}
+	
+	// 데이터 정보 목록
+	function dataList(dataGroupArray) {
+		for(var i=0; i<dataGroupArray.length; i++) {
+			var dataGroup = dataGroupArray[i];
+			$.ajax({
+				url: "/datas",
+				data: { "dataGroupId" : dataGroup.dataGroupId },
+				type: "GET",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+				dataType: "json",
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						var dataInfoList = msg.dataInfoList;
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+					}
+				},
+				error:function(request,status,error){
+					alert(JS_MESSAGE["ajax.error.message"]);
+				}
+			});			
+		}
 	}
 </script>
 </body>

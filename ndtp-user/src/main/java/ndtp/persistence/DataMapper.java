@@ -37,6 +37,13 @@ public interface DataMapper {
 //	Long getDataObjectAttributeTotalCount(DataInfoObjectAttribute dataInfoObjectAttribute);
 	
 	/**
+	 * Data 전체 목록
+	 * @param dataInfo
+	 * @return
+	 */
+	List<DataInfo> getAllListData(DataInfo dataInfo);
+	
+	/**
 	 * Data 목록
 	 * @param dataInfo
 	 * @return
