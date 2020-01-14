@@ -39,7 +39,7 @@
 		
 		<!-- E: NAVWRAP -->	
 		
-		<div id="contentsWrap" class="contentsWrap" style="display: block;">
+		<div id="contentsWrap" class="contentsWrap" style="display: none;">
 			<div id="dataContent" class="contents">
 				dataContent
 			</div>
@@ -97,6 +97,7 @@
 // 임시로...
 $(document).ready(function() {
 	$(".ui-slider-handle").slider({});
+	$(".${activeContent}").click();
 });
 	//Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIyNmNjOWZkOC03NjdlLTRiZTktYWQ3NS1hNmQ0YjA1ZjIzYWEiLCJpZCI6Mzk5Miwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0NDYwNDQ3M30.AwvoVAuMRwjcMMJ9lEG2v4CPUp8gfltJqZARHgxGv_k';
 	//var viewer = new Cesium.Viewer('magoContainer');
