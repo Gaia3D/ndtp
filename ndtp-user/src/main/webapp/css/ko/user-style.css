@@ -634,14 +634,11 @@ background-color: #fff;
 }
 
 /* FROM NIPA 국방부, 권재현*/
-.btnText {
-padding: 2px 5px;
-font-size: 0.9em;
-color: #888;
-border: 1px solid #ccc;
-border-radius: 2px;
-background-image: none;
+.btnText.on {
+color: #477cdb;
+border: 1px solid #477cdb;
 background-color: #fff;
+background-image: none;
 }
 .btnText:hover {
 color: #477cdb;
@@ -675,7 +672,7 @@ font-weight: bold;
 border:1px solid #e0e0e0;
 background-image: url(/images/ko/ico.png);
 background-repeat: no-repeat;
-background-position: right -255px;
+background-position: right -710px;
 background-color: #fff;
 }
 ul.listDrop li > p > span {
@@ -690,7 +687,7 @@ border-bottom: 3px solid #eaeaea;
 background-color: #287be4;
 background-image: url(/images/ko/ico.png);
 background-repeat: no-repeat;
-background-position: right -210px;
+background-position: right -660px;
 }
 ul.listDrop li p span {
 display: inline-block;

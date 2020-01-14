@@ -43,6 +43,15 @@ $(function() {
 		$('#spatialContent ul.listDrop > li').eq(index).toggleClass('on');
 	});
 	
+	// 공간분석 위치 관련 버튼 클릭 시
+	$('#spatialContent button[class*="draw"]').click(function(e) {
+		$(this).toggleClass('on');
+		
+		$('#spatialContent button[class*="draw"]').not($(this)).each(function(i,a){
+			$(this).removeClass('on');
+		});
+	});
+	
 /***** Contents Wrap: 공간분석 *****/	
 	// 시뮬레이션 그룹 클릭 시	
 	$('#simulationContent ul.listDrop li > p').click(function() {
