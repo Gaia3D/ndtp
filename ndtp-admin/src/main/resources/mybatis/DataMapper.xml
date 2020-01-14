@@ -204,7 +204,7 @@
 		UPDATE data_info
 		SET 
 			<if test="dataGroupId != null and dataGroupId > 0">
-			data_group_id = #{dataGroupId}
+			data_group_id = #{dataGroupId},
 			</if>
 			<if test="sharing != null and sharing != ''">
 			sharing = #{sharing},

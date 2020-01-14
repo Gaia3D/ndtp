@@ -65,7 +65,7 @@ public class DataGroupController {
 	 */
 	@GetMapping(value = "detail-group")
 	@ResponseBody
-	public Map<String, Object> ajaxProject(DataGroup dataGroup) {
+	public Map<String, Object> detailGroup(DataGroup dataGroup) {
 		
 		log.info("@@@@@ detail-group dataGroup = {}", dataGroup);
 		
@@ -78,7 +78,7 @@ public class DataGroupController {
 		try {
 			// TODO @Valid 로 구현해야 함
 			if(dataGroup.getDataGroupId() == null) {
-				result.put("statusCode", statusCode);
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
 				result.put("errorCode", "input.invalid");
 				result.put("message", message);
 				

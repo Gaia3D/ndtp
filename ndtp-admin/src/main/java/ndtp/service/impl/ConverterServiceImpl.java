@@ -161,7 +161,7 @@ public class ConverterServiceImpl implements ConverterService {
 		
 		log.info("----------- input = {}", uploadDataFile.getFilePath());
 		log.info("----------- output = {}", dataGroupRootPath + dataGroup.getDataGroupPath());
-		log.info("----------- log = {}", dataGroupRootPath + dataGroup.getDataGroupPath() + File.separator + "logTest.txt");
+		log.info("----------- log = {}", dataGroupRootPath + dataGroup.getDataGroupPath() + "logTest.txt");
 		
 		log.info("-------------------------------------------------------");
 		
@@ -170,7 +170,7 @@ public class ConverterServiceImpl implements ConverterService {
 		queueMessage.setInputFolder(uploadDataFile.getFilePath());
 		queueMessage.setOutputFolder(dataGroupRootPath + dataGroup.getDataGroupPath());
 		queueMessage.setMeshType("0");
-		queueMessage.setLogPath(dataGroupRootPath + dataGroup.getDataGroupPath() + File.separator + "logTest.txt");
+		queueMessage.setLogPath(dataGroupRootPath + dataGroup.getDataGroupPath() + "logTest.txt");
 		queueMessage.setIndexing("y");
 		
 		// TODO
@@ -190,24 +190,44 @@ public class ConverterServiceImpl implements ConverterService {
 	}
 	
 	private void insertData(String userId, UploadDataFile uploadDataFile) {
-		int order = 1;
-		// TODO nodeType 도 입력해야 함
-		String metainfo = "{\"isPhysical\": true}";
 		
+		String dataKey = uploadDataFile.getFileRealName().substring(0, uploadDataFile.getFileRealName().lastIndexOf("."));
 		DataInfo dataInfo = new DataInfo();
 		dataInfo.setDataGroupId(uploadDataFile.getDataGroupId());
-		dataInfo.setSharing(uploadDataFile.getSharing());
-		dataInfo.setDataKey(uploadDataFile.getFileRealName().substring(0, uploadDataFile.getFileRealName().lastIndexOf(".")));
-		dataInfo.setDataName(uploadDataFile.getFileName().substring(0, uploadDataFile.getFileName().lastIndexOf(".")));
-		dataInfo.setUserId(userId);
-		dataInfo.setLatitude(uploadDataFile.getLatitude());
-		dataInfo.setLongitude(uploadDataFile.getLongitude());
-		dataInfo.setAltitude(uploadDataFile.getAltitude());
-		if(dataInfo.getLongitude() != null && dataInfo.getLatitude() != null) {
-			dataInfo.setLocation("POINT(" + dataInfo.getLongitude() + " " + dataInfo.getLatitude() + ")");
+		dataInfo.setDataKey(dataKey);
+		
+		dataInfo = dataService.getDataByDataKey(dataInfo);
+		if(dataInfo == null) {
+			int order = 1;
+			// TODO nodeType 도 입력해야 함
+			String metainfo = "{\"isPhysical\": true}";
+			
+			dataInfo = new DataInfo();
+			dataInfo.setDataGroupId(uploadDataFile.getDataGroupId());
+			dataInfo.setSharing(uploadDataFile.getSharing());
+			dataInfo.setDataKey(uploadDataFile.getFileRealName().substring(0, uploadDataFile.getFileRealName().lastIndexOf(".")));
+			dataInfo.setDataName(uploadDataFile.getFileName().substring(0, uploadDataFile.getFileName().lastIndexOf(".")));
+			dataInfo.setUserId(userId);
+			dataInfo.setLatitude(uploadDataFile.getLatitude());
+			dataInfo.setLongitude(uploadDataFile.getLongitude());
+			dataInfo.setAltitude(uploadDataFile.getAltitude());
+			if(dataInfo.getLongitude() != null && dataInfo.getLatitude() != null) {
+				dataInfo.setLocation("POINT(" + dataInfo.getLongitude() + " " + dataInfo.getLatitude() + ")");
+			}
+			dataInfo.setMetainfo(metainfo);
+			dataService.insertData(dataInfo);
+		} else {
+			dataInfo.setSharing(uploadDataFile.getSharing());
+			dataInfo.setDataName(uploadDataFile.getFileName().substring(0, uploadDataFile.getFileName().lastIndexOf(".")));
+			dataInfo.setUserId(userId);
+			dataInfo.setLatitude(uploadDataFile.getLatitude());
+			dataInfo.setLongitude(uploadDataFile.getLongitude());
+			dataInfo.setAltitude(uploadDataFile.getAltitude());
+			if(dataInfo.getLongitude() != null && dataInfo.getLatitude() != null) {
+				dataInfo.setLocation("POINT(" + dataInfo.getLongitude() + " " + dataInfo.getLatitude() + ")");
+			}
+			dataService.updateData(dataInfo);
 		}
-		dataInfo.setMetainfo(metainfo);
-		dataService.insertData(dataInfo);
 	}
 	
 	/**

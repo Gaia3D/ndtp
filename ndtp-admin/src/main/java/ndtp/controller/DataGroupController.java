@@ -74,7 +74,7 @@ public class DataGroupController {
 		try {
 			// TODO @Valid 로 구현해야 함
 			if(dataGroup.getDataGroupId() == null) {
-				result.put("statusCode", statusCode);
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
 				result.put("errorCode", "input.invalid");
 				result.put("message", message);
 				

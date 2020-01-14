@@ -108,6 +108,8 @@
 	//var viewer = new Cesium.Viewer('magoContainer');
 	var MAGO3D_INSTANCE;
 	magoInit();
+	
+	dataGroup();
 
 	
 	function magoInit() {
@@ -156,14 +158,13 @@
 	// 데이터 그룹 정보
 	function dataGroup() {
 		$.ajax({
-			url: "/data/list-group",
-			data: { "dataGroupId" : dataGroupId },
+			url: "/data-groups",
 			type: "GET",
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 			dataType: "json",
 			success: function(msg){
 				if(msg.statusCode <= 200) {
-					var projectDataJson = JSON.parse(msg.projectDataJson);
+					var dataGroupList = new Array(msg.dataGroupList);
 				} else {
 					alert(JS_MESSAGE[msg.errorCode]);
 				}
