@@ -23,6 +23,7 @@ create table data_attribute_file_info(
 
 comment on table data_attribute_file_info is '데이터 속성 파일 관리';
 comment on column data_attribute_file_info.data_attribute_file_info_id is '고유번호';
+comment on column data_attribute_file_info.data_id is '데이터 고유번호';
 comment on column data_attribute_file_info.user_id is '사용자 아이디';
 comment on column data_attribute_file_info.job_type is '업무 타입';
 comment on column data_attribute_file_info.file_name is '파일 이름';
