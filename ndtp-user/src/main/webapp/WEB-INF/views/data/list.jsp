@@ -49,26 +49,26 @@
 						<span>112</span>
 					</li>
 					<li>
-						<label>공용</label>
+						<label>공공</label>
 						<span>51</span>
 					</li>
 					<li>
-						<label>개인</label>
+						<label>공개</label>
 						<span>235</span>
 					</li>
 					<li>
-						<label>공개</label>
+						<label>개인</label>
 						<span>32</span>
 					</li>
 					<li>
-						<label>공유</label>
+						<label>그룹</label>
 						<span>1</span>
 					</li>
 				</ul>
 				
 				<!-- 데이터 검색 -->
 				<div class="listSearch">
-					<input type="text" placeholder="검색어를 입력하세요">
+					<input type="text" placeholder="그룹명을 입력하세요">
 					<button type="button" title="검색">검색</button>
 				</div>
 				
@@ -92,10 +92,12 @@
 				<div class="tableList">
 					<table>
 						<thead>
-							<th>그룹명</th>
-							<th>공유타입</th>
-							<th>데이터건수</th>
-							<th>바로가기</th>
+							<tr>
+								<th>그룹명</th>
+								<th>공유타입</th>
+								<th>데이터건수</th>
+								<th>바로가기</th>
+							</tr>
 						</thead>
 						<tbody>
 							<tr>
@@ -135,9 +137,6 @@
 			</div>
 			<!-- E: 데이터 -->
 			
-			<div id="convertContent" class="contents" style="display:none;">
-				convertContent
-			</div>
 			<div id="spatialContent" class="contentsList yScroll" style="display:none;height: 798px;background-color: #fff;">
 				<%@ include file="/WEB-INF/views/spatial/spatial.jsp" %> 
 			</div>
@@ -188,7 +187,6 @@
 <script type="text/javascript" src="/js/${lang}/MapControll.js"></script>
 <script type="text/javascript" src="/js/${lang}/uiControll.js"></script>
 <script type="text/javascript" src="/js/${lang}/SpatialAnalysis.js"></script>
-<script type="text/javascript" src="/js/${lang}/DistrictControll.js"></script>
 <script type="text/javascript">
 	// 임시로...
 	$(document).ready(function() {
@@ -249,8 +247,6 @@
 		MapControll(viewer);
 		//공간분석 기능 수행
 		SpatialAnalysis(magoInstance);
-		
-		DistrictControll(viewer);
 	}
 	
 	// 데이터 그룹 목록
@@ -292,7 +288,6 @@
 						var dataInfoList = msg.dataInfoList;
 						
 						dataGroup.datas = dataInfoList;
-						console.log("---------- " + dataGroup.datas);
 						dataArray.push(dataGroup);
 					} else {
 						alert(JS_MESSAGE[msg.errorCode]);
