@@ -25,7 +25,7 @@
 					<div class="widget widget-low widget-otp-usage full column">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
-								<h3 class="widget-title"><spring:message code='main.issue.issuestatus'/><span class="widget-desc">${yearMonthDay } (<spring:message code='main.today'/>)</span></h3>
+								<h3 class="widget-title"><spring:message code='main.data.status'/><span class="widget-desc">${yearMonthDay } (<spring:message code='main.today'/>)</span></h3>
 							</div>
 						</div><!-- .widget-header -->
 						<div class="widget-content row">
@@ -38,9 +38,9 @@
 										</div>
 									</div>
 									<div>
-										<span class="banner-title"><spring:message code='main.issue.newissue'/></span>
+										<span class="banner-title"><spring:message code='main.data.new'/></span>
 										<span id="firstCountSpinner" class="banner-number"></span>
-										<span class="banner-unit"> ${issueTotalCount} <spring:message code='main.count'/> </span>
+										<span class="banner-unit"> 10 <spring:message code='main.count'/> </span>	<!-- ${issueTotalCount} -->
 									</div>
 								</div>
 							</div>
@@ -54,9 +54,9 @@
 										</div>
 									</div>
 									<div>
-										<span class="banner-title"><spring:message code='main.issue.ongoingissue'/></span>
+										<span class="banner-title"><spring:message code='main.data.success'/></span>
 										<span id="secondeCountSpinner" class="banner-number"></span>
-										<span class="banner-unit"> 0 <spring:message code='main.count'/></span>
+										<span class="banner-unit"> 5 <spring:message code='main.count'/></span>
 									</div>
 								</div>
 							</div>
@@ -70,7 +70,7 @@
 										</div>
 									</div>
 									<div>
-										<span class="banner-title"><spring:message code='main.issue.completedissue'/></span>
+										<span class="banner-title"><spring:message code='main.data.fail'/></span>
 										<span id="thirdCountSpinner" class="banner-number"></span>
 										<span class="banner-unit"> 0 <spring:message code='main.count'/></span>
 									</div>
@@ -827,7 +827,7 @@
 					content 	= "<table class=\"widget-table\">"
 								+	"<col class=\"col-left\" />"
 								+	"<col class=\"col-center\" style=\"min-width:50px;\"/>"
-								+	"<col class=\"col-center\" />";
+								+	"<col class=\"col-center\" style=\"width:140px;\"/>";
 					if(civilVoiceList == null || civilVoiceList.length == 0) {
 						content += 	"<tr>"
 								+	"	<td colspan=\"3\" class=\"col-none\"><spring:message code='main.status.no.civilvoice'/></td>"
@@ -842,8 +842,8 @@
 
 							content = content
 								+ 	"<tr>"
-								+ 	"	<td class=\"col-left\"><em>" + civilVoice.userId + "</em></td>"
-								+ 	"	<td class=\"col-center\">"  + civilVoice.title + "</td>"
+								+ 	"	<td class=\"col-left\">"  + civilVoice.title + "</td>"
+								+ 	"	<td class=\"col-center\">" + civilVoice.userId + "</td>"
 								+ 	"	<td class=\"col-center\">" + insertDate + "</td>"
 								+ 	"</tr>";
 						}

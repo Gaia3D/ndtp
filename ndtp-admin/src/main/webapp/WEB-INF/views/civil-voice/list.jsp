@@ -7,7 +7,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
-	<title>사용자 목록 | NDTP</title>
+	<title>시민참여 목록 | NDTP</title>
 	<link rel="stylesheet" href="/css/${lang}/font/font.css" />
 	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
 	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
@@ -89,28 +89,20 @@
 								</div>
 							</div>
 							<table class="list-table scope-col">
-								<col class="col-checkbox" />
 								<col class="col-number" />
 								<col class="col-name" />
-								<col class="col-name" />
-								<col class="col-name" />
 								<col class="col-type" />
 								<col class="col-type" />
-								<col class="col-functions" />
 								<col class="col-functions" />
 								<col class="col-functions" />
 								<thead>
 									<tr>
-										<th scope="col" class="col-checkbox"><input type="checkbox" id="chkAll" name="chkAll" /></th>
 										<th scope="col" class="col-number"><spring:message code='number'/></th>
-										<th scope="col">그룹명</th>
+					                    <th scope="col" style="width:600px">제목</th>
 					                    <th scope="col">아이디</th>
-					                    <th scope="col">이름</th>
-					                    <th scope="col">상태</th>
-					                    <th scope="col">등록유형</th>
-					                    <th scope="col">마지막 로그인</th>
+					                    <th scope="col">조회수</th>
 					                    <th scope="col">등록일</th>
-					                    <th scope="col">수정/삭제</th>
+					                    <th scope="col">삭제</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -123,32 +115,17 @@
 	<c:forEach var="civilVoice" items="${civilVoiceList}" varStatus="status">
 
 									<tr>
-										<td class="col-checkbox">
-											<input type="checkbox" id="userId_${civilVoice.userId}" name="userId" value="${civilVoice.userId}" />
-										</td>
 										<td class="col-number">${pagination.rowNumber - status.index}</td>
 										<td class="col-name">
-											<a href="/user/group/${civilVoice.civilVoiceId}/menu" class="linkButton">${civilVoice.userId}</a>
-										</td>
-										<td class="col-name">${civilVoice.userId}</td>
-										<td class="col-name">
-											<a href="/user/detail?userId=${civilVoice.userId}&amp;pageNo=${pagination.pageNo }${pagination.searchParameters}" class="linkButton">${civilVoice.userId}</a>
+											<a href="/civil-voice/detail?civilVoiceId=${civilVoice.civilVoiceId}&amp;pageNo=${pagination.pageNo }${pagination.searchParameters}" class="linkButton">${civilVoice.title}</a>
 										</td>
 										<td class="col-type">${civilVoice.userId}</td>
-										<td class="col-type">${civilVoice.civilVoiceId}</td>
-										<td class="col-type">
-											<fmt:parseDate value="${civilVoice.insertDate}" var="viewLastSigninDate" pattern="yyyy-MM-dd HH:mm:ss"/>
-											<fmt:formatDate value="${viewLastSigninDate}" pattern="yyyy-MM-dd HH:mm"/>
-										</td>
-										<td class="col-type">
+										<td class="col-type">${civilVoice.viewCount}</td>
+										<td class="col-functions">
 											<fmt:parseDate value="${civilVoice.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
 											<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
 										</td>
 										<td class="col-functions">
-											<span class="button-group">
-												<a href="#" onclick="deleteUploadData(${civilVoice.userId}); return false;"
-													class="image-button button-modify"><spring:message code='delete'/></a>
-											</span>
 											<span class="button-group">
 												<a href="#" onclick="deleteUploadData(${civilVoice.userId}); return false;"
 													class="image-button button-delete"><spring:message code='delete'/></a>
