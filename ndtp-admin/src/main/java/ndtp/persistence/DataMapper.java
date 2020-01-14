@@ -28,7 +28,7 @@ public interface DataMapper {
 	 * @param dataInfo
 	 * @return
 	 */
-	Long getDataTotalCountByStatus(DataInfo dataInfo);
+	Long getDataTotalCountByStatus(String status);
 	
 //	/**
 //	 * Data Object 총건수

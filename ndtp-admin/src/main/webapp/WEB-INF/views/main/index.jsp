@@ -381,9 +381,9 @@
 	</div>
 	
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
-
-<script type="text/javascript" src="/externlib/jquery/jquery.js"></script>
-<script type="text/javascript" src="/externlib/jquery-ui/jquery-ui.js"></script>
+	
+<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 
 <script type="text/javascript" src="/externlib/jqplot/jquery.jqplot.min.js"></script>
 <script type="text/javascript" src="/externlib/jqplot/plugins/jqplot.barRenderer.min.js"></script>
@@ -410,7 +410,7 @@
 	var isAccessLogDraw = "${isAccessLogDraw}";
 	var isDbcpDraw = "${isDbcpDraw}";
 	var isDbSessionDraw = "${isDbSessionDraw}";
-	
+
 	$(document).ready(function() {
 		if(isProjectDraw == "true") {
 			startSpinner("projectSpinner");
@@ -433,7 +433,7 @@
 		}
 		if(isScheduleLogListDraw == "true") {
 			//startSpinner("scheduleLogListSpinner");
-			scheduleLogListWidget();
+			//scheduleLogListWidget();
 		}
 		if(isAccessLogDraw == "true") {
 			startSpinner("accessLogSpinner");
@@ -486,7 +486,7 @@
 	}
 	
 	function projectWidget() {
-		var url = "/config/ajax-project-data-widget.do";
+		var url = "/main/ajax-project-data-widget";
 		var info = "";
 		$.ajax({
 			url: url,
@@ -559,7 +559,7 @@
 	
 	function dataInfoWidget() {
 		$.ajax({
-			url : "/config/ajax-data-status-widget.do",
+			url : "/main/ajax-data-status-widget",
 			type : "GET",
 			cache : false,
 			dataType : "json",
@@ -648,7 +648,7 @@
 	
 	function dataInfoLogListWidget() {
 		$.ajax({
-			url : "/config/ajax-data-info-log-widget.do",
+			url : "/main/ajax-data-info-log-widget",
 			type : "GET",
 			cache : false,
 			dataType : "json",
@@ -696,7 +696,7 @@
 			}
 		});
 	}
-	
+
 	function issueWidget() {
 		
 	}
@@ -789,7 +789,7 @@
 	// 사용자 상태별 현황 정보 갱신
 	function userWidget() {
 		$.ajax({
-			url : "/main/ajax-user-widget.do",
+			url : "/main/ajax-user-widget",
 			type : "GET",
 			cache : false,
 			dataType : "json",
@@ -812,7 +812,7 @@
 	// 스케줄 실행 이력 갱신
 	function scheduleLogListWidget() {
 		$.ajax({
-			url : "/main/ajax-schedule-log-list-widget.do",
+			url : "/main/ajax-schedule-log-list-widget",
 			type : "GET",
 			cache : false,
 			dataType : "json",
@@ -857,7 +857,7 @@
 	// DB Connection Pool 현황
 	function dbcpWidget() {
 		$.ajax({
-			url : "/main/ajax-dbcp-widget.do",
+			url : "/main/ajax-dbcp-widget",
 			type : "GET",
 			cache : false,
 			dataType : "json",
@@ -890,7 +890,7 @@
 	// 사용자 추적
 	function accessLogWidget() {
 		$.ajax({
-			url : "/main/ajax-access-log-widget.do",
+			url : "/main/ajax-access-log-widget",
 			type : "GET",
 			cache : false,
 			dataType : "json",
