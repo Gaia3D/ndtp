@@ -66,8 +66,8 @@
 				]]>
 				</if>
 			<choose>
-			<when test="order_word != null and order_word != '' and order_value != null and order_value != ''">
-			ORDER BY A.${order_word} ${order_value}
+			<when test="orderWord != null and orderWord != '' and orderValue != null and orderValue != ''">
+			ORDER BY A.${orderWord} ${orderValue}
 			</when>
 			<otherwise>
 			ORDER BY A.insert_date DESC, A.data_id DESC
