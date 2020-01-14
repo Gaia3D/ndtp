@@ -86,7 +86,7 @@
 			data_group_id, data_group_name, data_group_key, 
 			data_group_path, sharing, user_id, ancestor, parent, depth, view_order, children, basic, available, data_count, 
 			<if test="location != null">
-			ST_GeographyFromText(#{location}),
+			location,
 			</if>
 			altitude, duration,
 			<if test="metainfo != null and metainfo != ''">
