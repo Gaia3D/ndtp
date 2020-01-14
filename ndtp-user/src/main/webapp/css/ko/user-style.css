@@ -106,7 +106,7 @@ cursor: pointer;
 background-color: #35353d;
 background-image: url(/images/ko/ico.png);
 background-repeat: no-repeat;
-background-position: right -700px;
+background-position: right -750px;
 }
 .district > p {
 padding: 14px 8px;
@@ -911,5 +911,30 @@ border-bottom: 1px dotted #888;
 .setupContentWrap div label {
 display: inline-block;
 margin-right: 10px;
+}
+
+button.focusB{
+padding: 5px 15px;
+color: #fff;
+border: 1px solid #51515b;
+border-radius: 3px;
+background-color: #51515b;
+}
+button.focusB:hover {
+color: #477cdb;
+border: 1px solid #477cdb;
+background-color: #fff;
+}
+button.basicB {
+padding: 5px;
+color: #51515b;
+border: 1px solid #9898a0;
+border-radius: 3px;
+background-color: #fff;
+}
+button.basicB:hover {
+color: #477cdb;
+border: 1px solid #477cdb;
+background-color: #fff;
 }
 
