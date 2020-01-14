@@ -46,7 +46,6 @@
 		SELECT COUNT(data_id) 
 		FROM data_info
 		WHERE status = #{status} 
-			AND parent > 0
 			<!-- <if test="userId != null and userId != ''">
 			AND user_id = #{userId}
 			</if> -->
@@ -132,7 +131,6 @@
 		SELECT *
 		FROM data_info
 		WHERE data_group_id = #{dataGroupId} 
-			AND parent = 0
 			AND depth = 1
 	</select>
 	
@@ -150,7 +148,7 @@
 		/* getViewOrderByParent */
 		SELECT COALESCE(MAX(view_order), 0) + 1 
 		FROM data_info
-		WHERE parent = #{parent}
+		WHERE children_parent = #{childrenParent}
 	</select>
 	
 	<!-- 한 프로젝트 내 Root Parent 개수를 체크 -->
@@ -159,7 +157,6 @@
 		SELECT COUNT(data_id) 
 		FROM data_info 
 		WHERE data_group_id = #{dataGroupId} 
-			AND parent = 0 
 			AND depth = 1
 			AND data_id != #{dataId}
 	</select>
@@ -284,7 +281,6 @@
 		DELETE 
 		FROM data_info 
 		WHERE data_group_id = #{dataGroupId} 
-			AND parent = 0 
 			AND depth = 1
 			<if test="userId != null and userId != ''">
 			AND user_id = #{userId}
