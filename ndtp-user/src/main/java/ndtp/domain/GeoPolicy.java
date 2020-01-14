@@ -44,7 +44,7 @@ public class GeoPolicy {
 	private String dataChangeRequestDecision;
 	
 	// geoserver 사용유무. Y : 사용(기본값), N : 미사용
-	private String geoserverEnable;
+	private Boolean geoserverEnable;
 	// geoserver wms 버전. 기본 1.1.1
 	private String geoserverWmsVersion;
 	// geoserver 데이터 URL
@@ -89,7 +89,7 @@ public class GeoPolicy {
 	private String geoserverTerrainproviderParametersFormat;
 	
 	// 초기 카메라 이동 유무. 기본 true
- 	private String initCameraEnable;
+ 	private Boolean initCameraEnable;
  	// 초기 카메라 이동 위도
  	private String initLatitude;
  	// 초기 카메라 이동 경도
