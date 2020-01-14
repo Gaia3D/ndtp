@@ -134,6 +134,23 @@
 				</ul>
 			</div>
 			<!-- E: 데이터 -->
+			
+			<div id="convertContent" class="contents" style="display:none;">
+				convertContent
+			</div>
+			<div id="spatialContent" class="contentsList yScroll" style="display:none;height: 798px;background-color: #fff;">
+				<%@ include file="/WEB-INF/views/spatial/spatial.jsp" %> 
+			</div>
+			<div id="simulationContent" class="contentsList yScroll" style="display:none;">
+				<%@ include file="/WEB-INF/views/simulation/simulation.jsp" %>
+			</div>
+			<div id="joininContent" class="contents" style="display:none;">
+				<%@ include file="/WEB-INF/views/joinin/joinin.jsp" %>
+			</div>
+			<div id="setupContent" class="contents" style="display:none;">
+				<%@ include file="/WEB-INF/views/setup/setup.jsp" %>
+			</div>
+			<!-- E: CONTENTS -->
 			<!-- E: CONTENTS -->
 			
 			<div class="contentsBtn">
