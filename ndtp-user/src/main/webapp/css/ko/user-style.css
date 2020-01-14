@@ -938,3 +938,111 @@ border: 1px solid #477cdb;
 background-color: #fff;
 }
 
+
+
+/* 페이징 */
+.pager {
+border-top: 1px solid #eee;
+text-align: center;
+background-color: #fff;
+}
+.pager * {
+vertical-align: middle;
+}
+.pager > div {
+display: inline-block;
+overflow: hidden;
+height: 30px;
+max-width: 300px;
+}
+.pager a {
+display: inline-block;
+margin: 0 -3px;
+padding: 5px;
+cursor: pointer;
+}
+.pager a.thispage {
+color: tomato;
+}
+.pager > button {
+width: 20px;
+height: 20px;
+margin: 0 -2px;
+border: none;
+text-indent: -999em;
+background-color: #fff;
+background-image: url(../images/ico.png);
+background-repeat: no-repeat;
+}
+.pager > button.first {
+background-position: -50px -299px;
+}
+.pager > button.forward {
+background-position: -79px -299px;
+}
+.pager > button.next {
+background-position: -104px -299px;
+}
+.pager > button.last {
+background-position: -132px -299px;
+}
+.pager > button:hover {
+border-radius: 10px;
+background-color: #eee;
+}
+.topLine {
+border-top: 1px solid #ccc;
+}
+.pagerB {
+padding:10px;
+background-color: #fff;
+}
+.pagerB * {
+vertical-align: middle;
+}
+.pagerB .countPage {
+color: #477cdb;
+}
+.pagerB > div {
+float: right;
+}
+.pagerB div > input {
+border: none;
+text-align: center;
+border-bottom: 1px solid #757575;
+}
+.pagerB div > button {
+
+margin: 0 -2px;
+background-color: #fff;
+background-image: url(../images/ico.png);
+background-repeat: no-repeat;
+}
+.pagerB div > button.first {
+width: 20px;
+height: 20px;
+border: none;
+text-indent: -999em;
+background-position: -50px -299px;
+}
+.pagerB div > button.forward {
+width: 20px;
+height: 20px;
+border: none;
+text-indent: -999em;
+background-position: -79px -299px;
+}
+.pagerB div > button.next {
+width: 20px;
+height: 20px;
+border: none;
+text-indent: -999em;
+background-position: -104px -299px;
+}
+.pagerB div > button.last {
+width: 20px;
+height: 20px;
+border: none;
+text-indent: -999em;
+background-position: -132px -299px;
+}

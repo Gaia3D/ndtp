@@ -40,6 +40,9 @@
 		<!-- E: NAVWRAP -->	
 		
 		<div id="contentsWrap" class="contentsWrap" style="display: none;">
+			<div id="searchContent" class="contentsList yScroll" style="display:none;">
+				<%@ include file="/WEB-INF/views/district/search.jsp" %>
+			</div>
 			<div id="dataContent" class="contents fullHeight">
 				<!-- 데이터 그룹 -->
 				<h3>데이터 그룹</h3>
