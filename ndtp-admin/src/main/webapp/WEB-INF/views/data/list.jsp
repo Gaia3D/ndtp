@@ -523,28 +523,28 @@
 			}
 		}
 	}
-	
+
 	function searchCheck() {
-		if($("#search_option").val() == "1") {
+		if($("#searchOption").val() == "1") {
 			if(confirm(JS_MESSAGE["search.option.warning"])) {
 				// go
 			} else {
 				return false;
 			}
-		} 
-		
-		var start_date = $("#start_date").val();
-		var end_date = $("#end_date").val();
-		if(start_date != null && start_date != "" && end_date != null && end_date != "") {
-			if(parseInt(start_date) > parseInt(end_date)) {
+		}
+
+		var startDate = $("#startDate").val();
+		var endDate = $("#endDate").val();
+		if(startDate != null && startDate != "" && endDate != null && endDate != "") {
+			if(parseInt(startDate) > parseInt(endDate)) {
 				alert(JS_MESSAGE["search.date.warning"]);
-				$("#start_date").focus();
+				$("#startDate").focus();
 				return false;
 			}
 		}
 		return true;
 	}
-	
+
 	// 일괄등록(파일)
 	var dataFileUploadFlag = true;
 	function dataFileUpload() {

@@ -25,22 +25,22 @@
 					<%@ include file="/WEB-INF/views/layouts/page_header.jsp" %>
 					<div class="page-content">
 						<div class="filters">
-							<form:form id="searchForm" modelAttribute="userList" method="post" action="" onsubmit="return searchCheck();">
-							<div class="input-group row">
-								<div class="input-set">
+							<form:form id="searchForm" modelAttribute="userInfo" method="post" action="/user/list" onsubmit="return searchCheck();">
+								<div class="input-group row">
+									<div class="input-set">
 									<label for="searchWord"><spring:message code='search.word'/></label>
 									<select id="searchWord" name="searchWord" class="select" style="height: 30px;">
 										<option value=""><spring:message code='select'/></option>
-					          			<option value="data_name">파일명</option>
+					          			<option value="user_name">사용자명</option>
 									</select>
 									<select id="searchOption" name="searchOption" class="select" style="height: 30px;">
-										<%-- <option value="0"><spring:message code='search.same'/></option>
-										<option value="1"><spring:message code='search.include'/></option> --%>
+										<option value="0"><spring:message code='search.same'/></option>
+										<option value="1"><spring:message code='search.include'/></option>
 									</select>
-									<%-- <form:input path="searchValue" type="search" cssClass="m" cssStyle="float: right;" /> --%>
+									<form:input path="searchValue" type="search" cssClass="m" cssStyle="float: right;" />
 								</div>
 								<div class="input-set">
-									<%-- <label for="startDate"><spring:message code='search.date'/></label> --%>
+									<label for="startDate"><spring:message code='search.date'/></label>
 									<input type="text" class="s date" id="startDate" name="startDate" />
 									<span class="delimeter tilde">~</span>
 									<input type="text" class="s date" id="endDate" name="endDate" />
@@ -49,7 +49,7 @@
 									<label for="orderWord"><spring:message code='search.order'/></label>
 									<select id="orderWord" name="orderWord" class="select" style="height: 30px;">
 										<option value=""> <spring:message code='search.basic'/> </option>
-										<option value="data_name">파일명</option>
+										<option value="user_name">사용자명</option>
 										<option value="insertDate"> <spring:message code='search.insert.date'/> </option>
 									</select>
 									<select id="orderValue" name="orderValue" class="select" style="height: 30px;">
@@ -70,21 +70,21 @@
 							</form:form>
 						</div>
 						<div class="list">
-							<form:form id="listForm" modelAttribute="userList" method="post">
+							<form:form id="listForm" modelAttribute="userInfo" method="post">
 								<input type="hidden" id="checkIds" name="checkIds" value="" />
 							<div class="list-header row">
 								<div class="list-desc u-pull-left">
-									<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/> 
+									<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/>
 									<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/>
 								</div>
 								<div class="list-functions u-pull-right">
 									<!-- <div style="padding-bottom: 3px;" class="button-group">
-										<a href="#" onclick="return false;" class="button">비밀번호 초기화</a>	
-										<a href="#" onclick="return false;" class="button">사용자 잠금</a>	
-										<a href="#" onclick="return false;" class="button">사용자 잠금 해제</a>	
-										<a href="#" onclick="return false;" class="button">일괄삭제</a>	
-										<a href="#" onclick="return false;" class="button">일괄등록(EXCEL)</a>	
-										<a href="#" onclick="return false;" class="button">다운로드(EXCEL)</a>	
+										<a href="#" onclick="return false;" class="button">비밀번호 초기화</a>
+										<a href="#" onclick="return false;" class="button">사용자 잠금</a>
+										<a href="#" onclick="return false;" class="button">사용자 잠금 해제</a>
+										<a href="#" onclick="return false;" class="button">일괄삭제</a>
+										<a href="#" onclick="return false;" class="button">일괄등록(EXCEL)</a>
+										<a href="#" onclick="return false;" class="button">다운로드(EXCEL)</a>
 									</div> -->
 								</div>
 							</div>
@@ -121,7 +121,7 @@
 </c:if>
 <c:if test="${!empty userList}">
 	<c:forEach var="user" items="${userList}" varStatus="status">
-				
+
 									<tr>
 										<td class="col-checkbox">
 											<input type="checkbox" id="userId_${user.userId}" name="userId" value="${user.userId}" />
@@ -154,11 +154,11 @@
 										</td>
 										<td class="col-functions">
 											<span class="button-group">
-												<a href="#" onclick="deleteUploadData(${user.userId}); return false;" 
+												<a href="#" onclick="deleteUploadData(${user.userId}); return false;"
 													class="image-button button-modify"><spring:message code='delete'/></a>
 											</span>
 											<span class="button-group">
-												<a href="#" onclick="deleteUploadData(${user.userId}); return false;" 
+												<a href="#" onclick="deleteUploadData(${user.userId}); return false;"
 													class="image-button button-delete"><spring:message code='delete'/></a>
 											</span>
 										</td>
@@ -168,14 +168,14 @@
 								</tbody>
 							</table>
 							</form:form>
-								
+
 						</div>
 						<%@ include file="/WEB-INF/views/common/pagination.jsp" %>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>	
+	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
 
 	<%-- F4D Converter Job 등록 --%>
@@ -220,12 +220,12 @@
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript">
-	
-	//전체 선택 
+
+	//전체 선택
 	$("#chkAll").click(function() {
 		$(":checkbox[name=uploadDataId]").prop("checked", this.checked);
 	});
-	
+
 	var dialogConverterJob = $( ".dialogConverterJob" ).dialog({
 		autoOpen: false,
 		height: 280,
@@ -235,18 +235,18 @@
 		close: function() {
 			$("#converterCheckIds").val("");
 			$("#title").val("");
-			//location.reload(); 
+			//location.reload();
 		}
 	});
-	
+
 	// F4D Converter Button Click
 	function converterFile(uploadDataId, dataName) {
 		$("#converterCheckIds").val(uploadDataId + ",");
 		$("#title").val(dataName);
-		
+
 		dialogConverterJob.dialog( "open" );
 	}
-	
+
 	// All F4D Converter Button Click
 	function converterFiles() {
 		var checkedValue = "";
@@ -258,10 +258,10 @@
 			return;
 		}
 		$("#converterCheckIds").val(checkedValue);
-		
+
 		dialogConverterJob.dialog( "open" );
 	}
-	
+
 	// F4D Converter 일괄 변환
 	var saveConverterJobFlag = true;
 	function saveConverterJob() {
@@ -270,7 +270,7 @@
 			$("#title").focus();
 			return false;
 		}
-		
+
 		if(saveConverterJobFlag) {
 			saveConverterJobFlag = false;
 			var formData =$("#converterJobForm").serialize();
@@ -282,11 +282,11 @@
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				success: function(msg){
 					if(msg.statusCode <= 200) {
-						alert(JS_MESSAGE["insert"]);	
+						alert(JS_MESSAGE["insert"]);
 					} else {
 						alert(JS_MESSAGE[msg.errorCode]);
 					}
-					
+
 					$("#converterCheckIds").val("");
 					$("#title").val("");
 					$(":checkbox[name=uploadDataId]").prop("checked", false);
@@ -304,11 +304,11 @@
 			return;
 		}
 	}
-	
+
 	function deleteUploadData(uploadDataId) {
 		deleteAllUploadData(uploadDataId);
 	}
-	
+
 	// 삭제
 	var deleteUploadDataFlag = true;
 	function deleteAllUploadData(uploadDataId) {
@@ -328,7 +328,7 @@
 		} else {
 			formData = "checkIds=" + uploadDataId;
 		}
-		
+
 		if(confirm(JS_MESSAGE["delete.confirm"])) {
 			if(deleteUploadDataFlag) {
 				deleteUploadDataFlag = false;
@@ -340,7 +340,7 @@
 					headers: {"X-Requested-With": "XMLHttpRequest"},
 					success: function(msg){
 						if(msg.statusCode <= 200) {
-							alert(JS_MESSAGE["delete"]);	
+							alert(JS_MESSAGE["delete"]);
 							location.reload();
 						} else {
 							alert(JS_MESSAGE[msg.errorCode]);
@@ -357,6 +357,27 @@
 				return;
 			}
 		}
+	}
+
+	function searchCheck() {
+		if($("#searchOption").val() == "1") {
+			if(confirm(JS_MESSAGE["search.option.warning"])) {
+				// go
+			} else {
+				return false;
+			}
+		}
+
+		var startDate = $("#startDate").val();
+		var endDate = $("#endDate").val();
+		if(startDate != null && startDate != "" && endDate != null && endDate != "") {
+			if(parseInt(startDate) > parseInt(endDate)) {
+				alert(JS_MESSAGE["search.date.warning"]);
+				$("#startDate").focus();
+				return false;
+			}
+		}
+		return true;
 	}
 </script>
 </body>

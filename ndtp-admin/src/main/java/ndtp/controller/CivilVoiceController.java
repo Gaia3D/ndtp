@@ -31,10 +31,10 @@ public class CivilVoiceController implements AuthorizationController {
 
 	@Autowired
     private CivilVoiceService civilVoiceService;
-	
+
 	@Autowired
     private PolicyService policyService;
-	
+
     @Autowired
     private PropertiesConfig propertiesConfig;
 
@@ -45,22 +45,20 @@ public class CivilVoiceController implements AuthorizationController {
 	public String list(HttpServletRequest request, @RequestParam(defaultValue="1") String pageNo, CivilVoice civilVoice, Model model) {
 		String roleCheckResult = roleValidate(request);
     	if(roleValidate(request) != null) return roleCheckResult;
-		
+
 		Long totalCount = civilVoiceService.getCivilVoiceTotalCount(civilVoice);
 		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, civilVoice), totalCount, Long.valueOf(pageNo).longValue());
 		civilVoice.setOffset(pagination.getOffset());
 		civilVoice.setLimit(pagination.getPageRows());
-		
+
 		List<CivilVoice> civilVoiceList = new ArrayList<>();
 		if(totalCount > 0l) {
 			civilVoiceList = civilVoiceService.getListCivilVoice(civilVoice);
 		}
-		
+
 		model.addAttribute(pagination);
-		model.addAttribute("civilVoice", civilVoice);
-		model.addAttribute("totalCount", totalCount);
 		model.addAttribute("civilVoiceList", civilVoiceList);
-		
+
 		return "/civil-voice/list";
 	}
 
@@ -74,28 +72,28 @@ public class CivilVoiceController implements AuthorizationController {
 	@GetMapping(value = "detail")
 	public String detail(HttpServletRequest request, CivilVoice civilVoice, Model model) {
 		String listParameters = getSearchParameters(PageType.DETAIL, civilVoice);
-		
+
 		civilVoice =  civilVoiceService.getCivilVoice(civilVoice);
 		Policy policy = policyService.getPolicy();
-		
+
 		model.addAttribute("policy", policy);
 		model.addAttribute("listParameters", listParameters);
 		model.addAttribute("civilVoice", civilVoice);
 		return "/civil-voice/detail";
 	}
-	
+
 	/**
 	 * 사용자 등록 화면
 	 */
 	@GetMapping(value = "input")
 	public String input(Model model) {
 		Policy policy = policyService.getPolicy();
-		
+
 		model.addAttribute("policy", policy);
 		model.addAttribute("civilVoice", new CivilVoice());
 		return "/user/input";
 	}
-	
+
 	/**
 	 * 검색 조건
 	 * @param search
@@ -107,16 +105,16 @@ public class CivilVoiceController implements AuthorizationController {
 		if(pageType == PageType.MODIFY || pageType == PageType.DETAIL) {
 			isListPage = false;
 		}
-		
+
 //		if(!isListPage) {
 //			buffer.append("pageNo=" + request.getParameter("pageNo"));
 //			buffer.append("&");
 //			buffer.append("list_count=" + uploadData.getList_counter());
 //		}
-		
+
 		return buffer.toString();
 	}
-	
+
 	private String roleValidate(HttpServletRequest request) {
     	UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		int httpStatusCode = getRoleStatusCode(userSession.getUserGroupId(), RoleKey.ADMIN_USER_MANAGE.name());
@@ -125,8 +123,8 @@ public class CivilVoiceController implements AuthorizationController {
 			request.setAttribute("httpStatusCode", httpStatusCode);
 			return "/error/error";
 		}
-		
+
 		return null;
     }
-	
+
 }

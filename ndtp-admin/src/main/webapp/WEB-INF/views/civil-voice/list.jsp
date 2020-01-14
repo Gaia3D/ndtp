@@ -25,22 +25,22 @@
 					<%@ include file="/WEB-INF/views/layouts/page_header.jsp" %>
 					<div class="page-content">
 						<div class="filters">
-							<form:form id="searchForm" modelAttribute="userList" method="post" action="" onsubmit="return searchCheck();">
-							<div class="input-group row">
-								<div class="input-set">
+							<form:form id="searchForm" modelAttribute="civilVoice" method="post" action="/civil-voice/list" onsubmit="return searchCheck();">
+								<div class="input-group row">
+									<div class="input-set">
 									<label for="searchWord"><spring:message code='search.word'/></label>
 									<select id="searchWord" name="searchWord" class="select" style="height: 30px;">
 										<option value=""><spring:message code='select'/></option>
-					          			<option value="data_name">파일명</option>
+					          			<option value="title">제목명</option>
 									</select>
 									<select id="searchOption" name="searchOption" class="select" style="height: 30px;">
-										<%-- <option value="0"><spring:message code='search.same'/></option>
-										<option value="1"><spring:message code='search.include'/></option> --%>
+										<option value="0"><spring:message code='search.same'/></option>
+										<option value="1"><spring:message code='search.include'/></option>
 									</select>
-									<%-- <form:input path="searchValue" type="search" cssClass="m" cssStyle="float: right;" /> --%>
+									<form:input path="searchValue" type="search" cssClass="m" cssStyle="float: right;" />
 								</div>
 								<div class="input-set">
-									<%-- <label for="startDate"><spring:message code='search.date'/></label> --%>
+									<label for="startDate"><spring:message code='search.date'/></label>
 									<input type="text" class="s date" id="startDate" name="startDate" />
 									<span class="delimeter tilde">~</span>
 									<input type="text" class="s date" id="endDate" name="endDate" />
@@ -49,7 +49,7 @@
 									<label for="orderWord"><spring:message code='search.order'/></label>
 									<select id="orderWord" name="orderWord" class="select" style="height: 30px;">
 										<option value=""> <spring:message code='search.basic'/> </option>
-										<option value="data_name">파일명</option>
+										<option value="title">제목명</option>
 										<option value="insertDate"> <spring:message code='search.insert.date'/> </option>
 									</select>
 									<select id="orderValue" name="orderValue" class="select" style="height: 30px;">
@@ -70,7 +70,7 @@
 							</form:form>
 						</div>
 						<div class="list">
-							<form:form id="listForm" modelAttribute="userList" method="post">
+							<form:form id="listForm" modelAttribute="civilVoice" method="post">
 								<input type="hidden" id="checkIds" name="checkIds" value="" />
 							<div class="list-header row">
 								<div class="list-desc u-pull-left">
@@ -326,6 +326,27 @@
 				return;
 			}
 		}
+	}
+
+	function searchCheck() {
+		if($("#searchOption").val() == "1") {
+			if(confirm(JS_MESSAGE["search.option.warning"])) {
+				// go
+			} else {
+				return false;
+			}
+		}
+
+		var startDate = $("#startDate").val();
+		var endDate = $("#endDate").val();
+		if(startDate != null && startDate != "" && endDate != null && endDate != "") {
+			if(parseInt(startDate) > parseInt(endDate)) {
+				alert(JS_MESSAGE["search.date.warning"]);
+				$("#startDate").focus();
+				return false;
+			}
+		}
+		return true;
 	}
 </script>
 </body>
