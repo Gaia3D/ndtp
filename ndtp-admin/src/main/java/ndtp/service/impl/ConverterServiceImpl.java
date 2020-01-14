@@ -211,8 +211,8 @@ public class ConverterServiceImpl implements ConverterService {
 			dataInfo.setLatitude(uploadDataFile.getLatitude());
 			dataInfo.setLongitude(uploadDataFile.getLongitude());
 			dataInfo.setAltitude(uploadDataFile.getAltitude());
-			if(dataInfo.getLongitude() != null && dataInfo.getLatitude() != null) {
-				dataInfo.setLocation("POINT(" + dataInfo.getLongitude() + " " + dataInfo.getLatitude() + ")");
+			if(uploadDataFile.getLongitude() != null && uploadDataFile.getLatitude() != null) {
+				dataInfo.setLocation("POINT(" + uploadDataFile.getLongitude() + " " + uploadDataFile.getLatitude() + ")");
 			}
 			dataInfo.setMetainfo(metainfo);
 			dataService.insertData(dataInfo);
@@ -223,8 +223,8 @@ public class ConverterServiceImpl implements ConverterService {
 			dataInfo.setLatitude(uploadDataFile.getLatitude());
 			dataInfo.setLongitude(uploadDataFile.getLongitude());
 			dataInfo.setAltitude(uploadDataFile.getAltitude());
-			if(dataInfo.getLongitude() != null && dataInfo.getLatitude() != null) {
-				dataInfo.setLocation("POINT(" + dataInfo.getLongitude() + " " + dataInfo.getLatitude() + ")");
+			if(uploadDataFile.getLongitude() != null && uploadDataFile.getLatitude() != null) {
+				dataInfo.setLocation("POINT(" + uploadDataFile.getLongitude() + " " + uploadDataFile.getLatitude() + ")");
 			}
 			dataService.updateData(dataInfo);
 		}
