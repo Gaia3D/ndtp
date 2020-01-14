@@ -35,6 +35,8 @@
 			<ul>
 				<li><a href="#user_info_tab">업로딩 목록</a></li>
 				<li><a href="#user_device_tab">업로딩</a></li>
+				<li><a href="#user_device_tab2">데이터 변환</a></li>
+				<li><a href="#user_device_tab3">데이터 그룹 등록</a></li>
 			</ul>
 			
 			<%-- <%@ include file="/WEB-INF/views/upload-data/modify-policy-user.jsp" %> --%>
