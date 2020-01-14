@@ -95,6 +95,7 @@
 <script type="text/javascript" src="/js/${lang}/MapControll.js"></script>
 <script type="text/javascript" src="/js/${lang}/uiControll.js"></script>
 <script type="text/javascript" src="/js/${lang}/SpatialAnalysis.js"></script>
+<script type="text/javascript" src="/js/${lang}/DistrictControll.js"></script>
 <script type="text/javascript">
 	// 임시로...
 	$(document).ready(function() {
@@ -155,6 +156,8 @@
 		MapControll(viewer);
 		//공간분석 기능 수행
 		SpatialAnalysis(magoInstance);
+		
+		DistrictControll(viewer);
 	}
 	
 	// 데이터 그룹 목록

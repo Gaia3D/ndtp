@@ -59,4 +59,17 @@ $(function() {
 		var index = parentObj.index();
 		$('#simulationContent ul.listDrop > li').eq(index).toggleClass('on');
 	});
+	
+	// 행정구역 검색
+	$('div.district').hover(function() {
+		$('div.districtWrap').css('display', 'block');
+	}, function(){
+		$('div.districtWrap').css('display', 'none');
+	});
+
+	$('div.districtWrap').hover(function() {
+		$('div.districtWrap').css('display', 'block');
+	}, function(){
+		$('div.districtWrap').css('display', 'none');
+	});
 });

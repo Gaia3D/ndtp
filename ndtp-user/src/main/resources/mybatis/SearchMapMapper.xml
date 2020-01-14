@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ndtp.persistence.SearchMapMapper">
+	
+	<!-- Sdo 목록(geom 은 제외) -->
+	<select id="getListSdoExceptGeom" resultType="skSdo">
+		/* getListSdoExceptGeom */
+		SELECT A.bjcd, SUBSTR(A.bjcd, 1, 2) AS sdo_code, A.name
+		FROM sk_sdo A, ( 
+			SELECT MIN(gid) AS gid, name 
+			FROM sk_sdo GROUP BY name
+		) B
+		WHERE A.gid = B.gid
+		ORDER BY A.name
+	</select>
+	
+	<!-- Sgg 목록(geom 은 제외) -->
+	<select id="getListSggBySdoExceptGeom" parameterType="string" resultType="skSgg">
+		/* getListSggBySdoExceptGeom */
+		SELECT B.bjcd, SUBSTR(B.bjcd, 1, 2) AS sdo_code, SUBSTR(B.bjcd, 3, 3) AS sgg_code, B.name	
+		FROM sk_sgg B, (
+			SELECT MIN(A.gid) AS gid, A.code AS bjcd, A.name 
+			FROM (
+				SELECT gid, SUBSTR(bjcd, 1, 5) as code, name 
+				FROM sk_sgg 
+				WHERE bjcd LIKE #{sdoCode} || '%'
+			) A
+			GROUP BY A.code, A.name
+		) C
+		WHERE B.gid = C.gid
+		ORDER BY C.name
+	</select>
+	
+	<!-- emd 목록(geom 은 제외) -->
+	<select id="getListEmdBySdoAndSggExceptGeom" parameterType="skEmd" resultType="skEmd">
+		/* getListEmdBySdoAndSggExceptGeom */
+		SELECT B.bjcd, SUBSTR(B.bjcd, 1, 2) AS sdo_code, 
+			SUBSTR(B.bjcd, 3, 3) AS sgg_code,
+			SUBSTR(B.bjcd, 6, 3) AS emd_code,
+			B.name	
+		FROM sk_emd B, (
+			SELECT MIN(A.gid) AS gid, A.code AS bjcd, A.name 
+			FROM (
+				SELECT gid, SUBSTR(bjcd, 6, 3) as code, name 
+				FROM sk_emd 
+				WHERE bjcd LIKE #{sdoCode} || #{sggCode} ||'%'
+			) A
+			GROUP BY A.code, A.name
+		) C
+		WHERE B.gid = C.gid
+		ORDER BY C.name
+	</select>
+	
+	<!-- 선택한 시도의 center point를 구함 -->
+	<select id="getCentroidSdo" parameterType="skSdo" resultType="string">
+		/* getCentroidSdo */
+		SELECT ST_AsText(ST_Centroid(A.geom))
+		FROM (
+			SELECT geom 
+			FROM sk_sdo 
+			WHERE bjcd = #{bjcd}
+			ORDER BY bjcd LIMIT 1
+		) A
+	</select>
+	
+	<!-- 선택한 시군구의 center point를 구함 -->
+	<select id="getCentroidSgg" parameterType="skSgg" resultType="string">
+		/* getCentroidSgg */
+		SELECT ST_AsText(ST_Centroid(A.geom))
+		FROM (
+			SELECT geom 
+			FROM sk_sgg 
+			WHERE bjcd = #{bjcd}
+			ORDER BY bjcd LIMIT 1
+		) A
+	</select>
+	
+	<!-- 선택한 읍면동의 center point를 구함 -->
+	<select id="getCentroidEmd" parameterType="skEmd" resultType="string">
+		/* getCentroidEmd */
+		SELECT ST_AsText(ST_Centroid(A.geom))
+		FROM (
+			SELECT geom 
+			FROM sk_emd 
+			WHERE bjcd = #{bjcd}
+			ORDER BY bjcd LIMIT 1
+		) A
+	</select>
+	
+	<!-- 행정구역 검색 총 건수 -->
+	<select id="getDistrictTotalCount" parameterType="district" resultType="long">
+		/* getDistrictTotalCount */
+		SELECT count(*)
+		FROM (
+			SELECT name
+			FROM sk_sdo
+			WHERE name like '%' || #{searchValue} || '%'
+			UNION ALL
+			SELECT name
+			FROM sk_sgg 
+			WHERE name like '%' || #{searchValue} || '%'
+			UNION ALL
+			SELECT name
+			FROM sk_emd 
+			WHERE name like '%' || #{searchValue} || '%'
+		) A 		
+	</select>
+	
+	<!-- 지명 검색 총 건수 -->
+	<select id="getPlaceNameTotalCount" parameterType="placeName" resultType="long">
+		/* getPlaceNameTotalCount */
+		SELECT count(*)
+		FROM place_name
+		WHERE name_ko LIKE '%' || #{searchValue} || '%'		
+	</select>
+	
+	<!-- 지번 검색 총 건수 -->
+	<select id="getJibunTotalCount" parameterType="addrJibun" resultType="long">
+		/* getJibunTotalCount */
+		SELECT COUNT(*) 
+		FROM (
+			SELECT DISTINCT ON (kname_sido, kname_sgg , kname_emd, jibun_no1, jibun_no2, building_mno)
+			kname_sido, kname_sgg , kname_emd, jibun_no1, jibun_no2, building_mno
+		FROM jibun_search
+		WHERE kname_sido LIKE '%' || #{searchValue} || '%'
+			OR kname_sgg LIKE '%' || #{searchValue} || '%'
+			OR kname_emd LIKE '%' || #{searchValue} || '%'
+			OR kname_li LIKE '%' || #{searchValue} || '%' ) a	
+	</select>
+	
+	<!-- 새주소 검색 총 건수 -->
+	<select id="getNewAddressTotalCount" parameterType="newAddress" resultType="long">
+		/* getNewAddressTotalCount */
+		SELECT COUNT(1)
+		FROM (
+			SELECT DISTINCT ON (kname_sido, kname_sgg , kname_emd, name_addr, name_sgg_building)
+				kname_sido, kname_sgg , kname_emd, name_addr, name_sgg_building
+			FROM addr_new
+		WHERE (kname_sido|| ' '||kname_sgg||' '||name_addr) LIKE '%' || #{searchValue} || '%'
+		OR name_sgg_building LIKE '%' || #{searchValue} || '%'
+		 ) a
+	</select>
+
+	<!-- 국가 지점번호 검색 총 건수 -->
+	<select id="getCountryPlaceNumberTotalCount" parameterType="countryPlaceNumber" resultType="long">
+		/* getCountryPlaceNumberTotalCount */
+		SELECT count(*)
+		FROM place_num
+		WHERE spo_no_cd LIKE '%' || #{searchValue} || '%'
+	</select>
+
+	<!-- 행정 구역 목록 -->
+	<select id="getListDistrict" parameterType="district" resultType="district">
+		/* getListDistrict */
+		SELECT sido_cd AS id, sido_kor_nm AS name, ST_X(ST_Centroid(geom)) AS longitude, ST_Y(ST_Centroid(geom)) AS latitude, ST_AsGeoJSON(ST_Centroid(geom))
+		FROM adm_sido
+		WHERE sido_kor_nm LIKE '%' || #{searchValue} || '%'
+		UNION ALL
+		SELECT sgg_cd AS id, sgg_kor_nm AS name, ST_X(ST_Centroid(geom)) AS longitude, ST_Y(ST_Centroid(geom)) AS latitude, ST_AsGeoJSON(ST_Centroid(geom))
+		FROM adm_sgg
+		WHERE sgg_kor_nm LIKE '%' || #{searchValue} || '%'
+		UNION ALL
+		SELECT emd_cd AS id, emd_kor_nm AS name, ST_X(ST_Centroid(geom)) AS longitude, ST_Y(ST_Centroid(geom)) AS latitude, ST_AsGeoJSON(ST_Centroid(geom))
+		FROM adm_emd
+		WHERE emd_kor_nm LIKE '%' || #{searchValue} || '%'
+		OFFSET #{offset} LIMIT #{limit}
+	</select>
+	
+	<!-- 지명 목록 -->
+	<select id="getListPlaceName" parameterType="placeName" resultType="placeName">
+		/* getListPlaceName */
+		SELECT gid, name_ko, ST_X(ST_Centroid(geom)) as longitude, ST_Y(ST_Centroid(geom)) as latitude, ST_AsGeoJSON(geom)
+		FROM place_name
+		WHERE name_ko LIKE '%' || #{searchValue} || '%'
+		ORDER BY name_ko ASC 
+		OFFSET #{offset} LIMIT #{limit}
+	</select>
+	
+	<!-- 지번 목록 -->
+	<select id="getListJibun" parameterType="addrJibun" resultType="addrJibun">
+		/* getListJibun */
+		SELECT DISTINCT ON (kname_sido, kname_sgg , kname_emd, jibun_no1, jibun_no2, building_mno) 
+		       concat_ws(' '::text, kname_sido, kname_sgg, kname_emd, kname_li, jibun_no1, jibun_no2)
+		       AS jibun_addr, ST_X(geom) as longitude, ST_Y(geom) as latitude, ST_AsGeoJSON(geom)
+		FROM public.jibun_search
+		WHERE 
+			kname_sido LIKE '%' || #{searchValue} || '%'
+			OR kname_sgg LIKE '%' || #{searchValue} || '%'
+			OR kname_emd LIKE '%' || #{searchValue} || '%'
+			OR kname_li LIKE '%' || #{searchValue} || '%'
+		ORDER BY kname_sido ASC, kname_sgg ASC, kname_emd ASC, jibun_no1 ASC, jibun_no2 ASC, building_mno ASC
+		OFFSET #{offset} LIMIT #{limit}
+	</select>
+
+	<!-- 새주소 목록 -->
+	<select id="getListNewAddress" parameterType="newAddress" resultType="newAddress">
+		/* getListNewAddress */
+		SELECT DISTINCT ON (kname_sido, kname_sgg , kname_emd, name_addr, name_sgg_building)
+			   concat_ws(' '::text, a.kname_sido, a.kname_sgg, a.name_addr, a.building_no1 ||
+				CASE
+					WHEN a.building_no2 = 0 OR a.building_no2 IS NULL THEN ''::text
+					ELSE '-'::text || a.building_no2
+				END, a.name_sgg_building, a.detail_bname) AS new_addr, ST_X(geom) as longitude, ST_Y(geom) as latitude, ST_AsGeoJSON(geom)
+		FROM public.addr_new a
+		WHERE (kname_sido|| ' '||kname_sgg||' '||name_addr) LIKE '%' || #{searchValue} || '%'
+		OR name_sgg_building LIKE '%' || #{searchValue} || '%'
+		ORDER BY kname_sido ASC, kname_sgg ASC, name_addr ASC, name_sgg_building ASC
+		OFFSET #{offset} LIMIT #{limit}
+	</select>
+
+	<!-- 국가 지점 번호 목록 -->
+	<select id="getListCountryPlaceNumber" parameterType="countryPlaceNumber" resultType="countryPlaceNumber">
+		/* getListCountryPlaceNumber */
+		SELECT gid, spo_no_cd, ST_X(ST_Centroid(geom)) as longitude, ST_Y(ST_Centroid(geom)) as latitude, ST_AsGeoJSON(geom)
+		FROM place_num
+		WHERE spo_no_cd LIKE '%' || #{searchValue} || '%'
+		ORDER BY spo_no_cd ASC
+		OFFSET #{offset} LIMIT #{limit}
+	</select>
+	
+</mapper>
