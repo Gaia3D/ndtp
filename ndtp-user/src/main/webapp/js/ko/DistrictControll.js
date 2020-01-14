@@ -256,3 +256,8 @@ function getCentroid(name, sdoCode, sggCode, emdCode) {
         }
     });		
 }
+
+function gotoFly(longitude, latitude, altitude, duration)
+{
+  gotoFlyAPI(MAGO3D_INSTANCE, longitude, latitude, altitude, duration);
+}
