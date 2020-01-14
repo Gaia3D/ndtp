@@ -7,7 +7,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
-	<title>데이터 목록 | NDTP</title>
+	<title>업로딩 목록 | NDTP</title>
 	
 	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
@@ -203,10 +203,146 @@
 <script type="text/javascript" src="/js/${lang}/MapControll.js"></script>
 <script type="text/javascript" src="/js/${lang}/uiControll.js"></script>
 <script type="text/javascript">
-	$(document).ready(function() {
-// 		$( ".tabs" ).tabs();
-		$('.convert').addClass('on');
+$(document).ready(function() {
+	$('.convert').addClass('on');
+});
+//전체 선택 
+$("#chkAll").click(function() {
+	$(":checkbox[name=uploadDataId]").prop("checked", this.checked);
+});
+
+var dialogConverterJob = $( ".dialogConverterJob" ).dialog({
+	autoOpen: false,
+	height: 280,
+	width: 600,
+	modal: true,
+	resizable: false,
+	close: function() {
+		$("#converterCheckIds").val("");
+		$("#title").val("");
+		//location.reload(); 
+	}
+});
+
+// F4D Converter Button Click
+function converterFile(uploadDataId, dataName) {
+	$("#converterCheckIds").val(uploadDataId + ",");
+	$("#title").val(dataName);
+	
+	dialogConverterJob.dialog( "open" );
+}
+
+// All F4D Converter Button Click
+function converterFiles() {
+	var checkedValue = "";
+	$("input:checkbox[name=uploadDataId]:checked").each(function(index) {
+		checkedValue += $(this).val() + ",";
 	});
+	if(checkedValue === "") {
+		alert("파일을 선택해 주십시오.");
+		return;
+	}
+	$("#converterCheckIds").val(checkedValue);
+	
+	dialogConverterJob.dialog( "open" );
+}
+
+// F4D Converter 일괄 변환
+var saveConverterJobFlag = true;
+function saveConverterJob() {
+	if($("#title").val() === null || $("#title").val() === "") {
+		alert("제목을 입력하여 주십시오.");
+		$("#title").focus();
+		return false;
+	}
+	
+	if(saveConverterJobFlag) {
+		saveConverterJobFlag = false;
+		var formData =$("#converterJobForm").serialize();
+		$.ajax({
+			url: "/converter/insert",
+			type: "POST",
+			data: formData,
+			dataType: "json",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			success: function(msg){
+				if(msg.statusCode <= 200) {
+					alert(JS_MESSAGE["insert"]);	
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+				}
+				
+				$("#converterCheckIds").val("");
+				$("#title").val("");
+				$(":checkbox[name=uploadDataId]").prop("checked", false);
+				dialogConverterJob.dialog( "close" );
+				saveConverterJobFlag = true;
+			},
+			error:function(request,status,error){
+				alert(JS_MESSAGE["ajax.error.message"]);
+				dialogConverterJob.dialog( "close" );
+				saveConverterJobFlag = true;
+			}
+		});
+	} else {
+		alert(JS_MESSAGE["button.dobule.click"]);
+		return;
+	}
+}
+
+function deleteUploadData(uploadDataId) {
+	deleteAllUploadData(uploadDataId);
+}
+
+// 삭제
+var deleteUploadDataFlag = true;
+function deleteAllUploadData(uploadDataId) {
+	var formData = null;
+	if(uploadDataId === undefined) {
+		if($("input:checkbox[name=uploadDataId]:checked").length == 0) {
+			alert(JS_MESSAGE["check.value.required"]);
+			return false;
+		} else {
+			var checkedValue = "";
+			$("input:checkbox[name=uploadDataId]:checked").each(function(index){
+				checkedValue += $(this).val() + ",";
+			});
+			$("#checkIds").val(checkedValue);
+		}
+		formData = "checkIds=" + $("#checkIds").val();
+	} else {
+		formData = "checkIds=" + uploadDataId;
+	}
+	
+	if(confirm(JS_MESSAGE["delete.confirm"])) {
+		if(deleteUploadDataFlag) {
+			deleteUploadDataFlag = false;
+			$.ajax({
+				url: "/upload-data/delete",
+				type: "POST",
+				data: formData,
+				dataType: "json",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert(JS_MESSAGE["delete"]);	
+						location.reload();
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+					}
+					deleteDatasFlag = true;
+				},
+				error:function(request,status,error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        deleteDatasFlag = true;
+				}
+			});
+		} else {
+			alert(JS_MESSAGE["button.dobule.click"]);
+			return;
+		}
+	}
+}
 </script>
 </body>
 </html>

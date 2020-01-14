@@ -2,6 +2,8 @@
 
 /* Typo
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
+/*user-style css 때문에 important로 적용 */
+* { margin:0; padding:0; outline:0; vertical-align:middle !important; }
 html {
 	font-size: 62.5%; }
 	

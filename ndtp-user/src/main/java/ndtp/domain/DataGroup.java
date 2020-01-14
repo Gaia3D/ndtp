@@ -82,6 +82,8 @@ public class DataGroup {
 	
 	// Map 이동시간
 	private Integer duration;
+	// 데이터 그룹 메타 정보. 그룹 control을 위해 인위적으로 만든 속성
+	private String metainfo;
 	// 설명
 	private String description;
 	// 수정일
