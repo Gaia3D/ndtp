@@ -141,8 +141,6 @@ $(document).ready(function() {
 
 	function magoLoadEnd(e) {
 		var magoInstance = e;
-
-		
 		
 		var viewer = magoInstance.getViewer(); 
 		var magoManager = magoInstance.getMagoManager();
