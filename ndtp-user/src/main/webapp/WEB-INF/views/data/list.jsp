@@ -49,8 +49,8 @@
 			<div id="spatialContent" class="contentsList yScroll" style="display:none;height: 798px;background-color: #fff;">
 				<%@ include file="/WEB-INF/views/spatial/spatial.jsp" %> 
 			</div>
-			<div id="simulationContent" class="contents" style="display:none;">
-				simulationContent
+			<div id="simulationContent" class="contentsList yScroll" style="display:none;">
+				<%@ include file="/WEB-INF/views/simulation/simulation.jsp" %>
 			</div>
 			<div id="joininContent" class="contents" style="display:none;">
 				joininContent

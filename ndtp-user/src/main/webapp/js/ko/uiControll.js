@@ -29,8 +29,17 @@ $(function() {
     
 /***** Contents Wrap: 공간분석 *****/	
 	// 공간분석 그룹 클릭 시	
-	$('#spatialContent ul.listDrop li').click(function() {
-		var index = $(this).index();
-		$('#spatialContent ul.listDrop > li:eq('+ index +')').toggleClass('on');
+	$('#spatialContent ul.listDrop li > p').click(function(e) {
+		var parentObj = $(this).parent();
+		var index = parentObj.index();
+		$('#spatialContent ul.listDrop > li').eq(index).toggleClass('on');
+	});
+	
+/***** Contents Wrap: 공간분석 *****/	
+	// 시뮬레이션 그룹 클릭 시	
+	$('#simulationContent ul.listDrop li > p').click(function() {
+		var parentObj = $(this).parent();
+		var index = parentObj.index();
+		$('#simulationContent ul.listDrop > li').eq(index).toggleClass('on');
 	});
 });

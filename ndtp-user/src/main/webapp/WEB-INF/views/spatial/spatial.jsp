@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <ul class="listDrop">
 	<li class="on">
-		<p>Radial Line Of Sight Analysis</p>
+		<p>방사형 가시성 분석</p>
 		<div class="listContents" id="analysisRadialLineOfSight">
 			<ul class="analysisGroup">
 				<li>
@@ -27,17 +27,17 @@
 					<label for="">Observer Point</label>
 					<input type="text" placeholder="" class="withBtn observerPointMGRS">
 					<input type="hidden" class="observerPoint">
-					<button type="button" class="btnText drawObserverPoint">Pick Location</button>
+					<button type="button" class="btnText drawObserverPoint">위치지정</button>
 				</li>
 				<li class="btns">
-					<button type="button" class="btnTextF execute" title="Analysis">Analysis</button>
-					<button type="button" class="btnText reset" title="Clear">Clear</button>
+					<button type="button" class="btnTextF execute" title="방사형 가시성 분석">분석</button>
+					<button type="button" class="btnText reset" title="취소">취소</button>
 				</li>
 			</ul>
 		</div>
 	</li>
 	<li>
-		<p>Linear Line Of Sight Analysis</p>
+		<p>가시선 분석</p>
 		<div class="listContents" id="analysisLinearLineOfSight">
 			<ul class="analysisGroup">
 				<li>
@@ -55,23 +55,23 @@
 					<label for="">Observer Point</label>
 					<input type="text" placeholder="" class="withBtn observerPointMGRS">
 					<input type="hidden" class="observerPoint">
-					<button type="button" class="btnText drawObserverPoint">Pick Location</button>
+					<button type="button" class="btnText drawObserverPoint">위치지정</button>
 				</li>
 				<li>
 					<label for="">Target Point</label>
 					<input type="text" placeholder="" class="withBtn targetPointMGRS">
 					<input type="hidden" class="targetPoint">
-					<button type="button" class="btnText drawTargetPoint">Pick Location</button>
+					<button type="button" class="btnText drawTargetPoint">위치지정</button>
 				</li>
 				<li class="btns">
-					<button type="button" class="btnTextF execute" title="Analysis">Analysis</button>
-					<button type="button" class="btnText reset" title="Clear">Clear</button>
+					<button type="button" class="btnTextF execute" title="가시선 분석">분석</button>
+					<button type="button" class="btnText reset" title="취소">취소</button>
 				</li>
 			</ul>
 		</div>
 	</li>
 	<li>
-		<p>RasterProfile Analysis</p>
+		<p>지형 단면 분석</p>
 		<div class="listContents" id="analysisRasterProfile">
 			<ul class="analysisGroup">
 				<li>
@@ -87,13 +87,13 @@
 				</li>
 				<li>
 					<label for="">User Line</label>
-					<button type="button" class="btnText drawUserLine">Pick Location</button>
+					<button type="button" class="btnText drawUserLine">위치지정</button>
 					<input type="hidden" class="userLine">
 					<div class="coordsText"></div>
 				</li>
 				<li class="btns">
-					<button type="button" class="btnTextF execute" title="Analysis">Analysis</button>
-					<button type="button" class="btnText reset" title="Clear">Clear</button>
+					<button type="button" class="btnTextF execute" title="지형 단면 분석">분석</button>
+					<button type="button" class="btnText reset" title="취소">취소</button>
 				</li>
 
 				<li class="profileInfo">
@@ -103,7 +103,7 @@
 		</div>
 	</li>
 	<li>
-		<p>Raster High/Low Points Analysis</p>
+		<p>지형 최고/최저 점</p>
 		<div class="listContents" id="analysisRasterHighLowPoints">
 			<ul class="analysisGroup">
 				<li>
@@ -134,14 +134,14 @@
 				</li>
 				<li class="btns">
 					<input type="hidden" class="wcsExtent">
-					<button type="button" class="btnTextF execute" title="Analysis">Analysis</button>
-					<button type="button" class="btnText reset" title="Clear">Clear</button>
+					<button type="button" class="btnTextF execute" title="지형 최고/최저 점 분석">분석</button>
+					<button type="button" class="btnText reset" title="취소">취소</button>
 				</li>
 			</ul>
 		</div>
 	</li>
 	<li>
-		<p>Threat Dome Analysis</p>
+		<p>위험 돔 분석</p>
 		<div class="listContents" id="analysisRangeDome">
 			<ul class="analysisGroup">
 				<li>
@@ -152,11 +152,11 @@
 					<label for="">Observer Point</label>
 					<input type="text" placeholder="" class="withBtn observerPointMGRS">
 					<input type="hidden" class="observerPoint">
-					<button type="button" class="btnText drawObserverPoint">Pick Location</button>
+					<button type="button" class="btnText drawObserverPoint">위치지정</button>
 				</li>
 				<li class="btns">
-					<button type="button" class="btnTextF execute" title="Analysis">Analysis</button>
-					<button type="button" class="btnText reset" title="Clear">Clear</button>
+					<button type="button" class="btnTextF execute" title="위험 돔 분석 실행">분석</button>
+					<button type="button" class="btnText reset" title="취소">취소</button>
 				</li>
 			</ul>
 		</div>

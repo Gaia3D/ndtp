@@ -15,15 +15,7 @@
 	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 	<style type="text/css">
-	    .mapWrap {
-	    	float:right;
-	    	width: calc(100% - 60px);
-	    	height: 100%;
-			background-color: #eee;
-		}
-		.ctrlWrap {
-			z-index:10000;
-		}
+	    
     </style>
 </head>
 <body>
@@ -37,83 +29,77 @@
 	</div>
 	<!-- E: NAVWRAP -->
 	
-	<div>
-		test
+	<div style="float:right; width: calc(100% - 78px);">
+		<div style="padding: 20px 20px 10px 10px; font-size: 18px;">업로딩 데이터 자동 변환</div>
+		<div class="tabs" >
+			<ul>
+				<li><a href="#user_info_tab">업로딩 목록</a></li>
+				<li><a href="#user_device_tab">업로딩</a></li>
+				<li><a href="#user_device_tab2">데이터 변환</a></li>
+				<li><a href="#user_device_tab3">데이터 그룹 등록</a></li>
+			</ul>
+			
+			<%-- <%@ include file="/WEB-INF/views/upload-data/modify-policy-user.jsp" %> --%>
+			
+			<div id="user_info_tab">
+				<form:form id="uploadData" modelAttribute="uploadData" method="post" onsubmit="return false;">
+				<table class="input-table scope-row">
+					<col class="col-label" />
+					<col class="col-input" />
+					<tr>
+						<th class="col-label" scope="row">
+							<form:label path="userId">아이디</form:label>
+							<span class="icon-glyph glyph-emark-dot color-warning"></span>
+						</th>
+				</table>
+				
+				<div class="button-group">
+					<div id="insertUserLink" class="center-buttons">
+						<input type="submit" value="저장" onclick="insertUser();" />
+						<a href="/user/list-user.do" class="button">목록</a>
+					</div>
+				</div>
+				</form:form>
+			</div>
+			<div id="user_device_tab">
+				<form:form id="converterJobForm" modelAttribute="converterJobForm" method="post" onsubmit="return false;">
+				<table class="input-table scope-row">
+					<col class="col-label" />
+					<col class="col-input" />
+					<tr>
+						<th class="col-label" scope="row">
+							<form:label path="userId">아이디</form:label>
+							<span class="icon-glyph glyph-emark-dot color-warning"></span>
+						</th>
+				</table>
+				
+				<div class="button-group">
+					<div id="insertUserLink" class="center-buttons">
+						<input type="submit" value="저장" onclick="insertUser();" />
+						<a href="/user/list-user.do" class="button">목록</a>
+					</div>
+				</div>
+				
+				<div class="button-group">
+					<div id="insertUserLink" class="center-buttons">
+						<input type="submit" value="저장" onclick="insertUser();" />
+						<a href="/user/list-user.do" class="button">목록</a>
+					</div>
+				</div>
+				</form:form>
+			</div>
+		</div>
 	</div>
+	
 </div>
 <!-- E: WRAP -->
 
-<script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>
-<script type="text/javascript" src="/js/mago3d.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript" src="/js/${lang}/MapControll.js"></script>
 <script type="text/javascript">
-	//Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIyNmNjOWZkOC03NjdlLTRiZTktYWQ3NS1hNmQ0YjA1ZjIzYWEiLCJpZCI6Mzk5Miwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0NDYwNDQ3M30.AwvoVAuMRwjcMMJ9lEG2v4CPUp8gfltJqZARHgxGv_k';
-	//var viewer = new Cesium.Viewer('magoContainer');
-	var MAGO3D_INSTANCE;
-	magoInit();
-
-	
-	function magoInit() {
-		$.ajax({
-			url: "/js/temp/geopolicy.json",
-			type: "GET",
-			dataType: "json",
-			success: function(serverPolicy){
-				//cesium Ion token 할당.
-				serverPolicy.cesiumIonToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIyNmNjOWZkOC03NjdlLTRiZTktYWQ3NS1hNmQ0YjA1ZjIzYWEiLCJpZCI6Mzk5Miwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0NDYwNDQ3M30.AwvoVAuMRwjcMMJ9lEG2v4CPUp8gfltJqZARHgxGv_k';
-
-				var cesiumViewerOption = {};
- 				cesiumViewerOption.infoBox = false;
- 				cesiumViewerOption.navigationHelpButton = false;
- 				cesiumViewerOption.scene3DOnly = true;
- 				cesiumViewerOption.selectionIndicator = false;
- 				cesiumViewerOption.homeButton = false;
- 				cesiumViewerOption.fullscreenButton = false;
- 				cesiumViewerOption.geocoder = false;
- 				cesiumViewerOption.baseLayerPicker = false;
- 				
-				/**
-				 * @param {Stirng} containerId container div id. required.
-				 * @param {object} serverPolicy mage3d geopolicy. required.
-				 * @param {object} callback loadstart callback, loadend callback. option.
-				 * @param {object} options Cesium viewer parameter. option.
-				 * @param {Cesium.Viewer} legacyViewer 타 시스템과의 연동의 경우 view 객체가 생성되어서 넘어 오는 경우가 있음. option.
-				*/	
-				MAGO3D_INSTANCE = new Mago3D.Mago3d('magoContainer', serverPolicy, {loadend : magoLoadEnd}, cesiumViewerOption);
-			},
-			error: function(e){
-				alert(e.responseText);
-			}
-		});
-	}
-
-	function magoLoadEnd(e) {
-		var magoInstance = e;
-
-		// TODO : 세슘 MAP 선택 UI 제거,엔진에서 처리로 변경 예정.
-		
-		var viewer = magoInstance.getViewer(); 
-		var magoManager = magoInstance.getMagoManager();
-		var f4dController = magoInstance.getF4dController();
-
-		viewer.baseLayerPicker.destroy();
-		
-		magoManager.on(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
-			console.info(result);
-		});
-
-		//우측 상단 지도 컨트롤러
-		MapControll(viewer);
-	}
-	
-	// 상세 메뉴 닫기
-	$('button#closeLeftBtn').click(function() {
-		//$('ul.nav li[data-nav]').removeClass('on');
-		
-		$('#contentsWrap').hide();
-		//$('#closeLeftBtn').toggle();
+	$(document).ready(function() {
+		$( ".tabs" ).tabs();
 	});
 </script>
 </body>
