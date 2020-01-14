@@ -180,7 +180,7 @@
 			    <div class="fileSection" style="font-size: 17px;">
 			    	<form id="my-dropzone" action="" class="dropzone hzScroll"></form>
 			    </div>
-			    <div class="button-group">
+			    <div class="button-group" style="margin-top: 30px;">
 					<div class="center-buttons">
 						<button id="allFileUpload">업로드</button>
 						<button id="allFileClear">All Clear</button>
