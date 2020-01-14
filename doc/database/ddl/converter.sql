@@ -27,6 +27,7 @@ create table converter_job(
 comment on table converter_job is '파일 변환 job';
 comment on column converter_job.converter_job_id is '고유번호';
 comment on column converter_job.upload_data_id is '업로드 데이터 고유번호';
+comment on column converter_job.title is '제목';
 comment on column converter_job.user_id is '사용자 아이디';
 comment on column converter_job.converter_template is '변환 유형. basic : 기본, building : 빌딩, extra-big-building : 초대형 빌딩, single-realistic-mesh : 단일 point cloud 데이터, splitted-realistic-mesh : 분할 point cloud 데이터';
 comment on column converter_job.file_count is '대상 file 개수';
