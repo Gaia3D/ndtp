@@ -40,8 +40,8 @@ public class DataServiceImpl implements DataService {
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public Long getDataTotalCountByStatus(DataInfo dataInfo) {
-		return dataMapper.getDataTotalCountByStatus(dataInfo);
+	public Long getDataTotalCountByStatus(String status) {
+		return dataMapper.getDataTotalCountByStatus(status);
 	}
 	
 //	/**
