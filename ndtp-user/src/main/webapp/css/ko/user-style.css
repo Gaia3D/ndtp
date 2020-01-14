@@ -369,9 +369,24 @@ text-align: center;
 .dataGroupSum li:last-child {
 margin-right: 0;
 }
+.dataGroupSum li > label {
+display: block;
+padding: 1px 6px;	
+border-radius: 3px;
+border: 1px solid #dcdcdc;
+background-color: #f1f1f1;		
+}
 .dataGroupSum li > span {
 font-size: 17px;
 font-weight: bold;
+}
+.dataGroupSum li.total > label {
+color: #fff;
+border: 1px solid #1e6ed3;
+background-color: #287be4;
+}
+.dataGroupSum li.total > span {
+color: #287be4;
 }
 
 /* /// 데이터 게시판 목록 /// */
@@ -407,6 +422,14 @@ text-align: left;
 .tableList > table tr td.center {
 text-align: center;
 }
+button.goto {
+width: 30px;
+height: 30px;
+border:none;
+text-indent: -999em;
+background: url(/images/ko/ico.png) no-repeat -462px -697px;
+}
+
 /* 양쪽으로 나눠진 구분DIV */
 .bothSide {
 display: flex;
@@ -416,13 +439,26 @@ margin-bottom: 3px;
 flex: auto;
 }
 .bothSide > div:first-child {
-
+margin-top: 8px;
 }
 .bothSide > div:first-child > span {
 color: #287be4
 }
 .bothSide > div:last-child {
 text-align: right;
+}
+.dataBtns > button {
+padding: 4px 10px;
+color: #51515b;
+border: 1px solid #9898a0;
+border-radius: 3px;
+background-color: #fff;
+}
+.dataBtns > button.on { 
+color: #fff;
+border: 1px solid #414149;
+border-radius: 3px;
+background-color: #51515b;
 }
 
 /*  ///// 시민참여 ///// */
