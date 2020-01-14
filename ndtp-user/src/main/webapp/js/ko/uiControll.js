@@ -13,7 +13,7 @@ $(function() {
     $("ul.nav li[data-nav]:not(:empty)").click(function() {
         var active = $(this).attr('data-nav');
         var display = $(this).toggleClass('on').hasClass('on');
-        if(active === "dataContent") {
+        if(active === "convertContent") {
         	window.location="../upload-data/list";
         }
         
