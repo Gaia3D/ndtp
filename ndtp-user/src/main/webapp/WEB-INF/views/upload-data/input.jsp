@@ -79,7 +79,7 @@
 	</div>
 	<!-- E: NAVWRAP -->
 	
-	<div style="float:right; width: calc(100% - 78px);">
+	<div class="container" style="float:right; width: calc(100% - 78px);">
 		<div style="padding: 20px 20px 10px 10px; font-size: 18px;">업로딩 데이터 자동 변환</div>
 		<div class="tabs" >
 			<ul class="tab">
