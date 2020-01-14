@@ -53,7 +53,7 @@
 				<%@ include file="/WEB-INF/views/simulation/simulation.jsp" %>
 			</div>
 			<div id="joininContent" class="contents" style="display:none;">
-				joininContent
+				<%@ include file="/WEB-INF/views/joinin/joinin.jsp" %>
 			</div>
 			<div id="setupContent" class="contents" style="display:none;">
 				<%@ include file="/WEB-INF/views/setup/setup.jsp" %>
@@ -93,6 +93,7 @@
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript" src="/js/${lang}/MapControll.js"></script>
 <script type="text/javascript" src="/js/${lang}/uiControll.js"></script>
+<script type="text/javascript" src="/js/${lang}/SpatialAnalysis.js"></script>
 <script type="text/javascript">
 	// 임시로...
 	$(document).ready(function() {
@@ -149,6 +150,7 @@
 
 		//우측 상단 지도 컨트롤러
 		MapControll(viewer);
+		SpatialAnalysis(magoInstance);
 	}
 	
 	// 데이터 그룹 정보

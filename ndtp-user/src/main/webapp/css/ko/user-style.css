@@ -262,6 +262,15 @@ box-sizing: border-box;
 .contentsCover > div {
 height: 100%;
 }
+.fullHeight {
+height: calc(100% - 37px);
+}
+.contents > h3 {
+margin-bottom: 10px;
+padding-left: 12px;
+font-size: 16px;
+background: url(/images/ko/ico.png) no-repeat 3px -592px;
+}
 /* MAP / CTRLBTNS */
 .ctrlWrap {
 position: absolute;
@@ -345,8 +354,284 @@ border-bottom: 2px solid #fff;
 background-color: transparent;
 }
 
+/* ///// 데이터 ///// */
+.dataGroupSum {
+display: flex;
+margin: 10px 0;
+padding-bottom: 10px;
+border-bottom: 1px dotted #ccc;
+}
+.dataGroupSum li {
+flex: auto;
+margin:0 10px;
+text-align: center;
+}
+.dataGroupSum li:last-child {
+margin-right: 0;
+}
+.dataGroupSum li > span {
+font-size: 17px;
+font-weight: bold;
+}
+
+/* /// 데이터 게시판 목록 /// */
+.tableList {
+position: relative;
+}
+.tableList > table {
+width: 100%;
+}
+.tableList > table thead th {
+padding: 5px;	
+border: 1px solid #43444c;
+}
+.tableList > table tbody tr:hover {
+cursor: pointer;
+background-color: #f9f9f9;
+}
+.tableList > table tbody tr.selected {
+background-color: #d6dcf2;
+}
+.tableList > table tr td {
+padding: 7px 5px;
+border: 1px solid #bcbdc7;
+font-size: 14px;
+text-align: center;
+}
+.tableList > table tr td a {
+border-bottom: 1px solid #000;
+}
+.tableList > table tr td.alignLeft {
+text-align: left;
+}
+.tableList > table tr td.center {
+text-align: center;
+}
+/* 양쪽으로 나눠진 구분DIV */
+.bothSide {
+display: flex;
+margin-bottom: 3px;
+}
+.bothSide > div {
+flex: auto;
+}
+.bothSide > div:first-child {
+
+}
+.bothSide > div:first-child > span {
+color: #287be4
+}
+.bothSide > div:last-child {
+text-align: right;
+}
+
+/*  ///// 시민참여 ///// */
+.comment > li {
+display: flex;
+position: relative;
+margin-bottom: 10px;
+padding: 7px;
+border-radius: 5px;
+border: 1px solid #c7e0f2;
+background-color: #ecf7ff;
+}
+.comment li > p {
+flex: auto;
+padding-right: 10px;
+}
+.comment li > p:first-child {
+min-width: 215px;
+}
+.comment span.id {
+display: block;
+color: #999;
+}
+.comment p.count {
+min-width: 40px;
+padding: 8px 5px 0 15px;
+font-size: 17px;
+font-weight: bold;
+text-align: right;
+background: url(/images/ko/ico.png) no-repeat 0 -487px;
+}
 
 
+/* 의견보기 */
+.commentView {
+margin: 10px 0 20px;
+}
+.commentView > div {
+margin-bottom: 5px;
+}
+.commentView > .title {
+margin-bottom: 10px;
+padding: 10px 0 0 25px;
+font-size: 18px;
+font-weight: bold;
+border-radius: 5px;
+background: url(/images/ko/ico.png) no-repeat 3px -639px;
+}
+.commentView > .con {
+max-height: 250px;
+overflow-y: auto;
+padding: 10px;
+font-size: 14px;
+line-height: 1.5em;
+border-radius: 10px;
+background-color: #f1f1f1;
+}
+.agreeWrap {
+height: calc(100% - 485px)
+}
+.agreeWrap p.agree {
+padding: 0 0 0 25px;
+background: url(/images/ko/ico.png) no-repeat 0 -495px;	
+}
+.agreeCount {
+margin: 7px 0;
+}
+.agreeCount > span {
+color: #287be4;
+}
+.agreeNew {
+margin: 20px 0;
+}
+.agreeNew > input {
+width: 198px;
+padding: 7px 7px 7px 30px;
+border: 2px solid #555;
+background: url(/images/ko/ico.png) no-repeat 7px -490px;	
+}
+
+/* 의견등록 */
+.commentNew {
+margin-top: 20px;
+}
+.commentNew li {
+margin-bottom: 15px;
+}
+.commentNew li > label {
+display: block;
+margin-bottom: 7px;
+}
+.commentNew li > input {
+padding: 7px;
+}
+.commentNew li p.info {
+font-size: 12px;
+color: #777;
+text-align: right;
+}
+.commentNew li p.info > span {
+color: #287be4
+}
+
+/* 목록검색 */
+.listSearch {
+margin-bottom: 10px;
+padding: 7px;
+background-color: #f3f3f3;
+}
+.listSearch  > input {
+width: 230px;
+padding: 10px;
+font-size: 1.1em;
+border: none;
+}
+.listSearch > button {
+width: 30px;
+height: 30px;
+margin-left: -5px;
+border: none;
+text-indent: -999em;
+background-image: url(/images/ko/ico.png);
+background-repeat: no-repeat;
+background-position: 0px -110px;
+}
+
+/* PAGINATION */
+.pagination {
+position: relative;
+margin: 7px 0;
+text-align: center;
+}
+.pagination li {
+display: inline-block;
+margin: 0;
+padding: 0;
+font-size: 13px;
+padding: 2px 5px;
+cursor: pointer;
+}
+.pagination li * {
+vertical-align: middle;
+}
+.pagination li.on {
+font-weight: bold;
+text-decoration: underline;
+}
+.pagination .ico {
+width: 20px;
+height: 20px;
+padding: 0;
+text-indent: -999em;
+}
+.pagination .first {
+background: url(/images/ko/pagenation_first.png) no-repeat 0 0;
+}
+.pagination .forward {
+background: url(/images/ko/pagenation_forward.png) no-repeat 0 0;
+}
+.pagination .back {
+background: url(/images/ko/pagenation_back.png) no-repeat 0 0;
+}
+.pagination .end {
+background: url(/images/ko/pagenation_end.png) no-repeat 0 0;
+}
+/* 버튼정렬 */
+.btnAlignR {
+text-align: right;
+}
+.btnAlignC {
+text-align: center;
+}
+.btnText {
+padding: 2px 5px;
+font-size: 0.9em;
+color: #888;
+border: 1px solid #ccc;
+border-radius: 2px;
+background-image: none;
+background-color: #fff;
+}
+button.basicA {
+padding: 8px;
+color: #51515b;
+border: 1px solid #9898a0;
+border-radius: 3px;
+background-color: #fff;
+}
+button.focusA {
+padding: 8px 30px;
+color: #fff;
+border: 1px solid #414149;
+border-radius: 3px;
+background-color: #51515b;
+}
+button.focusC {
+padding: 8px 30px;
+color: #51515b;
+border: 1px solid #9898a0;
+border-radius: 3px;
+background-color: #fff;
+}
+button.focusAgree {
+padding: 8px 12px;
+color: #51515b;
+border: 1px solid #9898a0;
+border-radius: 3px;
+background-color: #fff;
+}
 
 /* FROM NIPA 국방부, 권재현*/
 .btnText {
@@ -388,7 +673,7 @@ ul.listDrop li > p {
 padding: 8px;
 font-weight: bold;
 border:1px solid #e0e0e0;
-background-image: url(../images/ico.png);
+background-image: url(/images/ko/ico.png);
 background-repeat: no-repeat;
 background-position: right -255px;
 background-color: #fff;
@@ -403,7 +688,7 @@ ul.listDrop li.on > p {
 color: #fff;
 border-bottom: 3px solid #eaeaea;
 background-color: #287be4;
-background-image: url(../images/ico.png);
+background-image: url(/images/ko/ico.png);
 background-repeat: no-repeat;
 background-position: right -210px;
 }
@@ -580,7 +865,7 @@ overflow-y: auto;
 padding: 8px;
 font-weight: bold;
 border:1px solid #e0e0e0;
-background-image: url(../images/ico.png);
+background-image: url(/images/ko/ico.png);
 background-repeat: no-repeat;
 background-position: right -255px;
 background-color: #fff;
