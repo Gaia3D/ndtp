@@ -575,7 +575,7 @@ overflow-y: auto;
 }
 
 
-/*환경 설정 임시*/
+/*========================================== temp css =========================================================*/
 .setupContentWrap > p {
 padding: 8px;
 font-weight: bold;
@@ -594,3 +594,4 @@ border-bottom: 1px dotted #888;
 display: inline-block;
 margin-right: 10px;
 }
+
