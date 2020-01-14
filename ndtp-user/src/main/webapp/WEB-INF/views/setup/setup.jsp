@@ -1,12 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <div class="setupContentWrap">
-<div>
+<!-- <div>
 	<p>라벨</p>
 	<input type="radio" id="showLabel" name="labelInfo" value="true" onclick="changeLabel(true);" />
 	<label for="showLabel">표시</label>
 	<input type="radio" id="hideLabel" name="labelInfo" value="false" onclick="changeLabel(false);"/>
 	<label for="hideLabel">비표시</label>
-</div>
+</div> -->
 <div>
 	<p>객체정보</p>
 	<input type="radio" id="showObjectInfo" name="objectInfo" value="true" onclick="changeObjectInfoViewMode(true);" />
@@ -28,7 +28,7 @@
 	<input type="radio" id="hideBoundingBox" name="boundingBox" value="false" onclick="changeBoundingBox(false);"/>
 	<label for="hideBoundingBox">비표시</label>
 </div>
-<div>
+<!-- <div>
 	<p>선택 및 이동</p>
 	<input type="radio" id="objectNoneMove" name="objectMoveMode" value="2" onclick="changeObjectMove('2');"/>
 	<label for="objectNoneMove">None</label>
@@ -39,8 +39,8 @@
 	
 	<button type="button" id="saveObjectMoveButton" class="btnTextF">저장</button>
 	<button type="button" id="deleteAllObjectMoveButton" class="btnTextF">전체삭제</button>
-</div>
-<div>
+</div> -->
+<!-- <div>
 	<p>Object Occlusion Culling</p>
 	<div style="height: 30px;">
 		<div style="display: inline-block; width: 70px;">선택</div>
@@ -54,7 +54,7 @@
 		<input type="text" id="occlusion_culling_data_key" name="occlusion_culling_data_key" size="22" />
 		<button type="button" id="changeOcclusionCullingButton" class="btnTextF">변경</button>
 	</div>
-</div>
+</div> -->
 <div>
 	<p>LOD</p>
 	<div style="height: 30px;">
@@ -83,7 +83,7 @@
 		<button type="button" id="changeLodButton" class="btnTextF">변경</button>
 	</div>
 </div>
-<div>
+<!-- <div>
 	<p>밝기</p>
 	<div style="height: 30px;">주변 반사 계수</div>
 	<div id="ambient_reflection_coef" style="display: inline-block; width: 65%;">
@@ -107,17 +107,17 @@
 	</div>
 	<div style="text-align: center">
 	</div>
-</div>
+</div> -->
 <div>
 	<p><label for="geo_ssao_radius">SSAO 반경</label></p>
 	<input type="text" id="geo_ssao_radius" name="geo_ssao_radius" />
 	<button type="button" id="changeSsaoRadiusButton" class="btnTextF">변경</button>
 </div>
-<div>
+<!-- <div>
 	<p>화면 모드</p>
 	<input type="radio" id="mode3PV" name="viewMode" value ="false" onclick="changeViewMode(false);"/>
 	<label for="mode3PV">3인칭 모드</label>
 	<input type="radio" id="mode1PV" name="viewMode" value ="true" onclick="changeViewMode(true);"/>
 	<label for="mode1PV">1인칭 모드</label>
-</div>
+</div> -->
 </div>

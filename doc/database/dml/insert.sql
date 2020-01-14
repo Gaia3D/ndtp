@@ -140,10 +140,10 @@ values
 	(NEXTVAL('widget_seq'), 'projectWidget', 1, 'admin' ),
 	(NEXTVAL('widget_seq'), 'dataInfoWidget', 2, 'admin' ),
 	(NEXTVAL('widget_seq'), 'dataInfoLogListWidget', 3, 'admin' ),
-	(NEXTVAL('widget_seq'), 'issueWidget', 4, 'admin' ),
+	(NEXTVAL('widget_seq'), 'accessLogWidget', 4, 'admin' ),
 	(NEXTVAL('widget_seq'), 'userWidget', 5, 'admin' ),
 	(NEXTVAL('widget_seq'), 'scheduleLogListWidget', 6, 'admin' ),
-	(NEXTVAL('widget_seq'), 'accessLogWidget', 7, 'admin' ),
+	(NEXTVAL('widget_seq'), 'issueWidget', 7, 'admin' ),
 	(NEXTVAL('widget_seq'), 'dbcpWidget', 8, 'admin' ),
 	(NEXTVAL('widget_seq'), 'dbSessionWidget', 9, 'admin' );
 

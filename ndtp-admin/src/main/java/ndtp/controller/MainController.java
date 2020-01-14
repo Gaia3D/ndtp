@@ -344,7 +344,7 @@ public class MainController {
 	 * @param request
 	 * @return
 	 */
-//	@RequestMapping(value = "ajax-project-data-widget.do")
+//	@RequestMapping(value = "ajax-project-data-widget")
 //	@ResponseBody
 //	public Map<String, Object> ajaxProjectDataWidget(HttpServletRequest request) {
 //		
@@ -380,7 +380,7 @@ public class MainController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "ajax-data-status-widget.do")
+	@RequestMapping(value = "ajax-data-status-widget")
 	@ResponseBody
 	public Map<String, Object> ajaxDataStatusStatistics(HttpServletRequest request) {
 		
@@ -408,7 +408,7 @@ public class MainController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "ajax-data-info-log-widget.do")
+	@GetMapping(value = "ajax-data-info-log-widget")
 	@ResponseBody
 	public Map<String, Object> ajaxDataInfoLogWidget(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
@@ -444,7 +444,7 @@ public class MainController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "ajax-user-widget.do")
+	@GetMapping(value = "ajax-user-widget")
 	@ResponseBody
 	public Map<String, Object> ajaxUserWidget(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
@@ -487,7 +487,7 @@ public class MainController {
 	 * @param model
 	 * @return
 	 */
-//	@GetMapping(value = "ajax-schedule-log-list-widget.do")
+//	@GetMapping(value = "ajax-schedule-log-list-widget")
 //	@ResponseBody
 //	public Map<String, Object> ajaxScheduleLogListWidget(HttpServletRequest request) {
 //		
@@ -525,7 +525,7 @@ public class MainController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "ajax-dbcp-widget.do")
+	@GetMapping(value = "ajax-dbcp-widget")
 	@ResponseBody
 	public Map<String, Object> ajaxDbcpWidget(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
@@ -568,7 +568,7 @@ public class MainController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "ajax-access-log-widget.do")
+	@GetMapping(value = "ajax-access-log-widget")
 	@ResponseBody
 	public Map<String, Object> ajaxAccessLogWidget(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
