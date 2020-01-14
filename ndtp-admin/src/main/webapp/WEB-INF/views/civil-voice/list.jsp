@@ -74,17 +74,17 @@
 								<input type="hidden" id="checkIds" name="checkIds" value="" />
 							<div class="list-header row">
 								<div class="list-desc u-pull-left">
-									<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/> 
+									<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/>
 									<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/>
 								</div>
 								<div class="list-functions u-pull-right">
 									<!-- <div style="padding-bottom: 3px;" class="button-group">
-										<a href="#" onclick="return false;" class="button">비밀번호 초기화</a>	
-										<a href="#" onclick="return false;" class="button">사용자 잠금</a>	
-										<a href="#" onclick="return false;" class="button">사용자 잠금 해제</a>	
-										<a href="#" onclick="return false;" class="button">일괄삭제</a>	
-										<a href="#" onclick="return false;" class="button">일괄등록(EXCEL)</a>	
-										<a href="#" onclick="return false;" class="button">다운로드(EXCEL)</a>	
+										<a href="#" onclick="return false;" class="button">비밀번호 초기화</a>
+										<a href="#" onclick="return false;" class="button">사용자 잠금</a>
+										<a href="#" onclick="return false;" class="button">사용자 잠금 해제</a>
+										<a href="#" onclick="return false;" class="button">일괄삭제</a>
+										<a href="#" onclick="return false;" class="button">일괄등록(EXCEL)</a>
+										<a href="#" onclick="return false;" class="button">다운로드(EXCEL)</a>
 									</div> -->
 								</div>
 							</div>
@@ -116,36 +116,28 @@
 								<tbody>
 <c:if test="${empty civilVoiceList}">
 									<tr>
-										<td colspan="10" class="col-none">사용자 목록이 존재하지 않습니다.</td>
+										<td colspan="10" class="col-none"><spring:message code='main.status.civilvoice.moreexecution' var="moreExectuion"/></td>
 									</tr>
 </c:if>
 <c:if test="${!empty civilVoiceList}">
 	<c:forEach var="civilVoice" items="${civilVoiceList}" varStatus="status">
-				
+
 									<tr>
 										<td class="col-checkbox">
 											<input type="checkbox" id="userId_${civilVoice.userId}" name="userId" value="${civilVoice.userId}" />
 										</td>
 										<td class="col-number">${pagination.rowNumber - status.index}</td>
 										<td class="col-name">
-											<a href="/user/group/${civilVoice.userGroupId}/menu" class="linkButton">${civilVoice.userGroupName}</a>
+											<a href="/user/group/${civilVoice.civilVoiceId}/menu" class="linkButton">${civilVoice.userId}</a>
 										</td>
 										<td class="col-name">${civilVoice.userId}</td>
 										<td class="col-name">
-											<a href="/user/detail?userId=${civilVoice.userId}&amp;pageNo=${pagination.pageNo }${pagination.searchParameters}" class="linkButton">${civilVoice.userName}</a>
+											<a href="/user/detail?userId=${civilVoice.userId}&amp;pageNo=${pagination.pageNo }${pagination.searchParameters}" class="linkButton">${civilVoice.userId}</a>
 										</td>
+										<td class="col-type">${civilVoice.userId}</td>
+										<td class="col-type">${civilVoice.civilVoiceId}</td>
 										<td class="col-type">
-											<c:if test="${civilVoice.status eq '0' }">사용중</c:if>
-											<c:if test="${civilVoice.status eq '1' }">사용중지</c:if>
-											<c:if test="${civilVoice.status eq '2' }">잠금</c:if>
-											<c:if test="${civilVoice.status eq '3' }">휴면</c:if>
-											<c:if test="${civilVoice.status eq '4' }">만료</c:if>
-											<c:if test="${civilVoice.status eq '5' }">삭제</c:if>
-											<c:if test="${civilVoice.status eq '6' }">임시비밀번호</c:if>
-										</td>
-										<td class="col-type">${civilVoice.status}</td>
-										<td class="col-type">
-											<fmt:parseDate value="${civilVoice.lastSigninDate}" var="viewLastSigninDate" pattern="yyyy-MM-dd HH:mm:ss"/>
+											<fmt:parseDate value="${civilVoice.insertDate}" var="viewLastSigninDate" pattern="yyyy-MM-dd HH:mm:ss"/>
 											<fmt:formatDate value="${viewLastSigninDate}" pattern="yyyy-MM-dd HH:mm"/>
 										</td>
 										<td class="col-type">
@@ -154,11 +146,11 @@
 										</td>
 										<td class="col-functions">
 											<span class="button-group">
-												<a href="#" onclick="deleteUploadData(${civilVoice.userId}); return false;" 
+												<a href="#" onclick="deleteUploadData(${civilVoice.userId}); return false;"
 													class="image-button button-modify"><spring:message code='delete'/></a>
 											</span>
 											<span class="button-group">
-												<a href="#" onclick="deleteUploadData(${civilVoice.userId}); return false;" 
+												<a href="#" onclick="deleteUploadData(${civilVoice.userId}); return false;"
 													class="image-button button-delete"><spring:message code='delete'/></a>
 											</span>
 										</td>
@@ -168,14 +160,14 @@
 								</tbody>
 							</table>
 							</form:form>
-								
+
 						</div>
 						<%@ include file="/WEB-INF/views/common/pagination.jsp" %>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>	
+	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
 
 	<%-- F4D Converter Job 등록 --%>
@@ -220,12 +212,12 @@
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript">
-	
-	//전체 선택 
+
+	//전체 선택
 	$("#chkAll").click(function() {
 		$(":checkbox[name=uploadDataId]").prop("checked", this.checked);
 	});
-	
+
 	var dialogConverterJob = $( ".dialogConverterJob" ).dialog({
 		autoOpen: false,
 		height: 280,
@@ -235,18 +227,18 @@
 		close: function() {
 			$("#converterCheckIds").val("");
 			$("#title").val("");
-			//location.reload(); 
+			//location.reload();
 		}
 	});
-	
+
 	// F4D Converter Button Click
 	function converterFile(uploadDataId, dataName) {
 		$("#converterCheckIds").val(uploadDataId + ",");
 		$("#title").val(dataName);
-		
+
 		dialogConverterJob.dialog( "open" );
 	}
-	
+
 	// All F4D Converter Button Click
 	function converterFiles() {
 		var checkedValue = "";
@@ -258,10 +250,10 @@
 			return;
 		}
 		$("#converterCheckIds").val(checkedValue);
-		
+
 		dialogConverterJob.dialog( "open" );
 	}
-	
+
 	// F4D Converter 일괄 변환
 	var saveConverterJobFlag = true;
 	function saveConverterJob() {
@@ -270,7 +262,7 @@
 			$("#title").focus();
 			return false;
 		}
-		
+
 		if(saveConverterJobFlag) {
 			saveConverterJobFlag = false;
 			var formData =$("#converterJobForm").serialize();
@@ -282,11 +274,11 @@
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				success: function(msg){
 					if(msg.statusCode <= 200) {
-						alert(JS_MESSAGE["insert"]);	
+						alert(JS_MESSAGE["insert"]);
 					} else {
 						alert(JS_MESSAGE[msg.errorCode]);
 					}
-					
+
 					$("#converterCheckIds").val("");
 					$("#title").val("");
 					$(":checkbox[name=uploadDataId]").prop("checked", false);
@@ -304,11 +296,11 @@
 			return;
 		}
 	}
-	
+
 	function deleteUploadData(uploadDataId) {
 		deleteAllUploadData(uploadDataId);
 	}
-	
+
 	// 삭제
 	var deleteUploadDataFlag = true;
 	function deleteAllUploadData(uploadDataId) {
@@ -328,7 +320,7 @@
 		} else {
 			formData = "checkIds=" + uploadDataId;
 		}
-		
+
 		if(confirm(JS_MESSAGE["delete.confirm"])) {
 			if(deleteUploadDataFlag) {
 				deleteUploadDataFlag = false;
@@ -340,7 +332,7 @@
 					headers: {"X-Requested-With": "XMLHttpRequest"},
 					success: function(msg){
 						if(msg.statusCode <= 200) {
-							alert(JS_MESSAGE["delete"]);	
+							alert(JS_MESSAGE["delete"]);
 							location.reload();
 						} else {
 							alert(JS_MESSAGE[msg.errorCode]);

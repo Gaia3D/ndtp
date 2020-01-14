@@ -24,7 +24,7 @@
 				<div class="row">
 					<div class="widget widget-low widget-otp-usage full column">
 						<div class="widget-header row">
-							<div class="widget-heading u-pull-left">						
+							<div class="widget-heading u-pull-left">
 								<h3 class="widget-title"><spring:message code='main.issue.issuestatus'/><span class="widget-desc">${yearMonthDay } (<spring:message code='main.today'/>)</span></h3>
 							</div>
 						</div><!-- .widget-header -->
@@ -44,7 +44,7 @@
 									</div>
 								</div>
 							</div>
-							
+
 							<div class="one-third column banner-container">
 								<div class="banner info-success">
 									<div>
@@ -60,7 +60,7 @@
 									</div>
 								</div>
 							</div>
-							
+
 							<div class="one-third column banner-container">
 								<div class="banner info-failures">
 									<div>
@@ -78,34 +78,34 @@
 							</div>
 						</div><!-- .widget-content -->
 					</div><!-- .widget -->
-	
+
 <c:forEach var="dbWidget" items="${widgetList }">
 	<c:choose>
-		<c:when test="${dbWidget.name == 'projectWidget'}">		
+		<c:when test="${dbWidget.name == 'dataGroupWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column" style="font-size: 16px;">
 						<div class="widget-header row">
-							<div class="widget-heading u-pull-left">						
-								<h3 class="widget-title"><spring:message code='main.status.project.data'/><span class="widget-desc">${today } <spring:message code='config.widget.basic'/></span></h3>
+							<div class="widget-heading u-pull-left">
+								<h3 class="widget-title"><spring:message code='main.status.data.group'/><span class="widget-desc">${today } <spring:message code='config.widget.basic'/></span></h3>
 							</div>
 							<div class="widget-functions u-pull-right">
-								<a href="/data/list-data.do" title="<spring:message code='config.widget.project.more'/>"><span class="icon-glyph glyph-plus"></span></a>
+								<a href="/data/list" title="<spring:message code='config.widget.project.more'/>"><span class="icon-glyph glyph-plus"></span></a>
 							</div>
 						</div>
 						<div id="${dbWidget.name}" class="widget-content row">
 							<div style="text-align: center; padding-top: 60px; padding-left: 150px;">
-					            <div id="projectSpinner" style="width: 150px; height: 70px;"></div>
+					            <div id="dataGroupSpinner" style="width: 150px; height: 70px;"></div>
 							</div>
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'dataInfoWidget'}">		
+		<c:when test="${dbWidget.name == 'dataInfoWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column" style="font-size: 16px;">
 						<div class="widget-header row">
-							<div class="widget-heading u-pull-left">						
+							<div class="widget-heading u-pull-left">
 								<h3 class="widget-title"><spring:message code='main.status.use.data'/><span class="widget-desc">${today } <spring:message code='config.widget.basic'/></span></h3>
 							</div>
 							<div class="widget-functions u-pull-right">
-								<a href="/data/list-data.do" title="<spring:message code='config.widget.data.info.more'/>"><span class="icon-glyph glyph-plus"></span></a>
+								<a href="/data/list" title="<spring:message code='config.widget.data.info.more'/>"><span class="icon-glyph glyph-plus"></span></a>
 							</div>
 						</div>
 						<div id="${dbWidget.name}" class="widget-content row">
@@ -115,14 +115,14 @@
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'dataInfoLogListWidget'}">		
+		<c:when test="${dbWidget.name == 'dataInfoLogListWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column">
 						<div class="widget-header row">
-							<div class="widget-heading u-pull-left">						
+							<div class="widget-heading u-pull-left">
 								<h3 class="widget-title"><spring:message code='main.status.data.log'/><span class="widget-desc">${today } <spring:message code='config.widget.basic'/></span></h3>
 							</div>
 							<div class="widget-functions u-pull-right">
-								<a href="/data/list-data-log.do" title="<spring:message code='config.widget.data.info.log.more'/>"><span class="icon-glyph glyph-plus"></span></a>
+								<a href="/data/list-data-log" title="<spring:message code='config.widget.data.info.log.more'/>"><span class="icon-glyph glyph-plus"></span></a>
 							</div>
 						</div>
 						<div id="${dbWidget.name}" class="widget-content row">
@@ -131,52 +131,52 @@
 					       	</div>
 						</div>
 					</div>
-		</c:when>		
-		<c:when test="${dbWidget.name == 'userWidget'}">		
+		</c:when>
+		<c:when test="${dbWidget.name == 'userWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column" style="font-size: 16px;">
 						<div class="widget-header row">
-							<div class="widget-heading u-pull-left">						
+							<div class="widget-heading u-pull-left">
 								<h3 class="widget-title"><spring:message code='main.status.userstatus'/><span class="widget-desc">${today }<spring:message code='main.standard'/></span></h3>
 							</div>
 							<div class="widget-functions u-pull-right">
 								<spring:message code='main.status.moreuserstatus' var="moreuserstatus"/>
-								<a href="/user/list-user.do" title="${moreuserstatus}"><span class="icon-glyph glyph-plus"></span></a>
+								<a href="/user/list" title="${moreuserstatus}"><span class="icon-glyph glyph-plus"></span></a>
 							</div>
 						</div>
 						<div id="${dbWidget.name}" class="widget-content row">
 						</div>
 					</div>
-		</c:when>			
-		<c:when test="${dbWidget.name == 'scheduleLogListWidget'}">	
+		</c:when>
+		<c:when test="${dbWidget.name == 'civilVoiceWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column">
 						<div class="widget-header row">
-							<div class="widget-heading u-pull-left">						
-								<h3 class="widget-title"><spring:message code='main.status.schedule.execution'/><span class="widget-desc">${thisYear }<spring:message code='main.status.schedule.date'/></span></h3>
+							<div class="widget-heading u-pull-left">
+								<h3 class="widget-title"><spring:message code='main.status.civilvoice.data'/><span class="widget-desc">${thisYear }<spring:message code='main.status.civilvoice.date'/></span></h3>
 							</div>
 							<div class="widget-functions u-pull-right">
-								<spring:message code='main.status.schedule.moreexecution' var="moreExectuion"/>
-								<a href="/schedule/list-schedule-log.do" title="${moreExectuion}"><span class="icon-glyph glyph-plus"></span></a>
+								<spring:message code='main.status.civilvoice.moreexecution' var="moreExectuion"/>
+								<a href="/civil-voice/list" title="${moreExectuion}"><span class="icon-glyph glyph-plus"></span></a>
 							</div>
 						</div>
 						<div id="${dbWidget.name}" class="widget-content row">
 							<div style="text-align: center; padding-top: 60px; padding-left: 150px;">
-			            		<div id="scheduleLogListSpinner" style="width: 150px; height: 70px;"></div>
+			            		<div id="civilVoiceSpinner" style="width: 150px; height: 70px;"></div>
 			            	</div>
 						</div>
 					</div>
-		</c:when>						
-		<c:when test="${dbWidget.name == 'accessLogWidget'}">		
+		</c:when>
+		<c:when test="${dbWidget.name == 'accessLogWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column">
 						<div class="widget-header row">
-							<div class="widget-heading u-pull-left">						
+							<div class="widget-heading u-pull-left">
 								<h3 class="widget-title"><spring:message code='main.status.user.tracking'/><span class="widget-desc">${today } <spring:message code='main.standard'/></span></h3>
 							</div>
 							<div class="widget-functions u-pull-right">
 								<spring:message code='main.status.user.moretracking' var='moreTracking'/>
-								<a href="/log/list-access-log.do" title="${moreTracking}"><span class="icon-glyph glyph-plus"></span></a>
+								<a href="/access/list" title="${moreTracking}"><span class="icon-glyph glyph-plus"></span></a>
 							</div>
 						</div>
-						
+
 						<div id="${dbWidget.name}" class="widget-content row">
 							<div style="text-align: center; padding-top: 60px; padding-left: 150px;">
 			            		<div id="accessLogSpinner" style="width: 150px; height: 70px;"></div>
@@ -187,11 +187,11 @@
 		<c:when test="${dbWidget.name == 'dbcpWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column">
 						<div class="widget-header row">
-							<div class="widget-heading u-pull-left">						
+							<div class="widget-heading u-pull-left">
 								<h3 class="widget-title"><spring:message code='main.status.db.connection.pool'/><span class="widget-desc">${today }<spring:message code='main.standard'/></span></h3>
 							</div>
 						</div>
-						
+
 						<div id="${dbWidget.name}" class="widget-content row">
 							<table class="widget-table">
 								<col class="col-left" />
@@ -335,10 +335,10 @@
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'dbSessionWidget'}">			
+		<c:when test="${dbWidget.name == 'dbSessionWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column">
 						<div class="widget-header row">
-							<div class="widget-heading u-pull-left">						
+							<div class="widget-heading u-pull-left">
 								<h3 class="widget-title"><spring:message code='main.status.db.session'/>(${dbSessionCount })<span class="widget-desc">${today }<spring:message code='main.standard'/></span></h3>
 							</div>
 							<div class="widget-functions u-pull-right">
@@ -350,7 +350,7 @@
 							<table class="widget-table">
 								<col class="col-left" />
 								<col class="col-left" />
-			<c:if test="${empty dbSessionList }">					
+			<c:if test="${empty dbSessionList }">
 								<tr>
 									<td colspan="2" class="col-none"><spring:message code='main.status.db.nosession'/></td>
 								</tr>
@@ -369,19 +369,19 @@
 							</table>
 						</div>
 					</div>
-		</c:when>		
+		</c:when>
 		<c:otherwise>
-					
+
 		</c:otherwise>
 	</c:choose>
 </c:forEach>
-				</div>	
+				</div>
 			</div>
 		</div>
 	</div>
-	
+
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
-	
+
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 
@@ -400,21 +400,21 @@
 <script type="text/javascript" src="/js/navigation.js"></script>
 <script type="text/javascript">
 	var refreshTime = parseInt("${widgetInterval}") * 1000;
-	
-	var isProjectDraw = "${isProjectDraw}";
+
+	var isDataGroupDraw = "${isDataGroupDraw}";
 	var isDataInfoDraw = "${isDataInfoDraw}";
 	var isDataInfoLogListDraw = "${isDataInfoLogListDraw}";
 	var isIssueDraw = "${isIssueDraw}";
 	var isUserDraw = "${isUserDraw}";
-	var isScheduleLogListDraw = "${isScheduleLogListDraw}";
+	var isCivilVoiceDraw = "${isCivilVoiceDraw}";
 	var isAccessLogDraw = "${isAccessLogDraw}";
 	var isDbcpDraw = "${isDbcpDraw}";
 	var isDbSessionDraw = "${isDbSessionDraw}";
 
 	$(document).ready(function() {
-		if(isProjectDraw == "true") {
-			startSpinner("projectSpinner");
-			projectWidget();
+		if(isDataGroupDraw == "true") {
+			startSpinner("dataGroupSpinner");
+			dataGroupWidget();
 		}
 		if(isDataInfoDraw == "true") {
 			startSpinner("dataInfoSpinner");
@@ -431,9 +431,9 @@
 		if(isUserDraw == "true") {
 			userWidget(0, null);
 		}
-		if(isScheduleLogListDraw == "true") {
-			//startSpinner("scheduleLogListSpinner");
-			//scheduleLogListWidget();
+		if(isCivilVoiceDraw == "true") {
+			startSpinner("civilVoiceSpinner");
+			civilVoiceWidget();
 		}
 		if(isAccessLogDraw == "true") {
 			startSpinner("accessLogSpinner");
@@ -446,17 +446,17 @@
 			//startSpinner("dbSessionSpinner");
 		    setTimeout(dbSessionWidget, 3000);
 		}
-		
+
 		var isActive = "${isActive}";
 		if(isActive == "true") {
 			// Active 일때만 화면을 갱신함
 			setInterval(refreshMain, refreshTime);
 		}
 	});
-	
+
 	function refreshMain() {
-		if(isProjectDraw == "true") {
-			projectWidget();
+		if(isDataGroupDraw == "true") {
+			dataGroupWidget();
 		}
 		if(isDataInfoDraw == "true") {
 			dataInfoWidget();
@@ -470,23 +470,23 @@
 		if(isUserDraw == "true") {
 			//userWidget();
 		}
-		// TODO You'll need to add the remaining widgets later 
+		// TODO You'll need to add the remaining widgets later
 	}
-	
+
 	// DB Connection Pool 현황
 	function callDbcpWidget() {
 		//dbcpWidget();
 		//setInterval(ajaxDbcpWidget, refreshTime);
 	}
-	
+
 	// 사용자 추적
 	function callAccessLogWidget() {
 		accessLogWidget();
 		setInterval(accessLogWidget, refreshTime);
 	}
-	
-	function projectWidget() {
-		var url = "/main/ajax-project-data-widget";
+
+	function dataGroupWidget() {
+		var url = "/main/ajax-data-group-widget";
 		var info = "";
 		$.ajax({
 			url: url,
@@ -496,7 +496,7 @@
 			headers: { "X-mago3D-Header" : "mago3D"},
 			success : function(msg) {
 				if(msg.result === "success") {
-					showProject(msg.projectNameList, msg.dataTotalCountList);
+					showDataGroup(msg.dataGroupNameList, msg.dataGroupTotalCountList);
 				} else {
 					alert(JS_MESSAGE[msg.result]);
 				}
@@ -507,22 +507,22 @@
 			}
 		});
 	}
-	
-	function showProject(projectNameList, dataTotalCountList) {
-		
-		$("#projectWidget").empty();
-		if(projectNameList == null || projectNameList.length == 0) {
+
+	function showDataGroup(dataGroupNameList, dataGroupTotalCountList) {
+
+		$("#dataGroupWidget").empty();
+		if(dataGroupNameList == null || dataGroupNameList.length == 0) {
 			return;
-		} 
-		
-		var data = [];
-		var projectCount =  projectNameList.length;
-		for(i=0; i<projectCount; i++ ) {
-			var projectStatisticsArray = [ projectNameList[i], dataTotalCountList[i]];
-			data.push(projectStatisticsArray);
 		}
-		
-		var plot = $.jqplot("projectWidget", [data], {
+
+		var data = [];
+		var dataGroupCount =  dataGroupNameList.length;
+		for(i=0; i<dataGroupCount; i++ ) {
+			var dataGroupStatisticsArray = [ dataGroupNameList[i], dataGroupTotalCountList[i]];
+			data.push(dataGroupStatisticsArray);
+		}
+
+		var plot = $.jqplot("dataGroupWidget", [data], {
             //title : "project 별 chart",
             seriesColors: [ "#a67ee9", "#FE642E", "#01DF01", "#2E9AFE", "#F781F3", "#F6D8CE", "#99a0ac" ],
             grid: {
@@ -556,7 +556,7 @@
             }
         });
 	}
-	
+
 	function dataInfoWidget() {
 		$.ajax({
 			url : "/main/ajax-data-status-widget",
@@ -575,26 +575,26 @@
 			}
 		});
 	}
-	
+
 	function showDataInfo(jsonData) {
-		
+
 		$("#dataInfoWidget").empty();
-		
+
 		var useTotalCount = parseInt(jsonData.useTotalCount);
 		var forbidTotalCount = parseInt(jsonData.forbidTotalCount);
 		var etcTotalCount = parseInt(jsonData.etcTotalCount);
-		
+
 		var use = "<spring:message code='data.status.use'/>";
 		var unused = "<spring:message code='data.status.unused'/>";
 		var etc = "<spring:message code='data.status.etc'/>";
-		
+
 		var dataValues = [ useTotalCount, forbidTotalCount, etcTotalCount];
 		var ticks = [use, unused, etc];
 		var yMax = 10;
 		if(useTotalCount > 10 || forbidTotalCount > 10 || etcTotalCount > 10) {
 			yMax = Math.max(useTotalCount, forbidTotalCount, etcTotalCount) + (useTotalCount * 0.2);
 		}
-		
+
 		var plot = $.jqplot("dataInfoWidget", [dataValues], {
         	//title : "data info status",
         	height: 205,
@@ -627,16 +627,16 @@
                 xaxis: {
                     renderer: $.jqplot.CategoryAxisRenderer,
                     ticks: ticks,
-                    tickOptions:{ 
+                    tickOptions:{
                     	formatString: "%'d",
 	                	fontSize: "10pt"
-	                } 
+	                }
                 },
                 yaxis: {
 	            	numberTicks : 6,
 	                min : 0,
 	                max : yMax,
-                    tickOptions:{ 
+                    tickOptions:{
                     	formatString: "%'d",
 	                	fontSize: "10pt"
 	                }
@@ -645,7 +645,7 @@
             highlighter: { show: false }
         });
 	}
-	
+
 	function dataInfoLogListWidget() {
 		$.ajax({
 			url : "/main/ajax-data-info-log-widget",
@@ -673,8 +673,8 @@
 							else if(dataInfoLog.status === "1") viewStatus = "<spring:message code='complete'/>";
 							else if(dataInfoLog.status === "2") viewStatus = "<spring:message code='reject'/>";
 							else if(dataInfoLog.status === "3") viewStatus = "<spring:message code='reset'/>";
-							
-							content = content 
+
+							content = content
 								+ 	"<tr>"
 								+ 	"	<td class=\"col-left\">"
 								+		"	<span class=\"index\"></span>"
@@ -698,9 +698,9 @@
 	}
 
 	function issueWidget() {
-		
+
 	}
-	
+
 	// 사용자 상태별 현황
 	function showUser(drawType, jsonData) {
 		var activeUserTotalCount = null;
@@ -709,7 +709,7 @@
 		var sleepUserTotalCount = null;
 		var expireUserTotalCount = null;
 		var tempPasswordUserTotalCount = null;
-		
+
 		if(drawType == 0) {
 			// el 데이터 표시
 			activeUserTotalCount = parseInt("${activeUserTotalCount}");
@@ -734,7 +734,7 @@
 		if(activeUserTotalCount > 10 || fobidUserTotalCount > 10 || failUserTotalCount > 10 || sleepUserTotalCount > 10 || expireUserTotalCount > 10 || tempPasswordUserTotalCount > 10) {
 			yMax = Math.max(activeUserTotalCount, fobidUserTotalCount, failUserTotalCount, sleepUserTotalCount, expireUserTotalCount, tempPasswordUserTotalCount) + (activeUserTotalCount * 0.2);
 		}
-		
+
         var plot = $.jqplot("userWidget", [userValues], {
         	//title : "사용자 상태별 현황",
         	height: 205,
@@ -748,7 +748,7 @@
 				shadow: false,
 				borderWidth:0.1
 				//shadowColor: 'transparent'
-			}, 
+			},
         	gridPadding:{
 		        left:35,
 		        right:1,
@@ -767,16 +767,16 @@
                 xaxis: {
                     renderer: $.jqplot.CategoryAxisRenderer,
                     ticks: ticks,
-                    tickOptions:{ 
+                    tickOptions:{
                     	formatString: "%'d",
 	                	fontSize: "10pt"
-	                } 
+	                }
                 },
                 yaxis: {
 	            	numberTicks : 6,
 	            	min : 0,
 	                max : yMax,
-                    tickOptions:{ 
+                    tickOptions:{
                     	formatString: "%'d",
 	                	fontSize: "10pt"
 	                }
@@ -785,7 +785,7 @@
             highlighter: { show: false }
         });
 	}
-	
+
 	// 사용자 상태별 현황 정보 갱신
 	function userWidget() {
 		$.ajax({
@@ -808,11 +808,11 @@
 			}
 		});
 	}
-	
+
 	// 스케줄 실행 이력 갱신
-	function scheduleLogListWidget() {
+	function civilVoiceWidget() {
 		$.ajax({
-			url : "/main/ajax-schedule-log-list-widget",
+			url : "/main/ajax-civil-voice-widget",
 			type : "GET",
 			cache : false,
 			dataType : "json",
@@ -822,30 +822,34 @@
 				} else if (msg.result == "db.exception") {
 					//alert("데이터 베이스 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
 				} else if (msg.result == "success") {
-					var scheduleLogList = msg.scheduleLogList;
+					var civilVoiceList = msg.civilVoiceList;
 					var content = "";
 					content 	= "<table class=\"widget-table\">"
 								+	"<col class=\"col-left\" />"
 								+	"<col class=\"col-center\" style=\"min-width:50px;\"/>"
 								+	"<col class=\"col-center\" />";
-					if(scheduleLogList == null || scheduleLogList.length == 0) {
+					if(civilVoiceList == null || civilVoiceList.length == 0) {
 						content += 	"<tr>"
-								+	"	<td colspan=\"3\" class=\"col-none\"><spring:message code='main.status.no.schedule'/></td>"
+								+	"	<td colspan=\"3\" class=\"col-none\"><spring:message code='main.status.no.civilvoice'/></td>"
 								+	"</tr>";
 					} else {
-						for(i=0; i<scheduleLogList.length; i++ ) {
-							var scheduleLog = null;
-							scheduleLog = scheduleLogList[i];
-							content = content 
+						for(i=0; i<civilVoiceList.length; i++ ) {
+							var civilVoice = null;
+							civilVoice = civilVoiceList[i];
+
+							var date = new Date(civilVoice.insertDate);
+							var insertDate = date.toLocaleString();
+
+							content = content
 								+ 	"<tr>"
-								+ 	"	<td class=\"col-left\"><em>" + scheduleLog.scheduleName + "</em></td>"
-								+ 	"	<td class=\"col-center\">"  + scheduleLog.viewExecuteResult + "</td>"
-								+ 	"	<td class=\"col-center\">" + scheduleLog.viewRegisterDate + "</td>"
+								+ 	"	<td class=\"col-left\"><em>" + civilVoice.userId + "</em></td>"
+								+ 	"	<td class=\"col-center\">"  + civilVoice.title + "</td>"
+								+ 	"	<td class=\"col-center\">" + insertDate + "</td>"
 								+ 	"</tr>";
 						}
 					}
-					$("#scheduleLogListWidget").empty();
-					$("#scheduleLogListWidget").html(content);
+					$("#civilVoiceWidget").empty();
+					$("#civilVoiceWidget").html(content);
 				}
 			},
 			error : function(request, status, error) {
@@ -853,7 +857,7 @@
 			}
 		});
 	}
-	
+
 	// DB Connection Pool 현황
 	function dbcpWidget() {
 		$.ajax({
@@ -886,7 +890,7 @@
 			}
 		});
 	}
-	
+
 	// 사용자 추적
 	function accessLogWidget() {
 		$.ajax({
@@ -913,7 +917,7 @@
 						for(i=0; i<accessLogList.length; i++ ) {
 							var accessLog = null;
 							accessLog = accessLogList[i];
-							content = content 
+							content = content
 								+ 	"<tr>"
 								+ 	"	<td class=\"col-left\">"
 								+		"	<span class=\"index\"></span>"

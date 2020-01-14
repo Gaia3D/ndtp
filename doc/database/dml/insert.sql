@@ -135,14 +135,14 @@ insert into user_group_role(user_group_role_id, user_group_id, role_id)
 
 
 -- 메인 화면 위젯
-insert into widget(	widget_id, name, view_order, user_id) 
+insert into widget(	widget_id, name, view_order, user_id)
 values
-	(NEXTVAL('widget_seq'), 'projectWidget', 1, 'admin' ),
+	(NEXTVAL('widget_seq'), 'dataGroupWidget', 1, 'admin' ),
 	(NEXTVAL('widget_seq'), 'dataInfoWidget', 2, 'admin' ),
 	(NEXTVAL('widget_seq'), 'dataInfoLogListWidget', 3, 'admin' ),
 	(NEXTVAL('widget_seq'), 'accessLogWidget', 4, 'admin' ),
 	(NEXTVAL('widget_seq'), 'userWidget', 5, 'admin' ),
-	(NEXTVAL('widget_seq'), 'scheduleLogListWidget', 6, 'admin' ),
+	(NEXTVAL('widget_seq'), 'civilVoiceWidget', 6, 'admin' ),
 	(NEXTVAL('widget_seq'), 'issueWidget', 7, 'admin' ),
 	(NEXTVAL('widget_seq'), 'dbcpWidget', 8, 'admin' ),
 	(NEXTVAL('widget_seq'), 'dbSessionWidget', 9, 'admin' );

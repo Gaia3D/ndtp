@@ -1,6 +1,7 @@
 package ndtp.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +20,9 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.AccessLog;
+import ndtp.domain.CivilVoice;
+import ndtp.domain.DataGroup;
+import ndtp.domain.DataInfo;
 import ndtp.domain.DataInfoLog;
 import ndtp.domain.DataStatus;
 import ndtp.domain.Policy;
@@ -26,6 +30,8 @@ import ndtp.domain.UserInfo;
 import ndtp.domain.UserStatus;
 import ndtp.domain.Widget;
 import ndtp.service.AccessLogService;
+import ndtp.service.CivilVoiceService;
+import ndtp.service.DataGroupService;
 import ndtp.service.DataLogService;
 import ndtp.service.DataService;
 import ndtp.service.PolicyService;
@@ -45,33 +51,42 @@ import ndtp.utils.FormatUtils;
 @Controller
 @RequestMapping("/main/")
 public class MainController {
-	
+
 	private static final long WIDGET_LIST_VIEW_COUNT = 7l;
-	
+
 	@Autowired
 	private HikariDataSource dataSource;
-	
-//	@Autowired
-//	private ProjectService projectService;
+
+	@Autowired
+	private DataGroupService dataGroupService;
+
 	@Autowired
 	private DataService dataService;
+
 	@Autowired
 	private DataLogService dataLogService;
+
 //	@Autowired
 //	private IssueService issueService;
+
 	@Autowired
 	private AccessLogService logService;
+
 //	@Autowired
 //	private MonitoringService monitoringService;
+
 	@Autowired
 	private UserService userService;
-//	@Autowired
-//	private ScheduleService scheduleService;
+
+	@Autowired
+	private CivilVoiceService civilVoiceService;
+
 	@Autowired
 	private WidgetService widgetService;
+
 	@Autowired
 	private PolicyService policyService;
-	
+
 	/**
 	 * 메인 페이지
 	 * @param model
@@ -83,7 +98,7 @@ public class MainController {
 //			log.error("@@@@@@@@@@@@@@@@@ 설정 파일을 잘못 로딩 하였습니다. Properties, Quartz 파일등을 확인해 주십시오.");
 //			return "/error/config-error";
 //		}
-		
+
 		Policy policy = policyService.getPolicy();
 		//Policy policy = CacheManager.getPolicy();
 		boolean isActive = true;
@@ -93,36 +108,36 @@ public class MainController {
 //			if(hostname == null || "".equals(hostname)) {
 //				hostname = WebUtil.getHostName();
 //			}
-//			if(systemConfig == null 
-//					|| !SystemConfig.ACTIVE.equals(systemConfig.getLoad_balancing_status()) 
+//			if(systemConfig == null
+//					|| !SystemConfig.ACTIVE.equals(systemConfig.getLoad_balancing_status())
 //					|| !hostname.equals(systemConfig.getHostname())) {
 //				log.error("@@@@@@@@@ hostname = {}, load_balancing_status = {}", hostname, systemConfig);
 //				isActive = false;
 //			}
 //		}
-		
+
 		Widget widget = new Widget();
 		widget.setLimit(policy.getContentMainWidgetCount());
 		List<Widget> widgetList = widgetService.getListWidget(widget);
-		
+
 		String today = DateUtils.getToday(FormatUtils.VIEW_YEAR_MONTH_DAY_TIME);
 		String yearMonthDay = today.substring(0, 4) + today.substring(5,7) + today.substring(8,10);
 		String startDate = yearMonthDay + DateUtils.START_TIME;
 		String endDate = yearMonthDay + DateUtils.END_TIME;
-		
-		boolean isProjectDraw = false;
+
+		boolean isDataGroupDraw = false;
 		boolean isDataInfoDraw = false;
 		boolean isDataInfoLogListDraw = false;
 		boolean isIssueDraw = false;
 		boolean isUserDraw = false;
-		boolean isScheduleLogListDraw = false;
+		boolean isCivilVoiceDraw = false;
 		boolean isAccessLogDraw = false;
 		boolean isDbcpDraw = false;
 		boolean isDbSessionDraw = false;
 		for(Widget dbWidget : widgetList) {
-			if("projectWidget".equals(dbWidget.getName())) {
-//				isProjectDraw = true;
-//				projectWidget(startDate, endDate, model);
+			if("dataGroupWidget".equals(dbWidget.getName())) {
+				isDataGroupDraw = true;
+				dataGroupWidget(startDate, endDate, model);
 			} else if("dataInfoWidget".equals(dbWidget.getName())) {
 				isDataInfoDraw = true;
 				dataInfoWidget(startDate, endDate, model);
@@ -135,9 +150,9 @@ public class MainController {
 			} else if("userWidget".equals(dbWidget.getName())) {
 				isUserDraw = true;
 				userWidget(startDate, endDate, model);
-			} else if("scheduleLogListWidget".equals(dbWidget.getName())) {
-//				isScheduleLogListDraw = true;
-//				scheduleLogListWidget(startDate, endDate, model);
+			} else if("civilVoiceWidget".equals(dbWidget.getName())) {
+				isCivilVoiceDraw = true;
+				civilVoiceWidget(startDate, endDate, model);
 			} else if("accessLogWidget".equals(dbWidget.getName())) {
 				isAccessLogDraw = true;
 				accessLogWidget(startDate, endDate, model);
@@ -146,10 +161,10 @@ public class MainController {
 				dbcpWidget(model);
 			} else if("dbSessionWidget".equals(dbWidget.getName())) {
 //				isDbSessionDraw = true;
-//				dbSessionWidget(model);	
+//				dbSessionWidget(model);
 			}
 		}
-		
+
 		model.addAttribute("today", today);
 		model.addAttribute("yearMonthDay", today.subSequence(0, 10));
 		model.addAttribute("thisYear", yearMonthDay.subSequence(0, 4));
@@ -159,33 +174,33 @@ public class MainController {
 		model.addAttribute("userSessionCount", SessionUserSupport.signinUsersMap.size());
 		model.addAttribute(widget);
 		model.addAttribute("widgetList", widgetList);
-		
+
 		model.addAttribute("isActive", isActive);
-		model.addAttribute("isProjectDraw", isProjectDraw);
+		model.addAttribute("isDataGroupDraw", isDataGroupDraw);
 		model.addAttribute("isDataInfoDraw", isDataInfoDraw);
 		model.addAttribute("isDataInfoLogListDraw", isDataInfoLogListDraw);
 		model.addAttribute("isIssueDraw", isIssueDraw);
 		model.addAttribute("isUserDraw", isUserDraw);
-		model.addAttribute("isScheduleLogListDraw", isScheduleLogListDraw);
+		model.addAttribute("isCivilVoiceDraw", isCivilVoiceDraw);
 		model.addAttribute("isAccessLogDraw", isAccessLogDraw);
 		model.addAttribute("isDbcpDraw", isDbcpDraw);
 		model.addAttribute("isDbSessionDraw", isDbSessionDraw);
-		
+
 		return "/main/index";
 	}
-	
+
 	/**
-	 * project
+	 * dataGroup
 	 * @param startDate
 	 * @param endDate
 	 * @param model
 	 */
-	private void projectWidget(String startDate, String endDate, Model model) {
+	private void dataGroupWidget(String startDate, String endDate, Model model) {
 		// ajax 에서 처리 하기 위해서 여기는 공백
 	}
-	
+
 	/**
-	 * project
+	 * dataInfo
 	 * @param startDate
 	 * @param endDate
 	 * @param model
@@ -193,9 +208,9 @@ public class MainController {
 	private void dataInfoWidget(String startDate, String endDate, Model model) {
 		// ajax 에서 처리 하기 위해서 여기는 공백
 	}
-	
+
 	/**
-	 * project
+	 * dataInfoLog
 	 * @param startDate
 	 * @param endDate
 	 * @param model
@@ -203,7 +218,7 @@ public class MainController {
 	private void dataInfoLogListWidget(String startDate, String endDate, Model model) {
 		// ajax 에서 처리 하기 위해서 여기는 공백
 	}
-	
+
 	/**
 	 * CPU 모니터링, 메모리 모니터링, 디스크 사용현황
 	 * @param startDate
@@ -215,10 +230,10 @@ public class MainController {
 //		issue.setStartDate(startDate);
 //		issue.setEndDate(endDate);
 //		Long issueTotalCount = issueService.getIssueTotalCount(issue);
-//		
+//
 //		model.addAttribute("issueTotalCount", issueTotalCount);
 //	}
-	
+
 	/**
 	 * 사용자 현황
 	 * @param startDate
@@ -240,7 +255,7 @@ public class MainController {
 		Long expireUserTotalCount = userService.getUserTotalCount(userInfo);
 		userInfo.setStatus(UserStatus.TEMP_PASSWORD.getValue());
 		Long tempPasswordUserTotalCount = userService.getUserTotalCount(userInfo);
-		
+
 		model.addAttribute("activeUserTotalCount", activeUserTotalCount);
 		model.addAttribute("fobidUserTotalCount", fobidUserTotalCount);
 		model.addAttribute("failUserTotalCount", failUserTotalCount);
@@ -248,37 +263,37 @@ public class MainController {
 		model.addAttribute("expireUserTotalCount", expireUserTotalCount);
 		model.addAttribute("tempPasswordUserTotalCount", tempPasswordUserTotalCount);
 	}
-	
+
 	/**
-	 * 스케줄 실행 이력 목록
+	 * 시민 참여 현황 목록
 	 * @param startDate
 	 * @param endDate
 	 * @param model
 	 */
-//	private void scheduleLogListWidget(String startDate, String endDate, Model model) {
-//		// ajax 에서 처리 하기 위해서 여기는 공백
-//	}
-	
+	private void civilVoiceWidget(String startDate, String endDate, Model model) {
+		// ajax 에서 처리 하기 위해서 여기는 공백
+	}
+
 	/**
 	 * DB Connection Pool 현황
 	  * @param model
 	 */
 	private void dbcpWidget(Model model) {
 		model.addAttribute("userSessionCount", SessionUserSupport.signinUsersMap.size());
-		
+
 		model.addAttribute("initialSize", dataSource.getMaximumPoolSize());
 //	model.addAttribute("maxIdle", dataSource.getMaxIdle());
 		model.addAttribute("minIdle", dataSource.getMinimumIdle());
 //	model.addAttribute("numActive", dataSource.getNumActive());
 //	model.addAttribute("numIdle", dataSource.getNumIdle());
-		
+
 //		model.addAttribute("initialSize", dataSource.getInitialSize());
 ////		model.addAttribute("maxTotal", dataSource.getMaxTotal());
 //		model.addAttribute("maxIdle", dataSource.getMaxIdle());
 //		model.addAttribute("minIdle", dataSource.getMinIdle());
 //		model.addAttribute("numActive", dataSource.getNumActive());
 //		model.addAttribute("numIdle", dataSource.getNumIdle());
-		
+
 		// 사용자 dbcp 정보
 		Map<String, Integer> userDbcp = getUserDbcp();
 		model.addAttribute("userUserSessionCount", userDbcp.get("userSessionCount"));
@@ -289,7 +304,7 @@ public class MainController {
 		model.addAttribute("userNumActive", userDbcp.get("numActive"));
 		model.addAttribute("userNumIdle", userDbcp.get("numIdle"));
 	}
-	
+
 	/**
 	 * 사용자 페이지 DBCP 정보
 	 * @return
@@ -306,7 +321,7 @@ public class MainController {
 		Integer minIdle = 0;
 		Integer numActive = 0;
 		Integer numIdle = 0;
-		
+
 		userDbcp.put("userSessionCount", userSessionCount);
 		userDbcp.put("initialSize", initialSize);
 		userDbcp.put("maxTotal", maxTotal);
@@ -314,10 +329,10 @@ public class MainController {
 		userDbcp.put("minIdle", minIdle);
 		userDbcp.put("numActive", numActive);
 		userDbcp.put("numIdle", numIdle);
-		
+
 		return userDbcp;
 	}
-	
+
 	/**
 	 * 사용자 추적
 	 * @param startDate
@@ -326,7 +341,7 @@ public class MainController {
 	 */
 	private void accessLogWidget(String startDate, String endDate, Model model) {
 	}
-	
+
 	/**
 	 * DB Session 현황
 	  * @param model
@@ -338,43 +353,41 @@ public class MainController {
 //		model.addAttribute("dbSessionCount", dbSessionCount);
 //		model.addAttribute("dbSessionList", dbSessionList);
 //	}
-	
+
 	/**
-	 * 프로젝트별 데이터 건수
+	 * 데이터 그룹 건수
 	 * @param request
 	 * @return
 	 */
-//	@RequestMapping(value = "ajax-project-data-widget")
-//	@ResponseBody
-//	public Map<String, Object> ajaxProjectDataWidget(HttpServletRequest request) {
-//		
-//		Map<String, Object> map = new HashMap<>();
-//		String result = "success";
-//		try {
-//			Project defaultProject = new Project();
-//			defaultProject.setUse_yn(Project.IN_USE);
-//			List<Project> projectList = projectService.getListProject(defaultProject);
-//			List<String> projectNameList = new ArrayList<>();
-//			List<Long> dataTotalCountList = new ArrayList<>();
-//			for(Project project : projectList) {
-//				projectNameList.add(project.getProject_name());
-//				DataInfo dataInfo = new DataInfo();
-//				dataInfo.setProject_id(project.getProject_id());
-//				Long dataTotalCount = dataService.getDataTotalCount(dataInfo);
-//				dataTotalCountList.add(dataTotalCount);
-//			}
-//			
-//			map.put("projectNameList", projectNameList);
-//			map.put("dataTotalCountList", dataTotalCountList);
-//		} catch(Exception e) {
-//			e.printStackTrace();
-//			result = "db.exception";
-//		}
-//		
-//		map.put("result", result);
-//		return map;
-//	}
-	
+	@RequestMapping(value = "ajax-data-group-widget")
+	@ResponseBody
+	public Map<String, Object> ajaxDataGroupWidget(HttpServletRequest request) {
+
+		Map<String, Object> map = new HashMap<>();
+		String result = "success";
+		try {
+			List<DataGroup> dataGroupList = dataGroupService.getListDataGroup();
+			List<String> dataGroupNameList = new ArrayList<>();
+			List<Long> dataGroupTotalCountList = new ArrayList<>();
+			for(DataGroup dataGroup : dataGroupList) {
+				dataGroupNameList.add(dataGroup.getDataGroupName());
+				DataInfo dataInfo = new DataInfo();
+				dataInfo.setDataGroupId(dataGroup.getDataGroupId());
+				Long dataTotalCount = dataService.getDataTotalCount(dataInfo);
+				dataGroupTotalCountList.add(dataTotalCount);
+			}
+
+			map.put("dataGroupNameList", dataGroupNameList);
+			map.put("dataGroupTotalCountList", dataGroupTotalCountList);
+		} catch(Exception e) {
+			e.printStackTrace();
+			result = "db.exception";
+		}
+
+		map.put("result", result);
+		return map;
+	}
+
 	/**
 	 * 데이터 상태별 통계 정보
 	 * @param request
@@ -383,14 +396,14 @@ public class MainController {
 	@RequestMapping(value = "ajax-data-status-widget")
 	@ResponseBody
 	public Map<String, Object> ajaxDataStatusStatistics(HttpServletRequest request) {
-		
+
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
 		try {
 			long useTotalCount = dataService.getDataTotalCountByStatus(DataStatus.USE.name().toLowerCase());
 			long forbidTotalCount = dataService.getDataTotalCountByStatus(DataStatus.UNUSED.name().toLowerCase());
 			long etcTotalCount = dataService.getDataTotalCountByStatus(DataStatus.DELETE.name().toLowerCase());
-			
+
 			map.put("useTotalCount", useTotalCount);
 			map.put("forbidTotalCount", forbidTotalCount);
 			map.put("etcTotalCount", etcTotalCount);
@@ -398,11 +411,11 @@ public class MainController {
 			e.printStackTrace();
 			result = "db.exception";
 		}
-		
+
 		map.put("result", result);
 		return map;
 	}
-	
+
 	/**
 	 * 데이터 변경 요청 목록
 	 * @param model
@@ -421,24 +434,24 @@ public class MainController {
 			String searchDay = simpleDateFormat.format(calendar.getTime());
 			String startDate = searchDay + DateUtils.START_TIME;
 			String endDate = today + DateUtils.END_TIME;
-			
+
 			DataInfoLog dataInfoLog = new DataInfoLog();
 			dataInfoLog.setStartDate(startDate);
 			dataInfoLog.setEndDate(endDate);
 			dataInfoLog.setOffset(0l);
 			dataInfoLog.setLimit(WIDGET_LIST_VIEW_COUNT);
 			List<DataInfoLog> dataInfoLogList = dataLogService.getListDataInfoLog(dataInfoLog);
-			
+
 			map.put("dataInfoLogList", dataInfoLogList);
 		} catch(Exception e) {
 			e.printStackTrace();
 			result = "db.exception";
 		}
-	
+
 		map.put("result", result);
 		return map;
 	}
-	
+
 	/**
 	 * 사용자 현황
 	 * @param model
@@ -464,62 +477,63 @@ public class MainController {
 			Long expireUserTotalCount = userService.getUserTotalCount(userInfo);
 			userInfo.setStatus(UserStatus.TEMP_PASSWORD.getValue());
 			Long tempPasswordUserTotalCount = userService.getUserTotalCount(userInfo);
-			
+
 			map.put("activeUserTotalCount", activeUserTotalCount);
 			map.put("fobidUserTotalCount", fobidUserTotalCount);
 			map.put("failUserTotalCount", String.valueOf(failUserTotalCount));
 			map.put("sleepUserTotalCount", sleepUserTotalCount);
 			map.put("expireUserTotalCount", expireUserTotalCount);
 			map.put("tempPasswordUserTotalCount", tempPasswordUserTotalCount);
-			
+
 		} catch(Exception e) {
 			e.printStackTrace();
 			result = "db.exception";
 		}
-	
+
 		map.put("result", result);
-		
+
 		return map;
 	}
-	
+
 	/**
-	 * 스케줄 실행 이력 갱신
+	 * 시민 참여 현황 갱신
 	 * @param model
 	 * @return
 	 */
-//	@GetMapping(value = "ajax-schedule-log-list-widget")
-//	@ResponseBody
-//	public Map<String, Object> ajaxScheduleLogListWidget(HttpServletRequest request) {
-//		
-//		Map<String, Object> map = new HashMap<>();
-//		String result = "success";
-//		try {
-//			String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
-//			Calendar calendar = Calendar.getInstance();
-//			calendar.add(Calendar.DATE, -7);
-//			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
-//			String searchDay = simpleDateFormat.format(calendar.getTime());
-//			String startDate = searchDay + DateUtils.START_TIME;
-//			String endDate = today + DateUtils.END_TIME;
-//			
-//			ScheduleLog scheduleLog = new ScheduleLog();
-//			scheduleLog.setStart_date(startDate);
-//			scheduleLog.setEnd_date(endDate);
-//			scheduleLog.setOffset(0l);
-//			scheduleLog.setLimit(WIDGET_LIST_VIEW_COUNT);
-//			List<ScheduleLog> scheduleLogList = scheduleService.getListScheduleLog(scheduleLog);
-//			
-////			map.put("scheduleLogList", new JSONArray.fromObject(scheduleLogList));
-//		} catch(Exception e) {
-//			e.printStackTrace();
-//			result = "db.exception";
-//		}
-//	
-//		map.put("result", result);
-//		
-//		return map;
-//	}
-	
+	@GetMapping(value = "ajax-civil-voice-widget")
+	@ResponseBody
+	public Map<String, Object> ajaxCivilVoiceWidget(HttpServletRequest request) {
+
+		Map<String, Object> map = new HashMap<>();
+		String result = "success";
+		try {
+			String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.DATE, -7);
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+			String searchDay = simpleDateFormat.format(calendar.getTime());
+			String startDate = searchDay + DateUtils.START_TIME;
+			String endDate = today + DateUtils.END_TIME;
+
+			CivilVoice civilVoice = new CivilVoice();
+			civilVoice.setStartDate(startDate);
+			civilVoice.setEndDate(endDate);
+			civilVoice.setOffset(0l);
+			civilVoice.setLimit(WIDGET_LIST_VIEW_COUNT);
+			List<CivilVoice> civilVoiceList = civilVoiceService.getListCivilVoice(civilVoice);
+
+//			map.put("civilVoiceList", new JSONArray.fromObject(civilVoiceList));
+			map.put("civilVoiceList", civilVoiceList);
+		} catch(Exception e) {
+			e.printStackTrace();
+			result = "db.exception";
+		}
+
+		map.put("result", result);
+
+		return map;
+	}
+
 	/**
 	 * DB Connection Pool 현황
 	 * @param model
@@ -532,18 +546,18 @@ public class MainController {
 		String result = "success";
 		try {
 			map.put("userSessionCount", SessionUserSupport.signinUsersMap.size());
-			
+
 			map.put("initialSize", dataSource.getMaximumPoolSize());
 			map.put("minIdle", dataSource.getMinimumIdle());
 			map.put("numIdle", dataSource.getMaximumPoolSize());
-			
+
 //			map.put("initialSize", dataSource.getInitialSize());
 ////			map.put("maxTotal", dataSource.getMaxTotal());
 //			map.put("maxIdle", dataSource.getMaxIdle());
 //			map.put("minIdle", dataSource.getMinIdle());
 //			map.put("numActive", dataSource.getNumActive());
 //			map.put("numIdle", dataSource.getNumIdle());
-			
+
 			// 사용자 dbcp 정보
 			Map<String, Integer> userDbcp = getUserDbcp();
 			map.put("userUserSessionCount", userDbcp.get("userSessionCount"));
@@ -557,12 +571,12 @@ public class MainController {
 			e.printStackTrace();
 			result = "db.exception";
 		}
-	
+
 		map.put("result", result);
-		
+
 		return map;
 	}
-	
+
 	/**
 	 * 사용자 추적 이력 목록
 	 * @param model
@@ -581,22 +595,22 @@ public class MainController {
 			String searchDay = simpleDateFormat.format(calendar.getTime());
 			String startDate = searchDay + DateUtils.START_TIME;
 			String endDate = today + DateUtils.END_TIME;
-			
+
 			AccessLog accessLog = new AccessLog();
 			accessLog.setStartDate(startDate);
 			accessLog.setEndDate(endDate);
 			accessLog.setOffset(0l);
 			accessLog.setLimit(WIDGET_LIST_VIEW_COUNT);
 			List<AccessLog> accessLogList = logService.getListAccessLog(accessLog);
-			
+
 			map.put("accessLogList", accessLogList);
 		} catch(Exception e) {
 			e.printStackTrace();
 			result = "db.exception";
 		}
-	
+
 		map.put("result", result);
-		
+
 		return map;
 	}
 }
