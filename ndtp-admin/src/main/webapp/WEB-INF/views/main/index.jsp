@@ -468,14 +468,14 @@
 			issueWidget();
 		}
 		if(isUserDraw == "true") {
-			userWidget();
+			//userWidget();
 		}
 		// TODO You'll need to add the remaining widgets later 
 	}
 	
 	// DB Connection Pool 현황
 	function callDbcpWidget() {
-		dbcpWidget();
+		//dbcpWidget();
 		//setInterval(ajaxDbcpWidget, refreshTime);
 	}
 	
@@ -678,10 +678,10 @@
 								+ 	"<tr>"
 								+ 	"	<td class=\"col-left\">"
 								+		"	<span class=\"index\"></span>"
-								+		"	<em>" + dataInfoLog.data_name + "</em>"
+								+		"	<em>" + dataInfoLog.dataName + "</em>"
 								+		"</td>"
 								+ 		"<td class=\"col-left\">" + viewStatus + "</td>"
-								+ 		"<td class=\"col-left\">" + dataInfoLog.view_insert_date + "</td>"
+								+ 		"<td class=\"col-left\">" + dataInfoLog.viewInsertDate + "</td>"
 								+ 	"</tr>";
 						}
 					}
@@ -838,7 +838,7 @@
 							scheduleLog = scheduleLogList[i];
 							content = content 
 								+ 	"<tr>"
-								+ 	"	<td class=\"col-left\"><em>" + scheduleLog.schedule_name + "</em></td>"
+								+ 	"	<td class=\"col-left\"><em>" + scheduleLog.scheduleName + "</em></td>"
 								+ 	"	<td class=\"col-center\">"  + scheduleLog.viewExecuteResult + "</td>"
 								+ 	"	<td class=\"col-center\">" + scheduleLog.viewRegisterDate + "</td>"
 								+ 	"</tr>";
@@ -917,7 +917,7 @@
 								+ 	"<tr>"
 								+ 	"	<td class=\"col-left\">"
 								+		"	<span class=\"index\"></span>"
-								+		"	<em>" + accessLog.user_name + "</em>"
+								+		"	<em>" + accessLog.userName + "</em>"
 								+		"</td>"
 								+ 		"<td class=\"col-left\">" + accessLog.viewRequestUri + "</td>"
 								+ 	"</tr>";
