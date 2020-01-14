@@ -490,6 +490,7 @@ public class UploadDataController {
 		}
 		
 		model.addAttribute(pagination);
+		model.addAttribute("uploadData", uploadData);
 		model.addAttribute("converterJobForm", new ConverterJob());
 		model.addAttribute("uploadDataList", uploadDataList);
 		
