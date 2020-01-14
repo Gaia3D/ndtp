@@ -182,6 +182,7 @@
 	
 	// 데이터 정보 목록
 	function dataList(dataGroupArray) {
+		var dataArray = new Array();
 		for(var i=0; i<dataGroupArray.length; i++) {
 			var dataGroup = dataGroupArray[i];
 			$.ajax({
@@ -193,6 +194,10 @@
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						var dataInfoList = msg.dataInfoList;
+						
+						dataGroup.datas = dataInfoList;
+						console.log("---------- " + dataGroup.datas);
+						dataArray.push(dataGroup);
 					} else {
 						alert(JS_MESSAGE[msg.errorCode]);
 					}
