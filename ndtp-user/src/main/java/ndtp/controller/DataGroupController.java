@@ -35,6 +35,9 @@ import ndtp.service.PolicyService;
 @RequestMapping("/data/")
 public class DataGroupController {
 	
+	private static final long PAGE_ROWS = 5l;
+	private static final long PAGE_LIST_COUNT = 5l;
+	
 	@Autowired
 	private DataGroupService dataGroupService;
 

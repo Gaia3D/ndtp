@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
+import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
 import ndtp.domain.GeoPolicy;
 import ndtp.domain.Key;
@@ -34,6 +35,9 @@ import ndtp.utils.FormatUtils;
 @Controller
 @RequestMapping("/data/")
 public class DataController {
+	
+	private static final long PAGE_ROWS = 5l;
+	private static final long PAGE_LIST_COUNT = 5l;
 	
 	@Autowired
 	private DataGroupService dataGroupService;
@@ -80,17 +84,21 @@ public class DataController {
 			dataInfo.setEndDate(dataInfo.getEndDate().substring(0, 8) + DateUtils.END_TIME);
 		}
 		
-		//long totalCount = dataService.getDataTotalCount(dataInfo);
-		long totalCount = 0l;
+		long totalCount = dataService.getDataTotalCount(dataInfo);
 		
-		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, dataInfo), totalCount, Long.valueOf(pageNo).longValue());
+		Pagination pagination = new Pagination(	request.getRequestURI(), 
+												getSearchParameters(PageType.LIST, dataInfo), 
+												totalCount, 
+												Long.valueOf(pageNo).longValue(),
+												PAGE_ROWS,
+												PAGE_LIST_COUNT);
 		log.info("@@ pagination = {}", pagination);
 		
 		dataInfo.setOffset(pagination.getOffset());
 		dataInfo.setLimit(pagination.getPageRows());
 		List<DataInfo> dataList = new ArrayList<>();
 		if(totalCount > 0l) {
-//			dataList = dataService.getListData(dataInfo);
+			dataList = dataService.getListData(dataInfo);
 		}
 		
 		model.addAttribute(pagination);
