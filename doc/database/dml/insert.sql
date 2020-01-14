@@ -44,6 +44,7 @@ values
 	(56, '0', '1', '2D 레이어 수정', 'LAYER', 5, 5, 2, 6, '/layer/modify', '/layer/list', null, 'glyph-check', 'N', 'Y', 'N'),
 	(7, '0', '1', '시민참여', 'CIVIL VOICE', 7, 0, 1, 7, '/civil-voice/list', null, null, 'glyph-dashboard', 'Y', 'Y', 'Y'),
 	(71, '0', '1', '시민참여', 'CIVIL VOICE', 7, 7, 2, 1, '/civil-voice/list', null, null, 'glyph-dashboard', 'Y', 'Y', 'Y'),
+	(72, '0', '1', '시민참여 상세 정보', 'CIVIL VOICE', 7, 7, 2, 2, '/civil-voice/detail', '/civil-voice/list', null, 'glyph-dashboard', 'N', 'Y', 'N'),
 	(8, '0', '1', '환경설정', 'CONFIGURATION', 8, 0, 1, 8, '/policy/modify', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
 	(81, '0', '1', '일반 운영정책', 'CONFIGURATION', 8, 8, 2, 1, '/policy/modify', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
 	(82, '0', '1', '공간정보 운영정책', 'CONFIGURATION', 8, 8, 2, 2, '/geopolicy/modify', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
@@ -101,6 +102,7 @@ insert into user_group_menu(user_group_menu_id, user_group_id, menu_id)
 		(56, 1, 56),
 		(7, 1, 7),
 		(71, 1, 71),
+		(72, 1, 72),
 		(8, 1, 8),
 		(81, 1, 81),
 		(82, 1, 82),
@@ -135,14 +137,14 @@ insert into user_group_role(user_group_role_id, user_group_id, role_id)
 
 
 -- 메인 화면 위젯
-insert into widget(	widget_id, name, view_order, user_id) 
+insert into widget(	widget_id, name, view_order, user_id)
 values
-	(NEXTVAL('widget_seq'), 'projectWidget', 1, 'admin' ),
+	(NEXTVAL('widget_seq'), 'dataGroupWidget', 1, 'admin' ),
 	(NEXTVAL('widget_seq'), 'dataInfoWidget', 2, 'admin' ),
 	(NEXTVAL('widget_seq'), 'dataInfoLogListWidget', 3, 'admin' ),
 	(NEXTVAL('widget_seq'), 'accessLogWidget', 4, 'admin' ),
 	(NEXTVAL('widget_seq'), 'userWidget', 5, 'admin' ),
-	(NEXTVAL('widget_seq'), 'scheduleLogListWidget', 6, 'admin' ),
+	(NEXTVAL('widget_seq'), 'civilVoiceWidget', 6, 'admin' ),
 	(NEXTVAL('widget_seq'), 'issueWidget', 7, 'admin' ),
 	(NEXTVAL('widget_seq'), 'dbcpWidget', 8, 'admin' ),
 	(NEXTVAL('widget_seq'), 'dbSessionWidget', 9, 'admin' );
