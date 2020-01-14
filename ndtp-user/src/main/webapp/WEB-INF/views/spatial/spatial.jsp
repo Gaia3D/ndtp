@@ -27,7 +27,7 @@
 					<label for="">관찰자 위치</label>
 					<input type="text" placeholder="" class="withBtn observerPointMGRS">
 					<input type="hidden" class="observerPoint">
-					<button type="button" class="btnText drawObserverPoint">위치지정</button>
+					<button type="button" class="btnText drawObserverPoint" data-draw-type="POINT">위치지정</button>
 				</li>
 				<li class="btns">
 					<button type="button" class="btnTextF execute" title="방사형 가시성 분석">분석</button>
@@ -55,13 +55,13 @@
 					<label for="">관찰 위치</label>
 					<input type="text" placeholder="" class="withBtn observerPointMGRS">
 					<input type="hidden" class="observerPoint">
-					<button type="button" class="btnText drawObserverPoint">위치지정</button>
+					<button type="button" class="btnText drawObserverPoint" data-draw-type="POINT">위치지정</button>
 				</li>
 				<li>
 					<label for="">대상 위치</label>
 					<input type="text" placeholder="" class="withBtn targetPointMGRS">
 					<input type="hidden" class="targetPoint">
-					<button type="button" class="btnText drawTargetPoint">위치지정</button>
+					<button type="button" class="btnText drawTargetPoint" data-draw-type="POINT">위치지정</button>
 				</li>
 				<li class="btns">
 					<button type="button" class="btnTextF execute" title="가시선 분석">분석</button>
@@ -87,7 +87,7 @@
 				</li>
 				<li>
 					<label for="">사용자 입력 선분</label>
-					<button type="button" class="btnText drawUserLine">위치지정</button>
+					<button type="button" class="btnText drawUserLine" data-draw-type="LINE">위치지정</button>
 					<input type="hidden" class="userLine">
 					<div class="coordsText"></div>
 				</li>
@@ -123,7 +123,7 @@
 				<li class="wrapCropShape">
 					<label for=""></label>
 					<input type="hidden" class="cropShape">
-					<button type="button" class="btnText drawCropShape">영역 그리기</button>
+					<button type="button" class="btnText drawCropShape" data-draw-type="POLYGON">영역 그리기</button>
 				</li>
 				<li>
 					<label for="">최고/최저</label>
@@ -152,7 +152,7 @@
 					<label for="">관찰 위치</label>
 					<input type="text" placeholder="" class="withBtn observerPointMGRS">
 					<input type="hidden" class="observerPoint">
-					<button type="button" class="btnText drawObserverPoint">위치지정</button>
+					<button type="button" class="btnText drawObserverPoint" data-draw-type="POINT">위치지정</button>
 				</li>
 				<li class="btns">
 					<button type="button" class="btnTextF execute" title="위험 돔 분석 실행">분석</button>

@@ -89,6 +89,7 @@
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>
 <script type="text/javascript" src="/js/mago3d.js"></script>
+<script type="text/javascript" src="/js/mago3d_lx.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript" src="/js/${lang}/MapControll.js"></script>
@@ -146,12 +147,13 @@
 		// TODO : 세슘 MAP 선택 UI 제거,엔진에서 처리로 변경 예정.
 		viewer.baseLayerPicker.destroy();
 		
-		magoManager.on(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
+		/* magoManager.on(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
 			console.info(result);
-		});
+		}); */
 
 		//우측 상단 지도 컨트롤러
 		MapControll(viewer);
+		//공간분석 기능 수행
 		SpatialAnalysis(magoInstance);
 	}
 	
@@ -180,6 +182,7 @@
 	
 	// 데이터 정보 목록
 	function dataList(dataGroupArray) {
+		var dataArray = new Array();
 		for(var i=0; i<dataGroupArray.length; i++) {
 			var dataGroup = dataGroupArray[i];
 			$.ajax({
@@ -191,6 +194,10 @@
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						var dataInfoList = msg.dataInfoList;
+						
+						dataGroup.datas = dataInfoList;
+						console.log("---------- " + dataGroup.datas);
+						dataArray.push(dataGroup);
 					} else {
 						alert(JS_MESSAGE[msg.errorCode]);
 					}
