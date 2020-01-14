@@ -573,3 +573,24 @@ border: 1px solid #477cdb;
 overflow-x: hidden;
 overflow-y: auto;
 }
+
+
+/*환경 설정 임시*/
+.setupContentWrap > p {
+padding: 8px;
+font-weight: bold;
+border:1px solid #e0e0e0;
+background-image: url(../images/ico.png);
+background-repeat: no-repeat;
+background-position: right -255px;
+background-color: #fff;
+}
+
+.setupContentWrap > div {
+padding-bottom: 7px;
+border-bottom: 1px dotted #888;
+}
+.setupContentWrap div label {
+display: inline-block;
+margin-right: 10px;
+}
