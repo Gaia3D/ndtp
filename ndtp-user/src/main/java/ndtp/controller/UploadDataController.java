@@ -92,7 +92,7 @@ public class UploadDataController {
 		UploadData uploadData = UploadData.builder().
 											dataGroupId(basicDataGroup.getDataGroupId()).
 											dataGroupName(basicDataGroup.getDataGroupName()).build();
-		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup();
+		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup(new DataGroup());
 		
 		model.addAttribute("uploadData", uploadData);
 		model.addAttribute("dataGroupList", dataGroupList);
@@ -560,7 +560,7 @@ public class UploadDataController {
 		
 		uploadData = uploadDataService.getUploadData(uploadData);
 		List<UploadDataFile> uploadDataFileList = uploadDataService.getListUploadDataFile(uploadData);
-		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup();
+		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup(new DataGroup());
 		
 		model.addAttribute("uploadData", uploadData);
 		model.addAttribute("uploadDataFileList", uploadDataFileList);

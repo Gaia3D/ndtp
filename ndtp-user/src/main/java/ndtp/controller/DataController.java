@@ -64,8 +64,11 @@ public class DataController {
 	 * @return
 	 */
 	@GetMapping(value = "list")
-	public String list(HttpServletRequest request, DataInfo dataInfo, @RequestParam(defaultValue="1") String pageNo, 
-			@RequestParam(defaultValue="") String activeContent, Model model) throws Exception {
+	public String list(	HttpServletRequest request, 
+						DataInfo dataInfo, 
+						@RequestParam(defaultValue="1") String pageNo, 
+						@RequestParam(defaultValue="") String activeContent, 
+						Model model) throws Exception {
 		
 		log.info("@@ activeContent = {}, dataInfo = {}", activeContent, dataInfo);
 		

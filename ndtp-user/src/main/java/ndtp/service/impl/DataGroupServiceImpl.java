@@ -29,12 +29,25 @@ public class DataGroupServiceImpl implements DataGroupService {
 	private PropertiesConfig propertiesConfig;
 
 	/**
+	 * Data Group 총건수
+	 * @param dataGroup
+	 * @return
+	 */
+	public Long getDataGroupTotalCount(DataGroup dataGroup) {
+		return dataGroupMapper.getDataGroupTotalCount(dataGroup);
+	}
+	
+	/**
      * 데이터 그룹 목록
      * @return
      */
 	@Transactional(readOnly = true)
-	public List<DataGroup> getListDataGroup() {
-		return dataGroupMapper.getListDataGroup();
+	public List<DataGroup> getAllListDataGroup() {
+		return dataGroupMapper.getAllListDataGroup();
+	}
+	
+	public List<DataGroup> getListDataGroup(DataGroup dataGroup) {
+		return dataGroupMapper.getListDataGroup(dataGroup);
 	}
 	
 	/**

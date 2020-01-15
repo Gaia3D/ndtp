@@ -3,8 +3,45 @@
 
 <mapper namespace="ndtp.persistence.DataGroupMapper">
 
+	<!-- 데이터 그룹 총 건수 -->
+	<select id="getDataGroupTotalCount" parameterType="dataGroup" resultType="long">
+		/* getDataGroupTotalCount */
+		SELECT COUNT(data_group_id) 
+		FROM data_group
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="dataGroupId != null and dataGroupId > 0">
+			data_group_id = #{dataGroupId}
+			</if>
+			<if test="sharing != null and sharing != ''">
+			AND sharing = #{sharing}
+			</if>
+			<if test="userId != null and userId != ''">
+			AND user_id = #{userId}
+			</if>
+			<if test="basic != null">
+			AND basic = #{basic}
+			</if>
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
+			AND ${searchWord} = #{searchValue}
+			</if>
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
+			AND ${searchWord} LIKE '%' || #{searchValue} || '%'
+			</if>
+			<if test="startDate != null and startDate != ''">
+			<![CDATA[
+			AND insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+			]]>
+			</if>
+			<if test="endDate != null and endDate != ''">
+			<![CDATA[
+			AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+			]]>
+			</if>
+		</trim>
+	</select>
+
 	<!-- 데이터 그룹 목록 조회 -->
-	<select id="getListDataGroup" resultType="dataGroup">
+	<select id="getAllListDataGroup" resultType="dataGroup">
 		/* getListLayerGroup */
 		WITH RECURSIVE data_group_tree (
 			data_group_id, data_group_name, data_group_key, data_group_path, sharing, user_id, ancestor, parent, depth, view_order,
@@ -31,6 +68,51 @@
 	    	path
 	    FROM data_group_tree
 	    ORDER BY path
+	</select>
+	
+	<select id="getListDataGroup" parameterType="dataGroup" resultType="dataGroup">
+		/* getListDataGroup */
+		SELECT *, ST_X(location) AS longitude, ST_Y(location) AS latitude
+		FROM data_group
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="dataGroupId != null and dataGroupId > 0">
+			data_group_id = #{dataGroupId}
+			</if>
+			<if test="sharing != null and sharing != ''">
+			AND sharing = #{sharing}
+			</if>
+			<if test="userId != null and userId != ''">
+			AND user_id = #{userId}
+			</if>
+			<if test="basic != null">
+			AND basic = #{basic}
+			</if>
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
+			AND ${searchWord} = #{searchValue}
+			</if>
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
+			AND ${searchWord} LIKE '%' || #{searchValue} || '%'
+			</if>
+			<if test="startDate != null and startDate != ''">
+			<![CDATA[
+			AND insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+			]]>
+			</if>
+			<if test="endDate != null and endDate != ''">
+			<![CDATA[
+			AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+			]]>
+			</if>
+		</trim>
+		<choose>
+		<when test="orderWord != null and orderWord != '' and orderValue != null and orderValue != ''">
+		ORDER BY ${orderWord} ${orderValue}
+		</when>
+		<otherwise>
+		ORDER BY insert_date DESC, data_group_id DESC
+		</otherwise>
+		</choose>
+		OFFSET #{offset} LIMIT #{limit}
 	</select>
 	
 	<!-- 데이터 그룹 정보 -->

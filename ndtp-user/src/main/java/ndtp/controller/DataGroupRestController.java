@@ -52,7 +52,7 @@ public class DataGroupRestController {
 		String errorCode = null;
 		String message = null;
 		try {
-			List<DataGroup> dataGroupList = dataGroupService.getListDataGroup();
+			List<DataGroup> dataGroupList = dataGroupService.getListDataGroup(new DataGroup());
 			
 			//dataGroup.set
 			//List<DataGroup> dataGroupList = dataGroupService.getListDataGroup();

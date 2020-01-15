@@ -1,5 +1,6 @@
 package ndtp.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -24,11 +26,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.DataGroup;
+import ndtp.domain.DataInfo;
+import ndtp.domain.GeoPolicy;
 import ndtp.domain.Key;
+import ndtp.domain.PageType;
+import ndtp.domain.Pagination;
 import ndtp.domain.Policy;
 import ndtp.domain.UserSession;
 import ndtp.service.DataGroupService;
+import ndtp.service.GeoPolicyService;
 import ndtp.service.PolicyService;
+import ndtp.utils.DateUtils;
+import ndtp.utils.FormatUtils;
 
 @Slf4j
 @Controller
@@ -40,10 +49,10 @@ public class DataGroupController {
 	
 	@Autowired
 	private DataGroupService dataGroupService;
-
+	@Autowired
+	private GeoPolicyService geoPolicyService;
 	@Autowired
 	private ObjectMapper objectMapper;
-	
 	@Autowired
 	private PolicyService policyService;
 	
@@ -51,13 +60,50 @@ public class DataGroupController {
 	 * 데이터 그룹 관리
 	 */
 	@GetMapping(value = "list-group")
-	public String list(HttpServletRequest request, @ModelAttribute DataGroup dataGroup, Model model) {
+	public String list(	HttpServletRequest request, 
+						DataGroup dataGroup, 
+						@RequestParam(defaultValue="1") String pageNo, 
+						@RequestParam(defaultValue="") String activeContent, 
+						Model model) throws Exception {
+		
+		log.info("@@ activeContent = {}, dataGroup = {}", activeContent, dataGroup);
+		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-				
-		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup();
+		GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
 		
+		String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
+		if(StringUtils.isEmpty(dataGroup.getStartDate())) {
+			dataGroup.setStartDate(today.substring(0,4) + DateUtils.START_DAY_TIME);
+		} else {
+			dataGroup.setStartDate(dataGroup.getStartDate().substring(0, 8) + DateUtils.START_TIME);
+		}
+		if(StringUtils.isEmpty(dataGroup.getEndDate())) {
+			dataGroup.setEndDate(today + DateUtils.END_TIME);
+		} else {
+			dataGroup.setEndDate(dataGroup.getEndDate().substring(0, 8) + DateUtils.END_TIME);
+		}
+		
+		long totalCount = dataGroupService.getDataGroupTotalCount(dataGroup);
+		
+		Pagination pagination = new Pagination(	request.getRequestURI(), 
+												getSearchParameters(PageType.LIST, dataGroup), 
+												totalCount, 
+												Long.valueOf(pageNo).longValue(),
+												PAGE_ROWS,
+												PAGE_LIST_COUNT);
+		log.info("@@ pagination = {}", pagination);
+		
+		dataGroup.setOffset(pagination.getOffset());
+		dataGroup.setLimit(pagination.getPageRows());
+		List<DataGroup> dataGroupList = new ArrayList<>();
+		if(totalCount > 0l) {
+			dataGroupList = dataGroupService.getListDataGroup(dataGroup);
+		}
+		
+		model.addAttribute(pagination);
+		model.addAttribute("activeContent", activeContent);
 		model.addAttribute("dataGroupList", dataGroupList);
-		
+		model.addAttribute("geoPolicyJson", objectMapper.writeValueAsString(geoPolicy));
 		return "/data/list-group";
 	}
 	
@@ -113,7 +159,7 @@ public class DataGroupController {
 				
 		Policy policy = policyService.getPolicy();
 		
-		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup();
+		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup(new DataGroup());
 		
 		DataGroup dataGroup = new DataGroup();
 		dataGroup.setParentName(policy.getContentDataGroupRoot());
@@ -247,5 +293,26 @@ public class DataGroupController {
 		dataGroupService.deleteDataGroup(dataGroup);
 		
 		return "redirect:/data/list-group";
+	}
+	
+	/**
+	 * 검색 조건
+	 * @param dataGroup
+	 * @return
+	 */
+	private String getSearchParameters(PageType pageType, DataGroup dataGroup) {
+		StringBuffer buffer = new StringBuffer(dataGroup.getParameters());
+		boolean isListPage = true;
+		if(pageType == PageType.MODIFY || pageType == PageType.DETAIL) {
+			isListPage = false;
+		}
+		
+//		if(!isListPage) {
+//			buffer.append("pageNo=" + request.getParameter("pageNo"));
+//			buffer.append("&");
+//			buffer.append("list_count=" + uploadData.getList_counter());
+//		}
+		
+		return buffer.toString();
 	}
 }
