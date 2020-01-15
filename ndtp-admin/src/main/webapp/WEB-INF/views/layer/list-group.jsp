@@ -64,7 +64,7 @@
 									<tr>
 										<td colspan="8" class="col-none">Layer 그룹이 존재하지 않습니다.</td>
 									</tr>
-</c:if>								
+</c:if>
 <c:if test="${!empty layerGroupList }">
 	<c:set var="paddingLeftValue" value="0" />
     <!-- depth 별 css 제어를 위한 변수 -->
@@ -103,7 +103,7 @@
 									<tr class="${depthClass } ${depthParentClass} ${ancestorClass }" style="${depthStyleDisplay}">
 										<td class="col-key" style="text-align: left;" nowrap="nowrap">
         <c:if test="${layerGroup.depth eq '1' }">
-					                        <span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;" 
+					                        <span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"
 					                        	onclick="childrenDisplayToggle('${layerGroup.depth}', '${layerGroup.layerGroupId}', '${layerGroup.ancestor}');">
 					                            <i id="oneDepthArrow-${layerGroup.layerGroupId }" class="fa fa-caret-right oneArrow" aria-hidden="true"></i>
 					                        </span>&nbsp;
@@ -116,7 +116,7 @@
                         					<span style="padding-left: ${paddingLeftValue}; font-size: 1.5em; color: Tomato;"><i class="fa fa-file-alt" aria-hidden="true"></i></span>
             </c:if>
             <c:if test="${layerGroup.children > 0}">
-					                        <span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;" 
+					                        <span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"
 					                        	onclick="childrenDisplayToggle('${layerGroup.depth}', '${layerGroup.layerGroupId}', '${layerGroup.ancestor}');">
 					                            <i id="twoDepthArrow-${layerGroup.layerGroupId }" class="fa fa-caret-right twoArrow ${ancestorArrowClass }" aria-hidden="true"></i></span>&nbsp;
 					                        <span style="font-size: 1.5em; color: Mediumslateblue;">
@@ -144,15 +144,16 @@
 					                    </td>
 					                    <td class="col-type">
 					                    	<div class="button-group">
-					                    		<a href="#" onclick="moveUp('${layerGroup.layerGroupId }', '${layerGroup.viewOrder }'); return false;" 
+					                    		<a href="#" onclick="moveUp('${layerGroup.layerGroupId }', '${layerGroup.viewOrder }'); return false;"
 					                    			class="button" style="text-decoration:none;">위로</a>
-												<a href="#" onclick="moveDown('${layerGroup.layerGroupId }', '${layerGroup.viewOrder }'); return false;" 
+												<a href="#" onclick="moveDown('${layerGroup.layerGroupId }', '${layerGroup.viewOrder }'); return false;"
 													class="button" style="text-decoration:none;">아래로</a>
 					                    	</div>
 					                    </td>
 					                    <td class="col-type">
 											<a href="/layer/modify-group?layerGroupId=${layerGroup.layerGroupId}" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;
-											<a href="#" onclick="deleteLayerGroup('${layerGroup.layerGroupId}'); return false;" class="linkButton">삭제</a>
+											<a href="/layer/delete-layer-group?layerGroupId=${layerGroup.layerGroupId }" onclick="return deleteWarning();"
+														class="linkButton"><spring:message code='delete'/></a>
 					                    </td>
 					                    <td class="col-date">
 					                    	<fmt:parseDate value="${layerGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
@@ -174,7 +175,7 @@
                         					미사용
         </c:if>
 					                    </td>
-					                </tr>	
+					                </tr>
 			</c:forEach>
 		</c:if>
     </c:forEach>
@@ -189,7 +190,7 @@
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
-	
+
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
@@ -200,36 +201,36 @@
 	function openAll() {
 	    $(".threeDepthClass").show();
 	    $(".twoDepthClass").show();
-	
+
 	    // fa-caret-right
 	    // fa-caret-down
 	    $(".oneArrow").removeClass("fa-caret-right");
 	    $(".oneArrow").addClass("fa-caret-down");
 	    $(".twoArrow").removeClass("fa-caret-right");
 	    $(".twoArrow").addClass("fa-caret-down");
-	
+
 	    $(".oneFolder").removeClass("fa-folder");
 	    $(".oneFolder").addClass("fa-folder-open");
 	    $(".twoFolder").removeClass("fa-folder");
 	    $(".twoFolder").addClass("fa-folder-open");
 	}
-	
+
 	// 접기
 	function closeAll() {
 	    $(".threeDepthClass").hide();
 	    $(".twoDepthClass").hide();
-	
+
 	    $(".oneArrow").removeClass("fa-caret-down");
 	    $(".oneArrow").addClass("fa-caret-right");
 	    $(".twoArrwo").removeClass("fa-caret-down");
 	    $(".twoArrwo").addClass("fa-caret-right");
-	
+
 	    $(".oneFolder").removeClass("fa-folder-open");
 	    $(".oneFolder").addClass("fa-folder");
 	    $(".twoFolder").removeClass("fa-folder-open");
 	    $(".twoFolder").addClass("fa-folder");
 	}
-	
+
 	// 화살표 클릭시
 	function childrenDisplayToggle(depth, layerGroupId, ancestor) {
 	    if(depth === "1") {
@@ -237,12 +238,12 @@
 	        if( $(".oneDepthParent-" + layerGroupId).css("display") === "none" ) {
 	            // 접힌 상태
 	            $(".oneDepthParent-" + layerGroupId).show();
-	
+
 	            $("#oneDepthArrow-" + layerGroupId).removeClass("fa-caret-right");
 	            $("#oneDepthArrow-" + layerGroupId).addClass("fa-caret-down");
 	            $("#oneDepthFolder-" + layerGroupId).removeClass("fa-folder");
 	            $("#oneDepthFolder-" + layerGroupId).addClass("fa-folder-open");
-	
+
 	            $(".ancestorArrow-" + ancestor).removeClass("fa-caret-down");
 	            $(".ancestorArrow-" + ancestor).addClass("fa-caret-right");
 	            $(".ancestorFolder-" + ancestor).removeClass("fa-folder-open");
@@ -251,12 +252,12 @@
 	            // 펼친 상태
 	            $(".ancestor-" + ancestor).hide();
 	            $(".oneDepthParent-" + layerGroupId).hide();
-	
+
 	            $("#oneDepthArrow-" + layerGroupId).removeClass("fa-caret-down");
 	            $("#oneDepthArrow-" + layerGroupId).addClass("fa-caret-right");
 	            $("#oneDepthFolder-" + layerGroupId).removeClass("fa-folder-open");
 	            $("#oneDepthFolder-" + layerGroupId).addClass("fa-folder");
-	
+
 	            $(".ancestorArrow-" + ancestor).removeClass("fa-caret-down");
 	            $(".ancestorArrow-" + ancestor).addClass("fa-caret-right");
 	            $(".ancestorFolder-" + ancestor).removeClass("fa-folder-open");
@@ -266,7 +267,7 @@
 	        if( $(".twoDepthParent-" + layerGroupId).css("display") === "none" ) {
 	            // 접힌 상태
 	            $(".twoDepthParent-" + layerGroupId).show();
-	
+
 	            $("#twoDepthArrow-" + layerGroupId).removeClass("fa-caret-right");
 	            $("#twoDepthArrow-" + layerGroupId).addClass("fa-caret-down");
 	            $("#twoDepthFolder-" + layerGroupId).removeClass("fa-folder");
@@ -274,7 +275,7 @@
 	        } else {
 	            // 펼친 상태
 	            $(".twoDepthParent-" + layerGroupId).hide();
-	
+
 	            $("#twoDepthArrow-" + layerGroupId).removeClass("fa-caret-down");
 	            $("#twoDepthArrow-" + layerGroupId).addClass("fa-caret-right");
 	            $("#twoDepthFolder-" + layerGroupId).removeClass("fa-folder-open");
@@ -282,7 +283,7 @@
 	        }
 	    }
 	}
-	
+
 	// 위로 이동
     var upFlag = true;
     function moveUp(id, viewOrder) {
@@ -293,10 +294,10 @@
                 upFlag = true;
                 return;
             }
-            
+
             var formData = "updateType=UP";
     	    $.ajax({
-    			url: "/layer/view-order-group/" + id,
+    			url: "/layer/group/view-order/" + id,
     			type: "POST",
     			headers: {"X-Requested-With": "XMLHttpRequest"},
     	        data: formData,
@@ -334,7 +335,7 @@
             downFlag = false;
             var formData = "updateType=DOWN";
     	    $.ajax({
-    			url: "/layer/view-order-group/" + id,
+    			url: "/layer/group/view-order/" + id,
     			type: "POST",
     			headers: {"X-Requested-With": "XMLHttpRequest"},
     	        data: formData,
@@ -345,7 +346,7 @@
     					downFlag = true;
     					openAll();
     				} else {
-    					if(msg.errorCode === "data.group.view-order.invalid") {
+    					if(msg.errorCode === "layer.group.view-order.invalid") {
 							alert("순서를 변경할 수 없습니다.");
 						} else {
 							alert(JS_MESSAGE[msg.errorCode]);
@@ -364,35 +365,7 @@
             return;
         }
     }
-    
-    var deleteLayerGroupFlag = true;
-    function deleteLayerGroup(layerGroupId) {
-    	if(deleteLayerGroupFlag) {
-    		if(confirm(JS_MESSAGE["delete.confirm"])) {
-    			deleteLayerGroupFlag = false;
-    			$.ajax({
-    				url: "/layer/delete-group/" + layerGroupId,
-    				type: "DELETE",
-    				headers: {"X-Requested-With": "XMLHttpRequest"},
-    				dataType: "json",
-    				success: function(msg) {
-    					alert(JS_MESSAGE["delete"]);
-    					location.reload();
-    				},
-    		        error: function(request, status, error) {
-    		        	// alert message, 세션이 없는 경우 로그인 페이지로 이동 - common.js
-    		        	ajaxErrorHandler(request);
-    		        	deleteLayerGroupFlag = true;
-    		        }
-    			});
-    		} else {
-    			deleteLayerGroupFlag = true;
-    		}
-    	} else {
-    		alert(JS_MESSAGE["button.dobule.click"]);
-    		return;
-    	}
-    }
+
 </script>
 </body>
 </html>

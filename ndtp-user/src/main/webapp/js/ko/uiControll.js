@@ -21,7 +21,7 @@ $(function() {
         }
         
         // 변환 클릭 이벤트시 url 변경 
-        if(active === "convertContent") {
+        if(active === "converterContent") {
         	window.location="../upload-data/list";
         }
         

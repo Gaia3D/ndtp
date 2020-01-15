@@ -126,9 +126,7 @@ public class CacheConfig {
     	CacheManager.setUserGroupRoleMap(userGroupRoleMap);
     	
     	CacheType cacheType = cacheParams.getCacheType();
-		if(cacheType == CacheType.BROADCAST) {
-			callRemoteCache(cacheParams);
-		}
+		
     }
     
     /**
@@ -136,44 +134,6 @@ public class CacheConfig {
 	 * @param cacheName
 	 */
 	private void callRemoteCache(CacheParams cacheParams) {
-		
 		log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@ callRemoteCache start! ");
-//		if(!propertiesConfig.isCallRemoteEnable()) {
-//			log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@ isCallRemoteEnable = {}. skip callRemoteCache ", propertiesConfig.isCallRemoteEnable());
-//			return;
-//		}
-//		
-//		CacheName cacheName = cacheParams.getCacheName();
-//		log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@ cacheName ={}", cacheName.toString());
-//		
-//		StringBuilder stringBuilder = new StringBuilder();
-//		stringBuilder.append("api-key=" + Crypt.decrypt(propertiesConfig.getRestAuthKey()))
-//		.append("&")
-//		.append("cache_name=" + cacheName.toString())
-//		.append("&");
-//		if(cacheParams.getProject_id() != null) stringBuilder.append("project_id=" + cacheParams.getProject_id());
-//		stringBuilder.append("&")
-//		.append("time=" + System.nanoTime());
-//		
-//		String authData = Crypt.encrypt(stringBuilder.toString());
-//		
-//		// TODO 로컬, 이중화 등의 분기 처리가 생략되어 있음
-//		List<ExternalService> remoteCacheServerList = CacheManager.getRemoteCacheServiceList();
-//		for(ExternalService externalService : remoteCacheServerList) {
-//			// TODO 환경 설정으로 빼서 로컬이거나 단독 서버인 경우 호출하지 않게 설계해야 함
-//			try {
-//				Map<String, Object> resultObject = HttpClientHelper.httpPost(externalService, authData);
-//				if(resultObject != null && !resultObject.isEmpty() ) {
-//					int statusCode = (Integer)resultObject.get("statusCode");
-//					String statusCodeValue = (String)resultObject.get("statusCodeValue");
-//					String result = (String)resultObject.get("result");
-//					log.error("@@@ statusCode = {}.", statusCode);
-//					log.error("@@@ statusCodeValue = {}.", statusCodeValue);
-//					log.error("@@@ result = {}.", result);
-//				}
-//			} catch(Exception e) {
-//				e.printStackTrace();
-//			}
-//		}
 	}
 }

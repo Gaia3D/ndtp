@@ -41,7 +41,7 @@
 		
 		<div id="contentsWrap" class="contentsWrap" style="display: none;">
 			<div id="searchContent" class="contentsList yScroll" style="display:none;">
-				<%@ include file="/WEB-INF/views/district/search.jsp" %>
+				<%@ include file="/WEB-INF/views/search/district.jsp" %>
 			</div>
 			<div id="dataContent" class="contents fullHeight">
 				<!-- 데이터 그룹 -->
@@ -146,11 +146,11 @@
 			<div id="simulationContent" class="contentsList yScroll" style="display:none;">
 				<%@ include file="/WEB-INF/views/simulation/simulation.jsp" %>
 			</div>
-			<div id="joininContent" class="contents" style="display:none;">
-				<%@ include file="/WEB-INF/views/joinin/joinin.jsp" %>
+			<div id="civilVoiceContent" class="contents" style="display:none;">
+				<%@ include file="/WEB-INF/views/civil-voice/input.jsp" %>
 			</div>
-			<div id="setupContent" class="contents" style="display:none;">
-				<%@ include file="/WEB-INF/views/setup/setup.jsp" %>
+			<div id="userPolicyContent" class="contents" style="display:none;">
+				<%@ include file="/WEB-INF/views/user-policy/modify.jsp" %>
 			</div>
 			<!-- E: CONTENTS -->
 			<!-- E: CONTENTS -->
@@ -201,7 +201,7 @@
 		}
 	});
 	
-	//Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIyNmNjOWZkOC03NjdlLTRiZTktYWQ3NS1hNmQ0YjA1ZjIzYWEiLCJpZCI6Mzk5Miwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0NDYwNDQ3M30.AwvoVAuMRwjcMMJ9lEG2v4CPUp8gfltJqZARHgxGv_k';
+	//Cesium.Ion.defaultAccessToken = '';
 	//var viewer = new Cesium.Viewer('magoContainer');
 	var MAGO3D_INSTANCE;
 	magoInit();
@@ -306,7 +306,6 @@
 							}
 
 							group.datas = dataInfoList;
-							console.log("---------- " + group.datas);
 							dataArray.push(group);
 							if(cnt === dataGroupArrayLength-1) {
 								var f4dController = MAGO3D_INSTANCE.getF4dController();

@@ -13,7 +13,7 @@ public interface DataGroupService {
     List<DataGroup> getListDataGroup();
     
     /**
-     * 데이터 정보 조회
+     * 데이터 그룹 정보 조회
      * @param dataGroup
      * @return
      */
@@ -40,7 +40,7 @@ public interface DataGroupService {
 	int updateDataGroup(DataGroup dataGroup);
 	
 	/**
-	 * 데이터 그룹 표시 순서 수정. UP, DOWN
+	 * 데이터 그룹 표시 순서 수정 (up/down)
 	 * @param dataGroup
 	 * @return
 	 */
