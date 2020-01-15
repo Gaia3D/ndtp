@@ -81,7 +81,7 @@
 				data_group_id = #{dataGroupId}
 				</if>
 				<if test="sharing != null and sharing != ''">
-				AND sharing_type = #{sharing_type}
+				AND sharing = #{sharing}
 				</if>
 				<if test="userId != null and userId != ''">
 				AND user_id = #{userId}

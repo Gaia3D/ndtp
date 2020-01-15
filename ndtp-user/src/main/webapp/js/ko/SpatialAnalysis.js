@@ -62,14 +62,16 @@ var SpatialAnalysis = function(magoInstance) {
 			for(var i in analTypes) {
 				var analType = analTypes[i];
 				var analysis = entityObject[analType];
-				if(i !== id) {
+				if(analType !== id) {
 					var entityTypes = Object.keys(analysis);
 					for(var j in entityTypes) {
 						var entityType = entityTypes[j];
 						var entityId = analysis[entityType];
 						
 						entities.removeById(entityId);
-						entityId = null;
+						analysis[entityType] = null;
+						
+						$('#' + analType + ' .' + entityType + 'Point').val('').siblings('input').val('');
 					}
 				} else {
 					if(analysis[type]) {

@@ -22,7 +22,7 @@ function MapControll(viewer, option) {
     /**
 	 * 나침반 동작
 	 */
-    viewer.scene.postRender.addEventListener(function () {
+    /*viewer.scene.postRender.addEventListener(function () {
         var camera = this._viewer.camera;
         var angle = Cesium.Math.toDegrees(camera.heading);
         if (angle > 359.9 || angle < .1) {
@@ -43,7 +43,7 @@ function MapControll(viewer, option) {
                 'transform': 'rotate(' + -angle + 'deg)'
             });
         }
-    });
+    });*/
     
 
     function createPoint(worldPosition) {

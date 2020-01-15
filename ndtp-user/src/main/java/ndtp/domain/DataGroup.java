@@ -23,7 +23,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DataGroup {
+public class DataGroup extends Search {
 
 	/****** 화면 표시용 *******/
 	private String parentName;

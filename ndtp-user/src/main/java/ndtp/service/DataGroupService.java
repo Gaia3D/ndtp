@@ -7,10 +7,23 @@ import ndtp.domain.DataGroup;
 public interface DataGroupService {
 	
 	/**
+	 * Data Group 총건수
+	 * @param dataGroup
+	 * @return
+	 */
+	Long getDataGroupTotalCount(DataGroup dataGroup);
+	
+	/**
+     * 데이터 그룹 전체 목록
+     * @return
+     */
+    List<DataGroup> getAllListDataGroup();
+    
+    /**
      * 데이터 그룹 목록
      * @return
      */
-    List<DataGroup> getListDataGroup();
+    List<DataGroup> getListDataGroup(DataGroup dataGroup);
     
     /**
      * 데이터 정보 조회

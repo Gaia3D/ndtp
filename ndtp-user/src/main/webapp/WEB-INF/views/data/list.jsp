@@ -239,7 +239,7 @@
 		var viewer = magoInstance.getViewer(); 
 		var magoManager = magoInstance.getMagoManager();
 		var f4dController = magoInstance.getF4dController();
-
+		
 		// TODO : 세슘 MAP 선택 UI 제거,엔진에서 처리로 변경 예정.
 		viewer.baseLayerPicker.destroy();
 		
@@ -281,7 +281,9 @@
 	// 데이터 정보 목록
 	function dataList(dataGroupArray) {
 		var dataArray = new Array();
-		for(var i=0; i<dataGroupArray.length; i++) {
+		var dataGroupArrayLength = dataGroupArray.length;
+		var cnt = 0;
+		for(var i=0; i<dataGroupArrayLength; i++) {
 			var dataGroup = dataGroupArray[i];
 			$.ajax({
 				url: "/datas",
@@ -292,9 +294,26 @@
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						var dataInfoList = msg.dataInfoList;
-						
-						dataGroup.datas = dataInfoList;
-						dataArray.push(dataGroup);
+
+						if(dataInfoList.length > 0) {
+							var dataInfoFirst = dataInfoList[0];
+							var dataInfoGroupId = dataInfoFirst.dataGroupId;
+							var group;
+							for(var j in dataGroupArray) {
+								if(dataGroupArray[j].dataGroupId === dataInfoGroupId) {
+									group = dataGroupArray[j];
+								}
+							}
+
+							group.datas = dataInfoList;
+							console.log("---------- " + group.datas);
+							dataArray.push(group);
+							if(cnt === dataGroupArrayLength-1) {
+								var f4dController = MAGO3D_INSTANCE.getF4dController();
+								f4dController.addF4dGroup(dataArray);
+							}
+						}
+						cnt++;
 					} else {
 						alert(JS_MESSAGE[msg.errorCode]);
 					}
@@ -304,6 +323,7 @@
 				}
 			});			
 		}
+		
 	}
 </script>
 </body>
