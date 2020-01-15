@@ -142,7 +142,7 @@
         </c:if>
 					                    </td>
 					                    <td class="col-type">
-					                        <a href="/user/group/${userGroup.userGroupId }/menu" class="linkButton">수정</a>
+					                        <a href="/user/group/${userGroup.userGroupId }/menu" class="linkButton">보기</a>
 					                    </td>
 					                    <td class="col-type">
 					                        <a href="/user/group/${userGroup.userGroupId }/menu" class="linkButton">수정</a>
