@@ -1586,6 +1586,7 @@ tr:hover td {
 	height: 37px;
 	line-height: 37px;
 	text-align: left;
+	padding-top: 6px;
 	padding-left: 20px;
 	padding-right: 20px; }
 	
@@ -1606,6 +1607,7 @@ tr:hover td {
 	border: 1px solid #d9d9d9;
 	height: 37px;
 	line-height: 37px;
+	padding-top: 6px;
 	padding-left: 5px;
 	padding-right: 5px; }
 	
