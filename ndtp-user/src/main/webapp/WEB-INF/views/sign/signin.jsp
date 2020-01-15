@@ -34,7 +34,7 @@
 		<div class="row">
 			<div class="container">
 				<div class="row">
-					<h1 style="padding-bottom:10px; font-size:38px; font-family:Lousianne; color:#573592;">NDTP</h1>
+					<h1 style="margin-bottom: 10px; font-size:38px; font-family:Lousianne; color:#573592;">NDTP</h1>
 <c:if test="${signinForm.errorCode ne null && signinForm.errorCode ne ''}">
 					<h6 style="padding-left: 10px; color: red;">* 
 						<spring:message code="${signinForm.errorCode}" />
