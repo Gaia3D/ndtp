@@ -293,10 +293,10 @@
                 upFlag = true;
                 return;
             }
-            
+
             var formData = "updateType=UP";
     	    $.ajax({
-    			url: "/layer/view-order-group/" + id,
+    			url: "/layer/group/view-order/" + id,
     			type: "POST",
     			headers: {"X-Requested-With": "XMLHttpRequest"},
     	        data: formData,

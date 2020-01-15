@@ -33,47 +33,53 @@ import ndtp.service.PolicyService;
 @Controller
 @RequestMapping("/layer/")
 public class LayerGroupController {
-	
+
 	@Autowired
 	private LayerGroupService layerGroupService;
 
 	@Autowired
 	private PolicyService policyService;
-	
+
 	/**
-	 * 레이어 그룹 관리
+	 * 레이어 그룹 목록
+	 * @param request
+	 * @param layerGroup
+	 * @param model
+	 * @return
 	 */
 	@GetMapping(value = "list-group")
 	public String list(HttpServletRequest request, @ModelAttribute LayerGroup layerGroup, Model model) {
 //		List<LayerGroup> layerGroupList = layerGroupService.getListLayerGroupAndLayer();
 		List<LayerGroup> layerGroupList = layerGroupService.getListLayerGroup();
-		
+
 		model.addAttribute("layerGroupList", layerGroupList);
-		
+
 		return "/layer/list-group";
 	}
-	
+
 	/**
-	 * 사용자 그룹 트리 순서 수정, up, down
-	 * @param model
+	 * 레이어 그룹 트리 순서 수정 (up/down)
+	 * @param request
+	 * @param layerGroupId
+	 * @param layerGroup
 	 * @return
 	 */
-	@PostMapping(value = "view-order-group/{layerGroupId}")
+	@PostMapping(value = "group/view-order/{layerGroupId}")
 	@ResponseBody
 	public Map<String, Object> moveLayerGroup(HttpServletRequest request, @PathVariable Integer layerGroupId, @ModelAttribute LayerGroup layerGroup) {
-		log.info("@@ dataGroup = {}", layerGroup);
-		
+		log.info("@@ layerGroup = {}", layerGroup);
+
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String errorCode = null;
 		String message = null;
 		try {
 			layerGroup.setLayerGroupId(layerGroupId);
-			
+
 			int updateCount = layerGroupService.updateLayerGroupViewOrder(layerGroup);
 			if(updateCount == 0) {
 				statusCode = HttpStatus.BAD_REQUEST.value();
-				errorCode = "data.group.view-order.invalid";
+				errorCode = "layer.group.view-order.invalid";
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -81,50 +87,56 @@ public class LayerGroupController {
             errorCode = "db.exception";
             message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 		}
-		
+
 		result.put("statusCode", statusCode);
 		result.put("errorCode", errorCode);
 		result.put("message", message);
 		return result;
 	}
-	
+
 	/**
-	 * 레이어 그룹 등록
+	 * 레이어 그룹 등록 페이지 이동
+	 * @param model
+	 * @return
 	 */
 	@GetMapping(value = "input-group")
 	public String input(Model model) {
 		Policy policy = policyService.getPolicy();
-		
+
 		List<LayerGroup> layerGroupList = layerGroupService.getListLayerGroup();
-		
+
 		LayerGroup layerGroup = new LayerGroup();
 		layerGroup.setParentName(policy.getContentLayerGroupRoot());
 		layerGroup.setParent(0);
-		
+
 		model.addAttribute("policy", policy);
 		model.addAttribute("layerGroup", layerGroup);
 		model.addAttribute("layerGroupList", layerGroupList);
-		
+
 		return "/layer/input-group";
 	}
-	
+
 	/**
-	 * 레이어 그룹을 등록한다.
+	 * 레이어 그룹 등록
+	 * @param request
+	 * @param layerGroup
+	 * @param bindingResult
+	 * @return
 	 */
 	@PostMapping(value = "insert-group")
 	@ResponseBody
 	public Map<String, Object> insert(HttpServletRequest request, @Valid @ModelAttribute LayerGroup layerGroup, BindingResult bindingResult) {
-		
+
 		log.info("@@@@@ insert layerGroup = {}", layerGroup);
-		
+
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String errorCode = null;
 		String message = null;
-		
+
 		try {
 			UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-			
+
 			if(bindingResult.hasErrors()) {
 				message = bindingResult.getAllErrors().get(0).getDefaultMessage();
 				log.info("@@@@@ message = {}", message);
@@ -133,9 +145,9 @@ public class LayerGroupController {
 				result.put("message", message);
 	            return result;
 			}
-			
+
 			layerGroup.setUserId(userSession.getUserId());
-			
+
 			layerGroupService.insertLayerGroup(layerGroup);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -143,30 +155,34 @@ public class LayerGroupController {
             errorCode = "db.exception";
             message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 		}
-		
+
 		result.put("statusCode", statusCode);
 		result.put("errorCode", errorCode);
 		result.put("message", message);
 		return result;
 	}
-	
-	
+
 	/**
-	 * 레이어 그룹을 수정하기 위한 페이지로 이동한다.
+	 * 레이어 그룹 수정 페이지 이동
+	 * @param request
+	 * @param layerGroupId
+	 * @param model
+	 * @return
 	 */
 	@GetMapping(value = "modify-group")
 	public String modify(HttpServletRequest request, @RequestParam Integer layerGroupId, Model model) {
 		LayerGroup layerGroup = layerGroupService.getLayerGroup(layerGroupId);
 		Policy policy = policyService.getPolicy();
-		
+
 		model.addAttribute("policy", policy);
 		model.addAttribute("layerGroup", layerGroup);
-		
+
 		return "/layer/modify-group";
 	}
-	
+
 	/**
-	 * 레이어 그룹 정보 수정
+	 * 레이어 그룹 수정
+	 * @param request
 	 * @param layerGroup
 	 * @param bindingResult
 	 * @return
@@ -179,7 +195,7 @@ public class LayerGroupController {
 		int statusCode = 0;
 		String errorCode = null;
 		String message = null;
-		
+
 		try {
 			if(bindingResult.hasErrors()) {
 				message = bindingResult.getAllErrors().get(0).getDefaultMessage();
@@ -189,7 +205,7 @@ public class LayerGroupController {
 				result.put("message", message);
 	            return result;
 			}
-		
+
 			layerGroupService.updateLayerGroup(layerGroup);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -197,17 +213,17 @@ public class LayerGroupController {
             errorCode = "db.exception";
             message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 		}
-		
+
 		result.put("statusCode", statusCode);
 		result.put("errorCode", errorCode);
 		result.put("message", message);
 		return result;
 	}
-	
+
 	/**
-	 * 레이어 그룹 정보 삭제
-	 * @param layerGroup
-	 * @param bindingResult
+	 * 레이어 그룹 삭제
+	 * @param request
+	 * @param layerGroupId
 	 * @return
 	 */
 	@DeleteMapping(value = "delete-group/{layerGroupId}")
@@ -217,9 +233,8 @@ public class LayerGroupController {
 		int statusCode = 0;
 		String errorCode = null;
 		String message = null;
-		
+
 		try {
-					
 			layerGroupService.deleteLayerGroup(layerGroupId);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -227,7 +242,7 @@ public class LayerGroupController {
             errorCode = "db.exception";
             message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 		}
-		
+
 		result.put("statusCode", statusCode);
 		result.put("errorCode", errorCode);
 		result.put("message", message);
