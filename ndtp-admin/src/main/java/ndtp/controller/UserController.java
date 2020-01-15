@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,6 +25,8 @@ import ndtp.domain.UserSession;
 import ndtp.service.PolicyService;
 import ndtp.service.UserGroupService;
 import ndtp.service.UserService;
+import ndtp.utils.DateUtils;
+import ndtp.utils.FormatUtils;
 
 /**
  * 사용자
@@ -43,7 +46,7 @@ public class UserController implements AuthorizationController {
 
 	@Autowired
 	private PolicyService policyService;
-	
+
 	/**
 	 * 사용자 목록
 	 * @param request
@@ -52,21 +55,33 @@ public class UserController implements AuthorizationController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "list")
-	public String list(HttpServletRequest request, UserInfo userInfo, @RequestParam(defaultValue="1") String pageNo, Model model) {
+	@RequestMapping(value = "list")
+	public String list(HttpServletRequest request, @RequestParam(defaultValue="1") String pageNo, UserInfo userInfo, Model model) {
 		String roleCheckResult = roleValidate(request);
     	if(roleValidate(request) != null) return roleCheckResult;
-    	
+
+    	String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
+		if(StringUtils.isEmpty(userInfo.getStartDate())) {
+			userInfo.setStartDate(today.substring(0,4) + DateUtils.START_DAY_TIME);
+		} else {
+			userInfo.setStartDate(userInfo.getStartDate().substring(0, 8) + DateUtils.START_TIME);
+		}
+		if(StringUtils.isEmpty(userInfo.getEndDate())) {
+			userInfo.setEndDate(today + DateUtils.END_TIME);
+		} else {
+			userInfo.setEndDate(userInfo.getEndDate().substring(0, 8) + DateUtils.END_TIME);
+		}
+
     	long totalCount = userService.getUserTotalCount(userInfo);
     	Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, userInfo), totalCount, Long.valueOf(pageNo).longValue());
 		userInfo.setOffset(pagination.getOffset());
 		userInfo.setLimit(pagination.getPageRows());
-		
+
 		List<UserInfo> userList = new ArrayList<>();
 		if(totalCount > 0l) {
 			userList = userService.getListUser(userInfo);
 		}
-		
+
 		model.addAttribute(pagination);
 		model.addAttribute("userList", userList);
 		return "/user/list";
@@ -82,16 +97,16 @@ public class UserController implements AuthorizationController {
 	@GetMapping(value = "detail")
 	public String detail(HttpServletRequest request, UserInfo userInfo, Model model) {
 		String listParameters = getSearchParameters(PageType.DETAIL, userInfo);
-		
+
 		userInfo =  userService.getUser(userInfo.getUserId());
 		Policy policy = policyService.getPolicy();
-		
+
 		model.addAttribute("policy", policy);
 		model.addAttribute("listParameters", listParameters);
 		model.addAttribute("userInfo", userInfo);
 		return "/user/detail";
 	}
-	
+
 	/**
 	 * 사용자 등록 화면
 	 */
@@ -99,13 +114,13 @@ public class UserController implements AuthorizationController {
 	public String input(Model model) {
 		Policy policy = policyService.getPolicy();
 		List<UserGroup> userGroupList = userGroupService.getListUserGroup(new UserGroup());
-		
+
 		model.addAttribute("policy", policy);
 		model.addAttribute("dataGroupList", userGroupList);
 		model.addAttribute("userInfo", new UserInfo());
 		return "/user/input";
 	}
-	
+
 	/**
 	 * 검색 조건
 	 * @param search
@@ -117,16 +132,16 @@ public class UserController implements AuthorizationController {
 		if(pageType == PageType.MODIFY || pageType == PageType.DETAIL) {
 			isListPage = false;
 		}
-		
+
 //		if(!isListPage) {
 //			buffer.append("pageNo=" + request.getParameter("pageNo"));
 //			buffer.append("&");
 //			buffer.append("list_count=" + uploadData.getList_counter());
 //		}
-		
+
 		return buffer.toString();
 	}
-	
+
 	private String roleValidate(HttpServletRequest request) {
     	UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		int httpStatusCode = getRoleStatusCode(userSession.getUserGroupId(), RoleKey.ADMIN_USER_MANAGE.name());
@@ -135,25 +150,25 @@ public class UserController implements AuthorizationController {
 			request.setAttribute("httpStatusCode", httpStatusCode);
 			return "/error/error";
 		}
-		
+
 		return null;
     }
 }
 
-//	
+//
 //	@Autowired
 //	private PropertiesConfig propertiesConfig;
-//	
+//
 //	@Resource(name="userValidator")
 //	private UserValidator userValidator;
-//	
+//
 //	@Autowired
 //	private UserGroupService userGroupService;
 //	@Autowired
 //	private UserService userService;
 //	@Autowired
 //	private UserDeviceService userDeviceService;
-//	
+//
 //	/**
 //	 * 사용자 목록
 //	 * @param request
@@ -165,7 +180,7 @@ public class UserController implements AuthorizationController {
 //	 */
 //	@RequestMapping(value = "list-user.do")
 //	public String listUser(	HttpServletRequest request, UserInfo userInfo, @RequestParam(defaultValue="1") String pageNo, Model model) {
-//		
+//
 //		log.info("@@ userInfo = {}", userInfo);
 //		UserGroup userGroup = new UserGroup();
 //		userGroup.setUse_yn(UserGroup.IN_USE);
@@ -183,25 +198,25 @@ public class UserController implements AuthorizationController {
 //		// 논리적 삭제는 SELECT에서 제외
 ////		userInfo.setDelete_flag(UserInfo.STATUS_LOGICAL_DELETE);
 //		long totalCount = userService.getUserTotalCount(userInfo);
-//		
+//
 //		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(userInfo), totalCount, Long.valueOf(pageNo).longValue(), userInfo.getList_counter());
 //		log.info("@@ pagination = {}", pagination);
-//		
+//
 //		userInfo.setOffset(pagination.getOffset());
 //		userInfo.setLimit(pagination.getPageRows());
 //		List<UserInfo> userList = new ArrayList<>();
 //		if(totalCount > 0l) {
 //			userList = userService.getListUser(userInfo);
 //		}
-//		
+//
 //		boolean txtDownloadFlag = false;
 //		if(totalCount > 60000l) {
 //			txtDownloadFlag = true;
 //		}
-//		
+//
 //		@SuppressWarnings("unchecked")
 //		List<CommonCode> userRegisterTypeList = (List<CommonCode>)CacheManager.getCommonCode(CommonCode.USER_REGISTER_TYPE);
-//		
+//
 //		model.addAttribute(pagination);
 //		model.addAttribute("commonCodeMap", CacheManager.getCommonCodeMap());
 //		model.addAttribute("userRegisterTypeList", userRegisterTypeList);
@@ -211,7 +226,7 @@ public class UserController implements AuthorizationController {
 //		model.addAttribute("excelUserInfo", userInfo);
 //		return "/user/list-user";
 //	}
-//	
+//
 //	/**
 //	 * 사용자 그룹 등록된 사용자 목록
 //	 * @param request
@@ -224,13 +239,13 @@ public class UserController implements AuthorizationController {
 //		String result = "success";
 //		Pagination pagination = null;
 //		List<UserInfo> userList = new ArrayList<>();
-//		try {		
+//		try {
 //			UserInfo userInfo = new UserInfo();
 //			userInfo.setUser_group_id(user_group_id);
-//			
+//
 //			long totalCount = userService.getUserTotalCount(userInfo);
 //			pagination = new Pagination(request.getRequestURI(), getSearchParameters(userInfo), totalCount, Long.valueOf(pageNo).longValue());
-//			
+//
 //			userInfo.setOffset(pagination.getOffset());
 //			userInfo.setLimit(pagination.getPageRows());
 //			if(totalCount > 0l) {
@@ -240,16 +255,16 @@ public class UserController implements AuthorizationController {
 //			e.printStackTrace();
 //			result = "db.exception";
 //		}
-//		
+//
 //		map.put("result", result);
 //		map.put("pagination", pagination);
 //		map.put("userList", userList);
-//		
+//
 //		log.info(">>>>>>>>>>>>>>>>>> userlist = {}", map);
-//		
+//
 //		return map;
 //	}
-//	
+//
 //	/**
 //	 * 사용자 그룹 전체 User 에서 선택한 사용자 그룹에 등록된 User 를 제외한 User 목록
 //	 * @param request
@@ -265,7 +280,7 @@ public class UserController implements AuthorizationController {
 //		try {
 //			long totalCount = userService.getExceptUserGroupUserByGroupIdTotalCount(userInfo);
 //			pagination = new Pagination(request.getRequestURI(), getSearchParameters(userInfo), totalCount, Long.valueOf(pageNo).longValue());
-//			
+//
 //			userInfo.setOffset(pagination.getOffset());
 //			userInfo.setLimit(pagination.getPageRows());
 //			if(totalCount > 0l) {
@@ -280,7 +295,7 @@ public class UserController implements AuthorizationController {
 //		map.put("userList", userList);
 //		return map;
 //	}
-//	
+//
 //	/**
 //	 * 선택한 사용자 그룹에 등록된 User 목록
 //	 * @param request
@@ -294,10 +309,10 @@ public class UserController implements AuthorizationController {
 //		Pagination pagination = null;
 //		List<UserInfo> userList = new ArrayList<>();
 //		try {
-//			
+//
 //			long totalCount = userService.getUserTotalCount(userInfo);
 //			pagination = new Pagination(request.getRequestURI(), getSearchParameters(userInfo), totalCount, Long.valueOf(pageNo).longValue());
-//			
+//
 //			userInfo.setOffset(pagination.getOffset());
 //			userInfo.setLimit(pagination.getPageRows());
 //			if(totalCount > 0l) {
@@ -312,7 +327,7 @@ public class UserController implements AuthorizationController {
 //		map.put("userList", userList);
 //		return map;
 //	}
-//	
+//
 //	/**
 //	 * 사용자 등록 화면
 //	 * @param model
@@ -320,25 +335,25 @@ public class UserController implements AuthorizationController {
 //	 */
 //	@GetMapping(value = "input-user.do")
 //	public String inputUser(Model model) {
-//		
+//
 //		UserGroup userGroup = new UserGroup();
 //		userGroup.setUse_yn(UserGroup.IN_USE);
 //		List<UserGroup> userGroupList = userGroupService.getListUserGroup(userGroup);
-//		
+//
 //		Policy policy = CacheManager.getPolicy();
 //		UserInfo userInfo = new UserInfo();
 //		UserDevice userDevice = new UserDevice();
-//		
+//
 //		String passwordExceptionChar = "";
 //		if(policy.getPassword_exception_char() != null && !"".equals(policy.getPassword_exception_char())) {
 //			for(int i=0; i< policy.getPassword_exception_char().length() - 1; i++) {
 //				passwordExceptionChar = passwordExceptionChar + "\\" + policy.getPassword_exception_char().substring(i, i+1);
 //			}
 //		}
-//		
+//
 //		@SuppressWarnings("unchecked")
 //		List<CommonCode> emailCommonCodeList = (List<CommonCode>)CacheManager.getCommonCode(CommonCode.USER_EMAIL);
-//		
+//
 //		model.addAttribute("passwordExceptionChar", passwordExceptionChar);
 //		model.addAttribute("emailCommonCodeList", emailCommonCodeList);
 //		model.addAttribute(userInfo);
@@ -347,7 +362,7 @@ public class UserController implements AuthorizationController {
 //		model.addAttribute("userDevice", userDevice);
 //		return "/user/input-user";
 //	}
-//	
+//
 //	/**
 //	 * 사용자 등록
 //	 * @param request
@@ -367,19 +382,19 @@ public class UserController implements AuthorizationController {
 //				map.put("result", result);
 //				return map;
 //			}
-//			
+//
 //			int count = userService.getDuplicationIdCount(userInfo.getUser_id());
 //			if(count > 0) {
 //				result = "user.id.duplication";
 //				map.put("result", result);
 //				return map;
 //			}
-//			
+//
 //			String salt = BCrypt.gensalt();
 //			ShaPasswordEncoder shaPasswordEncoder = new ShaPasswordEncoder(512);
 //			shaPasswordEncoder.setIterations(1000);
 //			String encryptPassword = shaPasswordEncoder.encodePassword(userInfo.getPassword(), salt);
-//			
+//
 //			if(userInfo.getTelephone1() != null && !"".equals(userInfo.getTelephone1()) &&
 //					userInfo.getTelephone2() != null && !"".equals(userInfo.getTelephone2()) &&
 //					userInfo.getTelephone3() != null && !"".equals(userInfo.getTelephone3())) {
@@ -394,16 +409,16 @@ public class UserController implements AuthorizationController {
 //					userInfo.getEmail2() != null && !"".equals(userInfo.getEmail2())) {
 //				userInfo.setEmail(userInfo.getEmail1()+"@"+userInfo.getEmail2());
 //			}
-//			
+//
 //			userInfo.setSalt(salt);
 //			userInfo.setPassword(encryptPassword);
 //			userInfo.setTelephone(Crypt.encrypt(userInfo.getTelephone()));
 //			userInfo.setMobile_phone(Crypt.encrypt(userInfo.getMobile_phone()));
 //			userInfo.setEmail(Crypt.encrypt(userInfo.getEmail()));
 //			userInfo.setAddress_etc(Crypt.encrypt(userInfo.getAddress_etc()));
-//						
+//
 //			userService.insertUser(userInfo);
-//			
+//
 //			userInfo.setMobile_phone(userInfo.getViewMobilePhone());
 //			userInfo.setEmail(userInfo.getViewEmail());
 //			map.put("maskingMobilePhone", userInfo.getMaskingMobilePhone());
@@ -413,12 +428,12 @@ public class UserController implements AuthorizationController {
 //			e.printStackTrace();
 //			result = "db.exception";
 //		}
-//	
+//
 //		map.put("result", result);
-//		
+//
 //		return map;
 //	}
-//	
+//
 //	/**
 //	 * 선택 사용자 그룹내 사용자 등록
 //	 * @param request
@@ -432,58 +447,58 @@ public class UserController implements AuthorizationController {
 //	public Map<String, Object> ajaxInsertUserGroupUser(HttpServletRequest request,
 //			@RequestParam("user_group_id") Long user_group_id,
 //			@RequestParam("user_all_id") String[] user_all_id) {
-//		
+//
 //		log.info("@@@ user_group_id = {}, user_all_id = {}", user_group_id, user_all_id);
 //		Map<String, Object> map = new HashMap<>();
 //		List<UserInfo> exceptUserList = new ArrayList<>();
 //		List<UserInfo> userList = new ArrayList<>();
 //		String result = "success";
 //		try {
-//			if(user_group_id == null || user_group_id.longValue() == 0l ||				
+//			if(user_group_id == null || user_group_id.longValue() == 0l ||
 //					user_all_id == null || user_all_id.length < 1) {
 //				result = "input.invalid";
 //				map.put("result", result);
 //				return map;
 //			}
-//			
+//
 //			UserInfo userInfo = new UserInfo();
 //			userInfo.setUser_group_id(user_group_id);
 //			userInfo.setUser_all_id(user_all_id);
-//			
+//
 //			userService.updateUserGroupUser(userInfo);
-//			
+//
 //			userList = userService.getListUser(userInfo);
 //			exceptUserList = userService.getListExceptUserGroupUserByGroupId(userInfo);
 //		} catch(Exception e) {
 //			e.printStackTrace();
 //			map.put("result", "db.exception");
 //		}
-//		
+//
 //		map.put("result", result	);
 //		map.put("exceptUserList", exceptUserList);
 //		map.put("userList", userList);
 //		return map;
 //	}
-//	
+//
 //	/**
 //	 * ajax 용 사용자 validation 체크
 //	 * @param userInfo
 //	 * @return
 //	 */
 //	private String userValidate(Policy policy, UserInfo userInfo) {
-//		
+//
 //		// 비밀번호 변경이 아닐경우
 //		if(!"updatePassword".equals(userInfo.getMethod_mode())) {
 //			if(userInfo.getUser_id() == null || "".equals(userInfo.getUser_id())) {
 //				return "user.input.invalid";
 //			}
-//			
+//
 //			if(userInfo.getUser_group_id() == null || userInfo.getUser_group_id() <= 0
 //					|| userInfo.getUser_name() == null || "".equals(userInfo.getUser_name())) {
 //				return "user.input.invalid";
 //			}
 //		}
-//		
+//
 //		if("insert".equals(userInfo.getMethod_mode())) {
 //			if(userInfo.getUser_id().length() < policy.getUser_id_min_length()) {
 //				return "user.id.min_length.invalid";
@@ -492,18 +507,18 @@ public class UserController implements AuthorizationController {
 //				return "user.id.duplication";
 //			}
 //		}
-//		
+//
 //		// 사용자 정보 수정화면에서는 Password가 있을 경우만 체크
 //		if("update".equals(userInfo.getMethod_mode())) {
 //			if(userInfo.getPassword() == null || "".equals(userInfo.getPassword())
 //				|| userInfo.getPassword_confirm() == null || "".equals(userInfo.getPassword_confirm())) {
 //				return null;
 //			}
-//		} 
-//		
+//		}
+//
 //		return PasswordHelper.validateUserPassword(CacheManager.getPolicy(), userInfo);
 //	}
-//	
+//
 //	/**
 //	 * 사용자 아이디 중복 체크
 //	 * @param model
@@ -521,7 +536,7 @@ public class UserController implements AuthorizationController {
 //				map.put("result", result);
 //				return map;
 //			}
-//			
+//
 //			int count = userService.getDuplicationIdCount(userInfo.getUser_id());
 //			log.info("@@ duplication_value = {}", count);
 //			duplication_value = String.valueOf(count);
@@ -529,13 +544,13 @@ public class UserController implements AuthorizationController {
 //			e.printStackTrace();
 //			result = "db.exception";
 //		}
-//	
+//
 //		map.put("result", result);
 //		map.put("duplication_value", duplication_value);
-//		
+//
 //		return map;
 //	}
-//	
+//
 //	/**
 //	 * 사용자 정보
 //	 * @param user_id
@@ -544,22 +559,22 @@ public class UserController implements AuthorizationController {
 //	 */
 //	@RequestMapping(value = "detail-user.do")
 //	public String detailUser(@RequestParam("user_id") String user_id, HttpServletRequest request, Model model) {
-//		
+//
 //		String listParameters = getListParameters(request);
-//			
+//
 //		UserInfo userInfo =  userService.getUser(user_id);
 //		UserDevice userDevice = userDeviceService.getUserDeviceByUserId(userInfo.getUser_id());
-//		
+//
 //		Policy policy = CacheManager.getPolicy();
-//		
+//
 //		model.addAttribute("policy", policy);
 //		model.addAttribute("listParameters", listParameters);
 //		model.addAttribute("userInfo", userInfo);
 //		model.addAttribute("userDevice", userDevice);
-//		
+//
 //		return "/user/detail-user";
 //	}
-//	
+//
 //	/**
 //	 * 사용자 정보 수정 화면
 //	 * @param user_id
@@ -568,9 +583,9 @@ public class UserController implements AuthorizationController {
 //	 */
 //	@GetMapping(value = "modify-user.do")
 //	public String modifyUser(@RequestParam("user_id") String user_id, HttpServletRequest request, @RequestParam(defaultValue="1") String pageNo, Model model) {
-//		
+//
 //		String listParameters = getListParameters(request);
-//		
+//
 //		UserGroup userGroup = new UserGroup();
 //		userGroup.setUse_yn(UserGroup.IN_USE);
 //		List<UserGroup> userGroupList = userGroupService.getListUserGroup(userGroup);
@@ -579,10 +594,10 @@ public class UserController implements AuthorizationController {
 //		userInfo.setMobile_phone(userInfo.getViewMobilePhone());
 //		userInfo.setEmail(userInfo.getViewEmail());
 //		userInfo.setAddress_etc(userInfo.getViewAddressEtc());
-//		
+//
 //		// TODO 고민을 해 보자. user_info랑 조인을 해서 가져올지, 그냥 가져 올지
 //		UserDevice userDevice = userDeviceService.getUserDeviceByUserId(userInfo.getUser_id());
-//		
+//
 //		log.info("@@@@@@@@ userInfo = {}", userInfo);
 //		if(userInfo.getTelephone() != null && !"".equals(userInfo.getTelephone())) {
 //			String[] telephone = userInfo.getTelephone().split("-");
@@ -607,19 +622,19 @@ public class UserController implements AuthorizationController {
 //			userInfo.setEmail1(email[0]);
 //			userInfo.setEmail2(email[1]);
 //		}
-//		
+//
 //		Policy policy = CacheManager.getPolicy();
-//		
+//
 //		String passwordExceptionChar = "";
 //		if(policy.getPassword_exception_char() != null && !"".equals(policy.getPassword_exception_char())) {
 //			for(int i=0; i< policy.getPassword_exception_char().length() - 1; i++) {
 //				passwordExceptionChar = passwordExceptionChar + "\\" + policy.getPassword_exception_char().substring(i, i+1);
 //			}
 //		}
-//		
+//
 //		@SuppressWarnings("unchecked")
 //		List<CommonCode> emailCommonCodeList = (List<CommonCode>)CacheManager.getCommonCode(CommonCode.USER_EMAIL);
-//		
+//
 //		model.addAttribute("passwordExceptionChar", passwordExceptionChar);
 //		model.addAttribute("emailCommonCodeList", emailCommonCodeList);
 //		model.addAttribute("listParameters", listParameters);
@@ -627,10 +642,10 @@ public class UserController implements AuthorizationController {
 //		model.addAttribute("userGroupList", userGroupList);
 //		model.addAttribute(userInfo);
 //		model.addAttribute("userDevice", userDevice);
-//		
+//
 //		return "/user/modify-user";
 //	}
-//	
+//
 //	/**
 //	 * 사용자 정보 수정
 //	 * @param request
@@ -651,7 +666,7 @@ public class UserController implements AuthorizationController {
 //				map.put("result", result);
 //				return map;
 //			}
-//						
+//
 //			UserInfo dbUserInfo = userService.getUser(userInfo.getUser_id());
 //			String encryptPassword = null;
 //			ShaPasswordEncoder shaPasswordEncoder = new ShaPasswordEncoder(512);
@@ -659,7 +674,7 @@ public class UserController implements AuthorizationController {
 //			// 비밀번호의 경우 입력값이 있을때만 수정
 //			if(userInfo.getPassword() != null && !"".equals(userInfo.getPassword())
 //					&& userInfo.getPassword_confirm() != null && !"".equals(userInfo.getPassword_confirm())) {
-//				
+//
 //				encryptPassword = shaPasswordEncoder.encodePassword(userInfo.getPassword(), dbUserInfo.getSalt()) ;
 //				if("".equals(encryptPassword)) {
 //					log.info("@@ password error!");
@@ -668,7 +683,7 @@ public class UserController implements AuthorizationController {
 //					return map;
 //				}
 //			}
-//			
+//
 //			if(userInfo.getTelephone1() != null && !"".equals(userInfo.getTelephone1()) &&
 //					userInfo.getTelephone2() != null && !"".equals(userInfo.getTelephone2()) &&
 //							userInfo.getTelephone3() != null && !"".equals(userInfo.getTelephone3())) {
@@ -683,38 +698,38 @@ public class UserController implements AuthorizationController {
 //					userInfo.getEmail2() != null && !"".equals(userInfo.getEmail2())) {
 //				userInfo.setEmail(userInfo.getEmail1()+"@"+userInfo.getEmail2());
 //			}
-//			
+//
 //			userInfo.setPassword(encryptPassword);
 //			userInfo.setTelephone(Crypt.encrypt(userInfo.getTelephone()));
 //			userInfo.setMobile_phone(Crypt.encrypt(userInfo.getMobile_phone()));
 //			userInfo.setEmail(Crypt.encrypt(userInfo.getEmail()));
 //			userInfo.setAddress_etc(Crypt.encrypt(userInfo.getAddress_etc()));
-//			
+//
 //			if(!UserInfo.STATUS_USE.equals(dbUserInfo.getStatus())) {
-//				log.info("@@ dbUserInfo.getStatus() = {}", dbUserInfo.getStatus());	
+//				log.info("@@ dbUserInfo.getStatus() = {}", dbUserInfo.getStatus());
 //				if(UserInfo.STATUS_USE.equals(userInfo.getStatus())) {
 //					// 실패 횟수 잠금 이었던 경우는 실패 횟수를 초기화
 //					// 휴면 계정이었던 경우 마지막 로그인 시간을 갱신
 //					userInfo.setFail_login_count(0);
 //				} else if(UserInfo.STATUS_TEMP_PASSWORD.equals(userInfo.getStatus())) {
 //					userInfo.setFail_login_count(0);
-//					log.info("@@ userInfo.getStatus() = {}", userInfo.getStatus());	
+//					log.info("@@ userInfo.getStatus() = {}", userInfo.getStatus());
 //					// 임시 비밀번호로 변경
 //					boolean isUserIdUse = false;
 //					String initPassword =  policy.getPassword_create_char();
 //					if(Policy.PASSWORD_CREATE_WITH_USER_ID.equals(policy.getPassword_create_type())) {
 //						isUserIdUse = true;
 //					}
-//					
+//
 //					String password = null;
 //					if(isUserIdUse) {
 //						password = shaPasswordEncoder.encodePassword(userInfo.getUser_id() + initPassword, dbUserInfo.getSalt());
 //					} else {
 //						password = shaPasswordEncoder.encodePassword(initPassword, dbUserInfo.getSalt());
 //					}
-//					log.info("@@ password = {}", password);	
+//					log.info("@@ password = {}", password);
 //					userInfo.setPassword(password);
-//					
+//
 //					// DB 처리
 //					if(UserInfo.STATUS_FAIL_LOGIN_COUNT_OVER.equals(dbUserInfo.getStatus())) {
 //						// status = 2. 비밀번호 실패 횟수 초과 잠금의 경우 실패 횟수 count = 0
@@ -725,42 +740,42 @@ public class UserController implements AuthorizationController {
 //				userInfo.setDb_status(dbUserInfo.getStatus());
 //			} else {
 //				if(UserInfo.STATUS_TEMP_PASSWORD.equals(userInfo.getStatus())) {
-//					log.info("@@ userInfo.getStatus() = {}", userInfo.getStatus());	
+//					log.info("@@ userInfo.getStatus() = {}", userInfo.getStatus());
 //					// 임시 비밀번호로 변경
 //					boolean isUserIdUse = false;
 //					String initPassword =  policy.getPassword_create_char();
 //					if(Policy.PASSWORD_CREATE_WITH_USER_ID.equals(policy.getPassword_create_type())) {
 //						isUserIdUse = true;
 //					}
-//					
+//
 //					String password = null;
 //					if(isUserIdUse) {
 //						password = shaPasswordEncoder.encodePassword(userInfo.getUser_id() + initPassword, dbUserInfo.getSalt());
 //					} else {
 //						password = shaPasswordEncoder.encodePassword(initPassword, dbUserInfo.getSalt());
 //					}
-//					log.info("@@ password = {}", password);	
+//					log.info("@@ password = {}", password);
 //					userInfo.setPassword(password);
 //				}
 //			}
 //			userService.updateUser(userInfo);
-//			
+//
 //			userInfo.setMobile_phone(userInfo.getViewMobilePhone());
 //			userInfo.setEmail(userInfo.getViewEmail());
 //			map.put("maskingMobilePhone", userInfo.getMaskingMobilePhone());
 //			map.put("maskingEmail", userInfo.getMaskingEmail());
 //			map.put("messanger", userInfo.getMessanger());
-//			
+//
 //		} catch(Exception e) {
 //			e.printStackTrace();
 //			result = "db.exception";
 //		}
-//	
+//
 //		map.put("result", result);
-//		
+//
 //		return map;
 //	}
-//	
+//
 //	/**
 //	 * 사용자 비밀번호 초기화
 //	 * @param request
@@ -769,7 +784,7 @@ public class UserController implements AuthorizationController {
 //	 */
 //	@PostMapping(value = "ajax-init-user-password.do")
 //	@ResponseBody
-//	public Map<String, Object> ajaxInitUserPassword(	HttpServletRequest request, 
+//	public Map<String, Object> ajaxInitUserPassword(	HttpServletRequest request,
 //										@RequestParam("check_ids") String check_ids) {
 //		Map<String, Object> map = new HashMap<>();
 //		String result = "success";
@@ -783,12 +798,12 @@ public class UserController implements AuthorizationController {
 //			e.printStackTrace();
 //			result = "db.exception";
 //		}
-//	
+//
 //		map.put("result", result);
-//		
+//
 //		return map;
 //	}
-//	
+//
 //	/**
 //	 * 사용자 상태 수정(패스워드 실패 잠금, 해제 등)
 //	 * @param request
@@ -797,11 +812,11 @@ public class UserController implements AuthorizationController {
 //	 */
 //	@PostMapping(value = "ajax-update-user-status.do")
 //	@ResponseBody
-//	public Map<String, Object> ajaxUpdateUserStatus(	HttpServletRequest request, 
-//										@RequestParam("check_ids") String check_ids, 
-//										@RequestParam("business_type") String business_type, 
+//	public Map<String, Object> ajaxUpdateUserStatus(	HttpServletRequest request,
+//										@RequestParam("check_ids") String check_ids,
+//										@RequestParam("business_type") String business_type,
 //										@RequestParam("status_value") String status_value) {
-//		
+//
 //		log.info("@@@@@@@ check_ids = {}, business_type = {}, status_value = {}", check_ids, business_type, status_value);
 //		Map<String, Object> map = new HashMap<>();
 //		String result = "success";
@@ -823,7 +838,7 @@ public class UserController implements AuthorizationController {
 //					}
 //					i++;
 //				}
-//				
+//
 //				String[] userIds = check_ids.split(",");
 //				map.put("update_count", userIds.length - userList.size());
 //				map.put("business_type", business_type);
@@ -833,12 +848,12 @@ public class UserController implements AuthorizationController {
 //			e.printStackTrace();
 //			result = "db.exception";
 //		}
-//	
+//
 //		map.put("result", result);
-//		
+//
 //		return map;
 //	}
-//	
+//
 //	/**
 //	 * 사용자 삭제
 //	 * @param user_id
@@ -847,12 +862,12 @@ public class UserController implements AuthorizationController {
 //	 */
 //	@GetMapping(value = "delete-user.do")
 //	public String deleteUser(@RequestParam("user_id") String user_id, Model model) {
-//		
+//
 //		// validation 체크 해야 함
 //		userService.deleteUser(user_id);
 //		return "redirect:/user/list-user.do";
 //	}
-//	
+//
 //	/**
 //	 * 선택 사용자 삭제
 //	 * @param request
@@ -864,7 +879,7 @@ public class UserController implements AuthorizationController {
 //	@PostMapping(value = "ajax-delete-users.do")
 //	@ResponseBody
 //	public Map<String, Object> ajaxDeleteUsers(HttpServletRequest request, @RequestParam("check_ids") String check_ids) {
-//		
+//
 //		log.info("@@@@@@@ check_ids = {}", check_ids);
 //		Map<String, Object> map = new HashMap<>();
 //		String result = "success";
@@ -873,17 +888,17 @@ public class UserController implements AuthorizationController {
 //				map.put("result", "check.value.required");
 //				return map;
 //			}
-//			
+//
 //			userService.deleteUserList(check_ids);
 //		} catch(Exception e) {
 //			e.printStackTrace();
 //			map.put("result", "db.exception");
 //		}
-//		
+//
 //		map.put("result", result	);
 //		return map;
 //	}
-//	
+//
 //	/**
 //	 * 선택 사용자 그룹내 사용자 삭제
 //	 * @param request
@@ -897,42 +912,42 @@ public class UserController implements AuthorizationController {
 //	public Map<String, Object> ajaxDeleteUserGroupUser(HttpServletRequest request,
 //			@RequestParam("user_group_id") Long user_group_id,
 //			@RequestParam("user_select_id") String[] user_select_id) {
-//		
+//
 //		log.info("@@@ user_group_id = {}, user_select_id = {}", user_group_id, user_select_id);
 //		Map<String, Object> map = new HashMap<>();
 //		List<UserInfo> exceptUserList = new ArrayList<>();
 //		List<UserInfo> userList = new ArrayList<>();
 //		String result = "success";
 //		try {
-//			if(user_group_id == null || user_group_id.longValue() == 0l ||				
+//			if(user_group_id == null || user_group_id.longValue() == 0l ||
 //					user_select_id == null || user_select_id.length < 1) {
 //				result = "input.invalid";
 //				map.put("result", result);
 //				return map;
 //			}
-//			
+//
 //			UserInfo userInfo = new UserInfo();
 //			userInfo.setUser_group_id(user_group_id);
 //			userInfo.setUser_select_id(user_select_id);
-//			
+//
 //			userService.updateUserGroupUser(userInfo);
-//			
+//
 //			// UPDATE 문에서 user_group_id 를 temp 그룹으로 변경
 //			userInfo.setUser_group_id(user_group_id);
-//			
+//
 //			userList = userService.getListUser(userInfo);
 //			exceptUserList = userService.getListExceptUserGroupUserByGroupId(userInfo);
 //		} catch(Exception e) {
 //			e.printStackTrace();
 //			map.put("result", "db.exception");
 //		}
-//		
+//
 //		map.put("result", result	);
 //		map.put("exceptUserList", exceptUserList);
 //		map.put("userList", userList);
 //		return map;
 //	}
-//	
+//
 //	/**
 //	 * 사용자 일괄 등록 화면
 //	 * @param model
@@ -940,14 +955,14 @@ public class UserController implements AuthorizationController {
 //	 */
 //	@GetMapping(value = "popup-input-excel-user.do")
 //	public String popupInputExcelUser(Model model) {
-//		
+//
 //		FileInfo fileInfo = new FileInfo();
-//		
+//
 //		model.addAttribute("fileInfo", fileInfo);
-//		
+//
 //		return "/user/popup-input-excel-user";
 //	}
-//	
+//
 //	/**
 //	 * 사용자 일괄 등록
 //	 * @param model
@@ -956,7 +971,7 @@ public class UserController implements AuthorizationController {
 //	@PostMapping(value = "ajax-insert-excel-user.do")
 //	@ResponseBody
 //	public Map<String, Object> ajaxInsertExcelUser(MultipartHttpServletRequest request) {
-//		
+//
 //		Map<String, Object> map = new HashMap<>();
 //		String result = "success";
 //		try {
@@ -966,18 +981,18 @@ public class UserController implements AuthorizationController {
 //				map.put("result", fileInfo.getError_code());
 //				return map;
 //			}
-//			
+//
 //			UserSession userSession = (UserSession)request.getSession().getAttribute(UserSession.KEY);
 //			fileInfo.setUser_id(userSession.getUser_id());
-//			
+//
 ////			fileInfo = fileService.insertExcelUser(fileInfo);
-//			
+//
 //			map.put("total_count", fileInfo.getTotal_count());
 //			map.put("parse_success_count", fileInfo.getParse_success_count());
 //			map.put("parse_error_count", fileInfo.getParse_error_count());
 //			map.put("insert_success_count", fileInfo.getInsert_success_count());
 //			map.put("insert_error_count", fileInfo.getInsert_error_count());
-//			
+//
 //			// 파일 삭제
 //			File copyFile = new File(fileInfo.getFile_path() + fileInfo.getFile_real_name());
 //			if(copyFile.exists()) {
@@ -987,12 +1002,12 @@ public class UserController implements AuthorizationController {
 //			e.printStackTrace();
 //			result = "db.exception";
 //		}
-//	
+//
 //		map.put("result", result);
-//		
+//
 //		return map;
 //	}
-//	
+//
 //	/**
 //	 * 사용자 Excel 다운로드
 //	 * @param model
@@ -1010,7 +1025,7 @@ public class UserController implements AuthorizationController {
 //		if(StringUtil.isNotEmpty(userInfo.getEnd_date())) {
 //			userInfo.setEnd_date(userInfo.getEnd_date().substring(0, 8) + DateUtil.END_TIME);
 //		}
-//		
+//
 //		long totalCount = 0l;
 //		List<UserInfo> userList = new ArrayList<>();
 //		try {
@@ -1027,28 +1042,28 @@ public class UserController implements AuthorizationController {
 //				for(; pageNo<= lastPage; pageNo++) {
 //					pagination = new Pagination(request.getRequestURI(), getSearchParameters(userInfo), totalCount, pageNo, pagePerCount, pageListCount);
 //					log.info("@@ pagination = {}", pagination);
-//					
+//
 //					userInfo.setOffset(pagination.getOffset());
 //					userInfo.setLimit(pagination.getPageRows());
 //					List<UserInfo> subUserList = userService.getListUser(userInfo);
-//					
+//
 //					userList.addAll(subUserList);
-//					
+//
 //					Thread.sleep(3000);
 //				}
-//			}			
+//			}
 //		} catch(Exception e) {
 //			e.printStackTrace();
 //		}
-//	
+//
 //		ModelAndView modelAndView = new ModelAndView();
 //		modelAndView.setViewName("pOIExcelView");
 //		modelAndView.addObject("fileType", "USER_LIST");
 //		modelAndView.addObject("fileName", "USER_LIST");
-//		modelAndView.addObject("userList", userList);	
+//		modelAndView.addObject("userList", userList);
 //		return modelAndView;
 //	}
-//	
+//
 //	/**
 //	 * 사용자 Txt 다운로드
 //	 * @param model
@@ -1057,11 +1072,11 @@ public class UserController implements AuthorizationController {
 //	@RequestMapping(value = "download-txt-user.do")
 //	@ResponseBody
 //	public String downloadTxtUser(HttpServletRequest request, HttpServletResponse response, UserInfo userInfo, Model model) {
-//		
+//
 //		response.setContentType("application/force-download");
 //		response.setHeader("Content-Transfer-Encoding", "binary");
 //		response.setHeader("Content-Disposition", "attachment; filename=\"user_info.txt\"");
-//		
+//
 //		log.info("@@ userInfo = {}", userInfo);
 //		if(userInfo.getUser_group_id() == null) {
 //			userInfo.setUser_group_id(Long.valueOf(0l));
@@ -1072,7 +1087,7 @@ public class UserController implements AuthorizationController {
 //		if(StringUtil.isNotEmpty(userInfo.getEnd_date())) {
 //			userInfo.setEnd_date(userInfo.getEnd_date().substring(0, 8) + DateUtil.END_TIME);
 //		}
-//		
+//
 //		long totalCount = 0l;
 //		try {
 //			// 논리적 삭제는 SELECT에서 제외
@@ -1091,15 +1106,15 @@ public class UserController implements AuthorizationController {
 //				for(; pageNo<= lastPage; pageNo++) {
 //					pagination = new Pagination(request.getRequestURI(), getSearchParameters(userInfo), totalCount, pageNo, pagePerCount, pageListCount);
 //					log.info("@@ pagination = {}", pagination);
-//					
+//
 //					userInfo.setOffset(pagination.getOffset());
 //					userInfo.setLimit(pagination.getPageRows());
 //					List<UserInfo> userList = userService.getListUser(userInfo);
-//					
+//
 //					int count = userList.size();
 //					for(int j=0; j<count; j++) {
 //						UserInfo dbUserInfo = userList.get(j);
-//						String data = number 
+//						String data = number
 //									+ SEPARATE + dbUserInfo.getUser_group_name() + SEPARATE + dbUserInfo.getUser_id()
 //									+ SEPARATE + dbUserInfo.getUser_name()+ SEPARATE + dbUserInfo.getViewStatus()
 //									+ SEPARATE + dbUserInfo.getViewMobilePhone()
@@ -1110,14 +1125,14 @@ public class UserController implements AuthorizationController {
 //					}
 //					Thread.sleep(3000);
 //				}
-//			}			
+//			}
 //		} catch(Exception e) {
 //			e.printStackTrace();
 //		}
-//	
+//
 //		return null;
 //	}
-//	
+//
 //	/**
 //	 * 사용자 다운로드 Sample
 //	 * @param model
@@ -1126,12 +1141,12 @@ public class UserController implements AuthorizationController {
 //	@RequestMapping(value = "download-excel-user-sample.do")
 //	@ResponseBody
 //	public void downloadExcelUserSample(HttpServletRequest request, HttpServletResponse response, Model model) {
-//		
+//
 //		File rootDirectory = new File(propertiesConfig.getSampleUploadDir());
 //		if(!rootDirectory.exists()) {
 //			rootDirectory.mkdir();
 //		}
-//				
+//
 //		File file = new File(propertiesConfig.getSampleUploadDir() + "sample.xlsx");
 //		if(file.exists()) {
 //			String mimetype = "application/x-msdownload";
@@ -1171,7 +1186,7 @@ public class UserController implements AuthorizationController {
 //			}
 //		}
 //	}
-//	
+//
 //	/**
 //	 * 패스워드 강제 변경 페이지
 //	 * @param request
@@ -1186,7 +1201,7 @@ public class UserController implements AuthorizationController {
 //		model.addAttribute("userInfo", new UserInfo());
 //		return "/user/modify-password";
 //	}
-//	
+//
 //	/**
 //	 * 비밀번호 수정
 //	 * @param request
@@ -1197,10 +1212,10 @@ public class UserController implements AuthorizationController {
 //	 */
 //	@PostMapping(value = "update-password.do")
 //	public String updatePassword(HttpServletRequest request, @ModelAttribute("userInfo") UserInfo userInfo, BindingResult bindingResult, Model model) {
-//		
+//
 //		Policy policy = CacheManager.getPolicy();
 //		// TODO validator 이용하게 수정해야 함
-//		
+//
 //		// 등록, 수정 화면의 validation 항목이 다를 경우를 위한 변수
 //		userInfo.setMethod_mode("updatePassword");
 //
@@ -1209,12 +1224,12 @@ public class UserController implements AuthorizationController {
 //			log.info("@@@@@@@@@@@@@ errcode = {}", errorcode);
 //			userInfo.setError_code(errorcode);
 //			model.addAttribute("policy", CacheManager.getPolicy());
-//			return "/user/modify-password";		
+//			return "/user/modify-password";
 //		}
-//		
+//
 //		UserSession userSession = (UserSession)request.getSession().getAttribute(UserSession.KEY);
 //		UserInfo dbUserInfo = userService.getUser(userSession.getUser_id());
-//		
+//
 //		ShaPasswordEncoder shaPasswordEncoder = new ShaPasswordEncoder(512);
 //		shaPasswordEncoder.setIterations(1000);
 //		String PasswordCheck = shaPasswordEncoder.encodePassword(userInfo.getPassword(), dbUserInfo.getSalt());
@@ -1225,21 +1240,21 @@ public class UserController implements AuthorizationController {
 //			model.addAttribute("policy", CacheManager.getPolicy());
 //			return "/user/modify-password";
 //		}
-//		
+//
 //		String encryptPassword = shaPasswordEncoder.encodePassword(userInfo.getNew_password(), dbUserInfo.getSalt());
 //		userInfo.setUser_id(userSession.getUser_id());
 //		userInfo.setPassword(encryptPassword);
 //		userInfo.setStatus(UserInfo.STATUS_USE);
 //		userService.updatePassword(userInfo);
-//		
+//
 //		// 임시 패스워드인 경우 세션을 사용중 상태로 변경
 //		if(UserInfo.STATUS_TEMP_PASSWORD.equals(userSession.getStatus())) {
 //			userSession.setStatus(UserInfo.STATUS_USE);
 //		}
-//	
+//
 //		return "redirect:/main/index.do";
 //	}
-//	
+//
 //	/**
 //	 * 사용자 그룹 정보
 //	 * @param request
@@ -1252,7 +1267,7 @@ public class UserController implements AuthorizationController {
 //		Map<String, Object> map = new HashMap<>();
 //		String result = "success";
 //		UserGroup userGroup = null;
-//		try {	
+//		try {
 //			userGroup = userGroupService.getUserGroup(user_group_id);
 //			log.info("@@@@@@@ userGroup = {}", userGroup);
 //		} catch(Exception e) {
@@ -1261,10 +1276,10 @@ public class UserController implements AuthorizationController {
 //		}
 //		map.put("result", result);
 //		map.put("userGroup", userGroup);
-//		
+//
 //		return map;
 //	}
-//	
+//
 //	/**
 //	 * 검색 조건
 //	 * @param userInfo
@@ -1302,7 +1317,7 @@ public class UserController implements AuthorizationController {
 //		builder.append("list_count=" + userInfo.getList_counter());
 //		return builder.toString();
 //	}
-//	
+//
 //	/**
 //	 * 목록 페이지 이동 검색 조건
 //	 * @param request

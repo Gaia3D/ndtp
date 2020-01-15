@@ -79,15 +79,15 @@
 	</div>
 	<!-- E: NAVWRAP -->
 	
-	<div style="float:right; width: calc(100% - 78px);">
+	<div class="container" style="float:right; width: calc(100% - 78px);">
 		<div style="padding: 20px 20px 10px 10px; font-size: 18px;">업로딩 데이터 자동 변환</div>
 		<div class="tabs" >
 			<ul class="tab">
-				<li><a href="/upload-data/list">업로딩 목록</a></li>
-				<li class="on"><a href="/upload-data/input">업로드</a></li>
-				<li><a href="/converter/list">데이터 변환 목록</a></li>
-				<li><a href="/data/list-group">데이터 그룹</a></li>
 				<li><a href="/data/input-group">데이터 그룹 등록</a></li>
+			    <li class="on"><a href="/upload-data/input">업로딩</a></li>
+			   	<li><a href="/upload-data/list">업로딩 목록</a></li>
+			  	<li><a href="/converter/list">데이터 변환 목록</a></li>
+			   	<li><a href="/data/list-group">데이터 그룹</a></li>
 			</ul>
 		</div>
 		<form:form id="uploadData" modelAttribute="uploadData" method="post" onsubmit="return false;">
@@ -180,7 +180,7 @@
 			    <div class="fileSection" style="font-size: 17px;">
 			    	<form id="my-dropzone" action="" class="dropzone hzScroll"></form>
 			    </div>
-			    <div class="button-group">
+			    <div class="button-group" style="margin-top: 30px;">
 					<div class="center-buttons">
 						<button id="allFileUpload">업로드</button>
 						<button id="allFileClear">All Clear</button>
