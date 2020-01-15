@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<div class="setupContentWrap">
+<div class="userPolicyContentWrap">
 <!-- <div>
 	<p>라벨</p>
 	<input type="radio" id="showLabel" name="labelInfo" value="true" onclick="changeLabel(true);" />

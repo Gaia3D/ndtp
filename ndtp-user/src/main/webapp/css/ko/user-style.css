@@ -187,7 +187,7 @@ background-position: -445px 10px;
 ul.nav li.data {
 background-position: -445px -90px;
 }
-ul.nav li.convert {
+ul.nav li.converter {
 background-position: -445px -190px;
 }
 ul.nav li.spatial {
@@ -197,10 +197,10 @@ ul.nav li.simulation {
 letter-spacing: -2px;
 background-position: -445px -390px;
 }
-ul.nav li.joinin {
+ul.nav li.civilVoice {
 background-position: -445px -490px;
 }
-ul.nav li.setup {
+ul.nav li.userPolicy {
 background-position: -445px -590px;
 }
 
@@ -708,7 +708,7 @@ font-weight: bold;
 border:1px solid #e0e0e0;
 background-image: url(/images/ko/ico.png);
 background-repeat: no-repeat;
-background-position: right -710px;
+background-position: 320px -738px;
 background-color: #fff;
 }
 ul.listDrop li > p > span {
@@ -723,7 +723,7 @@ border-bottom: 3px solid #eaeaea;
 background-color: #287be4;
 background-image: url(/images/ko/ico.png);
 background-repeat: no-repeat;
-background-position: right -660px;
+background-position: 320px -688px;
 }
 ul.listDrop li p span {
 display: inline-block;
@@ -894,7 +894,7 @@ overflow-y: auto;
 
 
 /*========================================== temp css =========================================================*/
-.setupContentWrap > p {
+.userPolicyContentWrap > p {
 padding: 8px;
 font-weight: bold;
 border:1px solid #e0e0e0;
@@ -904,11 +904,11 @@ background-position: right -255px;
 background-color: #fff;
 }
 
-.setupContentWrap > div {
+.userPolicyContentWrap > div {
 padding-bottom: 7px;
 border-bottom: 1px dotted #888;
 }
-.setupContentWrap div label {
+.userPolicyContentWrap div label {
 display: inline-block;
 margin-right: 10px;
 }
