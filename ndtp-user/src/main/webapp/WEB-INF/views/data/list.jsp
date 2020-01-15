@@ -150,7 +150,7 @@
 				<%@ include file="/WEB-INF/views/joinin/joinin.jsp" %>
 			</div>
 			<div id="setupContent" class="contents" style="display:none;">
-				<%@ include file="/WEB-INF/views/setup/setup.jsp" %>
+				<%@ include file="/WEB-INF/views/user-policy/modify.jsp" %>
 			</div>
 			<!-- E: CONTENTS -->
 			<!-- E: CONTENTS -->
