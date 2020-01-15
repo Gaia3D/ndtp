@@ -41,7 +41,7 @@
 		
 		<div id="contentsWrap" class="contentsWrap" style="display: none;">
 			<div id="searchContent" class="contentsList yScroll" style="display:none;">
-				<%@ include file="/WEB-INF/views/district/search.jsp" %>
+				<%@ include file="/WEB-INF/views/search/district.jsp" %>
 			</div>
 			<div id="dataContent" class="contents fullHeight">
 				<!-- 데이터 그룹 -->
@@ -147,7 +147,7 @@
 				<%@ include file="/WEB-INF/views/simulation/simulation.jsp" %>
 			</div>
 			<div id="joininContent" class="contents" style="display:none;">
-				<%@ include file="/WEB-INF/views/joinin/joinin.jsp" %>
+				<%@ include file="/WEB-INF/views/civil-voice/input.jsp" %>
 			</div>
 			<div id="setupContent" class="contents" style="display:none;">
 				<%@ include file="/WEB-INF/views/user-policy/modify.jsp" %>
