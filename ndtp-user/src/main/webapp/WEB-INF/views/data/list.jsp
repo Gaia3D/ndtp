@@ -146,10 +146,10 @@
 			<div id="simulationContent" class="contentsList yScroll" style="display:none;">
 				<%@ include file="/WEB-INF/views/simulation/simulation.jsp" %>
 			</div>
-			<div id="joininContent" class="contents" style="display:none;">
+			<div id="civilVoiceContent" class="contents" style="display:none;">
 				<%@ include file="/WEB-INF/views/civil-voice/input.jsp" %>
 			</div>
-			<div id="setupContent" class="contents" style="display:none;">
+			<div id="userPolicyContent" class="contents" style="display:none;">
 				<%@ include file="/WEB-INF/views/user-policy/modify.jsp" %>
 			</div>
 			<!-- E: CONTENTS -->
