@@ -20,7 +20,6 @@ import ndtp.domain.RoleTarget;
 import ndtp.domain.UserGroup;
 import ndtp.domain.UserGroupMenu;
 import ndtp.domain.UserGroupRole;
-import ndtp.domain.YOrN;
 import ndtp.service.MenuService;
 import ndtp.service.UserGroupService;
 
@@ -89,63 +88,63 @@ public class CacheConfig {
 		Menu adminMenu = new Menu();
 		adminMenu.setDefaultYn(null);
 		adminMenu.setMenuTarget(MenuTarget.ADMIN.getValue());
-		
+
 		List<Menu> menuList = menuService.getListMenu(adminMenu);
 		for(Menu menu : menuList) {
 			menuMap.put(menu.getMenuId(), menu);
 			menuUrlMap.put(menu.getUrl(), menu.getMenuId());
 		}
-    	
+
     	UserGroup inputUserGroup = new UserGroup();
-    	inputUserGroup.setUseYn(YOrN.Y.name());
+    	inputUserGroup.setAvailable(true);
     	List<UserGroup> userGroupList = userGroupService.getListUserGroup();
 
     	Map<Integer, List<UserGroupMenu>> userGroupMenuMap = new HashMap<>();
     	Map<Integer, List<String>> userGroupRoleMap = new HashMap<>();
-    	
+
     	UserGroupMenu userGroupMenu = new UserGroupMenu();
     	userGroupMenu.setMenuTarget(MenuTarget.ADMIN.getValue());
-    	
+
     	UserGroupRole userGroupRole = new UserGroupRole();
     	userGroupRole.setRoleTarget(RoleTarget.ADMIN.getValue());
     	for(UserGroup userGroup : userGroupList) {
     		Integer userGroupId = userGroup.getUserGroupId();
-    		
+
     		userGroupMenu.setUserGroupId(userGroupId);
     		List<UserGroupMenu> userGroupMenuList = userGroupService.getListUserGroupMenu(userGroupMenu);
     		userGroupMenuMap.put(userGroupId, userGroupMenuList);
-    		
+
     		userGroupRole.setUserGroupId(userGroupId);
     		List<String> userGroupRoleKeyList = userGroupService.getListUserGroupRoleKey(userGroupRole);
     		userGroupRoleMap.put(userGroupId, userGroupRoleKeyList);
     	}
-    	
+
     	CacheManager.setMenuMap(menuMap);
 		CacheManager.setMenuUrlMap(menuUrlMap);
     	CacheManager.setUserGroupMenuMap(userGroupMenuMap);
     	CacheManager.setUserGroupRoleMap(userGroupRoleMap);
-    	
+
     	CacheType cacheType = cacheParams.getCacheType();
 		if(cacheType == CacheType.BROADCAST) {
 			callRemoteCache(cacheParams);
 		}
     }
-    
+
     /**
 	 * Remote Cache 갱신 요청
 	 * @param cacheName
 	 */
 	private void callRemoteCache(CacheParams cacheParams) {
-		
+
 		log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@ callRemoteCache start! ");
 //		if(!propertiesConfig.isCallRemoteEnable()) {
 //			log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@ isCallRemoteEnable = {}. skip callRemoteCache ", propertiesConfig.isCallRemoteEnable());
 //			return;
 //		}
-//		
+//
 //		CacheName cacheName = cacheParams.getCacheName();
 //		log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@ cacheName ={}", cacheName.toString());
-//		
+//
 //		StringBuilder stringBuilder = new StringBuilder();
 //		stringBuilder.append("api-key=" + Crypt.decrypt(propertiesConfig.getRestAuthKey()))
 //		.append("&")
