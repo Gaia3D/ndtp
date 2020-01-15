@@ -215,7 +215,6 @@
 		var cesiumViewerOption = {};
 			cesiumViewerOption.infoBox = false;
 			cesiumViewerOption.navigationHelpButton = false;
-			cesiumViewerOption.scene3DOnly = true;
 			cesiumViewerOption.selectionIndicator = false;
 			cesiumViewerOption.homeButton = false;
 			cesiumViewerOption.fullscreenButton = false;
@@ -302,6 +301,7 @@
 							for(var j in dataGroupArray) {
 								if(dataGroupArray[j].dataGroupId === dataInfoGroupId) {
 									group = dataGroupArray[j];
+									break;
 								}
 							}
 
