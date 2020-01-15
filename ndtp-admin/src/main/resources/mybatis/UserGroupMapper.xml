@@ -179,9 +179,33 @@
 			SELECT NEXTVAL('user_group_seq')
         </selectKey>
         INSERT INTO user_group (
-        	user_group_id, user_group_key, user_group_name, ancestor, parent, depth, view_order, default_yn, use_yn, child_yn, description
+        	user_group_id, user_group_key, user_group_name,
+        	ancestor, parent, depth, view_order, children, basic, available, description
         ) VALUES (
-            #{userGroupId}, #{userGroupKey}, #{userGroupName}, #{ancestor}, #{parent}, #{depth}, #{viewOrder}, #{defaultYn}, #{useYn}, #{childYn}, #{description}
+            #{userGroupId}, #{userGroupKey}, #{userGroupName},
+            (
+				SELECT COALESCE(MAX(ancestor), #{userGroupId})
+				FROM user_group
+				WHERE user_group_id = #{parent}
+					AND user_group_id != 0
+			), #{parent},
+			(
+				SELECT COALESCE(MAX(depth),  0 ) + 1
+				FROM user_group
+				WHERE user_group_id = #{parent}
+			),
+			(
+				SELECT COALESCE(MAX(view_order), 0) + 1
+				FROM user_group
+				WHERE parent = #{parent}
+			),
+			(
+				SELECT COUNT(*)
+				FROM user_group
+				WHERE parent = #{userGroupId}
+			),
+			#{basic}, #{available},
+			trim(#{description})
         )
     </insert>
 
@@ -221,9 +245,9 @@
             parent = #{parent},
             depth = #{depth},
             view_order = #{viewOrder},
-            default_yn = #{defaultYn},
-            use_yn = #{useYn},
-            child_yn = #{childYn},
+            basic = #{basic},
+            available = #{available},
+            children = #{children},
             description = #{description}
         WHERE user_group_id = #{userGroupId}
     </update>
@@ -239,6 +263,20 @@
         /* deleteUserGroup */
         DELETE FROM user_group WHERE user_group_id = #{userGroupId}
     </delete>
+
+	<!-- ancestor를 이용하여 사용자 그룹 삭제 -->
+	<delete id="deleteUserGroupByAncestor" parameterType="userGroup">
+		/* deleteUserGroupByAncestor */
+		DELETE FROM user_group
+		WHERE ancestor = #{ancestor}
+	</delete>
+
+	<!-- parent를 이용하여 사용자 그룹 삭제 -->
+	<delete id="deleteUserGroupByParent" parameterType="userGroup">
+		/* deleteUserGroupByParent */
+		DELETE FROM user_group
+		WHERE parent = #{parent}
+	</delete>
 
     <!-- 사용자 그룹 메뉴 삭제 -->
 	<delete id="deleteUserGroupMenu" parameterType="int">

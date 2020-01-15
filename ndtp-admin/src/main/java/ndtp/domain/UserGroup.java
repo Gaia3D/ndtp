@@ -52,8 +52,9 @@ public class UserGroup {
 	private String deptNo;
 	// 부서명
 	private String deptName;
+
 	// 조상 고유번호
-	private String ancestor;
+	private Integer ancestor;
 	// 부모 고유번호
 	private Integer parent;
 	// 깊이
