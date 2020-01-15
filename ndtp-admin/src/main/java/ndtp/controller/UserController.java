@@ -120,7 +120,7 @@ public class UserController implements AuthorizationController {
 		List<UserGroup> userGroupList = userGroupService.getListUserGroup();
 
 		model.addAttribute("policy", policy);
-		model.addAttribute("dataGroupList", userGroupList);
+		model.addAttribute("userGroupList", userGroupList);
 		model.addAttribute("userInfo", new UserInfo());
 		return "/user/input";
 	}

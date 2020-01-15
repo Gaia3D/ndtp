@@ -52,7 +52,7 @@
 									<td class="col-input">
 										<form:hidden path="userGroupId" />
 			 							<form:input path="userGroupName" cssClass="m" readonly="true" />
-										<input type="button" id="userGroupButtion" value="<spring:message code='user.group.usergroup'/>" />
+										<input type="button" id="userGroupButtion" value="<spring:message code='user.group.usergroup'/> 찾기" />
 									</td>
 								</tr>
 								<tr>
@@ -166,7 +166,7 @@
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
 
 	<!-- Dialog -->
-	<div id="userGroupDialog" class="dialog">
+	<div id="userDialog" class="dialog">
 		<table class="list-table scope-col">
 			<col class="col-name" />
 			<col class="col-toggle" />
@@ -176,7 +176,7 @@
 			<col class="col-toggle" />
 			<thead>
 				<tr>
-					<th scope="col" class="col-name">데이터 그룹명</th>
+					<th scope="col" class="col-name">사용자 그룹명</th>
 					<th scope="col" class="col-toggle">사용 여부</th>
 					<th scope="col" class="col-toggle">설명</th>
 					<th scope="col" class="col-date">등록일</th>
@@ -230,9 +230,6 @@
 </c:if>
 			</tbody>
 		</table>
-		<div class="button-group">
-			<input type="button" id="rootParentSelect" class="button" value="최상위(ROOT) 그룹으로 저장"/>
-		</div>
 	</div>
 
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
@@ -244,7 +241,7 @@
 	$(document).ready(function() {
 	});
 
-	var userDialog = $( ".userDialog" ).dialog({
+	var userDialog = $( "#userDialog" ).dialog({
 		autoOpen: false,
 		height: 600,
 		width: 1200,
@@ -261,16 +258,10 @@
 
 	// 상위 Node
 	function confirmParent(parent, parentName) {
-		$("#parent").val(parent);
-		$("#parentName").val(parentName);
+		$("#userGroupId").val(parent);
+		$("#userGroupName").val(parentName);
 		userDialog.dialog( "close" );
 	}
-
-	$( "#rootParentSelect" ).on( "click", function() {
-		$("#parent").val(0);
-		$("#parentName").val("${userGroup.parentName}");
-		userDialog.dialog( "close" );
-	});
 
 	// 아이디 중복 확인
  	$( "#userDuplicationButtion" ).on( "click", function() {
