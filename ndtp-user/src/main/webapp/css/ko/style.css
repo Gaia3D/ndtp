@@ -2567,28 +2567,6 @@ tr:hover td {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*****************************************************************************************************/
 .tab {
 height: 31px;
@@ -2616,3 +2594,10 @@ background-color: #0073e2;
 margin: 10px 20px 10px 10px;
 float: left; 
 }
+
+
+/* custom select box */
+.selectBoxClass {
+	height: 30px; margin-bottom: 7px; border-color: #d5d5d5;
+}
+

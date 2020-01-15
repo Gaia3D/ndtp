@@ -48,11 +48,11 @@
 			<div class="input-group row">
 				<div class="input-set">
 					<label for="searchWord"><spring:message code='search.word'/></label>
-					<select id="searchWord" name="searchWord" class="select" style="height: 30px;">
+					<select id="searchWord" name="searchWord" class="selectBoxClass">
 						<option value=""><spring:message code='select'/></option>
 	          			<option value="data_name">파일명</option>
 					</select>
-					<select id="searchOption" name="searchOption" class="select" style="height: 30px;">
+					<select id="searchOption" name="searchOption" class="selectBoxClass">
 						<option value="0"><spring:message code='search.same'/></option>
 						<option value="1"><spring:message code='search.include'/></option>
 					</select>
@@ -66,17 +66,17 @@
 				</div>
 				<div class="input-set">
 					<label for="orderWord"><spring:message code='search.order'/></label>
-					<select id="orderWord" name="orderWord" class="select" style="height: 30px;">
+					<select id="orderWord" name="orderWord" class="selectBoxClass">
 						<option value=""> <spring:message code='search.basic'/> </option>
 						<option value="data_name">파일명</option>
 						<option value="insertDate"> <spring:message code='search.insert.date'/> </option>
 					</select>
-					<select id="orderValue" name="orderValue" class="select" style="height: 30px;">
+					<select id="orderValue" name="orderValue" class="selectBoxClass">
                 		<option value=""> <spring:message code='search.basic'/> </option>
 	                	<option value="ASC"> <spring:message code='search.ascending'/> </option>
 						<option value="DESC"> <spring:message code='search.descending.order'/> </option>
 					</select>
-					<select id="listCounter" name="listCounter" class="select" style="height: 30px;">
+					<select id="listCounter" name="listCounter" class="selectBoxClass">
                 		<option value="10"> <spring:message code='search.ten.count'/> </option>
 	                	<option value="50"> <spring:message code='search.fifty.count'/> </option>
 						<option value="100"> <spring:message code='search.hundred.count'/> </option>

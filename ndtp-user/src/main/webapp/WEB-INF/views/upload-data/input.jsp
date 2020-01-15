@@ -123,7 +123,7 @@
                         <span class="icon-glyph glyph-emark-dot color-warning"></span>
                     </th>
                     <td class="col-input">
-                        <select id="sharing" name="sharing">
+                        <select id="sharing" name="sharing" class="selectBoxClass">
 							<option value="common">공통</option>
 							<option value="public">공개</option>
 							<option value="private">비공개</option>
@@ -135,7 +135,7 @@
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
 					<td class="col-input">
-						<select id="dataType" name="dataType" class="select" style="height: 30px;">
+						<select id="dataType" name="dataType" class="selectBoxClass">
 							<option value="citygml" selected="selected"> CITYGML </option>
 							<option value="3ds"> 3DS </option>
 							<option value="obj"> OBJ </option>

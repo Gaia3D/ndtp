@@ -15,8 +15,25 @@ $(function() {
 	} else {
 		// 다른거 활성화
 		if( currentUrl.indexOf("/data/list") >= 0) {
-			$("#dataMenu").addClass('on');
-			$('#dataContent').toggle(true);
+			if( currentUrl.indexOf("#search") >= 0) {
+				$("#searchMenu").addClass('on');
+				$('#searchContent').toggle(true);
+			} else if( currentUrl.indexOf("#spatial") >= 0) {
+				$("#spatialMenu").addClass('on');
+				$('#spatialContent').toggle(true);
+			} else if( currentUrl.indexOf("#simulation") >= 0) {
+				$("#simulationMenu").addClass('on');
+				$('#simulationContent').toggle(true);
+			} else if( currentUrl.indexOf("#civilVoice") >= 0) {
+				$("#civilVoiceMenu").addClass('on');
+				$('#civilVoiceContent').toggle(true);
+			} else if( currentUrl.indexOf("#userPolicy") >= 0) {
+				$("#userPolicyMenu").addClass('on');
+				$('#userPolicyContent').toggle(true);
+			} else {
+				$("#dataMenu").addClass('on');
+				$('#dataContent').toggle(true);
+			}
 			$('#contentsWrap').toggle(true);
 		} else {
 			$("#converterMenu").addClass('on');
@@ -43,7 +60,7 @@ $(function() {
         if(location.href.indexOf("upload") > 0 || location.href.indexOf("converter") > 0 || location.href.indexOf("group") > 0) {
         	$(this).removeClass('on');
         	var classId = $(this).attr('class');
-        	window.location="../data/list";
+        	window.location="../data/list#" + classId;
         }
         
         // 변환 클릭 이벤트시 url 변경 

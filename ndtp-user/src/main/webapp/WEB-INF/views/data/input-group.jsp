@@ -82,7 +82,7 @@
                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
                    </th>
                    <td class="col-input">
-                       <select name="sharing">
+                       <select id="sharing" name="sharing" class="selectBoxClass">
 						<option value="common">공통</option>
 						<option value="public">공개</option>
 						<option value="private">개인</option>
