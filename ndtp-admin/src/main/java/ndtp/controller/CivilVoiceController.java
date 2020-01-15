@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,6 +24,8 @@ import ndtp.domain.RoleKey;
 import ndtp.domain.UserSession;
 import ndtp.service.CivilVoiceService;
 import ndtp.service.PolicyService;
+import ndtp.utils.DateUtils;
+import ndtp.utils.FormatUtils;
 
 @Slf4j
 @Controller
@@ -41,10 +44,22 @@ public class CivilVoiceController implements AuthorizationController {
     /**
 	 * 시민 참여 목록
 	 */
-	@GetMapping(value = "list")
+    @RequestMapping(value = "list")
 	public String list(HttpServletRequest request, @RequestParam(defaultValue="1") String pageNo, CivilVoice civilVoice, Model model) {
 		String roleCheckResult = roleValidate(request);
     	if(roleValidate(request) != null) return roleCheckResult;
+
+    	String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
+		if(StringUtils.isEmpty(civilVoice.getStartDate())) {
+			civilVoice.setStartDate(today.substring(0,4) + DateUtils.START_DAY_TIME);
+		} else {
+			civilVoice.setStartDate(civilVoice.getStartDate().substring(0, 8) + DateUtils.START_TIME);
+		}
+		if(StringUtils.isEmpty(civilVoice.getEndDate())) {
+			civilVoice.setEndDate(today + DateUtils.END_TIME);
+		} else {
+			civilVoice.setEndDate(civilVoice.getEndDate().substring(0, 8) + DateUtils.END_TIME);
+		}
 
 		Long totalCount = civilVoiceService.getCivilVoiceTotalCount(civilVoice);
 		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, civilVoice), totalCount, Long.valueOf(pageNo).longValue());
@@ -57,6 +72,7 @@ public class CivilVoiceController implements AuthorizationController {
 		}
 
 		model.addAttribute(pagination);
+		model.addAttribute("civilVoice", civilVoice);
 		model.addAttribute("civilVoiceList", civilVoiceList);
 
 		return "/civil-voice/list";
