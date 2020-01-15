@@ -18311,6 +18311,18 @@ CesiumViewerInit.prototype.init = function()
 	this.initMagoManager();
 	//this.setEventHandler();
 
+	// TODO : 제거 필수!! 세슘의 카메라 매트릭스를 강제로 변환시키기 위하여 우주크기만한 엔티티를 추가.
+	this.viewer.entities.add({
+		name     : "mago3D",
+		position : Cesium.Cartesian3.fromDegrees(37.521168, 126.924185, 3000.0),
+		box      : {
+			dimensions : new Cesium.Cartesian3(300000.0*1000.0, 300000.0*1000.0, 300000.0*1000.0), // dimensions : new Cesium.Cartesian3(400000.0, 300000.0, 500000.0),
+			fill       : true,
+			material   : Cesium.Color.BLUE,
+			outline    : false
+		}
+	});
+	
 	if (this.policy.initCameraEnable) 
 	{ 
 		var destination;
@@ -18333,6 +18345,8 @@ CesiumViewerInit.prototype.init = function()
 			duration    : duration
 		}); 
 	}
+	
+	
 };
 CesiumViewerInit.prototype.setCanvasEventHandler = function() 
 {
@@ -18469,18 +18483,6 @@ CesiumViewerInit.prototype.geoserverTerrainProviderBuild = function()
 
 CesiumViewerInit.prototype.postProcessDataProvider = function() 
 {
-	// TODO : 제거 필수!! 세슘의 카메라 매트릭스를 강제로 변환시키기 위하여 우주크기만한 엔티티를 추가.
-	this.viewer.entities.add({
-		name     : "mago3D",
-		position : Cesium.Cartesian3.fromDegrees(37.521168, 126.924185, 3000.0),
-		box      : {
-			dimensions : new Cesium.Cartesian3(300000.0*1000.0, 300000.0*1000.0, 300000.0*1000.0), // dimensions : new Cesium.Cartesian3(400000.0, 300000.0, 500000.0),
-			fill       : true,
-			material   : Cesium.Color.BLUE,
-			outline    : false
-		}
-	});
-
 	if (!this.options.imageryProvider) 
 	{
 		var imageryProvider = null;
@@ -18966,7 +18968,7 @@ F4dController.prototype.addF4dGroup = function(f4dObject)
 	}
 	else 
 	{
-		var groupId = f4dObject.data_key;
+		var groupId = f4dObject.dataGroupKey || f4dObject.dataKey;
 		var groupDataFolder = groupId;
 
 		MagoConfig.setData(CODE.PROJECT_ID_PREFIX + groupId, f4dObject);
@@ -22643,7 +22645,7 @@ var Mago3d = function(containerId, serverPolicy, callback, options, legacyViewer
 
 	magoManagerState = CODE.magoManagerState.READY;
 	viewerInitializer.setEventHandler();
-
+	
 	this.emit('loadend', returnObj);
 
 	return returnObj;
@@ -27831,20 +27833,44 @@ MagoManager.prototype.makeNode = function(jasonObject, resultPhysicalNodesArray,
 	
 	if (jasonObject !== undefined)
 	{
+		if(!jasonObject.data_key) {
+			
+			jasonObject.childrenCnt = jasonObject.children;
+			jasonObject.attributes = JSON.parse(jasonObject.metainfo);
+			
+			jasonObject.children = jasonObject.datas;
+			
+			delete jasonObject.datas;
+			
+			
+			data_group_id = jasonObject.dataGroupId;
+			data_group_name = jasonObject.dataGroupName;
+			data_id = jasonObject.data_id;
+			data_key = jasonObject.dataGroupKey || jasonObject.dataKey;
+			data_name = jasonObject.dataName || jasonObject.dataGroupName;
+			heading = jasonObject.heading;
+			height = jasonObject.altitude;
+			latitude = jasonObject.latitude;
+			longitude = jasonObject.longitude;
+			pitch = jasonObject.pitch;
+			roll = jasonObject.roll;
+			mapping_type = jasonObject.mappingType || 'origin';
+		} else {
+			data_group_id = jasonObject.data_group_id;
+			data_group_name = jasonObject.data_group_name;
+			data_id = jasonObject.data_id;
+			data_key = jasonObject.data_key;
+			data_name = jasonObject.data_name;
+			heading = jasonObject.heading;
+			height = jasonObject.height;
+			latitude = jasonObject.latitude;
+			longitude = jasonObject.longitude;
+			pitch = jasonObject.pitch;
+			roll = jasonObject.roll;
+			mapping_type = jasonObject.mapping_type;
+		}
 		attributes = jasonObject.attributes;
 		children = jasonObject.children;
-		data_group_id = jasonObject.data_group_id;
-		data_group_name = jasonObject.data_group_name;
-		data_id = jasonObject.data_id;
-		data_key = jasonObject.data_key;
-		data_name = jasonObject.data_name;
-		heading = jasonObject.heading;
-		height = jasonObject.height;
-		latitude = jasonObject.latitude;
-		longitude = jasonObject.longitude;
-		pitch = jasonObject.pitch;
-		roll = jasonObject.roll;
-		mapping_type = jasonObject.mapping_type;
 	}
 	
 	if (heading === undefined)
@@ -28154,7 +28180,8 @@ MagoManager.prototype.makeSmartTile = function(buildingSeedList, projectId)
 		buildingId = buildingSeed.buildingId;
 		buildingSeedMap[buildingId] = buildingSeed;
 	}
-	var projectFolderName = realTimeLocBlocksList.data_key;
+	//var projectFolderName = realTimeLocBlocksList.data_key;
+	var projectFolderName = realTimeLocBlocksList.data_key || realTimeLocBlocksList.dataGroupKey || realTimeLocBlocksList.dataKey;
 	this.makeNode(realTimeLocBlocksList, physicalNodesArray, buildingSeedMap, projectFolderName, projectId);
 	this.calculateBoundingBoxesNodes(projectId);
 	
@@ -29314,10 +29341,10 @@ var ManagerFactory = function(viewer, containerId, serverPolicy, projectIdArray,
 	function initCamera() 
 	{
 		viewer.camera.flyTo({
-			destination: Cesium.Cartesian3.fromDegrees(parseFloat(MagoConfig.getPolicy().initLatitude),
-				parseFloat(MagoConfig.getPolicy().initLongitude),
-				parseFloat(MagoConfig.getPolicy().initHeight)),
-			duration: parseInt(MagoConfig.getPolicy().initDuration)
+			destination: Cesium.Cartesian3.fromDegrees(126.924185,
+					37.521168,
+				3000),
+			duration: 1
 		});
 	}
 
