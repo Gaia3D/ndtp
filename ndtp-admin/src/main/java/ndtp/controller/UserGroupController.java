@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,11 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.extern.slf4j.Slf4j;
-import ndtp.domain.Key;
 import ndtp.domain.Policy;
-import ndtp.domain.RoleKey;
 import ndtp.domain.UserGroup;
-import ndtp.domain.UserSession;
 import ndtp.service.PolicyService;
 import ndtp.service.UserGroupService;
 
@@ -50,49 +46,11 @@ public class UserGroupController implements AuthorizationController {
 	 */
 	@GetMapping(value = "/list-group")
 	public String list(HttpServletRequest request, @ModelAttribute UserGroup userGroup, Model model) {
-		String roleCheckResult = roleValidate(request);
-    	if(roleValidate(request) != null) return roleCheckResult;
+		List<UserGroup> userGroupList = userGroupService.getListUserGroup();
 
-		List<UserGroup> userGroupList = userGroupService.getListUserGroup(new UserGroup());
 		model.addAttribute("userGroupList", userGroupList);
+
 		return "/user/list-group";
-	}
-
-	/**
-	 * 사용자 그룹 트리 순서 수정 (up/down)
-	 * @param request
-	 * @param userGroupId
-	 * @param userGroup
-	 * @return
-	 */
-	@PostMapping(value = "group/view-order/{userGroupId}")
-	@ResponseBody
-	public Map<String, Object> moveUserGroup(HttpServletRequest request, @PathVariable Integer userGroupId, @ModelAttribute UserGroup userGroup) {
-		log.info("@@ userGroup = {}", userGroup);
-
-		Map<String, Object> result = new HashMap<>();
-		int statusCode = 0;
-		String errorCode = null;
-		String message = null;
-		try {
-			userGroup.setUserGroupId(userGroupId);
-
-			int updateCount = userGroupService.updateUserGroupViewOrder(userGroup);
-			if(updateCount == 0) {
-				statusCode = HttpStatus.BAD_REQUEST.value();
-				errorCode = "user.group.view-order.invalid";
-			}
-		} catch(Exception e) {
-			e.printStackTrace();
-            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-            errorCode = "db.exception";
-            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-		}
-
-		result.put("statusCode", statusCode);
-		result.put("errorCode", errorCode);
-		result.put("message", message);
-		return result;
 	}
 
 	/**
@@ -172,7 +130,9 @@ public class UserGroupController implements AuthorizationController {
 	 */
 	@GetMapping(value = "modify-group")
 	public String modify(HttpServletRequest request, @RequestParam Integer userGroupId, Model model) {
-		UserGroup userGroup = userGroupService.getUserGroup(userGroupId);
+		UserGroup userGroup = new UserGroup();
+		userGroup.setUserGroupId(userGroupId);
+		userGroup = userGroupService.getUserGroup(userGroup);
 		Policy policy = policyService.getPolicy();
 
 		model.addAttribute("policy", policy);
@@ -222,22 +182,30 @@ public class UserGroupController implements AuthorizationController {
 	}
 
 	/**
-	 * 사용자 그룹 삭제
+	 * 사용자 그룹 트리 순서 수정 (up/down)
 	 * @param request
 	 * @param userGroupId
+	 * @param userGroup
 	 * @return
 	 */
-	@DeleteMapping(value = "delete-group/{userGroupId}")
+	@PostMapping(value = "group/view-order/{userGroupId}")
 	@ResponseBody
-	public Map<String, Object> delete(HttpServletRequest request, @PathVariable Integer userGroupId) {
+	public Map<String, Object> moveUserGroup(HttpServletRequest request, @PathVariable Integer userGroupId, @ModelAttribute UserGroup userGroup) {
+		log.info("@@ userGroup = {}", userGroup);
+
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String errorCode = null;
 		String message = null;
-
 		try {
-			userGroupService.deleteUserGroup(userGroupId);
-		} catch (Exception e) {
+			userGroup.setUserGroupId(userGroupId);
+
+			int updateCount = userGroupService.updateUserGroupViewOrder(userGroup);
+			if(updateCount == 0) {
+				statusCode = HttpStatus.BAD_REQUEST.value();
+				errorCode = "user.group.view-order.invalid";
+			}
+		} catch(Exception e) {
 			e.printStackTrace();
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
             errorCode = "db.exception";
@@ -250,15 +218,21 @@ public class UserGroupController implements AuthorizationController {
 		return result;
 	}
 
-	private String roleValidate(HttpServletRequest request) {
-    	UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-		int httpStatusCode = getRoleStatusCode(userSession.getUserGroupId(), RoleKey.ADMIN_USER_MANAGE.name());
-		if(httpStatusCode > 200) {
-			log.info("@@ httpStatusCode = {}", httpStatusCode);
-			request.setAttribute("httpStatusCode", httpStatusCode);
-			return "/error/error";
-		}
+    /**
+	 * 사용자 그룹 삭제
+	 * @param userGroupId
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "delete-data-group")
+	public String delete(@RequestParam("userGroupId") Integer userGroupId, Model model) {
 
-		return null;
-    }
+		// TODO validation 체크 해야 함
+		UserGroup userGroup = new UserGroup();
+		userGroup.setUserGroupId(userGroupId);
+
+		userGroupService.deleteUserGroup(userGroup);
+
+		return "redirect:/user/list-group";
+	}
 }

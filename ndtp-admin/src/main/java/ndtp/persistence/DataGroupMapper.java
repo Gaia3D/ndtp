@@ -50,7 +50,7 @@ public interface DataGroupMapper {
 	int updateDataGroup(DataGroup dataGroup);
 	
 	/**
-	 * 데이터 그룹 표시 순서 수정. UP, DOWN
+	 * 데이터 그룹 표시 순서 수정 (up/down)
 	 * @param dataGroup
 	 * @return
 	 */

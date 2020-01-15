@@ -101,44 +101,6 @@ public class DataGroupController {
 		return result;
 	}
 
-
-	/**
-	 * 데이터 그룹 트리 순서 수정 (up/down)
-	 * @param request
-	 * @param dataGroupId
-	 * @param dataGroup
-	 * @return
-	 */
-	@PostMapping(value = "group/view-order/{dataGroupId}")
-	@ResponseBody
-	public Map<String, Object> moveDataGroup(HttpServletRequest request, @PathVariable Integer dataGroupId, @ModelAttribute DataGroup dataGroup) {
-		log.info("@@ dataGroup = {}", dataGroup);
-
-		Map<String, Object> result = new HashMap<>();
-		int statusCode = 0;
-		String errorCode = null;
-		String message = null;
-		try {
-			dataGroup.setDataGroupId(dataGroupId);
-
-			int updateCount = dataGroupService.updateDataGroupViewOrder(dataGroup);
-			if(updateCount == 0) {
-				statusCode = HttpStatus.BAD_REQUEST.value();
-				errorCode = "data.group.view-order.invalid";
-			}
-		} catch(Exception e) {
-			e.printStackTrace();
-            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-            errorCode = "db.exception";
-            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-		}
-
-		result.put("statusCode", statusCode);
-		result.put("errorCode", errorCode);
-		result.put("message", message);
-		return result;
-	}
-
 	/**
     * 지도에서 위치 찾기
     * @param model
@@ -232,6 +194,43 @@ public class DataGroupController {
 		return result;
 	}
 
+	/**
+	 * 데이터 그룹 트리 순서 수정 (up/down)
+	 * @param request
+	 * @param dataGroupId
+	 * @param dataGroup
+	 * @return
+	 */
+	@PostMapping(value = "group/view-order/{dataGroupId}")
+	@ResponseBody
+	public Map<String, Object> moveDataGroup(HttpServletRequest request, @PathVariable Integer dataGroupId, @ModelAttribute DataGroup dataGroup) {
+		log.info("@@ dataGroup = {}", dataGroup);
+
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		try {
+			dataGroup.setDataGroupId(dataGroupId);
+
+			int updateCount = dataGroupService.updateDataGroupViewOrder(dataGroup);
+			if(updateCount == 0) {
+				statusCode = HttpStatus.BAD_REQUEST.value();
+				errorCode = "data.group.view-order.invalid";
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
+	}
+
     /**
 	 * 데이터 그룹 삭제
 	 * @param dataGroupId
@@ -239,7 +238,7 @@ public class DataGroupController {
 	 * @return
 	 */
 	@GetMapping(value = "delete-data-group")
-	public String deleteData(@RequestParam("dataGroupId") Integer dataGroupId, Model model) {
+	public String delete(@RequestParam("dataGroupId") Integer dataGroupId, Model model) {
 
 		// TODO validation 체크 해야 함
 		DataGroup dataGroup = new DataGroup();

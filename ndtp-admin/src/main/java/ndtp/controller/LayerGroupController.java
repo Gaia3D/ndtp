@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,43 +54,6 @@ public class LayerGroupController {
 		model.addAttribute("layerGroupList", layerGroupList);
 
 		return "/layer/list-group";
-	}
-
-	/**
-	 * 레이어 그룹 트리 순서 수정 (up/down)
-	 * @param request
-	 * @param layerGroupId
-	 * @param layerGroup
-	 * @return
-	 */
-	@PostMapping(value = "group/view-order/{layerGroupId}")
-	@ResponseBody
-	public Map<String, Object> moveLayerGroup(HttpServletRequest request, @PathVariable Integer layerGroupId, @ModelAttribute LayerGroup layerGroup) {
-		log.info("@@ layerGroup = {}", layerGroup);
-
-		Map<String, Object> result = new HashMap<>();
-		int statusCode = 0;
-		String errorCode = null;
-		String message = null;
-		try {
-			layerGroup.setLayerGroupId(layerGroupId);
-
-			int updateCount = layerGroupService.updateLayerGroupViewOrder(layerGroup);
-			if(updateCount == 0) {
-				statusCode = HttpStatus.BAD_REQUEST.value();
-				errorCode = "layer.group.view-order.invalid";
-			}
-		} catch(Exception e) {
-			e.printStackTrace();
-            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-            errorCode = "db.exception";
-            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-		}
-
-		result.put("statusCode", statusCode);
-		result.put("errorCode", errorCode);
-		result.put("message", message);
-		return result;
 	}
 
 	/**
@@ -171,7 +133,9 @@ public class LayerGroupController {
 	 */
 	@GetMapping(value = "modify-group")
 	public String modify(HttpServletRequest request, @RequestParam Integer layerGroupId, Model model) {
-		LayerGroup layerGroup = layerGroupService.getLayerGroup(layerGroupId);
+		LayerGroup layerGroup = new LayerGroup();
+		layerGroup.setLayerGroupId(layerGroupId);
+		layerGroup = layerGroupService.getLayerGroup(layerGroup);
 		Policy policy = policyService.getPolicy();
 
 		model.addAttribute("policy", policy);
@@ -221,22 +185,30 @@ public class LayerGroupController {
 	}
 
 	/**
-	 * 레이어 그룹 삭제
+	 * 레이어 그룹 트리 순서 수정 (up/down)
 	 * @param request
 	 * @param layerGroupId
+	 * @param layerGroup
 	 * @return
 	 */
-	@DeleteMapping(value = "delete-group/{layerGroupId}")
+	@PostMapping(value = "group/view-order/{layerGroupId}")
 	@ResponseBody
-	public Map<String, Object> delete(HttpServletRequest request, @PathVariable Integer layerGroupId) {
+	public Map<String, Object> moveLayerGroup(HttpServletRequest request, @PathVariable Integer layerGroupId, @ModelAttribute LayerGroup layerGroup) {
+		log.info("@@ layerGroup = {}", layerGroup);
+
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String errorCode = null;
 		String message = null;
-
 		try {
-			layerGroupService.deleteLayerGroup(layerGroupId);
-		} catch (Exception e) {
+			layerGroup.setLayerGroupId(layerGroupId);
+
+			int updateCount = layerGroupService.updateLayerGroupViewOrder(layerGroup);
+			if(updateCount == 0) {
+				statusCode = HttpStatus.BAD_REQUEST.value();
+				errorCode = "layer.group.view-order.invalid";
+			}
+		} catch(Exception e) {
 			e.printStackTrace();
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
             errorCode = "db.exception";
@@ -247,5 +219,23 @@ public class LayerGroupController {
 		result.put("errorCode", errorCode);
 		result.put("message", message);
 		return result;
+	}
+
+	/**
+	 * 레이어 그룹 삭제
+	 * @param layerGroupId
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "delete-layer-group")
+	public String delete(@RequestParam("layerGroupId") Integer layerGroupId, Model model) {
+
+		// TODO validation 체크 해야 함
+		LayerGroup layerGroup = new LayerGroup();
+		layerGroup.setLayerGroupId(layerGroupId);
+
+		layerGroupService.deleteLayerGroup(layerGroup);
+
+		return "redirect:/layer/list-group";
 	}
 }

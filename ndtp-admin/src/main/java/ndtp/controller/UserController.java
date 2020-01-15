@@ -113,7 +113,7 @@ public class UserController implements AuthorizationController {
 	@GetMapping(value = "input")
 	public String input(Model model) {
 		Policy policy = policyService.getPolicy();
-		List<UserGroup> userGroupList = userGroupService.getListUserGroup(new UserGroup());
+		List<UserGroup> userGroupList = userGroupService.getListUserGroup();
 
 		model.addAttribute("policy", policy);
 		model.addAttribute("dataGroupList", userGroupList);

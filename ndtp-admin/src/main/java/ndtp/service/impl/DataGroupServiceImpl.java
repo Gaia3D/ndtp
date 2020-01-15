@@ -20,7 +20,7 @@ import ndtp.utils.FileUtils;
 @Slf4j
 @Service
 public class DataGroupServiceImpl implements DataGroupService {
-	
+
 	@Autowired
 	private DataGroupMapper dataGroupMapper;
 	@Autowired
@@ -36,7 +36,7 @@ public class DataGroupServiceImpl implements DataGroupService {
 	public List<DataGroup> getListDataGroup() {
 		return dataGroupMapper.getListDataGroup();
 	}
-	
+
 	/**
      * 데이터 그룹 정보 조회
      * @return
@@ -45,7 +45,7 @@ public class DataGroupServiceImpl implements DataGroupService {
 	public DataGroup getDataGroup(DataGroup dataGroup) {
 		return dataGroupMapper.getDataGroup(dataGroup);
 	}
-	
+
 	/**
      * 기본 데이터 그룹 정보 조회
      * @return
@@ -62,9 +62,9 @@ public class DataGroupServiceImpl implements DataGroupService {
      */
     @Transactional
 	public int insertDataGroup(DataGroup dataGroup) {
-    	
+
     	//GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
-    	
+
     	DataGroup parentDataGroup = new DataGroup();
     	Integer depth = 0;
     	if(dataGroup.getParent() > 0) {
@@ -72,13 +72,13 @@ public class DataGroupServiceImpl implements DataGroupService {
 	    	parentDataGroup = dataGroupMapper.getDataGroup(parentDataGroup);
 	    	depth = parentDataGroup.getDepth() + 1;
     	}
-	    
+
     	// TODO 여기서 디렉토리를 만들어야 하나? 말아야 하나? 도저히 모르겠다.
     	//FileUtils.makeDirectoryByPath(geoPolicy.getDataServicePath(), dataGroup.getDataGroupKey());
     	FileUtils.makeDirectoryByPath(propertiesConfig.getDataServiceDir(), dataGroup.getDataGroupKey());
     	dataGroup.setDataGroupPath(dataGroup.getDataGroupKey() + File.separator);
     	int result = dataGroupMapper.insertDataGroup(dataGroup);
-    	
+
     	if(depth > 1) {
 	    	// parent 의 children update
     		Integer children = parentDataGroup.getChildren();
@@ -87,10 +87,10 @@ public class DataGroupServiceImpl implements DataGroupService {
     		parentDataGroup.setChildren(children);
 	    	return dataGroupMapper.updateDataGroup(parentDataGroup);
     	}
-    	
+
     	return result;
     }
-    
+
 	/**
 	 * 데이터 그룹 수정
 	 * @param dataGroup
@@ -100,47 +100,47 @@ public class DataGroupServiceImpl implements DataGroupService {
 	public int updateDataGroup(DataGroup dataGroup) {
     	return dataGroupMapper.updateDataGroup(dataGroup);
     }
-    
+
     /**
-	 * 데이터 그룹 표시 순서 수정. UP, DOWN
+	 * 데이터 그룹 표시 순서 수정 (up/down)
 	 * @param dataGroup
 	 * @return
 	 */
     @Transactional
 	public int updateDataGroupViewOrder(DataGroup dataGroup) {
-    	
+
     	DataGroup dbDataGroup = dataGroupMapper.getDataGroup(dataGroup);
     	dbDataGroup.setUpdateType(dataGroup.getUpdateType());
-    	
+
     	Integer modifyViewOrder = dbDataGroup.getViewOrder();
     	DataGroup searchDataGroup = new DataGroup();
     	searchDataGroup.setUpdateType(dbDataGroup.getUpdateType());
     	searchDataGroup.setParent(dbDataGroup.getParent());
-    	
+
     	if(Move.UP == Move.valueOf(dbDataGroup.getUpdateType())) {
     		// 바로 위 메뉴의 view_order 를 +1
     		searchDataGroup.setViewOrder(dbDataGroup.getViewOrder());
     		searchDataGroup = getDataGroupByParentAndViewOrder(searchDataGroup);
-    		
+
     		if(searchDataGroup == null) return 0;
-    		
+
 	    	dbDataGroup.setViewOrder(searchDataGroup.getViewOrder());
 	    	searchDataGroup.setViewOrder(modifyViewOrder);
     	} else {
     		// 바로 아래 메뉴의 view_order 를 -1 함
     		searchDataGroup.setViewOrder(dbDataGroup.getViewOrder());
     		searchDataGroup = getDataGroupByParentAndViewOrder(searchDataGroup);
-    		
+
     		if(searchDataGroup == null) return 0;
-    		
+
     		dbDataGroup.setViewOrder(searchDataGroup.getViewOrder());
     		searchDataGroup.setViewOrder(modifyViewOrder);
     	}
-    	
+
     	updateViewOrderDataGroup(searchDataGroup);
 		return updateViewOrderDataGroup(dbDataGroup);
     }
-    
+
     /**
      * 부모와 표시 순서로 메뉴 조회
      * @param dataGroup
@@ -149,16 +149,16 @@ public class DataGroupServiceImpl implements DataGroupService {
     private DataGroup getDataGroupByParentAndViewOrder(DataGroup dataGroup) {
     	return dataGroupMapper.getDataGroupByParentAndViewOrder(dataGroup);
     }
-    
+
     /**
-	 * 
+	 * 데이터 그룹 표시 순서 수정 (up/down)
 	 * @param userGroup
 	 * @return
 	 */
 	private int updateViewOrderDataGroup(DataGroup dataGroup) {
 		return dataGroupMapper.updateDataGroupViewOrder(dataGroup);
 	}
-    
+
 	/**
 	 * 데이터 그룹 삭제
 	 * @param dataGroup
@@ -167,10 +167,10 @@ public class DataGroupServiceImpl implements DataGroupService {
     @Transactional
 	public int deleteDataGroup(DataGroup dataGroup) {
     	// 삭제하고, children update
-    	
+
     	dataGroup = dataGroupMapper.getDataGroup(dataGroup);
     	log.info("--- 111111111 delete dataGroup = {}", dataGroup);
-    	
+
     	int result = 0;
     	if(Depth.ONE == Depth.findBy(dataGroup.getDepth())) {
     		log.info("--- one ================");
@@ -178,21 +178,21 @@ public class DataGroupServiceImpl implements DataGroupService {
     	} else if(Depth.TWO == Depth.findBy(dataGroup.getDepth())) {
     		log.info("--- two ================");
     		result = dataGroupMapper.deleteDataGroupByParent(dataGroup);
-    		
+
     		DataGroup ancestorDataGroup = new DataGroup();
     		ancestorDataGroup.setDataGroupId(dataGroup.getAncestor());
     		ancestorDataGroup = dataGroupMapper.getDataGroup(ancestorDataGroup);
     		ancestorDataGroup.setChildren(ancestorDataGroup.getChildren() + 1);
-	    	
+
     		log.info("--- delete ancestorDataGroup = {}", ancestorDataGroup);
-    		
+
 	    	dataGroupMapper.updateDataGroup(ancestorDataGroup);
     		// ancestor - 1
     	} else if(Depth.THREE == Depth.findBy(dataGroup.getDepth())) {
     		log.info("--- three ================");
     		result = dataGroupMapper.deleteDataGroup(dataGroup);
     		log.info("--- dataGroup ================ {}", dataGroup);
-    		
+
     		DataGroup parentDataGroup = new DataGroup();
 	    	parentDataGroup.setDataGroupId(dataGroup.getParent());
 	    	parentDataGroup = dataGroupMapper.getDataGroup(parentDataGroup);
@@ -201,9 +201,9 @@ public class DataGroupServiceImpl implements DataGroupService {
 	    	log.info("--- parentDataGroup children ================ {}", parentDataGroup);
 	    	dataGroupMapper.updateDataGroup(parentDataGroup);
     	} else {
-    		
+
     	}
-    	
+
     	return result;
     }
 }
