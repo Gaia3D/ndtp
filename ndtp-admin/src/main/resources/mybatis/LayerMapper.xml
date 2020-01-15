@@ -124,7 +124,7 @@
 	    		SELECT ''||A.column_name||''
 	        	FROM information_schema.columns As A
 	            WHERE table_name = #{value} 
-	            	AND  A.column_name NOT IN ('enable_yn', 'file_version')
+	            	AND  A.column_name NOT IN ('enable_yn', 'version_id')
 	    		), ','
 	    	) 
     </select>
