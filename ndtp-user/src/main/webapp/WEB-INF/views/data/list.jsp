@@ -201,7 +201,7 @@
 		}
 	});
 	
-	//Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIyNmNjOWZkOC03NjdlLTRiZTktYWQ3NS1hNmQ0YjA1ZjIzYWEiLCJpZCI6Mzk5Miwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0NDYwNDQ3M30.AwvoVAuMRwjcMMJ9lEG2v4CPUp8gfltJqZARHgxGv_k';
+	//Cesium.Ion.defaultAccessToken = '';
 	//var viewer = new Cesium.Viewer('magoContainer');
 	var MAGO3D_INSTANCE;
 	magoInit();
@@ -306,7 +306,6 @@
 							}
 
 							group.datas = dataInfoList;
-							console.log("---------- " + group.datas);
 							dataArray.push(group);
 							if(cnt === dataGroupArrayLength-1) {
 								var f4dController = MAGO3D_INSTANCE.getF4dController();
