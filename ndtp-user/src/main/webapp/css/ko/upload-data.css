@@ -3,7 +3,14 @@
 /* Typo
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 /*user-style css 때문에 important로 적용 */
-* { margin:0; padding:0; outline:0; vertical-align:middle !important; }
+/* * { margin:0; padding:0; outline:0; vertical-align:middle !important; } */
+
+body {
+	font-size: 1.3em; /* currently ems cause chrome bug misinterpreting rems on body element */
+	line-height: 1.6;
+	font-weight: 400; /* Regular 300~500, Bold 600~700, Extra Bold 800~900 */
+	font-family: 'Nanum Gothic', sans-serif;
+	color: #888; }
 html {
 	font-size: 62.5%; }
 	
@@ -1532,6 +1539,7 @@ tr:hover td {
 .list-table th {
 	font-size: 1.3rem;
 	font-weight: normal;
+	vertical-align:middle;
 	color: #000;
 	border: 1px solid #d9d9d9;
 	border-top: 2px solid #3b095e;
@@ -1542,6 +1550,7 @@ tr:hover td {
 
 .list-table td {
 	font-size: 1.3rem;
+	vertical-align:middle;
 	border: 1px solid #d9d9d9;
 	height: 33px;
 	padding-left: 10px;

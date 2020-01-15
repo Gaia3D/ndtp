@@ -2,7 +2,7 @@ drop table if exists user_policy cascade;
 
 create table user_policy (
 	user_policy_id				integer,
-	user_id						varchar(100)					not null,
+	user_id						varchar(32)						not null,
 	label_yn					char(1)							default 'Y',
 	base_layers					varchar(1000),
 	update_date					timestamp with time zone,
