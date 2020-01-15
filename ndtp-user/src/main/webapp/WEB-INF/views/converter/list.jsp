@@ -11,6 +11,7 @@
 	
 	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
+	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
 	<link rel="stylesheet" href="/css/${lang}/user-style.css" />
 	<link rel="stylesheet" href="/css/${lang}/upload-data.css" />
 	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
