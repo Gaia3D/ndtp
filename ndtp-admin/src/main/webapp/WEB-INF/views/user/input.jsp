@@ -52,7 +52,7 @@
 									<td class="col-input">
 										<form:hidden path="userGroupId" />
 			 							<form:input path="userGroupName" cssClass="m" readonly="true" />
-										<input type="button" id="userGroupButtion" value="<spring:message code='user.group.usergroup'/> 찾기" />
+										<input type="button" id="userGroupButtion" value="<spring:message code='user.group.usergroup'/> 선택" />
 									</td>
 								</tr>
 								<tr>
