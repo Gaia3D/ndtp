@@ -708,7 +708,7 @@ font-weight: bold;
 border:1px solid #e0e0e0;
 background-image: url(/images/ko/ico.png);
 background-repeat: no-repeat;
-background-position: right -710px;
+background-position: 320px -738px;
 background-color: #fff;
 }
 ul.listDrop li > p > span {
@@ -723,7 +723,7 @@ border-bottom: 3px solid #eaeaea;
 background-color: #287be4;
 background-image: url(/images/ko/ico.png);
 background-repeat: no-repeat;
-background-position: right -660px;
+background-position: 320px -688px;
 }
 ul.listDrop li p span {
 display: inline-block;
