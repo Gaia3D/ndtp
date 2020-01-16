@@ -30,7 +30,7 @@
 						<form:form id="userGroup" modelAttribute="userGroup" method="post" onsubmit="return false;">
 						<form:hidden path="userGroupId"/>
 						<table class="input-table scope-row">
-							<col class="col-label l" />
+							<col class="col-label" />
 							<col class="col-input" />
 							<tr>
 								<th class="col-label" scope="row">
@@ -64,7 +64,7 @@
 								</td>
 							</tr>
 							<tr>
-								<th class="col-label l" scope="row">
+								<th class="col-label m" scope="row">
 									<span>사용여부</span>
 									<span class="icon-glyph glyph-emark-dot color-warning"></span>
 								</th>
@@ -76,7 +76,7 @@
 								</td>
 							</tr>
 							<tr>
-								<th class="col-label l" scope="row"><form:label path="description"><spring:message code='description'/></form:label></th>
+								<th class="col-label m" scope="row"><form:label path="description"><spring:message code='description'/></form:label></th>
 								<td class="col-input">
 									<form:input path="description" cssClass="xl" />
 									<form:errors path="description" cssClass="error" />

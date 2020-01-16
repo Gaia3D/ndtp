@@ -28,75 +28,75 @@
 							<div class="content-desc u-pull-right"><span class="icon-glyph glyph-emark-dot color-warning"></span><spring:message code='check'/></div>
 						</div>
 						<form:form id="userGroup" modelAttribute="userGroup" method="post" onsubmit="return false;">
-						<table class="input-table scope-row">
-							<col class="col-label l" />
-							<col class="col-input" />
-							<tr>
-								<th class="col-label" scope="row">
-									<form:label path="userGroupName">사용자 그룹명</form:label>
-									<span class="icon-glyph glyph-emark-dot color-warning"></span>
-								</th>
-								<td class="col-input">
-									<form:input path="userGroupName" cssClass="l" />
-									<form:errors path="userGroupName" cssClass="error" />
-								</td>
-							</tr>
-							<tr>
-								<th class="col-label" scope="row">
-									<form:label path="userGroupKey">사용자 그룹 Key</form:label>
-									<span class="icon-glyph glyph-emark-dot color-warning"></span>
-								</th>
-								<td class="col-input">
-									<form:input path="userGroupKey" cssClass="l" />
-									<form:errors path="userGroupKey" cssClass="error" />
-								</td>
-							</tr>
-							<tr>
-								<th class="col-label" scope="row">
-									<form:label path="parentName">상위 그룹</form:label>
-									<span class="icon-glyph glyph-emark-dot color-warning"></span>
-								</th>
-								<td class="col-input">
-									<form:hidden path="parent" />
-		 							<form:input path="parentName" cssClass="l" readonly="true" />
-									<input type="button" id="userGroupButtion" value="상위 그룹 선택" />
-								</td>
-							</tr>
-			                <tr>
-								<th class="col-label l" scope="row">
-									기본 여부
-									<span class="icon-glyph glyph-emark-dot color-warning"></span>
-								</th>
-								<td class="col-input radio-set">
-									<input type="radio" id="basicTrue" name="basic" value="true" >
-									<label for="basicTrue">기본</label>
-									<input type="radio" id="basicFalse" name="basic" value="false" checked >
-									<label for="basicFalse">선택</label>
-								</td>
-							</tr>
-							<tr>
-								<th class="col-label l" scope="row">
-									사용 여부
-									<span class="icon-glyph glyph-emark-dot color-warning"></span>
-								</th>
-								<td class="col-input radio-set">
-									<input type="radio" id="availableTrue" name="available" value="true" checked>
-									<label for="availableTrue">사용</label>
-									<input type="radio" id="availableFalse" name="available" value="false">
-									<label for="availableFalse">미사용</label>
-								</td>
-							</tr>
-							<tr>
-								<th class="col-label l" scope="row"><form:label path="description"><spring:message code='description'/></form:label></th>
-								<td class="col-input"><form:input path="description" cssClass="xl" /></td>
-							</tr>
-						</table>
-						<div class="button-group">
-							<div class="center-buttons">
-								<input type="submit" value="<spring:message code='save'/>" onclick="insertUserGroup();"/>
-								<a href="/user-group/list" class="button">목록</a>
+							<table class="input-table scope-row">
+								<col class="col-label" />
+								<col class="col-input" />
+								<tr>
+									<th class="col-label" scope="row">
+										<form:label path="userGroupName">사용자 그룹명</form:label>
+										<span class="icon-glyph glyph-emark-dot color-warning"></span>
+									</th>
+									<td class="col-input">
+										<form:input path="userGroupName" cssClass="l" />
+										<form:errors path="userGroupName" cssClass="error" />
+									</td>
+								</tr>
+								<tr>
+									<th class="col-label" scope="row">
+										<form:label path="userGroupKey">사용자 그룹 Key</form:label>
+										<span class="icon-glyph glyph-emark-dot color-warning"></span>
+									</th>
+									<td class="col-input">
+										<form:input path="userGroupKey" cssClass="l" />
+										<form:errors path="userGroupKey" cssClass="error" />
+									</td>
+								</tr>
+								<tr>
+									<th class="col-label" scope="row">
+										<form:label path="parentName">상위 그룹</form:label>
+										<span class="icon-glyph glyph-emark-dot color-warning"></span>
+									</th>
+									<td class="col-input">
+										<form:hidden path="parent" />
+			 							<form:input path="parentName" cssClass="l" readonly="true" />
+										<input type="button" id="userGroupButtion" value="상위 그룹 선택" />
+									</td>
+								</tr>
+				                <tr>
+									<th class="col-label m" scope="row">
+										기본 여부
+										<span class="icon-glyph glyph-emark-dot color-warning"></span>
+									</th>
+									<td class="col-input radio-set">
+										<input type="radio" id="basicTrue" name="basic" value="true" >
+										<label for="basicTrue">기본</label>
+										<input type="radio" id="basicFalse" name="basic" value="false" checked >
+										<label for="basicFalse">선택</label>
+									</td>
+								</tr>
+								<tr>
+									<th class="col-label m" scope="row">
+										사용 여부
+										<span class="icon-glyph glyph-emark-dot color-warning"></span>
+									</th>
+									<td class="col-input radio-set">
+										<input type="radio" id="availableTrue" name="available" value="true" checked>
+										<label for="availableTrue">사용</label>
+										<input type="radio" id="availableFalse" name="available" value="false">
+										<label for="availableFalse">미사용</label>
+									</td>
+								</tr>
+								<tr>
+									<th class="col-label m" scope="row"><form:label path="description"><spring:message code='description'/></form:label></th>
+									<td class="col-input"><form:input path="description" cssClass="xl" /></td>
+								</tr>
+							</table>
+							<div class="button-group">
+								<div class="center-buttons">
+									<input type="submit" value="<spring:message code='save'/>" onclick="insertUserGroup();"/>
+									<a href="/user-group/list" class="button">목록</a>
+								</div>
 							</div>
-						</div>
 						</form:form>
 					</div>
 				</div>

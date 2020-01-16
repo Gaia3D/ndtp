@@ -139,37 +139,39 @@
 			AND user_id = #{userId}
 		</if>
 	</update>
-	
+
 	<!-- 데이터 그룹 삭제 -->
 	<delete id="deleteLayerGroup" parameterType="layerGroup">
 		/* deleteLayerGroup */
-		DELETE 
-		FROM layer_group 
-		WHERE layer_group_id = #{layerGroupId} 
+		DELETE
+		FROM layer_group
+		WHERE layer_group_id = #{layerGroupId}
 		<if test="userId != null and userId != ''">
 			AND user_id = #{userId}
-		</if> 
+		</if>
 	</delete>
-	
+
 	<!-- ancestor를 이용하여 데이터 그룹 삭제 -->
 	<delete id="deleteLayerGroupByAncestor" parameterType="layerGroup">
 		/* deleteLayerGroupByAncestor */
-		DELETE 
-		FROM layer_group 
-		WHERE ancestor = #{ancestor} 
+		DELETE
+		FROM layer_group
+		WHERE ancestor = #{layerGroupId}
+		OR layer_group_id = #{layerGroupId}
 		<if test="userId != null and userId != ''">
 			AND user_id = #{userId}
-		</if> 
+		</if>
 	</delete>
-	
+
 	<!-- parent를 이용하여 데이터 그룹 삭제 -->
 	<delete id="deleteLayerGroupByParent" parameterType="layerGroup">
 		/* deleteLayerGroupByParent */
-		DELETE 
-		FROM layer_group 
-		WHERE parent = #{parent} 
+		DELETE
+		FROM layer_group
+		WHERE parent = #{layerGroupId}
+		OR layer_group_id = #{layerGroupId}
 		<if test="userId != null and userId != ''">
 			AND user_id = #{userId}
-		</if> 
+		</if>
 	</delete>
 </mapper>
