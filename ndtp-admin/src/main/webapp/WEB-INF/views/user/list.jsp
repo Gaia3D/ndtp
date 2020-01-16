@@ -133,7 +133,7 @@
 										</td>
 										<td class="col-number">${pagination.rowNumber - status.index}</td>
 										<td class="col-name">
-											<a href="/user/group/${user.userGroupId}/menu" class="linkButton">${user.userGroupName}</a>
+											<a href="#" class="view-group-detail" onclick="detailUserGroup('${user.userGroupId}'); return false;">${user.userGroupName }</a>
 										</td>
 										<td class="col-name">${user.userId}</td>
 										<td class="col-name">
@@ -182,44 +182,8 @@
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
+	<%@ include file="/WEB-INF/views/user/group-dialog.jsp" %>
 
-	<%-- F4D Converter Job 등록 --%>
-	<div class=dialogConverterJob title="F4D Converter Job 등록">
-		<form id="converterJobForm" name="converterJobForm" action="" method="post">
-			<input type="hidden" id="converterCheckIds" name="converterCheckIds" value="" />
-			<table class="inner-table scope-row">
-				<col class="col-sub-label xl" />
-				<col class="col-data" />
-				<tbody>
-					<tr>
-						<th class="col-sub-label x">변환 템플릿</th>
-						<td class="col-input">
-							<select id="converterTemplate" name="converterTemplate" class="select" style="height: 30px;">
-		                		<option value="basic"> 기본 </option>
-			                	<option value="building"> 빌딩 </option>
-								<option value="extra-big-building"> 초대형 빌딩 </option>
-								<option value="single-realistic-mesh"> 단일 Point Cloud </option>
-								<option value="splitted-realistic-mesh"> 분할 Point Cloud </option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<th class="col-sub-label x">제목</th>
-						<td>
-							<div class="inner-data">
-								<input type="text" id="title" name="title" class="l" />
-							</div>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<div class="button-group">
-				<a href="#" onclick="saveConverterJob(); return false;" class="button" style="color: white">저장</a>
-			</div>
-		</form>
-	</div>
-
-<%-- F4D Converter Job 등록 --%>
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
@@ -231,83 +195,40 @@
 		$(":checkbox[name=uploadDataId]").prop("checked", this.checked);
 	});
 
-	var dialogConverterJob = $( ".dialogConverterJob" ).dialog({
+	// 사용자 그룹 정보
+	var userGroupDialog = $("#userGroupInfoDialog").dialog({
 		autoOpen: false,
-		height: 280,
-		width: 600,
+		width: 400,
+		height: 300,
 		modal: true,
-		resizable: false,
-		close: function() {
-			$("#converterCheckIds").val("");
-			$("#title").val("");
-			//location.reload();
-		}
+		resizable: false
 	});
 
-	// F4D Converter Button Click
-	function converterFile(uploadDataId, dataName) {
-		$("#converterCheckIds").val(uploadDataId + ",");
-		$("#title").val(dataName);
+	// 사용자 그룹 정보
+	function detailUserGroup(userGroupId) {
+		userGroupDialog.dialog("open");
 
-		dialogConverterJob.dialog( "open" );
-	}
-
-	// All F4D Converter Button Click
-	function converterFiles() {
-		var checkedValue = "";
-		$("input:checkbox[name=uploadDataId]:checked").each(function(index) {
-			checkedValue += $(this).val() + ",";
-		});
-		if(checkedValue === "") {
-			alert("파일을 선택해 주십시오.");
-			return;
-		}
-		$("#converterCheckIds").val(checkedValue);
-
-		dialogConverterJob.dialog( "open" );
-	}
-
-	// F4D Converter 일괄 변환
-	var saveConverterJobFlag = true;
-	function saveConverterJob() {
-		if($("#title").val() === null || $("#title").val() === "") {
-			alert("제목을 입력하여 주십시오.");
-			$("#title").focus();
-			return false;
-		}
-
-		if(saveConverterJobFlag) {
-			saveConverterJobFlag = false;
-			var formData =$("#converterJobForm").serialize();
-			$.ajax({
-				url: "/converter/insert",
-				type: "POST",
-				data: formData,
-				dataType: "json",
-				headers: {"X-Requested-With": "XMLHttpRequest"},
-				success: function(msg){
-					if(msg.statusCode <= 200) {
-						alert(JS_MESSAGE["insert"]);
-					} else {
-						alert(JS_MESSAGE[msg.errorCode]);
-					}
-
-					$("#converterCheckIds").val("");
-					$("#title").val("");
-					$(":checkbox[name=uploadDataId]").prop("checked", false);
-					dialogConverterJob.dialog( "close" );
-					saveConverterJobFlag = true;
-				},
-				error:function(request,status,error){
-					alert(JS_MESSAGE["ajax.error.message"]);
-					dialogConverterJob.dialog( "close" );
-					saveConverterJobFlag = true;
+		$.ajax({
+			url: "/user/detail-group",
+			data: {"userGroupId": userGroupId},
+			type: "GET",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			dataType: "json",
+			success: function(msg){
+				if(msg.statusCode <= 200) {
+					$("#userGroupNameInfo").html(msg.userGroup.userGroupName);
+					$("#userGroupKeyInfo").html(msg.userGroup.userGroupKey);
+					$("#basicInfo").html(msg.userGroup.basic?'기본':'선택');
+					$("#availableInfo").html(msg.userGroup.available?'사용':'미사용');
+					$("#descriptionInfo").html(msg.userGroup.description);
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
 				}
-			});
-		} else {
-			alert(JS_MESSAGE["button.dobule.click"]);
-			return;
-		}
+			},
+			error: function(request, status, error){
+				alert(JS_MESSAGE["ajax.error.message"]);
+			}
+		});
 	}
 
 	function deleteUploadData(uploadDataId) {

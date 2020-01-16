@@ -54,6 +54,46 @@ public class UserGroupController implements AuthorizationController {
 	}
 
 	/**
+	 * 사용자 그룹 정보
+	 * @param userGroup
+	 * @return
+	 */
+	@GetMapping(value = "detail-group")
+	@ResponseBody
+	public Map<String, Object> detail(UserGroup userGroup) {
+
+		log.info("@@@@@ detail-group userGroup = {}", userGroup);
+
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		try {
+			if(userGroup.getUserGroupId() == null) {
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "input.invalid");
+				result.put("message", message);
+
+				return result;
+			}
+
+			userGroup = userGroupService.getUserGroup(userGroup);
+			result.put("userGroup", userGroup);
+		} catch(Exception e) {
+			e.printStackTrace();
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+
+		return result;
+	}
+
+	/**
 	 * 사용자 그룹 등록 페이지 이동
 	 * @param model
 	 * @return

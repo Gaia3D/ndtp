@@ -9,8 +9,12 @@
 				<td id="userGroupNameInfo" class="col-data"></td>
 			</tr>
 			<tr>
-				<th class="col-label" scope="row">공유타입</th>
-				<td id="sharingInfo" class="col-data"></td>
+				<th class="col-label" scope="row">그룹Key</th>
+				<td id="userGroupKeyInfo" class="col-data"></td>
+			</tr>
+			<tr>
+				<th class="col-label" scope="row">기본유무</th>
+				<td id="basicInfo" class="col-data"></td>
 			</tr>
 			<tr>
 				<th class="col-label" scope="row">사용유무</th>
