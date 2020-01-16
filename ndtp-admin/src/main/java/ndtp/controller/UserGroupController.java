@@ -28,7 +28,7 @@ import ndtp.service.UserGroupService;
 
 @Slf4j
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/user-group")
 public class UserGroupController implements AuthorizationController {
 
 	@Autowired
@@ -44,7 +44,7 @@ public class UserGroupController implements AuthorizationController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "/list-group")
+	@GetMapping(value = "/list")
 	public String list(HttpServletRequest request, @ModelAttribute UserGroup userGroup, Model model) {
 		List<UserGroup> userGroupList = userGroupService.getListUserGroup();
 
@@ -58,7 +58,7 @@ public class UserGroupController implements AuthorizationController {
 	 * @param userGroup
 	 * @return
 	 */
-	@GetMapping(value = "detail-group")
+	@GetMapping(value = "detail")
 	@ResponseBody
 	public Map<String, Object> detail(UserGroup userGroup) {
 
@@ -98,7 +98,7 @@ public class UserGroupController implements AuthorizationController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "input-group")
+	@GetMapping(value = "input")
 	public String input(Model model) {
 		Policy policy = policyService.getPolicy();
 
@@ -122,7 +122,7 @@ public class UserGroupController implements AuthorizationController {
 	 * @param bindingResult
 	 * @return
 	 */
-	@PostMapping(value = "insert-group")
+	@PostMapping(value = "insert")
 	@ResponseBody
 	public Map<String, Object> insert(HttpServletRequest request, @Valid @ModelAttribute UserGroup userGroup, BindingResult bindingResult) {
 
@@ -168,7 +168,7 @@ public class UserGroupController implements AuthorizationController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "modify-group")
+	@GetMapping(value = "modify")
 	public String modify(HttpServletRequest request, @RequestParam Integer userGroupId, Model model) {
 		UserGroup userGroup = new UserGroup();
 		userGroup.setUserGroupId(userGroupId);
@@ -188,7 +188,7 @@ public class UserGroupController implements AuthorizationController {
 	 * @param bindingResult
 	 * @return
 	 */
-	@PostMapping(value = "update-group")
+	@PostMapping(value = "update")
 	@ResponseBody
 	public Map<String, Object> update(HttpServletRequest request, @Valid UserGroup userGroup, BindingResult bindingResult) {
 		log.info("@@ userGroup = {}", userGroup);
@@ -228,7 +228,7 @@ public class UserGroupController implements AuthorizationController {
 	 * @param userGroup
 	 * @return
 	 */
-	@PostMapping(value = "group/view-order/{userGroupId}")
+	@PostMapping(value = "view-order/{userGroupId}")
 	@ResponseBody
 	public Map<String, Object> moveUserGroup(HttpServletRequest request, @PathVariable Integer userGroupId, @ModelAttribute UserGroup userGroup) {
 		log.info("@@ userGroup = {}", userGroup);
@@ -264,7 +264,7 @@ public class UserGroupController implements AuthorizationController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "delete-group")
+	@GetMapping(value = "delete")
 	public String delete(@RequestParam("userGroupId") Integer userGroupId, Model model) {
 
 		// TODO validation 체크 해야 함

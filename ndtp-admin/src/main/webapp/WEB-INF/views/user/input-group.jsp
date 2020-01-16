@@ -94,7 +94,7 @@
 						<div class="button-group">
 							<div class="center-buttons">
 								<input type="submit" value="<spring:message code='save'/>" onclick="insertUserGroup();"/>
-								<a href="/user/list-group" class="button">목록</a>
+								<a href="/user-group/list" class="button">목록</a>
 							</div>
 						</div>
 						</form:form>
@@ -144,7 +144,7 @@
 			insertUserGroupFlag = false;
 			var formData = $("#userGroup").serialize();
 			$.ajax({
-				url: "/user/insert-group",
+				url: "/user-group/insert",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 		        data: formData,

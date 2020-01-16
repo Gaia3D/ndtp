@@ -207,7 +207,7 @@
 		userGroupDialog.dialog("open");
 
 		$.ajax({
-			url: "/user/detail-group",
+			url: "/user-group/detail",
 			data: {"userGroupId": userGroupId},
 			type: "GET",
 			headers: {"X-Requested-With": "XMLHttpRequest"},

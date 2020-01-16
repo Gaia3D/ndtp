@@ -86,7 +86,7 @@
 						<div class="button-group">
 							<div class="center-buttons">
 								<input type="submit" value="<spring:message code='save'/>" onclick="updateUserGroup();"/>
-								<a href="/user/list-group" class="button">목록</a>
+								<a href="/user-group/list" class="button">목록</a>
 							</div>
 						</div>
 						</form:form>
@@ -159,7 +159,7 @@
 			updateUserGroupFlag = false;
 			var formData = $("#userGroup").serialize();
 			$.ajax({
-				url: "/user/update-group",
+				url: "/user-group/update",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 		        data: formData,
