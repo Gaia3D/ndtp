@@ -264,7 +264,7 @@ public class UserGroupController implements AuthorizationController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "delete-data-group")
+	@GetMapping(value = "delete-group")
 	public String delete(@RequestParam("userGroupId") Integer userGroupId, Model model) {
 
 		// TODO validation 체크 해야 함
