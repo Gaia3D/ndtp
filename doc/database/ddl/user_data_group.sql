@@ -1,7 +1,7 @@
 -- FK, Index 는 별도 파일로 분리. 맨 마지막에 작업 예정
 drop table if exists user_data_group cascade;
 
--- data의 논리적인 그룹
+-- 사용자 데이터 그룹
 create table user_data_group (
 	user_data_group_id			integer,
 	data_group_key				varchar(60)							not null,
@@ -26,8 +26,8 @@ create table user_data_group (
 	constraint user_data_group_pk 	primary key (user_data_group_id)	
 );
 
-comment on table user_data_group is '데이터 그룹';
-comment on column user_data_group.user_data_group_id is '고유번호';
+comment on table user_data_group is '사용자 데이터 그룹';
+comment on column user_data_group.user_data_group_id is '사용자 데이터 그룹 고유번호';
 comment on column user_data_group.data_group_key is '링크 활용 등을 위한 확장 컬럼';
 comment on column user_data_group.data_group_name is '그룹명';
 comment on column user_data_group.data_group_path is '서비스 경로';

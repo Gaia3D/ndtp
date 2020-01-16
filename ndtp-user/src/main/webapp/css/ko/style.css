@@ -1302,7 +1302,6 @@ html, body {
 .container {
 	width: 100%;
 	max-width: 1920px;
-	min-width: 1420px;
 	margin: 0 auto;
 	padding: 0 20px;
 	box-sizing: border-box; }
@@ -2575,7 +2574,7 @@ min-width: 325px;
 }
 .tab li {
 display: inline-block;
-width: 110px;
+width: 180px;
 padding: 5px 0px;
 color: #000;
 cursor: pointer;

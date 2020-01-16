@@ -28,7 +28,7 @@ import ndtp.service.UserGroupService;
 
 @Slf4j
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/user-group")
 public class UserGroupController implements AuthorizationController {
 
 	@Autowired
@@ -44,7 +44,7 @@ public class UserGroupController implements AuthorizationController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "/list-group")
+	@GetMapping(value = "/list")
 	public String list(HttpServletRequest request, @ModelAttribute UserGroup userGroup, Model model) {
 		List<UserGroup> userGroupList = userGroupService.getListUserGroup();
 
@@ -54,11 +54,51 @@ public class UserGroupController implements AuthorizationController {
 	}
 
 	/**
+	 * 사용자 그룹 정보
+	 * @param userGroup
+	 * @return
+	 */
+	@GetMapping(value = "detail")
+	@ResponseBody
+	public Map<String, Object> detail(UserGroup userGroup) {
+
+		log.info("@@@@@ detail-group userGroup = {}", userGroup);
+
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		try {
+			if(userGroup.getUserGroupId() == null) {
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "input.invalid");
+				result.put("message", message);
+
+				return result;
+			}
+
+			userGroup = userGroupService.getUserGroup(userGroup);
+			result.put("userGroup", userGroup);
+		} catch(Exception e) {
+			e.printStackTrace();
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+
+		return result;
+	}
+
+	/**
 	 * 사용자 그룹 등록 페이지 이동
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "input-group")
+	@GetMapping(value = "input")
 	public String input(Model model) {
 		Policy policy = policyService.getPolicy();
 
@@ -82,7 +122,7 @@ public class UserGroupController implements AuthorizationController {
 	 * @param bindingResult
 	 * @return
 	 */
-	@PostMapping(value = "insert-group")
+	@PostMapping(value = "insert")
 	@ResponseBody
 	public Map<String, Object> insert(HttpServletRequest request, @Valid @ModelAttribute UserGroup userGroup, BindingResult bindingResult) {
 
@@ -128,7 +168,7 @@ public class UserGroupController implements AuthorizationController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "modify-group")
+	@GetMapping(value = "modify")
 	public String modify(HttpServletRequest request, @RequestParam Integer userGroupId, Model model) {
 		UserGroup userGroup = new UserGroup();
 		userGroup.setUserGroupId(userGroupId);
@@ -148,7 +188,7 @@ public class UserGroupController implements AuthorizationController {
 	 * @param bindingResult
 	 * @return
 	 */
-	@PostMapping(value = "update-group")
+	@PostMapping(value = "update")
 	@ResponseBody
 	public Map<String, Object> update(HttpServletRequest request, @Valid UserGroup userGroup, BindingResult bindingResult) {
 		log.info("@@ userGroup = {}", userGroup);
@@ -188,7 +228,7 @@ public class UserGroupController implements AuthorizationController {
 	 * @param userGroup
 	 * @return
 	 */
-	@PostMapping(value = "group/view-order/{userGroupId}")
+	@PostMapping(value = "view-order/{userGroupId}")
 	@ResponseBody
 	public Map<String, Object> moveUserGroup(HttpServletRequest request, @PathVariable Integer userGroupId, @ModelAttribute UserGroup userGroup) {
 		log.info("@@ userGroup = {}", userGroup);
@@ -224,7 +264,7 @@ public class UserGroupController implements AuthorizationController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "delete-data-group")
+	@GetMapping(value = "delete")
 	public String delete(@RequestParam("userGroupId") Integer userGroupId, Model model) {
 
 		// TODO validation 체크 해야 함
@@ -233,6 +273,6 @@ public class UserGroupController implements AuthorizationController {
 
 		userGroupService.deleteUserGroup(userGroup);
 
-		return "redirect:/user/list-group";
+		return "redirect:/user-group/list";
 	}
 }

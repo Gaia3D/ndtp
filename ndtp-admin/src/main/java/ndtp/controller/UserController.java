@@ -6,12 +6,16 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -112,7 +116,7 @@ public class UserController implements AuthorizationController {
 	}
 
 	/**
-	 * 사용자 등록 화면
+	 * 사용자 등록  페이지 이동
 	 */
 	@GetMapping(value = "input")
 	public String input(Model model) {
@@ -123,6 +127,109 @@ public class UserController implements AuthorizationController {
 		model.addAttribute("userGroupList", userGroupList);
 		model.addAttribute("userInfo", new UserInfo());
 		return "/user/input";
+	}
+
+	/**
+	 * 사용자 등록
+	 * @param request
+	 * @param userInfo
+	 * @param bindingResult
+	 * @return
+	 */
+	@PostMapping(value = "insert")
+	@ResponseBody
+	public Map<String, Object> insert(HttpServletRequest request, @Valid @ModelAttribute UserInfo userInfo, BindingResult bindingResult) {
+
+		log.info("@@@@@ insert userInfo = {}", userInfo);
+
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+
+		try {
+			if(bindingResult.hasErrors()) {
+				message = bindingResult.getAllErrors().get(0).getDefaultMessage();
+				log.info("@@@@@ message = {}", message);
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", errorCode);
+				result.put("message", message);
+	            return result;
+			}
+			userService.insertUser(userInfo);
+		} catch (Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
+	}
+
+	/**
+	 * 사용자 수정  페이지 이동
+	 * @param request
+	 * @param userId
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "modify")
+	public String modify(HttpServletRequest request, @RequestParam String userId, Model model) {
+		String roleCheckResult = roleValidate(request);
+    	if(roleValidate(request) != null) return roleCheckResult;
+
+        Policy policy = policyService.getPolicy();
+        UserInfo userInfo = userService.getUser(userId);
+
+        model.addAttribute("policy", policy);
+        model.addAttribute("userInfo", userInfo);
+
+        return "/user/modify";
+	}
+
+	/**
+	 * 사용자 수정
+	 * @param request
+	 * @param userInfo
+	 * @param bindingResult
+	 * @return
+	 */
+	@PostMapping(value = "update")
+	@ResponseBody
+	public Map<String, Object> update(HttpServletRequest request, @Valid UserInfo userInfo, BindingResult bindingResult) {
+		log.info("@@ userInfo = {}", userInfo);
+
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+
+		try {
+			if(bindingResult.hasErrors()) {
+				message = bindingResult.getAllErrors().get(0).getDefaultMessage();
+				log.info("@@@@@ message = {}", message);
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", errorCode);
+				result.put("message", message);
+	            return result;
+			}
+
+			userService.updateUser(userInfo);
+		} catch (Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
 	}
 
 	/**

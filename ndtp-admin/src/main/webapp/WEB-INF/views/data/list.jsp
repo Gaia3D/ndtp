@@ -75,7 +75,7 @@
 							<input type="hidden" id="checkIds" name="checkIds" value="" />
 						<div class="list-header row">
 							<div class="list-desc u-pull-left">
-								<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/> 
+								<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/>
 								<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/>
 							</div>
 							<div class="list-functions u-pull-right">
@@ -123,7 +123,7 @@
 </c:if>
 <c:if test="${!empty dataList }">
 	<c:forEach var="dataInfo" items="${dataList}" varStatus="status">
-		
+
 								<tr>
 									<td class="col-checkbox">
 										<input type="checkbox" id="dataId_${dataInfo.dataId}" name="dataId" value="${dataInfo.dataId}" />
@@ -148,21 +148,21 @@
 		</c:if>
 									</td>
 									<td class="col-type">
-										<a href="#" onclick="viewMapData('${dataInfo.dataId }'); return false;">보기</a></td>	
+										<a href="#" onclick="viewMapData('${dataInfo.dataId }'); return false;">보기</a></td>
 									<td class="col-type">
 										<a href="#" onclick="detailMetainfo('${dataInfo.dataId }'); return false;">보기</a>
 									</td>
 									<td class="col-functions">
 										<span class="button-group">
 											<a href="#" onclick="detailDataAttribute('${dataInfo.dataId }', '${dataInfo.dataName }'); return false;">보기</a>
-											<a href="#" class="image-button button-edit" 
+											<a href="#" class="image-button button-edit"
 												onclick="uploadDataAttribute('${dataInfo.dataId }', '${dataInfo.dataName }'); return false;">
 												<spring:message code='modified'/></a>
 										</span>
 									</td>
 									<td class="col-functions">
 										<span class="button-group">
-											<a href="#" class="image-button button-edit" 
+											<a href="#" class="image-button button-edit"
 												onclick="uploadDataObjectAttribute('${dataInfo.dataId }', '${dataInfo.dataName }'); return false;">
 												<spring:message code='modified'/></a>
 										</span>
@@ -185,14 +185,14 @@
 							</tbody>
 						</table>
 						</form:form>
-							
+
 					</div>
 					<%@ include file="/WEB-INF/views/common/pagination.jsp" %>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>	
+</div>
 <%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
 
 <%@ include file="/WEB-INF/views/data/group-dialog.jsp" %>
@@ -209,18 +209,18 @@
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript">
-	
-	// 전체 선택 
+
+	// 전체 선택
 	$("#chkAll").click(function() {
 		$(":checkbox[name=dataGroupid]").prop("checked", this.checked);
 	});
-	
+
 	// 데이터 그룹 정보
 	function detailDataGroup(dataGroupId) {
 		dataGroupDialog.dialog( "open" );
-		
+
 		$.ajax({
-			url: "/data/detail-group",
+			url: "/data-group/detail",
 			data: { "dataGroupId" : dataGroupId },
 			type: "GET",
 			headers: {"X-Requested-With": "XMLHttpRequest"},
@@ -240,11 +240,11 @@
 			}
 		});
 	}
-	
+
 		// 제어 속성
 	function detailMetainfo(dataId) {
 		dataMetainfoDialog.dialog( "open" );
-		
+
 		$.ajax({
 			url: "/data/detail-data-info",
 			data: { dataId : dataId },
@@ -263,12 +263,12 @@
 			}
 		});
 	}
-	
+
 	// 데이터 속성
 	function detailDataAttribute(dataId, dataName) {
 		dataAttributeDialog.dialog( "open" );
 		$("#data_name_for_origin").html(dataName);
-		
+
 		$.ajax({
 			url: "/data/detail-data-attribute",
 			data: { data_id : dataId },
@@ -289,7 +289,7 @@
 			}
 		});
 	}
-		
+
 	// origin 속성 수정
 	function uploadDataAttribute(dataId, dataName) {
 		uploadDataAttributeDialog.dialog( "open" );
@@ -298,13 +298,13 @@
 		$("#attributeFileDataId").val(dataId);
 		$("#attributeDataName").html(dataName);
 	}
-	
+
 	// origin 속성 파일 upload
 	var dataAttributeFileUploadFlag = true;
 	function dataAttributeFileUpload() {
 		alert("준비 중입니다.");
 		return;
-		
+
 		var fileName = $("#attributeFileName").val();
 		if(fileName === "") {
 			alert(JS_MESSAGE["file.name.empty"]);
@@ -316,7 +316,7 @@
 			$("#fileName").focus();
 			return false;
 		}
-		
+
 		if(dataAttributeFileUploadFlag) {
 			dataAttributeFileUploadFlag = false;
 			var totalNumber = "총건수";
@@ -382,7 +382,7 @@
 			return;
 		}
 	}
-	
+
 	// Data Object Attribute 파일 수정
 	function uploadDataObjectAttribute(dataId, dataName) {
 		uploadDataObjectAttributeDialog.dialog( "open" );
@@ -391,29 +391,29 @@
 		$("#objectAttributeFileDataId").val(dataId);
 		$("#objectAttributeDataName").html(dataName);
 	}
-	
+
 	// Data Object 속성 파일 upload
 	var dataObjectAttributeFileUploadFlag = true;
 	function dataObjectAttributeFileUpload() {
 		alert("준비 중입니다.");
 		return;
-		
+
 		var fileName = $("#object_attribute_file_name").val();
 		if(fileName === "") {
 			alert(JS_MESSAGE["file.name.empty"]);
 			$("#object_attribute_file_name").focus();
 			return false;
 		}
-		
+
 		if( fileName.lastIndexOf("json") <=0 && fileName.lastIndexOf("txt") <=0 ) {
 			alert(JS_MESSAGE["file.ext.invalid"]);
 			$("#file_name").focus();
 			return false;
 		}
-		
+
 		if(dataObjectAttributeFileUploadFlag) {
 			dataObjectAttributeFileUploadFlag = false;
-			
+
 			var totalNumber = "총건수";
 			var successParsing = "성공 건수";
 			var failedParsing = "실패 건수";
@@ -477,7 +477,7 @@
 			return;
 		}
 	}
-	
+
 	// Data 일괄 삭제
 	var deleteDatasFlag = true;
 	function deleteDatas() {
@@ -491,7 +491,7 @@
 			});
 			$("#check_ids").val(checkedValue);
 		}
-		
+
 		if(confirm(JS_MESSAGE["delete.confirm"])) {
 			if(deleteDatasFlag) {
 				deleteDatasFlag = false;
@@ -504,7 +504,7 @@
 					dataType: "json",
 					success: function(msg){
 						if(msg.statusCode <= 200) {
-							alert(JS_MESSAGE["delete"]);	
+							alert(JS_MESSAGE["delete"]);
 							location.reload();
 							$(":checkbox[name=data_id]").prop("checked", false);
 						} else {
@@ -554,16 +554,16 @@
 			$("#data_file_name").focus();
 			return false;
 		}
-		
-		if( fileName.lastIndexOf("xlsx") <=0 
+
+		if( fileName.lastIndexOf("xlsx") <=0
 				&& fileName.lastIndexOf("xls") <=0
-				&& fileName.lastIndexOf("json") <=0 
+				&& fileName.lastIndexOf("json") <=0
 				&& fileName.lastIndexOf("txt") <=0 ) {
 			alert(JS_MESSAGE["file.ext.invalid"]);
 			$("#data_file_name").focus();
 			return false;
 		}
-		
+
 		if(dataFileUploadFlag) {
 			dataFileUploadFlag = false;
 			var totalNumber = "총건수";
@@ -629,14 +629,14 @@
 			return;
 		}
 	}
-	
+
 	// Data Attribute 일괄 등록
 	function uploadProjectDataAttribute() {
 		uploadProjectDataAttributeDialog.dialog( "open" );
 		$("#project_data_attribute_path").val("");
 			$("#projectDataAttributeUploadLog > tbody:last").html("");
 	}
-	
+
 	// data attribute 일괄 등록
 	var projectDataAttributeFileUploadFlag = true;
 	function projectDataAttributeFileUpload() {
@@ -658,7 +658,7 @@
 				success: function(msg){
 					//if(msg.statusCode <= 200) {
 					//} alert(JS_MESSAGE[msg.errorCode]);
-					
+
 					if(msg.insert_error_count != 0) {
 						$("#project_data_attribute_path").val("");
 						alert(JS_MESSAGE["error.exist.in.processing"]);
@@ -699,14 +699,14 @@
 			return;
 		}
 	}
-	
+
 	// Data Object Attribute 일괄 등록
 	function uploadProjectDataObjectAttribute() {
 		uploadProjectDataObjectAttributeDialog.dialog( "open" );
 		$("#project_data_object_attribute_path").val("");
 			$("#projectDataObjectAttributeUploadLog > tbody:last").html("");
 	}
-	
+
 	// data object attribute 일괄 등록
 	var projectDataObjectAttributeFileUploadFlag = true;
 	function projectDataObjectAttributeFileUpload() {
@@ -727,7 +727,7 @@
 				success: function(msg){
 					// if(msg.statusCode <= 200) {
 					// alert(JS_MESSAGE[msg.errorCode]);
-						
+
 					if(msg.insert_error_count != 0) {
 						$("#project_data_object_attribute_path").val("");
 						alert(JS_MESSAGE["error.exist.in.processing"]);
@@ -768,7 +768,7 @@
 			return;
 		}
 	}
-	
+
 	// 데이터 그룹 정보
 	var dataGroupDialog = $( ".dataGroupDialog" ).dialog({
 		autoOpen: false,
@@ -825,7 +825,7 @@
 		modal: true,
 		resizable: false
 	});
-	
+
 	// Map 에 데이터 표시
 	function viewMapData(dataId) {
 		var url = "/data/map-data?dataId=" + dataId;

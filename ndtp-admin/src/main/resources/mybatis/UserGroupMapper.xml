@@ -239,16 +239,32 @@
     <update id="updateUserGroup" parameterType="userGroup">
         /* updateUserGroup */
         UPDATE user_group
-        SET user_group_key = #{userGroupKey},
-        	user_group_name = #{userGroupName},
+        SET
+			<if test="userGroupKey != null and userGroupKey != ''">
+        	user_group_key = #{userGroupKey},
+            </if>
+			<if test="ancestor != null and ancestor != ''">
             ancestor = #{ancestor},
+            </if>
+			<if test="parent != null and parent != ''">
             parent = #{parent},
+            </if>
+			<if test="depth != null and depth != ''">
             depth = #{depth},
+            </if>
+			<if test="viewOrder != null and viewOrder != ''">
             view_order = #{viewOrder},
+            </if>
+			<if test="basic != null and basic != ''">
             basic = #{basic},
+            </if>
+			<if test="available != null and available != ''">
             available = #{available},
+            </if>
+			<if test="children != null and children != ''">
             children = #{children},
-            description = #{description}
+            </if>
+            user_group_name = #{userGroupName}
         WHERE user_group_id = #{userGroupId}
     </update>
 

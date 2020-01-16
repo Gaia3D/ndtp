@@ -117,7 +117,7 @@
 					<label for="">면적 타입</label>
 					<select class="areaType">
 						<option value="useArea">사용자 영역</option>
-						<option value="extent">현재 지도 영역</option>
+						<!-- <option value="extent">현재 지도 영역</option> -->
 					</select>
 				</li>
 				<li class="wrapCropShape">

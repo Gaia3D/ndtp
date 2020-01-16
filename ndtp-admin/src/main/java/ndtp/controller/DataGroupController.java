@@ -32,7 +32,7 @@ import ndtp.service.PolicyService;
 
 @Slf4j
 @Controller
-@RequestMapping("/data/")
+@RequestMapping("/data-group/")
 public class DataGroupController {
 
 	@Autowired
@@ -51,7 +51,7 @@ public class DataGroupController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "list-group")
+	@GetMapping(value = "list")
 	public String list(HttpServletRequest request, @ModelAttribute DataGroup dataGroup, Model model) {
 		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup();
 
@@ -65,7 +65,7 @@ public class DataGroupController {
 	 * @param dataGroup
 	 * @return
 	 */
-	@GetMapping(value = "detail-group")
+	@GetMapping(value = "detail")
 	@ResponseBody
 	public Map<String, Object> ajaxProject(DataGroup dataGroup) {
 
@@ -131,7 +131,7 @@ public class DataGroupController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "input-group")
+	@GetMapping(value = "input")
 	public String input(Model model) {
 		Policy policy = policyService.getPolicy();
 
@@ -155,7 +155,7 @@ public class DataGroupController {
 	 * @param bindingResult
 	 * @return
 	 */
-	@PostMapping(value = "insert-group")
+	@PostMapping(value = "insert")
 	@ResponseBody
 	public Map<String, Object> insert(HttpServletRequest request, @Valid @ModelAttribute DataGroup dataGroup, BindingResult bindingResult) {
 
@@ -201,7 +201,7 @@ public class DataGroupController {
 	 * @param dataGroup
 	 * @return
 	 */
-	@PostMapping(value = "group/view-order/{dataGroupId}")
+	@PostMapping(value = "view-order/{dataGroupId}")
 	@ResponseBody
 	public Map<String, Object> moveDataGroup(HttpServletRequest request, @PathVariable Integer dataGroupId, @ModelAttribute DataGroup dataGroup) {
 		log.info("@@ dataGroup = {}", dataGroup);
@@ -237,7 +237,7 @@ public class DataGroupController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "delete-data-group")
+	@GetMapping(value = "delete")
 	public String delete(@RequestParam("dataGroupId") Integer dataGroupId, Model model) {
 
 		// TODO validation 체크 해야 함
@@ -246,6 +246,6 @@ public class DataGroupController {
 
 		dataGroupService.deleteDataGroup(dataGroup);
 
-		return "redirect:/data/list-group";
+		return "redirect:/data-group/list";
 	}
 }
