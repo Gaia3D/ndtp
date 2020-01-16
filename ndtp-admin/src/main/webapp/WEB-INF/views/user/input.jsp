@@ -164,73 +164,7 @@
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
-
-	<!-- Dialog -->
-	<div id="userDialog" class="dialog">
-		<table class="list-table scope-col">
-			<col class="col-name" />
-			<col class="col-toggle" />
-			<col class="col-id" />
-			<col class="col-function" />
-			<col class="col-date" />
-			<col class="col-toggle" />
-			<thead>
-				<tr>
-					<th scope="col" class="col-name">사용자 그룹명</th>
-					<th scope="col" class="col-toggle">사용 여부</th>
-					<th scope="col" class="col-toggle">설명</th>
-					<th scope="col" class="col-date">등록일</th>
-					<th scope="col" class="col-date">선택</th>
-				</tr>
-			</thead>
-			<tbody>
-<c:if test="${empty userGroupList }">
-			<tr>
-				<td colspan="6" class="col-none">사용자 그룹이 존재하지 않습니다.</td>
-			</tr>
-</c:if>
-<c:if test="${!empty userGroupList }">
-	<c:set var="paddingLeftValue" value="0" />
-	<c:forEach var="userGroup" items="${userGroupList}" varStatus="status">
-		<c:if test="${userGroup.depth eq '1' }">
-            <c:set var="depthClass" value="oneDepthClass" />
-            <c:set var="paddingLeftValue" value="0px" />
-        </c:if>
-        <c:if test="${userGroup.depth eq '2' }">
-            <c:set var="depthClass" value="twoDepthClass" />
-            <c:set var="paddingLeftValue" value="40px" />
-        </c:if>
-        <c:if test="${userGroup.depth eq '3' }">
-            <c:set var="depthClass" value="threeDepthClass" />
-            <c:set var="paddingLeftValue" value="80px" />
-        </c:if>
-
-			<tr class="${depthClass } ${depthParentClass} ${ancestorClass }" style="${depthStyleDisplay}">
-				<td class="col-name" style="text-align: left;" nowrap="nowrap">
-					<span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"></span>
-					${userGroup.userGroupName }
-				</td>
-				<td class="col-type">
-        <c:if test="${userGroup.available eq 'true' }">
-                	사용
-        </c:if>
-        <c:if test="${userGroup.available eq 'false' }">
-        			미사용
-        </c:if>
-			    </td>
-			    <td class="col-key">${userGroup.description }</td>
-			    <td class="col-date">
-			    	<fmt:parseDate value="${userGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
-					<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
-			    </td>
-			    <td class="col-toggle">
-			    	<a href="#" onclick="confirmParent('${userGroup.userGroupId}', '${userGroup.userGroupName}'); return false;">확인</a></td>
-			</tr>
-	</c:forEach>
-</c:if>
-			</tbody>
-		</table>
-	</div>
+	<%@ include file="/WEB-INF/views/user/group-dialog.jsp" %>
 
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
@@ -241,7 +175,7 @@
 	$(document).ready(function() {
 	});
 
-	var userDialog = $( "#userDialog" ).dialog({
+	var userDialog = $("#userGroupListDialog").dialog({
 		autoOpen: false,
 		height: 600,
 		width: 1200,
@@ -251,20 +185,20 @@
 	});
 
 	// 부모 찾기
-	$( "#userGroupButtion" ).on( "click", function() {
-		userDialog.dialog( "open" );
-		userDialog.dialog( "option", "title", "사용자 그룹 선택");
+	$("#userGroupButtion").on("click", function() {
+		userDialog.dialog("open");
+		userDialog.dialog("option", "title", "사용자 그룹 선택");
 	});
 
 	// 상위 Node
 	function confirmParent(parent, parentName) {
 		$("#userGroupId").val(parent);
 		$("#userGroupName").val(parentName);
-		userDialog.dialog( "close" );
+		userDialog.dialog("close");
 	}
 
 	// 아이디 중복 확인
- 	$( "#userDuplicationButtion" ).on( "click", function() {
+ 	$("#userDuplicationButtion").on("click", function() {
 		var userId = $("#userId").val();
 		if (userId == "") {
 			alert(JS_MESSAGE["user.id.empty"]);
