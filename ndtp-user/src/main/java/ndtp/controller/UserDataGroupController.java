@@ -41,7 +41,7 @@ import ndtp.utils.FormatUtils;
 @Slf4j
 @Controller
 @RequestMapping("/user-data-group/")
-public class UserGroupController {
+public class UserDataGroupController {
 	
 	private static final long PAGE_ROWS = 5l;
 	private static final long PAGE_LIST_COUNT = 5l;
