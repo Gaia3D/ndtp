@@ -140,7 +140,7 @@
 			</div>
 			<!-- E: 데이터 -->
 			
-			<div id="analyticsContent" class="contentsList yScroll" style="display:none;height: 798px;background-color: #fff;">
+			<div id="spatialContent" class="contentsList yScroll" style="display:none;height: 798px;background-color: #fff;">
 				<%@ include file="/WEB-INF/views/spatial/spatial.jsp" %> 
 			</div>
 			<div id="simulationContent" class="contentsList yScroll" style="display:none;">

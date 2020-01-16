@@ -26992,7 +26992,10 @@ MagoManager.prototype.mouseActionLeftClick = function(mouseX, mouseY)
 	if (!this.isDragging()) 
 	{
 		var eventCoordinate = ManagerUtils.getComplexCoordinateByScreenCoord(this.getGl(), mouseX, mouseY, undefined, undefined, undefined, this);
-		this.emit(MagoManager.EVENT_TYPE.CLICK, {type: MagoManager.EVENT_TYPE.CLICK, clickCoordinate: eventCoordinate, timestamp: this.getCurrentTime()});
+		if(eventCoordinate) {
+			this.emit(MagoManager.EVENT_TYPE.CLICK, {type: MagoManager.EVENT_TYPE.CLICK, clickCoordinate: eventCoordinate, timestamp: this.getCurrentTime()});
+		}
+		
 	}
 };
 
@@ -27008,7 +27011,9 @@ MagoManager.prototype.mouseActionLeftDoubleClick = function(mouseX, mouseY)
 	if (!this.isDragging()) 
 	{
 		var eventCoordinate = ManagerUtils.getComplexCoordinateByScreenCoord(this.getGl(), mouseX, mouseY, undefined, undefined, undefined, this);
-		this.emit(MagoManager.EVENT_TYPE.DBCLICK, {type: MagoManager.EVENT_TYPE.CLICK, clickCoordinate: eventCoordinate, timestamp: this.getCurrentTime()});
+		if(eventCoordinate) {
+			this.emit(MagoManager.EVENT_TYPE.DBCLICK, {type: MagoManager.EVENT_TYPE.CLICK, clickCoordinate: eventCoordinate, timestamp: this.getCurrentTime()});
+		}
 	}
 };
 
@@ -27024,7 +27029,9 @@ MagoManager.prototype.mouseActionRightClick = function(mouseX, mouseY)
 	if (!this.isDragging()) 
 	{
 		var eventCoordinate = ManagerUtils.getComplexCoordinateByScreenCoord(this.getGl(), mouseX, mouseY, undefined, undefined, undefined, this);
-		this.emit(MagoManager.EVENT_TYPE.RIGHTCLICK, {type: MagoManager.EVENT_TYPE.CLICK, clickCoordinate: eventCoordinate, timestamp: this.getCurrentTime()});
+		if(eventCoordinate) {
+			this.emit(MagoManager.EVENT_TYPE.RIGHTCLICK, {type: MagoManager.EVENT_TYPE.CLICK, clickCoordinate: eventCoordinate, timestamp: this.getCurrentTime()});
+		}
 	}
 };
 
@@ -27201,7 +27208,10 @@ MagoManager.prototype.mouseActionMove = function(newPixel, oldPixel)
 	var startEventCoordinate = ManagerUtils.getComplexCoordinateByScreenCoord(gl, oldPixel.x, oldPixel.y, undefined, undefined, undefined, this);
 	var endEventCoordinate = ManagerUtils.getComplexCoordinateByScreenCoord(gl, newPixel.x, newPixel.y, undefined, undefined, undefined, this);
 	
-	this.emit(MagoManager.EVENT_TYPE.MOUSEMOVE, {type: MagoManager.EVENT_TYPE.MOUSEMOVE, startEvent: startEventCoordinate, endEvent: endEventCoordinate, timestamp: this.getCurrentTime() });
+	if(startEventCoordinate && endEventCoordinate) {
+		this.emit(MagoManager.EVENT_TYPE.MOUSEMOVE, {type: MagoManager.EVENT_TYPE.MOUSEMOVE, startEvent: startEventCoordinate, endEvent: endEventCoordinate, timestamp: this.getCurrentTime() });
+	}
+	
 
 	function disableCameraMotion(screenSpaceCameraController, state)
 	{
@@ -86411,6 +86421,9 @@ ManagerUtils.getHeadingToNorthByTwoGeographicCoords = function(startGeographic, 
 ManagerUtils.getComplexCoordinateByScreenCoord = function(gl, pixelX, pixelY, depthFbo, frustumNear, frustumFar, magoManager) 
 {
 	var worldCoord = ManagerUtils.screenCoordToWorldCoord(magoManager.getGl(), pixelX, pixelY, worldCoord, undefined, undefined, undefined, magoManager);
+	if(!worldCoord) {
+		return null;
+	}
 	var geographicCoord = ManagerUtils.pointToGeographicCoord(worldCoord, geographicCoord);
 
 	return {

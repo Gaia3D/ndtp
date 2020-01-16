@@ -1,47 +1,50 @@
 var SpatialAnalysis = function(magoInstance) {
+	
 	var magoManager = magoInstance.getMagoManager();
 	var viewer = magoInstance.getViewer();
 	var entities = viewer.entities;
 	var entityObject = {};
-	
-	$('#analysisRasterProfile .drawUserLine').click(function() {
-		
-		var id = 'analysisRasterProfile';
-		$('#analysisRasterProfile .coordsText').empty();
-		
-		if(entityObject[id]) {
-			if(entityObject[id]['vertex']) {
-				remove(entityObject[id]['vertex']);
-				
-				entityObject[id]['vertex'] = null;
-			}
-			
-			if(entityObject[id]['line']) {
-				remove(entityObject[id]['line']);
-				
-				entityObject[id]['line'] = null;
-			}
-		}
+
+	//취소 버튼 클릭 시 해당 분석 위치 입력값 초기화.
+	$('#spatialContent .reset').click(function() {
+		var parentDiv = $(this).parents('div:first');
+		var analysisType = parentDiv.attr('id');
+		removeByDivId(analysisType);
 	});
 	
+	//지형 단면 분석 사용자 입력 선분 버텍스 위치 보기.
 	$('#analysisRasterProfile').on('click','span.coordText button', function() {
-		console.info($(this).data());
 		var data =$(this).data();
 		
 		var lon = parseFloat(data.lon);
 		var lat = parseFloat(data.lat);
 		
 		viewer.camera.flyTo({
-		    destination : Cesium.Cartesian3.fromDegrees(lon, lat, 1500.0)
+		    destination : Cesium.Cartesian3.fromDegrees(lon, lat, 1500.0),
+		    duration:0
 		});
+	});
+	
+	// 지형 최고/최저 점 면적 타입 변경 시 
+	// 좀 더 생각해봐야함.
+	$('#analysisRasterHighLowPoints .areaType').change(function() {
+		var changeVal = $(this).val();
+		var wrapCropShape = $('#analysisRasterHighLowPoints li.wrapCropShape');
+		
+		if(changeVal === 'useArea') {
+			wrapCropShape.show();
+		} else {
+			wrapCropShape.find('input.cropShape').val('');
+			wrapCropShape.hide();
+		}
 	});
 	
 	// TODO: mago3djs draw interaction 으로 devlope 예정
 	magoManager.on(Mago3D.MagoManager.EVENT_TYPE.MOUSEMOVE, function(result) {
-		var selectedBtn = $('#analyticsContent button[class*="draw"].on');
+		var selectedBtn = $('#spatialContent button[class*="draw"].on');
 		var drawType = selectedBtn.data('drawType');
-		if($('#analyticsContent').is(':visible') && drawType) {
-			if(drawType === 'LINE') {
+		if($('#spatialContent').is(':visible') && drawType) {
+			if(drawType === 'LINE' || drawType === 'POLYGON') {
 				var parentDiv = selectedBtn.parents('div:first');
 				var analysisType = parentDiv.attr('id');
 				
@@ -83,16 +86,24 @@ var SpatialAnalysis = function(magoInstance) {
 		}
 	});
 	magoManager.on(Mago3D.MagoManager.EVENT_TYPE.RIGHTCLICK, function(result) {
-		var selectedBtn = $('#analyticsContent button[class*="draw"].on');
+		var selectedBtn = $('#spatialContent button[class*="draw"].on');
 		var drawType = selectedBtn.data('drawType');
-		if($('#analyticsContent').is(':visible') && drawType) {
-			if(drawType === 'LINE') {
+		if($('#spatialContent').is(':visible') && drawType) {
+			if(drawType === 'LINE' || drawType === 'POLYGON') {
 				var parentDiv = selectedBtn.parents('div:first');
 				var analysisType = parentDiv.attr('id');
 				
 				if(entityObject[analysisType] && entityObject[analysisType]['vertex'] && entityObject[analysisType]['line']) {
-					selectedBtn.removeClass('on');
+					
 					var vertexIds = entityObject[analysisType]['vertex'];
+					
+					if(drawType === 'POLYGON' && vertexIds.length < 3) {
+						alert('최소 3개점이 필요합니다.');
+						return false;
+					}
+					
+					selectedBtn.removeClass('on');
+					
 					var positions = [];
 					for(var i in vertexIds) {
 						var vertexId = vertexIds[i];
@@ -108,15 +119,41 @@ var SpatialAnalysis = function(magoInstance) {
 						entities.removeById(lineIds[i]);
 					}
 					
-					var corridorGraphic = new Cesium.CorridorGraphics({
-						positions: positions,
-						width: 8,
-						material: Cesium.Color.AQUAMARINE,
-						clampToGround: true
-					})
-					var addedEntity = viewer.entities.add({
-						corridor : corridorGraphic
-					});
+					var addedEntity;
+					if(drawType === 'LINE') {
+						var corridorGraphic = new Cesium.CorridorGraphics({
+							positions: positions,
+							width: 16,
+							material: Cesium.Color.AQUAMARINE,
+							clampToGround: true
+						})
+						addedEntity = viewer.entities.add({
+							corridor : corridorGraphic
+						});
+					} else {
+						var polygonHierarchy = new Cesium.PolygonHierarchy(positions);
+						var polygonGraphic = new Cesium.PolygonGraphics({
+							hierarchy: polygonHierarchy,
+							material: Cesium.Color.AQUAMARINE.withAlpha(0.5),
+							outline:true,
+							outlineColor:Cesium.Color.WHITE,
+							outlineWidth:2,
+							clampToGround: true
+						})
+						addedEntity = viewer.entities.add({
+							polygon : polygonGraphic
+						});
+						
+					}
+					var geographics = []
+					for(var i in positions) {
+						var pos = positions[i];
+						var geog = Cesium.Cartographic.fromCartesian(pos);
+						
+						geographics.push({longitude:Cesium.Math.toDegrees(geog.longitude), latitude : Cesium.Math.toDegrees(geog.latitude)});
+					}
+					var wkt = Mago3D.ManagerUtils.geographicToWkt(geographics, drawType);
+					selectedBtn.siblings('input[type="hidden"]').val(wkt);
 					
 					entityObject[analysisType]['line'] = addedEntity.id;
 				}
@@ -125,20 +162,21 @@ var SpatialAnalysis = function(magoInstance) {
 	});
 	
 	magoManager.on(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
-		if($('#analyticsContent').is(':visible') && !magoManager.isDragging()) {
-			var selectedBtn = $('#analyticsContent button[class*="draw"].on');
+		if($('#spatialContent').is(':visible') && !magoManager.isDragging()) {
+			var selectedBtn = $('#spatialContent button[class*="draw"].on');
 			var parentDiv = selectedBtn.parents('div:first');
 			
 			var analysisType = parentDiv.attr('id');
 			var drawType = selectedBtn.data('drawType');
+			
+			if(!drawType) return false;
+			
 			var geographicCoord = result.clickCoordinate.geographicCoordinate
 			var worldCoordinate = result.clickCoordinate.worldCoordinate;
 			
-			//POINT (127.26878074384061 36.63103860210486)
-			
 			if(drawType === 'POINT') {
 				var pointType = selectedBtn.attr('class').indexOf('Observer') > 0 ? 'observer' : 'target';
-				var wkt = Mago3D.ManagerUtils.geographicToWkt(geographicCoord);
+				var wkt = Mago3D.ManagerUtils.geographicToWkt(geographicCoord, 'POINT');
 				selectedBtn.siblings('input[type="hidden"]').val(wkt);
 				
 				var tempString = geographicCoord.longitude.toFixed(5) + ',' + geographicCoord.latitude.toFixed(5);
@@ -165,13 +203,17 @@ var SpatialAnalysis = function(magoInstance) {
 				}
 				entityObject[analysisType][pointType] = addedEntity.id;
 				selectedBtn.removeClass('on');
-			} else if(drawType === 'LINE') {
+			} else {
 				removeAnotherEntity(analysisType, drawType, false);
 				
 				if(!entityObject[analysisType]) {
 					entityObject[analysisType] = {};
 				}
 				if(!entityObject[analysisType]['vertex']) {
+					entityObject[analysisType]['vertex'] = [];
+				}
+				if(entityObject[analysisType]['vertex'].length === 0 && entityObject[analysisType]['line']) {
+					removeByDivId(analysisType);
 					entityObject[analysisType]['vertex'] = [];
 				}
 				
@@ -189,18 +231,17 @@ var SpatialAnalysis = function(magoInstance) {
 				});
 				entityObject[analysisType]['vertex'].push(addedEntity.id);
 				
-				var tempString = geographicCoord.longitude.toFixed(5) + ',' + geographicCoord.latitude.toFixed(5)
-				
-				var html = '<span class="coordText">';
-				html += tempString;
-				html += '<button type="button" class="btnText coordBtn" data-lon="' + geographicCoord.longitude +'" data-lat="' + geographicCoord.latitude + '">보기</button>';
-				html += '</span>';
-				
-				$('#' + analysisType + ' .coordsText').append(html);
-			} else {
-				//POLYGON
+				if(drawType === 'LINE') {
+					var tempString = geographicCoord.longitude.toFixed(5) + ',' + geographicCoord.latitude.toFixed(5)
+					
+					var html = '<span class="coordText">';
+					html += tempString;
+					html += '<button type="button" class="btnText coordBtn" data-lon="' + geographicCoord.longitude +'" data-lat="' + geographicCoord.latitude + '">보기</button>';
+					html += '</span>';
+					
+					$('#' + analysisType + ' .coordsText').append(html);
+				}
 			}
-			
 		}
 	});
 	
@@ -212,15 +253,7 @@ var SpatialAnalysis = function(magoInstance) {
 				
 				var analysis = entityObject[analType];
 				if(analType !== id) {
-					var entityTypes = Object.keys(analysis);
-					for(var j in entityTypes) {
-						var entityType = entityTypes[j];
-						var stored = analysis[entityType];
-						remove(stored);
-
-						analysis[entityType] = null;
-						$('#' + analType + ' .' + entityType + 'Point').val('').siblings('input').val('');
-					}
+					removeByDivId(analType);
 				} else {
 					if(withPrev) {
 						if(analysis[type]) {
@@ -243,8 +276,36 @@ var SpatialAnalysis = function(magoInstance) {
 	}
 	function removeAnotherUI(id) {
 		switch(id) {
+			case 'analysisRadialLineOfSight':
+			case 'analysisLinearLineOfSight':
+			case 'analysisRangeDome': {
+				$('#'+id).find('input.withBtn,input[type="hidden"]').val('');
+				break;
+			}
 			case 'analysisRasterProfile' : {
+				$('#analysisRasterProfile').find('input[type="hidden"]').val('');
 				$('#analysisRasterProfile .coordsText').empty();
+				break;
+			}
+			case 'analysisRasterHighLowPoints' : {
+				$('#analysisRasterHighLowPoints').find('input[type="hidden"]').val('');
+			}
+		}
+	}
+	
+	function removeByDivId(id) {
+		removeAnotherUI(id);
+		
+		var $div = $('#'+id);
+		if(entityObject[id]) {
+			var entityTypes = Object.keys(entityObject[id]);
+			if(entityTypes.length > 0) {
+				for(var i in entityTypes) {
+					var entityType = entityTypes[i];
+					
+					remove(entityObject[id][entityType]);
+					entityObject[id][entityType] = null;
+				}
 			}
 		}
 	}

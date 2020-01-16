@@ -80,17 +80,17 @@ $(function() {
     
 /***** Contents Wrap: 공간분석 *****/	
 	// 공간분석 그룹 클릭 시	
-	$('#analyticsContent ul.listDrop li > p').click(function(e) {
+	$('#spatialContent ul.listDrop li > p').click(function(e) {
 		var parentObj = $(this).parent();
 		var index = parentObj.index();
-		$('#analyticsContent ul.listDrop > li').eq(index).toggleClass('on');
+		$('#spatialContent ul.listDrop > li').eq(index).toggleClass('on');
 	});
 	
 	// 공간분석 위치 관련 버튼 클릭 시
-	$('#analyticsContent button[class*="draw"]').click(function(e) {
+	$('#spatialContent button[class*="draw"]').click(function(e) {
 		$(this).toggleClass('on');
 		
-		$('#analyticsContent button[class*="draw"]').not($(this)).each(function(i,a){
+		$('#spatialContent button[class*="draw"]').not($(this)).each(function(i,a){
 			$(this).removeClass('on');
 		});
 	});
