@@ -176,11 +176,6 @@ insert into data_group (data_group_id, data_group_name, data_group_key,
 	values
 		(1, '기본', 'basic', 'basic/', 'common', 1, 0, 1, 1, true, true);
 
-insert into user_data_group (user_data_group_id, data_group_name, data_group_key, data_group_path, sharing,
-		user_id,ancestor, parent, depth, view_order, basic, available)
-	values
-		(NEXTVAL('user_data_group_seq'), '기본', 'basic', 'basic/', 'common', 'ndtp', 1, 0, 1, 1, true, true);
-
 commit;
 
 

@@ -162,7 +162,7 @@
 												<a href="/user/modify?userId=${user.userId}" class="image-button button-modify"><spring:message code='modified'/></a>
 											</span>
 											<span class="button-group">
-												<a href="/user/delete?userId=${user.userId}" class="image-button button-delete"><spring:message code='delete'/></a>
+												<a href="/user/delete?userId=${user.userId}" onclick="return deleteWarning();" class="image-button button-delete"><spring:message code='delete'/></a>
 											</span>
 										</td>
 									</tr>

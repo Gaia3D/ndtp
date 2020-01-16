@@ -14,56 +14,6 @@
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
 	<link rel="stylesheet" href="/externlib/dropzone/dropzone.min.css">
     <link rel="stylesheet" href="/css/${lang}/style.css" />
-    <script type="text/javascript" src="../externlib/handlebars-4.1.2/handlebars.js"></script>
-    <script type="text/javascript" src="/externlib/dropzone/dropzone.min.js"></script>
-    <style type="text/css">
-        .dropzone .dz-preview.lp-preview {
-            width: 150px;
-        }
-        .dropzone.hzScroll {
-            min-width: 700px;
-            overflow: auto;
-            white-space: nowrap;
-            border: 1px solid #e5e5e5;
-        }
-
-        .loader-txt p {
-            font-size: 13px;
-            color: #666;
-        }
-
-        .loader-txt p small {
-            font-size: 11.5px;
-            color: #999;
-        }
-
-        .loader {
-            position: relative;
-            text-align: center;
-            margin: 15px auto 35px auto;
-            z-index: 9999;
-            display: block;
-            width: 80px;
-            height: 80px;
-            border: 10px solid rgba(0, 0, 0, 0.3);
-            border-radius: 50%;
-            border-top-color: #000;
-            animation: spin 1s ease-in-out infinite;
-            -webkit-animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to {
-                -webkit-transform: rotate(360deg);
-            }
-        }
-
-        @-webkit-keyframes spin {
-            to {
-                -webkit-transform: rotate(360deg);
-            }
-        }
-    </style>
 </head>
 <body>
 	<%@ include file="/WEB-INF/views/layouts/header.jsp" %>
@@ -80,12 +30,8 @@
 						</div>
 						<form:form id="userInfo" modelAttribute="userInfo" method="post" onsubmit="return false;">
 						<table class="input-table scope-row">
-							<colgroup>
-			                    <col class="col-label l" style="width: 15%" >
-			                    <col class="col-input" style="width: 35%" >
-			                    <col class="col-label l" style="width: 15%" >
-			                    <col class="col-input" style="width: 35%" >
-			                </colgroup>
+							<col class="col-label" />
+							<col class="col-input" />
 			                <tr>
 								<th class="col-label" scope="row">
 									<form:label path="userId"><spring:message code='user.id'/></form:label>
@@ -108,7 +54,8 @@
 							</tr>
 							<tr>
 								<th class="col-label" scope="row">
-			                        <label for="userName"><spring:message code='name'/></label>
+			                        <form:label path="userName"><spring:message code='name'/></form:label>
+			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 			                    <td class="col-input">
 									<form:input path="userName" cssClass="ml"/>
@@ -118,6 +65,29 @@
 									<form:radiobutton id="sharingPrivate" path="sharing" value="private" label="비공개" />
 									<form:radiobutton id="sharingGroup" path="sharing" value="group" label="그룹" />
 			                    </td> --%>
+							</tr>
+							<tr>
+								<th class="col-label" scope="row">
+									<form:label path="password"><spring:message code='password'/></form:label>
+									<span class="icon-glyph glyph-emark-dot color-warning"></span>
+								</th>
+								<td class="col-input">
+									<form:input path="password" class="ml" />
+									<span class="table-desc"><spring:message code='user.input.upper.case'/> ${policy.passwordEngUpperCount}, <spring:message code='user.input.lower.case'/> ${policy.passwordEngLowerCount},
+										 <spring:message code='user.input.number'/> ${policy.passwordNumberCount}, <spring:message code='user.input.special.characters'/> ${policy.passwordSpecialCharCount} <spring:message code='user.input.special.characters.need'/>
+										 ${policy.passwordMinLength} ~ ${policy.passwordMaxLength}<spring:message code='user.input.do'/></span>
+									<form:errors path="password" cssClass="error" />
+								</td>
+							</tr>
+							<tr>
+								<th class="col-label" scope="row">
+									<form:label path="passwordConfirm"><spring:message code='password.check'/></form:label>
+									<span class="icon-glyph glyph-emark-dot color-warning"></span>
+								</th>
+								<td class="col-input">
+									<form:input path="password" class="ml" />
+									<form:errors path="passwordConfirm" cssClass="error" />
+								</td>
 							</tr>
 							<%-- <tr>
 			                    <th class="col-label" scope="row">
@@ -297,7 +267,7 @@
 	$(document).ready(function() {
 	});
 
-	var userGroupDialog = $( "#userGroupListdialog" ).dialog({
+	var userGroupDialog = $("#userGroupListDialog").dialog({
 		autoOpen: false,
 		height: 600,
 		width: 1200,
@@ -333,277 +303,6 @@
 			return false;
 		}
 	}
-
-	var fileUploadDialog = $( ".spinner-dialog" ).dialog({
-		autoOpen: false,
-		width: 250,
-		height: 290,
-		modal: true,
-		resizable: false
-	});
-
-	function alertMessage(response) {
-		if(uploadFileResultCount === 0) {
-			if(response.result === "upload.file.type.invalid") {
-				alert("복수의 파일을 업로딩 할 경우 zip 파일은 사용할 수 없습니다.");
-			} else if(response.result === "layer.name.empty") {
-				alert("Layer 명이 유효하지 않습니다.");
-			} else if("db.exception") {
-				alert("죄송 합니다. 서버 실행중에 오류가 발생 하였습니다. \n 로그를 확인하여 주십시오.");
-			}
-			uploadFileResultCount++;
-		}
-		return;
-	}
-
-    // 업로딩 파일 개수
-    var uploadFileCount = 0;
-    // dropzone 업로딩 결과(n개 파일을 올리면 n개 리턴이 옴)
-    var uploadFileResultCount = 0;
-    Dropzone.options.myDropzone = {
-   		url: "/layer/update/${layer.layerId}",
-        //paramName: "file",
-        // Prevents Dropzone from uploading dropped files immediately
-        timeout: 3600000,
-        autoProcessQueue: false,
-        // 여러개의 파일 허용
-        uploadMultiple: true,
-        method: "post",
-        // 병렬 처리
-        parallelUploads: 10,
-        // 최대 파일 업로드 갯수
-        maxFiles: 10,
-        // 최대 업로드 용량 Mb단위
-        maxFilesize: 2000,
-        dictDefaultMessage: "업로딩 하려면 Shape 파일을 올리거나 클릭 하십시오.",
-        /* headers: {
-            "x-csrf-token": document.querySelectorAll("meta[name=csrf-token]")[0].getAttributeNode("content").value,
-        }, */
-        // 허용 확장자
-        acceptedFiles: ".cpg, .dbf, .idx, .sbn, .sbx, .shp, .shx, .prj, .qpj, .zip",
-        // 업로드 취소 및 추가 삭제 미리 보기 그림 링크를 기본 추가 하지 않음
-        // 기본 true false 로 주면 아무 동작 못함
-        //clickable: true,
-        fallback: function() {
-            // 지원하지 않는 브라우저인 경우
-            alert("죄송합니다. 최신의 브라우저로 Update 후 사용해 주십시오.");
-            return;
-        },
-        init: function() {
-            var myDropzone = this; // closure
-            var uploadTask = document.querySelector("#allFileUpload");
-            var clearTask = document.querySelector("#allFileClear");
-
-            uploadTask.addEventListener("click", function(e) {
-                if (check() === false) {
-                    return;
-                }
-
-                uploadFileCount = 0;
-                uploadFileResultCount = 0;
-                e.preventDefault();
-                e.stopPropagation();
-
-                if (myDropzone.getQueuedFiles().length > 0) {
-                    uploadFileCount = myDropzone.getQueuedFiles().length;
-                    myDropzone.processQueue();
-                    //startSpinner("fileUploadSpinner");
-                    fileUploadDialog.dialog( "open" );
-                } else {
-                    //send empty
-                    //myDropzone.uploadFiles([{ name: 'nofiles', upload: { filename: 'nofiles' } }]);
-                    myDropzone._uploadData([{ upload: { filename: '' } }], [{ filename: '', name: '', data: new Blob() }]);
-                }
-            });
-
-            clearTask.addEventListener("click", function () {
-                // Using "_this" here, because "this" doesn't point to the dropzone anymore
-                if (confirm("정말 전체 항목을 삭제하겠습니까?")) {
-                    // true 주면 업로드 중인 파일도 다 같이 삭제
-                    myDropzone.removeAllFiles(true);
-                }
-            });
-
-            this.on("sending", function(file, xhr, formData) {
-                formData.append("layerGroupId", $("#layerGroupId").val());
-                formData.append("sharing", $(':radio[name="sharing"]:checked').val());
-                formData.append("layerName", $("#layerName").val());
-                formData.append("layerKey", $("#layerKey").val());
-                formData.append("serviceType", $("select[name=serviceType]").val());
-                formData.append("layerType", $("select[name=layerType]").val());
-                formData.append("geometryType", $("select[name=geometryType]").val());
-                formData.append("layerLineColor", $("#layerLineColor").val());
-                formData.append("layerFillColor", $("#layerFillColor").val());
-                formData.append("layerAlphaStyle", $("#sliderRange").val() / 100);
-                formData.append("defaultDisplay", $(':radio[name="defaultDisplay"]:checked').val());
-                formData.append("available", $(':radio[name="available"]:checked').val());
-                formData.append("labelDisplay", $(':radio[name="labelDisplay"]:checked').val());
-                formData.append("coordinate", $("#coordinate").val());
-                formData.append("description", $("#description").val());
-                formData.append("shapeEncoding", $("#shapeEncoding").val());
-                var zIndex = 0;
-                if($("#zIndex").val()) zIndex = $("#zIndex").val();
-                formData.append("zIndex", zIndex);
-                var layerLineStyle = 0;
-                if($("#layerLineStyle").val()) layerLineStyle = $("#layerLineStyle").val();
-                formData.append("layerLineStyle", layerLineStyle);
-            });
-
-            // maxFiles 카운터를 초과하면 경고창
-            this.on("maxfilesexceeded", function (data) {
-                alert("최대 업로드 파일 수는 10개 입니다.");
-                return;
-            });
-
-            this.on("success", function(file, response) {
-				if(file !== undefined && file.name !== undefined) {
-					console.log("file name = " + file.name);
-					$("#fileUploadSpinner").empty();
-					fileUploadDialog.dialog( "close" );
-
-					if(response.error === undefined) {
-						if(uploadFileCount === 0) {
-							alert("수정 하였습니다.");
-						} else {
-							uploadFileResultCount ++;
-							if(uploadFileCount === uploadFileResultCount) {
-								alert("업로딩을 완료 하였습니다.");
-								reloadLayerFileInfoList();
-							}
-						}
-					} else {
-						alertMessage(response);
-					}
-				} else {
-					console.log("------- success response = " + response);
-					if(response.statusCode === 200) {
-						alert("수정하였습니다.");
-					} else {
-						alert("수정에 실패 하였습니다. \n" + response.message);
-					}
-				}
-			});
-
-            // 무한 루프 빠지네....
-            /* this.on("error", function(response) {
-                alert("파일 업로딩 중 오류가 발생하였습니다. 로그를 확인해 주십시오.");
-            }); */
-        }
-    };
-
-    var reloadLayerFileInfoListCount = 0;
-	function reloadLayerFileInfoList() {
-    	console.log("reloadLayerFileInfoListCount = " + reloadLayerFileInfoListCount);
-    	$.ajax({
-            url: "/layer/${layer.layerId}/layer-fileinfos",
-            type: "GET",
-            headers: {"X-Requested-With": "XMLHttpRequest"},
-            dataType: "json",
-            success: function(msg){
-           		var source = $("#templateLayerFileInfoList").html();
-				//핸들바 템플릿 컴파일
-				var template = Handlebars.compile(source);
-
-				// if helper
-				Handlebars.registerHelper('if', function(conditional, options) {
-					if(conditional === 'Y') {
-						return options.fn(this);
-					} else {
-						return options.inverse(this);
-					}
-				});
-
-				// 빼기 helper
-				Handlebars.registerHelper("subtract", function(value1, value2) {
-					return value1 - value2;
-				});
-
-				//핸들바 템플릿에 데이터를 바인딩해서 HTML 생성
-				var reloadData = { layerFileInfoList: msg.layerFileInfoList };
-				var layerFileInfoListHtml = template(reloadData);
-				$("#layerFileInfoListArea").html("");
-				$("#layerFileInfoListArea").append(layerFileInfoListHtml);
-
-                reloadLayerFileInfoListCount++;
-            },
-            error: function(request, status, error) {
-            	alert(" code : " + request.status + "\n" + ", message : " + request.responseText + "\n" + ", error : " + error);
-            }
-        });
-    }
-
-	// 비활성화 상태의 layer를 활성화 함
-	function changeStatus(layerId, layerFileInfoGroupId, layerFileInfoId) {
-		var info = "layerFileInfoGroupId=" + layerFileInfoGroupId;
-		if(confirm("이 파일을 layer Shape 파일로 사용하시겠습니까?")) {
-            $.ajax({
-                url: "/layer/${layer.layerId}/layer-file-infos/" + layerFileInfoId,
-				type: "POST",
-				headers: {"X-Requested-With": "XMLHttpRequest"},
-				data: info,
-                dataType: "json",
-                success: function(msg){
-					reloadLayerFileInfoList();
-					alert("적용 되었습니다.");
-                },
-                error: function(request, status, error) {
-                	alert(" code : " + request.status + "\n" + ", message : " + request.responseText + "\n" + ", error : " + error);
-                }
-            });
-        }
-    }
-
-    var fileInfoDetailDialog = $( "#fileInfoDetailDialog" ).dialog({
-		autoOpen: false,
-		width: 600,
-		height: 310,
-		modal: true,
-		resizable: false
-	});
-
- 	// 상세 정보 보기
-    function viewFileDetail(layerFileInfoId) {
-    	fileInfoDetailDialog.dialog("open");
-
-        $.ajax({
-        	url: "/layer/file-info/" + layerFileInfoId,
-        	type: "GET",
-        	headers: {"X-Requested-With": "XMLHttpRequest"},
-        	dataType: "json",
-        	success: function(msg) {
-        		var source = $("#templateFileInfoDetail").html();
-				//핸들바 템플릿 컴파일
-				var template = Handlebars.compile(source);
-
-				// 빼기 helper
-				Handlebars.registerHelper("multiply", function(value1, value2) {
-					return value1 * value2;
-				});
-				Handlebars.registerHelper('ifEquals', function(arg1, arg2) {
-				    return (arg1 === arg2) ? "" : arg1;
-				});
-
-				//핸들바 템플릿에 데이터를 바인딩해서 HTML 생성
-				var fileInfoDetailHtml = template(msg.layerFileInfo);
-				$("#fileInfoDetailDialog").html("");
-				$("#fileInfoDetailDialog").append(fileInfoDetailHtml);
-        	},
-            error: function(request, status, error) {
-            	alert(" code : " + request.status + "\n" + ", message : " + request.responseText + "\n" + ", error : " + error);
-            }
-        });
-    }
-
- 	// 지도 보기
-    function viewLayerMap(layerId, layerName, layerFileInfoId) {
-    	var url = "/layer/" + layerId + "/map?layerFileInfoId=" + layerFileInfoId;
-		var width = 1000;
-		var height = 700;
-
-		var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height
-				+ ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
-		popWin.document.title = layerName;
-    }
 
 	// 저장
 	var updateUserFlag = true;

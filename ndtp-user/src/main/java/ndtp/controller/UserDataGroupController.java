@@ -67,6 +67,8 @@ public class UserDataGroupController {
 		log.info("@@ dataGroup = {}", dataGroup);
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		
+		
 		GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
 		
 		String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
