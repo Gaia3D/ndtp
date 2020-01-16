@@ -40,6 +40,8 @@
  		<typeAlias type="ndtp.domain.SkSdo" alias="skSdo"/>
  		<typeAlias type="ndtp.domain.SkSgg" alias="skSgg"/>
  		<typeAlias type="ndtp.domain.SkEmd" alias="skEmd"/>
+ 		
+ 		<typeAlias type="ndtp.domain.UserPolicy" alias="userPolicy"/>
     </typeAliases>
 
 </configuration>

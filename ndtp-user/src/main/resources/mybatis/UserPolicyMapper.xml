@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="hmd.persistence.postgresql.UserPolicyMapper">
+
+    <!-- 사용자 설정 정보 조회 -->
+    <select id="getUserPolicy" parameterType="string" resultType="userPolicy">
+        /* getUserPolicy */
+        SELECT * FROM user_policy WHERE user_id = #{userId}
+    </select>
+
+    <!-- 사용자 설정 등록 -->
+    <insert id="insertUserPolicy" parameterType="userPolicy">
+        /* insertUserPolicy */
+        <selectKey keyProperty="userPolicyId" resultType="int" order="BEFORE">
+        SELECT NEXTVAL('user_policy_seq')
+        </selectKey>
+        INSERT INTO user_policy (
+        	user_policy_id, user_id, label_yn, block_label_yn,
+        	<if test="rotationAngleBonsa != null and rotationAngleBonsa != ''">
+        	rotation_angle_bonsa,
+        	</if>
+        	<if test="rotationAngleOnsan != null and rotationAngleOnsan != ''">
+        	rotation_angle_onsan,
+        	</if>
+        	<if test="rotationAngleYoungyeon != null and rotationAngleYoungyeon != ''">
+        	rotation_angle_youngyeon,
+        	</if>
+        	<if test="rotationAngleMohwa != null and rotationAngleMohwa != ''">
+        	rotation_angle_mohwa,
+        	</if>
+        	tool_tip_yn
+        )
+        VALUES (
+        	#{userPolicyId}, #{userId}, #{labelYn}, #{blockLabelYn},
+        	<if test="rotationAngleBonsa != null and rotationAngleBonsa != ''">
+        	#{rotationAngleBonsa},
+        	</if>
+        	<if test="rotationAngleOnsan != null and rotationAngleOnsan != ''">
+        	#{rotationAngleOnsan},
+        	</if>
+        	<if test="rotationAngleYoungyeon != null and rotationAngleYoungyeon != ''">
+        	#{rotationAngleYoungyeon},
+        	</if>
+        	<if test="rotationAngleMohwa != null and rotationAngleMohwa != ''">
+        	#{rotationAngleMohwa},
+        	</if>
+        	#{toolTipYn}
+        )
+    </insert>
+
+    <!-- 사용자 설정 수정 -->
+    <update id="updateUserPolicy" parameterType="userPolicy">
+        /* updateUserPolicy */
+        UPDATE user_policy
+        SET label_yn = #{labelYn},
+        	block_label_yn = #{blockLabelYn},
+            tool_tip_yn = #{toolTipYn},
+			<if test="rotationAngleBonsa != null and rotationAngleBonsa != ''">
+            rotation_angle_bonsa = #{rotationAngleBonsa},
+			</if>
+			<if test="rotationAngleOnsan != null and rotationAngleOnsan != ''">
+            rotation_angle_onsan = #{rotationAngleOnsan},
+			</if>
+			<if test="rotationAngleYoungyeon != null and rotationAngleYoungyeon != ''">
+            rotation_angle_youngyeon = #{rotationAngleYoungyeon},
+			</if>
+			<if test="rotationAngleMohwa != null and rotationAngleMohwa != ''">
+            rotation_angle_mohwa = #{rotationAngleMohwa},
+			</if>
+            update_date = NOW()
+        WHERE user_id = #{userId}
+    </update>
+
+	<!-- 사용자 레이어 설정 등록 -->
+    <insert id="insertUserLayer" parameterType="userPolicy">
+        /* insertUserPolicy */
+        <selectKey keyProperty="userPolicyId" resultType="int" order="BEFORE">
+        SELECT NEXTVAL('user_policy_seq')
+        </selectKey>
+        INSERT INTO user_policy (
+        	user_policy_id, user_id, base_layers
+        )
+        VALUES (
+        	#{userPolicyId}, #{userId}, #{baseLayers}
+        )
+    </insert>
+
+    <!-- 사용자 레이어 설정 수정 -->
+    <update id="updateUserLayer" parameterType="userPolicy">
+        /* updateUserPolicy */
+        UPDATE user_policy
+        SET base_layers = #{baseLayers},
+            update_date = now()
+        WHERE user_id = #{userId}
+    </update>
+
+</mapper>
