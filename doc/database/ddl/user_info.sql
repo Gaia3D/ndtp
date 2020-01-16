@@ -139,12 +139,12 @@ create table user_group(
 	parent						integer								default 1,
 	depth						integer								default 1,
 	view_order					integer								default 1,
-	child_yn					char(1)								default 'N',
-	default_yn					char(1)								default 'N',
-	use_yn						char(1)								default 'Y',
+	children					integer								default 0,
+	basic						boolean								default false,
+	available					boolean								default true,
 	description					varchar(256),
 	insert_date					timestamp with time zone			default now(),
-	constraint user_group_pk 	primary key (user_group_id)	
+	constraint user_group_pk 	primary key (user_group_id)
 );
 
 comment on table user_group is '사용자 그룹';
@@ -155,9 +155,9 @@ comment on column user_group.ancestor is '조상 고유번호';
 comment on column user_group.parent is '부모 고유번호';
 comment on column user_group.depth is '깊이';
 comment on column user_group.view_order is '나열 순서';
-comment on column user_group.child_yn is '자식 존재유무, Y : 존재, N : 존재안함(기본)';
-comment on column user_group.default_yn is '삭제 불가, Y : 기본, N : 선택';
-comment on column user_group.use_yn is '사용유무, Y : 사용, N : 사용안함';
+comment on column user_group.children is '자식 존재 개수';
+comment on column user_group.basic is '삭제 불가, true : 기본, false : 선택';
+comment on column user_group.available is '사용유무, true : 사용, false : 사용안함';
 comment on column user_group.description is '설명';
 comment on column user_group.insert_date is '등록일';
 

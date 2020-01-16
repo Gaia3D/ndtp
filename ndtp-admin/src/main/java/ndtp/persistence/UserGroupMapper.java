@@ -30,6 +30,13 @@ public interface UserGroupMapper {
      */
     UserGroup getBasicUserGroup();
 
+    /**
+     * 부모와 표시 순서로 메뉴 조회
+     * @param userGroup
+     * @return
+     */
+    UserGroup getUserGroupByParentAndViewOrder(UserGroup userGroup);
+
 	/**
 	 * 사용자 그룹 메뉴 권한 목록
 	 * @param userGroupMenu
@@ -78,4 +85,18 @@ public interface UserGroupMapper {
 	 * @return
 	 */
 	int deleteUserGroup(UserGroup userGroup);
+
+	/**
+	 * ancestor를 이용하여 데이터 그룹 삭제
+	 * @param userGroup
+	 * @return
+	 */
+	int deleteUserGroupByAncestor(UserGroup userGroup);
+
+	/**
+	 * parent를 이용하여 데이터 그룹 삭제
+	 * @param userGroup
+	 * @return
+	 */
+	int deleteUserGroupByParent(UserGroup userGroup);
 }

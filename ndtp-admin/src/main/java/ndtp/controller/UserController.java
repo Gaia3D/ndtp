@@ -1,7 +1,9 @@
 package ndtp.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -10,8 +12,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.Key;
@@ -116,9 +120,41 @@ public class UserController implements AuthorizationController {
 		List<UserGroup> userGroupList = userGroupService.getListUserGroup();
 
 		model.addAttribute("policy", policy);
-		model.addAttribute("dataGroupList", userGroupList);
+		model.addAttribute("userGroupList", userGroupList);
 		model.addAttribute("userInfo", new UserInfo());
 		return "/user/input";
+	}
+
+	/**
+	 * 사용자 ID 중복 체크
+	 * @param model
+	 * @return
+	 */
+	@PostMapping(value = "duplication-check")
+	@ResponseBody
+	public Map<String, Object> ajaxUserIdDuplicationCheck(HttpServletRequest request, UserInfo userInfo) {
+		Map<String, Object> map = new HashMap<>();
+		String result = "success";
+		String duplicationValue = "";
+		try {
+			if(userInfo.getUserId() == null || "".equals(userInfo.getUserId())) {
+				result = "user.id.empty";
+				map.put("result", result);
+				return map;
+			}
+
+			int count = userService.getDuplicationIdCount(userInfo.getUserId());
+			log.info("@@ duplicationValue = {}", count);
+			duplicationValue = String.valueOf(count);
+		} catch(Exception e) {
+			e.printStackTrace();
+			result = "db.exception";
+		}
+
+		map.put("result", result);
+		map.put("duplicationValue", duplicationValue);
+
+		return map;
 	}
 
 	/**
@@ -519,37 +555,6 @@ public class UserController implements AuthorizationController {
 //		return PasswordHelper.validateUserPassword(CacheManager.getPolicy(), userInfo);
 //	}
 //
-//	/**
-//	 * 사용자 아이디 중복 체크
-//	 * @param model
-//	 * @return
-//	 */
-//	@PostMapping(value = "ajax-user-id-duplication-check.do")
-//	@ResponseBody
-//	public Map<String, Object> ajaxUserIdDuplicationCheck(HttpServletRequest request, UserInfo userInfo) {
-//		Map<String, Object> map = new HashMap<>();
-//		String result = "success";
-//		String duplication_value = "";
-//		try {
-//			if(userInfo.getUser_id() == null || "".equals(userInfo.getUser_id())) {
-//				result = "user.id.empty";
-//				map.put("result", result);
-//				return map;
-//			}
-//
-//			int count = userService.getDuplicationIdCount(userInfo.getUser_id());
-//			log.info("@@ duplication_value = {}", count);
-//			duplication_value = String.valueOf(count);
-//		} catch(Exception e) {
-//			e.printStackTrace();
-//			result = "db.exception";
-//		}
-//
-//		map.put("result", result);
-//		map.put("duplication_value", duplication_value);
-//
-//		return map;
-//	}
 //
 //	/**
 //	 * 사용자 정보

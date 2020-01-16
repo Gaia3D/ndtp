@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.extern.slf4j.Slf4j;
+import ndtp.domain.Depth;
 import ndtp.domain.Move;
 import ndtp.domain.UserGroup;
 import ndtp.domain.UserGroupMenu;
@@ -13,6 +15,7 @@ import ndtp.domain.UserGroupRole;
 import ndtp.persistence.UserGroupMapper;
 import ndtp.service.UserGroupService;
 
+@Slf4j
 @Service
 public class UserGroupServiceImpl implements UserGroupService {
 
@@ -83,7 +86,28 @@ public class UserGroupServiceImpl implements UserGroupService {
      */
     @Transactional
 	public int insertUserGroup(UserGroup userGroup) {
-    	return userGroupMapper.insertUserGroup(userGroup);
+    	//GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
+
+    	UserGroup parentUserGroup = new UserGroup();
+    	Integer depth = 0;
+    	if(userGroup.getParent() > 0) {
+	    	parentUserGroup.setUserGroupId(userGroup.getParent());
+	    	parentUserGroup = userGroupMapper.getUserGroup(parentUserGroup);
+	    	depth = parentUserGroup.getDepth() + 1;
+    	}
+
+    	int result = userGroupMapper.insertUserGroup(userGroup);
+
+    	if(depth > 1) {
+	    	// parent의 children update
+    		Integer children = parentUserGroup.getChildren();
+    		if(children == null) children = 0;
+    		children += 1;
+    		parentUserGroup.setChildren(children);
+	    	return userGroupMapper.updateUserGroup(parentUserGroup);
+    	}
+
+    	return result;
     }
 
 	/**
@@ -115,12 +139,18 @@ public class UserGroupServiceImpl implements UserGroupService {
     	if(Move.UP == Move.valueOf(dbUserGroup.getUpdateType())) {
     		// 바로 위 메뉴의 view_order 를 +1
     		searchUserGroup.setViewOrder(dbUserGroup.getViewOrder());
+    		searchUserGroup = getUserGroupByParentAndViewOrder(searchUserGroup);
+
+    		if(searchUserGroup == null) return 0;
 
 	    	dbUserGroup.setViewOrder(searchUserGroup.getViewOrder());
 	    	searchUserGroup.setViewOrder(modifyViewOrder);
     	} else {
     		// 바로 아래 메뉴의 view_order 를 -1 함
     		searchUserGroup.setViewOrder(dbUserGroup.getViewOrder());
+    		searchUserGroup = getUserGroupByParentAndViewOrder(searchUserGroup);
+
+    		if(searchUserGroup == null) return 0;
 
     		dbUserGroup.setViewOrder(searchUserGroup.getViewOrder());
     		searchUserGroup.setViewOrder(modifyViewOrder);
@@ -128,6 +158,15 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     	updateViewOrderUserGroup(searchUserGroup);
 		return updateViewOrderUserGroup(dbUserGroup);
+    }
+
+    /**
+     * 부모와 표시 순서로 메뉴 조회
+     * @param userGroup
+     * @return
+     */
+    private UserGroup getUserGroupByParentAndViewOrder(UserGroup userGroup) {
+    	return userGroupMapper.getUserGroupByParentAndViewOrder(userGroup);
     }
 
     /**
@@ -146,7 +185,45 @@ public class UserGroupServiceImpl implements UserGroupService {
 	 */
     @Transactional
 	public int deleteUserGroup(UserGroup userGroup) {
-    	return userGroupMapper.deleteUserGroup(userGroup);
+    	// 삭제하고, children update
+
+    	userGroup = userGroupMapper.getUserGroup(userGroup);
+    	log.info("--- 111111111 delete userGroup = {}", userGroup);
+
+    	int result = 0;
+    	if(Depth.ONE == Depth.findBy(userGroup.getDepth())) {
+    		log.info("--- one ================");
+    		result = userGroupMapper.deleteUserGroupByAncestor(userGroup);
+    	} else if(Depth.TWO == Depth.findBy(userGroup.getDepth())) {
+    		log.info("--- two ================");
+    		result = userGroupMapper.deleteUserGroupByParent(userGroup);
+
+    		UserGroup ancestorUserGroup = new UserGroup();
+    		ancestorUserGroup.setUserGroupId(userGroup.getAncestor());
+    		ancestorUserGroup = userGroupMapper.getUserGroup(ancestorUserGroup);
+    		ancestorUserGroup.setChildren(ancestorUserGroup.getChildren() + 1);
+
+    		log.info("--- delete ancestorUserGroup = {}", ancestorUserGroup);
+
+	    	userGroupMapper.updateUserGroup(ancestorUserGroup);
+    		// ancestor - 1
+    	} else if(Depth.THREE == Depth.findBy(userGroup.getDepth())) {
+    		log.info("--- three ================");
+    		result = userGroupMapper.deleteUserGroup(userGroup);
+    		log.info("--- userGroup ================ {}", userGroup);
+
+    		UserGroup parentUserGroup = new UserGroup();
+    		parentUserGroup.setUserGroupId(userGroup.getParent());
+    		parentUserGroup = userGroupMapper.getUserGroup(parentUserGroup);
+	    	log.info("--- parentUserGroup ================ {}", parentUserGroup);
+	    	parentUserGroup.setChildren(parentUserGroup.getChildren() - 1);
+	    	log.info("--- parentUserGroup children ================ {}", parentUserGroup);
+	    	userGroupMapper.updateUserGroup(parentUserGroup);
+    	} else {
+
+    	}
+
+    	return result;
     }
 
 }

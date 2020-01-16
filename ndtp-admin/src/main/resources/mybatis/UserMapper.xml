@@ -6,7 +6,7 @@
 	<!-- 사용자 총 건수 -->
 	<select id="getUserTotalCount" parameterType="userInfo" resultType="long">
 		/* getUserTotalCount */
-		SELECT COUNT(user_id) 
+		SELECT COUNT(user_id)
 		FROM user_info
 		<trim prefix="WHERE" prefixOverrides="AND">
 			<if test="userGroupId != null and userGroupId gt 0">
@@ -36,12 +36,12 @@
 			</if>
 		</trim>
 	</select>
-	
+
 	<!-- TODO password 안 가져오게 수정해야 함 -->
 	<!-- 사용자 목록 -->
 	<select id="getListUser" parameterType="userInfo" resultType="userInfo">
 		/* getListUser */
-		SELECT X.*, 
+		SELECT X.*,
 			(SELECT user_group_name FROM user_group WHERE user_group_id = X.user_group_id) AS user_group_name
 		FROM (
 			SELECT *
@@ -84,33 +84,39 @@
 			OFFSET #{offset} LIMIT #{limit}
 		) X
 	</select>
-	
+
 	<!-- 사용자 정보 -->
 	<select id="getUser" parameterType="string" resultType="userInfo">
 		/* getUser */
-		SELECT A.*, B.user_group_key, B.user_group_name AS user_group_name 
+		SELECT A.*, B.user_group_key, B.user_group_name AS user_group_name
 		FROM user_info A, user_group B
 		WHERE A.user_id = #{userId}
 			AND A.user_group_id = B.user_group_id
 	</select>
-	
+
+	<!-- 사용자 ID 중복 체크 -->
+	<select id="getDuplicationIdCount" parameterType="string" resultType="int">
+		/* getDuplicationIdCount */
+		SELECT COUNT(user_id) AS count FROM user_info WHERE user_id = #{userId}
+	</select>
+
 	<!-- 사용자 등록 -->
 	<insert id="insertUser" parameterType="userInfo">
 		/* insertUser */
 		INSERT INTO user_info(
-			user_id, user_group_id, user_name, password, telephone, mobile_phone, email, 
+			user_id, user_group_id, user_name, password, telephone, mobile_phone, email,
 			messanger, postal_code, address, address_etc, status, update_date
 		) values(
-			#{userId}, #{userGroupId}, #{userName}, #{password}, #{telephone}, #{mobilePhone}, #{email}, 
+			#{userId}, #{userGroupId}, #{userName}, #{password}, #{telephone}, #{mobilePhone}, #{email},
 			#{messanger}, #{postalCode}, #{address}, #{addressEtc}, COALESCE(#{status}, '0'), NOW()
 		)
 	</insert>
-	
-	<!-- 사용자 수정 -->	
+
+	<!-- 사용자 수정 -->
 	<update id="updateUser" parameterType="userInfo">
 		/* updateUser */
 		UPDATE user_info
-		SET 
+		SET
 			<if test="userGroupId != null and userGroupId gt 0">
 			user_group_id = #{userGroupId},
 			</if>
@@ -149,13 +155,13 @@
 			update_date = NOW()
 		WHERE user_id = #{userId}
 	</update>
-	
-	<!-- 사용자 상태 수정 -->	
+
+	<!-- 사용자 상태 수정 -->
 	<update id="updateUserStatus" parameterType="userInfo">
 		/* updateUserStatus */
 		UPDATE user_info
 		SET
-			<if test="status != null and status != ''"> 
+			<if test="status != null and status != ''">
 			status = #{status},
 			</if>
 			<if test="status != null and status == '0'.toString()">
@@ -167,11 +173,11 @@
 			update_date = NOW()
 		WHERE user_id = #{userId}
 	</update>
-	
+
 	<!-- 사용자 삭제 -->
 	<delete id="deleteUser" parameterType="string">
 		/* deleteUser */
 		DELETE FROM user_info WHERE user_id = #{userId}
 	</delete>
-	
+
 </mapper>

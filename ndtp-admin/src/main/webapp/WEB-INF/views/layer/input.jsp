@@ -93,7 +93,7 @@
 								<td class="col-input">
 									<form:hidden path="layerGroupId" />
 									<form:input path="layerGroupName" cssClass="ml" readonly="true" />
-									<input type="button" id="layerGroupButtion" value="Layer 그룹 찾기" />
+									<input type="button" id="layerGroupButtion" value="Layer 그룹 선택" />
 								</td>
 								<th class="col-label" scope="row">
 			                        <label for="sharing">공유 유형</label>
@@ -455,8 +455,8 @@
 		overflow : "auto",
 		resizable: false
 	});
-	
-	// Layer Group 찾기
+
+	// Layer Group 선택
 	$( "#layerGroupButtion" ).on( "click", function() {
 		layerGroupDialog.dialog( "open" );
 		layerGroupDialog.dialog( "option", "title", "Layer 그룹 선택");

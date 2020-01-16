@@ -38,6 +38,8 @@ JS_MESSAGE["usersession.grant.invalid"] = "사용 권한이 유효하지 않습�
 
 //사용자
 JS_MESSAGE["user.id.empty"] = "아이디를 입력하여 주십시오.";
+JS_MESSAGE["user.id.duplication"] = "이미 사용중인 아이디 입니다.";
+JS_MESSAGE["user.id.enable"] = "사용 가능한 아이디 입니다.";
 JS_MESSAGE["user.id.min_length.invalid"] = "사용자 아이디 최소 길이가 올바르지 않습니다.";
 JS_MESSAGE["password.empty"] = "비밀번호를 입력하여 주십시오.";
 JS_MESSAGE["password.correct.empty"] = "비밀번호 확인을 입력하여 주십시오.";

@@ -13,7 +13,7 @@
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
 	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
 	<link rel="stylesheet" href="/css/${lang}/user-style.css" />
-	<link rel="stylesheet" href="/css/${lang}/upload-data.css" />
+	<link rel="stylesheet" href="/css/${lang}/style.css" />
 	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 	<style type="text/css">
@@ -47,11 +47,11 @@
 			<div class="input-group row">
 				<div class="input-set">
 					<label for="searchWord"><spring:message code='search.word'/></label>
-					<select id="searchWord" name="searchWord" class="select" style="height: 30px;">
+					<select id="searchWord" name="searchWord" class="selectBoxClass">
 						<option value=""><spring:message code='select'/></option>
 	          			<option value="title">제목</option>
 					</select>
-					<select id="searchOption" name="searchOption" class="select" style="height: 30px;">
+					<select id="searchOption" name="searchOption" class="selectBoxClass">
 						<option value="0"><spring:message code='search.same'/></option>
 						<option value="1"><spring:message code='search.include'/></option>
 					</select>
@@ -65,17 +65,17 @@
 				</div>
 				<div class="input-set">
 					<label for="orderWord"><spring:message code='search.order'/></label>
-					<select id="orderWord" name="orderWord" class="select" style="height: 30px;">
+					<select id="orderWord" name="orderWord" class="selectBoxClass">
 						<option value=""> <spring:message code='search.basic'/> </option>
 						<option value="title">제목</option>
 						<option value="insertDate"> <spring:message code='search.insert.date'/> </option>
 					</select>
-					<select id="orderValue" name="orderValue" class="select" style="height: 30px;">
+					<select id="orderValue" name="orderValue" class="selectBoxClass">
                 		<option value=""> <spring:message code='search.basic'/> </option>
 	                	<option value="ASC"> <spring:message code='search.ascending'/> </option>
 						<option value="DESC"> <spring:message code='search.descending.order'/> </option>
 					</select>
-					<select id="listCounter" name="listCounter" class="select" style="height: 30px;">
+					<select id="listCounter" name="listCounter" class="selectBoxClass">
                 		<option value="10"> <spring:message code='search.ten.count'/> </option>
 	                	<option value="50"> <spring:message code='search.fifty.count'/> </option>
 						<option value="100"> <spring:message code='search.hundred.count'/> </option>

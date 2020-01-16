@@ -25,7 +25,7 @@ create table data_group (
 	description					varchar(256),
 	update_date					timestamp with time zone,
 	insert_date					timestamp with time zone			default now(),
-	constraint data_group_pk 	primary key (data_group_id)	
+	constraint data_group_pk 	primary key (data_group_id)
 );
 
 comment on table data_group is '데이터 그룹';
@@ -36,7 +36,8 @@ comment on column data_group.data_group_path is '서비스 경로';
 comment on column data_group.sharing is 'common : 공통, public : 공개, private : 개인, group : 그룹';
 comment on column data_group.user_id is '사용자 아이디';
 comment on column data_group.data_count is '데이터 총 건수';
-comment on column data_group.view_order is '순서';
+comment on column data_group.view_order is '나열 순서';
+comment on column data_group.children is '자식 존재 개수';
 comment on column data_group.basic is 'true : 기본, false : 선택';
 comment on column data_group.available is 'true : 사용, false : 사용안함';
 comment on column data_group.location is 'POINT(위도, 경도). 공간 검색 속도 때문에 altitude는 분리';

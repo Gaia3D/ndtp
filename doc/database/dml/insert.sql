@@ -1,7 +1,7 @@
 -- 사용자 그룹 테이블 기본값 입력
-insert into user_group(	user_group_id, user_group_key, user_group_name, parent, depth, view_order, default_yn, use_yn, description)
+insert into user_group(	user_group_id, user_group_key, user_group_name, parent, depth, view_order, basic, available, description)
 values
-	(1, 'SUPER_ADMIN', '슈퍼 관리자', 0, 1, 1, 'Y', 'Y', '기본값'), 
+	(1, 'SUPER_ADMIN', '슈퍼 관리자', 0, 1, 1, 'Y', 'Y', '기본값'),
 	(2, 'USER', '사용자', 0, 1, 2, 'Y', 'Y', '기본값');
 
 -- 슈퍼 관리자 등록
@@ -17,12 +17,13 @@ values
 	(1, '0', '1', '홈', 'HOME', 0, 0, 1, 1, '/main/index', null, null, 'glyph-home', 'N', 'N', 'N'),
 	(2, '0', '1', '사용자', 'USER', 2, 0, 1, 2, '/user/list', null, null, 'glyph-users', 'Y', 'Y', 'Y'),
 	(21, '0', '1', '사용자 그룹', 'USER', 2, 2, 2, 1, '/user/list-group', null, null, 'glyph-users', 'Y', 'Y', 'Y'),
-	(22, '0', '1', '사용자 목록', 'USER', 2, 2, 2, 2, '/user/list', null, null, 'glyph-users', 'Y', 'Y', 'Y'),
-	(23, '0', '1', '사용자 등록', 'USER', 2, 2, 2, 3, '/user/input', null, null, 'glyph-users', 'Y', 'Y', 'Y'),
-	(24, '0', '1', '사용자 비밀번호 변경', 'USER', 2, 2, 2, 4, '/user/modify-password', '/user/list', null, 'glyph-users', 'N', 'Y', 'N'),
-	(25, '0', '1', '사용자 비밀번호 변경', 'USER', 2, 2, 2, 5, '/user/update-password', '/user/list', null, 'glyph-users', 'N', 'Y', 'N'),
-	(26, '0', '1', '사용자 정보 수정', 'USER', 2, 2, 2, 6, '/user/modify', '/user/list', null, 'glyph-users', 'N', 'Y', 'N'),
-	(27, '0', '1', '사용자 상세 정보', 'USER', 2, 2, 2, 7, '/user/detail', '/user/list', null, 'glyph-users', 'N', 'Y', 'N'),
+	(22, '0', '1', '사용자 그룹 등록', 'USER', 2, 2, 2, 2, '/user/input-group', null, null, 'glyph-users', 'Y', 'Y', 'Y'),
+	(23, '0', '1', '사용자 목록', 'USER', 2, 2, 2, 3, '/user/list', null, null, 'glyph-users', 'Y', 'Y', 'Y'),
+	(24, '0', '1', '사용자 등록', 'USER', 2, 2, 2, 4, '/user/input', null, null, 'glyph-users', 'Y', 'Y', 'Y'),
+	(25, '0', '1', '사용자 비밀번호 변경', 'USER', 2, 2, 2, 5, '/user/modify-password', '/user/list', null, 'glyph-users', 'N', 'Y', 'N'),
+	(26, '0', '1', '사용자 비밀번호 변경', 'USER', 2, 2, 2, 6, '/user/update-password', '/user/list', null, 'glyph-users', 'N', 'Y', 'N'),
+	(27, '0', '1', '사용자 정보 수정', 'USER', 2, 2, 2, 7, '/user/modify', '/user/list', null, 'glyph-users', 'N', 'Y', 'N'),
+	(28, '0', '1', '사용자 상세 정보', 'USER', 2, 2, 2, 8, '/user/detail', '/user/list', null, 'glyph-users', 'N', 'Y', 'N'),
 	(3, '0', '1', '데이터', 'DATA', 3, 0, 1, 3, '/data/list-group', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
 	(31, '0', '1', '데이터 그룹', 'DATA', 3, 3, 2, 1, '/data/list-group', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
 	(32, '0', '1', '데이터 그룹 등록', 'DATA', 3, 3, 2, 2, '/data/input-group', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
@@ -81,6 +82,7 @@ insert into user_group_menu(user_group_menu_id, user_group_id, menu_id)
 		(25, 1, 25),
 		(26, 1, 26),
 		(27, 1, 27),
+		(28, 1, 28),
 		(3, 1, 3),
 		(31, 1, 31),
 		(32, 1, 32),
