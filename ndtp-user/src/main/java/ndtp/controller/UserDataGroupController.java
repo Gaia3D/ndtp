@@ -261,32 +261,6 @@ public class UserDataGroupController {
 		result.put("message", message);
 		return result;
 	}
-	
-	/**
-    * 지도에서 위치 찾기
-    * @param model
-    * @return
-    */
-    @GetMapping(value = "location-map")
-    public String locationMap(HttpServletRequest request, Model model) {
-
-        log.info("@@ locationMap");
-        //UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-		
-        Policy policy = policyService.getPolicy();
-        String policyJson = "";
-
-        try {
-            policyJson = objectMapper.writeValueAsString(policy);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        model.addAttribute("policy", policy);
-        model.addAttribute("policyJson", policyJson);
-
-        return "/user-data-group/location-map";
-    }
     
     /**
 	 * 사용자 데이터 그룹 삭제

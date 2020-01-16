@@ -11,6 +11,7 @@
 	
 	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
+	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
 	<link rel="stylesheet" href="/css/${lang}/user-style.css" />
 	<link rel="stylesheet" href="/css/${lang}/style.css" />
 	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
@@ -178,6 +179,9 @@
 </div>
 <!-- E: WRAP -->
 
+<!-- 상위 그룹 선택 다이얼 로그 -->
+<%@ include file="/WEB-INF/views/user-data-group/find-group-dialog.jsp" %>
+
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript" src="/js/${lang}/MapControll.js"></script>
@@ -242,20 +246,20 @@ function insertDataGroup() {
 
 var dataGroupDialog = $( ".dialog" ).dialog({
 	autoOpen: false,
-	height: 600,
-	width: 1200,
+	height: 500,
+	width: 1000,
 	modal: true,
 	overflow : "auto",
 	resizable: false
 });
 
-// 상위 Layer Group 찾기
+// 상위 데이터 그룹 찾기
 $( "#dataGroupButtion" ).on( "click", function() {
 	dataGroupDialog.dialog( "open" );
 	dataGroupDialog.dialog( "option", "title", "데이터 그룹 선택");
 });
 
-// 상위 Node
+// 다이얼로그에서 선택
 function confirmParent(parent, parentName) {
 	$("#parent").val(parent);
 	$("#parentName").val(parentName);
@@ -264,13 +268,13 @@ function confirmParent(parent, parentName) {
 
 $( "#rootParentSelect" ).on( "click", function() {
 	$("#parent").val(0);
-	$("#parentName").val("${dataGroup.parentName}");
+	$("#parentName").val("${userDataGroup.parentName}");
 	dataGroupDialog.dialog( "close" );
 });
 
 // 지도에서 찾기
 $( "#mapButtion" ).on( "click", function() {
-	var url = "/data/location-map";
+	var url = "/map/find-point";
 	var width = 800;
 	var height = 700;
 
