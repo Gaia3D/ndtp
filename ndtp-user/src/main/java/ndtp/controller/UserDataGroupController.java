@@ -25,19 +25,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
-import ndtp.domain.DataGroup;
 import ndtp.domain.GeoPolicy;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
 import ndtp.domain.Policy;
+import ndtp.domain.UserDataGroup;
 import ndtp.domain.UserSession;
-import ndtp.service.DataGroupService;
 import ndtp.service.GeoPolicyService;
 import ndtp.service.PolicyService;
+import ndtp.service.UserDataGroupService;
 import ndtp.utils.DateUtils;
 import ndtp.utils.FormatUtils;
 
+/**
+ * 사용자 데이터 그룹 관리
+ * @author Jeongdae
+ *
+ */
 @Slf4j
 @Controller
 @RequestMapping("/user-data-group/")
@@ -47,7 +52,7 @@ public class UserDataGroupController {
 	private static final long PAGE_LIST_COUNT = 5l;
 	
 	@Autowired
-	private DataGroupService dataGroupService;
+	private UserDataGroupService userDataGroupService;
 	@Autowired
 	private GeoPolicyService geoPolicyService;
 	@Autowired
@@ -56,68 +61,65 @@ public class UserDataGroupController {
 	private PolicyService policyService;
 	
 	/**
-	 * 데이터 그룹 관리
+	 * 사용자 데이터 그룹 관리
 	 */
 	@GetMapping(value = "list")
 	public String list(	HttpServletRequest request, 
-						DataGroup dataGroup, 
+						UserDataGroup userDataGroup, 
 						@RequestParam(defaultValue="1") String pageNo, 
 						Model model) throws Exception {
 		
-		log.info("@@ dataGroup = {}", dataGroup);
+		log.info("@@ userDataGroup = {}", userDataGroup);
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-		
-		
 		GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
 		
 		String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
-		if(StringUtils.isEmpty(dataGroup.getStartDate())) {
-			dataGroup.setStartDate(today.substring(0,4) + DateUtils.START_DAY_TIME);
+		if(StringUtils.isEmpty(userDataGroup.getStartDate())) {
+			userDataGroup.setStartDate(today.substring(0,4) + DateUtils.START_DAY_TIME);
 		} else {
-			dataGroup.setStartDate(dataGroup.getStartDate().substring(0, 8) + DateUtils.START_TIME);
+			userDataGroup.setStartDate(userDataGroup.getStartDate().substring(0, 8) + DateUtils.START_TIME);
 		}
-		if(StringUtils.isEmpty(dataGroup.getEndDate())) {
-			dataGroup.setEndDate(today + DateUtils.END_TIME);
+		if(StringUtils.isEmpty(userDataGroup.getEndDate())) {
+			userDataGroup.setEndDate(today + DateUtils.END_TIME);
 		} else {
-			dataGroup.setEndDate(dataGroup.getEndDate().substring(0, 8) + DateUtils.END_TIME);
+			userDataGroup.setEndDate(userDataGroup.getEndDate().substring(0, 8) + DateUtils.END_TIME);
 		}
 		
-		long totalCount = dataGroupService.getDataGroupTotalCount(dataGroup);
+		long totalCount = userDataGroupService.getUserDataGroupTotalCount(userDataGroup);
 		
 		Pagination pagination = new Pagination(	request.getRequestURI(), 
-												getSearchParameters(PageType.LIST, dataGroup), 
+												getSearchParameters(PageType.LIST, userDataGroup), 
 												totalCount, 
 												Long.valueOf(pageNo).longValue(),
 												PAGE_ROWS,
 												PAGE_LIST_COUNT);
 		log.info("@@ pagination = {}", pagination);
 		
-		dataGroup.setOffset(pagination.getOffset());
-		dataGroup.setLimit(pagination.getPageRows());
-		List<DataGroup> dataGroupList = new ArrayList<>();
+		userDataGroup.setOffset(pagination.getOffset());
+		userDataGroup.setLimit(pagination.getPageRows());
+		List<UserDataGroup> userDataGroupList = new ArrayList<>();
 		if(totalCount > 0l) {
-			dataGroupList = dataGroupService.getListDataGroup(dataGroup);
+			userDataGroupList = userDataGroupService.getListUserDataGroup(userDataGroup);
 		}
 		
 		model.addAttribute(pagination);
-		model.addAttribute("dataGroupList", dataGroupList);
+		model.addAttribute("userDataGroupList", userDataGroupList);
 		model.addAttribute("geoPolicyJson", objectMapper.writeValueAsString(geoPolicy));
 		return "/user-data-group/list";
 	}
 	
 	/**
-	 * 데이터 그룹 정보
-	 * @param projectId
+	 * 사용자 데이터 그룹 정보
+	 * @param userDataGroup
 	 * @return
 	 */
 	@GetMapping(value = "detail")
 	@ResponseBody
-	public Map<String, Object> detailGroup(DataGroup dataGroup) {
+	public Map<String, Object> detail(	HttpServletRequest request, UserDataGroup userDataGroup ) {
 		
-		log.info("@@@@@ detail-group dataGroup = {}", dataGroup);
-		
-		//UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		log.info("@@@@@ detail userDataGroup = {}", userDataGroup);
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
@@ -125,7 +127,7 @@ public class UserDataGroupController {
 		String message = null;
 		try {
 			// TODO @Valid 로 구현해야 함
-			if(dataGroup.getDataGroupId() == null) {
+			if(userDataGroup.getUserDataGroupId() == null) {
 				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
 				result.put("errorCode", "input.invalid");
 				result.put("message", message);
@@ -133,8 +135,9 @@ public class UserDataGroupController {
 				return result;
 			}
 			
-			dataGroup = dataGroupService.getDataGroup(dataGroup);
-			result.put("dataGroup", dataGroup);
+			userDataGroup.setUserId(userSession.getUserId());
+			userDataGroup = userDataGroupService.getUserDataGroup(userDataGroup);
+			result.put("userDataGroup", userDataGroup);
 		} catch(Exception e) {
 			e.printStackTrace();
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
@@ -150,36 +153,45 @@ public class UserDataGroupController {
 	}
 	
 	/**
-	 * 데이터 그룹 등록 화면
+	 * 사용자 데이터 그룹 등록 화면
+	 * @param request
+	 * @param model
+	 * @return
 	 */
 	@GetMapping(value = "input")
-	public String input(Model model) {
-		//UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+	public String input(HttpServletRequest request, Model model) {
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 				
 		Policy policy = policyService.getPolicy();
 		
-		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup(new DataGroup());
+		UserDataGroup userDataGroup = new UserDataGroup();
+		userDataGroup.setUserId(userSession.getUserId());
+		List<UserDataGroup> userDataGroupList = userDataGroupService.getListUserDataGroup(userDataGroup);
 		
-		DataGroup dataGroup = new DataGroup();
-		dataGroup.setParentName(policy.getContentDataGroupRoot());
-		dataGroup.setParent(0);
+		userDataGroup.setParentName(policy.getContentDataGroupRoot());
+		userDataGroup.setParent(0);
 		
 		model.addAttribute("policy", policy);
-		model.addAttribute("dataGroup", dataGroup);
-		model.addAttribute("dataGroupList", dataGroupList);
+		model.addAttribute("userDataGroup", userDataGroup);
+		model.addAttribute("userDataGroupList", userDataGroupList);
 		
 		return "/user-data-group/input";
 	}
 	
 	/**
-	 * 데이터 그룹 등록
+	 * 사용자 데이터 그룹 등록
+	 * @param request
+	 * @param userDataGroup
+	 * @param bindingResult
+	 * @return
 	 */
 	@PostMapping(value = "insert")
 	@ResponseBody
-	public Map<String, Object> insert(HttpServletRequest request, @Valid @ModelAttribute DataGroup dataGroup, BindingResult bindingResult) {
+	public Map<String, Object> insert(HttpServletRequest request, @Valid @ModelAttribute UserDataGroup userDataGroup, BindingResult bindingResult) {
 		
-		log.info("@@@@@ insert-group dataGroup = {}", dataGroup);
-		//UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		log.info("@@@@@ insert userDataGroup = {}", userDataGroup);
+		
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
@@ -187,8 +199,6 @@ public class UserDataGroupController {
 		String message = null;
 		
 		try {
-			UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-			
 			if(bindingResult.hasErrors()) {
 				message = bindingResult.getAllErrors().get(0).getDefaultMessage();
 				log.info("@@@@@ message = {}", message);
@@ -198,9 +208,8 @@ public class UserDataGroupController {
 	            return result;
 			}
 			
-			dataGroup.setUserId(userSession.getUserId());
-			
-			dataGroupService.insertDataGroup(dataGroup);
+			userDataGroup.setUserId(userSession.getUserId());
+			userDataGroupService.insertUserDataGroup(userDataGroup);
 		} catch (Exception e) {
 			e.printStackTrace();
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
@@ -215,24 +224,27 @@ public class UserDataGroupController {
 	}
 	
 	/**
-	 * 사용자 그룹 트리 순서 수정, up, down
-	 * @param model
+	 * 사용자 데이터 그룹 순서 수정
+	 * @param request
+	 * @param userDataGroupId
+	 * @param userDataGroup
 	 * @return
 	 */
-	@PostMapping(value = "view-order/{dataGroupId}")
+	@PostMapping(value = "view-order/{userDataGroupId}")
 	@ResponseBody
-	public Map<String, Object> moveUserGroup(HttpServletRequest request, @PathVariable Integer dataGroupId, @ModelAttribute DataGroup dataGroup) {
-		log.info("@@ dataGroup = {}", dataGroup);
-		//UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-				
+	public Map<String, Object> moveUserGroup(HttpServletRequest request, @PathVariable Integer userDataGroupId, @ModelAttribute UserDataGroup userDataGroup) {
+		log.info("@@ userDataGroupId = {}, userDataGroup = {}", userDataGroupId, userDataGroup);
+		
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String errorCode = null;
 		String message = null;
 		try {
-			dataGroup.setDataGroupId(dataGroupId);
+			userDataGroup.setUserId(userSession.getUserId());
+			userDataGroup.setUserDataGroupId(userDataGroupId);
 			
-			int updateCount = dataGroupService.updateDataGroupViewOrder(dataGroup);
+			int updateCount = userDataGroupService.updateUserDataGroupViewOrder(userDataGroup);
 			if(updateCount == 0) {
 				statusCode = HttpStatus.BAD_REQUEST.value();
 				errorCode = "data.group.view-order.invalid";
@@ -277,19 +289,19 @@ public class UserDataGroupController {
     }
     
     /**
-	 * 데이터 그룹 삭제
-	 * @param dataGroupId
+	 * 사용자 데이터 그룹 삭제
+	 * @param userDataGroupId
 	 * @param model
 	 * @return
 	 */
 	@GetMapping(value = "delete")
-	public String deleteData(@RequestParam("dataGroupId") Integer dataGroupId, Model model) {
+	public String deleteData(@RequestParam("userDataGroupId") Integer userDataGroupId, Model model) {
 		
 		// TODO validation 체크 해야 함
-		DataGroup dataGroup = new DataGroup();
-		dataGroup.setDataGroupId(dataGroupId);
+		UserDataGroup userDataGroup = new UserDataGroup();
+		userDataGroup.setUserDataGroupId(userDataGroupId);
 		
-		dataGroupService.deleteDataGroup(dataGroup);
+		userDataGroupService.deleteUserDataGroup(userDataGroup);
 		
 		return "redirect:/user-data-group/list";
 	}
@@ -299,8 +311,8 @@ public class UserDataGroupController {
 	 * @param dataGroup
 	 * @return
 	 */
-	private String getSearchParameters(PageType pageType, DataGroup dataGroup) {
-		StringBuffer buffer = new StringBuffer(dataGroup.getParameters());
+	private String getSearchParameters(PageType pageType, UserDataGroup userDataGroup) {
+		StringBuffer buffer = new StringBuffer(userDataGroup.getParameters());
 		boolean isListPage = true;
 		if(pageType == PageType.MODIFY || pageType == PageType.DETAIL) {
 			isListPage = false;

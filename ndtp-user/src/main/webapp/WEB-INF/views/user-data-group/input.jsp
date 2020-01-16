@@ -41,7 +41,7 @@
 			  	<li onclick="location.href='/converter/list'">업로딩 데이터 변환 목록</li>
 			</ul>
 		</div>
-		<form:form id="dataGroup" modelAttribute="dataGroup" method="post" onsubmit="return false;">
+		<form:form id="userDataGroup" modelAttribute="userDataGroup" method="post" onsubmit="return false;">
 		<table class="input-table scope-row">
 			<col class="col-label l" />
 			<col class="col-input" />
@@ -57,7 +57,7 @@
 			</tr>
 			<tr>
 				<th class="col-label" scope="row">
-					<form:label path="dataGroupKey">데이터 그룹 Key</form:label>
+					<form:label path="dataGroupKey">데이터 그룹 Key(영문)</form:label>
 					<span class="icon-glyph glyph-emark-dot color-warning"></span>
 				</th>
 				<td class="col-input">
@@ -72,7 +72,7 @@
 				</th>
 				<td class="col-input">
 					<form:hidden path="parent" />
-						<form:input path="parentName" cssClass="l" readonly="true" />
+					<form:input path="parentName" cssClass="l" readonly="true" />
 					<input type="button" id="dataGroupButtion" value="상위 그룹 선택" />
 				</td>
 			</tr>
@@ -83,8 +83,8 @@
                    </th>
                    <td class="col-input">
                        <select id="sharing" name="sharing" class="selectBoxClass">
+						<option value="public" selected="selected">공개</option>
 						<option value="common">공통</option>
-						<option value="public">공개</option>
 						<option value="private">개인</option>
 						<option value="group">그룹</option>
 					</select>
@@ -116,21 +116,21 @@
 			</tr>
 			<tr>
 				<th class="col-label" scope="row">
-					<form:label path="latitude">위도</form:label>
-				</th>
-				<td class="col-input">
-					<form:input path="latitude" cssClass="m" />
-					<input type="button" id="mapButtion" value="지도에서 찾기" />
-					<form:errors path="latitude" cssClass="error" />
-				</td>
-			</tr>
-			<tr>
-				<th class="col-label" scope="row">
 					<form:label path="longitude">경도</form:label>
 				</th>
 				<td class="col-input">
 					<form:input path="longitude" cssClass="m" />
+					<input type="button" id="mapButtion" value="지도에서 찾기" />
 					<form:errors path="longitude" cssClass="error" />
+				</td>
+			</tr>
+			<tr>
+				<th class="col-label" scope="row">
+					<form:label path="latitude">위도</form:label>
+				</th>
+				<td class="col-input">
+					<form:input path="latitude" cssClass="m" />
+					<form:errors path="latitude" cssClass="error" />
 				</td>
 			</tr>
 			<tr>
