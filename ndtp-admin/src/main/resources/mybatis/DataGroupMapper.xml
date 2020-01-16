@@ -195,45 +195,47 @@
 			AND user_id = #{userId}
 		</if>
 	</update>
-	
+
 	<!-- 데이터 그룹 순서 수정 -->
 	<update id="updateDataGroupViewOrder" parameterType="dataGroup">
 		/* updateDataGroupViewOrder */
-		UPDATE data_group 
-		SET view_order = #{viewOrder} 
+		UPDATE data_group
+		SET view_order = #{viewOrder}
 		WHERE data_group_id = #{dataGroupId}
 	</update>
-	
+
 	<!-- 데이터 그룹 삭제 -->
 	<delete id="deleteDataGroup" parameterType="dataGroup">
 		/* deleteDataGroup */
-		DELETE 
-		FROM data_group 
-		WHERE data_group_id = #{dataGroupId} 
+		DELETE
+		FROM data_group
+		WHERE data_group_id = #{dataGroupId}
 		<if test="userId != null and userId != ''">
 			AND user_id = #{userId}
-		</if> 
+		</if>
 	</delete>
-	
+
 	<!-- ancestor를 이용하여 데이터 그룹 삭제 -->
 	<delete id="deleteDataGroupByAncestor" parameterType="dataGroup">
 		/* deleteDataGroupByAncestor */
-		DELETE 
-		FROM data_group 
-		WHERE ancestor = #{ancestor} 
+		DELETE
+		FROM data_group
+		WHERE ancestor = #{dataGroupId}
+		OR data_group_id = #{dataGroupId}
 		<if test="userId != null and userId != ''">
 			AND user_id = #{userId}
-		</if> 
+		</if>
 	</delete>
-	
+
 	<!-- parent를 이용하여 데이터 그룹 삭제 -->
 	<delete id="deleteDataGroupByParent" parameterType="dataGroup">
 		/* deleteDataGroupByParent */
-		DELETE 
-		FROM data_group 
-		WHERE parent = #{parent} 
+		DELETE
+		FROM data_group
+		WHERE parent = #{dataGroupId}
+		OR data_group_id = #{dataGroupId}
 		<if test="userId != null and userId != ''">
 			AND user_id = #{userId}
-		</if> 
+		</if>
 	</delete>
 </mapper>
