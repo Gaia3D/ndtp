@@ -14,7 +14,7 @@ $(function() {
 		$('#contentsWrap').toggle(true);
 	} else {
 		// 다른거 활성화
-		if( currentUrl.indexOf("/data/list") >= 0 &&  currentUrl.indexOf("/data/list-group") < 0) {
+		if( currentUrl.indexOf("/data/list") >= 0 && currentUrl.indexOf("/data-group/list") < 0 && currentUrl.indexOf("/data-group/input") < 0) {
 			if( currentUrl.indexOf("#search") >= 0) {
 				$("#searchMenu").addClass('on');
 				$('#searchContent').toggle(true);

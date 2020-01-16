@@ -26,7 +26,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.DataGroup;
-import ndtp.domain.DataInfo;
 import ndtp.domain.GeoPolicy;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
@@ -41,7 +40,7 @@ import ndtp.utils.FormatUtils;
 
 @Slf4j
 @Controller
-@RequestMapping("/data/")
+@RequestMapping("/data-group/")
 public class DataGroupController {
 	
 	private static final long PAGE_ROWS = 5l;
@@ -59,14 +58,13 @@ public class DataGroupController {
 	/**
 	 * 데이터 그룹 관리
 	 */
-	@GetMapping(value = "list-group")
+	@GetMapping(value = "list")
 	public String list(	HttpServletRequest request, 
 						DataGroup dataGroup, 
 						@RequestParam(defaultValue="1") String pageNo, 
-						@RequestParam(defaultValue="") String activeContent, 
 						Model model) throws Exception {
 		
-		log.info("@@ activeContent = {}, dataGroup = {}", activeContent, dataGroup);
+		log.info("@@ dataGroup = {}", dataGroup);
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
@@ -101,10 +99,9 @@ public class DataGroupController {
 		}
 		
 		model.addAttribute(pagination);
-		model.addAttribute("activeContent", activeContent);
 		model.addAttribute("dataGroupList", dataGroupList);
 		model.addAttribute("geoPolicyJson", objectMapper.writeValueAsString(geoPolicy));
-		return "/data/list-group";
+		return "/data-group/list";
 	}
 	
 	/**
@@ -112,7 +109,7 @@ public class DataGroupController {
 	 * @param projectId
 	 * @return
 	 */
-	@GetMapping(value = "detail-group")
+	@GetMapping(value = "detail")
 	@ResponseBody
 	public Map<String, Object> detailGroup(DataGroup dataGroup) {
 		
@@ -153,7 +150,7 @@ public class DataGroupController {
 	/**
 	 * 데이터 그룹 등록 화면
 	 */
-	@GetMapping(value = "input-group")
+	@GetMapping(value = "input")
 	public String input(Model model) {
 		//UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 				
@@ -169,13 +166,13 @@ public class DataGroupController {
 		model.addAttribute("dataGroup", dataGroup);
 		model.addAttribute("dataGroupList", dataGroupList);
 		
-		return "/data/input-group";
+		return "/data-group/input";
 	}
 	
 	/**
 	 * 데이터 그룹 등록
 	 */
-	@PostMapping(value = "insert-group")
+	@PostMapping(value = "insert")
 	@ResponseBody
 	public Map<String, Object> insert(HttpServletRequest request, @Valid @ModelAttribute DataGroup dataGroup, BindingResult bindingResult) {
 		
@@ -220,7 +217,7 @@ public class DataGroupController {
 	 * @param model
 	 * @return
 	 */
-	@PostMapping(value = "group/view-order/{dataGroupId}")
+	@PostMapping(value = "view-order/{dataGroupId}")
 	@ResponseBody
 	public Map<String, Object> moveUserGroup(HttpServletRequest request, @PathVariable Integer dataGroupId, @ModelAttribute DataGroup dataGroup) {
 		log.info("@@ dataGroup = {}", dataGroup);
@@ -274,7 +271,7 @@ public class DataGroupController {
         model.addAttribute("policy", policy);
         model.addAttribute("policyJson", policyJson);
 
-        return "/data/location-map";
+        return "/data-group/location-map";
     }
     
     /**
@@ -283,7 +280,7 @@ public class DataGroupController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "delete-data-group")
+	@GetMapping(value = "delete")
 	public String deleteData(@RequestParam("dataGroupId") Integer dataGroupId, Model model) {
 		
 		// TODO validation 체크 해야 함
@@ -292,7 +289,7 @@ public class DataGroupController {
 		
 		dataGroupService.deleteDataGroup(dataGroup);
 		
-		return "redirect:/data/list-group";
+		return "redirect:/data-group/list";
 	}
 	
 	/**

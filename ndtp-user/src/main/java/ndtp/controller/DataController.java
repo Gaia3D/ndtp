@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
-import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
 import ndtp.domain.GeoPolicy;
 import ndtp.domain.Key;
@@ -67,10 +66,9 @@ public class DataController {
 	public String list(	HttpServletRequest request, 
 						DataInfo dataInfo, 
 						@RequestParam(defaultValue="1") String pageNo, 
-						@RequestParam(defaultValue="") String activeContent, 
 						Model model) throws Exception {
 		
-		log.info("@@ activeContent = {}, dataInfo = {}", activeContent, dataInfo);
+		log.info("@@ dataInfo = {}", dataInfo);
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
@@ -105,7 +103,6 @@ public class DataController {
 		}
 		
 		model.addAttribute(pagination);
-		model.addAttribute("activeContent", activeContent);
 		model.addAttribute("dataList", dataList);
 		model.addAttribute("geoPolicyJson", objectMapper.writeValueAsString(geoPolicy));
 		return "/data/list";
