@@ -70,7 +70,7 @@
 									<tr>
 										<td colspan="11" class="col-none">데이터 그룹이 존재하지 않습니다.</td>
 									</tr>
-</c:if>								
+</c:if>
 <c:if test="${!empty dataGroupList }">
 	<c:set var="paddingLeftValue" value="0" />
     <!-- depth 별 css 제어를 위한 변수 -->
@@ -109,7 +109,7 @@
 									<tr class="${depthClass } ${depthParentClass} ${ancestorClass }" style="${depthStyleDisplay}">
 										<td class="col-key" style="text-align: left;" nowrap="nowrap">
         <c:if test="${dataGroup.depth eq 1 }">
-					                        <span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;" 
+					                        <span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"
 					                        	onclick="childrenDisplayToggle('${dataGroup.depth}', '${dataGroup.dataGroupId}', '${dataGroup.ancestor}');">
 					                            <i id="oneDepthArrow-${dataGroup.dataGroupId }" class="fa fa-caret-right oneArrow" aria-hidden="true"></i>
 					                        </span>&nbsp;
@@ -118,7 +118,7 @@
 					                        </span>
         </c:if>
         <c:if test="${dataGroup.depth eq 2 }">
-					                        <span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;" 
+					                        <span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"
 					                        	onclick="childrenDisplayToggle('${dataGroup.depth}', '${dataGroup.dataGroupId}', '${dataGroup.ancestor}');">
 					                            <i id="twoDepthArrow-${dataGroup.dataGroupId }" class="fa fa-caret-right twoArrow ${ancestorArrowClass }" aria-hidden="true"></i></span>&nbsp;
 					                        <span style="font-size: 1.5em; color: Mediumslateblue;">
@@ -155,15 +155,15 @@
 					                    </td>
 					                    <td class="col-type">
 					                    	<div class="button-group">
-					                    		<a href="#" onclick="moveUp('${dataGroup.dataGroupId }', '${dataGroup.viewOrder }'); return false;" 
+					                    		<a href="#" onclick="moveUp('${dataGroup.dataGroupId }', '${dataGroup.viewOrder }'); return false;"
 					                    			class="button" style="text-decoration:none;">위로</a>
-												<a href="#" onclick="moveDown('${dataGroup.dataGroupId }', '${dataGroup.viewOrder }'); return false;" 
+												<a href="#" onclick="moveDown('${dataGroup.dataGroupId }', '${dataGroup.viewOrder }'); return false;"
 													class="button" style="text-decoration:none;">아래로</a>
 					                    	</div>
 					                    </td>
 					                    <td class="col-type">
 											<a href="#" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;
-											<a href="/data/delete-data-group?dataGroupId=${dataGroup.dataGroupId }" onclick="return deleteWarning();" 
+											<a href="/data-group/delete?dataGroupId=${dataGroup.dataGroupId }" onclick="return deleteWarning();"
 														class="linkButton"><spring:message code='delete'/></a>
 					                    </td>
 					                    <td class="col-date">
@@ -183,7 +183,7 @@
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
-	
+
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
@@ -194,36 +194,36 @@
 	function openAll() {
 	    $(".threeDepthClass").show();
 	    $(".twoDepthClass").show();
-	
+
 	    // fa-caret-right
 	    // fa-caret-down
 	    $(".oneArrow").removeClass("fa-caret-right");
 	    $(".oneArrow").addClass("fa-caret-down");
 	    $(".twoArrow").removeClass("fa-caret-right");
 	    $(".twoArrow").addClass("fa-caret-down");
-	
+
 	    $(".oneFolder").removeClass("fa-folder");
 	    $(".oneFolder").addClass("fa-folder-open");
 	    $(".twoFolder").removeClass("fa-folder");
 	    $(".twoFolder").addClass("fa-folder-open");
 	}
-	
+
 	// 접기
 	function closeAll() {
 	    $(".threeDepthClass").hide();
 	    $(".twoDepthClass").hide();
-	
+
 	    $(".oneArrow").removeClass("fa-caret-down");
 	    $(".oneArrow").addClass("fa-caret-right");
 	    $(".twoArrwo").removeClass("fa-caret-down");
 	    $(".twoArrwo").addClass("fa-caret-right");
-	
+
 	    $(".oneFolder").removeClass("fa-folder-open");
 	    $(".oneFolder").addClass("fa-folder");
 	    $(".twoFolder").removeClass("fa-folder-open");
 	    $(".twoFolder").addClass("fa-folder");
 	}
-	
+
 	// 화살표 클릭시
 	function childrenDisplayToggle(depth, id, ancestor) {
 	    if(depth === "1") {
@@ -231,12 +231,12 @@
 	        if( $(".oneDepthParent-" + id).css("display") === "none" ) {
 	            // 접힌 상태
 	            $(".oneDepthParent-" + id).show();
-	
+
 	            $("#oneDepthArrow-" + id).removeClass("fa-caret-right");
 	            $("#oneDepthArrow-" + id).addClass("fa-caret-down");
 	            $("#oneDepthFolder-" + id).removeClass("fa-folder");
 	            $("#oneDepthFolder-" + id).addClass("fa-folder-open");
-	
+
 	            $(".ancestorArrow-" + ancestor).removeClass("fa-caret-down");
 	            $(".ancestorArrow-" + ancestor).addClass("fa-caret-right");
 	            $(".ancestorFolder-" + ancestor).removeClass("fa-folder-open");
@@ -245,12 +245,12 @@
 	            // 펼친 상태
 	            $(".ancestor-" + ancestor).hide();
 	            $(".oneDepthParent-" + id).hide();
-	
+
 	            $("#oneDepthArrow-" + id).removeClass("fa-caret-down");
 	            $("#oneDepthArrow-" + id).addClass("fa-caret-right");
 	            $("#oneDepthFolder-" + id).removeClass("fa-folder-open");
 	            $("#oneDepthFolder-" + id).addClass("fa-folder");
-	
+
 	            $(".ancestorArrow-" + ancestor).removeClass("fa-caret-down");
 	            $(".ancestorArrow-" + ancestor).addClass("fa-caret-right");
 	            $(".ancestorFolder-" + ancestor).removeClass("fa-folder-open");
@@ -261,7 +261,7 @@
 	        if( $(".twoDepthParent-" + id).css("display") === "none" ) {
 	            // 접힌 상태
 	            $(".twoDepthParent-" + id).show();
-	
+
 	            $("#twoDepthArrow-" + id).removeClass("fa-caret-right");
 	            $("#twoDepthArrow-" + id).addClass("fa-caret-down");
 	            $("#twoDepthFolder-" + id).removeClass("fa-folder");
@@ -269,7 +269,7 @@
 	        } else {
 	            // 펼친 상태
 	            $(".twoDepthParent-" + id).hide();
-	
+
 	            $("#twoDepthArrow-" + id).removeClass("fa-caret-down");
 	            $("#twoDepthArrow-" + id).addClass("fa-caret-right");
 	            $("#twoDepthFolder-" + id).removeClass("fa-folder-open");
@@ -277,7 +277,7 @@
 	        }
 	    }
 	}
-	
+
 	// 위로 이동
     var upFlag = true;
     function moveUp(id, viewOrder) {
@@ -288,10 +288,10 @@
                 upFlag = true;
                 return;
             }
-            
+
             var formData = "updateType=UP";
     	    $.ajax({
-    			url: "/data/group/view-order/" + id,
+    			url: "/data-group/view-order/" + id,
     			type: "POST",
     			headers: {"X-Requested-With": "XMLHttpRequest"},
     	        data: formData,
@@ -329,7 +329,7 @@
             downFlag = false;
             var formData = "updateType=DOWN";
     	    $.ajax({
-    			url: "/data/group/view-order/" + id,
+    			url: "/data-group/view-order/" + id,
     			type: "POST",
     			headers: {"X-Requested-With": "XMLHttpRequest"},
     	        data: formData,
@@ -359,7 +359,7 @@
             return;
         }
     }
-    
+
     // 지도 보기
     function viewMap(layerId, layerName) {
         var url = "/layer/" + layerId + "/map";

@@ -159,12 +159,10 @@
 										</td>
 										<td class="col-functions">
 											<span class="button-group">
-												<a href="#" onclick="deleteUploadData(${user.userId}); return false;"
-													class="image-button button-modify"><spring:message code='delete'/></a>
+												<a href="/user/modify?userId=${user.userId}" class="image-button button-modify"><spring:message code='modified'/></a>
 											</span>
 											<span class="button-group">
-												<a href="#" onclick="deleteUploadData(${user.userId}); return false;"
-													class="image-button button-delete"><spring:message code='delete'/></a>
+												<a href="/user/delete?userId=${user.userId}" class="image-button button-delete"><spring:message code='delete'/></a>
 											</span>
 										</td>
 									</tr>
@@ -209,7 +207,7 @@
 		userGroupDialog.dialog("open");
 
 		$.ajax({
-			url: "/user/detail-group",
+			url: "/user-group/detail",
 			data: {"userGroupId": userGroupId},
 			type: "GET",
 			headers: {"X-Requested-With": "XMLHttpRequest"},

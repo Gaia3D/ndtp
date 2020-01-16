@@ -30,7 +30,7 @@ import ndtp.service.PolicyService;
 
 @Slf4j
 @Controller
-@RequestMapping("/layer/")
+@RequestMapping("/layer-group/")
 public class LayerGroupController {
 
 	@Autowired
@@ -46,7 +46,7 @@ public class LayerGroupController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "list-group")
+	@GetMapping(value = "list")
 	public String list(HttpServletRequest request, @ModelAttribute LayerGroup layerGroup, Model model) {
 //		List<LayerGroup> layerGroupList = layerGroupService.getListLayerGroupAndLayer();
 		List<LayerGroup> layerGroupList = layerGroupService.getListLayerGroup();
@@ -61,7 +61,7 @@ public class LayerGroupController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "input-group")
+	@GetMapping(value = "input")
 	public String input(Model model) {
 		Policy policy = policyService.getPolicy();
 
@@ -85,7 +85,7 @@ public class LayerGroupController {
 	 * @param bindingResult
 	 * @return
 	 */
-	@PostMapping(value = "insert-group")
+	@PostMapping(value = "insert")
 	@ResponseBody
 	public Map<String, Object> insert(HttpServletRequest request, @Valid @ModelAttribute LayerGroup layerGroup, BindingResult bindingResult) {
 
@@ -131,7 +131,7 @@ public class LayerGroupController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "modify-group")
+	@GetMapping(value = "modify")
 	public String modify(HttpServletRequest request, @RequestParam Integer layerGroupId, Model model) {
 		LayerGroup layerGroup = new LayerGroup();
 		layerGroup.setLayerGroupId(layerGroupId);
@@ -151,7 +151,7 @@ public class LayerGroupController {
 	 * @param bindingResult
 	 * @return
 	 */
-	@PostMapping(value = "update-group")
+	@PostMapping(value = "update")
 	@ResponseBody
 	public Map<String, Object> update(HttpServletRequest request, @Valid LayerGroup layerGroup, BindingResult bindingResult) {
 		log.info("@@ layerGroup = {}", layerGroup);
@@ -191,7 +191,7 @@ public class LayerGroupController {
 	 * @param layerGroup
 	 * @return
 	 */
-	@PostMapping(value = "group/view-order/{layerGroupId}")
+	@PostMapping(value = "view-order/{layerGroupId}")
 	@ResponseBody
 	public Map<String, Object> moveLayerGroup(HttpServletRequest request, @PathVariable Integer layerGroupId, @ModelAttribute LayerGroup layerGroup) {
 		log.info("@@ layerGroup = {}", layerGroup);
@@ -227,7 +227,7 @@ public class LayerGroupController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "delete-layer-group")
+	@GetMapping(value = "delete")
 	public String delete(@RequestParam("layerGroupId") Integer layerGroupId, Model model) {
 
 		// TODO validation 체크 해야 함

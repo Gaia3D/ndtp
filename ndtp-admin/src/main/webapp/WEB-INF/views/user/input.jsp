@@ -248,19 +248,19 @@
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				dataType: "json",
 				success: function(msg){
-					if(msg.result == "success") {
+					if(msg.statusCode <= 200) {
 						alert(JS_MESSAGE["user.insert"]);
-						$("#parent").val("");
-						$("#duplicationValue").val("");
+						window.location.reload();
 					} else {
-						alert(JS_MESSAGE[msg.result]);
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
 					}
-					insertDataFlag = true;
+					insertUserFlag = true;
 				},
 				error:function(request,status,error){
 			        alert(JS_MESSAGE["ajax.error.message"]);
 			        alert(" code : " + request.status + "\n" + ", message : " + request.responseText + "\n" + ", error : " + error);
-			        insertDataFlag = true;
+			        insertUserFlag = true;
 				}
 			});
 		} else {
@@ -270,26 +270,16 @@
 	}
 
 	function checkData() {
-		if ($("#parent").val() == "") {
-			alert(JS_MESSAGE["data.parent.empty"]);
-			$("#parentName").focus();
+		if($("#duplicationValue").val() == null || $("#duplicationValue").val() == "") {
+			alert(JS_MESSAGE["check.id.duplication"]);
+			return false;
+		} else if($("#duplicationValue").val() == "1") {
+			alert(JS_MESSAGE["use.id.other.id.select"]);
 			return false;
 		}
-		if ($("#data_key").val() == "") {
-			alert(JS_MESSAGE["data.key.empty"]);
-			$("#data_key").focus();
-			return false;
-		}
-		if($("#duplication_value").val() == null || $("#duplication_value").val() == "") {
-			alert(JS_MESSAGE["data.key.duplication_value.check"]);
-			return false;
-		} else if($("#duplication_value").val() == "1") {
-			alert(JS_MESSAGE["data.key.duplication_value.already"]);
-			return false;
-		}
-		if ($("#data_name").val() == "") {
-			alert(JS_MESSAGE["data.name.empty"]);
-			$("#data_name").focus();
+		if ($("#userName").val() == "") {
+			alert(JS_MESSAGE["user.name.empty"]);
+			$("#userName").focus();
 			return false;
 		}
 	}

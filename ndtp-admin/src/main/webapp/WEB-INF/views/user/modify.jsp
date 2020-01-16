@@ -275,7 +275,8 @@
 						<div class="button-group">
 							<div class="center-buttons">
 								<input type="submit" value="<spring:message code='save'/>" onclick="update();"/>
-								<a href="/user/detail?userId=1" class="button">목록</a>
+								<%-- <a href="/user/detail?userId=${userInfo.userId}" class="button">목록</a> --%>
+								<a href="/user/list" class="button">목록</a>
 							</div>
 						</div>
 						</form:form>
