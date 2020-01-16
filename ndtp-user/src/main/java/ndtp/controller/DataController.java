@@ -22,11 +22,13 @@ import ndtp.domain.GeoPolicy;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
+import ndtp.domain.UserPolicy;
 import ndtp.domain.UserSession;
 import ndtp.service.DataGroupService;
 import ndtp.service.DataService;
 import ndtp.service.GeoPolicyService;
 import ndtp.service.PolicyService;
+import ndtp.service.UserPolicyService;
 import ndtp.utils.DateUtils;
 import ndtp.utils.FormatUtils;
 
@@ -50,6 +52,8 @@ public class DataController {
 	private ObjectMapper objectMapper;
 	@Autowired
 	private PolicyService policyService;
+	@Autowired
+	private UserPolicyService userPolicyService;
 	
 	@Autowired
 	private PropertiesConfig propertiesConfig;
@@ -72,7 +76,7 @@ public class DataController {
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
-		
+		UserPolicy userPolicy = userPolicyService.getUserPolicy(userSession.getUserId());
 		String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
 		if(StringUtils.isEmpty(dataInfo.getStartDate())) {
 			dataInfo.setStartDate(today.substring(0,4) + DateUtils.START_DAY_TIME);
@@ -104,6 +108,7 @@ public class DataController {
 		
 		model.addAttribute(pagination);
 		model.addAttribute("dataList", dataList);
+		model.addAttribute("userPolicy", userPolicy);
 		model.addAttribute("geoPolicyJson", objectMapper.writeValueAsString(geoPolicy));
 		return "/data/list";
 	}

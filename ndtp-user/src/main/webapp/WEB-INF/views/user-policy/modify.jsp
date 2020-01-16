@@ -1,58 +1,103 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="/WEB-INF/views/common/taglib.jsp" %>
 <div class="userPolicyContentWrap">
+<form:form id="userPolicy" modelAttribute="userPolicy" method="post" onsubmit="return false;">
+<form:hidden path="userPolicyId"/>
 <div>
 	<p>객체정보</p>
-	<input type="radio" id="showObjectInfo" name="objectInfo" value="true" onclick="changeObjectInfoViewMode(true);" />
-	<label for="showObjectInfo">표시</label>
-	<input type="radio" id="hideObjectInfo" name="objectInfo" value="false" onclick="changeObjectInfoViewMode(false);"/>
-	<label for="hideObjectInfo">비표시</label>
+	<input type="radio" id="datainfoDisplayY" name="datainfoDisplay" value="true"/>
+	<label for="datainfoDisplay">표시</label>
+	<input type="radio" id="datainfoDisplayN" name="datainfoDisplay" value="false" checked/>
+	<label for="datainfoDisplay">비표시</label>
 </div>
 <div>
 	<p>Origin</p>
-	<input type="radio" id="showOrigin" name="origin" value="true" onclick="changeOrigin(true);" />
-	<label for="showOrigin">표시</label>
-	<input type="radio" id="hideOrigin" name="origin" value="false" onclick="changeOrigin(false);"/>
-	<label for="hideOrigin">비표시</label>
+	<input type="radio" id="originDisplayY" name="originDisplay" value="true"/>
+	<label for="originDisplay">표시</label>
+	<input type="radio" id="originDisplayN" name="originDisplay" value="false" checked/>
+	<label for="originDisplay">비표시</label>
 </div>
 <div>
 	<p>Bounding Box</p>
-	<input type="radio" id="showBoundingBox" name="boundingBox" value="true" onclick="changeBoundingBox(true);" />
-	<label for="showBoundingBox">표시</label>
-	<input type="radio" id="hideBoundingBox" name="boundingBox" value="false" onclick="changeBoundingBox(false);"/>
-	<label for="hideBoundingBox">비표시</label>
+	<input type="radio" id="bboxDisplayY" name="bboxDisplay" value="true"/>
+	<label for="bboxDisplay">표시</label>
+	<input type="radio" id="bboxDisplayN" name="bboxDisplay" value="false" checked/>
+	<label for="bboxDisplay">비표시</label>
 </div>
 <div>
 	<p>LOD</p>
 	<div style="height: 30px;">
 		<div style="display: inline-block; width: 70px;">LOD0</div>
-		<input type="text" id="geo_lod0" name="geo_lod0" value="${policy.geo_lod0 }" size="15" />&nbsp;M
+		<form:input type="text" id="geoLod0" path="lod0" size="15" />&nbsp;M
 	</div>
 	<div style="height: 30px;">
 		<div style="display: inline-block; width: 70px;">LOD1</div>
-		<input type="text" id="geo_lod1" name="geo_lod1" value="${policy.geo_lod1 }" size="15" />&nbsp;M
+		<form:input type="text" id="geoLod1" path="lod1" size="15" />&nbsp;M
 	</div>
 	<div style="height: 30px;">
 		<div style="display: inline-block; width: 70px;">LOD2</div>
-		<input type="text" id="geo_lod2" name="geo_lod2" value="${policy.geo_lod2 }" size="15" />&nbsp;M
+		<form:input type="text" id="geoLod2" path="lod2" size="15" />&nbsp;M
 	</div>
 	<div style="height: 30px;">
 		<div style="display: inline-block; width: 70px;">LOD3</div>
-		<input type="text" id="geo_lod3" name="geo_lod3" value="${policy.geo_lod3 }" size="15" />&nbsp;M
+		<form:input type="text" id="geoLod3" path="lod3" size="15" />&nbsp;M
 	</div>
 	<div style="height: 30px;">
 		<div style="display: inline-block; width: 70px;">LOD4</div>
-		<input type="text" id="geo_lod4" name="geo_lod4" value="${policy.geo_lod4 }" size="15" />&nbsp;M
+		<form:input type="text" id="geoLod4" path="lod4" size="15" />&nbsp;M
 	</div>
 	<div style="height: 30px;">
 		<div style="display: inline-block; width: 70px;">LOD5</div>
-		<input type="text" id="geo_lod5" name="geo_lod5" value="${policy.geo_lod5 }" size="15" />&nbsp;M&nbsp;&nbsp;
-		<button type="button" id="changeLodButton" class="btnTextF">변경</button>
+		<form:input type="text" id="geoLod5" path="lod5" size="15" />&nbsp;M
+<!-- 		<button type="button" id="changeLodButton" class="btnTextF">변경</button> -->
 	</div>
 </div>
-<div>
-	<p><label for="geo_ssao_radius">SSAO 반경</label></p>
-	<input type="text" id="geo_ssao_radius" name="geo_ssao_radius" />
-	<button type="button" id="changeSsaoRadiusButton" class="btnTextF">변경</button>
+<div style="height: 30px;margin-top:5px;">
+	<div style="display: inline-block; width: 70px;">SSAO 반경</div>
+	<form:input type="text" id="ssaoRadius" path="ssaoRadius" size="15" />&nbsp;M
+<!-- 	<button type="button" id="changeLodButton" class="btnTextF">변경</button> -->
 </div>
+<button class="focusA" style="width:100%;margin-top:20px;" title="저장" onclick="update();">저장</button>
+</form:form>
 </div>
-<button class="focusA" style="width:100%;margin-top:20px;" title="저장">저장</button>
+<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	$("input[name='datainfoDisplay']").filter("[value='${userPolicy.datainfoDisplay}']").prop("checked", true);
+	$("input[name='originDisplay']").filter("[value='${userPolicy.originDisplay}']").prop("checked", true);
+	$("input[name='bboxDisplay']").filter("[value='${userPolicy.bboxDisplay}']").prop("checked", true);
+});
+
+var updateUserPolicyFlag = true;
+function update() {
+	if(updateUserPolicyFlag) {
+		updateUserPolicyFlag = false;
+		var url = "/user-policy/update";
+		var formData = $("#userPolicy").serialize();
+		$.ajax({
+			url: url,
+			type: "POST",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			data: formData,
+			dataType: "json",
+			success: function(msg) {
+				if(msg.statusCode <= 200) {
+					alert("저장 되었습니다.");
+// 					window.location.reload();
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+					console.log("---- " + msg.message);
+				}
+				updateUserPolicyFlag = true;
+			},
+	        error: function(request, status, error) {
+	        	ajaxErrorHandler(request);
+	        	updateUserPolicyFlag = true;
+	        }
+		});
+	} else {
+		alert("진행 중입니다.");
+		return;
+	}
+}
+</script>

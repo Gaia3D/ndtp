@@ -1,11 +1,9 @@
 package ndtp.domain;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.sql.Timestamp;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,11 +40,11 @@ public class UserPolicy implements Serializable {
 	private String lod5;
 	// 그림자 반경 
 	private String ssaoRadius;
+	
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Timestamp updateDate;
 
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
-	private LocalDateTime updateDate;
-
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
-	private LocalDateTime insertDate;
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Timestamp insertDate;
 
 }
