@@ -179,8 +179,8 @@
 <script type="text/javascript" src="/js/${lang}/uiControll.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-	$('.convert').addClass('on');
 });
+
 //전체 선택 
 $("#chkAll").click(function() {
 	$(":checkbox[name=uploadDataId]").prop("checked", this.checked);

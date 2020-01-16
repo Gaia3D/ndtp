@@ -200,7 +200,6 @@
 <script type="text/javascript" src="/js/${lang}/uiControll.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-	$('.convert').addClass('on');
 });
 
 var dataGroupDialog = $( ".dialog" ).dialog({

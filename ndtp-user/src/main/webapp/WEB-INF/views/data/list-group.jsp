@@ -203,8 +203,8 @@
 <script type="text/javascript" src="/js/${lang}/uiControll.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-	$('.convert').addClass('on');
 });
+
 //펼치기
 function openAll() {
     $(".threeDepthClass").show();

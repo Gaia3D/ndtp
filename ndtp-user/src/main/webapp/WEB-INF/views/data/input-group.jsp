@@ -184,8 +184,8 @@
 <script type="text/javascript" src="/js/${lang}/uiControll.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-	$('.convert').addClass('on');
 });
+
 function validate() {
 	var number = /^[0-9]+$/;
 	if ($("#dataGroupName").val() === null || $("#dataGroupName").val() === "") {
