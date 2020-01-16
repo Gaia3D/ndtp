@@ -273,6 +273,6 @@ public class UserGroupController implements AuthorizationController {
 
 		userGroupService.deleteUserGroup(userGroup);
 
-		return "redirect:/user/list-group";
+		return "redirect:/user-group/list";
 	}
 }
