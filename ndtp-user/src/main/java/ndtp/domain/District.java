@@ -14,7 +14,7 @@ public class District extends Search {
 	private String fullTextSearch;
 
 	// 행정구역 코드
-	private Integer id;
+	private String id;
 	// 행정구역명(화면 표시)
 	private String name;
 	// 경도

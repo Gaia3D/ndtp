@@ -40,7 +40,7 @@
 		<!-- E: NAVWRAP -->	
 		
 		<div id="contentsWrap" class="contentsWrap" style="display: none;">
-			<div id="searchContent" class="contentsList yScroll" style="display:none;">
+			<div id="searchContent" class="contents yScroll" style="display:none;">
 				<%@ include file="/WEB-INF/views/search/district.jsp" %>
 			</div>
 			<div id="dataContent" class="contents fullHeight">
@@ -182,6 +182,7 @@
 
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/externlib/handlebars-4.1.2/handlebars.js"></script>
 <script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>
 <script type="text/javascript" src="/js/mago3d.js"></script>
 <script type="text/javascript" src="/js/mago3d_lx.js"></script>
@@ -191,6 +192,7 @@
 <script type="text/javascript" src="/js/${lang}/uiControll.js"></script>
 <script type="text/javascript" src="/js/${lang}/SpatialAnalysis.js"></script>
 <script type="text/javascript" src="/js/${lang}/DistrictControll.js"></script>
+<script type="text/javascript" src="/js/${lang}/Search.js"></script>
 <script type="text/javascript">
 	// 임시로...
 	$(document).ready(function() {

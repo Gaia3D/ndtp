@@ -12,7 +12,7 @@ public class SkSgg {
 	// 시도 1, 시군구 2, 읍면동 3
 	private Integer layerType;
 	// 고유번호
-	private Long gid;
+	private Integer ogcFid;
 	// PK
 	private String ufid;
 	// 법정동 코드
