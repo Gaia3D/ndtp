@@ -1050,3 +1050,31 @@ border: none;
 text-indent: -999em;
 background-position: -132px -299px;
 }
+
+
+.tab {
+height: 31px;
+margin: 0;
+min-width: 325px;
+}
+.tab li {
+display: inline-block;
+width: 145px;
+padding: 5px 0px;
+color: #000;
+cursor: pointer;
+border: 1px solid #d9d9d9;
+border-bottom: 1px solid #ececec;
+border-radius: 3px 3px 0 0;
+background-color: #fff;
+text-align: center;
+}
+.tab li.on {
+color: #fff;
+border: 1px solid #006bd2;
+background-color: #0073e2;
+} 
+.input-set {
+margin: 10px 20px 10px 10px;
+float: left; 
+}
