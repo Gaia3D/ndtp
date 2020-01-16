@@ -32,7 +32,7 @@
 	<!-- E: NAVWRAP -->
 	
 	<div class="container" style="float:right; width: calc(100% - 78px);">
-		<div style="padding: 20px 20px 10px 10px; font-size: 18px;">업로딩 데이터 자동 변환</div>
+		<div style="padding: 20px 20px 0px 10px; font-size: 18px;">3D 업로딩 데이터 자동 변환</div>
 		<div class="tabs" >
 			<ul class="tab">
 				<li><a href="/data/input-group">데이터 그룹 등록</a></li>
