@@ -37,17 +37,17 @@ $(function() {
     
 /***** Contents Wrap: 공간분석 *****/	
 	// 공간분석 그룹 클릭 시	
-	$('#spatialContent ul.listDrop li > p').click(function(e) {
+	$('#analyticsContent ul.listDrop li > p').click(function(e) {
 		var parentObj = $(this).parent();
 		var index = parentObj.index();
-		$('#spatialContent ul.listDrop > li').eq(index).toggleClass('on');
+		$('#analyticsContent ul.listDrop > li').eq(index).toggleClass('on');
 	});
 	
 	// 공간분석 위치 관련 버튼 클릭 시
-	$('#spatialContent button[class*="draw"]').click(function(e) {
+	$('#analyticsContent button[class*="draw"]').click(function(e) {
 		$(this).toggleClass('on');
 		
-		$('#spatialContent button[class*="draw"]').not($(this)).each(function(i,a){
+		$('#analyticsContent button[class*="draw"]').not($(this)).each(function(i,a){
 			$(this).removeClass('on');
 		});
 	});

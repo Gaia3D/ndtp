@@ -140,7 +140,7 @@
 			</div>
 			<!-- E: 데이터 -->
 			
-			<div id="spatialContent" class="contentsList yScroll" style="display:none;height: 798px;background-color: #fff;">
+			<div id="analyticsContent" class="contentsList yScroll" style="display:none;height: 798px;background-color: #fff;">
 				<%@ include file="/WEB-INF/views/spatial/spatial.jsp" %> 
 			</div>
 			<div id="simulationContent" class="contentsList yScroll" style="display:none;">
@@ -149,7 +149,7 @@
 			<div id="civilVoiceContent" class="contents" style="display:none;">
 				<%@ include file="/WEB-INF/views/civil-voice/input.jsp" %>
 			</div>
-			<div id="userPolicyContent" class="contents" style="display:none;">
+			<div id="configurationContent" class="contents" style="display:none;">
 				<%@ include file="/WEB-INF/views/user-policy/modify.jsp" %>
 			</div>
 			<!-- E: CONTENTS -->
@@ -206,7 +206,7 @@
 	var MAGO3D_INSTANCE;
 	magoInit();
 	
-	dataGroupList();
+	
 
 	
 	function magoInit() {
@@ -252,6 +252,8 @@
 		SpatialAnalysis(magoInstance);
 		// 행정 구역 이동 
         DistrictControll(viewer);
+
+        dataGroupList();
 	}
 	
 	// 데이터 그룹 목록
@@ -284,6 +286,7 @@
 		var cnt = 0;
 		for(var i=0; i<dataGroupArrayLength; i++) {
 			var dataGroup = dataGroupArray[i];
+			var f4dController = MAGO3D_INSTANCE.getF4dController();
 			$.ajax({
 				url: "/datas",
 				data: { "dataGroupId" : dataGroup.dataGroupId },
@@ -306,11 +309,7 @@
 							}
 
 							group.datas = dataInfoList;
-							dataArray.push(group);
-							if(cnt === dataGroupArrayLength-1) {
-								var f4dController = MAGO3D_INSTANCE.getF4dController();
-								f4dController.addF4dGroup(dataArray);
-							}
+							f4dController.addF4dGroup(group);
 						}
 						cnt++;
 					} else {
