@@ -1302,7 +1302,6 @@ html, body {
 .container {
 	width: 100%;
 	max-width: 1920px;
-	min-width: 1420px;
 	margin: 0 auto;
 	padding: 0 20px;
 	box-sizing: border-box; }

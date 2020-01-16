@@ -1,6 +1,0 @@
-alter table sk_sdo rename  column ogc_fid to gid;
-alter table sk_sgg rename  column ogc_fid to gid;
-alter table sk_emd rename  column ogc_fid to gid;
-alter table sk_sdo rename  column wkb_geometry to geom;
-alter table sk_sgg rename  column wkb_geometry to geom;
-alter table sk_emd rename  column wkb_geometry to geom;
