@@ -15,9 +15,9 @@
     <link rel="stylesheet" href="/externlib/dropzone/dropzone.min.css">
     <link rel="stylesheet" href="/css/${lang}/style.css" />
     <script type="text/javascript" src="/externlib/dropzone/dropzone.min.js"></script>
-    
+
     <script src="/externlib/jquery/jquery.js"></script>
-	<script src="/externlib/jquery-ui/jquery-ui.js"></script>	
+	<script src="/externlib/jquery-ui/jquery-ui.js"></script>
     <style type="text/css">
         .dropzone .dz-preview.lp-preview {
             width: 150px;
@@ -36,7 +36,7 @@
 <body>
 	<%@ include file="/WEB-INF/views/layouts/header.jsp" %>
 	<%@ include file="/WEB-INF/views/layouts/menu.jsp" %>
-	
+
 	<div class="site-body">
 		<div class="container">
 			<div class="site-content">
@@ -99,10 +99,10 @@
 				                    </td>
 								</tr>
 								<tr>
-									
-									
-									
-									
+
+
+
+
 									<th class="col-label" scope="row">
 										<form:label path="latitude"><spring:message code='latitude'/></form:label>
 									</th>
@@ -119,8 +119,8 @@
 										<form:input path="mappingType" class="m" />
 				  						<form:errors path="mappingType" cssClass="error" />
 									</td>
-								
-								
+
+
 									<th class="col-label" scope="row">
 										<form:label path="longitude"><spring:message code='longitude'/></form:label>
 									</th>
@@ -185,7 +185,7 @@
 								</tr>
 							</table>
 							</form:form>
-							
+
 							<h4 style="margin-top: 30px; margin-bottom: 5px;">파일 업로딩</h4>
 				        <div class="fileSection" style="font-size: 17px;">
 				            <form id="my-dropzone" action="" class="dropzone hzScroll"></form>
@@ -194,7 +194,7 @@
 							<div class="center-buttons">
 								<input type="submit" id="allFileUpload" value="<spring:message code='save'/>" onclick="insertLayerGroup();" />
 								<input type="submit" id="allFileClear" value="초기화" />
-								<a href="/layer/list" class="button">목록</a>
+								<a href="/data/list" class="button">목록</a>
 							</div>
 						</div>
 					</div>
@@ -203,7 +203,7 @@
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
-	
+
 	<!-- Dialog -->
 	<div id="dataDialog" class="dataDialog">
 		<table class="list-table scope-col">
@@ -236,7 +236,7 @@
 			<input type="button" id="rootParentSelect" class="button" value="최상위(ROOT) 폴더로 저장"/>
 		</div>
 	</div>
-	
+
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript">
@@ -244,7 +244,7 @@
 		$(".tabs").tabs();
 		$(".select").selectmenu();
 	});
-	
+
 	var dataDialog = $( ".dataDialog" ).dialog({
 		autoOpen: false,
 		height: 600,
@@ -253,14 +253,14 @@
 		overflow : "auto",
 		resizable: false
 	});
-	
+
 	// 부모 찾기
 	$( "#parentFind" ).on( "click", function() {
 		dataDialog.dialog( "open" );
 		dataDialog.dialog( "option", "title", $("#project_id option:selected").prop("label"));
 		drawDataList($("#project_id").val());
 	});
-	
+
 	function drawDataList(projectId) {
 		if(projectId === "") {
 			alert(JS_MESSAGE["project.project_id.empty"]);
@@ -294,7 +294,7 @@
 							var viewAttributes = dataInfo.attributes;
 							var viewDepth = getViewDepth(preViewDepth, dataInfo.data_id, preDepth, dataInfo.depth);
 							if(viewAttributes !== null && viewAttributes !== "" && viewAttributes.length > 20) viewAttributes = viewAttributes.substring(0, 20) + "...";
-							content = content 
+							content = content
 								+ 	"<tr>"
 								+ 	"	<td class=\"col-number\">" + (i + 1) + " </td>"
 								+ 	"	<td class=\"col-id\">" + viewDepth + "</td>"
@@ -304,16 +304,16 @@
 								+ 	"	<td class=\"col-toggle\">" + dataInfo.longitude + "</td>"
 								+ 	"	<td class=\"col-toggle\">" + dataInfo.height + "</td>"
 								+ 	"	<td class=\"col-toggle\">" + viewAttributes + "</td>"
-								+ 	"	<td class=\"col-toggle\"><a href=\"#\" onclick=\"confirmParent('" 
+								+ 	"	<td class=\"col-toggle\"><a href=\"#\" onclick=\"confirmParent('"
 								+ 									dataInfo.data_id + "', '" + dataInfo.data_name + "', '" + dataInfo.depth + "'); return false;\">" + select + "</a></td>"
 								+ 	"</tr>";
-								
+
 							preDataId = dataInfo.data_id;
 							preDepth = dataInfo.depth;
 							preViewDepth = viewDepth;
 						}
 					}
-					
+
 					$("#projectDataList").empty();
 					$("#projectDataList").html(content);
 				} else {
@@ -326,11 +326,11 @@
     		}
 		});
 	}
-	
+
 	function getViewDepth(preViewDepth, dataId, preDepth, depth) {
 		var result = "";
 		if(depth === 1) return result + dataId;
-		
+
 		if(preDepth === depth) {
 			// 형제
 			if(preViewDepth.indexOf(".") >= 0) {
@@ -340,14 +340,14 @@
 			}
 		} else if(preDepth < depth) {
 			// 자식
-			result = preViewDepth + "." + dataId;				
+			result = preViewDepth + "." + dataId;
 		} else {
 			result =  preViewDepth.substring(0, preViewDepth.lastIndexOf("."));
 			result =  result.substring(0, result.lastIndexOf(".") + 1) + dataId;
 		}
 		return result;
 	}
-	
+
 	// 상위 Node
 	function confirmParent(dataId, dataName, depth) {
 		$("#parent").val(dataId);
@@ -355,14 +355,14 @@
 		$("#parent_depth").val(depth);
 		dataDialog.dialog( "close" );
 	}
-	
+
 	$( "#rootParentSelect" ).on( "click", function() {
 		$("#parent").val(0);
 		$("#parent_name").val("최상위 Node");
 		$("#parent_depth").val(1);
 		dataDialog.dialog( "close" );
 	});
-	
+
 	// 아이디 중복 확인
 	$( "#data_duplication_buttion" ).on( "click", function() {
 		var dataKey = $("#data_key").val();
@@ -398,7 +398,7 @@
     		}
 		});
 	});
-	
+
 	// Data 정보 저장
 	var insertDataFlag = true;
 	function insertData() {
@@ -435,7 +435,7 @@
 			return;
 		}
 	}
-	
+
 	function checkData() {
 		if ($("#parent").val() == "") {
 			alert(JS_MESSAGE["data.parent.empty"]);

@@ -40,8 +40,8 @@ import ndtp.utils.FormatUtils;
 
 @Slf4j
 @Controller
-@RequestMapping("/data-group/")
-public class DataGroupController {
+@RequestMapping("/user-data-group/")
+public class UserDataGroupController {
 	
 	private static final long PAGE_ROWS = 5l;
 	private static final long PAGE_LIST_COUNT = 5l;
@@ -101,7 +101,7 @@ public class DataGroupController {
 		model.addAttribute(pagination);
 		model.addAttribute("dataGroupList", dataGroupList);
 		model.addAttribute("geoPolicyJson", objectMapper.writeValueAsString(geoPolicy));
-		return "/data-group/list";
+		return "/user-data-group/list";
 	}
 	
 	/**
@@ -166,7 +166,7 @@ public class DataGroupController {
 		model.addAttribute("dataGroup", dataGroup);
 		model.addAttribute("dataGroupList", dataGroupList);
 		
-		return "/data-group/input";
+		return "/user-data-group/input";
 	}
 	
 	/**
@@ -271,7 +271,7 @@ public class DataGroupController {
         model.addAttribute("policy", policy);
         model.addAttribute("policyJson", policyJson);
 
-        return "/data-group/location-map";
+        return "/user-data-group/location-map";
     }
     
     /**
@@ -289,7 +289,7 @@ public class DataGroupController {
 		
 		dataGroupService.deleteDataGroup(dataGroup);
 		
-		return "redirect:/data-group/list";
+		return "redirect:/user-data-group/list";
 	}
 	
 	/**

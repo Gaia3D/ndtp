@@ -151,8 +151,8 @@
 					                    	</div>
 					                    </td>
 					                    <td class="col-type">
-											<a href="/layer/modify-group?layerGroupId=${layerGroup.layerGroupId}" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;
-											<a href="/layer/delete-layer-group?layerGroupId=${layerGroup.layerGroupId }" onclick="return deleteWarning();"
+											<a href="/layer-group/modify?layerGroupId=${layerGroup.layerGroupId}" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;
+											<a href="/layer-group/delete?layerGroupId=${layerGroup.layerGroupId }" onclick="return deleteWarning();"
 														class="linkButton"><spring:message code='delete'/></a>
 					                    </td>
 					                    <td class="col-date">
@@ -297,7 +297,7 @@
 
             var formData = "updateType=UP";
     	    $.ajax({
-    			url: "/layer/group/view-order/" + id,
+    			url: "/layer-group/view-order/" + id,
     			type: "POST",
     			headers: {"X-Requested-With": "XMLHttpRequest"},
     	        data: formData,
@@ -335,7 +335,7 @@
             downFlag = false;
             var formData = "updateType=DOWN";
     	    $.ajax({
-    			url: "/layer/group/view-order/" + id,
+    			url: "/layer-group/view-order/" + id,
     			type: "POST",
     			headers: {"X-Requested-With": "XMLHttpRequest"},
     	        data: formData,

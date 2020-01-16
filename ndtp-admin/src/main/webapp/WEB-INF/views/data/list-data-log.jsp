@@ -75,7 +75,7 @@
 							<input type="hidden" id="checkIds" name="checkIds" value="" />
 						<div class="list-header row">
 							<div class="list-desc u-pull-left">
-								<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/> 
+								<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/>
 								<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/>
 							</div>
 						</div>
@@ -114,7 +114,7 @@
 </c:if>
 <c:if test="${!empty dataInfoLogList }">
 	<c:forEach var="dataInfoLog" items="${dataInfoLogList}" varStatus="status">
-		
+
 								<tr>
 									<td class="col-checkbox">
 										<input type="checkbox" id="dataInfoLogId_${dataInfoLog.dataInfoLogId}" name="dataInfoLogId" value="${dataInfoLog.dataInfoLogId}" />
@@ -174,14 +174,14 @@
 							</tbody>
 						</table>
 						</form:form>
-							
+
 					</div>
 					<%@ include file="/WEB-INF/views/common/pagination.jsp" %>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>	
+</div>
 <%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
 
 <%@ include file="/WEB-INF/views/data/group-dialog.jsp" %>
@@ -192,16 +192,16 @@
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript">
-	
-	//전체 선택 
+
+	//전체 선택
 	$("#chkAll").click(function() {
 		$(":checkbox[name=dataInfoLogId]").prop("checked", this.checked);
 	});
-	
+
 	function searchCheck() {
 		// TODO 체크 해야 함
 	}
-	
+
 	var dataGroupDialog = $( ".dataGroupDialog" ).dialog({
 		autoOpen: false,
 		height: 300,
@@ -209,17 +209,17 @@
 		modal: true,
 		resizable: false
 	});
-	
+
 	// 데이터 그룹 정보
 	function detailDataGroup(dataGroupId) {
 		dataGroupDialog.dialog( "open" );
 		viewDataGroup(dataGroupId);
 	}
-	
+
 	// project 정보
 	function viewDataGroup(dataGroupId) {
 		$.ajax({
-			url: "/data/detail-group",
+			url: "/data-group/detail",
 			data: { dataGroupId : dataGroupId },
 			type: "GET",
 			dataType: "json",
@@ -238,7 +238,7 @@
 			}
 		});
 	}
-	
+
 	// 프로젝트 정보
 	function drawDataGroup(dataGroup) {
 		$("#dataGroupNameInfo").html(dataGroup.dataGroupName);
@@ -246,7 +246,7 @@
 		$("#availableInfo").html(dataGroup.available);
 		$("#descriptionInfo").html(dataGroup.description);
 	}
-	
+
 	// data info change request log
 	var dataInfoLogDialog = $( ".dataInfoLogDialog" ).dialog({
 	    autoOpen: false,
@@ -268,10 +268,10 @@
 		$("#afterPitch").html(pitch);
 		$("#beforeRoll").html(beforeRoll);
 		$("#afterRoll").html(roll);
-		
+
 		dataInfoLogDialog.dialog({title: dataName + " Change Request Log"}).dialog( "open" );
 	}
-	
+
 	var warningFlag = true;
 	function warning(statusLevel, dataGroupId, dataInfoLogId) {
 		if(confirm("계속 진행 하시겠습니까?")) {
@@ -302,7 +302,7 @@
 			} else {
 				alert(JS_MESSAGE["button.dobule.click"]);
 				return;
-			} 
+			}
 		}
 	}
 </script>

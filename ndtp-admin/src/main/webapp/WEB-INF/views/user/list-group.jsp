@@ -55,6 +55,7 @@
 					                    <th scope="col">사용자</th>
 					                    <th scope="col">메뉴</th>
 					                    <th scope="col">Role</th>
+					                    <th scope="col">편집</th>
 					                    <th scope="col">등록일</th>
 									</tr>
 								</thead>
@@ -149,6 +150,10 @@
 					                    </td>
 					                    <td class="col-type">
 					                        <a href="/user/group/${userGroup.userGroupId }/role" class="linkButton">수정</a>
+					                    </td>
+					                    <td class="col-type">
+											<a href="/user-group/modify?userGroupId=${userGroup.userGroupId}" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;
+											<a href="/user-group/delete?userGroupId=${userGroup.userGroupId}" onclick="return deleteWarning();" class="linkButton"><spring:message code='delete'/></a>
 					                    </td>
 					                    <td class="col-date">
 					                    	<fmt:parseDate value="${userGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>

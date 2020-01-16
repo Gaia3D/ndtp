@@ -32,14 +32,14 @@
 	<!-- E: NAVWRAP -->
 	
 	<div class="container" style="float:right; width: calc(100% - 78px);">
-		<div style="padding: 20px 20px 10px 10px; font-size: 18px;">3D 업로딩 데이터 자동 변환</div>
+		<div style="padding: 20px 20px 0px 10px; font-size: 18px;">3D 업로딩 데이터 자동 변환</div>
 		<div class="tabs" >
 			<ul class="tab">
-				<li><a href="/data/input-group">데이터 그룹 등록</a></li>
-			    <li><a href="/upload-data/input">업로딩</a></li>
-			   	<li class="on"><a href="/upload-data/list">업로딩 목록</a></li>
-			  	<li><a href="/converter/list">데이터 변환 목록</a></li>
-			   	<li><a href="/data/list-group">데이터 그룹</a></li>
+				<li onclick="location.href='/user-data-group/list'">데이터 그룹</li>
+				<li onclick="location.href='/user-data-group/input'">데이터 그룹 등록</li>
+				<li onclick="location.href='/upload-data/input'">업로딩 데이터</li>
+			   	<li onclick="location.href='/upload-data/list'" class="on">업로딩 데이터 목록</li>
+			  	<li onclick="location.href='/converter/list'">업로딩 데이터 변환 목록</li>
 			</ul>
 		</div>
 		
@@ -205,8 +205,8 @@
 <script type="text/javascript" src="/js/${lang}/uiControll.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-	$('.convert').addClass('on');
 });
+
 //전체 선택 
 $("#chkAll").click(function() {
 	$(":checkbox[name=uploadDataId]").prop("checked", this.checked);

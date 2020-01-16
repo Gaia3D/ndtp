@@ -37,15 +37,19 @@
 									<tr>
 										<th class="col-label" scope="row"><spring:message code='user.id'/></th>
 										<td class="col-data">${userInfo.userId}</td>
-									</tr>	
+									</tr>
 									<tr>
 										<th class="col-label" scope="row"><spring:message code='user.group.usergroup'/></th>
 										<td class="col-data">${userInfo.userGroupName}</td>
-									</tr>	
+									</tr>
 									<tr>
 										<th class="col-label" scope="row"><spring:message code='name'/></th>
 										<td class="col-data">${userInfo.userName}</td>
-									</tr>	
+									</tr>
+									<tr>
+										<th class="col-label" scope="row"><spring:message code='status'/></th>
+										<td class="col-data">${userInfo.status}</td>
+									</tr>
 									<tr>
 										<th class="col-label" scope="row"><spring:message code='password'/></th>
 										<td class="col-data">********</td>
@@ -53,7 +57,7 @@
 									<%-- <tr>
 										<th class="col-label" scope="row"><spring:message code='phone.number'/></th>
 										<td class="col-data">${userInfo.viewMaskingTelePhone}</td>
-									</tr>	
+									</tr>
 									<tr>
 										<th class="col-label" scope="row"><spring:message code='mobile'/></th>
 										<td class="col-data">${userInfo.viewMaskingMobilePhone}</td>
@@ -111,13 +115,13 @@
 				<span class="icon-text"><spring:message code='user.group.temporary.password'/></span>
 			</c:when>
 		</c:choose>
-																					
+
 										</td>
 									</tr>
 									<tr>
 										<th class="col-label" scope="row"><spring:message code='insert.type'/></th>
 										<td class="col-data">
-											${userInfo.viewUserInsertType}									
+											${userInfo.viewUserInsertType}
 										</td>
 									</tr>
 									<tr>
@@ -125,12 +129,12 @@
 										<td class="col-data">
 	<c:if test="${user_info.sso_use_yn eq 'N'}">
 											<spring:message code='no.use'/>
-	</c:if>									
+	</c:if>
 										</td>
 									</tr> --%>
 								</table>
 							</div>
-							<%-- 
+							<%--
 							<div id="user_device_tab">
 								<table class="inner-table scope-col">
 									<col class="col-number" />
@@ -201,7 +205,7 @@
 						<div class="button-group">
 							<div class="center-buttons">
 								<a href="/user/list?${listParameters}" class="button"><spring:message code='list'/></a>
-								<a href="/user/modify-user?userId=${userInfo.userId }&amp;${listParameters}" class="button"><spring:message code='modified'/></a>
+								<a href="/user/modify?userId=${userInfo.userId}&amp;${listParameters}" class="button"><spring:message code='modified'/></a>
 							</div>
 						</div>
 					</div>
@@ -221,11 +225,11 @@
 		$( ".tabs" ).tabs();
 	});
 
-	//전체 선택 
+	//전체 선택
 	$("#chkAll").click(function() {
 		$(":checkbox[name=uploadDataId]").prop("checked", this.checked);
 	});
-	
+
 	var dialogConverterJob = $( ".dialogConverterJob" ).dialog({
 		autoOpen: false,
 		height: 280,
@@ -235,18 +239,18 @@
 		close: function() {
 			$("#converterCheckIds").val("");
 			$("#title").val("");
-			//location.reload(); 
+			//location.reload();
 		}
 	});
-	
+
 	// F4D Converter Button Click
 	function converterFile(uploadDataId, dataName) {
 		$("#converterCheckIds").val(uploadDataId + ",");
 		$("#title").val(dataName);
-		
+
 		dialogConverterJob.dialog( "open" );
 	}
-	
+
 	// All F4D Converter Button Click
 	function converterFiles() {
 		var checkedValue = "";
@@ -258,10 +262,10 @@
 			return;
 		}
 		$("#converterCheckIds").val(checkedValue);
-		
+
 		dialogConverterJob.dialog( "open" );
 	}
-	
+
 	// F4D Converter 일괄 변환
 	var saveConverterJobFlag = true;
 	function saveConverterJob() {
@@ -270,7 +274,7 @@
 			$("#title").focus();
 			return false;
 		}
-		
+
 		if(saveConverterJobFlag) {
 			saveConverterJobFlag = false;
 			var formData =$("#converterJobForm").serialize();
@@ -282,11 +286,11 @@
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				success: function(msg){
 					if(msg.statusCode <= 200) {
-						alert(JS_MESSAGE["insert"]);	
+						alert(JS_MESSAGE["insert"]);
 					} else {
 						alert(JS_MESSAGE[msg.errorCode]);
 					}
-					
+
 					$("#converterCheckIds").val("");
 					$("#title").val("");
 					$(":checkbox[name=uploadDataId]").prop("checked", false);
@@ -304,11 +308,11 @@
 			return;
 		}
 	}
-	
+
 	function deleteUploadData(uploadDataId) {
 		deleteAllUploadData(uploadDataId);
 	}
-	
+
 	// 삭제
 	var deleteUploadDataFlag = true;
 	function deleteAllUploadData(uploadDataId) {
@@ -328,7 +332,7 @@
 		} else {
 			formData = "checkIds=" + uploadDataId;
 		}
-		
+
 		if(confirm(JS_MESSAGE["delete.confirm"])) {
 			if(deleteUploadDataFlag) {
 				deleteUploadDataFlag = false;
@@ -340,7 +344,7 @@
 					headers: {"X-Requested-With": "XMLHttpRequest"},
 					success: function(msg){
 						if(msg.statusCode <= 200) {
-							alert(JS_MESSAGE["delete"]);	
+							alert(JS_MESSAGE["delete"]);
 							location.reload();
 						} else {
 							alert(JS_MESSAGE[msg.errorCode]);
