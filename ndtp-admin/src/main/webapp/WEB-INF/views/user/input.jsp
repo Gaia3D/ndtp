@@ -39,7 +39,7 @@
 									<td class="col-input">
 										<form:hidden path="duplicationValue"/>
 										<form:input path="userId" cssClass="m" />
-				  						<input type="button" id="userDuplicationButtion" value="<spring:message code='overlap.check'/>" />
+				  						<input type="button" id="userDuplicationButton" value="<spring:message code='overlap.check'/>" />
 				  						<span class="table-desc" style="padding-left: 5px;"><spring:message code='minimum.length'/> ${policy.userIdMinLength}</span>
 										<form:errors path="userId" cssClass="error" />
 									</td>
@@ -52,7 +52,7 @@
 									<td class="col-input">
 										<form:hidden path="userGroupId" />
 			 							<form:input path="userGroupName" cssClass="m" readonly="true" />
-										<input type="button" id="userGroupButtion" value="<spring:message code='user.group.usergroup'/> 선택" />
+										<input type="button" id="userGroupButton" value="<spring:message code='user.group.usergroup'/> 선택" />
 									</td>
 								</tr>
 								<tr>
@@ -185,7 +185,7 @@
 	});
 
 	// 부모 찾기
-	$("#userGroupButtion").on("click", function() {
+	$("#userGroupButton").on("click", function() {
 		userDialog.dialog("open");
 		userDialog.dialog("option", "title", "사용자 그룹 선택");
 	});
@@ -198,7 +198,7 @@
 	}
 
 	// 아이디 중복 확인
- 	$("#userDuplicationButtion").on("click", function() {
+ 	$("#userDuplicationButton").on("click", function() {
 		var userId = $("#userId").val();
 		if (userId == "") {
 			alert(JS_MESSAGE["user.id.empty"]);
