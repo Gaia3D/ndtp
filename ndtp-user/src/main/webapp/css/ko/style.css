@@ -2574,7 +2574,7 @@ min-width: 325px;
 }
 .tab li {
 display: inline-block;
-width: 110px;
+width: 180px;
 padding: 5px 0px;
 color: #000;
 cursor: pointer;

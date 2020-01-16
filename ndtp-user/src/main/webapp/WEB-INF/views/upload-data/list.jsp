@@ -35,11 +35,11 @@
 		<div style="padding: 20px 20px 0px 10px; font-size: 18px;">3D 업로딩 데이터 자동 변환</div>
 		<div class="tabs" >
 			<ul class="tab">
-				<li onclick="location.href='/data-group/input'">데이터 그룹 등록</li>
-			    <li onclick="location.href='/upload-data/input'">업로딩</li>
-			   	<li onclick="location.href='/upload-data/list'" class="on">업로딩 목록</li>
-			  	<li onclick="location.href='/converter/list'">데이터 변환 목록</li>
-			   	<li onclick="location.href='/data-group/list'">데이터 그룹</li>
+				<li onclick="location.href='/user-data-group/list'">데이터 그룹</li>
+				<li onclick="location.href='/user-data-group/input'">데이터 그룹 등록</li>
+				<li onclick="location.href='/upload-data/input'">업로딩 데이터</li>
+			   	<li onclick="location.href='/upload-data/list'" class="on">업로딩 데이터 목록</li>
+			  	<li onclick="location.href='/converter/list'">업로딩 데이터 변환 목록</li>
 			</ul>
 		</div>
 		
