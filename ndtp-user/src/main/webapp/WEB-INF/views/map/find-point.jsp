@@ -9,13 +9,11 @@
     <meta name="referrer" content="origin">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <meta name="robots" content="index,nofollow"/>
-    <title>지도에서 찾기 | NDTP</title>
-    <link rel="stylesheet" href="/css/${lang}/font/font.css" />
-	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
-	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
-	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
+    <title>지도에서 찾기 | NDPT</title>
+    <link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-    <link rel="stylesheet" href="/css/${lang}/style.css" />
+    <link rel="stylesheet" href="/css/${lang}/user-style.css" />
+	<link rel="stylesheet" href="/css/${lang}/style.css" />
     <style type="text/css">
 	    .mapWrap {
 			height: 100%;
@@ -37,7 +35,7 @@
 
 <script type="text/javascript">
 	var managerFactory = null;
-	var policyJson = ${policyJson};
+	var geoPolicyJson = ${geoPolicyJson};
 	var FPVModeFlag = false;
 	
 	var imagePath = "/images/${lang}/mago3d";
@@ -78,7 +76,7 @@
 	
 	// mago3d 시작, 정책 데이터 파일을 로딩
 	function magoStart() {
-		managerFactory = new Mago3D.ManagerFactory(null, "magoContainer", policyJson, null, null, null, imagePath);
+		managerFactory = new Mago3D.ManagerFactory(null, "magoContainer", geoPolicyJson, null, null, null, imagePath);
 	}
 
 	function showClickPosition(position) {

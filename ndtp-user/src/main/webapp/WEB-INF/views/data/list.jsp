@@ -113,19 +113,12 @@
 	// 임시로...
 	$(document).ready(function() {
 		$(".ui-slider-handle").slider({});
-		var activeContent = "${activeContent}";
-		if(activeContent !== undefined && activeContent !== null && activeContent !== "") {
-			$(".${activeContent}").click();			
-		}
 	});
 	
 	//Cesium.Ion.defaultAccessToken = '';
 	//var viewer = new Cesium.Viewer('magoContainer');
 	var MAGO3D_INSTANCE;
 	magoInit();
-	
-	
-
 	
 	function magoInit() {
 		var geoPolicyJson = ${geoPolicyJson};
