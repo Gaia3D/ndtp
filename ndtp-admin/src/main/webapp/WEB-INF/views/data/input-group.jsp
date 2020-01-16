@@ -79,7 +79,7 @@
 			                    <td class="col-input">
 			                        <select name="sharing">
 										<option value="common">공통</option>
-										<option value="public">공개</option>
+										<option value="public" selected="selected">공개</option>
 										<option value="private">개인</option>
 										<option value="group">그룹</option>
 									</select>
@@ -262,12 +262,21 @@
 			alert("데이터 그룹명을 입력해 주세요.");
 			$("#dataGroupName").focus();
 			return false;
+		} else if ($("#dataGroupName").val().length >= 100) {
+			alert("데이터 그룹명은 100자를 넘길 수 없습니다.");
+			$("#dataGroupName").focus();
+			return false;
 		}
 		if ($("#dataGroupKey").val() === null || $("#dataGroupKey").val() === "") {
 			alert("데이터 그룹명(한글불가)을 입력해 주세요.");
 			$("#dataGroupKey").focus();
 			return false;
+		} else if ($("#dataGroupKey").val().length >= 60) {
+			alert("데이터 그룹 Key는 60자를 넘길 수 없습니다.");
+			$("#dataGroupKey").focus();
+			return false;
 		}
+		//한글이 입력될 경우 "한글명은 이용할 수 없습니다."라고 출력 -> 한글 검사방법..?
 		if($("#parent").val() === null || $("#parent").val() === "" || !number.test($("#parent").val())) {
 			alert("상위 데이터 그룹을 선택해 주세요.");
 			$("#parent").focus();
