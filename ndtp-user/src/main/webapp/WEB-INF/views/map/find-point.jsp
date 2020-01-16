@@ -15,6 +15,25 @@
     <link rel="stylesheet" href="/css/${lang}/user-style.css" />
 	<link rel="stylesheet" href="/css/${lang}/style.css" />
     <style type="text/css">
+    	.mapSelectButton {
+			position : absolute;
+			bottom : 17px;
+			right : 20px;
+			z-index : 1;
+			width: 90px;
+			height: 40px;
+			padding: 7px;
+			font-size: 17px;
+			border-radius: 3px;
+			color: #414e80;
+			border: 1px solid #414e80;
+			background-color: #fff;
+		}
+		.mapSelectButton:hover {
+			color: #fff;
+			border: 1px solid #414e80;
+			background-color: #414e80;
+		}
 	    .mapWrap {
 			height: 100%;
 			background-color: #eee;
@@ -22,6 +41,7 @@
     </style>
  </head>
 <body>
+	<button class="mapSelectButton" onclick="window.close();">닫기</button>
     <div id="magoContainer" style="height: 699px;">
 	</div>
 </body>
@@ -30,59 +50,88 @@
 <script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
-<script type="text/javascript" src="/js/navigation.js"></script>
 <script type="text/javascript" src="/js/mago3d.js"></script>
 
 <script type="text/javascript">
-	var managerFactory = null;
-	var geoPolicyJson = ${geoPolicyJson};
-	var FPVModeFlag = false;
+	//Cesium.Ion.defaultAccessToken = '';
+	//var viewer = new Cesium.Viewer('magoContainer');
+	var MAGO3D_INSTANCE;
+	var viewer = null; 
+	var entities = null;
 	
-	var imagePath = "/images/${lang}/mago3d";
-	magoStart();
-	var intervalCount = 0;
-	var timerId = setInterval("startMogoUI()", 1000);
+	magoInit();
 	
-	function startMogoUI() {
-		intervalCount++;
-		if(managerFactory != null && managerFactory.getMagoManagerState() === Mago3D.CODE.magoManagerState.READY) {
-			gotoFlyAPI(managerFactory, 127.5820, 36.5100, 170000, 2);
+	function magoInit() {
+		var geoPolicyJson = ${geoPolicyJson};
+		
+		var cesiumViewerOption = {};
+			cesiumViewerOption.infoBox = false;
+			cesiumViewerOption.navigationHelpButton = false;
+			cesiumViewerOption.selectionIndicator = false;
+			cesiumViewerOption.homeButton = false;
+			cesiumViewerOption.fullscreenButton = false;
+			cesiumViewerOption.geocoder = false;
+			cesiumViewerOption.baseLayerPicker = false;
 			
-			// Label 표시
-			//changeLabel(false);
-			// object 정보 표시
-			//changeObjectInfoViewMode(true);
-            // Origin 표시
-            //changeOrigin(false);
-			// BoundingBox
-			//changeBoundingBox(false);
-			// Selecting And Moving
-			//changeObjectMove("2");
-			// slider, color-picker
-			//initRendering();
-			
-			// Test. ****************
-			//changeMagoStateAPI(managerFactory, false);
-			
-			// 3PView Mode
-			//changeViewMode(false);
-			
-			clearInterval(timerId);
-			console.log(" managerFactory != null, managerFactory.getMagoManagerState() = " + managerFactory.getMagoManagerState() + ", intervalCount = " + intervalCount);
-			return;
-		}
-		console.log("--------- intervalCount = " + intervalCount);
+		/**
+		 * @param {Stirng} containerId container div id. required.
+		 * @param {object} serverPolicy mage3d geopolicy. required.
+		 * @param {object} callback loadstart callback, loadend callback. option.
+		 * @param {object} options Cesium viewer parameter. option.
+		 * @param {Cesium.Viewer} legacyViewer 타 시스템과의 연동의 경우 view 객체가 생성되어서 넘어 오는 경우가 있음. option.
+		*/	
+		MAGO3D_INSTANCE = new Mago3D.Mago3d('magoContainer', geoPolicyJson, {loadend : magoLoadEnd}, cesiumViewerOption);
+	
 	}
 	
-	// mago3d 시작, 정책 데이터 파일을 로딩
-	function magoStart() {
-		managerFactory = new Mago3D.ManagerFactory(null, "magoContainer", geoPolicyJson, null, null, null, imagePath);
+	var beforePointId = null;
+	function magoLoadEnd(e) {
+		var magoInstance = e;
+		
+		viewer = magoInstance.getViewer(); 
+		entities = viewer.entities;
+		var magoManager = magoInstance.getMagoManager();
+		var f4dController = magoInstance.getF4dController();
+		
+		// TODO : 세슘 MAP 선택 UI 제거,엔진에서 처리로 변경 예정.
+		viewer.baseLayerPicker.destroy();
+		
+		magoManager.on(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
+			if(beforePointId !== undefined && beforePointId !== null) {
+				remove(beforePointId);
+			}
+			
+			var longitude = result.clickCoordinate.geographicCoordinate.longitude;
+			var latitude = result.clickCoordinate.geographicCoordinate.latitude;
+			var altitude = result.clickCoordinate.geographicCoordinate.altitude;
+			
+			var x = result.clickCoordinate.worldCoordinate.x;
+			var y = result.clickCoordinate.worldCoordinate.y;
+			var z = result.clickCoordinate.worldCoordinate.z;
+			
+			var pointGraphic = new Cesium.PointGraphics({
+				pixelSize : 10,
+				heightReference : Cesium.HeightReference.CLAMP_TO_GROUND,
+				color : Cesium.Color.AQUAMARINE,
+				outlineColor : Cesium.Color.WHITE,
+				outlineWidth : 2
+			});
+			
+			var addedEntity = viewer.entities.add({
+				position : new Cesium.Cartesian3(x, y, z),
+				point : pointGraphic
+			});
+			
+			$(opener.document).find("#longitude").val(longitude);
+			$(opener.document).find("#latitude").val(latitude);
+			$(opener.document).find("#altitude").val(altitude);
+			
+			beforePointId = addedEntity.id;
+		});
 	}
-
-	function showClickPosition(position) {
-		$(opener.document).find("#latitude").val(position.lat);
-		$(opener.document).find("#longitude").val(position.lon);
-		$(opener.document).find("#altitude").val(position.alt);
+	
+	function remove(entityStored) {
+		entities.removeById(entityStored);
 	}
 	
 </script>

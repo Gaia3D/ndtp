@@ -73,7 +73,7 @@ public class UserDataGroupServiceImpl implements UserDataGroupService {
 	@Transactional
 	public UserDataGroup getBasicUserDataGroup(UserDataGroup userDataGroup) {
 		userDataGroup = userDataGroupMapper.getBasicUserDataGroup(userDataGroup);
-		if(userDataGroup == null) {
+		if(userDataGroup == null || userDataGroup.getDataGroupName() == null) {
 			userDataGroup = new UserDataGroup();
 			
 			userDataGroup.setUserId(userDataGroup.getUserId());;

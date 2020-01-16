@@ -169,7 +169,7 @@
 		</table>
 		<div class="button-group">
 			<div class="center-buttons">
-				<input type="submit" value="<spring:message code='save'/>" onclick="insertDataGroup();"/>
+				<input type="submit" value="<spring:message code='save'/>" onclick="insertUserDataGroup();"/>
 				<a href="/data/list-group" class="button">목록</a>
 			</div>
 		</div>
@@ -210,16 +210,16 @@ function validate() {
 }
 
 // 저장
-var insertDataGroupFlag = true;
-function insertDataGroup() {
+var insertUserDataGroupFlag = true;
+function insertUserDataGroup() {
 	if (validate() == false) {
 		return false;
 	}
-	if(insertDataGroupFlag) {
-		insertDataGroupFlag = false;
-		var formData = $("#dataGroup").serialize();		
+	if(insertUserDataGroupFlag) {
+		insertUserDataGroupFlag = false;
+		var formData = $("#userDataGroup").serialize();		
 		$.ajax({
-			url: "/data/insert-group",
+			url: "/user-data-group/insert",
 			type: "POST",
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 	        data: formData,
@@ -231,11 +231,11 @@ function insertDataGroup() {
 					alert(JS_MESSAGE[msg.errorCode]);
 					console.log("---- " + msg.message);
 				}
-				insertDataGroupFlag = true;
+				insertUserDataGroupFlag = true;
 			},
 			error:function(request, status, error){
 		        alert(JS_MESSAGE["ajax.error.message"]);
-		        insertDataGroupFlag = true;
+		        insertUserDataGroupFlag = true;
 			}
 		});
 	} else {
@@ -244,7 +244,7 @@ function insertDataGroup() {
 	}
 }
 
-var dataGroupDialog = $( ".dialog" ).dialog({
+var userDataGroupDialog = $( ".dialog" ).dialog({
 	autoOpen: false,
 	height: 500,
 	width: 1000,
@@ -255,21 +255,21 @@ var dataGroupDialog = $( ".dialog" ).dialog({
 
 // 상위 데이터 그룹 찾기
 $( "#dataGroupButtion" ).on( "click", function() {
-	dataGroupDialog.dialog( "open" );
-	dataGroupDialog.dialog( "option", "title", "데이터 그룹 선택");
+	userDataGroupDialog.dialog( "open" );
+	userDataGroupDialog.dialog( "option", "title", "데이터 그룹 선택");
 });
 
 // 다이얼로그에서 선택
 function confirmParent(parent, parentName) {
 	$("#parent").val(parent);
 	$("#parentName").val(parentName);
-	dataGroupDialog.dialog( "close" );
+	userDataGroupDialog.dialog( "close" );
 }
 
 $( "#rootParentSelect" ).on( "click", function() {
 	$("#parent").val(0);
 	$("#parentName").val("${userDataGroup.parentName}");
-	dataGroupDialog.dialog( "close" );
+	userDataGroupDialog.dialog( "close" );
 });
 
 // 지도에서 찾기
@@ -278,7 +278,11 @@ $( "#mapButtion" ).on( "click", function() {
 	var width = 800;
 	var height = 700;
 
-    var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height
+	var popupX = (window.screen.width / 2) - (width / 2);
+	// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+	var popupY= (window.screen.height / 2) - (height / 2);
+	
+    var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height + ", top=" + popupY + ", left="+popupX
             + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
     //popWin.document.title = layerName;
 });
