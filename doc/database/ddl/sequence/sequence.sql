@@ -23,6 +23,7 @@ drop sequence if exists user_group_role_seq;
 drop sequence if exists user_group_menu_seq;
 drop sequence if exists user_device_seq;
 drop sequence if exists widget_seq;
+drop sequence if exists user_policy_seq;
 
 create sequence access_log_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
 create sequence civil_voice_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
@@ -50,4 +51,5 @@ create sequence user_group_role_seq increment 1 minvalue 1 maxvalue 999999999999
 create sequence user_group_menu_seq increment 1 minvalue 1 maxvalue 999999999999 start 10000 cache 1;
 create sequence user_device_seq increment 1 minvalue 1 maxvalue 999999999999 start 1 cache 1;
 create sequence widget_seq increment 1 minvalue 1 maxvalue 999999999999 start 1 cache 1;
+create sequence user_policy_seq increment 1 minvalue 1 maxvalue 999999999999 start 1 cache 1;
 
