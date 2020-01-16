@@ -1,12 +1,18 @@
 package ndtp.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+@ToString
+@Builder
 @Getter
 @Setter
-@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class SkSgg {
 
 	// 시도 1, 시군구 2, 읍면동 3
