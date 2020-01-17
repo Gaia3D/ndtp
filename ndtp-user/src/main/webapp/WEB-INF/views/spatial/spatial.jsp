@@ -12,20 +12,20 @@
 					</select>
 				</li>
 				<li>
-					<label for="">관찰 높이 (m)</label>
-					<input class="observerOffset" type="text" placeholder="" value="1.7">
+					<label for="rlosOffset">관찰 높이 (m)</label>
+					<input id="rlosOffset" class="observerOffset" type="text" placeholder="" value="1.7" title="지표로부터 관측자 지점의 높이">
 				</li>
 				<li>
-					<label for="">반경 (m)</label>
-					<input class="radius" type="text" placeholder="" value="100">
+					<label for="rlosRadius">반경 (m)</label>
+					<input id="rlosRadius" class="radius" type="text" placeholder="" value="100" title="관찰자 지점으로부터의 가시선 분석 수행 반경. 단위는 m">
 				</li>
 				<li>
-					<label for="">선분 수 (number)</label>
-					<input class="sides" type="text" placeholder="" value="90">
+					<label for="rlosSidex">선분 수 (number)</label>
+					<input id="rlosSidex" class="sides" type="text" placeholder="" value="90" title="방사형 가시선의 수">
 				</li>
 				<li>
 					<label for="">관찰자 위치</label>
-					<input type="text" placeholder="" class="withBtn observerPointMGRS">
+					<input type="text" placeholder="" class="withBtn observerPointMGRS" disabled>
 					<input type="hidden" class="observerPoint">
 					<button type="button" class="btnText drawObserverPoint" data-draw-type="POINT">위치지정</button>
 				</li>
@@ -48,18 +48,18 @@
 					</select>
 				</li>
 				<li>
-					<label for="">관찰 높이 (m)</label>
-					<input class="observerOffset" type="text" placeholder="" value="1.7">
+					<label for="llosOffsete">관찰 높이 (m)</label>
+					<input id="llosOffsete" class="observerOffset" type="text" placeholder="" value="1.7" title="지표로부터 관측자 지점의 높이">
 				</li>
 				<li>
 					<label for="">관찰 위치</label>
-					<input type="text" placeholder="" class="withBtn observerPointMGRS">
+					<input type="text" placeholder="" class="withBtn observerPointMGRS" disabled>
 					<input type="hidden" class="observerPoint">
 					<button type="button" class="btnText drawObserverPoint" data-draw-type="POINT">위치지정</button>
 				</li>
 				<li>
 					<label for="">대상 위치</label>
-					<input type="text" placeholder="" class="withBtn targetPointMGRS">
+					<input type="text" placeholder="" class="withBtn targetPointMGRS" disabled>
 					<input type="hidden" class="targetPoint">
 					<button type="button" class="btnText drawTargetPoint" data-draw-type="POINT">위치지정</button>
 				</li>
@@ -82,8 +82,8 @@
 					</select>
 				</li>
 				<li>
-					<label for="">간격 (number)</label>
-					<input class="interval" type="text" placeholder="" value="20">
+					<label for="rpInterval">간격 (number)</label>
+					<input id="rpInterval" class="interval" type="text" placeholder="" value="20">
 				</li>
 				<li>
 					<label for="">사용자 입력 선분</label>
@@ -145,12 +145,12 @@
 		<div class="listContents" id="analysisRangeDome">
 			<ul class="analysisGroup">
 				<li>
-					<label for="">반경 (m)</label>
-					<input class="radius" type="text" placeholder="" value="1000">
+					<label for="rdRadius">반경 (m)</label>
+					<input id="rdRadius" class="radius" type="text" placeholder="" value="1000">
 				</li>
 				<li>
 					<label for="">관찰 위치</label>
-					<input type="text" placeholder="" class="withBtn observerPointMGRS">
+					<input type="text" placeholder="" class="withBtn observerPointMGRS" disabled>
 					<input type="hidden" class="observerPoint">
 					<button type="button" class="btnText drawObserverPoint" data-draw-type="POINT">위치지정</button>
 				</li>
