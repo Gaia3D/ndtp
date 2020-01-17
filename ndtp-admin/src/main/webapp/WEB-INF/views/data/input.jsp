@@ -13,7 +13,7 @@
 	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
     <link rel="stylesheet" href="/externlib/dropzone/dropzone.min.css">
-    <link rel="stylesheet" href="/css/${lang}/style.css" />
+    <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
     <script type="text/javascript" src="/externlib/dropzone/dropzone.min.js"></script>
 
     <script src="/externlib/jquery/jquery.js"></script>
