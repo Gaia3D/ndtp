@@ -29,6 +29,7 @@ import ndtp.listener.Gaia3dHttpSessionBindingListener;
 import ndtp.service.PolicyService;
 import ndtp.service.RoleService;
 import ndtp.service.SigninService;
+import ndtp.service.UserDataGroupService;
 import ndtp.support.RoleSupport;
 import ndtp.support.SessionUserSupport;
 import ndtp.utils.WebUtils;
@@ -49,6 +50,8 @@ public class SigninController {
 	private RoleService roleService;
 	@Autowired
 	private SigninService signinService;
+	@Autowired
+	private UserDataGroupService userDataGroupService;
 	
 	/**
 	 * Sign in 페이지

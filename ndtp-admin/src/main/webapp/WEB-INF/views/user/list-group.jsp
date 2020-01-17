@@ -143,13 +143,13 @@
         </c:if>
 					                    </td>
 					                    <td class="col-type">
-					                        <a href="/user/group/${userGroup.userGroupId }/menu" class="linkButton">보기</a>
+					                        <a href="/user-group/user?userGroupId=${userGroup.userGroupId}" onClick="alert('TODO. 준비중입니다.'); return false;" class="linkButton">보기</a>
 					                    </td>
 					                    <td class="col-type">
-					                        <a href="/user/group/${userGroup.userGroupId }/menu" class="linkButton">수정</a>
+					                        <a href="/user-group/menu?userGroupId=${userGroup.userGroupId}" class="linkButton">수정</a>
 					                    </td>
 					                    <td class="col-type">
-					                        <a href="/user/group/${userGroup.userGroupId }/role" class="linkButton">수정</a>
+					                        <a href="/user-group/role?userGroupId=${userGroup.userGroupId}" class="linkButton">수정</a>
 					                    </td>
 					                    <td class="col-type">
 											<a href="/user-group/modify?userGroupId=${userGroup.userGroupId}" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;

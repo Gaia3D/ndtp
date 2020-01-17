@@ -153,7 +153,7 @@
 							<div class="button-group">
 								<div id="insertUserLink" class="center-buttons">
 									<input type="submit" value="<spring:message code='save'/>" onclick="insertUser();" />
-									<input type="submit" id="allFileClear" value="초기화" />
+									<input type="submit" id="allFileClear" onClick="alert('TODO. 준비중입니다.'); return false;" value="초기화" />
 									<a href="/user/list" class="button"><spring:message code='list'/></a>
 								</div>
 							</div>

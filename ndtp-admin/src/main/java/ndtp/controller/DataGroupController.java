@@ -246,6 +246,6 @@ public class DataGroupController {
 
 		dataGroupService.deleteDataGroup(dataGroup);
 
-		return "redirect:/data/list-group";
+		return "redirect:/data-group/list";
 	}
 }

@@ -1,8 +1,8 @@
 -- 사용자 그룹 테이블 기본값 입력
-insert into user_group(	user_group_id, user_group_key, user_group_name, parent, depth, view_order, basic, available, description)
+insert into user_group(	user_group_id, user_group_key, user_group_name, ancestor, parent, depth, view_order, basic, available, description)
 values
-	(1, 'SUPER_ADMIN', '슈퍼 관리자', 0, 1, 1, 'Y', 'Y', '기본값'),
-	(2, 'USER', '사용자', 0, 1, 2, 'Y', 'Y', '기본값');
+	(1, 'SUPER_ADMIN', '슈퍼 관리자', 1, 0, 1, 1, 'Y', 'Y', '기본값'),
+	(2, 'USER', '사용자', 1, 0, 1, 2, 'Y', 'Y', '기본값');
 
 -- 슈퍼 관리자 등록
 insert into user_info(
@@ -19,10 +19,10 @@ values
 	(21, '0', '1', '사용자 그룹', 'USER', 2, 2, 2, 1, '/user-group/list', null, null, 'glyph-users', 'Y', 'Y', 'Y'),
 	(22, '0', '1', '사용자 그룹 등록', 'USER', 2, 2, 2, 2, '/user-group/input', null, null, 'glyph-users', 'Y', 'Y', 'Y'),
 	(23, '0', '1', '사용자 그룹 수정', 'USER', 2, 2, 2, 3, '/user-group/modify', '/user-group/list', null, 'glyph-users', 'N', 'Y', 'N'),
-	(24, '0', '1', '사용자 목록', 'USER', 2, 2, 2, 4, '/user/list', null, null, 'glyph-user', 'Y', 'Y', 'Y'),
-	(25, '0', '1', '사용자 등록', 'USER', 2, 2, 2, 5, '/user/input', null, null, 'glyph-users', 'Y', 'Y', 'Y'),
-	(26, '0', '1', '사용자 비밀번호 변경', 'USER', 2, 2, 2, 6, '/user/modify-password', '/user/list', null, 'glyph-users', 'N', 'Y', 'N'),
-	(27, '0', '1', '사용자 비밀번호 변경', 'USER', 2, 2, 2, 7, '/user/update-password', '/user/list', null, 'glyph-users', 'N', 'Y', 'N'),
+	(24, '0', '1', '사용자 그룹 메뉴', 'USER', 2, 2, 2, 4, '/user-group/menu', '/user-group/list', null, 'glyph-users', 'N', 'Y', 'N'),
+	(25, '0', '1', '사용자 그룹 Role', 'USER', 2, 2, 2, 5, '/user-group/role', '/user-group/list', null, 'glyph-users', 'N', 'Y', 'N'),
+	(26, '0', '1', '사용자 목록', 'USER', 2, 2, 2, 6, '/user/list', null, null, 'glyph-user', 'Y', 'Y', 'Y'),
+	(27, '0', '1', '사용자 등록', 'USER', 2, 2, 2, 7, '/user/input', null, null, 'glyph-users', 'Y', 'Y', 'Y'),
 	(28, '0', '1', '사용자 정보 수정', 'USER', 2, 2, 2, 8, '/user/modify', '/user/list', null, 'glyph-users', 'N', 'Y', 'N'),
 	(29, '0', '1', '사용자 상세 정보', 'USER', 2, 2, 2, 9, '/user/detail', '/user/list', null, 'glyph-users', 'N', 'Y', 'N'),
 	(3, '0', '1', '데이터', 'DATA', 3, 0, 1, 3, '/data-group/list', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
@@ -52,7 +52,7 @@ values
 	(82, '0', '1', '공간정보 운영정책', 'CONFIGURATION', 8, 8, 2, 2, '/geopolicy/modify', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
 	(83, '0', '1', '관리자 메뉴', 'ADMIN MENU', 8, 8, 2, 3, '/menu/admin-menu', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
 	(84, '0', '1', '사용자 메뉴', 'USER MENU', 8, 8, 2, 4, '/menu/user-menu', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
-	(85, '0', '1', '위젯', 'WIDGET', 8, 8, 2, 5, '/widget/modify', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
+	(85, '0', '1', '위젯', 'WIDGET', 8, 8, 2, 5, '/widget/modify', null, null, 'glyph-settings', 'N', 'N', 'N'),
 	(86, '0', '1', '권한', 'ROLE', 8, 8, 2, 6, '/role/list', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
 	(87, '0', '1', '권한 등록', 'ROLE', 8, 8, 2, 7, '/role/input', '/role/list', null, 'glyph-settings', 'N', 'Y', 'N'),
 	(88, '0', '1', '권한 수정', 'ROLE', 8, 8, 2, 8, '/role/modify', '/role/list', null, 'glyph-settings', 'N', 'Y', 'N');
@@ -73,71 +73,71 @@ values
 
 -- 사용자 그룹별 메뉴
 insert into user_group_menu(user_group_menu_id, user_group_id, menu_id)
-	values
-		(1, 1, 1),
-		(2, 1, 2),
-		(21, 1, 21),
-		(22, 1, 22),
-		(23, 1, 23),
-		(24, 1, 24),
-		(25, 1, 25),
-		(26, 1, 26),
-		(27, 1, 27),
-		(28, 1, 28),
-		(29, 1, 29),
-		(3, 1, 3),
-		(31, 1, 31),
-		(32, 1, 32),
-		(33, 1, 33),
-		(34, 1, 34),
-		(35, 1, 35),
-		(36, 1, 36),
-		(40, 1, 40),
-		(41, 1, 41),
-		(42, 1, 42),
-		(43, 1, 43),
-		(44, 1, 44),
-		(5, 1, 5),
-		(51, 1, 51),
-		(52, 1, 52),
-		(53, 1, 53),
-		(54, 1, 54),
-		(55, 1, 55),
-		(56, 1, 56),
-		(7, 1, 7),
-		(71, 1, 71),
-		(72, 1, 72),
-		(8, 1, 8),
-		(81, 1, 81),
-		(82, 1, 82),
-		(83, 1, 83),
-		(84, 1, 84),
-		(85, 1, 85),
-		(86, 1, 86),
-		(87, 1, 87),
-		(88, 1, 88),
-		(NEXTVAL('user_group_menu_seq'), 1, 1001),
-		(NEXTVAL('user_group_menu_seq'), 1, 1002),
-		(NEXTVAL('user_group_menu_seq'), 1, 1003),
-		(NEXTVAL('user_group_menu_seq'), 1, 1004),
-		(NEXTVAL('user_group_menu_seq'), 1, 1005),
-		(NEXTVAL('user_group_menu_seq'), 1, 1006),
-		(NEXTVAL('user_group_menu_seq'), 1, 1007),
+values
+	(1, 1, 1),
+	(2, 1, 2),
+	(21, 1, 21),
+	(22, 1, 22),
+	(23, 1, 23),
+	(24, 1, 24),
+	(25, 1, 25),
+	(26, 1, 26),
+	(27, 1, 27),
+	(28, 1, 28),
+	(29, 1, 29),
+	(3, 1, 3),
+	(31, 1, 31),
+	(32, 1, 32),
+	(33, 1, 33),
+	(34, 1, 34),
+	(35, 1, 35),
+	(36, 1, 36),
+	(40, 1, 40),
+	(41, 1, 41),
+	(42, 1, 42),
+	(43, 1, 43),
+	(44, 1, 44),
+	(5, 1, 5),
+	(51, 1, 51),
+	(52, 1, 52),
+	(53, 1, 53),
+	(54, 1, 54),
+	(55, 1, 55),
+	(56, 1, 56),
+	(7, 1, 7),
+	(71, 1, 71),
+	(72, 1, 72),
+	(8, 1, 8),
+	(81, 1, 81),
+	(82, 1, 82),
+	(83, 1, 83),
+	(84, 1, 84),
+	(85, 1, 85),
+	(86, 1, 86),
+	(87, 1, 87),
+	(88, 1, 88),
+	(NEXTVAL('user_group_menu_seq'), 1, 1001),
+	(NEXTVAL('user_group_menu_seq'), 1, 1002),
+	(NEXTVAL('user_group_menu_seq'), 1, 1003),
+	(NEXTVAL('user_group_menu_seq'), 1, 1004),
+	(NEXTVAL('user_group_menu_seq'), 1, 1005),
+	(NEXTVAL('user_group_menu_seq'), 1, 1006),
+	(NEXTVAL('user_group_menu_seq'), 1, 1007),
 
-		(NEXTVAL('user_group_menu_seq'), 2, 1001),
-		(NEXTVAL('user_group_menu_seq'), 2, 1002),
-		(NEXTVAL('user_group_menu_seq'), 2, 1003),
-		(NEXTVAL('user_group_menu_seq'), 2, 1004),
-		(NEXTVAL('user_group_menu_seq'), 2, 1005),
-		(NEXTVAL('user_group_menu_seq'), 2, 1006),
-		(NEXTVAL('user_group_menu_seq'), 2, 1007);
+	(NEXTVAL('user_group_menu_seq'), 2, 1001),
+	(NEXTVAL('user_group_menu_seq'), 2, 1002),
+	(NEXTVAL('user_group_menu_seq'), 2, 1003),
+	(NEXTVAL('user_group_menu_seq'), 2, 1004),
+	(NEXTVAL('user_group_menu_seq'), 2, 1005),
+	(NEXTVAL('user_group_menu_seq'), 2, 1006),
+	(NEXTVAL('user_group_menu_seq'), 2, 1007);
 
 insert into user_group_role(user_group_role_id, user_group_id, role_id)
-	values
-		(1, 1, 1),
-		(2, 1, 2),
-		(3, 1, 3),
-		(4, 1, 4);
+values
+	(NEXTVAL('user_group_role_seq'), 1, 1),
+	(NEXTVAL('user_group_role_seq'), 1, 2),
+	(NEXTVAL('user_group_role_seq'), 1, 3),
+	(NEXTVAL('user_group_role_seq'), 1, 4);
 
 
 -- 메인 화면 위젯
@@ -164,22 +164,17 @@ insert into geopolicy(	geopolicy_id)
 -- Role
 insert into role(role_id, role_name, role_key, role_target, role_type, use_yn, default_yn)
 values
-    (1, '[ADMIN] 관리자 페이지 SIGN IN 권한', 'ADMIN_SIGNIN', '1', '0', 'Y', 'Y'),
-    (2, '[ADMIN] 관리자 페이지 사용자 관리 권한', 'ADMIN_USER_MANAGE', '1', '0', 'Y', 'Y'),
-    (3, '[ADMIN] 관리자 페이지 Layer 관리 권한', 'ADMIN_LAYER_MANAGE', '1', '0', 'Y', 'Y'),
+    (1, '[관리자 전용] 관리자 페이지 SIGN IN 권한', 'ADMIN_SIGNIN', '1', '0', 'Y', 'Y'),
+    (2, '[관리자 전용] 관리자 페이지 사용자 관리 권한', 'ADMIN_USER_MANAGE', '1', '0', 'Y', 'Y'),
+    (3, '[관리자 전용] 관리자 페이지 Layer 관리 권한', 'ADMIN_LAYER_MANAGE', '1', '0', 'Y', 'Y'),
 
-    (4, '[ADMIN] 사용자 페이지 SIGN IN 권한', 'USER_SIGNIN', '0', '0', 'Y', 'Y'),
-    (5, '[사용자] 사용자 페이지 SIGN IN 권한', 'USER_SIGNIN', '0', '0', 'Y', 'Y');
+    (4, '[관리자 전용] 사용자 페이지 SIGN IN 권한', 'USER_SIGNIN', '0', '0', 'Y', 'Y'),
+    (5, '[사용자 전용] 사용자 페이지 SIGN IN 권한', 'USER_SIGNIN', '0', '0', 'Y', 'Y');
 
 insert into data_group (data_group_id, data_group_name, data_group_key,
 		data_group_path, sharing, ancestor, parent, depth, view_order, basic, available)
 	values
 		(1, '기본', 'basic', 'basic/', 'common', 1, 0, 1, 1, true, true);
-
-insert into user_data_group (user_data_group_id, data_group_name, data_group_key, data_group_path, sharing,
-		user_id,ancestor, parent, depth, view_order, basic, available)
-	values
-		(NEXTVAL('user_data_group_seq'), '기본', 'basic', 'basic/', 'common', 'ndtp', 1, 0, 1, 1, true, true);
 
 commit;
 

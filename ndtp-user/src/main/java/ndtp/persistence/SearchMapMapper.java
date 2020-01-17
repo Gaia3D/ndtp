@@ -65,65 +65,10 @@ public interface SearchMapMapper {
 	Long getDistrictTotalCount(District district);
 	
 	/**
-	 * 지명 검색 총 건수
-	 * @param placeName
-	 * @return
-	 */
-	Long getPlaceNameTotalCount(PlaceName placeName);
-	
-	/**
-	 * 지번 검색 총 건수
-	 * @param addrJibun
-	 * @return
-	 */
-	Long getJibunTotalCount(AddrJibun addrJibun);
-	
-	/**
-	 * 새 주소 검색 총 건수
-	 * @param newAddress
-	 * @return
-	 */
-	Long getNewAddressTotalCount(NewAddress newAddress);
-	
-	/**
-	 * 국가 지점 번호 검색 총 건수
-	 * @param countryPlaceNumber
-	 * @return
-	 */
-	Long getCountryPlaceNumberTotalCount(CountryPlaceNumber countryPlaceNumber);
-	
-	/**
 	 * 행정 구역 검색
 	 * @param district
 	 * @return
 	 */
 	List<District> getListDistrict(District district);
 	
-	/**
-	 * 지명 구역 검색
-	 * @param placeName
-	 * @return
-	 */
-	List<PlaceName> getListPlaceName(PlaceName placeName);
-	
-	/**
-	 * 지번 검색 목록
-	 * @param addrJibun
-	 * @return
-	 */
-	List<AddrJibun> getListJibun(AddrJibun addrJibun);
-	
-	/**
-	 * 새 주소 검색
-	 * @param newAddress
-	 * @return
-	 */
-	List<NewAddress> getListNewAddress(NewAddress newAddress);
-	
-	/**
-	 * 국가 지점번호 검색 검색
-	 * @param countryPlaceNumber
-	 * @return
-	 */
-	List<CountryPlaceNumber> getListCountryPlaceNumber(CountryPlaceNumber countryPlaceNumber);
 }

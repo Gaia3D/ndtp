@@ -9,7 +9,7 @@
     <meta name="referrer" content="origin">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <meta name="robots" content="index,nofollow"/>
-    <title>지도에서 찾기 | 현대 미포 조선</title>
+    <title>지도에서 찾기 | NDTP</title>
     <link rel="stylesheet" href="/css/${lang}/font/font.css" />
 	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
 	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />

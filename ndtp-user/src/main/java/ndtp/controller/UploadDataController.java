@@ -35,7 +35,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
 import ndtp.domain.ConverterJob;
-import ndtp.domain.DataGroup;
 import ndtp.domain.DataType;
 import ndtp.domain.FileType;
 import ndtp.domain.Key;
@@ -45,10 +44,11 @@ import ndtp.domain.Policy;
 import ndtp.domain.UploadData;
 import ndtp.domain.UploadDataFile;
 import ndtp.domain.UploadDirectoryType;
+import ndtp.domain.UserDataGroup;
 import ndtp.domain.UserSession;
-import ndtp.service.DataGroupService;
 import ndtp.service.PolicyService;
 import ndtp.service.UploadDataService;
+import ndtp.service.UserDataGroupService;
 import ndtp.utils.DateUtils;
 import ndtp.utils.FileUtils;
 import ndtp.utils.FormatUtils;
@@ -68,9 +68,6 @@ public class UploadDataController {
 	public static final int BUFFER_SIZE = 8192;
 	
 	@Autowired
-	private DataGroupService dataGroupService;
-	
-	@Autowired
 	private PolicyService policyService;
 	
 	@Autowired
@@ -78,6 +75,8 @@ public class UploadDataController {
 	
 	@Autowired
 	private UploadDataService uploadDataService;
+	@Autowired
+	private UserDataGroupService userDataGroupService;
 	
 	/**
 	 * 데이터 upload 화면
@@ -87,15 +86,18 @@ public class UploadDataController {
 	@GetMapping(value = "input")
 	public String input(HttpServletRequest request, Model model) {
 		
-		DataGroup basicDataGroup = dataGroupService.getBasicDataGroup();
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		UserDataGroup userDataGroup = new UserDataGroup();
+		userDataGroup.setUserId(userSession.getUserId());
+		UserDataGroup basicUserDataGroup = userDataGroupService.getBasicUserDataGroup(userDataGroup);
 		
 		UploadData uploadData = UploadData.builder().
-											dataGroupId(basicDataGroup.getDataGroupId()).
-											dataGroupName(basicDataGroup.getDataGroupName()).build();
-		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup(new DataGroup());
+											dataGroupId(basicUserDataGroup.getUserDataGroupId()).
+											dataGroupName(basicUserDataGroup.getDataGroupName()).build();
+		List<UserDataGroup> userDataGroupList = userDataGroupService.getListUserDataGroup(new UserDataGroup());
 		
 		model.addAttribute("uploadData", uploadData);
-		model.addAttribute("dataGroupList", dataGroupList);
+		model.addAttribute("userDataGroupList", userDataGroupList);
 		
 		return "/upload-data/input";
 	}
@@ -560,11 +562,11 @@ public class UploadDataController {
 		
 		uploadData = uploadDataService.getUploadData(uploadData);
 		List<UploadDataFile> uploadDataFileList = uploadDataService.getListUploadDataFile(uploadData);
-		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup(new DataGroup());
+		List<UserDataGroup> userDataGroupList = userDataGroupService.getListUserDataGroup(new UserDataGroup());
 		
 		model.addAttribute("uploadData", uploadData);
 		model.addAttribute("uploadDataFileList", uploadDataFileList);
-		model.addAttribute("dataGroupList", dataGroupList);
+		model.addAttribute("userDataGroupList", userDataGroupList);
 		
 		return "/upload-data/modify";
 	}

@@ -66,6 +66,20 @@ public interface UserGroupMapper {
     int insertUserGroup(UserGroup userGroup);
 
 	/**
+	 * 사용자 그룹 메뉴 등록
+	 * @param userGroupMenu
+	 * @return
+	 */
+	int insertUserGroupMenu(UserGroupMenu userGroupMenu);
+
+	/**
+	 * 사용자 그룹 Role 등록
+	 * @param userGroupRole
+	 * @return
+	 */
+	int insertUserGroupRole(UserGroupRole userGroupRole);
+
+	/**
 	 * 사용자 그룹 수정
 	 * @param userGroup
 	 * @return
@@ -99,4 +113,18 @@ public interface UserGroupMapper {
 	 * @return
 	 */
 	int deleteUserGroupByParent(UserGroup userGroup);
+
+	/**
+	 * 사용자 그룹 메뉴 삭제
+	 * @param userGroupId
+	 * @return
+	 */
+	int deleteUserGroupMenu(Integer userGroupId);
+
+	/**
+	 * 사용자 그룹 Role 삭제
+	 * @param userGroupId
+	 * @return
+	 */
+	int deleteUserGroupRole(Integer userGroupId);
 }

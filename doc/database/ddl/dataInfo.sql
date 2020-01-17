@@ -55,6 +55,7 @@ create table data_info(
 	data_group_id				integer								not null,
 	data_key					varchar(128)						not null,
 	data_name					varchar(256),
+	data_type					varchar(30),
 	sharing						varchar(30)							default 'public',
 	user_id						varchar(32),
 	mapping_type				varchar(30)							default 'origin',
@@ -82,6 +83,7 @@ comment on column data_info.data_id is '고유번호';
 comment on column data_info.data_group_id is 'data_group 고유번호';
 comment on column data_info.data_key is 'data 고유 식별번호';
 comment on column data_info.data_name is 'data 이름';
+comment on column data_info.data_type is '데이터 타입(중복). 3ds,obj,dae,collada,ifc,las,citygml,indoorgml,gml,ect';
 comment on column data_info.sharing is 'common : 공통, public : 공개, private : 개인, group : 그룹';
 comment on column data_info.user_id is '고유번호';
 comment on column data_info.mapping_type is '기본값 origin : latitude, longitude, height를 origin에 맞춤. boundingboxcenter : latitude, longitude, height를 boundingboxcenter 맞춤';

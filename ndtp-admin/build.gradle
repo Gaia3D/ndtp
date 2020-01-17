@@ -26,6 +26,9 @@ repositories {
 	maven {
         url "http://download.osgeo.org/webdav/geotools/"
     }
+    maven {
+        url "https://repo.boundlessgeo.com/main"
+    }
 	mavenCentral()
 }
 

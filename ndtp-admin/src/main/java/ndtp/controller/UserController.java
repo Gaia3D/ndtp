@@ -184,9 +184,11 @@ public class UserController implements AuthorizationController {
 
         Policy policy = policyService.getPolicy();
         UserInfo userInfo = userService.getUser(userId);
+		List<UserGroup> userGroupList = userGroupService.getListUserGroup();
 
         model.addAttribute("policy", policy);
         model.addAttribute("userInfo", userInfo);
+        model.addAttribute("userGroupList", userGroupList);
 
         return "/user/modify";
 	}
@@ -262,6 +264,20 @@ public class UserController implements AuthorizationController {
 		map.put("duplicationValue", duplicationValue);
 
 		return map;
+	}
+
+    /**
+	 * 사용자 삭제
+	 * @param userId
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "delete")
+	public String delete(@RequestParam("userId") String userId, Model model) {
+		// TODO validation 체크 해야 함
+		userService.deleteUser(userId);
+
+		return "redirect:/user/list";
 	}
 
 	/**

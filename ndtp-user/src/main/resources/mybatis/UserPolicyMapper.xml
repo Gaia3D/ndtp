@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ndtp.persistence.UserPolicyMapper">
+
+    <!-- 사용자 설정 정보 조회 -->
+    <select id="getUserPolicy" parameterType="string" resultType="userPolicy">
+        /* getUserPolicy */
+        SELECT * FROM user_policy WHERE user_id = #{userId}
+    </select>
+
+    <!-- 사용자 설정 등록 -->
+    <insert id="insertUserPolicy" parameterType="userPolicy">
+        /* insertUserPolicy */
+        <selectKey keyProperty="userPolicyId" resultType="int" order="BEFORE">
+        SELECT NEXTVAL('user_policy_seq')
+        </selectKey>
+        INSERT INTO user_policy (
+        	user_policy_id, user_id, datainfo_display, origin_display, bbox_display, lod0, lod1, lod2, lod3, lod4, lod5, ssao_radius, insert_date
+        )
+        VALUES (
+        	#{userPolicyId}, #{userId}, #{datainfoDisplay}, #{originDisplay}, #{bboxDisplay},
+        	#{lod0}, #{lod1}, #{lod2}, #{lod3}, #{lod4}, #{lod5}, #{ssaoRadius}, NOW()
+        )
+    </insert>
+
+    <!-- 사용자 설정 수정 -->
+    <update id="updateUserPolicy" parameterType="userPolicy">
+        /* updateUserPolicy */
+        UPDATE user_policy SET
+        	datainfo_display = #{datainfoDisplay},
+        	origin_display = #{originDisplay}, 
+        	bbox_display = #{bboxDisplay}, 
+        	lod0 = #{lod0},
+        	lod1 = #{lod1}, 
+        	lod2 = #{lod2}, 
+        	lod3 = #{lod3},
+        	lod4 = #{lod4}, 
+        	lod5 = #{lod5}, 
+        	ssao_radius = #{ssaoRadius}, 
+            update_date = NOW()
+        WHERE user_id = #{userId}
+    </update>
+</mapper>

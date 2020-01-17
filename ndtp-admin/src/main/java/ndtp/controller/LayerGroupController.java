@@ -236,6 +236,6 @@ public class LayerGroupController {
 
 		layerGroupService.deleteLayerGroup(layerGroup);
 
-		return "redirect:/layer/list-group";
+		return "redirect:/layer-group/list";
 	}
 }

@@ -109,7 +109,9 @@
 					<if test="menuTarget != null and menuTarget != ''">
 					AND B.menu_target = #{menuTarget}
 					</if>
+					<if test="useYn != null and useYn != ''">
 					AND B.use_yn != 'N'
+					</if>
 			) X
 	        UNION ALL
 	        SELECT X.user_group_menu_id, X.user_group_id, X.all_yn, X.read_yn, X.write_yn, X.update_yn, X.delete_yn,
@@ -131,7 +133,9 @@
 					<if test="menuTarget != null and menuTarget != ''">
 					AND B.menu_target = #{menuTarget}
 					</if>
+					<if test="useYn != null and useYn != ''">
 					AND B.use_yn != 'N'
+					</if>
 	        ) X, menu_tree Y
 	        WHERE X.parent = Y.menu_id AND not cycle
 		)
@@ -284,14 +288,16 @@
 	<delete id="deleteUserGroupByAncestor" parameterType="userGroup">
 		/* deleteUserGroupByAncestor */
 		DELETE FROM user_group
-		WHERE ancestor = #{ancestor}
+		WHERE ancestor = #{userGroupId}
+		OR user_group_id = #{userGroupId}
 	</delete>
 
 	<!-- parent를 이용하여 사용자 그룹 삭제 -->
 	<delete id="deleteUserGroupByParent" parameterType="userGroup">
 		/* deleteUserGroupByParent */
 		DELETE FROM user_group
-		WHERE parent = #{parent}
+		WHERE parent = #{userGroupId}
+		OR user_group_id = #{userGroupId}
 	</delete>
 
     <!-- 사용자 그룹 메뉴 삭제 -->
