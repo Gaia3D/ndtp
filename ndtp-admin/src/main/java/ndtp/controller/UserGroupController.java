@@ -392,7 +392,6 @@ public class UserGroupController implements AuthorizationController {
 		Role role = new Role();
 		role.setOffset(0l);
 		role.setLimit(1000l);
-		role.setUseYn(YOrN.N.toString());
 		role.setOrderWord("role_id");
 		role.setOrderValue("ASC");
 		List<Role> roleList = roleService.getListRole(role);

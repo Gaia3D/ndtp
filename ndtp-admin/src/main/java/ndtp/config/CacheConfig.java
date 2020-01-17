@@ -20,6 +20,7 @@ import ndtp.domain.RoleTarget;
 import ndtp.domain.UserGroup;
 import ndtp.domain.UserGroupMenu;
 import ndtp.domain.UserGroupRole;
+import ndtp.domain.YOrN;
 import ndtp.service.MenuService;
 import ndtp.service.UserGroupService;
 
@@ -111,6 +112,7 @@ public class CacheConfig {
     		Integer userGroupId = userGroup.getUserGroupId();
 
     		userGroupMenu.setUserGroupId(userGroupId);
+    		userGroupMenu.setUseYn(YOrN.Y.toString());
     		List<UserGroupMenu> userGroupMenuList = userGroupService.getListUserGroupMenu(userGroupMenu);
     		userGroupMenuMap.put(userGroupId, userGroupMenuList);
 

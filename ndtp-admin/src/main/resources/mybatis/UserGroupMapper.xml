@@ -110,7 +110,7 @@
 					AND B.menu_target = #{menuTarget}
 					</if>
 					<if test="useYn != null and useYn != ''">
-					AND B.use_yn != 'N'
+					AND B.use_yn = #{useYn}
 					</if>
 			) X
 	        UNION ALL
@@ -134,7 +134,7 @@
 					AND B.menu_target = #{menuTarget}
 					</if>
 					<if test="useYn != null and useYn != ''">
-					AND B.use_yn != 'N'
+					AND B.use_yn = #{useYn}
 					</if>
 	        ) X, menu_tree Y
 	        WHERE X.parent = Y.menu_id AND not cycle
