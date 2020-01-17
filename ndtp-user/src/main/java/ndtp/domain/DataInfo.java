@@ -58,6 +58,8 @@ public class DataInfo extends Search implements Serializable {
 	private String oldDataKey;
 	// data 이름
 	private String dataName;
+	// 데이터 타입(중복). 3ds,obj,dae,collada,ifc,las,citygml,indoorgml,gml,ect
+	private String dataType;
 	// common : 공통, public : 공개, private : 개인, group : 그룹
 	private String sharing;
 	// 부모 고유번호

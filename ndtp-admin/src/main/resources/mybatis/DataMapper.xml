@@ -176,7 +176,7 @@
     		SELECT NEXTVAL('data_info_seq')
   		</selectKey>
 		INSERT INTO data_info(
-			data_id, data_group_id, data_key, data_name, sharing, user_id, mapping_type,
+			data_id, data_group_id, data_key, data_name, data_type, sharing, user_id, mapping_type,
 			<if test="location != null">
 			location,
 			</if>
@@ -186,7 +186,7 @@
 			</if>
 			description
 		) VALUES (
-			#{dataId}, #{dataGroupId}, #{dataKey}, #{dataName}, #{sharing}, #{userId}, #{mappingType},
+			#{dataId}, #{dataGroupId}, #{dataKey}, #{dataName}, #{dataType}, #{sharing}, #{userId}, #{mappingType},
 			<if test="location != null">
 			ST_GeomFromText(#{location}),
 			</if>
@@ -211,6 +211,9 @@
 			</if>
 			<if test="dataName != null and dataName != ''">
 			data_name = #{dataName},
+			</if>
+			<if test="dataType != null and dataType != ''">
+			data_name = #{dataType},
 			</if>
 			<if test="mappingType != null and mappingType != ''">
 			mapping_type = #{mappingType},
