@@ -12,6 +12,7 @@ import ndtp.domain.Move;
 import ndtp.domain.UserGroup;
 import ndtp.domain.UserGroupMenu;
 import ndtp.domain.UserGroupRole;
+import ndtp.domain.YOrN;
 import ndtp.persistence.UserGroupMapper;
 import ndtp.service.UserGroupService;
 
@@ -176,6 +177,83 @@ public class UserGroupServiceImpl implements UserGroupService {
 	 */
 	private int updateViewOrderUserGroup(UserGroup userGroup) {
 		return userGroupMapper.updateUserGroupViewOrder(userGroup);
+	}
+
+	/**
+	 * 사용자 그룹 메뉴 수정
+	 * @param userGroupMenu
+	 * @return
+	 */
+	@Transactional
+	public int updateUserGroupMenu(UserGroupMenu userGroupMenu) {
+		Integer userGroupId = userGroupMenu.getUserGroupId();
+		userGroupMapper.deleteUserGroupMenu(userGroupId);
+
+		String[] allYnValues = userGroupMenu.getAllYn().split(",");
+		String[] readYnValues = userGroupMenu.getReadYn().split(",");
+		String[] writeYnValues = userGroupMenu.getWriteYn().split(",");
+		String[] updateYnValues = userGroupMenu.getUpdateYn().split(",");
+		String[] deleteYnValues = userGroupMenu.getDeleteYn().split(",");
+
+		int totalCount = allYnValues.length;
+		for(int i=0; i<totalCount; i++) {
+			boolean insertFlag = false;
+			String[] allValues = allYnValues[i].split("_");
+			String[] readValues = readYnValues[i].split("_");
+			String[] writeValues = writeYnValues[i].split("_");
+			String[] updateValues = updateYnValues[i].split("_");
+			String[] deleteValues = deleteYnValues[i].split("_");
+
+			UserGroupMenu tempUserGroupMenu = new UserGroupMenu();
+			tempUserGroupMenu.setUserGroupId(userGroupId);
+			tempUserGroupMenu.setMenuId(Integer.parseInt(allValues[0]));
+
+			if(allValues.length == 2 && YOrN.Y.name().equals(allValues[1])) {
+				tempUserGroupMenu.setAllYn(allValues[1]);
+				insertFlag = true;
+			}
+			if(readValues.length == 2 && YOrN.Y.name().equals(readValues[1])) {
+				tempUserGroupMenu.setReadYn(readValues[1]);
+				insertFlag = true;
+			}
+			if(writeValues.length == 2 && YOrN.Y.name().equals(writeValues[1])) {
+				tempUserGroupMenu.setWriteYn(writeValues[1]);
+				insertFlag = true;
+			}
+			if(updateValues.length == 2 && YOrN.Y.name().equals(updateValues[1])) {
+				tempUserGroupMenu.setUpdateYn(updateValues[1]);
+				insertFlag = true;
+			}
+			if(deleteValues.length == 2 && YOrN.Y.name().equals(deleteValues[1])) {
+				tempUserGroupMenu.setDeleteYn(deleteValues[1]);
+				insertFlag = true;
+			}
+
+			if(insertFlag) userGroupMapper.insertUserGroupMenu(tempUserGroupMenu);
+		}
+
+		return totalCount;
+	}
+
+	/**
+	 * 사용자 그룹 Role 수정
+	 * @param userGroupRole
+	 * @return
+	 */
+	@Transactional
+	public int updateUserGroupRole(UserGroupRole userGroupRole) {
+		Integer userGroupId = userGroupRole.getUserGroupId();
+		userGroupMapper.deleteUserGroupRole(userGroupId);
+
+		String[] roleIds = userGroupRole.getCheckIds().split(",");
+		for(String roleId : roleIds) {
+			UserGroupRole tempUserGroupRole = new UserGroupRole();
+			tempUserGroupRole.setUserGroupId(userGroupId);
+			tempUserGroupRole.setRoleId(Integer.parseInt(roleId));
+			userGroupMapper.insertUserGroupRole(tempUserGroupRole);
+		}
+
+		return roleIds.length;
 	}
 
 	/**
