@@ -7,10 +7,12 @@
 	<select id="getUserTotalCount" parameterType="userInfo" resultType="long">
 		/* getUserTotalCount */
 		SELECT COUNT(user_id)
-		FROM user_info
+		FROM user_info a
+		LEFT JOIN user_group b
+		ON a.user_group_id = b.user_group_id
 		<trim prefix="WHERE" prefixOverrides="AND">
 			<if test="userGroupId != null and userGroupId gt 0">
-			user_group_id = #{userGroupId}
+			AND a.user_group_id = #{userGroupId}
 			</if>
 			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
 			AND ${searchWord} = #{searchValue}
@@ -26,12 +28,12 @@
 			</if>
 			<if test="startDate != null and startDate != ''">
 			<![CDATA[
-			AND insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+			AND a.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
 			<if test="endDate != null and endDate != ''">
 			<![CDATA[
-			AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+			AND a.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
 		</trim>
@@ -41,14 +43,15 @@
 	<!-- 사용자 목록 -->
 	<select id="getListUser" parameterType="userInfo" resultType="userInfo">
 		/* getListUser */
-		SELECT X.*,
-			(SELECT user_group_name FROM user_group WHERE user_group_id = X.user_group_id) AS user_group_name
+		SELECT X.*
 		FROM (
-			SELECT *
-			FROM user_info
+			SELECT a.*, b.user_group_name
+			FROM user_info a
+			LEFT JOIN user_group b
+			ON a.user_group_id = b.user_group_id
 			<trim prefix="WHERE" prefixOverrides="AND">
 				<if test="userGroupId != null and userGroupId gt 0">
-				user_group_id = #{userGroupId}
+				AND a.user_group_id = #{userGroupId}
 				</if>
 				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
 				AND ${searchWord} = #{searchValue}
@@ -62,14 +65,17 @@
 				<if test="status != null and status != ''">
 				AND status = #{status}
 				</if>
+				<if test="userGroupName != null and userGroupName != ''">
+				AND user_group_name = #{userGroupName}
+				</if>
 				<if test="startDate != null and startDate != ''">
 				<![CDATA[
-				AND insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+				AND a.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
 				]]>
 				</if>
 				<if test="endDate != null and endDate != ''">
 				<![CDATA[
-				AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+				AND a.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
 				]]>
 				</if>
 			</trim>
@@ -78,7 +84,7 @@
 			ORDER BY ${orderWord} ${orderValue}
 			</when>
 			<otherwise>
-			ORDER BY insert_date DESC, user_id DESC
+			ORDER BY a.insert_date DESC, user_id DESC
 			</otherwise>
 			</choose>
 			OFFSET #{offset} LIMIT #{limit}

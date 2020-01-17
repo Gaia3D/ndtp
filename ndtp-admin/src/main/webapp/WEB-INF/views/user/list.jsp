@@ -33,6 +33,7 @@
 										<option value=""><spring:message code='select'/></option>
 					          			<option value="user_id">아이디</option>
 					          			<option value="user_name">사용자명</option>
+					          			<option value="user_group_name">그룹명</option>
 					          			<option value="status">상태</option>
 									</select>
 									<select id="searchOption" name="searchOption" class="select" style="height: 30px;">
@@ -53,9 +54,10 @@
 										<option value=""> <spring:message code='search.basic'/> </option>
 					          			<option value="user_id">아이디</option>
 										<option value="user_name">사용자명</option>
+					          			<option value="user_group_name">그룹명</option>
 					          			<option value="status">상태</option>
 					          			<option value="last_signin_date">마지막 로그인</option>
-										<option value="insertDate"> <spring:message code='search.insert.date'/> </option>
+										<option value="insert_date"> <spring:message code='search.insert.date'/> </option>
 									</select>
 									<select id="orderValue" name="orderValue" class="select" style="height: 30px;">
 				                		<option value=""> <spring:message code='search.basic'/> </option>

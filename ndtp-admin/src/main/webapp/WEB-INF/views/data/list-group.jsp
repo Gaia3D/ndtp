@@ -151,7 +151,7 @@
 					                    </td>
 					                    <td class="col-type">${dataGroup.latitude } / ${dataGroup.longitude }</td>
 					                    <td class="col-key">${dataGroup.duration }</td>
-					                    <td class="col-type"><a href="/data/modify/${dataGroup.dataGroupId }" class="linkButton">보기</a>
+					                    <td class="col-type"><a href="/data/list?searchOption=0&searchWord=data_group_name&searchValue=${dataGroup.dataGroupName}" class="linkButton">보기</a>
 					                    </td>
 					                    <td class="col-type">
 					                    	<div class="button-group">

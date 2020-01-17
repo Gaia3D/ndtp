@@ -6,17 +6,19 @@
 	<!-- Data 총 건수 -->
 	<select id="getDataTotalCount" parameterType="dataInfo" resultType="long">
 		/* getDataTotalCount */
-		SELECT COUNT(data_id) 
-		FROM data_info
+		SELECT COUNT(data_id)
+		FROM data_info a
+        LEFT JOIN data_group b
+        ON a.data_info = b.data_group
 		<trim prefix="WHERE" prefixOverrides="AND">
 			<if test="dataGroupId != null and dataGroupId > 0">
-			data_group_id = #{dataGroupId}
+			AND a.data_group_id = #{dataGroupId}
 			</if>
 			<if test="sharing != null and sharing != ''">
 			AND sharing = #{sharing}
 			</if>
 			<if test="userId != null and userId != ''">
-			AND user_id = #{userId}
+			AND a.user_id = #{userId}
 			</if>
 			<if test="status != null and status != ''">
 			AND status = #{status}
@@ -29,45 +31,46 @@
 			</if>
 			<if test="startDate != null and startDate != ''">
 			<![CDATA[
-			AND insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+			AND a.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
 			<if test="endDate != null and endDate != ''">
 			<![CDATA[
-			AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+			AND a.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
 		</trim>
 	</select>
-	
+
 	<!-- 데이터 상태별 통계 정보 -->
 	<select id="getDataTotalCountByStatus" parameterType="string" resultType="long">
 		/* getDataTotalCountByStatus */
-		SELECT COUNT(data_id) 
+		SELECT COUNT(data_id)
 		FROM data_info
-		WHERE status = #{status} 
+		WHERE status = #{status}
 			<!-- <if test="userId != null and userId != ''">
 			AND user_id = #{userId}
 			</if> -->
 	</select>
-	
+
 	<!-- Data 목록 -->
 	<select id="getListData" parameterType="dataInfo" resultType="dataInfo">
 		/* getListData */
-		SELECT X.*, ST_X(X.location) AS longitude, ST_Y(X.location) AS latitude,
-			(SELECT data_group_name FROM data_group WHERE data_group_id = X.data_group_id) AS dataGroupName
+		SELECT X.*, ST_X(X.location) AS longitude, ST_Y(X.location) AS latitude
 		FROM (
-			SELECT *
-			FROM data_info
+			SELECT a.*, b.data_group_name
+			FROM data_info a
+	        LEFT JOIN data_group b
+	        ON a.data_info = b.data_group
 			<trim prefix="WHERE" prefixOverrides="AND">
 				<if test="dataGroupId != null and dataGroupId > 0">
-				data_group_id = #{dataGroupId}
+				AND a.data_group_id = #{dataGroupId}
 				</if>
 				<if test="sharing != null and sharing != ''">
 				AND sharing = #{sharing}
 				</if>
 				<if test="userId != null and userId != ''">
-				AND user_id = #{userId}
+				AND a.user_id = #{userId}
 				</if>
 				<if test="status != null and status != ''">
 				AND status = #{status}
@@ -80,12 +83,12 @@
 				</if>
 				<if test="startDate != null and startDate != ''">
 				<![CDATA[
-				AND insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+				AND a.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
 				]]>
 				</if>
 				<if test="endDate != null and endDate != ''">
 				<![CDATA[
-				AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+				AND a.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
 				]]>
 				</if>
 			</trim>
@@ -94,13 +97,13 @@
 			ORDER BY ${orderWord} ${orderValue}
 			</when>
 			<otherwise>
-			ORDER BY insert_date DESC, data_id DESC
+			ORDER BY a.insert_date DESC, data_id DESC
 			</otherwise>
 			</choose>
 			OFFSET #{offset} LIMIT #{limit}
 		) X
 	</select>
-	
+
 	<!-- Data 정보 -->
 	<select id="getData" parameterType="dataInfo" resultType="dataInfo">
 		/* getData */
@@ -112,55 +115,55 @@
 			AND A.user_id = #{userId}
 			</if>
 	</select>
-	
+
 	<!-- Data 정보 -->
 	<select id="getDataByDataKey" parameterType="dataInfo" resultType="dataInfo">
 		/* getDataByDataKey */
 		SELECT *
 		FROM data_info
-		WHERE data_group_id = #{dataGroupId} 
+		WHERE data_group_id = #{dataGroupId}
 			AND data_key = #{dataKey}
 			<if test="userId != null and userId != ''">
 			AND user_id = #{userId}
 			</if>
 	</select>
-	
+
 	<!-- 최상위 root dataInfo 정보 취득 -->
 	<select id="getRootDataByDataGroupId" parameterType="int" resultType="dataInfo">
 		/* getRootDataByDataGroupId */
 		SELECT *
 		FROM data_info
-		WHERE data_group_id = #{dataGroupId} 
+		WHERE data_group_id = #{dataGroupId}
 			AND depth = 1
 	</select>
-	
+
 	<!-- Data 아이디 중복 체크 -->
 	<select id="getDuplicationKeyCount" parameterType="dataInfo" resultType="int">
 		/* getDuplicationKeyCount */
-		SELECT COUNT(data_key) AS count 
-		FROM data_info 
-		WHERE data_group_id = #{dataGroupId} 
+		SELECT COUNT(data_key) AS count
+		FROM data_info
+		WHERE data_group_id = #{dataGroupId}
 			AND data_key = #{dataKey}
 	</select>
-	
+
 	<!-- 표시 순서 -->
 	<select id="getViewOrderByParent" parameterType="dataInfo" resultType="int">
 		/* getViewOrderByParent */
-		SELECT COALESCE(MAX(view_order), 0) + 1 
+		SELECT COALESCE(MAX(view_order), 0) + 1
 		FROM data_info
 		WHERE children_parent = #{childrenParent}
 	</select>
-	
+
 	<!-- 한 프로젝트 내 Root Parent 개수를 체크 -->
 	<select id="getRootParentCount" parameterType="dataInfo" resultType="int">
 		/* getRootParentCount */
-		SELECT COUNT(data_id) 
-		FROM data_info 
-		WHERE data_group_id = #{dataGroupId} 
+		SELECT COUNT(data_id)
+		FROM data_info
+		WHERE data_group_id = #{dataGroupId}
 			AND depth = 1
 			AND data_id != #{dataId}
 	</select>
-	
+
 	<!-- Data Attribute 정보 -->
 	<select id="getDataAttribute" parameterType="long" resultType="dataInfoAttribute">
 		/* getDataAttribute */
@@ -168,7 +171,7 @@
 		FROM data_info_attribute
 		WHERE data_id = #{dataId}
 	</select>
-	
+
 	<!-- Data 등록 -->
 	<insert id="insertData" parameterType="dataInfo">
 		/* insertData */
@@ -197,12 +200,12 @@
 			#{description}
 		)
 	</insert>
-	
-	<!-- Data 수정 -->	
+
+	<!-- Data 수정 -->
 	<update id="updateData" parameterType="dataInfo">
 		/* updateData */
 		UPDATE data_info
-		SET 
+		SET
 			<if test="dataGroupId != null and dataGroupId > 0">
 			data_group_id = #{dataGroupId},
 			</if>
@@ -254,8 +257,8 @@
 			AND user_id = #{userId}
 			</if>
 	</update>
-	
-	<!-- Data 상태 수정 -->	
+
+	<!-- Data 상태 수정 -->
 	<update id="updateDataStatus" parameterType="dataInfo">
 		/* updateDataStatus */
 		UPDATE data_info
@@ -266,24 +269,24 @@
 			AND user_id = #{userId}
 			</if>
 	</update>
-	
+
 	<!-- Data 삭제 -->
 	<delete id="deleteData" parameterType="dataInfo">
 		/* deleteData */
-		DELETE 
-		FROM data_info 
+		DELETE
+		FROM data_info
 		WHERE data_id = #{dataId}
 			<if test="userId != null and userId != ''">
 			AND user_id = #{userId}
 			</if>
 	</delete>
-	
+
 	<!-- Data 에 속하는 모든 Object ID를 삭제 -->
 	<delete id="deleteDataByDataGroupId" parameterType="dataGroup">
 		/* deleteDataByProjectId */
-		DELETE 
-		FROM data_info 
-		WHERE data_group_id = #{dataGroupId} 
+		DELETE
+		FROM data_info
+		WHERE data_group_id = #{dataGroupId}
 			AND depth = 1
 			<if test="userId != null and userId != ''">
 			AND user_id = #{userId}

@@ -32,8 +32,9 @@
 									<label for="searchWord">검색어</label>
 									<select id="searchWord" name="searchWord" class="select">
 										<option value="">선택</option>
-										<option value="layer_name">Layer 명</option>
-										<option value="layer_key">Layer Key</option>
+										<option value="layer_name">레이어 명</option>
+										<option value="layer_key">레이어 Key</option>
+										<option value="layer_group_name">레이어 그룹명</option>
 									</select>
 									<select id="searchOption" name="searchOption" class="select">
 										<option value="0">일치</option>
@@ -47,13 +48,15 @@
 									<span class="delimeter tilde">~</span>
 									<input type="text" id="endDate" name="endDate" class="s date" />
 								</div>
-							
+
 								<div class="input-set">
 									<label for="orderWord">표시순서</label>
 									<select id="orderWord" name="orderWord" class="select">
 										<option value="">기본</option>
-										<option value="layerName">이름</option>
-										<option value="insertDate">등록일</option>
+										<option value="layer_name">레이어 명</option>
+										<option value="layer_key">레이어 Key</option>
+										<option value="layer_group_name">레이어 그룹명</option>
+										<option value="insert_date"> <spring:message code='search.insert.date'/> </option>
 									</select>
 									<select id="orderValue" name="orderValue" class="select">
 										<option value="">기본</option>
@@ -72,7 +75,7 @@
 							<div class="list-header row">
 								<div class="list-desc u-pull-left">
 									<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/>
-									<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> 
+									<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/>
 									<spring:message code='search.page'/>
 								</div>
 							</div>
@@ -100,7 +103,7 @@
 									<tr>
 										<td colspan="7" class="col-none">Layer 가 존재하지 않습니다.</td>
 									</tr>
-</c:if>								
+</c:if>
 <c:if test="${!empty layerList }">
 	<c:forEach var="layer" items="${layerList}" varStatus="status">
 									<tr class="${depthClass } ${depthParentClass} ${ancestorClass }" style="${depthStyleDisplay}">
@@ -142,7 +145,7 @@
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
-	
+
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>

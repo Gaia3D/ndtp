@@ -140,7 +140,7 @@
 					                    </td>
 					                    <td class="col-key">${layerGroup.userId }</td>
 					                    <td class="col-key">${layerGroup.description }</td>
-					                    <td class="col-type"><a href="/layer/list?layer_group_id=${layerGroup.layerGroupId }" class="linkButton">보기</a>
+					                    <td class="col-type"><a href="/layer/list?searchOption=0&searchWord=layer_group_name&searchValue=${layerGroup.layerGroupName}" class="linkButton">보기</a>
 					                    </td>
 					                    <td class="col-type">
 					                    	<div class="button-group">

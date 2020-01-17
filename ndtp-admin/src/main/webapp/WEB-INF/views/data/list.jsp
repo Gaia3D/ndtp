@@ -33,6 +33,7 @@
 								<select id="searchWord" name="searchWord" class="select" style="height: 30px;">
 									<option value=""><spring:message code='select'/></option>
 				          			<option value="data_name">데이터명</option>
+				          			<option value="data_group_name">데이터그룹명</option>
 								</select>
 								<select id="searchOption" name="searchOption" class="select" style="height: 30px;">
 									<option value="0"><spring:message code='search.same'/></option>
@@ -50,8 +51,9 @@
 								<label for="orderWord"><spring:message code='search.order'/></label>
 								<select id="orderWord" name="orderWord" class="select" style="height: 30px;">
 									<option value=""> <spring:message code='search.basic'/> </option>
-									<option value="data_name">데이터명</option>
-									<option value="insertDate"> <spring:message code='search.insert.date'/> </option>
+									<option value="data_name">데이터 명</option>
+				          			<option value="data_group_name">데이터 그룹명</option>
+									<option value="insert_date"> <spring:message code='search.insert.date'/> </option>
 								</select>
 								<select id="orderValue" name="orderValue" class="select" style="height: 30px;">
 			                		<option value=""> <spring:message code='search.basic'/> </option>
