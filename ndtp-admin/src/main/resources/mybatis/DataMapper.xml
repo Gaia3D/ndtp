@@ -9,7 +9,7 @@
 		SELECT COUNT(data_id)
 		FROM data_info a
         LEFT JOIN data_group b
-        ON a.data_info = b.data_group
+        ON a.data_group_id = b.data_group_id
 		<trim prefix="WHERE" prefixOverrides="AND">
 			<if test="dataGroupId != null and dataGroupId > 0">
 			AND a.data_group_id = #{dataGroupId}
@@ -61,7 +61,7 @@
 			SELECT a.*, b.data_group_name
 			FROM data_info a
 	        LEFT JOIN data_group b
-	        ON a.data_info = b.data_group
+	        ON a.data_group_id = b.data_group_id
 			<trim prefix="WHERE" prefixOverrides="AND">
 				<if test="dataGroupId != null and dataGroupId > 0">
 				AND a.data_group_id = #{dataGroupId}

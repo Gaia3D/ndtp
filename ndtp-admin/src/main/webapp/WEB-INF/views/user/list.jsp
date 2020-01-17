@@ -189,6 +189,16 @@
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript">
+	$(document).ready(function() {
+		initJqueryCalendar();
+
+		$("#searchWord").val("${userInfo.searchWord}");
+		$("#searchValue").val("${userInfo.searchValue}");
+		$("#orderWord").val("${userInfo.orderWord}");
+		$("#orderValue").val("${userInfo.orderValue}");
+
+		initCalendar(new Array("startDate", "endDate"), new Array("${userInfo.startDate}", "${userInfo.endDate}"));
+	});
 
 	//전체 선택
 	$("#chkAll").click(function() {

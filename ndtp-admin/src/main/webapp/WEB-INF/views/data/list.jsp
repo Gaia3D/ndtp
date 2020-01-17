@@ -32,8 +32,8 @@
 								<label for="searchWord"><spring:message code='search.word'/></label>
 								<select id="searchWord" name="searchWord" class="select" style="height: 30px;">
 									<option value=""><spring:message code='select'/></option>
-				          			<option value="data_name">데이터명</option>
-				          			<option value="data_group_name">데이터그룹명</option>
+				          			<option value="data_name">데이터 명</option>
+				          			<option value="data_group_name">데이터 그룹명</option>
 								</select>
 								<select id="searchOption" name="searchOption" class="select" style="height: 30px;">
 									<option value="0"><spring:message code='search.same'/></option>
@@ -211,6 +211,16 @@
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript">
+	$(document).ready(function() {
+		initJqueryCalendar();
+
+		$("#searchWord").val("${dataInfo.searchWord}");
+		$("#searchValue").val("${dataInfo.searchValue}");
+		$("#orderWord").val("${dataInfo.orderWord}");
+		$("#orderValue").val("${dataInfo.orderValue}");
+
+		initCalendar(new Array("startDate", "endDate"), new Array("${dataInfo.startDate}", "${dataInfo.endDate}"));
+	});
 
 	// 전체 선택
 	$("#chkAll").click(function() {
