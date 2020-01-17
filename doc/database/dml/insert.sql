@@ -15,7 +15,6 @@ values
 insert into menu(menu_id, menu_type, menu_target, name, name_en, ancestor, parent, depth, view_order, url, url_alias, html_id, css_class, default_yn, use_yn, display_yn)
 values
 	(1, '0', '1', '홈', 'HOME', 0, 0, 1, 1, '/main/index', null, null, 'glyph-home', 'N', 'N', 'N'),
-
 	(2, '0', '1', '사용자', 'USER', 2, 0, 1, 2, '/user/list', null, null, 'glyph-users', 'Y', 'Y', 'Y'),
 	(21, '0', '1', '사용자 그룹', 'USER', 2, 2, 2, 1, '/user-group/list', null, null, 'glyph-users', 'Y', 'Y', 'Y'),
 	(22, '0', '1', '사용자 그룹 등록', 'USER', 2, 2, 2, 2, '/user-group/input', null, null, 'glyph-users', 'Y', 'Y', 'Y'),
@@ -29,9 +28,7 @@ values
 	(3, '0', '1', '데이터', 'DATA', 3, 0, 1, 3, '/data-group/list', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
 	(31, '0', '1', '데이터 그룹', 'DATA', 3, 3, 2, 1, '/data-group/list', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
 	(32, '0', '1', '데이터 그룹 등록', 'DATA', 3, 3, 2, 2, '/data-group/input', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
-
 	(33, '0', '1', '사용자 데이터 그룹', 'DATA', 3, 3, 2, 3, '/data-group/list-user', null, null, 'glyph-monitor', 'Y', 'N', 'Y'),
-
 	(34, '0', '1', '데이터 목록', 'DATA', 3, 3, 2, 4, '/data/list', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
 	(35, '0', '1', '데이터 상세 정보', 'DATA', 3, 3, 2, 5, '/data/detail', '/data/list', null, 'glyph-monitor', 'N', 'Y', 'N'),
 	(36, '0', '1', '데이터 수정', 'DATA', 3, 3, 2, 6, '/data/modify', '/data/list', null, 'glyph-monitor', 'N', 'Y', 'N'),
@@ -55,7 +52,7 @@ values
 	(82, '0', '1', '공간정보 운영정책', 'CONFIGURATION', 8, 8, 2, 2, '/geopolicy/modify', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
 	(83, '0', '1', '관리자 메뉴', 'ADMIN MENU', 8, 8, 2, 3, '/menu/admin-menu', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
 	(84, '0', '1', '사용자 메뉴', 'USER MENU', 8, 8, 2, 4, '/menu/user-menu', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
-	(85, '0', '1', '위젯', 'WIDGET', 8, 8, 2, 5, '/widget/modify', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
+	(85, '0', '1', '위젯', 'WIDGET', 8, 8, 2, 5, '/widget/modify', null, null, 'glyph-settings', 'N', 'N', 'N'),
 	(86, '0', '1', '권한', 'ROLE', 8, 8, 2, 6, '/role/list', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
 	(87, '0', '1', '권한 등록', 'ROLE', 8, 8, 2, 7, '/role/input', '/role/list', null, 'glyph-settings', 'N', 'Y', 'N'),
 	(88, '0', '1', '권한 수정', 'ROLE', 8, 8, 2, 8, '/role/modify', '/role/list', null, 'glyph-settings', 'N', 'Y', 'N');
