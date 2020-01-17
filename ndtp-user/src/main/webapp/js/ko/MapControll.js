@@ -313,7 +313,7 @@ function MapControll(viewer, option) {
         that._scene.camera.flyTo({
 			destination: Cesium.Cartesian3.fromDegrees(parseFloat(Mago3D.MagoConfig.getPolicy().initLongitude),
 				parseFloat(Mago3D.MagoConfig.getPolicy().initLatitude),
-				parseFloat(Mago3D.MagoConfig.getPolicy().initHeight)),
+				parseFloat(Mago3D.MagoConfig.getPolicy().initAltitude)),
 			duration: parseInt(Mago3D.MagoConfig.getPolicy().initDuration)
 		});
     });
