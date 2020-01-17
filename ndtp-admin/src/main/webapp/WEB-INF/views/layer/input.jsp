@@ -25,17 +25,17 @@
             white-space: nowrap;
             border: 1px solid #e5e5e5;
         }
-        
+
         .loader-txt p {
             font-size: 13px;
             color: #666;
         }
-    
+
         .loader-txt p small {
             font-size: 11.5px;
             color: #999;
         }
-        
+
         .loader {
             position: relative;
             text-align: center;
@@ -50,13 +50,13 @@
             animation: spin 1s ease-in-out infinite;
             -webkit-animation: spin 1s ease-in-out infinite;
         }
-    
+
         @keyframes spin {
             to {
                 -webkit-transform: rotate(360deg);
             }
         }
-    
+
         @-webkit-keyframes spin {
             to {
                 -webkit-transform: rotate(360deg);
@@ -170,7 +170,7 @@
 									<input type="color" id="layerLineColor" name="layerLineColor" class="picker" alt="외곽선 색상" />
 								</td>
 							</tr>
-							<tr>	
+							<tr>
 								<th class="col-label" scope="row">
 			                        <form:label path="layerLineStyle">외곽선 두께</form:label>
 			                    </th>
@@ -186,7 +186,7 @@
 									<input type="color" id="layerFillColor" name="layerFillColor" class="picker forPolygon" alt="채우기 색상">
 								</td>
 							</tr>
-			                
+
 			                <tr>
 			                	<th class="col-label" scope="row">
 			                        <form:label path="layerAlphaStyle">투명도</form:label>
@@ -258,7 +258,7 @@
 			                </tr>
 						</table>
 						</form:form>
-						
+
 						<h4 style="margin-top: 30px; margin-bottom: 5px;">파일 업로딩</h4>
 				        <div class="fileSection" style="font-size: 17px;">
 				            <form id="my-dropzone" action="" class="dropzone hzScroll"></form>
@@ -266,7 +266,7 @@
 				        <div class="button-group">
 							<div class="center-buttons">
 								<input type="submit" id="allFileUpload" value="<spring:message code='save'/>"/>
-								<input type="submit" id="allFileClear" value="초기화" />
+								<input type="submit" id="allFileClear" onClick="formClear(); return false;" value="초기화" />
 								<a href="/layer/list" class="button">목록</a>
 							</div>
 						</div>
@@ -277,7 +277,7 @@
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
 	<%@ include file="/WEB-INF/views/layer/spinner-dialog.jsp" %>
-	
+
 	<!-- Dialog -->
 	<div id="layerGroupDialog" class="dialog">
 		<table class="list-table scope-col">
@@ -304,7 +304,7 @@
 			<tr>
 				<td colspan="7" class="col-none">Layer 그룹이 존재하지 않습니다.</td>
 			</tr>
-</c:if>								
+</c:if>
 <c:if test="${!empty layerGroupList }">
 	<c:set var="paddingLeftValue" value="0" />
 	<c:forEach var="layerGroup" items="${layerGroupList}" varStatus="status">
@@ -320,10 +320,10 @@
             <c:set var="depthClass" value="threeDepthClass" />
             <c:set var="paddingLeftValue" value="80px" />
         </c:if>
-			
+
 			<tr class="${depthClass } ${depthParentClass} ${ancestorClass }" style="${depthStyleDisplay}">
 				<td class="col-key" style="text-align: left;" nowrap="nowrap">
-					<span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"></span> 
+					<span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"></span>
 					${layerGroup.depth }
 				</td>
 				<td class="col-name">
@@ -345,13 +345,13 @@
 			    </td>
 			    <td class="col-toggle">
 			    	<a href="#" onclick="confirmParent('${layerGroup.layerGroupId}', '${layerGroup.layerGroupName}'); return false;">확인</a></td>
-			</tr>	
+			</tr>
 	</c:forEach>
 </c:if>
 			</tbody>
 		</table>
 	</div>
-	
+
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
@@ -362,21 +362,21 @@
 		showRange(100);
 		changeLayerType(null);
 		changeGeometryType(null);
-		
+
 		$("input[name='sharing']").filter("[value='public']").prop("checked", true);
 		$("input[name='defaultDisplay']").filter("[value='true']").prop("checked", true);
 		$("input[name='available']").filter("[value='true']").prop("checked", true);
         $("input[name='labelDisplay']").filter("[value='true']").prop("checked", true);
 	});
-	
+
 	$('[name=layerType]').on('change', function() {
 		changeLayerType($("[name=layerType]").val());
 	});
-	
+
 	$('[name=geometryType]').on('change', function() {
 		changeGeometryType($("[name=geometryType]").val());
 	});
-	
+
 	// 레이어 타입 Raster 선택 시 입력폼 변경
 	function changeLayerType(layerType) {
 		if(layerType == 'Vector') {
@@ -407,7 +407,7 @@
 			$('.forPolygon').val(null);
 		}
 	}
-	
+
 	// 슬라이더
 	function showRange(valus) {
 		$('#sliderValue').val(valus + "%");
@@ -415,8 +415,8 @@
 
 	var rangeSlider = function(){
 		var range = $('#sliderRange');
-		
-		range.on('change', function(){		
+
+		range.on('change', function(){
 			showRange(this.value);
 		});
 	};
@@ -428,25 +428,25 @@
 		var layerLineColor = $('#layerLineColor');
 		var fillColorValue = $('#fillColorValue');
 		var lineColorValue = $('#lineColorValue');
-		
-		layerFillColor.on('change', function(){		
+
+		layerFillColor.on('change', function(){
 			$('#fillColorValue').val($(this).val().toUpperCase());
 		});
 
-		layerLineColor.on('change', function(){		
+		layerLineColor.on('change', function(){
 			$('#lineColorValue').val($(this).val().toUpperCase());
 		});
 
-		fillColorValue.on('change', function(){		
+		fillColorValue.on('change', function(){
 			$('#layerFillColor').val($(this).val().toUpperCase());
 		});
 
-		lineColorValue.on('change', function(){		
+		lineColorValue.on('change', function(){
 			$('#layerLineColor').val($(this).val().toUpperCase());
 		});
 	}
 	pickerColor();
-	
+
 	var layerGroupDialog = $( ".dialog" ).dialog({
 		autoOpen: false,
 		height: 600,
@@ -461,17 +461,17 @@
 		layerGroupDialog.dialog( "open" );
 		layerGroupDialog.dialog( "option", "title", "Layer 그룹 선택");
 	});
-	
+
 	// 상위 Node
 	function confirmParent(parent, parentName) {
 		$("#layerGroupId").val(parent);
 		$("#layerGroupName").val(parentName);
 		layerGroupDialog.dialog( "close" );
 	}
-	
+
 	function check() {
 		var number = /^[0-9]+$/;
-		
+
 		if(!$("#layerGroupId").val() || !number.test($("#layerGroupId").val())) {
 			alert("레이어 그룹을 선택해 주세요.");
 			$("#layerGroupName").focus();
@@ -503,7 +503,7 @@
 			return false;
 		}
 	}
-	
+
 	var fileUploadDialog = $( ".spinner-dialog" ).dialog({
 		autoOpen: false,
 		width: 250,
@@ -511,7 +511,7 @@
 		modal: true,
 		resizable: false
 	});
-	
+
 	function alertMessage(response) {
 		if(uploadFileResultCount === 0) {
 			if(response.result === "upload.file.type.invalid") {
@@ -658,7 +658,11 @@
             }); */
         }
     };
-    
+
+	function formClear() {
+
+	}
+
 </script>
 </body>
 </html>

@@ -32,7 +32,6 @@
         }
     </style>
 </head>
-
 <body>
 	<%@ include file="/WEB-INF/views/layouts/header.jsp" %>
 	<%@ include file="/WEB-INF/views/layouts/menu.jsp" %>
@@ -48,13 +47,13 @@
 							<div class="content-desc u-pull-right"><span class="icon-glyph glyph-emark-dot color-warning"></span><spring:message code='check'/></div>
 						</div>
 						<form:form id="uploadData" modelAttribute="uploadData" method="post" onsubmit="return false;">
-						<table class="input-table scope-row">
-							<colgroup>
-			                    <col class="col-label l" style="width: 15%" >
-			                    <col class="col-input" style="width: 35%" >
-			                    <col class="col-label l" style="width: 15%" >
-			                    <col class="col-input" style="width: 35%" >
-			                </colgroup>
+							<table class="input-table scope-row">
+								<colgroup>
+				                    <col class="col-label l" style="width: 15%" >
+				                    <col class="col-input" style="width: 35%" >
+				                    <col class="col-label l" style="width: 15%" >
+				                    <col class="col-input" style="width: 35%" >
+				                </colgroup>
 								<tr>
 									<th class="col-label" scope="row">
 										<form:label path="dataName">데이터명</form:label>
@@ -99,10 +98,6 @@
 				                    </td>
 								</tr>
 								<tr>
-
-
-
-
 									<th class="col-label" scope="row">
 										<form:label path="latitude"><spring:message code='latitude'/></form:label>
 									</th>
@@ -184,16 +179,16 @@
 									</td>
 								</tr>
 							</table>
-							</form:form>
+						</form:form>
 
-							<h4 style="margin-top: 30px; margin-bottom: 5px;">파일 업로딩</h4>
+						<h4 style="margin-top: 30px; margin-bottom: 5px;">파일 업로딩</h4>
 				        <div class="fileSection" style="font-size: 17px;">
 				            <form id="my-dropzone" action="" class="dropzone hzScroll"></form>
 				        </div>
 				        <div class="button-group">
 							<div class="center-buttons">
 								<input type="submit" id="allFileUpload" value="<spring:message code='save'/>" onclick="insertLayerGroup();" />
-								<input type="submit" id="allFileClear" value="초기화" />
+								<input type="submit" onClick="formClear(); return false;" value="초기화" />
 								<a href="/data/list" class="button">목록</a>
 							</div>
 						</div>
@@ -460,6 +455,11 @@
 			return false;
 		}
 	}
+
+	function formClear() {
+
+	}
+
 </script>
 </body>
 </html>

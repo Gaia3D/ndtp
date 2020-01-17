@@ -94,6 +94,7 @@
 							<div class="button-group">
 								<div class="center-buttons">
 									<input type="submit" value="<spring:message code='save'/>" onclick="insertUserGroup();"/>
+									<input type="submit" onClick="formClear(); return false;" value="초기화" />
 									<a href="/user-group/list" class="button">목록</a>
 								</div>
 							</div>
@@ -207,6 +208,11 @@
                 + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
         //popWin.document.title = layerName;
 	});
+
+	function formClear() {
+
+	}
+
 </script>
 </body>
 </html>
