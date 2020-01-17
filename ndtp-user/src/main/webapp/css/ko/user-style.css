@@ -1050,3 +1050,31 @@ border: none;
 text-indent: -999em;
 background-position: -132px -299px;
 }
+
+/* 연직분석 그래프 */
+.analysisGraphic {
+position: absolute;
+bottom: 20px;
+left: 460px;
+right: 0;
+height: 200px;
+padding: 20px;
+margin: 10px;
+background-color: #fff;
+z-index: 9;
+display: none;
+}
+.analysisGraphic canvas {
+border: 1px dotted red;
+}
+
+.analysisGraphic div.closeGraphic {
+position: absolute;
+top: 0px;
+left: 2px;
+font-weight: 900;
+font: #f00;
+color: red;
+font-size: 16px;
+cursor: pointer;	
+}

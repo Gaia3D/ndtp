@@ -20446,7 +20446,7 @@ CesiumViewerInit.prototype.initMagoManager = function()
 	this.magoManager = this.viewer.scene.magoManager;
 	scene = this.viewer.scene;
 	
-	this.viewer.scene.globe.depthTestAgainstTerrain = false;
+	this.viewer.scene.globe.depthTestAgainstTerrain = true;
 	this.viewer.scene.logarithmicDepthBuffer = false; //do not use logarithmic buffer
 	this.viewer.scene.highDynamicRange = false; //do not use high dynamic range
     
@@ -30841,7 +30841,7 @@ var ManagerFactory = function(viewer, containerId, serverPolicy, projectIdArray,
 		viewer.camera.flyTo({
 			destination: Cesium.Cartesian3.fromDegrees(parseFloat(MagoConfig.getPolicy().initLatitude),
 				parseFloat(MagoConfig.getPolicy().initLongitude),
-				parseFloat(MagoConfig.getPolicy().initHeight)),
+				parseFloat(MagoConfig.getPolicy().initAltitude)),
 			duration: parseInt(MagoConfig.getPolicy().initDuration)
 		});
 	}
