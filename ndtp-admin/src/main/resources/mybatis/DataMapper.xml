@@ -191,7 +191,7 @@
 		) VALUES (
 			#{dataId}, #{dataGroupId}, #{dataKey}, #{dataName}, #{dataType}, #{sharing}, #{userId}, #{mappingType},
 			<if test="location != null">
-			ST_GeomFromText(#{location}),
+			ST_GeomFromText(#{location}, 4326),
 			</if>
 			#{altitude}, #{heading}, #{pitch}, #{roll}, #{childrenAncestor}, #{childrenParent}, #{childrenDepth}, #{childrenViewOrder},
 			<if test="metainfo != null and metainfo != ''">
@@ -222,7 +222,7 @@
 			mapping_type = #{mappingType},
 			</if>
 			<if test="location != null">
-			location = ST_GeographyFromText(#{location}),
+			location = ST_GeomFromText(#{location}, 4326),
 			</if>
 			<if test="altitude != null">
 			altitude = #{altitude},

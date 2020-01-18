@@ -11,7 +11,7 @@ create table upload_data(
 	data_name						varchar(256),
 	user_id							varchar(32),
 	location		 				GEOMETRY(POINT, 4326),
-	altitude						numeric(7,3),
+	altitude						numeric(13,7),
 	file_count						int									default 0,
 	converter_count					int 								default 0,
 	status							varchar(20)							default 'upload',

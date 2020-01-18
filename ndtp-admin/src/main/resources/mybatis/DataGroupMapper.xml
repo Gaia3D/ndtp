@@ -120,7 +120,7 @@
 			),
 			#{basic}, #{available}, #{dataCount},
 			<if test="location != null">
-			ST_GeographyFromText(#{location}),
+			ST_GeomFromText(#{location}, 4326),
 			</if>
 			#{altitude}, #{duration}, 
 			<if test="metainfo != null and metainfo != ''">
@@ -175,7 +175,7 @@
 			data_count = #{dataCount},
 			</if>
 			<if test="location != null">
-			location = ST_GeographyFromText(#{location}),
+			location = ST_GeomFromText(#{location}, 4326),
 			</if>
 			<if test="altitude != null">
 			altitude = #{altitude},

@@ -111,10 +111,14 @@
 	<!-- 사용자 데이터 그룹 정보 -->
 	<select id="getUserDataGroup" parameterType="userDataGroup" resultType="userDataGroup">
 		/* getUserDataGroup */
-		SELECT * 
-		FROM user_data_group 
-		WHERE user_data_group_id = #{userDataGroupId} 
-			AND user_id = #{userId}
+		SELECT A.*, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude,
+			CASE 
+				WHEN parent > 0 THEN ( SELECT data_group_name FROM user_data_group WHERE user_data_group_id = A.parent )
+				ELSE null
+			END AS parentName
+		FROM user_data_group A
+		WHERE A.user_data_group_id = #{userDataGroupId} 
+			AND A.user_id = #{userId}
 	</select>
 	
 	<!-- 사용자 기본 데이터 그룹 정보 -->
@@ -209,7 +213,7 @@
 			),
 			#{basic}, #{available}, COALESCE(#{dataCount}, 0),
 			<if test="location != null">
-			ST_GeographyFromText(#{location}),
+			ST_GeomFromText(#{location}, 4326),
 			</if>
 			#{altitude}, #{duration}, #{locationUpdateType},
 			<if test="metainfo != null and metainfo != ''">
@@ -240,7 +244,7 @@
 			#{userDataGroupId}, #{dataGroupName}, #{dataGroupKey}, #{dataGroupPath}, #{sharing}, #{userId},
 			#{userDataGroupId}, 0, 1, 1, 0, true, true, 0,
 			<if test="location != null">
-			ST_GeographyFromText(#{location}),
+			ST_GeomFromText(#{location}, 4326),
 			</if>
 			#{altitude}, #{duration}, 
 			<if test="metainfo != null and metainfo != ''">
@@ -295,7 +299,7 @@
 			data_count = #{dataCount},
 			</if>
 			<if test="location != null">
-			location = ST_GeographyFromText(#{location}),
+			location = ST_GeomFromText(#{location}, 4326),
 			</if>
 			<if test="altitude != null">
 			altitude = #{altitude},

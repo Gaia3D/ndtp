@@ -18,7 +18,7 @@ create table user_data_group (
 	available					boolean								default true,
 	data_count					integer								default 0,
 	location		 			GEOMETRY(POINT, 4326),
-	altitude					numeric(7,3),
+	altitude					numeric(13,7),
 	duration					integer,
 	location_update_type		varchar(20)							default 'auto',
 	metainfo					jsonb,

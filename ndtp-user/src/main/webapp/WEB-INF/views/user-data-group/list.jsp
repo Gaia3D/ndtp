@@ -62,8 +62,6 @@
 				<col class="col-functions" />
 				<col class="col-functions" />
 				<col class="col-functions" />
-				<col class="col-functions" />
-				<col class="col-functions" />
 				<col class="col-date" />
 				<thead>
 					<tr>
@@ -71,8 +69,6 @@
 	                    <th scope="col">그룹 Key</th>
 	                    <th scope="col">공유 유형</th>
 	                    <th scope="col">사용 여부</th>
-	                    <th scope="col">위도/경도</th>
-	                    <th scope="col">이동시간</th>
 	                    <th scope="col">데이터 건수</th>
 	                    <th scope="col">순서</th>
 	                    <th scope="col">수정/삭제</th>
@@ -82,7 +78,7 @@
 				<tbody>
 <c:if test="${empty userDataGroupList }">
 					<tr>
-						<td colspan="10" class="col-none">데이터 그룹이 존재하지 않습니다.</td>
+						<td colspan="8" class="col-none">데이터 그룹이 존재하지 않습니다.</td>
 					</tr>
 </c:if>								
 <c:if test="${!empty userDataGroupList }">
@@ -159,8 +155,6 @@
                     					미사용
     </c:if>
 	                    </td>
-	                    <td class="col-type">${userDataGroup.latitude } / ${userDataGroup.longitude }</td>
-	                    <td class="col-key">${userDataGroup.duration }</td>
 	                    <td class="col-type">
 	<c:if test="${userDataGroup.dataCount gt 0 }">
 	                    	<a href="/data/list?userDataGroupId=${userDataGroup.userDataGroupId }" class="linkButton">

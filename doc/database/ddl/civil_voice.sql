@@ -8,7 +8,7 @@ create table civil_voice (
 	title				varchar(1000)					not null,
 	contents			text,
 	location		 	GEOMETRY(POINT, 4326),
-	altitude			numeric(7,3),
+	altitude			numeric(13,7),
 	available			boolean							default true,
 	client_ip 			varchar(45),
 	view_count			bigint							default 0,

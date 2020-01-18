@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,7 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.Key;
 import ndtp.domain.LocationUdateType;
-import ndtp.domain.PageType;
 import ndtp.domain.UserDataGroup;
 import ndtp.domain.UserSession;
 import ndtp.service.GeoPolicyService;
@@ -172,6 +173,54 @@ public class UserDataGroupRestController {
 				userDataGroup.setLocation("POINT(" + userDataGroup.getLongitude() + " " + userDataGroup.getLatitude() + ")");
 			}
 			userDataGroupService.insertUserDataGroup(userDataGroup);
+		} catch (Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+		
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
+	}
+	
+	/**
+	 * 사용자 데이터 그룹 등록
+	 * @param request
+	 * @param userDataGroup
+	 * @param bindingResult
+	 * @return
+	 */
+	@PostMapping("/{userDataGroupId}")
+	public Map<String, Object> update(HttpServletRequest request, @PathVariable Integer userDataGroupId, @ModelAttribute UserDataGroup userDataGroup) {
+		
+		log.info("@@@@@ update userDataGroup = {}", userDataGroup);
+		
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		
+		try {
+			// @Valid 로 dataGroupKey를 걸어 뒀더니 수정화면에서는 수정 불가라서 hidden으로는 보내고 싶지 않고~
+			if(userDataGroup.getUserDataGroupId() == null) {
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "input.invalid");
+				result.put("message", message);
+				
+				return result;
+			}
+			
+			userDataGroup.setUserId(userSession.getUserId());
+			if(userDataGroup.getLongitude() != null && userDataGroup.getLatitude() != null) {
+				userDataGroup.setLocationUpdateType(LocationUdateType.USER.name().toLowerCase());
+				userDataGroup.setLocation("POINT(" + userDataGroup.getLongitude() + " " + userDataGroup.getLatitude() + ")");
+			}
+			userDataGroupService.updateUserDataGroup(userDataGroup);
 		} catch (Exception e) {
 			e.printStackTrace();
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();

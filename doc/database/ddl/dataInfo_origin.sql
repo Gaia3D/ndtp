@@ -7,7 +7,7 @@ create table data_info_origin(
 	data_id						bigint								not null,
 	data_origin_name			varchar(256),
 	location		 			GEOMETRY(POINT, 4326),
-	altitude					numeric(7,3),
+	altitude					numeric(13,7),
 	heading						numeric(8,5),
 	pitch						numeric(8,5),
 	roll						numeric(8,5),

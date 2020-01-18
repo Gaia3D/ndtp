@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -83,6 +84,35 @@ public class UserDataGroupController {
 		model.addAttribute("userDataGroupList", userDataGroupList);
 		
 		return "/user-data-group/input";
+	}
+	
+	/**
+	 * 사용자 데이터 그룹 수정 화면
+	 * @param request
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "/modify")
+	public String modify(HttpServletRequest request, @RequestParam("userDataGroupId") Integer userDataGroupId, Model model) {
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		
+		UserDataGroup userDataGroup = new UserDataGroup();
+		userDataGroup.setUserId(userSession.getUserId());
+		userDataGroup.setUserDataGroupId(userDataGroupId);
+		
+		userDataGroup = userDataGroupService.getUserDataGroup(userDataGroup);
+		if(StringUtils.isEmpty(userDataGroup.getParentName())) {
+			Policy policy = policyService.getPolicy();
+			userDataGroup.setParentName(policy.getContentDataGroupRoot());
+		}
+		userDataGroup.setOldDataGroupKey(userDataGroup.getDataGroupKey());
+		
+		List<UserDataGroup> userDataGroupList = userDataGroupService.getAllListUserDataGroup(userDataGroup);
+		
+		model.addAttribute("userDataGroup", userDataGroup);
+		model.addAttribute("userDataGroupList", userDataGroupList);
+		
+		return "/user-data-group/modify";
 	}
 	
 	/**
