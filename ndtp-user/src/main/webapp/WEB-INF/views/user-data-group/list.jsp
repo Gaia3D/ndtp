@@ -13,6 +13,7 @@
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
 	<link rel="stylesheet" href="/css/${lang}/user-style.css" />
 	<link rel="stylesheet" href="/css/${lang}/style.css" />
+	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css">
 	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 	<style type="text/css">
@@ -30,7 +31,7 @@
 	</div>
 	<!-- E: NAVWRAP -->
 	
-	<div class="container" style="float:right; width: calc(100% - 78px);">
+	<div class="container" style="float:left; width: calc(100% - 78px);">
 		<div style="padding: 20px 20px 0px 10px; font-size: 18px;">3D 업로딩 데이터 자동 변환</div>
 		<div class="tabs" >
 			<ul class="tab">
@@ -81,12 +82,12 @@
 					</tr>
 				</thead>
 				<tbody>
-<c:if test="${empty dataGroupList }">
+<c:if test="${empty userDataGroupList }">
 					<tr>
 						<td colspan="11" class="col-none">데이터 그룹이 존재하지 않습니다.</td>
 					</tr>
 </c:if>								
-<c:if test="${!empty dataGroupList }">
+<c:if test="${!empty userDataGroupList }">
 <c:set var="paddingLeftValue" value="0" />
 <!-- depth 별 css 제어를 위한 변수 -->
 <c:set var="depthClass" value="" />
@@ -97,92 +98,92 @@
 <c:set var="depthParentClass" value="" />
 <c:set var="ancestorArrowClass" value="" />
 <c:set var="ancestorFolderClass" value="" />
-<c:forEach var="dataGroup" items="${dataGroupList}" varStatus="status">
-    <c:if test="${dataGroup.depth eq 1 }">
+<c:forEach var="userDataGroup" items="${userDataGroupList}" varStatus="status">
+    <c:if test="${userDataGroup.depth eq 1 }">
         <c:set var="depthClass" value="oneDepthClass" />
         <c:set var="paddingLeftValue" value="0px" />
         <c:set var="depthStyleDisplay" value="" />
         <c:set var="ancestorClass" value="" />
         <c:set var="depthParentClass" value="" />
     </c:if>
-    <c:if test="${dataGroup.depth eq 2 }">
+    <c:if test="${userDataGroup.depth eq 2 }">
         <c:set var="depthClass" value="twoDepthClass" />
         <c:set var="paddingLeftValue" value="40px" />
         <c:set var="depthStyleDisplay" value="display: none;" />
-        <c:set var="depthParentClass" value="oneDepthParent-${dataGroup.parent }" />
+        <c:set var="depthParentClass" value="oneDepthParent-${userDataGroup.parent }" />
         <c:set var="ancestorClass" value="" />
-        <c:set var="ancestorArrowClass" value="ancestorArrow-${dataGroup.ancestor }" />
-        <c:set var="ancestorFolderClass" value="ancestorFolder-${dataGroup.ancestor }" />
+        <c:set var="ancestorArrowClass" value="ancestorArrow-${userDataGroup.ancestor }" />
+        <c:set var="ancestorFolderClass" value="ancestorFolder-${userDataGroup.ancestor }" />
     </c:if>
-    <c:if test="${dataGroup.depth eq 3 }">
+    <c:if test="${userDataGroup.depth eq 3 }">
         <c:set var="depthClass" value="threeDepthClass" />
         <c:set var="paddingLeftValue" value="80px" />
         <c:set var="depthStyleDisplay" value="display: none;" />
-        <c:set var="depthParentClass" value="twoDepthParent-${dataGroup.parent }" />
-        <c:set var="ancestorClass" value="ancestor-${dataGroup.ancestor }" />
+        <c:set var="depthParentClass" value="twoDepthParent-${userDataGroup.parent }" />
+        <c:set var="ancestorClass" value="ancestor-${userDataGroup.ancestor }" />
     </c:if>
 					<tr class="${depthClass } ${depthParentClass} ${ancestorClass }" style="${depthStyleDisplay}">
 						<td class="col-key" style="text-align: left;" nowrap="nowrap">
-    <c:if test="${dataGroup.depth eq 1 }">
+    <c:if test="${userDataGroup.depth eq 1 }">
 	                        <span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;" 
-	                        	onclick="childrenDisplayToggle('${dataGroup.depth}', '${dataGroup.dataGroupId}', '${dataGroup.ancestor}');">
-	                            <i id="oneDepthArrow-${dataGroup.dataGroupId }" class="fa fa-caret-right oneArrow" aria-hidden="true"></i>
+	                        	onclick="childrenDisplayToggle('${userDataGroup.depth}', '${userDataGroup.userDataGroupId}', '${userDataGroup.ancestor}');">
+	                            <i id="oneDepthArrow-${userDataGroup.userDataGroupId }" class="fa fa-caret-right oneArrow" aria-hidden="true"></i>
 	                        </span>&nbsp;
 	                        <span style="font-size: 1.5em; color: Dodgerblue;">
-	                            <i id="oneDepthFolder-${dataGroup.dataGroupId }" class="fa fa-folder oneFolder" aria-hidden="true"></i>
+	                            <i id="oneDepthFolder-${userDataGroup.userDataGroupId }" class="fa fa-folder oneFolder" aria-hidden="true"></i>
 	                        </span>
     </c:if>
-    <c:if test="${dataGroup.depth eq 2 }">
+    <c:if test="${userDataGroup.depth eq 2 }">
 	                        <span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;" 
-	                        	onclick="childrenDisplayToggle('${dataGroup.depth}', '${dataGroup.dataGroupId}', '${dataGroup.ancestor}');">
-	                            <i id="twoDepthArrow-${dataGroup.dataGroupId }" class="fa fa-caret-right twoArrow ${ancestorArrowClass }" aria-hidden="true"></i></span>&nbsp;
+	                        	onclick="childrenDisplayToggle('${userDataGroup.depth}', '${userDataGroup.userDataGroupId}', '${userDataGroup.ancestor}');">
+	                            <i id="twoDepthArrow-${userDataGroup.userDataGroupId }" class="fa fa-caret-right twoArrow ${ancestorArrowClass }" aria-hidden="true"></i></span>&nbsp;
 	                        <span style="font-size: 1.5em; color: Mediumslateblue;">
-	                            <i id="twoDepthFolder-${dataGroup.dataGroupId }" class="fa fa-folder twoFolder ${ancestorFolderClass }" aria-hidden="true"></i>
+	                            <i id="twoDepthFolder-${userDataGroup.userDataGroupId }" class="fa fa-folder twoFolder ${ancestorFolderClass }" aria-hidden="true"></i>
 	                        </span>
     </c:if>
-    <c:if test="${dataGroup.depth eq 3 }">
+    <c:if test="${userDataGroup.depth eq 3 }">
                     					<span style="padding-left: ${paddingLeftValue}; font-size: 1.5em; color: Tomato;"><i class="fa fa-file-alt" aria-hidden="true"></i></span>
     </c:if>
 
-                    					${dataGroup.dataGroupName }
+                    					${userDataGroup.dataGroupName }
 						</td>
-						<td class="col-key">${dataGroup.dataGroupKey }</td>
-						<td class="col-key">${dataGroup.sharing }</td>
+						<td class="col-key">${userDataGroup.dataGroupKey }</td>
+						<td class="col-key">${userDataGroup.sharing }</td>
 	                    <td class="col-type">
-    <c:if test="${dataGroup.basic eq 'true' }">
+    <c:if test="${userDataGroup.basic eq 'true' }">
                     					기본
     </c:if>
-    <c:if test="${dataGroup.basic eq 'false' }">
+    <c:if test="${userDataGroup.basic eq 'false' }">
                     					선택
     </c:if>
 	                    </td>
 	                    <td class="col-type">
-    <c:if test="${dataGroup.available eq 'true' }">
+    <c:if test="${userDataGroup.available eq 'true' }">
                     					사용
     </c:if>
-    <c:if test="${dataGroup.available eq 'false' }">
+    <c:if test="${userDataGroup.available eq 'false' }">
                     					미사용
     </c:if>
 	                    </td>
-	                    <td class="col-type">${dataGroup.latitude } / ${dataGroup.longitude }</td>
-	                    <td class="col-key">${dataGroup.duration }</td>
-	                    <td class="col-type"><a href="/data/modify/${dataGroup.dataGroupId }" class="linkButton">보기</a>
+	                    <td class="col-type">${userDataGroup.latitude } / ${userDataGroup.longitude }</td>
+	                    <td class="col-key">${userDataGroup.duration }</td>
+	                    <td class="col-type"><a href="/data/modify/${userDataGroup.userDataGroupId }" class="linkButton">보기</a>
 	                    </td>
 	                    <td class="col-type">
 	                    	<div class="button-group">
-	                    		<a href="#" onclick="moveUp('${dataGroup.dataGroupId }', '${dataGroup.viewOrder }'); return false;" 
+	                    		<a href="#" onclick="moveUp('${userDataGroup.userDataGroupId }', '${userDataGroup.viewOrder }'); return false;" 
 	                    			class="button" style="text-decoration:none;">위로</a>
-								<a href="#" onclick="moveDown('${dataGroup.dataGroupId }', '${dataGroup.viewOrder }'); return false;" 
+								<a href="#" onclick="moveDown('${userDataGroup.userDataGroupId }', '${userDataGroup.viewOrder }'); return false;" 
 									class="button" style="text-decoration:none;">아래로</a>
 	                    	</div>
 	                    </td>
 	                    <td class="col-type">
 							<a href="#" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;
-							<a href="/data/delete-data-group?dataGroupId=${dataGroup.dataGroupId }" onclick="return deleteWarning();" 
+							<a href="/data/delete-data-group?userDataGroupId=${userDataGroup.userDataGroupId }" onclick="return deleteWarning();" 
 										class="linkButton"><spring:message code='delete'/></a>
 	                    </td>
 	                    <td class="col-date">
-	                    	<fmt:parseDate value="${dataGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
+	                    	<fmt:parseDate value="${userDataGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
 							<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
 	                    </td>
 	                </tr>

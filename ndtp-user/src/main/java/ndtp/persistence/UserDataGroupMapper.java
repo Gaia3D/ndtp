@@ -18,9 +18,10 @@ public interface UserDataGroupMapper {
 
 	/**
      * 사용자 데이터 그룹 전체 목록
+     * @param userDataGroup
      * @return
      */
-    List<UserDataGroup> getAllListUserDataGroup();
+    List<UserDataGroup> getAllListUserDataGroup(UserDataGroup userDataGroup);
     
     /**
      * 사용자 데이터 그룹 목록
@@ -48,6 +49,13 @@ public interface UserDataGroupMapper {
      * @return
      */
     UserDataGroup getUserDataGroupByParentAndViewOrder(UserDataGroup userDataGroup);
+    
+    /**
+     * 사용자 데이터 그룹 Key 중복 확인
+     * @param userDataGroup
+     * @return
+     */
+    Boolean isDataGroupKeyDuplication(UserDataGroup userDataGroup);
 
     /**
      * 사용자 데이터 그룹 등록

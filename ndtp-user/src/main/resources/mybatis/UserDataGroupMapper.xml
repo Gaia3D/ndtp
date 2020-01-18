@@ -37,15 +37,15 @@
 	</select>
 
 	<!-- 사용자 데이터 그룹 목록 조회 -->
-	<select id="getAllListUserDataGroup" resultType="userDataGroup">
+	<select id="getAllListUserDataGroup" parameterType="userDataGroup" resultType="userDataGroup">
 		/* getAllListUserDataGroup */
 		WITH RECURSIVE user_data_group_tree (
 			user_data_group_id, data_group_name, data_group_key, data_group_path, sharing, user_id, ancestor, parent, depth, view_order,
-			children, basic, available, data_count, location, altitude, duration, metainfo, description, update_date, insert_date,
+			children, basic, available, data_count, location, altitude, duration, location_update_type, metainfo, description, update_date, insert_date,
 			path, cycle
 		) AS (
 	        SELECT A.user_data_group_id, A.data_group_name, A.data_group_key, A.data_group_path, A.sharing, A.user_id, A.ancestor, A.parent, A.depth, A.view_order,
-	        	A.children, A.basic, A.available, A.data_count, A.location, A.altitude, A.duration, A.metainfo, A.description, A.update_date, A.insert_date,
+	        	A.children, A.basic, A.available, A.data_count, A.location, A.altitude, A.duration, A.location_update_type, A.metainfo, A.description, A.update_date, A.insert_date,
 	        	ARRAY[A.view_order], false
 			FROM user_data_group A
 			WHERE user_id = #{userId} AND A.parent = 0
@@ -54,13 +54,13 @@
 			</if>
 			UNION ALL
 	        SELECT A.user_data_group_id, A.data_group_name, A.data_group_key, A.data_group_path, A.sharing, A.user_id, A.ancestor, A.parent, A.depth, A.view_order,
-	        	A.children, A.basic, A.available, A.data_count, A.location, A.altitude, A.duration, A.metainfo, A.description, A.update_date, A.insert_date,
+	        	A.children, A.basic, A.available, A.data_count, A.location, A.altitude, A.duration, A.location_update_type, A.metainfo, A.description, A.update_date, A.insert_date,
 	        	path || A.view_order, A.user_data_group_id = ANY(path)
 	        FROM user_data_group A, user_data_group_tree B
 	        WHERE A.user_id = #{userId} AND A.parent = B.user_data_group_id AND not cycle
 		)
 	    SELECT user_data_group_id, data_group_name, data_group_key, data_group_path, sharing, user_id, ancestor, parent, depth, view_order,
-	    	children, basic, available, data_count, location, altitude, duration, metainfo, description, update_date, insert_date,
+	    	children, basic, available, data_count, location, altitude, duration, location_update_type, metainfo, description, update_date, insert_date,
 	    	path
 	    FROM user_data_group_tree
 	    ORDER BY path
@@ -152,6 +152,19 @@
 		LIMIT 1 
 	</select>
 	
+	<!-- 사용자 데이터 그룹 Key 중복 확인 -->
+	<select id="isDataGroupKeyDuplication" parameterType="userDataGroup" resultType="boolean">
+		/* isDataGroupKeyDuplication */
+		SELECT 
+			CASE 
+				WHEN COUNT(*) > 0 THEN true
+				ELSE false
+			END AS duplication
+		FROM user_data_group
+		WHERE user_id = #{userId}
+			AND data_group_key = #{dataGroupKey}
+	</select>
+	
 	<!-- 사용자 데이터 그룹 등록 -->
 	<insert id="insertUserDataGroup" parameterType="userDataGroup">
 		/* insertUserDataGroup */
@@ -164,7 +177,7 @@
 			<if test="location != null">
 			location,
 			</if>
-			altitude, duration,
+			altitude, duration, location_update_type,
 			<if test="metainfo != null and metainfo != ''">
 			metainfo,
 			</if>
@@ -198,7 +211,7 @@
 			<if test="location != null">
 			ST_GeographyFromText(#{location}),
 			</if>
-			#{altitude}, #{duration}, 
+			#{altitude}, #{duration}, #{locationUpdateType},
 			<if test="metainfo != null and metainfo != ''">
 			TO_JSON(#{metainfo}::json),
 			</if>
@@ -289,6 +302,9 @@
 			</if>
 			<if test="duration != null">
 			duration = #{duration},
+			</if>
+			<if test="locationUpdateType != null and locationUpdateType != ''">
+			location_update_type = #{locationUpdateType},
 			</if>
 			<if test="metainfo != null and metainfo != ''">
 			metainfo = TO_JSON(#{metainfo}::json),

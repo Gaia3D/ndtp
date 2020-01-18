@@ -73,10 +73,11 @@ public class DataGroupServiceImpl implements DataGroupService {
 	    	depth = parentDataGroup.getDepth() + 1;
     	}
 
-    	// TODO 여기서 디렉토리를 만들어야 하나? 말아야 하나? 도저히 모르겠다.
-    	//FileUtils.makeDirectoryByPath(geoPolicy.getDataServicePath(), dataGroup.getDataGroupKey());
-    	FileUtils.makeDirectoryByPath(propertiesConfig.getDataServiceDir(), dataGroup.getDataGroupKey());
-    	dataGroup.setDataGroupPath(dataGroup.getDataGroupKey() + File.separator);
+    	// 디렉토리 생성. 사용자의 경우 userId 밑에 생성 했는데, 관리자는 어디가 좋을까? 그냥 /
+    	//String dataGroupPath = dataGroup.getUserId() + "/" + dataGroup.getDataGroupKey() + "/";
+    	String dataGroupPath = dataGroup.getDataGroupKey() + "/";
+    	FileUtils.makeDirectoryByPath(propertiesConfig.getDataServiceDir(), dataGroupPath);
+    	dataGroup.setDataGroupPath(dataGroupPath);
     	int result = dataGroupMapper.insertDataGroup(dataGroup);
 
     	if(depth > 1) {

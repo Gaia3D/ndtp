@@ -31,7 +31,7 @@
 	</div>
 	<!-- E: NAVWRAP -->
 	
-	<div class="container" style="float:right; width: calc(100% - 78px);">
+	<div class="container" style="float:left; width: calc(100% - 78px);">
 		<div style="padding: 20px 20px 0px 10px; font-size: 18px;">3D 업로딩 데이터 자동 변환</div>
 		<div class="tabs" >
 			<ul class="tab">

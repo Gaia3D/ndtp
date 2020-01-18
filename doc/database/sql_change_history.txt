@@ -1,0 +1,6 @@
+2020 01 18 14:05 cheon
+alter table user_data_group add column location_update_type		varchar(20)							default 'auto';
+commit;
+
+comment on column user_data_group.location_update_type is 'location 업데이트 방법. auto : data 입력시 자동, user : 사용자가 직접 입력';
+commit;

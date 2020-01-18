@@ -100,6 +100,8 @@ public class ConverterServiceImpl implements ConverterService {
 	@Transactional
 	public int insertConverter(ConverterJob converterJob) {
 		
+		// data_group에 data_count ++ 해야 함
+		
 		String dataGroupRootPath = propertiesConfig.getDataServiceDir();
 		
 		String title = converterJob.getTitle();

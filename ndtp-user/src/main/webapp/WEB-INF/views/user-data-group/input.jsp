@@ -31,7 +31,7 @@
 	</div>
 	<!-- E: NAVWRAP -->
 	
-	<div class="container" style="float:right; width: calc(100% - 78px);">
+	<div class="container" style="float:left; width: calc(100% - 78px);">
 		<div style="padding: 20px 20px 0px 10px; font-size: 18px;">3D 업로딩 데이터 자동 변환</div>
 		<div class="tabs" >
 			<ul class="tab">
@@ -62,7 +62,9 @@
 					<span class="icon-glyph glyph-emark-dot color-warning"></span>
 				</th>
 				<td class="col-input">
+					<form:hidden path="duplication"/>
 					<form:input path="dataGroupKey" cssClass="l" />
+					<input type="button" id="duplicationButtion" value="<spring:message code='overlap.check'/>" />
 					<form:errors path="dataGroupKey" cssClass="error" />
 				</td>
 			</tr>
@@ -170,7 +172,7 @@
 		<div class="button-group">
 			<div class="center-buttons">
 				<input type="submit" value="<spring:message code='save'/>" onclick="insertUserDataGroup();"/>
-				<a href="/data/list-group" class="button">목록</a>
+				<a href="/user-data-group/list" class="button">목록</a>
 			</div>
 		</div>
 		</form:form>
@@ -190,11 +192,57 @@
 $(document).ready(function() {
 });
 
+// 데이터 그룹 중복 확인
+$( "#duplicationButtion" ).on( "click", function() {
+	var dataGroupKey = $("#dataGroupKey").val();
+	if (dataGroupKey == "") {
+		alert("데이터 그룹키(한글불가)를 입력해 주세요.");
+		$("#dataGroupKey").focus();
+		return false;
+	}
+	var formData = "dataGroupKey=" + dataGroupKey;
+	$.ajax({
+		url: "/user-data-groups/duplication",
+		type: "GET",
+		headers: {"X-Requested-With": "XMLHttpRequest"},
+        data: formData,
+		dataType: "json",
+		success: function(msg){
+			if(msg.statusCode <= 200) {
+				if(msg.duplication == true) {
+					alert(JS_MESSAGE["data.group.key.duplication"]);
+					$("#dataGroupKey").focus();
+					return false;
+				} else {
+					alert(JS_MESSAGE["data.group.key.enable"]);
+					$("#duplication").val(msg.duplication);
+				}
+			} else {
+				alert(JS_MESSAGE[msg.errorCode]);
+				console.log("---- " + msg.message);
+			}
+		},
+		error:function(request, status, error) {
+			//alert(JS_MESSAGE["ajax.error.message"]);
+			alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+		}
+	});
+});
+
 function validate() {
 	var number = /^[0-9]+$/;
 	if ($("#dataGroupName").val() === null || $("#dataGroupName").val() === "") {
 		alert("데이터 그룹명을 입력해 주세요.");
 		$("#dataGroupName").focus();
+		return false;
+	}
+	if($("#duplication").val() === null || $("#duplication").val() === "") {
+		alert(JS_MESSAGE["data.group.key.duplication.check"]);
+		$("#dataGroupKey").focus();
+		return false;
+	} else if($("#duplication").val() === "true") {
+		alert(JS_MESSAGE["data.group.key.duplication"]);
+		$("#dataGroupKey").focus();
 		return false;
 	}
 	if ($("#dataGroupKey").val() === null || $("#dataGroupKey").val() === "") {
@@ -206,6 +254,12 @@ function validate() {
 		alert("상위 데이터 그룹을 선택해 주세요.");
 		$("#parent").focus();
 		return false;
+	}
+	if($("#duration").val() !== null && $("#duration").val() !== "") {
+		if(!isNumber($("#duration").val())) {
+			$("#duration").focus();
+			return false;
+		}
 	}
 }
 
@@ -219,7 +273,7 @@ function insertUserDataGroup() {
 		insertUserDataGroupFlag = false;
 		var formData = $("#userDataGroup").serialize();		
 		$.ajax({
-			url: "/user-data-group/insert",
+			url: "/user-data-groups/",
 			type: "POST",
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 	        data: formData,
@@ -260,7 +314,11 @@ $( "#dataGroupButtion" ).on( "click", function() {
 });
 
 // 다이얼로그에서 선택
-function confirmParent(parent, parentName) {
+function confirmParent(parent, parentName, parentDepth) {
+	if(parentDepth >= 3) {
+		alert("사용자 데이터 그룹은 3Depth 이상 계층으로 입력할 수 없습니다.");
+		return;
+	}
 	$("#parent").val(parent);
 	$("#parentName").val(parentName);
 	userDataGroupDialog.dialog( "close" );

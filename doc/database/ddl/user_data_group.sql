@@ -20,6 +20,8 @@ create table user_data_group (
 	location		 			GEOMETRY(POINT, 4326),
 	altitude					numeric(7,3),
 	duration					integer,
+	location_update_type		varchar(20)							default 'auto',
+	metainfo					jsonb,
 	description					varchar(256),
 	update_date					timestamp with time zone,
 	insert_date					timestamp with time zone			default now(),
@@ -35,11 +37,14 @@ comment on column user_data_group.sharing is 'common : 공통, public : 공개, 
 comment on column user_data_group.user_id is '사용자 아이디';
 comment on column user_data_group.data_count is '데이터 총 건수';
 comment on column user_data_group.view_order is '순서';
+comment on column user_data_group.children is '자식 존재 개수';
 comment on column user_data_group.basic is 'true : 기본, false : 선택';
 comment on column user_data_group.available is 'true : 사용, false : 사용안함';
 comment on column user_data_group.location is 'POINT(위도, 경도). 공간 검색 속도 때문에 altitude는 분리';
 comment on column user_data_group.altitude is '높이';
 comment on column user_data_group.duration is 'Map 이동시간';
+comment on column user_data_group.location_update_type is 'location 업데이트 방법. auto : data 입력시 자동, user : 사용자가 직접 입력';
+comment on column user_data_group.metainfo is '데이터 그룹 메타 정보. 그룹 control을 위해 인위적으로 만든 속성';
 comment on column user_data_group.description is '설명';
 comment on column user_data_group.update_date is '수정일';
 comment on column user_data_group.insert_date is '등록일';

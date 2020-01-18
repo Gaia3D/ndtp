@@ -1,6 +1,5 @@
 package ndtp.service.impl;
 
-import java.io.File;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
-import ndtp.domain.DataType;
 import ndtp.domain.Depth;
 import ndtp.domain.Move;
 import ndtp.domain.UserDataGroup;
@@ -39,16 +37,16 @@ public class UserDataGroupServiceImpl implements UserDataGroupService {
 	}
 	
 	/**
-     * 데이터 그룹 목록
-     * @return
+     * 전체 데이터 그룹 목록
+     * @param userDataGroup
      */
 	@Transactional(readOnly = true)
-	public List<UserDataGroup> getAllListUserDataGroup() {
-		return userDataGroupMapper.getAllListUserDataGroup();
+	public List<UserDataGroup> getAllListUserDataGroup(UserDataGroup userDataGroup) {
+		return userDataGroupMapper.getAllListUserDataGroup(userDataGroup);
 	}
 	
 	/**
-	 * 
+	 * 데이터 그룹 목록
 	 * @param userDataGroup
 	 * @return
 	 */
@@ -72,18 +70,33 @@ public class UserDataGroupServiceImpl implements UserDataGroupService {
 	 */
 	@Transactional
 	public UserDataGroup getBasicUserDataGroup(UserDataGroup userDataGroup) {
+		String userId = userDataGroup.getUserId();
 		userDataGroup = userDataGroupMapper.getBasicUserDataGroup(userDataGroup);
 		if(userDataGroup == null || userDataGroup.getDataGroupName() == null) {
+			
+			String dataGroupPath = userId + "/basic/";
 			userDataGroup = new UserDataGroup();
 			
-			userDataGroup.setUserId(userDataGroup.getUserId());;
+			userDataGroup.setUserId(userId);;
 			userDataGroup.setDataGroupKey("basic");
 			userDataGroup.setDataGroupName("기본");
-			userDataGroup.setDataGroupPath("basic/");
+			userDataGroup.setDataGroupPath(dataGroupPath);
 			userDataGroup.setSharing("public");
+			
+			FileUtils.makeDirectoryByPath(propertiesConfig.getDataServiceDir(), dataGroupPath);
 			userDataGroupMapper.insertBasicUserDataGroup(userDataGroup);
 		}
 		return userDataGroup;
+	}
+	
+	/**
+     * 사용자 데이터 그룹 Key 중복 확인
+     * @param userDataGroup
+     * @return
+     */
+	@Transactional(readOnly = true)
+	public Boolean isDataGroupKeyDuplication(UserDataGroup userDataGroup) {
+		return userDataGroupMapper.isDataGroupKeyDuplication(userDataGroup);
 	}
 
     /**
@@ -93,10 +106,9 @@ public class UserDataGroupServiceImpl implements UserDataGroupService {
      */
     @Transactional
 	public int insertUserDataGroup(UserDataGroup userDataGroup) {
-    	
-    	//GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
-    	
+    	String userId = userDataGroup.getUserId();
     	UserDataGroup parentUserDataGroup = new UserDataGroup();
+    	parentUserDataGroup.setUserId(userId);
     	Integer depth = 0;
     	if(userDataGroup.getParent() > 0) {
     		parentUserDataGroup.setUserDataGroupId(userDataGroup.getParent());
@@ -104,10 +116,10 @@ public class UserDataGroupServiceImpl implements UserDataGroupService {
 	    	depth = parentUserDataGroup.getDepth() + 1;
     	}
 	    
-    	// TODO 여기서 디렉토리를 만들어야 하나? 말아야 하나? 도저히 모르겠다.
-    	//FileUtils.makeDirectoryByPath(geoPolicy.getDataServicePath(), dataGroup.getDataGroupKey());
-    	FileUtils.makeDirectoryByPath(propertiesConfig.getDataServiceDir(), userDataGroup.getDataGroupKey());
-    	userDataGroup.setDataGroupPath(userDataGroup.getDataGroupKey() + File.separator);
+    	// 디렉토리 생성
+    	String dataGroupPath = userDataGroup.getUserId() + "/" + userDataGroup.getDataGroupKey() + "/";
+    	FileUtils.makeDirectoryByPath(propertiesConfig.getDataServiceDir(), dataGroupPath);
+    	userDataGroup.setDataGroupPath(dataGroupPath);
     	int result = userDataGroupMapper.insertUserDataGroup(userDataGroup);
     	
     	if(depth > 1) {

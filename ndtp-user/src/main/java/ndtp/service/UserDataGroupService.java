@@ -17,7 +17,7 @@ public interface UserDataGroupService {
      * 사용자 데이터 그룹 전체 목록
      * @return
      */
-    List<UserDataGroup> getAllListUserDataGroup();
+    List<UserDataGroup> getAllListUserDataGroup(UserDataGroup userDataGroup);
     
     /**
      * 사용자 데이터 그룹 목록
@@ -45,6 +45,13 @@ public interface UserDataGroupService {
      * @return
      */
     UserDataGroup getUserDataGroupByParentAndViewOrder(UserDataGroup userDataGroup);
+    
+    /**
+     * 사용자 데이터 그룹 Key 중복 확인
+     * @param userDataGroup
+     * @return
+     */
+    Boolean isDataGroupKeyDuplication(UserDataGroup userDataGroup);
 
     /**
      * 사용자 데이터 그룹 등록

@@ -161,6 +161,7 @@
 //		DataGroup dataGroup = new DataGroup();
 //		dataGroup.setParentName(policy.getContentDataGroupRoot());
 //		dataGroup.setParent(0);
+//		dataGroup.setParentDepth(0);
 //		
 //		model.addAttribute("policy", policy);
 //		model.addAttribute("dataGroup", dataGroup);

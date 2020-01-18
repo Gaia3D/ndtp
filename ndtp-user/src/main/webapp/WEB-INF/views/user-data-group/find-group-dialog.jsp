@@ -53,14 +53,14 @@
         			미사용
         </c:if>
 		    </td>
-		    <td class="col-key">${userDataGroup.sharing }</td>
+		    <td class="col-type">${userDataGroup.sharing }</td>
 		    <td class="col-key">${userDataGroup.description }</td>
 		    <td class="col-date">
 		    	<fmt:parseDate value="${userDataGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
 				<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
 		    </td>
 		    <td class="col-toggle">
-		    	<a href="#" onclick="confirmParent('${userDataGroup.dataGroupId}', '${userDataGroup.dataGroupName}'); return false;">확인</a></td>
+		    	<a href="#" onclick="confirmParent('${userDataGroup.userDataGroupId}', '${userDataGroup.dataGroupName}', '${userDataGroup.depth}'); return false;">확인</a></td>
 		</tr>
 	</c:forEach>
 </c:if>

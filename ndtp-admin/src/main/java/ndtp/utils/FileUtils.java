@@ -262,13 +262,28 @@ public class FileUtils {
 		}
 	}
 	
-	public static boolean makeDirectoryByPath(String dataServicePath, String dataGroupKey) {
-		File directory = Paths.get(dataServicePath, dataGroupKey).toFile();
-		if(directory.exists()) {
-			return true;
-		} else {
-			return directory.mkdir();
+	/**
+	 * 경로를 기준으로 디렉토리를 생성. window, linux 에서 File.separator 가 문제를 일으킴
+	 * @param dataServicePath
+	 * @param dataGroupPath
+	 * @return
+	 */
+	public static boolean makeDirectoryByPath(String dataServicePath, String dataGroupPath) {
+		String[] directors = dataGroupPath.split("/");
+		String fullName = dataServicePath;
+		
+		boolean result = true;
+		for(String directoryName : directors) {
+			fullName = fullName + directoryName + File.separator;
+			File directory = new File(fullName);
+			if(directory.exists()) {
+				result = true;
+			} else {
+				result = directory.mkdir();
+				if(!result) return result;
+			}
 		}
+		return result;
 	}
 	
 	public static String makeDirectory(String userId, UploadDirectoryType uploadDirectoryType, String targetDirectory) {

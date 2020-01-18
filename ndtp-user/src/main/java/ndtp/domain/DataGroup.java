@@ -27,6 +27,8 @@ public class DataGroup extends Search {
 
 	/****** 화면 표시용 *******/
 	private String parentName;
+	// 부모 depth
+	private Integer parentDepth;
 	// up : 위로, down : 아래로
 	private String updateType;
 	// 위도

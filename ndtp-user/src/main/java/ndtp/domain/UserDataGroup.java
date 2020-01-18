@@ -3,6 +3,8 @@ package ndtp.domain;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import javax.validation.constraints.NotBlank;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
@@ -27,26 +29,29 @@ public class UserDataGroup extends Search {
 
 	/****** 화면 표시용 *******/
 	private String parentName;
+	// 부모 depth
+	private Integer parentDepth;
 	// up : 위로, down : 아래로
 	private String updateType;
 	// 위도
 	private BigDecimal latitude;
 	// 경도
 	private BigDecimal longitude;
+	// data_group_key 중복 확인을 위한 화면 전용 값. true 중복
+	private String duplication;
 	
 	/****** validator ********/
 	private String methodMode;
 	
-	// 아이디 중복 확인 hidden 값
-	private String duplicationValue;
-
 	// 고유번호
 	private Integer userDataGroupId;
 	// 링크 활용 등을 위한 확장 컬럼
+	@NotBlank
 	private String dataGroupKey;
 	// old 고유 식별번호
 	private String oldDataGroupKey;
 	// 그룹명
+	@NotBlank
 	private String dataGroupName;
 	// 서비스 경로
 	private String dataGroupPath;
@@ -82,7 +87,11 @@ public class UserDataGroup extends Search {
 	
 	// Map 이동시간
 	private Integer duration;
+	// location 업데이트 방법. auto : data 입력시 자동, user : 사용자가 직접 입력
+	private String locationUpdateType;
+	
 	// 데이터 그룹 메타 정보. 그룹 control을 위해 인위적으로 만든 속성
+	@NotBlank
 	private String metainfo;
 	// 설명
 	private String description;
