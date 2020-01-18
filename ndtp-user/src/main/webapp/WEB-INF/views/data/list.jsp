@@ -110,13 +110,13 @@
 <script type="text/javascript" src="/js/mago3d_lx.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
-<script type="text/javascript" src="/js/${lang}/MapControll.js"></script>
-<script type="text/javascript" src="/js/${lang}/uiControll.js"></script>
-<script type="text/javascript" src="/js/${lang}/SpatialAnalysis.js"></script>
-<script type="text/javascript" src="/js/${lang}/DistrictControll.js"></script>
-<script type="text/javascript" src="/js/${lang}/wpsRequest.js"></script>
-<script type="text/javascript" src="/js/${lang}/Search.js"></script>
-<script type="text/javascript" src="/js/${lang}/DataInfo.js"></script>
+<script type="text/javascript" src="/js/${lang}/map-controll.js"></script>
+<script type="text/javascript" src="/js/${lang}/ui-controll.js"></script>
+<script type="text/javascript" src="/js/${lang}/spatial-analysis.js"></script>
+<script type="text/javascript" src="/js/${lang}/district-controll.js"></script>
+<script type="text/javascript" src="/js/${lang}/wps-request.js"></script>
+<script type="text/javascript" src="/js/${lang}/search.js"></script>
+<script type="text/javascript" src="/js/${lang}/data-info.js"></script>
 <script type="text/javascript">
 	// 임시로...
 	$(document).ready(function() {
