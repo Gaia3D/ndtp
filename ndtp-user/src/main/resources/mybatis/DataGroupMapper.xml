@@ -3,20 +3,17 @@
 
 <mapper namespace="ndtp.persistence.DataGroupMapper">
 
-	<!-- 데이터 그룹 총 건수 -->
+	<!-- 사용자 데이터 그룹 총 건수 -->
 	<select id="getDataGroupTotalCount" parameterType="dataGroup" resultType="long">
 		/* getDataGroupTotalCount */
 		SELECT COUNT(data_group_id) 
 		FROM data_group
-		<trim prefix="WHERE" prefixOverrides="AND">
+		WHERE user_id = #{userId}
 			<if test="dataGroupId != null and dataGroupId > 0">
-			data_group_id = #{dataGroupId}
+			AND data_group_id = #{dataGroupId}
 			</if>
 			<if test="sharing != null and sharing != ''">
 			AND sharing = #{sharing}
-			</if>
-			<if test="userId != null and userId != ''">
-			AND user_id = #{userId}
 			</if>
 			<if test="basic != null">
 			AND basic = #{basic}
@@ -37,52 +34,53 @@
 			AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
-		</trim>
 	</select>
 
-	<!-- 데이터 그룹 목록 조회 -->
-	<select id="getAllListDataGroup" resultType="dataGroup">
-		/* getListLayerGroup */
+	<!-- 사용자 데이터 그룹 목록 조회 -->
+	<select id="getAllListDataGroup" parameterType="dataGroup" resultType="dataGroup">
+		/* getAllListDataGroup */
 		WITH RECURSIVE data_group_tree (
 			data_group_id, data_group_name, data_group_key, data_group_path, sharing, user_id, ancestor, parent, depth, view_order,
-			children, basic, available, data_count, location, altitude, duration, metainfo, description, update_date, insert_date,
+			children, basic, available, data_count, location, altitude, duration, location_update_type, metainfo, description, update_date, insert_date,
 			path, cycle
 		) AS (
 	        SELECT A.data_group_id, A.data_group_name, A.data_group_key, A.data_group_path, A.sharing, A.user_id, A.ancestor, A.parent, A.depth, A.view_order,
-	        	A.children, A.basic, A.available, A.data_count, A.location, A.altitude, A.duration, A.metainfo, A.description, A.update_date, A.insert_date,
+	        	A.children, A.basic, A.available, A.data_count, A.location, A.altitude, A.duration, A.location_update_type, A.metainfo, A.description, A.update_date, A.insert_date,
 	        	ARRAY[A.view_order], false
 			FROM data_group A
-			WHERE A.parent = 0
+			WHERE user_id = #{userId}
+				AND A.data_group_target = 'user' 
+				AND A.parent = 0
 			<if test="available != null">
 				AND A.available = #{available}
 			</if>
 			UNION ALL
 	        SELECT A.data_group_id, A.data_group_name, A.data_group_key, A.data_group_path, A.sharing, A.user_id, A.ancestor, A.parent, A.depth, A.view_order,
-	        	A.children, A.basic, A.available, A.data_count, A.location, A.altitude, A.duration, A.metainfo, A.description, A.update_date, A.insert_date,
+	        	A.children, A.basic, A.available, A.data_count, A.location, A.altitude, A.duration, A.location_update_type, A.metainfo, A.description, A.update_date, A.insert_date,
 	        	path || A.view_order, A.data_group_id = ANY(path)
 	        FROM data_group A, data_group_tree B
-	        WHERE A.parent = B.data_group_id AND not cycle
+	        WHERE A.user_id = #{userId} 
+	        	AND A.parent = B.data_group_id 
+	        	AND not cycle
 		)
 	    SELECT data_group_id, data_group_name, data_group_key, data_group_path, sharing, user_id, ancestor, parent, depth, view_order,
-	    	children, basic, available, data_count, location, altitude, duration, metainfo, description, update_date, insert_date,
+	    	children, basic, available, data_count, location, altitude, duration, location_update_type, metainfo, description, update_date, insert_date,
 	    	path
 	    FROM data_group_tree
 	    ORDER BY path
 	</select>
 	
+	<!-- 사용자 데이터 그룹 목록 -->
 	<select id="getListDataGroup" parameterType="dataGroup" resultType="dataGroup">
 		/* getListDataGroup */
 		SELECT *, ST_X(location) AS longitude, ST_Y(location) AS latitude
 		FROM data_group
-		<trim prefix="WHERE" prefixOverrides="AND">
+		WHERE user_id = #{userId}
 			<if test="dataGroupId != null and dataGroupId > 0">
-			data_group_id = #{dataGroupId}
+			AND data_group_id = #{dataGroupId}
 			</if>
 			<if test="sharing != null and sharing != ''">
 			AND sharing = #{sharing}
-			</if>
-			<if test="userId != null and userId != ''">
-			AND user_id = #{userId}
 			</if>
 			<if test="basic != null">
 			AND basic = #{basic}
@@ -103,7 +101,6 @@
 			AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
-		</trim>
 		<choose>
 		<when test="orderWord != null and orderWord != '' and orderValue != null and orderValue != ''">
 		ORDER BY ${orderWord} ${orderValue}
@@ -115,34 +112,40 @@
 		OFFSET #{offset} LIMIT #{limit}
 	</select>
 	
-	<!-- 데이터 그룹 정보 -->
+	<!-- 사용자 데이터 그룹 정보 -->
 	<select id="getDataGroup" parameterType="dataGroup" resultType="dataGroup">
 		/* getDataGroup */
-		SELECT * 
-		FROM data_group 
-		WHERE data_group_id = #{dataGroupId} 
-		<if test="userId != null and userId != ''">
-			AND user_id = #{userId}
-		</if> 
+		SELECT A.*, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude,
+			CASE 
+				WHEN parent > 0 THEN ( SELECT data_group_name FROM data_group WHERE data_group_id = A.parent )
+				ELSE null
+			END AS parentName
+		FROM data_group A
+		WHERE A.data_group_id = #{dataGroupId} 
+			AND A.user_id = #{userId}
 	</select>
 	
-	<!-- 기본 데이터 그룹 정보 -->
+	<!-- 사용자 기본 데이터 그룹 정보 -->
 	<select id="getBasicDataGroup" parameterType="dataGroup" resultType="dataGroup">
 		/* getBasicDataGroup */
 		SELECT * 
 		FROM data_group 
-		WHERE basic = 'true' 
+		WHERE user_id = #{userId}
+			AND data_group_target = 'user'
+			AND data_group_key = 'basic'
+			AND basic = 'true' 
 			AND depth = 1
 		ORDER BY view_order
 		LIMIT 1 
 	</select>
 	
-	<!-- 부모와 순서를 가지고 데이터 그룹 정보를 취득 -->
+	<!-- 부모와 순서를 가지고 사용자 데이터 그룹 정보를 취득 -->
 	<select id="getDataGroupByParentAndViewOrder" parameterType="dataGroup" resultType="dataGroup">
-		/* getUserGroupByParentAndViewOrder */
+		/* getDataGroupByParentAndViewOrder */
 		SELECT * 
 		FROM data_group 
-		WHERE parent = #{parent} 
+		WHERE user_id = #{userId}
+			AND parent = #{parent} 
 		<if test="updateType == 'UP'.toString()">
 			<![CDATA[
 			AND view_order < #{viewOrder}
@@ -158,7 +161,20 @@
 		LIMIT 1 
 	</select>
 	
-	<!-- 데이터 그룹 등록 -->
+	<!-- 사용자 데이터 그룹 Key 중복 확인 -->
+	<select id="isDataGroupKeyDuplication" parameterType="dataGroup" resultType="boolean">
+		/* isDataGroupKeyDuplication */
+		SELECT 
+			CASE 
+				WHEN COUNT(*) > 0 THEN true
+				ELSE false
+			END AS duplication
+		FROM data_group
+		WHERE user_id = #{userId}
+			AND data_group_key = #{dataGroupKey}
+	</select>
+	
+	<!-- 사용자 데이터 그룹 등록 -->
 	<insert id="insertDataGroup" parameterType="dataGroup">
 		/* insertDataGroup */
 		<selectKey keyProperty="dataGroupId" resultType="int" order="BEFORE">
@@ -170,7 +186,7 @@
 			<if test="location != null">
 			location,
 			</if>
-			altitude, duration,
+			altitude, duration, location_update_type,
 			<if test="metainfo != null and metainfo != ''">
 			metainfo,
 			</if>
@@ -200,7 +216,38 @@
 				FROM data_group
 				WHERE parent = #{dataGroupId}
 			),
-			#{basic}, #{available}, #{dataCount},
+			#{basic}, #{available}, COALESCE(#{dataCount}, 0),
+			<if test="location != null">
+			ST_GeomFromText(#{location}, 4326),
+			</if>
+			#{altitude}, #{duration}, #{locationUpdateType},
+			<if test="metainfo != null and metainfo != ''">
+			TO_JSON(#{metainfo}::json),
+			</if>
+			trim(#{description})
+		)
+	</insert>
+	
+	<!-- 기본 사용자 데이터 그룹 등록 -->
+	<insert id="insertBasicDataGroup" parameterType="dataGroup">
+		/* insertBasicDataGroup */
+		<selectKey keyProperty="dataGroupId" resultType="int" order="BEFORE">
+    		SELECT NEXTVAL('data_group_seq')
+  		</selectKey>
+		INSERT INTO data_group (
+			data_group_id, data_group_name, data_group_key, data_group_path, sharing, user_id, 
+			ancestor, parent, depth, view_order, children, basic, available, data_count, 
+			<if test="location != null">
+			location,
+			</if>
+			altitude, duration,
+			<if test="metainfo != null and metainfo != ''">
+			metainfo,
+			</if>
+			description
+		) VALUES (
+			#{dataGroupId}, #{dataGroupName}, #{dataGroupKey}, #{dataGroupPath}, #{sharing}, #{userId},
+			#{dataGroupId}, 0, 1, 1, 0, true, true, 0,
 			<if test="location != null">
 			ST_GeomFromText(#{location}, 4326),
 			</if>
@@ -212,7 +259,7 @@
 		)
 	</insert>
 	
-	<!-- 데이터 그룹 수정 -->
+	<!-- 사용자 데이터 그룹 수정 -->
 	<update id="updateDataGroup" parameterType="dataGroup">
 		/* updateDataGroup */
 		UPDATE data_group
@@ -265,6 +312,9 @@
 			<if test="duration != null">
 			duration = #{duration},
 			</if>
+			<if test="locationUpdateType != null and locationUpdateType != ''">
+			location_update_type = #{locationUpdateType},
+			</if>
 			<if test="metainfo != null and metainfo != ''">
 			metainfo = TO_JSON(#{metainfo}::json),
 			</if>
@@ -273,49 +323,42 @@
 			</if>
 			update_date = NOW()
 		WHERE data_group_id = #{dataGroupId}
-		<if test="userId != null and userId != ''">
 			AND user_id = #{userId}
-		</if>
 	</update>
 	
-	<!-- 데이터 그룹 순서 수정 -->
+	<!-- 사용자 데이터 그룹 순서 수정 -->
 	<update id="updateDataGroupViewOrder" parameterType="dataGroup">
 		/* updateDataGroupViewOrder */
 		UPDATE data_group 
 		SET view_order = #{viewOrder} 
 		WHERE data_group_id = #{dataGroupId}
+			AND user_id = #{userId}
 	</update>
 	
-	<!-- 데이터 그룹 삭제 -->
+	<!-- 사용자 데이터 그룹 삭제 -->
 	<delete id="deleteDataGroup" parameterType="dataGroup">
 		/* deleteDataGroup */
 		DELETE 
 		FROM data_group 
 		WHERE data_group_id = #{dataGroupId} 
-		<if test="userId != null and userId != ''">
 			AND user_id = #{userId}
-		</if> 
 	</delete>
 	
-	<!-- ancestor를 이용하여 데이터 그룹 삭제 -->
+	<!-- ancestor를 이용하여 사용자 데이터 그룹 삭제 -->
 	<delete id="deleteDataGroupByAncestor" parameterType="dataGroup">
 		/* deleteDataGroupByAncestor */
 		DELETE 
 		FROM data_group 
-		WHERE ancestor = #{ancestor} 
-		<if test="userId != null and userId != ''">
+		WHERE ancestor = #{dataGroupId} 
 			AND user_id = #{userId}
-		</if> 
 	</delete>
 	
-	<!-- parent를 이용하여 데이터 그룹 삭제 -->
+	<!-- parent를 이용하여 사용자 데이터 그룹 삭제 -->
 	<delete id="deleteDataGroupByParent" parameterType="dataGroup">
 		/* deleteDataGroupByParent */
 		DELETE 
 		FROM data_group 
-		WHERE parent = #{parent} 
-		<if test="userId != null and userId != ''">
+		WHERE parent = #{dataGroupId} 
 			AND user_id = #{userId}
-		</if> 
 	</delete>
 </mapper>

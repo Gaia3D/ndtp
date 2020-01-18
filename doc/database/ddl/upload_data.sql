@@ -6,7 +6,7 @@ drop table if exists upload_data_file cascade;
 create table upload_data(
 	upload_data_id					bigint,
 	data_group_id					int,
-	sharing						varchar(30)							default 'public',
+	sharing							varchar(30)							default 'public',
 	data_type						varchar(30),
 	data_name						varchar(256),
 	user_id							varchar(32),

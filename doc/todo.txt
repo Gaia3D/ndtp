@@ -1,4 +1,25 @@
 
+1. 테이블 분리?
+ - 관리자용 데이터 그룹과 일반 사용자용 데이터 그룹을
+   data_group, user_data_group 으로 분리 하였다.
+   그런데....
+   data_info, upload_data, converter_job 은 같이 사용하고 있다.
+   
+   여기서 꼬인다.
+   
+   upload_data 를 할때 관리자와 사용자가 선택하는 data_group_id, user_data_group_id 로 fk 가 다르다.
+   이걸 그냥.... 어차피 섞이지 않으니까...
+   data_group_id 에 넣고 쓰자니 찝찝하고....
+   user_data_info, user_upload_data, user_converter_job 으로 분리해서...
+   관리자와 일반 사용자를 나눠 사용하는게 맞는거 같기도 한데....
+   
+   일단.... 그냥
+  
+  그냥.... data_group 에 data_group_target 컬럼 하나 넣어서,관리자, 사용자용 구분 하기로 했다.
+
+
+
+
 data file info 
 data object file info 
 

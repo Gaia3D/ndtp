@@ -8,8 +8,6 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<title>데이터 업로드 | NDTP</title>
-	
-	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
 	<link rel="stylesheet" href="/css/${lang}/user-style.css" />
 	<link rel="stylesheet" href="/css/${lang}/style.css" />
@@ -83,8 +81,8 @@
 		<div style="padding: 20px 20px 0px 10px; font-size: 18px;">3D 업로딩 데이터 자동 변환</div>
 		<div class="tabs" >
 			<ul class="tab">
-				<li onclick="location.href='/user-data-group/list'">데이터 그룹</li>
-				<li onclick="location.href='/user-data-group/input'">데이터 그룹 등록</li>
+				<li onclick="location.href='/data-group/list'">데이터 그룹</li>
+				<li onclick="location.href='/data-group/input'">데이터 그룹 등록</li>
 				<li onclick="location.href='/upload-data/input'" class="on">업로딩 데이터</li>
 			   	<li onclick="location.href='/upload-data/list'">업로딩 데이터 목록</li>
 			  	<li onclick="location.href='/converter/list'">업로딩 데이터 변환 목록</li>
@@ -148,14 +146,14 @@
 				</tr>
 				<tr>
 					<th class="col-label" scope="row">
-					<form:label path="latitude">위도 / 경도</form:label>
+					<form:label path="longitude">경도 / 위도</form:label>
 					</th>
 					<td class="col-input">
+						<form:input path="longitude" cssClass="m" />
 						<form:input path="latitude" cssClass="m" />
-						<form:input path="longitude" cssClass="m" /> 
 						<input type="button" id="mapButtion" value="지도에서 찾기" />
-						<form:errors path="latitude" cssClass="error" />
 						<form:errors path="longitude" cssClass="error" />
+						<form:errors path="latitude" cssClass="error" />
 					</td>
 					<th class="col-label" scope="row">
 						<form:label path="altitude">높이</form:label>
@@ -223,17 +221,6 @@ function confirmDataGroup(dataGroupId, dataGroupName) {
 	$("#dataGroupName").val(dataGroupName);
 	dataGroupDialog.dialog( "close" );
 }
-
-// 지도에서 찾기
-$( "#mapButtion" ).on( "click", function() {
-	var url = "/data/location-map";
-	var width = 800;
-	var height = 700;
-
-    var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height
-            + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
-    //popWin.document.title = layerName;
-});
 
 var fileUploadDialog = $( ".spinner-dialog" ).dialog({
 	autoOpen: false,
@@ -376,6 +363,21 @@ function alertMessage(response) {
 	}
     return;
 }
+
+//지도에서 찾기
+$( "#mapButtion" ).on( "click", function() {
+	var url = "/map/find-point";
+	var width = 800;
+	var height = 700;
+
+	var popupX = (window.screen.width / 2) - (width / 2);
+	// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+	var popupY= (window.screen.height / 2) - (height / 2);
+	
+    var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height + ", top=" + popupY + ", left="+popupX
+            + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
+    //popWin.document.title = layerName;
+});
 </script>
 </body>
 </html>

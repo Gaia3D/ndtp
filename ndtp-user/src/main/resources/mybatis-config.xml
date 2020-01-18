@@ -25,11 +25,11 @@
     	
 		<typeAlias type="ndtp.domain.UploadData" alias="uploadData" />
 		<typeAlias type="ndtp.domain.UploadDataFile" alias="uploadDataFile" />
-    	<typeAlias type="ndtp.domain.UserDataGroup" alias="userDataGroup" />
-    	<typeAlias type="ndtp.domain.UserInfo" alias="userInfo" />
     	<typeAlias type="ndtp.domain.UserGroup" alias="userGroup" />
     	<typeAlias type="ndtp.domain.UserGroupMenu" alias="userGroupMenu" />
     	<typeAlias type="ndtp.domain.UserGroupRole" alias="userGroupRole" />
+		<typeAlias type="ndtp.domain.UserInfo" alias="userInfo" />
+		<typeAlias type="ndtp.domain.UserPolicy" alias="userPolicy"/>
     	<typeAlias type="ndtp.domain.UserSession" alias="userSession" />
     	
     	<typeAlias type="ndtp.domain.AddrJibun" alias="addrJibun"/>
@@ -40,8 +40,6 @@
  		<typeAlias type="ndtp.domain.SkSdo" alias="skSdo"/>
  		<typeAlias type="ndtp.domain.SkSgg" alias="skSgg"/>
  		<typeAlias type="ndtp.domain.SkEmd" alias="skEmd"/>
- 		
- 		<typeAlias type="ndtp.domain.UserPolicy" alias="userPolicy"/>
     </typeAliases>
 
 </configuration>

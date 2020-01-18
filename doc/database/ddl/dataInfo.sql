@@ -8,6 +8,7 @@ create table data_group (
 	data_group_key				varchar(60)							not null,
 	data_group_name				varchar(100)						not null,
 	data_group_path				varchar(256),
+	data_group_target			varchar(5)							default 'user',
 	sharing						varchar(30)							default 'public',
 	user_id						varchar(32),
 	ancestor					integer								default 0,
@@ -21,6 +22,7 @@ create table data_group (
 	location		 			GEOMETRY(POINT, 4326),
 	altitude					numeric(13,7),
 	duration					integer,
+	location_update_type		varchar(20)							default 'auto',
 	metainfo					jsonb,
 	description					varchar(256),
 	update_date					timestamp with time zone,
@@ -33,6 +35,7 @@ comment on column data_group.data_group_id is '고유번호';
 comment on column data_group.data_group_key is '링크 활용 등을 위한 확장 컬럼';
 comment on column data_group.data_group_name is '그룹명';
 comment on column data_group.data_group_path is '서비스 경로';
+comment on column data_group.data_group_target is 'admin : 관리자용 데이터 그룹, user : 일반 사용자용 데이터 그룹';
 comment on column data_group.sharing is 'common : 공통, public : 공개, private : 개인, group : 그룹';
 comment on column data_group.user_id is '사용자 아이디';
 comment on column data_group.data_count is '데이터 총 건수';
@@ -43,6 +46,7 @@ comment on column data_group.available is 'true : 사용, false : 사용안함';
 comment on column data_group.location is 'POINT(위도, 경도). 공간 검색 속도 때문에 altitude는 분리';
 comment on column data_group.altitude is '높이';
 comment on column data_group.duration is 'Map 이동시간';
+comment on column data_group.location_update_type is 'location 업데이트 방법. auto : data 입력시 자동, user : 사용자가 직접 입력';
 comment on column data_group.metainfo is '데이터 그룹 메타 정보. 그룹 control을 위해 인위적으로 만든 속성';
 comment on column data_group.description is '설명';
 comment on column data_group.update_date is '수정일';
