@@ -1105,3 +1105,32 @@ background-color: #0073e2;
 margin: 10px 20px 10px 10px;
 float: left; 
 }
+#loadingWrap{	
+position: fixed;
+top: 50px;
+z-index: 100;
+width: 100%;
+height:calc(100% - 50px);
+display: none;
+background: rgba(0,0,0,0.6);
+z-index: 10001;
+}
+.loading {
+height: 100%;
+display: flex;
+justify-content: center;
+align-items: center;
+}
+.spinner {
+width: 40px;
+height: 40px;
+border: 4px #ddd solid;
+border-top: 4px #2e93e6 solid;
+border-radius: 50%;
+animation: spinning 0.8s infinite linear;
+}
+@keyframes spinning {
+100% { 
+	transform: rotate(360deg); 
+}
+}

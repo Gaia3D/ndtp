@@ -282,7 +282,7 @@ var SpatialAnalysis = function(magoInstance) {
 	        alert("Please select an observer point!!");
 	        return;
 	    }
-
+	    startLoading();
 		var extent = getViewExtentLonLat();
 		
 		var xml = requestBodyRadialLineOfSight(layerDEM, observerPoint, observerOffset, radius, sides, extent);
@@ -311,6 +311,8 @@ var SpatialAnalysis = function(magoInstance) {
 	        });
 	    }).otherwise(function (error) {
 	        window.alert('Invalid selection');
+	    }).always(function(){
+	    	stopLoading();
 	    });
 	});
 	// 방사형 가시권 분석 - 클리어
@@ -333,7 +335,7 @@ var SpatialAnalysis = function(magoInstance) {
 			alert("Please select a target point!!");
 			return;
 		}
-
+		startLoading();
 		var extent = getViewExtentLonLat();
 
 		var xml = requestBodyLinearLineOfSight(layerDEM, observerOffset, observerPoint, targetPoint, extent);
@@ -362,7 +364,9 @@ var SpatialAnalysis = function(magoInstance) {
 	        });
 	    }).otherwise(function (error) {
 	        window.alert('Invalid selection');
-	    });
+	    }).always(function(){
+	    	stopLoading();
+	    });;
 	});
 	
 	// 연직분석 - 실행
@@ -375,7 +379,7 @@ var SpatialAnalysis = function(magoInstance) {
 			alert("Please select an user line!!");
 			return;
 		}
-
+		startLoading();
 		var extent = getViewExtentLonLat();
 
 		var xml = requestBodyRasterProfile(inputCoverage, interval, userLine, extent);
@@ -422,7 +426,9 @@ var SpatialAnalysis = function(magoInstance) {
 		    });
 	    }).otherwise(function (error) {
 	        window.alert('Invalid selection');
-	    });
+	    }).always(function(){
+	    	stopLoading();
+	    });;
 	});
 	
 	//지형 단면 분석 실행 결과 그래프 제거
@@ -442,7 +448,7 @@ var SpatialAnalysis = function(magoInstance) {
 			alert("Please select a crop shape!!");
 			return;
 		}
-
+		startLoading();
 		// 임시로 사용 현재 위치 extent
 		var extent = getViewExtentLonLat();
 
@@ -487,6 +493,8 @@ var SpatialAnalysis = function(magoInstance) {
 	        });
 	    }).otherwise(function (error) {
 			window.alert('Invalid selection');
+	    }).always(function(){
+	    	stopLoading();
 	    });
 	});
 	
@@ -499,7 +507,6 @@ var SpatialAnalysis = function(magoInstance) {
 	        alert("Please select the observer point!!");
 	        return;
 	    }
-	    
 	    var coords = Mago3D.ManagerUtils.getCoordinateFromWKT(observerPoint,'POINT');
 
         var dome = viewer.entities.add({

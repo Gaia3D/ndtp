@@ -14,6 +14,15 @@ function startSpinner(loadingId) {
     $spinner.start();
 }
 
+//로딩 시작
+function startLoading() {
+	$('#loadingWrap').show();
+}
+//로딩 중지
+function stopLoading() {
+	$('#loadingWrap').hide();
+}
+
 // 팝업
 function popupOpen(url, title, width, height) {
 	var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height 
