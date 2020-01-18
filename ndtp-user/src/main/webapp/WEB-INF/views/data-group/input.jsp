@@ -172,7 +172,7 @@
 		<div class="button-group">
 			<div class="center-buttons">
 				<input type="submit" value="<spring:message code='save'/>" onclick="insertDataGroup();"/>
-				<a href="/user-data-group/list" class="button">목록</a>
+				<a href="/data-group/list" class="button">목록</a>
 			</div>
 		</div>
 		</form:form>
@@ -202,7 +202,7 @@ $( "#duplicationButtion" ).on( "click", function() {
 	}
 	var formData = "dataGroupKey=" + dataGroupKey;
 	$.ajax({
-		url: "data-groups/duplication",
+		url: "/data-groups/duplication",
 		type: "GET",
 		headers: {"X-Requested-With": "XMLHttpRequest"},
         data: formData,

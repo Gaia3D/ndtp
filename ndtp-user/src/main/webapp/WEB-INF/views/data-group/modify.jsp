@@ -167,7 +167,7 @@
 		<div class="button-group">
 			<div class="center-buttons">
 				<input type="submit" value="<spring:message code='modified'/>" onclick="updatedataGroup();"/>
-				<a href="/user-data-group/list" class="button">목록</a>
+				<a href="/data-group/list" class="button">목록</a>
 			</div>
 		</div>
 		</form:form>

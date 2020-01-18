@@ -118,11 +118,14 @@ public class DataGroupServiceImpl implements DataGroupService {
     @Transactional
 	public int insertDataGroup(DataGroup dataGroup) {
     	String userId = dataGroup.getUserId();
+    	Integer parentDataGroupId = 0;
+    	
     	DataGroup parentDataGroup = new DataGroup();
     	parentDataGroup.setUserId(userId);
     	Integer depth = 0;
     	if(dataGroup.getParent() > 0) {
-    		parentDataGroup.setDataGroupId(dataGroup.getParent());
+    		parentDataGroupId = dataGroup.getParent();
+    		parentDataGroup.setDataGroupId(parentDataGroupId);
     		parentDataGroup = dataGroupMapper.getDataGroup(parentDataGroup);
 	    	depth = parentDataGroup.getDepth() + 1;
     	}
@@ -138,6 +141,10 @@ public class DataGroupServiceImpl implements DataGroupService {
     		Integer children = parentDataGroup.getChildren();
     		if(children == null) children = 0;
     		children += 1;
+    		
+    		parentDataGroup = new DataGroup();
+    		parentDataGroup.setUserId(userId);
+    		parentDataGroup.setDataGroupId(parentDataGroupId);
     		parentDataGroup.setChildren(children);
 	    	return dataGroupMapper.updateDataGroup(parentDataGroup);
     	}
