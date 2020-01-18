@@ -59,7 +59,6 @@
 				<col class="col-name" />
 				<col class="col-name" />
 				<col class="col-toggle" />
-				<col class="col-toggle" />
 				<col class="col-functions" />
 				<col class="col-functions" />
 				<col class="col-functions" />
@@ -71,20 +70,19 @@
 						<th scope="col">그룹명</th>
 	                    <th scope="col">그룹 Key</th>
 	                    <th scope="col">공유 유형</th>
-	                    <th scope="col">기본 여부</th>
 	                    <th scope="col">사용 여부</th>
 	                    <th scope="col">위도/경도</th>
 	                    <th scope="col">이동시간</th>
-	                    <th scope="col">데이터</th>
+	                    <th scope="col">데이터 건수</th>
 	                    <th scope="col">순서</th>
-	                    <th scope="col">편집</th>
+	                    <th scope="col">수정/삭제</th>
 	                    <th scope="col">등록일</th>
 					</tr>
 				</thead>
 				<tbody>
 <c:if test="${empty userDataGroupList }">
 					<tr>
-						<td colspan="11" class="col-none">데이터 그룹이 존재하지 않습니다.</td>
+						<td colspan="10" class="col-none">데이터 그룹이 존재하지 않습니다.</td>
 					</tr>
 </c:if>								
 <c:if test="${!empty userDataGroupList }">
@@ -154,14 +152,6 @@
 						<td class="col-key">${userDataGroup.dataGroupKey }</td>
 						<td class="col-key">${userDataGroup.sharing }</td>
 	                    <td class="col-type">
-    <c:if test="${userDataGroup.basic eq 'true' }">
-                    					기본
-    </c:if>
-    <c:if test="${userDataGroup.basic eq 'false' }">
-                    					선택
-    </c:if>
-	                    </td>
-	                    <td class="col-type">
     <c:if test="${userDataGroup.available eq 'true' }">
                     					사용
     </c:if>
@@ -171,7 +161,15 @@
 	                    </td>
 	                    <td class="col-type">${userDataGroup.latitude } / ${userDataGroup.longitude }</td>
 	                    <td class="col-key">${userDataGroup.duration }</td>
-	                    <td class="col-type"><a href="/data/modify/${userDataGroup.userDataGroupId }" class="linkButton">보기</a>
+	                    <td class="col-type">
+	<c:if test="${userDataGroup.dataCount gt 0 }">
+	                    	<a href="/data/list?userDataGroupId=${userDataGroup.userDataGroupId }" class="linkButton">
+	                    	<fmt:formatNumber value="${userDataGroup.dataCount}" type="number"/>
+	                    	</a>
+	</c:if>
+	<c:if test="${userDataGroup.dataCount eq 0 }">
+							<fmt:formatNumber value="${userDataGroup.dataCount}" type="number"/>	
+	</c:if>
 	                    </td>
 	                    <td class="col-type">
 	                    	<div class="button-group">
@@ -182,9 +180,9 @@
 	                    	</div>
 	                    </td>
 	                    <td class="col-type">
-							<a href="#" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;
-							<a href="/data/delete-data-group?userDataGroupId=${userDataGroup.userDataGroupId }" onclick="return deleteWarning();" 
-										class="linkButton"><spring:message code='delete'/></a>
+							<a href="/user-data-group/modify?userDataGroupId=${userDataGroup.userDataGroupId }" class="image-button button-edit">수정</a>
+							<a href="/user-data-group/delete?userDataGroupId=${userDataGroup.userDataGroupId }" onclick="return deleteWarning();" 
+										class="image-button button-delete"><spring:message code='delete'/></a>
 	                    </td>
 	                    <td class="col-date">
 	                    	<fmt:parseDate value="${userDataGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
@@ -249,7 +247,6 @@ function childrenDisplayToggle(depth, id, ancestor) {
     if(depth === "1") {
         console.log("--------- depth 1 = " + $(".oneDepthParent-" + id).css("display"));
 		if( $(".oneDepthParent-" + id).css("display") === "none" ) {
-			console.log("------------- 여기 ----------------");
 			// 접힌 상태
             $(".oneDepthParent-" + id).show();
 
@@ -331,7 +328,7 @@ function moveUp(id, viewOrder) {
         
         var formData = "updateType=UP";
 	    $.ajax({
-			url: "/data/group/view-order/" + id,
+			url: "/user-data-groups/view-order/" + id,
 			type: "POST",
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 	        data: formData,
@@ -369,7 +366,7 @@ function moveDown(id, viewOrder) {
         downFlag = false;
         var formData = "updateType=DOWN";
 	    $.ajax({
-			url: "/data/group/view-order/" + id,
+			url: "/user-data-groups/view-order/" + id,
 			type: "POST",
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 	        data: formData,

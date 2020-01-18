@@ -207,7 +207,7 @@
 				FROM user_data_group
 				WHERE parent = #{userDataGroupId}
 			),
-			#{basic}, #{available}, #{dataCount},
+			#{basic}, #{available}, COALESCE(#{dataCount}, 0),
 			<if test="location != null">
 			ST_GeographyFromText(#{location}),
 			</if>

@@ -11,15 +11,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.Key;
-import ndtp.domain.PageType;
 import ndtp.domain.Policy;
 import ndtp.domain.UserDataGroup;
 import ndtp.domain.UserSession;
-import ndtp.service.GeoPolicyService;
 import ndtp.service.PolicyService;
 import ndtp.service.UserDataGroupService;
 
@@ -33,15 +29,15 @@ import ndtp.service.UserDataGroupService;
 @RequestMapping("/user-data-group")
 public class UserDataGroupController {
 	
-	private static final long PAGE_ROWS = 5l;
-	private static final long PAGE_LIST_COUNT = 5l;
+//	private static final long PAGE_ROWS = 5l;
+//	private static final long PAGE_LIST_COUNT = 5l;
 	
 	@Autowired
 	private UserDataGroupService userDataGroupService;
-	@Autowired
-	private GeoPolicyService geoPolicyService;
-	@Autowired
-	private ObjectMapper objectMapper;
+//	@Autowired
+//	private GeoPolicyService geoPolicyService;
+//	@Autowired
+//	private ObjectMapper objectMapper;
 	@Autowired
 	private PolicyService policyService;
 	
@@ -96,35 +92,20 @@ public class UserDataGroupController {
 	 * @return
 	 */
 	@GetMapping(value = "/delete")
-	public String deleteData(@RequestParam("userDataGroupId") Integer userDataGroupId, Model model) {
+	public String deleteData(HttpServletRequest request, @RequestParam("userDataGroupId") Integer userDataGroupId, Model model) {
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		
-		// TODO validation 체크 해야 함
+		if(userDataGroupId == null) {
+			log.info("@@@ validation error userDataGroupId = {}", userDataGroupId);
+			return "redirect:/user-data-group/list";
+		}
+		
 		UserDataGroup userDataGroup = new UserDataGroup();
+		userDataGroup.setUserId(userSession.getUserId());
 		userDataGroup.setUserDataGroupId(userDataGroupId);
 		
 		userDataGroupService.deleteUserDataGroup(userDataGroup);
 		
 		return "redirect:/user-data-group/list";
-	}
-	
-	/**
-	 * 검색 조건
-	 * @param dataGroup
-	 * @return
-	 */
-	private String getSearchParameters(PageType pageType, UserDataGroup userDataGroup) {
-		StringBuffer buffer = new StringBuffer(userDataGroup.getParameters());
-		boolean isListPage = true;
-		if(pageType == PageType.MODIFY || pageType == PageType.DETAIL) {
-			isListPage = false;
-		}
-		
-//		if(!isListPage) {
-//			buffer.append("pageNo=" + request.getParameter("pageNo"));
-//			buffer.append("&");
-//			buffer.append("list_count=" + uploadData.getList_counter());
-//		}
-		
-		return buffer.toString();
 	}
 }

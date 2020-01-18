@@ -1,6 +1,5 @@
 package ndtp.controller;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -222,26 +221,5 @@ public class UserDataGroupRestController {
 		result.put("errorCode", errorCode);
 		result.put("message", message);
 		return result;
-	}
-	
-	/**
-	 * 검색 조건
-	 * @param dataGroup
-	 * @return
-	 */
-	private String getSearchParameters(PageType pageType, UserDataGroup userDataGroup) {
-		StringBuffer buffer = new StringBuffer(userDataGroup.getParameters());
-		boolean isListPage = true;
-		if(pageType == PageType.MODIFY || pageType == PageType.DETAIL) {
-			isListPage = false;
-		}
-		
-//		if(!isListPage) {
-//			buffer.append("pageNo=" + request.getParameter("pageNo"));
-//			buffer.append("&");
-//			buffer.append("list_count=" + uploadData.getList_counter());
-//		}
-		
-		return buffer.toString();
 	}
 }

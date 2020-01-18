@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
+import ndtp.domain.DataGroup;
 import ndtp.domain.Depth;
 import ndtp.domain.Move;
 import ndtp.domain.UserDataGroup;
@@ -98,6 +99,16 @@ public class UserDataGroupServiceImpl implements UserDataGroupService {
 	public Boolean isDataGroupKeyDuplication(UserDataGroup userDataGroup) {
 		return userDataGroupMapper.isDataGroupKeyDuplication(userDataGroup);
 	}
+	
+	/**
+     * 부모와 표시 순서로 메뉴 조회
+     * @param userDataGroup
+     * @return
+     */
+	@Transactional(readOnly = true)
+    public UserDataGroup getUserDataGroupByParentAndViewOrder(UserDataGroup userDataGroup) {
+    	return userDataGroupMapper.getUserDataGroupByParentAndViewOrder(userDataGroup);
+    }
 
     /**
      * 데이터 그룹 등록
@@ -157,6 +168,7 @@ public class UserDataGroupServiceImpl implements UserDataGroupService {
     	
     	Integer modifyViewOrder = dbUserDataGroup.getViewOrder();
     	UserDataGroup searchUserDataGroup = new UserDataGroup();
+    	searchUserDataGroup.setUserId(userDataGroup.getUserId());
     	searchUserDataGroup.setUpdateType(dbUserDataGroup.getUpdateType());
     	searchUserDataGroup.setParent(dbUserDataGroup.getParent());
     	
@@ -180,20 +192,11 @@ public class UserDataGroupServiceImpl implements UserDataGroupService {
     		searchUserDataGroup.setViewOrder(modifyViewOrder);
     	}
     	
-    	updateUserDataGroupViewOrder(searchUserDataGroup);
-		return updateUserDataGroupViewOrder(dbUserDataGroup);
+    	userDataGroupMapper.updateUserDataGroupViewOrder(searchUserDataGroup);
+		return userDataGroupMapper.updateUserDataGroupViewOrder(dbUserDataGroup);
     }
     
     /**
-     * 부모와 표시 순서로 메뉴 조회
-     * @param userDataGroup
-     * @return
-     */
-    public UserDataGroup getUserDataGroupByParentAndViewOrder(UserDataGroup userDataGroup) {
-    	return userDataGroupMapper.getUserDataGroupByParentAndViewOrder(userDataGroup);
-    }
-    
-	/**
 	 * 데이터 그룹 삭제
 	 * @param userDataGroup
 	 * @return
@@ -206,10 +209,8 @@ public class UserDataGroupServiceImpl implements UserDataGroupService {
     	
     	int result = 0;
     	if(Depth.ONE == Depth.findBy(userDataGroup.getDepth())) {
-    		log.info("--- one ================");
     		result = userDataGroupMapper.deleteUserDataGroupByAncestor(userDataGroup);
     	} else if(Depth.TWO == Depth.findBy(userDataGroup.getDepth())) {
-    		log.info("--- two ================");
     		result = userDataGroupMapper.deleteUserDataGroupByParent(userDataGroup);
     		
     		UserDataGroup ancestorUserDataGroup = new UserDataGroup();
@@ -217,21 +218,15 @@ public class UserDataGroupServiceImpl implements UserDataGroupService {
     		ancestorUserDataGroup = userDataGroupMapper.getUserDataGroup(ancestorUserDataGroup);
     		ancestorUserDataGroup.setChildren(ancestorUserDataGroup.getChildren() + 1);
 	    	
-    		log.info("--- delete ancestorDataGroup = {}", ancestorUserDataGroup);
-    		
     		userDataGroupMapper.updateUserDataGroup(ancestorUserDataGroup);
     		// ancestor - 1
     	} else if(Depth.THREE == Depth.findBy(userDataGroup.getDepth())) {
-    		log.info("--- three ================");
     		result = userDataGroupMapper.deleteUserDataGroup(userDataGroup);
-    		log.info("--- userDataGroup ================ {}", userDataGroup);
     		
     		UserDataGroup parentUserDataGroup = new UserDataGroup();
     		parentUserDataGroup.setUserDataGroupId(userDataGroup.getParent());
     		parentUserDataGroup = userDataGroupMapper.getUserDataGroup(parentUserDataGroup);
-	    	log.info("--- parentUserDataGroup ================ {}", parentUserDataGroup);
 	    	parentUserDataGroup.setChildren(parentUserDataGroup.getChildren() - 1);
-	    	log.info("--- parentDataGroup children ================ {}", parentUserDataGroup);
 	    	userDataGroupMapper.updateUserDataGroup(parentUserDataGroup);
     	} else {
     		
