@@ -13,7 +13,7 @@
 	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
 	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css">
-    <link rel="stylesheet" href="/css/${lang}/style.css" />
+    <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
 </head>
 <body>
 	<%@ include file="/WEB-INF/views/layouts/header.jsp" %>
@@ -151,7 +151,7 @@
 					                    </td>
 					                    <td class="col-type">${dataGroup.latitude } / ${dataGroup.longitude }</td>
 					                    <td class="col-key">${dataGroup.duration }</td>
-					                    <td class="col-type"><a href="/data/modify/${dataGroup.dataGroupId }" class="linkButton">보기</a>
+					                    <td class="col-type"><a href="/data/list?searchOption=0&searchWord=data_group_name&searchValue=${dataGroup.dataGroupName}" class="linkButton">보기</a>
 					                    </td>
 					                    <td class="col-type">
 					                    	<div class="button-group">

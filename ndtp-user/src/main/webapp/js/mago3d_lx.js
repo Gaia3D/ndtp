@@ -11,7 +11,7 @@ Mago3D.ManagerUtils.geographicToWkt = function(geographic, type) {
 			break;
 		}
 		case 'LINE' : {
-			wkt = 'LINE (';
+			wkt = 'LINESTRING (';
 			for(var i=0,len=geographic.length;i<len;i++) {
 				if(i>0) {
 					wkt += ',';
@@ -24,7 +24,7 @@ Mago3D.ManagerUtils.geographicToWkt = function(geographic, type) {
 			break;
 		}
 		case 'POLYGON' : {
-			wkt = 'POLYGON (';
+			wkt = 'POLYGON ((';
 			for(var i=0,len=geographic.length;i<len;i++) {
 				if(i>0) {
 					wkt += ',';
@@ -33,10 +33,11 @@ Mago3D.ManagerUtils.geographicToWkt = function(geographic, type) {
 				wkt += ' ';
 				wkt += geographic[i].latitude;
 			}
+			wkt += ',';
 			wkt += geographic[0].longitude;
 			wkt += ' ';
 			wkt += geographic[0].latitude;
-			wkt += ')';
+			wkt += '))';
 			break;
 		}
 	}
@@ -60,4 +61,15 @@ Mago3D.ManagerUtils.geographicToWkt = function(geographic, type) {
 	}
 	
 	return wkt;
+}
+
+Mago3D.ManagerUtils.getCoordinateFromWKT = function(wkt, type) {
+	switch(type) {
+		case 'POINT' : {
+			var removePrefix = wkt.replace(/\bpoint\b\s*\(/i, "");
+			var removeSuffix = removePrefix.replace(/\s*\)\s*$/, "");
+			var coordinates = removeSuffix.match(/[+-]?\d*(\.?\d+)/g);
+			return coordinates;
+		}
+	}
 }

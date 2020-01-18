@@ -13,7 +13,7 @@
 	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
 	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css">
-    <link rel="stylesheet" href="/css/${lang}/style.css" />
+    <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
     <link type="text/css" rel="stylesheet" href="/externlib/${lang}/axisj/ui/arongi/font-awesome.min.css" />
    	<link type="text/css" rel="stylesheet" href="../externlib/${lang}/axisj/ui/arongi/AXJ.min.css" />
 	<link type="text/css" rel="stylesheet" href="../externlib/${lang}/axisj/ui/arongi/AXButton.css" />

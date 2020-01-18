@@ -12,7 +12,7 @@
 	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
 	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-    <link rel="stylesheet" href="/css/${lang}/style.css" />
+    <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
 </head>
 <body>
 	<%@ include file="/WEB-INF/views/layouts/header.jsp" %>
@@ -153,7 +153,7 @@
 							<div class="button-group">
 								<div id="insertUserLink" class="center-buttons">
 									<input type="submit" value="<spring:message code='save'/>" onclick="insertUser();" />
-									<input type="submit" id="allFileClear" value="초기화" />
+									<input type="submit" onClick="formClear(); return false;" value="초기화" />
 									<a href="/user/list" class="button"><spring:message code='list'/></a>
 								</div>
 							</div>
@@ -283,6 +283,11 @@
 			return false;
 		}
 	}
+
+	function formClear() {
+
+	}
+
 </script>
 </body>
 </html>

@@ -20,10 +20,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.extern.slf4j.Slf4j;
+import ndtp.config.CacheConfig;
+import ndtp.domain.CacheName;
+import ndtp.domain.CacheParams;
+import ndtp.domain.CacheType;
+import ndtp.domain.Menu;
+import ndtp.domain.MenuTarget;
+import ndtp.domain.MenuType;
 import ndtp.domain.Policy;
+import ndtp.domain.Role;
 import ndtp.domain.UserGroup;
+import ndtp.domain.UserGroupMenu;
+import ndtp.domain.UserGroupRole;
+import ndtp.domain.YOrN;
+import ndtp.service.MenuService;
 import ndtp.service.PolicyService;
+import ndtp.service.RoleService;
 import ndtp.service.UserGroupService;
 
 @Slf4j
@@ -35,7 +50,19 @@ public class UserGroupController implements AuthorizationController {
 	private UserGroupService userGroupService;
 
 	@Autowired
+	private MenuService menuService;
+
+	@Autowired
+	private RoleService roleService;
+
+	@Autowired
 	private PolicyService policyService;
+
+	@Autowired
+	private ObjectMapper objectMapper;
+
+	@Autowired
+	private CacheConfig cacheConfig;
 
 	/**
 	 * 사용자 그룹 목록
@@ -274,5 +301,158 @@ public class UserGroupController implements AuthorizationController {
 		userGroupService.deleteUserGroup(userGroup);
 
 		return "redirect:/user-group/list";
+	}
+
+	/**
+	 * 사용자 그룹 메뉴 할당 페이지 이동
+	 * @param request
+	 * @param userGroupId
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "menu")
+	public String menu(HttpServletRequest request, @RequestParam Integer userGroupId, Model model) {
+		Menu menu = new Menu();
+		menu.setMenuTarget(MenuTarget.ADMIN.getValue());
+		menu.setMenuType(MenuType.URL.getValue());
+		List<Menu> menuList = menuService.getListMenu(menu);
+		menu.setMenuTarget(MenuTarget.USER.getValue());
+		menu.setMenuType(MenuType.HTMLID.getValue());
+		menuList.addAll(menuService.getListMenu(menu));
+
+		UserGroup userGroup = new UserGroup();
+		userGroup.setUserGroupId(userGroupId);
+		userGroup = userGroupService.getUserGroup(userGroup);
+
+		String userGroupMenuJson = "";
+
+		try {
+			UserGroupMenu userGroupMenu = new UserGroupMenu();
+			userGroupMenu.setUserGroupId(userGroupId);
+			List<UserGroupMenu> userGroupMenuList = userGroupService.getListUserGroupMenu(userGroupMenu);
+			userGroupMenuJson = objectMapper.writeValueAsString(userGroupMenuList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		model.addAttribute("userGroup", userGroup);
+		model.addAttribute("menuList", menuList);
+		model.addAttribute("userGroupMenuJson", userGroupMenuJson);
+
+		return "/user/group-menu";
+	}
+
+	/**
+	 * 사용자 그룹 메뉴 수정
+	 * @param request
+	 * @param userGroupId
+	 * @param userGroupMenu
+	 * @return
+	 */
+	@PostMapping(value = "menu")
+	@ResponseBody
+	public Map<String, Object> updateMenu(HttpServletRequest request, @ModelAttribute UserGroupMenu userGroupMenu) {
+		log.info("@@ userGroupMenu = {}", userGroupMenu);
+
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+
+		try {
+			userGroupService.updateUserGroupMenu(userGroupMenu);
+
+	        CacheParams cacheParams = new CacheParams();
+			cacheParams.setCacheType(CacheType.SELF);
+			cacheParams.setCacheName(CacheName.USER_GROUP);
+			cacheConfig.loadCache(cacheParams);
+
+		} catch(Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
+	}
+
+	/**
+	 * 사용자 그룹 Role 할당 페이지 이동
+	 * @param request
+	 * @param userGroupId
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "role")
+	public String role(HttpServletRequest request, @RequestParam Integer userGroupId, Model model) {
+		Role role = new Role();
+		role.setOffset(0l);
+		role.setLimit(1000l);
+		role.setOrderWord("role_id");
+		role.setOrderValue("ASC");
+		List<Role> roleList = roleService.getListRole(role);
+
+		UserGroup userGroup = new UserGroup();
+		userGroup.setUserGroupId(userGroupId);
+		userGroup = userGroupService.getUserGroup(userGroup);
+
+		String userGroupRoleJson = "";
+
+		try {
+			UserGroupRole userGroupRole = new UserGroupRole();
+			userGroupRole.setUserGroupId(userGroupId);
+			List<UserGroupRole> userGroupRoleList = userGroupService.getListUserGroupRole(userGroupRole);
+			userGroupRoleJson = objectMapper.writeValueAsString(userGroupRoleList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		model.addAttribute("userGroup", userGroup);
+		model.addAttribute("roleList", roleList);
+		model.addAttribute("userGroupRoleJson", userGroupRoleJson);
+
+		return "/user/group-role";
+	}
+
+	/**
+	 * 사용자 그룹 Role 수정
+	 * @param request
+	 * @param userGroupId
+	 * @param userGroupRole
+	 * @return
+	 */
+	@PostMapping(value = "role")
+	@ResponseBody
+	public Map<String, Object> updateMenu(HttpServletRequest request, @ModelAttribute UserGroupRole userGroupRole) {
+		log.info("@@ userGroupRole = {}", userGroupRole);
+
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+
+		try {
+			userGroupService.updateUserGroupRole(userGroupRole);
+
+	        CacheParams cacheParams = new CacheParams();
+			cacheParams.setCacheType(CacheType.SELF);
+			cacheParams.setCacheName(CacheName.USER_GROUP);
+			cacheConfig.loadCache(cacheParams);
+
+		} catch(Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
 	}
 }

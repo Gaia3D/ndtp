@@ -13,7 +13,7 @@
 	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
 	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css">
-    <link rel="stylesheet" href="/css/${lang}/style.css" />
+    <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
 </head>
 <body>
 	<%@ include file="/WEB-INF/views/layouts/header.jsp" %>
@@ -143,13 +143,13 @@
         </c:if>
 					                    </td>
 					                    <td class="col-type">
-					                        <a href="/user/group/${userGroup.userGroupId }/menu" class="linkButton">보기</a>
+					                        <a href="/user/list?searchOption=0&searchWord=user_group_name&searchValue=${userGroup.userGroupName}" class="linkButton">보기</a>
 					                    </td>
 					                    <td class="col-type">
-					                        <a href="/user/group/${userGroup.userGroupId }/menu" class="linkButton">수정</a>
+					                        <a href="/user-group/menu?userGroupId=${userGroup.userGroupId}" class="linkButton">수정</a>
 					                    </td>
 					                    <td class="col-type">
-					                        <a href="/user/group/${userGroup.userGroupId }/role" class="linkButton">수정</a>
+					                        <a href="/user-group/role?userGroupId=${userGroup.userGroupId}" class="linkButton">수정</a>
 					                    </td>
 					                    <td class="col-type">
 											<a href="/user-group/modify?userGroupId=${userGroup.userGroupId}" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;

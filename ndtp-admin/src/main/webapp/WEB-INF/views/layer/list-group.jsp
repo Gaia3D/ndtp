@@ -13,7 +13,7 @@
 	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
 	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css">
-    <link rel="stylesheet" href="/css/${lang}/style.css" />
+    <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
 </head>
 <body>
 	<%@ include file="/WEB-INF/views/layouts/header.jsp" %>
@@ -140,7 +140,7 @@
 					                    </td>
 					                    <td class="col-key">${layerGroup.userId }</td>
 					                    <td class="col-key">${layerGroup.description }</td>
-					                    <td class="col-type"><a href="/layer/list?layer_group_id=${layerGroup.layerGroupId }" class="linkButton">보기</a>
+					                    <td class="col-type"><a href="/layer/list?searchOption=0&searchWord=layer_group_name&searchValue=${layerGroup.layerGroupName}" class="linkButton">보기</a>
 					                    </td>
 					                    <td class="col-type">
 					                    	<div class="button-group">

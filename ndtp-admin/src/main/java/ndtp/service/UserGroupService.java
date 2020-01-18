@@ -70,6 +70,20 @@ public interface UserGroupService {
 	int updateUserGroupViewOrder(UserGroup userGroup);
 
 	/**
+	 * 사용자 그룹 메뉴 수정
+	 * @param userGroupMenu
+	 * @return
+	 */
+	int updateUserGroupMenu(UserGroupMenu userGroupMenu);
+
+	/**
+	 * 사용자 그룹 Role 수정
+	 * @param userGroupRole
+	 * @return
+	 */
+	int updateUserGroupRole(UserGroupRole userGroupRole);
+
+	/**
 	 * 사용자 그룹 삭제
 	 * @param userGroup
 	 * @return

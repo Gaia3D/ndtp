@@ -109,7 +109,9 @@
 					<if test="menuTarget != null and menuTarget != ''">
 					AND B.menu_target = #{menuTarget}
 					</if>
-					AND B.use_yn != 'N'
+					<if test="useYn != null and useYn != ''">
+					AND B.use_yn = #{useYn}
+					</if>
 			) X
 	        UNION ALL
 	        SELECT X.user_group_menu_id, X.user_group_id, X.all_yn, X.read_yn, X.write_yn, X.update_yn, X.delete_yn,
@@ -131,7 +133,9 @@
 					<if test="menuTarget != null and menuTarget != ''">
 					AND B.menu_target = #{menuTarget}
 					</if>
-					AND B.use_yn != 'N'
+					<if test="useYn != null and useYn != ''">
+					AND B.use_yn = #{useYn}
+					</if>
 	        ) X, menu_tree Y
 	        WHERE X.parent = Y.menu_id AND not cycle
 		)

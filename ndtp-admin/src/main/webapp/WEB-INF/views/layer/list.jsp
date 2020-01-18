@@ -13,7 +13,7 @@
 	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
 	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css">
-    <link rel="stylesheet" href="/css/${lang}/style.css" />
+    <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
 </head>
 <body>
 	<%@ include file="/WEB-INF/views/layouts/header.jsp" %>
@@ -29,40 +29,48 @@
 							<form:form id="layer" modelAttribute="layer" method="get" action="/layer/list" onsubmit="return searchCheck();">
 							<div class="input-group row">
 								<div class="input-set">
-									<label for="searchWord">검색어</label>
-									<select id="searchWord" name="searchWord" class="select">
-										<option value="">선택</option>
-										<option value="layer_name">Layer 명</option>
-										<option value="layer_key">Layer Key</option>
+									<label for="searchWord"><spring:message code='search.word'/></label>
+									<select id="searchWord" name="searchWord" class="select" style="height: 30px;">
+										<option value=""><spring:message code='select'/></option>
+										<option value="layer_name">레이어 명</option>
+										<option value="layer_key">레이어 Key</option>
+										<option value="layer_group_name">레이어 그룹명</option>
 									</select>
-									<select id="searchOption" name="searchOption" class="select">
-										<option value="0">일치</option>
-										<option value="1">포함</option>
+									<select id="searchOption" name="searchOption" class="select" style="height: 30px;">
+										<option value="0"><spring:message code='search.same'/></option>
+										<option value="1"><spring:message code='search.include'/></option>
 									</select>
-									<form:input path="searchValue" cssClass="m" />
+									<form:input path="searchValue" type="search" cssClass="m" cssStyle="float: right;" />
 								</div>
 								<div class="input-set">
-									<label for="start_date">기간</label>
-									<input type="text" id="startDate" name="startDate" class="s date" />
+									<label for="startDate"><spring:message code='search.date'/></label>
+									<input type="text" class="s date" id="startDate" name="startDate" />
 									<span class="delimeter tilde">~</span>
-									<input type="text" id="endDate" name="endDate" class="s date" />
+									<input type="text" class="s date" id="endDate" name="endDate" />
 								</div>
-							
+
 								<div class="input-set">
-									<label for="orderWord">표시순서</label>
-									<select id="orderWord" name="orderWord" class="select">
-										<option value="">기본</option>
-										<option value="layerName">이름</option>
-										<option value="insertDate">등록일</option>
+									<label for="orderWord"><spring:message code='search.order'/></label>
+									<select id="orderWord" name="orderWord" class="select" style="height: 30px;">
+										<option value=""> <spring:message code='search.basic'/> </option>
+										<option value="layer_name">레이어 명</option>
+										<option value="layer_key">레이어 Key</option>
+										<option value="layer_group_name">레이어 그룹명</option>
+										<option value="insert_date"> <spring:message code='search.insert.date'/> </option>
 									</select>
-									<select id="orderValue" name="orderValue" class="select">
-										<option value="">기본</option>
-										<option value="ASC">오름차순</option>
-										<option value="DESC">내림차순</option>
+									<select id="orderValue" name="orderValue" class="select" style="height: 30px;">
+				                		<option value=""> <spring:message code='search.basic'/> </option>
+					                	<option value="ASC"> <spring:message code='search.ascending'/> </option>
+										<option value="DESC"> <spring:message code='search.descending.order'/> </option>
+									</select>
+									<select id="listCounter" name="listCounter" class="select" style="height: 30px;">
+				                		<option value="10"> <spring:message code='search.ten.count'/> </option>
+					                	<option value="50"> <spring:message code='search.fifty.count'/> </option>
+										<option value="100"> <spring:message code='search.hundred.count'/> </option>
 									</select>
 								</div>
 								<div class="input-set">
-									<input type="submit" value="검색" />
+									<input type="submit" value="<spring:message code='search'/>" />
 								</div>
 							</div>
 							</form:form>
@@ -72,7 +80,7 @@
 							<div class="list-header row">
 								<div class="list-desc u-pull-left">
 									<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/>
-									<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> 
+									<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/>
 									<spring:message code='search.page'/>
 								</div>
 							</div>
@@ -100,7 +108,7 @@
 									<tr>
 										<td colspan="7" class="col-none">Layer 가 존재하지 않습니다.</td>
 									</tr>
-</c:if>								
+</c:if>
 <c:if test="${!empty layerList }">
 	<c:forEach var="layer" items="${layerList}" varStatus="status">
 									<tr class="${depthClass } ${depthParentClass} ${ancestorClass }" style="${depthStyleDisplay}">
@@ -142,7 +150,7 @@
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
-	
+
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>

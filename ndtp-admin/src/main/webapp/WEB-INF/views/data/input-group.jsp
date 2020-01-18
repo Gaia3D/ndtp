@@ -12,7 +12,7 @@
 	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
 	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-    <link rel="stylesheet" href="/css/${lang}/style.css" />
+    <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
 </head>
 <body>
 	<%@ include file="/WEB-INF/views/layouts/header.jsp" %>
@@ -28,145 +28,146 @@
 							<div class="content-desc u-pull-right"><span class="icon-glyph glyph-emark-dot color-warning"></span><spring:message code='check'/></div>
 						</div>
 						<form:form id="dataGroup" modelAttribute="dataGroup" method="post" onsubmit="return false;">
-						<table class="input-table scope-row">
-							<col class="col-label l" />
-							<col class="col-input" />
-							<tr>
-								<th class="col-label" scope="row">
-									<form:label path="dataGroupName">데이터 그룹명</form:label>
-									<span class="icon-glyph glyph-emark-dot color-warning"></span>
-								</th>
-								<td class="col-input">
-									<form:input path="dataGroupName" cssClass="l" />
-									<form:errors path="dataGroupName" cssClass="error" />
-								</td>
-							</tr>
-							<tr>
-								<th class="col-label" scope="row">
-									<form:label path="dataGroupKey">데이터 그룹 Key</form:label>
-									<span class="icon-glyph glyph-emark-dot color-warning"></span>
-								</th>
-								<td class="col-input">
-									<form:input path="dataGroupKey" cssClass="l" />
-									<form:errors path="dataGroupKey" cssClass="error" />
-								</td>
-							</tr>
-							<tr>
-								<th class="col-label" scope="row">
-									<form:label path="parentName">상위 그룹</form:label>
-									<span class="icon-glyph glyph-emark-dot color-warning"></span>
-								</th>
-								<td class="col-input">
-									<form:hidden path="parent" />
-		 							<form:input path="parentName" cssClass="l" readonly="true" />
-									<input type="button" id="dataGroupButtion" value="상위 그룹 선택" />
-								</td>
-							</tr>
-							<%-- <tr>
-								<th class="col-label" scope="row">
-									<form:label path="dataGroupPath">데이터 그룹 경로</form:label>
-								</th>
-								<td class="col-input">
-									<form:input path="dataGroupPath" cssClass="l" />
-									<form:errors path="dataGroupPath" cssClass="error" />
-								</td>
-							</tr> --%>
-							<tr>
-			                    <th class="col-label" scope="row">
-			                        <form:label path="sharing">공유 타입</form:label>
-			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
-			                    </th>
-			                    <td class="col-input">
-			                        <select name="sharing">
-										<option value="common">공통</option>
-										<option value="public" selected="selected">공개</option>
-										<option value="private">개인</option>
-										<option value="group">그룹</option>
-									</select>
-			                    </td>
-			                </tr>
-			                <tr>
-								<th class="col-label l" scope="row">
-									기본 여부
-									<span class="icon-glyph glyph-emark-dot color-warning"></span>
-								</th>
-								<td class="col-input radio-set">
-									<input type="radio" id="basicTrue" name="basic" value="true" >
-									<label for="basicTrue">기본</label>
-									<input type="radio" id="basicFalse" name="basic" value="false" checked >
-									<label for="basicFalse">선택</label>
-								</td>
-							</tr>
-							<tr>
-								<th class="col-label l" scope="row">
-									사용 여부
-									<span class="icon-glyph glyph-emark-dot color-warning"></span>
-								</th>
-								<td class="col-input radio-set">
-									<input type="radio" id="availableTrue" name="available" value="true" checked>
-									<label for="availableTrue">사용</label>
-									<input type="radio" id="availableFalse" name="available" value="false">
-									<label for="availableFalse">미사용</label>
-								</td>
-							</tr>
-							<tr>
-								<th class="col-label" scope="row">
-									<form:label path="latitude">위도</form:label>
-								</th>
-								<td class="col-input">
-									<form:input path="latitude" cssClass="m" />
-									<input type="button" id="mapButtion" value="지도에서 찾기" />
-									<form:errors path="latitude" cssClass="error" />
-								</td>
-							</tr>
-							<tr>
-								<th class="col-label" scope="row">
-									<form:label path="longitude">경도</form:label>
-								</th>
-								<td class="col-input">
-									<form:input path="longitude" cssClass="m" />
-									<form:errors path="longitude" cssClass="error" />
-								</td>
-							</tr>
-							<tr>
-								<th class="col-label" scope="row">
-									<form:label path="altitude">높이</form:label>
-								</th>
-								<td class="col-input">
-									<form:input path="altitude" cssClass="m" />
-									<form:errors path="altitude" cssClass="error" />
-								</td>
-							</tr>
-							<tr>
-								<th class="col-label" scope="row">
-									<form:label path="duration">이동시간</form:label>
-								</th>
-								<td class="col-input">
-									<form:input path="duration" cssClass="s" />&nbsp;&nbsp;ms
-									<form:errors path="duration" cssClass="error" />
-								</td>
-							</tr>
-							<tr>
-								<th class="col-label" scope="row">
-									<form:label path="metainfo">메타정보</form:label>
-									<span class="icon-glyph glyph-emark-dot color-warning"></span>
-								</th>
-								<td class="col-input">
-									<form:input path="metainfo" class="xl" value="{\"isPhysical\": false}" />
-			  						<form:errors path="metainfo" cssClass="error" />
-								</td>
-							</tr>
-							<tr>
-								<th class="col-label l" scope="row"><form:label path="description"><spring:message code='description'/></form:label></th>
-								<td class="col-input"><form:input path="description" cssClass="xl" /></td>
-							</tr>
-						</table>
-						<div class="button-group">
-							<div class="center-buttons">
-								<input type="submit" value="<spring:message code='save'/>" onclick="insertDataGroup();"/>
-								<a href="/data-group/list" class="button">목록</a>
+							<table class="input-table scope-row">
+								<col class="col-label l" />
+								<col class="col-input" />
+								<tr>
+									<th class="col-label" scope="row">
+										<form:label path="dataGroupName">데이터 그룹명</form:label>
+										<span class="icon-glyph glyph-emark-dot color-warning"></span>
+									</th>
+									<td class="col-input">
+										<form:input path="dataGroupName" cssClass="l" />
+										<form:errors path="dataGroupName" cssClass="error" />
+									</td>
+								</tr>
+								<tr>
+									<th class="col-label" scope="row">
+										<form:label path="dataGroupKey">데이터 그룹 Key</form:label>
+										<span class="icon-glyph glyph-emark-dot color-warning"></span>
+									</th>
+									<td class="col-input">
+										<form:input path="dataGroupKey" cssClass="l" />
+										<form:errors path="dataGroupKey" cssClass="error" />
+									</td>
+								</tr>
+								<tr>
+									<th class="col-label" scope="row">
+										<form:label path="parentName">상위 그룹</form:label>
+										<span class="icon-glyph glyph-emark-dot color-warning"></span>
+									</th>
+									<td class="col-input">
+										<form:hidden path="parent" />
+			 							<form:input path="parentName" cssClass="l" readonly="true" />
+										<input type="button" id="dataGroupButtion" value="상위 그룹 선택" />
+									</td>
+								</tr>
+								<%-- <tr>
+									<th class="col-label" scope="row">
+										<form:label path="dataGroupPath">데이터 그룹 경로</form:label>
+									</th>
+									<td class="col-input">
+										<form:input path="dataGroupPath" cssClass="l" />
+										<form:errors path="dataGroupPath" cssClass="error" />
+									</td>
+								</tr> --%>
+								<tr>
+				                    <th class="col-label" scope="row">
+				                        <form:label path="sharing">공유 타입</form:label>
+				                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
+				                    </th>
+				                    <td class="col-input">
+				                        <select name="sharing">
+											<option value="common">공통</option>
+											<option value="public" selected="selected">공개</option>
+											<option value="private">개인</option>
+											<option value="group">그룹</option>
+										</select>
+				                    </td>
+				                </tr>
+				                <tr>
+									<th class="col-label l" scope="row">
+										기본 여부
+										<span class="icon-glyph glyph-emark-dot color-warning"></span>
+									</th>
+									<td class="col-input radio-set">
+										<input type="radio" id="basicTrue" name="basic" value="true" >
+										<label for="basicTrue">기본</label>
+										<input type="radio" id="basicFalse" name="basic" value="false" checked >
+										<label for="basicFalse">선택</label>
+									</td>
+								</tr>
+								<tr>
+									<th class="col-label l" scope="row">
+										사용 여부
+										<span class="icon-glyph glyph-emark-dot color-warning"></span>
+									</th>
+									<td class="col-input radio-set">
+										<input type="radio" id="availableTrue" name="available" value="true" checked>
+										<label for="availableTrue">사용</label>
+										<input type="radio" id="availableFalse" name="available" value="false">
+										<label for="availableFalse">미사용</label>
+									</td>
+								</tr>
+								<tr>
+									<th class="col-label" scope="row">
+										<form:label path="latitude">위도</form:label>
+									</th>
+									<td class="col-input">
+										<form:input path="latitude" cssClass="m" />
+										<input type="button" id="mapButtion" value="지도에서 찾기" />
+										<form:errors path="latitude" cssClass="error" />
+									</td>
+								</tr>
+								<tr>
+									<th class="col-label" scope="row">
+										<form:label path="longitude">경도</form:label>
+									</th>
+									<td class="col-input">
+										<form:input path="longitude" cssClass="m" />
+										<form:errors path="longitude" cssClass="error" />
+									</td>
+								</tr>
+								<tr>
+									<th class="col-label" scope="row">
+										<form:label path="altitude">높이</form:label>
+									</th>
+									<td class="col-input">
+										<form:input path="altitude" cssClass="m" />
+										<form:errors path="altitude" cssClass="error" />
+									</td>
+								</tr>
+								<tr>
+									<th class="col-label" scope="row">
+										<form:label path="duration">이동시간</form:label>
+									</th>
+									<td class="col-input">
+										<form:input path="duration" cssClass="s" />&nbsp;&nbsp;ms
+										<form:errors path="duration" cssClass="error" />
+									</td>
+								</tr>
+								<tr>
+									<th class="col-label" scope="row">
+										<form:label path="metainfo">메타정보</form:label>
+										<span class="icon-glyph glyph-emark-dot color-warning"></span>
+									</th>
+									<td class="col-input">
+										<form:input path="metainfo" class="xl" value="{\"isPhysical\": false}" />
+				  						<form:errors path="metainfo" cssClass="error" />
+									</td>
+								</tr>
+								<tr>
+									<th class="col-label l" scope="row"><form:label path="description"><spring:message code='description'/></form:label></th>
+									<td class="col-input"><form:input path="description" cssClass="xl" /></td>
+								</tr>
+							</table>
+							<div class="button-group">
+								<div class="center-buttons">
+									<input type="submit" value="<spring:message code='save'/>" onclick="insertDataGroup();"/>
+									<input type="submit" onClick="formClear(); return false;" value="초기화" />
+									<a href="/data-group/list" class="button">목록</a>
+								</div>
 							</div>
-						</div>
 						</form:form>
 					</div>
 				</div>
@@ -357,6 +358,11 @@
                 + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
         //popWin.document.title = layerName;
 	});
+
+	function formClear() {
+
+	}
+
 </script>
 </body>
 </html>

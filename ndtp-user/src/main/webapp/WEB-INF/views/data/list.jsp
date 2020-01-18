@@ -11,6 +11,7 @@
 	
 	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
+	<link rel="stylesheet" href="/externlib/geostats/geostats.css" />
 	<link rel="stylesheet" href="/css/${lang}/user-style.css" />
 	<style type="text/css">
 	    .mapWrap {
@@ -90,6 +91,10 @@
 
 	<!-- MAP -->
 	<div id="magoContainer" class="mapWrap">
+		<div class="analysisGraphic">
+			<canvas id="analysisGraphic"></canvas>
+			<div class="closeGraphic">X</div>
+		</div>
 	</div>
 	<!-- E: MAP -->
 </div>
@@ -99,6 +104,8 @@
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/externlib/handlebars-4.1.2/handlebars.js"></script>
 <script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>
+<script type="text/javascript" src="/externlib/geostats/geostats.js"></script>
+<script type="text/javascript" src="/externlib/chartjs/Chart.min.js"></script>
 <script type="text/javascript" src="/js/mago3d.js"></script>
 <script type="text/javascript" src="/js/mago3d_lx.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
@@ -107,6 +114,7 @@
 <script type="text/javascript" src="/js/${lang}/uiControll.js"></script>
 <script type="text/javascript" src="/js/${lang}/SpatialAnalysis.js"></script>
 <script type="text/javascript" src="/js/${lang}/DistrictControll.js"></script>
+<script type="text/javascript" src="/js/${lang}/wpsRequest.js"></script>
 <script type="text/javascript" src="/js/${lang}/Search.js"></script>
 <script type="text/javascript" src="/js/${lang}/DataInfo.js"></script>
 <script type="text/javascript">

@@ -6,11 +6,13 @@
     <!-- Layer 총 건수 -->
     <select id="getLayerTotalCount" parameterType="layer" resultType="long">
         /* getLayerTotalCount */
-        SELECT COUNT(layer_id) 
-        FROM layer
+        SELECT COUNT(layer_id)
+        FROM layer a
+        LEFT JOIN layer_group b
+        ON a.layer_group_id = b.layer_group_id
 		<trim prefix="WHERE" prefixOverrides="AND">
 			<if test="layerGroupId != null and layerGroupId gt 0">
-			layer_group_id = #{layerGroupId}
+			AND a.layer_group_id = #{layerGroupId}
 			</if>
 			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
 			AND ${searchWord} = #{searchValue}
@@ -20,12 +22,12 @@
 			</if>
 			<if test="startDate != null and startDate != ''">
 			<![CDATA[
-			AND insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+			AND a.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
 			<if test="endDate != null and endDate != ''">
 			<![CDATA[
-			AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+			AND a.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
 		</trim>
@@ -34,11 +36,13 @@
     <!-- Layer 목록 -->
     <select id="getListLayer" parameterType="layer" resultType="layer">
         /* getListLayer */
-        SELECT A.*, B.layer_group_name
-        FROM layer A, layer_group B
-        WHERE A.layer_group_id = B.layer_group_id
+        SELECT a.*, b.layer_group_name
+        FROM layer a
+        LEFT JOIN layer_group b
+        ON a.layer_group_id = b.layer_group_id
+		<trim prefix="WHERE" prefixOverrides="AND">
         	<if test="layerGroupId != null and layerGroupId gt 0">
-			AND A.layer_group_id = #{layerGroupId}
+			AND a.layer_group_id = #{layerGroupId}
 			</if>
 			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
 			AND ${searchWord} = #{searchValue}
@@ -48,20 +52,21 @@
 			</if>
 			<if test="startDate != null and startDate != ''">
 			<![CDATA[
-			AND A.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+			AND a.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
 			<if test="endDate != null and endDate != ''">
 			<![CDATA[
-			AND A.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+			AND a.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
+		</trim>
 		<choose>
 		<when test="orderWord != null and orderWord != '' and orderValue != null and orderValue != ''">
-		ORDER BY A.${orderWord} ${orderValue}
+		ORDER BY a.${orderWord} ${orderValue}
 		</when>
 		<otherwise>
-		ORDER BY A.insert_date DESC, layer_id DESC
+		ORDER BY a.insert_date DESC, layer_id DESC
 		</otherwise>
 		</choose>
 		OFFSET #{offset} LIMIT #{limit}
@@ -116,17 +121,17 @@
         WHERE enable_yn = 'Y'
         LIMIT 1
     </select>
-    
+
     <select id="getLayerColumn" parameterType="string" resultType="string">
     	/* getLayerColumn */
     	SELECT ARRAY_TO_STRING(
     		ARRAY(
 	    		SELECT ''||A.column_name||''
 	        	FROM information_schema.columns As A
-	            WHERE table_name = #{value} 
+	            WHERE table_name = #{value}
 	            	AND  A.column_name NOT IN ('enable_yn', 'version_id')
 	    		), ','
-	    	) 
+	    	)
     </select>
 
     <!-- layer 등록 -->
@@ -135,13 +140,13 @@
             SELECT NEXTVAL('layer_seq')
         </selectKey>
         INSERT INTO layer (
-            layer_id, layer_group_id, sharing, layer_name, layer_key, service_type, layer_type, geometry_type, 
-            layer_line_color, layer_line_style, layer_fill_color, layer_alpha_style, default_display, available, 
-            label_display, coordinate, description, z_index, user_id   
+            layer_id, layer_group_id, sharing, layer_name, layer_key, service_type, layer_type, geometry_type,
+            layer_line_color, layer_line_style, layer_fill_color, layer_alpha_style, default_display, available,
+            label_display, coordinate, description, z_index, user_id
         ) VALUES (
-         #{layerId}, #{layerGroupId}, #{sharing}, #{layerName}, #{layerKey}, #{serviceType}, #{layerType}, #{geometryType}, 
-         #{layerLineColor}, #{layerLineStyle}, #{layerFillColor}, #{layerAlphaStyle}, #{defaultDisplay}, #{available}, 
-         #{labelDisplay}, #{coordinate}, #{description}, #{zIndex}, #{userId}   
+         #{layerId}, #{layerGroupId}, #{sharing}, #{layerName}, #{layerKey}, #{serviceType}, #{layerType}, #{geometryType},
+         #{layerLineColor}, #{layerLineStyle}, #{layerFillColor}, #{layerAlphaStyle}, #{defaultDisplay}, #{available},
+         #{labelDisplay}, #{coordinate}, #{description}, #{zIndex}, #{userId}
         )
     </insert>
 
@@ -171,25 +176,25 @@
     <!-- layer 정보 수정 -->
     <update id="updateLayer" parameterType="layer">
         /* updateLayer */
-        UPDATE layer SET 
+        UPDATE layer SET
 	        layer_name = #{layerName},
 	        layer_group_id = #{layerGroupId},
 	        sharing = #{sharing},
 	        layer_key = #{layerKey},
 	        service_type = #{serviceType},
 	        layer_type = #{layerType},
-	        geometry_type = #{geometryType}, 
+	        geometry_type = #{geometryType},
 	        layer_line_color = #{layerLineColor},
 	        layer_line_style = #{layerLineStyle},
 	        layer_fill_color = #{layerFillColor},
-	        layer_alpha_style = #{layerAlphaStyle}, 
-	        default_display = #{defaultDisplay}, 
-	        available = #{available}, 
-	        label_display = #{labelDisplay}, 
-	        coordinate = #{coordinate}, 
-	        description = #{description}, 
-	        z_index = #{zIndex}, 
-	        user_id = #{userId}, 
+	        layer_alpha_style = #{layerAlphaStyle},
+	        default_display = #{defaultDisplay},
+	        available = #{available},
+	        label_display = #{labelDisplay},
+	        coordinate = #{coordinate},
+	        description = #{description},
+	        z_index = #{zIndex},
+	        user_id = #{userId},
 	        update_date = NOW()
         WHERE layer_id = #{layerId}
     </update>
@@ -199,7 +204,7 @@
         /* deleteLayer */
         DELETE FROM layer WHERE layer_id = #{layerId}
     </delete>
-    
+
     <delete id="deleteLayerTable" parameterType="string">
         /* deleteLayer */
         DROP TABLE ${value}
