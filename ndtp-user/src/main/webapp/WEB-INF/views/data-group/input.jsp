@@ -183,7 +183,7 @@
 <!-- E: WRAP -->
 
 <!-- 상위 그룹 선택 다이얼 로그 -->
-<%@ include file="/WEB-INF/views/data-group/parent-group-dialog.jsp" %>
+<%@ include file="/WEB-INF/views/data-group/parent-data-group-dialog.jsp" %>
 
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
