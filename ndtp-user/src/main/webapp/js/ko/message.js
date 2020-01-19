@@ -155,6 +155,7 @@ JS_MESSAGE["data.insert"] = "데이터를 등록 하였습니다.";
 JS_MESSAGE["upload.file.type.invalid"] = "업로드 파일 타입이 유효하지 않습니다.";
 
 JS_MESSAGE["converter.title.empty"] = "제목을 입력하여 주십시오.";
+JS_MESSAGE["converter.usf.empty"] = "Unit Scale Factor 를 입력하여 주십시오.";
 
 JS_MESSAGE["search.option.warning"] = "포함 옵션을 사용하실 경우 1분 이상이 소요될 수 있습니다. 계속 진행 하시겠습니까?";
 JS_MESSAGE["search.date.warning"] = "시작일이 종료일보다 클수 없습니다.";

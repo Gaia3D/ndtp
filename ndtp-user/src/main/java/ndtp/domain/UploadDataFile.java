@@ -33,6 +33,7 @@ public class UploadDataFile extends Search implements Serializable {
 	
 	private Integer dataGroupId;
 	private String sharing;
+	private String dataType;
 	
 	/****** validator ********/
 	private String methodMode;

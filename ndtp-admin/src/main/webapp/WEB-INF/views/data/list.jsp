@@ -212,7 +212,7 @@
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-		initJqueryCalendar();
+		initDatePicker();
 
 		$("#searchWord").val("${dataInfo.searchWord}");
 		$("#searchValue").val("${dataInfo.searchValue}");

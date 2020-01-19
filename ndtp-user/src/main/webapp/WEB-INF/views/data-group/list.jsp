@@ -208,197 +208,196 @@
 <script type="text/javascript" src="/js/${lang}/map-controll.js"></script>
 <script type="text/javascript" src="/js/${lang}/ui-controll.js"></script>
 <script type="text/javascript">
-$(document).ready(function() {
-});
-
-//펼치기
-function openAll() {
-    $(".threeDepthClass").show();
-    $(".twoDepthClass").show();
-
-    // fa-caret-right
-    // fa-caret-down
-    $(".oneArrow").removeClass("fa-caret-right");
-    $(".oneArrow").addClass("fa-caret-down");
-    $(".twoArrow").removeClass("fa-caret-right");
-    $(".twoArrow").addClass("fa-caret-down");
-
-    $(".oneFolder").removeClass("fa-folder");
-    $(".oneFolder").addClass("fa-folder-open");
-    $(".twoFolder").removeClass("fa-folder");
-    $(".twoFolder").addClass("fa-folder-open");
-}
-
-// 접기
-function closeAll() {
-    $(".threeDepthClass").hide();
-    $(".twoDepthClass").hide();
-
-    $(".oneArrow").removeClass("fa-caret-down");
-    $(".oneArrow").addClass("fa-caret-right");
-    $(".twoArrwo").removeClass("fa-caret-down");
-    $(".twoArrwo").addClass("fa-caret-right");
-
-    $(".oneFolder").removeClass("fa-folder-open");
-    $(".oneFolder").addClass("fa-folder");
-    $(".twoFolder").removeClass("fa-folder-open");
-    $(".twoFolder").addClass("fa-folder");
-}
-
-// 화살표 클릭시
-function childrenDisplayToggle(depth, id, ancestor) {
-    if(depth === "1") {
-        if( $(".oneDepthParent-" + id).css("display") === "none" ) {
-			// 접힌 상태
-            $(".oneDepthParent-" + id).show();
-
-            $("#oneDepthArrow-" + id).removeClass("fa-caret-right");
-            $("#oneDepthArrow-" + id).addClass("fa-caret-down");
-            $("#oneDepthFolder-" + id).removeClass("fa-folder");
-            $("#oneDepthFolder-" + id).addClass("fa-folder-open");
-
-            $(".ancestorArrow-" + ancestor).removeClass("fa-caret-down");
-            $(".ancestorArrow-" + ancestor).addClass("fa-caret-right");
-            $(".ancestorFolder-" + ancestor).removeClass("fa-folder-open");
-            $(".ancestorFolder-" + ancestor).addClass("fa-folder");
-		} else {
-			// 펼친 상태
-            $(".ancestor-" + ancestor).hide();
-            $(".oneDepthParent-" + id).hide();
-
-            var clickClass = $("#oneDepthArrow-" + id).attr("class");
-            if(clickClass.indexOf("right") >= 0) {
-            	// 닫힘 상태라 펼침
-            	$("#oneDepthArrow-" + id).removeClass("fa-caret-right");
-            	$("#oneDepthArrow-" + id).addClass("fa-caret-down");
-            	$("#oneDepthFolder-" + id).removeClass("fa-folder");
-            	$("#oneDepthFolder-" + id).addClass("fa-folder-open");
-            } else {
-            	// 펼침 상태라 닫힘
-            	$("#oneDepthArrow-" + id).removeClass("fa-caret-down");
-                $("#oneDepthArrow-" + id).addClass("fa-caret-right");
-                $("#oneDepthFolder-" + id).removeClass("fa-folder-open");
-                $("#oneDepthFolder-" + id).addClass("fa-folder");
-            }
-            
-            $(".ancestorArrow-" + ancestor).removeClass("fa-caret-down");
-            $(".ancestorArrow-" + ancestor).addClass("fa-caret-right");
-            $(".ancestorFolder-" + ancestor).removeClass("fa-folder-open");
-            $(".ancestorFolder-" + ancestor).addClass("fa-folder");
-        }
-    } else if(depth === "2") {
-    	if( $(".twoDepthParent-" + id).css("display") === "none" ) {
-            // 접힌 상태
-            $(".twoDepthParent-" + id).show();
-
-            $("#twoDepthArrow-" + id).removeClass("fa-caret-right");
-            $("#twoDepthArrow-" + id).addClass("fa-caret-down");
-            $("#twoDepthFolder-" + id).removeClass("fa-folder");
-            $("#twoDepthFolder-" + id).addClass("fa-folder-open");
-        } else {
-            // 펼친 상태
-            $(".twoDepthParent-" + id).hide();
-            
-            var clickClass = $("#twoDepthArrow-" + id).attr("class");
-            if(clickClass.indexOf("right") >= 0) {
-            	// 닫힘 상태라 펼침
-            	$("#twoDepthArrow-" + id).removeClass("fa-caret-right");
-            	$("#twoDepthArrow-" + id).addClass("fa-caret-down");
-            	$("#twoDepthFolder-" + id).removeClass("fa-folder");
-            	$("#twoDepthFolder-" + id).addClass("fa-folder-open");
-            } else {
-            	// 펼침 상태라 닫힘
-            	$("#twoDepthArrow-" + id).removeClass("fa-caret-down");
-                $("#twoDepthArrow-" + id).addClass("fa-caret-right");
-                $("#twoDepthFolder-" + id).removeClass("fa-folder-open");
-                $("#twoDepthFolder-" + id).addClass("fa-folder");
-            }
-        }
-    }
-}
-
-// 위로 이동
-var upFlag = true;
-function moveUp(id, viewOrder) {
-    if(upFlag) {
-        upFlag = false;
-        if(viewOrder === "1") {
-            alert("제일 처음 입니다.");
-            upFlag = true;
-            return;
-        }
-        
-        var formData = "updateType=UP";
-	    $.ajax({
-			url: "/data-groups/view-order/" + id,
-			type: "POST",
-			headers: {"X-Requested-With": "XMLHttpRequest"},
-	        data: formData,
-			success: function(msg){
-				if(msg.statusCode <= 200) {
-					alert(JS_MESSAGE["update"]);
-					window.location.reload();
-					upFlag = true;
-					openAll();
-				} else {
-					if(msg.errorCode === "data.group.view-order.invalid") {
-						alert("순서를 변경할 수 없습니다.");
+	$(document).ready(function() {
+	});
+	
+	//펼치기
+	function openAll() {
+	    $(".threeDepthClass").show();
+	    $(".twoDepthClass").show();
+	
+	    // fa-caret-right
+	    // fa-caret-down
+	    $(".oneArrow").removeClass("fa-caret-right");
+	    $(".oneArrow").addClass("fa-caret-down");
+	    $(".twoArrow").removeClass("fa-caret-right");
+	    $(".twoArrow").addClass("fa-caret-down");
+	
+	    $(".oneFolder").removeClass("fa-folder");
+	    $(".oneFolder").addClass("fa-folder-open");
+	    $(".twoFolder").removeClass("fa-folder");
+	    $(".twoFolder").addClass("fa-folder-open");
+	}
+	
+	// 접기
+	function closeAll() {
+	    $(".threeDepthClass").hide();
+	    $(".twoDepthClass").hide();
+	
+	    $(".oneArrow").removeClass("fa-caret-down");
+	    $(".oneArrow").addClass("fa-caret-right");
+	    $(".twoArrwo").removeClass("fa-caret-down");
+	    $(".twoArrwo").addClass("fa-caret-right");
+	
+	    $(".oneFolder").removeClass("fa-folder-open");
+	    $(".oneFolder").addClass("fa-folder");
+	    $(".twoFolder").removeClass("fa-folder-open");
+	    $(".twoFolder").addClass("fa-folder");
+	}
+	
+	// 화살표 클릭시
+	function childrenDisplayToggle(depth, id, ancestor) {
+	    if(depth === "1") {
+	        if( $(".oneDepthParent-" + id).css("display") === "none" ) {
+				// 접힌 상태
+	            $(".oneDepthParent-" + id).show();
+	
+	            $("#oneDepthArrow-" + id).removeClass("fa-caret-right");
+	            $("#oneDepthArrow-" + id).addClass("fa-caret-down");
+	            $("#oneDepthFolder-" + id).removeClass("fa-folder");
+	            $("#oneDepthFolder-" + id).addClass("fa-folder-open");
+	
+	            $(".ancestorArrow-" + ancestor).removeClass("fa-caret-down");
+	            $(".ancestorArrow-" + ancestor).addClass("fa-caret-right");
+	            $(".ancestorFolder-" + ancestor).removeClass("fa-folder-open");
+	            $(".ancestorFolder-" + ancestor).addClass("fa-folder");
+			} else {
+				// 펼친 상태
+	            $(".ancestor-" + ancestor).hide();
+	            $(".oneDepthParent-" + id).hide();
+	
+	            var clickClass = $("#oneDepthArrow-" + id).attr("class");
+	            if(clickClass.indexOf("right") >= 0) {
+	            	// 닫힘 상태라 펼침
+	            	$("#oneDepthArrow-" + id).removeClass("fa-caret-right");
+	            	$("#oneDepthArrow-" + id).addClass("fa-caret-down");
+	            	$("#oneDepthFolder-" + id).removeClass("fa-folder");
+	            	$("#oneDepthFolder-" + id).addClass("fa-folder-open");
+	            } else {
+	            	// 펼침 상태라 닫힘
+	            	$("#oneDepthArrow-" + id).removeClass("fa-caret-down");
+	                $("#oneDepthArrow-" + id).addClass("fa-caret-right");
+	                $("#oneDepthFolder-" + id).removeClass("fa-folder-open");
+	                $("#oneDepthFolder-" + id).addClass("fa-folder");
+	            }
+	            
+	            $(".ancestorArrow-" + ancestor).removeClass("fa-caret-down");
+	            $(".ancestorArrow-" + ancestor).addClass("fa-caret-right");
+	            $(".ancestorFolder-" + ancestor).removeClass("fa-folder-open");
+	            $(".ancestorFolder-" + ancestor).addClass("fa-folder");
+	        }
+	    } else if(depth === "2") {
+	    	if( $(".twoDepthParent-" + id).css("display") === "none" ) {
+	            // 접힌 상태
+	            $(".twoDepthParent-" + id).show();
+	
+	            $("#twoDepthArrow-" + id).removeClass("fa-caret-right");
+	            $("#twoDepthArrow-" + id).addClass("fa-caret-down");
+	            $("#twoDepthFolder-" + id).removeClass("fa-folder");
+	            $("#twoDepthFolder-" + id).addClass("fa-folder-open");
+	        } else {
+	            // 펼친 상태
+	            $(".twoDepthParent-" + id).hide();
+	            
+	            var clickClass = $("#twoDepthArrow-" + id).attr("class");
+	            if(clickClass.indexOf("right") >= 0) {
+	            	// 닫힘 상태라 펼침
+	            	$("#twoDepthArrow-" + id).removeClass("fa-caret-right");
+	            	$("#twoDepthArrow-" + id).addClass("fa-caret-down");
+	            	$("#twoDepthFolder-" + id).removeClass("fa-folder");
+	            	$("#twoDepthFolder-" + id).addClass("fa-folder-open");
+	            } else {
+	            	// 펼침 상태라 닫힘
+	            	$("#twoDepthArrow-" + id).removeClass("fa-caret-down");
+	                $("#twoDepthArrow-" + id).addClass("fa-caret-right");
+	                $("#twoDepthFolder-" + id).removeClass("fa-folder-open");
+	                $("#twoDepthFolder-" + id).addClass("fa-folder");
+	            }
+	        }
+	    }
+	}
+	
+	// 위로 이동
+	var upFlag = true;
+	function moveUp(id, viewOrder) {
+	    if(upFlag) {
+	        upFlag = false;
+	        if(viewOrder === "1") {
+	            alert("제일 처음 입니다.");
+	            upFlag = true;
+	            return;
+	        }
+	        
+	        var formData = "updateType=UP";
+		    $.ajax({
+				url: "/data-groups/view-order/" + id,
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+		        data: formData,
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert(JS_MESSAGE["update"]);
+						window.location.reload();
+						upFlag = true;
+						openAll();
 					} else {
-						alert(JS_MESSAGE[msg.errorCode]);
+						if(msg.errorCode === "data.group.view-order.invalid") {
+							alert("순서를 변경할 수 없습니다.");
+						} else {
+							alert(JS_MESSAGE[msg.errorCode]);
+						}
+						console.log("---- " + msg.message);
+						upFlag = true;
 					}
-					console.log("---- " + msg.message);
-					upFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        upFlag = true;
 				}
-			},
-			error:function(request, status, error){
-		        alert(JS_MESSAGE["ajax.error.message"]);
-		        upFlag = true;
-			}
-		});
-    } else {
-        alert("진행 중입니다.");
-        return;
-    }
-}
-
-// 아래로 이동
-var downFlag = true;
-function moveDown(id, viewOrder) {
-    if(downFlag) {
-        downFlag = false;
-        var formData = "updateType=DOWN";
-	    $.ajax({
-			url: "/data-groups/view-order/" + id,
-			type: "POST",
-			headers: {"X-Requested-With": "XMLHttpRequest"},
-	        data: formData,
-			success: function(msg){
-				if(msg.statusCode <= 200) {
-					alert(JS_MESSAGE["update"]);
-					window.location.reload();
-					downFlag = true;
-					openAll();
-				} else {
-					if(msg.errorCode === "data.group.view-order.invalid") {
-						alert("순서를 변경할 수 없습니다.");
+			});
+	    } else {
+	        alert("진행 중입니다.");
+	        return;
+	    }
+	}
+	
+	// 아래로 이동
+	var downFlag = true;
+	function moveDown(id, viewOrder) {
+	    if(downFlag) {
+	        downFlag = false;
+	        var formData = "updateType=DOWN";
+		    $.ajax({
+				url: "/data-groups/view-order/" + id,
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+		        data: formData,
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert(JS_MESSAGE["update"]);
+						window.location.reload();
+						downFlag = true;
+						openAll();
 					} else {
-						alert(JS_MESSAGE[msg.errorCode]);
+						if(msg.errorCode === "data.group.view-order.invalid") {
+							alert("순서를 변경할 수 없습니다.");
+						} else {
+							alert(JS_MESSAGE[msg.errorCode]);
+						}
+						console.log("---- " + msg.message);
+						downFlag = true;
 					}
-					console.log("---- " + msg.message);
-					downFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        downFlag = true;
 				}
-			},
-			error:function(request, status, error){
-		        alert(JS_MESSAGE["ajax.error.message"]);
-		        downFlag = true;
-			}
-		});
-    } else {
-        alert("진행 중입니다.");
-        return;
-    }
-}
-
+			});
+	    } else {
+	        alert("진행 중입니다.");
+	        return;
+	    }
+	}
 </script>
 </body>
 </html>

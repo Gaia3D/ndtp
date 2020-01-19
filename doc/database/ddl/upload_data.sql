@@ -33,7 +33,7 @@ comment on column upload_data.upload_data_id is '고유번호';
 comment on column upload_data.data_group_id is '데이터 그룹 고유번호';
 comment on column upload_data.sharing is '공유 유형. 0 : common, 1: public, 2 : private, 3 : sharing';
 comment on column upload_data.data_type is '데이터 타입. 3ds,obj,dae,collada,ifc,las,citygml,indoorgml,jpg,jpeg,gif,png,bmp,zip';
-comment on column upload_data.data_name is '파일명';
+comment on column upload_data.data_name is '데이터명';
 comment on column upload_data.user_id is '사용자 아이디';
 comment on column upload_data.location is 'POINT(위도, 경도). 공간 검색 속도 때문에 altitude는 분리';
 comment on column upload_data.altitude is '높이';

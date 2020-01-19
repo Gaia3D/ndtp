@@ -14,21 +14,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.extern.slf4j.Slf4j;
-import ndtp.config.PropertiesConfig;
 import ndtp.domain.ConverterJob;
+import ndtp.domain.DataGroup;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
 import ndtp.domain.UploadData;
 import ndtp.domain.UploadDataFile;
-import ndtp.domain.DataGroup;
 import ndtp.domain.UserSession;
 import ndtp.service.DataGroupService;
-import ndtp.service.PolicyService;
 import ndtp.service.UploadDataService;
-import ndtp.service.DataGroupService;
 import ndtp.utils.DateUtils;
-import ndtp.utils.FormatUtils;
 
 /**
  * 3D 데이터 파일 업로더
@@ -45,15 +41,51 @@ public class UploadDataController {
 	public static final int BUFFER_SIZE = 8192;
 	
 	@Autowired
-	private PolicyService policyService;
-	
-	@Autowired
-	private PropertiesConfig propertiesConfig;
-	
-	@Autowired
 	private UploadDataService uploadDataService;
 	@Autowired
 	private DataGroupService dataGroupService;
+	
+	/**
+	 * 업로딩 파일 목록
+	 * @param request
+	 * @param uploadData
+	 * @param pageNo
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "/list")
+	public String list(HttpServletRequest request, UploadData uploadData, @RequestParam(defaultValue="1") String pageNo, Model model) {
+		log.info("@@ uploadData = {}", uploadData);
+		
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		uploadData.setUserId(userSession.getUserId());
+		
+		if(!StringUtils.isEmpty(uploadData.getStartDate())) {
+			uploadData.setStartDate(uploadData.getStartDate().substring(0, 8) + DateUtils.START_TIME);
+		}
+		if(!StringUtils.isEmpty(uploadData.getEndDate())) {
+			uploadData.setEndDate(uploadData.getEndDate().substring(0, 8) + DateUtils.END_TIME);
+		}
+		
+		long totalCount = uploadDataService.getUploadDataTotalCount(uploadData);
+		
+		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, uploadData), totalCount, Long.valueOf(pageNo).longValue());
+		log.info("@@ pagination = {}", pagination);
+		
+		uploadData.setOffset(pagination.getOffset());
+		uploadData.setLimit(pagination.getPageRows());
+		List<UploadData> uploadDataList = new ArrayList<>();
+		if(totalCount > 0l) {
+			uploadDataList = uploadDataService.getListUploadData(uploadData);
+		}
+		
+		model.addAttribute(pagination);
+		model.addAttribute("uploadData", uploadData);
+		model.addAttribute("converterJobForm", new ConverterJob());
+		model.addAttribute("uploadDataList", uploadDataList);
+		
+		return "/upload-data/list";
+	}
 	
 	/**
 	 * 데이터 upload 화면
@@ -80,53 +112,6 @@ public class UploadDataController {
 	}
 	
 	/**
-	 * 업로딩 파일 목록
-	 * @param request
-	 * @param uploadData
-	 * @param pageNo
-	 * @param model
-	 * @return
-	 */
-	@GetMapping(value = "/list")
-	public String list(HttpServletRequest request, UploadData uploadData, @RequestParam(defaultValue="1") String pageNo, Model model) {
-		log.info("@@ uploadData = {}", uploadData);
-		
-//		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-//		uploadData.setUserId(userSession.getUserId());
-		
-		String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
-		if(StringUtils.isEmpty(uploadData.getStartDate())) {
-			uploadData.setStartDate(today.substring(0,4) + DateUtils.START_DAY_TIME);
-		} else {
-			uploadData.setStartDate(uploadData.getStartDate().substring(0, 8) + DateUtils.START_TIME);
-		}
-		if(StringUtils.isEmpty(uploadData.getEndDate())) {
-			uploadData.setEndDate(today + DateUtils.END_TIME);
-		} else {
-			uploadData.setEndDate(uploadData.getEndDate().substring(0, 8) + DateUtils.END_TIME);
-		}
-		
-		long totalCount = uploadDataService.getUploadDataTotalCount(uploadData);
-		
-		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, uploadData), totalCount, Long.valueOf(pageNo).longValue());
-		log.info("@@ pagination = {}", pagination);
-		
-		uploadData.setOffset(pagination.getOffset());
-		uploadData.setLimit(pagination.getPageRows());
-		List<UploadData> uploadDataList = new ArrayList<>();
-		if(totalCount > 0l) {
-			uploadDataList = uploadDataService.getListUploadData(uploadData);
-		}
-		
-		model.addAttribute(pagination);
-		model.addAttribute("uploadData", uploadData);
-		model.addAttribute("converterJobForm", new ConverterJob());
-		model.addAttribute("uploadDataList", uploadDataList);
-		
-		return "/upload-data/list";
-	}
-	
-	/**
 	 * 데이터 upload 수정
 	 * @param model
 	 * @return
@@ -134,12 +119,15 @@ public class UploadDataController {
 	@GetMapping(value = "/modify")
 	public String modify(HttpServletRequest request, UploadData uploadData, Model model) {
 		
-//		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-//		uploadData.setUserId(userSession.getUserId());
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		uploadData.setUserId(userSession.getUserId());
 		
 		uploadData = uploadDataService.getUploadData(uploadData);
 		List<UploadDataFile> uploadDataFileList = uploadDataService.getListUploadDataFile(uploadData);
-		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup(new DataGroup());
+		
+		DataGroup dataGroup = new DataGroup();
+		dataGroup.setUserId(userSession.getUserId());
+		List<DataGroup> dataGroupList = dataGroupService.getAllListDataGroup(dataGroup);
 		
 		model.addAttribute("uploadData", uploadData);
 		model.addAttribute("uploadDataFileList", uploadDataFileList);

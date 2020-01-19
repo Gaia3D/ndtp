@@ -178,27 +178,27 @@
 <script type="text/javascript" src="/js/${lang}/map-controll.js"></script>
 <script type="text/javascript" src="/js/${lang}/ui-controll.js"></script>
 <script type="text/javascript">
-$(document).ready(function() {
-});
-
-//전체 선택 
-$("#chkAll").click(function() {
-	$(":checkbox[name=uploadDataId]").prop("checked", this.checked);
-});
-
-// 프로젝트 다이얼 로그
-var errorDialog = $( ".errorDialog" ).dialog({
-	autoOpen: false,
-	width: 400,
-	height: 500,
-	modal: true,
-	resizable: false
-});
-
-function detailErrorCode(errorCode) {
-	errorDialog.dialog( "open" );
-	$("#dialog_error_code").html(errorCode);
-}
+	$(document).ready(function() {
+	});
+	
+	//전체 선택 
+	$("#chkAll").click(function() {
+		$(":checkbox[name=uploadDataId]").prop("checked", this.checked);
+	});
+	
+	// 프로젝트 다이얼 로그
+	var errorDialog = $( ".errorDialog" ).dialog({
+		autoOpen: false,
+		width: 400,
+		height: 500,
+		modal: true,
+		resizable: false
+	});
+	
+	function detailErrorCode(errorCode) {
+		errorDialog.dialog( "open" );
+		$("#dialog_error_code").html(errorCode);
+	}
 </script>
 </body>
 </html>

@@ -1,5 +1,6 @@
 package ndtp.config;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.ConverterJob;
 import ndtp.domain.ConverterJobStatus;
 import ndtp.domain.QueueMessage;
+import ndtp.domain.ServerTarget;
 import ndtp.support.ProcessBuilderSupport;
 
 @Slf4j
@@ -31,6 +33,8 @@ public class AMQPSubscribe {
 	public void handleMessage(QueueMessage queueMessage) {
 		Long converterJobId = queueMessage.getConverterJobId();
 		log.info(" @@@@@@ handleMessage start. converterJobId = {}", converterJobId);
+		String userId = queueMessage.getUserId();
+		String serverTarget = queueMessage.getServerTarget();
 		
 		CompletableFuture.supplyAsync( () -> {
 			List<String> command = new ArrayList<>();
@@ -45,7 +49,8 @@ public class AMQPSubscribe {
 			command.add(queueMessage.getLogPath());
 			command.add("#indexing");
 			command.add(queueMessage.getIndexing());
-			
+			command.add("#usf");
+			command.add(queueMessage.getUsf().toString());
 			
 			log.info(" >>>>>> command = {}", command.toString());
 			
@@ -64,32 +69,40 @@ public class AMQPSubscribe {
         })
 		.exceptionally(e -> {
         	log.info("exceptionally exception = {}", e.getMessage());
-        	updateConverterJobStatus(converterJobId, ConverterJobStatus.FAIL.name().toLowerCase(), e.getMessage());
+        	updateConverterJobStatus(userId, serverTarget, converterJobId, ConverterJobStatus.FAIL.name().toLowerCase(), e.getMessage());
         	return null;
         })
 		// 앞의 비동기 작업의 결과를 받아 사용하며 return이 없다.
 		.thenAccept(s -> {
 			log.info("thenAccept result = {}", s);
-			updateConverterJobStatus(converterJobId, s, null);
+			updateConverterJobStatus(userId, serverTarget, converterJobId, s, null);
 			log.info("thenAccept end");
 		});
 	}
 	
 	/**
 	 * 데이터 변환 job 상태 변경
+	 * @param userId
+	 * @param serverTarget
 	 * @param converterJobId
 	 * @param status
 	 * @param errorCode
 	 */
-	private void updateConverterJobStatus(Long converterJobId, String status, String errorCode) {
+	private void updateConverterJobStatus(String userId, String serverTarget, Long converterJobId, String status, String errorCode) {
 		log.info("@@ updateConverterJobStatus converterJobId = {}, status = {}, errorCode = {}", converterJobId, status, errorCode);
 		ConverterJob converterJob = new ConverterJob();
+		converterJob.setUserId(userId);
 		converterJob.setConverterJobId(converterJobId);
 		converterJob.setStatus(status);
 		converterJob.setErrorCode(errorCode);
 		
 		try {
-			URI uri = new URI(propertiesConfig.getCmsRestServer() + "/api/converter/status");
+			URI uri = null;
+			if(ServerTarget.USER == ServerTarget.valueOf(serverTarget)) {
+				uri = new URI(propertiesConfig.getCmsUserRestServer() + "/api/converter/status");
+			} else {
+				uri = new URI(propertiesConfig.getCmsAdminRestServer() + "/api/converter/status");
+			}
 			restTemplate.postForEntity(uri, converterJob, Map.class);
 		} catch (URISyntaxException e) {
 			log.info("데이터 converter 상태 변경 api 호출 실패 = {}", e.getMessage());

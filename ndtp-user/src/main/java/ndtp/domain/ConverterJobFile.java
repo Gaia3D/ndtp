@@ -1,5 +1,6 @@
 package ndtp.domain;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -27,7 +28,8 @@ public class ConverterJobFile extends Search {
 	// 화면 표기용
 	private String sharing;
 	private String dataType;
-	private String fileName;	
+	private String fileName;
+	private BigDecimal usf;
 	
 	/****** validator ********/
 	private String methodMode;

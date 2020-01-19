@@ -77,15 +77,10 @@ public class DataController {
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
 		UserPolicy userPolicy = userPolicyService.getUserPolicy(userSession.getUserId());
-		String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
-		if(StringUtils.isEmpty(dataInfo.getStartDate())) {
-			dataInfo.setStartDate(today.substring(0,4) + DateUtils.START_DAY_TIME);
-		} else {
+		if(!StringUtils.isEmpty(dataInfo.getStartDate())) {
 			dataInfo.setStartDate(dataInfo.getStartDate().substring(0, 8) + DateUtils.START_TIME);
 		}
-		if(StringUtils.isEmpty(dataInfo.getEndDate())) {
-			dataInfo.setEndDate(today + DateUtils.END_TIME);
-		} else {
+		if(!StringUtils.isEmpty(dataInfo.getEndDate())) {
 			dataInfo.setEndDate(dataInfo.getEndDate().substring(0, 8) + DateUtils.END_TIME);
 		}
 		

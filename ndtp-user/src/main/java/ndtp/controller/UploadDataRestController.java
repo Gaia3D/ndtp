@@ -20,10 +20,10 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,21 +34,15 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
-import ndtp.domain.ConverterJob;
-import ndtp.domain.DataType;
 import ndtp.domain.FileType;
 import ndtp.domain.Key;
-import ndtp.domain.PageType;
-import ndtp.domain.Pagination;
 import ndtp.domain.Policy;
 import ndtp.domain.UploadData;
 import ndtp.domain.UploadDataFile;
 import ndtp.domain.UploadDirectoryType;
-import ndtp.domain.DataGroup;
 import ndtp.domain.UserSession;
 import ndtp.service.PolicyService;
 import ndtp.service.UploadDataService;
-import ndtp.service.DataGroupService;
 import ndtp.utils.DateUtils;
 import ndtp.utils.FileUtils;
 import ndtp.utils.FormatUtils;
@@ -59,8 +53,7 @@ import ndtp.utils.FormatUtils;
  * @author jeongdae
  *
  */
-@Slf4j
-@RestController
+@Slf4j@RestController
 @RequestMapping("/upload-datas")
 public class UploadDataRestController {
 	
@@ -75,8 +68,6 @@ public class UploadDataRestController {
 	
 	@Autowired
 	private UploadDataService uploadDataService;
-	@Autowired
-	private DataGroupService dataGroupService;
 	
 	/**
 	 * TODO 비동기로 처리해야 할듯
@@ -225,7 +216,7 @@ public class UploadDataRestController {
             			uploadDataFile.setDepth(1);
 					} catch(Exception e) {
 						e.printStackTrace();
-						log.info("@@@@@@@@@@@@ upload.file.type.invalid");
+						log.info("@@@@@@@@@@@@ file copy exception.");
     					result.put("statusCode", HttpStatus.INTERNAL_SERVER_ERROR.value());
 						result.put("errorCode", "file.copy.exception");
 						result.put("message", message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
@@ -242,19 +233,19 @@ public class UploadDataRestController {
 			uploadData.setSharing(request.getParameter("sharing"));
 			uploadData.setDataType(request.getParameter("dataType"));
 			uploadData.setUserId(userId);
-			if(request.getParameter("latitude") != null && !"".equals(request.getParameter("latitude"))
-					&& request.getParameter("longitude") != null && !"".equals(request.getParameter("longitude"))) {
-				uploadData.setLatitude(new BigDecimal(request.getParameter("latitude")) );
-				uploadData.setLongitude(new BigDecimal(request.getParameter("longitude")) );
-				
-				if(request.getParameter("altitude") == null || "".equals(request.getParameter("altitude"))) {
-					uploadData.setAltitude(BigDecimal.valueOf(0l));
-				} else uploadData.setAltitude(new BigDecimal(request.getParameter("altitude")) );
-				
-				uploadData.setLocation("POINT(" + request.getParameter("longitude") + " " + request.getParameter("latitude") + ")");
-			}
-			uploadData.setDescription(request.getParameter("description"));
+//			if(request.getParameter("latitude") != null && !"".equals(request.getParameter("latitude"))
+//					&& request.getParameter("longitude") != null && !"".equals(request.getParameter("longitude"))) {
+			uploadData.setLongitude(new BigDecimal(request.getParameter("longitude")) );
+			uploadData.setLatitude(new BigDecimal(request.getParameter("latitude")) );
+//			if(request.getParameter("altitude") == null || "".equals(request.getParameter("altitude"))) {
+//				uploadData.setAltitude(BigDecimal.valueOf(0l));
+//			} else uploadData.setAltitude(new BigDecimal(request.getParameter("altitude")) );
+			uploadData.setAltitude(new BigDecimal(request.getParameter("altitude")) );
+			uploadData.setLocation("POINT(" + request.getParameter("longitude") + " " + request.getParameter("latitude") + ")");
+//			}
+			
 			uploadData.setFileCount(uploadDataFileList.size());
+			uploadData.setDescription(request.getParameter("description"));
 			
 			log.info("@@@@@@@@@@@@ uploadData = {}", uploadData);
 			uploadDataService.insertUploadData(uploadData, uploadDataFileList);       
@@ -484,9 +475,9 @@ public class UploadDataRestController {
 	 * @param bindingResult
 	 * @return
 	 */
-	@PostMapping(value = "update")
+	@PostMapping(value = "/{uploadDataId}")
 	@ResponseBody
-	public Map<String, Object> update(HttpServletRequest request, @Valid UploadData uploadData, BindingResult bindingResult) {
+	public Map<String, Object> update(HttpServletRequest request, @PathVariable Long uploadDataId, @Valid UploadData uploadData, BindingResult bindingResult) {
 		log.info("@@ uploadData = {}", uploadData);
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
@@ -502,13 +493,44 @@ public class UploadDataRestController {
 				result.put("message", message);
 	            return result;
 			}
-		
-			if(uploadData.getLongitude() != null && uploadData.getLatitude() != null ) {
-				uploadData.setLatitude(new BigDecimal(request.getParameter("latitude")) );
-				uploadData.setLongitude(new BigDecimal(request.getParameter("longitude")) );
-				uploadData.setAltitude(new BigDecimal(request.getParameter("altitude")) );
-				uploadData.setLocation("POINT(" + uploadData.getLongitude() + " " + uploadData.getLatitude() + ")");
+			
+			if(StringUtils.isEmpty(uploadData.getDataName())) {
+				errorCode = "data.name.empty";
 			}
+			if(StringUtils.isEmpty(uploadData.getDataGroupId())) {
+				errorCode = "data.group.id.empty";
+			}
+			if(StringUtils.isEmpty(uploadData.getSharing())) {
+				errorCode = "data.sharing.empty";
+			}
+			if(StringUtils.isEmpty(uploadData.getDataType())) {
+				errorCode = "data.type.empty";
+			}
+			
+			// TODO citygml, indoorgml 의 경우 위도, 경도, 높이를 포함하고 있어서 validation 체크를 하지 않음
+			// 지금은 converter 가 update를 해 주지 않아서 기본 체크 함
+//			if(!dataType.equals(DataType.CITYGML.getValue()) && !dataType.equals(DataType.INDOORGML.getValue())) {
+			if(uploadData.getLongitude() == null) {
+				errorCode = "data.longitude.empty";
+			}
+			if(uploadData.getLatitude() == null) {
+				errorCode = "data.latitude.empty";
+			}
+			if(uploadData.getAltitude() == null) {
+				errorCode = "data.altitude.empty";
+			}
+//			}
+			
+			if(!StringUtils.isEmpty(errorCode)) {
+				log.info("@@@@@ errorCode = {}", errorCode);
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", errorCode);
+				result.put("message", message);
+	            return result;
+			}
+		
+			uploadData.setLocation("POINT(" + uploadData.getLongitude() + " " + uploadData.getLatitude() + ")");
+			
 			uploadDataService.updateUploadData(uploadData);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -524,32 +546,34 @@ public class UploadDataRestController {
 	}
 	
 	/**
-	 * 선택 upload-data 삭제
+	 * 선택 uploadLoad 데이터 삭제
 	 * @param request
 	 * @param checkIds
 	 * @param model
 	 * @return
 	 */
-	@PostMapping(value = "delete")
-	@ResponseBody
-	public Map<String, Object> deleteDatas(HttpServletRequest request, @RequestParam("checkIds") String checkIds) {
+	@DeleteMapping(value = "/{uploadDataId}")
+	public Map<String, Object> deleteDatas(HttpServletRequest request, @PathVariable Long uploadDataId) {
 		
-		log.info("@@@@@@@ checkIds = {}", checkIds);
+		log.info("@@@@@@@ uploadDataId = {}", uploadDataId);
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String errorCode = null;
 		String message = null;
 		try {
-			if(checkIds.length() <= 0) {
+			if(uploadDataId == null) {
 				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-				result.put("errorCode", "check.value.required");
+				result.put("errorCode", "upload.data.id.empty");
 				result.put("message", message);
 	            return result;
 			}
 			
 			UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+			UploadData uploadData = new UploadData();
+			uploadData.setUserId(userSession.getUserId());
+			uploadData.setUploadDataId(uploadDataId);
 			
-			uploadDataService.deleteUploadDatas(userSession.getUserId(), checkIds);
+			uploadDataService.deleteUploadData(uploadData);
 		} catch(Exception e) {
 			e.printStackTrace();
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
@@ -586,18 +610,19 @@ public class UploadDataRestController {
 			return "data.type.empty";
 		}
 		
-		// citygml, indoorgml 의 경우 위도, 경도, 높이를 포함하고 있어서 validation 체크를 하지 않음
-		if(!dataType.equals(DataType.CITYGML.getValue()) && !dataType.equals(DataType.INDOORGML.getValue())) {
-			if(StringUtils.isEmpty(request.getParameter("latitude"))) {
-				return "data.latitude.empty";
-			}
-			if(StringUtils.isEmpty(request.getParameter("longitude"))) {
-				return "data.longitude.empty";
-			}
-			if(StringUtils.isEmpty(request.getParameter("altitude"))) {
-				return "data.altitude.empty";
-			}
+		// TODO citygml, indoorgml 의 경우 위도, 경도, 높이를 포함하고 있어서 validation 체크를 하지 않음
+		// 지금은 converter 가 update를 해 주지 않아서 기본 체크 함
+//		if(!dataType.equals(DataType.CITYGML.getValue()) && !dataType.equals(DataType.INDOORGML.getValue())) {
+		if(StringUtils.isEmpty(request.getParameter("longitude"))) {
+			return "data.longitude.empty";
 		}
+		if(StringUtils.isEmpty(request.getParameter("latitude"))) {
+			return "data.latitude.empty";
+		}
+		if(StringUtils.isEmpty(request.getParameter("altitude"))) {
+			return "data.altitude.empty";
+		}
+//		}
 		
 		Map<String, MultipartFile> fileMap = request.getFileMap();
 		if(fileMap.isEmpty()) {

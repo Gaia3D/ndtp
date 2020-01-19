@@ -188,75 +188,77 @@
 <script type="text/javascript" src="/js/${lang}/map-controll.js"></script>
 <script type="text/javascript" src="/js/${lang}/ui-controll.js"></script>
 <script type="text/javascript">
-$(document).ready(function() {
-	$("[name=basic]").filter("[value='${dataGroup.basic}']").prop("checked",true);
-	$("[name=available]").filter("[value='${dataGroup.available}']").prop("checked",true);
-});
-
-function validate() {
-	var number = /^[0-9]+$/;
-	if ($("#dataGroupName").val() === null || $("#dataGroupName").val() === "") {
-		alert("데이터 그룹명을 입력해 주세요.");
-		$("#dataGroupName").focus();
-		return false;
-	}
-	if($("#duration").val() !== null && $("#duration").val() !== "") {
-		if(!isNumber($("#duration").val())) {
-			$("#duration").focus();
+	$(document).ready(function() {
+		$("[name=basic]").filter("[value='${dataGroup.basic}']").prop("checked",true);
+		$("[name=available]").filter("[value='${dataGroup.available}']").prop("checked",true);
+		
+		$("#sharing").val("${dataGroup.sharing}");
+	});
+	
+	function validate() {
+		var number = /^[0-9]+$/;
+		if ($("#dataGroupName").val() === null || $("#dataGroupName").val() === "") {
+			alert("데이터 그룹명을 입력해 주세요.");
+			$("#dataGroupName").focus();
 			return false;
 		}
-	}
-}
-
-// 수정
-var updatedataGroupFlag = true;
-function updatedataGroup() {
-	if (validate() == false) {
-		return false;
-	}
-	if(updatedataGroupFlag) {
-		updatedataGroupFlag = false;
-		var formData = $("#dataGroup").serialize();		
-		$.ajax({
-			url: "/data-groups/${dataGroup.dataGroupId}",
-			type: "POST",
-			headers: {"X-Requested-With": "XMLHttpRequest"},
-			data: formData,
-			success: function(msg){
-				if(msg.statusCode <= 200) {
-					alert(JS_MESSAGE["update"]);
-					window.location.reload();
-				} else {
-					alert(JS_MESSAGE[msg.errorCode]);
-					console.log("---- " + msg.message);
-				}
-				updatedataGroupFlag = true;
-			},
-			error:function(request, status, error){
-		        alert(JS_MESSAGE["ajax.error.message"]);
-		        updatedataGroupFlag = true;
+		if($("#duration").val() !== null && $("#duration").val() !== "") {
+			if(!isNumber($("#duration").val())) {
+				$("#duration").focus();
+				return false;
 			}
-		});
-	} else {
-		alert(JS_MESSAGE["button.dobule.click"]);
-		return;
+		}
 	}
-}
-
-// 지도에서 찾기
-$( "#mapButtion" ).on( "click", function() {
-	var url = "/map/find-point";
-	var width = 800;
-	var height = 700;
-
-	var popupX = (window.screen.width / 2) - (width / 2);
-	// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
-	var popupY= (window.screen.height / 2) - (height / 2);
 	
-    var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height + ", top=" + popupY + ", left="+popupX
-            + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
-    //popWin.document.title = layerName;
-});
+	// 수정
+	var updatedataGroupFlag = true;
+	function updatedataGroup() {
+		if (validate() == false) {
+			return false;
+		}
+		if(updatedataGroupFlag) {
+			updatedataGroupFlag = false;
+			var formData = $("#dataGroup").serialize();		
+			$.ajax({
+				url: "/data-groups/${dataGroup.dataGroupId}",
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+				data: formData,
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert(JS_MESSAGE["update"]);
+						window.location.reload();
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
+					updatedataGroupFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        updatedataGroupFlag = true;
+				}
+			});
+		} else {
+			alert(JS_MESSAGE["button.dobule.click"]);
+			return;
+		}
+	}
+	
+	// 지도에서 찾기
+	$( "#mapButtion" ).on( "click", function() {
+		var url = "/map/find-point";
+		var width = 800;
+		var height = 700;
+	
+		var popupX = (window.screen.width / 2) - (width / 2);
+		// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+		var popupY= (window.screen.height / 2) - (height / 2);
+		
+	    var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height + ", top=" + popupY + ", left="+popupX
+	            + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
+	    //popWin.document.title = layerName;
+	});
 </script>
 </body>
 </html>

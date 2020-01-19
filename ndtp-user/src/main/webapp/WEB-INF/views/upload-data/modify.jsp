@@ -85,12 +85,13 @@
 			<ul class="tab">
 				<li onclick="location.href='/data-group/list'">데이터 그룹</li>
 				<li onclick="location.href='/data-group/input'">데이터 그룹 등록</li>
-				<li onclick="location.href='/upload-data/input'" class="on">업로딩 데이터</li>
-			   	<li onclick="location.href='/upload-data/list'">업로딩 데이터 목록</li>
+				<li onclick="location.href='/upload-data/input'">업로딩 데이터</li>
+			   	<li onclick="location.href='/upload-data/list'" class="on">업로딩 데이터 목록</li>
 			  	<li onclick="location.href='/converter/list'">업로딩 데이터 변환 목록</li>
 			</ul>
 		</div>
 		<form:form id="uploadData" modelAttribute="uploadData" method="post" onsubmit="return false;">
+			<form:hidden path="uploadDataId" />
 		<table class="input-table scope-row">
 			<colgroup>
 				<col class="col-label l" style="width: 15%" >
@@ -171,18 +172,64 @@
 				</td>
 			</tr>
 		</table>
-		</form:form>
-		<div style="padding: 20px 20px 10px 10px; font-size: 18px;">파일 업로딩</div>
-		<div class="fileSection" style="font-size: 17px;">
-	    	<form id="my-dropzone" action="" class="dropzone hzScroll"></form>
-	    </div>
-	    <div class="button-group" style="margin-top: 30px;">
+		<div class="button-group">
 			<div class="center-buttons">
-				<button id="allFileUpload">업로드</button>
-				<button id="allFileClear">All Clear</button>
+				<button id="updateButton">수정</button>
 				<a href="/upload-data/list" class="button">목록</a>
 			</div>
 		</div>
+						
+		<table class="input-table scope-row">
+			<colgroup>
+                   <col class="col-label l" style="width: 15%" >
+                   <col class="col-input" style="width: 35%" >
+                   <col class="col-label l" style="width: 15%" >
+                   <col class="col-input" style="width: 35%" >
+               </colgroup>
+			<tr>
+				<th class="col-label" scope="row" style="vertical-align: top;">
+					<form:label path="description">첨부 파일</form:label>
+				</th>
+				<td colspan="3" class="col-input">
+					<ul style="list-style: none; margin-bottom: 20px;">
+
+<c:set var="converterFileStyle" value="" />									
+<c:forEach var="uploadDataFile" items="${uploadDataFileList}" varStatus="status">
+	<c:if test="${uploadDataFile.depth == 1 }">
+		<c:set var="paddingLeft" value="0px;" />
+	</c:if>
+	<c:if test="${uploadDataFile.depth == 2 }">
+		<c:set var="paddingLeft" value="50px;" />
+	</c:if>
+	<c:if test="${uploadDataFile.depth == 3 }">
+		<c:set var="paddingLeft" value="100px;" />
+	</c:if>
+	<c:if test="${uploadDataFile.depth == 4 }">
+		<c:set var="paddingLeft" value="150px" />
+	</c:if>
+	<c:if test="${uploadDataFile.fileType eq 'DIRECTORY' }">
+						<li style="padding-left: ${paddingLeft}; height: 25px;">[ ${uploadDataFile.fileType } ] ${uploadDataFile.fileSubPath }</li>
+	</c:if>
+	
+	<c:if test="${uploadDataFile.converterTarget eq 'true' }">
+		<c:set var="converterFileStyle" value="color:blue; font-weight: bold;" />
+	</c:if>
+	<c:if test="${uploadDataFile.converterTarget eq 'false' }">
+		<c:set var="converterFileStyle" value="" />
+	</c:if>
+	
+	<c:if test="${uploadDataFile.fileType eq 'FILE' }">
+						<li style="padding-left: ${paddingLeft}; height: 25px; ${converterFileStyle}">
+							[ ${uploadDataFile.fileType } ] ${uploadDataFile.fileName } 
+							(<fmt:formatNumber value="${uploadDataFile.viewFileSizeUnitKB }" type="number"/>)KB
+						</li>
+	</c:if>
+</c:forEach>
+					</ul>
+				</td>
+			</tr>
+		</table>
+		</form:form>
 		
 	</div>
 </div>
@@ -196,6 +243,9 @@
 <script type="text/javascript" src="/js/${lang}/ui-controll.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
+		$("#sharing").val("${uploadData.sharing}");
+		$("#dataType").val("${uploadData.dataType}");
+		
 	});
 	
 	var dataGroupDialog = $( ".dialog" ).dialog({
@@ -220,118 +270,6 @@
 		dataGroupDialog.dialog( "close" );
 	}
 	
-	var fileUploadDialog = $( ".spinner-dialog" ).dialog({
-		autoOpen: false,
-		width: 250,
-		height: 290,
-		modal: true,
-		resizable: false
-	});
-	
-	// 업로딩 파일 개수
-	var uploadFileCount = 0;
-	// dropzone 업로딩 결과(n개 파일을 올리면 n개 리턴이 옴)
-	var uploadFileResultCount = 0;
-	Dropzone.options.myDropzone = {
-		url: "/upload-datas",	
-		//paramName: "file",
-		// Prevents Dropzone from uploading dropped files immediately
-		timeout: 3600000,
-	    autoProcessQueue: false,
-	    // 여러개의 파일 허용
-		uploadMultiple: true,
-		method: "post",
-		// 병렬 처리
-		parallelUploads: 500,
-		// 최대 파일 업로드 갯수
-		maxFiles: 500,
-		// 최대 업로드 용량 Mb단위
-		maxFilesize: 5000,
-		dictDefaultMessage: "업로딩 하려면 파일을 올리거나 클릭 하십시오.",
-		/* headers: {
-			"x-csrf-token": document.querySelectorAll("meta[name=csrf-token]")[0].getAttributeNode("content").value,
-		}, */
-		// 허용 확장자
-		acceptedFiles: ".3ds, .obj, .dae, .collada, .ifc, .las, .citygml, .indoorgml, .jpg, .jpeg, .gif, .png, .bmp, .zip",
-		// 업로드 취소 및 추가 삭제 미리 보기 그림 링크 를 기본 추가 하지 않음
-		// 기본 true false 로 주면 아무 동작 못함
-		//clickable: true,
-		fallback: function() {
-	    	// 지원하지 않는 브라우저인 경우
-	    	alert("죄송합니다. 최신의 브라우저로 Update 후 사용해 주십시오.");
-	    	return;
-	    },
-		init: function() {
-			var myDropzone = this; // closure
-			var uploadTask = document.querySelector("#allFileUpload");
-			var clearTask = document.querySelector("#allFileClear");
-			
-			uploadTask.addEventListener("click", function(e) {
-				if (validate() === false) {
-					return;
-				}
-				
-				uploadFileCount = 0;
-	            uploadFileResultCount = 0;
-	            e.preventDefault();
-	            e.stopPropagation();
-				
-	            if (myDropzone.getQueuedFiles().length > 0) {
-	                uploadFileCount = myDropzone.getQueuedFiles().length;
-	                myDropzone.processQueue();
-	                fileUploadDialog.dialog( "open" );
-	            } else {
-	                alert("업로딩 할 파일이 존재하지 않습니다.");
-	                return;
-	            }
-			});
-	
-			clearTask.addEventListener("click", function () {
-	            if (confirm("정말 전체 항목을 삭제하겠습니까?")) {
-	            	// true 주면 업로드 중인 파일도 다 같이 삭제
-	            	myDropzone.removeAllFiles(true);
-	            }
-	        });
-			
-			this.on("sending", function(file, xhr, formData) {
-				formData.append("dataName", $("#dataName").val());
-				formData.append("dataGroupId", $("#dataGroupId").val());
-				formData.append("sharing", $("#sharing").val());
-				formData.append("dataType", $("#dataType").val());
-				formData.append("longitude", $("#longitude").val());
-				formData.append("latitude", $("#latitude").val());
-				formData.append("altitude", $("#altitude").val());
-				formData.append("description", $("#description").val());
-			});
-			
-			// maxFiles 카운터를 초과하면 경고창
-			this.on("maxfilesexceeded", function (data) {
-				myDropzone.removeAllFiles(true);
-				alert("최대 업로드 파일 수는 500개 입니다.");
-				return;
-			});
-			
-			this.on("success", function(file, response) {
-				if(file !== undefined && file.name !== undefined) {
-	                console.log("file name = " + file.name);
-	                fileUploadDialog.dialog( "close" );
-					if(response.errorCode === undefined || response.errorCode === null) {
-						uploadFileResultCount ++;
-						if(uploadFileCount === uploadFileResultCount) {
-						    alert("업로딩을 완료 하였습니다.");
-						    uploadFileCount = 0;
-						    uploadFileResultCount = 0;
-						}
-	                } else {
-	                    alertMessage(response);
-	                }
-	            } else {
-					console.log("------- success response = " + response);
-	            }
-	        });
-		}
-	};
-	
 	function validate() {
 		if ($("#dataName").val() === "") {
 			alert("데이터명을 입력하여 주십시오.");
@@ -355,37 +293,39 @@
 		}
 	}
 	
-	function alertMessage(response) {
-		if(uploadFileResultCount === 0) {
-			if(response.errorCode === "data.name.empty") {
-	    		alert("데이터명이 유효하지 않습니다.");
-	    	} else if(response.errorCode === "data.group.id.empty") {
-	    		alert("데이터 그룹명을 입력하여 주십시오.");
-	    	} else if(response.errorCode === "data.sharing.empty") {
-	    		alert("공유 유형을 입력하여 주십시오.");
-	    	} else if(response.errorCode === "data.longitude.empty") {
-	    		alert("대표 위치(경도)를 입력하여 주십시오.");
-	    	} else if(response.errorCode === "data.latitude.empty") {
-	    		alert("대표 위치(위도)를 입력하여 주십시오.");
-	    	} else if(response.errorCode === "data.altitude.empty") {
-	    		alert("대표 위치(높이)를 입력하여 주십시오.");
-	    	} else if(response.errorCode === "data.file.empty") {
-	    		alert("파일이 유효하지 않습니다. 다시 업로딩 해 주십시오.");
-	    	} else if(response.errorCode === "file.name.invalid") {
-				alert("파일명이 유효하지 않습니다.");
-	    	} else if(response.errorCode === "file.ext.invalid") {
-				alert("파일 확장자가 유효하지 않습니다.");
-	        } else if(response.errorCode === "file.size.invalid") {
-	            alert("파일 용량이 너무 커서 업로딩 할 수 없습니다.");
-	        } else if(response.errorCode === "db.exception") {
-	            alert("죄송 합니다. 서버 실행중에 오류가 발생 하였습니다. \n 로그를 확인하여 주십시오.");
-	        } else {
-	        	alert(response.errorCode);
-	        }
-	        uploadFileResultCount++;
+	//수정
+	var updateFlag = true;
+	$( "#updateButton" ).on( "click", function() {
+		if (validate() == false) {
+			return false;
 		}
-	    return;
-	}
+		if(updateFlag) {
+			updateFlag = false;
+			var formData = $("#uploadData").serialize();		
+			$.ajax({
+				url: "/upload-datas/${uploadData.uploadDataId}",
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+		        data: formData,
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert(JS_MESSAGE["update"]);
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
+					updateFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        updateFlag = true;
+				}
+			});
+		} else {
+			alert(JS_MESSAGE["button.dobule.click"]);
+			return;
+		}
+	});
 	
 	//지도에서 찾기
 	$( "#mapButtion" ).on( "click", function() {

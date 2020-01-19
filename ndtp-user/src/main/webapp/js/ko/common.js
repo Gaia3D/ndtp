@@ -77,7 +77,7 @@ function checkedStatus(element) {
 	return returnVal; 
 }
 
-function initJqueryCalendar() {
+function initDatePicker() {
 	$( ".date" ).datepicker({ 
 		dateFormat : "yymmdd",
 		dayNames : [ "일", "월", "화", "수", "목", "금", "토" ],

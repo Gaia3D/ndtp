@@ -158,13 +158,13 @@
     		SELECT NEXTVAL('converter_job_seq')
   		</selectKey>
 		INSERT INTO converter_job(
-			converter_job_id, upload_data_id, user_id, title, converter_template, file_count,
+			converter_job_id, upload_data_id, user_id, title, usf, converter_template, file_count,
 			<if test="status != null and status != ''">
 			status, 
 			</if>
 			error_code
 		) VALUES (
-			#{converterJobId}, #{uploadDataId}, #{userId}, #{title}, #{converterTemplate}, #{fileCount},
+			#{converterJobId}, #{uploadDataId}, #{userId}, #{title}, #{usf}, #{converterTemplate}, #{fileCount},
 			<if test="status != null and status != ''">
 			#{status}, 
 			</if>
@@ -207,13 +207,14 @@
 			<if test="converterTemplate != null and converterTemplate != ''">
 			converter_type = #{converterTemplate},
 			</if>
+			<if test="usf != null">
+			usf = #{usf},
+			</if>
 			<if test="errorCode != null and errorCode != ''">
 			error_code = #{errorCode},
 			</if>
 			update_date = now()
 		WHERE converter_job_id = #{converterJobId}
-			<if test="userId != null and userId != ''">
 			AND user_id = #{userId}
-			</if>
 	</update>
 </mapper>
