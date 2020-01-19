@@ -62,6 +62,7 @@
 				<col class="col-functions" />
 				<col class="col-functions" />
 				<col class="col-functions" />
+				<col class="col-functions" />
 				<col class="col-date" />
 				<thead>
 					<tr>
@@ -71,14 +72,15 @@
 	                    <th scope="col">사용 여부</th>
 	                    <th scope="col">데이터 건수</th>
 	                    <th scope="col">순서</th>
-	                    <th scope="col">수정/삭제</th>
+	                    <th scope="col">수정</th>
+	                    <th scope="col">삭제</th>
 	                    <th scope="col">등록일</th>
 					</tr>
 				</thead>
 				<tbody>
 <c:if test="${empty dataGroupList }">
 					<tr>
-						<td colspan="8" class="col-none">데이터 그룹이 존재하지 않습니다.</td>
+						<td colspan="9" class="col-none">데이터 그룹이 존재하지 않습니다.</td>
 					</tr>
 </c:if>								
 <c:if test="${!empty dataGroupList }">
@@ -175,8 +177,15 @@
 	                    </td>
 	                    <td class="col-type">
 							<a href="/data-group/modify?dataGroupId=${dataGroup.dataGroupId }" class="image-button button-edit">수정</a>
+	                    </td>
+	                    <td class="col-type">
+	<c:if test="${dataGroup.basic eq 'true' }">
+							불가(기본)
+	</c:if>                    
+	<c:if test="${dataGroup.basic ne 'true' }">			
 							<a href="/data-group/delete?dataGroupId=${dataGroup.dataGroupId }" onclick="return deleteWarning();" 
-										class="image-button button-delete"><spring:message code='delete'/></a>
+								class="image-button button-delete"><spring:message code='delete'/></a>
+	</c:if>
 	                    </td>
 	                    <td class="col-date">
 	                    	<fmt:parseDate value="${dataGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>

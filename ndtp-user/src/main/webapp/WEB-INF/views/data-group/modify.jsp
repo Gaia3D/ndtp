@@ -94,10 +94,12 @@
 					<span class="icon-glyph glyph-emark-dot color-warning"></span>
 				</th>
 				<td class="col-input radio-set">
-					<input type="radio" id="basicTrue" name="basic" value="true" >
-					<label for="basicTrue">기본</label>
-					<input type="radio" id="basicFalse" name="basic" value="false">
-					<label for="basicFalse">선택</label>
+	<c:if test="${dataGroup.basic eq 'true' }">
+					기본
+	</c:if>
+	<c:if test="${dataGroup.basic ne 'true' }">
+					선택
+	</c:if>
 				</td>
 			</tr>
 			<tr>
@@ -106,10 +108,15 @@
 					<span class="icon-glyph glyph-emark-dot color-warning"></span>
 				</th>
 				<td class="col-input radio-set">
+	<c:if test="${dataGroup.basic eq 'true' }">
+					사용
+	</c:if>
+	<c:if test="${dataGroup.basic ne 'true' }">
 					<input type="radio" id="availableTrue" name="available" value="true">
 					<label for="availableTrue">사용</label>
 					<input type="radio" id="availableFalse" name="available" value="false">
 					<label for="availableFalse">미사용</label>
+	</c:if>
 				</td>
 			</tr>
 			<tr>
@@ -175,9 +182,6 @@
 	
 </div>
 <!-- E: WRAP -->
-
-<!-- 상위 그룹 선택 다이얼 로그 -->
-<%@ include file="/WEB-INF/views/data-group/find-group-dialog.jsp" %>
 
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>

@@ -14,6 +14,7 @@
 	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
 	<link rel="stylesheet" href="/css/${lang}/user-style.css" />
 	<link rel="stylesheet" href="/css/${lang}/style.css" />
+	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css">
 	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 	<style type="text/css">
@@ -70,30 +71,30 @@
 			</tr>
 			<tr>
 				<th class="col-label" scope="row">
-					<form:label path="parentName">상위 그룹</form:label>
+					<form:label path="parentName">상위 데이터 그룹</form:label>
 					<span class="icon-glyph glyph-emark-dot color-warning"></span>
 				</th>
 				<td class="col-input">
 					<form:hidden path="parent" />
 					<form:input path="parentName" cssClass="l" readonly="true" />
-					<input type="button" id="dataGroupButtion" value="상위 그룹 선택" />
+					<input type="button" id="dataGroupButtion" value="상위 데이터 그룹 선택" />
 				</td>
 			</tr>
 			<tr>
-                   <th class="col-label" scope="row">
-                       <form:label path="sharing">공유 타입</form:label>
-                       <span class="icon-glyph glyph-emark-dot color-warning"></span>
-                   </th>
-                   <td class="col-input">
-                       <select id="sharing" name="sharing" class="selectBoxClass">
+				<th class="col-label" scope="row">
+                	<form:label path="sharing">공유 타입</form:label>
+                    <span class="icon-glyph glyph-emark-dot color-warning"></span>
+				</th>
+				<td class="col-input">
+                	<select id="sharing" name="sharing" class="selectBoxClass">
 						<option value="public" selected="selected">공개</option>
 						<option value="common">공통</option>
 						<option value="private">개인</option>
 						<option value="group">그룹</option>
 					</select>
-                   </td>
-               </tr>
-               <tr>
+				</td>
+			</tr>
+			<!-- <tr>
 				<th class="col-label l" scope="row">
 					기본 여부
 					<span class="icon-glyph glyph-emark-dot color-warning"></span>
@@ -104,7 +105,7 @@
 					<input type="radio" id="basicFalse" name="basic" value="false" checked >
 					<label for="basicFalse">선택</label>
 				</td>
-			</tr>
+			</tr> -->
 			<tr>
 				<th class="col-label l" scope="row">
 					사용 여부
@@ -182,7 +183,7 @@
 <!-- E: WRAP -->
 
 <!-- 상위 그룹 선택 다이얼 로그 -->
-<%@ include file="/WEB-INF/views/data-group/find-group-dialog.jsp" %>
+<%@ include file="/WEB-INF/views/data-group/parent-group-dialog.jsp" %>
 
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>

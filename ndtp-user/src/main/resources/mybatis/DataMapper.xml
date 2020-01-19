@@ -303,10 +303,6 @@
 		DELETE 
 		FROM data_info 
 		WHERE data_group_id = #{dataGroupId} 
-			AND parent = 0 
-			AND depth = 1
-			<if test="userId != null and userId != ''">
 			AND user_id = #{userId}
-			</if>
 	</delete>
 </mapper>

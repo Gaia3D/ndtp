@@ -43,6 +43,21 @@
 		<tr class="${depthClass } ${depthParentClass} ${ancestorClass }" style="${depthStyleDisplay}">
 			<td class="col-name" style="text-align: left;" nowrap="nowrap">
 				<span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"></span>
+		<c:if test="${dataGroup.depth eq 1 }">
+				<span style="font-size: 1.5em; color: Dodgerblue;">
+	            	<i class="fa fa-folder oneFolder" aria-hidden="true"></i>
+	            </span>
+		</c:if>
+		<c:if test="${dataGroup.depth eq 2 }">
+				<span style="font-size: 1.5em; color: Mediumslateblue;">
+	            	<i class="fa fa-folder oneFolder" aria-hidden="true"></i>
+	            </span>	
+		</c:if>		
+		<c:if test="${dataGroup.depth eq 3 }">
+				<span style="font-size: 1.5em; color: Tomato;;">
+	            	<i class="fa fa-folder oneFolder" aria-hidden="true"></i>
+	            </span>
+		</c:if>
 				${dataGroup.dataGroupName }
 			</td>
 			<td class="col-type">
@@ -67,6 +82,6 @@
 		</tbody>
 	</table>
 	<div class="button-group">
-		<input type="button" id="rootParentSelect" class="button" value="최상위 그룹으로 저장"/>
+		<input type="button" id="rootParentSelect" class="button" value="최상위 데이터 그룹으로 선택"/>
 	</div>
 </div>

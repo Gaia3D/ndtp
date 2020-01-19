@@ -9,8 +9,10 @@
 	<meta name="viewport" content="width=device-width">
 	<title>데이터 업로드 | NDTP</title>
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
+	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
 	<link rel="stylesheet" href="/css/${lang}/user-style.css" />
 	<link rel="stylesheet" href="/css/${lang}/style.css" />
+	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css">
 	<link rel="stylesheet" href="/externlib/dropzone/dropzone.min.css">
 	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
@@ -122,8 +124,8 @@
                     </th>
                     <td class="col-input">
                         <select id="sharing" name="sharing" class="selectBoxClass">
-							<option value="common">공통</option>
 							<option value="public">공개</option>
+							<option value="common">공통</option>
 							<option value="private">비공개</option>
 							<option value="group">그룹 공개</option>
 						</select>
@@ -135,31 +137,26 @@
 					<td class="col-input">
 						<select id="dataType" name="dataType" class="selectBoxClass">
 							<option value="citygml" selected="selected"> CITYGML </option>
+							<option value="indoorgml"> INDOORGML </option>
+							<option value="ifc"> IFC </option>
+							<option value="las"> LAS(POINT CLOUD) </option>
 							<option value="3ds"> 3DS </option>
 							<option value="obj"> OBJ </option>
 			          		<option value="dae"> DAE(COLLADA) </option>
-			          		<option value="ifc"> IFC </option>
-			          		<option value="las"> LAS </option>
-			          		<option value="indoorgml"> INDOORGML </option>
 						</select>
 					</td>
 				</tr>
 				<tr>
 					<th class="col-label" scope="row">
-					<form:label path="longitude">경도 / 위도</form:label>
+					<form:label path="longitude">대표 경도 / 위도 / 높이 </form:label>
 					</th>
-					<td class="col-input">
-						<form:input path="longitude" cssClass="m" />
-						<form:input path="latitude" cssClass="m" />
+					<td colspan="3"  class="col-input">
+						<form:input path="longitude" cssClass="m" placeholder="longitude" />
+						<form:input path="latitude" cssClass="m" placeholder="latitude" />
+						<form:input path="altitude" cssClass="m" placeholder="altitude" />
 						<input type="button" id="mapButtion" value="지도에서 찾기" />
 						<form:errors path="longitude" cssClass="error" />
 						<form:errors path="latitude" cssClass="error" />
-					</td>
-					<th class="col-label" scope="row">
-						<form:label path="altitude">높이</form:label>
-					</th>
-					<td class="col-input">
-						<form:input path="altitude" cssClass="m" />
 						<form:errors path="altitude" cssClass="error" />
 					</td>
 				</tr>

@@ -174,6 +174,24 @@
 			AND data_group_key = #{dataGroupKey}
 	</select>
 	
+	<!-- 데이터 삭제를 위해 조상 dataGroupId를 이용해서 모든 하위 dataGroupId를 취득 -->
+	<select id="getDataGroupListByAncestor" parameterType="dataGroup" resultType="int">
+		/* getDataGroupListByAncestor */
+		SELECT data_group_id
+		FROM data_group
+		WHERE ancestor = #{ancestor}
+			AND user_id = #{userId}
+	</select>
+	
+	<!-- 데이터 삭제를 위해 부모 dataGroupId를 이용해서 모든 하위 dataGroupId를 취득 -->
+	<select id="getDataGroupListByParent" parameterType="dataGroup" resultType="int">
+		/* getDataGroupListByParent */
+		SELECT data_group_id
+		FROM data_group
+		WHERE parent = #{ancestor}
+			AND user_id = #{userId}
+	</select>
+	
 	<!-- 사용자 데이터 그룹 등록 -->
 	<insert id="insertDataGroup" parameterType="dataGroup">
 		/* insertDataGroup */
@@ -335,15 +353,6 @@
 			AND user_id = #{userId}
 	</update>
 	
-	<!-- 사용자 데이터 그룹 삭제 -->
-	<delete id="deleteDataGroup" parameterType="dataGroup">
-		/* deleteDataGroup */
-		DELETE 
-		FROM data_group 
-		WHERE data_group_id = #{dataGroupId} 
-			AND user_id = #{userId}
-	</delete>
-	
 	<!-- ancestor를 이용하여 사용자 데이터 그룹 삭제 -->
 	<delete id="deleteDataGroupByAncestor" parameterType="dataGroup">
 		/* deleteDataGroupByAncestor */
@@ -359,6 +368,15 @@
 		DELETE 
 		FROM data_group 
 		WHERE parent = #{dataGroupId} 
+			AND user_id = #{userId}
+	</delete>
+	
+	<!-- 사용자 데이터 그룹 삭제 -->
+	<delete id="deleteDataGroup" parameterType="dataGroup">
+		/* deleteDataGroup */
+		DELETE 
+		FROM data_group 
+		WHERE data_group_id = #{dataGroupId} 
 			AND user_id = #{userId}
 	</delete>
 </mapper>
