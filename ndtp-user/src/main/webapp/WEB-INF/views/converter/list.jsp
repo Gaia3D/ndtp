@@ -43,7 +43,7 @@
 			</ul>
 		</div>
 		<div class="filters">
-			<form:form id="searchForm" modelAttribute="converterJob" method="post" action="/converter/list" onsubmit="return searchCheck();">
+			<form:form id="searchForm" modelAttribute="converterJob" method="get" action="/converter/list" onsubmit="return searchCheck();">
 			<div class="input-group row">
 				<div class="input-set">
 					<label for="searchWord"><spring:message code='search.word'/></label>

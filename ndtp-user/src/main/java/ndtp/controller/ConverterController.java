@@ -60,7 +60,7 @@ public class ConverterController {
 			converterJob.setEndDate(converterJob.getEndDate().substring(0, 8) + DateUtils.END_TIME);
 		}
 		
-		long totalCount = converterService.getListConverterJobTotalCount(converterJob);
+		long totalCount = converterService.getConverterJobTotalCount(converterJob);
 		
 		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, converterJob), totalCount, Long.valueOf(pageNo).longValue());
 		log.info("@@ pagination = {}", pagination);

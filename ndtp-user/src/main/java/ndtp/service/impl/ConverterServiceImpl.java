@@ -63,8 +63,8 @@ public class ConverterServiceImpl implements ConverterService {
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public Long getListConverterJobTotalCount(ConverterJob converterJob) {
-		return converterMapper.getListConverterJobTotalCount(converterJob);
+	public Long getConverterJobTotalCount(ConverterJob converterJob) {
+		return converterMapper.getConverterJobTotalCount(converterJob);
 	}
 	
 	/**
@@ -73,8 +73,8 @@ public class ConverterServiceImpl implements ConverterService {
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public Long getListConverterJobFileTotalCount(ConverterJobFile converterJobFile) {
-		return converterMapper.getListConverterJobFileTotalCount(converterJobFile);
+	public Long getConverterJobFileTotalCount(ConverterJobFile converterJobFile) {
+		return converterMapper.getConverterJobFileTotalCount(converterJobFile);
 	}
 	
 	/**
