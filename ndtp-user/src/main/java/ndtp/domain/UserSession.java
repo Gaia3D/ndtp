@@ -17,7 +17,6 @@ import lombok.ToString;
  * @author jeongdae
  *
  */
-@ToString
 @Builder
 @Getter
 @Setter

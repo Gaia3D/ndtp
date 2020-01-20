@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@ToString
+@ToString(callSuper = true)
 @Builder
 @Getter
 @Setter

@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@ToString
+@ToString(callSuper = true)
 @Setter
 @Getter
 public class PlaceName extends Search {
