@@ -196,7 +196,7 @@
 		$("#userGroupName").val(parentName);
 		userDialog.dialog("close");
 	}
-
+	
 	// 아이디 중복 확인
  	$("#userDuplicationButton").on("click", function() {
 		var userId = $("#userId").val();
@@ -283,9 +283,14 @@
 			return false;
 		}
 	}
-
+	// 초기화
 	function formClear() {
-
+		$("#userId").val("");
+		$("#userGroupId").val("");
+		$("#userGroupName").val("");
+		$("#userName").val("");
+		$("#password").val("");
+		$("#passwordConfirm").val("");
 	}
 
 </script>

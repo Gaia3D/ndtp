@@ -118,6 +118,7 @@
 
 	function validate() {
 		var number = /^[0-9]+$/;
+		var exceptKorean = /^[a-zA-Z0-9]*$/;
 		if ($("#userGroupName").val() === null || $("#userGroupName").val() === "") {
 			alert("데이터 그룹명을 입력해 주세요.");
 			$("#userGroupName").focus();
@@ -125,6 +126,12 @@
 		}
 		if ($("#userGroupKey").val() === null || $("#userGroupKey").val() === "") {
 			alert("데이터 그룹명(한글불가)을 입력해 주세요.");
+			$("#userGroupKey").focus();
+			return false;
+		}
+		if (!number.test($("#userGroupKey").val())) {
+			alert("데이터 그룹명은 한글을 입력할 수 없습니다.");
+			$("#userGroupKey").val("");
 			$("#userGroupKey").focus();
 			return false;
 		}
@@ -208,10 +215,17 @@
                 + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
         //popWin.document.title = layerName;
 	});
-
+	
+	// 초기화
 	function formClear() {
-
-	}
+		$("#userGroupName").val("");
+		$("#userGroupKey").val("");
+		$("#parent").val(0);
+		$("#parentName").val("${userGroup.parentName}");
+		$("input:radio[name='basic']:radio[value='false']").prop('checked',true);
+		$("input:radio[name='available']:radio[value='true']").prop('checked', true);
+		$("#description").val("");
+	};
 
 </script>
 </body>
