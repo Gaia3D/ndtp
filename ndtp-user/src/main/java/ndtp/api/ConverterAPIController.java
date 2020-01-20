@@ -24,7 +24,7 @@ import ndtp.service.ConverterService;
 @Slf4j
 @RestController
 @RequestMapping("/api/converters")
-public class ConverterRestController {
+public class ConverterAPIController {
 	
 //	@Autowired
 //	private PropertiesConfig propertiesConfig;

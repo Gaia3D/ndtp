@@ -119,7 +119,7 @@
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 			                    <td class="col-input">
-			                        <form:input path="layerKey" cssClass="ml" />
+			                        <form:input path="layerKey" cssClass="ml" readonly="true" />
 			                        <form:errors path="layerKey" cssClass="error" />
 			                    </td>
 			                </tr>
