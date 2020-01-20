@@ -204,7 +204,10 @@
 			<if test="location != null">
 			location,
 			</if>
-			altitude, duration, location_update_type,
+			altitude, duration,
+			<if test="locationUpdateType != null and locationUpdateType != ''">
+			location_update_type,
+			</if>
 			<if test="metainfo != null and metainfo != ''">
 			metainfo,
 			</if>
@@ -238,7 +241,10 @@
 			<if test="location != null">
 			ST_GeomFromText(#{location}, 4326),
 			</if>
-			#{altitude}, #{duration}, #{locationUpdateType},
+			#{altitude}, #{duration}, 
+			<if test="locationUpdateType != null and locationUpdateType != ''">
+			#{locationUpdateType},
+			</if>
 			<if test="metainfo != null and metainfo != ''">
 			TO_JSON(#{metainfo}::json),
 			</if>

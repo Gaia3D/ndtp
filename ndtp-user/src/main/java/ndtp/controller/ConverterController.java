@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
 import ndtp.domain.ConverterJob;
+import ndtp.domain.Key;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
+import ndtp.domain.UserSession;
 import ndtp.service.ConverterService;
 import ndtp.utils.DateUtils;
 
@@ -47,8 +49,8 @@ public class ConverterController {
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest request, ConverterJob converterJob, @RequestParam(defaultValue="1") String pageNo, Model model) {
 		
-//		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-//		converterJob.setUserId(userSession.getUserId());		
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		converterJob.setUserId(userSession.getUserId());		
 		log.info("@@ converterJob = {}", converterJob);
 		
 		if(!StringUtils.isEmpty(converterJob.getStartDate())) {
@@ -58,7 +60,7 @@ public class ConverterController {
 			converterJob.setEndDate(converterJob.getEndDate().substring(0, 8) + DateUtils.END_TIME);
 		}
 		
-		long totalCount = converterService.getListConverterJobTotalCount(converterJob);
+		long totalCount = converterService.getConverterJobTotalCount(converterJob);
 		
 		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, converterJob), totalCount, Long.valueOf(pageNo).longValue());
 		log.info("@@ pagination = {}", pagination);

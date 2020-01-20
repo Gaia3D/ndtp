@@ -99,9 +99,9 @@ public class AMQPSubscribe {
 		try {
 			URI uri = null;
 			if(ServerTarget.USER == ServerTarget.valueOf(serverTarget)) {
-				uri = new URI(propertiesConfig.getCmsUserRestServer() + "/api/converter/status");
+				uri = new URI(propertiesConfig.getCmsUserRestServer() + "/api/converters/status");
 			} else {
-				uri = new URI(propertiesConfig.getCmsAdminRestServer() + "/api/converter/status");
+				uri = new URI(propertiesConfig.getCmsAdminRestServer() + "/api/converters/status");
 			}
 			restTemplate.postForEntity(uri, converterJob, Map.class);
 		} catch (URISyntaxException e) {
