@@ -232,7 +232,7 @@
 			data_name = #{dataName},
 			</if>
 			<if test="dataType != null and dataType != ''">
-			data_name = #{dataType},
+			data_type = #{dataType},
 			</if>
 			<if test="mappingType != null and mappingType != ''">
 			mapping_type = #{mappingType},

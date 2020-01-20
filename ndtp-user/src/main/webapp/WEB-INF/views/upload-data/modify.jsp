@@ -235,7 +235,6 @@
 </div>
 <!-- E: WRAP -->
 <%@ include file="/WEB-INF/views/upload-data/data-group-dialog.jsp" %>
-<%@ include file="/WEB-INF/views/upload-data/spinner-dialog.jsp" %>
 
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
@@ -245,7 +244,6 @@
 	$(document).ready(function() {
 		$("#sharing").val("${uploadData.sharing}");
 		$("#dataType").val("${uploadData.dataType}");
-		
 	});
 	
 	var dataGroupDialog = $( ".dialog" ).dialog({

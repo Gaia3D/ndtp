@@ -7,7 +7,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
-	<title>데이터 변환 목록 | NDTP</title>
+	<title>업로딩 데이터 변환 목록 | NDTP</title>
 	
 	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
@@ -105,6 +105,7 @@
 				<col class="col-number" />
 				<col class="col-number" />
 				<col class="col-number" />
+				<col class="col-number" />
 				<col class="col-functions" />
 				<col class="col-functions" />
 				<col class="col-functions" />
@@ -113,6 +114,7 @@
 						<th scope="col" class="col-number"><spring:message code='number'/></th>
 						<th scope="col" class="col-name">변환 유형</th>
 						<th scope="col" class="col-name">제목</th>
+						<th scope="col" class="col-name">U.S.F</th>
 						<th scope="col" class="col-name">상태</th>
 						<th scope="col" class="col-name">파일 개수</th>
 						<th scope="col" class="col-name">에러코드</th>
@@ -122,7 +124,7 @@
 				<tbody>
 <c:if test="${empty converterJobList }">
 					<tr>
-						<td colspan="7" class="col-none">Converter Job이 존재하지 않습니다.</td>
+						<td colspan="8" class="col-none">Converter Job이 존재하지 않습니다.</td>
 					</tr>
 </c:if>
 <c:if test="${!empty converterJobList }">
@@ -136,9 +138,15 @@
 <c:if test="${converterJob.converterTemplate eq 'extra-big-building'}">초대형 빌딩</c:if>
 <c:if test="${converterJob.converterTemplate eq 'single-realistic-mesh'}">단일 point cloud</c:if>
 <c:if test="${converterJob.converterTemplate eq 'splitted-realistic-mesh'}">분할 point cloud</c:if>
-<c:if test="${converterJob.converterTemplate eq '3'}">초대형 건물</c:if>
 						</td>
 						<td class="col-name">${converterJob.title }</td>
+						<td class="col-count"><fmt:formatNumber value="${converterJob.usf}" type="number"/>
+<c:if test="${converterJob.usf ge 1 and converterJob.usf lt 10}"> m</c:if>
+<c:if test="${converterJob.usf ge 0.1 and converterJob.usf lt 1 }"> cm</c:if>
+<c:if test="${converterJob.usf ge 0.01 and converterJob.usf lt 0.1}"> cm</c:if>
+<c:if test="${converterJob.usf ge 0.001 and converterJob.usf lt 0.01}"> mm</c:if>
+<c:if test="${converterJob.usf ge 10}"> m</c:if>						
+						</td>
 						<td class="col-type">
 <c:if test="${converterJob.status eq 'ready'}">준비</c:if>
 <c:if test="${converterJob.status eq 'success'}">성공</c:if>
@@ -146,7 +154,7 @@
 <c:if test="${converterJob.status eq 'fail'}">실패</c:if>								
 						</td>
 						<td class="col-count"><fmt:formatNumber value="${converterJob.fileCount}" type="number"/> 개</td>
-						<td class="col-count">
+						<td class="col-type">
 <c:if test="${empty converterJob.errorCode }">
 							없음
 </c:if>
@@ -179,6 +187,20 @@
 <script type="text/javascript" src="/js/${lang}/ui-controll.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
+		var searchWord = "${converterJob.searchWord}";
+		var searchOption = "${converterJob.searchOption}";
+		var orderWord = "${converterJob.orderWord}";
+		var orderValue = "${converterJob.orderValue}";
+		var listCounter = "${converterJob.listCounter}";
+		
+		if(searchWord != "") $("#searchWord").val("${converterJob.searchWord}");
+		if(searchOption != "") $("#searchOption").val("${converterJob.searchOption}");
+		if(orderWord != "") $("#orderWord").val("${converterJob.orderWord}");
+		if(orderValue != "") $("#orderValue").val("${converterJob.orderValue}");
+		if(listCounter != "") $("#listCounter").val("${converterJob.listCounter}");
+		
+		initDatePicker();
+		initCalendar(new Array("startDate", "endDate"), new Array("${converterJob.startDate}", "${converterJob.endDate}"));
 	});
 	
 	//전체 선택 

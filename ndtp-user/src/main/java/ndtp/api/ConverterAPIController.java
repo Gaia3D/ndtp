@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +27,6 @@ import ndtp.service.ConverterService;
 @RequestMapping("/api/converters")
 public class ConverterAPIController {
 	
-//	@Autowired
-//	private PropertiesConfig propertiesConfig;
-	
 	@Autowired
 	private ConverterService converterService;
 	
@@ -46,6 +44,19 @@ public class ConverterAPIController {
 		String errorCode = null;
 		String message = null;
 		try {
+			if(converterJob.getConverterJobId() == null) {
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "converter.job.id.empty");
+				result.put("message", message);
+	            return result;
+			}
+			if(StringUtils.isEmpty(converterJob.getUserId())) {
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "converter.userId.empty");
+				result.put("message", message);
+	            return result;
+			}
+			
 			converterService.updateConverterJob(converterJob);
 		} catch(Exception e) {
 			e.printStackTrace();
