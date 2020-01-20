@@ -4,11 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import ndtp.domain.AddrJibun;
-import ndtp.domain.CountryPlaceNumber;
 import ndtp.domain.District;
-import ndtp.domain.NewAddress;
-import ndtp.domain.PlaceName;
 import ndtp.domain.SkEmd;
 import ndtp.domain.SkSdo;
 import ndtp.domain.SkSgg;

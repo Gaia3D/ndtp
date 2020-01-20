@@ -32,11 +32,7 @@
 		<typeAlias type="ndtp.domain.UserPolicy" alias="userPolicy"/>
     	<typeAlias type="ndtp.domain.UserSession" alias="userSession" />
     	
-    	<typeAlias type="ndtp.domain.AddrJibun" alias="addrJibun"/>
  		<typeAlias type="ndtp.domain.District" alias="district"/>
- 		<typeAlias type="ndtp.domain.PlaceName" alias="placeName"/>
- 		<typeAlias type="ndtp.domain.NewAddress" alias="newAddress"/>
- 		<typeAlias type="ndtp.domain.CountryPlaceNumber" alias="countryPlaceNumber"/>
  		<typeAlias type="ndtp.domain.SkSdo" alias="skSdo"/>
  		<typeAlias type="ndtp.domain.SkSgg" alias="skSgg"/>
  		<typeAlias type="ndtp.domain.SkEmd" alias="skEmd"/>
