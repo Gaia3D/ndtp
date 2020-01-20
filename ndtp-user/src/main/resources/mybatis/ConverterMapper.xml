@@ -4,8 +4,8 @@
 <mapper namespace="ndtp.persistence.ConverterMapper">
 
 	<!-- converter job 총 건수 -->
-	<select id="getListConverterJobTotalCount" parameterType="converterJob" resultType="long">
-		/* getListConverterJobTotalCount */
+	<select id="getConverterJobTotalCount" parameterType="converterJob" resultType="long">
+		/* getConverterJobTotalCount */
 		SELECT COUNT(converter_job_id) 
 		FROM converter_job
 		<trim prefix="WHERE" prefixOverrides="AND">
@@ -35,8 +35,8 @@
 	</select>
 	
 	<!-- converter job file 총 건수 -->
-	<select id="getListConverterJobFileTotalCount" parameterType="converterJobFile" resultType="long">
-		/* getListConverterJobFileTotalCount */
+	<select id="getConverterJobFileTotalCount" parameterType="converterJobFile" resultType="long">
+		/* getConverterJobFileTotalCount */
 		SELECT COUNT(converter_job_file_id) 
 		FROM converter_job_file
 		<trim prefix="WHERE" prefixOverrides="AND">

@@ -17,7 +17,7 @@ import lombok.ToString;
  * @author jeongdae
  *
  */
-@ToString
+@ToString(callSuper = true)
 @Builder
 @Getter
 @Setter
