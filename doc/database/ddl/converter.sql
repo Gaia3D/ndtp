@@ -46,7 +46,7 @@ comment on column converter_job.update_date is '수정일';
 comment on column converter_job.insert_date is '등록일';
 
 
--- 사용자 f4d 변환 이력
+-- 사용자 f4d 변환 이력. Job과 파일의 관계를 1 : N 으로 설계 했으나 지금은 Converter가 1 : 1 만 지원해서 필요 없는 테이블
 create table converter_job_file(
 	converter_job_file_id				bigint,
 	converter_job_id					bigint,

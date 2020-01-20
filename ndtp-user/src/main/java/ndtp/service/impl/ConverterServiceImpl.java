@@ -282,6 +282,8 @@ public class ConverterServiceImpl implements ConverterService {
 			dataGroup.setLocation("POINT(" + dataInfo.getLongitude() + " " + dataInfo.getLatitude() + ")");
 			dataGroup.setAltitude(dataInfo.getAltitude());
 		}
+		
+		dataGroupService.updateDataGroup(dataGroup);
 	}
 	
 	/**
