@@ -35,52 +35,12 @@
 								<li><a href="#contentTab">컨텐트</a></li>
 								<li><a href="#uploadTab">사용자 업로딩 파일</a></li>
 							</ul>
-							
-							<div id="userTab">
-							<form:form id="policyUser" modelAttribute="policy" method="post" onsubmit="return false;">
-								<form:hidden path="policyId" />
-							<table class="input-table scope-row">
-								<col class="col-label l" />
-								<col class="col-input" />
-								<tr>
-									<th class="col-label l" scope="row">
-										<form:label path="userIdMinLength">사용자 아이디 최소길이</form:label>
-										<span class="icon-glyph glyph-emark-dot color-warning"></span>
-									</th>
-									<td class="col-input">
-										<form:input path="userIdMinLength" maxlength="2" cssClass="s" />
-										<span class="table-desc">5이상</span>
-										<form:errors path="userIdMinLength" cssClass="error" />
-									</td>
-								</tr>
-								<tr>
-									<th class="col-label l" scope="row">
-										<form:label path="userFailSigninCount">로그인 실패 횟수</form:label>
-										<span class="icon-glyph glyph-emark-dot color-warning"></span>
-									</th>
-									<td class="col-input">
-										<form:input path="userFailSigninCount" maxlength="2" cssClass="s" />
-										<form:errors path="userFailSigninCount" cssClass="error" />
-									</td>
-								</tr>
-								<tr>
-									<th class="col-label l" scope="row">
-										<form:label path="userFailLockRelease">로그인 실패 잠금 해제 기간</form:label>
-										<span class="icon-glyph glyph-emark-dot color-warning"></span>
-									</th>
-									<td class="col-input">
-										<form:input path="userFailLockRelease" maxlength="2" cssClass="s" />
-										<form:errors path="userFailLockRelease" cssClass="error" />
-									</td>
-								</tr>
-							</table>
-							<div class="button-group">
-								<div class="center-buttons">
-											<a href="#" onclick="updatePolicyUser();" class="button"><spring:message code='save'/></a>
-								</div>
-							</div>
-							</form:form>
-						</div>
+							<%@ include file="/WEB-INF/views/policy/modify-user.jsp" %>
+							<%@ include file="/WEB-INF/views/policy/modify-password.jsp" %>
+							<%@ include file="/WEB-INF/views/policy/modify-notice.jsp" %>
+							<%@ include file="/WEB-INF/views/policy/modify-security.jsp" %>
+							<%@ include file="/WEB-INF/views/policy/modify-content.jsp" %>
+							<%@ include file="/WEB-INF/views/policy/modify-upload.jsp" %>
 						</div>
 					</div>
 				</div>
@@ -88,16 +48,70 @@
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
-	
+
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript" src="/js/navigation.js"></script>
 <script type="text/javascript">
-$(document).ready(function() {
-	$( ".tabs" ).tabs();
-});
+	$(document).ready(function() {
+		$( ".tabs" ).tabs();
+	});
+
+	var updatPolicyUserFlag = true;
+	function updatePolicyUser() {
+	    if(updatPolicyUserFlag) {
+	        //if( contentsCheck() === false ) return false;
+
+	        updatPolicyUserFlag = false;
+	        var formData = $('#policyUser').serialize();
+	        $.ajax({
+				url: "/policy/modify-user",
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+		        data: formData + "&policyId=${policy.policyId}",
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert("사용자 정책이 수정 되었습니다");
+						window.location.reload();
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
+					updatPolicyUserFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        updatPolicyUserFlag = true;
+				}
+			});
+	    } else {
+	        alert("진행 중입니다.");
+	        return;
+		}
+	}
+
+	function updatePolicyPassword() {
+
+	}
+
+	function updatePolicyNotice() {
+
+	}
+
+	function updatePolicySecurity() {
+
+	}
+
+	function updatePolicyContent() {
+
+	}
+
+	function updatePolicyUpload() {
+
+	}
+
 </script>
 </body>
 </html>
