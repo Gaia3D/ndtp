@@ -33,9 +33,9 @@ public class UserPolicy implements Serializable {
 	// 초기 카메라 이동 높이
 	private String initAltitude;
 	// 초기 카메라 이동 시간. 초 단위
-	private Long initDuration;
+	private Integer initDuration;
 	// field of view. 기본값 0(1.8 적용) 
-	private Long initDefaultFov;
+	private Float initDefaultFov;
 	private String lod0;
 	private String lod1;
 	private String lod2;
@@ -43,7 +43,7 @@ public class UserPolicy implements Serializable {
 	private String lod4;
 	private String lod5;
 	// 그림자 반경 
-	private String ssaoRadius;
+	private Float ssaoRadius;
 	
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Timestamp updateDate;

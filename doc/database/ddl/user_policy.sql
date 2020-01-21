@@ -2,19 +2,19 @@ drop table if exists user_policy cascade;
 
 create table user_policy (
 	user_policy_id				integer,
-	user_id						varchar(32)						not null,
+	user_id						varchar(32)			not null,
 	init_latitude				varchar(30)			default '37.521168',
 	init_longitude				varchar(30)			default '126.924185',
 	init_altitude				varchar(30)			default '3000.0',
 	init_duration				integer				default 3,
-	init_default_fov			integer				default 0,
+	init_default_fov			numeric(3,2)		default 0,
 	lod0						varchar(20)			default '15',
 	lod1						varchar(20)			default '60',
 	lod2						varchar(20)			default '90',
 	lod3						varchar(20)			default '200',
 	lod4						varchar(20)			default '1000',
 	lod5						varchar(20)			default '50000',
-	ssao_radius					varchar(20)			default '0.15',
+	ssao_radius					numeric(8,2)		default  0.15,
 	update_date					timestamp with time zone,
 	insert_date					timestamp with time zone		default now(),
 	constraint user_policy_pk	primary key (user_policy_id)

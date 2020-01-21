@@ -97,11 +97,11 @@ public class GeoPolicy {
  	// 초기 카메라 이동 높이
  	private String initAltitude;
  	// 초기 카메라 이동 시간. 초 단위
- 	private Long initDuration;
+ 	private Integer initDuration;
  	// 기본 Terrain
  	private String initDefaultTerrain;
  	// field of view. 기본값 0(1.8 적용)
- 	private Long initDefaultFov;
+ 	private Float initDefaultFov;
  	
  	// LOD0. 기본값 15M
  	private String lod0;
@@ -117,7 +117,7 @@ public class GeoPolicy {
  	private String lod5;
  	
  	// 그림자 반경
-  	private String ssaoRadius;
+  	private Float ssaoRadius;
   	// cullFace 사용유무. 기본 false
   	private Boolean cullFaceEnable;
   	// timeLine 사용유무. 기본 false

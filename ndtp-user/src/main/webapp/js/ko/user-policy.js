@@ -53,10 +53,10 @@ var UserPolicy = function(magoInstance) {
 	$("#findStartPoint").click(function(e){
 		var magoManager = MAGO3D_INSTANCE.getMagoManager();
 		// TODO event 삭제 필요 
-		magoManager.on(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
+		magoManager.once(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
 			var longitude = result.clickCoordinate.geographicCoordinate.longitude;
 			var latitude = result.clickCoordinate.geographicCoordinate.latitude;
-			var altitude = result.clickCoordinate.geographicCoordinate.altitude;
+			var altitude = getCameraCurrentPositionAPI(MAGO3D_INSTANCE).alt;
 			
 			$("#initLatitude").val(latitude);
 			$("#initLongitude").val(longitude);
