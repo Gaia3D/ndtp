@@ -18,13 +18,13 @@ import lombok.ToString;
  * @author jeongdae
  *
  */
-@ToString
+@ToString(callSuper = true)
 @Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Role {
+public class Role extends Search {
 	
 	private Search search;
 

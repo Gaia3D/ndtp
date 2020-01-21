@@ -74,9 +74,6 @@
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-	$("input[name='datainfoDisplay']").filter("[value='${userPolicy.datainfoDisplay}']").prop("checked", true);
-	$("input[name='originDisplay']").filter("[value='${userPolicy.originDisplay}']").prop("checked", true);
-	$("input[name='bboxDisplay']").filter("[value='${userPolicy.bboxDisplay}']").prop("checked", true);
 });
 
 var updateUserPolicyFlag = true;

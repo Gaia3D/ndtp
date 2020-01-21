@@ -1,5 +1,6 @@
 package ndtp.domain;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -16,7 +17,7 @@ import lombok.ToString;
  * @author jeongdae
  *
  */
-@ToString
+@ToString(callSuper = true)
 @Builder
 @Getter
 @Setter
@@ -45,6 +46,8 @@ public class ConverterJob extends Search {
 	private String title;
 	// 변환 유형. basic : 기본, building : 빌딩, extra-big-building : 초대형 빌딩, single-realistic-mesh : 단일 point cloud 데이터, splitted-realistic-mesh : 분할 point cloud 데이터
 	private String converterTemplate;
+	// unit scale factor. 설계 파일의 1이 의미하는 단위. 기본 1 = 0.01m
+	private BigDecimal usf;
 	// 대상 file 개수
 	private Integer fileCount;
 	// 상태. ready : 준비, success : 성공, waiting : 승인대기, fail : 실패

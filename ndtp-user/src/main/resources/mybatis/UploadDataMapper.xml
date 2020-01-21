@@ -8,15 +8,12 @@
 		/* getUploadDataTotalCount */
 		SELECT COUNT(upload_data_id) 
 		FROM upload_data
-		<trim prefix="WHERE" prefixOverrides="AND">
+		WHERE user_id = #{userId}
 			<if test="sharing != null and sharing != ''">
-			sharing = #{sharing}
+			AND sharing = #{sharing}
 			</if>
 			<if test="dataType != null and dataType != ''">
 			AND data_type = #{dataType}
-			</if>
-			<if test="userId != null and userId != ''">
-			AND user_id = #{userId}
 			</if>
 			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
 			AND ${searchWord} = #{searchValue}
@@ -34,7 +31,6 @@
 			AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
-		</trim>
 	</select>
 	
 	<!-- 사용자가 업로드 완료한 파일 목록 -->
@@ -42,7 +38,8 @@
 		/* getListUploadData */
 		SELECT A.*, B.data_group_name
 		FROM upload_data A, data_group B
-		WHERE A.data_group_id = B.data_group_id
+		WHERE A.user_id = #{userId}
+			AND A.data_group_id = B.data_group_id
 		<if test="dataGroupName != null and dataGroupName != ''">
 			AND B.data_group_name = #{dataGroupName}
 		</if>
@@ -51,9 +48,6 @@
 		</if>
 		<if test="dataType != null and dataType != ''">
 			AND A.data_type = #{dataType}
-		</if>
-		<if test="userId != null and userId != ''">
-			AND A.user_id = #{userId}
 		</if>
 		<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
 			AND ${searchWord} = #{searchValue}
@@ -89,7 +83,7 @@
 		FROM upload_data A, data_group B
 		WHERE A.data_group_id = B.data_group_id
 			<if test="userId != null and userId != ''">
-			AND user_id = #{userId}
+			AND A.user_id = #{userId}
 			</if>
 			AND upload_data_id = #{uploadDataId}
 	</select>
@@ -117,12 +111,10 @@
 	<!-- 업로딩한 파일 목록 -->
 	<select id="getListUploadDataFile" parameterType="uploadData" resultType="uploadDataFile">
 		/* getListUploadDataFile */
-		SELECT A.data_group_id, A.sharing, A.data_name, A.location, A.altitude, B.*
+		SELECT A.data_group_id, A.sharing, A.data_type, A.data_name, A.location, A.altitude, B.*
 		FROM upload_data A, upload_data_file B
 		WHERE A.upload_data_id = B.upload_data_id
-		<if test="userId != null and userId != ''">
-			AND B.user_id =#{userId} 
-		</if> 
+			AND B.user_id = #{userId}
 		<if test="converterTarget != null">
 			AND B.converter_target = #{converterTarget}
 		</if>
@@ -145,16 +137,10 @@
   		</selectKey>
 		INSERT INTO upload_data(
 			upload_data_id, data_group_id, sharing, data_type, data_name, user_id, 
-			<if test="latitude != null">
-			location, altitude,
-			</if>
-			file_count, description
+			location, altitude, file_count, description
 		) VALUES (
 			#{uploadDataId}, #{dataGroupId}, #{sharing}, #{dataType}, #{dataName}, #{userId}, 
-			<if test="latitude != null">
-			ST_GeomFromText(#{location}, 4326), #{altitude},
-			</if>
-			#{fileCount}, #{description}
+			ST_GeomFromText(#{location}, 4326), #{altitude}, #{fileCount}, #{description}
 		)
 	</insert>
 	

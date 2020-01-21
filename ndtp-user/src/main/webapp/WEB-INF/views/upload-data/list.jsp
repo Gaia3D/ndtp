@@ -7,7 +7,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
-	<title>업로딩 목록 | NDTP</title>
+	<title>업로딩 데이터 목록 | NDTP</title>
 	
 	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
@@ -35,8 +35,8 @@
 		<div style="padding: 20px 20px 0px 10px; font-size: 18px;">3D 업로딩 데이터 자동 변환</div>
 		<div class="tabs" >
 			<ul class="tab">
-				<li onclick="location.href='/user-data-group/list'">데이터 그룹</li>
-				<li onclick="location.href='/user-data-group/input'">데이터 그룹 등록</li>
+				<li onclick="location.href='/data-group/list'">데이터 그룹</li>
+				<li onclick="location.href='/data-group/input'">데이터 그룹 등록</li>
 				<li onclick="location.href='/upload-data/input'">업로딩 데이터</li>
 			   	<li onclick="location.href='/upload-data/list'" class="on">업로딩 데이터 목록</li>
 			  	<li onclick="location.href='/converter/list'">업로딩 데이터 변환 목록</li>
@@ -44,13 +44,13 @@
 		</div>
 		
 		<div class="filters">
-			<form:form id="searchForm" modelAttribute="uploadData" method="post" action="/upload-data/list-upload-data" onsubmit="return searchCheck();">
+			<form:form id="searchForm" modelAttribute="uploadData" method="get" action="/upload-data/list" onsubmit="return searchCheck();">
 			<div class="input-group row">
 				<div class="input-set">
 					<label for="searchWord"><spring:message code='search.word'/></label>
 					<select id="searchWord" name="searchWord" class="selectBoxClass">
 						<option value=""><spring:message code='select'/></option>
-	          			<option value="data_name">파일명</option>
+	          			<option value="data_name">데이터명</option>
 					</select>
 					<select id="searchOption" name="searchOption" class="selectBoxClass">
 						<option value="0"><spring:message code='search.same'/></option>
@@ -60,9 +60,9 @@
 				</div>
 				<div class="input-set">
 					<label for="startDate"><spring:message code='search.date'/></label>
-					<input type="text" class="s date" id="startDate" name="startDate" />
+					<input type="text" id="startDate" name="startDate" class="s date" />
 					<span class="delimeter tilde">~</span>
-					<input type="text" class="s date" id="endDate" name="endDate" />
+					<input type="text" id="endDate" name="endDate" class="s date" />
 				</div>
 				<div class="input-set">
 					<label for="orderWord"><spring:message code='search.order'/></label>
@@ -119,9 +119,9 @@
 					<tr>
 						<th scope="col" class="col-checkbox"><input type="checkbox" id="chkAll" name="chkAll" /></th>
 						<th scope="col" class="col-number"><spring:message code='number'/></th>
+						<th scope="col" class="col-name">그룹명</th>
 						<th scope="col" class="col-name">공유 유형</th>
 						<th scope="col" class="col-name">데이터 타입</th>
-						<th scope="col" class="col-name">그룹명</th>
 						<th scope="col" class="col-name">데이터명</th>
 						<th scope="col" class="col-name">파일 개수</th>
 						<th scope="col" class="col-name">Converter 횟수</th>
@@ -144,6 +144,7 @@
 							<input type="checkbox" id="uploadDataId_${uploadData.uploadDataId}" name="uploadDataId" value="${uploadData.uploadDataId}" />
 						</td>
 						<td class="col-number">${pagination.rowNumber - status.index }</td>
+						<td class="col-name">${uploadData.dataGroupName }</td>
 						<td class="col-type">
 <c:if test="${uploadData.sharing eq 'common' }">
 							공통
@@ -159,14 +160,13 @@
 </c:if>
 						</td>
 						<td class="col-type">${uploadData.dataType }</td>
-						<td class="col-name">${uploadData.dataGroupName }</td>
 						<td class="col-name">
 							<a href="/upload-data/modify?uploadDataId=${uploadData.uploadDataId }">
 							${uploadData.dataName }
 							</a>
 						</td>
 						<td class="col-count"><fmt:formatNumber value="${uploadData.fileCount}" type="number"/> 개</td>
-						<td class="col-count">${uploadData.converterCount} 건</td>
+						<td class="col-count"><fmt:formatNumber value="${uploadData.converterCount}" type="number"/> 건</td>
 						<td class="col-functions">
 							<span class="button-group">
 								<a href="#" onclick="converterFile('${uploadData.uploadDataId}', '${uploadData.dataName}'); return false;" 
@@ -177,7 +177,7 @@
 						</td>
 						<td class="col-functions">
 							<span class="button-group">
-								<a href="#" onclick="deleteUploadData(${uploadData.uploadDataId }); return false;" 
+								<a href="#" onclick="deleteUploadData('${uploadData.uploadDataId }'); return false;" 
 									class="image-button button-delete"><spring:message code='delete'/></a>
 							</span>
 						</td>
@@ -192,150 +192,113 @@
 			</table>
 			</form:form>
 		</div>
+		
 		<%@ include file="/WEB-INF/views/common/pagination.jsp" %>
 		
 	</div>
-	
 </div>
 <!-- E: WRAP -->
+
+<%@ include file="/WEB-INF/views/upload-data/converter-dialog.jsp" %>
 
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript" src="/js/${lang}/map-controll.js"></script>
 <script type="text/javascript" src="/js/${lang}/ui-controll.js"></script>
 <script type="text/javascript">
-$(document).ready(function() {
-});
-
-//전체 선택 
-$("#chkAll").click(function() {
-	$(":checkbox[name=uploadDataId]").prop("checked", this.checked);
-});
-
-var dialogConverterJob = $( ".dialogConverterJob" ).dialog({
-	autoOpen: false,
-	height: 280,
-	width: 600,
-	modal: true,
-	resizable: false,
-	close: function() {
-		$("#converterCheckIds").val("");
-		$("#title").val("");
-		//location.reload(); 
-	}
-});
-
-// F4D Converter Button Click
-function converterFile(uploadDataId, dataName) {
-	$("#converterCheckIds").val(uploadDataId + ",");
-	$("#title").val(dataName);
-	
-	dialogConverterJob.dialog( "open" );
-}
-
-// All F4D Converter Button Click
-function converterFiles() {
-	var checkedValue = "";
-	$("input:checkbox[name=uploadDataId]:checked").each(function(index) {
-		checkedValue += $(this).val() + ",";
+	$(document).ready(function() {
+		var searchWord = "${uploadData.searchWord}";
+		var searchOption = "${uploadData.searchOption}";
+		var orderWord = "${uploadData.orderWord}";
+		var orderValue = "${uploadData.orderValue}";
+		var listCounter = "${uploadData.listCounter}";
+		
+		if(searchWord != "") $("#searchWord").val("${uploadData.searchWord}");
+		if(searchOption != "") $("#searchOption").val("${uploadData.searchOption}");
+		if(orderWord != "") $("#orderWord").val("${uploadData.orderWord}");
+		if(orderValue != "") $("#orderValue").val("${uploadData.orderValue}");
+		if(listCounter != "") $("#listCounter").val("${uploadData.listCounter}");
+		
+		initDatePicker();
+		initCalendar(new Array("startDate", "endDate"), new Array("${uploadData.startDate}", "${uploadData.endDate}"));
 	});
-	if(checkedValue === "") {
-		alert("파일을 선택해 주십시오.");
-		return;
-	}
-	$("#converterCheckIds").val(checkedValue);
 	
-	dialogConverterJob.dialog( "open" );
-}
-
-// F4D Converter 일괄 변환
-var saveConverterJobFlag = true;
-function saveConverterJob() {
-	if($("#title").val() === null || $("#title").val() === "") {
-		alert("제목을 입력하여 주십시오.");
-		$("#title").focus();
-		return false;
-	}
+	//전체 선택 
+	$("#chkAll").click(function() {
+		$(":checkbox[name=uploadDataId]").prop("checked", this.checked);
+	});
 	
-	if(saveConverterJobFlag) {
-		saveConverterJobFlag = false;
-		var formData =$("#converterJobForm").serialize();
-		$.ajax({
-			url: "/converter/insert",
-			type: "POST",
-			data: formData,
-			dataType: "json",
-			headers: {"X-Requested-With": "XMLHttpRequest"},
-			success: function(msg){
-				if(msg.statusCode <= 200) {
-					alert(JS_MESSAGE["insert"]);	
-				} else {
-					alert(JS_MESSAGE[msg.errorCode]);
-				}
-				
-				$("#converterCheckIds").val("");
-				$("#title").val("");
-				$(":checkbox[name=uploadDataId]").prop("checked", false);
-				dialogConverterJob.dialog( "close" );
-				saveConverterJobFlag = true;
-			},
-			error:function(request,status,error){
-				alert(JS_MESSAGE["ajax.error.message"]);
-				dialogConverterJob.dialog( "close" );
-				saveConverterJobFlag = true;
-			}
-		});
-	} else {
-		alert(JS_MESSAGE["button.dobule.click"]);
-		return;
-	}
-}
-
-function deleteUploadData(uploadDataId) {
-	deleteAllUploadData(uploadDataId);
-}
-
-// 삭제
-var deleteUploadDataFlag = true;
-function deleteAllUploadData(uploadDataId) {
-	var formData = null;
-	if(uploadDataId === undefined) {
-		if($("input:checkbox[name=uploadDataId]:checked").length == 0) {
-			alert(JS_MESSAGE["check.value.required"]);
-			return false;
-		} else {
-			var checkedValue = "";
-			$("input:checkbox[name=uploadDataId]:checked").each(function(index){
-				checkedValue += $(this).val() + ",";
-			});
-			$("#checkIds").val(checkedValue);
+	var dialogConverterJob = $( ".dialogConverterJob" ).dialog({
+		autoOpen: false,
+		height: 315,
+		width: 600,
+		modal: true,
+		resizable: false,
+		close: function() {
+			$("#converterCheckIds").val("");
+			$("#title").val("");
+			//location.reload(); 
 		}
-		formData = "checkIds=" + $("#checkIds").val();
-	} else {
-		formData = "checkIds=" + uploadDataId;
+	});
+	
+	// F4D Converter Button Click
+	function converterFile(uploadDataId, dataName) {
+		$("#converterCheckIds").val(uploadDataId + ",");
+		$("#title").val(dataName);
+		
+		dialogConverterJob.dialog( "open" );
 	}
 	
-	if(confirm(JS_MESSAGE["delete.confirm"])) {
-		if(deleteUploadDataFlag) {
-			deleteUploadDataFlag = false;
+	// All F4D Converter Button Click
+	function converterFiles() {
+		var checkedValue = "";
+		$("input:checkbox[name=uploadDataId]:checked").each(function(index) {
+			checkedValue += $(this).val() + ",";
+		});
+		if(checkedValue === "") {
+			alert("파일을 선택해 주십시오.");
+			return;
+		}
+		$("#converterCheckIds").val(checkedValue);
+		
+		dialogConverterJob.dialog( "open" );
+	}
+	
+	// F4D Converter 일괄 변환
+	var saveConverterJobFlag = true;
+	function saveConverterJob() {
+		if($("#title").val() === null || $("#title").val() === "") {
+			alert("제목을 입력하여 주십시오.");
+			$("#title").focus();
+			return false;
+		}
+		
+		if(saveConverterJobFlag) {
+			saveConverterJobFlag = false;
+			var formData =$("#converterJobForm").serialize();
 			$.ajax({
-				url: "/upload-data/delete",
+				url: "/converters",
 				type: "POST",
 				data: formData,
 				dataType: "json",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				success: function(msg){
 					if(msg.statusCode <= 200) {
-						alert(JS_MESSAGE["delete"]);	
-						location.reload();
+						alert(JS_MESSAGE["insert"]);	
 					} else {
 						alert(JS_MESSAGE[msg.errorCode]);
 					}
-					deleteDatasFlag = true;
+					
+					$("#converterCheckIds").val("");
+					$("#title").val("");
+					$(":checkbox[name=uploadDataId]").prop("checked", false);
+					dialogConverterJob.dialog( "close" );
+					saveConverterJobFlag = true;
 				},
 				error:function(request,status,error){
-			        alert(JS_MESSAGE["ajax.error.message"]);
-			        deleteDatasFlag = true;
+					alert(JS_MESSAGE["ajax.error.message"]);
+					dialogConverterJob.dialog( "close" );
+					saveConverterJobFlag = true;
 				}
 			});
 		} else {
@@ -343,7 +306,38 @@ function deleteAllUploadData(uploadDataId) {
 			return;
 		}
 	}
-}
+	
+	var deleteUploadDataFlag = true;
+	function deleteUploadData(uploadDataId) {
+		if(confirm(JS_MESSAGE["delete.confirm"])) {
+			if(deleteUploadDataFlag) {
+				deleteUploadDataFlag = false;
+				$.ajax({
+					url: "/upload-datas/" + uploadDataId,
+					type: "DELETE",
+					//data: formData,
+					dataType: "json",
+					headers: {"X-Requested-With": "XMLHttpRequest"},
+					success: function(msg){
+						if(msg.statusCode <= 200) {
+							alert(JS_MESSAGE["delete"]);	
+							location.reload();
+						} else {
+							alert(JS_MESSAGE[msg.errorCode]);
+						}
+						deleteDatasFlag = true;
+					},
+					error:function(request,status,error){
+				        alert(JS_MESSAGE["ajax.error.message"]);
+				        deleteDatasFlag = true;
+					}
+				});
+			} else {
+				alert(JS_MESSAGE["button.dobule.click"]);
+				return;
+			}
+		}
+	}
 </script>
 </body>
 </html>

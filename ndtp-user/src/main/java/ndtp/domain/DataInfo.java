@@ -44,7 +44,7 @@ public class DataInfo extends Search implements Serializable {
 	private String userName;
 	
 	/****** validator ********/
-	private String methodMode;
+	private MethodType methodType;
 
 	// 고유번호
 	private Long dataId;

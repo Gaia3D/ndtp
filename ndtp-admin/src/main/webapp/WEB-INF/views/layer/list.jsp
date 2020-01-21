@@ -158,7 +158,7 @@
 <script type="text/javascript" src="/js/navigation.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-	initJqueryCalendar();
+	initDatePicker();
 
 	$("#searchWord").val("${layer.searchWord}");
 	$("#searchValue").val("${layer.searchValue}");

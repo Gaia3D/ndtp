@@ -35,14 +35,14 @@
 		<div style="padding: 20px 20px 0px 10px; font-size: 18px;">3D 업로딩 데이터 자동 변환</div>
 		<div class="tabs" >
 			<ul class="tab">
-				<li onclick="location.href='/user-data-group/list'">데이터 그룹</li>
-				<li onclick="location.href='/user-data-group/input'" class="on">데이터 그룹 등록</li>
+				<li onclick="location.href='/data-group/list'" class="on">데이터 그룹</li>
+				<li onclick="location.href='/data-group/input'">데이터 그룹 등록</li>
 				<li onclick="location.href='/upload-data/input'">업로딩 데이터</li>
 			   	<li onclick="location.href='/upload-data/list'">업로딩 데이터 목록</li>
 			  	<li onclick="location.href='/converter/list'">업로딩 데이터 변환 목록</li>
 			</ul>
 		</div>
-		<form:form id="userDataGroup" modelAttribute="userDataGroup" method="post" onsubmit="return false;">
+		<form:form id="dataGroup" modelAttribute="dataGroup" method="post" onsubmit="return false;">
 		<table class="input-table scope-row">
 			<col class="col-label l" />
 			<col class="col-input" />
@@ -62,10 +62,7 @@
 					<span class="icon-glyph glyph-emark-dot color-warning"></span>
 				</th>
 				<td class="col-input">
-					<form:hidden path="duplication"/>
-					<form:input path="dataGroupKey" cssClass="l" />
-					<input type="button" id="duplicationButtion" value="<spring:message code='overlap.check'/>" />
-					<form:errors path="dataGroupKey" cssClass="error" />
+					${dataGroup.dataGroupKey }
 				</td>
 			</tr>
 			<tr>
@@ -74,9 +71,7 @@
 					<span class="icon-glyph glyph-emark-dot color-warning"></span>
 				</th>
 				<td class="col-input">
-					<form:hidden path="parent" />
-					<form:input path="parentName" cssClass="l" readonly="true" />
-					<input type="button" id="dataGroupButtion" value="상위 그룹 선택" />
+					${dataGroup.parentName }
 				</td>
 			</tr>
 			<tr>
@@ -99,10 +94,12 @@
 					<span class="icon-glyph glyph-emark-dot color-warning"></span>
 				</th>
 				<td class="col-input radio-set">
-					<input type="radio" id="basicTrue" name="basic" value="true" >
-					<label for="basicTrue">기본</label>
-					<input type="radio" id="basicFalse" name="basic" value="false" checked >
-					<label for="basicFalse">선택</label>
+	<c:if test="${dataGroup.basic eq 'true' }">
+					기본
+	</c:if>
+	<c:if test="${dataGroup.basic ne 'true' }">
+					선택
+	</c:if>
 				</td>
 			</tr>
 			<tr>
@@ -111,10 +108,15 @@
 					<span class="icon-glyph glyph-emark-dot color-warning"></span>
 				</th>
 				<td class="col-input radio-set">
-					<input type="radio" id="availableTrue" name="available" value="true" checked>
+	<c:if test="${dataGroup.basic eq 'true' }">
+					사용
+	</c:if>
+	<c:if test="${dataGroup.basic ne 'true' }">
+					<input type="radio" id="availableTrue" name="available" value="true">
 					<label for="availableTrue">사용</label>
 					<input type="radio" id="availableFalse" name="available" value="false">
 					<label for="availableFalse">미사용</label>
+	</c:if>
 				</td>
 			</tr>
 			<tr>
@@ -171,8 +173,8 @@
 		</table>
 		<div class="button-group">
 			<div class="center-buttons">
-				<input type="submit" value="<spring:message code='save'/>" onclick="insertUserDataGroup();"/>
-				<a href="/user-data-group/list" class="button">목록</a>
+				<input type="submit" value="<spring:message code='modified'/>" onclick="updatedataGroup();"/>
+				<a href="/data-group/list" class="button">목록</a>
 			</div>
 		</div>
 		</form:form>
@@ -181,169 +183,82 @@
 </div>
 <!-- E: WRAP -->
 
-<!-- 상위 그룹 선택 다이얼 로그 -->
-<%@ include file="/WEB-INF/views/user-data-group/find-group-dialog.jsp" %>
-
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript" src="/js/${lang}/map-controll.js"></script>
 <script type="text/javascript" src="/js/${lang}/ui-controll.js"></script>
 <script type="text/javascript">
-$(document).ready(function() {
-});
-
-// 데이터 그룹 중복 확인
-$( "#duplicationButtion" ).on( "click", function() {
-	var dataGroupKey = $("#dataGroupKey").val();
-	if (dataGroupKey == "") {
-		alert("데이터 그룹키(한글불가)를 입력해 주세요.");
-		$("#dataGroupKey").focus();
-		return false;
-	}
-	var formData = "dataGroupKey=" + dataGroupKey;
-	$.ajax({
-		url: "/user-data-groups/duplication",
-		type: "GET",
-		headers: {"X-Requested-With": "XMLHttpRequest"},
-        data: formData,
-		dataType: "json",
-		success: function(msg){
-			if(msg.statusCode <= 200) {
-				if(msg.duplication == true) {
-					alert(JS_MESSAGE["data.group.key.duplication"]);
-					$("#dataGroupKey").focus();
-					return false;
-				} else {
-					alert(JS_MESSAGE["data.group.key.enable"]);
-					$("#duplication").val(msg.duplication);
-				}
-			} else {
-				alert(JS_MESSAGE[msg.errorCode]);
-				console.log("---- " + msg.message);
-			}
-		},
-		error:function(request, status, error) {
-			//alert(JS_MESSAGE["ajax.error.message"]);
-			alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
-		}
+	$(document).ready(function() {
+		$("[name=basic]").filter("[value='${dataGroup.basic}']").prop("checked",true);
+		$("[name=available]").filter("[value='${dataGroup.available}']").prop("checked",true);
+		
+		$("#sharing").val("${dataGroup.sharing}");
 	});
-});
-
-function validate() {
-	var number = /^[0-9]+$/;
-	if ($("#dataGroupName").val() === null || $("#dataGroupName").val() === "") {
-		alert("데이터 그룹명을 입력해 주세요.");
-		$("#dataGroupName").focus();
-		return false;
-	}
-	if($("#duplication").val() === null || $("#duplication").val() === "") {
-		alert(JS_MESSAGE["data.group.key.duplication.check"]);
-		$("#dataGroupKey").focus();
-		return false;
-	} else if($("#duplication").val() === "true") {
-		alert(JS_MESSAGE["data.group.key.duplication"]);
-		$("#dataGroupKey").focus();
-		return false;
-	}
-	if ($("#dataGroupKey").val() === null || $("#dataGroupKey").val() === "") {
-		alert("데이터 그룹키(한글불가)를 입력해 주세요.");
-		$("#dataGroupKey").focus();
-		return false;
-	}
-	if($("#parent").val() === null || $("#parent").val() === "" || !number.test($("#parent").val())) {
-		alert("상위 데이터 그룹을 선택해 주세요.");
-		$("#parent").focus();
-		return false;
-	}
-	if($("#duration").val() !== null && $("#duration").val() !== "") {
-		if(!isNumber($("#duration").val())) {
-			$("#duration").focus();
+	
+	function validate() {
+		var number = /^[0-9]+$/;
+		if ($("#dataGroupName").val() === null || $("#dataGroupName").val() === "") {
+			alert("데이터 그룹명을 입력해 주세요.");
+			$("#dataGroupName").focus();
 			return false;
 		}
-	}
-}
-
-// 저장
-var insertUserDataGroupFlag = true;
-function insertUserDataGroup() {
-	if (validate() == false) {
-		return false;
-	}
-	if(insertUserDataGroupFlag) {
-		insertUserDataGroupFlag = false;
-		var formData = $("#userDataGroup").serialize();		
-		$.ajax({
-			url: "/user-data-groups/",
-			type: "POST",
-			headers: {"X-Requested-With": "XMLHttpRequest"},
-	        data: formData,
-			success: function(msg){
-				if(msg.statusCode <= 200) {
-					alert(JS_MESSAGE["insert"]);
-					window.location.reload();
-				} else {
-					alert(JS_MESSAGE[msg.errorCode]);
-					console.log("---- " + msg.message);
-				}
-				insertUserDataGroupFlag = true;
-			},
-			error:function(request, status, error){
-		        alert(JS_MESSAGE["ajax.error.message"]);
-		        insertUserDataGroupFlag = true;
+		if($("#duration").val() !== null && $("#duration").val() !== "") {
+			if(!isNumber($("#duration").val())) {
+				$("#duration").focus();
+				return false;
 			}
-		});
-	} else {
-		alert(JS_MESSAGE["button.dobule.click"]);
-		return;
+		}
 	}
-}
-
-var userDataGroupDialog = $( ".dialog" ).dialog({
-	autoOpen: false,
-	height: 500,
-	width: 1000,
-	modal: true,
-	overflow : "auto",
-	resizable: false
-});
-
-// 상위 데이터 그룹 찾기
-$( "#dataGroupButtion" ).on( "click", function() {
-	userDataGroupDialog.dialog( "open" );
-	userDataGroupDialog.dialog( "option", "title", "데이터 그룹 선택");
-});
-
-// 다이얼로그에서 선택
-function confirmParent(parent, parentName, parentDepth) {
-	if(parentDepth >= 3) {
-		alert("사용자 데이터 그룹은 3Depth 이상 계층으로 입력할 수 없습니다.");
-		return;
-	}
-	$("#parent").val(parent);
-	$("#parentName").val(parentName);
-	userDataGroupDialog.dialog( "close" );
-}
-
-$( "#rootParentSelect" ).on( "click", function() {
-	$("#parent").val(0);
-	$("#parentName").val("${userDataGroup.parentName}");
-	userDataGroupDialog.dialog( "close" );
-});
-
-// 지도에서 찾기
-$( "#mapButtion" ).on( "click", function() {
-	var url = "/map/find-point";
-	var width = 800;
-	var height = 700;
-
-	var popupX = (window.screen.width / 2) - (width / 2);
-	// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
-	var popupY= (window.screen.height / 2) - (height / 2);
 	
-    var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height + ", top=" + popupY + ", left="+popupX
-            + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
-    //popWin.document.title = layerName;
-});
+	// 수정
+	var updatedataGroupFlag = true;
+	function updatedataGroup() {
+		if (validate() == false) {
+			return false;
+		}
+		if(updatedataGroupFlag) {
+			updatedataGroupFlag = false;
+			var formData = $("#dataGroup").serialize();		
+			$.ajax({
+				url: "/data-groups/${dataGroup.dataGroupId}",
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+				data: formData,
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert(JS_MESSAGE["update"]);
+						window.location.reload();
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
+					updatedataGroupFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        updatedataGroupFlag = true;
+				}
+			});
+		} else {
+			alert(JS_MESSAGE["button.dobule.click"]);
+			return;
+		}
+	}
+	
+	// 지도에서 찾기
+	$( "#mapButtion" ).on( "click", function() {
+		var url = "/map/find-point";
+		var width = 800;
+		var height = 700;
+	
+		var popupX = (window.screen.width / 2) - (width / 2);
+		// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+		var popupY= (window.screen.height / 2) - (height / 2);
+		
+	    var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height + ", top=" + popupY + ", left="+popupX
+	            + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
+	    //popWin.document.title = layerName;
+	});
 </script>
 </body>
 </html>

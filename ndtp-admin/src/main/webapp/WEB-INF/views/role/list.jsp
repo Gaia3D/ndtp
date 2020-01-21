@@ -160,7 +160,7 @@
 <script type="text/javascript" src="/js/navigation.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-	initJqueryCalendar();
+	initDatePicker();
 
 	$("#searchWord").val("${role.searchWord}");
 	$("#searchValue").val("${role.searchValue}");

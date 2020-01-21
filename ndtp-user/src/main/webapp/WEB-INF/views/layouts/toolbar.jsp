@@ -16,5 +16,47 @@
         <input type="text" id="pitchInput" placeholder="-90" readonly>&deg;
 		<button type="button" class="rotateLeft" id="rotateLeft" title="왼쪽으로 회전">왼쪽으로 회전</button>
 		<button type="button" class="rotateRight" id="rotateRight" title="오른쪽으로 회전">오른쪽으로 회전</button>
+<!-- 		<button type="button" class="mapPolicy" id="mapPolicy" title="지도 설정">지도 설정</button> -->
 	</div>
+	<div class="index">
+		<button type="button" class="" id="mapPolicy" title="Mago3D 설정">Mago3D</button>
+	</div>
+</div>
+<div class="labelLayer" style="display:none;">
+    <div class="layerHeader">
+        <h3>Mago3D 설정</h3>
+        <button type="button" class="layerClose" title="닫기">닫기</button>
+    </div>
+    <div class="layerContents">
+    	<ul class="category">
+    		<li>객체정보</li>
+    	</ul>
+			<input type="radio" id="datainfoDisplayY" name="datainfoDisplay" value="true"/>
+			<label for="datainfoDisplay">표시</label>
+			<input type="radio" id="datainfoDisplayN" name="datainfoDisplay" value="false" checked/>
+			<label for="datainfoDisplay">비표시</label>
+		<ul class="category">
+    		<li>Origin</li>
+    	</ul>
+			<input type="radio" id="originDisplayY" name="originDisplay" value="true"/>
+			<label for="originDisplay">표시</label>
+			<input type="radio" id="originDisplayN" name="originDisplay" value="false" checked/>
+			<label for="originDisplay">비표시</label>
+		<ul class="category">
+    		<li>Bounding Box</li>
+    	</ul>
+	    	<input type="radio" id="bboxDisplayY" name="bboxDisplay" value="true"/>
+			<label for="bboxDisplay">표시</label>
+			<input type="radio" id="bboxDisplayN" name="bboxDisplay" value="false" checked/>
+			<label for="bboxDisplay">비표시</label>
+		<ul class="category">
+    		<li>선택 및 이동</li>
+    	</ul>
+	    	<input type="radio" id="objectNoneMove" name="objectMoveMode" value="2" checked/>
+			<label for="objectNoneMove">None</label>
+			<input type="radio" id="objectAllMove" name="objectMoveMode" value="0"/>
+			<label for="objectAllMove">All</label>
+			<input type="radio" id="objectMove" name="objectMoveMode" value="1"/>
+			<label for="objectMove">Object</label>
+    </div>
 </div>

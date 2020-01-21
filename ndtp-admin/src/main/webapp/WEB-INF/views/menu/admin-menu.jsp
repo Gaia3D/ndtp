@@ -20,7 +20,7 @@
 	<link type="text/css" rel="stylesheet" href="../externlib/${lang}/axisj/ui/arongi/AXInput.css" />
 	<link type="text/css" rel="stylesheet" href="../externlib/${lang}/axisj/ui/arongi/AXSelect.css" />
 	<link type="text/css" rel="stylesheet" href="../externlib/${lang}/axisj/ui/arongi/AXTree.css" />
-    
+
 </head>
 <body>
 	<%@ include file="/WEB-INF/views/layouts/header.jsp" %>
@@ -103,7 +103,6 @@
 											<tr>
 												<th class="col-label" scope="row">
 													<label for="htmlId">HTML ID</label>
-													<span class="icon-glyph glyph-emark-dot color-warning"></span>
 												</th>
 												<td><input type="text" id="htmlId" name="htmlId"/></td>
 											</tr>
@@ -186,7 +185,7 @@
 										</table>
 										</form>
 									</div>
-									
+
 								</div>
 							</div>
 						</div>
@@ -196,7 +195,7 @@
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
-	
+
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
@@ -232,14 +231,14 @@
 	        }
 		});
 	}
-	
+
 	function reset() {
 		document.menuForm.reset();
 	}
-	
+
 	function check() {
 		var regExp = /^[0-9A-Za-z;\-_#$]*$/;
-		
+
 		if( $("#menuType").val() === "" ) {
 			alert("메뉴 타입을 입력해 주세요.");
 			return false;
@@ -281,7 +280,7 @@
 			return false;
 		}
 	}
-	
+
 	// 메뉴 등록
 	function insertMenu() {
 		if( check() === false ) return false;
@@ -322,7 +321,7 @@
 	// 메뉴 수정
 	function updateMenu() {
 		if( check() === false ) return false;
-		
+
 		// 관리자 사이트
 		if( $("#ancestor").val() === "0" ) {
 			if( $("#menuTarget").val() === "0" ) {

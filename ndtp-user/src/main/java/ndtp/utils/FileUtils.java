@@ -364,4 +364,14 @@ public class FileUtils {
 		
 		return sourceDirectory;
 	}
+	
+	public static String getFilePath(String dataGroupPath) {
+		String[] names = dataGroupPath.split("/");
+		
+		String filePath = "";
+		for(String name : names) {
+			filePath = filePath + name + File.separator;
+		}
+		return filePath;
+	}
 }

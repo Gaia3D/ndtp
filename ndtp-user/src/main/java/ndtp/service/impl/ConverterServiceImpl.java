@@ -1,6 +1,7 @@
 package ndtp.service.impl;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,10 @@ import ndtp.domain.ConverterJobFile;
 import ndtp.domain.ConverterJobStatus;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
+import ndtp.domain.LocationUdateType;
+import ndtp.domain.MethodType;
 import ndtp.domain.QueueMessage;
+import ndtp.domain.ServerTarget;
 import ndtp.domain.UploadData;
 import ndtp.domain.UploadDataFile;
 import ndtp.persistence.ConverterMapper;
@@ -24,6 +28,7 @@ import ndtp.service.DataGroupService;
 import ndtp.service.DataService;
 import ndtp.service.GeoPolicyService;
 import ndtp.service.UploadDataService;
+import ndtp.utils.FileUtils;
 
 /**
  * converter manager
@@ -58,8 +63,8 @@ public class ConverterServiceImpl implements ConverterService {
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public Long getListConverterJobTotalCount(ConverterJob converterJob) {
-		return converterMapper.getListConverterJobTotalCount(converterJob);
+	public Long getConverterJobTotalCount(ConverterJob converterJob) {
+		return converterMapper.getConverterJobTotalCount(converterJob);
 	}
 	
 	/**
@@ -68,8 +73,8 @@ public class ConverterServiceImpl implements ConverterService {
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public Long getListConverterJobFileTotalCount(ConverterJobFile converterJobFile) {
-		return converterMapper.getListConverterJobFileTotalCount(converterJobFile);
+	public Long getConverterJobFileTotalCount(ConverterJobFile converterJobFile) {
+		return converterMapper.getConverterJobFileTotalCount(converterJobFile);
 	}
 	
 	/**
@@ -100,49 +105,54 @@ public class ConverterServiceImpl implements ConverterService {
 	@Transactional
 	public int insertConverter(ConverterJob converterJob) {
 		
-		// data_group에 data_count ++ 해야 함
-		
 		String dataGroupRootPath = propertiesConfig.getDataServiceDir();
 		
 		String title = converterJob.getTitle();
 		String converterTemplate = converterJob.getConverterTemplate();
 		String userId = converterJob.getUserId();
+		BigDecimal usf = converterJob.getUsf();
 		
 		String[] uploadDataIds = converterJob.getConverterCheckIds().split(",");
 		for(String uploadDataId : uploadDataIds) {
-			// 1. job을 하나씩 등록
-			ConverterJob inConverterJob = new ConverterJob();
-			inConverterJob.setUploadDataId(Long.valueOf(uploadDataId));
-			inConverterJob.setUserId(userId);
-			inConverterJob.setTitle(title);
-			inConverterJob.setConverterTemplate(converterTemplate);
-			
+			// 1. 변환해야 할 파일 목록을 취득
 			UploadData uploadData = new UploadData();
 			uploadData.setUserId(userId);
 			uploadData.setUploadDataId(Long.valueOf(uploadDataId));
 			uploadData.setConverterTarget(true);
 			List<UploadDataFile> uploadDataFileList = uploadDataService.getListUploadDataFile(uploadData);
 			
+			// 2. converter job 을 등록
+			ConverterJob inConverterJob = new ConverterJob();
+			inConverterJob.setUploadDataId(Long.valueOf(uploadDataId));
+			inConverterJob.setUserId(userId);
+			inConverterJob.setTitle(title);
+			inConverterJob.setUsf(usf);
+			inConverterJob.setConverterTemplate(converterTemplate);
 			inConverterJob.setFileCount(uploadDataFileList.size());
 			converterMapper.insertConverterJob(inConverterJob);
 			
 			Long converterJobId = inConverterJob.getConverterJobId();
 			for(UploadDataFile uploadDataFile : uploadDataFileList) {
 				ConverterJobFile converterJobFile = new ConverterJobFile();
+				converterJobFile.setUserId(userId);
 				converterJobFile.setConverterJobId(converterJobId);
 				converterJobFile.setUploadDataId(Long.valueOf(uploadDataId));
 				converterJobFile.setUploadDataFileId(uploadDataFile.getUploadDataFileId());
 				converterJobFile.setDataGroupId(uploadDataFile.getDataGroupId());
 				converterJobFile.setUserId(userId);
+				converterJobFile.setUsf(usf);
 				
-				// 2. job file을 하나씩 등록
+				// 3. job file을 하나씩 등록
 				converterMapper.insertConverterJobFile(converterJobFile);
 				
-				// 3. 데이터를 등록
-				insertData(userId, uploadDataFile);
+				// 4. 데이터를 등록
+				DataInfo dataInfo = insertData(userId, uploadDataFile);
+				
+				// 5. 데이터 그룹 신규 생성의 경우 데이터 건수 update, location_update_type 이 auto 일 경우 dataInfo 위치 정보로 dataGroup 위치 정보 수정 
+				updateDataGroup(userId, dataInfo, uploadDataFile);
 				
 				// queue 를 실행
-				executeConverter(dataGroupRootPath, converterJobFile, uploadDataFile);
+				executeConverter(userId, dataGroupRootPath, converterJobFile, uploadDataFile);
 			}
 			
 			uploadData.setConverterCount(1);
@@ -152,28 +162,35 @@ public class ConverterServiceImpl implements ConverterService {
 		return uploadDataIds.length;
 	}
 	
-	private void executeConverter(String dataGroupRootPath, ConverterJobFile converterJobFile, UploadDataFile uploadDataFile) {
+	private void executeConverter(String userId, String dataGroupRootPath, ConverterJobFile converterJobFile, UploadDataFile uploadDataFile) {
 		DataGroup dataGroup = new DataGroup();
+		dataGroup.setUserId(userId);
 		dataGroup.setDataGroupId(uploadDataFile.getDataGroupId());
 		dataGroup = dataGroupService.getDataGroup(dataGroup);
+		
+		// path 와 File.seperator 의 차이점 때문에 변환
+		String dataGroupFilePath = FileUtils.getFilePath(dataGroup.getDataGroupPath());
 		
 		log.info("-------------------------------------------------------");
 		log.info("----------- dataGroupRootPath = {}", dataGroupRootPath);
 		log.info("----------- dataGroup.getDataGroupPath() = {}", dataGroup.getDataGroupPath());
 		
 		log.info("----------- input = {}", uploadDataFile.getFilePath());
-		log.info("----------- output = {}", dataGroupRootPath + dataGroup.getDataGroupPath());
-		log.info("----------- log = {}", dataGroupRootPath + dataGroup.getDataGroupPath() + "logTest.txt");
+		log.info("----------- output = {}", dataGroupRootPath + dataGroupFilePath);
+		log.info("----------- log = {}", dataGroupRootPath + dataGroupFilePath + "logTest.txt");
 		
 		log.info("-------------------------------------------------------");
 		
 		QueueMessage queueMessage = new QueueMessage();
+		queueMessage.setServerTarget(ServerTarget.USER.name());
 		queueMessage.setConverterJobId(converterJobFile.getConverterJobId());
 		queueMessage.setInputFolder(uploadDataFile.getFilePath());
-		queueMessage.setOutputFolder(dataGroupRootPath + dataGroup.getDataGroupPath());
+		queueMessage.setOutputFolder(dataGroupRootPath + dataGroupFilePath);
 		queueMessage.setMeshType("0");
-		queueMessage.setLogPath(dataGroupRootPath + dataGroup.getDataGroupPath() + "logTest.txt");
+		queueMessage.setLogPath(dataGroupRootPath + dataGroupFilePath + "logTest.txt");
 		queueMessage.setIndexing("y");
+		queueMessage.setUsf(converterJobFile.getUsf());
+		queueMessage.setUserId(userId);
 		
 		// TODO
 		// 조금 미묘하다. transaction 처리를 할지, 관리자 UI 재 실행을 위해서는 여기가 맞는거 같기도 하고....
@@ -182,6 +199,7 @@ public class ConverterServiceImpl implements ConverterService {
 			aMQPPublishService.send(queueMessage);
 		} catch(Exception ex) {
 			ConverterJob converterJob = new ConverterJob();
+			converterJob.setUserId(userId);
 			converterJob.setConverterJobId(converterJobFile.getConverterJobId());
 			converterJob.setStatus(ConverterJobStatus.WAITING.name());
 			converterJob.setErrorCode(ex.getMessage());
@@ -191,8 +209,12 @@ public class ConverterServiceImpl implements ConverterService {
 		}
 	}
 	
-	private void insertData(String userId, UploadDataFile uploadDataFile) {
-		
+	/**
+	 * dataKey 존재하지 않을 경우 insert, 존재할 경우 update
+	 * @param userId
+	 * @param uploadDataFile
+	 */
+	private DataInfo insertData(String userId, UploadDataFile uploadDataFile) {
 		String dataKey = uploadDataFile.getFileRealName().substring(0, uploadDataFile.getFileRealName().lastIndexOf("."));
 		DataInfo dataInfo = new DataInfo();
 		dataInfo.setDataGroupId(uploadDataFile.getDataGroupId());
@@ -205,8 +227,10 @@ public class ConverterServiceImpl implements ConverterService {
 			String metainfo = "{\"isPhysical\": true}";
 			
 			dataInfo = new DataInfo();
+			dataInfo.setMethodType(MethodType.INSERT);
 			dataInfo.setDataGroupId(uploadDataFile.getDataGroupId());
 			dataInfo.setSharing(uploadDataFile.getSharing());
+			dataInfo.setDataType(uploadDataFile.getDataType());
 			dataInfo.setDataKey(uploadDataFile.getFileRealName().substring(0, uploadDataFile.getFileRealName().lastIndexOf(".")));
 			dataInfo.setDataName(uploadDataFile.getFileName().substring(0, uploadDataFile.getFileName().lastIndexOf(".")));
 			dataInfo.setUserId(userId);
@@ -219,7 +243,9 @@ public class ConverterServiceImpl implements ConverterService {
 			dataInfo.setMetainfo(metainfo);
 			dataService.insertData(dataInfo);
 		} else {
+			dataInfo.setMethodType(MethodType.UPDATE);
 			dataInfo.setSharing(uploadDataFile.getSharing());
+			dataInfo.setDataType(uploadDataFile.getDataType());
 			dataInfo.setDataName(uploadDataFile.getFileName().substring(0, uploadDataFile.getFileName().lastIndexOf(".")));
 			dataInfo.setUserId(userId);
 			dataInfo.setLatitude(uploadDataFile.getLatitude());
@@ -230,6 +256,34 @@ public class ConverterServiceImpl implements ConverterService {
 			}
 			dataService.updateData(dataInfo);
 		}
+		
+		return dataInfo;
+	}
+	
+	/**
+	 * dataKey 존재하지 않을 경우 insert, 존재할 경우 update
+	 * @param userId
+	 * @param dataInfo
+	 * @param uploadDataFile
+	 */
+	private void updateDataGroup(String userId, DataInfo dataInfo, UploadDataFile uploadDataFile) {
+		DataGroup dataGroup = DataGroup.builder()
+				.userId(userId)
+				.dataGroupId(uploadDataFile.getDataGroupId())
+				.build();
+		
+		DataGroup dbDataGroup = dataGroupService.getDataGroup(dataGroup);
+		
+		if(MethodType.INSERT == dataInfo.getMethodType()) {
+			dataGroup.setDataCount(dbDataGroup.getDataCount() + 1);
+		}
+
+		if(LocationUdateType.AUTO == LocationUdateType.valueOf(dbDataGroup.getLocationUpdateType().toUpperCase())) {
+			dataGroup.setLocation("POINT(" + dataInfo.getLongitude() + " " + dataInfo.getLatitude() + ")");
+			dataGroup.setAltitude(dataInfo.getAltitude());
+		}
+		
+		dataGroupService.updateDataGroup(dataGroup);
 	}
 	
 	/**
