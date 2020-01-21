@@ -50,7 +50,7 @@ create table geopolicy(
 	lod4												varchar(20)			default '1000',
 	lod5												varchar(20)			default '50000',
 
-	ssao_radius											numeric(8,2)		default '0.15',
+	ssao_radius											numeric(8,2)		default 0.15,
 	cull_face_enable									boolean				default false,
 	time_line_enable									boolean				default false,
 	
