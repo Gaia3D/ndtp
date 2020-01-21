@@ -32,23 +32,23 @@
     		<li>객체정보</li>
     	</ul>
 			<input type="radio" id="datainfoDisplayY" name="datainfoDisplay" value="true"/>
-			<label for="datainfoDisplay">표시</label>
+			<label for="datainfoDisplayY">표시</label>
 			<input type="radio" id="datainfoDisplayN" name="datainfoDisplay" value="false" checked/>
-			<label for="datainfoDisplay">비표시</label>
+			<label for="datainfoDisplayN">비표시</label>
 		<ul class="category">
     		<li>Origin</li>
     	</ul>
 			<input type="radio" id="originDisplayY" name="originDisplay" value="true"/>
-			<label for="originDisplay">표시</label>
+			<label for="originDisplayY">표시</label>
 			<input type="radio" id="originDisplayN" name="originDisplay" value="false" checked/>
-			<label for="originDisplay">비표시</label>
+			<label for="originDisplayN">비표시</label>
 		<ul class="category">
     		<li>Bounding Box</li>
     	</ul>
 	    	<input type="radio" id="bboxDisplayY" name="bboxDisplay" value="true"/>
-			<label for="bboxDisplay">표시</label>
+			<label for="bboxDisplayY">표시</label>
 			<input type="radio" id="bboxDisplayN" name="bboxDisplay" value="false" checked/>
-			<label for="bboxDisplay">비표시</label>
+			<label for="bboxDisplayN">비표시</label>
 		<ul class="category">
     		<li>선택 및 이동</li>
     	</ul>

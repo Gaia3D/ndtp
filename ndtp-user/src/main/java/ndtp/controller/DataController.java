@@ -76,7 +76,22 @@ public class DataController {
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
+		// 사용자 환경설정값이 있을경우 geoPolicy의 기본값을 사용자 설정값으로 변경 
 		UserPolicy userPolicy = userPolicyService.getUserPolicy(userSession.getUserId());
+		if(userPolicy.getUserId() != null) {
+			geoPolicy.setInitLatitude(userPolicy.getInitLatitude());
+			geoPolicy.setInitLongitude(userPolicy.getInitLongitude());
+			geoPolicy.setInitAltitude(userPolicy.getInitAltitude());
+			geoPolicy.setInitDuration(userPolicy.getInitDuration());
+			geoPolicy.setInitDefaultFov(userPolicy.getInitDefaultFov());
+			geoPolicy.setLod0(userPolicy.getLod0());
+			geoPolicy.setLod1(userPolicy.getLod1());
+			geoPolicy.setLod2(userPolicy.getLod2());
+			geoPolicy.setLod3(userPolicy.getLod3());
+			geoPolicy.setLod4(userPolicy.getLod4());
+			geoPolicy.setLod5(userPolicy.getLod5());
+			geoPolicy.setSsaoRadius(userPolicy.getSsaoRadius());
+		}
 		if(!StringUtils.isEmpty(dataInfo.getStartDate())) {
 			dataInfo.setStartDate(dataInfo.getStartDate().substring(0, 8) + DateUtils.START_TIME);
 		}

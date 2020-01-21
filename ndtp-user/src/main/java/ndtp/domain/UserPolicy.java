@@ -33,9 +33,9 @@ public class UserPolicy implements Serializable {
 	// 초기 카메라 이동 높이
 	private String initAltitude;
 	// 초기 카메라 이동 시간. 초 단위
-	private Integer initDuration;
+	private Long initDuration;
 	// field of view. 기본값 0(1.8 적용) 
-	private Integer initDefaultFov;
+	private Long initDefaultFov;
 	private String lod0;
 	private String lod1;
 	private String lod2;

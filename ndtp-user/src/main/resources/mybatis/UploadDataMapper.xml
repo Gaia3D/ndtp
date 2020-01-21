@@ -111,7 +111,7 @@
 	<!-- 업로딩한 파일 목록 -->
 	<select id="getListUploadDataFile" parameterType="uploadData" resultType="uploadDataFile">
 		/* getListUploadDataFile */
-		SELECT A.data_group_id, A.sharing, A.data_type, A.data_name, A.location, A.altitude, B.*
+		SELECT A.data_group_id, A.sharing, A.data_type, A.data_name, A.location, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude, A.altitude, B.*
 		FROM upload_data A, upload_data_file B
 		WHERE A.upload_data_id = B.upload_data_id
 			AND B.user_id = #{userId}
