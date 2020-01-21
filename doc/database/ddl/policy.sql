@@ -57,8 +57,8 @@ create table policy(
 	content_layer_group_root				varchar(60)			default 'NDTP',
 	content_data_group_root					varchar(60)			default 'NDTP',
 	
-	user_upload_type						varchar(256)		default '3ds,obj,dae,collada,ifc,las,gml,citygml,indoorgml,jpg,jpeg,gif,png,bmp,zip',
-	user_converter_type						varchar(256)		default '3ds,obj,dae,collada,ifc,las,gml,citygml,indoorgml',
+	user_upload_type						varchar(256)		default '3ds,obj,dae,collada,ifc,las,gml,citygml,indoorgml,jpg,jpeg,gif,png,bmp,zip,mtl',
+	user_converter_type						varchar(256)		default '3ds,obj,dae,collada,ifc,las,gml,citygml,indoorgml,mtl',
 	user_upload_max_filesize				integer				default 10000,
 	user_upload_max_count					integer				default 500,
 	
