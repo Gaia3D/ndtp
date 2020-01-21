@@ -121,6 +121,7 @@
 <script type="text/javascript" src="/js/${lang}/wps-request.js"></script>
 <script type="text/javascript" src="/js/${lang}/search.js"></script>
 <script type="text/javascript" src="/js/${lang}/data-info.js"></script>
+<script type="text/javascript" src="/js/${lang}/user-policy.js"></script>
 <script type="text/javascript">
 	// 임시로...
 	$(document).ready(function() {
@@ -177,6 +178,9 @@
         DistrictControll(viewer);
 
         dataGroupList();
+
+        // 환경 설정.
+        UserPolicy(magoInstance);
 	}
 	
 	// 데이터 그룹 목록
