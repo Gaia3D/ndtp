@@ -26,12 +26,16 @@ public class UserPolicy implements Serializable {
 	private Integer userPolicyId;
 	// 사용자 아이디
 	private String userId;
-	// 객체 정보 표시 여부
-	private Boolean datainfoDisplay;
-	// Origin 정보 표시 여부
-	private Boolean originDisplay;
-	// bbox 표시 여부
-	private Boolean bboxDisplay;
+	// 초기 카메라 이동 위도
+	private String initLatitude;
+	// 초기 카메라 이동 경도
+	private String initLongitude;
+	// 초기 카메라 이동 높이
+	private String initAltitude;
+	// 초기 카메라 이동 시간. 초 단위
+	private Integer initDuration;
+	// field of view. 기본값 0(1.8 적용) 
+	private Integer initDefaultFov;
 	private String lod0;
 	private String lod1;
 	private String lod2;

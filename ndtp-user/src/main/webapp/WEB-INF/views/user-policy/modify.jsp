@@ -3,38 +3,70 @@
 <div class="userPolicyContentWrap">
 <form:form id="userPolicy" modelAttribute="userPolicy" method="post" onsubmit="return false;">
 <form:hidden path="userPolicyId"/>
-<div>
-	<p>LOD</p>
-	<div style="height: 30px;">
-		<div style="display: inline-block; width: 70px;">LOD0</div>
-		<form:input type="text" id="geoLod0" path="lod0" size="15" />&nbsp;M
-	</div>
-	<div style="height: 30px;">
-		<div style="display: inline-block; width: 70px;">LOD1</div>
-		<form:input type="text" id="geoLod1" path="lod1" size="15" />&nbsp;M
-	</div>
-	<div style="height: 30px;">
-		<div style="display: inline-block; width: 70px;">LOD2</div>
-		<form:input type="text" id="geoLod2" path="lod2" size="15" />&nbsp;M
-	</div>
-	<div style="height: 30px;">
-		<div style="display: inline-block; width: 70px;">LOD3</div>
-		<form:input type="text" id="geoLod3" path="lod3" size="15" />&nbsp;M
-	</div>
-	<div style="height: 30px;">
-		<div style="display: inline-block; width: 70px;">LOD4</div>
-		<form:input type="text" id="geoLod4" path="lod4" size="15" />&nbsp;M
-	</div>
-	<div style="height: 30px;">
-		<div style="display: inline-block; width: 70px;">LOD5</div>
-		<form:input type="text" id="geoLod5" path="lod5" size="15" />&nbsp;M
-<!-- 		<button type="button" id="changeLodButton" class="btnTextF">변경</button> -->
+<div class="userPolicyContent">
+	<h3>객체정보</h3>
+	<div class="userPolicyContentDetail">
+		<input type="radio" id="datainfoDisplayY" name="datainfoDisplay" value="true"/>
+		<label for="datainfoDisplay">표시</label>
+		<input type="radio" id="datainfoDisplayN" name="datainfoDisplay" value="false" checked/>
+		<label for="datainfoDisplay">비표시</label>
 	</div>
 </div>
-<div style="height: 30px;margin-top:5px;">
-	<div style="display: inline-block; width: 70px;">SSAO 반경</div>
-	<form:input type="text" id="ssaoRadius" path="ssaoRadius" size="15" />&nbsp;M
-<!-- 	<button type="button" id="changeLodButton" class="btnTextF">변경</button> -->
+<div class="userPolicyContent">
+	<h3>Origin</h3>
+	<div class="userPolicyContentDetail">
+		<input type="radio" id="originDisplayY" name="originDisplay" value="true"/>
+		<label for="originDisplay">표시</label>
+		<input type="radio" id="originDisplayN" name="originDisplay" value="false" checked/>
+		<label for="originDisplay">비표시</label>
+	</div>
+</div>
+<div class="userPolicyContent">
+	<h3>Bounding Box</h3>
+	<div class="userPolicyContentDetail">
+		<input type="radio" id="bboxDisplayY" name="bboxDisplay" value="true"/>
+		<label for="bboxDisplay">표시</label>
+		<input type="radio" id="bboxDisplayN" name="bboxDisplay" value="false" checked/>
+		<label for="bboxDisplay">비표시</label>
+	</div>
+</div>
+<div class="userPolicyContent">
+	<h3>LOD</h3>
+	<div class="userPolicyContentDetail">
+		<div style="height: 30px;">
+			<div style="display: inline-block; width: 70px;">LOD0</div>
+			<form:input type="text" id="geoLod0" path="lod0" size="15" />&nbsp;M
+		</div>
+		<div style="height: 30px;">
+			<div style="display: inline-block; width: 70px;">LOD1</div>
+			<form:input type="text" id="geoLod1" path="lod1" size="15" />&nbsp;M
+		</div>
+		<div style="height: 30px;">
+			<div style="display: inline-block; width: 70px;">LOD2</div>
+			<form:input type="text" id="geoLod2" path="lod2" size="15" />&nbsp;M
+		</div>
+		<div style="height: 30px;">
+			<div style="display: inline-block; width: 70px;">LOD3</div>
+			<form:input type="text" id="geoLod3" path="lod3" size="15" />&nbsp;M
+		</div>
+		<div style="height: 30px;">
+			<div style="display: inline-block; width: 70px;">LOD4</div>
+			<form:input type="text" id="geoLod4" path="lod4" size="15" />&nbsp;M
+		</div>
+		<div style="height: 30px;">
+			<div style="display: inline-block; width: 70px;">LOD5</div>
+			<form:input type="text" id="geoLod5" path="lod5" size="15" />&nbsp;M
+			<button type="button" id="changeLodButton" class="btnTextF" style="margin-left: 50px;">변경</button>
+		</div>
+	</div>
+</div>
+<div style="height: 30px;margin-top:5px;" class="userPolicyContent">
+	<h3 style="display:inline-block;float:left;">SSAO 반경</h3>
+	<!-- <div style="display: inline-block; width: 70px;">SSAO 반경</div> -->
+	<div class="userPolicyContentDetail" style="float:left;">
+		<form:input type="text" id="ssaoRadius" path="ssaoRadius" size="15" />&nbsp;M
+		<button type="button" id="changeSsaoButton" class="btnTextF" style="margin-left: 50px;">변경</button>
+	</div>
 </div>
 <button class="focusA" style="width:100%;margin-top:20px;" title="저장" onclick="update();">저장</button>
 </form:form>
@@ -42,9 +74,6 @@
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-	$("input[name='datainfoDisplay']").filter("[value='${userPolicy.datainfoDisplay}']").prop("checked", true);
-	$("input[name='originDisplay']").filter("[value='${userPolicy.originDisplay}']").prop("checked", true);
-	$("input[name='bboxDisplay']").filter("[value='${userPolicy.bboxDisplay}']").prop("checked", true);
 });
 
 var updateUserPolicyFlag = true;

@@ -916,7 +916,13 @@ border-bottom: 1px dotted #888;
 display: inline-block;
 margin-right: 10px;
 }
-
+.userPolicyContentWrap div.userPolicyContent{
+margin-top : 8px;
+}
+.userPolicyContentWrap div.userPolicyContent div.userPolicyContentDetail{
+margin-left : 10px;
+margin-top : 5px;
+}
 button.focusB{
 padding: 5px 15px;
 color: #fff;

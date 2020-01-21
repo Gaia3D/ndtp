@@ -1,3 +1,6 @@
+20200 01 21 09:00
+user_policy.sql 재실행
+
 2020 01 20 9:30
 converter.sql
 data_info.sql
