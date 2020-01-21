@@ -6,11 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import ndtp.domain.AddrJibun;
-import ndtp.domain.CountryPlaceNumber;
 import ndtp.domain.District;
-import ndtp.domain.NewAddress;
-import ndtp.domain.PlaceName;
 import ndtp.domain.SkEmd;
 import ndtp.domain.SkSdo;
 import ndtp.domain.SkSgg;

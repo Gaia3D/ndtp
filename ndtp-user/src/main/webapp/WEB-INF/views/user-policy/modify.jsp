@@ -4,27 +4,6 @@
 <form:form id="userPolicy" modelAttribute="userPolicy" method="post" onsubmit="return false;">
 <form:hidden path="userPolicyId"/>
 <div>
-	<p>객체정보</p>
-	<input type="radio" id="datainfoDisplayY" name="datainfoDisplay" value="true"/>
-	<label for="datainfoDisplay">표시</label>
-	<input type="radio" id="datainfoDisplayN" name="datainfoDisplay" value="false" checked/>
-	<label for="datainfoDisplay">비표시</label>
-</div>
-<div>
-	<p>Origin</p>
-	<input type="radio" id="originDisplayY" name="originDisplay" value="true"/>
-	<label for="originDisplay">표시</label>
-	<input type="radio" id="originDisplayN" name="originDisplay" value="false" checked/>
-	<label for="originDisplay">비표시</label>
-</div>
-<div>
-	<p>Bounding Box</p>
-	<input type="radio" id="bboxDisplayY" name="bboxDisplay" value="true"/>
-	<label for="bboxDisplay">표시</label>
-	<input type="radio" id="bboxDisplayN" name="bboxDisplay" value="false" checked/>
-	<label for="bboxDisplay">비표시</label>
-</div>
-<div>
 	<p>LOD</p>
 	<div style="height: 30px;">
 		<div style="display: inline-block; width: 70px;">LOD0</div>

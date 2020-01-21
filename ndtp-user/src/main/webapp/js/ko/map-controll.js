@@ -433,3 +433,12 @@ var formatArea = function (_area) {
     var output= Math.round(_area / unitFactor * 100) / 100 + " " + unitName.substring(0, unitName.indexOf('('));
     return output;
 };
+
+$("#mapPolicy").click(function(){
+	$("#mapPolicy").addClass("on");
+	$(".labelLayer").show();
+});
+$(".layerClose").click(function(){
+	$("#mapPolicy").removeClass("on");
+	$(".labelLayer").hide();
+});

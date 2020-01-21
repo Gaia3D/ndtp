@@ -113,11 +113,12 @@ comment on column policy.content_main_widget_interval is '메인 화면 위젯 R
 comment on column policy.content_statistics_interval is '통계 기본 검색 기간. 0 : 1년 단위, 1 : 상/하반기, 2 : 분기 단위, 3 : 월 단위';
 comment on column policy.content_menu_group_root is '메뉴 그룹 최상위 그룹명';
 comment on column policy.content_user_group_root is '사용자 그룹 최상위 그룹명';
+comment on column policy.content_layer_group_root is '레이어 그룹 최상위 그룹명';
 comment on column policy.content_data_group_root is '데이터 그룹 최상위 그룹명';
 
 comment on column policy.user_upload_type is '업로딩 가능 확장자. 3ds,obj,dae,collada,ifc,las,gml,citygml,indoorgml,jpg,jpeg,gif,png,bmp,zip';
 comment on column policy.user_converter_type is '변환 가능 확장자. 3ds,obj,dae,collada,ifc,las,gml,citygml,indoorgml';
 comment on column policy.user_upload_max_filesize is '최대 업로딩 사이즈(단위M). 500M';
 comment on column policy.user_upload_max_count is '1회, 최대 업로딩 파일 수. 50개';
-	
+
 comment on column policy.insert_date is '등록일';
