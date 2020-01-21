@@ -75,6 +75,8 @@ public class UploadData extends Search implements Serializable {
 	private String status;
 	// 파일 개수
 	private Integer fileCount;
+	// converter 변환 대상 파일 수
+	private Integer converterTargetCount;
 	// converter 횟수
 	private Integer converterCount;
 	

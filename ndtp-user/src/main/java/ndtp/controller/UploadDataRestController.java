@@ -77,10 +77,14 @@ public class UploadDataRestController {
 	@SuppressWarnings("unchecked")
 	@PostMapping
 	public Map<String, Object> insert(MultipartHttpServletRequest request) {
+		
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String errorCode = null;
 		String message = null;
+		
+		// converter 변환 대상 파일 수
+		int converterTargetCount = 0;
 		try {
 			Policy policy = policyService.getPolicy();
 			// 여긴 null 체크를 안 하는게 맞음. 없음 장애가 나야 함
@@ -132,6 +136,16 @@ public class UploadDataRestController {
 							log.info("@@@@@@@@@@@@ errorCode = {}", errorCode);
 							result.put("statusCode", HttpStatus.BAD_REQUEST.value());
 							result.put("errorCode", errorCode);
+							result.put("message", message);
+				            return result;
+						}
+						
+						// converter 변환 대상 파일 수
+						converterTargetCount = (Integer)uploadMap.get("converter 변환 대상 파일 수");
+						if(converterTargetCount <= 0) {
+							log.info("@@@@@@@@@@@@ converterTargetCount = {}", converterTargetCount);
+							result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+							result.put("errorCode", "converter.target.count.invalid");
 							result.put("message", message);
 				            return result;
 						}
@@ -191,6 +205,7 @@ public class UploadDataRestController {
 						// 변환 대상 파일만 이름을 변경하고 나머지 파일은 그대로 이름 유지
 						saveFileName = userId + "_" + today + "_" + System.nanoTime() + "." + extension;
 						converterTarget = true;
+						converterTargetCount++;
 					}
         			
 					long size = 0L;
@@ -224,6 +239,14 @@ public class UploadDataRestController {
 
 					uploadDataFileList.add(uploadDataFile);
 				}
+			}
+			
+			if(converterTargetCount <= 0) {
+				log.info("@@@@@@@@@@@@ converterTargetCount = {}", converterTargetCount);
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "converter.target.count.invalid");
+				result.put("message", message);
+	            return result;
 			}
 
 			UploadData uploadData = new UploadData();
@@ -283,6 +306,9 @@ public class UploadDataRestController {
 										String targetDirectory) throws Exception {
 		
 		Map<String, Object> result = new HashMap<>();
+		// converter 변환 대상 파일 수
+		int converterTargetCount = 0;
+		
 		String errorCode = fileValidate(policy, uploadTypeList, multipartFile);
 		if(!StringUtils.isEmpty(errorCode)) {
 			result.put("errorCode", errorCode);
@@ -355,6 +381,7 @@ public class UploadDataRestController {
             						// 변환 대상 파일만 이름을 변경하고 나머지 파일은 그대로 이름 유지
             						saveFileName = userId + "_" + today + "_" + System.nanoTime() + "." + extension;
             						converterTarget = true;
+            						converterTargetCount++;
             					}
 	        				}
             			}
@@ -369,6 +396,7 @@ public class UploadDataRestController {
             						// 변환 대상 파일만 이름을 변경하고 나머지 파일은 그대로 이름 유지
             						saveFileName = userId + "_" + today + "_" + System.nanoTime() + "." + extension;
                 					converterTarget = true;
+                					converterTargetCount++;
             					}
 	        				} else {
 	        					// 예외 처리
@@ -413,6 +441,7 @@ public class UploadDataRestController {
 			ex.printStackTrace(); 
 		}
 		
+		result.put("converterTargetCount", converterTargetCount);
 		result.put("uploadDataFileList", uploadDataFileList);
 		return result;
 	}
