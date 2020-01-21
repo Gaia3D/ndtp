@@ -16,10 +16,10 @@
         SELECT NEXTVAL('user_policy_seq')
         </selectKey>
         INSERT INTO user_policy (
-        	user_policy_id, user_id, datainfo_display, origin_display, bbox_display, lod0, lod1, lod2, lod3, lod4, lod5, ssao_radius, insert_date
+        	user_policy_id, user_id, init_latitude, init_longitude, init_altitude, init_duration, init_default_fov, lod0, lod1, lod2, lod3, lod4, lod5, ssao_radius, insert_date
         )
         VALUES (
-        	#{userPolicyId}, #{userId}, #{datainfoDisplay}, #{originDisplay}, #{bboxDisplay},
+        	#{userPolicyId}, #{userId}, #{initLatitude}, #{initLongitude}, #{initAltitude}, #{initDuration}, #{initDefaultFov},
         	#{lod0}, #{lod1}, #{lod2}, #{lod3}, #{lod4}, #{lod5}, #{ssaoRadius}, NOW()
         )
     </insert>
@@ -28,9 +28,11 @@
     <update id="updateUserPolicy" parameterType="userPolicy">
         /* updateUserPolicy */
         UPDATE user_policy SET
-        	datainfo_display = #{datainfoDisplay},
-        	origin_display = #{originDisplay}, 
-        	bbox_display = #{bboxDisplay}, 
+        	init_latitude = #{initLatitude}, 
+        	init_longitude = #{initLongitude}, 
+        	init_altitude = #{initAltitude}, 
+        	init_duration = #{initDuration}, 
+        	init_default_fov = #{initDefaultFov},
         	lod0 = #{lod0},
         	lod1 = #{lod1}, 
         	lod2 = #{lod2}, 

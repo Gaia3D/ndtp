@@ -2,7 +2,6 @@
 <%@ include file="/WEB-INF/views/common/taglib.jsp" %>
 <div class="userPolicyContentWrap">
 <form:form id="userPolicy" modelAttribute="userPolicy" method="post" onsubmit="return false;">
-<form:hidden path="userPolicyId"/>
 <div>
 	<p>LOD</p>
 	<div style="height: 30px;">
@@ -42,9 +41,6 @@
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-	$("input[name='datainfoDisplay']").filter("[value='${userPolicy.datainfoDisplay}']").prop("checked", true);
-	$("input[name='originDisplay']").filter("[value='${userPolicy.originDisplay}']").prop("checked", true);
-	$("input[name='bboxDisplay']").filter("[value='${userPolicy.bboxDisplay}']").prop("checked", true);
 });
 
 var updateUserPolicyFlag = true;
