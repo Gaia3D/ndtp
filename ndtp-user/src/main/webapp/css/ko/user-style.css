@@ -915,9 +915,11 @@ border-bottom: 1px dotted #888;
 .userPolicyContentWrap div label {
 display: inline-block;
 margin-right: 10px;
+margin-bottom: 5px;
 }
 .userPolicyContentWrap div.userPolicyContent{
 margin-top : 8px;
+/* border-bottom: 1px dotted #888; */
 }
 .userPolicyContentWrap div.userPolicyContent div.userPolicyContentDetail{
 margin-left : 10px;

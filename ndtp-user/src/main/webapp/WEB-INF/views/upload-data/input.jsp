@@ -357,7 +357,9 @@
 	
 	function alertMessage(response) {
 		if(uploadFileResultCount === 0) {
-			if(response.errorCode === "data.name.empty") {
+			if(response.errorCode === "converter.target.count.invalid") {
+	    		alert("변환 대상인 3D 파일이 존재하지 않습니다.");
+			} else if(response.errorCode === "data.name.empty") {
 	    		alert("데이터명이 유효하지 않습니다.");
 	    	} else if(response.errorCode === "data.group.id.empty") {
 	    		alert("데이터 그룹명을 입력하여 주십시오.");

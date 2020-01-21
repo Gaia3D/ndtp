@@ -4,30 +4,32 @@
 <form:form id="userPolicy" modelAttribute="userPolicy" method="post" onsubmit="return false;">
 <form:hidden path="userPolicyId"/>
 <div class="userPolicyContent">
-	<h3>객체정보</h3>
+	<h3>시작 위치</h3>
 	<div class="userPolicyContentDetail">
-		<input type="radio" id="datainfoDisplayY" name="datainfoDisplay" value="true"/>
-		<label for="datainfoDisplay">표시</label>
-		<input type="radio" id="datainfoDisplayN" name="datainfoDisplay" value="false" checked/>
-		<label for="datainfoDisplay">비표시</label>
+		<div style="height: 30px;">
+			<div style="display: inline-block; width: 70px;">위도</div>
+			<form:input type="text" id="initLatitude" path="initLatitude" size="15" />&nbsp;M
+			<button type="button" id="findStartPoint" class="btnTextF" style="margin-left: 5px;">지도에서 선택</button>
+		</div>
+		<div style="height: 30px;">
+			<div style="display: inline-block; width: 70px;">경도</div>
+			<form:input type="text" id="initLongitude" path="initLongitude" size="15" />&nbsp;M
+		</div>
+		<div style="height: 30px;">
+			<div style="display: inline-block; width: 70px;">높이</div>
+			<form:input type="text" id="initAltitude" path="initAltitude" size="15" />&nbsp;M
+		</div>
+		<div style="height: 30px;">
+			<div style="display: inline-block; width: 70px;">이동 속도</div>
+			<form:input type="text" id="initDuration" path="initDuration" size="15" />&nbsp;초
+		</div>
 	</div>
 </div>
-<div class="userPolicyContent">
-	<h3>Origin</h3>
-	<div class="userPolicyContentDetail">
-		<input type="radio" id="originDisplayY" name="originDisplay" value="true"/>
-		<label for="originDisplay">표시</label>
-		<input type="radio" id="originDisplayN" name="originDisplay" value="false" checked/>
-		<label for="originDisplay">비표시</label>
-	</div>
-</div>
-<div class="userPolicyContent">
-	<h3>Bounding Box</h3>
-	<div class="userPolicyContentDetail">
-		<input type="radio" id="bboxDisplayY" name="bboxDisplay" value="true"/>
-		<label for="bboxDisplay">표시</label>
-		<input type="radio" id="bboxDisplayN" name="bboxDisplay" value="false" checked/>
-		<label for="bboxDisplay">비표시</label>
+<div style="height: 30px;margin-top:5px;" class="userPolicyContent">
+	<h3 style="display:inline-block;float:left;">Field Of View</h3>
+	<div class="userPolicyContentDetail" style="float:left;">
+		<form:input type="text" id="initfieldOfView" path="initDefaultFov" size="11" style="margin-left:3px;" />&nbsp;M
+<!-- 		<button type="button" id="fieldOfViewButton" class="btnTextF" style="margin-left: 51px;">변경</button> -->
 	</div>
 </div>
 <div class="userPolicyContent">
@@ -62,12 +64,12 @@
 </div>
 <div style="height: 30px;margin-top:5px;" class="userPolicyContent">
 	<h3 style="display:inline-block;float:left;">SSAO 반경</h3>
-	<!-- <div style="display: inline-block; width: 70px;">SSAO 반경</div> -->
 	<div class="userPolicyContentDetail" style="float:left;">
 		<form:input type="text" id="ssaoRadius" path="ssaoRadius" size="15" />&nbsp;M
 		<button type="button" id="changeSsaoButton" class="btnTextF" style="margin-left: 50px;">변경</button>
 	</div>
 </div>
+
 <button class="focusA" style="width:100%;margin-top:20px;" title="저장" onclick="update();">저장</button>
 </form:form>
 </div>
@@ -91,7 +93,6 @@ function update() {
 			success: function(msg) {
 				if(msg.statusCode <= 200) {
 					alert("저장 되었습니다.");
-// 					window.location.reload();
 				} else {
 					alert(JS_MESSAGE[msg.errorCode]);
 					console.log("---- " + msg.message);
@@ -99,7 +100,7 @@ function update() {
 				updateUserPolicyFlag = true;
 			},
 	        error: function(request, status, error) {
-	        	ajaxErrorHandler(request);
+	        	alert(JS_MESSAGE["ajax.error.message"]);
 	        	updateUserPolicyFlag = true;
 	        }
 		});

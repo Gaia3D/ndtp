@@ -13,6 +13,7 @@ create table upload_data(
 	location		 				GEOMETRY(POINT, 4326),
 	altitude						numeric(13,7),
 	file_count						int									default 0,
+	converter_target_count			int									default 0,
 	converter_count					int 								default 0,
 	status							varchar(20)							default 'upload',
 	year							char(4)								default to_char(now(), 'yyyy'),
@@ -38,6 +39,7 @@ comment on column upload_data.user_id is '사용자 아이디';
 comment on column upload_data.location is 'POINT(위도, 경도). 공간 검색 속도 때문에 altitude는 분리';
 comment on column upload_data.altitude is '높이';
 comment on column upload_data.file_count is '파일 개수';
+comment on column upload_data.converter_target_count is 'converter 변환 대상 파일 수';
 comment on column upload_data.converter_count is 'converter 횟수';
 comment on column upload_data.status is '상태. upload : 업로딩 완료, converter : 변환';
 comment on column upload_data.year is '년';

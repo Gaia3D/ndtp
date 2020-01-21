@@ -1,3 +1,8 @@
+1 21 16:25
+alter table data_group add column converter_target_count			int									default 0;
+comment on column upload_data.converter_target_count is 'converter 변환 대상 파일 수';
+
+
 20200 01 21 09:00
 user_policy.sql 재실행
 

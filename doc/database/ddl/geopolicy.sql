@@ -41,7 +41,7 @@ create table geopolicy(
 	init_altitude										varchar(30)			default '3000.0',
 	init_duration										integer				default 3,
 	init_default_terrain								varchar(64),
-	init_default_fov									integer				default 0,
+	init_default_fov									numeric(3,2)		default 0,
 
 	lod0												varchar(20)			default '15',
 	lod1												varchar(20)			default '60',
@@ -50,7 +50,7 @@ create table geopolicy(
 	lod4												varchar(20)			default '1000',
 	lod5												varchar(20)			default '50000',
 
-	ssao_radius											varchar(20)			default '0.15',
+	ssao_radius											numeric(8,2)		default 0.15,
 	cull_face_enable									boolean				default false,
 	time_line_enable									boolean				default false,
 	
