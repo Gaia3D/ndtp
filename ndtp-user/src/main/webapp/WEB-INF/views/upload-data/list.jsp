@@ -152,10 +152,10 @@
 <c:if test="${uploadData.sharing eq 'public' }">
 							공개
 </c:if>
-<c:if test="${uploadData.sharing eq '2' }">
+<c:if test="${uploadData.sharing eq 'private' }">
 							개인
 </c:if>
-<c:if test="${uploadData.sharing eq '3' }">
+<c:if test="${uploadData.sharing eq 'sharing' }">
 							공유
 </c:if>
 						</td>
