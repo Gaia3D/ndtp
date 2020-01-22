@@ -137,10 +137,10 @@
   		</selectKey>
 		INSERT INTO upload_data(
 			upload_data_id, data_group_id, sharing, data_type, data_name, user_id, 
-			location, altitude, file_count, description
+			location, altitude, file_count, converter_target_count, description
 		) VALUES (
 			#{uploadDataId}, #{dataGroupId}, #{sharing}, #{dataType}, #{dataName}, #{userId}, 
-			ST_GeomFromText(#{location}, 4326), #{altitude}, #{fileCount}, #{description}
+			ST_GeomFromText(#{location}, 4326), #{altitude}, #{fileCount}, #{converterTargetCount}, #{description}
 		)
 	</insert>
 	

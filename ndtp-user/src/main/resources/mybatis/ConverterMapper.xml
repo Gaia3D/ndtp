@@ -158,13 +158,13 @@
     		SELECT NEXTVAL('converter_job_seq')
   		</selectKey>
 		INSERT INTO converter_job(
-			converter_job_id, upload_data_id, user_id, title, usf, converter_template, file_count, converter_target_count,
+			converter_job_id, upload_data_id, user_id, title, usf, converter_template, file_count,
 			<if test="status != null and status != ''">
 			status, 
 			</if>
 			error_code
 		) VALUES (
-			#{converterJobId}, #{uploadDataId}, #{userId}, #{title}, #{usf}, #{converterTemplate}, #{fileCount}, #{converterTargetCount},
+			#{converterJobId}, #{uploadDataId}, #{userId}, #{title}, #{usf}, #{converterTemplate}, #{fileCount},
 			<if test="status != null and status != ''">
 			#{status}, 
 			</if>

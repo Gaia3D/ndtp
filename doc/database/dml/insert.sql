@@ -68,7 +68,8 @@ values
     (1004, '1', '0', '공간분석', 'SPATIAL', 1004, 0, 1, 4, '/spatial', null, 'spatialMenu', 'spatialContent', 'spatial', 'Y', 'Y', 'Y'),
     (1005, '1', '0', '시뮬레이션', 'SIMULATION', 1005, 0, 1, 5, '/simulation', null, 'simulationMenu', 'simulationContent', 'simulation', 'Y', 'Y', 'Y'),
     (1006, '1', '0', '시민참여', 'CIVIL VOICE', 1006, 0, 1, 6, '/civil-voice/list', null, 'civilVoiceMenu', 'civilVoiceContent', 'civilVoice', 'Y', 'Y', 'Y'),
-    (1007, '1', '0', '환경설정', 'USER POLICY', 1007, 0, 1, 7, '/user-policy/modify', null, 'userPolicyMenu', 'userPolicyContent', 'userPolicy', 'Y', 'Y', 'Y');
+    (1007, '1', '0', '레이어', 'LAYER', 1007, 0, 1, 7, '/layer/list', null, 'layerMenu', 'layerContent', 'layer', 'Y', 'Y', 'Y'),
+    (1008, '1', '0', '환경설정', 'USER POLICY', 1008, 0, 1, 8, '/user-policy/modify', null, 'userPolicyMenu', 'userPolicyContent', 'userPolicy', 'Y', 'Y', 'Y');
 
 
 -- 사용자 그룹별 메뉴
@@ -123,6 +124,7 @@ values
 	(NEXTVAL('user_group_menu_seq'), 1, 1005),
 	(NEXTVAL('user_group_menu_seq'), 1, 1006),
 	(NEXTVAL('user_group_menu_seq'), 1, 1007),
+	(NEXTVAL('user_group_menu_seq'), 1, 1008),
 
 	(NEXTVAL('user_group_menu_seq'), 2, 1001),
 	(NEXTVAL('user_group_menu_seq'), 2, 1002),
@@ -131,6 +133,7 @@ values
 	(NEXTVAL('user_group_menu_seq'), 2, 1005),
 	(NEXTVAL('user_group_menu_seq'), 2, 1006),
 	(NEXTVAL('user_group_menu_seq'), 2, 1007);
+	(NEXTVAL('user_group_menu_seq'), 2, 1008);
 
 insert into user_group_role(user_group_role_id, user_group_id, role_id)
 values
