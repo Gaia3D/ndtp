@@ -12,6 +12,7 @@
 	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
 	<link rel="stylesheet" href="/externlib/geostats/geostats.css" />
+	<link rel="stylesheet" href="/externlib/kotSlider/range.css" />
 	<link rel="stylesheet" href="/css/${lang}/user-style.css" />
 	<style type="text/css">
 	    .mapWrap {
@@ -99,6 +100,9 @@
 			<canvas id="analysisGraphic"></canvas>
 			<div class="closeGraphic">X</div>
 		</div>
+		<div class="sliderWrap">
+			<input id="rangeInput"/>
+		</div>
 	</div>
 	<!-- E: MAP -->
 </div>
@@ -110,6 +114,7 @@
 <script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>
 <script type="text/javascript" src="/externlib/geostats/geostats.js"></script>
 <script type="text/javascript" src="/externlib/chartjs/Chart.min.js"></script>
+<script type="text/javascript" src="/externlib/kotSlider/range.js"></script>
 <script type="text/javascript" src="/js/mago3d.js"></script>
 <script type="text/javascript" src="/js/mago3d_lx.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
@@ -122,6 +127,7 @@
 <script type="text/javascript" src="/js/${lang}/search.js"></script>
 <script type="text/javascript" src="/js/${lang}/data-info.js"></script>
 <script type="text/javascript" src="/js/${lang}/user-policy.js"></script>
+<script type="text/javascript" src="/js/${lang}/simulation.js"></script>
 <script type="text/javascript">
 	// 임시로...
 	$(document).ready(function() {
@@ -179,6 +185,7 @@
 
         dataGroupList();
 
+        Simulation(magoInstance);
         // 환경 설정.
         UserPolicy(magoInstance);
 	}

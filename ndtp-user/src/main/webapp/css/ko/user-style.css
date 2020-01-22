@@ -896,6 +896,16 @@ overflow-x: hidden;
 overflow-y: auto;
 }
 
+.sliderWrap {
+	position: absolute;
+	bottom: 20px;
+	left: 710px;
+	right: 0;
+	background-color: #fff;
+	z-index: 9;
+	display: none;
+	width:900px;
+}
 
 /*========================================== temp css =========================================================*/
 .userPolicyContentWrap > p {
