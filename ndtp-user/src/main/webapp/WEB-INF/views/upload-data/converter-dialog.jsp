@@ -27,7 +27,7 @@
 					</td>
 				</tr>
 				<tr>
-					<th class="col-sub-label x">Unit Scale Factor</th>
+					<th class="col-sub-label x">Original Unit</th>
 					<td>
 						<select id="usf" name="usf" class="select" style="height: 30px;">
 	                		<option value="1"> 기본(1m) </option>
