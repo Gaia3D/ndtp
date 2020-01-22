@@ -62,13 +62,6 @@ function districtSearch(pageNo) {
 		data: info,
 		dataType: "json",
 		success: function(msg){
-			Handlebars.registerHelper("indexCompare", function(index, pageNo, options) {
-                if(index == pageNo) {
-                    return true;
-                } else {
-                    return false;
-                }
-			});
 			msg.pagination.pageList = [];
             var start = msg.pagination.startPage;
             var end = msg.pagination.endPage;

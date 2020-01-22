@@ -1204,3 +1204,69 @@ margin-bottom: 10px;
 margin-left: 10px;
 margin-top: 20px;
 }
+
+
+/* 레이어스타일 */
+ul.layerList > li {
+margin-bottom: 10px;
+cursor: pointer;
+background-color: #fff;
+border: 1px solid #ccc;
+}
+ul.layerList li {
+background-color: #fff;
+}
+ul.layerList li p {
+padding: 7px;
+}
+ul.layerList li.selected {
+background-color: #ffffd6;
+}
+ul.layerList span {
+display: inline-block;
+width: 35px;
+height: 20px;
+background-image: url(../images/ico_layer.png);
+background-repeat: no-repeat;
+}
+ul.layerList li p.depthOne {
+font-weight: bold;
+font-size: 15px;
+background-color: #ececec;
+}
+ul.layerList li.on p.depthOne {
+font-weight: bold;
+font-size: 15px;
+background-color: #454554;
+color: white;
+}
+ul.layerList li p.depthOne > span.folder {
+background-position: 0 -48px;
+}
+ul.layerList li.on p.depthOne > span.folder {
+background-position: 0 -150px;
+}
+ul.layerList li > p > span.folder {
+background-position: 0 0;
+}
+ul.layerList li.on > p > span.folder {
+background-position: 0 -101px;
+}
+ul.layerList li > ul {
+display: none;
+}
+ul.layerList li.on > ul {
+display: block;
+margin: 0;
+padding-left: 15px;
+}
+ul.layerList li ul li {
+padding: 2px 5px 2px 15px;
+}
+li.nodepth span {
+background:url(../images/ico_layer.png) no-repeat 5px -248px;
+}
+li.nodepth.on span {
+background:url(../images/ico_layer.png) no-repeat 5px -198px;
+}
+

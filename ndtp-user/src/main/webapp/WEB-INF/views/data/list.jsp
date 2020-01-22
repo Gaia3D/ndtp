@@ -112,6 +112,7 @@
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/externlib/handlebars-4.1.2/handlebars.js"></script>
+<script type="text/javascript" src="/js/${lang}/handlebarsHelper.js"></script>
 <script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>
 <script type="text/javascript" src="/externlib/geostats/geostats.js"></script>
 <script type="text/javascript" src="/externlib/chartjs/Chart.min.js"></script>
@@ -127,6 +128,7 @@
 <script type="text/javascript" src="/js/${lang}/search.js"></script>
 <script type="text/javascript" src="/js/${lang}/data-info.js"></script>
 <script type="text/javascript" src="/js/${lang}/user-policy.js"></script>
+<script type="text/javascript" src="/js/${lang}/layer.js"></script>
 <script type="text/javascript">
 	// 임시로...
 	$(document).ready(function() {
