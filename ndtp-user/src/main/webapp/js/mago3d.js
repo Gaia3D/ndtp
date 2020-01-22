@@ -27941,6 +27941,7 @@ MagoManager.prototype.makeSmartTile = function(buildingSeedList, projectId, f4dO
 			if (f4d.dataGroupPath) 
 			{
 				folderName = f4d.dataGroupPath;
+				folderName = folderName.replace(/\/+$/, '');
 			}
 			else 
 			{

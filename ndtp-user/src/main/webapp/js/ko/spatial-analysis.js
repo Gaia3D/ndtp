@@ -306,6 +306,7 @@ var SpatialAnalysis = function(magoInstance) {
 					if (entity.properties.Visible.getValue()===1) {
 						entity.corridor.material = Cesium.Color.fromCssColorString('rgb(0, 255, 0, .8)');
 					}
+					entity.polyline = undefined;
 	            }
 	            // viewer.flyTo(entities);
 	        });
@@ -359,6 +360,7 @@ var SpatialAnalysis = function(magoInstance) {
 					if (entity.properties.Visible.getValue()===1) {
 						entity.corridor.material = Cesium.Color.fromCssColorString('rgb(0, 255, 0, .8)');
 					}
+					entity.polyline = undefined;
 	            }
 	            // viewer.flyTo(entities);
 	        });
