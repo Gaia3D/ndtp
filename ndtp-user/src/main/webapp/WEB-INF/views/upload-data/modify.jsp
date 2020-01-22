@@ -152,7 +152,7 @@
 					<form:label path="longitude">대표 위치 (경도/위도/높이) </form:label>
 					<span class="icon-glyph glyph-emark-dot color-warning"></span>
 				</th>
-				<td colspan="3"  class="col-input">
+				<td class="col-input">
 					<form:input path="longitude" cssClass="m" placeholder="longitude" />
 					<form:input path="latitude" cssClass="m" placeholder="latitude" />
 					<form:input path="altitude" cssClass="m" placeholder="altitude" />
@@ -160,6 +160,16 @@
 					<form:errors path="longitude" cssClass="error" />
 					<form:errors path="latitude" cssClass="error" />
 					<form:errors path="altitude" cssClass="error" />
+				</td>
+				<th class="col-label m" scope="row">
+					<form:label path="mappingType">매핑 타입</form:label>
+					<span class="icon-glyph glyph-emark-dot color-warning"></span>
+				</th>
+				<td class="col-input">
+					<select id="mappingType" name="mappingType" class="selectBoxClass">
+						<option value="origin" selected="selected"> ORIGIN </option>
+						<option value="boundingboxcenter"> BOUNDING BOX CENTER </option>
+					</select>
 				</td>
 			</tr>
 			<tr>
@@ -244,6 +254,7 @@
 	$(document).ready(function() {
 		$("#sharing").val("${uploadData.sharing}");
 		$("#dataType").val("${uploadData.dataType}");
+		$("#mappingType").val("${uploadData.mappingType}");
 	});
 	
 	var dataGroupDialog = $( ".dialog" ).dialog({

@@ -59,7 +59,8 @@
 					<td>${dataGroup.dataGroupName }</td>
 					<td>${dataGroup.sharing }</td>
 					<td>${dataGroup.dataCount }</td>
-					<td><button type="button" title="바로가기" class="goto">바로가기</button></td>
+					<td>
+						<button type="button" title="바로가기" class="goto" onclick="flyToData('${dataGroup.longitude}', '${dataGroup.latitude}', '${dataGroup.altitude}', '2');">바로가기</button></td>
 				</tr>
 	</c:forEach>
 </c:if>
@@ -67,5 +68,7 @@
 		</table>
 	</div>
 	
+<c:if test="${!empty dataGroupList }">	
 	<%@ include file="/WEB-INF/views/common/small-pagination.jsp" %>
+</c:if>
 </div>

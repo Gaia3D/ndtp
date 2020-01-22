@@ -265,6 +265,10 @@
 		}
 		
 	}
+	
+	function flyToData(longitude, latitude, altitude, duration) {
+		gotoFlyAPI(MAGO3D_INSTANCE, parseFloat(longitude), parseFloat(latitude), parseFloat(altitude), parseFloat(duration));
+	}
 </script>
 </body>
 </html>
