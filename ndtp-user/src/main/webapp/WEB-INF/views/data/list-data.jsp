@@ -65,6 +65,8 @@
 			</tbody>
 		</table>
 	</div>
-
+	
+<c:if test="${!empty dataList }">
 	<%@ include file="/WEB-INF/views/common/small-pagination.jsp" %>
+</c:if>
 </div>
