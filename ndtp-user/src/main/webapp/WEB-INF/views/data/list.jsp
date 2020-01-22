@@ -69,6 +69,11 @@
 			<div id="civilVoiceContent" class="contents" style="display:none;">
 				<%@ include file="/WEB-INF/views/civil-voice/input.jsp" %>
 			</div>
+			
+			<div id="layerContent" class="contents" style="display:none;">
+				<%@ include file="/WEB-INF/views/layer/list.jsp" %>
+			</div>
+			
 			<div id="userPolicyContent" class="contents" style="display:none;">
 				<%@ include file="/WEB-INF/views/user-policy/modify.jsp" %>
 			</div>
