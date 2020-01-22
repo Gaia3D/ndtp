@@ -18999,7 +18999,17 @@ F4dController.prototype.addF4dGroup = function(f4dObject)
 	else 
 	{
 		var groupId = f4dObject.data_key || f4dObject.dataGroupKey || f4dObject.dataKey;
-		var groupDataFolder = groupId;
+		var groupDataFolder;
+
+		if (f4dObject.data_key) 
+		{
+			groupDataFolder = groupId;
+		}
+		else 
+		{
+			groupDataFolder = f4dObject.dataGroupPath;
+			groupDataFolder = groupDataFolder.replace(/\/+$/, '');
+		}
 
 		MagoConfig.setData(CODE.PROJECT_ID_PREFIX + groupId, f4dObject);
 		MagoConfig.setProjectDataFolder(CODE.PROJECT_DATA_FOLDER_PREFIX + groupDataFolder, groupDataFolder);
