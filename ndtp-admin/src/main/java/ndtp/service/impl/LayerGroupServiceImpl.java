@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
+import ndtp.domain.DataGroup;
 import ndtp.domain.Depth;
 import ndtp.domain.Layer;
 import ndtp.domain.LayerGroup;
@@ -104,8 +105,33 @@ public class LayerGroupServiceImpl implements LayerGroupService {
 	 */
 	@Transactional
 	public int insertLayerGroup(LayerGroup layerGroup) {
-		// TODO 자식 존재 유무 부분은 나중에 추가 하자.
-		return layerGroupMapper.insertLayerGroup(layerGroup);
+		
+		Integer parentLayerGroupId = 0;
+    	
+    	LayerGroup parentLayerGroup = new LayerGroup();
+    	Integer depth = 0;
+    	if(layerGroup.getParent() > 0) {
+    		parentLayerGroupId = layerGroup.getParent();
+    		parentLayerGroup.setLayerGroupId(parentLayerGroupId);
+    		parentLayerGroup = layerGroupMapper.getLayerGroup(parentLayerGroup);
+	    	depth = parentLayerGroup.getDepth() + 1;
+    	}
+    	
+    	int result = layerGroupMapper.insertLayerGroup(layerGroup); 
+		
+    	if(depth > 1) {
+	    	// parent 의 children update
+    		Integer children = parentLayerGroup.getChildren();
+    		if(children == null) children = 0;
+    		children += 1;
+    		
+    		parentLayerGroup = new LayerGroup();
+    		parentLayerGroup.setLayerGroupId(parentLayerGroupId);
+    		parentLayerGroup.setChildren(children);
+	    	return layerGroupMapper.updateLayerGroup(parentLayerGroup);
+    	}
+    	
+		return result; 
 	}
 
 	/**
@@ -154,29 +180,26 @@ public class LayerGroupServiceImpl implements LayerGroupService {
     		result = layerGroupMapper.deleteLayerGroupByAncestor(layerGroup);
     	} else if(Depth.TWO == Depth.findBy(layerGroup.getDepth())) {
     		log.info("--- two ================");
-    		result = layerGroupMapper.deleteLayerGroupByParent(layerGroup);
 
     		LayerGroup ancestorLayerGroup = new LayerGroup();
     		ancestorLayerGroup.setLayerGroupId(layerGroup.getAncestor());
     		ancestorLayerGroup = layerGroupMapper.getLayerGroup(ancestorLayerGroup);
-    		ancestorLayerGroup.setChildren(ancestorLayerGroup.getChildren() + 1);
-
-    		log.info("--- delete ancestorDataGroup = {}", ancestorLayerGroup);
-
+    		ancestorLayerGroup.setChildren(ancestorLayerGroup.getChildren() - 1);
 	    	layerGroupMapper.updateLayerGroup(ancestorLayerGroup);
+	    	
+	    	result = layerGroupMapper.deleteLayerGroupByParent(layerGroup);
     		// ancestor - 1
     	} else if(Depth.THREE == Depth.findBy(layerGroup.getDepth())) {
     		log.info("--- three ================");
-    		result = layerGroupMapper.deleteLayerGroup(layerGroup);
     		log.info("--- dataGroup ================ {}", layerGroup);
 
     		LayerGroup parentDataGroup = new LayerGroup();
 	    	parentDataGroup.setLayerGroupId(layerGroup.getParent());
 	    	parentDataGroup = layerGroupMapper.getLayerGroup(parentDataGroup);
-	    	log.info("--- parentDataGroup ================ {}", parentDataGroup);
 	    	parentDataGroup.setChildren(parentDataGroup.getChildren() - 1);
-	    	log.info("--- parentDataGroup children ================ {}", parentDataGroup);
 	    	layerGroupMapper.updateLayerGroup(parentDataGroup);
+	    	
+	    	result = layerGroupMapper.deleteLayerGroup(layerGroup);
     	} else {
 
     	}
