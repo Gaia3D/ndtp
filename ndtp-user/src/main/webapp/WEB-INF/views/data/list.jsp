@@ -52,8 +52,8 @@
 			<div id="dataContent" class="contents fullHeight">
 				<div class="tabs" >
 					<ul id="dataInfoTab" class="tab">
-						<li class="on" data-nav="dataGroupInfoContent">데이터 그룹</li>
-						<li data-nav="dataInfoContent">데이터 목록</li>
+						<li data-nav="dataGroupInfoContent">데이터 그룹</li>
+						<li class="on" data-nav="dataInfoContent">데이터 목록</li>
 					</ul>
 				</div>
 				<%@ include file="/WEB-INF/views/data/list-data.jsp" %>

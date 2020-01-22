@@ -1,7 +1,7 @@
 1 22 09:21
 update policy
-set user_upload_type = '3ds,obj,dae,collada,ifc,las,gml,citygml,indoorgml,jpg,jpeg,gif,png,bmp,zip,mtl',
-	user_converter_type	= '3ds,obj,dae,collada,ifc,las,gml,citygml,indoorgml,mtl';
+set user_upload_type = '3ds,obj,dae,collada,ifc,las,citygml,indoorgml,jpg,jpeg,gif,png,bmp,zip,mtl',
+	user_converter_type	= '3ds,obj,dae,collada,ifc,las,citygml,indoorgml,mtl';
 commit;
 
 1 21 16:25

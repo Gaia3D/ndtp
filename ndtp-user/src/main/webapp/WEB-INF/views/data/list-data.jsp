@@ -1,24 +1,20 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<div id="dataInfoContent" style="display:none;">
+<div id="dataInfoContent" style="display:block;">
 <div class="listSearch">
 	<input type="text" placeholder="데이터명을 입력하세요">
 	<button type="button" title="검색">검색</button>
 </div>
 
-<h3>데이터 목록</h3>
-<div class="bothSide">
-	<div>
-		전체
-		<span>55</span>
-		/ <span>23</span>건
-	</div>
-</div>
+<h3 style="margin-top: 30px; margin-bottom: 10px;">
+	<spring:message code='all.d'/> <fmt:formatNumber value="${pagination.totalCount}" type="number"/> <spring:message code='search.what.count'/>, 
+	<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/>
+</h3>
 <div class="dataBtns"></div>
-<div class="tableList">
+<div class="dataGroupSummary">
 	<table>
 		<thead>
 			<tr>
-				<th rowspan="2">No</th>
+				<th rowspan="2" style="vertical-align: middle; text-align: center;">번호</th>
 				<th colspan="3">데이터명</th>
 			</tr>
 			<tr>
@@ -28,33 +24,24 @@
 			</tr>
 		</thead>
 		<tbody>
+<c:if test="${empty dataList }">
 			<tr>
-				<td rowspan="2">1</td>
-				<td colspan="3">데이터 이름 1</td>
+				<td colspan="4" class="col-none">데이터가 존재하지 않습니다.</td>
 			</tr>
-			<tr>
-				<td>사용중</td>
+</c:if>								
+<c:if test="${!empty dataList }">
+	<c:forEach var="dataInfo" items="${dataList}" varStatus="status">		
+			<tr style="height: 25px;">
+				<td rowspan="2" style="vertical-align: middle; text-align: center;">${pagination.rowNumber - status.index }</td>
+				<td colspan="3" style="text-align: left;">${dataInfo.dataName }</td>
+			</tr>
+			<tr style="height: 25px;">
+				<td>${dataInfo.status }</td>
 				<td><a href="">보기</a></td>
-				<td><button type="button" title="바로가기" class="goto">바로가기</button></td>
+				<td></td>
 			</tr>
-			<tr>
-				<td rowspan="2">2</td>
-				<td colspan="3">데이터 이름 2</td>
-			</tr>
-			<tr>
-				<td>사용중</td>
-				<td><a href="">보기</a></td>
-				<td><button type="button" title="바로가기" class="goto">바로가기</button></td>
-			</tr>
-			<tr>
-				<td rowspan="2">3</td>
-				<td colspan="3">데이터 이름 3</td>
-			</tr>
-			<tr>
-				<td>사용중</td>
-				<td><a href="">보기</a></td>
-				<td><button type="button" title="바로가기" class="goto">바로가기</button></td>
-			</tr>
+	</c:forEach>
+</c:if>
 		</tbody>
 	</table>
 </div>

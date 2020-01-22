@@ -80,14 +80,6 @@ public class DataController {
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		
 		GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
-		String geoPolicyJson = "";
-		try {
-			geoPolicyJson = objectMapper.writeValueAsString(geoPolicy);
-		} catch(Exception e) {
-			log.info("@@ objectMapper exception");
-			e.printStackTrace();
-		}
-		
 		UserPolicy userPolicy = userPolicyService.getUserPolicy(userSession.getUserId());
 		if(userPolicy.getUserId() != null) {
 			geoPolicy.setInitLatitude(userPolicy.getInitLatitude());
@@ -102,6 +94,14 @@ public class DataController {
 			geoPolicy.setLod4(userPolicy.getLod4());
 			geoPolicy.setLod5(userPolicy.getLod5());
 			geoPolicy.setSsaoRadius(userPolicy.getSsaoRadius());
+		}
+		
+		String geoPolicyJson = "";
+		try {
+			geoPolicyJson = objectMapper.writeValueAsString(geoPolicy);
+		} catch(Exception e) {
+			log.info("@@ objectMapper exception");
+			e.printStackTrace();
 		}
 		
 		Long commonDataCount = 0l;

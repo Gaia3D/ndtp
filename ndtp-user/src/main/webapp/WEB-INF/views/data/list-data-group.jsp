@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<div id="dataGroupInfoContent" style="display:block;">
+<div id="dataGroupInfoContent" style="display:none;">
 	<h3 style="margin-top: 10px;">데이터 공유 유형별 현황( 총 : <span><fmt:formatNumber value="${totalCount }" type="number"/></span> 건 )</h3>
 	<div class="dataGroupSummary" style="margin: 10px 0px 10px 0px;">
 		<table>
@@ -58,6 +58,7 @@
 					<td>${pagination.rowNumber - status.index }</td>
 					<td>${dataGroup.dataGroupName }</td>
 					<td>${dataGroup.sharing }</td>
+					<td>${dataGroup.dataCount }</td>
 					<td><button type="button" title="바로가기" class="goto">바로가기</button></td>
 				</tr>
 	</c:forEach>
