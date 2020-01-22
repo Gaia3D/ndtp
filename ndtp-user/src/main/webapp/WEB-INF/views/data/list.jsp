@@ -56,8 +56,8 @@
 						<li data-nav="dataInfoContent">데이터 목록</li>
 					</ul>
 				</div>
-				<%@ include file="/WEB-INF/views/data/data.jsp" %>
-				<%@ include file="/WEB-INF/views/data/group.jsp" %>
+				<%@ include file="/WEB-INF/views/data/list-data.jsp" %>
+				<%@ include file="/WEB-INF/views/data/list-data-group.jsp" %>
 			</div>
 			<!-- E: 데이터 -->
 			
@@ -227,6 +227,7 @@
 		var cnt = 0;
 		for(var i=0; i<dataGroupArrayLength; i++) {
 			var dataGroup = dataGroupArray[i];
+			if(dataGroup.dataCount === 0) delete dataGroupArray[i];
 			var f4dController = MAGO3D_INSTANCE.getF4dController();
 			$.ajax({
 				url: "/datas",

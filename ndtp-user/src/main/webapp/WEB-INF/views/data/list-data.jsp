@@ -1,34 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<div id="dataGroupInfoContent" style="display:block;">
-<ul class="dataGroupSum">
-	<li class="total">
-		<label>전체</label>
-		<span>112</span>
-	</li>
-	<li>
-		<label>공공</label>
-		<span>51</span>
-	</li>
-	<li>
-		<label>공개</label>
-		<span>235</span>
-	</li>
-	<li>
-		<label>개인</label>
-		<span>32</span>
-	</li>
-	<li>
-		<label>그룹</label>
-		<span>1</span>
-	</li>
-</ul>
-
+<div id="dataInfoContent" style="display:none;">
 <div class="listSearch">
-	<input type="text" placeholder="그룹명을 입력하세요">
+	<input type="text" placeholder="데이터명을 입력하세요">
 	<button type="button" title="검색">검색</button>
 </div>
 
-<h3>데이터 그룹 목록</h3>
+<h3>데이터 목록</h3>
 <div class="bothSide">
 	<div>
 		전체
@@ -37,34 +14,45 @@
 	</div>
 </div>
 <div class="dataBtns"></div>
-
 <div class="tableList">
 	<table>
 		<thead>
 			<tr>
-				<th>그룹명</th>
-				<th>공유타입</th>
-				<th>데이터건수</th>
-				<th>바로가기</th>
+				<th rowspan="2">No</th>
+				<th colspan="3">데이터명</th>
+			</tr>
+			<tr>
+				<th>상태</th>
+				<th>속성</th>
+				<th>위치</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
-				<td>세종</td>
-				<td>공용</td>
-				<td><a href="">200</a></td>
+				<td rowspan="2">1</td>
+				<td colspan="3">데이터 이름 1</td>
+			</tr>
+			<tr>
+				<td>사용중</td>
+				<td><a href="">보기</a></td>
 				<td><button type="button" title="바로가기" class="goto">바로가기</button></td>
 			</tr>
 			<tr>
-				<td>세종</td>
-				<td>공용</td>
-				<td><a href="">200</a></td>
+				<td rowspan="2">2</td>
+				<td colspan="3">데이터 이름 2</td>
+			</tr>
+			<tr>
+				<td>사용중</td>
+				<td><a href="">보기</a></td>
 				<td><button type="button" title="바로가기" class="goto">바로가기</button></td>
 			</tr>
 			<tr>
-				<td>세종</td>
-				<td>공용</td>
-				<td><a href="">200</a></td>
+				<td rowspan="2">3</td>
+				<td colspan="3">데이터 이름 3</td>
+			</tr>
+			<tr>
+				<td>사용중</td>
+				<td><a href="">보기</a></td>
 				<td><button type="button" title="바로가기" class="goto">바로가기</button></td>
 			</tr>
 		</tbody>

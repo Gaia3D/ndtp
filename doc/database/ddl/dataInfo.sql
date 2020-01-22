@@ -36,7 +36,7 @@ comment on column data_group.data_group_key is '링크 활용 등을 위한 확�
 comment on column data_group.data_group_name is '그룹명';
 comment on column data_group.data_group_path is '서비스 경로';
 comment on column data_group.data_group_target is 'admin : 관리자용 데이터 그룹, user : 일반 사용자용 데이터 그룹';
-comment on column data_group.sharing is 'common : 공통, public : 공개, private : 개인, group : 그룹';
+comment on column data_group.sharing is 'common : 공통, public : 공개, private : 비공개, group : 그룹';
 comment on column data_group.user_id is '사용자 아이디';
 comment on column data_group.data_count is '데이터 총 건수';
 comment on column data_group.view_order is '나열 순서';
@@ -88,7 +88,7 @@ comment on column data_info.data_group_id is 'data_group 고유번호';
 comment on column data_info.data_key is 'data 고유 식별번호';
 comment on column data_info.data_name is 'data 이름';
 comment on column data_info.data_type is '데이터 타입(중복). 3ds,obj,dae,collada,ifc,las,citygml,indoorgml,gml,ect';
-comment on column data_info.sharing is 'common : 공통, public : 공개, private : 개인, group : 그룹';
+comment on column data_info.sharing is 'common : 공통, public : 공개, private : 비공개, group : 그룹';
 comment on column data_info.user_id is '고유번호';
 comment on column data_info.mapping_type is '기본값 origin : latitude, longitude, height를 origin에 맞춤. boundingboxcenter : latitude, longitude, height를 boundingboxcenter 맞춤';
 comment on column data_info.location is 'POINT(위도, 경도). 공간 검색 속도 때문에 altitude는 분리';

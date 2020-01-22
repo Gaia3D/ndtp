@@ -30,10 +30,8 @@ public class UserGroup {
 	public static final Integer TEMP = 7;
 
 	/****** 화면 표시용 *******/
-	@Builder.Default
-	private String open = "open";
-	@Builder.Default
-	private String nodeType = "folder";
+	private String open;
+	private String nodeType;
 	private String parentName;
 	private Integer userCount;
 	// up : 위로, down : 아래로

@@ -118,6 +118,15 @@
 		) X
 	</select>
 	
+	<!-- 공유 유형별 데이터 통계 -->
+	<select id="getDataTotalCountBySharing" parameterType="string" resultType="dataInfo">
+		/* getDataTotalCountBySharing */
+		SELECT DISTINCT sharing, COUNT(*) AS dataCount 
+		FROM data_info
+		WHERE user_id = #{userId}
+		GROUP BY sharing
+	</select>
+	
 	<!-- Data 정보 -->
 	<select id="getData" parameterType="dataInfo" resultType="dataInfo">
 		/* getData */

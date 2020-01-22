@@ -18,7 +18,7 @@ import lombok.ToString;
  *
  */
 @ToString
-@Builder
+//@Builder
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,9 +26,7 @@ import lombok.ToString;
 public class Menu {
 	
 	/******** 화면 트리 표시용 ********/
-	@Builder.Default
 	private String open = "open";
-	@Builder.Default
 	private String nodeType = "folder";
 	private String parentName;
 	// up : 위로, down : 아래로

@@ -17,11 +17,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
+import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
+import ndtp.domain.DataType;
 import ndtp.domain.GeoPolicy;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
+import ndtp.domain.SharingType;
 import ndtp.domain.UserPolicy;
 import ndtp.domain.UserSession;
 import ndtp.service.DataGroupService;
@@ -70,13 +73,21 @@ public class DataController {
 	public String list(	HttpServletRequest request, 
 						DataInfo dataInfo, 
 						@RequestParam(defaultValue="1") String pageNo, 
-						Model model) throws Exception {
+						Model model) {
 		
 		log.info("@@ dataInfo = {}", dataInfo);
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		
 		GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
-		// 사용자 환경설정값이 있을경우 geoPolicy의 기본값을 사용자 설정값으로 변경 
+		String geoPolicyJson = "";
+		try {
+			geoPolicyJson = objectMapper.writeValueAsString(geoPolicy);
+		} catch(Exception e) {
+			log.info("@@ objectMapper exception");
+			e.printStackTrace();
+		}
+		
 		UserPolicy userPolicy = userPolicyService.getUserPolicy(userSession.getUserId());
 		if(userPolicy.getUserId() != null) {
 			geoPolicy.setInitLatitude(userPolicy.getInitLatitude());
@@ -92,6 +103,26 @@ public class DataController {
 			geoPolicy.setLod5(userPolicy.getLod5());
 			geoPolicy.setSsaoRadius(userPolicy.getSsaoRadius());
 		}
+		
+		Long commonDataCount = 0l;
+		Long publicDataCount = 0l;
+		Long privateDataCount = 0l;
+		Long groupDataCount = 0l;
+		// 그룹별 통계
+		List<DataInfo> groupDataCountList = dataService.getDataTotalCountBySharing(userSession.getUserId());
+		for(DataInfo statisticDataInfo : groupDataCountList) {
+			if(SharingType.COMMON == SharingType.valueOf(statisticDataInfo.getSharing().toUpperCase())) {
+				commonDataCount = statisticDataInfo.getDataCount();
+			} else if(SharingType.PUBLIC == SharingType.valueOf(statisticDataInfo.getSharing().toUpperCase())) {
+				publicDataCount = statisticDataInfo.getDataCount();
+			} else if(SharingType.PRIVATE == SharingType.valueOf(statisticDataInfo.getSharing().toUpperCase())) {
+				privateDataCount = statisticDataInfo.getDataCount();
+			} else if(SharingType.GROUP == SharingType.valueOf(statisticDataInfo.getSharing().toUpperCase())) {
+				groupDataCount = statisticDataInfo.getDataCount();
+			}
+		}
+		
+		dataInfo.setUserId(userSession.getUserId());
 		if(!StringUtils.isEmpty(dataInfo.getStartDate())) {
 			dataInfo.setStartDate(dataInfo.getStartDate().substring(0, 8) + DateUtils.START_TIME);
 		}
@@ -116,10 +147,25 @@ public class DataController {
 			dataList = dataService.getListData(dataInfo);
 		}
 		
+		// 데이터 그룹
+		DataGroup dataGroup = new DataGroup();
+		dataGroup.setUserId(userSession.getUserId());
+		List<DataGroup> dataGroupList = dataGroupService.getAllListDataGroup(dataGroup);
+		
 		model.addAttribute(pagination);
+		
+		model.addAttribute("totalCount", totalCount);
+		
+		model.addAttribute("commonDataCount", commonDataCount);
+		model.addAttribute("publicDataCount", publicDataCount);
+		model.addAttribute("privateDataCount", privateDataCount);
+		model.addAttribute("groupDataCount", groupDataCount);
+		
 		model.addAttribute("dataList", dataList);
+		model.addAttribute("dataGroupList", dataGroupList);
 		model.addAttribute("userPolicy", userPolicy);
-		model.addAttribute("geoPolicyJson", objectMapper.writeValueAsString(geoPolicy));
+		model.addAttribute("geoPolicyJson", geoPolicyJson);
+		
 		return "/data/list";
 	}
 	

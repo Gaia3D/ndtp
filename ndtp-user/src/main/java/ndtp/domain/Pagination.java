@@ -1,7 +1,6 @@
 package ndtp.domain;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +12,6 @@ import lombok.ToString;
  *
  */
 @ToString
-@Builder
 @Getter
 @Setter
 @NoArgsConstructor
@@ -70,7 +68,7 @@ public class Pagination {
     }
 
     private void init() {
-        this.rowNumber = this.totalCount - (this.pageNo - 1l) * this.pageRows;
+    	this.rowNumber = this.totalCount - (this.pageNo - 1l) * this.pageRows;
 
         this.offset = (this.pageNo - 1l) * this.pageRows;
 
@@ -134,10 +132,8 @@ public class Pagination {
     // 게시물 번호
     private Long rowNumber;
     // 페이지 번호
-    @Builder.Default
     private long pageNo = 1l;
     // 처음
-    @Builder.Default
     private long firstPage = 1l;
     // 끝
     private long lastPage;
@@ -151,10 +147,8 @@ public class Pagination {
     // 다음
     private long nextPageNo;
     // 이전 페이지 존재여부 Flag
-    @Builder.Default
     private boolean existPrePage = false;
     // 다음 페이지 존재여부 Flag
-    @Builder.Default
     private boolean existNextPage = false;
 
     // 한 페이지에 표시할 건수, 목록 페이지에서는 기본 10건(총건수가 23개 라면 20개씩 2page 처럼 몇개가 한 페이지 인지)
