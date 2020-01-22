@@ -3,13 +3,14 @@ drop table if exists upload_data cascade;
 drop table if exists upload_data_file cascade;
 
 -- 사용자 업로드 정보
-create table upload_data(
+create table upload_data (
 	upload_data_id					bigint,
 	data_group_id					int,
 	sharing							varchar(30)							default 'public',
 	data_type						varchar(30),
 	data_name						varchar(256),
 	user_id							varchar(32),
+	mapping_type					varchar(30)							default 'origin',
 	location		 				GEOMETRY(POINT, 4326),
 	altitude						numeric(13,7),
 	file_count						int									default 0,
@@ -36,6 +37,7 @@ comment on column upload_data.sharing is '공유 유형. 0 : common, 1: public, 
 comment on column upload_data.data_type is '데이터 타입. 3ds,obj,dae,collada,ifc,las,citygml,indoorgml,gml,jpg,jpeg,gif,png,bmp,zip,mtl';
 comment on column upload_data.data_name is '데이터명';
 comment on column upload_data.user_id is '사용자 아이디';
+comment on column upload_data.mapping_type is '기본값 origin : latitude, longitude, height를 origin에 맞춤. boundingboxcenter : latitude, longitude, height를 boundingboxcenter 맞춤';
 comment on column upload_data.location is 'POINT(위도, 경도). 공간 검색 속도 때문에 altitude는 분리';
 comment on column upload_data.altitude is '높이';
 comment on column upload_data.file_count is '파일 개수';

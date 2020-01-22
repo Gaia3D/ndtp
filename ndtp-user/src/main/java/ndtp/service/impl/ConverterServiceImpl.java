@@ -230,6 +230,7 @@ public class ConverterServiceImpl implements ConverterService {
 			dataInfo.setMethodType(MethodType.INSERT);
 			dataInfo.setDataGroupId(uploadDataFile.getDataGroupId());
 			dataInfo.setSharing(uploadDataFile.getSharing());
+			dataInfo.setMappingType(uploadDataFile.getMappingType());
 			dataInfo.setDataType(uploadDataFile.getDataType());
 			dataInfo.setDataKey(uploadDataFile.getFileRealName().substring(0, uploadDataFile.getFileRealName().lastIndexOf(".")));
 			dataInfo.setDataName(uploadDataFile.getFileName().substring(0, uploadDataFile.getFileName().lastIndexOf(".")));
@@ -248,6 +249,7 @@ public class ConverterServiceImpl implements ConverterService {
 			dataInfo.setDataType(uploadDataFile.getDataType());
 			dataInfo.setDataName(uploadDataFile.getFileName().substring(0, uploadDataFile.getFileName().lastIndexOf(".")));
 			dataInfo.setUserId(userId);
+			dataInfo.setMappingType(uploadDataFile.getMappingType());
 			dataInfo.setLatitude(uploadDataFile.getLatitude());
 			dataInfo.setLongitude(uploadDataFile.getLongitude());
 			dataInfo.setAltitude(uploadDataFile.getAltitude());

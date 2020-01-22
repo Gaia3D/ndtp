@@ -55,6 +55,8 @@ public class UploadData extends Search implements Serializable {
 	private String userId;
 	// 사용자명
 	private String userName;
+	// 기본값 origin : latitude, longitude, height를 origin에 맞춤. boundingboxcenter : latitude, longitude, height를 boundingboxcenter 맞춤
+	private String mappingType;
 	// POINT(위도, 경도). 공간 검색 속도 때문에 altitude는 분리
 	private String location;
 	// 위도
