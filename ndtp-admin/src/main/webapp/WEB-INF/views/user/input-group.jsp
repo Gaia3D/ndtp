@@ -47,7 +47,9 @@
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input">
+										<form:hidden path="duplicationValue"/>
 										<form:input path="userGroupKey" cssClass="l" />
+				  						<input type="button" id="userGroupDuplicationButton" value="<spring:message code='overlap.check'/>" />
 										<form:errors path="userGroupKey" cssClass="error" />
 									</td>
 								</tr>
@@ -68,10 +70,9 @@
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input radio-set">
-										<input type="radio" id="basicTrue" name="basic" value="true" >
-										<label for="basicTrue">기본</label>
-										<input type="radio" id="basicFalse" name="basic" value="false" checked >
-										<label for="basicFalse">선택</label>
+										<form:radiobutton label="기본" path="basic" value="true" />
+										<form:radiobutton label="선택" path="basic" value="false" checked="checked" />
+										<form:errors path="basic" cssClass="error" />
 									</td>
 								</tr>
 								<tr>
@@ -80,10 +81,9 @@
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input radio-set">
-										<input type="radio" id="availableTrue" name="available" value="true" checked>
-										<label for="availableTrue">사용</label>
-										<input type="radio" id="availableFalse" name="available" value="false">
-										<label for="availableFalse">미사용</label>
+										<form:radiobutton label="사용" path="available" value="true" checked="checked" />
+										<form:radiobutton label="미사용" path="available" value="false" />
+										<form:errors path="available" cssClass="error" />
 									</td>
 								</tr>
 								<tr>
@@ -120,19 +120,26 @@
 		var number = /^[0-9]+$/;
 		var exceptKorean = /^[a-zA-Z0-9]*$/;
 		if ($("#userGroupName").val() === null || $("#userGroupName").val() === "") {
-			alert("데이터 그룹명을 입력해 주세요.");
+			alert("사용자 그룹명을 입력해 주세요.");
 			$("#userGroupName").focus();
 			return false;
 		}
 		if ($("#userGroupKey").val() === null || $("#userGroupKey").val() === "") {
-			alert("데이터 그룹명(한글불가)을 입력해 주세요.");
+			alert("사용자 그룹 Key(한글불가)을 입력해 주세요.");
 			$("#userGroupKey").focus();
 			return false;
 		}
 		if (!number.test($("#userGroupKey").val())) {
-			alert("데이터 그룹명은 한글을 입력할 수 없습니다.");
+			alert("사용자 그룹Key는 한글을 입력할 수 없습니다.");
 			$("#userGroupKey").val("");
 			$("#userGroupKey").focus();
+			return false;
+		}
+		if($("#duplicationValue").val() == null || $("#duplicationValue").val() == "") {
+			alert(JS_MESSAGE["check.group.key.duplication"]);
+			return false;
+		} else if($("#duplicationValue").val() == "1") {
+			alert(JS_MESSAGE["group.key.duplication"]);
 			return false;
 		}
 		if($("#parent").val() === null || $("#parent").val() === "" || !number.test($("#parent").val())) {
@@ -141,6 +148,41 @@
 			return false;
 		}
 	}
+
+	// 그룹Key 중복 확인
+ 	$("#userGroupDuplicationButton").on("click", function() {
+		var userGroupKey = $("#userGroupKey").val();
+		if (userGroupKey == "") {
+			alert(JS_MESSAGE["group.key.empty"]);
+			$("#userGroupKey").focus();
+			return false;
+		}
+		$.ajax({
+			url: "/user-group/duplication-check",
+			type: "POST",
+			data: {"userGroupKey": userGroupKey},
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			dataType: "json",
+			success: function(msg){
+				if(msg.result == "success") {
+					if(msg.duplicationValue != "0") {
+						alert(JS_MESSAGE["group.key.duplication"]);
+						$("#userGroupKey").focus();
+						return false;
+					} else {
+						alert(JS_MESSAGE["group.key.enable"]);
+						$("#duplicationValue").val(msg.duplicationValue);
+					}
+				} else {
+					alert(JS_MESSAGE[msg.result]);
+				}
+			},
+			error:function(request, status, error) {
+				//alert(JS_MESSAGE["ajax.error.message"]);
+				alert(" code : " + request.status + "\n" + ", message : " + request.responseText + "\n" + ", error : " + error);
+    		}
+		});
+	});
 
 	// 저장
 	var insertUserGroupFlag = true;
@@ -215,7 +257,7 @@
                 + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
         //popWin.document.title = layerName;
 	});
-	
+
 	// 초기화
 	function formClear() {
 		$("#userGroupName").val("");

@@ -48,7 +48,7 @@
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input">
-										<form:input path="dataGroupKey" cssClass="l" />
+										<form:input path="dataGroupKey" cssClass="l" readonly="true" />
 										<form:errors path="dataGroupKey" cssClass="error" />
 									</td>
 								</tr>
@@ -92,10 +92,9 @@
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input radio-set">
-										<input type="radio" id="basicTrue" name="basic" value="true" >
-										<label for="basicTrue">기본</label>
-										<input type="radio" id="basicFalse" name="basic" value="false" checked >
-										<label for="basicFalse">선택</label>
+										<form:radiobutton label="기본" path="basic" value="true" />
+										<form:radiobutton label="선택" path="basic" value="false" />
+										<form:errors path="basic" cssClass="error" />
 									</td>
 								</tr>
 								<tr>
@@ -104,10 +103,9 @@
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input radio-set">
-										<input type="radio" id="availableTrue" name="available" value="true" checked>
-										<label for="availableTrue">사용</label>
-										<input type="radio" id="availableFalse" name="available" value="false">
-										<label for="availableFalse">미사용</label>
+										<form:radiobutton label="사용" path="available" value="true" />
+										<form:radiobutton label="미사용" path="available" value="false" />
+										<form:errors path="available" cssClass="error" />
 									</td>
 								</tr>
 								<tr>
@@ -168,7 +166,7 @@
 							<div class="button-group">
 								<div class="center-buttons">
 									<input type="submit" value="<spring:message code='save'/>" onclick="updateDataGroup();"/>
-									<a href="/user-group/list" class="button">목록</a>
+									<a href="/data-group/list" class="button">목록</a>
 								</div>
 							</div>
 						</form:form>
@@ -178,7 +176,7 @@
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
-	<%@ include file="/WEB-INF/views/user/group-dialog.jsp" %>
+	<%@ include file="/WEB-INF/views/data/group-dialog.jsp" %>
 
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
@@ -252,7 +250,7 @@
 			updateDataGroupFlag = false;
 			var formData = $("#dataGroup").serialize();
 			$.ajax({
-				url: "/user-group/update",
+				url: "/data-group/update",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 		        data: formData,
