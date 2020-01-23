@@ -10,10 +10,8 @@
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
 					<td class="col-input radio-set">
-						<form:radiobutton path="noticeServiceYn" value="Y" />
-						<form:label path="noticeServiceYn">사용</form:label>
-						<form:radiobutton path="noticeServiceYn" value="N" />
-						<form:label path="noticeServiceYn">미사용</form:label>
+						<form:radiobutton label="${use }" path="noticeServiceYn" value="Y" />
+						<form:radiobutton label="${notuse }" path="noticeServiceYn" value="N" />
 						<form:errors path="noticeServiceYn" cssClass="error" />
 					</td>
 				</tr>
@@ -33,10 +31,8 @@
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
 					<td class="col-input radio-set">
-						<form:radiobutton path="noticeRiskYn" value="Y" />
-						<form:label path="noticeRiskYn">사용</form:label>
-						<form:radiobutton path="noticeRiskYn" value="N" />
-						<form:label path="noticeRiskYn">미사용</form:label>
+						<form:radiobutton label="${use }" path="noticeRiskYn" value="Y" />
+						<form:radiobutton label="${notuse }" path="noticeRiskYn" value="N" />
 						<form:errors path="noticeRiskYn" cssClass="error" />
 					</td>
 				</tr>

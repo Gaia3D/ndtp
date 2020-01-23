@@ -9,67 +9,121 @@
 		SELECT * FROM geopolicy ORDER BY geopolicy_id DESC LIMIT 1
 	</select>
 
-	<!-- 공간 정보 기본 수정 -->	
+	<!-- 공간 정보 기본 수정 -->
 	<update id="updateGeoPolicy" parameterType="geoPolicy">
 		/* updateGeoPolicy */
 		UPDATE geopolicy
-		SET geo_view_library = #{geoVieLibrary},
-			geo_cesium_ion_token = #{geoCesiumIonToken},
-			geo_data_path = #{geo_data_path},
-			<if test="geoDataDefaultProjects == null or geoDataDefaultProjects == ''">
-			geo_data_default_projects = null,
+		SET cesium_ion_token = #{cesiumIonToken},
+			<if test="dataApiUrl != null and dataApiUrl != ''">
+			data_api_url = #{dataApiUrl},
 			</if>
-			<if test="geoDataDefaultProjects != null and geoDataDefaultProjects != ''">
-			geo_data_default_projects = STRING_TO_ARRAY(#{geoDataDefaultProjects}, ','),
-			</if>
-			geo_data_change_request_decision = #{geoDataChangeRequestDecision},
-			geo_cull_face_enable = #{geoCullFaceEnable},
-			geo_time_line_enable = #{geoTimeLineEnable},
-			geo_init_camera_enable = #{geoInitCameraEnable},
-			geo_init_latitude = #{geoInitLatitude},
-			geo_init_longitude = #{geoInitLongitude},
-			geo_init_height = #{geoInitHeight},
-			geo_init_duration = #{geoInitDuration},
-			geo_init_default_terrain = #{geoInitDefaultTerrain},
-			geo_init_default_fov = #{geoInitDefaultFov},
-			geo_lod0 = #{geoLod0},
-			geo_lod1 = #{geoLod1},
-			geo_lod2 = #{geoLod2},
-			geo_lod3 = #{geoLod3},
-			geo_lod4 = #{geoLod4},
-			geo_lod5 = #{geoLod5},
-			geo_ambient_reflection_coef = #{geoAmbientReflectionCoef},
-			geo_diffuse_reflection_coef = #{geoDiffuseReflectionCoef},
-			geo_specular_reflection_coef = #{geoSpecularReflectionCoef},
-			geo_specular_color = #{geoSpecularColor},
-			geo_ambient_color = #{geoAmbientColor},
-			geo_ssao_radius = #{geoSsaoRadius}
-		WHERE geopolicy_id = #{geopolicyId}
+			data_service_path = #{dataServicePath},
+			data_change_request_decision = #{dataChangeRequestDecision}
+			<!-- init_camera_enable = #{initCameraEnable},
+			init_latitude = #{initLatitude},
+			init_longitude = #{initLongitude},
+			init_altitude = #{initAltitude},
+			init_duration = #{initDuration},
+			init_default_terrain = #{initDefaultTerrain},
+			init_default_fov = #{initDefaultFov},
+			init_camera_enable = #{initCameraEnable},
+			init_latitude = #{initLatitude},
+			init_longitude = #{initLongitude},
+			init_altitude = #{initAltitude},
+			init_duration = #{initDuration},
+			init_default_terrain = #{initDefaultTerrain},
+			init_default_fov = #{initDefaultFov},
+			lod0 = #{lod0},
+			lod1 = #{lod1},
+			lod2 = #{lod2},
+			lod3 = #{lod3},
+			lod4 = #{lod4},
+			lod5 = #{lod5},
+			ssao_radius = #{ssaoRadiustltlffl2},
+			cull_face_enable = #{cullFaceEnable},
+			time_line_enable = #{timeLineEnable},
+			max_partitions_lod0 = #{maxPartitionsLod0},
+			max_partitions_lod1 = #{maxPartitionsLod1},
+			max_partitions_lod2_or_less = #{maxPartitionsLod2OrLess},
+			max_ratio_points_dist_0m = #{maxRatioPointsDist0m},
+			max_ratio_points_dist_100m = #{maxRatioPointsDist100m},
+			max_ratio_points_dist_200m = #{maxRatioPointsDist200m},
+			max_ratio_points_dist_400m = #{maxRatioPointsDist400m},
+			max_ratio_points_dist_800m = #{maxRatioPointsDist800m},
+			max_ratio_points_dist_1600m = #{maxRatioPointsDist1600m},
+			max_ratio_points_dist_over_1600m = #{maxRatioPointsDistOver1600m},
+			max_point_size_for_pc = #{maxPointSizeForPc},
+			min_point_size_for_pc = #{minPointSizeForPc},
+			pendent_point_size_for_pc = #{pendentPointSizeForPc},
+			memory_management = #{memoryManagement},
+			layer_source_coordinate = #{layerSourceCoordinate},
+			layer_target_coordinate = #{layerTargetCoordinate}, -->
+		WHERE geopolicy_id = #{geoPolicyId}
 	</update>
-	
-	<!-- Geo Server 수정 -->	
+
+	<!-- Geo Server 수정 -->
 	<update id="updateGeoPolicyGeoServer" parameterType="geoPolicy">
 		/* updateGeoPolicyGeoServer */
 		UPDATE geopolicy
-		SET geo_server_enable = #{geoServerEnable},
-			geo_server_url = #{geoServerUrl},
-			geo_server_layers = #{geoserverLayers},
-			geo_server_parameters_service = #{geoServerParametersService},
-			geo_server_parameters_version = #{geoServerParametersversion},
-			geo_server_parameters_request = #{geoServerParametersRequest},
-			geo_server_parameters_transparent = #{geoServerParametersTransparent},
-			geo_server_parameters_format = #{geoServerParametersFormat},
-			geo_server_add_url = #{geoServerAddUrl},
-			geo_server_add_layers = #{geoServerAddLayers},
-			geo_server_add_parameters_service = #{geoServerAddParametersService},
-			geo_server_add_parameters_version = #{geoServerAddParametersVersion},
-			geo_server_add_parameters_request = #{geoServerAddParametersRequest},
-			geo_server_add_parameters_transparent = #{geoServerAddParametersTransparent},
-			geo_server_add_parameters_format = #{geoServerAddParametersFormat}
-		WHERE geopolicy_id = #{geopolicyId}
+		SET geoserver_enable = #{geoserverEnable},
+			<if test="geoserverDataUrl != null and geoserverDataUrl != ''">
+			geoserver_data_url = #{geoserverDataUrl},
+			</if>
+			<if test="geoserverDataWorkspace != null and geoserverDataWorkspace != ''">
+			geoserver_data_workspace = #{geoserverDataWorkspace},
+			</if>
+			<if test="geoserverDataStore != null and geoserverDataStore != ''">
+			geoserver_data_store = #{geoserverDataStore},
+			</if>
+			<if test="geoserverUser != null and geoserverUser != ''">
+			geoserver_user = #{geoserverUser},
+			</if>
+			<if test="geoserverPassword != null and geoserverPassword != ''">
+			geoserver_password = #{geoserverPassword},
+			</if>
+			geoserver_imageprovider_enable = #{geoserverImageproviderEnable},
+			<if test="geoserverImageproviderUrl != null and geoserverImageproviderUrl != ''">
+			geoserver_imageprovider_url = #{geoserverImageproviderUrl},
+			</if>
+			<if test="geoserverImageproviderLayerName != null and geoserverImageproviderLayerName != ''">
+			geoserver_imageprovider_layer_name = #{geoserverImageproviderLayerName},
+			</if>
+			<if test="geoserverImageproviderStyleName != null and geoserverImageproviderStyleName != ''">
+			geoserver_imageprovider_style_name = #{geoserverImageproviderStyleName},
+			</if>
+			<if test="geoserverImageproviderParametersWidth != null and geoserverImageproviderParametersWidth != ''">
+			geoserver_imageprovider_parameters_width = #{geoserverImageproviderParametersWidth},
+			</if>
+			<if test="geoserverImageproviderParametersHeight != null and geoserverImageproviderParametersHeight != ''">
+			geoserver_imageprovider_parameters_height = #{geoserverImageproviderParametersHeight},
+			</if>
+			<if test="geoserverImageproviderParametersFormat != null and geoserverImageproviderParametersFormat != ''">
+			geoserver_imageprovider_parameters_format = #{geoserverImageproviderParametersFormat},
+			</if>
+			geoserver_terrainprovider_enable = #{geoserverTerrainproviderEnable},
+			<if test="geoserverTerrainproviderUrl != null and geoserverTerrainproviderUrl != ''">
+			geoserver_terrainprovider_url = #{geoserverTerrainproviderUrl},
+			</if>
+			<if test="geoserverTerrainproviderLayerName != null and geoserverTerrainproviderLayerName != ''">
+			geoserver_terrainprovider_layer_name = #{geoserverTerrainproviderLayerName},
+			</if>
+			<if test="geoserverTerrainproviderStyleName != null and geoserverTerrainproviderStyleName != ''">
+			geoserver_terrainprovider_style_name = #{geoserverTerrainproviderStyleName},
+			</if>
+			<if test="geoserverTerrainproviderParametersWidth != null and geoserverTerrainproviderParametersWidth != ''">
+			geoserver_terrainprovider_parameters_width = #{geoserverTerrainproviderParametersWidth},
+			</if>
+			<if test="geoserverTerrainproviderParametersHeight != null and geoserverTerrainproviderParametersHeight != ''">
+			geoserver_terrainprovider_parameters_height = #{geoserverTerrainproviderParametersHeight},
+			</if>
+			<if test="geoserverTerrainproviderParametersFormat != null and geoserverTerrainproviderParametersFormat != ''">
+			geoserver_terrainprovider_parameters_format = #{geoserverTerrainproviderParametersFormat},
+			</if>
+			geoserver_wms_version = #{geoserverWmsVersion}
+		WHERE geopolicy_id = #{geoPolicyId}
 	</update>
-	
-	<!-- CallBack Function 수정 -->	
+
+	<!-- CallBack Function 수정 -->
 	<update id="updateGeoPolicyGeoCallBack" parameterType="geoPolicy">
 		/* updateGeoPolicyGeoCallBack */
 		UPDATE geopolicy
@@ -81,7 +135,7 @@
 			geo_callback_insertissue = #{geoCallbackInsertissue},
 			geo_callback_listissue = #{geoCallback_listissue},
 			geo_callback_clickposition = #{geoCallbackClickposition}
-		WHERE geopolicy_id = #{geopolicyId}
+		WHERE geopolicy_id = #{geoPolicyId}
 	</update>
-	
+
 </mapper>

@@ -10,10 +10,8 @@
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
 					<td class="col-input radio-set">
-						<form:radiobutton path="securitySessionTimeoutYn" value="Y" />
-						<form:label path="securitySessionTimeoutYn">사용</form:label>
-						<form:radiobutton path="securitySessionTimeoutYn" value="N" />
-						<form:label path="securitySessionTimeoutYn">미사용</form:label>
+						<form:radiobutton label="${use }" path="securitySessionTimeoutYn" value="Y" />
+						<form:radiobutton label="${notuse }" path="securitySessionTimeoutYn" value="N" />
 						<form:errors path="securitySessionTimeoutYn" cssClass="error" />
 					</td>
 				</tr>
@@ -34,10 +32,8 @@
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
 					<td class="col-input radio-set">
-						<form:radiobutton path="securityUserIpCheckYn" value="Y" />
-						<form:label path="securityUserIpCheckYn">사용</form:label>
-						<form:radiobutton path="securityUserIpCheckYn" value="N" />
-						<form:label path="securityUserIpCheckYn">미사용</form:label>
+						<form:radiobutton label="${use }" path="securityUserIpCheckYn" value="Y" />
+						<form:radiobutton label="${notuse }" path="securityUserIpCheckYn" value="N" />
 						<form:errors path="securityUserIpCheckYn" cssClass="error" />
 					</td>
 				</tr>
@@ -77,10 +73,8 @@
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
 					<td class="col-input radio-set">
-						<form:radiobutton path="securityDynamicBlockYn" value="Y" />
-						<form:label path="securityDynamicBlockYn">사용</form:label>
-						<form:radiobutton path="securityDynamicBlockYn" value="N" />
-						<form:label path="securityDynamicBlockYn">미사용</form:label>
+						<form:radiobutton label="${use }" path="securityDynamicBlockYn" value="Y" />
+						<form:radiobutton label="${notuse }" path="securityDynamicBlockYn" value="N" />
 						<form:errors path="securityDynamicBlockYn" cssClass="error" />
 					</td>
 				</tr>
@@ -90,10 +84,8 @@
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
 					<td class="col-input radio-set">
-						<form:radiobutton path="securityApiResultSecureYn" value="Y" />
-						<form:label path="securityApiResultSecureYn">사용</form:label>
-						<form:radiobutton path="securityApiResultSecureYn" value="N" />
-						<form:label path="securityApiResultSecureYn">미사용</form:label>
+						<form:radiobutton label="${use }" path="securityApiResultSecureYn" value="Y" />
+						<form:radiobutton label="${notuse }" path="securityApiResultSecureYn" value="N" />
 						<form:errors path="securityApiResultSecureYn" cssClass="error" />
 					</td>
 				</tr>
@@ -103,10 +95,8 @@
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
 					<td class="col-input radio-set">
-						<form:radiobutton path="securityMaskingYn" value="Y" />
-						<form:label path="securityMaskingYn">사용</form:label>
-						<form:radiobutton path="securityMaskingYn" value="N" />
-						<form:label path="securityMaskingYn">미사용</form:label>
+						<form:radiobutton label="${use }" path="securityMaskingYn" value="Y" />
+						<form:radiobutton label="${notuse }" path="securityMaskingYn" value="N" />
 						<form:errors path="securityMaskingYn" cssClass="error" />
 					</td>
 				</tr>
