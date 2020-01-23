@@ -23170,6 +23170,8 @@ var MagoManager = function()
 	
 	this.managerUtil = new ManagerUtils();
 
+	this.frustumVolumeControl = new FrustumVolumeControl();
+
 	// CURRENTS.********************************************************************
 	this.currentSelectedObj_idx = -1;
 	this.currentByteColorPicked = new Uint8Array(4);
@@ -23226,10 +23228,12 @@ MagoManager.prototype = Object.create(Emitter.prototype);
 MagoManager.prototype.constructor = MagoManager;
 
 MagoManager.EVENT_TYPE = {
-	'CLICK'     	: 'click',
-	'DBCLICK'   	: 'dbclick',
-	'RIGHTCLICK' : 'rightclick',
-	'MOUSEMOVE'  : 'mousemove'
+	'CLICK'             	: 'click',
+	'DBCLICK'           	: 'dbclick',
+	'RIGHTCLICK'         : 'rightclick',
+	'MOUSEMOVE'          : 'mousemove',
+	'SMARTTILELOADSTART' : 'smarttileloadstart',
+	'SMARTTILELOADEND'   : 'smarttileloadend'
 };
 
 /**
@@ -24440,9 +24444,16 @@ MagoManager.prototype.cameraMoved = function()
 	this.sceneState.camera.setDirty(true);
 	
 	if (this.selectionFbo === undefined) 
-	{ this.selectionFbo = new FBO(this.sceneState.gl, this.sceneState.drawingBufferWidth, this.sceneState.drawingBufferHeight); }
-
-	this.selectionFbo.dirty = true;
+	{ 
+		if (this.sceneState.gl) 
+		{
+			this.selectionFbo = new FBO(this.sceneState.gl, this.sceneState.drawingBufferWidth, this.sceneState.drawingBufferHeight); 
+		}
+	}
+	if (this.selectionFbo)
+	{
+		this.selectionFbo.dirty = true;
+	}
 };
 
 /**
@@ -24611,6 +24622,11 @@ MagoManager.prototype.isDragging = function()
 	var gl = this.sceneState.gl;
 	
 	this.arrayAuxSC.length = 0;
+	if (!this.selectionFbo)
+	{
+		return false;
+	}
+
 	this.selectionFbo.bind();
 	var current_objectSelected = this.getSelectedObjects(gl, this.mouse_x, this.mouse_y, this.arrayAuxSC);
 
@@ -24976,7 +24992,7 @@ MagoManager.prototype.keyDown = function(key)
 			//{
 			//	excavation.makeExtrudeObject(this);
 			//}
-			if (geoCoordsList !== undefined)
+			if (geoCoordsList !== undefined && geoCoordsList.geographicCoordsArray.length > 0)
 			{
 				// test make thickLine.
 				var options = {
@@ -25038,8 +25054,9 @@ MagoManager.prototype.keyDown = function(key)
 		if (this.smartTile_f4d_tested === undefined)
 		{
 			this.smartTile_f4d_tested = 1;
-			var projectFolderName = "smartTile_f4d_Korea";
+			//var projectFolderName = "smartTile_f4d_Korea";
 			//var projectFolderName = "SejongParkJinWoo_20191101";
+			var projectFolderName = "sejong_time_series_smartTiles";
 			var fileName = this.readerWriter.geometryDataPath + "/" + projectFolderName + "/" + "smartTile_f4d_indexFile.sii";
 			this.readerWriter.getObjectIndexFileSmartTileF4d(fileName, projectFolderName, this);
 
@@ -25320,7 +25337,11 @@ MagoManager.prototype.mouseActionLeftDoubleClick = function(mouseX, mouseY)
 		var eventCoordinate = ManagerUtils.getComplexCoordinateByScreenCoord(this.getGl(), mouseX, mouseY, undefined, undefined, undefined, this);
 		if (eventCoordinate) 
 		{
-			this.emit(MagoManager.EVENT_TYPE.DBCLICK, {type: MagoManager.EVENT_TYPE.CLICK, clickCoordinate: eventCoordinate, timestamp: this.getCurrentTime()});
+			this.emit(MagoManager.EVENT_TYPE.DBCLICK, {
+				type            : MagoManager.EVENT_TYPE.DBCLICK, 
+				clickCoordinate : eventCoordinate, 
+				timestamp       : this.getCurrentTime()
+			});
 		}
 	}
 };
@@ -25361,10 +25382,11 @@ MagoManager.prototype.mouseActionLeftDown = function(mouseX, mouseY)
 	this.mouse_y = mouseY;
 	this.mouseLeftDown = true;
 	//this.isCameraMoving = true;
-	if (!this.isCesiumGlobe()) 
+	MagoWorld.updateMouseStartClick(mouseX, mouseY, this);
+	/*if (!this.isCesiumGlobe()) 
 	{
 		MagoWorld.updateMouseStartClick(mouseX, mouseY, this);
-	}
+	}*/
 	
 	/*
 	// Test.**********************************************************************************************************************
@@ -27085,9 +27107,6 @@ MagoManager.prototype.doMultiFrustumCullingSmartTiles = function(camera)
 	// This makes the visible buildings array.
 	var smartTile1 = this.smartTileManager.tilesArray[0]; // America side tile.
 	var smartTile2 = this.smartTileManager.tilesArray[1]; // Asia side tile.
-	
-	if (this.frustumVolumeControl === undefined)
-	{ this.frustumVolumeControl = new FrustumVolumeControl(); }
 	
 	if (this.intersectedTilesArray === undefined)
 	{ this.intersectedTilesArray = []; }
@@ -32757,6 +32776,7 @@ SmartTile.prototype.parseSmartTileF4d = function(dataArrayBuffer, magoManager)
 	var bytesReaded = 0;
 	var smartTileType = (new Int32Array(dataArrayBuffer.slice(bytesReaded, bytesReaded+4)))[0]; bytesReaded += 4;
 	var buildingsCount = (new Int32Array(dataArrayBuffer.slice(bytesReaded, bytesReaded+4)))[0]; bytesReaded += 4;
+	magoManager.emit(MagoManager.EVENT_TYPE.SMARTTILELOADSTART, {tile: this, timestamp: new Date()});
 	for (var i=0; i<buildingsCount; i++)
 	{
 		// read projectId.
@@ -32781,7 +32801,7 @@ SmartTile.prototype.parseSmartTileF4d = function(dataArrayBuffer, magoManager)
 		data.projectId = projectId + ".json";
 		data.data_name = buildingId;
 		data.attributes = attributes;
-		data.mapping_type = "origin";
+		data.mapping_type = "boundingboxcenter";
 		
 		// Create a neoBuilding.
 		var neoBuilding = new NeoBuilding();
@@ -32844,117 +32864,11 @@ SmartTile.prototype.parseSmartTileF4d = function(dataArrayBuffer, magoManager)
 		node.data.smartTileOwner = this;
 		this.nodesArray.push(node);
 	}
-	
+	magoManager.emit(MagoManager.EVENT_TYPE.SMARTTILELOADEND, {
+		tile      : this,  
+		timestamp : new Date()
+	});
 	//this.fileLoadState = CODE.fileLoadState.PARSE_FINISHED;
-};
-
-/**
- */
-SmartTile.prototype.parseSmartTileF4d_original = function(dataArrayBuffer, magoManager) 
-{
-	var hierarchyManager = magoManager.hierarchyManager;
-	var readWriter = magoManager.readerWriter;
-	var smartTileManager = magoManager.smartTileManager;
-	var targetDepth = 17;
-	
-	if (targetDepth < this.depth)
-	{ targetDepth = this.depth; }
-	
-	// parse smartTileF4d.***
-	var bytesReaded = 0;
-	var buildingsCount = (new Int32Array(dataArrayBuffer.slice(bytesReaded, bytesReaded+4)))[0]; bytesReaded += 4;
-	for (var i=0; i<buildingsCount; i++)
-	{
-		// read projectId.
-		var projectId = "";
-		var wordLength = (new Uint16Array(dataArrayBuffer.slice(bytesReaded, bytesReaded+2)))[0]; bytesReaded += 2;
-		for (var j=0; j<wordLength; j++)
-		{
-			projectId += String.fromCharCode(new Int8Array(dataArrayBuffer.slice(bytesReaded, bytesReaded+ 1))[0]);bytesReaded += 1;
-		}
-		
-		// read buildingId.
-		var buildingId = "";
-		wordLength = (new Uint16Array(dataArrayBuffer.slice(bytesReaded, bytesReaded+2)))[0]; bytesReaded += 2;
-		for (var j=0; j<wordLength; j++)
-		{
-			buildingId += String.fromCharCode(new Int8Array(dataArrayBuffer.slice(bytesReaded, bytesReaded+ 1))[0]);bytesReaded += 1;
-		}
-		
-		// Create a node for each building.
-		var attributes = {
-			"isPhysical" : true,
-			"objectType" : "basicF4d"
-		};
-		
-		var node = hierarchyManager.newNode(buildingId, projectId, attributes);
-		var data = node.data;
-		data.projectFolderName = projectId;
-		data.projectId = projectId + ".json";
-		data.data_name = buildingId;
-		data.attributes = attributes;
-		data.mapping_type = "origin";
-		
-		// Create a neoBuilding.
-		var neoBuilding = new NeoBuilding();
-		data.neoBuilding = neoBuilding;
-		neoBuilding.buildingFileName = buildingId;
-		neoBuilding.buildingId = buildingId;
-		neoBuilding.projectFolderName = projectId;
-		neoBuilding.nodeOwner = node;
-		
-		// read header (metaData + octree's structure + textures list + lodBuilding data).
-		var metadataByteSize = (new Int32Array(dataArrayBuffer.slice(bytesReaded, bytesReaded+4)))[0]; bytesReaded += 4;
-		bytesReaded = neoBuilding.parseHeader(dataArrayBuffer, bytesReaded);
-		neoBuilding.bbox = neoBuilding.metaData.bbox;
-
-		// read lod5 mesh data.
-		var lod5meshSize = (new Int32Array(dataArrayBuffer.slice(bytesReaded, bytesReaded+4)))[0]; bytesReaded += 4;
-		var lodToLoad = 5;
-		var lodBuildingData = neoBuilding.getLodBuildingData(lodToLoad);
-		if (lodBuildingData === undefined)
-		{ return false; }
-
-		if (lodBuildingData.isModelRef)
-		{ return false; }
-		
-		var textureFileName = lodBuildingData.textureFileName;
-		var lodString = lodBuildingData.geometryFileName;
-		
-		var lowLodMesh = neoBuilding.getOrNewLodMesh(lodString);
-		lowLodMesh.textureName = textureFileName;
-		lowLodMesh.fileLoadState = CODE.fileLoadState.LOADING_FINISHED;
-		bytesReaded = lowLodMesh.parseLegoData(dataArrayBuffer, magoManager, bytesReaded);
-		
-		// read lod5 image.
-		var lod5ImageSize = (new Int32Array(dataArrayBuffer.slice(bytesReaded, bytesReaded+4)))[0]; bytesReaded += 4;
-		var byteSize = 1;
-		var startBuff = bytesReaded;
-		var endBuff = bytesReaded + byteSize * lod5ImageSize;
-		var lod5ImageDataBuffer = new Uint8Array(dataArrayBuffer.slice(startBuff, endBuff));
-		bytesReaded = bytesReaded + byteSize * lod5ImageSize; // updating data.
-
-		if (lowLodMesh.texture === undefined)
-		{ lowLodMesh.texture = new Texture(); }
-	
-		var gl = magoManager.getGl();
-		TexturesManager.newWebGlTextureByEmbeddedImage(gl, lod5ImageDataBuffer, lowLodMesh.texture);
-		
-		
-		// read geographicCoord.
-		var geoCoord = new GeographicCoord();
-		bytesReaded = geoCoord.readDataFromBuffer(dataArrayBuffer, bytesReaded);
-		node.data.geographicCoord = geoCoord;
-		
-		// read euler angles degree.
-		var eulerAngDeg = new Point3D();
-		bytesReaded = eulerAngDeg.readDataFromBuffer(dataArrayBuffer, bytesReaded);
-		data.rotationsDegree = eulerAngDeg; 
-		
-		// finally put the node into smartTile.
-		this.putNode(targetDepth, node, magoManager);
-	}
-	
 };
 
 /**
@@ -48390,8 +48304,11 @@ Node.prototype.changeLocationAndRotation = function(latitude, longitude, elevati
 	
 		// Change the geoCoords of the buildingSeed.
 		var buildingSeed = aNode.data.buildingSeed;
-		buildingSeed.geographicCoordOfBBox.longitude = longitude;
-		buildingSeed.geographicCoordOfBBox.latitude = latitude;
+		if (buildingSeed)
+		{
+			buildingSeed.geographicCoordOfBBox.longitude = longitude;
+			buildingSeed.geographicCoordOfBBox.latitude = latitude;
+		}
 
 		
 		// now, must change the keyMatrix of the references of the octrees of all buildings of this node.
@@ -55590,6 +55507,111 @@ TinTerrainManager.prototype.render = function(magoManager, bDepth, renderType, s
 'use strict';
 
 /**
+ * 메세지
+ * 
+ * @class
+ */
+var Message = function(i18next, message) 
+{
+	this.handle  = i18next;
+	this.message = message || MessageSource;
+};
+
+/**
+ * 메세지 클래스 초기화
+ *
+ * @param {Function} callback
+ */
+Message.prototype.init = function (callback)
+{
+	var h = this.handle;
+	this.handle.use(i18nextXHRBackend)
+		.use(i18nextBrowserLanguageDetector)
+		.init({
+			// Useful for debuging, displays which key is missing
+			debug: false,
+
+			detection: {
+				// keys or params to lookup language from
+				lookupQuerystring  : 'lang',
+				lookupCookie       : 'i18nextLang',
+				lookupLocalStorage : 'i18nextLang',
+			},
+    
+			// If translation key is missing, which lang use instead
+			fallbackLng: 'en',
+
+			resources: this.message,
+
+			// all, languageOnly
+			load: "languageOnly",
+
+			ns        : ['common'],
+			// Namespace to use by default, when not indicated
+			defaultNS : 'common',
+    
+			keySeparator     : ".",
+			nsSeparator      : ":",
+			pluralSeparator  : "_",
+			contextSeparator : "_"
+
+		}, function(err, t)
+		{
+			console.log("detected user language: " + h.language);
+			console.log("loaded languages: " + h.languages.join(', '));
+			h.changeLanguage(h.languages[0]);
+			callback(err, t);
+		});
+};
+
+/**
+ * 메세지 핸들러를 가져온다.
+ *
+ * @returns {i18next} message handler
+ */
+Message.prototype.getHandle = function ()
+{
+	return this.handle;
+};
+
+/**
+ * 메세지를 가져온다.
+ *
+ * @returns {Object} message
+ */
+Message.prototype.getMessage = function ()
+{
+	return this.message;
+};
+
+'use strict';
+var MessageSource = {};
+MessageSource.en = {
+  "common": {
+    "welcome" : "Welcome",
+    "error": {
+        "title" : "Error",
+        "construct" : {
+            "create" : "This object should be created using new."
+        }
+    }
+  }
+};
+MessageSource.ko = {
+    "common": {
+      "welcome" : "환영합니다.",
+      "error": {
+          "title" : "오류",
+          "construct" : {
+              "create" : "이 객체는 new 를 사용하여 생성해야 합니다."
+          }
+      }
+    }
+  };
+
+'use strict';
+
+/**
  * This represent Arc feature in 2D
  * @class Arc2D
  */
@@ -59945,6 +59967,11 @@ MagoWorld.updateMouseStartClick = function(mouseX, mouseY, magoManager)
 	mouseAction.strLinealDepth = currentLinearDepth;
 	//mouseAction.strCamCoordPoint = ManagerUtils.calculatePixelPositionCamCoord(gl, mouseAction.strX, mouseAction.strY, mouseAction.strCamCoordPoint, currentDepthFbo, currentFrustumNear, currentFrustumFar, magoManager);
 	mouseAction.strCamCoordPoint = MagoWorld.screenToCamCoord(mouseX, mouseY, magoManager, mouseAction.strCamCoordPoint);
+	if (!mouseAction.strCamCoordPoint) 
+	{
+		return;
+	}
+
 	mouseAction.strWorldPoint = ManagerUtils.cameraCoordPositionToWorldCoord(mouseAction.strCamCoordPoint, mouseAction.strWorldPoint, magoManager);
 	
 	// now, copy camera to curCamera.
@@ -74197,111 +74224,6 @@ VtxSegment.prototype.intersectionWithPoint = function(point, error)
 'use strict';
 
 /**
- * 메세지
- * 
- * @class
- */
-var Message = function(i18next, message) 
-{
-	this.handle  = i18next;
-	this.message = message || MessageSource;
-};
-
-/**
- * 메세지 클래스 초기화
- *
- * @param {Function} callback
- */
-Message.prototype.init = function (callback)
-{
-	var h = this.handle;
-	this.handle.use(i18nextXHRBackend)
-		.use(i18nextBrowserLanguageDetector)
-		.init({
-			// Useful for debuging, displays which key is missing
-			debug: false,
-
-			detection: {
-				// keys or params to lookup language from
-				lookupQuerystring  : 'lang',
-				lookupCookie       : 'i18nextLang',
-				lookupLocalStorage : 'i18nextLang',
-			},
-    
-			// If translation key is missing, which lang use instead
-			fallbackLng: 'en',
-
-			resources: this.message,
-
-			// all, languageOnly
-			load: "languageOnly",
-
-			ns        : ['common'],
-			// Namespace to use by default, when not indicated
-			defaultNS : 'common',
-    
-			keySeparator     : ".",
-			nsSeparator      : ":",
-			pluralSeparator  : "_",
-			contextSeparator : "_"
-
-		}, function(err, t)
-		{
-			console.log("detected user language: " + h.language);
-			console.log("loaded languages: " + h.languages.join(', '));
-			h.changeLanguage(h.languages[0]);
-			callback(err, t);
-		});
-};
-
-/**
- * 메세지 핸들러를 가져온다.
- *
- * @returns {i18next} message handler
- */
-Message.prototype.getHandle = function ()
-{
-	return this.handle;
-};
-
-/**
- * 메세지를 가져온다.
- *
- * @returns {Object} message
- */
-Message.prototype.getMessage = function ()
-{
-	return this.message;
-};
-
-'use strict';
-var MessageSource = {};
-MessageSource.en = {
-  "common": {
-    "welcome" : "Welcome",
-    "error": {
-        "title" : "Error",
-        "construct" : {
-            "create" : "This object should be created using new."
-        }
-    }
-  }
-};
-MessageSource.ko = {
-    "common": {
-      "welcome" : "환영합니다.",
-      "error": {
-          "title" : "오류",
-          "construct" : {
-              "create" : "이 객체는 new 를 사용하여 생성해야 합니다."
-          }
-      }
-    }
-  };
-
-'use strict';
-
-/**
  * Geoserver for mago3Djs object.
  * @class Geoserver
  */
@@ -88296,7 +88218,12 @@ ManagerUtils.calculatePixelLinearDepth = function(gl, pixelX, pixelY, depthFbo, 
 {
 	if (depthFbo === undefined)
 	{ depthFbo = magoManager.depthFboNeo; }
-	
+	if (!depthFbo) 
+	{
+		return;
+	}
+
+
 	if (depthFbo) 
 	{
 		depthFbo.bind(); 
@@ -88330,6 +88257,10 @@ ManagerUtils.calculatePixelPositionCamCoord = function(gl, pixelX, pixelY, resul
 	{ frustumNear = 0.0; }
 	
 	var linearDepth = ManagerUtils.calculatePixelLinearDepth(gl, pixelX, pixelY, depthFbo, magoManager);
+	if (!linearDepth) 
+	{
+		return;
+	}
 	var realZDepth = frustumNear + linearDepth*frustumFar; // original.
 
 	// now, find the 3d position of the pixel in camCoord.*
