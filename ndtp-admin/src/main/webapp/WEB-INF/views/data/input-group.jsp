@@ -33,10 +33,8 @@
 								<col class="col-input" />
 								<tr>
 									<th class="col-label" scope="row">
-										<form:hidden path="duplicationValue"/>
 										<form:label path="dataGroupName">데이터 그룹명</form:label>
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
-				  						<input type="button" id="dataGroupDuplicationButton" value="<spring:message code='overlap.check'/>" />
 									</th>
 									<td class="col-input">
 										<form:input path="dataGroupName" cssClass="l" />
@@ -49,7 +47,9 @@
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input">
+										<form:hidden path="duplicationValue"/>
 										<form:input path="dataGroupKey" cssClass="l" />
+				  						<input type="button" id="dataGroupDuplicationButton" value="<spring:message code='overlap.check'/>" />
 										<form:errors path="dataGroupKey" cssClass="error" />
 									</td>
 								</tr>
@@ -269,12 +269,19 @@
 			return false;
 		}
 		if ($("#dataGroupKey").val() === null || $("#dataGroupKey").val() === "") {
-			alert("데이터 그룹명(한글불가)을 입력해 주세요.");
+			alert("데이터 그룹 Key(한글불가)을 입력해 주세요.");
 			$("#dataGroupKey").focus();
 			return false;
 		} else if ($("#dataGroupKey").val().length >= 60) {
 			alert("데이터 그룹 Key는 60자를 넘길 수 없습니다.");
 			$("#dataGroupKey").focus();
+			return false;
+		}
+		if($("#duplicationValue").val() == null || $("#duplicationValue").val() == "") {
+			alert(JS_MESSAGE["check.group.key.duplication"]);
+			return false;
+		} else if($("#duplicationValue").val() == "1") {
+			alert(JS_MESSAGE["group.key.duplication"]);
 			return false;
 		}
 		//한글이 입력될 경우 "한글명은 이용할 수 없습니다."라고 출력 -> 한글 검사방법..?
@@ -284,6 +291,41 @@
 			return false;
 		}
 	}
+
+	// 그룹Key 중복 확인
+ 	$("#dataGroupDuplicationButton").on("click", function() {
+		var dataGroupKey = $("#dataGroupKey").val();
+		if (dataGroupKey == "") {
+			alert(JS_MESSAGE["group.key.empty"]);
+			$("#dataGroupKey").focus();
+			return false;
+		}
+		$.ajax({
+			url: "/data-group/duplication-check",
+			type: "POST",
+			data: {"dataGroupKey": dataGroupKey},
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			dataType: "json",
+			success: function(msg){
+				if(msg.result == "success") {
+					if(msg.duplicationValue != "0") {
+						alert(JS_MESSAGE["group.key.duplication"]);
+						$("#dataGroupKey").focus();
+						return false;
+					} else {
+						alert(JS_MESSAGE["group.key.enable"]);
+						$("#duplicationValue").val(msg.duplicationValue);
+					}
+				} else {
+					alert(JS_MESSAGE[msg.result]);
+				}
+			},
+			error:function(request, status, error) {
+				//alert(JS_MESSAGE["ajax.error.message"]);
+				alert(" code : " + request.status + "\n" + ", message : " + request.responseText + "\n" + ", error : " + error);
+    		}
+		});
+	});
 
 	// 저장
 	var insertDataGroupFlag = true;

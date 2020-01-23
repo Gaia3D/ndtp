@@ -38,7 +38,6 @@ JS_MESSAGE["usersession.grant.invalid"] = "사용 권한이 유효하지 않습�
 
 //사용자
 JS_MESSAGE["user.id.empty"] = "아이디를 입력하여 주십시오.";
-JS_MESSAGE["user.id.duplication"] = "이미 사용중인 아이디 입니다.";
 JS_MESSAGE["user.id.enable"] = "사용 가능한 아이디 입니다.";
 JS_MESSAGE["user.id.min_length.invalid"] = "사용자 아이디 최소 길이가 올바르지 않습니다.";
 JS_MESSAGE["password.empty"] = "비밀번호를 입력하여 주십시오.";
@@ -58,7 +57,6 @@ JS_MESSAGE["user.password.exception"] = "패스워드 등록 과정 중 오류�
 JS_MESSAGE["user.session.notexist"] = "세션 정보가 존재하지 않습니다.";
 JS_MESSAGE["user.session.closed"] = "세션 종료 처리 하였습니다.";
 JS_MESSAGE["user.session.close"] = "선택하신 사용자의 세션을 종료 하시겠습니까?";
-JS_MESSAGE["user.id.enable"] = "사용 가능한 아이디 입니다.";
 JS_MESSAGE["user.insert"] = "사용자를 등록 하였습니다.";
 JS_MESSAGE["user.info.update"] = "사용자 정보를 수정 하였습니다.";
 JS_MESSAGE["user.id.notexist"] = "아이디가 존재하지 않습니다.";
@@ -99,6 +97,12 @@ JS_MESSAGE["policy.contents.main.display"] = "메인 화면 컨텐츠 표시 개
 JS_MESSAGE["policy.contents.main.display"] = "메인 화면 컨텐츠 표시 개수를 입력하여 주십시오.";
 
 JS_MESSAGE["policy.menu.invalid"] = "필수 입력값이 유효하지 않습니다.";
+
+// group
+JS_MESSAGE["group.key.empty"] = "그룹Key를 입력하여 주십시오.";
+JS_MESSAGE["group.key.duplication"] = "사용중인 값 입니다. 다른 그룹Key를 입력해 주십시오.";
+JS_MESSAGE["group.key.enable"] = "사용 가능한 그룹Key 입니다.";
+JS_MESSAGE["check.group.key.duplication"] = "그룹Key 중복확인을 해주십시오.";
 
 // ticks
 JS_MESSAGE["main.status.in.use"] = "사용중";

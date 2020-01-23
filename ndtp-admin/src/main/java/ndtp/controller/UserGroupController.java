@@ -35,7 +35,6 @@ import ndtp.domain.Role;
 import ndtp.domain.UserGroup;
 import ndtp.domain.UserGroupMenu;
 import ndtp.domain.UserGroupRole;
-import ndtp.domain.YOrN;
 import ndtp.service.MenuService;
 import ndtp.service.PolicyService;
 import ndtp.service.RoleService;
@@ -186,6 +185,38 @@ public class UserGroupController implements AuthorizationController {
 		result.put("errorCode", errorCode);
 		result.put("message", message);
 		return result;
+	}
+
+	/**
+	 * 그룹Key 중복 체크
+	 * @param model
+	 * @return
+	 */
+	@PostMapping(value = "duplication-check")
+	@ResponseBody
+	public Map<String, Object> ajaxKeyDuplicationCheck(HttpServletRequest request, UserGroup userGroup) {
+		Map<String, Object> map = new HashMap<>();
+		String result = "success";
+		String duplicationValue = "";
+		try {
+			if(userGroup.getUserGroupKey() == null || "".equals(userGroup.getUserGroupKey())) {
+				result = "group.key.empty";
+				map.put("result", result);
+				return map;
+			}
+
+			int count = userGroupService.getDuplicationKeyCount(userGroup.getUserGroupKey());
+			log.info("@@ duplicationValue = {}", count);
+			duplicationValue = String.valueOf(count);
+		} catch(Exception e) {
+			e.printStackTrace();
+			result = "db.exception";
+		}
+
+		map.put("result", result);
+		map.put("duplicationValue", duplicationValue);
+
+		return map;
 	}
 
 	/**

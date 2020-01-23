@@ -92,6 +92,16 @@ public class DataGroupServiceImpl implements DataGroupService {
     	return result;
     }
 
+    /**
+	 * 그룹Key 중복 체크
+	 * @param dataGroupKey
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public int getDuplicationKeyCount(String dataGroupKey) {
+		return dataGroupMapper.getDuplicationKeyCount(dataGroupKey);
+	}
+
 	/**
 	 * 데이터 그룹 수정
 	 * @param dataGroup

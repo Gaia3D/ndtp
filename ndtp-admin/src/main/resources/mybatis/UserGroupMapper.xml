@@ -176,6 +176,12 @@
 		ORDER BY A.insert_date DESC
 	</select>
 
+	<!-- 그룹Key 중복 체크 -->
+	<select id="getDuplicationKeyCount" parameterType="string" resultType="int">
+		/* getDuplicationKeyCount */
+		SELECT COUNT(user_group_key) AS count FROM user_group WHERE user_group_key = #{userGroupKey}
+	</select>
+
     <!-- 사용자 그룹 등록 -->
     <insert id="insertUserGroup" parameterType="userGroup">
     	/* insertUserGroup */

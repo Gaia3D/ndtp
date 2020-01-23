@@ -195,6 +195,38 @@ public class DataGroupController {
 	}
 
 	/**
+	 * 그룹Key 중복 체크
+	 * @param model
+	 * @return
+	 */
+	@PostMapping(value = "duplication-check")
+	@ResponseBody
+	public Map<String, Object> ajaxKeyDuplicationCheck(HttpServletRequest request, DataGroup dataGroup) {
+		Map<String, Object> map = new HashMap<>();
+		String result = "success";
+		String duplicationValue = "";
+		try {
+			if(dataGroup.getDataGroupKey() == null || "".equals(dataGroup.getDataGroupKey())) {
+				result = "group.key.empty";
+				map.put("result", result);
+				return map;
+			}
+
+			int count = dataGroupService.getDuplicationKeyCount(dataGroup.getDataGroupKey());
+			log.info("@@ duplicationValue = {}", count);
+			duplicationValue = String.valueOf(count);
+		} catch(Exception e) {
+			e.printStackTrace();
+			result = "db.exception";
+		}
+
+		map.put("result", result);
+		map.put("duplicationValue", duplicationValue);
+
+		return map;
+	}
+
+	/**
 	 * 데이터 그룹 수정 페이지 이동
 	 * @param request
 	 * @param dataGroupId

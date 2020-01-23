@@ -48,7 +48,7 @@
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input">
-										<form:input path="dataGroupKey" cssClass="l" />
+										<form:input path="dataGroupKey" cssClass="l" readonly="true" />
 										<form:errors path="dataGroupKey" cssClass="error" />
 									</td>
 								</tr>

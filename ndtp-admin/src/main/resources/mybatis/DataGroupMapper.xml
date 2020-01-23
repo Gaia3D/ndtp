@@ -76,6 +76,12 @@
 		LIMIT 1
 	</select>
 
+	<!-- 그룹Key 중복 체크 -->
+	<select id="getDuplicationKeyCount" parameterType="string" resultType="int">
+		/* getDuplicationKeyCount */
+		SELECT COUNT(data_group_key) AS count FROM data_group WHERE data_group_key = #{dataGroupKey}
+	</select>
+
 	<!-- 데이터 그룹 등록 -->
 	<insert id="insertDataGroup" parameterType="dataGroup">
 		/* insertDataGroup */
