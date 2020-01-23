@@ -14846,6 +14846,176 @@ ViewerInit.prototype.setEventHandler = function()
 'use strict';
 
 /**
+ * color 처리 관련 도메인
+ * @class ColorAPI
+ */
+var ColorAPI = {};
+
+ColorAPI.changeColor = function(api, magoManager) 
+{
+	var projectId = api.getProjectId();
+	var dataKey = api.getDataKey();
+	var objectIds = api.getObjectIds();
+	var property = api.getProperty();
+	var propertyKey = null;
+	var propertyValue = null;
+	if (property !== null && property !== "") 
+	{
+		var properties = property.split("=");
+		propertyKey = properties[0];
+		propertyValue = properties[1];
+	}
+	var colorString = api.getColor();
+	if (colorString === undefined || colorString === 0)
+	{ return; }
+	
+	var color = api.getColor().split(",");
+	var rgbColor = [ color[0]/255, color[1]/255, color[2]/255 ] ;
+	
+	var isExistObjectIds = false;
+	if (objectIds !== null && objectIds.length !== 0) 
+	{
+		isExistObjectIds = true;
+	}
+	
+	var changeHistorys = [];
+	if (isExistObjectIds) 
+	{
+		for (var i=0, objectCount = objectIds.length; i<objectCount; i++) 
+		{
+			var changeHistory = new ChangeHistory();
+			changeHistory.setProjectId(projectId);
+			changeHistory.setDataKey(dataKey);
+			changeHistory.setObjectId(objectIds[i]);
+			changeHistory.setProperty(property);
+			changeHistory.setPropertyKey(propertyKey);
+			changeHistory.setPropertyValue(propertyValue);
+			changeHistory.setRgbColor(rgbColor);
+			
+			changeHistorys.push(changeHistory);
+		}
+	}
+	else 
+	{
+		var changeHistory = new ChangeHistory();
+		changeHistory.setProjectId(projectId);
+		changeHistory.setDataKey(dataKey);
+		changeHistory.setObjectId(null);
+		changeHistory.setProperty(property);
+		changeHistory.setPropertyKey(propertyKey);
+		changeHistory.setPropertyValue(propertyValue);
+		changeHistory.setRgbColor(rgbColor);
+		
+		changeHistorys.push(changeHistory);
+	}
+
+	var changeHistory;
+	var historiesCount = changeHistorys.length;
+	for (var i=0; i<historiesCount; i++)
+	{
+		changeHistory = changeHistorys[i];
+		MagoConfig.saveColorHistory(projectId, dataKey, changeHistory.getObjectId(), changeHistory);
+	}
+};
+'use strict';
+
+/**
+ * Draw 관련 API를 담당하는 클래스
+ * 원래는 이렇게 만들려고 한게 아니지만, legacy 파일이랑 이름, function 등이 중복되서 이렇게 만들었음
+ * @class DrawAPI
+ */
+var DrawAPI = {};
+
+DrawAPI.drawAppendData = function(api, magoManager) 
+{
+	magoManager.getObjectIndexFile(api.getProjectId(), api.getProjectDataFolder());
+};
+
+DrawAPI.drawInsertIssueImage = function(api, magoManager) 
+{
+	// pin 을 표시
+	if (magoManager.objMarkerSC === undefined || api.getDrawType() === 0) 
+	{
+		magoManager.objMarkerSC = new ObjectMarker();
+		magoManager.objMarkerSC.geoLocationData.geographicCoord = new GeographicCoord();
+		ManagerUtils.calculateGeoLocationData(parseFloat(api.getLongitude()), parseFloat(api.getLatitude()), parseFloat(api.getElevation()), 
+			undefined, undefined, undefined, magoManager.objMarkerSC.geoLocationData, magoManager);
+	}
+	
+	var objMarker = magoManager.objMarkerManager.newObjectMarker();
+	
+	magoManager.objMarkerSC.issue_id = api.getIssueId();
+	magoManager.objMarkerSC.issue_type = api.getIssueType();
+	magoManager.objMarkerSC.geoLocationData.geographicCoord.setLonLatAlt(parseFloat(api.getLongitude()), parseFloat(api.getLatitude()), parseFloat(api.getElevation()));
+	
+	objMarker.copyFrom(magoManager.objMarkerSC);
+	magoManager.objMarkerSC = undefined;
+};
+'use strict';
+
+/**
+ * 변환 행렬 API
+ * @class LocationAndRotationAPI
+ */
+var LocationAndRotationAPI = {};
+
+LocationAndRotationAPI.changeLocationAndRotation = function(api, magoManager) 
+{
+//	var buildingId = api.getDataKey();
+//	var buildingType = "structure";
+//	var building = this.getNeoBuildingByTypeId(buildingType, buildingId);
+
+	var changeHistory = new ChangeHistory();
+	changeHistory.setProjectId(api.getProjectId());
+	changeHistory.setDataKey(api.getDataKey());
+	changeHistory.setLatitude(parseFloat(api.getLatitude()));
+	changeHistory.setLongitude(parseFloat(api.getLongitude()));
+	changeHistory.setElevation(parseFloat(api.getElevation()));
+	changeHistory.setHeading(parseFloat(api.getHeading()));
+	changeHistory.setPitch(parseFloat(api.getPitch()));
+	changeHistory.setRoll(parseFloat(api.getRoll()));
+	
+	var lat = api.getLatitude();
+	var lon = api.getLongitude();
+	var elevation = api.getElevation();
+	var heading = api.getHeading();
+	var pitch = api.getPitch();
+	var roll = api.getRoll();
+
+
+	magoManager.changeLocationAndRotation(	api.getProjectId(),
+		api.getDataKey(),
+		lat,
+		lon,
+		elevation,
+		heading,
+		pitch,
+		roll,
+		api.getAnimationOption()
+	);
+	
+	// MagoConfig에 저장......?
+};
+'use strict';
+
+/**
+ * lod 처리 관련 도메인
+ * @class LodAPI
+ */
+var LodAPI = {};
+
+LodAPI.changeLod = function(api, magoManager) 
+{
+	if (api.getLod0DistInMeters() !== null && api.getLod0DistInMeters() !== "") { magoManager.magoPolicy.setLod0DistInMeters(api.getLod0DistInMeters()); }
+	if (api.getLod1DistInMeters() !== null && api.getLod1DistInMeters() !== "") { magoManager.magoPolicy.setLod1DistInMeters(api.getLod1DistInMeters()); }
+	if (api.getLod2DistInMeters() !== null && api.getLod2DistInMeters() !== "") { magoManager.magoPolicy.setLod2DistInMeters(api.getLod2DistInMeters()); }
+	if (api.getLod3DistInMeters() !== null && api.getLod3DistInMeters() !== "") { magoManager.magoPolicy.setLod3DistInMeters(api.getLod3DistInMeters()); }
+	if (api.getLod4DistInMeters() !== null && api.getLod4DistInMeters() !== "") { magoManager.magoPolicy.setLod4DistInMeters(api.getLod4DistInMeters()); }
+	if (api.getLod5DistInMeters() !== null && api.getLod5DistInMeters() !== "") { magoManager.magoPolicy.setLod5DistInMeters(api.getLod5DistInMeters()); }
+};
+'use strict';
+
+/**
  * save the data related with making feature move
  * @class AnimationData
  */
@@ -18829,7 +18999,17 @@ F4dController.prototype.addF4dGroup = function(f4dObject)
 	else 
 	{
 		var groupId = f4dObject.data_key || f4dObject.dataGroupKey || f4dObject.dataKey;
-		var groupDataFolder = groupId;
+		var groupDataFolder;
+
+		if (f4dObject.data_key) 
+		{
+			groupDataFolder = groupId;
+		}
+		else 
+		{
+			groupDataFolder = f4dObject.dataGroupPath;
+			groupDataFolder = groupDataFolder.replace(/\/+$/, '');
+		}
 
 		MagoConfig.setData(CODE.PROJECT_ID_PREFIX + groupId, f4dObject);
 		MagoConfig.setProjectDataFolder(CODE.PROJECT_DATA_FOLDER_PREFIX + groupDataFolder, groupDataFolder);
@@ -25233,7 +25413,7 @@ MagoManager.prototype.manageMouseDragging = function(mouseX, mouseY)
 			if (geographicCoords === undefined)
 			{ return; }
 			
-			movedDataCallback(	MagoConfig.getPolicy().geo_callback_moveddata,
+			/*movedDataCallback(	MagoConfig.getPolicy().geo_callback_moveddata,
 				nodeOwner.data.projectId,
 				nodeOwner.data.nodeId,
 				null,
@@ -25242,7 +25422,7 @@ MagoManager.prototype.manageMouseDragging = function(mouseX, mouseY)
 				geographicCoords.altitude,
 				geoLocation.heading,
 				geoLocation.pitch,
-				geoLocation.roll);
+				geoLocation.roll);*/
 								
 		}
 		else 
@@ -26485,6 +26665,52 @@ MagoManager.prototype.drawCCTVNames = function(cctvArray)
 
 	ctx.restore();
 };
+/**
+ * 데이터 표출 컨디션 설정
+ * @param {string} projectId required.
+ * @param {string} dataKey option. 키 존재 시 해당 노드만 컨디션 들어감.
+ * @param {function} condition required.
+ */
+MagoManager.prototype.setRenderCondition = function(projectId, dataKey, condition) 
+{
+	if (!condition || typeof condition !== 'function') 
+	{
+		throw new Error('renderCondition is required.');
+	}
+
+	if (!projectId) 
+	{
+		throw new Error('projectId is required.');
+	}
+	if (!this.hierarchyManager.existProject(projectId)) 
+	{
+		throw new Error(projectId + ' project is not exist.');
+	}
+
+	var nodeMap = this.hierarchyManager.getNodesMap(projectId);
+	if (!dataKey) 
+	{
+		for (var i in nodeMap) 
+		{
+			if (nodeMap.hasOwnProperty(i)) 
+			{
+				checkAndSetCondition(nodeMap[i], condition);
+			}
+		}
+	}
+	else 
+	{
+		checkAndSetCondition(nodeMap[dataKey], condition);
+	}
+	
+	function checkAndSetCondition(node, cond)
+	{
+		if (node instanceof Node && node.data.attributes.isPhysical) 
+		{
+			node.setRenderCondition(cond);
+		}
+	}
+};
 
 
 /**
@@ -27228,8 +27454,8 @@ MagoManager.prototype.getObjectIndexFileForData = function(projectId, f4dObject)
 	}
 	
 	var f4dGroupObject = MagoConfig.getData(CODE.PROJECT_ID_PREFIX + projectId);
-	var groupDataFolder = projectId;
-
+	var groupDataFolder = this.hierarchyManager.getNodeByDataKey(projectId, projectId).data.projectFolderName;
+	groupDataFolder = groupDataFolder.replace(/\/+$/, '');
 	var newDataKeys = [];
 	var children = f4dGroupObject.children;
 	// TODO :
@@ -27242,7 +27468,7 @@ MagoManager.prototype.getObjectIndexFileForData = function(projectId, f4dObject)
 			{
 				throw new Error('f4d member must isPhysical true.'); 
 			}
-
+			f4dObject[i].groupDataFolder = groupDataFolder;
 			var dataKey = f4dObject[i].data_key || f4dObject[i].dataKey;
 			newDataKeys.push(dataKey);
 			children.push(f4dObject[i]);
@@ -27256,6 +27482,7 @@ MagoManager.prototype.getObjectIndexFileForData = function(projectId, f4dObject)
 		{
 			throw new Error('f4d member must isPhysical true.'); 
 		}
+		f4dObject.groupDataFolder = groupDataFolder;
 		var dataKey = f4dObject.data_key || f4dObject.dataKey;
 		newDataKeys.push(dataKey);
 		children.push(f4dObject);
@@ -27679,10 +27906,9 @@ MagoManager.prototype.makeSmartTile = function(buildingSeedList, projectId, f4dO
 		}
 	}
 	
-	//var projectFolderName = realTimeLocBlocksList.data_key;
+	var projectFolderName = getProjectFolderName(realTimeLocBlocksList);
 	if (!Array.isArray(realTimeLocBlocksList)) 
 	{
-		var projectFolderName = realTimeLocBlocksList.data_key || realTimeLocBlocksList.dataGroupKey || realTimeLocBlocksList.dataKey;
 		this.makeNode(realTimeLocBlocksList, physicalNodesArray, buildingSeedMap, projectFolderName, projectId);
 	}
 	else 
@@ -27690,7 +27916,6 @@ MagoManager.prototype.makeSmartTile = function(buildingSeedList, projectId, f4dO
 		for (var i=0, len=realTimeLocBlocksList.length;i<len;i++) 
 		{
 			var blocks = realTimeLocBlocksList[i];
-			var projectFolderName = projectId;// blocks.data_key || blocks.dataGroupKey || blocks.dataKey;
 			this.makeNode(blocks, physicalNodesArray, buildingSeedMap, projectFolderName, projectId);
 		}
 	}
@@ -27702,6 +27927,30 @@ MagoManager.prototype.makeSmartTile = function(buildingSeedList, projectId, f4dO
 	this.smartTileManager.makeTreeByDepth(targetDepth, physicalNodesArray, this);
 
 	this.buildingSeedList.buildingSeedArray.length = 0; // init.
+
+	function getProjectFolderName(json) 
+	{
+		var folderName;
+		var f4d = Array.isArray(json) ? json[0] : json;
+		if (f4d.data_key) 
+		{
+			folderName = f4d.groupDataFolder || f4d.data_key;
+		}
+		else 
+		{
+			if (f4d.dataGroupPath) 
+			{
+				folderName = f4d.dataGroupPath;
+				folderName = folderName.replace(/\/+$/, '');
+			}
+			else 
+			{
+				folderName = f4d.groupDataFolder;
+			}
+		}
+
+		return folderName;
+	}
 };
 
 
@@ -36835,176 +37084,6 @@ VisibleObjectsController.prototype.putNodeByLod = function(node, lod)
 
 
 
-'use strict';
-
-/**
- * color 처리 관련 도메인
- * @class ColorAPI
- */
-var ColorAPI = {};
-
-ColorAPI.changeColor = function(api, magoManager) 
-{
-	var projectId = api.getProjectId();
-	var dataKey = api.getDataKey();
-	var objectIds = api.getObjectIds();
-	var property = api.getProperty();
-	var propertyKey = null;
-	var propertyValue = null;
-	if (property !== null && property !== "") 
-	{
-		var properties = property.split("=");
-		propertyKey = properties[0];
-		propertyValue = properties[1];
-	}
-	var colorString = api.getColor();
-	if (colorString === undefined || colorString === 0)
-	{ return; }
-	
-	var color = api.getColor().split(",");
-	var rgbColor = [ color[0]/255, color[1]/255, color[2]/255 ] ;
-	
-	var isExistObjectIds = false;
-	if (objectIds !== null && objectIds.length !== 0) 
-	{
-		isExistObjectIds = true;
-	}
-	
-	var changeHistorys = [];
-	if (isExistObjectIds) 
-	{
-		for (var i=0, objectCount = objectIds.length; i<objectCount; i++) 
-		{
-			var changeHistory = new ChangeHistory();
-			changeHistory.setProjectId(projectId);
-			changeHistory.setDataKey(dataKey);
-			changeHistory.setObjectId(objectIds[i]);
-			changeHistory.setProperty(property);
-			changeHistory.setPropertyKey(propertyKey);
-			changeHistory.setPropertyValue(propertyValue);
-			changeHistory.setRgbColor(rgbColor);
-			
-			changeHistorys.push(changeHistory);
-		}
-	}
-	else 
-	{
-		var changeHistory = new ChangeHistory();
-		changeHistory.setProjectId(projectId);
-		changeHistory.setDataKey(dataKey);
-		changeHistory.setObjectId(null);
-		changeHistory.setProperty(property);
-		changeHistory.setPropertyKey(propertyKey);
-		changeHistory.setPropertyValue(propertyValue);
-		changeHistory.setRgbColor(rgbColor);
-		
-		changeHistorys.push(changeHistory);
-	}
-
-	var changeHistory;
-	var historiesCount = changeHistorys.length;
-	for (var i=0; i<historiesCount; i++)
-	{
-		changeHistory = changeHistorys[i];
-		MagoConfig.saveColorHistory(projectId, dataKey, changeHistory.getObjectId(), changeHistory);
-	}
-};
-'use strict';
-
-/**
- * Draw 관련 API를 담당하는 클래스
- * 원래는 이렇게 만들려고 한게 아니지만, legacy 파일이랑 이름, function 등이 중복되서 이렇게 만들었음
- * @class DrawAPI
- */
-var DrawAPI = {};
-
-DrawAPI.drawAppendData = function(api, magoManager) 
-{
-	magoManager.getObjectIndexFile(api.getProjectId(), api.getProjectDataFolder());
-};
-
-DrawAPI.drawInsertIssueImage = function(api, magoManager) 
-{
-	// pin 을 표시
-	if (magoManager.objMarkerSC === undefined || api.getDrawType() === 0) 
-	{
-		magoManager.objMarkerSC = new ObjectMarker();
-		magoManager.objMarkerSC.geoLocationData.geographicCoord = new GeographicCoord();
-		ManagerUtils.calculateGeoLocationData(parseFloat(api.getLongitude()), parseFloat(api.getLatitude()), parseFloat(api.getElevation()), 
-			undefined, undefined, undefined, magoManager.objMarkerSC.geoLocationData, magoManager);
-	}
-	
-	var objMarker = magoManager.objMarkerManager.newObjectMarker();
-	
-	magoManager.objMarkerSC.issue_id = api.getIssueId();
-	magoManager.objMarkerSC.issue_type = api.getIssueType();
-	magoManager.objMarkerSC.geoLocationData.geographicCoord.setLonLatAlt(parseFloat(api.getLongitude()), parseFloat(api.getLatitude()), parseFloat(api.getElevation()));
-	
-	objMarker.copyFrom(magoManager.objMarkerSC);
-	magoManager.objMarkerSC = undefined;
-};
-'use strict';
-
-/**
- * 변환 행렬 API
- * @class LocationAndRotationAPI
- */
-var LocationAndRotationAPI = {};
-
-LocationAndRotationAPI.changeLocationAndRotation = function(api, magoManager) 
-{
-//	var buildingId = api.getDataKey();
-//	var buildingType = "structure";
-//	var building = this.getNeoBuildingByTypeId(buildingType, buildingId);
-
-	var changeHistory = new ChangeHistory();
-	changeHistory.setProjectId(api.getProjectId());
-	changeHistory.setDataKey(api.getDataKey());
-	changeHistory.setLatitude(parseFloat(api.getLatitude()));
-	changeHistory.setLongitude(parseFloat(api.getLongitude()));
-	changeHistory.setElevation(parseFloat(api.getElevation()));
-	changeHistory.setHeading(parseFloat(api.getHeading()));
-	changeHistory.setPitch(parseFloat(api.getPitch()));
-	changeHistory.setRoll(parseFloat(api.getRoll()));
-	
-	var lat = api.getLatitude();
-	var lon = api.getLongitude();
-	var elevation = api.getElevation();
-	var heading = api.getHeading();
-	var pitch = api.getPitch();
-	var roll = api.getRoll();
-
-
-	magoManager.changeLocationAndRotation(	api.getProjectId(),
-		api.getDataKey(),
-		lat,
-		lon,
-		elevation,
-		heading,
-		pitch,
-		roll,
-		api.getAnimationOption()
-	);
-	
-	// MagoConfig에 저장......?
-};
-'use strict';
-
-/**
- * lod 처리 관련 도메인
- * @class LodAPI
- */
-var LodAPI = {};
-
-LodAPI.changeLod = function(api, magoManager) 
-{
-	if (api.getLod0DistInMeters() !== null && api.getLod0DistInMeters() !== "") { magoManager.magoPolicy.setLod0DistInMeters(api.getLod0DistInMeters()); }
-	if (api.getLod1DistInMeters() !== null && api.getLod1DistInMeters() !== "") { magoManager.magoPolicy.setLod1DistInMeters(api.getLod1DistInMeters()); }
-	if (api.getLod2DistInMeters() !== null && api.getLod2DistInMeters() !== "") { magoManager.magoPolicy.setLod2DistInMeters(api.getLod2DistInMeters()); }
-	if (api.getLod3DistInMeters() !== null && api.getLod3DistInMeters() !== "") { magoManager.magoPolicy.setLod3DistInMeters(api.getLod3DistInMeters()); }
-	if (api.getLod4DistInMeters() !== null && api.getLod4DistInMeters() !== "") { magoManager.magoPolicy.setLod4DistInMeters(api.getLod4DistInMeters()); }
-	if (api.getLod5DistInMeters() !== null && api.getLod5DistInMeters() !== "") { magoManager.magoPolicy.setLod5DistInMeters(api.getLod5DistInMeters()); }
-};
 'use strict';
 
 /**
@@ -46609,6 +46688,11 @@ Node.prototype.renderContent = function(magoManager, shader, renderType, refMatr
 	if (data === undefined)
 	{ return; }
 
+	if (this.renderCondition && typeof this.renderCondition === 'function') 
+	{
+		this.renderCondition.call(this, data);
+	}
+
 	// Check if there are renderables.***
 	var renderable = data.renderable;
 	if (renderable)
@@ -46815,6 +46899,25 @@ Node.prototype.getRoot = function()
 };
 
 /**
+ * @param {function} renderCondition
+ */
+Node.prototype.setRenderCondition = function(renderCondition) 
+{
+	if (!renderCondition || typeof renderCondition !== 'function') 
+	{
+		throw new Error('renderCondition is required.');
+	}
+	this.renderCondition = renderCondition;
+};
+/**
+ * @return {function}
+ */
+Node.prototype.getRenderCondition = function() 
+{
+	return this.renderCondition;
+};
+
+/**
  * 어떤 일을 하고 있습니까?
  */
 Node.prototype.getClosestParentWithData = function(dataName) 
@@ -46925,6 +47028,11 @@ Node.prototype.getBBoxCenterPositionWorldCoord = function(geoLoc)
  */
 Node.prototype.calculateBBoxCenterPositionWorldCoord = function(geoLoc) 
 {
+	var data = this.data;
+	if (!data) 
+	{
+		return;
+	}
 	if (data.mapping_type === undefined)
 	{ data.mapping_type = "origin"; }
 

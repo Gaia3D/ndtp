@@ -74,6 +74,16 @@ public class DataServiceImpl implements DataService {
 	}
 	
 	/**
+	 * 공유 유형별 데이터 통계
+	 * @param userId
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public List<DataInfo> getDataTotalCountBySharing(String userId) {
+		return dataMapper.getDataTotalCountBySharing(userId);
+	}
+	
+	/**
 	 * Data 정보 취득
 	 * @param data_id
 	 * @return

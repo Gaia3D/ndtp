@@ -1,16 +1,17 @@
+1 22 23:13
+alter table upload_data add column
+mapping_type					varchar(30)							default 'origin';
+comment on column upload_data.mapping_type is '기본값 origin : latitude, longitude, height를 origin에 맞춤. boundingboxcenter : latitude, longitude, height를 boundingboxcenter 맞춤';
+
 1 22 09:21
 update policy
-set user_upload_type = '3ds,obj,dae,collada,ifc,las,gml,citygml,indoorgml,jpg,jpeg,gif,png,bmp,zip,mtl',
-	user_converter_type	= '3ds,obj,dae,collada,ifc,las,gml,citygml,indoorgml,mtl';
+set user_upload_type = '3ds,obj,dae,collada,ifc,las,citygml,indoorgml,jpg,jpeg,gif,png,bmp,zip,mtl',
+	user_converter_type	= '3ds,obj,dae,collada,ifc,las,citygml,indoorgml,mtl';
 commit;
 
 1 21 16:25
 alter table data_group add column converter_target_count			int									default 0;
 comment on column upload_data.converter_target_count is 'converter 변환 대상 파일 수';
-
-
-20200 01 21 09:00
-user_policy.sql 재실행
 
 2020 01 20 9:30
 converter.sql

@@ -39,11 +39,9 @@ public class Layer extends Search implements Serializable {
     private String point;
     
     // 리스트 펼치기
-    @Builder.Default
-    private String open = "open";
+    private String open;
     // 계층 타입
-    @Builder.Default
-    private String nodeType = "folder";
+    private String nodeType;
     
     // 수정 유형
     private String updateType;

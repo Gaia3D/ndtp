@@ -132,9 +132,9 @@ public class Policy {
  	// data 그룹 최상위 그룹명
  	private String contentDataGroupRoot;
  	
- 	// 업로딩 가능 확장자. 3ds,obj,dae,collada,ifc,las,gml,citygml,indoorgml,jpg,jpeg,gif,png,bmp,zip
+ 	// 업로딩 가능 확장자. 3ds,obj,dae,collada,ifc,las,citygml,indoorgml,jpg,jpeg,gif,png,bmp,zip
  	private String userUploadType;
- 	// 변환 가능 확장자. 3ds,obj,dae,collada,ifc,las, gml, citygml,indoorgml
+ 	// 변환 가능 확장자. 3ds,obj,dae,collada,ifc,las,citygml,indoorgml
   	private String userConverterType;
  	// 최대 업로딩 사이즈(단위M). 기본값 10000M
  	private Long userUploadMaxFilesize;

@@ -12,6 +12,7 @@
 	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
 	<link rel="stylesheet" href="/externlib/geostats/geostats.css" />
+	<link rel="stylesheet" href="/externlib/kotSlider/range.css" />
 	<link rel="stylesheet" href="/css/${lang}/user-style.css" />
 	<style type="text/css">
 	    .mapWrap {
@@ -51,12 +52,12 @@
 			<div id="dataContent" class="contents fullHeight">
 				<div class="tabs" >
 					<ul id="dataInfoTab" class="tab">
-						<li class="on" data-nav="dataGroupInfoContent">데이터 그룹</li>
-						<li data-nav="dataInfoContent">데이터 목록</li>
+						<li data-nav="dataGroupInfoContent">데이터 그룹</li>
+						<li class="on" data-nav="dataInfoContent">데이터 목록</li>
 					</ul>
 				</div>
-				<%@ include file="/WEB-INF/views/data/data.jsp" %>
-				<%@ include file="/WEB-INF/views/data/group.jsp" %>
+				<%@ include file="/WEB-INF/views/data/list-data.jsp" %>
+				<%@ include file="/WEB-INF/views/data/list-data-group.jsp" %>
 			</div>
 			<!-- E: 데이터 -->
 			
@@ -69,6 +70,11 @@
 			<div id="civilVoiceContent" class="contents" style="display:none;">
 				<%@ include file="/WEB-INF/views/civil-voice/input.jsp" %>
 			</div>
+			
+			<div id="layerContent" class="contents" style="display:none;">
+				<%@ include file="/WEB-INF/views/layer/list.jsp" %>
+			</div>
+			
 			<div id="userPolicyContent" class="contents" style="display:none;">
 				<%@ include file="/WEB-INF/views/user-policy/modify.jsp" %>
 			</div>
@@ -99,6 +105,9 @@
 			<canvas id="analysisGraphic"></canvas>
 			<div class="closeGraphic">X</div>
 		</div>
+		<div class="sliderWrap">
+			<input id="rangeInput"/>
+		</div>
 	</div>
 	<!-- E: MAP -->
 </div>
@@ -107,9 +116,11 @@
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/externlib/handlebars-4.1.2/handlebars.js"></script>
+<script type="text/javascript" src="/js/${lang}/handlebarsHelper.js"></script>
 <script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>
 <script type="text/javascript" src="/externlib/geostats/geostats.js"></script>
 <script type="text/javascript" src="/externlib/chartjs/Chart.min.js"></script>
+<script type="text/javascript" src="/externlib/kotSlider/range.js"></script>
 <script type="text/javascript" src="/js/mago3d.js"></script>
 <script type="text/javascript" src="/js/mago3d_lx.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
@@ -122,6 +133,8 @@
 <script type="text/javascript" src="/js/${lang}/search.js"></script>
 <script type="text/javascript" src="/js/${lang}/data-info.js"></script>
 <script type="text/javascript" src="/js/${lang}/user-policy.js"></script>
+<script type="text/javascript" src="/js/${lang}/simulation.js"></script>
+<script type="text/javascript" src="/js/${lang}/layer.js"></script>
 <script type="text/javascript">
 	// 임시로...
 	$(document).ready(function() {
@@ -165,7 +178,7 @@
 		
 		// TODO : 세슘 MAP 선택 UI 제거,엔진에서 처리로 변경 예정.
 		viewer.baseLayerPicker.destroy();
-		
+		viewer.scene.globe.depthTestAgainstTerrain = true;
 		/* magoManager.on(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
 			console.info(result);
 		}); */
@@ -179,6 +192,7 @@
 
         dataGroupList();
 
+        Simulation(magoInstance);
         // 환경 설정.
         UserPolicy(magoInstance);
 	}
@@ -213,6 +227,7 @@
 		var cnt = 0;
 		for(var i=0; i<dataGroupArrayLength; i++) {
 			var dataGroup = dataGroupArray[i];
+			if(dataGroup.dataCount === 0) delete dataGroupArray[i];
 			var f4dController = MAGO3D_INSTANCE.getF4dController();
 			$.ajax({
 				url: "/datas",
@@ -249,6 +264,10 @@
 			});			
 		}
 		
+	}
+	
+	function flyToData(longitude, latitude, altitude, duration) {
+		gotoFlyAPI(MAGO3D_INSTANCE, parseFloat(longitude), parseFloat(latitude), parseFloat(altitude), parseFloat(duration));
 	}
 </script>
 </body>

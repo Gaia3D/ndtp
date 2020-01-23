@@ -47,6 +47,13 @@ public interface DataService {
 	List<DataInfo> getListData(DataInfo dataInfo);
 	
 	/**
+	 * 공유 유형별 데이터 통계
+	 * @param userId
+	 * @return
+	 */
+	List<DataInfo> getDataTotalCountBySharing(String userId);
+	
+	/**
 	 * Data 정보 취득
 	 * @param dataInfo
 	 * @return

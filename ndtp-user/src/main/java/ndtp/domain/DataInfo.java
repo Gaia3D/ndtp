@@ -33,6 +33,8 @@ public class DataInfo extends Search implements Serializable {
 	private String errorCode;
 	// 아이디 중복 확인 hidden 값
 	private String duplicationValue;
+	// 그룹 통계용
+	private Long dataCount;
 	
 	// 위도
 	private BigDecimal latitude;
@@ -58,7 +60,7 @@ public class DataInfo extends Search implements Serializable {
 	private String oldDataKey;
 	// data 이름
 	private String dataName;
-	// 데이터 타입(중복). 3ds,obj,dae,collada,ifc,las,citygml,indoorgml,gml,ect
+	// 데이터 타입(중복). 3ds,obj,dae,collada,ifc,las,citygml,indoorgml,etc
 	private String dataType;
 	// common : 공통, public : 공개, private : 개인, group : 그룹
 	private String sharing;

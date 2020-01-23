@@ -49,7 +49,7 @@ import ndtp.utils.FormatUtils;
 
 @Slf4j
 @Controller
-@RequestMapping("/data/")
+@RequestMapping("/data")
 public class DataController {
 	
 	@Autowired
@@ -78,7 +78,7 @@ public class DataController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = "list")
+	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest request, DataInfo dataInfo, @RequestParam(defaultValue="1") String pageNo, Model model) {
 		
 //		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
@@ -117,7 +117,7 @@ public class DataController {
 	/**
 	 * 데이터 등록 화면
 	 */
-	@GetMapping(value = "input")
+	@GetMapping(value = "/input")
 	public String input(Model model) {
 		Policy policy = policyService.getPolicy();
 		UploadData uploadData = new UploadData();
@@ -137,7 +137,7 @@ public class DataController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "detail")
+	@GetMapping(value = "/detail")
 	public String detail(HttpServletRequest request, DataInfo dataInfo, Model model) {
 		
 		log.info("@@@ detail-info dataInfo = {}", dataInfo);
@@ -160,7 +160,7 @@ public class DataController {
 	 * @param dataInfo
 	 * @return
 	 */
-	@GetMapping(value = "detail-data-info")
+	@GetMapping(value = "/detail-data-info")
 	@ResponseBody
 	public Map<String, Object> detailDataInfo(HttpServletRequest request, DataInfo dataInfo) {
 		log.info("@@ dataInfo = {}", dataInfo);
@@ -191,7 +191,7 @@ public class DataController {
 	 * @param dataInfoAttribute
 	 * @return
 	 */
-	@GetMapping(value = "detail-data-attribute")
+	@GetMapping(value = "/detail-data-attribute")
 	@ResponseBody
 	public Map<String, Object> detailDataAttribute(HttpServletRequest request, DataInfoAttribute dataInfoAttribute) {
 		log.info("@@ dataInfoAttribute = {}", dataInfoAttribute);
@@ -222,7 +222,7 @@ public class DataController {
 	 * @param dataInfoAttribute
 	 * @return
 	 */
-	@PostMapping(value = "insert-data-attribute-file")
+	@PostMapping(value = "/insert-data-attribute-file")
 	@ResponseBody
 	public Map<String, Object> insertDataAttributeFile(MultipartHttpServletRequest request) {
 		log.info("@@ insert-data-attribute-file start");
@@ -280,7 +280,7 @@ public class DataController {
     * @return
 	 * @throws JsonProcessingException 
     */
-    @GetMapping(value = "map-data")
+    @GetMapping(value = "/map-data")
     public String mapData(HttpServletRequest request, DataInfo dataInfo, Model model) throws JsonProcessingException {
     	
     	log.info("@@ map-data. dataInfo = {}", dataInfo);

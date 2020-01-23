@@ -111,7 +111,7 @@
 	<!-- 업로딩한 파일 목록 -->
 	<select id="getListUploadDataFile" parameterType="uploadData" resultType="uploadDataFile">
 		/* getListUploadDataFile */
-		SELECT A.data_group_id, A.sharing, A.data_type, A.data_name, A.location, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude, A.altitude, B.*
+		SELECT A.data_group_id, A.sharing, A.data_type, A.data_name, A.mapping_type, A.location, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude, A.altitude, B.*
 		FROM upload_data A, upload_data_file B
 		WHERE A.upload_data_id = B.upload_data_id
 			AND B.user_id = #{userId}
@@ -175,6 +175,9 @@
 			</if>
 			<if test="dataType != null and dataType != ''">
 			data_type = #{dataType},
+			</if>
+			<if test="mappingType != null and mappingType != ''">
+			mapping_type = #{mappingType},
 			</if>
 			<if test="latitude != null and latitude gt 0 and longitude != null and longitude gt 0">
 			location = ST_GeomFromText(#{location}, 4326),
