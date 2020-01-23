@@ -114,6 +114,8 @@
 </div>
 <!-- E: WRAP -->
 
+<%@ include file="/WEB-INF/views/data/data-dialog.jsp" %>
+
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/externlib/handlebars-4.1.2/handlebars.js"></script>
@@ -269,6 +271,43 @@
 	
 	function flyToData(longitude, latitude, altitude, duration) {
 		gotoFlyAPI(MAGO3D_INSTANCE, parseFloat(longitude), parseFloat(latitude), parseFloat(altitude), parseFloat(duration));
+	}
+	
+	var dataInfoDialog = $( "#dataInfoDialog" ).dialog({
+		autoOpen: false,
+		width: 500,
+		height: 700,
+		modal: true,
+		overflow : "auto",
+		resizable: false
+	});
+	
+	// 데이터 상세 정보 조회
+	function detailDataInfo(dataId) {
+		$.ajax({
+			url: "/datas/" + dataId,
+			type: "GET",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			dataType: "json",
+			success: function(msg){
+				if(msg.statusCode <= 200) {
+					dataInfoDialog.dialog( "open" );
+					dataInfoDialog.dialog( "option", "title", msg.dataInfo.dataName + " 상세 정보");
+					
+					var source = $("#templateDataInfo").html();
+				    var template = Handlebars.compile(source);
+				    var dataInfoHtml = template(msg.dataInfo);
+				    
+				    $("#dataInfoDialog").html("");
+	                $("#dataInfoDialog").append(dataInfoHtml);
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+				}
+			},
+			error:function(request,status,error){
+				alert(JS_MESSAGE["ajax.error.message"]);
+			}
+		});
 	}
 </script>
 </body>

@@ -1,14 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <div id="dataInfoContent" style="display:block;">
-	
-	
-	
-	
-	
-	
-	
-	
 	<div class="listSearch">
+		
+	
+	
 		<input type="text" placeholder="데이터명을 입력하세요">
 		<button type="button" title="검색">검색</button>
 	</div>
@@ -23,11 +18,11 @@
 			<thead>
 				<tr style="height: 30px;">
 					<th rowspan="2" style="vertical-align: middle; text-align: center; background-color: #f3f3f3;">번호</th>
-					<th colspan="3" style="background-color: #f3f3f3;">데이터명</th>
+					<th colspan="3" style="background-color: #f3f3f3;">데이터명[타입]</th>
 				</tr>
 				<tr style="height: 30px;">
-					<th style="background-color: #f3f3f3;">데이터타입</th>
-					<th style="background-color: #f3f3f3;">속성</th>
+					<th style="background-color: #f3f3f3;">데이터그룹</th>
+					<th style="background-color: #f3f3f3;">타입</th>
 					<th style="background-color: #f3f3f3;">보기</th>
 				</tr>
 			</thead>
@@ -41,10 +36,12 @@
 		<c:forEach var="dataInfo" items="${dataList}" varStatus="status">		
 				<tr style="height: 35px;">
 					<td rowspan="2" style="vertical-align: middle; text-align: center; padding: 0px;">${pagination.rowNumber - status.index }</td>
-					<td colspan="3" style="vertical-align: middle; text-align: left; padding: 0px 0px 0px 5px;">${dataInfo.dataName }</td>
+					<td colspan="3" style="vertical-align: middle; text-align: left; padding: 0px 0px 0px 5px;">
+						<a href="#" onclick="detailDataInfo('${dataInfo.dataId}'); return false;">${dataInfo.dataName }</a> [${dataInfo.dataType }]
+					</td>
 				</tr>
 				<tr style="height: 35px;">
-					<td style="padding: 0px; vertical-align: middle; text-align: left; padding: 0px 0px 0px 5px;">${dataInfo.dataType }</td>
+					<td style="padding: 0px; vertical-align: middle; text-align: left; padding: 0px 0px 0px 5px;">${dataInfo.dataGroupName }</td>
 					<td style="padding: 0px; vertical-align: middle; ">
 			<c:if test="${dataInfo.status eq 'use' }">
 						사용중
