@@ -36,8 +36,8 @@ public class DataGroup {
 	
 	/****** validator ********/
 	private String methodMode;
-	
-	// 아이디 중복 확인 hidden 값
+
+	// 그룹Key 중복 확인 hidden 값
 	private String duplicationValue;
 
 	// 고유번호

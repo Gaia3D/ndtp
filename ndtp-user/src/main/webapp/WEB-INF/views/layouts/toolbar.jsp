@@ -19,7 +19,7 @@
 <!-- 		<button type="button" class="mapPolicy" id="mapPolicy" title="지도 설정">지도 설정</button> -->
 	</div>
 	<div class="index">
-		<button type="button" class="" id="mapPolicy" title="Mago3D 설정">Mago3D</button>
+		<button type="button" class="magoSet" id="mapPolicy" title="Mago3D 설정">Mago3D</button>
 	</div>
 </div>
 <div class="labelLayer" style="display:none;">

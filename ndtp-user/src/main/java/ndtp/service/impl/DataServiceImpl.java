@@ -113,6 +113,16 @@ public class DataServiceImpl implements DataService {
 		return dataMapper.getRootDataByDataGroupId(dataGroupId);
 	}
 	
+	/**
+	 * Data 정보 취득
+	 * @param dataInfo
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public DataInfo getDataByConverterJob(DataInfo dataInfo) {
+		return dataMapper.getDataByConverterJob(dataInfo);
+	}
+	
 //	/**
 //	 * Data Attribute 정보 취득
 //	 * @param dataId
@@ -300,5 +310,15 @@ public class DataServiceImpl implements DataService {
 	@Transactional
 	public int deleteDataObjects(Long dataId) {
 		return dataMapper.deleteDataObjects(dataId);
+	}
+	
+	/**
+	 * Data 삭제
+	 * @param dataInfo
+	 * @return
+	 */
+	@Transactional
+	public int deleteDataByConverterJob(DataInfo dataInfo) {
+		return dataMapper.deleteDataByConverterJob(dataInfo);
 	}
 }

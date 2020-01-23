@@ -66,6 +66,13 @@ public interface UserGroupMapper {
     int insertUserGroup(UserGroup userGroup);
 
 	/**
+	 * 그룹Key 중복 체크
+	 * @param userGroupKey
+	 * @return
+	 */
+	int getDuplicationKeyCount(String userGroupKey);
+
+	/**
 	 * 사용자 그룹 메뉴 등록
 	 * @param userGroupMenu
 	 * @return

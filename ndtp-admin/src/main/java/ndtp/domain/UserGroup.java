@@ -40,6 +40,9 @@ public class UserGroup {
 	/****** validator ********/
 	private String methodMode;
 
+	// 그룹Key 중복 확인 hidden 값
+	private String duplicationValue;
+
 	// 고유번호
 	private Integer userGroupId;
 	// 링크 활용 등을 위한 확장 컬럼

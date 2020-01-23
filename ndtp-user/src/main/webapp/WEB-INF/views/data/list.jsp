@@ -114,6 +114,8 @@
 </div>
 <!-- E: WRAP -->
 
+<%@ include file="/WEB-INF/views/data/data-dialog.jsp" %>
+
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/externlib/handlebars-4.1.2/handlebars.js"></script>
@@ -145,6 +147,12 @@
 	//Cesium.Ion.defaultAccessToken = '';
 	//var viewer = new Cesium.Viewer('magoContainer');
 	var MAGO3D_INSTANCE;
+	// ndtp 전역 네임스페이스
+	var NDTP = NDTP ||{
+		policy : ${geoPolicyJson},
+		wmsProvider : {},
+		districtProvider : {}
+	};
 	magoInit();
 	
 	function magoInit() {
@@ -172,7 +180,7 @@
 
 	function magoLoadEnd(e) {
 		var magoInstance = e;
-		
+		var geoPolicyJson = ${geoPolicyJson};
 		var viewer = magoInstance.getViewer(); 
 		var magoManager = magoInstance.getMagoManager();
 		var f4dController = magoInstance.getF4dController();
@@ -189,13 +197,17 @@
 		//공간분석 기능 수행
 		SpatialAnalysis(magoInstance);
 		// 행정 구역 이동 
-        DistrictControll(viewer);
+        DistrictControll(magoInstance);
 
         dataGroupList();
 
         Simulation(magoInstance);
         // 환경 설정.
         UserPolicy(magoInstance);
+        // 기본 레이어 랜더링
+        setTimeout(function(){
+        	initLayer(magoInstance);
+        }, geoPolicyJson.initDuration * 1000);
 	}
 	
 	// 데이터 그룹 목록
@@ -269,6 +281,43 @@
 	
 	function flyToData(longitude, latitude, altitude, duration) {
 		gotoFlyAPI(MAGO3D_INSTANCE, parseFloat(longitude), parseFloat(latitude), parseFloat(altitude), parseFloat(duration));
+	}
+	
+	var dataInfoDialog = $( "#dataInfoDialog" ).dialog({
+		autoOpen: false,
+		width: 500,
+		height: 700,
+		modal: true,
+		overflow : "auto",
+		resizable: false
+	});
+	
+	// 데이터 상세 정보 조회
+	function detailDataInfo(dataId) {
+		dataInfoDialog.dialog( "open" );
+		$.ajax({
+			url: "/datas/" + dataId,
+			type: "GET",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			dataType: "json",
+			success: function(msg){
+				if(msg.statusCode <= 200) {
+					dataInfoDialog.dialog( "option", "title", msg.dataInfo.dataName + " 상세 정보");
+					
+					var source = $("#templateDataInfo").html();
+				    var template = Handlebars.compile(source);
+				    var dataInfoHtml = template(msg.dataInfo);
+				    
+				    $("#dataInfoDialog").html("");
+	                $("#dataInfoDialog").append(dataInfoHtml);
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+				}
+			},
+			error:function(request,status,error){
+				alert(JS_MESSAGE["ajax.error.message"]);
+			}
+		});
 	}
 </script>
 </body>

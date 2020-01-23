@@ -7,7 +7,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
-	<title>데이터 그룹 등록 | NDTP</title>
+	<title>데이터 그룹 수정 | NDTP</title>
 	<link rel="stylesheet" href="/css/${lang}/font/font.css" />
 	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
 	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
@@ -28,8 +28,9 @@
 							<div class="content-desc u-pull-right"><span class="icon-glyph glyph-emark-dot color-warning"></span><spring:message code='check'/></div>
 						</div>
 						<form:form id="dataGroup" modelAttribute="dataGroup" method="post" onsubmit="return false;">
+							<form:hidden path="dataGroupId"/>
 							<table class="input-table scope-row">
-								<col class="col-label l" />
+								<col class="col-label" />
 								<col class="col-input" />
 								<tr>
 									<th class="col-label" scope="row">
@@ -43,13 +44,11 @@
 								</tr>
 								<tr>
 									<th class="col-label" scope="row">
-										<form:label path="dataGroupKey">데이터 그룹 Key</form:label>
+										<form:label path="dataGroupName">데이터 그룹 Key</form:label>
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input">
-										<form:hidden path="duplicationValue"/>
-										<form:input path="dataGroupKey" cssClass="l" />
-				  						<input type="button" id="dataGroupDuplicationButton" value="<spring:message code='overlap.check'/>" />
+										<form:input path="dataGroupKey" cssClass="l" readonly="true" />
 										<form:errors path="dataGroupKey" cssClass="error" />
 									</td>
 								</tr>
@@ -94,7 +93,7 @@
 									</th>
 									<td class="col-input radio-set">
 										<form:radiobutton label="기본" path="basic" value="true" />
-										<form:radiobutton label="선택" path="basic" value="false" checked="checked" />
+										<form:radiobutton label="선택" path="basic" value="false" />
 										<form:errors path="basic" cssClass="error" />
 									</td>
 								</tr>
@@ -104,7 +103,7 @@
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input radio-set">
-										<form:radiobutton label="사용" path="available" value="true" checked="checked" />
+										<form:radiobutton label="사용" path="available" value="true" />
 										<form:radiobutton label="미사용" path="available" value="false" />
 										<form:errors path="available" cssClass="error" />
 									</td>
@@ -157,14 +156,16 @@
 									</td>
 								</tr>
 								<tr>
-									<th class="col-label l" scope="row"><form:label path="description"><spring:message code='description'/></form:label></th>
-									<td class="col-input"><form:input path="description" cssClass="xl" /></td>
+									<th class="col-label m" scope="row"><form:label path="description"><spring:message code='description'/></form:label></th>
+									<td class="col-input">
+										<form:input path="description" cssClass="xl" />
+										<form:errors path="description" cssClass="error" />
+									</td>
 								</tr>
 							</table>
 							<div class="button-group">
 								<div class="center-buttons">
-									<input type="submit" value="<spring:message code='save'/>" onclick="insertDataGroup();"/>
-									<input type="submit" onClick="formClear(); return false;" value="초기화" />
+									<input type="submit" value="<spring:message code='save'/>" onclick="updateDataGroup();"/>
 									<a href="/data-group/list" class="button">목록</a>
 								</div>
 							</div>
@@ -175,78 +176,7 @@
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
-
-	<!-- Dialog -->
-	<div id="dataGroupDialog" class="dialog">
-		<table class="list-table scope-col">
-			<col class="col-name" />
-			<col class="col-toggle" />
-			<col class="col-id" />
-			<col class="col-function" />
-			<col class="col-date" />
-			<col class="col-toggle" />
-			<thead>
-				<tr>
-					<th scope="col" class="col-name">데이터 그룹명</th>
-					<th scope="col" class="col-toggle">사용 여부</th>
-					<th scope="col" class="col-toggle">공유 유형</th>
-					<th scope="col" class="col-toggle">설명</th>
-					<th scope="col" class="col-date">등록일</th>
-					<th scope="col" class="col-date">선택</th>
-				</tr>
-			</thead>
-			<tbody>
-<c:if test="${empty dataGroupList }">
-			<tr>
-				<td colspan="6" class="col-none">데이터 그룹이 존재하지 않습니다.</td>
-			</tr>
-</c:if>
-<c:if test="${!empty dataGroupList }">
-	<c:set var="paddingLeftValue" value="0" />
-	<c:forEach var="dataGroup" items="${dataGroupList}" varStatus="status">
-		<c:if test="${dataGroup.depth eq '1' }">
-            <c:set var="depthClass" value="oneDepthClass" />
-            <c:set var="paddingLeftValue" value="0px" />
-        </c:if>
-        <c:if test="${dataGroup.depth eq '2' }">
-            <c:set var="depthClass" value="twoDepthClass" />
-            <c:set var="paddingLeftValue" value="40px" />
-        </c:if>
-        <c:if test="${dataGroup.depth eq '3' }">
-            <c:set var="depthClass" value="threeDepthClass" />
-            <c:set var="paddingLeftValue" value="80px" />
-        </c:if>
-
-			<tr class="${depthClass } ${depthParentClass} ${ancestorClass }" style="${depthStyleDisplay}">
-				<td class="col-name" style="text-align: left;" nowrap="nowrap">
-					<span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"></span>
-					${dataGroup.dataGroupName }
-				</td>
-				<td class="col-type">
-        <c:if test="${dataGroup.available eq 'true' }">
-                	사용
-        </c:if>
-        <c:if test="${dataGroup.available eq 'false' }">
-        			미사용
-        </c:if>
-			    </td>
-			    <td class="col-key">${dataGroup.sharing }</td>
-			    <td class="col-key">${dataGroup.description }</td>
-			    <td class="col-date">
-			    	<fmt:parseDate value="${dataGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
-					<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
-			    </td>
-			    <td class="col-toggle">
-			    	<a href="#" onclick="confirmParent('${dataGroup.dataGroupId}', '${dataGroup.dataGroupName}'); return false;">확인</a></td>
-			</tr>
-	</c:forEach>
-</c:if>
-			</tbody>
-		</table>
-		<div class="button-group">
-			<input type="button" id="rootParentSelect" class="button" value="최상위(ROOT) 그룹으로 저장"/>
-		</div>
-	</div>
+	<%@ include file="/WEB-INF/views/data/group-dialog.jsp" %>
 
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
@@ -263,106 +193,15 @@
 			alert("데이터 그룹명을 입력해 주세요.");
 			$("#dataGroupName").focus();
 			return false;
-		} else if ($("#dataGroupName").val().length >= 100) {
-			alert("데이터 그룹명은 100자를 넘길 수 없습니다.");
-			$("#dataGroupName").focus();
-			return false;
 		}
-		if ($("#dataGroupKey").val() === null || $("#dataGroupKey").val() === "") {
-			alert("데이터 그룹 Key(한글불가)을 입력해 주세요.");
-			$("#dataGroupKey").focus();
-			return false;
-		} else if ($("#dataGroupKey").val().length >= 60) {
-			alert("데이터 그룹 Key는 60자를 넘길 수 없습니다.");
-			$("#dataGroupKey").focus();
-			return false;
-		}
-		if($("#duplicationValue").val() == null || $("#duplicationValue").val() == "") {
-			alert(JS_MESSAGE["check.group.key.duplication"]);
-			return false;
-		} else if($("#duplicationValue").val() == "1") {
-			alert(JS_MESSAGE["group.key.duplication"]);
-			return false;
-		}
-		//한글이 입력될 경우 "한글명은 이용할 수 없습니다."라고 출력 -> 한글 검사방법..?
 		if($("#parent").val() === null || $("#parent").val() === "" || !number.test($("#parent").val())) {
-			alert("상위 데이터 그룹을 선택해 주세요.");
+			alert("상위 레이어 그룹을 선택해 주세요.");
 			$("#parent").focus();
 			return false;
 		}
 	}
 
-	// 그룹Key 중복 확인
- 	$("#dataGroupDuplicationButton").on("click", function() {
-		var dataGroupKey = $("#dataGroupKey").val();
-		if (dataGroupKey == "") {
-			alert(JS_MESSAGE["group.key.empty"]);
-			$("#dataGroupKey").focus();
-			return false;
-		}
-		$.ajax({
-			url: "/data-group/duplication-check",
-			type: "POST",
-			data: {"dataGroupKey": dataGroupKey},
-			headers: {"X-Requested-With": "XMLHttpRequest"},
-			dataType: "json",
-			success: function(msg){
-				if(msg.result == "success") {
-					if(msg.duplicationValue != "0") {
-						alert(JS_MESSAGE["group.key.duplication"]);
-						$("#dataGroupKey").focus();
-						return false;
-					} else {
-						alert(JS_MESSAGE["group.key.enable"]);
-						$("#duplicationValue").val(msg.duplicationValue);
-					}
-				} else {
-					alert(JS_MESSAGE[msg.result]);
-				}
-			},
-			error:function(request, status, error) {
-				//alert(JS_MESSAGE["ajax.error.message"]);
-				alert(" code : " + request.status + "\n" + ", message : " + request.responseText + "\n" + ", error : " + error);
-    		}
-		});
-	});
-
-	// 저장
-	var insertDataGroupFlag = true;
-	function insertDataGroup() {
-		if (validate() == false) {
-			return false;
-		}
-		if(insertDataGroupFlag) {
-			insertDataGroupFlag = false;
-			var formData = $("#dataGroup").serialize();
-			$.ajax({
-				url: "/data-group/insert",
-				type: "POST",
-				headers: {"X-Requested-With": "XMLHttpRequest"},
-		        data: formData,
-				success: function(msg){
-					if(msg.statusCode <= 200) {
-						alert(JS_MESSAGE["insert"]);
-						window.location.reload();
-					} else {
-						alert(JS_MESSAGE[msg.errorCode]);
-						console.log("---- " + msg.message);
-					}
-					insertDataGroupFlag = true;
-				},
-				error:function(request, status, error){
-			        alert(JS_MESSAGE["ajax.error.message"]);
-			        insertDataGroupFlag = true;
-				}
-			});
-		} else {
-			alert(JS_MESSAGE["button.dobule.click"]);
-			return;
-		}
-	}
-
-	var dataGroupDialog = $( ".dialog" ).dialog({
+	var dataGroupDialog = $("#dataGroupListDialog").dialog({
 		autoOpen: false,
 		height: 600,
 		width: 1200,
@@ -371,10 +210,10 @@
 		resizable: false
 	});
 
-	// 상위 Layer Group 찾기
-	$( "#dataGroupButtion" ).on( "click", function() {
-		dataGroupDialog.dialog( "open" );
-		dataGroupDialog.dialog( "option", "title", "데이터 그룹 선택");
+	// 상위 데이터 그룹 찾기
+	$( "#dataGroupButton" ).on( "click", function() {
+		dataGroupDialog.dialog("open" );
+		dataGroupDialog.dialog("option", "title", "데이터 그룹 선택");
 	});
 
 	// 상위 Node
@@ -387,7 +226,7 @@
 	$( "#rootParentSelect" ).on( "click", function() {
 		$("#parent").val(0);
 		$("#parentName").val("${dataGroup.parentName}");
-		dataGroupDialog.dialog( "close" );
+		dataGroupDialog.dialog("close");
 	});
 
 	// 지도에서 찾기
@@ -401,10 +240,40 @@
         //popWin.document.title = layerName;
 	});
 
-	function formClear() {
-
+	// 저장
+	var updateDataGroupFlag = true;
+	function updateDataGroup() {
+		if (validate() == false) {
+			return false;
+		}
+		if(updateDataGroupFlag) {
+			updateDataGroupFlag = false;
+			var formData = $("#dataGroup").serialize();
+			$.ajax({
+				url: "/data-group/update",
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+		        data: formData,
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert(JS_MESSAGE["update"]);
+						window.location.reload();
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
+					updateDataGroupFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        updateDataGroupFlag = true;
+				}
+			});
+		} else {
+			alert(JS_MESSAGE["button.dobule.click"]);
+			return;
+		}
 	}
-
 </script>
 </body>
 </html>

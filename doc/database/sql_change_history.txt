@@ -1,3 +1,10 @@
+1 23 15:34
+
+alter table data_info add column converter_job_id			bigint;
+comment on column data_info.converter_job_id is 'converter 고유번호';
+commit;
+
+
 1 22 23:13
 alter table upload_data add column
 mapping_type					varchar(30)							default 'origin';

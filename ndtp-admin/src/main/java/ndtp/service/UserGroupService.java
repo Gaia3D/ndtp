@@ -56,6 +56,13 @@ public interface UserGroupService {
     int insertUserGroup(UserGroup userGroup);
 
 	/**
+	 * 그룹Key 중복 체크
+	 * @param userGroupKey
+	 * @return
+	 */
+	int getDuplicationKeyCount(String userGroupKey);
+
+	/**
 	 * 사용자 그룹 수정
 	 * @param userGroup
 	 * @return

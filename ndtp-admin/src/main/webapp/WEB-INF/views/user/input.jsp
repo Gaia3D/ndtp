@@ -188,6 +188,7 @@
 	$("#userGroupButton").on("click", function() {
 		userDialog.dialog("open");
 		userDialog.dialog("option", "title", "사용자 그룹 선택");
+		$('#rootParentSelect').hide();
 	});
 
 	// 상위 Node
@@ -196,7 +197,7 @@
 		$("#userGroupName").val(parentName);
 		userDialog.dialog("close");
 	}
-	
+
 	// 아이디 중복 확인
  	$("#userDuplicationButton").on("click", function() {
 		var userId = $("#userId").val();
@@ -274,7 +275,7 @@
 			alert(JS_MESSAGE["check.id.duplication"]);
 			return false;
 		} else if($("#duplicationValue").val() == "1") {
-			alert(JS_MESSAGE["use.id.other.id.select"]);
+			alert(JS_MESSAGE["user.id.duplication"]);
 			return false;
 		}
 		if ($("#userName").val() == "") {

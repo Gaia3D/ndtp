@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -73,6 +74,50 @@ public class DataRestController {
 			//dataInfo.setUserId(userSession.getUserId());
 			List<DataInfo> dataInfoList = dataService.getAllListData(dataInfo);
 			result.put("dataInfoList", dataInfoList);
+		} catch(Exception e) {
+			e.printStackTrace();
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+		
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		
+		return result;
+	}
+	
+	/**
+	 * 데이터 그룹 정보
+	 * @param projectId
+	 * @return
+	 */
+	@GetMapping("/{dataId}")
+	public Map<String, Object> detail(HttpServletRequest request, @PathVariable Long dataId) {
+		
+		log.info("@@@@@ dataId = {}", dataId);
+		
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		try {
+			if(dataId == null || dataId.longValue() <=0l) {
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "input.invalid");
+				result.put("message", message);
+				return result;
+			}
+			
+			DataInfo dataInfo = new DataInfo();
+			dataInfo.setUserId(userSession.getUserId());
+			dataInfo.setDataId(dataId);
+			
+			dataInfo = dataService.getData(dataInfo);
+			
+			result.put("dataInfo", dataInfo);
 		} catch(Exception e) {
 			e.printStackTrace();
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
