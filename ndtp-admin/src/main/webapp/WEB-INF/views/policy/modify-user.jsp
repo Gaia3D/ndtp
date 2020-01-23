@@ -54,10 +54,8 @@
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
 					<td class="col-input radio-set">
-						<form:radiobutton path="userDuplicationSigninYn" value="Y" />
-						<form:label path="userDuplicationSigninYn">사용</form:label>
-						<form:radiobutton path="userDuplicationSigninYn" value="N" />
-						<form:label path="userDuplicationSigninYn">미사용</form:label>
+						<form:radiobutton label="${use }" path="userDuplicationSigninYn" value="Y" />
+						<form:radiobutton label="${notuse }" path="userDuplicationSigninYn" value="N" />
 						<form:errors path="userDuplicationSigninYn" cssClass="error" />
 					</td>
 				</tr>

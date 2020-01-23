@@ -31,6 +31,8 @@
 								<li><a href="#geopolicyTab">공간정보</a></li>
 								<li><a href="#geoserverTab">GeoServer</a></li>
 							</ul>
+							<spring:message var="notuse" code='not.use'/>
+							<spring:message var="use" code='use'/>
 							<%@ include file="/WEB-INF/views/geopolicy/modify-geopolicy.jsp" %>
 							<%@ include file="/WEB-INF/views/geopolicy/modify-geoserver.jsp" %>
 						</div>
@@ -51,11 +53,74 @@
 		$( ".tabs" ).tabs();
 	});
 
+	var updatePolicyGeoInfoFlag = true;
 	function updatePolicyGeoInfo() {
+	    if(updatePolicyGeoInfoFlag) {
+	        if( geoInfoCheck() === false ) return false;
 
+	        updatePolicyGeoInfoFlag = false;
+	        var formData = $('#geoPolicyGeoInfo').serialize();
+	        $.ajax({
+				url: "/geopolicy/modify-geopolicy",
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+		        data: formData + "&geoPolicyId=${geoPolicy.geoPolicyId}",
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert("공간정보 정책이 수정 되었습니다");
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
+					updatePolicyGeoInfoFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        updatePolicyGeoInfoFlag = true;
+				}
+			});
+	    } else {
+	        alert("진행 중입니다.");
+	        return;
+		}
 	}
 
+	var updatePolicyGeoServerFlag = true;
 	function updatePolicyGeoServer() {
+	    if(updatePolicyGeoServerFlag) {
+	        if( geoserverCheck() === false ) return false;
+
+	        updatePolicyGeoServerFlag = false;
+	        var formData = $('#geoPolicyGeoServer').serialize();
+	        $.ajax({
+				url: "/geopolicy/modify-geoserver",
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+		        data: formData + "&geoPolicyId=${geoPolicy.geoPolicyId}",
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert("GeoServer 정책이 수정 되었습니다");
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
+					updatePolicyGeoServerFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        updatePolicyGeoServerFlag = true;
+				}
+			});
+	    } else {
+	        alert("진행 중입니다.");
+	        return;
+		}
+	}
+
+	function geoInfoCheck() {
+
+	}
+	function geoserverCheck() {
 
 	}
 

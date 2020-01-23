@@ -214,12 +214,16 @@ background-position: -445px 10px;
 
 /* CONTENTSBTN */
 .contentsBtn {
-position: absolute;
-right: -25px;
+/* position: absolute; */
+/* right: -25px; */
+position: relative;
+right: -395px;
 top: 50%;	
 }
 .contentsBtn > button {
-position:fixed;
+/* position:fixed; */
+position: relative;
+z-index: 1;
 margin-left:-25px;
 display: inline-block;
 width: 25px;

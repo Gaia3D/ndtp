@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 	<div id="geopolicyTab">
-		<form:form id="geoPolicy" modelAttribute="geoPolicy" method="post" onsubmit="return false;">
+		<form:form id="geoPolicyGeoInfo" modelAttribute="geoPolicy" method="post" onsubmit="return false;">
 			<form:hidden path="geoPolicyId" />
 			<table class="input-table scope-row">
 				<col class="col-label l" />
@@ -11,7 +11,7 @@
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
 					<td class="col-input">
-						<form:input path="cesiumIonToken" maxlength="2" cssClass="s" />
+						<form:input path="cesiumIonToken" maxlength="256" cssClass="l" />
 						<form:errors path="cesiumIonToken" cssClass="error" />
 					</td>
 				</tr>
@@ -21,7 +21,7 @@
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
 					<td class="col-input">
-						<form:input path="dataServicePath" maxlength="2" cssClass="s" />
+						<form:input path="dataServicePath" maxlength="256" cssClass="l" />
 						<form:errors path="dataServicePath" cssClass="error" />
 					</td>
 				</tr>
@@ -30,8 +30,9 @@
 						<form:label path="dataChangeRequestDecision">Data 변경 요청 처리</form:label>
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
-					<td class="col-input">
-						<form:input path="dataChangeRequestDecision" maxlength="2" cssClass="s" />
+					<td class="col-input radio-set">
+						<form:radiobutton label="결재(기본값)" path="dataChangeRequestDecision" value="approval" />
+						<form:radiobutton label="자동승인" path="dataChangeRequestDecision" value="auto" />
 						<form:errors path="dataChangeRequestDecision" cssClass="error" />
 					</td>
 				</tr>
