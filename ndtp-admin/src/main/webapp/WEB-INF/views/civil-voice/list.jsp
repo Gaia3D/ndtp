@@ -127,8 +127,7 @@
 										</td>
 										<td class="col-functions">
 											<span class="button-group">
-												<a href="#" onclick="deleteUploadData(${civilVoice.userId}); return false;"
-													class="image-button button-delete"><spring:message code='delete'/></a>
+												<a href="/civil-voice/delete?civilVoiceId=${civilVoice.civilVoiceId}&amp;pageNo=${pagination.pageNo }${pagination.searchParameters}" onclick="return deleteWarning();" class="linkButton"><spring:message code='delete'/></a>
 											</span>
 										</td>
 									</tr>

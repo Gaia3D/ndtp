@@ -166,7 +166,7 @@
 							<div class="button-group">
 								<div class="center-buttons">
 									<input type="submit" value="<spring:message code='save'/>" onclick="updateDataGroup();"/>
-									<a href="/user-group/list" class="button">목록</a>
+									<a href="/data-group/list" class="button">목록</a>
 								</div>
 							</div>
 						</form:form>
@@ -176,7 +176,7 @@
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
-	<%@ include file="/WEB-INF/views/user/group-dialog.jsp" %>
+	<%@ include file="/WEB-INF/views/data/group-dialog.jsp" %>
 
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
@@ -250,7 +250,7 @@
 			updateDataGroupFlag = false;
 			var formData = $("#dataGroup").serialize();
 			$.ajax({
-				url: "/user-group/update",
+				url: "/data-group/update",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 		        data: formData,

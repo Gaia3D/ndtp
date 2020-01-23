@@ -92,7 +92,7 @@
 								</th>
 								<td class="col-input">
 									<form:hidden path="layerGroupId" />
-									<form:input path="layerGroupName" cssClass="ml" readonly="true" />
+									<form:input path="layerGroupName" cssClass="m" readonly="true" />
 									<input type="button" id="layerGroupButtion" value="Layer 그룹 선택" />
 								</td>
 								<th class="col-label" scope="row">
@@ -110,7 +110,7 @@
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 			                    <td class="col-input">
-			                        <form:input path="layerName" cssClass="ml" />
+			                        <form:input path="layerName" cssClass="m" />
 			                        <form:errors path="layerName" cssClass="error" />
 			                    </td>
 			                    <th class="col-label" scope="row">
@@ -118,7 +118,7 @@
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 			                    <td class="col-input">
-			                        <form:input path="layerKey" cssClass="ml" />
+			                        <form:input path="layerKey" cssClass="m" />
 			                        <form:errors path="layerKey" cssClass="error" />
 			                    </td>
 			                </tr>

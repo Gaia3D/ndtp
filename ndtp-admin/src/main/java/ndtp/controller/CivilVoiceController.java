@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.extern.slf4j.Slf4j;
-import ndtp.config.PropertiesConfig;
 import ndtp.domain.CivilVoice;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
@@ -38,11 +37,13 @@ public class CivilVoiceController implements AuthorizationController {
 	@Autowired
     private PolicyService policyService;
 
-    @Autowired
-    private PropertiesConfig propertiesConfig;
-
-    /**
-	 * 시민 참여 목록
+	/**
+	 * 시민참여 목록
+	 * @param request
+	 * @param pageNo
+	 * @param civilVoice
+	 * @param model
+	 * @return
 	 */
     @RequestMapping(value = "list")
 	public String list(HttpServletRequest request, @RequestParam(defaultValue="1") String pageNo, CivilVoice civilVoice, Model model) {
@@ -78,13 +79,13 @@ public class CivilVoiceController implements AuthorizationController {
 		return "/civil-voice/list";
 	}
 
-	/**
-	 * 사용자 상세 정보
-	 * @param request
-	 * @param userInfo
-	 * @param model
-	 * @return
-	 */
+    /**
+     * 시민참여 상세 정보
+     * @param request
+     * @param civilVoice
+     * @param model
+     * @return
+     */
 	@GetMapping(value = "detail")
 	public String detail(HttpServletRequest request, CivilVoice civilVoice, Model model) {
 		String listParameters = getSearchParameters(PageType.DETAIL, civilVoice);
@@ -99,15 +100,21 @@ public class CivilVoiceController implements AuthorizationController {
 	}
 
 	/**
-	 * 사용자 등록 화면
+	 * 시민참여 삭제
+	 * @param civilVoiceId
+	 * @param model
+	 * @return
 	 */
-	@GetMapping(value = "input")
-	public String input(Model model) {
-		Policy policy = policyService.getPolicy();
+	@GetMapping(value = "delete")
+	public String delete(@RequestParam("civilVoiceId") Integer civilVoiceId, Model model) {
 
-		model.addAttribute("policy", policy);
-		model.addAttribute("civilVoice", new CivilVoice());
-		return "/user/input";
+		// TODO validation 체크 해야 함
+		CivilVoice civilVoice = new CivilVoice();
+		civilVoice.setCivilVoiceId(civilVoiceId);
+
+		civilVoiceService.deleteCivilVoice(civilVoice);
+
+		return "redirect:/civil-voice/list";
 	}
 
 	/**
