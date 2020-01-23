@@ -207,6 +207,10 @@ background-position: -445px -490px;
 ul.nav li.userPolicy {
 background-position: -445px -590px;
 }
+/* 레이어 임시 스타일 */
+ul.nav li.layer {
+background-position: -445px 10px;
+}
 
 /* CONTENTSBTN */
 .contentsBtn {
@@ -1249,7 +1253,6 @@ margin-left: 10px;
 margin-top: 20px;
 }
 
-
 /* 레이어스타일 */
 ul.layerList > li {
 margin-bottom: 10px;
@@ -1270,7 +1273,7 @@ ul.layerList span {
 display: inline-block;
 width: 35px;
 height: 20px;
-background-image: url(../images/ico_layer.png);
+background-image: url(/images/ko/ico_layer.png);
 background-repeat: no-repeat;
 }
 ul.layerList li p.depthOne {
@@ -1308,9 +1311,22 @@ ul.layerList li ul li {
 padding: 2px 5px 2px 15px;
 }
 li.nodepth span {
-background:url(../images/ico_layer.png) no-repeat 5px -248px;
+background:url(/images/ko/ico_layer.png) no-repeat 5px -248px;
 }
 li.nodepth.on span {
-background:url(../images/ico_layer.png) no-repeat 5px -198px;
+background:url(/images/ko/ico_layer.png) no-repeat 5px -198px;
 }
 
+button.textBtnSub {
+padding: 10px;
+border-radius: 3px;
+color: #333;
+font-size: 14px;
+border: 1px solid #555;
+background-color: #fff;
+}
+button.textBtnSub:hover {
+color: #fff;
+border: 1px solid #555;
+background-color: #555;
+}

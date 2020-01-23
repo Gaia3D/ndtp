@@ -160,6 +160,7 @@ public class LayerController implements AuthorizationController {
 
         Policy policy = policyService.getPolicy();
         Layer layer = layerService.getLayer(layerId);
+        List<LayerGroup> layerGroupList = layerGroupService.getListLayerGroup();
 
         List<LayerFileInfo> layerFileInfoList = layerFileInfoService.getListLayerFileInfo(layerId);
         LayerFileInfo layerFileInfo = new LayerFileInfo();
@@ -170,6 +171,7 @@ public class LayerController implements AuthorizationController {
         }
         model.addAttribute("policy", policy);
         model.addAttribute("layer", layer);
+        model.addAttribute("layerGroupList", layerGroupList);
         model.addAttribute("layerFileInfo", layerFileInfo);
         model.addAttribute("layerFileInfoList", layerFileInfoList);
         model.addAttribute("layerFileInfoListSize", layerFileInfoList.size());
