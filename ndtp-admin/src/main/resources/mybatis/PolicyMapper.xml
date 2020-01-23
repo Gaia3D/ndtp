@@ -69,8 +69,6 @@
 			security_session_timeout = #{securitySessionTimeout},
 			security_user_ip_check_yn = #{securityUserIpCheckYn},
 			security_session_hijacking = #{securitySessionHijacking},
-			security_sso = #{securitySso},
-			security_sso_token_verify_time = #{securitySsoTokenVerifyTime},
 			security_log_save_type = #{securityLogSaveType},
 			security_log_save_term = #{securityLogSaveTerm},
 			security_dynamic_block_yn = #{securityDynamicBlockYn},

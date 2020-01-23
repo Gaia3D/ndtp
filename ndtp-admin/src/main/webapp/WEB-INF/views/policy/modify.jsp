@@ -62,7 +62,7 @@
 	var updatPolicyUserFlag = true;
 	function updatePolicyUser() {
 	    if(updatPolicyUserFlag) {
-	        //if( contentsCheck() === false ) return false;
+	        if( userCheck() === false ) return false;
 
 	        updatPolicyUserFlag = false;
 	        var formData = $('#policyUser').serialize();
@@ -74,7 +74,6 @@
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						alert("사용자 정책이 수정 되었습니다");
-						window.location.reload();
 					} else {
 						alert(JS_MESSAGE[msg.errorCode]);
 						console.log("---- " + msg.message);
@@ -92,25 +91,191 @@
 		}
 	}
 
+	var updatPolicyPasswordFlag = true;
 	function updatePolicyPassword() {
+		if(updatPolicyPasswordFlag) {
+	        if( passwordCheck() === false ) return false;
 
+	        updatPolicyPasswordFlag = false;
+	        var formData = $('#policyPassword').serialize();
+	        $.ajax({
+				url: "/policy/modify-password",
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+		        data: formData + "&policyId=${policy.policyId}",
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert("비밀번호 정책이 수정 되었습니다");
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
+					updatPolicyPasswordFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        updatPolicyPasswordFlag = true;
+				}
+			});
+	    } else {
+	        alert("진행 중입니다.");
+	        return;
+		}
 	}
 
+	var updatPolicyNoticeFlag = true;
 	function updatePolicyNotice() {
+		if(updatPolicyNoticeFlag) {
+	        if( noticeCheck() === false ) return false;
 
+	        updatPolicyNoticeFlag = false;
+	        var formData = $('#policyNotice').serialize();
+	        $.ajax({
+				url: "/policy/modify-notice",
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+		        data: formData + "&policyId=${policy.policyId}",
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert("알림 정책이 수정 되었습니다");
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
+					updatPolicyNoticeFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        updatPolicyNoticeFlag = true;
+				}
+			});
+	    } else {
+	        alert("진행 중입니다.");
+	        return;
+		}
 	}
 
+	var updatPolicySecurityFlag = true;
 	function updatePolicySecurity() {
+		if(updatPolicySecurityFlag) {
+	        if( securityCheck() === false ) return false;
 
+	        updatPolicySecurityFlag = false;
+	        var formData = $('#policySecurity').serialize();
+	        $.ajax({
+				url: "/policy/modify-security",
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+		        data: formData + "&policyId=${policy.policyId}",
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert("보안 정책이 수정 되었습니다");
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
+					updatPolicySecurityFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        updatPolicySecurityFlag = true;
+				}
+			});
+	    } else {
+	        alert("진행 중입니다.");
+	        return;
+		}
 	}
 
+	var updatPolicyContentFlag = true;
 	function updatePolicyContent() {
+		if(updatPolicyPasswordFlag) {
+	        if( contentCheck() === false ) return false;
 
+	        updatPolicyContentFlag = false;
+	        var formData = $('#policyContent').serialize();
+	        $.ajax({
+				url: "/policy/modify-content",
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+		        data: formData + "&policyId=${policy.policyId}",
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert("컨텐트 정책이 수정 되었습니다");
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
+					updatPolicyContentFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        updatPolicyContentFlag = true;
+				}
+			});
+	    } else {
+	        alert("진행 중입니다.");
+	        return;
+		}
 	}
 
+	var updatPolicyUploadFlag = true;
 	function updatePolicyUpload() {
+		if(updatPolicyPasswordFlag) {
+	        if( uploadCheck() === false ) return false;
 
+	        updatPolicyUploadFlag = false;
+	        var formData = $('#policyUpload').serialize();
+	        $.ajax({
+				url: "/policy/modify-upload",
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+		        data: formData + "&policyId=${policy.policyId}",
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert("업로드 정책이 수정 되었습니다");
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
+					updatPolicyUploadFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        updatPolicyUploadFlag = true;
+				}
+			});
+	    } else {
+	        alert("진행 중입니다.");
+	        return;
+		}
 	}
+
+	function userCheck() {
+		return true;
+	}
+
+	function passwordCheck() {
+		return true;
+	}
+
+	function noticeCheck() {
+		return true;
+	}
+
+	function securityCheck() {
+		return true;
+	}
+
+	function contentCheck() {
+		return true;
+	}
+
+	function uploadCheck() {
+		return true;
+	}
+
+
 
 </script>
 </body>
