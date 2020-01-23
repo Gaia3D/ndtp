@@ -1,48 +1,50 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <div id="dataInfoContent" style="display:block;">
-	<table class="tableTemplate" style="width: 100%;">
-		<colgroup>
-			<col class="col-label l" style="width: 30%" >
-			<col class="col-input" style="width: 70%" >
-        </colgroup>
-		<tr style="margin: 7px 0px 7px 0px;">
-			<td>
-				<label for="searchDataName">데이터명</label>
-			</td>
-			<td>
-				<input type="text" placeholder="데이터명을 입력하여 주십시오." style="height: 26px;" size="30" />
-			</td>	
-		</tr>
-		<tr style="margin: 7px 0px 7px 0px;">
-			<td>
-				<select id="" name="" style="height: 30px;">
-					<option value="전체">전체</option>
-					<option value="상태">상태</option>
-				</select>
-			</td>
-			<td>
-				<input type="radio" id="showPropertyRendering" name="propertyRendering" value="true" />
-						<label for="showLabel"> 표시 </label>
-						<input type="radio" id="hidePropertyRendering" name="propertyRendering" value="false" />
-						<label for="hideLabel"> 비표시 </label>
-			</td>
-		</tr>
-		<tr style="margin: 7px 0px 7px 0px;">
-			<td>
-				<select id="" name="" style="height: 30px;">
-					<option value="전체">타입</option>
-				</select>
-			</td>
-			<td>
-			</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>
-				<button type="button" title="검색">검색</button>
-			</td>
-		</tr>
-	</table>
+	<div class="listSearch">
+		<table class="basicTable" style="margin: 7px 0px 7px 0px; width: 100%;">
+			<colgroup>
+				<col class="col-label l" style="width: 30%" >
+				<col class="col-input" style="width: 70%" >
+	        </colgroup>
+			<tr>
+				<td>
+					<label for="searchDataName">데이터명</label>
+				</td>
+				<td>
+					<input type="text" placeholder="데이터명을 입력하여 주십시오." style="height: 26px;" size="30" />
+				</td>	
+			</tr>
+			<tr style="margin: 7px 0px 7px 0px;">
+				<td>
+					<select id="" name="" style="height: 30px;">
+						<option value="전체">전체</option>
+						<option value="상태">상태</option>
+					</select>
+				</td>
+				<td>
+					<input type="radio" id="showPropertyRendering" name="propertyRendering" value="true" />
+							<label for="showLabel"> 표시 </label>
+							<input type="radio" id="hidePropertyRendering" name="propertyRendering" value="false" />
+							<label for="hideLabel"> 비표시 </label>
+				</td>
+			</tr>
+			<tr style="margin: 7px 0px 7px 0px;">
+				<td>
+					<select id="" name="" style="height: 30px;">
+						<option value="전체">타입</option>
+					</select>
+				</td>
+				<td>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<button type="button" title="검색">검색</button>
+				</td>
+			</tr>
+		</table>
+	</div>
 	
 	<h3 style="margin-top: 30px; margin-bottom: 10px;">
 		<spring:message code='all.d'/> <fmt:formatNumber value="${pagination.totalCount}" type="number"/> <spring:message code='search.what.count'/>, 
