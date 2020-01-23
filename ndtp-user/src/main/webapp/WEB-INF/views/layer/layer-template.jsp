@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <script id="templateLayerList" type="text/x-handlebars-template">
 	{{#ifMatch depth 1}}
-		<li class="mapLayer {{layerKey}} on" data-depth="{{layerGroupId}}">
+		<li class="mapLayer on" data-depth="{{layerGroupId}}">
 		<p class="depthOne"><span class="folder"></span>{{layerGroupName}}</p>
 		<ul>		
 	{{/ifMatch}}
