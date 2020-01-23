@@ -207,9 +207,8 @@ background-position: -445px -490px;
 ul.nav li.userPolicy {
 background-position: -445px -590px;
 }
-/* 레이어 임시 스타일 */
 ul.nav li.layer {
-background-position: -445px 10px;
+background-position: -360px -190px;
 }
 
 /* CONTENTSBTN */
@@ -354,6 +353,13 @@ background-position: -340px 0;
 .ctrlWrap div > button.rotateRight {
 background-position: -390px 0;
 }
+.ctrlWrap div > button.magoSet {
+background-position: -85px -52px;
+}
+.ctrlWrap div > button.magoSet.on {
+background-position: -85px -102px;
+}
+
 .ctrlWrap div > input {
 width: 30px;
 margin-top: 3px;
@@ -1205,7 +1211,7 @@ font-size: 16px;
 font-weight: bold;
 letter-spacing: -1px;
 border-radius: 25px;
-background-position: -451px -588px;
+/* background-position: -451px -588px; */
 }
 #mapPolicy.on {
 color: #000;
@@ -1302,6 +1308,12 @@ background-position: 0 0;
 }
 ul.layerList li.on > p > span.folder {
 background-position: 0 -101px;
+}
+ul.layerList li > p > span.depthThree {
+background-position: 0 -300px;
+}
+ul.layerList li.on > p > span.depthThree {
+background-position: 0 -347px;
 }
 ul.layerList li > ul {
 display: none;

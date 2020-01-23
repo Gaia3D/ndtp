@@ -5,11 +5,16 @@
 		<p class="depthOne"><span class="folder"></span>{{layerGroupName}}</p>
 		<ul>		
 	{{/ifMatch}}
-	{{#valueCompare depth 1}}
+	{{#ifMatch depth 2}}
 		<li class="mapLayer" data-depth="{{layerGroupId}}">
 		<p><span class="folder"></span>{{layerGroupName}}</p>
 		<ul>
-	{{/valueCompare}}
+	{{/ifMatch}}
+	{{#ifMatch depth 3}}
+		<li class="mapLayer" data-depth="{{layerGroupId}}">
+		<p><span class="depthThree"></span>{{layerGroupName}}</p>
+		<ul>
+	{{/ifMatch}}
 		{{#if layerList}}
 				{{#each layerList}}
 					<li class="nodepth {{viewType}}Layer "
