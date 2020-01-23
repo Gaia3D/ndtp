@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<div id="dataInfoDialog" class="tableTemplate" style="display: none;">
+<div id="dataInfoDialog" class="basicTable" style="display: none;">
 </div>
 <script id="templateDataInfo" type="text/x-handlebars-template">
 	<table>
