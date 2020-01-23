@@ -92,6 +92,13 @@ public interface DataMapper {
 	 */
 	DataInfo getRootDataByDataGroupId(Integer dataGroupId);
 	
+	/**
+	 * Data 정보 취득
+	 * @param dataInfo
+	 * @return
+	 */
+	DataInfo getDataByConverterJob(DataInfo dataInfo);
+	
 //	/**
 //	 * Data Attribute 정보 취득
 //	 * @param dataId
@@ -204,4 +211,11 @@ public interface DataMapper {
 	 * @return
 	 */
 	int deleteDataByDataGroupId(DataGroup dataGroup);
+	
+	/**
+	 * Data 삭제
+	 * @param dataInfo
+	 * @return
+	 */
+	int deleteDataByConverterJob(DataInfo dataInfo);
 }

@@ -288,6 +288,7 @@
 	
 	// 데이터 상세 정보 조회
 	function detailDataInfo(dataId) {
+		dataInfoDialog.dialog( "open" );
 		$.ajax({
 			url: "/datas/" + dataId,
 			type: "GET",
@@ -295,7 +296,6 @@
 			dataType: "json",
 			success: function(msg){
 				if(msg.statusCode <= 200) {
-					dataInfoDialog.dialog( "open" );
 					dataInfoDialog.dialog( "option", "title", msg.dataInfo.dataName + " 상세 정보");
 					
 					var source = $("#templateDataInfo").html();

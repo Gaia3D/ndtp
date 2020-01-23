@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <div id="dataInfoDialog" class="tableTemplate" style="display: none;">
-	<script id="templateDataInfo" type="text/x-handlebars-template">
+</div>
+<script id="templateDataInfo" type="text/x-handlebars-template">
 	<table>
 		<col class="col-label" />
 		<col class="col-data" />
@@ -73,5 +74,4 @@
 			<td id="insertDate" class="col-data">{{viewInsertDate}}</td>
 		</tr>
 	</table>
-	</script>
-</div>
+</script>

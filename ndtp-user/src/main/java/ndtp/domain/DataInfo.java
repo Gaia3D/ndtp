@@ -55,6 +55,8 @@ public class DataInfo extends Search implements Serializable {
 	private Long dataId;
 	// Data Group 고유번호
 	private Integer dataGroupId;
+	// converter 고유번호
+	private Long converterJobId;
 	// Data Group 이름
 	private String dataGroupName;
 	// data 고유 식별번호

@@ -58,10 +58,9 @@
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input radio-set">
-										<input type="radio" id="availableTrue" name="available" value="true" checked>
-										<label for="availableTrue">사용</label>
-										<input type="radio" id="availableFalse" name="available" value="false">
-										<label for="availableFalse">미사용</label>
+										<form:radiobutton label="사용" path="available" value="true" checked="checked" />
+										<form:radiobutton label="미사용" path="available" value="false" />
+										<form:errors path="available" cssClass="error" />
 									</td>
 								</tr>
 								<tr>
