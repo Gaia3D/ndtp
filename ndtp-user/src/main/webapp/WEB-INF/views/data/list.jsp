@@ -147,6 +147,12 @@
 	//Cesium.Ion.defaultAccessToken = '';
 	//var viewer = new Cesium.Viewer('magoContainer');
 	var MAGO3D_INSTANCE;
+	// ndtp 전역 네임스페이스
+	var NDTP = NDTP ||{
+		policy : ${geoPolicyJson},
+		wmsProvider : {},
+		districtProvider : {}
+	};
 	magoInit();
 	
 	function magoInit() {
@@ -191,7 +197,7 @@
 		//공간분석 기능 수행
 		SpatialAnalysis(magoInstance);
 		// 행정 구역 이동 
-        DistrictControll(viewer, geoPolicyJson);
+        DistrictControll(magoInstance);
 
         dataGroupList();
 
@@ -200,7 +206,7 @@
         UserPolicy(magoInstance);
         // 기본 레이어 랜더링
         setTimeout(function(){
-        	initDefaultLayer(viewer, geoPolicyJson);
+        	initLayer(magoInstance);
         }, geoPolicyJson.initDuration * 1000);
 	}
 	

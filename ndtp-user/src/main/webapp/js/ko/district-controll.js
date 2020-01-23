@@ -1,18 +1,17 @@
-var district = null;
-var DISTRICT_PROVIDER = null;
-function DistrictControll(viewer, policy)
+var district;
+function DistrictControll(magoInstance)
 {
-    district = new District(viewer, policy );
+	var viewer = magoInstance.getViewer();
+    district = new District(magoInstance, viewer);
 }
 
-function District(viewer, policy)
+function District(magoInstance, viewer)
 {
     this.drawDistrict = function (name, sdoCode, sggCode, emdCode) {
+    	this.deleteDistrict();
         var now = new Date();
         var rand = ( now - now % 5000) / 5000;
-    
-        this.deleteDistrict();
-        
+        var policy = NDTP.policy;
         // 시도(2) + 시군구(3) + 읍면동(3) + 리(2)
         var queryString = "bjcd = " + sdoCode.toString().padStart(2, '0') + sggCode.toString().padStart(3, '0') + emdCode.toString().padStart(3, '0') + '00';
         // TODO 개발 서버 포팅후 geoserver url 변경하기 
@@ -35,14 +34,14 @@ function District(viewer, policy)
             enablePickFeatures : false
         });
         
-        DISTRICT_PROVIDER = viewer.imageryLayers.addImageryProvider(provider);
+        NDTP.districtProvider = viewer.imageryLayers.addImageryProvider(provider);
     }
 
     this.deleteDistrict = function () {
-        if(DISTRICT_PROVIDER !== null && DISTRICT_PROVIDER !== undefined) {
-            viewer.imageryLayers.remove(DISTRICT_PROVIDER, true);
+        if(NDTP.districtProvider !== null && NDTP.districtProvider !== undefined) {
+            viewer.imageryLayers.remove(NDTP.districtProvider, true);
         }
-        DISTRICT_PROVIDER = null;
+        NDTP.districtProvider = null;
     }
 }
 loadDistrict();

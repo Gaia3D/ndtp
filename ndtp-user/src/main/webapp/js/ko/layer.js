@@ -1,10 +1,11 @@
+
 $(document).ready(function (){
 	// 트리 안그렸을때만 ajax 요청해서 랜더링 
 	if($("ul.layerList li").length === 0){
 		//레이어 목록 가져오기
 		getLayerList();
-//		initImageryLayer();
 	}
+	
 //    $('#layerMenu').on('click', function() {
 //    	
 //    });
@@ -15,12 +16,21 @@ $(document).ready(function (){
     	var $target = $(this).parent('li');
     	$target.toggleClass('on');
     });
+    
+    $('#layerContent').on('click', '.wmsLayer p', function(e) {
+    	initLayer(MAGO3D_INSTANCE, NDTP.policy);
+    });
 
 });
 
 // 관리자 레이어에서 기본표시가  사용인 항목들을 랜더링 
-function initDefaultLayer(viewer, policy) {
+function initLayer(magoInstance) {
+	var viewer = magoInstance.getViewer();
+	if(NDTP.wmsProvider){
+		viewer.imageryLayers.remove(NDTP.wmsProvider);
+	}
 	var layerList = [];
+	var policy = NDTP.policy;
 	$("ul.layerList li ul li.wmsLayer.on").each(function(){
 	    var layerKey = $(this).attr("data-layer-name");
 	    layerList.push(policy.geoserverDataStore+':'+layerKey);
@@ -28,8 +38,6 @@ function initDefaultLayer(viewer, policy) {
 	
 	var queryString = "enable_yn='Y'";
     var queryStrings = layerList.map(function(){ return queryString; }).join(';');	// map: ie9부터 지원
-//	var now = new Date();
-//	var rand = ( now - now % 5000) / 5000;
 	var provider = new Cesium.WebMapServiceImageryProvider({
         url : policy.geoserverDataUrl + "/wms",
         layers : layerList.join(","),
@@ -40,7 +48,6 @@ function initDefaultLayer(viewer, policy) {
             ,transparent : 'true'
             ,format : 'image/png'
             ,time : 'P2Y/PRESENT'
-//            ,rand:rand
             ,maxZoom : 25
             ,maxNativeZoom : 23
             ,CQL_FILTER: queryStrings
@@ -48,7 +55,7 @@ function initDefaultLayer(viewer, policy) {
         enablePickFeatures : false
     });
     
-    LAYER_PROVIDER = viewer.imageryLayers.addImageryProvider(provider);
+	NDTP.wmsProvider = viewer.imageryLayers.addImageryProvider(provider);
 }
 
 //레이어 메뉴 목록 조회
@@ -74,6 +81,7 @@ function getLayerList() {
     });
 }
 
+// 레이어 트리 html 랜더링 
 function createLayerHtml(res) {
 	var source = $("#templateLayerList").html();
     var template = Handlebars.compile(source);
