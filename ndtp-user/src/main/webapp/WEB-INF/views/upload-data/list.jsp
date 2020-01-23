@@ -155,7 +155,7 @@
 <c:if test="${uploadData.sharing eq 'private' }">
 							개인
 </c:if>
-<c:if test="${uploadData.sharing eq 'sharing' }">
+<c:if test="${uploadData.sharing eq 'group' }">
 							공유
 </c:if>
 						</td>
