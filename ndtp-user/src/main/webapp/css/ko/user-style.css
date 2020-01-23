@@ -1346,3 +1346,42 @@ color: #fff;
 border: 1px solid #555;
 background-color: #555;
 }
+
+/* /// 기본 테이블 /// */
+.tableTemplate {
+	position: relative;
+}
+.tableTemplate > table {
+	width: 100%;
+}
+.tableTemplate > table thead th {
+	padding: 5px;	
+	border: 1px solid #ccc;
+}
+.tableTemplate > table tbody tr:hover {
+	cursor: pointer;
+	background-color: #f9f9f9;
+}
+.tableTemplate > table tbody tr.selected {
+	background-color: #d6dcf2;
+}
+.tableTemplate > table th {
+	padding: 5px;	
+	border: 1px solid #ccc;
+	background-color: #ddd;
+}
+.tableTemplate > table tr td {
+	padding: 7px 5px;
+	border: 1px solid #ccc;
+	font-size: 14px;
+	text-align: left;
+}
+.tableTemplate > table tr td a {
+	border-bottom: 1px solid #000;
+}
+.tableTemplate > table tr td.alignLeft {
+	text-align: left;
+}
+.tableTemplate > table tr td.center {
+	text-align: center;
+}

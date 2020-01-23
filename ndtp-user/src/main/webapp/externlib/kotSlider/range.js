@@ -25,7 +25,6 @@ KotSlider.prototype.init = function () {
         if (document.getElementById(this.sliderObject.id) && document.getElementById(this.sliderObject.id).tagName == 'INPUT') {
             var slider = document.getElementById(this.sliderObject.id);
             var parent = slider.parentElement;
-            console.info(parent);
             var div = document.createElement('div');
             var divChild1 = document.createElement('div');
             var divChild2 = document.createElement('div');

@@ -130,7 +130,7 @@
 	<!-- Data 정보 -->
 	<select id="getData" parameterType="dataInfo" resultType="dataInfo">
 		/* getData */
-		SELECT A.*, B.data_group_name
+		SELECT A.*, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude, B.data_group_name
 		FROM data_info A, data_group B
 		WHERE data_id = #{dataId}
 			AND A.data_group_id = B.data_group_id
@@ -142,7 +142,7 @@
 	<!-- Data 정보 -->
 	<select id="getDataByDataKey" parameterType="dataInfo" resultType="dataInfo">
 		/* getDataByDataKey */
-		SELECT *
+		SELECT *, ST_X(location) AS longitude, ST_Y(location) AS latitude
 		FROM data_info
 		WHERE data_group_id = #{dataGroupId} 
 			AND data_key = #{dataKey}
@@ -154,7 +154,7 @@
 	<!-- 최상위 root dataInfo 정보 취득 -->
 	<select id="getRootDataByDataGroupId" parameterType="int" resultType="dataInfo">
 		/* getRootDataByDataGroupId */
-		SELECT *
+		SELECT *, ST_X(location) AS longitude, ST_Y(location) AS latitude
 		FROM data_info
 		WHERE data_group_id = #{dataGroupId} 
 			AND parent = 0
