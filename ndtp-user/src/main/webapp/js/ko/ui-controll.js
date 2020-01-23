@@ -13,6 +13,7 @@ $(function() {
 		$('#dataContent').toggle(true);
 		$('#contentsWrap').toggle(true);
 	} else {
+		$('button#closeLeftBtn').toggle(true);
 		// 다른거 활성화
 		if( currentUrl.indexOf("/data/list") >= 0) {
 			if( currentUrl.indexOf("#search") >= 0) {
@@ -47,7 +48,7 @@ $(function() {
 		
 		$('#contentsWrap').hide();
 		$('ul.nav li.on').removeClass('on');
-		//$('#closeLeftBtn').toggle();
+		$(this).hide();
 	});
 
 	/***** NAV WRAP: 메뉴 *****/
@@ -75,6 +76,7 @@ $(function() {
 
         $('#'+ active).toggle(display);
         $('#contentsWrap').toggle(display);
+        $('button#closeLeftBtn').toggle(display);
     });
 
     

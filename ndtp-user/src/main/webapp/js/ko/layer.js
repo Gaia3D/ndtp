@@ -21,10 +21,14 @@ function getLayerList() {
         headers: {'X-Requested-With': 'XMLHttpRequest'},
         contentType: "application/json; charset=utf-8",
         dataType: 'json',
-        cache: false,	// ie동작오류보완
         success: function(res){
-        	// html 생성
-            createLayerHtml(res.layerGroupList);
+        	if(res.statusCode <= 200) {
+            	// html 생성
+                createLayerHtml(res.layerGroupList);
+			} else {
+				alert(JS_MESSAGE[res.errorCode]);
+				console.log("---- " + res.message);
+			}
         },
         error: function(request, status, error) {
         	alert(JS_MESSAGE["ajax.error.message"]);
@@ -50,4 +54,11 @@ function createLayerHtml(res) {
             selector.append(h);
         }
     }
+}
+
+//레이어 전체 끄기
+function turnOffAllLayer() {
+	$('#layerContent .nodepth.on').each(function() {
+		$(this).find('p').trigger('click');
+	});
 }

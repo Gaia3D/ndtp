@@ -81,10 +81,11 @@
 			<!-- E: CONTENTS -->
 			<!-- E: CONTENTS -->
 			
-			<div class="contentsBtn">
-				<button type="button" id="closeLeftBtn" title="닫기">Close</button>
-			</div>
+			
 			<!-- E: CONTENTSBTN -->
+		</div>
+		<div class="contentsBtn">
+			<button type="button" id="closeLeftBtn" title="닫기" style="display:none;">Close</button>
 		</div>
 		<!-- E: CONTENTSWRAP -->
 
