@@ -38,7 +38,7 @@
 									<span class="icon-glyph glyph-emark-dot color-warning"></span>
 								</th>
 								<td class="col-input">
-									<form:input path="userId" cssClass="ml" readonly="true" />
+									<form:input path="userId" cssClass="m" readonly="true" />
 								</td>
 							</tr>
 			                <tr>
@@ -48,7 +48,7 @@
 								</th>
 								<td class="col-input">
 									<form:hidden path="userGroupId" />
-									<form:input path="userGroupName" cssClass="ml" readonly="true" />
+									<form:input path="userGroupName" cssClass="m" readonly="true" />
 									<input type="button" id="userGroupButton" value="사용자 그룹 선택" />
 								</td>
 							</tr>
@@ -58,7 +58,7 @@
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 			                    <td class="col-input">
-									<form:input path="userName" cssClass="ml"/>
+									<form:input path="userName" cssClass="m"/>
 								</td>
 			                    <%-- <td class="col-input radio-set">
 			                        <form:radiobutton id="sharingPublic"  path="sharing" value="public" label="공개" />
@@ -72,7 +72,7 @@
 									<span class="icon-glyph glyph-emark-dot color-warning"></span>
 								</th>
 								<td class="col-input">
-									<form:input path="password" class="ml" />
+									<form:input path="password" class="m" />
 									<span class="table-desc"><spring:message code='user.input.upper.case'/> ${policy.passwordEngUpperCount}, <spring:message code='user.input.lower.case'/> ${policy.passwordEngLowerCount},
 										 <spring:message code='user.input.number'/> ${policy.passwordNumberCount}, <spring:message code='user.input.special.characters'/> ${policy.passwordSpecialCharCount} <spring:message code='user.input.special.characters.need'/>
 										 ${policy.passwordMinLength} ~ ${policy.passwordMaxLength}<spring:message code='user.input.do'/></span>
@@ -85,7 +85,7 @@
 									<span class="icon-glyph glyph-emark-dot color-warning"></span>
 								</th>
 								<td class="col-input">
-									<form:input path="password" class="ml" />
+									<form:input path="password" class="m" />
 									<form:errors path="passwordConfirm" cssClass="error" />
 								</td>
 							</tr>

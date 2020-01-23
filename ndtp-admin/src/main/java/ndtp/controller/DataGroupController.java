@@ -195,6 +195,66 @@ public class DataGroupController {
 	}
 
 	/**
+	 * 데이터 그룹 수정 페이지 이동
+	 * @param request
+	 * @param dataGroupId
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "modify")
+	public String modify(HttpServletRequest request, @RequestParam Integer dataGroupId, Model model) {
+		DataGroup dataGroup = new DataGroup();
+		dataGroup.setDataGroupId(dataGroupId);
+		dataGroup = dataGroupService.getDataGroup(dataGroup);
+		Policy policy = policyService.getPolicy();
+
+		model.addAttribute("policy", policy);
+		model.addAttribute("dataGroup", dataGroup);
+
+		return "/data/modify-group";
+	}
+
+	/**
+	 * 데이터 그룹 수정
+	 * @param request
+	 * @param dataGroup
+	 * @param bindingResult
+	 * @return
+	 */
+	@PostMapping(value = "update")
+	@ResponseBody
+	public Map<String, Object> update(HttpServletRequest request, @Valid DataGroup dataGroup, BindingResult bindingResult) {
+		log.info("@@ dataGroup = {}", dataGroup);
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+
+		try {
+			if(bindingResult.hasErrors()) {
+				message = bindingResult.getAllErrors().get(0).getDefaultMessage();
+				log.info("@@@@@ message = {}", message);
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", errorCode);
+				result.put("message", message);
+	            return result;
+			}
+
+			dataGroupService.updateDataGroup(dataGroup);
+		} catch (Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
+	}
+
+	/**
 	 * 데이터 그룹 트리 순서 수정 (up/down)
 	 * @param request
 	 * @param dataGroupId

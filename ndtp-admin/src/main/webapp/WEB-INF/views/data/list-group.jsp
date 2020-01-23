@@ -162,7 +162,7 @@
 					                    	</div>
 					                    </td>
 					                    <td class="col-type">
-											<a href="#" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;
+											<a href="/data-group/modify?dataGroupId=${dataGroup.dataGroupId }" onclick="" class="linkButton"><spring:message code='modified' /></a>&nbsp;&nbsp;
 											<a href="/data-group/delete?dataGroupId=${dataGroup.dataGroupId }" onclick="return deleteWarning();"
 														class="linkButton"><spring:message code='delete'/></a>
 					                    </td>
