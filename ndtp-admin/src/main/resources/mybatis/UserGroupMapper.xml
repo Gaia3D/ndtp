@@ -259,15 +259,11 @@
 			<if test="viewOrder != null and viewOrder != ''">
             view_order = #{viewOrder},
             </if>
-			<if test="basic != null and basic != ''">
-            basic = #{basic},
-            </if>
-			<if test="available != null and available != ''">
-            available = #{available},
-            </if>
 			<if test="children != null and children != ''">
             children = #{children},
             </if>
+            basic = #{basic},
+            available = #{available},
             user_group_name = #{userGroupName}
         WHERE user_group_id = #{userGroupId}
     </update>

@@ -65,14 +65,24 @@
 							</tr>
 							<tr>
 								<th class="col-label m" scope="row">
+									<span>기본 여부</span>
+									<span class="icon-glyph glyph-emark-dot color-warning"></span>
+								</th>
+								<td class="col-input radio-set">
+									<form:radiobutton label="기본" path="basic" value="true" />
+									<form:radiobutton label="선택" path="basic" value="false" />
+									<form:errors path="basic" cssClass="error" />
+								</td>
+							</tr>
+							<tr>
+								<th class="col-label m" scope="row">
 									<span>사용여부</span>
 									<span class="icon-glyph glyph-emark-dot color-warning"></span>
 								</th>
 								<td class="col-input radio-set">
-									<input type="radio" id="availableTrue" name="available" value="true" checked>
-									<label for="availableTrue">사용</label>
-									<input type="radio" id="availableFalse" name="available" value="false">
-									<label for="availableFalse">미사용</label>
+									<form:radiobutton label="사용" path="available" value="true" />
+									<form:radiobutton label="미사용" path="available" value="false" />
+									<form:errors path="available" cssClass="error" />
 								</td>
 							</tr>
 							<tr>

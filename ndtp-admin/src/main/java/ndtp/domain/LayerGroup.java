@@ -29,7 +29,10 @@ public class LayerGroup implements Serializable {
 	/****** 화면 표시용 *******/
 	// up : 위로, down : 아래로
 	private String updateType;
-	
+
+	// 그룹Key 중복 확인 hidden 값
+	private String duplicationValue;
+
 	/**
 	 * 레이어 그룹 고유번호 
 	 */

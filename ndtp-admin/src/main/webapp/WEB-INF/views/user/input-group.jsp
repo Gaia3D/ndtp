@@ -43,8 +43,10 @@
 								</tr>
 								<tr>
 									<th class="col-label" scope="row">
+										<form:hidden path="duplicationValue"/>
 										<form:label path="userGroupKey">사용자 그룹 Key</form:label>
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
+				  						<input type="button" id="userGroupDuplicationButton" value="<spring:message code='overlap.check'/>" />
 									</th>
 									<td class="col-input">
 										<form:input path="userGroupKey" cssClass="l" />
@@ -68,10 +70,9 @@
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input radio-set">
-										<input type="radio" id="basicTrue" name="basic" value="true" >
-										<label for="basicTrue">기본</label>
-										<input type="radio" id="basicFalse" name="basic" value="false" checked >
-										<label for="basicFalse">선택</label>
+										<form:radiobutton label="기본" path="basic" value="true" />
+										<form:radiobutton label="선택" path="basic" value="false" checked="checked" />
+										<form:errors path="basic" cssClass="error" />
 									</td>
 								</tr>
 								<tr>
@@ -80,10 +81,9 @@
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input radio-set">
-										<input type="radio" id="availableTrue" name="available" value="true" checked>
-										<label for="availableTrue">사용</label>
-										<input type="radio" id="availableFalse" name="available" value="false">
-										<label for="availableFalse">미사용</label>
+										<form:radiobutton label="사용" path="available" value="true" checked="checked" />
+										<form:radiobutton label="미사용" path="available" value="false" />
+										<form:errors path="available" cssClass="error" />
 									</td>
 								</tr>
 								<tr>
@@ -215,7 +215,7 @@
                 + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
         //popWin.document.title = layerName;
 	});
-	
+
 	// 초기화
 	function formClear() {
 		$("#userGroupName").val("");

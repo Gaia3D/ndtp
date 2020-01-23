@@ -32,50 +32,50 @@
 	    FROM data_group_tree
 	    ORDER BY path
 	</select>
-	
+
 	<!-- 데이터 그룹 정보 -->
 	<select id="getDataGroup" parameterType="dataGroup" resultType="dataGroup">
 		/* getDataGroup */
-		SELECT * 
-		FROM data_group 
-		WHERE data_group_id = #{dataGroupId} 
+		SELECT *
+		FROM data_group
+		WHERE data_group_id = #{dataGroupId}
 		<if test="userId != null and userId != ''">
 			AND user_id = #{userId}
-		</if> 
+		</if>
 	</select>
-	
+
 	<!-- 기본 데이터 그룹 정보 -->
 	<select id="getBasicDataGroup" parameterType="dataGroup" resultType="dataGroup">
 		/* getBasicDataGroup */
-		SELECT * 
-		FROM data_group 
-		WHERE basic = 'true' 
+		SELECT *
+		FROM data_group
+		WHERE basic = 'true'
 			AND depth = 1
 		ORDER BY view_order
-		LIMIT 1 
+		LIMIT 1
 	</select>
-	
+
 	<!-- 부모와 순서를 가지고 데이터 그룹 정보를 취득 -->
 	<select id="getDataGroupByParentAndViewOrder" parameterType="dataGroup" resultType="dataGroup">
 		/* getUserGroupByParentAndViewOrder */
-		SELECT * 
-		FROM data_group 
-		WHERE parent = #{parent} 
+		SELECT *
+		FROM data_group
+		WHERE parent = #{parent}
 		<if test="updateType == 'UP'.toString()">
 			<![CDATA[
 			AND view_order < #{viewOrder}
 			]]>
-		ORDER BY view_order DESC 
+		ORDER BY view_order DESC
 		</if>
 		<if test="updateType == 'DOWN'.toString()">
 			<![CDATA[
 			AND view_order > #{viewOrder}
 			]]>
-		ORDER BY view_order 
+		ORDER BY view_order
 		</if>
-		LIMIT 1 
+		LIMIT 1
 	</select>
-	
+
 	<!-- 데이터 그룹 등록 -->
 	<insert id="insertDataGroup" parameterType="dataGroup">
 		/* insertDataGroup */
@@ -83,8 +83,8 @@
     		SELECT NEXTVAL('data_group_seq')
   		</selectKey>
 		INSERT INTO data_group (
-			data_group_id, data_group_name, data_group_key, 
-			data_group_path, sharing, user_id, ancestor, parent, depth, view_order, children, basic, available, data_count, 
+			data_group_id, data_group_name, data_group_key,
+			data_group_path, sharing, user_id, ancestor, parent, depth, view_order, children, basic, available, data_count,
 			<if test="location != null">
 			location,
 			</if>
@@ -94,18 +94,18 @@
 			</if>
 			description
 		) VALUES (
-			#{dataGroupId}, #{dataGroupName}, #{dataGroupKey}, 
+			#{dataGroupId}, #{dataGroupName}, #{dataGroupKey},
 			#{dataGroupPath}, #{sharing}, #{userId},
 			(
-				SELECT COALESCE(MAX(ancestor), #{dataGroupId}) 
-				FROM data_group 
+				SELECT COALESCE(MAX(ancestor), #{dataGroupId})
+				FROM data_group
 				WHERE data_group_id = #{parent}
 					AND data_group_id != 0
 			),
 			#{parent},
 			(
 				SELECT COALESCE(MAX(depth),  0 ) + 1
-				FROM data_group 
+				FROM data_group
 				WHERE data_group_id = #{parent}
 			),
 			(
@@ -114,7 +114,7 @@
 				WHERE parent = #{parent}
 			),
 			(
-				SELECT COUNT(*) 
+				SELECT COUNT(*)
 				FROM data_group
 				WHERE parent = #{dataGroupId}
 			),
@@ -122,19 +122,19 @@
 			<if test="location != null">
 			ST_GeomFromText(#{location}, 4326),
 			</if>
-			#{altitude}, #{duration}, 
+			#{altitude}, #{duration},
 			<if test="metainfo != null and metainfo != ''">
 			TO_JSON(#{metainfo}::json),
 			</if>
 			trim(#{description})
 		)
 	</insert>
-	
+
 	<!-- 데이터 그룹 수정 -->
 	<update id="updateDataGroup" parameterType="dataGroup">
 		/* updateDataGroup */
 		UPDATE data_group
-		SET 
+		SET
 			<if test="dataGroupName != null and dataGroupName != ''">
 			data_group_name = #{dataGroupName},
 			</if>
@@ -165,12 +165,6 @@
 			<if test="children != null and children gte 0">
 			children = #{children},
 			</if>
-			<if test="basic != null">
-			basic = #{basic},
-			</if>
-			<if test="available != null">
-			available = #{available},
-			</if>
 			<if test="dataCount != null and dataCount gte 0">
 			data_count = #{dataCount},
 			</if>
@@ -189,6 +183,8 @@
 			<if test="description != null and description != ''">
 			description = #{description},
 			</if>
+			basic = #{basic},
+			available = #{available},
 			update_date = NOW()
 		WHERE data_group_id = #{dataGroupId}
 		<if test="userId != null and userId != ''">
