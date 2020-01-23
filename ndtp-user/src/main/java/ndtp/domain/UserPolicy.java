@@ -3,6 +3,8 @@ package ndtp.domain;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import javax.validation.constraints.Digits;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
@@ -33,6 +35,7 @@ public class UserPolicy implements Serializable {
 	// 초기 카메라 이동 높이
 	private String initAltitude;
 	// 초기 카메라 이동 시간. 초 단위
+	@Digits(integer = 2, fraction = 0)
 	private Integer initDuration;
 	// field of view. 기본값 0(1.8 적용) 
 	private Float initDefaultFov;
