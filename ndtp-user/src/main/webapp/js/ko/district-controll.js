@@ -1,11 +1,11 @@
 var district = null;
 var DISTRICT_PROVIDER = null;
-function DistrictControll(viewer, option)
+function DistrictControll(viewer, policy)
 {
-    district = new District(viewer);
+    district = new District(viewer, policy );
 }
 
-function District(viewer)
+function District(viewer, policy)
 {
     this.drawDistrict = function (name, sdoCode, sggCode, emdCode) {
         var now = new Date();
@@ -17,7 +17,7 @@ function District(viewer)
         var queryString = "bjcd = " + sdoCode.toString().padStart(2, '0') + sggCode.toString().padStart(3, '0') + emdCode.toString().padStart(3, '0') + '00';
         // TODO 개발 서버 포팅후 geoserver url 변경하기 
         var provider = new Cesium.WebMapServiceImageryProvider({
-            url : "http://localhost:8080/geoserver/wms",
+            url : policy.geoserverDataUrl + "/wms",
             layers : 'ndtp:district',
             parameters : {
                 service : 'WMS'
