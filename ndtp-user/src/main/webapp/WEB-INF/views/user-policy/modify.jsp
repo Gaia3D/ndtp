@@ -9,7 +9,7 @@
 		<div style="height: 30px;">
 			<div style="display: inline-block; width: 70px;">위도</div>
 			<form:input type="text" id="initLatitude" path="initLatitude" size="15" />&nbsp;M
-			<button type="button" id="findStartPoint" class="btnTextF" style="margin-left: 5px;">선택</button>
+			<button type="button" id="findStartPoint" class="btnTextF" style="margin-left: 50px;">선택</button>
 		</div>
 		<div style="height: 30px;">
 			<div style="display: inline-block; width: 70px;">경도</div>

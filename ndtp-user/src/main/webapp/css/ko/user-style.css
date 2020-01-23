@@ -1334,7 +1334,7 @@ background:url(/images/ko/ico_layer.png) no-repeat 5px -198px;
 }
 
 button.textBtnSub {
-padding: 10px;
+padding: 8px;
 border-radius: 3px;
 color: #333;
 font-size: 14px;
@@ -1345,6 +1345,20 @@ button.textBtnSub:hover {
 color: #fff;
 border: 1px solid #555;
 background-color: #555;
+}
+button.textBtn {
+padding: 8px;
+border-radius: 3px;
+color: #fff;
+font-size: 14px;
+border: 1px solid #0073e2;
+background-color: #0073e2;
+}
+button.textBtn:hover {
+color: #0073e2;
+border: 1px solid #0073e2;
+background-color: #fff;
+
 }
 
 /* /// 기본 테이블 /// */
