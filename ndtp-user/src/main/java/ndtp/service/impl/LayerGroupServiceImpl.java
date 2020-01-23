@@ -30,11 +30,28 @@ public class LayerGroupServiceImpl implements LayerGroupService {
 	@Transactional(readOnly = true)
 	public List<LayerGroup> getListLayerGroupAndLayer() {
 		List<LayerGroup> layerGroupList = layerGroupMapper.getListLayerGroup();
-		for(LayerGroup layerGroup : layerGroupList) {
-			Layer layer = new Layer();
-			layer.setLayerGroupId(layerGroup.getLayerGroupId());
-			layerGroup.setLayerList(layerService.getListLayer(layer));
-		}
+		layerGroupList.stream()
+						.forEach(group -> {
+							Layer layer = Layer.builder()
+											.layerGroupId(group.getLayerGroupId())
+											.build();
+							group.setLayerList(layerService.getListLayer(layer));
+						});
+//		List<Layer> layerList = new ArrayList<>();
+//		layerGroupList.stream()
+//						.forEach(group -> {
+//							Layer layer = Layer.builder()
+//											.layerGroupId(group.getLayerGroupId())
+//											.parent(group.getParent())
+//											.parentName(group.getLayerGroupName())
+//											.depth(group.getDepth())
+//											.build();
+//							layerList.add(layer);
+//							List<Layer> childLayerList = layerService.getListLayer(layer);
+//							if(childLayerList.size() > 0) {
+//								layerList.addAll(childLayerList);
+//							}
+//						});
 
 		return layerGroupList;
 	}

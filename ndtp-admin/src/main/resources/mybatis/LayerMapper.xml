@@ -76,7 +76,8 @@
     <select id="getLayer" parameterType="int" resultType="layer">
         /* getLayer */
         SELECT A.*, B.layer_group_name
-        FROM layer A, layer_group B
+        FROM layer A
+        LEFT JOIN layer_group B on B.layer_group_id = A.layer_group_id
         WHERE A.layer_id = #{layerId}
     </select>
 

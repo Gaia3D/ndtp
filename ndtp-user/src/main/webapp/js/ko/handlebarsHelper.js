@@ -22,6 +22,14 @@ Handlebars.registerHelper('replace', function(inputText, matchValue, replaceText
     return string;
 });
 
+Handlebars.registerHelper('valueCompare', function(inputValue, compareValue, options) {
+    if(inputValue > compareValue) {
+    	return options.fn(this);
+    } else {
+    	return options.inverse(this);
+    }
+});
+
 Handlebars.registerHelper('indexCompare', function(index, pageNo, options) {
     if(index == pageNo) {
         return true;
