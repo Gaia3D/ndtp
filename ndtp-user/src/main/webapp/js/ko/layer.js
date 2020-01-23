@@ -26,16 +26,22 @@ $(document).ready(function (){
 // 관리자 레이어에서 기본표시가  사용인 항목들을 랜더링 
 function initLayer(magoInstance) {
 	var viewer = magoInstance.getViewer();
+	var layerList = [];
+	
+	$("ul.layerList li ul li.wmsLayer.on").each(function(){
+	    var layerKey = $(this).attr("data-layer-name");
+	    layerList.push(NDTP.policy.geoserverDataStore+':'+layerKey);
+	});
+	
+	createWmsProvider(viewer, layerList);
+}
+
+// wmsProvider 생성 
+function createWmsProvider(viewer, layerList) {
 	if(NDTP.wmsProvider){
 		viewer.imageryLayers.remove(NDTP.wmsProvider);
 	}
-	var layerList = [];
 	var policy = NDTP.policy;
-	$("ul.layerList li ul li.wmsLayer.on").each(function(){
-	    var layerKey = $(this).attr("data-layer-name");
-	    layerList.push(policy.geoserverDataStore+':'+layerKey);
-	});
-	
 	var queryString = "enable_yn='Y'";
     var queryStrings = layerList.map(function(){ return queryString; }).join(';');	// map: ie9부터 지원
 	var provider = new Cesium.WebMapServiceImageryProvider({
@@ -102,9 +108,30 @@ function createLayerHtml(res) {
     }
 }
 
+// 레이어 전체 켜기 
+function turnOnAllLayer() {
+	turnOffAllLayer();
+	var layerList = [];
+	$('.nodepth').addClass("on");
+	$('.nodepth').each(function(){
+		var layerKey = $(this).attr("data-layer-name");
+	    layerList.push(NDTP.policy.geoserverDataStore+':'+layerKey);
+	});
+	
+	createWmsProvider(MAGO3D_INSTANCE.getViewer(), layerList);
+}
 //레이어 전체 끄기
 function turnOffAllLayer() {
-	$('#layerContent .nodepth.on').each(function() {
-		$(this).find('p').trigger('click');
-	});
+	$('.nodepth').removeClass("on");
+	MAGO3D_INSTANCE.getViewer().imageryLayers.remove(NDTP.wmsProvider);
+}
+
+// 레이어 트리 전체 펼치기 
+function openAllLayerTree() {
+	$(".mapLayer").addClass("on");
+}
+
+// 레이어 트리 전체 접기
+function closeAllLayerTree() {
+	$(".mapLayer").removeClass("on");
 }
