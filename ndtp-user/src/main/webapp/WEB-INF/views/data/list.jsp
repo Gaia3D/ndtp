@@ -174,7 +174,7 @@
 
 	function magoLoadEnd(e) {
 		var magoInstance = e;
-		
+		var geoPolicyJson = ${geoPolicyJson};
 		var viewer = magoInstance.getViewer(); 
 		var magoManager = magoInstance.getMagoManager();
 		var f4dController = magoInstance.getF4dController();
@@ -191,13 +191,17 @@
 		//공간분석 기능 수행
 		SpatialAnalysis(magoInstance);
 		// 행정 구역 이동 
-        DistrictControll(viewer);
+        DistrictControll(viewer, geoPolicyJson);
 
         dataGroupList();
 
         Simulation(magoInstance);
         // 환경 설정.
         UserPolicy(magoInstance);
+        // 기본 레이어 랜더링
+        setTimeout(function(){
+        	initDefaultLayer(viewer, geoPolicyJson);
+        }, geoPolicyJson.initDuration * 1000);
 	}
 	
 	// 데이터 그룹 목록
@@ -284,6 +288,7 @@
 	
 	// 데이터 상세 정보 조회
 	function detailDataInfo(dataId) {
+		dataInfoDialog.dialog( "open" );
 		$.ajax({
 			url: "/datas/" + dataId,
 			type: "GET",
@@ -291,7 +296,6 @@
 			dataType: "json",
 			success: function(msg){
 				if(msg.statusCode <= 200) {
-					dataInfoDialog.dialog( "open" );
 					dataInfoDialog.dialog( "option", "title", msg.dataInfo.dataName + " 상세 정보");
 					
 					var source = $("#templateDataInfo").html();

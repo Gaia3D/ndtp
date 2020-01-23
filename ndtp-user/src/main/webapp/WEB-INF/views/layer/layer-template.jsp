@@ -17,13 +17,13 @@
 	{{/ifMatch}}
 		{{#if layerList}}
 				{{#each layerList}}
-					<li class="nodepth {{viewType}}Layer "
-						data-target-layer="{{#getPrefix viewType layerKey}}{{/getPrefix}}"
+					<li class="nodepth {{serviceType}}Layer {{#replace defaultDisplay true 'on'}}{{/replace}}"
+						data-target-layer="{{#getPrefix serviceType layerKey}}{{/getPrefix}}"
 						data-z-index="{{zindex}}"
-						data-view-type="{{viewType}}"
-						data-label="{{labelDisplayYn}}"
+						data-view-type="{{serviceType}}"
+						data-label="{{labelDisplay}}"
 						data-depth="{{layerId}}"
-						data-parent="{{ancestor}}"
+						data-parent="{{layerGroupId}}"
 						data-layer-name="{{layerKey}}">
         				<p><span></span>{{layerName}}</p>
     				</li>

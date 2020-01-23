@@ -146,7 +146,7 @@ public class ConverterServiceImpl implements ConverterService {
 				converterMapper.insertConverterJobFile(converterJobFile);
 				
 				// 4. 데이터를 등록
-				DataInfo dataInfo = insertData(userId, uploadDataFile);
+				DataInfo dataInfo = insertData(userId, converterJobId, uploadDataFile);
 				
 				// 5. 데이터 그룹 신규 생성의 경우 데이터 건수 update, location_update_type 이 auto 일 경우 dataInfo 위치 정보로 dataGroup 위치 정보 수정 
 				updateDataGroup(userId, dataInfo, uploadDataFile);
@@ -210,11 +210,12 @@ public class ConverterServiceImpl implements ConverterService {
 	}
 	
 	/**
+	 * TODO 현재는 converterJob 과 dataInfo 가 1:1 의 관계여서 converterJobId를 받지만, 나중에는 converterJobFileId 를 받아야 함
 	 * dataKey 존재하지 않을 경우 insert, 존재할 경우 update
 	 * @param userId
 	 * @param uploadDataFile
 	 */
-	private DataInfo insertData(String userId, UploadDataFile uploadDataFile) {
+	private DataInfo insertData(String userId, Long converterJobId, UploadDataFile uploadDataFile) {
 		String dataKey = uploadDataFile.getFileRealName().substring(0, uploadDataFile.getFileRealName().lastIndexOf("."));
 		DataInfo dataInfo = new DataInfo();
 		dataInfo.setDataGroupId(uploadDataFile.getDataGroupId());
@@ -229,6 +230,7 @@ public class ConverterServiceImpl implements ConverterService {
 			dataInfo = new DataInfo();
 			dataInfo.setMethodType(MethodType.INSERT);
 			dataInfo.setDataGroupId(uploadDataFile.getDataGroupId());
+			dataInfo.setConverterJobId(converterJobId);
 			dataInfo.setSharing(uploadDataFile.getSharing());
 			dataInfo.setMappingType(uploadDataFile.getMappingType());
 			dataInfo.setDataType(uploadDataFile.getDataType());
@@ -245,6 +247,7 @@ public class ConverterServiceImpl implements ConverterService {
 			dataService.insertData(dataInfo);
 		} else {
 			dataInfo.setMethodType(MethodType.UPDATE);
+			dataInfo.setConverterJobId(converterJobId);
 			dataInfo.setSharing(uploadDataFile.getSharing());
 			dataInfo.setDataType(uploadDataFile.getDataType());
 			dataInfo.setDataName(uploadDataFile.getFileName().substring(0, uploadDataFile.getFileName().lastIndexOf(".")));
@@ -295,6 +298,34 @@ public class ConverterServiceImpl implements ConverterService {
 	 */
 	@Transactional
 	public int updateConverterJob(ConverterJob converterJob) {
+		// 상태가 실패인 경우
+		// 1. 데이터 삭제
+		// 2. 데이터 그룹 데이터 건수 -1
+		// 3. 데이터 그룹 최신 이동 location 은? 이건 그냥 다음에 하는걸로~
+		if(ConverterJobStatus.SUCCESS != ConverterJobStatus.valueOf(converterJob.getStatus())) {
+			DataInfo dataInfo = new DataInfo();
+			dataInfo.setUserId(converterJob.getUserId());
+			dataInfo.setConverterJobId(converterJob.getConverterJobId());
+			dataInfo = dataService.getDataByConverterJob(dataInfo);
+			
+			DataInfo deleteDataInfo = new DataInfo();
+			deleteDataInfo.setUserId(converterJob.getUserId());
+			deleteDataInfo.setConverterJobId(converterJob.getConverterJobId());
+			dataService.deleteDataByConverterJob(deleteDataInfo);
+			
+			DataGroup dataGroup = new DataGroup();
+			dataGroup.setUserId(converterJob.getUserId());
+			dataGroup.setDataGroupId(dataInfo.getDataGroupId());
+			dataGroup = dataGroupService.getDataGroup(dataGroup);
+			
+			DataGroup updateDataGroup = new DataGroup();
+			updateDataGroup.setUserId(converterJob.getUserId());
+			updateDataGroup.setDataGroupId(dataGroup.getDataGroupId());
+			updateDataGroup.setDataCount(dataGroup.getDataCount() - 1);
+			dataGroupService.updateDataGroup(updateDataGroup);
+		}
+		
+		
 		return converterMapper.updateConverterJob(converterJob);
 	}
 }
