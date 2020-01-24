@@ -626,30 +626,23 @@
             });
 
             this.on("success", function(file, response) {
-                if(file !== undefined && file.name !== undefined) {
-                    console.log("file name = " + file.name);
-                    $("#fileUploadSpinner").empty();
-                    fileUploadDialog.dialog( "close" );
-                    if(response.error === undefined) {
-                        if(uploadFileCount === 0) {
-                            alert("수정 하였습니다.");
-                        } else {
-                            uploadFileResultCount ++;
-                            if(uploadFileCount === uploadFileResultCount) {
-                                alert("업로딩을 완료 하였습니다.");
-                            }
-                        }
-                    } else {
-                        alertMessage(response);
-                    }
-                } else {
+            	if(file !== undefined && file.name !== undefined) {
+	                console.log("file name = " + file.name);
+	                $("#fileUploadSpinner").empty();
+	                fileUploadDialog.dialog( "close" );
+					if(response.errorCode === undefined || response.errorCode === null) {
+						uploadFileResultCount ++;
+						if(uploadFileCount === uploadFileResultCount) {
+							alert(JS_MESSAGE["insert"]);
+						    uploadFileCount = 0;
+						    uploadFileResultCount = 0;
+						}
+	                } else {
+	                    alertMessage(response);
+	                }
+	            } else {
 					console.log("------- success response = " + response);
-					if(response.statusCode === 200) {
-						alert("수정하였습니다.");
-					} else {
-						alert("수정에 실패 하였습니다. \n" + response.message);
-					}
-				}
+	            }
             });
 
             // 무한 루프 빠지네....

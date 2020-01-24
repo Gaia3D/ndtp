@@ -367,15 +367,16 @@ public class LayerServiceImpl implements LayerService {
 						File directory = new File(path);
 				        if(directory.exists()) { directory.delete();}
 					});
-		
-		// geoserver layer 삭제
-		deleteGeoserverLayer(geopolicy, layer.getLayerKey());
-		// geoserver style 삭제
-		deleteGeoserverLayerStyle(geopolicy, layer.getLayerKey());
-		// layer_file_info 히스토리 삭제
-		layerFileInfoMapper.deleteLayerFileInfo(layerId);
-		// 공간정보 테이블 삭제
-		layerMapper.deleteLayerTable(layer.getLayerKey());
+		if(layerFilePath.size() > 0) {
+			// geoserver layer 삭제
+			deleteGeoserverLayer(geopolicy, layer.getLayerKey());
+			// geoserver style 삭제
+			deleteGeoserverLayerStyle(geopolicy, layer.getLayerKey());
+			// layer_file_info 히스토리 삭제
+			layerFileInfoMapper.deleteLayerFileInfo(layerId);
+			// 공간정보 테이블 삭제
+			layerMapper.deleteLayerTable(layer.getLayerKey());
+		}
 		// 레이어 메타정보 삭제 
 		return layerMapper.deleteLayer(layerId);
 	}
@@ -439,12 +440,15 @@ public class LayerServiceImpl implements LayerService {
      @Transactional
      public int updateLayerStyle(Layer layer) throws Exception {
     	 log.info("==============update layer style");
-    	 
          GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
          Layer dbLayer = layerMapper.getLayer(layer.getLayerId());
          layer.setLayerKey(dbLayer.getLayerKey());
          String xmlData = getLayerStyleFileData(layer.getLayerId());
-         HttpStatus httpStatus = getLayerStyle(geoPolicy, layer.getLayerKey());
+         HttpStatus httpStatus = getLayerStatus(geoPolicy, layer.getLayerKey());
+         if(HttpStatus.NOT_FOUND == httpStatus) {
+             return httpStatus.value();
+         }
+         httpStatus = getLayerStyle(geoPolicy, layer.getLayerKey());
          if(HttpStatus.INTERNAL_SERVER_ERROR.equals(httpStatus)) {
              throw new Exception();
          }
