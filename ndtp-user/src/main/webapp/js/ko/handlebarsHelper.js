@@ -22,8 +22,27 @@ Handlebars.registerHelper('replace', function(inputText, matchValue, replaceText
     return string;
 });
 
-Handlebars.registerHelper('valueCompare', function(inputValue, compareValue, options) {
+Handlebars.registerHelper('formatNumber', function(value) {
+	return value.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+});
+
+Handlebars.registerHelper('numberEqual', function(v1, v2, options) {
+	if(v1 === v2) {
+		return options.fn(this);
+	}
+	return options.inverse(this);
+});
+
+Handlebars.registerHelper('greaterThan', function(inputValue, compareValue, options) {
     if(inputValue > compareValue) {
+    	return options.fn(this);
+    } else {
+    	return options.inverse(this);
+    }
+});
+
+Handlebars.registerHelper('lessThanEqual', function(inputValue, compareValue, options) {
+    if(inputValue <= compareValue) {
     	return options.fn(this);
     } else {
     	return options.inverse(this);
@@ -48,4 +67,9 @@ Handlebars.registerHelper('getPrefix', function(viewType, layerKey) {
 		case 'canvas': string = viewType + '_' + layerKey;
 	}
     return string;
+});
+
+// 빼기 helper
+Handlebars.registerHelper("subtract", function(value1, value2) {
+    return value1 - value2;
 });

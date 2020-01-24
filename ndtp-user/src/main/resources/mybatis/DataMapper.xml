@@ -12,6 +12,9 @@
 			<if test="dataGroupId != null and dataGroupId > 0">
 			data_group_id = #{dataGroupId}
 			</if>
+			<if test="dataType != null and dataType != ''">
+			AND data_type = #{dataType}
+			</if>
 			<if test="sharing != null and sharing != ''">
 			AND sharing = #{sharing}
 			</if>
@@ -79,6 +82,9 @@
 			<trim prefix="WHERE" prefixOverrides="AND">
 				<if test="dataGroupId != null and dataGroupId > 0">
 				data_group_id = #{dataGroupId}
+				</if>
+				<if test="dataType != null and dataType != ''">
+				AND data_type = #{dataType}
 				</if>
 				<if test="sharing != null and sharing != ''">
 				AND sharing = #{sharing}

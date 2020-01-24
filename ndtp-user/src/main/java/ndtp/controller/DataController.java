@@ -75,7 +75,7 @@ public class DataController {
 						@RequestParam(defaultValue="1") String pageNo, 
 						Model model) {
 		
-		log.info("@@ dataInfo = {}", dataInfo);
+		log.info("@@ DataController list dataInfo = {}, pageNo = {}", dataInfo, pageNo);
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		

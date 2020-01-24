@@ -1,5 +1,6 @@
 package ndtp.controller;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -107,7 +108,7 @@ public class DataRestController {
 	@GetMapping
 	public Map<String, Object> list(HttpServletRequest request, DataInfo dataInfo, @RequestParam(defaultValue="1") String pageNo) {
 		
-		log.info("@@@@@ list dataInfo = {}", dataInfo);
+		log.info("@@@@@ list dataInfo = {}, pageNo = {}", dataInfo, pageNo);
 		
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
@@ -209,17 +210,28 @@ public class DataRestController {
 	 */
 	private String getSearchParameters(PageType pageType, DataInfo dataInfo) {
 		StringBuffer buffer = new StringBuffer(dataInfo.getParameters());
-		boolean isListPage = true;
-		if(pageType == PageType.MODIFY || pageType == PageType.DETAIL) {
-			isListPage = false;
-		}
-		
-//		if(!isListPage) {
-//			buffer.append("pageNo=" + request.getParameter("pageNo"));
-//			buffer.append("&");
-//			buffer.append("list_count=" + uploadData.getList_counter());
+//		buffer.append("&");
+//		try {
+//			buffer.append("dataName=" + URLEncoder.encode(getDefaultValue(dataInfo.getDataName()), "UTF-8"));
+//		} catch(Exception e) {
+//			e.printStackTrace();
+//			buffer.append("dataName=");
 //		}
 		
+		buffer.append("&");
+		buffer.append("status=");
+		buffer.append(dataInfo.getStatus());
+		buffer.append("&");
+		buffer.append("dataType=");
+		buffer.append(dataInfo.getDataType());
 		return buffer.toString();
+	}
+	
+	private String getDefaultValue(String value) {
+		if(value == null || "".equals(value.trim())) {
+			return "";
+		}
+		
+		return value;
 	}
 }

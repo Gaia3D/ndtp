@@ -21,9 +21,9 @@
 				</td>
 				<td style="width: 100%; background-color: white; padding: 4px 7px 3px 7px;">
 					<select id="searchDataStatus" name="searchDataStatus" style="height: 30px;">
-						<option value="citygml">&nbsp;&nbsp;전체&nbsp;&nbsp;</option>
-						<option value="citygml">&nbsp;&nbsp;사용중&nbsp;&nbsp;</option>
-						<option value="indoorgml">&nbsp;&nbsp;사용중지&nbsp;&nbsp;</option>
+						<option value="">&nbsp;&nbsp;전체&nbsp;&nbsp;</option>
+						<option value="use">&nbsp;&nbsp;사용중&nbsp;&nbsp;</option>
+						<option value="unused">&nbsp;&nbsp;사용중지&nbsp;&nbsp;</option>
 					</select>&nbsp;&nbsp;
 				</td>
 			</tr>
@@ -106,8 +106,6 @@
 			</table>
 		</div>
 		
-	<c:if test="${!empty dataList }">
 		<%@ include file="/WEB-INF/views/common/small-pagination.jsp" %>
-	</c:if>
 	</div>
 </div>

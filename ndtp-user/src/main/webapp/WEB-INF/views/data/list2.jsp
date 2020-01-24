@@ -8,7 +8,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<title>데이터 목록 | NDTP</title>
-	<link rel="shortcut icon" href="/images/favicon.ico">
+	
 	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
 	<link rel="stylesheet" href="/externlib/geostats/geostats.css" />
@@ -320,48 +320,16 @@
 		});
 	}
 	
-	// 검색 버튼 클릭
-	$("#mapDataSearch").click(function() {
-		dataInfoList(1, $("#searchDataName").val(), $("#searchDataStatus").val(), $("#searchDataType").val());
-	});
-	
-	// 페이징에서 호출됨
-	function pagingDataInfoList(pageNo, searchParameters) {
-		// searchParameters=&searchWord=dataName&searchOption=&searchValue=%ED%95%9C%EA%B8%80&startDate=&endDate=&orderWord=&orderValue=&status=&dataType=
-		var dataName = null;
-		var status = null;
-		var dataType = null;
-		var parameters = searchParameters.split("&");
-		for(var i=0; i<parameters.length; i++) {
-			if(i == 3) {
-				var tempDataName = parameters[3].split("=");
-				dataName = tempDataName[1];
-			} else if(i == 8) {
-				var tempDataStatus = parameters[8].split("=");
-				status = tempDataStatus[1];
-			} else if(i == 9) {
-				var tempDataType = parameters[9].split("=");
-				dataType = tempDataType[1];
-			}
-		}
-		
-		dataInfoList(pageNo, dataName, status, dataType);
-	}
-	
-	// 검색 버튼 클릭 후 
 	var dataSearchFlag = true;
-	function dataInfoList(pageNo, searchDataName, searchStatus, searchDataType) {
-		// searchOption : 1 like
-		
-		//searchDataName
+	$("#mapDataSearch").click(function() {
 		if(dataSearchFlag) {
 			dataSearchFlag = false;
-			//var formData =$("#searchDataForm").serialize();
+			var formData =$("#searchDataForm").serialize();
 		
 			$.ajax({
 				url: "/datas",
 				type: "GET",
-				data: { pageNo : pageNo, searchWord : "data_name", searchValue : searchDataName, searchOption : "1", status : searchStatus, dataType : searchDataType},
+				data: formData,
 				dataType: "json",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				success: function(msg){
@@ -371,18 +339,35 @@
 						var source = $("#templateDataList").html();
 		                //핸들바 템플릿 컴파일
 		                var template = Handlebars.compile(source);
-		                
-		                Handlebars.registerHelper('forEachStep', function(from, to, incr, block) {
-		                    var accum = '';
-		                    for(var i = from; i <= to; i += incr)
-		                        accum += block.fn(i);
-		                    return accum;
+
+		                // if helper
+		                Handlebars.registerHelper('if', function(conditional, options) {
+		                    if(conditional === 'Y') {
+		                        return options.fn(this);
+		                    } else {
+		                        return options.inverse(this);
+		                    }
 		                });
-		                
+
+		                // 빼기 helper
+		                Handlebars.registerHelper("subtract", function(value1, value2) {
+		                    return value1 - value2;
+		                });
+
+		                // date 포맷 helper
+		                Handlebars.registerHelper("dateFormat", function(value) {
+		                       if(value === undefined || value === null || value === '') {
+		                           return value;
+		                       } else {
+		                           return value.substring(0, 19);
+		                       }
+		                   });
+
 		                //핸들바 템플릿에 데이터를 바인딩해서 HTML 생성
-		                var dataInfoListHtml = template(msg);
-		                $("#dataInfoListArea").html("");
-		                $("#dataInfoListArea").append(dataInfoListHtml);
+		                var reloadData = { layerFileInfoList: msg };
+		                var layerFileInfoListHtml = template(reloadData);
+		                $("#layerFileInfoListArea").html("");
+		                $("#layerFileInfoListArea").append(layerFileInfoListHtml);
 					} else {
 						alert(JS_MESSAGE[msg.errorCode]);
 					}
@@ -397,7 +382,7 @@
 			alert(JS_MESSAGE["button.dobule.click"]);
 			return;
 		}
-	}
+	});
 </script>
 </body>
 </html>

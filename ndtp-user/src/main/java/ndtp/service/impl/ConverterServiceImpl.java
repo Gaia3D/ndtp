@@ -145,7 +145,7 @@ public class ConverterServiceImpl implements ConverterService {
 				// 3. job file을 하나씩 등록
 				converterMapper.insertConverterJobFile(converterJobFile);
 				
-				// 4. 데이터를 등록
+				// 4. 데이터를 등록. 상태를 ready 로 등록해야 함
 				DataInfo dataInfo = insertData(userId, converterJobId, uploadDataFile);
 				
 				// 5. 데이터 그룹 신규 생성의 경우 데이터 건수 update, location_update_type 이 auto 일 경우 dataInfo 위치 정보로 dataGroup 위치 정보 수정 
@@ -298,11 +298,14 @@ public class ConverterServiceImpl implements ConverterService {
 	 */
 	@Transactional
 	public int updateConverterJob(ConverterJob converterJob) {
-		// 상태가 실패인 경우
-		// 1. 데이터 삭제
-		// 2. 데이터 그룹 데이터 건수 -1
-		// 3. 데이터 그룹 최신 이동 location 은? 이건 그냥 다음에 하는걸로~
-		if(ConverterJobStatus.SUCCESS != ConverterJobStatus.valueOf(converterJob.getStatus())) {
+		
+		if(ConverterJobStatus.SUCCESS == ConverterJobStatus.valueOf(converterJob.getStatus().toUpperCase())) {
+			// TODO 상태를 success 로 udpate 해야 함
+		} else {
+			// 상태가 실패인 경우
+			// 1. 데이터 삭제
+			// 2. 데이터 그룹 데이터 건수 -1
+			// 3. 데이터 그룹 최신 이동 location 은? 이건 그냥 다음에 하는걸로~
 			DataInfo dataInfo = new DataInfo();
 			dataInfo.setUserId(converterJob.getUserId());
 			dataInfo.setConverterJobId(converterJob.getConverterJobId());
@@ -324,7 +327,6 @@ public class ConverterServiceImpl implements ConverterService {
 			updateDataGroup.setDataCount(dataGroup.getDataCount() - 1);
 			dataGroupService.updateDataGroup(updateDataGroup);
 		}
-		
 		
 		return converterMapper.updateConverterJob(converterJob);
 	}
