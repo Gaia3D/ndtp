@@ -115,6 +115,7 @@
 <!-- E: WRAP -->
 
 <%@ include file="/WEB-INF/views/data/data-dialog.jsp" %>
+<%@ include file="/WEB-INF/views/data/map-list-template.jsp" %>
 
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
@@ -243,8 +244,7 @@
 			if(dataGroup.dataCount === 0) delete dataGroupArray[i];
 			var f4dController = MAGO3D_INSTANCE.getF4dController();
 			$.ajax({
-				url: "/datas",
-				data: { "dataGroupId" : dataGroup.dataGroupId },
+				url: "/datas/" + dataGroup.dataGroupId + "/list",
 				type: "GET",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				dataType: "json",
@@ -319,6 +319,70 @@
 			}
 		});
 	}
+	
+	var dataSearchFlag = true;
+	$("#mapDataSearch").click(function() {
+		if(dataSearchFlag) {
+			dataSearchFlag = false;
+			var formData =$("#searchDataForm").serialize();
+		
+			$.ajax({
+				url: "/datas",
+				type: "GET",
+				data: formData,
+				dataType: "json",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						$("#dataInfoListArea").html("");
+						
+						var source = $("#templateDataList").html();
+		                //핸들바 템플릿 컴파일
+		                var template = Handlebars.compile(source);
+
+		                // if helper
+		                Handlebars.registerHelper('if', function(conditional, options) {
+		                    if(conditional === 'Y') {
+		                        return options.fn(this);
+		                    } else {
+		                        return options.inverse(this);
+		                    }
+		                });
+
+		                // 빼기 helper
+		                Handlebars.registerHelper("subtract", function(value1, value2) {
+		                    return value1 - value2;
+		                });
+
+		                // date 포맷 helper
+		                Handlebars.registerHelper("dateFormat", function(value) {
+		                       if(value === undefined || value === null || value === '') {
+		                           return value;
+		                       } else {
+		                           return value.substring(0, 19);
+		                       }
+		                   });
+
+		                //핸들바 템플릿에 데이터를 바인딩해서 HTML 생성
+		                var reloadData = { layerFileInfoList: msg };
+		                var layerFileInfoListHtml = template(reloadData);
+		                $("#layerFileInfoListArea").html("");
+		                $("#layerFileInfoListArea").append(layerFileInfoListHtml);
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+					}
+					dataSearchFlag = true;
+				},
+				error:function(request,status,error){
+					alert(JS_MESSAGE["ajax.error.message"]);
+					dataSearchFlag = true;
+				}
+			});
+		} else {
+			alert(JS_MESSAGE["button.dobule.click"]);
+			return;
+		}
+	});
 </script>
 </body>
 </html>
