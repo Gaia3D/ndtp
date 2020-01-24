@@ -1,3 +1,9 @@
+1 24 18:00
+alter table data_info drop column converter_job_id;
+alter table data_info add column converter_job_file_id			bigint;
+comment on column data_info.converter_job_file_id is 'converter job file 고유번호';
+commit;
+
 1 23 15:34
 
 alter table data_info add column converter_job_id			bigint;

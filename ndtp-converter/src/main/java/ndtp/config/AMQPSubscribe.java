@@ -33,6 +33,8 @@ public class AMQPSubscribe {
 	public void handleMessage(QueueMessage queueMessage) {
 		Long converterJobId = queueMessage.getConverterJobId();
 		log.info(" @@@@@@ handleMessage start. converterJobId = {}", converterJobId);
+		
+		Long converterJobFileId = queueMessage.getConverterJobFileId();
 		String userId = queueMessage.getUserId();
 		String serverTarget = queueMessage.getServerTarget();
 		
@@ -69,13 +71,13 @@ public class AMQPSubscribe {
         })
 		.exceptionally(e -> {
         	log.info("exceptionally exception = {}", e.getMessage());
-        	updateConverterJobStatus(userId, serverTarget, converterJobId, ConverterJobStatus.FAIL.name().toLowerCase(), e.getMessage());
+        	updateConverterJobStatus(userId, serverTarget, converterJobId, converterJobFileId, ConverterJobStatus.FAIL.name().toLowerCase(), e.getMessage());
         	return null;
         })
 		// 앞의 비동기 작업의 결과를 받아 사용하며 return이 없다.
 		.thenAccept(s -> {
 			log.info("thenAccept result = {}", s);
-			updateConverterJobStatus(userId, serverTarget, converterJobId, s, null);
+			updateConverterJobStatus(userId, serverTarget, converterJobId, converterJobFileId, s, null);
 			log.info("thenAccept end");
 		});
 	}
@@ -88,9 +90,10 @@ public class AMQPSubscribe {
 	 * @param status
 	 * @param errorCode
 	 */
-	private void updateConverterJobStatus(String userId, String serverTarget, Long converterJobId, String status, String errorCode) {
+	private void updateConverterJobStatus(String userId, String serverTarget, Long converterJobId, Long converterJobFileId, String status, String errorCode) {
 		log.info("@@ updateConverterJobStatus converterJobId = {}, status = {}, errorCode = {}", converterJobId, status, errorCode);
 		ConverterJob converterJob = new ConverterJob();
+		converterJob.setConverterJobFileId(converterJobFileId);
 		converterJob.setUserId(userId);
 		converterJob.setConverterJobId(converterJobId);
 		converterJob.setStatus(status);

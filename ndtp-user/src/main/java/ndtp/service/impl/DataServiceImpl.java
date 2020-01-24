@@ -119,8 +119,8 @@ public class DataServiceImpl implements DataService {
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public DataInfo getDataByConverterJob(DataInfo dataInfo) {
-		return dataMapper.getDataByConverterJob(dataInfo);
+	public DataInfo getDataByConverterJobFile(DataInfo dataInfo) {
+		return dataMapper.getDataByConverterJobFile(dataInfo);
 	}
 	
 //	/**
@@ -318,7 +318,7 @@ public class DataServiceImpl implements DataService {
 	 * @return
 	 */
 	@Transactional
-	public int deleteDataByConverterJob(DataInfo dataInfo) {
-		return dataMapper.deleteDataByConverterJob(dataInfo);
+	public int deleteDataByConverterJobFile(DataInfo dataInfo) {
+		return dataMapper.deleteDataByConverterJobFile(dataInfo);
 	}
 }

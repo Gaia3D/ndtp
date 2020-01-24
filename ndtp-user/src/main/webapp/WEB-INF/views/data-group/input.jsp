@@ -274,7 +274,7 @@
 			insertDataGroupFlag = false;
 			var formData = $("#dataGroup").serialize();		
 			$.ajax({
-				url: "/data-groups/",
+				url: "/data-groups",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 		        data: formData,

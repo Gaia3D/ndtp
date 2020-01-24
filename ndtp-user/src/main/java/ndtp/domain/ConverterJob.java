@@ -32,6 +32,7 @@ public class ConverterJob extends Search {
 	
 	// job에 포함된 변환 파일 갯수
 	private Integer converterFileCount;
+	private Long converterJobFileId;
 	
 	/****** validator ********/
 	private String methodMode;

@@ -55,8 +55,8 @@ public class DataInfo extends Search implements Serializable {
 	private Long dataId;
 	// Data Group 고유번호
 	private Integer dataGroupId;
-	// converter 고유번호
-	private Long converterJobId;
+	// converter job file 고유번호
+	private Long converterJobFileId;
 	// Data Group 이름
 	private String dataGroupName;
 	// data 고유 식별번호
@@ -99,7 +99,7 @@ public class DataInfo extends Search implements Serializable {
 	
 	// 기본 정보
 	private String metainfo;
-	// data 상태. 0:사용중, 1:사용중지(관리자), 2:삭제(화면 비표시)
+	// data 상태. processing : 변환중, use : 사용중, unused : 사용중지(관리자), delete : 삭제(비표시)
 	private String status;
 	// 속성 존재 유무. true : 존재, false : 존재하지 않음(기본값)
 	private Boolean attributeExist;

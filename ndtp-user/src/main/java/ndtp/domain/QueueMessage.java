@@ -28,11 +28,13 @@ public class QueueMessage implements Serializable {
 	private String userId;
 	
 	private Long converterJobId;
+	private Long converterJobFileId;
 	private String inputFolder;
 	private String outputFolder;
 	private String meshType;
 	private String logPath;
 	private String indexing;
+	
 	// unit scale factor. 설계 파일의 1이 의미하는 단위. 기본 1 = 0.01m
 	private BigDecimal usf;
 }

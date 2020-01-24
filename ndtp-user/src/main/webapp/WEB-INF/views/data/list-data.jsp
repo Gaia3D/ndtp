@@ -21,9 +21,9 @@
 				</td>
 				<td style="width: 100%; background-color: white; padding: 4px 7px 3px 7px;">
 					<select id="searchDataStatus" name="searchDataStatus" style="height: 30px;">
-						<option value="citygml">&nbsp;&nbsp;전체&nbsp;&nbsp;</option>
-						<option value="citygml">&nbsp;&nbsp;사용중&nbsp;&nbsp;</option>
-						<option value="indoorgml">&nbsp;&nbsp;사용중지&nbsp;&nbsp;</option>
+						<option value="">&nbsp;&nbsp;전체&nbsp;&nbsp;</option>
+						<option value="use">&nbsp;&nbsp;사용중&nbsp;&nbsp;</option>
+						<option value="unused">&nbsp;&nbsp;사용중지&nbsp;&nbsp;</option>
 					</select>&nbsp;&nbsp;
 				</td>
 			</tr>
@@ -86,6 +86,9 @@
 					<tr style="height: 35px;">
 						<td style="padding: 0px; vertical-align: middle; text-align: left; padding: 0px 0px 0px 5px;">${dataInfo.dataGroupName }</td>
 						<td style="padding: 0px; vertical-align: middle; ">
+				<c:if test="${dataInfo.status eq 'processing' }">
+							변환중
+				</c:if>
 				<c:if test="${dataInfo.status eq 'use' }">
 							사용중
 				</c:if>
@@ -98,7 +101,7 @@
 						</td>
 						<td style="padding: 0px; vertical-align: middle; ">
 							<button type="button" title="바로가기" class="goto" style="margin: 0px; padding: 0px;" 
-								onclick="flyToData('${dataInfo.longitude}', '${dataInfo.latitude}', '${dataInfo.altitude}', '2');">바로가기</button></td>
+								onclick="flyTo('${dataInfo.longitude}', '${dataInfo.latitude}', '${dataInfo.altitude}', '2');">바로가기</button></td>
 					</tr>
 			</c:forEach>
 		</c:if>
@@ -106,8 +109,6 @@
 			</table>
 		</div>
 		
-	<c:if test="${!empty dataList }">
-		<%@ include file="/WEB-INF/views/common/small-pagination.jsp" %>
-	</c:if>
+		<%@ include file="/WEB-INF/views/data/data-pagination.jsp" %>
 	</div>
 </div>

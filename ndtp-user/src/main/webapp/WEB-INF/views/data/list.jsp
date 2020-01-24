@@ -115,7 +115,8 @@
 <!-- E: WRAP -->
 
 <%@ include file="/WEB-INF/views/data/data-dialog.jsp" %>
-<%@ include file="/WEB-INF/views/data/map-list-template.jsp" %>
+<%@ include file="/WEB-INF/views/data/data-list-template.jsp" %>
+<%@ include file="/WEB-INF/views/data/data-group-list-template.jsp" %>
 
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
@@ -143,6 +144,7 @@
 	// 임시로...
 	$(document).ready(function() {
 		$(".ui-slider-handle").slider({});
+		initDataGroupList();
 	});
 	
 	//Cesium.Ion.defaultAccessToken = '';
@@ -215,7 +217,7 @@
 	// 데이터 그룹 목록
 	function dataGroupList() {
 		$.ajax({
-			url: "/data-groups",
+			url: "/data-groups/all",
 			type: "GET",
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 			dataType: "json",
@@ -280,7 +282,11 @@
 		
 	}
 	
-	function flyToData(longitude, latitude, altitude, duration) {
+	function flyTo(longitude, latitude, altitude, duration) {
+		if(longitude === null || longitude === '' || latitude === null || latitude === '' || altitude === null || altitude === '') {
+			alert("위치 정보가 올바르지 않습니다. 확인하여 주십시오.");
+			return;
+		}
 		gotoFlyAPI(MAGO3D_INSTANCE, parseFloat(longitude), parseFloat(latitude), parseFloat(altitude), parseFloat(duration));
 	}
 	
@@ -321,16 +327,48 @@
 		});
 	}
 	
-	var dataSearchFlag = true;
+	// 데이터 검색 버튼 클릭
 	$("#mapDataSearch").click(function() {
+		mapDataInfoList(1, $("#searchDataName").val(), $("#searchDataStatus").val(), $("#searchDataType").val());
+	});
+	
+	// 데이터 검색 페이징에서 호출됨
+	function pagingDataInfoList(pageNo, searchParameters) {
+		// searchParameters=&searchWord=dataName&searchOption=&searchValue=%ED%95%9C%EA%B8%80&startDate=&endDate=&orderWord=&orderValue=&status=&dataType=
+		var dataName = null;
+		var status = null;
+		var dataType = null;
+		var parameters = searchParameters.split("&");
+		for(var i=0; i<parameters.length; i++) {
+			if(i == 3) {
+				var tempDataName = parameters[3].split("=");
+				dataName = tempDataName[1];
+			} else if(i == 8) {
+				var tempDataStatus = parameters[8].split("=");
+				status = tempDataStatus[1];
+			} else if(i == 9) {
+				var tempDataType = parameters[9].split("=");
+				dataType = tempDataType[1];
+			}
+		}
+		
+		mapDataInfoList(pageNo, dataName, status, dataType);
+	}
+	
+	// 데이터 검색
+	var dataSearchFlag = true;
+	function mapDataInfoList(pageNo, searchDataName, searchStatus, searchDataType) {
+		// searchOption : 1 like
+		
+		//searchDataName
 		if(dataSearchFlag) {
 			dataSearchFlag = false;
-			var formData =$("#searchDataForm").serialize();
+			//var formData =$("#searchDataForm").serialize();
 		
 			$.ajax({
 				url: "/datas",
 				type: "GET",
-				data: formData,
+				data: { pageNo : pageNo, searchWord : "data_name", searchValue : searchDataName, searchOption : "1", status : searchStatus, dataType : searchDataType},
 				dataType: "json",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				success: function(msg){
@@ -340,35 +378,11 @@
 						var source = $("#templateDataList").html();
 		                //핸들바 템플릿 컴파일
 		                var template = Handlebars.compile(source);
-
-		                // if helper
-		                Handlebars.registerHelper('if', function(conditional, options) {
-		                    if(conditional === 'Y') {
-		                        return options.fn(this);
-		                    } else {
-		                        return options.inverse(this);
-		                    }
-		                });
-
-		                // 빼기 helper
-		                Handlebars.registerHelper("subtract", function(value1, value2) {
-		                    return value1 - value2;
-		                });
-
-		                // date 포맷 helper
-		                Handlebars.registerHelper("dateFormat", function(value) {
-		                       if(value === undefined || value === null || value === '') {
-		                           return value;
-		                       } else {
-		                           return value.substring(0, 19);
-		                       }
-		                   });
-
-		                //핸들바 템플릿에 데이터를 바인딩해서 HTML 생성
-		                var reloadData = { layerFileInfoList: msg };
-		                var layerFileInfoListHtml = template(reloadData);
-		                $("#layerFileInfoListArea").html("");
-		                $("#layerFileInfoListArea").append(layerFileInfoListHtml);
+		                
+		               	//핸들바 템플릿에 데이터를 바인딩해서 HTML 생성
+		                var dataInfoListHtml = template(msg);
+		                $("#dataInfoListArea").html("");
+		                $("#dataInfoListArea").append(dataInfoListHtml);
 					} else {
 						alert(JS_MESSAGE[msg.errorCode]);
 					}
@@ -383,7 +397,80 @@
 			alert(JS_MESSAGE["button.dobule.click"]);
 			return;
 		}
+	}
+	
+	// 데이터 그룹 목록 초기화
+	function initDataGroupList() {
+		mapDataGroupList(1, null);
+	}
+	
+	// 데이터 그룹 검색 버튼 클릭
+	$("#mapDataGroupSearch").click(function() {
+		mapDataGroupList(1, $("#searchDataGroupName").val());
 	});
+	
+	$("#searchDataGroupName").keyup(function(e) { 
+		if(e.keyCode == 13) mapDataGroupList(1, $("#searchDataGroupName").val());
+	});
+
+	// 데이터 그룹 검색 페이징에서 호출됨
+	function pagingDataGroupList(pageNo, searchParameters) {
+		// searchParameters=&searchWord=dataName&searchOption=&searchValue=%ED%95%9C%EA%B8%80&startDate=&endDate=&orderWord=&orderValue=&status=&dataType=
+		var dataGroupName = null;
+		var parameters = searchParameters.split("&");
+		for(var i=0; i<parameters.length; i++) {
+			if(i == 3) {
+				var tempDataName = parameters[3].split("=");
+				dataGroupName = tempDataName[1];
+			}
+		}
+		
+		mapDataGroupList(pageNo, dataGroupName);
+	}
+	
+	// 데이터 그룹 검색
+	var dataGroupSearchFlag = true;
+	function mapDataGroupList(pageNo, searchDataGroupName) {
+		// searchOption : 1 like
+		
+		//searchDataName
+		if(dataGroupSearchFlag) {
+			dataGroupSearchFlag = false;
+			//var formData =$("#searchDataForm").serialize();
+		
+			$.ajax({
+				url: "/data-groups",
+				type: "GET",
+				data: { pageNo : pageNo, searchWord : "data_group_name", searchValue : searchDataGroupName, searchOption : "1"},
+				dataType: "json",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						$("#dataGroupListArea").html("");
+						
+						var source = $("#templateDataGroupList").html();
+		                //핸들바 템플릿 컴파일
+		                var template = Handlebars.compile(source);
+		                
+		                //핸들바 템플릿에 데이터를 바인딩해서 HTML 생성
+		                var dataGroupListHtml = template(msg);
+		                $("#dataGroupListArea").html("");
+		                $("#dataGroupListArea").append(dataGroupListHtml);
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+					}
+					dataGroupSearchFlag = true;
+				},
+				error:function(request,status,error){
+					alert(JS_MESSAGE["ajax.error.message"]);
+					dataGroupSearchFlag = true;
+				}
+			});
+		} else {
+			alert(JS_MESSAGE["button.dobule.click"]);
+			return;
+		}
+	}
 </script>
 </body>
 </html>

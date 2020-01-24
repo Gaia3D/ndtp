@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
-import ndtp.domain.DataType;
 import ndtp.domain.GeoPolicy;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
@@ -33,7 +32,6 @@ import ndtp.service.GeoPolicyService;
 import ndtp.service.PolicyService;
 import ndtp.service.UserPolicyService;
 import ndtp.utils.DateUtils;
-import ndtp.utils.FormatUtils;
 
 @Slf4j
 @Controller
@@ -75,7 +73,7 @@ public class DataController {
 						@RequestParam(defaultValue="1") String pageNo, 
 						Model model) {
 		
-		log.info("@@ dataInfo = {}", dataInfo);
+		log.info("@@ DataController list dataInfo = {}, pageNo = {}", dataInfo, pageNo);
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		
@@ -122,7 +120,7 @@ public class DataController {
 			}
 		}
 		
-		dataInfo.setUserId(userSession.getUserId());
+		//dataInfo.setUserId(userSession.getUserId());
 		if(!StringUtils.isEmpty(dataInfo.getStartDate())) {
 			dataInfo.setStartDate(dataInfo.getStartDate().substring(0, 8) + DateUtils.START_TIME);
 		}
@@ -156,6 +154,7 @@ public class DataController {
 		
 		model.addAttribute("totalCount", totalCount);
 		
+		model.addAttribute("dataGroupTotalCount", groupDataCountList.size());
 		model.addAttribute("commonDataCount", commonDataCount);
 		model.addAttribute("publicDataCount", publicDataCount);
 		model.addAttribute("privateDataCount", privateDataCount);

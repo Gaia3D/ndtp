@@ -12,6 +12,9 @@
 			<if test="dataGroupId != null and dataGroupId > 0">
 			data_group_id = #{dataGroupId}
 			</if>
+			<if test="dataType != null and dataType != ''">
+			AND data_type = #{dataType}
+			</if>
 			<if test="sharing != null and sharing != ''">
 			AND sharing = #{sharing}
 			</if>
@@ -80,6 +83,9 @@
 				<if test="dataGroupId != null and dataGroupId > 0">
 				data_group_id = #{dataGroupId}
 				</if>
+				<if test="dataType != null and dataType != ''">
+				AND data_type = #{dataType}
+				</if>
 				<if test="sharing != null and sharing != ''">
 				AND sharing = #{sharing}
 				</if>
@@ -123,7 +129,9 @@
 		/* getDataTotalCountBySharing */
 		SELECT DISTINCT sharing, COUNT(*) AS dataCount 
 		FROM data_info
+		<if test="userId != null and userId != ''">
 		WHERE user_id = #{userId}
+		</if>
 		GROUP BY sharing
 	</select>
 	
@@ -189,13 +197,13 @@
 			AND data_id != #{dataId}
 	</select>
 	
-	<!-- converterJob 정보를 이용하여 data 정보 취득 -->
-	<select id="getDataByConverterJob" parameterType="dataInfo" resultType="dataInfo">
-		/* getDataByConverterJob */
+	<!-- converterJobFile 정보를 이용하여 data 정보 취득 -->
+	<select id="getDataByConverterJobFile" parameterType="dataInfo" resultType="dataInfo">
+		/* getDataByConverterJobFile */
 		SELECT * 
 		FROM data_info 
 		WHERE user_id = #{userId}
-			AND converter_job_id = #{converterJobId}
+			AND converter_job_file_id = #{converterJobFileId}
 	</select>
 	
 	<!-- Data Attribute 정보 -->
@@ -213,7 +221,7 @@
     		SELECT NEXTVAL('data_info_seq')
   		</selectKey>
 		INSERT INTO data_info(
-			data_id, data_group_id, converter_job_id, data_key, data_name, data_type, sharing, user_id, mapping_type,
+			data_id, data_group_id, converter_job_file_id, data_key, data_name, data_type, sharing, user_id, mapping_type,
 			<if test="location != null">
 			location,
 			</if>
@@ -223,7 +231,7 @@
 			</if>
 			description
 		) VALUES (
-			#{dataId}, #{dataGroupId}, #{converterJobId}, #{dataKey}, #{dataName}, #{dataType}, #{sharing}, #{userId}, #{mappingType},
+			#{dataId}, #{dataGroupId}, #{converterJobFileId}, #{dataKey}, #{dataName}, #{dataType}, #{sharing}, #{userId}, #{mappingType},
 			<if test="location != null">
 			ST_GeomFromText(#{location}, 4326),
 			</if>
@@ -243,8 +251,8 @@
 			<if test="dataGroupId != null and dataGroupId > 0">
 			data_group_id = #{dataGroupId},
 			</if>
-			<if test="converterJobId != null and converterJobId > 0">
-			converter_job_id = #{converterJobId},
+			<if test="converterJobFileId != null and converterJobFileId > 0">
+			converter_job_file_id = #{converterJobFileId},
 			</if>
 			<if test="sharing != null and sharing != ''">
 			sharing = #{sharing},
@@ -327,12 +335,12 @@
 			AND user_id = #{userId}
 	</delete>
 	
-	<!-- converterJob 정보를 이용하여 data 정보 삭제 -->
-	<delete id="deleteDataByConverterJob" parameterType="dataInfo">
-		/* deleteDataByConverterJob */
+	<!-- converterJobFile 정보를 이용하여 data 정보 삭제 -->
+	<delete id="deleteDataByConverterJobFile" parameterType="dataInfo">
+		/* deleteDataByConverterJobFile */
 		DELETE
 		FROM data_info 
 		WHERE user_id = #{userId}
-			AND converter_job_id = #{converterJobId}
+			AND converter_job_file_id = #{converterJobFileId}
 	</delete>
 </mapper>
