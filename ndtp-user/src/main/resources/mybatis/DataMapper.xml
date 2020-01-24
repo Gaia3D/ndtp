@@ -129,7 +129,9 @@
 		/* getDataTotalCountBySharing */
 		SELECT DISTINCT sharing, COUNT(*) AS dataCount 
 		FROM data_info
+		<if test="userId != null and userId != ''">
 		WHERE user_id = #{userId}
+		</if>
 		GROUP BY sharing
 	</select>
 	

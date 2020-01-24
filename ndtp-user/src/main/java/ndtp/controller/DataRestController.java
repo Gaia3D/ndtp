@@ -117,7 +117,7 @@ public class DataRestController {
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		try {
-			dataInfo.setUserId(userSession.getUserId());
+			//dataInfo.setUserId(userSession.getUserId());
 			if(!StringUtils.isEmpty(dataInfo.getStartDate())) {
 				dataInfo.setStartDate(dataInfo.getStartDate().substring(0, 8) + DateUtils.START_TIME);
 			}
@@ -183,7 +183,7 @@ public class DataRestController {
 			}
 			
 			DataInfo dataInfo = new DataInfo();
-			dataInfo.setUserId(userSession.getUserId());
+			//dataInfo.setUserId(userSession.getUserId());
 			dataInfo.setDataId(dataId);
 			
 			dataInfo = dataService.getData(dataInfo);

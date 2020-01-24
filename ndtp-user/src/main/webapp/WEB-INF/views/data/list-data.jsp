@@ -98,7 +98,7 @@
 						</td>
 						<td style="padding: 0px; vertical-align: middle; ">
 							<button type="button" title="바로가기" class="goto" style="margin: 0px; padding: 0px;" 
-								onclick="flyToData('${dataInfo.longitude}', '${dataInfo.latitude}', '${dataInfo.altitude}', '2');">바로가기</button></td>
+								onclick="flyTo('${dataInfo.longitude}', '${dataInfo.latitude}', '${dataInfo.altitude}', '2');">바로가기</button></td>
 					</tr>
 			</c:forEach>
 		</c:if>
@@ -106,6 +106,6 @@
 			</table>
 		</div>
 		
-		<%@ include file="/WEB-INF/views/common/small-pagination.jsp" %>
+		<%@ include file="/WEB-INF/views/data/data-pagination.jsp" %>
 	</div>
 </div>

@@ -8,7 +8,10 @@
 		/* getDataGroupTotalCount */
 		SELECT COUNT(data_group_id) 
 		FROM data_group
-		WHERE user_id = #{userId}
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="userId != null and userId != ''">
+				user_id = #{userId}
+			</if>
 			<if test="dataGroupId != null and dataGroupId > 0">
 			AND data_group_id = #{dataGroupId}
 			</if>
@@ -34,6 +37,7 @@
 			AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
+		</trim>
 	</select>
 
 	<!-- 사용자 데이터 그룹 목록 조회 -->
@@ -79,7 +83,10 @@
 		/* getListDataGroup */
 		SELECT *, ST_X(location) AS longitude, ST_Y(location) AS latitude
 		FROM data_group
-		WHERE user_id = #{userId}
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="userId != null and userId != ''">
+				user_id = #{userId}
+			</if>
 			<if test="dataGroupId != null and dataGroupId > 0">
 			AND data_group_id = #{dataGroupId}
 			</if>
@@ -105,6 +112,7 @@
 			AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
+		</trim>
 		<choose>
 		<when test="orderWord != null and orderWord != '' and orderValue != null and orderValue != ''">
 		ORDER BY ${orderWord} ${orderValue}
