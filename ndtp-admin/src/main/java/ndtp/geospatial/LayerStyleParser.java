@@ -12,11 +12,11 @@ import org.geotools.styling.Mark;
 import org.geotools.styling.NamedLayer;
 import org.geotools.styling.PointSymbolizer;
 import org.geotools.styling.PolygonSymbolizer;
-import org.geotools.styling.SLDTransformer;
 import org.geotools.styling.Stroke;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyledLayerDescriptor;
-import org.geotools.xml.Parser;
+import org.geotools.xml.styling.SLDTransformer;
+import org.geotools.xsd.Parser;
 import org.opengis.filter.FilterFactory;
 
 import ndtp.domain.GeometryType;

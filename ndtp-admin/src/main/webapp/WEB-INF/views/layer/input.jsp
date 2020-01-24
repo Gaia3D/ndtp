@@ -642,6 +642,12 @@
 	                }
 	            } else {
 					console.log("------- success response = " + response);
+					if(response.statusCode <= 200) {
+		        		alert(JS_MESSAGE["insert"]);
+					} else {
+						alert(JS_MESSAGE[res.errorCode]);
+						console.log("---- " + res.message);
+					}
 	            }
             });
 
