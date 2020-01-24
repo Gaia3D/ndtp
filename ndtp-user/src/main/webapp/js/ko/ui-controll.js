@@ -61,7 +61,10 @@ $(function() {
         var display = $(this).toggleClass('on').hasClass('on');
         
         // 변환(upload-data)이 아닌 컨텐츠 클릭시 다시 지도 페이지로 돌아감 
-        if(location.href.indexOf("upload") > 0 || location.href.indexOf("converter") > 0 || location.href.indexOf("group") > 0) {
+        if(location.href.indexOf("upload") > 0 
+        	|| location.href.indexOf("converter") > 0 
+        	|| location.href.indexOf("group") > 0 
+        	|| location.href.indexOf("/data/list") > 0) {
         	$(this).removeClass('on');
         	var classId = $(this).attr('class');
         	window.location="../data/map#" + classId;
