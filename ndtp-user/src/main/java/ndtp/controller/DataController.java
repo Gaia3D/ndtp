@@ -35,7 +35,7 @@ import ndtp.utils.DateUtils;
 
 @Slf4j
 @Controller
-@RequestMapping("/data/")
+@RequestMapping("/data")
 public class DataController {
 	
 	private static final long PAGE_ROWS = 5l;
@@ -67,8 +67,8 @@ public class DataController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "list")
-	public String list(	HttpServletRequest request, 
+	@GetMapping(value = "/map")
+	public String map(	HttpServletRequest request, 
 						DataInfo dataInfo, 
 						@RequestParam(defaultValue="1") String pageNo, 
 						Model model) {
@@ -166,7 +166,7 @@ public class DataController {
 		model.addAttribute("geoPolicyJson", geoPolicyJson);
 		model.addAttribute("baseLayers", userPolicy.getBaseLayers());
 		
-		return "/data/list";
+		return "/data/map";
 	}
 	
 //	/**

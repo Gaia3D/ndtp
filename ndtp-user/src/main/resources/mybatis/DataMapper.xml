@@ -229,7 +229,7 @@
 			<if test="metainfo != null and metainfo != ''">
 			metainfo,
 			</if>
-			description
+			status, description
 		) VALUES (
 			#{dataId}, #{dataGroupId}, #{converterJobFileId}, #{dataKey}, #{dataName}, #{dataType}, #{sharing}, #{userId}, #{mappingType},
 			<if test="location != null">
@@ -239,7 +239,7 @@
 			<if test="metainfo != null and metainfo != ''">
 			TO_JSON(#{metainfo}::json),
 			</if>
-			#{description}
+			#{status}, #{description}
 		)
 	</insert>
 	

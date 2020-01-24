@@ -56,8 +56,8 @@
 						<li class="on" data-nav="dataInfoContent">데이터 목록</li>
 					</ul>
 				</div>
-				<%@ include file="/WEB-INF/views/data/list-data.jsp" %>
-				<%@ include file="/WEB-INF/views/data/list-data-group.jsp" %>
+				<%@ include file="/WEB-INF/views/data/map-data.jsp" %>
+				<%@ include file="/WEB-INF/views/data/map-data-group.jsp" %>
 			</div>
 			<!-- E: 데이터 -->
 			
@@ -115,8 +115,8 @@
 <!-- E: WRAP -->
 
 <%@ include file="/WEB-INF/views/data/data-dialog.jsp" %>
-<%@ include file="/WEB-INF/views/data/data-list-template.jsp" %>
-<%@ include file="/WEB-INF/views/data/data-group-list-template.jsp" %>
+<%@ include file="/WEB-INF/views/data/map-data-template.jsp" %>
+<%@ include file="/WEB-INF/views/data/map-data-group-template.jsp" %>
 
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>

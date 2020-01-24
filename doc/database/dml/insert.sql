@@ -64,7 +64,7 @@ insert into menu(menu_id, menu_type, menu_target, name, name_en, ancestor, paren
     css_class, default_yn, use_yn, display_yn)
 values
     (1001, '1', '0', '검색', 'SEARCH', 1001, 0, 1, 1, '/search', null, 'searchMenu', 'searchContent', 'search', 'Y', 'Y', 'Y'),
-    (1002, '1', '0', '데이터', 'DATA', 1002, 0, 1, 2, '/data/list', null, 'dataMenu', 'dataContent', 'data', 'Y', 'Y', 'Y'),
+    (1002, '1', '0', '데이터', 'DATA', 1002, 0, 1, 2, '/data/map', null, 'dataMenu', 'dataContent', 'data', 'Y', 'Y', 'Y'),
     (1003, '1', '0', '변환', 'CONVERTER', 1003, 0, 1, 3, '/upload-data/list', null, 'converterMenu', 'converterContent', 'converter', 'Y', 'Y', 'Y'),
     (1004, '1', '0', '공간분석', 'SPATIAL', 1004, 0, 1, 4, '/spatial', null, 'spatialMenu', 'spatialContent', 'spatial', 'Y', 'Y', 'Y'),
     (1005, '1', '0', '시뮬레이션', 'SIMULATION', 1005, 0, 1, 5, '/simulation', null, 'simulationMenu', 'simulationContent', 'simulation', 'Y', 'Y', 'Y'),
