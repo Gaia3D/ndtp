@@ -31,6 +31,9 @@
 				<tr style="height: 35px;">
 					<td style="padding: 0px; vertical-align: middle; text-align: left; padding: 0px 0px 0px 5px;">{{dataGroupName}}</td>
 					<td style="padding: 0px; vertical-align: middle; ">
+		{{#ifMatch status 'processing'}}
+						변환중
+		{{/ifMatch}}
 		{{#ifMatch status 'use'}}
 						사용중
 		{{/ifMatch}}

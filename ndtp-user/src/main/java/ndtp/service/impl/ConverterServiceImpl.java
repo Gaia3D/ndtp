@@ -15,6 +15,7 @@ import ndtp.domain.ConverterJobFile;
 import ndtp.domain.ConverterJobStatus;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
+import ndtp.domain.DataStatus;
 import ndtp.domain.LocationUdateType;
 import ndtp.domain.MethodType;
 import ndtp.domain.QueueMessage;
@@ -146,7 +147,7 @@ public class ConverterServiceImpl implements ConverterService {
 				converterMapper.insertConverterJobFile(converterJobFile);
 				
 				// 4. 데이터를 등록. 상태를 ready 로 등록해야 함
-				DataInfo dataInfo = insertData(userId, converterJobId, uploadDataFile);
+				DataInfo dataInfo = insertData(userId, converterJobFile.getConverterJobFileId(), uploadDataFile);
 				
 				// 5. 데이터 그룹 신규 생성의 경우 데이터 건수 update, location_update_type 이 auto 일 경우 dataInfo 위치 정보로 dataGroup 위치 정보 수정 
 				updateDataGroup(userId, dataInfo, uploadDataFile);
@@ -184,6 +185,7 @@ public class ConverterServiceImpl implements ConverterService {
 		QueueMessage queueMessage = new QueueMessage();
 		queueMessage.setServerTarget(ServerTarget.USER.name());
 		queueMessage.setConverterJobId(converterJobFile.getConverterJobId());
+		queueMessage.setConverterJobFileId(converterJobFile.getConverterJobFileId());
 		queueMessage.setInputFolder(uploadDataFile.getFilePath());
 		queueMessage.setOutputFolder(dataGroupRootPath + dataGroupFilePath);
 		queueMessage.setMeshType("0");
@@ -215,7 +217,7 @@ public class ConverterServiceImpl implements ConverterService {
 	 * @param userId
 	 * @param uploadDataFile
 	 */
-	private DataInfo insertData(String userId, Long converterJobId, UploadDataFile uploadDataFile) {
+	private DataInfo insertData(String userId, Long converterJobFileId, UploadDataFile uploadDataFile) {
 		String dataKey = uploadDataFile.getFileRealName().substring(0, uploadDataFile.getFileRealName().lastIndexOf("."));
 		DataInfo dataInfo = new DataInfo();
 		dataInfo.setDataGroupId(uploadDataFile.getDataGroupId());
@@ -230,7 +232,7 @@ public class ConverterServiceImpl implements ConverterService {
 			dataInfo = new DataInfo();
 			dataInfo.setMethodType(MethodType.INSERT);
 			dataInfo.setDataGroupId(uploadDataFile.getDataGroupId());
-			dataInfo.setConverterJobId(converterJobId);
+			dataInfo.setConverterJobFileId(converterJobFileId);
 			dataInfo.setSharing(uploadDataFile.getSharing());
 			dataInfo.setMappingType(uploadDataFile.getMappingType());
 			dataInfo.setDataType(uploadDataFile.getDataType());
@@ -244,10 +246,11 @@ public class ConverterServiceImpl implements ConverterService {
 				dataInfo.setLocation("POINT(" + uploadDataFile.getLongitude() + " " + uploadDataFile.getLatitude() + ")");
 			}
 			dataInfo.setMetainfo(metainfo);
+			dataInfo.setStatus(DataStatus.PROCESSING.name().toLowerCase());
 			dataService.insertData(dataInfo);
 		} else {
 			dataInfo.setMethodType(MethodType.UPDATE);
-			dataInfo.setConverterJobId(converterJobId);
+			dataInfo.setConverterJobFileId(converterJobFileId);
 			dataInfo.setSharing(uploadDataFile.getSharing());
 			dataInfo.setDataType(uploadDataFile.getDataType());
 			dataInfo.setDataName(uploadDataFile.getFileName().substring(0, uploadDataFile.getFileName().lastIndexOf(".")));
@@ -259,6 +262,7 @@ public class ConverterServiceImpl implements ConverterService {
 			if(uploadDataFile.getLongitude() != null && uploadDataFile.getLatitude() != null) {
 				dataInfo.setLocation("POINT(" + uploadDataFile.getLongitude() + " " + uploadDataFile.getLatitude() + ")");
 			}
+			dataInfo.setStatus(DataStatus.PROCESSING.name().toLowerCase());
 			dataService.updateData(dataInfo);
 		}
 		
@@ -299,22 +303,29 @@ public class ConverterServiceImpl implements ConverterService {
 	@Transactional
 	public int updateConverterJob(ConverterJob converterJob) {
 		
+		DataInfo dataInfo = new DataInfo();
+		dataInfo.setUserId(converterJob.getUserId());
+		dataInfo.setConverterJobFileId(converterJob.getConverterJobFileId());
+		dataInfo = dataService.getDataByConverterJobFile(dataInfo);
+		
 		if(ConverterJobStatus.SUCCESS == ConverterJobStatus.valueOf(converterJob.getStatus().toUpperCase())) {
 			// TODO 상태를 success 로 udpate 해야 함
+			
+			DataInfo updateDataInfo = new DataInfo();
+			updateDataInfo.setUserId(converterJob.getUserId());
+			updateDataInfo.setDataId(dataInfo.getDataId());
+			updateDataInfo.setStatus(DataStatus.USE.name().toLowerCase());
+			dataService.updateDataStatus(updateDataInfo);
 		} else {
 			// 상태가 실패인 경우
 			// 1. 데이터 삭제
 			// 2. 데이터 그룹 데이터 건수 -1
 			// 3. 데이터 그룹 최신 이동 location 은? 이건 그냥 다음에 하는걸로~
-			DataInfo dataInfo = new DataInfo();
-			dataInfo.setUserId(converterJob.getUserId());
-			dataInfo.setConverterJobId(converterJob.getConverterJobId());
-			dataInfo = dataService.getDataByConverterJob(dataInfo);
 			
 			DataInfo deleteDataInfo = new DataInfo();
 			deleteDataInfo.setUserId(converterJob.getUserId());
-			deleteDataInfo.setConverterJobId(converterJob.getConverterJobId());
-			dataService.deleteDataByConverterJob(deleteDataInfo);
+			deleteDataInfo.setConverterJobFileId(converterJob.getConverterJobFileId());
+			dataService.deleteDataByConverterJobFile(deleteDataInfo);
 			
 			DataGroup dataGroup = new DataGroup();
 			dataGroup.setUserId(converterJob.getUserId());

@@ -86,6 +86,9 @@
 					<tr style="height: 35px;">
 						<td style="padding: 0px; vertical-align: middle; text-align: left; padding: 0px 0px 0px 5px;">${dataInfo.dataGroupName }</td>
 						<td style="padding: 0px; vertical-align: middle; ">
+				<c:if test="${dataInfo.status eq 'processing' }">
+							변환중
+				</c:if>
 				<c:if test="${dataInfo.status eq 'use' }">
 							사용중
 				</c:if>

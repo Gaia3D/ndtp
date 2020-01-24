@@ -97,7 +97,7 @@ public interface DataMapper {
 	 * @param dataInfo
 	 * @return
 	 */
-	DataInfo getDataByConverterJob(DataInfo dataInfo);
+	DataInfo getDataByConverterJobFile(DataInfo dataInfo);
 	
 //	/**
 //	 * Data Attribute 정보 취득
@@ -217,5 +217,5 @@ public interface DataMapper {
 	 * @param dataInfo
 	 * @return
 	 */
-	int deleteDataByConverterJob(DataInfo dataInfo);
+	int deleteDataByConverterJobFile(DataInfo dataInfo);
 }
