@@ -279,7 +279,7 @@ public class DataGroupRestController {
 	}
 	
 	/**
-	 * 사용자 데이터 그룹 등록
+	 * 사용자 데이터 그룹 수정
 	 * @param request
 	 * @param dataGroup
 	 * @param bindingResult

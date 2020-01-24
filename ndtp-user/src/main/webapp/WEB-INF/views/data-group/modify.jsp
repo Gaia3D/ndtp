@@ -73,20 +73,20 @@
 				</td>
 			</tr>
 			<tr>
-                   <th class="col-label" scope="row">
-                       <form:label path="sharing">공유 타입</form:label>
-                       <span class="icon-glyph glyph-emark-dot color-warning"></span>
-                   </th>
-                   <td class="col-input">
-                       <select id="sharing" name="sharing" class="selectBoxClass">
+				<th class="col-label" scope="row">
+	            	<form:label path="sharing">공유 타입</form:label>
+	                <span class="icon-glyph glyph-emark-dot color-warning"></span>
+				</th>
+	            <td class="col-input">
+					<select id="sharing" name="sharing" class="selectBoxClass">
 						<option value="public" selected="selected">공개</option>
 						<option value="common">공통</option>
 						<option value="private">개인</option>
 						<option value="group">그룹</option>
 					</select>
-                   </td>
-               </tr>
-               <tr>
+				</td>
+			</tr>
+            <tr>
 				<th class="col-label l" scope="row">
 					기본 여부
 					<span class="icon-glyph glyph-emark-dot color-warning"></span>

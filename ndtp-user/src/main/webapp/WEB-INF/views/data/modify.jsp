@@ -32,126 +32,86 @@
 		<div style="padding: 20px 20px 0px 10px; font-size: 18px;">3D 업로딩 데이터 자동 변환</div>
 		<div class="tabs" >
 			<ul class="tab">
-				<li onclick="location.href='/data-group/list'" class="on">데이터 그룹</li>
+				<li onclick="location.href='/data-group/list'">데이터 그룹</li>
 				<li onclick="location.href='/data-group/input'">데이터 그룹 등록</li>
 				<li onclick="location.href='/upload-data/input'">업로딩 데이터</li>
 			   	<li onclick="location.href='/upload-data/list'">업로딩 데이터 목록</li>
 			  	<li onclick="location.href='/converter/list'">업로딩 데이터 변환 목록</li>
-			  	<li onclick="location.href='/data/list'">데이터 목록</li>
+			  	<li onclick="location.href='/data/list'" class="on">데이터 목록</li>
 			</ul>
 		</div>
-		<form:form id="dataGroup" modelAttribute="dataGroup" method="post" onsubmit="return false;">
+		<form:form id="dataInfo" modelAttribute="dataInfo" method="post" onsubmit="return false;">
 		<table class="input-table scope-row">
 			<col class="col-label l" />
 			<col class="col-input" />
 			<tr>
 				<th class="col-label" scope="row">
-					<form:label path="dataGroupName">데이터 그룹명</form:label>
-					<span class="icon-glyph glyph-emark-dot color-warning"></span>
+					데이터 그룹명
 				</th>
 				<td class="col-input">
-					<form:input path="dataGroupName" cssClass="l" />
-					<form:errors path="dataGroupName" cssClass="error" />
+					${dataInfo.dataGroupName }
 				</td>
 			</tr>
 			<tr>
 				<th class="col-label" scope="row">
-					<form:label path="dataGroupKey">데이터 그룹 Key(영문)</form:label>
-					<span class="icon-glyph glyph-emark-dot color-warning"></span>
+					데이터  Key
 				</th>
 				<td class="col-input">
-					${dataGroup.dataGroupKey }
+					${dataInfo.dataKey }
 				</td>
 			</tr>
 			<tr>
 				<th class="col-label" scope="row">
-					<form:label path="parentName">상위 그룹</form:label>
-					<span class="icon-glyph glyph-emark-dot color-warning"></span>
+					데이터명
 				</th>
 				<td class="col-input">
-					${dataGroup.parentName }
+					${dataInfo.dataName }
 				</td>
 			</tr>
 			<tr>
-                   <th class="col-label" scope="row">
-                       <form:label path="sharing">공유 타입</form:label>
-                       <span class="icon-glyph glyph-emark-dot color-warning"></span>
-                   </th>
-                   <td class="col-input">
-                       <select id="sharing" name="sharing" class="selectBoxClass">
-						<option value="public" selected="selected">공개</option>
-						<option value="common">공통</option>
-						<option value="private">개인</option>
-						<option value="group">그룹</option>
+				<th class="col-label" scope="row">
+	            	공유 타입
+				</th>
+	            <td class="col-input">
+	<c:if test="${dataInfo.sharing eq 'common'}">공통</c:if>
+	<c:if test="${dataInfo.sharing eq 'public'}">공개</c:if>
+	<c:if test="${dataInfo.sharing eq 'private'}">개인</c:if>
+	<c:if test="${dataInfo.sharing eq 'group'}">그룹</c:if>
+				</td>
+			</tr>
+			<tr>
+				<th class="col-label" scope="row">
+	            	<form:label path="mappingType">매핑 타입</form:label>
+	                <span class="icon-glyph glyph-emark-dot color-warning"></span>
+				</th>
+	            <td class="col-input">
+					<select id="mappingType" name="mappingType" class="selectBoxClass">
+						<option value="origin">origin</option>
+						<option value="boundingboxcenter ">boundingboxcenter</option>
 					</select>
-                   </td>
-               </tr>
-               <tr>
-				<th class="col-label l" scope="row">
-					기본 여부
-					<span class="icon-glyph glyph-emark-dot color-warning"></span>
-				</th>
-				<td class="col-input radio-set">
-	<c:if test="${dataGroup.basic eq 'true' }">
-					기본
-	</c:if>
-	<c:if test="${dataGroup.basic ne 'true' }">
-					선택
-	</c:if>
-				</td>
-			</tr>
-			<tr>
-				<th class="col-label l" scope="row">
-					사용 여부
-					<span class="icon-glyph glyph-emark-dot color-warning"></span>
-				</th>
-				<td class="col-input radio-set">
-	<c:if test="${dataGroup.basic eq 'true' }">
-					사용
-	</c:if>
-	<c:if test="${dataGroup.basic ne 'true' }">
-					<input type="radio" id="availableTrue" name="available" value="true">
-					<label for="availableTrue">사용</label>
-					<input type="radio" id="availableFalse" name="available" value="false">
-					<label for="availableFalse">미사용</label>
-	</c:if>
 				</td>
 			</tr>
 			<tr>
 				<th class="col-label" scope="row">
-					<form:label path="longitude">경도</form:label>
+					<form:label path="longitude">경도/위도/높이</form:label>
+					<span class="icon-glyph glyph-emark-dot color-warning"></span>
 				</th>
 				<td class="col-input">
 					<form:input path="longitude" cssClass="m" />
+					<form:input path="latitude" cssClass="m" />
+					<form:input path="altitude" cssClass="m" />
 					<input type="button" id="mapButtion" value="지도에서 찾기" />
 					<form:errors path="longitude" cssClass="error" />
-				</td>
-			</tr>
-			<tr>
-				<th class="col-label" scope="row">
-					<form:label path="latitude">위도</form:label>
-				</th>
-				<td class="col-input">
-					<form:input path="latitude" cssClass="m" />
 					<form:errors path="latitude" cssClass="error" />
-				</td>
-			</tr>
-			<tr>
-				<th class="col-label" scope="row">
-					<form:label path="altitude">높이</form:label>
-				</th>
-				<td class="col-input">
-					<form:input path="altitude" cssClass="m" />
 					<form:errors path="altitude" cssClass="error" />
 				</td>
 			</tr>
 			<tr>
 				<th class="col-label" scope="row">
-					<form:label path="duration">이동시간</form:label>
+					heading/pitch/roll
 				</th>
 				<td class="col-input">
-					<form:input path="duration" cssClass="s" />&nbsp;&nbsp;ms
-					<form:errors path="duration" cssClass="error" />
+					${dataInfo.heading } / ${dataInfo.pitch } / ${dataInfo.roll }
 				</td>
 			</tr>
 			<tr>
@@ -160,19 +120,74 @@
 					<span class="icon-glyph glyph-emark-dot color-warning"></span>
 				</th>
 				<td class="col-input">
-					<form:input path="metainfo" class="xl" value="{\"isPhysical\": false}" />
- 						<form:errors path="metainfo" cssClass="error" />
+					<form:input path="metainfo" class="xl" />
+ 					<form:errors path="metainfo" cssClass="error" />
+				</td>
+			</tr>
+			<tr>
+				<th class="col-label" scope="row">
+	            	<form:label path="status">상태</form:label>
+	                <span class="icon-glyph glyph-emark-dot color-warning"></span>
+				</th>
+				<td class="col-input">
+					<select id="status" name="status" class="selectBoxClass">
+						<option value="processing">변환중 </option>
+						<option value="use">사용중</option>
+						<option value="unused">사용중지</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th class="col-label" scope="row">
+					속성 정보
+				</th>
+				<td class="col-input">
+		<c:if test="${dataInfo.attributeExist eq 'true' }">	
+							등록
+		</c:if>
+		<c:if test="${dataInfo.attributeExist eq 'false' }">
+							미등록
+		</c:if>
+				</td>
+			</tr>
+			<tr>
+				<th class="col-label" scope="row">
+					Object 속성 정보
+				</th>
+				<td class="col-input">
+		<c:if test="${dataInfo.objectAttributeExist eq 'true' }">	
+							등록
+		</c:if>
+		<c:if test="${dataInfo.objectAttributeExist eq 'false' }">
+							미등록
+		</c:if>
 				</td>
 			</tr>
 			<tr>
 				<th class="col-label l" scope="row"><form:label path="description"><spring:message code='description'/></form:label></th>
 				<td class="col-input"><form:input path="description" cssClass="xl" /></td>
 			</tr>
+			<tr>
+				<th class="col-label" scope="row">
+					수정일
+				</th>
+				<td class="col-input">
+					${dataInfo.updateDate }
+				</td>
+			</tr>
+			<tr>
+				<th class="col-label" scope="row">
+					등록일
+				</th>
+				<td class="col-input">
+					${dataInfo.insertDate }
+				</td>
+			</tr>
 		</table>
 		<div class="button-group">
 			<div class="center-buttons">
-				<input type="submit" value="<spring:message code='modified'/>" onclick="updatedataGroup();"/>
-				<a href="/data-group/list" class="button">목록</a>
+				<input type="submit" value="<spring:message code='modified'/>" onclick="updateDataInfo();"/>
+				<a href="/data/list" class="button">목록</a>
 			</div>
 		</div>
 		</form:form>
@@ -187,38 +202,44 @@
 <script type="text/javascript" src="/js/${lang}/ui-controll.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-		$("[name=basic]").filter("[value='${dataGroup.basic}']").prop("checked",true);
-		$("[name=available]").filter("[value='${dataGroup.available}']").prop("checked",true);
-		
-		$("#sharing").val("${dataGroup.sharing}");
+		$("#mappingType").val("${dataInfo.mappingType}");
+		$("#status").val("${dataInfo.status}");
 	});
 	
 	function validate() {
-		var number = /^[0-9]+$/;
-		if ($("#dataGroupName").val() === null || $("#dataGroupName").val() === "") {
-			alert("데이터 그룹명을 입력해 주세요.");
-			$("#dataGroupName").focus();
+		if ($("#longitude").val() === "") {
+			alert("대표 위치(경도)를 입력하여 주십시오.");
+			$("#longitude").focus();
 			return false;
 		}
-		if($("#duration").val() !== null && $("#duration").val() !== "") {
-			if(!isNumber($("#duration").val())) {
-				$("#duration").focus();
-				return false;
-			}
+		if ($("#latitude").val() === "") {
+			alert("대표 위치(위도)를 입력하여 주십시오.");
+			$("#latitude").focus();
+			return false;
+		}
+		if ($("#altitude").val() === "") {
+			alert("대표 위치(높이)를 입력하여 주십시오.");
+			$("#altitude").focus();
+			return false;
+		}
+		if ($("#metainfo").val() === "") {
+			alert("메타 정보를 입력하여 주십시오.");
+			$("#metainfo").focus();
+			return false;
 		}
 	}
 	
 	// 수정
-	var updatedataGroupFlag = true;
-	function updatedataGroup() {
+	var updateDataInfoFlag = true;
+	function updateDataInfo() {
 		if (validate() == false) {
 			return false;
 		}
-		if(updatedataGroupFlag) {
-			updatedataGroupFlag = false;
-			var formData = $("#dataGroup").serialize();		
+		if(updateDataInfoFlag) {
+			updateDataInfoFlag = false;
+			var formData = $("#dataInfo").serialize();		
 			$.ajax({
-				url: "/data-groups/${dataGroup.dataGroupId}",
+				url: "/datas/${dataInfo.dataId}",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				data: formData,
@@ -230,11 +251,11 @@
 						alert(JS_MESSAGE[msg.errorCode]);
 						console.log("---- " + msg.message);
 					}
-					updatedataGroupFlag = true;
+					updateDataInfoFlag = true;
 				},
 				error:function(request, status, error){
 			        alert(JS_MESSAGE["ajax.error.message"]);
-			        updatedataGroupFlag = true;
+			        updateDataInfoFlag = true;
 				}
 			});
 		} else {
@@ -245,8 +266,8 @@
 	
 	// 지도에서 찾기
 	$( "#mapButtion" ).on( "click", function() {
-		var url = "/map/find-point";
-		var width = 800;
+		var url = "/map/find-data-point";
+		var width = 1024;
 		var height = 700;
 	
 		var popupX = (window.screen.width / 2) - (width / 2);

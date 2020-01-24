@@ -13,7 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +27,7 @@ import ndtp.config.PropertiesConfig;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
 import ndtp.domain.Key;
+import ndtp.domain.LocationUdateType;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
 import ndtp.domain.UserSession;
@@ -200,6 +203,53 @@ public class DataRestController {
 		result.put("errorCode", errorCode);
 		result.put("message", message);
 		
+		return result;
+	}
+	
+	/**
+	 * 사용자 데이터 수정
+	 * @param request
+	 * @param dataGroup
+	 * @param bindingResult
+	 * @return
+	 */
+	@PostMapping("/{dataId}")
+	public Map<String, Object> update(HttpServletRequest request, @PathVariable Integer dataId, @ModelAttribute DataInfo dataInfo) {
+		
+		log.info("@@@@@ update dataInfo = {}, dataId = {}", dataInfo, dataId);
+		
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		
+		try {
+			// @Valid 로
+			if(dataId == null) {
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "input.invalid");
+				result.put("message", message);
+				
+				return result;
+			}
+			
+			dataInfo.setUserId(userSession.getUserId());
+			if(dataInfo.getLongitude() != null && dataInfo.getLatitude() != null) {
+				dataInfo.setLocation("POINT(" + dataInfo.getLongitude() + " " + dataInfo.getLatitude() + ")");
+			}
+			dataService.updateData(dataInfo);
+		} catch (Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+		
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
 		return result;
 	}
 	

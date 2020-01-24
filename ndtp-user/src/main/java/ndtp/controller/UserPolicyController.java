@@ -70,7 +70,8 @@ public class UserPolicyController {
 		
     	try {
     		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-            String userId = userSession.getUserId();
+            
+    		String userId = userSession.getUserId();
             UserPolicy userPolicy = UserPolicy.builder()
             						.baseLayers(baseLayers)
             						.userId(userId)
