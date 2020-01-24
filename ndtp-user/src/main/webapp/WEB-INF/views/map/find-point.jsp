@@ -58,11 +58,11 @@
 	var MAGO3D_INSTANCE;
 	var viewer = null; 
 	var entities = null;
+	var geoPolicyJson = ${geoPolicyJson};
 	
 	magoInit();
 	
 	function magoInit() {
-		var geoPolicyJson = ${geoPolicyJson};
 		
 		var cesiumViewerOption = {};
 			cesiumViewerOption.infoBox = false;
@@ -81,7 +81,7 @@
 		 * @param {Cesium.Viewer} legacyViewer 타 시스템과의 연동의 경우 view 객체가 생성되어서 넘어 오는 경우가 있음. option.
 		*/	
 		MAGO3D_INSTANCE = new Mago3D.Mago3d('magoContainer', geoPolicyJson, {loadend : magoLoadEnd}, cesiumViewerOption);
-	
+		 
 	}
 	
 	var beforePointId = null;
@@ -128,11 +128,38 @@
 			
 			beforePointId = addedEntity.id;
 		});
+		
+		setTimeout(function(){
+        	initLayer('${baseLayers}');
+        }, geoPolicyJson.initDuration * 1000);
 	}
 	
 	function remove(entityStored) {
 		entities.removeById(entityStored);
 	}
 	
+	function initLayer(baseLayers) {
+		var layerList = baseLayers.split(",");
+		var queryString = "enable_yn='Y'";
+	    var queryStrings = layerList.map(function(){ return queryString; }).join(';');	// map: ie9부터 지원
+		var provider = new Cesium.WebMapServiceImageryProvider({
+	        url : geoPolicyJson.geoserverDataUrl + "/wms",
+	        layers : layerList.join(","),
+	        parameters : {
+	            service : 'WMS'
+	            ,version : '1.1.1'
+	            ,request : 'GetMap'
+	            ,transparent : 'true'
+	            ,format : 'image/png'
+	            ,time : 'P2Y/PRESENT'
+	            ,maxZoom : 25
+	            ,maxNativeZoom : 23
+	            ,CQL_FILTER: queryStrings
+	        },
+	        enablePickFeatures : false
+	    });
+	    
+		viewer.imageryLayers.addImageryProvider(provider);
+	}
 </script>
 </html>

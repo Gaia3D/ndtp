@@ -13,8 +13,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.GeoPolicy;
 import ndtp.domain.Key;
+import ndtp.domain.UserPolicy;
 import ndtp.domain.UserSession;
 import ndtp.service.GeoPolicyService;
+import ndtp.service.UserPolicyService;
 
 /**
  * 지도에서 위치 찾기, 보기 등을 위한 공통 클래스
@@ -29,6 +31,8 @@ public class MapController {
 	@Autowired
 	private GeoPolicyService geoPolicyService;
 	@Autowired
+	private UserPolicyService userPolicyService;
+	@Autowired
 	private ObjectMapper objectMapper;
 	
 	/**
@@ -41,14 +45,16 @@ public class MapController {
     public String findPoint(HttpServletRequest request, Model model) {
 
         UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-		
+        UserPolicy userPolicy = userPolicyService.getUserPolicy(userSession.getUserId());
         GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
         try {
             model.addAttribute("geoPolicyJson", objectMapper.writeValueAsString(geoPolicy));
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        
+        model.addAttribute("baseLayers", userPolicy.getBaseLayers());
+        
         return "/map/find-point";
     }
 }
