@@ -3,6 +3,7 @@ drop table if exists user_policy cascade;
 create table user_policy (
 	user_policy_id				integer,
 	user_id						varchar(32)			not null,
+	base_layers					text,
 	init_latitude				varchar(30)			default '37.521168',
 	init_longitude				varchar(30)			default '126.924185',
 	init_altitude				varchar(30)			default '3000.0',

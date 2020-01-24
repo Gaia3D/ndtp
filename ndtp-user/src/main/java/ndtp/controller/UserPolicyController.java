@@ -8,11 +8,11 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import ndtp.domain.Key;
 import ndtp.domain.UserPolicy;
@@ -20,15 +20,15 @@ import ndtp.domain.UserSession;
 import ndtp.service.UserPolicyService;
 
 @RequestMapping("/user-policy/")
-@Controller
+@RestController
 public class UserPolicyController {
 
     @Autowired
     UserPolicyService userPolicyService;
 
     @PostMapping("update")
-    @ResponseBody
     public Map<String, Object> updateUserPolicy(HttpServletRequest request, @Valid UserPolicy userPolicy, BindingResult bindingResult) {
+    	
     	Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String errorCode = null;
@@ -42,17 +42,39 @@ public class UserPolicyController {
 				result.put("message", message);
 	            return result;
 			}
-//        	String roleCheckResult = roleValidator(request);
-//    		if(roleCheckResult != null) {
-//    			Map<String, Object> result = new HashMap<>();
-//    	        result.put("statusCode", HttpStatus.FORBIDDEN.value());
-//    	        result.put("error", new APIError("권한이 존재하지 않습니다."));
-//    	        return new ResponseEntity<>(result, HttpStatus.FORBIDDEN);
-//    		}
 
     		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
             String userId = userSession.getUserId();
             userPolicy.setUserId(userId);
+            userPolicyService.updateUserPolicy(userPolicy);
+
+        } catch(Exception e) {
+        	e.printStackTrace();
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+        }
+    	
+    	result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
+    }
+    
+    @PostMapping("update/{baseLayers}")
+    public Map<String, Object> updateBaseLayers(HttpServletRequest request, @PathVariable String baseLayers) {
+    	Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		
+    	try {
+    		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+            String userId = userSession.getUserId();
+            UserPolicy userPolicy = UserPolicy.builder()
+            						.baseLayers(baseLayers)
+            						.userId(userId)
+            						.build();
             userPolicyService.updateUserPolicy(userPolicy);
 
         } catch(Exception e) {

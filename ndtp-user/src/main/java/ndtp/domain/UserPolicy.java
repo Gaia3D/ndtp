@@ -28,6 +28,8 @@ public class UserPolicy implements Serializable {
 	private Integer userPolicyId;
 	// 사용자 아이디
 	private String userId;
+	// 사용자 설정 레이어 
+	private String baseLayers;
 	// 초기 카메라 이동 위도
 	private String initLatitude;
 	// 초기 카메라 이동 경도

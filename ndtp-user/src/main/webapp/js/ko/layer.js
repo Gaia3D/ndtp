@@ -1,10 +1,11 @@
 
 $(document).ready(function (){
+	
 	// 트리 안그렸을때만 ajax 요청해서 랜더링 
-	if($("ul.layerList li").length === 0){
+//	if($("ul.layerList li").length === 0){
 		//레이어 목록 가져오기
-		getLayerList();
-	}
+	getLayerList();
+//	}
 	
 //    $('#layerMenu').on('click', function() {
 //    	
@@ -18,20 +19,23 @@ $(document).ready(function (){
     });
     
     $('#layerContent').on('click', '.wmsLayer p', function(e) {
-    	initLayer(MAGO3D_INSTANCE, NDTP.policy);
+    	initLayer(MAGO3D_INSTANCE);
     });
 
 });
 
 // 관리자 레이어에서 기본표시가  사용인 항목들을 랜더링 
-function initLayer(magoInstance) {
+function initLayer(magoInstance, baseLayers) {
 	var viewer = magoInstance.getViewer();
 	var layerList = [];
-	
-	$("ul.layerList li ul li.wmsLayer.on").each(function(){
-	    var layerKey = $(this).attr("data-layer-name");
-	    layerList.push(NDTP.policy.geoserverDataStore+':'+layerKey);
-	});
+	if(baseLayers) {
+		layerList = baseLayers.split(",");
+	} else {
+		$("ul.layerList li ul li.wmsLayer.on").each(function(){
+			var layerKey = $(this).attr("data-layer-name");
+			layerList.push(NDTP.policy.geoserverDataStore+':'+layerKey);
+		});
+	}
 	
 	createWmsProvider(viewer, layerList);
 }
@@ -76,6 +80,16 @@ function getLayerList() {
         	if(res.statusCode <= 200) {
             	// html 생성
                 createLayerHtml(res.layerGroupList);
+                var baseLayers = NDTP.baseLayers;
+                if(baseLayers) {
+            		$('.nodepth').removeClass("on");
+            		layerList = baseLayers.split(",");
+            		layerList.forEach(function(layer) {
+            			var layer = layer.split(":")[1];
+                		var target = $('#layerContent [data-layer-name="'+layer+'"]');
+                		target.addClass("on");
+                	});
+                }
 			} else {
 				alert(JS_MESSAGE[res.errorCode]);
 				console.log("---- " + res.message);
@@ -108,6 +122,35 @@ function createLayerHtml(res) {
     }
 }
 
+// 사용자 레이어 설정 저장 
+function saveUserLayers() {
+	var layerList = [];
+	var dataInfo = {};
+	$("ul.layerList li ul li.wmsLayer.on").each(function(){
+	    var layerKey = $(this).attr("data-layer-name");
+	    layerList.push(NDTP.policy.geoserverDataStore+':'+layerKey);
+	});
+	dataInfo.baseLayers = layerList.join(",");
+	
+	$.ajax({
+        url: '/user-policy/update/' + layerList.join(","),
+        type: 'POST',
+        headers: {'X-Requested-With': 'XMLHttpRequest'},
+        contentType: "application/json; charset=utf-8",
+        dataType: 'json',
+        success: function(res){
+        	if(res.statusCode <= 200) {
+        		alert(JS_MESSAGE["update"]);
+			} else {
+				alert(JS_MESSAGE[res.errorCode]);
+				console.log("---- " + res.message);
+			}
+        },
+        error: function(request, status, error) {
+        	alert(JS_MESSAGE["ajax.error.message"]);
+        }
+    });
+}
 // 레이어 전체 켜기 
 function turnOnAllLayer() {
 	turnOffAllLayer();

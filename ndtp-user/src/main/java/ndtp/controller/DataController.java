@@ -165,6 +165,7 @@ public class DataController {
 		model.addAttribute("dataGroupList", dataGroupList);
 		model.addAttribute("userPolicy", userPolicy);
 		model.addAttribute("geoPolicyJson", geoPolicyJson);
+		model.addAttribute("baseLayers", userPolicy.getBaseLayers());
 		
 		return "/data/list";
 	}

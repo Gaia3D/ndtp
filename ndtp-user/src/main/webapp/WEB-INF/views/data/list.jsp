@@ -151,6 +151,7 @@
 	// ndtp 전역 네임스페이스
 	var NDTP = NDTP ||{
 		policy : ${geoPolicyJson},
+		baseLayers : "${baseLayers}",
 		wmsProvider : {},
 		districtProvider : {}
 	};
@@ -207,7 +208,7 @@
         UserPolicy(magoInstance);
         // 기본 레이어 랜더링
         setTimeout(function(){
-        	initLayer(magoInstance);
+        	initLayer(magoInstance, NDTP.baseLayers);
         }, geoPolicyJson.initDuration * 1000);
 	}
 	

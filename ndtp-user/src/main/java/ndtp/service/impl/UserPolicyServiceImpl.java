@@ -22,8 +22,8 @@ public class UserPolicyServiceImpl implements UserPolicyService {
     @Transactional(readOnly = true)
     public UserPolicy getUserPolicy(String userId) {
         UserPolicy userPolicy = userPolicyMapper.getUserPolicy(userId);
+        GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
         if(userPolicy == null) {
-        	GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
         	userPolicy = UserPolicy.builder()
         				.initLongitude(geoPolicy.getInitLongitude())
         				.initLatitude(geoPolicy.getInitLatitude())
@@ -38,6 +38,19 @@ public class UserPolicyServiceImpl implements UserPolicyService {
         				.lod5(geoPolicy.getLod5())
         				.ssaoRadius(geoPolicy.getSsaoRadius())
         				.build();
+        } else {
+        	if(userPolicy.getInitLongitude() == null) userPolicy.setInitLongitude(geoPolicy.getInitLongitude());
+        	if(userPolicy.getInitLatitude() == null) userPolicy.setInitLatitude(geoPolicy.getInitLatitude());
+        	if(userPolicy.getInitAltitude() == null) userPolicy.setInitAltitude(geoPolicy.getInitAltitude());
+        	if(userPolicy.getInitDuration() == null) userPolicy.setInitDuration(geoPolicy.getInitDuration());
+        	if(userPolicy.getInitDefaultFov() == null) userPolicy.setInitDefaultFov(geoPolicy.getInitDefaultFov());
+        	if(userPolicy.getLod0() == null) userPolicy.setLod0(geoPolicy.getLod0());
+        	if(userPolicy.getLod1() == null) userPolicy.setLod1(geoPolicy.getLod1());
+        	if(userPolicy.getLod2() == null) userPolicy.setLod2(geoPolicy.getLod2());
+        	if(userPolicy.getLod3() == null) userPolicy.setLod3(geoPolicy.getLod3());
+        	if(userPolicy.getLod4() == null) userPolicy.setLod4(geoPolicy.getLod4());
+        	if(userPolicy.getLod5() == null) userPolicy.setLod5(geoPolicy.getLod5());
+        	if(userPolicy.getSsaoRadius() == null) userPolicy.setSsaoRadius(geoPolicy.getSsaoRadius());
         }
 
         return userPolicy;
