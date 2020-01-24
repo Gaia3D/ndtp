@@ -7,7 +7,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
-	<title>데이터 그룹 등록 | NDTP</title>
+	<title>데이터 그룹 수정 | NDTP</title>
 	
 	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
@@ -16,9 +16,6 @@
 	<link rel="stylesheet" href="/css/${lang}/style.css" />
 	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-	<style type="text/css">
-	    
-    </style>
 </head>
 <body>
 
@@ -40,6 +37,7 @@
 				<li onclick="location.href='/upload-data/input'">업로딩 데이터</li>
 			   	<li onclick="location.href='/upload-data/list'">업로딩 데이터 목록</li>
 			  	<li onclick="location.href='/converter/list'">업로딩 데이터 변환 목록</li>
+			  	<li onclick="location.href='/data/list'">데이터 목록</li>
 			</ul>
 		</div>
 		<form:form id="dataGroup" modelAttribute="dataGroup" method="post" onsubmit="return false;">

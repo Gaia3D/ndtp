@@ -7,7 +7,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
-	<title>업로딩 데이터 변환 목록 | NDTP</title>
+	<title>데이터 목록 | NDTP</title>
 	
 	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
@@ -36,18 +36,18 @@
 				<li onclick="location.href='/data-group/input'">데이터 그룹 등록</li>
 				<li onclick="location.href='/upload-data/input'">업로딩 데이터</li>
 			   	<li onclick="location.href='/upload-data/list'">업로딩 데이터 목록</li>
-			  	<li onclick="location.href='/converter/list'" class="on">업로딩 데이터 변환 목록</li>
-			  	<li onclick="location.href='/data/list'">데이터 목록</li>
+			  	<li onclick="location.href='/converter/list'">업로딩 데이터 변환 목록</li>
+			  	<li onclick="location.href='/data/list'" class="on">데이터 목록</li>
 			</ul>
 		</div>
 		<div class="filters">
-			<form:form id="searchForm" modelAttribute="converterJob" method="get" action="/converter/list" onsubmit="return searchCheck();">
+			<form:form id="searchForm" modelAttribute="dataInfo" method="get" action="/data/list" onsubmit="return searchCheck();">
 			<div class="input-group row">
 				<div class="input-set">
 					<label for="searchWord"><spring:message code='search.word'/></label>
 					<select id="searchWord" name="searchWord" class="selectBoxClass">
 						<option value=""><spring:message code='select'/></option>
-	          			<option value="title">제목</option>
+	          			<option value="data_name">데이터명</option>
 					</select>
 					<select id="searchOption" name="searchOption" class="selectBoxClass">
 						<option value="0"><spring:message code='search.same'/></option>
@@ -65,7 +65,7 @@
 					<label for="orderWord"><spring:message code='search.order'/></label>
 					<select id="orderWord" name="orderWord" class="selectBoxClass">
 						<option value=""> <spring:message code='search.basic'/> </option>
-						<option value="title">제목</option>
+						<option value="data_name">데이터명</option>
 						<option value="insert_date"> <spring:message code='search.insert.date'/> </option>
 					</select>
 					<select id="orderValue" name="orderValue" class="selectBoxClass">
@@ -87,7 +87,7 @@
 		</div>
 		
 		<div class="list">
-			<form:form id="listForm" modelAttribute="converterJob" method="post">
+			<form:form id="listForm" modelAttribute="dataInfo" method="post">
 				<input type="hidden" id="checkIds" name="checkIds" value="" />
 			<div class="list-header row">
 				<div class="list-desc u-pull-left">
@@ -100,68 +100,90 @@
 				<col class="col-name" />
 				<col class="col-name" />
 				<col class="col-name" />
-				<col class="col-number" />
-				<col class="col-number" />
-				<col class="col-number" />
-				<col class="col-number" />
+				<col class="col-name" />
+				<col class="col-name" />
+				<col class="col-name" />
+				<col class="col-functions" />
 				<col class="col-functions" />
 				<col class="col-functions" />
 				<col class="col-functions" />
 				<thead>
 					<tr>
 						<th scope="col" class="col-number"><spring:message code='number'/></th>
-						<th scope="col" class="col-name">변환 유형</th>
-						<th scope="col" class="col-name">제목</th>
-						<th scope="col" class="col-name">U.S.F</th>
+						<th scope="col" class="col-name">그룹명</th>
+						<th scope="col" class="col-name">데이터명</th>
+						<th scope="col" class="col-name">데이터 타입</th>
+						<th scope="col" class="col-name">공유 유형</th>
+						<th scope="col" class="col-name">매핑타입</th>
+						<th scope="col" class="col-name">지도</th>
 						<th scope="col" class="col-name">상태</th>
-						<th scope="col" class="col-name">파일 개수</th>
-						<th scope="col" class="col-name">에러코드</th>
+						<th scope="col" class="col-name">속성</th>
+						<th scope="col" class="col-name">Object 속성</th>
 						<th scope="col" class="col-date">등록일</th>
 					</tr>
 				</thead>
 				<tbody>
-<c:if test="${empty converterJobList }">
+<c:if test="${empty dataInfoList }">
 					<tr>
-						<td colspan="8" class="col-none">Converter Job이 존재하지 않습니다.</td>
+						<td colspan="11" class="col-none">데이터가 존재하지 않습니다.</td>
 					</tr>
 </c:if>
-<c:if test="${!empty converterJobList }">
-<c:forEach var="converterJob" items="${converterJobList}" varStatus="status">
+<c:if test="${!empty dataInfoList }">
+	<c:forEach var="dataInfo" items="${dataInfoList}" varStatus="status">
 
 					<tr>
 						<td class="col-number">${pagination.rowNumber - status.index }</td>
-						<td class="col-type">
-<c:if test="${converterJob.converterTemplate eq 'basic'}">기본</c:if>
-<c:if test="${converterJob.converterTemplate eq 'building'}">빌딩</c:if>
-<c:if test="${converterJob.converterTemplate eq 'extra-big-building'}">초대형 빌딩</c:if>
-<c:if test="${converterJob.converterTemplate eq 'single-realistic-mesh'}">단일 point cloud</c:if>
-<c:if test="${converterJob.converterTemplate eq 'splitted-realistic-mesh'}">분할 point cloud</c:if>
+						<td class="col-name">${dataInfo.dataGroupName }</td>
+						<td class="col-name">
+		<c:if test="${dataInfo.userId eq owner}">
+							<a href="/data/modify?dataId=${dataInfo.dataId}">${dataInfo.dataName }</a>
+		</c:if>
+		<c:if test="${dataInfo.userId ne owner}">
+							${dataInfo.dataName }[ADMIN]
+		</c:if>					
 						</td>
-						<td class="col-name">${converterJob.title }</td>
-						<td class="col-count"><fmt:formatNumber value="${converterJob.usf}" type="number"/>
-<c:if test="${converterJob.usf ge 1 and converterJob.usf lt 10}"> m</c:if>
-<c:if test="${converterJob.usf ge 0.1 and converterJob.usf lt 1 }"> cm</c:if>
-<c:if test="${converterJob.usf ge 0.01 and converterJob.usf lt 0.1}"> cm</c:if>
-<c:if test="${converterJob.usf ge 0.001 and converterJob.usf lt 0.01}"> mm</c:if>
-<c:if test="${converterJob.usf ge 10}"> m</c:if>						
-						</td>
+						<td class="col-name">${dataInfo.dataType }</td>
 						<td class="col-type">
-<c:if test="${converterJob.status eq 'ready'}">준비</c:if>
-<c:if test="${converterJob.status eq 'success'}">성공</c:if>
-<c:if test="${converterJob.status eq 'waiting'}">승인대기</c:if>
-<c:if test="${converterJob.status eq 'fail'}">실패</c:if>								
+		<c:if test="${dataInfo.sharing eq 'common'}">공통</c:if>
+		<c:if test="${dataInfo.sharing eq 'public'}">공개</c:if>
+		<c:if test="${dataInfo.sharing eq 'private'}">개인</c:if>
+		<c:if test="${dataInfo.sharing eq 'group'}">그룹</c:if>
 						</td>
-						<td class="col-count"><fmt:formatNumber value="${converterJob.fileCount}" type="number"/> 개</td>
+						<td class="col-name">${dataInfo.mappingType }</td>
 						<td class="col-type">
-<c:if test="${empty converterJob.errorCode }">
-							없음
-</c:if>
-<c:if test="${!empty converterJob.errorCode }">
-							<a href="#" onclick="detailErrorCode('${converterJob.errorCode}'); return false;">[보기]</a>
-</c:if>								
+							<a href="#" onclick="viewDataInfo('${dataInfo.dataId}'); return false;">보기</a>
 						</td>
 						<td class="col-type">
-							<fmt:parseDate value="${converterJob.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
+		<c:if test="${dataInfo.status eq 'processing' }">
+							변환중
+		</c:if>
+		<c:if test="${dataInfo.status eq 'use' }">
+							사용중
+		</c:if>
+		<c:if test="${dataInfo.status eq 'unused' }">
+							사용중지
+		</c:if>
+		<c:if test="${dataInfo.status eq 'delete' }">
+							삭제
+		</c:if>		
+						</td>
+						<td class="col-type">
+		<c:if test="${dataInfo.attributeExist eq 'true' }">	
+							등록
+		</c:if>
+		<c:if test="${dataInfo.attributeExist eq 'false' }">
+							미등록
+		</c:if>				
+						</td>
+						<td class="col-type">
+		<c:if test="${dataInfo.objectAttributeExist eq 'true' }">	
+							등록
+		</c:if>
+		<c:if test="${dataInfo.objectAttributeExist eq 'false' }">
+							미등록
+		</c:if>							
+						<td class="col-date">
+							<fmt:parseDate value="${dataInfo.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
 							<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
 						</td>
 					</tr>
@@ -176,7 +198,6 @@
 	</div>
 	
 </div>
-<%@ include file="/WEB-INF/views/converter/error-dialog.jsp" %>
 <!-- E: WRAP -->
 
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
@@ -185,39 +206,40 @@
 <script type="text/javascript" src="/js/${lang}/ui-controll.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-		var searchWord = "${converterJob.searchWord}";
-		var searchOption = "${converterJob.searchOption}";
-		var orderWord = "${converterJob.orderWord}";
-		var orderValue = "${converterJob.orderValue}";
-		var listCounter = "${converterJob.listCounter}";
+		var searchWord = "${dataInfo.searchWord}";
+		var searchOption = "${dataInfo.searchOption}";
+		var orderWord = "${dataInfo.orderWord}";
+		var orderValue = "${dataInfo.orderValue}";
+		var listCounter = "${dataInfo.listCounter}";
 		
-		if(searchWord != "") $("#searchWord").val("${converterJob.searchWord}");
-		if(searchOption != "") $("#searchOption").val("${converterJob.searchOption}");
-		if(orderWord != "") $("#orderWord").val("${converterJob.orderWord}");
-		if(orderValue != "") $("#orderValue").val("${converterJob.orderValue}");
-		if(listCounter != "") $("#listCounter").val("${converterJob.listCounter}");
+		if(searchWord != "") $("#searchWord").val("${dataInfo.searchWord}");
+		if(searchOption != "") $("#searchOption").val("${dataInfo.searchOption}");
+		if(orderWord != "") $("#orderWord").val("${dataInfo.orderWord}");
+		if(orderValue != "") $("#orderValue").val("${dataInfo.orderValue}");
+		if(listCounter != "") $("#listCounter").val("${dataInfo.listCounter}");
 		
 		initDatePicker();
-		initCalendar(new Array("startDate", "endDate"), new Array("${converterJob.startDate}", "${converterJob.endDate}"));
+		initCalendar(new Array("startDate", "endDate"), new Array("${dataInfo.startDate}", "${dataInfo.endDate}"));
 	});
 	
 	//전체 선택 
 	$("#chkAll").click(function() {
-		$(":checkbox[name=uploadDataId]").prop("checked", this.checked);
+		$(":checkbox[name=dataId]").prop("checked", this.checked);
 	});
 	
-	// 프로젝트 다이얼 로그
-	var errorDialog = $( ".errorDialog" ).dialog({
-		autoOpen: false,
-		width: 400,
-		height: 500,
-		modal: true,
-		resizable: false
-	});
+	//지도에서 찾기
+	function viewDataInfo(dataId) {
+		var url = "/map/find-point";
+		var width = 800;
+		var height = 700;
 	
-	function detailErrorCode(errorCode) {
-		errorDialog.dialog( "open" );
-		$("#dialog_error_code").html(errorCode);
+		var popupX = (window.screen.width / 2) - (width / 2);
+		// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+		var popupY= (window.screen.height / 2) - (height / 2);
+		
+	    var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height + ", top=" + popupY + ", left="+popupX
+	            + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
+		//popWin.document.title = layerName;
 	}
 </script>
 </body>

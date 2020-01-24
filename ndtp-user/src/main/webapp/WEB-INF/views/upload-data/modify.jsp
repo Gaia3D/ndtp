@@ -88,6 +88,7 @@
 				<li onclick="location.href='/upload-data/input'">업로딩 데이터</li>
 			   	<li onclick="location.href='/upload-data/list'" class="on">업로딩 데이터 목록</li>
 			  	<li onclick="location.href='/converter/list'">업로딩 데이터 변환 목록</li>
+			  	<li onclick="location.href='/data/list'">데이터 목록</li>
 			</ul>
 		</div>
 		<form:form id="uploadData" modelAttribute="uploadData" method="post" onsubmit="return false;">
