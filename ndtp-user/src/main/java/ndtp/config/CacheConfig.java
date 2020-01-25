@@ -97,7 +97,7 @@ public class CacheConfig {
 		}
     	
     	UserGroup inputUserGroup = new UserGroup();
-    	inputUserGroup.setUseYn(YOrN.Y.name());
+    	inputUserGroup.setAvailable(Boolean.TRUE);
     	List<UserGroup> userGroupList = userGroupService.getListUserGroup(inputUserGroup);
     	
     	Map<Integer, List<UserGroupMenu>> userGroupMenuMap = new HashMap<>();
