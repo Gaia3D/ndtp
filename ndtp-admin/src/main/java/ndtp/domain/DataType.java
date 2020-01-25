@@ -12,7 +12,7 @@ public enum DataType {
 	COLLADA("collada"),
 	IFC("ifc"),
 	LAS("las"),
-	GML("gml"),
+	//GML("gml"),
 	CITYGML("citygml"),
 	INDOORGML("indoorgml"),
 	
@@ -21,8 +21,10 @@ public enum DataType {
 	GIF("gif"),
 	PNG("png"),
 	BMP("bmp"),
+	DDS("dds"),
 	
-	ZIP("zip");
+	ZIP("zip"),
+	MTL("mtl");
 	
 	private final String value;
 	
