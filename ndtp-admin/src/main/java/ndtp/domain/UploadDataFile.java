@@ -29,7 +29,7 @@ public class UploadDataFile extends Search implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4068618702385916892L;
+	private static final long serialVersionUID = -5630897579641436048L;
 	
 	private Integer dataGroupId;
 	private String sharing;

@@ -22,8 +22,11 @@ import lombok.ToString;
 @AllArgsConstructor
 public class UserPolicy implements Serializable {
 
-	private static final long serialVersionUID = -6548874769672071277L;
-
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6350197434389445302L;
+	
 	// 고유 번호
 	private Integer userPolicyId;
 	// 사용자 아이디

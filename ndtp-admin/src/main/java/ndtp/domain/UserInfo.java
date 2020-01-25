@@ -22,9 +22,12 @@ import lombok.ToString;
 @AllArgsConstructor
 public class UserInfo extends Search implements Serializable {
 
-    private static final long serialVersionUID = 8349597082356588759L;
-
-    /******** 화면 오류 표시용 ********/
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3187805323220573503L;
+	
+	/******** 화면 오류 표시용 ********/
 	private String message;
 	private String errorCode;
 	// 일정 기간 동안 미 접속시 잠금 처리(예 3개월 90일)

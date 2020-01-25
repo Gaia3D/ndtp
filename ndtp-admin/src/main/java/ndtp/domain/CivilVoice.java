@@ -27,8 +27,11 @@ import lombok.ToString;
 @AllArgsConstructor
 public class CivilVoice extends Search implements Serializable {
 
-    private static final long serialVersionUID = -4668268071028609827L;
-
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7636814381604940705L;
+	
 	/******** 화면 오류 표시용 ********/
 	private String messageCode;
 	private String errorCode;

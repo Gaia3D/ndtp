@@ -29,7 +29,7 @@ public class UploadData extends Search implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4372534009365949984L;
+	private static final long serialVersionUID = -639261582314376967L;
 
 	public static final String ZIP_EXTENSION = "zip";
 	

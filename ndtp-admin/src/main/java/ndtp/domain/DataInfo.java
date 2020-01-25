@@ -29,7 +29,10 @@ import lombok.ToString;
 @AllArgsConstructor
 public class DataInfo extends Search implements Serializable {
 	
-	private static final long serialVersionUID = 6267402319518438249L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4527009012673017066L;
 	
 	/******** 화면 오류 표시용 ********/
 	private String messageCode;

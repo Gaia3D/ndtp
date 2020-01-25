@@ -28,8 +28,8 @@ public class UserSession implements Serializable {
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = -9092603237488892716L;
-	
+	private static final long serialVersionUID = -7501829694372184669L;
+
 	/******* 세션 하이재킹 체크 *******/
 	private String signinIp;
 

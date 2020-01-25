@@ -15,7 +15,10 @@ import lombok.ToString;
 @ToString
 public class APIHeader implements Serializable {
 
-	private static final long serialVersionUID = -6764057655883300254L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 307548813245126235L;
 	
 	private String userId;
 	private String apiKey;
