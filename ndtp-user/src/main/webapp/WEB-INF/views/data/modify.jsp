@@ -266,8 +266,8 @@
 	
 	// 지도에서 찾기
 	$( "#mapButtion" ).on( "click", function() {
-		var url = "/map/find-data-point";
-		var width = 1024;
+		var url = "/map/find-data-point?dataId=${dataInfo.dataId}&referrer=MODIFY";
+		var width = 1400;
 		var height = 700;
 	
 		var popupX = (window.screen.width / 2) - (width / 2);

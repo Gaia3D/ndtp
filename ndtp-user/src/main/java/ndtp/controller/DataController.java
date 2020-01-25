@@ -17,14 +17,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
-import ndtp.domain.ConverterJob;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
 import ndtp.domain.GeoPolicy;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
-import ndtp.domain.Policy;
 import ndtp.domain.SharingType;
 import ndtp.domain.UserPolicy;
 import ndtp.domain.UserSession;

@@ -134,7 +134,9 @@
 			END AS parentName
 		FROM data_group A
 		WHERE A.data_group_id = #{dataGroupId} 
-			AND A.user_id = #{userId}
+			<if test="userId != null and userId != ''">
+			AND user_id = #{userId}
+			</if>
 	</select>
 	
 	<!-- 사용자 기본 데이터 그룹 정보 -->
