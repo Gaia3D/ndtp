@@ -47,7 +47,7 @@
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input">
-										<form:hidden path="duplicationValue"/>
+										<form:hidden path="duplication"/>
 										<form:input path="dataGroupKey" cssClass="l" />
 				  						<input type="button" id="dataGroupDuplicationButton" value="<spring:message code='overlap.check'/>" />
 										<form:errors path="dataGroupKey" cssClass="error" />

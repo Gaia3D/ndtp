@@ -50,17 +50,13 @@ public class RoleController {
 	@RequestMapping(value = "list")
 	public String list(HttpServletRequest request, @RequestParam(defaultValue="1") String pageNo, Role role, Model model) {
 		
-		String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
-		if(StringUtils.isEmpty(role.getStartDate())) {
-			role.setStartDate(today.substring(0,4) + DateUtils.START_DAY_TIME);
-		} else {
+		if(!StringUtils.isEmpty(role.getStartDate())) {
 			role.setStartDate(role.getStartDate().substring(0, 8) + DateUtils.START_TIME);
 		}
-		if(StringUtils.isEmpty(role.getEndDate())) {
-			role.setEndDate(today + DateUtils.END_TIME);
-		} else {
+		if(!StringUtils.isEmpty(role.getEndDate())) {
 			role.setEndDate(role.getEndDate().substring(0, 8) + DateUtils.END_TIME);
 		}
+		
 		long totalCount = roleService.getRoleTotalCount(role);
 		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(role), totalCount, Long.valueOf(pageNo).longValue());
 		log.info("@@ pagination = {}", pagination);
@@ -74,7 +70,6 @@ public class RoleController {
 		
 		model.addAttribute(pagination);
 		model.addAttribute("role", role);
-		model.addAttribute("totalCount", totalCount);
 		model.addAttribute("roleList", roleList);
 		
 		return "/role/list";
