@@ -146,7 +146,7 @@
                     					${dataGroup.dataGroupName }
 						</td>
 						<td class="col-key">${dataGroup.dataGroupKey }</td>
-						<td class="col-key">${dataGroup.sharing }</td>
+						<td class="col-type">${dataGroup.sharing }</td>
 	                    <td class="col-type">
     <c:if test="${dataGroup.available eq 'true' }">
                     					사용
@@ -155,7 +155,7 @@
                     					미사용
     </c:if>
 	                    </td>
-	                    <td class="col-type">
+	                    <td class="col-count">
 	<c:if test="${dataGroup.dataCount gt 0 }">
 	                    	<a href="/data/list?dataGroupId=${dataGroup.dataGroupId }" class="linkButton">
 	                    	<fmt:formatNumber value="${dataGroup.dataCount}" type="number"/>

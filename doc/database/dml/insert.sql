@@ -176,12 +176,6 @@ values
     (4, '[관리자 전용] 사용자 페이지 SIGN IN 권한', 'USER_SIGNIN', '0', '0', 'Y', 'Y'),
     (5, '[사용자 전용] 사용자 페이지 SIGN IN 권한', 'USER_SIGNIN', '0', '0', 'Y', 'Y');
 
--- 삭제 예정 --
-insert into data_group (data_group_id, data_group_name, data_group_key,
-		data_group_path, sharing, ancestor, parent, depth, view_order, basic, available)
-	values
-		(1, '기본', 'basic', 'basic/', 'common', 1, 0, 1, 1, true, true);
-
 commit;
 
 

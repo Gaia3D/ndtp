@@ -12,8 +12,7 @@
     <title>지도에서 찾기 | NDPT</title>
     <link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-    <link rel="stylesheet" href="/css/${lang}/user-style.css" />
-	<link rel="stylesheet" href="/css/${lang}/style.css" />
+    <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
     <style type="text/css">
     	.mapSelectButton {
 			position : absolute;
@@ -51,7 +50,6 @@
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript" src="/js/mago3d.js"></script>
-<script type="text/javascript" src="/js/mago3d_lx.js"></script>
 
 <script type="text/javascript">
 	//Cesium.Ion.defaultAccessToken = '';

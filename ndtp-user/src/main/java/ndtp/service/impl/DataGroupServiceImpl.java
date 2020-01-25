@@ -155,6 +155,16 @@ public class DataGroupServiceImpl implements DataGroupService {
     	return result;
     }
     
+    /**
+     * 기본 데이터 그룹 등록
+     * @param dataGroup
+     * @return
+     */
+    @Transactional
+	public int insertBasicDataGroup(DataGroup dataGroup) {
+    	return dataGroupMapper.insertBasicDataGroup(dataGroup);
+    }
+    
 	/**
 	 * 데이터 그룹 수정
 	 * @param dataGroup

@@ -25,8 +25,10 @@ import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
 import ndtp.domain.DataInfoLog;
 import ndtp.domain.DataStatus;
+import ndtp.domain.Key;
 import ndtp.domain.Policy;
 import ndtp.domain.UserInfo;
+import ndtp.domain.UserSession;
 import ndtp.domain.UserStatus;
 import ndtp.domain.Widget;
 import ndtp.service.AccessLogService;
@@ -366,13 +368,18 @@ public class MainController {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
 		try {
-			List<DataGroup> dataGroupList = dataGroupService.getListDataGroup();
+			UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+			
+			DataGroup dataGroup = new DataGroup();
+			dataGroup.setUserId(userSession.getUserId());
+			List<DataGroup> dataGroupList = dataGroupService.getListDataGroup(dataGroup);
+			
 			List<String> dataGroupNameList = new ArrayList<>();
 			List<Long> dataGroupTotalCountList = new ArrayList<>();
-			for(DataGroup dataGroup : dataGroupList) {
-				dataGroupNameList.add(dataGroup.getDataGroupName());
+			for(DataGroup dbDataGroup : dataGroupList) {
+				dataGroupNameList.add(dbDataGroup.getDataGroupName());
 				DataInfo dataInfo = new DataInfo();
-				dataInfo.setDataGroupId(dataGroup.getDataGroupId());
+				dataInfo.setDataGroupId(dbDataGroup.getDataGroupId());
 				Long dataTotalCount = dataService.getDataTotalCount(dataInfo);
 				dataGroupTotalCountList.add(dataTotalCount);
 			}

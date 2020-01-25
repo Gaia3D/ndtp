@@ -86,13 +86,17 @@ public class UploadDataController {
 	 */
 	@GetMapping(value = "input")
 	public String input(HttpServletRequest request, Model model) {
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		
 		DataGroup basicDataGroup = dataGroupService.getBasicDataGroup();
+		
+		DataGroup dataGroup = new DataGroup();
+		dataGroup.setUserId(userSession.getUserId());
+		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup(dataGroup);
 		
 		UploadData uploadData = UploadData.builder().
 											dataGroupId(basicDataGroup.getDataGroupId()).
 											dataGroupName(basicDataGroup.getDataGroupName()).build();
-		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup();
 		
 		model.addAttribute("uploadData", uploadData);
 		model.addAttribute("dataGroupList", dataGroupList);
@@ -554,12 +558,15 @@ public class UploadDataController {
 	@GetMapping(value = "modify")
 	public String modify(HttpServletRequest request, UploadData uploadData, Model model) {
 		
-//		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 //		uploadData.setUserId(userSession.getUserId());
 		
 		uploadData = uploadDataService.getUploadData(uploadData);
 		List<UploadDataFile> uploadDataFileList = uploadDataService.getListUploadDataFile(uploadData);
-		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup();
+		
+		DataGroup dataGroup = new DataGroup();
+		dataGroup.setUserId(userSession.getUserId());
+		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup(dataGroup);
 		
 		model.addAttribute("uploadData", uploadData);
 		model.addAttribute("uploadDataFileList", uploadDataFileList);

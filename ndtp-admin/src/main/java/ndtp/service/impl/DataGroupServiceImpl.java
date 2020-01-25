@@ -33,7 +33,7 @@ public class DataGroupServiceImpl implements DataGroupService {
      * @return
      */
 	@Transactional(readOnly = true)
-	public List<DataGroup> getListDataGroup() {
+	public List<DataGroup> getListDataGroup(DataGroup dataGroup) {
 		return dataGroupMapper.getListDataGroup();
 	}
 
@@ -53,6 +53,16 @@ public class DataGroupServiceImpl implements DataGroupService {
 	@Transactional(readOnly = true)
 	public DataGroup getBasicDataGroup() {
 		return dataGroupMapper.getBasicDataGroup();
+	}
+	
+	/**
+	 * 그룹Key 중복 체크
+	 * @param dataGroupKey
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public int getDuplicationKeyCount(String dataGroupKey) {
+		return dataGroupMapper.getDuplicationKeyCount(dataGroupKey);
 	}
 
     /**
@@ -91,18 +101,18 @@ public class DataGroupServiceImpl implements DataGroupService {
 
     	return result;
     }
+    
+    /**
+     * 기본 데이터 그룹 등록
+     * @param dataGroup
+     * @return
+     */
+    @Transactional
+	public int insertBasicDataGroup(DataGroup dataGroup) {
+    	return dataGroupMapper.insertBasicDataGroup(dataGroup);
+    }
 
     /**
-	 * 그룹Key 중복 체크
-	 * @param dataGroupKey
-	 * @return
-	 */
-	@Transactional(readOnly=true)
-	public int getDuplicationKeyCount(String dataGroupKey) {
-		return dataGroupMapper.getDuplicationKeyCount(dataGroupKey);
-	}
-
-	/**
 	 * 데이터 그룹 수정
 	 * @param dataGroup
 	 * @return
@@ -148,8 +158,8 @@ public class DataGroupServiceImpl implements DataGroupService {
     		searchDataGroup.setViewOrder(modifyViewOrder);
     	}
 
-    	updateViewOrderDataGroup(searchDataGroup);
-		return updateViewOrderDataGroup(dbDataGroup);
+    	dataGroupMapper.updateDataGroupViewOrder(searchDataGroup);
+		return dataGroupMapper.updateDataGroupViewOrder(dbDataGroup);
     }
 
     /**
@@ -162,15 +172,6 @@ public class DataGroupServiceImpl implements DataGroupService {
     }
 
     /**
-	 * 데이터 그룹 표시 순서 수정 (up/down)
-	 * @param userGroup
-	 * @return
-	 */
-	private int updateViewOrderDataGroup(DataGroup dataGroup) {
-		return dataGroupMapper.updateDataGroupViewOrder(dataGroup);
-	}
-
-	/**
 	 * 데이터 그룹 삭제
 	 * @param dataGroup
 	 * @return

@@ -1,0 +1,483 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="/WEB-INF/views/common/taglib.jsp" %>
+<%@ include file="/WEB-INF/views/common/config.jsp" %>
+
+<!DOCTYPE html>
+<html lang="${accessibility}">
+<head>
+    <meta charset="utf-8">
+    <meta name="referrer" content="origin">
+    <meta name="viewport" content="width=device-width">
+    <meta name="robots" content="index,nofollow"/>
+    <title>지도에서 찾기 | NDPT</title>
+    <link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
+	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
+    <link rel="stylesheet" href="/css/${lang}/user-style.css" />
+	<style type="text/css">
+		/* MAP / CTRLBTNS */
+		.mapToollWrap {
+			position: absolute;
+			top: 3px;
+			right: 3px;
+		}
+		.mapToollWrap div {
+			display: inline-block;
+			color: #fff;
+			border-radius: 25px;
+			background-color: #252535;
+		}
+		.mapToollWrap div > button {
+			border: none;
+			border-radius: 25px;
+			background-color: transparent;
+			background-image: url(/images/ko/ico.png);
+			background-repeat: no-repeat;
+		}
+		.mapToollWrap div button:hover {
+			background-color: #333446;
+		}
+		.mapToollWrap div.zoom button {
+			width: 50px;
+			height: 50px;
+			text-indent: -999em;
+		}
+		.mapToollWrap div.rotate button {
+			width: 50px;
+			height: 50px;
+			text-indent: -999em;
+		}
+		.mapToollWrap div > button.reset {
+			background-position: 15px 0;
+		}
+		.mapToollWrap div > button.zoomall {
+			background-position: -35px 0;
+		}
+		.mapToollWrap div > button.zoomin {
+			background-position: -85px 0;
+		}
+		.mapToollWrap div > button.zoomout {
+			background-position: -135px 0;
+		}
+		.mapToollWrap div > button.distance {
+			background-position: -185px 0;
+		}
+		.mapToollWrap div > button.distance.on {
+			background-position: -185px -50px;
+			background-color: #fff600;
+		}
+		.mapToollWrap div > button.area {
+			background-position: -242px 0;
+		}
+		.mapToollWrap div > button.area.on {
+			background-position: -242px -50px;
+			background-color: #fff600;
+		}
+		.mapToollWrap div > button.rotateReset {
+			background-position: -285px 0;
+		}
+		.mapToollWrap div > button.rotateReset.on {
+			background-color: #fff600;
+			background-position: -285px -50px;
+		}
+		.mapToollWrap div > button.rotateLeft {
+			background-position: -340px 0;
+		}
+		.mapToollWrap div > button.rotateRight {
+			background-position: -390px 0;
+		}
+		.mapToollWrap div > button.magoSet {
+			background-position: -85px -52px;
+		}
+		.mapToollWrap div > button.magoSet.on {
+			background-position: -85px -102px;
+		}
+		.mapToollWrap div > input {
+			width: 30px;
+			margin-top: 3px;
+			padding: 8px;
+			font-size: 17px;
+			color: #fff;
+			text-align: center;
+			border: none;
+			border-bottom: 2px solid #fff;
+			background-color: transparent;
+		}
+		
+    	.mapSelectButton {
+			position : absolute;
+			bottom : 17px;
+			right : 20px;
+			z-index : 1;
+			width: 90px;
+			height: 40px;
+			padding: 7px;
+			font-size: 17px;
+			border-radius: 3px;
+			color: #414e80;
+			border: 1px solid #414e80;
+			background-color: #fff;
+		}
+		.mapSelectButton:hover {
+			color: #fff;
+			border: 1px solid #414e80;
+			background-color: #414e80;
+		}
+	    .mapWrap {
+			height: 100%;
+			background-color: #eee;
+		}
+		
+		#magoTool {
+			width: 110px;
+			height: 50px;
+			padding-left: 25px;
+			color: #fff;
+			background-color:#ff8d00;
+			font-size: 16px;
+			font-weight: bold;
+			letter-spacing: -1px;
+			border-radius: 25px;
+			/* background-position: -451px -588px; */
+		}
+		#magoTool.on {
+			color: #000;
+			background-color: #fff600;
+			border: 1px solid #333446;
+		}
+		
+		.labelLayer {
+			position: absolute;
+			top:60px;
+			right: 5px;
+			width: 200px;
+			height: 453px;
+			min-width: 150px;
+			border-radius: 5px;
+			box-shadow: 1px 1px 2px 0 #333;
+			background-color: #fff;
+			z-index:1;
+		}
+		.labelLayer > .layerHeader {
+			height: 35px;
+			padding: 5px 5px 0px 15px;
+			cursor: pointer;
+			border-radius: 5px 5px 0 0;
+			border-bottom: 1px solid #e0e0e0;
+			background-color: #f1f1f1;
+		}
+		.labelLayer > .layerContents {
+			margin: 15px 20px;
+		}
+		.layerHeader > h3 {
+			margin-top:5px;	
+		}
+		.layerClose {
+			position: absolute;
+			top: 3px;
+			right: 5px;
+			width: 30px;
+			height: 30px;
+			border: none;
+			text-indent: -999em;
+			background-image: url(/images/ko/ico.png);
+			background-position: -6px 590px;
+		}
+		.labelLayer div.layerContents > ul.category {
+			list-style: circle;
+			margin-bottom: 10px;
+			margin-left: 10px;
+			margin-top: 20px;
+		}
+    </style>
+ </head>
+<body>
+	<div class="mapToollWrap" style="z-index: 9999">
+		<div class="zoom">
+			<button type="button" class="reset" id="mapCtrlReset" title="초기화">초기화</button>
+			<button type="button" class="zoomall" title="전체보기">전체보기</button>
+			<button type="button" class="zoomin" id="mapCtrlZoomIn" title="확대">확대</button>
+			<button type="button" class="zoomout" id="mapCtrlZoomOut" title="축소">축소</button>
+			<button type="button" class="measures distance" id="mapCtrlDistance" data-type="LineString" title="거리">거리</button>
+			<button type="button" class="measures area" id="mapCtrlArea" data-type="Polygon" title="면적">면적</button>
+		</div>
+		<div class="rotate"> 
+			<button type="button" class="rotateReset on" id="rotateReset" title="방향초기화">방향 초기화</button>
+			<!-- <input type="text" placeholder="0" id="rotateInput"/>&deg; --> 
+			<input type="text" id="rotateInput" placeholder="0" readonly>&deg;
+	        <input type="text" id="pitchInput" placeholder="-90" readonly>&deg;
+			<button type="button" class="rotateLeft" id="rotateLeft" title="왼쪽으로 회전">왼쪽으로 회전</button>
+			<button type="button" class="rotateRight" id="rotateRight" title="오른쪽으로 회전">오른쪽으로 회전</button>
+	<!-- 		<button type="button" class="mapPolicy" id="mapPolicy" title="지도 설정">지도 설정</button> -->
+		</div>
+		<div class="">
+			<button type="button" id="magoTool" class="magoSet" title="Mago3D 설정">Mago3D</button>
+		</div>
+	</div>
+	<div class="labelLayer" style="display:none;">
+	    <div class="layerHeader">
+	        <h3>Mago3D 설정</h3>
+	        <button type="button" class="layerClose" title="닫기">닫기</button>
+	    </div>
+	    <div class="layerContents">
+	    	<!-- <ul class="category">
+	    		<li>객체정보</li>
+	    	</ul>
+				<input type="radio" id="datainfoDisplayY" name="datainfoDisplay" value="true"/>
+				<label for="datainfoDisplayY">표시</label>
+				<input type="radio" id="datainfoDisplayN" name="datainfoDisplay" value="false" checked/>
+				<label for="datainfoDisplayN">비표시</label> -->
+			<ul class="category">
+	    		<li>Origin</li>
+	    	</ul>
+				<input type="radio" id="originDisplayY" name="originDisplay" value="true"/>
+				<label for="originDisplayY">표시</label>
+				<input type="radio" id="originDisplayN" name="originDisplay" value="false" checked/>
+				<label for="originDisplayN">비표시</label>
+			<ul class="category">
+	    		<li>Bounding Box</li>
+	    	</ul>
+		    	<input type="radio" id="bboxDisplayY" name="bboxDisplay" value="true"/>
+				<label for="bboxDisplayY">표시</label>
+				<input type="radio" id="bboxDisplayN" name="bboxDisplay" value="false" checked/>
+				<label for="bboxDisplayN">비표시</label>
+			<ul class="category">
+	    		<li>선택 및 이동</li>
+	    	</ul>
+		    	<input type="radio" id="objectNoneMove" name="objectMoveMode" value="2"/>
+				<label for="objectNoneMove">None</label>
+				<input type="radio" id="objectAllMove" name="objectMoveMode" value="0" checked />
+				<label for="objectAllMove">All</label>
+				<input type="radio" id="objectMove" name="objectMoveMode" value="1"/>
+				<label for="objectMove">Object</label>
+			<ul class="category">
+	    		<li>
+	    			경도 <input type="text" id="longitude" name="longitutde" value="${dataInfo.longitude }">
+	    		</li>
+	    		<li>
+	    			위도 <input type="text" id="latitude" name="latitude" value="${dataInfo.latitude }">
+	    		</li>
+	    		<li>
+	    			높이 <input type="text" id="altitude" name="altitude" value="${dataInfo.altitude }">
+	    		</li>
+			</ul>
+	<c:if test="${referrer eq 'MODIFY' }">	
+			<ul>
+				<li style="text-align: center;">
+					<button id="applyLocationButton" style="height: 30px; width: 120px;">위치 정보 적용</button>
+				</li>
+			</ul>
+	</c:if>
+	    </div>
+	</div>
+	
+    <div id="magoContainer" style="height: 100%;"></div>
+    <button class="mapSelectButton" onclick="window.close();">닫기</button>
+</body>
+<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/externlib/handlebars-4.1.2/handlebars.js"></script>
+<script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>
+<script type="text/javascript" src="/js/mago3d.js"></script>
+<script type="text/javascript" src="/js/mago3d_lx.js"></script>
+<script type="text/javascript" src="/js/${lang}/common.js"></script>
+<script type="text/javascript" src="/js/${lang}/message.js"></script>
+<script type="text/javascript" src="/js/${lang}/map-controll.js"></script>
+<script type="text/javascript" src="/js/${lang}/ui-controll.js"></script>
+<script type="text/javascript" src="/js/${lang}/wps-request.js"></script>
+<script type="text/javascript" src="/js/${lang}/data-info.js"></script>
+<script type="text/javascript" src="/js/${lang}/user-policy.js"></script>
+<%-- <script type="text/javascript" src="/js/${lang}/layer.js"></script> --%>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#magoTool").addClass("on");
+		$(".labelLayer").show();
+	});
+
+	//Cesium.Ion.defaultAccessToken = '';
+	//var viewer = new Cesium.Viewer('magoContainer');
+	var MAGO3D_INSTANCE;
+	// ndtp 전역 네임스페이스
+	/* var NDTP = NDTP ||{
+		policy : ${geoPolicyJson},
+		baseLayers : "${baseLayers}",
+		wmsProvider : {},
+		districtProvider : {}
+	}; */
+	
+	var geoPolicyJson = null;
+	var viewer = null;
+	var entities = null;
+	
+	magoInit();
+	
+	function magoInit() {
+		
+		geoPolicyJson = ${geoPolicyJson};
+		
+		var cesiumViewerOption = {};
+		cesiumViewerOption.infoBox = false;
+		cesiumViewerOption.navigationHelpButton = false;
+		cesiumViewerOption.selectionIndicator = false;
+		cesiumViewerOption.homeButton = false;
+		cesiumViewerOption.fullscreenButton = false;
+		cesiumViewerOption.geocoder = false;
+		cesiumViewerOption.baseLayerPicker = false;
+		cesiumViewerOption.sceneModePicker = false;
+		
+		/**
+		 * @param {Stirng} containerId container div id. required.
+		 * @param {object} serverPolicy mage3d geopolicy. required.
+		 * @param {object} callback loadstart callback, loadend callback. option.
+		 * @param {object} options Cesium viewer parameter. option.
+		 * @param {Cesium.Viewer} legacyViewer 타 시스템과의 연동의 경우 view 객체가 생성되어서 넘어 오는 경우가 있음. option.
+		*/	
+		MAGO3D_INSTANCE = new Mago3D.Mago3d('magoContainer', geoPolicyJson, {loadend : magoLoadEnd}, cesiumViewerOption);
+	}
+	
+	var beforePointId = null;
+	function magoLoadEnd(e) {
+		var magoInstance = e;
+		viewer = magoInstance.getViewer(); 
+		entities = viewer.entities;
+		var magoManager = magoInstance.getMagoManager();
+		var f4dController = magoInstance.getF4dController();
+		
+		// TODO : 세슘 MAP 선택 UI 제거,엔진에서 처리로 변경 예정.
+		viewer.baseLayerPicker.destroy();
+		viewer.scene.globe.depthTestAgainstTerrain = true;
+		/* magoManager.on(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
+			console.info(result);
+		}); */
+
+		//우측 상단 지도 컨트롤러
+		MapControll(viewer);
+		dataGroupList();
+        // 환경 설정.
+        UserPolicy(magoInstance);
+				
+     	// 선택 및 이동 all 로 선택
+		changeObjectMoveAPI(magoInstance, "0");
+		
+		//선택된 데이터 이동 시 결과 리턴
+	    magoManager.on(Mago3D.MagoManager.EVENT_TYPE.SELECTEDF4DMOVED, function(result) {
+	    	//console.info(result);
+	    	var longitude = result.result.longitude;
+			var latitude = result.result.latitude;
+			var altitude = result.result.altitude;
+			
+			$("#longitude").val(longitude);
+			$("#latitude").val(latitude);
+			$("#altitude").val(altitude);
+	    });
+	
+	    // 기본 레이어 랜더링
+		setTimeout(function(){
+        	initLayer('${baseLayers}');
+        }, geoPolicyJson.initDuration * 1000);
+		
+		/* setTimeout(function(){
+			changeObjectMove();
+        }, 5000); */
+		
+	}
+	/* 
+	function changeObjectMove() {
+		// 선택 및 이동 all 로 선택
+		changeObjectMoveAPI(MAGO3D_INSTANCE, "0");
+	} */
+	
+	// 데이터 그룹 목록
+	function dataGroupList() {
+		$.ajax({
+			url: "/data-groups/${dataInfo.dataGroupId}",
+			type: "GET",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			dataType: "json",
+			success: function(msg){
+				if(msg.statusCode <= 200) {
+					var dataGroup = msg.dataGroup;
+					if(dataGroup !== null && dataGroup !== undefined) {
+						dataList(dataGroup);
+					}
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+				}
+			},
+			error:function(request,status,error){
+				alert(JS_MESSAGE["ajax.error.message"]);
+			}
+		});
+	}
+	
+	// 데이터 정보 목록
+	function dataList(dataGroup) {
+		var dataInfoJson = ${dataInfoJson};
+		
+		var f4dController = MAGO3D_INSTANCE.getF4dController();
+		
+		var dataInfoList = new Array();
+		dataInfoList.push(dataInfoJson);
+		
+		//var dataInfoList = msg.dataInfoList;
+		var dataInfoFirst = dataInfoJson;
+		var dataInfoGroupId = dataInfoFirst.dataGroupId;
+			
+		dataGroup.datas = dataInfoList;
+		f4dController.addF4dGroup(dataGroup);
+	}
+	
+	function flyTo(longitude, latitude, altitude, duration) {
+		if(longitude === null || longitude === '' || latitude === null || latitude === '' || altitude === null || altitude === '') {
+			alert("위치 정보가 올바르지 않습니다. 확인하여 주십시오.");
+			return;
+		}
+		gotoFlyAPI(MAGO3D_INSTANCE, parseFloat(longitude), parseFloat(latitude), parseFloat(altitude), parseFloat(duration));
+	}
+	
+	function remove(entityStored) {
+		entities.removeById(entityStored);
+	}
+	
+	function initLayer(baseLayers) {
+		var layerList = baseLayers.split(",");
+		var queryString = "enable_yn='Y'";
+	    var queryStrings = layerList.map(function(){ return queryString; }).join(';');	// map: ie9부터 지원
+		var provider = new Cesium.WebMapServiceImageryProvider({
+	        url : geoPolicyJson.geoserverDataUrl + "/wms",
+	        layers : layerList.join(","),
+	        parameters : {
+	            service : 'WMS'
+	            ,version : '1.1.1'
+	            ,request : 'GetMap'
+	            ,transparent : 'true'
+	            ,format : 'image/png'
+	            ,time : 'P2Y/PRESENT'
+	            ,maxZoom : 25
+	            ,maxNativeZoom : 23
+	            ,CQL_FILTER: queryStrings
+	        },
+	        enablePickFeatures : false
+	    });
+	    
+		viewer.imageryLayers.addImageryProvider(provider);
+	}
+	
+	$("#magoTool").click(function(){
+		$("#magoTool").addClass("on");
+		$(".labelLayer").show();
+	});
+	$(".layerClose").click(function(){
+		$("#magoTool").removeClass("on");
+		$(".labelLayer").hide();
+	});
+	
+	// 위치 정보 적용 버튼 클릭
+	$("#applyLocationButton").click(function(){
+		$(opener.document).find("#longitude").val($("#longitude").val());
+		$(opener.document).find("#latitude").val($("#latitude").val());
+		$(opener.document).find("#altitude").val($("#altitude").val());
+		window.close();
+	});
+</script>
+</html>

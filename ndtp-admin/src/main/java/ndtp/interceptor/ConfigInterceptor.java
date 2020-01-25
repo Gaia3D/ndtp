@@ -78,6 +78,9 @@ public class ConfigInterceptor extends HandlerInterceptorAdapter {
 				}
 			}
 			
+			log.info("@@@ clickMenuId = {}", clickMenuId);
+			log.info("@@@ menu = {}", menu);
+			log.info("@@@ parentMenu = {}", parentMenu);
 			
 //			Integer contentLoadBalancingIntervalValue = policy.getContent_load_balancing_interval().intValue() * 1000;
 //			request.setAttribute("contentLoadBalancingInterval", contentLoadBalancingIntervalValue);

@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.DataGroup;
-import ndtp.domain.DataInfo;
 import ndtp.domain.Key;
 import ndtp.domain.LocationUdateType;
 import ndtp.domain.PageType;

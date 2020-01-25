@@ -44,23 +44,20 @@
 								</tr>
 								<tr>
 									<th class="col-label" scope="row">
-										<form:label path="dataGroupName">데이터 그룹 Key</form:label>
+										데이터 그룹 Key
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input">
-										<form:input path="dataGroupKey" cssClass="l" readonly="true" />
-										<form:errors path="dataGroupKey" cssClass="error" />
+										${dataGroup.dataGroupKey }
 									</td>
 								</tr>
 								<tr>
 									<th class="col-label" scope="row">
-										<form:label path="parentName">상위 그룹</form:label>
+										상위 그룹
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input">
-										<form:hidden path="parent" />
-			 							<form:input path="parentName" cssClass="l" readonly="true" />
-										<input type="button" id="dataGroupButtion" value="상위 그룹 선택" />
+										${dataGroup.parentName }
 									</td>
 								</tr>
 								<%-- <tr>
@@ -78,9 +75,9 @@
 				                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 				                    </th>
 				                    <td class="col-input">
-				                        <select name="sharing">
+				                        <select id="sharing" name="sharing" class="selectBoxClass">
 											<option value="common">공통</option>
-											<option value="public" selected="selected">공개</option>
+											<option value="public">공개</option>
 											<option value="private">개인</option>
 											<option value="group">그룹</option>
 										</select>
@@ -92,9 +89,12 @@
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input radio-set">
-										<form:radiobutton label="기본" path="basic" value="true" />
-										<form:radiobutton label="선택" path="basic" value="false" />
-										<form:errors path="basic" cssClass="error" />
+	<c:if test="${dataGroup.basic eq 'true' }">
+										기본
+	</c:if>
+	<c:if test="${dataGroup.basic ne 'true' }">
+										선택
+	</c:if>
 									</td>
 								</tr>
 								<tr>
@@ -103,19 +103,15 @@
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input radio-set">
-										<form:radiobutton label="사용" path="available" value="true" />
-										<form:radiobutton label="미사용" path="available" value="false" />
-										<form:errors path="available" cssClass="error" />
-									</td>
-								</tr>
-								<tr>
-									<th class="col-label" scope="row">
-										<form:label path="latitude">위도</form:label>
-									</th>
-									<td class="col-input">
-										<form:input path="latitude" cssClass="m" />
-										<input type="button" id="mapButtion" value="지도에서 찾기" />
-										<form:errors path="latitude" cssClass="error" />
+	<c:if test="${dataGroup.basic eq 'true' }">
+					사용
+	</c:if>
+	<c:if test="${dataGroup.basic ne 'true' }">
+										<input type="radio" id="availableTrue" name="available" value="true">
+										<label for="availableTrue">사용</label>
+										<input type="radio" id="availableFalse" name="available" value="false">
+										<label for="availableFalse">미사용</label>
+	</c:if>
 									</td>
 								</tr>
 								<tr>
@@ -124,7 +120,17 @@
 									</th>
 									<td class="col-input">
 										<form:input path="longitude" cssClass="m" />
+										<input type="button" id="mapButtion" value="지도에서 찾기" />
 										<form:errors path="longitude" cssClass="error" />
+									</td>
+								</tr>
+								<tr>
+									<th class="col-label" scope="row">
+										<form:label path="latitude">위도</form:label>
+									</th>
+									<td class="col-input">
+										<form:input path="latitude" cssClass="m" />
+										<form:errors path="latitude" cssClass="error" />
 									</td>
 								</tr>
 								<tr>
@@ -176,7 +182,6 @@
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
-	<%@ include file="/WEB-INF/views/data/group-dialog.jsp" %>
 
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
@@ -185,6 +190,13 @@
 <script type="text/javascript" src="/js/navigation.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
+		var isBasic = "${dataGroup.basic}";
+		if(isBasic === "false") {
+			// 기본 그룹이 아닐 경우만 사용 유무 수정 가능
+			$("[name=available]").filter("[value='${dataGroup.available}']").prop("checked",true);
+		}
+		
+		$("#sharing").val("${dataGroup.sharing}");
 	});
 
 	function validate() {
@@ -194,10 +206,11 @@
 			$("#dataGroupName").focus();
 			return false;
 		}
-		if($("#parent").val() === null || $("#parent").val() === "" || !number.test($("#parent").val())) {
-			alert("상위 레이어 그룹을 선택해 주세요.");
-			$("#parent").focus();
-			return false;
+		if($("#duration").val() !== null && $("#duration").val() !== "") {
+			if(!isNumber($("#duration").val())) {
+				$("#duration").focus();
+				return false;
+			}
 		}
 	}
 
@@ -210,36 +223,6 @@
 		resizable: false
 	});
 
-	// 상위 데이터 그룹 찾기
-	$( "#dataGroupButton" ).on( "click", function() {
-		dataGroupDialog.dialog("open" );
-		dataGroupDialog.dialog("option", "title", "데이터 그룹 선택");
-	});
-
-	// 상위 Node
-	function confirmParent(parent, parentName) {
-		$("#parent").val(parent);
-		$("#parentName").val(parentName);
-		dataGroupDialog.dialog( "close" );
-	}
-
-	$( "#rootParentSelect" ).on( "click", function() {
-		$("#parent").val(0);
-		$("#parentName").val("${dataGroup.parentName}");
-		dataGroupDialog.dialog("close");
-	});
-
-	// 지도에서 찾기
-	$( "#mapButtion" ).on( "click", function() {
-		var url = "/data/location-map";
-		var width = 800;
-		var height = 700;
-
-        var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height
-                + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
-        //popWin.document.title = layerName;
-	});
-
 	// 저장
 	var updateDataGroupFlag = true;
 	function updateDataGroup() {
@@ -250,7 +233,7 @@
 			updateDataGroupFlag = false;
 			var formData = $("#dataGroup").serialize();
 			$.ajax({
-				url: "/data-group/update",
+				url: "/data-groups/${dataGroup.dataGroupId}",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 		        data: formData,
@@ -274,6 +257,21 @@
 			return;
 		}
 	}
+	
+	// 지도에서 찾기
+	$( "#mapButtion" ).on( "click", function() {
+		var url = "/map/find-point";
+		var width = 800;
+		var height = 700;
+
+		var popupX = (window.screen.width / 2) - (width / 2);
+		// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+		var popupY= (window.screen.height / 2) - (height / 2);
+		
+	    var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height + ", top=" + popupY + ", left="+popupX
+	            + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
+	    //popWin.document.title = layerName;
+	});
 </script>
 </body>
 </html>

@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.Key;
 import ndtp.domain.Policy;
+import ndtp.config.PropertiesConfig;
 import ndtp.domain.DataGroup;
 import ndtp.domain.UserSession;
 import ndtp.service.PolicyService;
+import ndtp.utils.FileUtils;
 import ndtp.service.DataGroupService;
 
 /**
@@ -41,6 +43,8 @@ public class DataGroupController {
 //	private ObjectMapper objectMapper;
 	@Autowired
 	private PolicyService policyService;
+	@Autowired
+	private PropertiesConfig propertiesConfig;
 	
 	/**
 	 * 사용자 데이터 그룹 관리
@@ -54,6 +58,18 @@ public class DataGroupController {
 		DataGroup dataGroup = new DataGroup();
 		dataGroup.setUserId(userSession.getUserId());
 		List<DataGroup> dataGroupList = dataGroupService.getAllListDataGroup(dataGroup);
+		if(dataGroupList == null || dataGroupList.isEmpty()) {
+			String dataGroupPath = "basic/";
+			dataGroup.setDataGroupKey("basic");
+			dataGroup.setDataGroupName("기본");
+			dataGroup.setDataGroupPath(dataGroupPath);
+			dataGroup.setSharing("public");
+			
+			FileUtils.makeDirectoryByPath(propertiesConfig.getDataServiceDir(), dataGroupPath);
+			dataGroupService.insertBasicDataGroup(dataGroup);
+			
+			dataGroupList = dataGroupService.getListDataGroup(dataGroup);
+		}
 		
 		model.addAttribute("dataGroupList", dataGroupList);
 		return "/data-group/list";
@@ -107,10 +123,7 @@ public class DataGroupController {
 		}
 		dataGroup.setOldDataGroupKey(dataGroup.getDataGroupKey());
 		
-		List<DataGroup> dataGroupList = dataGroupService.getAllListDataGroup(dataGroup);
-		
 		model.addAttribute("dataGroup", dataGroup);
-		model.addAttribute("dataGroupList", dataGroupList);
 		
 		return "/data-group/modify";
 	}

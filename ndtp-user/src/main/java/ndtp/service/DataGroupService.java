@@ -60,6 +60,13 @@ public interface DataGroupService {
      */
     int insertDataGroup(DataGroup dataGroup);
     
+    /**
+     * 기본 데이터 그룹 등록
+     * @param dataGroup
+     * @return
+     */
+    int insertBasicDataGroup(DataGroup dataGroup);
+    
 	/**
 	 * 사용자 데이터 그룹 수정
 	 * @param dataGroup

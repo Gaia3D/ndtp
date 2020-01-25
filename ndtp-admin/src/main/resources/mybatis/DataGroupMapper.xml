@@ -16,6 +16,7 @@
 	        	ARRAY[A.view_order], false
 			FROM data_group A
 			WHERE A.parent = 0
+				AND A.data_group_target = 'admin'
 			<if test="available != null">
 				AND A.available = #{available}
 			</if>
@@ -36,7 +37,7 @@
 	<!-- 데이터 그룹 정보 -->
 	<select id="getDataGroup" parameterType="dataGroup" resultType="dataGroup">
 		/* getDataGroup */
-		SELECT *
+		SELECT *, ST_X(location) AS longitude, ST_Y(location) AS latitude
 		FROM data_group
 		WHERE data_group_id = #{dataGroupId}
 		<if test="userId != null and userId != ''">
@@ -79,7 +80,9 @@
 	<!-- 그룹Key 중복 체크 -->
 	<select id="getDuplicationKeyCount" parameterType="string" resultType="int">
 		/* getDuplicationKeyCount */
-		SELECT COUNT(data_group_key) AS count FROM data_group WHERE data_group_key = #{dataGroupKey}
+		SELECT COUNT(data_group_key) AS count 
+		FROM data_group 
+		WHERE data_group_key = #{dataGroupKey}
 	</select>
 
 	<!-- 데이터 그룹 등록 -->
@@ -129,6 +132,37 @@
 			ST_GeomFromText(#{location}, 4326),
 			</if>
 			#{altitude}, #{duration},
+			<if test="metainfo != null and metainfo != ''">
+			TO_JSON(#{metainfo}::json),
+			</if>
+			trim(#{description})
+		)
+	</insert>
+	
+	<!-- 기본 사용자 데이터 그룹 등록 -->
+	<insert id="insertBasicDataGroup" parameterType="dataGroup">
+		/* insertBasicDataGroup */
+		<selectKey keyProperty="dataGroupId" resultType="int" order="BEFORE">
+    		SELECT NEXTVAL('data_group_seq')
+  		</selectKey>
+		INSERT INTO data_group (
+			data_group_id, data_group_name, data_group_key, data_group_path, data_group_target, sharing, user_id, 
+			ancestor, parent, depth, view_order, children, basic, available, data_count, 
+			<if test="location != null">
+			location,
+			</if>
+			altitude, duration,
+			<if test="metainfo != null and metainfo != ''">
+			metainfo,
+			</if>
+			description
+		) VALUES (
+			#{dataGroupId}, #{dataGroupName}, #{dataGroupKey}, #{dataGroupPath}, #{dataGroupTarget}, #{sharing}, #{userId},
+			#{dataGroupId}, 0, 1, 1, 0, true, true, 0,
+			<if test="location != null">
+			ST_GeomFromText(#{location}, 4326),
+			</if>
+			#{altitude}, #{duration}, 
 			<if test="metainfo != null and metainfo != ''">
 			TO_JSON(#{metainfo}::json),
 			</if>
@@ -189,8 +223,12 @@
 			<if test="description != null and description != ''">
 			description = #{description},
 			</if>
+			<if test="basic != null">
 			basic = #{basic},
+			</if>
+			<if test="available != null">
 			available = #{available},
+			</if>
 			update_date = NOW()
 		WHERE data_group_id = #{dataGroupId}
 		<if test="userId != null and userId != ''">
@@ -204,6 +242,9 @@
 		UPDATE data_group
 		SET view_order = #{viewOrder}
 		WHERE data_group_id = #{dataGroupId}
+		<if test="userId != null and userId != ''">
+			AND user_id = #{userId}
+		</if>
 	</update>
 
 	<!-- 데이터 그룹 삭제 -->
@@ -223,7 +264,7 @@
 		DELETE
 		FROM data_group
 		WHERE ancestor = #{dataGroupId}
-		OR data_group_id = #{dataGroupId}
+			OR data_group_id = #{dataGroupId}
 		<if test="userId != null and userId != ''">
 			AND user_id = #{userId}
 		</if>
@@ -235,7 +276,7 @@
 		DELETE
 		FROM data_group
 		WHERE parent = #{dataGroupId}
-		OR data_group_id = #{dataGroupId}
+			OR data_group_id = #{dataGroupId}
 		<if test="userId != null and userId != ''">
 			AND user_id = #{userId}
 		</if>
