@@ -14,8 +14,8 @@
 	        	A.description, A.insert_date, ARRAY[A.view_order], false
 			FROM user_group A
 			WHERE A.parent = 0
-			<if test="useYn == 'Y'.toString()">
-				AND A.use_yn = 'Y'
+			<if test="available == true">
+				AND A.available = true
 			</if>
 			UNION ALL
 	        SELECT A.user_group_id, A.user_group_key, A.user_group_name, A.ancestor, A.parent, A.depth, A.view_order, A.basic, A.available, A.children,

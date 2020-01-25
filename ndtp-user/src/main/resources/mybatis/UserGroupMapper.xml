@@ -14,8 +14,8 @@
 	        	A.description, A.insert_date, ARRAY[A.view_order], false
 			FROM user_group A
 			WHERE A.parent = 0
-			<if test="useYn == 'Y'.toString()">
-				AND A.available = 'Y'
+			<if test="available == true">
+				AND A.available = true
 			</if>
 			UNION ALL
 	        SELECT A.user_group_id, A.user_group_key, A.user_group_name, A.ancestor, A.parent, A.depth, A.view_order, A.basic, A.available, A.children,
@@ -88,7 +88,7 @@
 		WITH RECURSIVE menu_tree (
 			user_group_menu_id, user_group_id, all_yn, read_yn, write_yn, update_yn, delete_yn,
 			menu_id, menu_type, menu_target, name, name_en, ancestor, parent, depth, view_order, url, url_alias, html_id, html_content_id,
-			image, image_alt, css_class, basic, available, display_yn, description, insert_date, path, cycle
+			image, image_alt, css_class, default_yn, use_yn, display_yn, description, insert_date, path, cycle
 		) AS (
 	        SELECT X.user_group_menu_id, X.user_group_id, X.all_yn, X.read_yn, X.write_yn, X.update_yn, X.delete_yn,
 				X.menu_id, X.menu_type, X.menu_target, X.name, X.name_en, X.ancestor, X.parent, X.depth, X.view_order, X.url, X.url_alias, X.html_id, X.html_content_id,
@@ -109,7 +109,9 @@
 					<if test="menuTarget != null and menuTarget != ''">
 					AND B.menu_target = #{menuTarget}
 					</if>
-					AND B.use_yn != 'N'
+					<if test="useYn != null and useYn != ''">
+					AND B.use_yn = #{useYn}
+					</if>
 			) X
 	        UNION ALL
 	        SELECT X.user_group_menu_id, X.user_group_id, X.all_yn, X.read_yn, X.write_yn, X.update_yn, X.delete_yn,
@@ -131,13 +133,15 @@
 					<if test="menuTarget != null and menuTarget != ''">
 					AND B.menu_target = #{menuTarget}
 					</if>
-					AND B.use_yn != 'N'
+					<if test="useYn != null and useYn != ''">
+					AND B.use_yn = #{useYn}
+					</if>
 	        ) X, menu_tree Y
 	        WHERE X.parent = Y.menu_id AND not cycle
 		)
 	    SELECT user_group_menu_id, user_group_id, all_yn, read_yn, write_yn, update_yn, delete_yn,
 			menu_id, menu_type, menu_target, name, name_en, ancestor, parent, depth, view_order, url, url_alias, html_id, html_content_id,
-			image, image_alt, css_class, basic, available, display_yn, description, insert_date
+			image, image_alt, css_class, default_yn, use_yn, display_yn, description, insert_date
 	    FROM menu_tree
 	    ORDER BY path
 	</select>
@@ -146,7 +150,7 @@
 	<select id="getListUserGroupRole" parameterType="userGroupRole" resultType="userGroupRole">
 		/* getListUserGroupRole */
 		SELECT A.*,
-			B.role_key, B.role_name, B.role_type, B.available, B.description
+			B.role_key, B.role_name, B.role_type, B.use_yn, B.description
 		FROM user_group_role A, role B
 		WHERE A.role_id = B.role_id
 			<if test="userGroupId != null and userGroupId gt 0">
