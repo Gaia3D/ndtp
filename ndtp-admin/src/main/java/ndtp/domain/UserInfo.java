@@ -31,16 +31,16 @@ public class UserInfo extends Search implements Serializable {
 	private String userLastSigninLock;
 	// 아이디 중복 확인 hidden 값
 	private String duplicationValue;
-	// 논리 삭제
+	// 논리 삭제 
 	private String deleteFlag;
-
+	
 	/****** validator ********/
 	private String methodMode;
-
+	
 	/********** Policy ************/
 	// 사용자 사인인 실패 잠금 해제 기간
 	private String userFailLockRelease;
-
+	
 	/********** DB 사용 *************/
 	// 고유번호
 	@NotBlank
@@ -119,7 +119,7 @@ public class UserInfo extends Search implements Serializable {
 	private String tempPassword;
 	// 일정 기간 동안 미 접속시 잠금 처리 결과 값
 	private Boolean userLastSigninLockOver;
-
+	
 	// 개인정보 수정 날짜
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Timestamp updateDate;

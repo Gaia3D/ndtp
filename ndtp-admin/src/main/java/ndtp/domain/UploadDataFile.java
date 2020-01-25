@@ -18,7 +18,7 @@ import lombok.ToString;
  * @author Cheon JeongDae
  *
  */
-@ToString
+@ToString(callSuper = true)
 @Builder
 @Getter
 @Setter
@@ -33,6 +33,7 @@ public class UploadDataFile extends Search implements Serializable {
 	
 	private Integer dataGroupId;
 	private String sharing;
+	private String dataType;
 	
 	/****** validator ********/
 	private String methodMode;
@@ -40,6 +41,8 @@ public class UploadDataFile extends Search implements Serializable {
 	/****** upload_data join ********/
 	// 데이터명
 	private String dataName;
+	// 기본값 origin : latitude, longitude, height를 origin에 맞춤. boundingboxcenter : latitude, longitude, height를 boundingboxcenter 맞춤
+	private String mappingType;
 	// 위도
 	private BigDecimal latitude;
 	// 경도
