@@ -252,3 +252,7 @@ function isHangul(value) {
 	}
 }
 
+function notyetAlram() {
+	alert('아직 준비중입니다.');
+}
+

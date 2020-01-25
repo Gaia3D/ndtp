@@ -160,9 +160,6 @@ var SpatialAnalysis = function(magoInstance) {
 						var polygonGraphic = new Cesium.PolygonGraphics({
 							hierarchy: polygonHierarchy,
 							material: Cesium.Color.AQUAMARINE.withAlpha(0.5),
-							outline:true,
-							outlineColor:Cesium.Color.WHITE,
-							outlineWidth:2,
 							clampToGround: true
 						})
 						addedEntity = viewer.entities.add({

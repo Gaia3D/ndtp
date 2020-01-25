@@ -1,153 +1,219 @@
 var KotSlider = function (inputId) {
+    if (!document.getElementById(inputId) || !document.getElementById(inputId).tagName == 'INPUT') throw '"' + inputId + '" 라는 id의 input이 없습니다.';
 
     var defaultOptions = {
+
         max: 5,
         min: 0,
         step: 1,
         duration: 1000
     };
+    this.id = inputId;
+    this.min = defaultOptions.min;
+    this.max = defaultOptions.max;
+    this.step = defaultOptions.step;
+    this.duration = defaultOptions.duration;
     this.t = defaultOptions.min;
-
-    this.sliderObject = {
-        id : inputId,
-        max : defaultOptions.max,
-        min : defaultOptions.min,
-        step : defaultOptions.step,
-        duration : defaultOptions.duration
-    };
 
     this.init();
 }
 
 KotSlider.prototype.init = function () {
 
+	var that = this;
+    var slider = document.getElementById(this.id);
 
-        if (document.getElementById(this.sliderObject.id) && document.getElementById(this.sliderObject.id).tagName == 'INPUT') {
-            var slider = document.getElementById(this.sliderObject.id);
-            var parent = slider.parentElement;
-            var div = document.createElement('div');
-            var divChild1 = document.createElement('div');
-            var divChild2 = document.createElement('div');
-            div.setAttribute('class', 'rangeWrap');
-            divChild1.setAttribute('class', 'rangeWrapChild button');
-            divChild2.setAttribute('class', 'rangeWrapChild slide');
-            divChild2.append(slider);
-            div.append(divChild1);
-            div.append(divChild2);
-            parent.appendChild(div);
+    var div = document.createElement('div');
+    var divChild1 = document.createElement('div');
+    var divChild2 = document.createElement('div');
+    var divChild3 = document.createElement('div');
+    var mother = slider.parentNode;
+    div.setAttribute('class', 'rangeWrap');
+    divChild1.setAttribute('class', 'rangeWrapChild button');
+    divChild2.setAttribute('class', 'rangeWrapChild slide');
+    divChild2.append(slider);
+    divChild3.setAttribute('class', 'rangeWrapChild legend');
+    div.append(divChild1);
+    div.append(divChild2);
+    div.append(divChild3);
+    mother.appendChild(div);
 
-            makeSliderBtn("startBtn", "start", this.sliderObject.id);
-            makeSliderBtn("stopBtn", "stop", this.sliderObject.id);
-            makeSliderBtn("beforeBtn", "before", this.sliderObject.id);
-            makeSliderBtn("afterBtn", "after", this.sliderObject.id);
+    makeSliderBtn("startBtn", "start", this.id);
+    makeSliderBtn("stopBtn", "stop", this.id);
+    makeSliderBtn("beforeBtn", "before", this.id);
+    makeSliderBtn("afterBtn", "after", this.id);
 
-            this.setSlider(this.sliderObject);
+    this.setSlider(this.id);
 
-            function makeSliderBtn(name, action, id) {
-                var name = document.createElement('button');
+    function makeSliderBtn(name, action, id) {
+        var name = document.createElement('button');
 
-                name.id = action + id;
-                name.setAttribute('class', action);
-                name.value = action;
-                divChild1.append(name);
-            }
-        } else {
-            throw '"' + this.sliderObject.id + '" 라는 id의 input이 없습니다.';
-        }
+        name.id = action + id;
+        name.setAttribute('class', action);
+        name.value = action;
+        divChild1.append(name);
+    }
+    slider.onchange = function(e){
+    	that.t = this.value;
+    }
+    slider.oninput = function(e){
+    	that.t = this.value;
+    }
+    slider.onmousewheel = function(e){
+    	var isUp = e.deltaY < 0;
+    	var type = isUp ? 'after' : 'before';
+    	
+    	var btn = document.getElementById(type+this.id);
+    	btn.dispatchEvent(new Event('click'));
+    }
 }
 
 KotSlider.prototype.setMax = function (max) {
-    
-    this.sliderObject.max = max;
-    this.setSlider(this.sliderObject);
+
+    this.max = max;
+    this.setSlider(this.id);
 
 }
 
 KotSlider.prototype.setMin = function (min) {
-    
-    this.sliderObject.min = min;
-    this.setSlider(this.sliderObject);
+
+    this.min = min;
+    this.setSlider(this.id);
 
 }
 
 KotSlider.prototype.setStep = function (step) {
-    
-    this.sliderObject.step = step;
-    this.setSlider(this.sliderObject);
+
+    this.step = step;
+    this.setSlider(this.id);
 
 }
 
 KotSlider.prototype.setDuration = function (duration) {
-    
-    this.sliderObject.duration = duration;
-    this.setSlider(this.sliderObject);
+
+    this.duration = duration;
+    this.setSlider(this.id);
 
 }
 
-KotSlider.prototype.setSlider = function (sliderObject) {
+KotSlider.prototype.getMax = function () {
 
-    var slider = document.getElementById(sliderObject.id);
+    return this.max;
 
-    var t = sliderObject.min;
-    var startButton = document.getElementById("start" + sliderObject.id);
-    var stopButton = document.getElementById("stop" + sliderObject.id);
-    var beforeButton = document.getElementById("before" + sliderObject.id);
-    var afterButton = document.getElementById("after" + sliderObject.id);
+}
+
+KotSlider.prototype.getMin = function () {
+
+    return this.min;
+
+}
+
+KotSlider.prototype.getStep = function () {
+
+    return this.step;
+
+}
+
+KotSlider.prototype.getDuration = function () {
+
+    return this.duration
+
+}
+
+KotSlider.prototype.getValue = function () {
+
+    return this.t
+
+}
+
+KotSlider.prototype._setT = function (value) {
+
+	this.t = value;
+
+}
+
+KotSlider.prototype.setValue = function (value) {
+	
+	var slider = document.getElementById(this.id);
+	var isChange = true;
+	if(slider.value == value) {
+		isChange = false;
+    }
+	slider.value = value;
+	this._setT(value);
+	
+	if(isChange) {
+		slider.dispatchEvent(new Event('change'));
+	}
+}
+
+KotSlider.prototype.setSlider = function (id) {
+	var that = this;
+    var sliderObject = document.getElementById(id);
+
+    var t = that.min;
+    var startButton = document.getElementById("start" + id);
+    var stopButton = document.getElementById("stop" + id);
+    var beforeButton = document.getElementById("before" + id);
+    var afterButton = document.getElementById("after" + id);
     var timer;
+    var max = that.max;
+    var min = that.min;
+    var step = that.step;
+    var duration = that.duration;
 
-    slider.value = t;
-    slider.type = 'range';
-    slider.max = sliderObject.max;
-    slider.min = sliderObject.min;
-    slider.step = sliderObject.step;
-    slider.className = 'slider';
+    sliderObject.value = t;
+    sliderObject.type = 'range';
+    sliderObject.max = max;
+    sliderObject.min = min;
+    sliderObject.step = step;
+    sliderObject.className = 'slider';
 
     startButton.onclick = start;
     beforeButton.onclick = before;
     afterButton.onclick = after;
-    slider.onclick = clickValue;
+    sliderObject.onclick = clickValue;
 
     function clickValue() {
-        t = new Number(slider.value);
+        t = new Number(sliderObject.value);
     }
 
     function start() {
         startButton.onclick = null;
         stopButton.onclick = stop;
-        t = sliderObject.min;
-        slider.value = t;
+        if(sliderObject.value == t) {
+        	t = min;
+        	that.setValue(min);
+        }
+        
         timer = setInterval(function () {
-
-            if (t + sliderObject.step >= sliderObject.max) {
+            if (t + step > max) {
                 clearInterval(timer);
-                t = sliderObject.max;
-                slider.value = t;
                 startButton.onclick = start;
-
-            } else {
-                t = (t + sliderObject.step);
-                slider.value = t;
-
+                return;
             }
-        }, sliderObject.duration);
+            t = t + step;
+            that.setValue(t);
+        }, duration);
     }
     function stop() {
         clearInterval(timer);
         startButton.onclick = start;
     }
     function before() {
-        if (t - sliderObject.step <= sliderObject.max && t - sliderObject.step >= sliderObject.min) {
-
-            t = t - sliderObject.step;
+        if (t - min <= max && t - step >= min) {
+            t = t - step
         }
-        slider.value = t;
+
+        that.setValue(t);
     }
     function after() {
-        if (t + sliderObject.step <= sliderObject.max) {
 
-            t = t + sliderObject.step;
+        if (t + step <= max) {
+
+            t = t + step;
+
         }
-        slider.value = t;
-
+        that.setValue(t);
     }
 }

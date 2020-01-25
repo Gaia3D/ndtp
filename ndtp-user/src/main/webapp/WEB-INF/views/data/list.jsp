@@ -143,9 +143,6 @@
 	$(document).ready(function() {
 		$(".ui-slider-handle").slider({});
 	});
-	
-	//Cesium.Ion.defaultAccessToken = '';
-	//var viewer = new Cesium.Viewer('magoContainer');
 	var MAGO3D_INSTANCE;
 	// ndtp 전역 네임스페이스
 	var NDTP = NDTP ||{
@@ -201,6 +198,7 @@
 
         dataGroupList();
 
+		//시뮬레이션
         Simulation(magoInstance);
         // 환경 설정.
         UserPolicy(magoInstance);
