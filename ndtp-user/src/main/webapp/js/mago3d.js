@@ -14737,7 +14737,6 @@ MagoRenderable.prototype.makeMesh = function()
 MagoRenderable.prototype.moved = function() 
 {
 	// do something.
-	var hola = 0;
 };
 MagoRenderable.prototype.updateMatrix = function(ownerMatrix) 
 {
@@ -22987,7 +22986,7 @@ var MagoManager = function()
 	 * @type {SelectionManager}
 	 * @default SelectionManager.
 	 */
-	this.selectionManager = new SelectionManager();
+	this.selectionManager = new SelectionManager(this);
 	
 	/**
 	 * Manages the shaders.
@@ -23228,12 +23227,17 @@ MagoManager.prototype = Object.create(Emitter.prototype);
 MagoManager.prototype.constructor = MagoManager;
 
 MagoManager.EVENT_TYPE = {
-	'CLICK'             	: 'click',
-	'DBCLICK'           	: 'dbclick',
-	'RIGHTCLICK'         : 'rightclick',
-	'MOUSEMOVE'          : 'mousemove',
-	'SMARTTILELOADSTART' : 'smarttileloadstart',
-	'SMARTTILELOADEND'   : 'smarttileloadend'
+	'CLICK'              	: 'click',
+	'DBCLICK'            	: 'dbclick',
+	'RIGHTCLICK'         	: 'rightclick',
+	'MOUSEMOVE'          	: 'mousemove',
+	'SMARTTILELOADSTART' 	: 'smarttileloadstart',
+	'SMARTTILELOADEND'   	: 'smarttileloadend',
+	'SELECTEDF4D'      	 	: 'selectedf4d',
+	'SELECTEDF4DMOVED'    : 'selectedf4dmoved',
+	'SELECTEDF4DOBJECT'  	: 'selectedf4dobject',
+	'DESELECTEDF4D'    	 	: 'deselectedf4d',
+	'DESELECTEDF4DOBJECT'	: 'deselectedf4dobject'
 };
 
 /**
@@ -24533,6 +24537,16 @@ MagoManager.prototype.getSelectedObjects = function(gl, mouseX, mouseY, resultSe
 	{ selectionManager.selectObjects(idx); }
 	else 
 	{
+		var mode = this.magoPolicy.getObjectMoveMode();
+		if (mode === CODE.moveMode.OBJECT && (selectionManager.currentReferenceSelected && !selectionManager.referencesMap[idx])&& (selectionManager.currentOctreeSelected && !selectionManager.octreesMap[idx])) 
+		{
+			this.emit(MagoManager.EVENT_TYPE.DESELECTEDF4DOBJECT, {type: MagoManager.EVENT_TYPE.DESELECTEDF4DOBJECT});
+		}
+
+		if (mode === CODE.moveMode.ALL && (selectionManager.currentBuildingSelected && !selectionManager.buildingsMap[idx])&& (selectionManager.currentNodeSelected && !selectionManager.nodesMap[idx])) 
+		{
+			this.emit(MagoManager.EVENT_TYPE.DESELECTEDF4D, {type: MagoManager.EVENT_TYPE.DESELECTEDF4D});
+		}
 		selectionManager.currentReferenceSelected = selectionManager.referencesMap[idx];
 		selectionManager.currentOctreeSelected = selectionManager.octreesMap[idx];
 		selectionManager.currentBuildingSelected = selectionManager.buildingsMap[idx];
@@ -25624,6 +25638,21 @@ MagoManager.prototype.manageMouseDragging = function(mouseX, mouseY)
 			if (geographicCoords === undefined)
 			{ return; }
 			
+			this.emit(MagoManager.EVENT_TYPE.SELECTEDF4DMOVED, {
+				type   : MagoManager.EVENT_TYPE.SELECTEDF4DMOVED,
+				result : {
+					projectId : nodeOwner.data.projectId,
+					dataKey   : nodeOwner.data.nodeId,
+					latitude  : geographicCoords.latitude,
+					longitude : geographicCoords.longitude,
+					altitude  : geographicCoords.altitude, 
+					heading   : geoLocation.heading, 
+					pitch     : geoLocation.pitch, 
+					roll      : geoLocation.roll
+				},
+				timestamp: new Date()
+			});
+
 			/*movedDataCallback(	MagoConfig.getPolicy().geo_callback_moveddata,
 				nodeOwner.data.projectId,
 				nodeOwner.data.nodeId,
@@ -25633,8 +25662,8 @@ MagoManager.prototype.manageMouseDragging = function(mouseX, mouseY)
 				geographicCoords.altitude,
 				geoLocation.heading,
 				geoLocation.pitch,
-				geoLocation.roll);*/
-								
+				geoLocation.roll
+			);*/				
 		}
 		else 
 		{
@@ -55507,111 +55536,6 @@ TinTerrainManager.prototype.render = function(magoManager, bDepth, renderType, s
 'use strict';
 
 /**
- * 메세지
- * 
- * @class
- */
-var Message = function(i18next, message) 
-{
-	this.handle  = i18next;
-	this.message = message || MessageSource;
-};
-
-/**
- * 메세지 클래스 초기화
- *
- * @param {Function} callback
- */
-Message.prototype.init = function (callback)
-{
-	var h = this.handle;
-	this.handle.use(i18nextXHRBackend)
-		.use(i18nextBrowserLanguageDetector)
-		.init({
-			// Useful for debuging, displays which key is missing
-			debug: false,
-
-			detection: {
-				// keys or params to lookup language from
-				lookupQuerystring  : 'lang',
-				lookupCookie       : 'i18nextLang',
-				lookupLocalStorage : 'i18nextLang',
-			},
-    
-			// If translation key is missing, which lang use instead
-			fallbackLng: 'en',
-
-			resources: this.message,
-
-			// all, languageOnly
-			load: "languageOnly",
-
-			ns        : ['common'],
-			// Namespace to use by default, when not indicated
-			defaultNS : 'common',
-    
-			keySeparator     : ".",
-			nsSeparator      : ":",
-			pluralSeparator  : "_",
-			contextSeparator : "_"
-
-		}, function(err, t)
-		{
-			console.log("detected user language: " + h.language);
-			console.log("loaded languages: " + h.languages.join(', '));
-			h.changeLanguage(h.languages[0]);
-			callback(err, t);
-		});
-};
-
-/**
- * 메세지 핸들러를 가져온다.
- *
- * @returns {i18next} message handler
- */
-Message.prototype.getHandle = function ()
-{
-	return this.handle;
-};
-
-/**
- * 메세지를 가져온다.
- *
- * @returns {Object} message
- */
-Message.prototype.getMessage = function ()
-{
-	return this.message;
-};
-
-'use strict';
-var MessageSource = {};
-MessageSource.en = {
-  "common": {
-    "welcome" : "Welcome",
-    "error": {
-        "title" : "Error",
-        "construct" : {
-            "create" : "This object should be created using new."
-        }
-    }
-  }
-};
-MessageSource.ko = {
-    "common": {
-      "welcome" : "환영합니다.",
-      "error": {
-          "title" : "오류",
-          "construct" : {
-              "create" : "이 객체는 new 를 사용하여 생성해야 합니다."
-          }
-      }
-    }
-  };
-
-'use strict';
-
-/**
  * This represent Arc feature in 2D
  * @class Arc2D
  */
@@ -74224,6 +74148,111 @@ VtxSegment.prototype.intersectionWithPoint = function(point, error)
 'use strict';
 
 /**
+ * 메세지
+ * 
+ * @class
+ */
+var Message = function(i18next, message) 
+{
+	this.handle  = i18next;
+	this.message = message || MessageSource;
+};
+
+/**
+ * 메세지 클래스 초기화
+ *
+ * @param {Function} callback
+ */
+Message.prototype.init = function (callback)
+{
+	var h = this.handle;
+	this.handle.use(i18nextXHRBackend)
+		.use(i18nextBrowserLanguageDetector)
+		.init({
+			// Useful for debuging, displays which key is missing
+			debug: false,
+
+			detection: {
+				// keys or params to lookup language from
+				lookupQuerystring  : 'lang',
+				lookupCookie       : 'i18nextLang',
+				lookupLocalStorage : 'i18nextLang',
+			},
+    
+			// If translation key is missing, which lang use instead
+			fallbackLng: 'en',
+
+			resources: this.message,
+
+			// all, languageOnly
+			load: "languageOnly",
+
+			ns        : ['common'],
+			// Namespace to use by default, when not indicated
+			defaultNS : 'common',
+    
+			keySeparator     : ".",
+			nsSeparator      : ":",
+			pluralSeparator  : "_",
+			contextSeparator : "_"
+
+		}, function(err, t)
+		{
+			console.log("detected user language: " + h.language);
+			console.log("loaded languages: " + h.languages.join(', '));
+			h.changeLanguage(h.languages[0]);
+			callback(err, t);
+		});
+};
+
+/**
+ * 메세지 핸들러를 가져온다.
+ *
+ * @returns {i18next} message handler
+ */
+Message.prototype.getHandle = function ()
+{
+	return this.handle;
+};
+
+/**
+ * 메세지를 가져온다.
+ *
+ * @returns {Object} message
+ */
+Message.prototype.getMessage = function ()
+{
+	return this.message;
+};
+
+'use strict';
+var MessageSource = {};
+MessageSource.en = {
+  "common": {
+    "welcome" : "Welcome",
+    "error": {
+        "title" : "Error",
+        "construct" : {
+            "create" : "This object should be created using new."
+        }
+    }
+  }
+};
+MessageSource.ko = {
+    "common": {
+      "welcome" : "환영합니다.",
+      "error": {
+          "title" : "오류",
+          "construct" : {
+              "create" : "이 객체는 new 를 사용하여 생성해야 합니다."
+          }
+      }
+    }
+  };
+
+'use strict';
+
+/**
  * Geoserver for mago3Djs object.
  * @class Geoserver
  */
@@ -80898,12 +80927,15 @@ SelectionCandidateFamily.prototype.selectObject = function(idxKey)
  * @alias SelectionManager
  * @class SelectionManager
  */
-var SelectionManager = function() 
+var SelectionManager = function(magoManager) 
 {
 	if (!(this instanceof SelectionManager)) 
 	{
 		throw new Error(Messages.CONSTRUCT_ERROR);
 	}
+
+	//2020 01 24 추가
+	this.magoManager = magoManager;
 
 	// General candidates. 
 	this.selCandidatesMap = {};
@@ -81068,6 +81100,18 @@ SelectionManager.prototype.selectObjects = function(idxKey)
 	this.currentOctreeSelected = this.octreesMap[idxKey];
 	this.currentBuildingSelected = this.buildingsMap[idxKey];
 	this.currentNodeSelected = this.nodesMap[idxKey];
+
+	var mode = this.magoManager.magoPolicy.getObjectMoveMode();
+
+	if (mode === CODE.moveMode.ALL && this.currentBuildingSelected && this.currentNodeSelected) 
+	{
+		this.magoManager.emit(MagoManager.EVENT_TYPE.SELECTEDF4D, {type: MagoManager.EVENT_TYPE.SELECTEDF4D, f4d: this.currentNodeSelected, timestamp: new Date()});
+	}
+
+	if (mode === CODE.moveMode.OBJECT && this.currentOctreeSelected && this.currentReferenceSelected) 
+	{
+		this.magoManager.emit(MagoManager.EVENT_TYPE.SELECTEDF4DOBJECT, {type: MagoManager.EVENT_TYPE.SELECTEDF4DOBJECT, object: this.currentOctreeSelected, timestamp: new Date()});
+	}
 	
 	for (var key in this.selCandidatesFamilyMap)
 	{
