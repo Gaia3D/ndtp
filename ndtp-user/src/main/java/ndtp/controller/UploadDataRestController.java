@@ -201,7 +201,7 @@ public class UploadDataRestController {
     					return result;
     				}
     				
-    				if(converterTypeList.contains(extension)) {
+    				if(converterTypeList.contains(extension.toLowerCase())) {
 						// 변환 대상 파일만 이름을 변경하고 나머지 파일은 그대로 이름 유지
 						saveFileName = userId + "_" + today + "_" + System.nanoTime() + "." + extension;
 						converterTarget = true;
@@ -376,8 +376,8 @@ public class UploadDataRestController {
             			saveFileName = fileName;
             			if(divideFileName != null && divideFileName.length != 0) {
             				extension = divideFileName[divideFileName.length - 1];
-            				if(uploadTypeList.contains(extension)) {
-            					if(converterTypeList.contains(extension)) {
+            				if(uploadTypeList.contains(extension.toLowerCase())) {
+            					if(converterTypeList.contains(extension.toLowerCase())) {
             						// 변환 대상 파일만 이름을 변경하고 나머지 파일은 그대로 이름 유지
             						saveFileName = userId + "_" + today + "_" + System.nanoTime() + "." + extension;
             						converterTarget = true;
@@ -391,8 +391,8 @@ public class UploadDataRestController {
             			saveFileName = fileName;
             			if(divideFileName != null && divideFileName.length != 0) {
             				extension = divideFileName[divideFileName.length - 1];
-            				if(uploadTypeList.contains(extension)) {
-            					if(converterTypeList.contains(extension)) {
+            				if(uploadTypeList.contains(extension.toLowerCase())) {
+            					if(converterTypeList.contains(extension.toLowerCase())) {
             						// 변환 대상 파일만 이름을 변경하고 나머지 파일은 그대로 이름 유지
             						saveFileName = userId + "_" + today + "_" + System.nanoTime() + "." + extension;
                 					converterTarget = true;

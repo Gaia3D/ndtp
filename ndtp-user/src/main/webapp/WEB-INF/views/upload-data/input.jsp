@@ -88,6 +88,7 @@
 				<li onclick="location.href='/upload-data/input'" class="on">업로딩 데이터</li>
 			   	<li onclick="location.href='/upload-data/list'">업로딩 데이터 목록</li>
 			  	<li onclick="location.href='/converter/list'">업로딩 데이터 변환 목록</li>
+			  	<li onclick="location.href='/data/list'">데이터 목록</li>
 			</ul>
 		</div>
 		<form:form id="uploadData" modelAttribute="uploadData" method="post" onsubmit="return false;">
@@ -252,7 +253,7 @@
 			"x-csrf-token": document.querySelectorAll("meta[name=csrf-token]")[0].getAttributeNode("content").value,
 		}, */
 		// 허용 확장자
-		acceptedFiles: ".3ds, .obj, .dae, .collada, .ifc, .las, .citygml, .indoorgml, .jpg, .jpeg, .gif, .png, .bmp, .zip, .mtl",
+		acceptedFiles: ".3ds, .obj, .dae, .collada, .ifc, .las, .citygml, .indoorgml, .jpg, .jpeg, .gif, .png, .bmp, .dds, .zip, .mtl",
 		// 업로드 취소 및 추가 삭제 미리 보기 그림 링크 를 기본 추가 하지 않음
 		// 기본 true false 로 주면 아무 동작 못함
 		//clickable: true,

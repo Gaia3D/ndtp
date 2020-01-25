@@ -14,7 +14,7 @@
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
     <link rel="stylesheet" href="/css/${lang}/user-style.css" />
 	<link rel="stylesheet" href="/css/${lang}/style.css" />
-    <style type="text/css">
+	<style type="text/css">
     	.mapSelectButton {
 			position : absolute;
 			bottom : 17px;
@@ -47,22 +47,37 @@
 </body>
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/externlib/handlebars-4.1.2/handlebars.js"></script>
 <script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>
+<script type="text/javascript" src="/js/mago3d.js"></script>
+<script type="text/javascript" src="/js/mago3d_lx.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
-<script type="text/javascript" src="/js/mago3d.js"></script>
+<script type="text/javascript" src="/js/${lang}/map-controll.js"></script>
+<script type="text/javascript" src="/js/${lang}/ui-controll.js"></script>
+<script type="text/javascript" src="/js/${lang}/wps-request.js"></script>
+<script type="text/javascript" src="/js/${lang}/data-info.js"></script>
+<script type="text/javascript" src="/js/${lang}/user-policy.js"></script>
+<%-- <script type="text/javascript" src="/js/${lang}/layer.js"></script> --%>
 
 <script type="text/javascript">
 	//Cesium.Ion.defaultAccessToken = '';
 	//var viewer = new Cesium.Viewer('magoContainer');
 	var MAGO3D_INSTANCE;
-	var viewer = null; 
-	var entities = null;
-	var geoPolicyJson = ${geoPolicyJson};
+	// ndtp 전역 네임스페이스
+	/* var NDTP = NDTP ||{
+		policy : ${geoPolicyJson},
+		baseLayers : "${baseLayers}",
+		wmsProvider : {},
+		districtProvider : {}
+	}; */
 	
+	var geoPolicyJson = null;
 	magoInit();
 	
 	function magoInit() {
+		
+		geoPolicyJson = ${geoPolicyJson};
 		
 		var cesiumViewerOption = {};
 			cesiumViewerOption.infoBox = false;
@@ -81,13 +96,11 @@
 		 * @param {Cesium.Viewer} legacyViewer 타 시스템과의 연동의 경우 view 객체가 생성되어서 넘어 오는 경우가 있음. option.
 		*/	
 		MAGO3D_INSTANCE = new Mago3D.Mago3d('magoContainer', geoPolicyJson, {loadend : magoLoadEnd}, cesiumViewerOption);
-		 
 	}
 	
 	var beforePointId = null;
 	function magoLoadEnd(e) {
 		var magoInstance = e;
-		
 		viewer = magoInstance.getViewer(); 
 		entities = viewer.entities;
 		var magoManager = magoInstance.getMagoManager();
@@ -95,6 +108,18 @@
 		
 		// TODO : 세슘 MAP 선택 UI 제거,엔진에서 처리로 변경 예정.
 		viewer.baseLayerPicker.destroy();
+		viewer.scene.globe.depthTestAgainstTerrain = true;
+		/* magoManager.on(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
+			console.info(result);
+		}); */
+
+		//우측 상단 지도 컨트롤러
+		MapControll(viewer);
+		
+        dataGroupList();
+
+        // 환경 설정.
+        UserPolicy(magoInstance);
 		
 		magoManager.on(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
 			if(beforePointId !== undefined && beforePointId !== null) {
@@ -129,9 +154,86 @@
 			beforePointId = addedEntity.id;
 		});
 		
+		// 기본 레이어 랜더링
 		setTimeout(function(){
         	initLayer('${baseLayers}');
         }, geoPolicyJson.initDuration * 1000);
+	}
+	
+	// 데이터 그룹 목록
+	function dataGroupList() {
+		$.ajax({
+			url: "/data-groups/all",
+			type: "GET",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			dataType: "json",
+			success: function(msg){
+				if(msg.statusCode <= 200) {
+					var dataGroupList = msg.dataGroupList;
+					if(dataGroupList !== null && dataGroupList !== undefined) {
+						dataList(dataGroupList);
+					}
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+				}
+			},
+			error:function(request,status,error){
+				alert(JS_MESSAGE["ajax.error.message"]);
+			}
+		});
+	}
+	
+	// 데이터 정보 목록
+	function dataList(dataGroupArray) {
+		var dataArray = new Array();
+		var dataGroupArrayLength = dataGroupArray.length;
+		var cnt = 0;
+		for(var i=0; i<dataGroupArrayLength; i++) {
+			var dataGroup = dataGroupArray[i];
+			if(dataGroup.dataCount === 0) delete dataGroupArray[i];
+			var f4dController = MAGO3D_INSTANCE.getF4dController();
+			$.ajax({
+				url: "/datas/" + dataGroup.dataGroupId + "/list",
+				type: "GET",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+				dataType: "json",
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						var dataInfoList = msg.dataInfoList;
+
+						if(dataInfoList.length > 0) {
+							var dataInfoFirst = dataInfoList[0];
+							var dataInfoGroupId = dataInfoFirst.dataGroupId;
+							var group;
+							for(var j in dataGroupArray) {
+								if(dataGroupArray[j].dataGroupId === dataInfoGroupId) {
+									group = dataGroupArray[j];
+									break;
+								}
+							}
+
+							group.datas = dataInfoList;
+							f4dController.addF4dGroup(group);
+						}
+						cnt++;
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+					}
+				},
+				error:function(request,status,error){
+					alert(JS_MESSAGE["ajax.error.message"]);
+				}
+			});			
+		}
+		
+	}
+	
+	function flyTo(longitude, latitude, altitude, duration) {
+		if(longitude === null || longitude === '' || latitude === null || latitude === '' || altitude === null || altitude === '') {
+			alert("위치 정보가 올바르지 않습니다. 확인하여 주십시오.");
+			return;
+		}
+		gotoFlyAPI(MAGO3D_INSTANCE, parseFloat(longitude), parseFloat(latitude), parseFloat(altitude), parseFloat(duration));
 	}
 	
 	function remove(entityStored) {

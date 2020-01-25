@@ -16,9 +16,6 @@
 	<link rel="stylesheet" href="/css/${lang}/style.css" />
 	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-	<style type="text/css">
-	    
-    </style>
 </head>
 <body>
 
@@ -40,6 +37,7 @@
 				<li onclick="location.href='/upload-data/input'">업로딩 데이터</li>
 			   	<li onclick="location.href='/upload-data/list'">업로딩 데이터 목록</li>
 			  	<li onclick="location.href='/converter/list'" class="on">업로딩 데이터 변환 목록</li>
+			  	<li onclick="location.href='/data/list'">데이터 목록</li>
 			</ul>
 		</div>
 		<div class="filters">
@@ -89,7 +87,7 @@
 		</div>
 		
 		<div class="list">
-			<form:form id="listForm" modelAttribute="uploadData" method="post">
+			<form:form id="listForm" modelAttribute="converterJob" method="post">
 				<input type="hidden" id="checkIds" name="checkIds" value="" />
 			<div class="list-header row">
 				<div class="list-desc u-pull-left">

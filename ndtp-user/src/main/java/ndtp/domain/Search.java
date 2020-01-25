@@ -127,7 +127,8 @@ public class Search {
 		buffer.append("searchOption=" + getDefaultValue(this.searchOption));
 		buffer.append("&");
 		try {
-			buffer.append("searchValue=" + URLEncoder.encode(getDefaultValue(this.searchValue), "UTF-8"));
+			buffer.append("searchValue=" + getDefaultValue(this.searchValue));
+			//buffer.append("searchValue=" + URLEncoder.encode(getDefaultValue(this.searchValue), "UTF-8"));
 		} catch(Exception e) {
 			e.printStackTrace();
 			buffer.append("searchValue=");

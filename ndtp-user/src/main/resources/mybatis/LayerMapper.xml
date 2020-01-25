@@ -10,35 +10,6 @@
         FROM layer a
         LEFT JOIN layer_group b
         ON a.layer_group_id = b.layer_group_id
-		<trim prefix="WHERE" prefixOverrides="AND">
-        	<if test="layerGroupId != null and layerGroupId gt 0">
-			AND a.layer_group_id = #{layerGroupId}
-			</if>
-			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
-			AND ${searchWord} = #{searchValue}
-			</if>
-			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
-			AND ${searchWord} LIKE '%' || #{searchValue} || '%'
-			</if>
-			<if test="startDate != null and startDate != ''">
-			<![CDATA[
-			AND a.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
-			]]>
-			</if>
-			<if test="endDate != null and endDate != ''">
-			<![CDATA[
-			AND a.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
-			]]>
-			</if>
-		</trim>
-		<choose>
-		<when test="orderWord != null and orderWord != '' and orderValue != null and orderValue != ''">
-		ORDER BY a.${orderWord} ${orderValue}
-		</when>
-		<otherwise>
-		ORDER BY a.insert_date DESC, layer_id DESC
-		</otherwise>
-		</choose>
-		OFFSET #{offset} LIMIT #{limit}
+        WHERE a.layer_group_id = #{layerGroupId}
     </select>
 </mapper>

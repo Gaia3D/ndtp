@@ -57,7 +57,7 @@ comment on column data_group.insert_date is '등록일';
 create table data_info(
 	data_id						bigint,
 	data_group_id				integer								not null,
-	converter_job_id			bigint,
+	converter_job_file_id		bigint,
 	data_key					varchar(128)						not null,
 	data_name					varchar(256),
 	data_type					varchar(30),
@@ -86,7 +86,7 @@ create table data_info(
 comment on table data_info is 'Data 정보';
 comment on column data_info.data_id is '고유번호';
 comment on column data_info.data_group_id is 'data_group 고유번호';
-comment on column data_info.converter_job_id is 'converter 고유번호';
+comment on column data_info.converter_job_file_id is 'converter job file 고유번호';
 comment on column data_info.data_key is 'data 고유 식별번호';
 comment on column data_info.data_name is 'data 이름';
 comment on column data_info.data_type is '데이터 타입(중복). 3ds,obj,dae,collada,ifc,las,citygml,indoorgml,etc';
@@ -103,7 +103,7 @@ comment on column data_info.children_parent is '부모';
 comment on column data_info.children_depth is '깊이';
 comment on column data_info.children_view_order is '표시 순서';
 comment on column data_info.metainfo is '데이터 메타 정보. 데이터  control을 위해 인위적으로 만든 속성';
-comment on column data_info.status is '상태. use : 사용중, unused : 사용중지(관리자), delete : 삭제(비표시)';
+comment on column data_info.status is '상태. processing : 변환중, use : 사용중, unused : 사용중지(관리자), delete : 삭제(비표시)';
 comment on column data_info.attribute_exist is '속성 존재 유무. true : 존재, false : 존재하지 않음(기본값)';
 comment on column data_info.object_attribute_exist is 'Object 속성 존재 유무. true : 존재, false : 존재하지 않음(기본값)';
 comment on column data_info.description is '설명';

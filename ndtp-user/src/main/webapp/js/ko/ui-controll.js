@@ -15,7 +15,7 @@ $(function() {
 	} else {
 		$('button#closeLeftBtn').toggle(true);
 		// 다른거 활성화
-		if( currentUrl.indexOf("/data/list") >= 0) {
+		if( currentUrl.indexOf("/data/map") >= 0) {
 			if( currentUrl.indexOf("#search") >= 0) {
 				$("#searchMenu").addClass('on');
 				$('#searchContent').toggle(true);
@@ -31,6 +31,9 @@ $(function() {
 			} else if( currentUrl.indexOf("#userPolicy") >= 0) {
 				$("#userPolicyMenu").addClass('on');
 				$('#userPolicyContent').toggle(true);
+			} else if( currentUrl.indexOf("#layer") >= 0) {
+				$("#layerMenu").addClass('on');
+				$('#layerContent').toggle(true);
 			} else {
 				$("#dataMenu").addClass('on');
 				$('#dataContent').toggle(true);
@@ -58,10 +61,13 @@ $(function() {
         var display = $(this).toggleClass('on').hasClass('on');
         
         // 변환(upload-data)이 아닌 컨텐츠 클릭시 다시 지도 페이지로 돌아감 
-        if(location.href.indexOf("upload") > 0 || location.href.indexOf("converter") > 0 || location.href.indexOf("group") > 0) {
+        if(location.href.indexOf("upload") > 0 
+        	|| location.href.indexOf("converter") > 0 
+        	|| location.href.indexOf("group") > 0 
+        	|| location.href.indexOf("/data/list") > 0 || location.href.indexOf("/data/modify") > 0) {
         	$(this).removeClass('on');
         	var classId = $(this).attr('class');
-        	window.location="../data/list#" + classId;
+        	window.location="../data/map#" + classId;
         }
         
         // 변환 클릭 이벤트시 url 변경 

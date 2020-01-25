@@ -1,3 +1,17 @@
+1 24
+update policy set user_upload_type = '3ds,obj,dae,collada,ifc,las,citygml,indoorgml,jpg,jpeg,gif,png,bmp,dds,zip,mtl';
+update policy set user_converter_type =	'3ds,obj,dae,collada,ifc,las,citygml,indoorgml';
+commit;
+
+update menu set url = '/data/map' where menu_id = 1002;
+commit;
+
+
+alter table data_info drop column converter_job_id;
+alter table data_info add column converter_job_file_id			bigint;
+comment on column data_info.converter_job_file_id is 'converter job file 고유번호';
+commit;
+
 1 23 15:34
 
 alter table data_info add column converter_job_id			bigint;

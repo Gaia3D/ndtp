@@ -17,13 +17,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
+import ndtp.domain.ConverterJob;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
-import ndtp.domain.DataType;
 import ndtp.domain.GeoPolicy;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
+import ndtp.domain.Policy;
 import ndtp.domain.SharingType;
 import ndtp.domain.UserPolicy;
 import ndtp.domain.UserSession;
@@ -33,11 +34,10 @@ import ndtp.service.GeoPolicyService;
 import ndtp.service.PolicyService;
 import ndtp.service.UserPolicyService;
 import ndtp.utils.DateUtils;
-import ndtp.utils.FormatUtils;
 
 @Slf4j
 @Controller
-@RequestMapping("/data/")
+@RequestMapping("/data")
 public class DataController {
 	
 	private static final long PAGE_ROWS = 5l;
@@ -62,6 +62,47 @@ public class DataController {
 	private PropertiesConfig propertiesConfig;
 	
 	/**
+	 * 데이터 목록
+	 * @param request
+	 * @param dataInfo
+	 * @param pageNo
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/list")
+	public String list(HttpServletRequest request, DataInfo dataInfo, @RequestParam(defaultValue="1") String pageNo, Model model) {
+		
+		log.info("@@ dataInfo = {}, pageNo = {}", dataInfo, pageNo);
+		
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+//		dataInfo.setUserId(userSession.getUserId());		
+		
+		if(!StringUtils.isEmpty(dataInfo.getStartDate())) {
+			dataInfo.setStartDate(dataInfo.getStartDate().substring(0, 8) + DateUtils.START_TIME);
+		}
+		if(!StringUtils.isEmpty(dataInfo.getEndDate())) {
+			dataInfo.setEndDate(dataInfo.getEndDate().substring(0, 8) + DateUtils.END_TIME);
+		}
+		
+		long totalCount = dataService.getDataTotalCount(dataInfo);
+		
+		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, dataInfo), totalCount, Long.valueOf(pageNo).longValue());
+		log.info("@@ pagination = {}", pagination);
+		
+		dataInfo.setOffset(pagination.getOffset());
+		dataInfo.setLimit(pagination.getPageRows());
+		List<DataInfo> dataInfoList = new ArrayList<>();
+		if(totalCount > 0l) {
+			dataInfoList = dataService.getListData(dataInfo);
+		}
+		
+		model.addAttribute(pagination);
+		model.addAttribute("owner", userSession.getUserId());
+		model.addAttribute("dataInfoList", dataInfoList);
+		return "/data/list";
+	}
+	
+	/**
 	 * converter job 목록
 	 * @param request
 	 * @param membership_id
@@ -69,13 +110,13 @@ public class DataController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "list")
-	public String list(	HttpServletRequest request, 
+	@GetMapping(value = "/map")
+	public String map(	HttpServletRequest request, 
 						DataInfo dataInfo, 
 						@RequestParam(defaultValue="1") String pageNo, 
 						Model model) {
 		
-		log.info("@@ dataInfo = {}", dataInfo);
+		log.info("@@ DataController list dataInfo = {}, pageNo = {}", dataInfo, pageNo);
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		
@@ -122,7 +163,7 @@ public class DataController {
 			}
 		}
 		
-		dataInfo.setUserId(userSession.getUserId());
+		//dataInfo.setUserId(userSession.getUserId());
 		if(!StringUtils.isEmpty(dataInfo.getStartDate())) {
 			dataInfo.setStartDate(dataInfo.getStartDate().substring(0, 8) + DateUtils.START_TIME);
 		}
@@ -156,6 +197,7 @@ public class DataController {
 		
 		model.addAttribute("totalCount", totalCount);
 		
+		model.addAttribute("dataGroupTotalCount", groupDataCountList.size());
 		model.addAttribute("commonDataCount", commonDataCount);
 		model.addAttribute("publicDataCount", publicDataCount);
 		model.addAttribute("privateDataCount", privateDataCount);
@@ -165,49 +207,33 @@ public class DataController {
 		model.addAttribute("dataGroupList", dataGroupList);
 		model.addAttribute("userPolicy", userPolicy);
 		model.addAttribute("geoPolicyJson", geoPolicyJson);
+		model.addAttribute("baseLayers", userPolicy.getBaseLayers());
 		
-		return "/data/list";
+		return "/data/map";
 	}
 	
-//	/**
-//	 * 데이터 등록 화면
-//	 */
-//	@GetMapping(value = "input")
-//	public String input(Model model) {
-//		Policy policy = policyService.getPolicy();
-//		UploadData uploadData = new UploadData();
-//		
-//		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup();
-//		
-//		model.addAttribute("policy", policy);
-//		model.addAttribute("dataGroupList", dataGroupList);
-//		model.addAttribute("uploadData", uploadData);
-//		
-//		return "/data/input";
-//	}
-//	
-//	/**
-//	 * Data 정보
-//	 * @param dataInfo
-//	 * @param model
-//	 * @return
-//	 */
-//	@GetMapping(value = "detail")
-//	public String detail(HttpServletRequest request, DataInfo dataInfo, Model model) {
-//		
-//		log.info("@@@ detail-info dataInfo = {}", dataInfo);
-//		
-//		String listParameters = getSearchParameters(PageType.DETAIL, dataInfo);
-//		
-//		dataInfo =  dataService.getData(dataInfo);
-//		Policy policy = policyService.getPolicy();
-//		
-//		model.addAttribute("policy", policy);
-//		model.addAttribute("listParameters", listParameters);
-//		model.addAttribute("dataInfo", dataInfo);
-//		
-//		return "/data/detail-data";
-//	}
+	/**
+	 * 사용자 데이터 수정 화면
+	 * @param request
+	 * @param dataId
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "/modify")
+	public String modify(HttpServletRequest request, @RequestParam("dataId") Long dataId, Model model) {
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		
+		DataInfo dataInfo = new DataInfo();
+		//dataInfo.setUserId(userSession.getUserId());
+		dataInfo.setDataId(dataId);
+		
+		dataInfo = dataService.getData(dataInfo);
+		
+		model.addAttribute("dataInfo", dataInfo);
+		
+		return "/data/modify";
+	}
+
 //	
 //	/**
 //	 * Data 정보(ajax용) - 중복이라 맘이 안 편함... 뭔가 좋은 방법이 없을까?
@@ -385,17 +411,7 @@ public class DataController {
 	 */
 	private String getSearchParameters(PageType pageType, DataInfo dataInfo) {
 		StringBuffer buffer = new StringBuffer(dataInfo.getParameters());
-		boolean isListPage = true;
-		if(pageType == PageType.MODIFY || pageType == PageType.DETAIL) {
-			isListPage = false;
-		}
-		
-//		if(!isListPage) {
-//			buffer.append("pageNo=" + request.getParameter("pageNo"));
-//			buffer.append("&");
-//			buffer.append("list_count=" + uploadData.getList_counter());
-//		}
-		
+				
 		return buffer.toString();
 	}
 }

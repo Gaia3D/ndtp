@@ -17,9 +17,6 @@
 	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css">
 	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-	<style type="text/css">
-	    
-    </style>
 </head>
 <body>
 
@@ -41,6 +38,7 @@
 				<li onclick="location.href='/upload-data/input'">업로딩 데이터</li>
 			   	<li onclick="location.href='/upload-data/list'">업로딩 데이터 목록</li>
 			  	<li onclick="location.href='/converter/list'">업로딩 데이터 변환 목록</li>
+			  	<li onclick="location.href='/data/list'">데이터 목록</li>
 			</ul>
 		</div>
 		<form:form id="dataGroup" modelAttribute="dataGroup" method="post" onsubmit="return false;">
@@ -274,7 +272,7 @@
 			insertDataGroupFlag = false;
 			var formData = $("#dataGroup").serialize();		
 			$.ajax({
-				url: "/data-groups/",
+				url: "/data-groups",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 		        data: formData,

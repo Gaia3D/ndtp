@@ -1,5 +1,6 @@
 package ndtp.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,14 +17,19 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.DataGroup;
+import ndtp.domain.DataInfo;
 import ndtp.domain.Key;
 import ndtp.domain.LocationUdateType;
+import ndtp.domain.PageType;
+import ndtp.domain.Pagination;
 import ndtp.domain.UserSession;
 import ndtp.service.DataGroupService;
+import ndtp.utils.DateUtils;
 
 /**
  * 사용자 데이터 그룹 관리
@@ -35,8 +41,8 @@ import ndtp.service.DataGroupService;
 @RequestMapping("/data-groups")
 public class DataGroupRestController {
 	
-//	private static final long PAGE_ROWS = 5l;
-//	private static final long PAGE_LIST_COUNT = 5l;
+	private static final long PAGE_ROWS = 5l;
+	private static final long PAGE_LIST_COUNT = 5l;
 	
 	@Autowired
 	private DataGroupService dataGroupService;
@@ -48,27 +54,81 @@ public class DataGroupRestController {
 //	private PolicyService policyService;
 	
 	/**
-	 * 데이터 그룹 정보
+	 * 데이터 그룹 전체 목록
 	 * @param projectId
 	 * @return
 	 */
-	@GetMapping
-	public Map<String, Object> list(HttpServletRequest request, DataGroup dataGroup) {
+	@GetMapping(value = "/all")
+	public Map<String, Object> allList(HttpServletRequest request, DataGroup dataGroup) {
 		
 		log.info("@@@@@ list dataGroup = {}", dataGroup);
-		
-		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String errorCode = null;
 		String message = null;
+		
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		try {
-			List<DataGroup> dataGroupList = dataGroupService.getAllListDataGroup(new DataGroup());
+			List<DataGroup> dataGroupList = dataGroupService.getAllListDataGroup(dataGroup);
 			
-			//dataGroup.set
-			//List<DataGroup> dataGroupList = dataGroupService.getListDataGroup();
+			result.put("dataGroupList", dataGroupList);
+		} catch(Exception e) {
+			e.printStackTrace();
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+		
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		
+		return result;
+	}
+	
+	/**
+	 * 데이터 그룹 정보
+	 * @param projectId
+	 * @return
+	 */
+	@GetMapping
+	public Map<String, Object> list(HttpServletRequest request, DataGroup dataGroup, @RequestParam(defaultValue="1") String pageNo) {
+		
+		log.info("@@@@@ list dataGroup = {}, pageNo = {}", dataGroup, pageNo);
+		
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		try {
+			if(!StringUtils.isEmpty(dataGroup.getStartDate())) {
+				dataGroup.setStartDate(dataGroup.getStartDate().substring(0, 8) + DateUtils.START_TIME);
+			}
+			if(!StringUtils.isEmpty(dataGroup.getEndDate())) {
+				dataGroup.setEndDate(dataGroup.getEndDate().substring(0, 8) + DateUtils.END_TIME);
+			}
 			
+			long totalCount = dataGroupService.getDataGroupTotalCount(dataGroup);
+			
+			Pagination pagination = new Pagination(	request.getRequestURI(), 
+													getSearchParameters(PageType.LIST, dataGroup), 
+													totalCount, 
+													Long.valueOf(pageNo).longValue(),
+													PAGE_ROWS,
+													PAGE_LIST_COUNT);
+			log.info("@@ pagination = {}", pagination);
+			
+			dataGroup.setOffset(pagination.getOffset());
+			dataGroup.setLimit(pagination.getPageRows());
+			List<DataGroup> dataGroupList = new ArrayList<>();
+			if(totalCount > 0l) {
+				dataGroupList = dataGroupService.getListDataGroup(dataGroup);
+			}
+			
+			result.put("pagination", pagination);
 			result.put("dataGroupList", dataGroupList);
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -219,7 +279,7 @@ public class DataGroupRestController {
 	}
 	
 	/**
-	 * 사용자 데이터 그룹 등록
+	 * 사용자 데이터 그룹 수정
 	 * @param request
 	 * @param dataGroup
 	 * @param bindingResult
@@ -302,5 +362,31 @@ public class DataGroupRestController {
 		result.put("errorCode", errorCode);
 		result.put("message", message);
 		return result;
+	}
+	
+	/**
+	 * 검색 조건
+	 * @param pageType
+	 * @param dataGroup
+	 * @return
+	 */
+	private String getSearchParameters(PageType pageType, DataGroup dataGroup) {
+		StringBuffer buffer = new StringBuffer(dataGroup.getParameters());
+//		buffer.append("&");
+//		try {
+//			buffer.append("dataName=" + URLEncoder.encode(getDefaultValue(dataInfo.getDataName()), "UTF-8"));
+//		} catch(Exception e) {
+//			e.printStackTrace();
+//			buffer.append("dataName=");
+//		}
+		return buffer.toString();
+	}
+	
+	private String getDefaultValue(String value) {
+		if(value == null || "".equals(value.trim())) {
+			return "";
+		}
+		
+		return value;
 	}
 }

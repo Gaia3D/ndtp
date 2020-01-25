@@ -9,7 +9,7 @@
 		<div style="height: 30px;">
 			<div style="display: inline-block; width: 70px;">위도</div>
 			<form:input type="text" id="initLatitude" path="initLatitude" size="15" />&nbsp;M
-			<button type="button" id="findStartPoint" class="btnTextF" style="margin-left: 5px;">지도에서 선택</button>
+			<button type="button" id="findStartPoint" class="btnTextF" style="margin-left: 50px;">선택</button>
 		</div>
 		<div style="height: 30px;">
 			<div style="display: inline-block; width: 70px;">경도</div>
@@ -25,14 +25,14 @@
 		</div>
 	</div>
 </div>
-<div style="height: 30px;margin-top:5px;" class="userPolicyContent">
-	<h3 style="display:inline-block;float:left;">Field Of View</h3>
-	<div class="userPolicyContentDetail" style="float:left;">
-		<form:input type="text" id="initfieldOfView" path="initDefaultFov" size="11" style="margin-left:3px;" />&nbsp;M
-<!-- 		<button type="button" id="fieldOfViewButton" class="btnTextF" style="margin-left: 51px;">변경</button> -->
+<div style="height: 40px;margin-top:10px;margin-bottom:15px;" class="userPolicyContent">
+	<h3>Field Of View</h3>
+	<div class="userPolicyContentDetail">
+		<div style="display: inline-block; width: 70px;">각도</div>
+		<form:input type="text" id="initfieldOfView" path="initDefaultFov" size="14" style="margin-left:3px;" />&nbsp;M
 	</div>
 </div>
-<div class="userPolicyContent">
+<div class="userPolicyContent" style="margin-top:5px;">
 	<h3>LOD</h3>
 	<div class="userPolicyContentDetail">
 		<div style="height: 30px;">
@@ -58,15 +58,16 @@
 		<div style="height: 30px;">
 			<div style="display: inline-block; width: 70px;">LOD5</div>
 			<form:input type="text" id="geoLod5" path="lod5" size="15" />&nbsp;M
-			<button type="button" id="changeLodButton" class="btnTextF" style="margin-left: 50px;">변경</button>
+			<button type="button" id="changeLodButton" class="btnTextF" style="margin-left: 50px;">적용</button>
 		</div>
 	</div>
 </div>
-<div style="height: 30px;margin-top:5px;" class="userPolicyContent">
-	<h3 style="display:inline-block;float:left;">SSAO 반경</h3>
-	<div class="userPolicyContentDetail" style="float:left;">
+<div style="height: 30px;margin-top:5px;margin-bottom:10px;" class="userPolicyContent">
+	<h3>SSAO</h3>
+	<div class="userPolicyContentDetail">
+		<div style="display: inline-block; width: 70px;">그림자 반경</div>
 		<form:input type="text" id="ssaoRadius" path="ssaoRadius" size="15" />&nbsp;M
-		<button type="button" id="changeSsaoButton" class="btnTextF" style="margin-left: 50px;">변경</button>
+		<button type="button" id="changeSsaoButton" class="btnTextF" style="margin-left: 50px;">적용</button>
 	</div>
 </div>
 
@@ -94,7 +95,7 @@ function update() {
 				if(msg.statusCode <= 200) {
 					alert("저장 되었습니다.");
 				} else {
-					alert(JS_MESSAGE[msg.errorCode]);
+					alert(msg.message);
 					console.log("---- " + msg.message);
 				}
 				updateUserPolicyFlag = true;
