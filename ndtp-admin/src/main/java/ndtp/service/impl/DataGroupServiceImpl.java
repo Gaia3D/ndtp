@@ -241,15 +241,17 @@ public class DataGroupServiceImpl implements DataGroupService {
     		//ancestorDataGroup.setUserId(userId);
     		ancestorDataGroup.setDataGroupId(dataGroup.getAncestor());
     		ancestorDataGroup = dataGroupMapper.getDataGroup(ancestorDataGroup);
-    		ancestorDataGroup.setChildren(ancestorDataGroup.getChildren() - 1);
-	    	dataGroupMapper.updateDataGroup(ancestorDataGroup);
+    		DataGroup tempDataGroup = new DataGroup();
+    		tempDataGroup.setDataGroupId(ancestorDataGroup.getDataGroupId());
+    		tempDataGroup.setChildren(ancestorDataGroup.getChildren() - 1);
+	    	dataGroupMapper.updateDataGroup(tempDataGroup);
     		
 	    	// 데이터 그룹 일괄 삭제
     		result = dataGroupMapper.deleteDataGroupByParent(dataGroup);
     	} else if(Depth.THREE == Depth.findBy(dataGroup.getDepth())) {
     		DataGroup deleteDataGroup = new DataGroup();
 			//deleteDataGroup.setUserId(userId);
-			deleteDataGroup.setDataGroupId(dataGroup.getDataCount());
+			deleteDataGroup.setDataGroupId(dataGroup.getDataGroupId());
 			// 하위 데이터 삭제
 			dataMapper.deleteDataByDataGroupId(deleteDataGroup);
     		
@@ -257,8 +259,10 @@ public class DataGroupServiceImpl implements DataGroupService {
 			DataGroup parentDataGroup = new DataGroup();
     		parentDataGroup.setDataGroupId(dataGroup.getParent());
     		parentDataGroup = dataGroupMapper.getDataGroup(parentDataGroup);
-	    	parentDataGroup.setChildren(parentDataGroup.getChildren() - 1);
-	    	dataGroupMapper.updateDataGroup(parentDataGroup);
+    		DataGroup tempDataGroup = new DataGroup();
+    		tempDataGroup.setDataGroupId(parentDataGroup.getDataGroupId());
+    		tempDataGroup.setChildren(parentDataGroup.getChildren() - 1);
+	    	dataGroupMapper.updateDataGroup(tempDataGroup);
 	    	
 	    	result = dataGroupMapper.deleteDataGroup(dataGroup);
     	} else {

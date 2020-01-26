@@ -241,8 +241,11 @@ public class DataGroupServiceImpl implements DataGroupService {
     		ancestorDataGroup.setUserId(userId);
     		ancestorDataGroup.setDataGroupId(dataGroup.getAncestor());
     		ancestorDataGroup = dataGroupMapper.getDataGroup(ancestorDataGroup);
-    		ancestorDataGroup.setChildren(ancestorDataGroup.getChildren() - 1);
-	    	dataGroupMapper.updateDataGroup(ancestorDataGroup);
+    		DataGroup tempDataGroup = new DataGroup();
+    		tempDataGroup.setUserId(userId);
+    		tempDataGroup.setDataGroupId(ancestorDataGroup.getDataGroupId());
+    		tempDataGroup.setChildren(ancestorDataGroup.getChildren() - 1);
+	    	dataGroupMapper.updateDataGroup(tempDataGroup);
     		
 	    	// 데이터 그룹 일괄 삭제
     		result = dataGroupMapper.deleteDataGroupByParent(dataGroup);
