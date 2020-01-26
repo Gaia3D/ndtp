@@ -160,6 +160,7 @@ JS_MESSAGE["data.insert"] = "데이터를 등록 하였습니다.";
 
 JS_MESSAGE["upload.data.id.empty"] = "업로더 데이터 삭제 정보가 유효하지 않습니다.";
 JS_MESSAGE["upload.file.type.invalid"] = "업로드 파일 타입이 유효하지 않습니다.";
+JS_MESSAGE["upload.shpfile.requried"] = "enable_yn, version_id 필드가 필요합니다.";
 
 JS_MESSAGE["converter.title.empty"] = "제목을 입력하여 주십시오.";
 

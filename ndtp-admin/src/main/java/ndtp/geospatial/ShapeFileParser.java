@@ -1,16 +1,59 @@
 package ndtp.geospatial;
 
-import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.charset.Charset;
 
-import lombok.extern.slf4j.Slf4j;
+import org.geotools.data.shapefile.dbf.DbaseFileHeader;
+import org.geotools.data.shapefile.dbf.DbaseFileReader;
+import org.geotools.data.shapefile.files.ShpFiles;
+
+import ndtp.domain.ShapeFileField;
 
 /**
- * @author Cheon JeongDae
+ * Shape file 관련 유틸 
  *
  */
-@Slf4j
 public class ShapeFileParser {
-
+	
+	// shapefile 경로 
+	private String filePath; 
+	
+	public ShapeFileParser(String filePath) {
+		this.filePath = filePath;
+	}
+	
+	/**
+	 * shape file의 필수 칼럼 검사 
+	 * @return
+	 */
+	public Boolean fieldValidate() {
+		DbaseFileReader reader = null;
+		Boolean fieldValid = false; 
+        try {
+            ShpFiles shpFile = new ShpFiles(filePath);
+            // field만 검사할 것이기 때문에 따로 인코딩은 설정하지 않음 
+            reader = new DbaseFileReader(shpFile, false, Charset.defaultCharset());
+            DbaseFileHeader header = reader.getHeader();
+            int filedValidCount = 0;
+            // 필드 카운트
+            int numFields = header.getNumFields();
+            for(int iField=0; iField < numFields; ++iField) {
+                String fieldName = header.getFieldName(iField);
+                if(ShapeFileField.findBy(fieldName) != null) filedValidCount++;
+            }
+            // 필수 칼럼이 모두 있는지 확인한 결과 리턴 
+            fieldValid = (filedValidCount == ShapeFileField.values().length) ? true : false;
+            
+            reader.close();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        return fieldValid;
+	}
 	/**
 	 * shape 파일 파싱
 	 * @param fileName

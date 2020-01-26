@@ -17,15 +17,19 @@ public class ShapeFileValidation {
 		DbaseFileReader r = null;
         try {
             ShpFiles shpFile = new ShpFiles("D:\\data\\boundary\\sk_emd\\sk_emd_20200115100910_230251955674700.shp");
-            r = new DbaseFileReader(shpFile, false, Charset.defaultCharset());
+            r = new DbaseFileReader(shpFile, false, Charset.forName("CP949"));
             DbaseFileHeader header = r.getHeader();
- 
+            
+            // 필드수
+            int filedValidCount = 0;
             int numFields = header.getNumFields();
             for(int iField=0; iField < numFields; ++iField) {
                 String fieldName = header.getFieldName(iField);
                 System.out.println(fieldName);
+                if(ShapeFileField.findBy(fieldName) != null) filedValidCount++;
             }
- 
+            System.out.println("fieldValidCount ================== " + filedValidCount);
+            System.out.println("enum length" + ShapeFileField.values().length);
 //            while (r.hasNext()) {
 //                Object[] values = r.readEntry();
 //                for(int iField=0; iField < numFields; ++iField) {
