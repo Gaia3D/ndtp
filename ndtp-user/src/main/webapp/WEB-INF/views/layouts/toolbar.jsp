@@ -58,9 +58,36 @@
 			<label for="objectAllMove">All</label>
 			<input type="radio" id="objectMove" name="objectMoveMode" value="1"/>
 			<label for="objectMove">Object</label>
+		<div id="dataControllWrap" style="display:none;">
+			<h3>mipo blockA</h3>
+			<ul class="category">
+	    		<li>색상 변경</li>
+	    	</ul>
+		    	<label for="dcColorPicker">색상</label>
+		    	<input type="color" id="dcColorPicker"/>
+		    	<input type="text" id="dcColorInput" value="#000000" size="6" readonly/>
+		    	<button type="button" id="dcColorApply" class="btnTextF">적용</button>
+		    	<button type="button" id="dcColorCancle" class="btnText">되돌리기</button>
+		    <ul class="category">
+	    		<li>위치 변경</li>
+	    	</ul>
+	    		<label for="dcLongitude">위도</label>
+		    	<input type="text" id="dcLongitude"/><br/>
+		    	<label for="dcLatitude">경도</label>
+		    	<input type="text" id="dcLatitude"/><br/>
+		    	<label for="dcAltitude">높이</label>
+		    	<input type="text" id="dcAltitude"/>
+		    	<button type="button" style="height:26px;width:28px;background-image:url(/images/ko/black_arrow_26.png);"></button>
+		    	<button type="button" style="height:26px;width:28px;background-image:url(/images/ko/black_arrow_26.png);transform: rotate(180deg);"></button>
+		    <ul class="category">
+	    		<li>회전 변경</li>
+	    	</ul>
+	    		<label for="dcPitch">x(pitch)</label>
+		    	<input type="text" id="dcPitch" size="1"/><input id="dcPitchRange" data-type="Pitch" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/><br/>
+		    	<label for="dcRoll">y(roll)</label>
+		    	<input type="text" id="dcRoll" size="1"/><input id="dcRollRange" data-type="Roll" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/><br/>
+		    	<label for="dcHeading">z(heading)</label>
+		    	<input type="text" id="dcHeading" size="1"/><input id="dcHeadingRange" data-type="Heading" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/>
+	    </div>
     </div>
-</div>
-
-<div class="dataControlLayer">
-개발중
 </div>

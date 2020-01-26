@@ -256,3 +256,32 @@ function notyetAlram() {
 	alert('아직 준비중입니다.');
 }
 
+//hex color to rgb string
+function hex2rgb(hex) {
+	hex = hexToDoubleHex(hex);
+	
+	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	return result ? 'rgba(' +
+	    parseInt(result[1], 16) + ', ' +
+	    parseInt(result[2], 16) + ', ' +
+	    parseInt(result[3], 16) + ')' :
+	    'rgba(255, 255, 255)';
+};
+//hex color to rgb array
+function hex2rgbArray(hex) {
+	hex = hexToDoubleHex(hex);
+	
+	var regResult = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	var splitHex = regResult.slice(1,4);
+	var result = splitHex.map(function(e){return parseInt(e,16)});
+	return result;
+};
+//#000 -> #000000 함수명이 좀 이상함... 글자 세개랑 글자 6개에 대한 명칭을 잘 모르겟음 
+function hexToDoubleHex (hex){
+	var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+	hex = hex.replace(shorthandRegex, function (m, r, g, b) {
+	    return r + r + g + g + b + b;
+	});
+	
+	return hex;
+}

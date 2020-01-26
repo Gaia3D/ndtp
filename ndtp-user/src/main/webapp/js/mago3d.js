@@ -23953,10 +23953,50 @@ MagoManager.prototype.managePickingProcess = function()
 			
 			this.objectSelected = this.getSelectedObjects(gl, this.mouse_x, this.mouse_y, this.arrayAuxSC, bSelectObjects);
 			
-			
-			this.buildingSelected = this.arrayAuxSC[0];
-			this.octreeSelected = this.arrayAuxSC[1];
-			this.nodeSelected = this.arrayAuxSC[3];
+			var auxBuildingSelected = this.arrayAuxSC[0];
+			var auxOctreeSelected = this.arrayAuxSC[1];
+			var auxNodeSelected = this.arrayAuxSC[3]; 
+
+			var mode = this.magoPolicy.getObjectMoveMode();
+
+			if (mode === CODE.moveMode.ALL) 
+			{
+				if (auxBuildingSelected && auxNodeSelected) 
+				{
+					this.emit(MagoManager.EVENT_TYPE.SELECTEDF4D, {
+						type      : MagoManager.EVENT_TYPE.SELECTEDF4D, 
+						f4d       : auxNodeSelected, 
+						timestamp : new Date()
+					});
+				}
+				else if (!auxBuildingSelected && !auxNodeSelected) 
+				{
+					this.emit(MagoManager.EVENT_TYPE.DESELECTEDF4D, {
+						type: MagoManager.EVENT_TYPE.DESELECTEDF4D
+					});
+				}
+			}
+			else if (mode === CODE.moveMode.OBJECT) 
+			{
+				if (auxOctreeSelected) 
+				{
+					this.emit(MagoManager.EVENT_TYPE.SELECTEDF4DOBJECT, {
+						type      : MagoManager.EVENT_TYPE.SELECTEDF4DOBJECT,
+						object    : auxOctreeSelected,
+						timestamp : new Date()
+					});
+				}
+				else 
+				{
+					this.emit(MagoManager.EVENT_TYPE.DESELECTEDF4DOBJECT, {
+						type: MagoManager.EVENT_TYPE.DESELECTEDF4DOBJECT
+					});
+				}
+			}
+
+			this.buildingSelected = auxBuildingSelected;
+			this.octreeSelected = auxOctreeSelected;
+			this.nodeSelected = auxNodeSelected;
 			if (this.nodeSelected)
 			{ this.rootNodeSelected = this.nodeSelected.getRoot(); }
 			else
@@ -24537,16 +24577,6 @@ MagoManager.prototype.getSelectedObjects = function(gl, mouseX, mouseY, resultSe
 	{ selectionManager.selectObjects(idx); }
 	else 
 	{
-		var mode = this.magoPolicy.getObjectMoveMode();
-		if (mode === CODE.moveMode.OBJECT && (selectionManager.currentReferenceSelected && !selectionManager.referencesMap[idx])&& (selectionManager.currentOctreeSelected && !selectionManager.octreesMap[idx])) 
-		{
-			this.emit(MagoManager.EVENT_TYPE.DESELECTEDF4DOBJECT, {type: MagoManager.EVENT_TYPE.DESELECTEDF4DOBJECT});
-		}
-
-		if (mode === CODE.moveMode.ALL && (selectionManager.currentBuildingSelected && !selectionManager.buildingsMap[idx])&& (selectionManager.currentNodeSelected && !selectionManager.nodesMap[idx])) 
-		{
-			this.emit(MagoManager.EVENT_TYPE.DESELECTEDF4D, {type: MagoManager.EVENT_TYPE.DESELECTEDF4D});
-		}
 		selectionManager.currentReferenceSelected = selectionManager.referencesMap[idx];
 		selectionManager.currentOctreeSelected = selectionManager.octreesMap[idx];
 		selectionManager.currentBuildingSelected = selectionManager.buildingsMap[idx];
@@ -25609,7 +25639,7 @@ MagoManager.prototype.manageMouseDragging = function(mouseX, mouseY)
 	// distinguish 2 modes.******************************************************
 	if (this.magoPolicy.objectMoveMode === CODE.moveMode.ALL) // blocks move.***
 	{
-		if (this.buildingSelected !== undefined) 
+		if (this.buildingSelected !== undefined && this.selectionManager.currentNodeSelected) 
 		{
 			// 1rst, check if there are objects to move.***
 			if (this.mustCheckIfDragging) 
@@ -25672,7 +25702,7 @@ MagoManager.prototype.manageMouseDragging = function(mouseX, mouseY)
 	}
 	else if (this.magoPolicy.objectMoveMode === CODE.moveMode.OBJECT) // objects move.***
 	{
-		if (this.objectSelected !== undefined) 
+		if (this.objectSelected !== undefined && this.selectionManager.currentOctreeSelected) 
 		{
 			// 1rst, check if there are objects to move.***
 			if (this.mustCheckIfDragging) 
@@ -32827,7 +32857,7 @@ SmartTile.prototype.parseSmartTileF4d = function(dataArrayBuffer, magoManager)
 		var node = hierarchyManager.newNode(buildingId, projectId, attributes);
 		var data = node.data;
 		data.projectFolderName = projectId;
-		data.projectId = projectId + ".json";
+		data.projectId = projectId;// + ".json";
 		data.data_name = buildingId;
 		data.attributes = attributes;
 		data.mapping_type = "boundingboxcenter";
@@ -81101,18 +81131,6 @@ SelectionManager.prototype.selectObjects = function(idxKey)
 	this.currentBuildingSelected = this.buildingsMap[idxKey];
 	this.currentNodeSelected = this.nodesMap[idxKey];
 
-	var mode = this.magoManager.magoPolicy.getObjectMoveMode();
-
-	if (mode === CODE.moveMode.ALL && this.currentBuildingSelected && this.currentNodeSelected) 
-	{
-		this.magoManager.emit(MagoManager.EVENT_TYPE.SELECTEDF4D, {type: MagoManager.EVENT_TYPE.SELECTEDF4D, f4d: this.currentNodeSelected, timestamp: new Date()});
-	}
-
-	if (mode === CODE.moveMode.OBJECT && this.currentOctreeSelected && this.currentReferenceSelected) 
-	{
-		this.magoManager.emit(MagoManager.EVENT_TYPE.SELECTEDF4DOBJECT, {type: MagoManager.EVENT_TYPE.SELECTEDF4DOBJECT, object: this.currentOctreeSelected, timestamp: new Date()});
-	}
-	
 	for (var key in this.selCandidatesFamilyMap)
 	{
 		if (Object.prototype.hasOwnProperty.call(this.selCandidatesFamilyMap, key))

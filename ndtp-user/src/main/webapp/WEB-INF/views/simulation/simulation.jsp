@@ -25,7 +25,7 @@
 		<div class="listContents" id="constructionProcess">
 			<ul class="analysisGroup">
 				<li>
-					<span style="display: inline-block;padding: 3px 0;margin-right: 20px;">데이터그룹</span>
+					<span style="display: inline-block;padding: 3px 0;margin-right: 20px;">위치</span>
 					<!-- <input class="" type="text" placeholder="" value=""/>
 					<button type="button" class="btnText drawObserverPoint">찾기</button> -->
 					<label style="width:26px;" for="cpSejong">세종</label> 

@@ -140,6 +140,7 @@
 <script type="text/javascript" src="/js/${lang}/user-policy.js"></script>
 <script type="text/javascript" src="/js/${lang}/simulation.js"></script>
 <script type="text/javascript" src="/js/${lang}/layer.js"></script>
+<script type="text/javascript" src="/js/${lang}/map-data-controll.js"></script>
 <script type="text/javascript">
 	// 임시로...
 	$(document).ready(function() {
@@ -170,6 +171,8 @@
 			cesiumViewerOption.fullscreenButton = false;
 			cesiumViewerOption.geocoder = false;
 			cesiumViewerOption.baseLayerPicker = false;
+			cesiumViewerOption.sceneModePicker = false;
+			
 			
 		/**
 		 * @param {Stirng} containerId container div id. required.
@@ -195,7 +198,6 @@
 		/* magoManager.on(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
 			console.info(result);
 		}); */
-
 		//우측 상단 지도 컨트롤러
 		MapControll(viewer);
 		//공간분석 기능 수행
@@ -210,8 +212,11 @@
         UserPolicy(magoInstance);
         // 기본 레이어 랜더링
         setTimeout(function(){
-        	initLayer(magoInstance, NDTP.baseLayers);
+        	//initLayer(magoInstance, NDTP.baseLayers);
         }, geoPolicyJson.initDuration * 1000);
+
+		//지도상에 데이터 다루는거
+		MapDataControll(magoInstance);
 	}
 	
 	// 데이터 그룹 목록
