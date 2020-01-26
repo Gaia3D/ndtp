@@ -72,22 +72,24 @@
 	    		<li>위치 변경</li>
 	    	</ul>
 	    		<label for="dcLongitude">위도</label>
-		    	<input type="text" id="dcLongitude"/><br/>
-		    	<label for="dcLatitude">경도</label>
-		    	<input type="text" id="dcLatitude"/><br/>
-		    	<label for="dcAltitude">높이</label>
-		    	<input type="text" id="dcAltitude"/>
-		    	<button type="button" style="height:26px;width:28px;background-image:url(/images/ko/black_arrow_26.png);"></button>
-		    	<button type="button" style="height:26px;width:28px;background-image:url(/images/ko/black_arrow_26.png);transform: rotate(180deg);"></button>
+		    	<input type="text" id="dcLongitude" readonly/><br/>
+		    	<label for="dcLatitude" >경도</label>
+		    	<input type="text" id="dcLatitude" readonly/><br/>
+		    	<label for="dcAltitude" >높이</label>
+		    	<input type="text" id="dcAltitude" readonly/>
+		    	<button id="dcAltUp" data-type="up" type="button" style="height:26px;width:28px;background-image:url(/images/ko/black_arrow_26.png);"></button>
+		    	<button id="dcAltDown" data-type="down" type="button" style="height:26px;width:28px;background-image:url(/images/ko/black_arrow_26.png);transform: rotate(180deg);"></button>
+		    	<label for="dcAltitude" >높이 offset</label>
+		    	<input type="text" id="dcAltitudeOffset" value="1" size="1"/>
 		    <ul class="category">
 	    		<li>회전 변경</li>
 	    	</ul>
 	    		<label for="dcPitch">x(pitch)</label>
-		    	<input type="text" id="dcPitch" size="1"/><input id="dcPitchRange" data-type="Pitch" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/><br/>
+		    	<input type="text" id="dcPitch" size="1" readonly/><input id="dcPitchRange" data-type="Pitch" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/><br/>
 		    	<label for="dcRoll">y(roll)</label>
-		    	<input type="text" id="dcRoll" size="1"/><input id="dcRollRange" data-type="Roll" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/><br/>
+		    	<input type="text" id="dcRoll" size="1" readonly/><input id="dcRollRange" data-type="Roll" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/><br/>
 		    	<label for="dcHeading">z(heading)</label>
-		    	<input type="text" id="dcHeading" size="1"/><input id="dcHeadingRange" data-type="Heading" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/>
+		    	<input type="text" id="dcHeading" size="1" readonly/><input id="dcHeadingRange" data-type="Heading" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/>
 	    </div>
     </div>
 </div>
