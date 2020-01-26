@@ -68,7 +68,12 @@
         			미사용
         </c:if>
 		    </td>
-		    <td class="col-type">${dataGroup.sharing }</td>
+		    <td class="col-type">
+		<c:if test="${dataGroup.sharing eq 'common'}">공통</c:if>
+		<c:if test="${dataGroup.sharing eq 'public'}">공개</c:if>
+		<c:if test="${dataGroup.sharing eq 'private'}">개인</c:if>
+		<c:if test="${dataGroup.sharing eq 'group'}">그룹</c:if>	
+		    </td>
 		    <td class="col-key">${dataGroup.description }</td>
 		    <td class="col-date">
 		    	<fmt:parseDate value="${dataGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>

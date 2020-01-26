@@ -7,18 +7,21 @@
 	<select id="getDataTotalCount" parameterType="dataInfo" resultType="long">
 		/* getDataTotalCount */
 		SELECT COUNT(data_id)
-		FROM data_info a
-        LEFT JOIN data_group b
-        ON a.data_group_id = b.data_group_id
+		FROM data_info A
+        LEFT JOIN data_group B
+        ON a.data_group_id = B.data_group_id
 		<trim prefix="WHERE" prefixOverrides="AND">
 			<if test="dataGroupId != null and dataGroupId > 0">
-			AND a.data_group_id = #{dataGroupId}
+			AND A.data_group_id = #{dataGroupId}
+			</if>
+			<if test="dataType != null and dataType != ''">
+			AND data_type = #{dataType}
 			</if>
 			<if test="sharing != null and sharing != ''">
 			AND sharing = #{sharing}
 			</if>
 			<if test="userId != null and userId != ''">
-			AND a.user_id = #{userId}
+			AND A.user_id = #{userId}
 			</if>
 			<if test="status != null and status != ''">
 			AND status = #{status}
@@ -31,12 +34,12 @@
 			</if>
 			<if test="startDate != null and startDate != ''">
 			<![CDATA[
-			AND a.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+			AND A.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
 			<if test="endDate != null and endDate != ''">
 			<![CDATA[
-			AND a.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+			AND A.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
 		</trim>
@@ -48,9 +51,9 @@
 		SELECT COUNT(data_id)
 		FROM data_info
 		WHERE status = #{status}
-			<!-- <if test="userId != null and userId != ''">
+			<if test="userId != null and userId != ''">
 			AND user_id = #{userId}
-			</if> -->
+			</if>
 	</select>
 
 	<!-- Data 목록 -->
@@ -59,36 +62,39 @@
 		SELECT X.*, ST_X(X.location) AS longitude, ST_Y(X.location) AS latitude
 		FROM (
 			SELECT a.*, b.data_group_name
-			FROM data_info a
-	        LEFT JOIN data_group b
-	        ON a.data_group_id = b.data_group_id
+			FROM data_info A
+	        LEFT JOIN data_group B
+	        ON A.data_group_id = B.data_group_id
 			<trim prefix="WHERE" prefixOverrides="AND">
 				<if test="dataGroupId != null and dataGroupId > 0">
-				AND a.data_group_id = #{dataGroupId}
+				AND A.data_group_id = #{dataGroupId}
+				</if>
+				<if test="dataType != null and dataType != ''">
+				AND A.data_type = #{dataType}
 				</if>
 				<if test="sharing != null and sharing != ''">
-				AND sharing = #{sharing}
+				AND A.sharing = #{sharing}
 				</if>
 				<if test="userId != null and userId != ''">
-				AND a.user_id = #{userId}
+				AND A.user_id = #{userId}
 				</if>
 				<if test="status != null and status != ''">
-				AND status = #{status}
+				AND A.status = #{status}
 				</if>
 				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
-				AND ${searchWord} = #{searchValue}
+				AND A.${searchWord} = #{searchValue}
 				</if>
 				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
-				AND ${searchWord} LIKE '%' || #{searchValue} || '%'
+				AND A.${searchWord} LIKE '%' || #{searchValue} || '%'
 				</if>
 				<if test="startDate != null and startDate != ''">
 				<![CDATA[
-				AND a.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+				AND A.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
 				]]>
 				</if>
 				<if test="endDate != null and endDate != ''">
 				<![CDATA[
-				AND a.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+				AND A.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
 				]]>
 				</if>
 			</trim>
@@ -97,7 +103,7 @@
 			ORDER BY ${orderWord} ${orderValue}
 			</when>
 			<otherwise>
-			ORDER BY a.insert_date DESC, data_id DESC
+			ORDER BY A.insert_date DESC, data_id DESC
 			</otherwise>
 			</choose>
 			OFFSET #{offset} LIMIT #{limit}
@@ -119,7 +125,7 @@
 	<!-- Data 정보 -->
 	<select id="getDataByDataKey" parameterType="dataInfo" resultType="dataInfo">
 		/* getDataByDataKey */
-		SELECT *
+		SELECT *, ST_X(location) AS longitude, ST_Y(location) AS latitude
 		FROM data_info
 		WHERE data_group_id = #{dataGroupId}
 			AND data_key = #{dataKey}
@@ -131,9 +137,10 @@
 	<!-- 최상위 root dataInfo 정보 취득 -->
 	<select id="getRootDataByDataGroupId" parameterType="int" resultType="dataInfo">
 		/* getRootDataByDataGroupId */
-		SELECT *
+		SELECT *, ST_X(location) AS longitude, ST_Y(location) AS latitude
 		FROM data_info
-		WHERE data_group_id = #{dataGroupId}
+		WHERE data_group_id = #{dataGroupId} 
+			AND parent = 0
 			AND depth = 1
 	</select>
 
@@ -160,17 +167,29 @@
 		SELECT COUNT(data_id)
 		FROM data_info
 		WHERE data_group_id = #{dataGroupId}
+			AND parent = 0 
 			AND depth = 1
 			AND data_id != #{dataId}
 	</select>
-
+	
+	<!-- converterJobFile 정보를 이용하여 data 정보 취득 -->
+	<select id="getDataByConverterJobFile" parameterType="dataInfo" resultType="dataInfo">
+		/* getDataByConverterJobFile */
+		SELECT * 
+		FROM data_info 
+		WHERE converter_job_file_id = #{converterJobFileId}
+			<if test="userId != null and userId != ''">
+			AND A.user_id = #{userId}
+			</if>
+	</select>
+	
 	<!-- Data Attribute 정보 -->
-	<select id="getDataAttribute" parameterType="long" resultType="dataInfoAttribute">
+	<!-- <select id="getDataAttribute" parameterType="long" resultType="dataInfoAttribute">
 		/* getDataAttribute */
 		SELECT *
 		FROM data_info_attribute
 		WHERE data_id = #{dataId}
-	</select>
+	</select> -->
 
 	<!-- Data 등록 -->
 	<insert id="insertData" parameterType="dataInfo">
@@ -179,7 +198,7 @@
     		SELECT NEXTVAL('data_info_seq')
   		</selectKey>
 		INSERT INTO data_info(
-			data_id, data_group_id, data_key, data_name, data_type, sharing, user_id, mapping_type,
+			data_id, data_group_id, converter_job_file_id, data_key, data_name, data_type, sharing, user_id, mapping_type,
 			<if test="location != null">
 			location,
 			</if>
@@ -187,9 +206,9 @@
 			<if test="metainfo != null and metainfo != ''">
 			metainfo,
 			</if>
-			description
+			status, description
 		) VALUES (
-			#{dataId}, #{dataGroupId}, #{dataKey}, #{dataName}, #{dataType}, #{sharing}, #{userId}, #{mappingType},
+			#{dataId}, #{dataGroupId}, #{converterJobFileId}, #{dataKey}, #{dataName}, #{dataType}, #{sharing}, #{userId}, #{mappingType},
 			<if test="location != null">
 			ST_GeomFromText(#{location}, 4326),
 			</if>
@@ -197,7 +216,7 @@
 			<if test="metainfo != null and metainfo != ''">
 			TO_JSON(#{metainfo}::json),
 			</if>
-			#{description}
+			#{status}, #{description}
 		)
 	</insert>
 
@@ -209,6 +228,9 @@
 			<if test="dataGroupId != null and dataGroupId > 0">
 			data_group_id = #{dataGroupId},
 			</if>
+			<if test="converterJobFileId != null and converterJobFileId > 0">
+			converter_job_file_id = #{converterJobFileId},
+			</if>
 			<if test="sharing != null and sharing != ''">
 			sharing = #{sharing},
 			</if>
@@ -216,7 +238,7 @@
 			data_name = #{dataName},
 			</if>
 			<if test="dataType != null and dataType != ''">
-			data_name = #{dataType},
+			data_type = #{dataType},
 			</if>
 			<if test="mappingType != null and mappingType != ''">
 			mapping_type = #{mappingType},
@@ -287,7 +309,17 @@
 		DELETE
 		FROM data_info
 		WHERE data_group_id = #{dataGroupId}
-			AND depth = 1
+			<if test="userId != null and userId != ''">
+			AND user_id = #{userId}
+			</if>
+	</delete>
+	
+	<!-- converterJobFile 정보를 이용하여 data 정보 삭제 -->
+	<delete id="deleteDataByConverterJobFile" parameterType="dataInfo">
+		/* deleteDataByConverterJobFile */
+		DELETE
+		FROM data_info 
+		WHERE converter_job_file_id = #{converterJobFileId}
 			<if test="userId != null and userId != ''">
 			AND user_id = #{userId}
 			</if>

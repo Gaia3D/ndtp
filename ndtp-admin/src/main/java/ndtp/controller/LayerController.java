@@ -54,6 +54,7 @@ import ndtp.domain.Policy;
 import ndtp.domain.RoleKey;
 import ndtp.domain.ShapeFileExt;
 import ndtp.domain.UserSession;
+import ndtp.geospatial.ShapeFileParser;
 import ndtp.service.GeoPolicyService;
 import ndtp.service.LayerFileInfoService;
 import ndtp.service.LayerGroupService;
@@ -199,7 +200,7 @@ public class LayerController implements AuthorizationController {
 		try {
 			errorCode = layerValidate(request);
 			if (!StringUtils.isEmpty(errorCode)) {
-				result.put("statusCode", HttpStatus.OK.value());
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
 				result.put("errorCode", errorCode);
 				return result;
 			}
@@ -273,7 +274,7 @@ public class LayerController implements AuthorizationController {
 					// 파일 기본 validation 체크
 					errorCode = fileValidate(policy, multipartFile);
 					if (!StringUtils.isEmpty(errorCode)) {
-						result.put("statusCode", HttpStatus.OK.value());
+						statusCode = HttpStatus.BAD_REQUEST.value();
 						result.put("errorCode", errorCode);
 						return result;
 					}
@@ -285,7 +286,7 @@ public class LayerController implements AuthorizationController {
 						extension = divideFileName[divideFileName.length - 1];
 						if (LayerFileInfo.ZIP_EXTENSION.equals(extension.toLowerCase())) {
 							log.info("@@@@@@@@@@@@ upload.file.type.invalid");
-							result.put("statusCode", HttpStatus.OK.value());
+							result.put("statusCode", HttpStatus.BAD_REQUEST.value());
 							result.put("errorCode", "upload.file.type.invalid");
 							return result;
 						}
@@ -318,6 +319,13 @@ public class LayerController implements AuthorizationController {
 				}
 			}
 			
+			// shp 파일 필수 필드 확인
+			ShapeFileParser shapeFileParser = new ShapeFileParser(makedDirectory + groupFileName + "." + ShapeFileExt.SHP.getValue());
+			if(!shapeFileParser.fieldValidate()) {
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "upload.shpfile.requried");
+				return result;
+			}
 			// 3. 레이어 기본 정보 및 레이어 이력 정보 등록
 			Map<String, Object> updateLayerMap = layerService.insertLayer(layer, layerFileInfoList);
 			if (!layerFileInfoList.isEmpty()) {
@@ -340,7 +348,7 @@ public class LayerController implements AuthorizationController {
 			statusCode = HttpStatus.OK.value();
 		} catch (Exception e) {
 			e.printStackTrace();
-			statusCode = HttpStatus.OK.value();
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "db.exception";
 			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 		}
@@ -377,7 +385,7 @@ public class LayerController implements AuthorizationController {
         try {
             errorCode = layerValidate(request);
             if(!StringUtils.isEmpty(errorCode)) {
-                result.put("statusCode", HttpStatus.OK.value());
+            	result.put("statusCode", HttpStatus.BAD_REQUEST.value());
                 result.put("errorCode", errorCode);
                 return result;
             }
@@ -432,7 +440,7 @@ public class LayerController implements AuthorizationController {
                     // 파일 기본 validation 체크
                     errorCode = fileValidate(policy, multipartFile);
                     if(!StringUtils.isEmpty(errorCode)) {
-                        result.put("statusCode", HttpStatus.OK.value());
+                    	result.put("statusCode", HttpStatus.BAD_REQUEST.value());
                         result.put("errorCode", errorCode);
                         return result;
                     }
@@ -444,7 +452,7 @@ public class LayerController implements AuthorizationController {
                         extension = divideFileName[divideFileName.length - 1];
                         if(LayerFileInfo.ZIP_EXTENSION.equals(extension.toLowerCase())) {
                             log.info("@@@@@@@@@@@@ upload.file.type.invalid");
-                            result.put("statusCode", HttpStatus.OK.value());
+                            result.put("statusCode", HttpStatus.BAD_REQUEST.value());
                             result.put("errorCode", "upload.file.type.invalid");
                             return result;
                         }
@@ -476,6 +484,14 @@ public class LayerController implements AuthorizationController {
 					layerFileInfoList.add(layerFileInfo);
                 }
             }
+            
+            // shp 파일 필수 필드 확인
+ 			ShapeFileParser shapeFileParser = new ShapeFileParser(makedDirectory + groupFileName + "." + ShapeFileExt.SHP.getValue());
+ 			if(!shapeFileParser.fieldValidate()) {
+ 				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+ 				result.put("errorCode", "upload.shpfile.requried");
+ 				return result;
+ 			}
             
             layer.setLayerId(layerId);
             layer.setLayerGroupId(Integer.valueOf(request.getParameter("layerGroupId")));
@@ -536,7 +552,7 @@ public class LayerController implements AuthorizationController {
             }
 
             e.printStackTrace();
-            statusCode = HttpStatus.OK.value();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
             errorCode = "db.exception";
             message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
         }

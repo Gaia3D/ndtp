@@ -736,14 +736,15 @@
 						    uploadFileResultCount = 0;
 						}
 	                } else {
-	                    alertMessage(response);
+	                	alert(JS_MESSAGE[response.errorCode]);
+						console.log("---- " + res.message);
 	                }
 	            } else {
 					console.log("------- success response = " + response);
 					if(response.statusCode <= 200) {
 		        		alert(JS_MESSAGE["update"]);
 					} else {
-						alert(JS_MESSAGE[res.errorCode]);
+						alert(JS_MESSAGE[response.errorCode]);
 						console.log("---- " + res.message);
 					}
 	            }

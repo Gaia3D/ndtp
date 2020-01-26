@@ -38,6 +38,7 @@ JS_MESSAGE["usersession.grant.invalid"] = "사용 권한이 유효하지 않습�
 
 //사용자
 JS_MESSAGE["user.id.empty"] = "아이디를 입력하여 주십시오.";
+JS_MESSAGE["user.id.enable"] = "사용 가능한 아이디 입니다.";
 JS_MESSAGE["user.id.min_length.invalid"] = "사용자 아이디 최소 길이가 올바르지 않습니다.";
 JS_MESSAGE["password.empty"] = "비밀번호를 입력하여 주십시오.";
 JS_MESSAGE["password.correct.empty"] = "비밀번호 확인을 입력하여 주십시오.";
@@ -56,7 +57,6 @@ JS_MESSAGE["user.password.exception"] = "패스워드 등록 과정 중 오류�
 JS_MESSAGE["user.session.notexist"] = "세션 정보가 존재하지 않습니다.";
 JS_MESSAGE["user.session.closed"] = "세션 종료 처리 하였습니다.";
 JS_MESSAGE["user.session.close"] = "선택하신 사용자의 세션을 종료 하시겠습니까?";
-JS_MESSAGE["user.id.enable"] = "사용 가능한 아이디 입니다.";
 JS_MESSAGE["user.insert"] = "사용자를 등록 하였습니다.";
 JS_MESSAGE["user.info.update"] = "사용자 정보를 수정 하였습니다.";
 JS_MESSAGE["user.id.notexist"] = "아이디가 존재하지 않습니다.";
@@ -152,6 +152,11 @@ JS_MESSAGE["data.altitude.empty"] = "높이를  입력하여 주십시오.";
 JS_MESSAGE["data.file.empty"] = "파일을 입력하여 주십시오.";
 JS_MESSAGE["data.insert"] = "데이터를 등록 하였습니다.";
 
+JS_MESSAGE["data.group.key.empty"] = "데이터 그룹 Key 를 입력하여 주십시오.";
+JS_MESSAGE["data.group.key.duplication"] = "사용중인 데이터 그룹 Key 입니다. 다른 이름을 사용해 주십시오.";
+JS_MESSAGE["data.group.key.enable"] = "사용 가능한 데이터 그룹 Key 입니다.";
+JS_MESSAGE["data.group.key.duplication.check"] = "데이터 그룹 Key 중복 확인이 필요 합니다.";
+
 JS_MESSAGE["upload.file.type.invalid"] = "업로드 파일 타입이 유효하지 않습니다.";
 
 JS_MESSAGE["converter.title.empty"] = "제목을 입력하여 주십시오.";
@@ -159,9 +164,4 @@ JS_MESSAGE["converter.usf.empty"] = "Unit Scale Factor 를 입력하여 주십�
 
 JS_MESSAGE["search.option.warning"] = "포함 옵션을 사용하실 경우 1분 이상이 소요될 수 있습니다. 계속 진행 하시겠습니까?";
 JS_MESSAGE["search.date.warning"] = "시작일이 종료일보다 클수 없습니다.";
-
-JS_MESSAGE["data.group.key.empty"] = "데이터 그룹 Key 를 입력하여 주십시오.";
-JS_MESSAGE["data.group.key.duplication"] = "사용중인 데이터 그룹 Key 입니다. 다른 이름을 사용해 주십시오.";
-JS_MESSAGE["data.group.key.enable"] = "사용 가능한 데이터 그룹 Key 입니다.";
-JS_MESSAGE["data.group.key.duplication.check"] = "데이터 그룹 Key 중복 확인이 필요 합니다.";
 
