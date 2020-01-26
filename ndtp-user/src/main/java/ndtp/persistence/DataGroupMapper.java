@@ -42,7 +42,7 @@ public interface DataGroupMapper {
      * @return
      */
     DataGroup getBasicDataGroup(DataGroup dataGroup);
-    
+
     /**
      * 부모와 표시 순서로 메뉴 조회
      * @param dataGroup

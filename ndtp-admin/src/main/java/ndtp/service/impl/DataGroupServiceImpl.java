@@ -31,18 +31,37 @@ public class DataGroupServiceImpl implements DataGroupService {
 	private PropertiesConfig propertiesConfig;
 
 	/**
+	 * Data Group 총건수
+	 * @param dataGroup
+	 * @return
+	 */
+	public Long getDataGroupTotalCount(DataGroup dataGroup) {
+		return dataGroupMapper.getDataGroupTotalCount(dataGroup);
+	}
+	
+	/**
+     * 전체 데이터 그룹 목록
+     * @param dataGroup
+     */
+	@Transactional(readOnly = true)
+	public List<DataGroup> getAllListDataGroup(DataGroup dataGroup) {
+		return dataGroupMapper.getAllListDataGroup(dataGroup);
+	}
+	
+	/**
      * 데이터 그룹 목록
      * @return
      */
 	@Transactional(readOnly = true)
 	public List<DataGroup> getListDataGroup(DataGroup dataGroup) {
-		return dataGroupMapper.getListDataGroup();
+		return dataGroupMapper.getListDataGroup(dataGroup);
 	}
 
 	/**
      * 데이터 그룹 정보 조회
-     * @return
-     */
+     * @param dataGroup
+	 * @return
+	 */
 	@Transactional(readOnly = true)
 	public DataGroup getDataGroup(DataGroup dataGroup) {
 		return dataGroupMapper.getDataGroup(dataGroup);
@@ -66,6 +85,16 @@ public class DataGroupServiceImpl implements DataGroupService {
 	public Boolean isDataGroupKeyDuplication(DataGroup dataGroup) {
 		return dataGroupMapper.isDataGroupKeyDuplication(dataGroup);
 	}
+	
+	/**
+     * 부모와 표시 순서로 메뉴 조회
+     * @param dataGroup
+     * @return
+     */
+	@Transactional(readOnly = true)
+    public DataGroup getDataGroupByParentAndViewOrder(DataGroup dataGroup) {
+    	return dataGroupMapper.getDataGroupByParentAndViewOrder(dataGroup);
+    }
 
     /**
      * 데이터 그룹 등록
@@ -74,19 +103,20 @@ public class DataGroupServiceImpl implements DataGroupService {
      */
     @Transactional
 	public int insertDataGroup(DataGroup dataGroup) {
-
-    	//GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
-
+    	String userId = dataGroup.getUserId();
+    	Integer parentDataGroupId = 0;
+    	
     	DataGroup parentDataGroup = new DataGroup();
+    	//parentDataGroup.setUserId(userId);
     	Integer depth = 0;
     	if(dataGroup.getParent() > 0) {
-	    	parentDataGroup.setDataGroupId(dataGroup.getParent());
-	    	parentDataGroup = dataGroupMapper.getDataGroup(parentDataGroup);
+    		parentDataGroupId = dataGroup.getParent();
+    		parentDataGroup.setDataGroupId(parentDataGroupId);
+    		parentDataGroup = dataGroupMapper.getDataGroup(parentDataGroup);
 	    	depth = parentDataGroup.getDepth() + 1;
     	}
-
-    	// 디렉토리 생성. 사용자의 경우 userId 밑에 생성 했는데, 관리자는 어디가 좋을까? 그냥 /
-    	//String dataGroupPath = dataGroup.getUserId() + "/" + dataGroup.getDataGroupKey() + "/";
+	    
+    	// 디렉토리 생성
     	String dataGroupPath = dataGroup.getDataGroupKey() + "/";
     	FileUtils.makeDirectoryByPath(propertiesConfig.getDataServiceDir(), dataGroupPath);
     	dataGroup.setDataGroupPath(dataGroupPath);
@@ -97,6 +127,10 @@ public class DataGroupServiceImpl implements DataGroupService {
     		Integer children = parentDataGroup.getChildren();
     		if(children == null) children = 0;
     		children += 1;
+    		
+    		parentDataGroup = new DataGroup();
+    		//parentDataGroup.setUserId(userId);
+    		parentDataGroup.setDataGroupId(parentDataGroupId);
     		parentDataGroup.setChildren(children);
 	    	return dataGroupMapper.updateDataGroup(parentDataGroup);
     	}
@@ -125,7 +159,7 @@ public class DataGroupServiceImpl implements DataGroupService {
     }
 
     /**
-	 * 데이터 그룹 표시 순서 수정 (up/down)
+	 * 데이터 그룹 표시 순서 수정. UP, DOWN
 	 * @param dataGroup
 	 * @return
 	 */
@@ -137,6 +171,7 @@ public class DataGroupServiceImpl implements DataGroupService {
 
     	Integer modifyViewOrder = dbDataGroup.getViewOrder();
     	DataGroup searchDataGroup = new DataGroup();
+    	//searchDataGroup.setUserId(dataGroup.getUserId());
     	searchDataGroup.setUpdateType(dbDataGroup.getUpdateType());
     	searchDataGroup.setParent(dbDataGroup.getParent());
 
@@ -165,15 +200,6 @@ public class DataGroupServiceImpl implements DataGroupService {
     }
 
     /**
-     * 부모와 표시 순서로 메뉴 조회
-     * @param dataGroup
-     * @return
-     */
-    private DataGroup getDataGroupByParentAndViewOrder(DataGroup dataGroup) {
-    	return dataGroupMapper.getDataGroupByParentAndViewOrder(dataGroup);
-    }
-
-    /**
 	 * 데이터 그룹 삭제
 	 * @param dataGroup
 	 * @return
@@ -181,7 +207,8 @@ public class DataGroupServiceImpl implements DataGroupService {
     @Transactional
 	public int deleteDataGroup(DataGroup dataGroup) {
     	// 삭제하고, children update
-
+    	
+    	//String userId = dataGroup.getUserId();
     	dataGroup = dataGroupMapper.getDataGroup(dataGroup);
     	
     	int result = 0;
@@ -190,6 +217,7 @@ public class DataGroupServiceImpl implements DataGroupService {
     		List<Integer> dataGroupIdList = dataGroupMapper.getDataGroupListByAncestor(dataGroup);
     		for(Integer dataGroupId : dataGroupIdList) {
     			DataGroup deleteDataGroup = new DataGroup();
+    			//deleteDataGroup.setUserId(userId);
     			deleteDataGroup.setDataGroupId(dataGroupId);
     			// 하위 데이터 삭제
     			dataMapper.deleteDataByDataGroupId(deleteDataGroup);
@@ -202,6 +230,7 @@ public class DataGroupServiceImpl implements DataGroupService {
     		List<Integer> dataGroupIdList = dataGroupMapper.getDataGroupListByParent(dataGroup);
     		for(Integer dataGroupId : dataGroupIdList) {
     			DataGroup deleteDataGroup = new DataGroup();
+    			//deleteDataGroup.setUserId(userId);
     			deleteDataGroup.setDataGroupId(dataGroupId);
     			// 하위 데이터 삭제
     			dataMapper.deleteDataByDataGroupId(deleteDataGroup);
@@ -209,6 +238,7 @@ public class DataGroupServiceImpl implements DataGroupService {
     		
     		// 조상의 children -1
     		DataGroup ancestorDataGroup = new DataGroup();
+    		//ancestorDataGroup.setUserId(userId);
     		ancestorDataGroup.setDataGroupId(dataGroup.getAncestor());
     		ancestorDataGroup = dataGroupMapper.getDataGroup(ancestorDataGroup);
     		ancestorDataGroup.setChildren(ancestorDataGroup.getChildren() - 1);
@@ -218,6 +248,7 @@ public class DataGroupServiceImpl implements DataGroupService {
     		result = dataGroupMapper.deleteDataGroupByParent(dataGroup);
     	} else if(Depth.THREE == Depth.findBy(dataGroup.getDepth())) {
     		DataGroup deleteDataGroup = new DataGroup();
+			//deleteDataGroup.setUserId(userId);
 			deleteDataGroup.setDataGroupId(dataGroup.getDataCount());
 			// 하위 데이터 삭제
 			dataMapper.deleteDataByDataGroupId(deleteDataGroup);
@@ -236,4 +267,12 @@ public class DataGroupServiceImpl implements DataGroupService {
     	
     	return result;
     }
+
+	public int deleteDataGroupByAncestor(DataGroup dataGroup) {
+		return dataGroupMapper.deleteDataGroupByAncestor(dataGroup);
+	}
+
+	public int deleteDataGroupByParent(DataGroup dataGroup) {
+		return dataGroupMapper.deleteDataGroupByParent(dataGroup);
+	}
 }
