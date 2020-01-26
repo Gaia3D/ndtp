@@ -68,15 +68,16 @@
 		    	<input type="text" id="dcColorInput" value="#000000" size="6" readonly/>
 		    	<button type="button" id="dcColorApply" class="btnTextF">적용</button>
 		    	<button type="button" id="dcColorCancle" class="btnText">되돌리기</button>
+		    <form id="dcRotLocForm">
 		    <ul class="category">
 	    		<li>위치 변경</li>
 	    	</ul>
 	    		<label for="dcLongitude">위도</label>
-		    	<input type="text" id="dcLongitude" readonly/><br/>
+		    	<input type="text" id="dcLongitude" name="longitude" readonly/><br/>
 		    	<label for="dcLatitude" >경도</label>
-		    	<input type="text" id="dcLatitude" readonly/><br/>
+		    	<input type="text" id="dcLatitude" name="latitude" readonly/><br/>
 		    	<label for="dcAltitude" >높이</label>
-		    	<input type="text" id="dcAltitude" readonly/>
+		    	<input type="text" id="dcAltitude" name="altitude" readonly/>
 		    	<button id="dcAltUp" data-type="up" type="button" style="height:26px;width:28px;background-image:url(/images/ko/black_arrow_26.png);"></button>
 		    	<button id="dcAltDown" data-type="down" type="button" style="height:26px;width:28px;background-image:url(/images/ko/black_arrow_26.png);transform: rotate(180deg);"></button>
 		    	<label for="dcAltitude" >높이 offset</label>
@@ -85,12 +86,13 @@
 	    		<li>회전 변경</li>
 	    	</ul>
 	    		<label for="dcPitch">x(pitch)</label>
-		    	<input type="text" id="dcPitch" size="1" readonly/><input id="dcPitchRange" data-type="Pitch" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/><br/>
+		    	<input type="text" id="dcPitch" name="pitch" size="1" readonly/><input id="dcPitchRange" data-type="Pitch" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/><br/>
 		    	<label for="dcRoll">y(roll)</label>
-		    	<input type="text" id="dcRoll" size="1" readonly/><input id="dcRollRange" data-type="Roll" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/><br/>
+		    	<input type="text" id="dcRoll" name="roll" size="1" readonly/><input id="dcRollRange" data-type="Roll" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/><br/>
 		    	<label for="dcHeading">z(heading)</label>
-		    	<input type="text" id="dcHeading" size="1" readonly/><input id="dcHeadingRange" data-type="Heading" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/>
+		    	<input type="text" id="dcHeading" name="heading" size="1" readonly/><input id="dcHeadingRange" data-type="Heading" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/>
 		    	<button type="button" id="dcSavePosRot" class="btnTextF" style="display: block;margin-top: 8px;">높이회전 저장</button>
+		    </form>
 	    </div>
     </div>
 </div>

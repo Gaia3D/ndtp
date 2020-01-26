@@ -5,6 +5,7 @@ var MapDataControll = function(magoInstance) {
 	var $header = $dataControlWrap.find('h3');
 	var projectId;
 	var dataKey;
+	var dataId;
 	//지도상에서 데이터 all 선택 시 
     magoManager.on(Mago3D.MagoManager.EVENT_TYPE.SELECTEDF4D, function(result) {
     	var f4d = result.f4d;
@@ -12,6 +13,7 @@ var MapDataControll = function(magoInstance) {
 			clearDataControl();
 			
 			var data = f4d.data;
+			dataId = data.dataId;
 			dataKey = data.nodeId;
 			projectId = data.projectId;
 			var title = '선택된 데이터 :  ' + projectId + ' / ' + dataKey;
@@ -112,7 +114,31 @@ var MapDataControll = function(magoInstance) {
 	
 	$('#dcSavePosRot').click(function() {
 		if(confirm('현재 입력된 위치와 회전 정보를 db에 저장하시겠습니까?')) {
-			alert('save');
+			if(!dataId) {
+				alert('선택된 데이터가 없습니다.');
+				return false;
+			}
+			startLoading();
+			var formData = $('#dcRotLocForm').serialize();
+			$.ajax({
+				url: "/datas/" + dataId,
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+				data: formData,
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert(JS_MESSAGE["update"]);
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
+					updateDataInfoFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        updateDataInfoFlag = true;
+				}
+			}).always(stopLoading);
 		} else {
 			alert('no');
 		}
@@ -130,6 +156,7 @@ var MapDataControll = function(magoInstance) {
 	}
 	
 	var clearDataControl = function() {
+		dataId = undefined;
 		dataKey = undefined;
 		projectId = undefined;
 		$header.empty();
