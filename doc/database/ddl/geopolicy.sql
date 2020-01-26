@@ -8,7 +8,7 @@ create table geopolicy(
 	cesium_ion_token									varchar(256),
 
 	data_api_url										varchar(256),
-	data_service_path									varchar(256)		default '/f4d',
+	data_service_path									varchar(256)		default '/f4d/',
 	data_change_request_decision						varchar(20)			default 'approval',
 	
 	geoserver_enable									boolean				default true,

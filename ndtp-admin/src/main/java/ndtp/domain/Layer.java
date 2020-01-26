@@ -18,7 +18,7 @@ import lombok.ToString;
  * @author Cheon JeongDae
  *
  */
-@ToString
+@ToString(callSuper = true)
 @Builder
 @Getter
 @Setter
@@ -27,11 +27,11 @@ import lombok.ToString;
 public class Layer extends Search implements Serializable {
 
     /**
-    * 레이어 목록 표시
-    */
-    private static final long serialVersionUID = -4668268071028609827L;
-
-    // 경도
+	 * 
+	 */
+	private static final long serialVersionUID = -6379435382043677979L;
+	
+	// 경도
     private String longitude;
     // 위도
     private String latitude;

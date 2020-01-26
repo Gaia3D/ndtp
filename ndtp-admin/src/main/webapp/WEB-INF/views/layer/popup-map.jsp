@@ -7,7 +7,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="referrer" content="origin">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="viewport" content="width=device-width">
     <meta name="robots" content="index,nofollow"/>
     <title>Layer 수정 | NDTP</title>
     <link rel="stylesheet" href="/css/${lang}/font/font.css" />

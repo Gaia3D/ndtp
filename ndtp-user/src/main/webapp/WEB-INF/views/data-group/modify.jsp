@@ -56,7 +56,7 @@
 			</tr>
 			<tr>
 				<th class="col-label" scope="row">
-					<form:label path="dataGroupKey">데이터 그룹 Key(영문)</form:label>
+					데이터 그룹 Key(영문)
 					<span class="icon-glyph glyph-emark-dot color-warning"></span>
 				</th>
 				<td class="col-input">
@@ -65,7 +65,7 @@
 			</tr>
 			<tr>
 				<th class="col-label" scope="row">
-					<form:label path="parentName">상위 그룹</form:label>
+					상위 그룹
 					<span class="icon-glyph glyph-emark-dot color-warning"></span>
 				</th>
 				<td class="col-input">
@@ -79,7 +79,7 @@
 				</th>
 	            <td class="col-input">
 					<select id="sharing" name="sharing" class="selectBoxClass">
-						<option value="public" selected="selected">공개</option>
+						<option value="public">공개</option>
 						<option value="common">공통</option>
 						<option value="private">개인</option>
 						<option value="group">그룹</option>
@@ -187,9 +187,12 @@
 <script type="text/javascript" src="/js/${lang}/ui-controll.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-		$("[name=basic]").filter("[value='${dataGroup.basic}']").prop("checked",true);
-		$("[name=available]").filter("[value='${dataGroup.available}']").prop("checked",true);
-		
+		var isBasic = "${dataGroup.basic}";
+		if(isBasic === "false") {
+			// 기본 그룹이 아닐 경우만 사용 유무 수정 가능
+			$("[name=available]").filter("[value='${dataGroup.available}']").prop("checked",true);
+		}
+			
 		$("#sharing").val("${dataGroup.sharing}");
 	});
 	

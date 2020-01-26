@@ -8,9 +8,10 @@ public interface DataGroupService {
 
 	/**
      * 데이터 그룹 목록
+     * @param dataGroup
      * @return
      */
-    List<DataGroup> getListDataGroup();
+    List<DataGroup> getListDataGroup(DataGroup dataGroup);
 
     /**
      * 데이터 그룹 정보 조회
@@ -25,6 +26,13 @@ public interface DataGroupService {
      */
     DataGroup getBasicDataGroup();
 
+	/**
+	 * 그룹Key 중복 체크
+	 * @param dataGroupKey
+	 * @return
+	 */
+	int getDuplicationKeyCount(String dataGroupKey);
+    
     /**
      * 데이터 그룹 등록
      * @param dataGroup
@@ -32,14 +40,14 @@ public interface DataGroupService {
      */
     int insertDataGroup(DataGroup dataGroup);
 
-	/**
-	 * 그룹Key 중복 체크
-	 * @param dataGroupKey
-	 * @return
-	 */
-	int getDuplicationKeyCount(String dataGroupKey);
-
-	/**
+    /**
+     * 기본 데이터 그룹 등록
+     * @param dataGroup
+     * @return
+     */
+    int insertBasicDataGroup(DataGroup dataGroup);
+    
+    /**
 	 * 데이터 그룹 수정
 	 * @param dataGroup
 	 * @return

@@ -15,7 +15,10 @@ import lombok.ToString;
 @ToString
 public class APIError implements Serializable {
 
-	private static final long serialVersionUID = -5385530623691900908L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1208067801485413775L;
 	
 	/**
 	 * front end 메시지 처리 등을 위한 code

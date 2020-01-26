@@ -5,8 +5,10 @@
 <!DOCTYPE html>
 <html lang="${accessibility}">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width">
+	<meta charset="utf-8">
+    <meta name="referrer" content="origin">
+    <meta name="viewport" content="width=device-width">
+    <meta name="robots" content="index,nofollow"/>
 	<title>데이터 목록 | NDTP</title>
 	<link rel="shortcut icon" href="/images/favicon.ico">
 	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
@@ -164,15 +166,14 @@
 		var geoPolicyJson = ${geoPolicyJson};
 		
 		var cesiumViewerOption = {};
-			cesiumViewerOption.infoBox = false;
-			cesiumViewerOption.navigationHelpButton = false;
-			cesiumViewerOption.selectionIndicator = false;
-			cesiumViewerOption.homeButton = false;
-			cesiumViewerOption.fullscreenButton = false;
-			cesiumViewerOption.geocoder = false;
-			cesiumViewerOption.baseLayerPicker = false;
-			cesiumViewerOption.sceneModePicker = false;
-			
+		cesiumViewerOption.infoBox = false;
+		cesiumViewerOption.navigationHelpButton = false;
+		cesiumViewerOption.selectionIndicator = false;
+		cesiumViewerOption.homeButton = false;
+		cesiumViewerOption.fullscreenButton = false;
+		cesiumViewerOption.geocoder = false;
+		cesiumViewerOption.baseLayerPicker = false;
+		cesiumViewerOption.sceneModePicker = false;
 			
 		/**
 		 * @param {Stirng} containerId container div id. required.

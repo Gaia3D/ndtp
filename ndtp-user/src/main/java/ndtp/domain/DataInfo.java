@@ -38,6 +38,8 @@ public class DataInfo extends Search implements Serializable {
 	private String duplicationValue;
 	// 그룹 통계용
 	private Long dataCount;
+	// 3D 지도 표시 시 목록에서 온건지, 수정에서 온건지를 구분하기 위해.
+	private String referrer;
 	
 	// 위도
 	private BigDecimal latitude;

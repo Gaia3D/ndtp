@@ -15,4 +15,11 @@ public enum MenuTarget {
 	public String getValue() {
 		return this.value;
 	}
+	
+	public static MenuTarget findBy(String value) {
+		for(MenuTarget menuTarget : values()) {
+			if(menuTarget.getValue().equals(value)) return menuTarget;
+		}
+		return null;
+	}
 }

@@ -25,8 +25,10 @@ import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.ApprovalStatus;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfoLog;
+import ndtp.domain.Key;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
+import ndtp.domain.UserSession;
 import ndtp.service.DataGroupService;
 import ndtp.service.DataLogService;
 import ndtp.utils.DateUtils;
@@ -60,10 +62,11 @@ public class DataLogController {
 	public String listDataLog(Locale locale, HttpServletRequest request, DataInfoLog dataInfoLog, @RequestParam(defaultValue="1") String pageNo, Model model) {
 		
 		log.info("@@ dataInfoLog = {}", dataInfoLog);
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		
-//		DataGroup dataGroup = new DataGroup();
-//		dataGroup.setAvailable(true);
-		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup();
+		DataGroup dataGroup = new DataGroup();
+		dataGroup.setUserId(userSession.getUserId());
+		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup(dataGroup);
 		
 		String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
 		if(StringUtils.isEmpty(dataInfoLog.getStartDate())) {

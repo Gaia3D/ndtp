@@ -40,7 +40,7 @@ import ndtp.utils.WebUtils;
  */
 @Slf4j
 @Controller
-@RequestMapping("/sign/")
+@RequestMapping("/sign")
 public class SigninController {
 	
 	@Autowired
@@ -74,7 +74,7 @@ public class SigninController {
 	 * @param model
 	 * @return
 	 */
-	@PostMapping(value = "process-signin")
+	@PostMapping(value = "/process-signin")
 	public String processSignin(HttpServletRequest request, @Valid @ModelAttribute("signinForm") UserInfo signinForm, BindingResult bindingResult, Model model) {
 		
 		Policy policy = policyService.getPolicy();
@@ -232,7 +232,7 @@ public class SigninController {
 	 * @param request
 	 * @return
 	 */
-	@GetMapping(value = "signout")
+	@GetMapping(value = "/signout")
 	public String signout(HttpServletRequest request) {
 		
 		HttpSession session = request.getSession();

@@ -7,10 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.ConverterJob;
@@ -24,7 +23,7 @@ import ndtp.service.ConverterService;
  *
  */
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("/converters")
 public class ConverterRestController {
 	
@@ -38,7 +37,6 @@ public class ConverterRestController {
 	 * @return
 	 */
 	@RequestMapping
-	@ResponseBody
 	public Map<String, Object> insert(HttpServletRequest request, ConverterJob converterJob) {
 		log.info("@@@ converterJob = {}", converterJob);
 		

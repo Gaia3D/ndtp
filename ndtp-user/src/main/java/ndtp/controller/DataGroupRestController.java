@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.DataGroup;
-import ndtp.domain.DataInfo;
 import ndtp.domain.Key;
 import ndtp.domain.LocationUdateType;
 import ndtp.domain.PageType;
@@ -188,47 +187,50 @@ public class DataGroupRestController {
 		return result;
 	}
 	
-//	/**
-//	 * 사용자 데이터 그룹 정보
-//	 * @param dataGroup
-//	 * @return
-//	 */
-//	@GetMapping(value = "/detail")
-//	public Map<String, Object> detail(	HttpServletRequest request, DataGroup dataGroup ) {
-//		
-//		log.info("@@@@@ detail dataGroup = {}", dataGroup);
-//		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-//		
-//		Map<String, Object> result = new HashMap<>();
-//		int statusCode = 0;
-//		String errorCode = null;
-//		String message = null;
-//		try {
-//			// TODO @Valid 로 구현해야 함
-//			if(dataGroup.getDataGroupId() == null) {
-//				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-//				result.put("errorCode", "input.invalid");
-//				result.put("message", message);
-//				
-//				return result;
-//			}
-//			
+	/**
+	 * 사용자 데이터 그룹 정보
+	 * @param dataGroup
+	 * @return
+	 */
+	@GetMapping("/{dataGroupId}")
+	public Map<String, Object> detail(	HttpServletRequest request, @PathVariable Integer dataGroupId, DataGroup dataGroup ) {
+		
+		log.info("@@@@@ detail dataGroup = {}, dataGroupId = {}", dataGroup, dataGroupId);
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		try {
+			// TODO @Valid 로 구현해야 함
+			if(dataGroupId == null) {
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "input.invalid");
+				result.put("message", message);
+				
+				return result;
+			}
+			
 //			dataGroup.setUserId(userSession.getUserId());
-//			dataGroup = dataGroupService.getDataGroup(dataGroup);
-//			result.put("dataGroup", dataGroup);
-//		} catch(Exception e) {
-//			e.printStackTrace();
-//			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-//			errorCode = "db.exception";
-//			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-//		}
-//		
-//		result.put("statusCode", statusCode);
-//		result.put("errorCode", errorCode);
-//		result.put("message", message);
-//		
-//		return result;
-//	}
+//			dataGroup.setDataGroupId(dataGroupId);
+			dataGroup = dataGroupService.getDataGroup(dataGroup);
+			
+			statusCode = HttpStatus.OK.value();
+			result.put("dataGroup", dataGroup);
+		} catch(Exception e) {
+			e.printStackTrace();
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+		
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		
+		return result;
+	}
 	
 	/**
 	 * 사용자 데이터 그룹 등록

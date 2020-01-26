@@ -2,6 +2,8 @@ package ndtp.domain;
 
 public enum DataStatus {
 
+	// 변환중
+	PROCESSING,
 	// 사용중
 	USE,
 	// 사용 중지

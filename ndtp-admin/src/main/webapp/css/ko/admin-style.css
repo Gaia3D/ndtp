@@ -2550,3 +2550,7 @@ tr:hover td {
 	text-align: center;
 	line-height: 1.6em;
 }
+
+.selectBoxClass {
+	height: 30px; margin-bottom: 7px; border-color: #d5d5d5;
+}

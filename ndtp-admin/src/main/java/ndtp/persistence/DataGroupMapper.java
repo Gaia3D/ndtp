@@ -36,18 +36,25 @@ public interface DataGroupMapper {
     DataGroup getDataGroupByParentAndViewOrder(DataGroup dataGroup);
 
     /**
-     * 데이터 그룹 등록
-     * @param dataGroup
-     * @return
-     */
-    int insertDataGroup(DataGroup dataGroup);
-
-	/**
 	 * 그룹Key 중복 체크
 	 * @param dataGroupKey
 	 * @return
 	 */
 	int getDuplicationKeyCount(String dataGroupKey);
+    
+    /**
+     * 데이터 그룹 등록
+     * @param dataGroup
+     * @return
+     */
+    int insertDataGroup(DataGroup dataGroup);
+    
+    /**
+     * 기본 그룹 등록
+     * @param dataGroup
+     * @return
+     */
+    int insertBasicDataGroup(DataGroup dataGroup);
 
 	/**
 	 * 데이터 그룹 수정

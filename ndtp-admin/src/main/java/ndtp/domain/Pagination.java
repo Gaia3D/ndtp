@@ -1,7 +1,6 @@
 package ndtp.domain;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -69,7 +68,7 @@ public class Pagination {
     }
 
     private void init() {
-        this.rowNumber = this.totalCount - (this.pageNo - 1l) * this.pageRows;
+    	this.rowNumber = this.totalCount - (this.pageNo - 1l) * this.pageRows;
 
         this.offset = (this.pageNo - 1l) * this.pageRows;
 

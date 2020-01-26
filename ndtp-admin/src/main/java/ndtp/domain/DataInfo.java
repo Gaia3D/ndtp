@@ -6,6 +6,9 @@ import java.sql.Timestamp;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,13 +29,20 @@ import lombok.ToString;
 @AllArgsConstructor
 public class DataInfo extends Search implements Serializable {
 	
-	private static final long serialVersionUID = 6267402319518438249L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4527009012673017066L;
 	
 	/******** 화면 오류 표시용 ********/
 	private String messageCode;
 	private String errorCode;
 	// 아이디 중복 확인 hidden 값
 	private String duplicationValue;
+	// 그룹 통계용
+	private Long dataCount;
+	// 3D 지도 표시 시 목록에서 온건지, 수정에서 온건지를 구분하기 위해.
+	private String referrer;
 	
 	// 위도
 	private BigDecimal latitude;
@@ -44,12 +54,14 @@ public class DataInfo extends Search implements Serializable {
 	private String userName;
 	
 	/****** validator ********/
-	private String methodMode;
+	private MethodType methodType;
 
 	// 고유번호
 	private Long dataId;
 	// Data Group 고유번호
 	private Integer dataGroupId;
+	// converter job file 고유번호
+	private Long converterJobFileId;
 	// Data Group 이름
 	private String dataGroupName;
 	// data 고유 식별번호
@@ -58,6 +70,8 @@ public class DataInfo extends Search implements Serializable {
 	private String oldDataKey;
 	// data 이름
 	private String dataName;
+	// 데이터 타입(중복). 3ds,obj,dae,collada,ifc,las,citygml,indoorgml,etc
+	private String dataType;
 	// common : 공통, public : 공개, private : 개인, group : 그룹
 	private String sharing;
 	// 부모 고유번호
@@ -88,9 +102,9 @@ public class DataInfo extends Search implements Serializable {
 	// 순서
 	private Integer childrenViewOrder;
 	
-	// 데이터 메타 정보. 데이터  control을 위해 인위적으로 만든 속성
+	// 기본 정보
 	private String metainfo;
-	// data 상태. 0:사용중, 1:사용중지(관리자), 2:삭제(화면 비표시)
+	// data 상태. processing : 변환중, use : 사용중, unused : 사용중지(관리자), delete : 삭제(비표시)
 	private String status;
 	// 속성 존재 유무. true : 존재, false : 존재하지 않음(기본값)
 	private Boolean attributeExist;
@@ -98,6 +112,30 @@ public class DataInfo extends Search implements Serializable {
 	private Boolean objectAttributeExist;
 	// 설명
 	private String description;
+	
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+	private Timestamp viewUpdateDate;
+	
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+	private Timestamp viewInsertDate;
+	public Timestamp getInsertDate() {
+		return insertDate;
+	}
+	public void setInsertDate(Timestamp insertDate) {
+		this.insertDate = insertDate;
+	}
+	
+	public Timestamp getViewUpdateDate() {
+		return this.updateDate;
+	}
+	public Timestamp getViewInsertDate() {
+		return this.insertDate;
+	}
+	
 	// 수정일 
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Timestamp updateDate;

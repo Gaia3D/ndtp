@@ -52,7 +52,8 @@ import ndtp.utils.FormatUtils;
  * @author jeongdae
  *
  */
-@Slf4j@RestController
+@Slf4j
+@RestController
 @RequestMapping("/upload-datas")
 public class UploadDataRestController {
 	

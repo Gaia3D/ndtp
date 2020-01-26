@@ -18,7 +18,7 @@ import lombok.ToString;
  * @author Cheon JeongDae
  *
  */
-@ToString
+@ToString(callSuper = true)
 @Builder
 @Getter
 @Setter
@@ -29,7 +29,7 @@ public class UploadData extends Search implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4372534009365949984L;
+	private static final long serialVersionUID = -639261582314376967L;
 
 	public static final String ZIP_EXTENSION = "zip";
 	
@@ -55,6 +55,8 @@ public class UploadData extends Search implements Serializable {
 	private String userId;
 	// 사용자명
 	private String userName;
+	// 기본값 origin : latitude, longitude, height를 origin에 맞춤. boundingboxcenter : latitude, longitude, height를 boundingboxcenter 맞춤
+	private String mappingType;
 	// POINT(위도, 경도). 공간 검색 속도 때문에 altitude는 분리
 	private String location;
 	// 위도
@@ -75,6 +77,8 @@ public class UploadData extends Search implements Serializable {
 	private String status;
 	// 파일 개수
 	private Integer fileCount;
+	// converter 변환 대상 파일 수
+	private Integer converterTargetCount;
 	// converter 횟수
 	private Integer converterCount;
 	
