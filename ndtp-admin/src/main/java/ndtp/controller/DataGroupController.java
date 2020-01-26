@@ -87,6 +87,20 @@ public class DataGroupController {
 		DataGroup dataGroup = new DataGroup();
 		dataGroup.setUserId(userSession.getUserId());
 		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup(dataGroup);
+		if(dataGroupList == null || dataGroupList.isEmpty()) {
+			String dataGroupPath = "basic/";
+			
+			dataGroup.setDataGroupKey("basic");
+			dataGroup.setDataGroupName("기본");
+			dataGroup.setDataGroupPath(dataGroupPath);
+			dataGroup.setDataGroupTarget(ServerTarget.ADMIN.name().toLowerCase());
+			dataGroup.setSharing("public");
+			
+			FileUtils.makeDirectoryByPath(propertiesConfig.getDataServiceDir(), dataGroupPath);
+			dataGroupService.insertBasicDataGroup(dataGroup);
+			
+			dataGroupList = dataGroupService.getListDataGroup(dataGroup);
+		}
 
 		Policy policy = policyService.getPolicy();
 		dataGroup.setParentName(policy.getContentDataGroupRoot());

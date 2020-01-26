@@ -213,7 +213,7 @@
         UserPolicy(magoInstance);
         // 기본 레이어 랜더링
         setTimeout(function(){
-        	//initLayer(magoInstance, NDTP.baseLayers);
+        	initLayer(magoInstance, NDTP.baseLayers);
         }, geoPolicyJson.initDuration * 1000);
 
 		//지도상에 데이터 다루는거

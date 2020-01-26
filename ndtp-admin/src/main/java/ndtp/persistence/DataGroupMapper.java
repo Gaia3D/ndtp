@@ -8,7 +8,21 @@ import ndtp.domain.DataGroup;
 
 @Repository
 public interface DataGroupMapper {
+	
+	/**
+	 * 사용자 Data Group 총건수
+	 * @param dataGroup
+	 * @return
+	 */
+	Long getDataGroupTotalCount(DataGroup dataGroup);
 
+	/**
+     * 사용자 데이터 그룹 전체 목록
+     * @param dataGroup
+     * @return
+     */
+    List<DataGroup> getAllListDataGroup(DataGroup dataGroup);
+	
 	/**
      * 데이터 그룹 목록
      * @return
@@ -78,7 +92,7 @@ public interface DataGroupMapper {
 	int updateDataGroup(DataGroup dataGroup);
 
 	/**
-	 * 데이터 그룹 표시 순서 수정 (up/down)
+	 * 사용자 데이터 그룹 표시 순서 수정. UP, DOWN
 	 * @param dataGroup
 	 * @return
 	 */

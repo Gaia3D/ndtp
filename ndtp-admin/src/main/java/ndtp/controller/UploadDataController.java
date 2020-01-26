@@ -42,6 +42,7 @@ import ndtp.domain.Key;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
 import ndtp.domain.Policy;
+import ndtp.domain.ServerTarget;
 import ndtp.domain.UploadData;
 import ndtp.domain.UploadDataFile;
 import ndtp.domain.UploadDirectoryType;
@@ -88,11 +89,25 @@ public class UploadDataController {
 	public String input(HttpServletRequest request, Model model) {
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		
-		DataGroup basicDataGroup = dataGroupService.getBasicDataGroup();
-		
 		DataGroup dataGroup = new DataGroup();
 		dataGroup.setUserId(userSession.getUserId());
 		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup(dataGroup);
+		if(dataGroupList == null || dataGroupList.isEmpty()) {
+			String dataGroupPath = "basic/";
+			
+			dataGroup.setDataGroupKey("basic");
+			dataGroup.setDataGroupName("기본");
+			dataGroup.setDataGroupPath(dataGroupPath);
+			dataGroup.setDataGroupTarget(ServerTarget.ADMIN.name().toLowerCase());
+			dataGroup.setSharing("public");
+			
+			FileUtils.makeDirectoryByPath(propertiesConfig.getDataServiceDir(), dataGroupPath);
+			dataGroupService.insertBasicDataGroup(dataGroup);
+			
+			dataGroupList = dataGroupService.getListDataGroup(dataGroup);
+		}
+		
+		DataGroup basicDataGroup = dataGroupService.getBasicDataGroup();
 		
 		UploadData uploadData = UploadData.builder().
 											dataGroupId(basicDataGroup.getDataGroupId()).

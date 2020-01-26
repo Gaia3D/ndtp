@@ -59,7 +59,7 @@ public class DataGroupController {
 		dataGroup.setUserId(userSession.getUserId());
 		List<DataGroup> dataGroupList = dataGroupService.getAllListDataGroup(dataGroup);
 		if(dataGroupList == null || dataGroupList.isEmpty()) {
-			String dataGroupPath = "basic/";
+			String dataGroupPath = userSession.getUserId() + "/basic/";
 			dataGroup.setDataGroupKey("basic");
 			dataGroup.setDataGroupName("기본");
 			dataGroup.setDataGroupPath(dataGroupPath);
@@ -90,6 +90,18 @@ public class DataGroupController {
 		DataGroup dataGroup = new DataGroup();
 		dataGroup.setUserId(userSession.getUserId());
 		List<DataGroup> dataGroupList = dataGroupService.getAllListDataGroup(dataGroup);
+		if(dataGroupList == null || dataGroupList.isEmpty()) {
+			String dataGroupPath = userSession.getUserId() + "/basic/";
+			dataGroup.setDataGroupKey("basic");
+			dataGroup.setDataGroupName("기본");
+			dataGroup.setDataGroupPath(dataGroupPath);
+			dataGroup.setSharing("public");
+			
+			FileUtils.makeDirectoryByPath(propertiesConfig.getDataServiceDir(), dataGroupPath);
+			dataGroupService.insertBasicDataGroup(dataGroup);
+			
+			dataGroupList = dataGroupService.getListDataGroup(dataGroup);
+		}
 		
 		dataGroup.setParentName(policy.getContentDataGroupRoot());
 		dataGroup.setParent(0);

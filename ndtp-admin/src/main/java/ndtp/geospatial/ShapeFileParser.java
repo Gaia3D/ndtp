@@ -6,8 +6,10 @@ import java.nio.charset.Charset;
 
 import org.geotools.data.shapefile.dbf.DbaseFileHeader;
 import org.geotools.data.shapefile.dbf.DbaseFileReader;
+import org.geotools.data.shapefile.files.ShpFileType;
 import org.geotools.data.shapefile.files.ShpFiles;
 
+import ndtp.domain.ShapeFileExt;
 import ndtp.domain.ShapeFileField;
 
 /**
@@ -32,6 +34,9 @@ public class ShapeFileParser {
 		Boolean fieldValid = false; 
         try {
             ShpFiles shpFile = new ShpFiles(filePath);
+            if(!shpFile.exists(ShpFileType.SHP)) {
+            	return true;
+            }
             // field만 검사할 것이기 때문에 따로 인코딩은 설정하지 않음 
             reader = new DbaseFileReader(shpFile, false, Charset.defaultCharset());
             DbaseFileHeader header = reader.getHeader();

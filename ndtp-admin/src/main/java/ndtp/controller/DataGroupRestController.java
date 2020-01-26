@@ -80,46 +80,6 @@ public class DataGroupRestController {
 		return result;
 	}
 	
-//	/**
-//	 * 데이터 그룹 정보
-//	 * @param dataGroup
-//	 * @return
-//	 */
-//	@GetMapping(value = "/detail")
-//	public Map<String, Object> ajaxProject(DataGroup dataGroup) {
-//
-//		log.info("@@@@@ detail-group dataGroup = {}", dataGroup);
-//
-//		Map<String, Object> result = new HashMap<>();
-//		int statusCode = 0;
-//		String errorCode = null;
-//		String message = null;
-//		try {
-//			// TODO @Valid 로 구현해야 함
-//			if(dataGroup.getDataGroupId() == null) {
-//				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-//				result.put("errorCode", "input.invalid");
-//				result.put("message", message);
-//
-//				return result;
-//			}
-//
-//			dataGroup = dataGroupService.getDataGroup(dataGroup);
-//			result.put("dataGroup", dataGroup);
-//		} catch(Exception e) {
-//			e.printStackTrace();
-//			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-//			errorCode = "db.exception";
-//			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-//		}
-//
-//		result.put("statusCode", statusCode);
-//		result.put("errorCode", errorCode);
-//		result.put("message", message);
-//
-//		return result;
-//	}
-	
 	/**
 	 * 데이터 그룹 등록
 	 * @param request

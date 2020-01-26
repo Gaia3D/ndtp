@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.extern.slf4j.Slf4j;
+import ndtp.config.PropertiesConfig;
 import ndtp.domain.ConverterJob;
 import ndtp.domain.DataGroup;
 import ndtp.domain.Key;
@@ -25,6 +26,7 @@ import ndtp.domain.UserSession;
 import ndtp.service.DataGroupService;
 import ndtp.service.UploadDataService;
 import ndtp.utils.DateUtils;
+import ndtp.utils.FileUtils;
 
 /**
  * 3D 데이터 파일 업로더
@@ -41,9 +43,11 @@ public class UploadDataController {
 	public static final int BUFFER_SIZE = 8192;
 	
 	@Autowired
+	private DataGroupService dataGroupService;
+	@Autowired
 	private UploadDataService uploadDataService;
 	@Autowired
-	private DataGroupService dataGroupService;
+	private PropertiesConfig propertiesConfig;
 	
 	/**
 	 * 업로딩 파일 목록
@@ -98,8 +102,21 @@ public class UploadDataController {
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		DataGroup dataGroup = new DataGroup();
 		dataGroup.setUserId(userSession.getUserId());
-		DataGroup basicDataGroup = dataGroupService.getBasicDataGroup(dataGroup);
 		List<DataGroup> dataGroupList = dataGroupService.getAllListDataGroup(dataGroup);
+		if(dataGroupList == null || dataGroupList.isEmpty()) {
+			String dataGroupPath = userSession.getUserId() + "/basic/";
+			dataGroup.setDataGroupKey("basic");
+			dataGroup.setDataGroupName("기본");
+			dataGroup.setDataGroupPath(dataGroupPath);
+			dataGroup.setSharing("public");
+			
+			FileUtils.makeDirectoryByPath(propertiesConfig.getDataServiceDir(), dataGroupPath);
+			dataGroupService.insertBasicDataGroup(dataGroup);
+			
+			dataGroupList = dataGroupService.getListDataGroup(dataGroup);
+		}
+		
+		DataGroup basicDataGroup = dataGroupService.getBasicDataGroup(dataGroup);
 		
 		UploadData uploadData = UploadData.builder().
 											dataGroupId(basicDataGroup.getDataGroupId()).

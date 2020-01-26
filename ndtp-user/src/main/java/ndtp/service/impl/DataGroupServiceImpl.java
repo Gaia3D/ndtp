@@ -73,24 +73,7 @@ public class DataGroupServiceImpl implements DataGroupService {
 	 */
 	@Transactional
 	public DataGroup getBasicDataGroup(DataGroup dataGroup) {
-		String userId = dataGroup.getUserId();
-		dataGroup = dataGroupMapper.getBasicDataGroup(dataGroup);
-		log.info("------- dataGroup = {}", dataGroup);
-		if(dataGroup == null || dataGroup.getDataGroupName() == null) {
-			
-			String dataGroupPath = userId + "/basic/";
-			dataGroup = new DataGroup();
-			
-			dataGroup.setUserId(userId);;
-			dataGroup.setDataGroupKey("basic");
-			dataGroup.setDataGroupName("기본");
-			dataGroup.setDataGroupPath(dataGroupPath);
-			dataGroup.setSharing("public");
-			
-			FileUtils.makeDirectoryByPath(propertiesConfig.getDataServiceDir(), dataGroupPath);
-			dataGroupMapper.insertBasicDataGroup(dataGroup);
-		}
-		return dataGroup;
+		return dataGroupMapper.getBasicDataGroup(dataGroup);
 	}
 	
 	/**
@@ -258,8 +241,11 @@ public class DataGroupServiceImpl implements DataGroupService {
     		ancestorDataGroup.setUserId(userId);
     		ancestorDataGroup.setDataGroupId(dataGroup.getAncestor());
     		ancestorDataGroup = dataGroupMapper.getDataGroup(ancestorDataGroup);
-    		ancestorDataGroup.setChildren(ancestorDataGroup.getChildren() - 1);
-	    	dataGroupMapper.updateDataGroup(ancestorDataGroup);
+    		DataGroup tempDataGroup = new DataGroup();
+    		tempDataGroup.setUserId(userId);
+    		tempDataGroup.setDataGroupId(ancestorDataGroup.getDataGroupId());
+    		tempDataGroup.setChildren(ancestorDataGroup.getChildren() - 1);
+	    	dataGroupMapper.updateDataGroup(tempDataGroup);
     		
 	    	// 데이터 그룹 일괄 삭제
     		result = dataGroupMapper.deleteDataGroupByParent(dataGroup);
@@ -275,7 +261,10 @@ public class DataGroupServiceImpl implements DataGroupService {
     		parentDataGroup.setDataGroupId(dataGroup.getParent());
     		parentDataGroup = dataGroupMapper.getDataGroup(parentDataGroup);
 	    	parentDataGroup.setChildren(parentDataGroup.getChildren() - 1);
-	    	dataGroupMapper.updateDataGroup(parentDataGroup);
+	    	DataGroup tempDataGroup = new DataGroup();
+    		tempDataGroup.setDataGroupId(parentDataGroup.getDataGroupId());
+    		tempDataGroup.setChildren(parentDataGroup.getChildren() - 1);
+	    	dataGroupMapper.updateDataGroup(tempDataGroup);
 	    	
 	    	result = dataGroupMapper.deleteDataGroup(dataGroup);
     	} else {

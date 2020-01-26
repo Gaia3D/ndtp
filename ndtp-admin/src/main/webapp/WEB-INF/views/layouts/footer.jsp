@@ -3,7 +3,7 @@
 <div class="site-footer">
 	<div class="row">
 		<div class="container">
-			NDTP ⓒ Gaia3d Corp. All Rights Reserved
+			NDTP (c) LX LH Gaia3D, Inc All Rights Reserved
 		</div>
 	</div>
 </div>

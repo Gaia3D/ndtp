@@ -5,7 +5,20 @@ import java.util.List;
 import ndtp.domain.DataGroup;
 
 public interface DataGroupService {
+	
+	/**
+	 * Data Group 총건수
+	 * @param dataGroup
+	 * @return
+	 */
+	Long getDataGroupTotalCount(DataGroup dataGroup);
 
+	/**
+     * 데이터 그룹 전체 목록
+     * @return
+     */
+    List<DataGroup> getAllListDataGroup(DataGroup dataGroup);
+	
 	/**
      * 데이터 그룹 목록
      * @param dataGroup
@@ -25,6 +38,13 @@ public interface DataGroupService {
      * @return
      */
     DataGroup getBasicDataGroup();
+    
+    /**
+     * 부모와 표시 순서로 메뉴 조회
+     * @param dataGroup
+     * @return
+     */
+    DataGroup getDataGroupByParentAndViewOrder(DataGroup dataGroup);
 
     /**
      * 데이터 그룹 Key 중복 확인
@@ -55,7 +75,7 @@ public interface DataGroupService {
 	int updateDataGroup(DataGroup dataGroup);
 
 	/**
-	 * 데이터 그룹 표시 순서 수정 (up/down)
+	 * 데이터 그룹 표시 순서 수정. UP, DOWN
 	 * @param dataGroup
 	 * @return
 	 */
@@ -67,4 +87,18 @@ public interface DataGroupService {
 	 * @return
 	 */
 	int deleteDataGroup(DataGroup dataGroup);
+	
+	/**
+	 * ancestor를 이용하여 데이터 그룹 삭제
+	 * @param dataGroup
+	 * @return
+	 */
+	int deleteDataGroupByAncestor(DataGroup dataGroup);
+	
+	/**
+	 * parent를 이용하여 데이터 그룹 삭제
+	 * @param dataGroup
+	 * @return
+	 */
+	int deleteDataGroupByParent(DataGroup dataGroup);
 }
