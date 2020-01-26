@@ -59,7 +59,7 @@ public class DataGroupController {
 		dataGroup.setUserId(userSession.getUserId());
 		List<DataGroup> dataGroupList = dataGroupService.getAllListDataGroup(dataGroup);
 		if(dataGroupList == null || dataGroupList.isEmpty()) {
-			String dataGroupPath = "basic/";
+			String dataGroupPath = userSession.getUserId() + "/basic/";
 			dataGroup.setDataGroupKey("basic");
 			dataGroup.setDataGroupName("기본");
 			dataGroup.setDataGroupPath(dataGroupPath);
@@ -91,7 +91,7 @@ public class DataGroupController {
 		dataGroup.setUserId(userSession.getUserId());
 		List<DataGroup> dataGroupList = dataGroupService.getAllListDataGroup(dataGroup);
 		if(dataGroupList == null || dataGroupList.isEmpty()) {
-			String dataGroupPath = "basic/";
+			String dataGroupPath = userSession.getUserId() + "/basic/";
 			dataGroup.setDataGroupKey("basic");
 			dataGroup.setDataGroupName("기본");
 			dataGroup.setDataGroupPath(dataGroupPath);
