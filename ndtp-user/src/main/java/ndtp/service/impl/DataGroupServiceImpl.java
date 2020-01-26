@@ -261,7 +261,10 @@ public class DataGroupServiceImpl implements DataGroupService {
     		parentDataGroup.setDataGroupId(dataGroup.getParent());
     		parentDataGroup = dataGroupMapper.getDataGroup(parentDataGroup);
 	    	parentDataGroup.setChildren(parentDataGroup.getChildren() - 1);
-	    	dataGroupMapper.updateDataGroup(parentDataGroup);
+	    	DataGroup tempDataGroup = new DataGroup();
+    		tempDataGroup.setDataGroupId(parentDataGroup.getDataGroupId());
+    		tempDataGroup.setChildren(parentDataGroup.getChildren() - 1);
+	    	dataGroupMapper.updateDataGroup(tempDataGroup);
 	    	
 	    	result = dataGroupMapper.deleteDataGroup(dataGroup);
     	} else {
