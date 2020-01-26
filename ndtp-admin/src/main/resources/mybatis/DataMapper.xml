@@ -212,7 +212,7 @@
 			<if test="location != null">
 			ST_GeomFromText(#{location}, 4326),
 			</if>
-			#{altitude}, #{heading}, #{pitch}, #{roll}, #{childrenAncestor}, #{childrenParent}, #{childrenDepth}, #{childrenViewOrder},
+			#{altitude}, COALESCE(#{heading}, 0), COALESCE(#{pitch}, 0), COALESCE(#{roll}, #{childrenAncestor}, #{childrenParent}, #{childrenDepth}, #{childrenViewOrder},
 			<if test="metainfo != null and metainfo != ''">
 			TO_JSON(#{metainfo}::json),
 			</if>
