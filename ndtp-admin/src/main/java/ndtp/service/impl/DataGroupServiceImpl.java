@@ -54,7 +54,7 @@ public class DataGroupServiceImpl implements DataGroupService {
      */
 	@Transactional(readOnly = true)
 	public List<DataGroup> getListDataGroup(DataGroup dataGroup) {
-		return dataGroupMapper.getListDataGroup(dataGroup);
+		return dataGroupMapper.getListDataGroup();
 	}
 
 	/**

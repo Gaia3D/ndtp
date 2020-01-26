@@ -73,24 +73,7 @@ public class DataGroupServiceImpl implements DataGroupService {
 	 */
 	@Transactional
 	public DataGroup getBasicDataGroup(DataGroup dataGroup) {
-		String userId = dataGroup.getUserId();
-		dataGroup = dataGroupMapper.getBasicDataGroup(dataGroup);
-		log.info("------- dataGroup = {}", dataGroup);
-		if(dataGroup == null || dataGroup.getDataGroupName() == null) {
-			
-			String dataGroupPath = userId + "/basic/";
-			dataGroup = new DataGroup();
-			
-			dataGroup.setUserId(userId);;
-			dataGroup.setDataGroupKey("basic");
-			dataGroup.setDataGroupName("기본");
-			dataGroup.setDataGroupPath(dataGroupPath);
-			dataGroup.setSharing("public");
-			
-			FileUtils.makeDirectoryByPath(propertiesConfig.getDataServiceDir(), dataGroupPath);
-			dataGroupMapper.insertBasicDataGroup(dataGroup);
-		}
-		return dataGroup;
+		return dataGroupMapper.getBasicDataGroup(dataGroup);
 	}
 	
 	/**
