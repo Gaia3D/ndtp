@@ -135,11 +135,16 @@ public class DataGroupController {
 	public String delete(@RequestParam("dataGroupId") Integer dataGroupId, Model model) {
 
 		// TODO validation 체크 해야 함
+		if(dataGroupId == null) {
+			log.info("@@@ validation error dataGroupId = {}", dataGroupId);
+			return "redirect:/data-group/list";
+		}
+		
 		DataGroup dataGroup = new DataGroup();
 		dataGroup.setDataGroupId(dataGroupId);
 
 		dataGroupService.deleteDataGroup(dataGroup);
-
+		
 		return "redirect:/data-group/list";
 	}
 }

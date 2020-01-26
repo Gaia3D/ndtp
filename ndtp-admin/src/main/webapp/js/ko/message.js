@@ -98,12 +98,6 @@ JS_MESSAGE["policy.contents.main.display"] = "메인 화면 컨텐츠 표시 개
 
 JS_MESSAGE["policy.menu.invalid"] = "필수 입력값이 유효하지 않습니다.";
 
-// group
-JS_MESSAGE["group.key.empty"] = "그룹Key를 입력하여 주십시오.";
-JS_MESSAGE["group.key.duplication"] = "사용중인 값 입니다. 다른 그룹Key를 입력해 주십시오.";
-JS_MESSAGE["group.key.enable"] = "사용 가능한 그룹Key 입니다.";
-JS_MESSAGE["check.group.key.duplication"] = "그룹Key 중복확인을 해주십시오.";
-
 // ticks
 JS_MESSAGE["main.status.in.use"] = "사용중";
 JS_MESSAGE["main.status.stop.use"] = "사용중지";
@@ -158,15 +152,17 @@ JS_MESSAGE["data.altitude.empty"] = "높이를  입력하여 주십시오.";
 JS_MESSAGE["data.file.empty"] = "파일을 입력하여 주십시오.";
 JS_MESSAGE["data.insert"] = "데이터를 등록 하였습니다.";
 
+JS_MESSAGE["data.group.key.empty"] = "데이터 그룹 Key 를 입력하여 주십시오.";
+JS_MESSAGE["data.group.key.duplication"] = "사용중인 데이터 그룹 Key 입니다. 다른 이름을 사용해 주십시오.";
+JS_MESSAGE["data.group.key.enable"] = "사용 가능한 데이터 그룹 Key 입니다.";
+JS_MESSAGE["data.group.key.duplication.check"] = "데이터 그룹 Key 중복 확인이 필요 합니다.";
+
 JS_MESSAGE["upload.data.id.empty"] = "업로더 데이터 삭제 정보가 유효하지 않습니다.";
 JS_MESSAGE["upload.file.type.invalid"] = "업로드 파일 타입이 유효하지 않습니다.";
 
 JS_MESSAGE["converter.title.empty"] = "제목을 입력하여 주십시오.";
+JS_MESSAGE["converter.usf.empty"] = "Unit Scale Factor 를 입력하여 주십시오.";
 
 JS_MESSAGE["search.option.warning"] = "포함 옵션을 사용하실 경우 1분 이상이 소요될 수 있습니다. 계속 진행 하시겠습니까?";
 JS_MESSAGE["search.date.warning"] = "시작일이 종료일보다 클수 없습니다.";
-
-
-
-
 

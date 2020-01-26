@@ -1,6 +1,5 @@
 package ndtp.service.impl;
 
-import java.io.File;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,7 @@ import ndtp.domain.DataGroup;
 import ndtp.domain.Depth;
 import ndtp.domain.Move;
 import ndtp.persistence.DataGroupMapper;
+import ndtp.persistence.DataMapper;
 import ndtp.service.DataGroupService;
 import ndtp.service.GeoPolicyService;
 import ndtp.utils.FileUtils;
@@ -21,6 +21,8 @@ import ndtp.utils.FileUtils;
 @Service
 public class DataGroupServiceImpl implements DataGroupService {
 
+	@Autowired
+	private DataMapper dataMapper;
 	@Autowired
 	private DataGroupMapper dataGroupMapper;
 	@Autowired
@@ -56,13 +58,13 @@ public class DataGroupServiceImpl implements DataGroupService {
 	}
 	
 	/**
-	 * 그룹Key 중복 체크
-	 * @param dataGroupKey
-	 * @return
-	 */
-	@Transactional(readOnly=true)
-	public int getDuplicationKeyCount(String dataGroupKey) {
-		return dataGroupMapper.getDuplicationKeyCount(dataGroupKey);
+     * 데이터 그룹 Key 중복 확인
+     * @param dataGroup
+     * @return
+     */
+	@Transactional(readOnly = true)
+	public Boolean isDataGroupKeyDuplication(DataGroup dataGroup) {
+		return dataGroupMapper.isDataGroupKeyDuplication(dataGroup);
 	}
 
     /**
@@ -181,41 +183,57 @@ public class DataGroupServiceImpl implements DataGroupService {
     	// 삭제하고, children update
 
     	dataGroup = dataGroupMapper.getDataGroup(dataGroup);
-    	log.info("--- 111111111 delete dataGroup = {}", dataGroup);
-
+    	
     	int result = 0;
     	if(Depth.ONE == Depth.findBy(dataGroup.getDepth())) {
-    		log.info("--- one ================");
+    		// 하위 데이터 그룹 조회
+    		List<Integer> dataGroupIdList = dataGroupMapper.getDataGroupListByAncestor(dataGroup);
+    		for(Integer dataGroupId : dataGroupIdList) {
+    			DataGroup deleteDataGroup = new DataGroup();
+    			deleteDataGroup.setDataGroupId(dataGroupId);
+    			// 하위 데이터 삭제
+    			dataMapper.deleteDataByDataGroupId(deleteDataGroup);
+    		}
+    		
+    		// 데이터 그룹 일괄 삭제
     		result = dataGroupMapper.deleteDataGroupByAncestor(dataGroup);
     	} else if(Depth.TWO == Depth.findBy(dataGroup.getDepth())) {
-    		log.info("--- two ================");
-    		result = dataGroupMapper.deleteDataGroupByParent(dataGroup);
-
+    		// 하위 데이터 그룹 조회
+    		List<Integer> dataGroupIdList = dataGroupMapper.getDataGroupListByParent(dataGroup);
+    		for(Integer dataGroupId : dataGroupIdList) {
+    			DataGroup deleteDataGroup = new DataGroup();
+    			deleteDataGroup.setDataGroupId(dataGroupId);
+    			// 하위 데이터 삭제
+    			dataMapper.deleteDataByDataGroupId(deleteDataGroup);
+    		}
+    		
+    		// 조상의 children -1
     		DataGroup ancestorDataGroup = new DataGroup();
     		ancestorDataGroup.setDataGroupId(dataGroup.getAncestor());
     		ancestorDataGroup = dataGroupMapper.getDataGroup(ancestorDataGroup);
-    		ancestorDataGroup.setChildren(ancestorDataGroup.getChildren() + 1);
-
-    		log.info("--- delete ancestorDataGroup = {}", ancestorDataGroup);
-
+    		ancestorDataGroup.setChildren(ancestorDataGroup.getChildren() - 1);
 	    	dataGroupMapper.updateDataGroup(ancestorDataGroup);
-    		// ancestor - 1
+    		
+	    	// 데이터 그룹 일괄 삭제
+    		result = dataGroupMapper.deleteDataGroupByParent(dataGroup);
     	} else if(Depth.THREE == Depth.findBy(dataGroup.getDepth())) {
-    		log.info("--- three ================");
-    		result = dataGroupMapper.deleteDataGroup(dataGroup);
-    		log.info("--- dataGroup ================ {}", dataGroup);
-
-    		DataGroup parentDataGroup = new DataGroup();
-	    	parentDataGroup.setDataGroupId(dataGroup.getParent());
-	    	parentDataGroup = dataGroupMapper.getDataGroup(parentDataGroup);
-	    	log.info("--- parentDataGroup ================ {}", parentDataGroup);
+    		DataGroup deleteDataGroup = new DataGroup();
+			deleteDataGroup.setDataGroupId(dataGroup.getDataCount());
+			// 하위 데이터 삭제
+			dataMapper.deleteDataByDataGroupId(deleteDataGroup);
+    		
+			// 부모의 children -1
+			DataGroup parentDataGroup = new DataGroup();
+    		parentDataGroup.setDataGroupId(dataGroup.getParent());
+    		parentDataGroup = dataGroupMapper.getDataGroup(parentDataGroup);
 	    	parentDataGroup.setChildren(parentDataGroup.getChildren() - 1);
-	    	log.info("--- parentDataGroup children ================ {}", parentDataGroup);
 	    	dataGroupMapper.updateDataGroup(parentDataGroup);
+	    	
+	    	result = dataGroupMapper.deleteDataGroup(dataGroup);
     	} else {
-
+    		
     	}
-
+    	
     	return result;
     }
 }

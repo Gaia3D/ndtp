@@ -152,7 +152,7 @@
 		/* getDataByDataKey */
 		SELECT *, ST_X(location) AS longitude, ST_Y(location) AS latitude
 		FROM data_info
-		WHERE data_group_id = #{dataGroupId} 
+		WHERE data_group_id = #{dataGroupId}
 			AND data_key = #{dataKey}
 			<if test="userId != null and userId != ''">
 			AND user_id = #{userId}
