@@ -80,12 +80,35 @@ var MapDataControll = function(magoInstance) {
 		$('#dcColorInput').val(color).css('color',color);
 	});
 	
-	//
+	//회전 변경 range 조절
 	$('#dcPitchRange,#dcHeadingRange,#dcRollRange').on('input change',function(){
 		var val = $(this).val();
 		var type = $(this).data('type');
 		$('#dc' + type).val(val);
 		
+		changeF4d();
+	});
+	
+	var holdInterval;
+	$('#dcAltUp,#dcAltDown').on('mousedown',function() {
+		var $this = $(this);
+		holdInterval = setInterval(function(){
+			var type = $this.data('type');
+			var offset = parseFloat($('#dcAltitudeOffset').val());
+			offset = (type==='up') ? offset : -offset;
+			
+			var alt = parseFloat($('#dcAltitude').val());
+			$('#dcAltitude').val(alt + offset);
+			
+			changeF4d();
+		});
+		
+	})
+	$('#dcAltUp,#dcAltDown').on('mouseup mouseleave',function() {
+		clearInterval(holdInterval);
+	});
+	
+	var changeF4d = function() {
 		var lat = parseFloat($('#dcLatitude').val());
 		var lon = parseFloat($('#dcLongitude').val());
 		var alt = parseFloat($('#dcAltitude').val());
@@ -95,7 +118,7 @@ var MapDataControll = function(magoInstance) {
 		
 		changeLocationAndRotationAPI(magoInstance, projectId, dataKey, 
 				lat, lon, alt, heading, pitch, roll);
-	});
+	}
 	
 	var clearDataControl = function() {
 		dataKey = undefined;
