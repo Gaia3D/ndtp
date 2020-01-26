@@ -135,15 +135,15 @@
 		FROM data_group A
 		WHERE A.data_group_id = #{dataGroupId} 
 			<if test="userId != null and userId != ''">
-			AND user_id = #{userId}
+			AND A.user_id = #{userId}
 			</if>
 	</select>
 	
 	<!-- 사용자 기본 데이터 그룹 정보 -->
 	<select id="getBasicDataGroup" parameterType="dataGroup" resultType="dataGroup">
 		/* getBasicDataGroup */
-		SELECT * 
-		FROM data_group 
+		SELECT *
+		FROM data_group
 		WHERE user_id = #{userId}
 			AND data_group_target = 'user'
 			AND data_group_key = 'basic'
@@ -159,22 +159,22 @@
 		SELECT * 
 		FROM data_group 
 		WHERE user_id = #{userId}
-			AND parent = #{parent} 
+			AND parent = #{parent}
 		<if test="updateType == 'UP'.toString()">
 			<![CDATA[
 			AND view_order < #{viewOrder}
 			]]>
-		ORDER BY view_order DESC 
+		ORDER BY view_order DESC
 		</if>
 		<if test="updateType == 'DOWN'.toString()">
 			<![CDATA[
 			AND view_order > #{viewOrder}
 			]]>
-		ORDER BY view_order 
+		ORDER BY view_order
 		</if>
-		LIMIT 1 
+		LIMIT 1
 	</select>
-	
+
 	<!-- 사용자 데이터 그룹 Key 중복 확인 -->
 	<select id="isDataGroupKeyDuplication" parameterType="dataGroup" resultType="boolean">
 		/* isDataGroupKeyDuplication */
@@ -213,8 +213,15 @@
     		SELECT NEXTVAL('data_group_seq')
   		</selectKey>
 		INSERT INTO data_group (
-			data_group_id, data_group_name, data_group_key, 
-			data_group_path, sharing, user_id, ancestor, parent, depth, view_order, children, basic, available, data_count, 
+			data_group_id, data_group_name, data_group_key,
+			data_group_path, sharing, user_id, ancestor, parent, depth, view_order, children, 
+			<if test="basic != null">
+			basic,
+			</if>
+			<if test="available != null">
+			available,
+			</if>
+			data_count,
 			<if test="location != null">
 			location,
 			</if>
@@ -227,18 +234,18 @@
 			</if>
 			description
 		) VALUES (
-			#{dataGroupId}, #{dataGroupName}, #{dataGroupKey}, 
+			#{dataGroupId}, #{dataGroupName}, #{dataGroupKey},
 			#{dataGroupPath}, #{sharing}, #{userId},
 			(
-				SELECT COALESCE(MAX(ancestor), #{dataGroupId}) 
-				FROM data_group 
+				SELECT COALESCE(MAX(ancestor), #{dataGroupId})
+				FROM data_group
 				WHERE data_group_id = #{parent}
 					AND data_group_id != 0
 			),
 			#{parent},
 			(
 				SELECT COALESCE(MAX(depth),  0 ) + 1
-				FROM data_group 
+				FROM data_group
 				WHERE data_group_id = #{parent}
 			),
 			(
@@ -247,11 +254,17 @@
 				WHERE parent = #{parent}
 			),
 			(
-				SELECT COUNT(*) 
+				SELECT COUNT(*)
 				FROM data_group
 				WHERE parent = #{dataGroupId}
 			),
-			#{basic}, #{available}, COALESCE(#{dataCount}, 0),
+			<if test="basic != null">
+			#{basic},
+			</if>
+			<if test="available != null">
+			#{available},
+			</if>
+			COALESCE(#{dataCount}, 0),
 			<if test="location != null">
 			ST_GeomFromText(#{location}, 4326),
 			</if>
@@ -301,7 +314,7 @@
 	<update id="updateDataGroup" parameterType="dataGroup">
 		/* updateDataGroup */
 		UPDATE data_group
-		SET 
+		SET
 			<if test="dataGroupName != null and dataGroupName != ''">
 			data_group_name = #{dataGroupName},
 			</if>
@@ -367,8 +380,8 @@
 	<!-- 사용자 데이터 그룹 순서 수정 -->
 	<update id="updateDataGroupViewOrder" parameterType="dataGroup">
 		/* updateDataGroupViewOrder */
-		UPDATE data_group 
-		SET view_order = #{viewOrder} 
+		UPDATE data_group
+		SET view_order = #{viewOrder}
 		WHERE data_group_id = #{dataGroupId}
 			AND user_id = #{userId}
 	</update>
@@ -376,9 +389,9 @@
 	<!-- ancestor를 이용하여 사용자 데이터 그룹 삭제 -->
 	<delete id="deleteDataGroupByAncestor" parameterType="dataGroup">
 		/* deleteDataGroupByAncestor */
-		DELETE 
-		FROM data_group 
-		WHERE ancestor = #{dataGroupId} 
+		DELETE
+		FROM data_group
+		WHERE ancestor = #{dataGroupId}
 			AND user_id = #{userId}
 	</delete>
 	
@@ -386,16 +399,16 @@
 	<delete id="deleteDataGroupByParent" parameterType="dataGroup">
 		/* deleteDataGroupByParent */
 		DELETE 
-		FROM data_group 
-		WHERE parent = #{dataGroupId} 
+		FROM data_group
+		WHERE parent = #{dataGroupId}
 			AND user_id = #{userId}
 	</delete>
 	
 	<!-- 사용자 데이터 그룹 삭제 -->
 	<delete id="deleteDataGroup" parameterType="dataGroup">
 		/* deleteDataGroup */
-		DELETE 
-		FROM data_group 
+		DELETE
+		FROM data_group
 		WHERE data_group_id = #{dataGroupId} 
 			AND user_id = #{userId}
 	</delete>

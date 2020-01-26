@@ -36,11 +36,25 @@ public interface DataGroupMapper {
     DataGroup getDataGroupByParentAndViewOrder(DataGroup dataGroup);
 
     /**
-	 * 그룹Key 중복 체크
-	 * @param dataGroupKey
-	 * @return
-	 */
-	int getDuplicationKeyCount(String dataGroupKey);
+     * 데이터 그룹 Key 중복 확인
+     * @param dataGroup
+     * @return
+     */
+    Boolean isDataGroupKeyDuplication(DataGroup dataGroup);
+    
+    /**
+     * 데이터 삭제를 위해 조상 dataGroupId를 이용해서 모든 하위 dataGroupId를 취득
+     * @param dataGroup
+     * @return
+     */
+    List<Integer> getDataGroupListByAncestor(DataGroup dataGroup);
+    
+    /**
+     * 데이터 삭제를 위해 부모 dataGroupId를 이용해서 모든 하위 dataGroupId를 취득
+     * @param dataGroup
+     * @return
+     */
+    List<Integer> getDataGroupListByParent(DataGroup dataGroup);
     
     /**
      * 데이터 그룹 등록

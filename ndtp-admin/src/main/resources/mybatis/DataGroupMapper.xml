@@ -37,12 +37,16 @@
 	<!-- 데이터 그룹 정보 -->
 	<select id="getDataGroup" parameterType="dataGroup" resultType="dataGroup">
 		/* getDataGroup */
-		SELECT *, ST_X(location) AS longitude, ST_Y(location) AS latitude
-		FROM data_group
-		WHERE data_group_id = #{dataGroupId}
-		<if test="userId != null and userId != ''">
-			AND user_id = #{userId}
-		</if>
+		SELECT A.*, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude,
+			CASE 
+				WHEN parent > 0 THEN ( SELECT data_group_name FROM data_group WHERE data_group_id = A.parent )
+				ELSE null
+			END AS parentName
+		FROM data_group A
+		WHERE A.data_group_id = #{dataGroupId} 
+			<if test="userId != null and userId != ''">
+			AND A.user_id = #{userId}
+			</if>
 	</select>
 
 	<!-- 기본 데이터 그룹 정보 -->
@@ -50,7 +54,9 @@
 		/* getBasicDataGroup */
 		SELECT *
 		FROM data_group
-		WHERE basic = 'true'
+		WHERE data_group_target = 'admin'
+			AND data_group_key = 'basic'
+			AND basic = 'true' 
 			AND depth = 1
 		ORDER BY view_order
 		LIMIT 1
@@ -77,12 +83,42 @@
 		LIMIT 1
 	</select>
 
-	<!-- 그룹Key 중복 체크 -->
-	<select id="getDuplicationKeyCount" parameterType="string" resultType="int">
-		/* getDuplicationKeyCount */
-		SELECT COUNT(data_group_key) AS count 
-		FROM data_group 
+	<!-- 사용자 데이터 그룹 Key 중복 확인 -->
+	<select id="isDataGroupKeyDuplication" parameterType="dataGroup" resultType="boolean">
+		/* isDataGroupKeyDuplication */
+		SELECT 
+			CASE 
+				WHEN COUNT(*) > 0 THEN true
+				ELSE false
+			END AS duplication
+		FROM data_group
 		WHERE data_group_key = #{dataGroupKey}
+			AND data_group_target = 'admin'
+		<if test="userId != null and userId != ''">
+			AND user_id = #{userId}
+		</if>
+	</select>
+	
+	<!-- 데이터 삭제를 위해 조상 dataGroupId를 이용해서 모든 하위 dataGroupId를 취득 -->
+	<select id="getDataGroupListByAncestor" parameterType="dataGroup" resultType="int">
+		/* getDataGroupListByAncestor */
+		SELECT data_group_id
+		FROM data_group
+		WHERE ancestor = #{ancestor}
+			<if test="userId != null and userId != ''">
+			AND user_id = #{userId}
+			</if>
+	</select>
+	
+	<!-- 데이터 삭제를 위해 부모 dataGroupId를 이용해서 모든 하위 dataGroupId를 취득 -->
+	<select id="getDataGroupListByParent" parameterType="dataGroup" resultType="int">
+		/* getDataGroupListByParent */
+		SELECT data_group_id
+		FROM data_group
+		WHERE parent = #{ancestor}
+			<if test="userId != null and userId != ''">
+			AND user_id = #{userId}
+			</if>
 	</select>
 
 	<!-- 데이터 그룹 등록 -->
@@ -92,19 +128,34 @@
     		SELECT NEXTVAL('data_group_seq')
   		</selectKey>
 		INSERT INTO data_group (
-			data_group_id, data_group_name, data_group_key,
-			data_group_path, sharing, user_id, ancestor, parent, depth, view_order, children, basic, available, data_count,
+			data_group_id, data_group_name, data_group_key, data_group_path, data_group_target,
+			sharing, user_id, 
+			ancestor, 
+			parent, 
+			depth, 
+			view_order,
+			children,
+			<if test="basic != null">
+			basic,
+			</if>
+			<if test="available != null">
+			available,
+			</if>
+			data_count,
 			<if test="location != null">
 			location,
 			</if>
 			altitude, duration,
+			<if test="locationUpdateType != null and locationUpdateType != ''">
+			location_update_type,
+			</if>
 			<if test="metainfo != null and metainfo != ''">
 			metainfo,
 			</if>
 			description
 		) VALUES (
-			#{dataGroupId}, #{dataGroupName}, #{dataGroupKey},
-			#{dataGroupPath}, #{sharing}, #{userId},
+			#{dataGroupId}, #{dataGroupName}, #{dataGroupKey}, #{dataGroupPath}, 'admin',
+			#{sharing}, #{userId},
 			(
 				SELECT COALESCE(MAX(ancestor), #{dataGroupId})
 				FROM data_group
@@ -127,11 +178,20 @@
 				FROM data_group
 				WHERE parent = #{dataGroupId}
 			),
-			#{basic}, #{available}, #{dataCount},
+			<if test="basic != null">
+			#{basic},
+			</if>
+			<if test="available != null">
+			#{available},
+			</if>
+			COALESCE(#{dataCount}, 0),
 			<if test="location != null">
 			ST_GeomFromText(#{location}, 4326),
 			</if>
-			#{altitude}, #{duration},
+			#{altitude}, #{duration}, 
+			<if test="locationUpdateType != null and locationUpdateType != ''">
+			#{locationUpdateType},
+			</if>
 			<if test="metainfo != null and metainfo != ''">
 			TO_JSON(#{metainfo}::json),
 			</if>
@@ -205,6 +265,12 @@
 			<if test="children != null and children gte 0">
 			children = #{children},
 			</if>
+			<if test="basic != null">
+			basic = #{basic},
+			</if>
+			<if test="available != null">
+			available = #{available},
+			</if>
 			<if test="dataCount != null and dataCount gte 0">
 			data_count = #{dataCount},
 			</if>
@@ -217,17 +283,14 @@
 			<if test="duration != null">
 			duration = #{duration},
 			</if>
+			<if test="locationUpdateType != null and locationUpdateType != ''">
+			location_update_type = #{locationUpdateType},
+			</if>
 			<if test="metainfo != null and metainfo != ''">
 			metainfo = TO_JSON(#{metainfo}::json),
 			</if>
 			<if test="description != null and description != ''">
 			description = #{description},
-			</if>
-			<if test="basic != null">
-			basic = #{basic},
-			</if>
-			<if test="available != null">
-			available = #{available},
 			</if>
 			update_date = NOW()
 		WHERE data_group_id = #{dataGroupId}
@@ -246,17 +309,6 @@
 			AND user_id = #{userId}
 		</if>
 	</update>
-
-	<!-- 데이터 그룹 삭제 -->
-	<delete id="deleteDataGroup" parameterType="dataGroup">
-		/* deleteDataGroup */
-		DELETE
-		FROM data_group
-		WHERE data_group_id = #{dataGroupId}
-		<if test="userId != null and userId != ''">
-			AND user_id = #{userId}
-		</if>
-	</delete>
 
 	<!-- ancestor를 이용하여 데이터 그룹 삭제 -->
 	<delete id="deleteDataGroupByAncestor" parameterType="dataGroup">
@@ -277,6 +329,17 @@
 		FROM data_group
 		WHERE parent = #{dataGroupId}
 			OR data_group_id = #{dataGroupId}
+		<if test="userId != null and userId != ''">
+			AND user_id = #{userId}
+		</if>
+	</delete>
+	
+	<!-- 데이터 그룹 삭제 -->
+	<delete id="deleteDataGroup" parameterType="dataGroup">
+		/* deleteDataGroup */
+		DELETE
+		FROM data_group
+		WHERE data_group_id = #{dataGroupId}
 		<if test="userId != null and userId != ''">
 			AND user_id = #{userId}
 		</if>

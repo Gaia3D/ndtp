@@ -55,13 +55,13 @@
 								</tr>
 								<tr>
 									<th class="col-label" scope="row">
-										<form:label path="parentName">상위 그룹</form:label>
+										<form:label path="parentName">상위 데이터 그룹</form:label>
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input">
 										<form:hidden path="parent" />
 			 							<form:input path="parentName" cssClass="l" readonly="true" />
-										<input type="button" id="dataGroupButtion" value="상위 그룹 선택" />
+										<input type="button" id="dataGroupButtion" value="상위 데이터 그룹 선택" />
 									</td>
 								</tr>
 								<%-- <tr>

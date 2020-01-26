@@ -26,12 +26,12 @@ public interface DataGroupService {
      */
     DataGroup getBasicDataGroup();
 
-	/**
-	 * 그룹Key 중복 체크
-	 * @param dataGroupKey
-	 * @return
-	 */
-	int getDuplicationKeyCount(String dataGroupKey);
+    /**
+     * 데이터 그룹 Key 중복 확인
+     * @param dataGroup
+     * @return
+     */
+    Boolean isDataGroupKeyDuplication(DataGroup dataGroup);
     
     /**
      * 데이터 그룹 등록
