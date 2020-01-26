@@ -16,18 +16,6 @@ var Simulation = function(magoInstance) {
 	
 	//건설공정 조회
 	$('#constructionProcess .execute').click(function(){
-		$.ajax({
-			url: "/js/temp/mipo.json",
-			type: "GET",
-			headers: {"X-Requested-With": "XMLHttpRequest"},
-			dataType: "json",
-			success: function(oo){
-				magoInstance.getF4dController().addF4dGroup(oo);
-			},
-			error:function(request,status,error){
-				alert(JS_MESSAGE["ajax.error.message"]);
-			}
-		});
 		//레인지, 레전드 보이기
 		$('div.sliderWrap, #constructionProcess .profileInfo').show();
 		slider.setValue(0);

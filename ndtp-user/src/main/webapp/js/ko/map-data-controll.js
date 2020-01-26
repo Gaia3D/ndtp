@@ -89,6 +89,7 @@ var MapDataControll = function(magoInstance) {
 		changeF4d();
 	});
 	
+	//데이터 높이 이벤트
 	var holdInterval;
 	$('#dcAltUp,#dcAltDown').on('mousedown',function() {
 		var $this = $(this);
@@ -103,11 +104,19 @@ var MapDataControll = function(magoInstance) {
 			changeF4d();
 		});
 		
-	})
+	});
+	
 	$('#dcAltUp,#dcAltDown').on('mouseup mouseleave',function() {
 		clearInterval(holdInterval);
 	});
 	
+	$('#dcSavePosRot').click(function() {
+		if(confirm('현재 입력된 위치와 회전 정보를 db에 저장하시겠습니까?')) {
+			alert('save');
+		} else {
+			alert('no');
+		}
+	});
 	var changeF4d = function() {
 		var lat = parseFloat($('#dcLatitude').val());
 		var lon = parseFloat($('#dcLongitude').val());

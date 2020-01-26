@@ -90,6 +90,7 @@
 		    	<input type="text" id="dcRoll" size="1" readonly/><input id="dcRollRange" data-type="Roll" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/><br/>
 		    	<label for="dcHeading">z(heading)</label>
 		    	<input type="text" id="dcHeading" size="1" readonly/><input id="dcHeadingRange" data-type="Heading" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/>
+		    	<button type="button" id="dcSavePosRot" class="btnTextF" style="display: block;margin-top: 8px;">높이회전 저장</button>
 	    </div>
     </div>
 </div>
