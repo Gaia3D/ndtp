@@ -115,8 +115,8 @@
 						<th scope="col" class="col-name">데이터 타입</th>
 						<th scope="col" class="col-name">공유 유형</th>
 						<th scope="col" class="col-name">매핑타입</th>
-						<th scope="col" class="col-name">지도</th>
 						<th scope="col" class="col-name">상태</th>
+						<th scope="col" class="col-name">지도</th>
 						<th scope="col" class="col-name">속성</th>
 						<th scope="col" class="col-name">Object 속성</th>
 						<th scope="col" class="col-date">등록일</th>
@@ -151,9 +151,6 @@
 						</td>
 						<td class="col-name">${dataInfo.mappingType }</td>
 						<td class="col-type">
-							<a href="#" onclick="viewDataInfo('${dataInfo.dataId}'); return false;">보기</a>
-						</td>
-						<td class="col-type">
 		<c:if test="${dataInfo.status eq 'processing' }">
 							변환중
 		</c:if>
@@ -166,6 +163,9 @@
 		<c:if test="${dataInfo.status eq 'delete' }">
 							삭제
 		</c:if>		
+						</td>
+						<td class="col-type">
+							<a href="#" onclick="viewDataInfo('${dataInfo.dataId}'); return false;">보기</a>
 						</td>
 						<td class="col-type">
 		<c:if test="${dataInfo.attributeExist eq 'true' }">	

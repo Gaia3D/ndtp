@@ -30,12 +30,12 @@
 						<div class="input-group row">
 							<div class="input-set">
 								<label for="searchWord"><spring:message code='search.word'/></label>
-								<select id="searchWord" name="searchWord" class="select" style="height: 30px;">
+								<select id="searchWord" name="searchWord" class="selectBoxClass">
 									<option value=""><spring:message code='select'/></option>
 				          			<option value="data_name">데이터 명</option>
 				          			<option value="data_group_name">데이터 그룹명</option>
 								</select>
-								<select id="searchOption" name="searchOption" class="select" style="height: 30px;">
+								<select id="searchOption" name="searchOption" class="selectBoxClass">
 									<option value="0"><spring:message code='search.same'/></option>
 									<option value="1"><spring:message code='search.include'/></option>
 								</select>
@@ -49,18 +49,18 @@
 							</div>
 							<div class="input-set">
 								<label for="orderWord"><spring:message code='search.order'/></label>
-								<select id="orderWord" name="orderWord" class="select" style="height: 30px;">
+								<select id="orderWord" name="orderWord" class="selectBoxClass">
 									<option value=""> <spring:message code='search.basic'/> </option>
 									<option value="data_name">데이터 명</option>
 				          			<option value="data_group_name">데이터 그룹명</option>
 									<option value="insert_date"> <spring:message code='search.insert.date'/> </option>
 								</select>
-								<select id="orderValue" name="orderValue" class="select" style="height: 30px;">
+								<select id="orderValue" name="orderValue" class="selectBoxClass">
 			                		<option value=""> <spring:message code='search.basic'/> </option>
 				                	<option value="ASC"> <spring:message code='search.ascending'/> </option>
 									<option value="DESC"> <spring:message code='search.descending.order'/> </option>
 								</select>
-								<select id="listCounter" name="listCounter" class="select" style="height: 30px;">
+								<select id="listCounter" name="listCounter" class="selectBoxClass">
 			                		<option value="10"> <spring:message code='search.ten.count'/> </option>
 				                	<option value="50"> <spring:message code='search.fifty.count'/> </option>
 									<option value="100"> <spring:message code='search.hundred.count'/> </option>
@@ -80,7 +80,7 @@
 								<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/>
 								<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/>
 							</div>
-							<div class="list-functions u-pull-right">
+							<%-- <div class="list-functions u-pull-right">
 								<div class="button-group">
 									<a href="#" onclick="updateDataStatus('DATA', 'USE'); return false;" class="button">사용</a>
 									<a href="#" onclick="updateDataStatus('DATA', 'UNUSED'); return false;" class="button">사용중지</a>
@@ -88,19 +88,21 @@
 									<a href="#" onclick="uploadDataGroupDataAttribute(); return false;" class="button"><spring:message code='data.attribute.insert'/></a>
 									<a href="#" onclick="uploadDataGroupDataObjectAttribute(); return false;" class="button"><spring:message code='data.object.attribute.insert'/></a>
 								</div>
-							</div>
+							</div> --%>
 						</div>
 						<table class="list-table scope-col">
 							<col class="col-checkbox" />
 							<col class="col-number" />
 							<col class="col-name" />
 							<col class="col-name" />
-							<col class="col-number" />
-							<col class="col-number" />
-							<col class="col-number" />
+							<col class="col-name" />
+							<col class="col-name" />
+							<col class="col-name" />
+							<col class="col-name" />
 							<col class="col-functions" />
 							<col class="col-functions" />
-							<col class="col-functions" />
+							<!-- <col class="col-functions" />
+							<col class="col-functions" /> -->
 							<col class="col-functions" />
 							<thead>
 								<tr>
@@ -108,19 +110,23 @@
 									<th scope="col" class="col-number"><spring:message code='number'/></th>
 									<th scope="col" class="col-name">그룹명</th>
 									<th scope="col" class="col-name">데이터명</th>
+									<th scope="col" class="col-name">소유자 아이디</th>
+									<th scope="col" class="col-name">데이터타입</th>
+									<th scope="col" class="col-name">공유유형</th>
+									<th scope="col" class="col-name">매핑타입</th>
 									<th scope="col" class="col-name">상태</th>
 									<th scope="col" class="col-name">지도</th>
 									<th scope="col" class="col-name">메타정보</th>
-									<th scope="col" class="col-name">속성</th>
-									<th scope="col" class="col-name">오브젝트 속성</th>
-									<th scope="col" class="col-name">편집</th>
+									<!-- <th scope="col" class="col-name">속성</th>
+									<th scope="col" class="col-name">오브젝트 속성</th> -->
+									<th scope="col" class="col-name">삭제</th>
 									<th scope="col" class="col-date">등록일</th>
 								</tr>
 							</thead>
 							<tbody>
 <c:if test="${empty dataList }">
 								<tr>
-									<td colspan="11" class="col-none"><spring:message code='data.does.not.exist'/></td>
+									<td colspan="13" class="col-none"><spring:message code='data.does.not.exist'/></td>
 								</tr>
 </c:if>
 <c:if test="${!empty dataList }">
@@ -133,49 +139,63 @@
 									<td class="col-number">${pagination.rowNumber - status.index }</td>
 									<td class="col-name">
 										<a href="#" class="view-group-detail" onclick="detailDataGroup('${dataInfo.dataGroupId }'); return false;">${dataInfo.dataGroupName }</a></td>
-									<td class="col-name"><a href="/data/detail?dataId=${dataInfo.dataId }&amp;pageNo=${pagination.pageNo }${pagination.searchParameters}">
-										${dataInfo.dataName }</a></td>
-									<td class="col-type">
-		<c:if test="${dataInfo.status eq 'use'}">
-										<span class="icon-glyph glyph-on on"></span>
-										<span class="icon-text">사용중</span>
-		</c:if>
-		<c:if test="${dataInfo.status eq 'unused'}">
-										<span class="icon-glyph glyph-off off"></span>
-										<span class="icon-text">사용중지</span>
-		</c:if>
-		<c:if test="${dataInfo.status eq 'delete'}">
-										<span class="icon-glyph glyph-off off"></span>
-										<span class="icon-text">삭제(비표시)</span>
-		</c:if>
+									<td class="col-name">
+										<a href="/data/modify?dataId=${dataInfo.dataId }&amp;pageNo=${pagination.pageNo }${pagination.searchParameters}">
+										${dataInfo.dataName }</a>
 									</td>
+									<td class="col-name">${dataInfo.userId }</td>	
+									<td class="col-name">${dataInfo.dataType }</td>
 									<td class="col-type">
-										<a href="#" onclick="viewMapData('${dataInfo.dataId }'); return false;">보기</a></td>
+		<c:if test="${dataInfo.sharing eq 'common'}">공통</c:if>
+		<c:if test="${dataInfo.sharing eq 'public'}">공개</c:if>
+		<c:if test="${dataInfo.sharing eq 'private'}">개인</c:if>
+		<c:if test="${dataInfo.sharing eq 'group'}">그룹</c:if>
+									</td>
+									<td class="col-name">${dataInfo.mappingType }</td>
+									<td class="col-type">
+		<c:if test="${dataInfo.status eq 'processing' }">
+										변환중
+		</c:if>
+		<c:if test="${dataInfo.status eq 'use' }">
+										사용중
+		</c:if>
+		<c:if test="${dataInfo.status eq 'unused' }">
+										사용중지
+		</c:if>
+		<c:if test="${dataInfo.status eq 'delete' }">
+										삭제
+		</c:if>		
+						</td>
+									<td class="col-type">
+										<a href="#" onclick="viewDataInfo('${dataInfo.dataId}'); return false;">보기</a>
+									</td>
 									<td class="col-type">
 										<a href="#" onclick="detailMetainfo('${dataInfo.dataId }'); return false;">보기</a>
 									</td>
-									<td class="col-functions">
+									<%-- <td class="col-functions">
 										<span class="button-group">
+		<c:if test="${dataInfo.attributeExist eq 'true' }">	
 											<a href="#" onclick="detailDataAttribute('${dataInfo.dataId }', '${dataInfo.dataName }'); return false;">보기</a>
+		</c:if>
 											<a href="#" class="image-button button-edit"
 												onclick="uploadDataAttribute('${dataInfo.dataId }', '${dataInfo.dataName }'); return false;">
 												<spring:message code='modified'/></a>
 										</span>
 									</td>
 									<td class="col-functions">
+		<c:if test="${dataInfo.objectAttributeExist eq 'true' }">
+		</c:if>
+		<c:if test="${dataInfo.objectAttributeExist eq 'false' }">
 										<span class="button-group">
 											<a href="#" class="image-button button-edit"
 												onclick="uploadDataObjectAttribute('${dataInfo.dataId }', '${dataInfo.dataName }'); return false;">
 												<spring:message code='modified'/></a>
 										</span>
-									</td>
+		</c:if>
+									</td> --%>
 									<td class="col-functions">
-										<span class="button-group">
-											<a href="/data/modify?dataId=${dataInfo.dataId }&amp;pageNo=${pagination.pageNo }${pagination.searchParameters}" >
-												<spring:message code='modified'/></a>&nbsp;&nbsp;
-											<a href="/data/delete?dataId=${dataInfo.dataId }" onclick="return deleteWarning();" >
-												<spring:message code='delete'/></a>
-										</span>
+										<a href="/data/delete?dataId=${dataInfo.dataId }" onclick="return deleteWarning();" 
+											class="image-button button-delete"><spring:message code='delete'/></a>
 									</td>
 									<td class="col-type">
 										<fmt:parseDate value="${dataInfo.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
@@ -212,13 +232,19 @@
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
+		var searchWord = "${dataInfo.searchWord}";
+		var searchOption = "${dataInfo.searchOption}";
+		var orderWord = "${dataInfo.orderWord}";
+		var orderValue = "${dataInfo.orderValue}";
+		var listCounter = "${dataInfo.listCounter}";
+		
+		if(searchWord != "") $("#searchWord").val("${dataInfo.searchWord}");
+		if(searchOption != "") $("#searchOption").val("${dataInfo.searchOption}");
+		if(orderWord != "") $("#orderWord").val("${dataInfo.orderWord}");
+		if(orderValue != "") $("#orderValue").val("${dataInfo.orderValue}");
+		if(listCounter != "") $("#listCounter").val("${dataInfo.listCounter}");
+
 		initDatePicker();
-
-		$("#searchWord").val("${dataInfo.searchWord}");
-		$("#searchValue").val("${dataInfo.searchValue}");
-		$("#orderWord").val("${dataInfo.orderWord}");
-		$("#orderValue").val("${dataInfo.orderValue}");
-
 		initCalendar(new Array("startDate", "endDate"), new Array("${dataInfo.startDate}", "${dataInfo.endDate}"));
 	});
 
@@ -232,16 +258,21 @@
 		dataGroupDialog.dialog( "open" );
 
 		$.ajax({
-			url: "/data-group/detail",
-			data: { "dataGroupId" : dataGroupId },
+			url: "/data-groups/" + dataGroupId,
+			//data: { "dataGroupId" : dataGroupId },
 			type: "GET",
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 			dataType: "json",
 			success: function(msg){
 				if(msg.statusCode <= 200) {
 					$("#dataGroupNameInfo").html(msg.dataGroup.dataGroupName);
+					$("#dataGroupKeyInfo").html(msg.dataGroup.dataGroupKey);
 					$("#sharingInfo").html(msg.dataGroup.sharing);
+					$("#basicInfo").html(msg.dataGroup.basic);
 					$("#availableInfo").html(msg.dataGroup.available);
+					$("#locationInfo").html(msg.dataGroup.longitude + " / " + msg.dataGroup.latitude);
+					$("#dataCountInfo").html(msg.dataGroup.dataCount);
+					$("#metainfoInfo").html(msg.dataGroup.metainfo);
 					$("#descriptionInfo").html(msg.dataGroup.description);
 				} else {
 					alert(JS_MESSAGE[msg.errorCode]);
@@ -784,8 +815,8 @@
 	// 데이터 그룹 정보
 	var dataGroupDialog = $( ".dataGroupDialog" ).dialog({
 		autoOpen: false,
-		width: 400,
-		height: 300,
+		width: 500,
+		height: 500,
 		modal: true,
 		resizable: false
 	});
@@ -838,15 +869,19 @@
 		resizable: false
 	});
 
-	// Map 에 데이터 표시
-	function viewMapData(dataId) {
-		var url = "/data/map-data?dataId=" + dataId;
-		var width = 800;
+	//지도에서 찾기
+	function viewDataInfo(dataId) {
+		var url = "/map/find-data-point?dataId=" + dataId + "&referrer=list";
+		var width = 1024;
 		var height = 700;
-
-        var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height
-                + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
-        //popWin.document.title = layerName;
+	
+		var popupX = (window.screen.width / 2) - (width / 2);
+		// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+		var popupY= (window.screen.height / 2) - (height / 2);
+		
+	    var popWin = window.open(url, "", "toolbar=no, width=" + width + ", height=" + height + ", top=" + popupY + ", left=" + popupX
+	            + ", directories=no, status=yes, scrollbars=no, menubar=no, location=no");
+	    //popWin.document.title = layerName;
 	}
 </script>
 </body>

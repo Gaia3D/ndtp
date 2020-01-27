@@ -172,7 +172,8 @@
 					수정일
 				</th>
 				<td class="col-input">
-					${dataInfo.updateDate }
+					<fmt:parseDate value="${dataInfo.updateDate}" var="viewUpdateDate" pattern="yyyy-MM-dd HH:mm:ss"/>
+					<fmt:formatDate value="${viewUpdateDate}" pattern="yyyy-MM-dd HH:mm"/>
 				</td>
 			</tr>
 			<tr>
@@ -180,7 +181,8 @@
 					등록일
 				</th>
 				<td class="col-input">
-					${dataInfo.insertDate }
+					<fmt:parseDate value="${dataInfo.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
+					<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
 				</td>
 			</tr>
 		</table>

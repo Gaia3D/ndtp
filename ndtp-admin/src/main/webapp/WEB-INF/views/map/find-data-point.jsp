@@ -12,7 +12,7 @@
     <title>지도에서 찾기 | NDPT</title>
     <link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-    <link rel="stylesheet" href="/css/${lang}/user-style.css" />
+    <link rel="stylesheet" href="/css/${lang}/map-style.css" />
 	<style type="text/css">
 		/* MAP / CTRLBTNS */
 		.mapToollWrap {
@@ -282,7 +282,6 @@
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript" src="/js/${lang}/map-controll.js"></script>
-<script type="text/javascript" src="/js/${lang}/ui-controll.js"></script>
 <script type="text/javascript" src="/js/${lang}/wps-request.js"></script>
 <script type="text/javascript" src="/js/${lang}/data-info.js"></script>
 <script type="text/javascript" src="/js/${lang}/user-policy.js"></script>

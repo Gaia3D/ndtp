@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +29,6 @@ import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
 import ndtp.domain.DataInfoAttribute;
 import ndtp.domain.FileInfo;
-import ndtp.domain.GeoPolicy;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
@@ -44,7 +42,6 @@ import ndtp.service.GeoPolicyService;
 import ndtp.service.PolicyService;
 import ndtp.utils.DateUtils;
 import ndtp.utils.FileUtils;
-import ndtp.utils.FormatUtils;
 
 @Slf4j
 @Controller
@@ -84,15 +81,10 @@ public class DataController {
 //		converterJob.setUserId(userSession.getUserId());		
 		log.info("@@ dataInfo = {}", dataInfo);
 		
-		String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
-		if(StringUtils.isEmpty(dataInfo.getStartDate())) {
-			dataInfo.setStartDate(today.substring(0,4) + DateUtils.START_DAY_TIME);
-		} else {
+		if(!StringUtils.isEmpty(dataInfo.getStartDate())) {
 			dataInfo.setStartDate(dataInfo.getStartDate().substring(0, 8) + DateUtils.START_TIME);
 		}
-		if(StringUtils.isEmpty(dataInfo.getEndDate())) {
-			dataInfo.setEndDate(today + DateUtils.END_TIME);
-		} else {
+		if(!StringUtils.isEmpty(dataInfo.getEndDate())) {
 			dataInfo.setEndDate(dataInfo.getEndDate().substring(0, 8) + DateUtils.END_TIME);
 		}
 		
@@ -278,33 +270,54 @@ public class DataController {
 	}
 	
 	/**
-    * Map 에 데이터 표시
-    * @param model
-    * @return
-	 * @throws JsonProcessingException 
-    */
-    @GetMapping(value = "/map-data")
-    public String mapData(HttpServletRequest request, DataInfo dataInfo, Model model) throws JsonProcessingException {
-    	
-    	log.info("@@ map-data. dataInfo = {}", dataInfo);
+	 * 사용자 데이터 수정 화면
+	 * @param request
+	 * @param dataId
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "/modify")
+	public String modify(HttpServletRequest request, @RequestParam("dataId") Long dataId, Model model) {
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		
+		DataInfo dataInfo = new DataInfo();
+		//dataInfo.setUserId(userSession.getUserId());
+		dataInfo.setDataId(dataId);
+		
+		dataInfo = dataService.getData(dataInfo);
+		
+		model.addAttribute("dataInfo", dataInfo);
+		
+		return "/data/modify";
+	}
+	
+	/**
+	 * 데이터 삭제
+	 * @param dataId
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "/delete")
+	public String delete(HttpServletRequest request, @RequestParam("dataId") Long dataId, Model model) {
 
-    	dataInfo = dataService.getData(dataInfo);
-    	
-    	GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
-    	String geoPolicyJson = "";
-        try {
-        	geoPolicyJson = objectMapper.writeValueAsString(geoPolicy);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		
+		// TODO validation 체크 해야 함
+		if(dataId == null) {
+			log.info("@@@ validation error dataId = {}", dataId);
+			return "redirect:/data/list";
+		}
+		
+		DataInfo dataInfo = new DataInfo();
+		dataInfo.setDataId(dataId);
+		//dataInfo.setUserId(userId);
 
-        model.addAttribute("geoPolicyJson", geoPolicyJson);
-        model.addAttribute("dataInfo", dataInfo);
-
-        return "/data/map-data";
-    }
-    
-    /**
+		dataService.deleteData(dataInfo);
+		
+		return "redirect:/data/list";
+	}
+	
+	/**
      * TODO 고쳐야 함... .급해서
      * @param fileInfo
      * @return
