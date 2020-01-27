@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ndtp.domain.Key;
@@ -61,8 +62,8 @@ public class UserPolicyController {
 		return result;
     }
     
-    @PostMapping("update/{baseLayers}")
-    public Map<String, Object> updateBaseLayers(HttpServletRequest request, @PathVariable String baseLayers) {
+    @PostMapping("update-layers")
+    public Map<String, Object> updateBaseLayers(HttpServletRequest request, @RequestParam String baseLayers) {
     	Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String errorCode = null;
@@ -76,7 +77,7 @@ public class UserPolicyController {
             						.baseLayers(baseLayers)
             						.userId(userId)
             						.build();
-            userPolicyService.updateUserPolicy(userPolicy);
+            userPolicyService.updateBaseLayers(userPolicy);
 
         } catch(Exception e) {
         	e.printStackTrace();

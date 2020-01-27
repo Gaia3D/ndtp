@@ -440,6 +440,7 @@
 	}
 	
 	function initLayer(baseLayers) {
+		if(!baseLayers) return;
 		var layerList = baseLayers.split(",");
 		var queryString = "enable_yn='Y'";
 	    var queryStrings = layerList.map(function(){ return queryString; }).join(';');	// map: ie9부터 지원

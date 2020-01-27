@@ -28,10 +28,7 @@
     <update id="updateUserPolicy" parameterType="userPolicy">
         /* updateUserPolicy */
         UPDATE user_policy SET
-        	<if test="baseLayers != null and baseLayers != ''">
-        		base_layers = #{baseLayers}, 
-        	</if>
-        	<if test="initLatitude != null and initLatitude != ''">
+           	<if test="initLatitude != null and initLatitude != ''">
         		init_latitude = #{initLatitude}, 
         	</if>
         	<if test="initLongitude != null and initLongitude != ''">
@@ -69,5 +66,11 @@
         	</if>
            		update_date = NOW()
         WHERE user_id = #{userId}
+    </update>
+    
+    <update id="updateBaseLayers" parameterType="userPolicy">
+    	UPDATE user_policy SET
+       		base_layers = #{baseLayers}
+       	WHERE user_id = #{userId} 
     </update>
 </mapper>

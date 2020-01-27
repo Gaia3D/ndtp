@@ -1,23 +1,32 @@
 package ndtp.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.GeoPolicy;
 import ndtp.domain.UserPolicy;
 import ndtp.persistence.UserPolicyMapper;
 import ndtp.service.GeoPolicyService;
+import ndtp.service.LayerService;
 import ndtp.service.UserPolicyService;
 
 
 @Service
+@Slf4j
 public class UserPolicyServiceImpl implements UserPolicyService {
 
 	@Autowired
 	private UserPolicyMapper userPolicyMapper;
 	@Autowired
 	private GeoPolicyService geoPolicyService;
+	@Autowired
+	private LayerService layerService;
 
     @Transactional(readOnly = true)
     public UserPolicy getUserPolicy(String userId) {
@@ -37,6 +46,7 @@ public class UserPolicyServiceImpl implements UserPolicyService {
         				.lod4(geoPolicy.getLod4())
         				.lod5(geoPolicy.getLod5())
         				.ssaoRadius(geoPolicy.getSsaoRadius())
+        				.baseLayers(defaultLayers())
         				.build();
         } else {
         	if(userPolicy.getInitLongitude() == null) userPolicy.setInitLongitude(geoPolicy.getInitLongitude());
@@ -65,5 +75,30 @@ public class UserPolicyServiceImpl implements UserPolicyService {
 		} else {
 			return userPolicyMapper.updateUserPolicy(userPolicy);
 		}
+    }
+    
+    /**
+	 * 사용자 기본 레이어 수정 
+	 * @param userPolicy
+	 * @return
+	 */
+    @Transactional
+	public int updateBaseLayers(UserPolicy userPolicy) {
+    	UserPolicy dbUserPolicy = userPolicyMapper.getUserPolicy(userPolicy.getUserId());
+
+		if(dbUserPolicy == null) {
+			return userPolicyMapper.insertUserPolicy(userPolicy);
+		} else {
+			return userPolicyMapper.updateBaseLayers(userPolicy);
+		}
+	}
+    
+    private String defaultLayers() {
+    	List<String> layerKeyList = layerService.getListDefaultDisplayLayer();
+    	String dataStore = geoPolicyService.getGeoPolicy().getGeoserverDataStore();
+    	String baseLayers = layerKeyList.stream()
+    				.map(layerKey -> String.valueOf(dataStore + ":" + layerKey))
+    				.collect(Collectors.joining(","));
+    	return baseLayers.toString();
     }
 }
