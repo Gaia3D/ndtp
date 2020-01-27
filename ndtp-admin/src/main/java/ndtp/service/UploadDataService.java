@@ -66,10 +66,9 @@ public interface UploadDataService {
 
 	/**
 	 * 업로딩 데이터 삭제
-	 * @param userId
-	 * @param checkIds
+	 * @param uploadData
 	 * @return
 	 */
-	int deleteUploadDatas(String userId, String checkIds);
+	int deleteUploadData(UploadData uploadData);
 
 }

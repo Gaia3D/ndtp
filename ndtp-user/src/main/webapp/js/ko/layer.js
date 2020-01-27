@@ -1,15 +1,8 @@
 
 $(document).ready(function (){
 	
-	// 트리 안그렸을때만 ajax 요청해서 랜더링 
-//	if($("ul.layerList li").length === 0){
-		//레이어 목록 가져오기
+	// 초기 레이어 트리 그리기  
 	getLayerList();
-//	}
-	
-//    $('#layerMenu').on('click', function() {
-//    	
-//    });
 
     // 하위 영역 on/off
     $('#layerContent').on('click', '.mapLayer p', function(e) {
@@ -45,6 +38,7 @@ function createWmsProvider(viewer, layerList) {
 	if(NDTP.wmsProvider){
 		viewer.imageryLayers.remove(NDTP.wmsProvider);
 	}
+	if(layerList.length === 0) return;
 	var policy = NDTP.policy;
 	var queryString = "enable_yn='Y'";
     var queryStrings = layerList.map(function(){ return queryString; }).join(';');	// map: ie9부터 지원
@@ -82,14 +76,13 @@ function getLayerList() {
                 createLayerHtml(res.layerGroupList);
                 var baseLayers = NDTP.baseLayers;
                 if(baseLayers) {
-            		$('.nodepth').removeClass("on");
             		layerList = baseLayers.split(",");
             		layerList.forEach(function(layer) {
             			var layer = layer.split(":")[1];
                 		var target = $('#layerContent [data-layer-name="'+layer+'"]');
                 		target.addClass("on");
                 	});
-                }
+                } 
 			} else {
 				alert(JS_MESSAGE[res.errorCode]);
 				console.log("---- " + res.message);
@@ -133,7 +126,7 @@ function saveUserLayers() {
 	dataInfo.baseLayers = layerList.join(",");
 	
 	$.ajax({
-        url: '/user-policy/update/' + layerList.join(","),
+        url: '/user-policy/update-layers?baseLayers=' + layerList.join(","),
         type: 'POST',
         headers: {'X-Requested-With': 'XMLHttpRequest'},
         contentType: "application/json; charset=utf-8",

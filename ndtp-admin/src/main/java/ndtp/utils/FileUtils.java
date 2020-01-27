@@ -264,13 +264,13 @@ public class FileUtils {
 	
 	/**
 	 * 경로를 기준으로 디렉토리를 생성. window, linux 에서 File.separator 가 문제를 일으킴
-	 * @param dataServicePath
+	 * @param servicePath
 	 * @param dataGroupPath
 	 * @return
 	 */
-	public static boolean makeDirectoryByPath(String dataServicePath, String dataGroupPath) {
+	public static boolean makeDirectoryByPath(String servicePath, String dataGroupPath) {
 		String[] directors = dataGroupPath.split("/");
-		String fullName = dataServicePath;
+		String fullName = servicePath;
 		
 		boolean result = true;
 		for(String directoryName : directors) {

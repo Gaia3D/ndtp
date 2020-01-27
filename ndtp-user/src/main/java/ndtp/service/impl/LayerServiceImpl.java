@@ -30,4 +30,13 @@ public class LayerServiceImpl implements LayerService {
     public List<Layer> getListLayer(Layer layer) {
         return layerMapper.getListLayer(layer);
     }
+    
+    /**
+     * 기본 사용 레이어 목록 
+     * @return
+     */
+    @Transactional(readOnly=true)
+    public List<String> getListDefaultDisplayLayer() {
+    	return layerMapper.getListDefaultDisplayLayer();
+    }
 }
