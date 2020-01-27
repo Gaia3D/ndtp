@@ -101,16 +101,6 @@
 									<form:input path="dataName" class="l" />
 			  						<form:errors path="dataName" cssClass="error" />
 								</td>
-								<%-- <th class="col-label" scope="row">
-									<form:label path="dataKey">데이터 Key</form:label>
-									<span class="icon-glyph glyph-emark-dot color-warning"></span>
-								</th>
-								<td class="col-type-select">
-									<form:hidden path="duplication_value"/>
-									<form:input path="dataKey" cssClass="l" />
-			  						<input type="button" id="data_duplication_buttion" value="중복확인" />
-			  						<form:errors path="dataKey" cssClass="error" />
-								</td> --%>
 								<th class="col-label" scope="row">
 									<form:label path="dataGroupName">데이터 그룹</form:label>
 									<span class="icon-glyph glyph-emark-dot color-warning"></span>
@@ -127,9 +117,9 @@
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 			                    <td class="col-input">
-			                        <select id="sharing" name="sharing">
-										<option value="common">공통</option>
+			                    	<select id="sharing" name="sharing" class="selectBoxClass">
 										<option value="public">공개</option>
+										<option value="common">공통</option>
 										<option value="private">비공개</option>
 										<option value="group">그룹 공개</option>
 									</select>
@@ -139,36 +129,32 @@
 									<span class="icon-glyph glyph-emark-dot color-warning"></span>
 								</th>
 								<td class="col-input">
-									<select id="dataType" name="dataType" class="select" style="height: 30px;">
+									<select id="dataType" name="dataType" class="selectBoxClass">
 										<option value="citygml" selected="selected"> CITYGML </option>
+										<option value="indoorgml"> INDOORGML </option>
+										<option value="ifc"> IFC </option>
+										<option value="las"> LAS(POINT CLOUD) </option>
 										<option value="3ds"> 3DS </option>
 										<option value="obj"> OBJ </option>
-						          		<option value="dae"> DAE(COLLADA) </option>
-						          		<option value="ifc"> IFC </option>
-						          		<option value="las"> LAS </option>
-						          		<option value="indoorgml"> INDOORGML </option>
+		          						<option value="dae"> DAE(COLLADA) </option>
 									</select>
 								</td>
 							</tr>
 							<tr>
-								<th class="col-label" scope="row">
-								<form:label path="latitude">위도 / 경도</form:label>
-								</th>
-								<td class="col-input">
-									<form:input path="latitude" cssClass="m" />
-									<form:input path="longitude" cssClass="m" /> 
-									<input type="button" id="mapButtion" value="지도에서 찾기" />
-									<form:errors path="latitude" cssClass="error" />
-									<form:errors path="longitude" cssClass="error" />
-								</td>
-								<th class="col-label" scope="row">
-									<form:label path="altitude">높이</form:label>
-								</th>
-								<td class="col-input">
-									<form:input path="altitude" cssClass="m" />
-									<form:errors path="altitude" cssClass="error" />
-								</td>
-							</tr>
+				<th class="col-label" scope="row">
+					<form:label path="longitude">대표 위치 (경도/위도/높이) </form:label>
+					<span class="icon-glyph glyph-emark-dot color-warning"></span>
+				</th>
+				<td colspan="3"  class="col-input">
+					<form:input path="longitude" cssClass="m" placeholder="longitude" />
+					<form:input path="latitude" cssClass="m" placeholder="latitude" />
+					<form:input path="altitude" cssClass="m" placeholder="altitude" />
+					<input type="button" id="mapButtion" value="지도에서 찾기" />
+					<form:errors path="longitude" cssClass="error" />
+					<form:errors path="latitude" cssClass="error" />
+					<form:errors path="altitude" cssClass="error" />
+				</td>
+			</tr>
 							<tr>
 								<th class="col-label" scope="row">
 									<form:label path="description"><spring:message code='description'/></form:label>
@@ -180,18 +166,17 @@
 							</tr>
 						</table>
 						</form:form>
-							
-						<h4 style="margin-top: 30px; margin-bottom: 5px;">파일 업로딩</h4>
-					    <div class="fileSection" style="font-size: 17px;">
-					    	<form id="my-dropzone" action="" class="dropzone hzScroll"></form>
-					    </div>
-					    <div class="button-group">
-							<div class="center-buttons">
-								<button id="allFileUpload">업로드</button>
-								<button id="allFileClear">All Clear</button>
-								<a href="/upload-data/list" class="button">목록</a>
-							</div>
-						</div>
+						<div style="padding: 20px 20px 10px 10px; font-size: 18px;">파일 업로딩</div>
+		<div class="fileSection" style="font-size: 17px;">
+	    	<form id="my-dropzone" action="" class="dropzone hzScroll"></form>
+	    </div>
+	    <div class="button-group" style="margin-top: 30px;">
+			<div class="center-buttons">
+				<button id="allFileUpload">업로드</button>
+				<button id="allFileClear">All Clear</button>
+				<a href="/upload-data/list" class="button">목록</a>
+			</div>
+		</div>
 					</div>
 				</div>
 			</div>
@@ -213,8 +198,8 @@
 	
 	var dataGroupDialog = $( ".dialog" ).dialog({
 		autoOpen: false,
-		height: 600,
-		width: 1200,
+		height: 500,
+		width: 1000,
 		modal: true,
 		overflow : "auto",
 		resizable: false
@@ -233,17 +218,6 @@
 		dataGroupDialog.dialog( "close" );
 	}
 	
-	// 지도에서 찾기
-	$( "#mapButtion" ).on( "click", function() {
-		var url = "/data/location-map";
-		var width = 800;
-		var height = 700;
-
-        var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height
-                + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
-        //popWin.document.title = layerName;
-	});
-	
 	var fileUploadDialog = $( ".spinner-dialog" ).dialog({
 		autoOpen: false,
 		width: 250,
@@ -253,16 +227,16 @@
 	});
 	
 	// 업로딩 파일 개수
-    var uploadFileCount = 0;
-    // dropzone 업로딩 결과(n개 파일을 올리면 n개 리턴이 옴)
-    var uploadFileResultCount = 0;
-    Dropzone.options.myDropzone = {
-		url: "/upload-data/insert",	
+	var uploadFileCount = 0;
+	// dropzone 업로딩 결과(n개 파일을 올리면 n개 리턴이 옴)
+	var uploadFileResultCount = 0;
+	Dropzone.options.myDropzone = {
+		url: "/upload-datas",	
 		//paramName: "file",
 		// Prevents Dropzone from uploading dropped files immediately
 		timeout: 3600000,
-        autoProcessQueue: false,
-        // 여러개의 파일 허용
+	    autoProcessQueue: false,
+	    // 여러개의 파일 허용
 		uploadMultiple: true,
 		method: "post",
 		// 병렬 처리
@@ -276,7 +250,7 @@
 			"x-csrf-token": document.querySelectorAll("meta[name=csrf-token]")[0].getAttributeNode("content").value,
 		}, */
 		// 허용 확장자
-		acceptedFiles: ".3ds, .obj, .dae, .collada, .ifc, .las, .citygml, .indoorgml, .jpg, .jpeg, .gif, .png, .bmp, .zip",
+		acceptedFiles: ".3ds, .obj, .dae, .collada, .ifc, .las, .citygml, .indoorgml, .jpg, .jpeg, .gif, .png, .bmp, .dds, .zip, .mtl",
 		// 업로드 취소 및 추가 삭제 미리 보기 그림 링크 를 기본 추가 하지 않음
 		// 기본 true false 로 주면 아무 동작 못함
 		//clickable: true,
@@ -291,41 +265,39 @@
 			var clearTask = document.querySelector("#allFileClear");
 			
 			uploadTask.addEventListener("click", function(e) {
-				if (checkData() === false) {
+				if (validate() === false) {
 					return;
 				}
 				
 				uploadFileCount = 0;
-                uploadFileResultCount = 0;
-                e.preventDefault();
-                e.stopPropagation();
+	            uploadFileResultCount = 0;
+	            e.preventDefault();
+	            e.stopPropagation();
 				
-                if (myDropzone.getQueuedFiles().length > 0) {
-                    uploadFileCount = myDropzone.getQueuedFiles().length;
-                    myDropzone.processQueue();
-                    //startSpinner("fileUploadSpinner");
-                    fileUploadDialog.dialog( "open" );
-                } else {
-                    alert("업로딩 할 파일이 존재하지 않습니다.");
-                    return;
-                }
+	            if (myDropzone.getQueuedFiles().length > 0) {
+	                uploadFileCount = myDropzone.getQueuedFiles().length;
+	                myDropzone.processQueue();
+	                fileUploadDialog.dialog( "open" );
+	            } else {
+	                alert("업로딩 할 파일이 존재하지 않습니다.");
+	                return;
+	            }
 			});
-
+	
 			clearTask.addEventListener("click", function () {
-                // Using "_this" here, because "this" doesn't point to the dropzone anymore
-                if (confirm("정말 전체 항목을 삭제하겠습니까?")) {
-                	// true 주면 업로드 중인 파일도 다 같이 삭제
-                	myDropzone.removeAllFiles(true);
-                }
-            });
-			
+	            if (confirm("정말 전체 항목을 삭제하겠습니까?")) {
+	            	// true 주면 업로드 중인 파일도 다 같이 삭제
+	            	myDropzone.removeAllFiles(true);
+	            }
+	        });
+        	
 			this.on("sending", function(file, xhr, formData) {
 				formData.append("dataName", $("#dataName").val());
 				formData.append("dataGroupId", $("#dataGroupId").val());
 				formData.append("sharing", $("#sharing").val());
 				formData.append("dataType", $("#dataType").val());
-				formData.append("latitude", $("#latitude").val());
 				formData.append("longitude", $("#longitude").val());
+				formData.append("latitude", $("#latitude").val());
 				formData.append("altitude", $("#altitude").val());
 				formData.append("description", $("#description").val());
 			});
@@ -333,14 +305,14 @@
 			// maxFiles 카운터를 초과하면 경고창
 			this.on("maxfilesexceeded", function (data) {
 				myDropzone.removeAllFiles(true);
-				alert("최대 업로드 파일 수는 100개 입니다.");
+				alert("최대 업로드 파일 수는 500개 입니다.");
 				return;
 			});
 			
 			this.on("success", function(file, response) {
 				if(file !== undefined && file.name !== undefined) {
-                    console.log("file name = " + file.name);
-                    fileUploadDialog.dialog( "close" );
+	                console.log("file name = " + file.name);
+	                fileUploadDialog.dialog( "close" );
 					if(response.errorCode === undefined || response.errorCode === null) {
 						uploadFileResultCount ++;
 						if(uploadFileCount === uploadFileResultCount) {
@@ -348,43 +320,87 @@
 						    uploadFileCount = 0;
 						    uploadFileResultCount = 0;
 						}
-                    } else {
-                        alertMessage(response);
-                    }
-                } else {
+	                } else {
+	                    alertMessage(response);
+	                }
+	            } else {
 					console.log("------- success response = " + response);
-                }
-            });
+	            }
+	        });
 		}
 	};
-    
-    function checkData() {
-		if ($("#dataName").val() == "") {
+	
+	function validate() {
+		if ($("#dataName").val() === "") {
 			alert("데이터명을 입력하여 주십시오.");
 			$("#dataName").focus();
 			return false;
 		}
-	}
-    
-    function alertMessage(response) {
-		if(uploadFileResultCount === 0) {
-        	if(response.errorCode === "data.name.empty") {
-        		alert("데이터명이 유효하지 않습니다.");
-        	} else if(response.errorCode === "file.name.invalid") {
-				alert("파일명이 유효하지 않습니다.");
-        	} else if(response.errorCode === "file.ext.invalid") {
-				alert("파일 확장자가 유효하지 않습니다.");
-            } else if(response.errorCode === "file.size.invalid") {
-                alert("파일 용량이 너무 커서 업로딩 할 수 없습니다.");
-            } else if(response.errorCode === "db.exception") {
-                alert("죄송 합니다. 서버 실행중에 오류가 발생 하였습니다. \n 로그를 확인하여 주십시오.");
-            } else {
-            	alert(response.errorCode);
-            }
-            uploadFileResultCount++;
+		if ($("#longitude").val() === "") {
+			alert("대표 위치(경도)를 입력하여 주십시오.");
+			$("#longitude").focus();
+			return false;
 		}
-        return;
-    }
+		if ($("#latitude").val() === "") {
+			alert("대표 위치(위도)를 입력하여 주십시오.");
+			$("#latitude").focus();
+			return false;
+		}
+		if ($("#altitude").val() === "") {
+			alert("대표 위치(높이)를 입력하여 주십시오.");
+			$("#altitude").focus();
+			return false;
+		}
+	}
+	
+	function alertMessage(response) {
+		if(uploadFileResultCount === 0) {
+			if(response.errorCode === "converter.target.count.invalid") {
+	    		alert("변환 대상인 3D 파일이 존재하지 않습니다.");
+			} else if(response.errorCode === "data.name.empty") {
+	    		alert("데이터명이 유효하지 않습니다.");
+	    	} else if(response.errorCode === "data.group.id.empty") {
+	    		alert("데이터 그룹명을 입력하여 주십시오.");
+	    	} else if(response.errorCode === "data.sharing.empty") {
+	    		alert("공유 유형을 입력하여 주십시오.");
+	    	} else if(response.errorCode === "data.longitude.empty") {
+	    		alert("대표 위치(경도)를 입력하여 주십시오.");
+	    	} else if(response.errorCode === "data.latitude.empty") {
+	    		alert("대표 위치(위도)를 입력하여 주십시오.");
+	    	} else if(response.errorCode === "data.altitude.empty") {
+	    		alert("대표 위치(높이)를 입력하여 주십시오.");
+	    	} else if(response.errorCode === "data.file.empty") {
+	    		alert("파일이 유효하지 않습니다. 다시 업로딩 해 주십시오.");
+	    	} else if(response.errorCode === "file.name.invalid") {
+				alert("파일명이 유효하지 않습니다.");
+	    	} else if(response.errorCode === "file.ext.invalid") {
+				alert("파일 확장자가 유효하지 않습니다.");
+	        } else if(response.errorCode === "file.size.invalid") {
+	            alert("파일 용량이 너무 커서 업로딩 할 수 없습니다.");
+	        } else if(response.errorCode === "db.exception") {
+	            alert("죄송 합니다. 서버 실행중에 오류가 발생 하였습니다. \n 로그를 확인하여 주십시오.");
+	        } else {
+	        	alert(response.errorCode);
+	        }
+	        uploadFileResultCount++;
+		}
+	    return;
+	}
+	
+	//지도에서 찾기
+	$( "#mapButtion" ).on( "click", function() {
+		var url = "/map/find-point";
+		var width = 800;
+		var height = 700;
+	
+		var popupX = (window.screen.width / 2) - (width / 2);
+		// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+		var popupY= (window.screen.height / 2) - (height / 2);
+		
+	    var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height + ", top=" + popupY + ", left="+popupX
+	            + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
+	    //popWin.document.title = layerName;
+	});
 </script>
 </body>
 </html>

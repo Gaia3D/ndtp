@@ -119,38 +119,28 @@ public class UploadDataServiceImpl implements UploadDataService {
 	
 	/**
 	 * 업로딩 데이터 삭제
-	 * @param checkIds
+	 * @param uploadData
 	 * @return
 	 */
 	@Transactional
-	public int deleteUploadDatas(String userId, String checkIds) {
-		String[] uploadDatas = checkIds.split(",");
-		
-		for(String uploadDataId : uploadDatas) {
-			UploadData uploadData = new UploadData();
-			uploadData.setUserId(userId);
-			uploadData.setUploadDataId(Long.valueOf(uploadDataId));
+	public int deleteUploadData(UploadData uploadData) {
 			
-			List<UploadDataFile> uploadDataFileList = uploadDataMapper.getListUploadDataFile(uploadData);
-			uploadDataMapper.deleteUploadDataFile(uploadData);
-			// 2 upload_data 삭제
-			uploadDataMapper.deleteUploadData(uploadData);
+		List<UploadDataFile> uploadDataFileList = uploadDataMapper.getListUploadDataFile(uploadData);
+		uploadDataMapper.deleteUploadDataFile(uploadData);
+		for(UploadDataFile deleteUploadDataFile : uploadDataFileList) {
+			String fileName = null;
+			if(FileType.DIRECTORY == FileType.valueOf(deleteUploadDataFile.getFileType())) {
+				fileName = deleteUploadDataFile.getFilePath();
+			} else {
+				fileName = deleteUploadDataFile.getFilePath() + deleteUploadDataFile.getFileRealName();
+			}
 			
-			for(UploadDataFile deleteUploadDataFile : uploadDataFileList) {
-				String fileName = null;
-				if(FileType.DIRECTORY == FileType.valueOf(deleteUploadDataFile.getFileType())) {
-					fileName = deleteUploadDataFile.getFilePath();
-				} else {
-					fileName = deleteUploadDataFile.getFilePath() + deleteUploadDataFile.getFileRealName();
-				}
-				
-				File file = new File(fileName);
-				if(file.exists()) {
-					file.delete();
-				}
+			File file = new File(fileName);
+			if(file.exists()) {
+				file.delete();
 			}
 		}
 			
-		return uploadDatas.length;
+		return uploadDataMapper.deleteUploadData(uploadData);
 	}
 }
