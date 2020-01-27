@@ -20,6 +20,7 @@ import ndtp.domain.DataGroup;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
+import ndtp.domain.SharingType;
 import ndtp.domain.UploadData;
 import ndtp.domain.UploadDataFile;
 import ndtp.domain.UserSession;
@@ -107,10 +108,11 @@ public class UploadDataController {
 			String dataGroupPath = userSession.getUserId() + "/basic/";
 			dataGroup.setDataGroupKey("basic");
 			dataGroup.setDataGroupName("기본");
-			dataGroup.setDataGroupPath(dataGroupPath);
-			dataGroup.setSharing("public");
+			dataGroup.setDataGroupPath(propertiesConfig.getUserDataServicePath() + dataGroupPath);
+			dataGroup.setSharing(SharingType.PUBLIC.name().toLowerCase());
+			dataGroup.setMetainfo("{\"isPhysical\": false}");
 			
-			FileUtils.makeDirectoryByPath(propertiesConfig.getDataServiceDir(), dataGroupPath);
+			FileUtils.makeDirectoryByPath(propertiesConfig.getUserDataServiceDir(), dataGroupPath);
 			dataGroupService.insertBasicDataGroup(dataGroup);
 			
 			dataGroupList = dataGroupService.getListDataGroup(dataGroup);

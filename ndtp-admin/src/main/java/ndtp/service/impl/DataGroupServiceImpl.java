@@ -118,8 +118,8 @@ public class DataGroupServiceImpl implements DataGroupService {
 	    
     	// 디렉토리 생성
     	String dataGroupPath = dataGroup.getDataGroupKey() + "/";
-    	FileUtils.makeDirectoryByPath(propertiesConfig.getDataServiceDir(), dataGroupPath);
-    	dataGroup.setDataGroupPath(dataGroupPath);
+    	FileUtils.makeDirectoryByPath(propertiesConfig.getAdminDataServiceDir(), dataGroupPath);
+    	dataGroup.setDataGroupPath(propertiesConfig.getAdminDataServicePath() + dataGroupPath);
     	int result = dataGroupMapper.insertDataGroup(dataGroup);
 
     	if(depth > 1) {
@@ -206,6 +206,8 @@ public class DataGroupServiceImpl implements DataGroupService {
 	 */
     @Transactional
 	public int deleteDataGroup(DataGroup dataGroup) {
+    	
+    	// TODO converter_job 이력도 삭제해야 하는가?
     	// 삭제하고, children update
     	
     	//String userId = dataGroup.getUserId();

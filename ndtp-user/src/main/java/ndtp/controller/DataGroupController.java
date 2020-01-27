@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.Key;
 import ndtp.domain.Policy;
+import ndtp.domain.SharingType;
 import ndtp.config.PropertiesConfig;
 import ndtp.domain.DataGroup;
 import ndtp.domain.UserSession;
@@ -62,10 +63,11 @@ public class DataGroupController {
 			String dataGroupPath = userSession.getUserId() + "/basic/";
 			dataGroup.setDataGroupKey("basic");
 			dataGroup.setDataGroupName("기본");
-			dataGroup.setDataGroupPath(dataGroupPath);
-			dataGroup.setSharing("public");
+			dataGroup.setDataGroupPath(propertiesConfig.getUserDataServicePath() + dataGroupPath);
+			dataGroup.setSharing(SharingType.PUBLIC.name().toLowerCase());
+			dataGroup.setMetainfo("{\"isPhysical\": false}");
 			
-			FileUtils.makeDirectoryByPath(propertiesConfig.getDataServiceDir(), dataGroupPath);
+			FileUtils.makeDirectoryByPath(propertiesConfig.getUserDataServiceDir(), dataGroupPath);
 			dataGroupService.insertBasicDataGroup(dataGroup);
 			
 			dataGroupList = dataGroupService.getListDataGroup(dataGroup);
@@ -94,10 +96,11 @@ public class DataGroupController {
 			String dataGroupPath = userSession.getUserId() + "/basic/";
 			dataGroup.setDataGroupKey("basic");
 			dataGroup.setDataGroupName("기본");
-			dataGroup.setDataGroupPath(dataGroupPath);
-			dataGroup.setSharing("public");
+			dataGroup.setDataGroupPath(propertiesConfig.getUserDataServicePath() + dataGroupPath);
+			dataGroup.setSharing(SharingType.PUBLIC.name().toLowerCase());
+			dataGroup.setMetainfo("{\"isPhysical\": false}");
 			
-			FileUtils.makeDirectoryByPath(propertiesConfig.getDataServiceDir(), dataGroupPath);
+			FileUtils.makeDirectoryByPath(propertiesConfig.getUserDataServiceDir(), dataGroupPath);
 			dataGroupService.insertBasicDataGroup(dataGroup);
 			
 			dataGroupList = dataGroupService.getListDataGroup(dataGroup);

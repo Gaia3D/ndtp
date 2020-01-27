@@ -21,6 +21,7 @@ import ndtp.domain.Key;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
 import ndtp.domain.ServerTarget;
+import ndtp.domain.SharingType;
 import ndtp.domain.UploadData;
 import ndtp.domain.UploadDataFile;
 import ndtp.domain.UserSession;
@@ -74,11 +75,12 @@ public class UploadDataController {
 			
 			dataGroup.setDataGroupKey("basic");
 			dataGroup.setDataGroupName("기본");
-			dataGroup.setDataGroupPath(dataGroupPath);
+			dataGroup.setDataGroupPath(propertiesConfig.getAdminDataServicePath() + dataGroupPath);
 			dataGroup.setDataGroupTarget(ServerTarget.ADMIN.name().toLowerCase());
-			dataGroup.setSharing("public");
+			dataGroup.setSharing(SharingType.PUBLIC.name().toLowerCase());
+			dataGroup.setMetainfo("{\"isPhysical\": false}");
 			
-			FileUtils.makeDirectoryByPath(propertiesConfig.getDataServiceDir(), dataGroupPath);
+			FileUtils.makeDirectoryByPath(propertiesConfig.getAdminDataServiceDir(), dataGroupPath);
 			dataGroupService.insertBasicDataGroup(dataGroup);
 			
 			dataGroupList = dataGroupService.getListDataGroup(dataGroup);

@@ -21,6 +21,7 @@ import ndtp.domain.DataGroup;
 import ndtp.domain.Key;
 import ndtp.domain.Policy;
 import ndtp.domain.ServerTarget;
+import ndtp.domain.SharingType;
 import ndtp.domain.UserSession;
 import ndtp.service.DataGroupService;
 import ndtp.service.PolicyService;
@@ -60,11 +61,12 @@ public class DataGroupController {
 			
 			dataGroup.setDataGroupKey("basic");
 			dataGroup.setDataGroupName("기본");
-			dataGroup.setDataGroupPath(dataGroupPath);
+			dataGroup.setDataGroupPath(propertiesConfig.getAdminDataServicePath() + dataGroupPath);
 			dataGroup.setDataGroupTarget(ServerTarget.ADMIN.name().toLowerCase());
-			dataGroup.setSharing("public");
+			dataGroup.setSharing(SharingType.PUBLIC.name().toLowerCase());
+			dataGroup.setMetainfo("{\"isPhysical\": false}");
 			
-			FileUtils.makeDirectoryByPath(propertiesConfig.getDataServiceDir(), dataGroupPath);
+			FileUtils.makeDirectoryByPath(propertiesConfig.getAdminDataServiceDir(), dataGroupPath);
 			dataGroupService.insertBasicDataGroup(dataGroup);
 			
 			dataGroupList = dataGroupService.getListDataGroup(dataGroup);
@@ -92,11 +94,12 @@ public class DataGroupController {
 			
 			dataGroup.setDataGroupKey("basic");
 			dataGroup.setDataGroupName("기본");
-			dataGroup.setDataGroupPath(dataGroupPath);
+			dataGroup.setDataGroupPath(propertiesConfig.getAdminDataServicePath() + dataGroupPath);
 			dataGroup.setDataGroupTarget(ServerTarget.ADMIN.name().toLowerCase());
-			dataGroup.setSharing("public");
+			dataGroup.setSharing(SharingType.PUBLIC.name().toLowerCase());
+			dataGroup.setMetainfo("{\"isPhysical\": false}");
 			
-			FileUtils.makeDirectoryByPath(propertiesConfig.getDataServiceDir(), dataGroupPath);
+			FileUtils.makeDirectoryByPath(propertiesConfig.getAdminDataServiceDir(), dataGroupPath);
 			dataGroupService.insertBasicDataGroup(dataGroup);
 			
 			dataGroupList = dataGroupService.getListDataGroup(dataGroup);

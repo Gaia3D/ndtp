@@ -118,8 +118,8 @@ public class DataGroupServiceImpl implements DataGroupService {
 	    
     	// 디렉토리 생성
     	String dataGroupPath = dataGroup.getUserId() + "/" + dataGroup.getDataGroupKey() + "/";
-    	FileUtils.makeDirectoryByPath(propertiesConfig.getDataServiceDir(), dataGroupPath);
-    	dataGroup.setDataGroupPath(dataGroupPath);
+    	FileUtils.makeDirectoryByPath(propertiesConfig.getUserDataServiceDir(), dataGroupPath);
+    	dataGroup.setDataGroupPath(propertiesConfig.getUserDataServicePath() + dataGroupPath);
     	int result = dataGroupMapper.insertDataGroup(dataGroup);
     	
     	if(depth > 1) {
