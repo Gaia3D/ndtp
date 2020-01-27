@@ -80,7 +80,7 @@
 						            <td class="col-input">
 										<select id="mappingType" name="mappingType" class="selectBoxClass">
 											<option value="origin">origin</option>
-											<option value="boundingboxcenter ">boundingboxcenter</option>
+											<option value="boundingboxcenter">boundingboxcenter</option>
 										</select>
 									</td>
 								</tr>
