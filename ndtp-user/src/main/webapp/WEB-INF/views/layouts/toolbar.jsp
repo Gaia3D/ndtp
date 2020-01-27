@@ -1,5 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-
+<style>
+.dcRangeBtn{
+height: 14px;
+width: 14px;
+margin-top: 4px;
+margin-left: 3px;
+background-color: black;
+border-radius:10px;
+}
+</style>
 <div class="ctrlWrap">
 	<div class="zoom">
 		<button type="button" class="reset" id="mapCtrlReset" title="초기화">초기화</button>
@@ -86,11 +95,11 @@
 	    		<li>회전 변경</li>
 	    	</ul>
 	    		<label for="dcPitch">x(pitch)</label>
-		    	<input type="text" id="dcPitch" name="pitch" size="1" readonly/><input id="dcPitchRange" data-type="Pitch" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/><br/>
+		    	<input type="text" id="dcPitch" name="pitch" size="2" readonly/><button type="button" class="dcRangeBtn" data-type="prev" id="rcPitchPrev"></button><input id="dcPitchRange" data-type="Pitch" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/><button type="button" class="dcRangeBtn" data-type="next" id="rcPitchNext"></button><br/>
 		    	<label for="dcRoll">y(roll)</label>
-		    	<input type="text" id="dcRoll" name="roll" size="1" readonly/><input id="dcRollRange" data-type="Roll" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/><br/>
+		    	<input type="text" id="dcRoll" name="roll" size="2" readonly/><button type="button" class="dcRangeBtn" data-type="prev" id="rcRollPrev"></button><input id="dcRollRange" data-type="Roll" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/><button type="button" class="dcRangeBtn" data-type="next" id="rcRollNext"></button><br/>
 		    	<label for="dcHeading">z(heading)</label>
-		    	<input type="text" id="dcHeading" name="heading" size="1" readonly/><input id="dcHeadingRange" data-type="Heading" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/>
+		    	<input type="text" id="dcHeading" name="heading" size="2" readonly/><button type="button" class="dcRangeBtn" data-type="prev" id="rcHeadingPrev"></button><input id="dcHeadingRange" data-type="Heading" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/><button type="button" class="dcRangeBtn" data-type="next" id="rcHeadingNext"></button>
 		    	<button type="button" id="dcSavePosRot" class="btnTextF" style="display: block;margin-top: 8px;">높이회전 저장</button>
 		    </form>
 	    </div>

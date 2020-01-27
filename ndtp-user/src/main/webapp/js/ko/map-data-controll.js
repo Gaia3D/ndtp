@@ -16,7 +16,7 @@ var MapDataControll = function(magoInstance) {
 			dataId = data.dataId;
 			dataKey = data.nodeId;
 			projectId = data.projectId;
-			var title = '선택된 데이터 :  ' + projectId + ' / ' + dataKey;
+			var title = '선택된 데이터 :  ' + projectId + ' / ' + data.data_name;
 			$header.text(title);
 			
 			var currentGeoLocData = f4d.getCurrentGeoLocationData();
@@ -91,11 +91,27 @@ var MapDataControll = function(magoInstance) {
 		changeF4d();
 	});
 	
+	//회전 변경 버튼 조절
+	var rotBtnHoldInterval
+	$('.dcRangeBtn').on('mousedown',function() {
+		var $this = $(this);
+		rotBtnHoldInterval = setInterval(function(){
+			var type = $this.data('type');
+			var range = (type ==='prev') ?  $this.next() : $this.prev();
+			var offset = (type ==='prev') ? -1 : 1;
+			var curVal = parseFloat(range.val()); 
+			range.val(curVal + offset).change();
+		});
+	});
+	$('.dcRangeBtn').on('mouseup mouseleave',function() {
+		clearInterval(rotBtnHoldInterval);
+	});
+	
 	//데이터 높이 이벤트
-	var holdInterval;
+	var locAltholdInterval;
 	$('#dcAltUp,#dcAltDown').on('mousedown',function() {
 		var $this = $(this);
-		holdInterval = setInterval(function(){
+		locAltholdInterval = setInterval(function(){
 			var type = $this.data('type');
 			var offset = parseFloat($('#dcAltitudeOffset').val());
 			offset = (type==='up') ? offset : -offset;
@@ -109,7 +125,7 @@ var MapDataControll = function(magoInstance) {
 	});
 	
 	$('#dcAltUp,#dcAltDown').on('mouseup mouseleave',function() {
-		clearInterval(holdInterval);
+		clearInterval(locAltholdInterval);
 	});
 	
 	$('#dcSavePosRot').click(function() {

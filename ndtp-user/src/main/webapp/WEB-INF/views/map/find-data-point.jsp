@@ -277,6 +277,8 @@
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/externlib/handlebars-4.1.2/handlebars.js"></script>
 <script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>
+<script type="text/javascript" src="/externlib/decodeTextAlternative/encoding-indexes.js"></script>
+<script type="text/javascript" src="/externlib/decodeTextAlternative/encoding.js"></script>
 <script type="text/javascript" src="/js/mago3d.js"></script>
 <script type="text/javascript" src="/js/mago3d_lx.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
