@@ -35,10 +35,10 @@ function initLayer(magoInstance, baseLayers) {
 
 // wmsProvider 생성 
 function createWmsProvider(viewer, layerList) {
-	if(layerList.length === 0) return;
 	if(NDTP.wmsProvider){
 		viewer.imageryLayers.remove(NDTP.wmsProvider);
 	}
+	if(layerList.length === 0) return;
 	var policy = NDTP.policy;
 	var queryString = "enable_yn='Y'";
     var queryStrings = layerList.map(function(){ return queryString; }).join(';');	// map: ie9부터 지원
