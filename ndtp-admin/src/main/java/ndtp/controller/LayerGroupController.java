@@ -137,9 +137,11 @@ public class LayerGroupController {
 		layerGroup.setLayerGroupId(layerGroupId);
 		layerGroup = layerGroupService.getLayerGroup(layerGroup);
 		Policy policy = policyService.getPolicy();
+		List<LayerGroup> layerGroupList = layerGroupService.getListLayerGroup();
 
 		model.addAttribute("policy", policy);
 		model.addAttribute("layerGroup", layerGroup);
+		model.addAttribute("layerGroupList", layerGroupList);
 
 		return "/layer/modify-group";
 	}

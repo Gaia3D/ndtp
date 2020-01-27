@@ -33,21 +33,21 @@
 							<tr>
 								<th class="col-label l" scope="row">
 									<form:label path="roleName">Role 명</form:label>
-									<span class="must">*</span>
+									<span class="icon-glyph glyph-emark-dot color-warning"></span>
 								</th>
 								<td class="col-input"><form:input path="roleName" cssClass="l" size="70" /></td>
 							</tr>
 							<tr>
 								<th class="col-label l" scope="row">
 									<form:label path="roleKey">Role Key</form:label>
-									<span class="must">*</span>
+									<span class="icon-glyph glyph-emark-dot color-warning"></span>
 								</th>
 								<td class="col-input"><form:input path="roleKey" size="70" /></td>
 							</tr>
 							<tr>
 								<th class="col-label l" scope="row">
 									<form:label path="roleTarget">Role Target</form:label>
-									<span class="must">*</span>
+									<span class="icon-glyph glyph-emark-dot color-warning"></span>
 								</th>
 								<td class="col-input">
 									<select id="roleTarget" name="roleTarget" class="select" >
@@ -60,7 +60,7 @@
 							<tr>
 								<th class="col-label l" scope="row">
 									<form:label path="roleType">Role 유형</form:label>
-									<span class="must">*</span>
+									<span class="icon-glyph glyph-emark-dot color-warning"></span>
 								</th>
 								<td class="col-input">
 									<select id="roleType" name="roleType" class="select" >
@@ -73,7 +73,7 @@
 							<tr>
 								<th class="col-label l" scope="row">
 									<span>사용 유무</span>
-									<span class="must">*</span>
+									<span class="icon-glyph glyph-emark-dot color-warning"></span>
 								</th>
 								<td class="col-input radio-set">
 									<input type="radio" id="useY" name="useYn" value="Y" />
@@ -85,7 +85,7 @@
 							<tr>
 								<th class="col-label l" scope="row">
 									<span>기본사용 유무</span>
-									<span class="must">*</span>
+									<span class="icon-glyph glyph-emark-dot color-warning"></span>
 								</th>
 								<td class="col-input radio-set">
 									<input type="radio" id="defaultY" name="defaultYn" value="Y" />
