@@ -5,7 +5,7 @@ var Simulation = function(magoInstance) {
 	var SEJONG_POSITION = new Cesium.Cartesian3(-3108649.1049808883, 4086368.566202183, 3773910.6726226895);
 	var magoManager = magoInstance.getMagoManager();
 	
-	var slider = new KotSlider('rangeInput');
+	var slider;
 	var simulating = false;
 	
 	var observer;
@@ -16,10 +16,6 @@ var Simulation = function(magoInstance) {
 	
 	//건설공정 조회
 	$('#constructionProcess .execute').click(function(){
-		//레인지, 레전드 보이기
-		$('div.sliderWrap, #constructionProcess .profileInfo').show();
-		slider.setValue(0);
-		simulating = true;
 		var targetArea = $('input[name="cpProtoArea"]:checked').val();
 		
 		var dataName;
@@ -28,8 +24,17 @@ var Simulation = function(magoInstance) {
 			dataName = SEJONG_TILE_NAME;
 			initPosition = SEJONG_POSITION;
 		} else {
-			
+			notyetAlram();
+			return;
 		}
+		$('div.sliderWrap, #constructionProcess .profileInfo').show();
+		if(!slider) {
+			slider = new KotSlider('rangeInput');
+		}
+		//레인지, 레전드 보이기
+		
+		//slider.setValue(0);
+		simulating = true;
 		
 		if(!cache[dataName]) {
 			if(dataName.indexOf('tiles') > 0) {
@@ -68,17 +73,17 @@ var Simulation = function(magoInstance) {
 	
 	//경관 분석 위치지정
 	$('#solarAnalysis .drawObserverPoint').click(function(){
-		notyetAlram()
+		notyetAlram();
 	});
 	
 	//경관 분석 조회
 	$('#solarAnalysis .execute').click(function(){
-		notyetAlram()
+		notyetAlram();
 	});
 	
 	//경관 분석 취소
 	$('#solarAnalysis .reset').click(function(){
-		notyetAlram()
+		notyetAlram();
 	});
 	
 	var smartTileLoaEndCallbak = function(evt){

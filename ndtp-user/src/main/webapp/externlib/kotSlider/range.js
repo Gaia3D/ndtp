@@ -162,8 +162,10 @@ KotSlider.prototype.setSlider = function (id) {
     var step = that.step;
     var duration = that.duration;
 
-    sliderObject.value = t;
+    
     sliderObject.type = 'range';
+    //ie에서는 순서가 영향있음..
+    sliderObject.value = t;
     sliderObject.max = max;
     sliderObject.min = min;
     sliderObject.step = step;

@@ -161,6 +161,7 @@ background: url(./images/slide.png) no-repeat -90px 0;
 width: 865px;
 height: 20px;
 float: right;
+background-color: black;
 }
 .rangeWrapChild.legend span{
 color: white;

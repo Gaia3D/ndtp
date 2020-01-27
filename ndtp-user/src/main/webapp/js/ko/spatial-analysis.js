@@ -269,14 +269,18 @@ var SpatialAnalysis = function(magoInstance) {
 	
 	// 방사형 가시권 분석 - 분석실행
 	$('#analysisRadialLineOfSight .execute').click(function(e) {
-
+		var dataType = $('#analysisRadialLineOfSight .dataType').val();
+		if(dataType === 'DSM') {
+			notyetAlram();
+			return;
+		}
 		var observerOffset = $('#analysisRadialLineOfSight .observerOffset').val();
 	    var radius = $('#analysisRadialLineOfSight .radius').val();
 	    var sides = $('#analysisRadialLineOfSight .sides').val();
 		var observerPoint = $("#analysisRadialLineOfSight .observerPoint").val();
 
 	    if (observerPoint == "") {
-	        alert("Please select an observer point!!");
+	        alert("관찰자 위치를 선택해주세요.");
 	        return;
 	    }
 	    startLoading();
@@ -320,17 +324,22 @@ var SpatialAnalysis = function(magoInstance) {
 	
 	// 가시선 분석 - 실행
 	$('#analysisLinearLineOfSight .execute').click(function(e) {
+		var dataType = $('#analysisLinearLineOfSight .dataType').val();
+		if(dataType === 'DSM') {
+			notyetAlram();
+			return;
+		}
 		var observerOffset = $('#analysisLinearLineOfSight .observerOffset').val();
 	    var observerPoint = $('#analysisLinearLineOfSight .observerPoint').val();
 	    var targetPoint = $('#analysisLinearLineOfSight .targetPoint').val();
 
 	    if (observerPoint == "") {
-	        alert("Please select an observer point!!");
+	        alert("관찰 위치를 선택해주세요.");
 	        return;
 	    }
 
 		if (targetPoint == "") {
-			alert("Please select a target point!!");
+			alert("대상 위치를 선택해주세요.");
 			return;
 		}
 		startLoading();
@@ -370,12 +379,17 @@ var SpatialAnalysis = function(magoInstance) {
 	
 	// 연직분석 - 실행
 	$('#analysisRasterProfile .execute').click(function(e) {
+		var dataType = $('#analysisRasterProfile .dataType').val();
+		if(dataType === 'DSM') {
+			notyetAlram();
+			return;
+		}
 		var inputCoverage = layerDEM;
 		var interval = $('#analysisRasterProfile .interval').val();
 		var userLine = $('#analysisRasterProfile .userLine').val();
 
 		if (userLine == "") {
-			alert("Please select an user line!!");
+			alert("사용자 입력 선분을 선택헤주세요.");
 			return;
 		}
 		startLoading();
@@ -438,13 +452,18 @@ var SpatialAnalysis = function(magoInstance) {
 	
 	// 최고/최저 지점찾기 - 분석실행
 	$('#analysisRasterHighLowPoints .execute').click(function(e) {
+		var dataType = $('#analysisRasterHighLowPoints .dataType').val();
+		if(dataType === 'DSM') {
+			notyetAlram();
+			return;
+		}
 		var inputCoverage = layerDEM;
 		var cropShape = $('#analysisRasterHighLowPoints .cropShape').val();
 		var valueType = $('#analysisRasterHighLowPoints .valueType').val();
 
 		var typeKorName = $('#analysisRasterHighLowPoints .valueType option:selected').text();
 		if ($('#analysisRasterHighLowPoints .cropShape').val() == "") {
-			alert("Please select a crop shape!!");
+			alert("영역 그리기로 분석할 영역을 선택해주세요.");
 			return;
 		}
 		startLoading();

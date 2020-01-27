@@ -7,7 +7,8 @@
 				<li>
 					<label for="">분석 자료</label>
 					<select class="dataType">
-						<option value="DEM" selected="">DEM (DEM)</option>
+						<option value="DEM" selected>DEM (DEM)</option>
+						<option value="DSM">DSM (DSM)</option>
 						<!-- <option value="DSM">DSM (DSM)</option> -->
 					</select>
 				</li>
@@ -43,8 +44,8 @@
 				<li>
 					<label for="">분석 자료</label>
 					<select class="dataType">
-						<option value="DEM" selected="">DEM (DEM)</option>
-						<!-- <option value="DSM">DSM (DSM)</option> -->
+						<option value="DEM" selected>DEM (DEM)</option>
+						<option value="DSM">DSM (DSM)</option>
 					</select>
 				</li>
 				<li>
@@ -77,8 +78,8 @@
 				<li>
 					<label for="">분석 자료</label>
 					<select class="dataType">
-						<option value="DEM" selected="">DEM (DEM)</option>
-						<!-- <option value="DSM">DSM (DSM)</option> -->
+						<option value="DEM" selected>DEM (DEM)</option>
+						<option value="DSM">DSM (DSM)</option>
 					</select>
 				</li>
 				<li>
@@ -109,8 +110,8 @@
 				<li>
 					<label for="">분석 자료</label>
 					<select class="dataType">
-						<option value="DEM" selected="">DEM (DEM)</option>
-						<!-- <option value="DSM">DSM (DSM)</option> -->
+						<option value="DEM" selected>DEM (DEM)</option>
+						<option value="DSM">DSM (DSM)</option>
 					</select>
 				</li>
 				<li>
