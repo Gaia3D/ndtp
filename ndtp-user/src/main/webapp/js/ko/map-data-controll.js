@@ -2,7 +2,7 @@ var MapDataControll = function(magoInstance) {
 	
 	var magoManager = magoInstance.getMagoManager();
 	var $dataControlWrap = $('#dataControllWrap');
-	var $header = $dataControlWrap.find('h3');
+	var $header = $dataControlWrap.find('.layerDivTit span');
 	var projectId;
 	var dataKey;
 	var dataId;
@@ -16,7 +16,7 @@ var MapDataControll = function(magoInstance) {
 			dataId = data.dataId;
 			dataKey = data.nodeId;
 			projectId = data.projectId;
-			var title = '선택된 데이터 :  ' + projectId + ' / ' + data.data_name;
+			var title = projectId + ' / ' + (data.data_name || data.nodeId);
 			$header.text(title);
 			
 			var currentGeoLocData = f4d.getCurrentGeoLocationData();
@@ -101,7 +101,7 @@ var MapDataControll = function(magoInstance) {
 			var offset = (type ==='prev') ? -1 : 1;
 			var curVal = parseFloat(range.val()); 
 			range.val(curVal + offset).change();
-		});
+		},50);
 	});
 	$('.dcRangeBtn').on('mouseup mouseleave',function() {
 		clearInterval(rotBtnHoldInterval);

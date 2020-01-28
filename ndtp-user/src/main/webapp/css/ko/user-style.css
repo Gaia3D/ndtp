@@ -1477,3 +1477,35 @@ background-position: -212px -193px;
 button.rangeNext {
 background-position: -262px -193px;
 }
+.layerDiv li > button:active {
+border: 1px solid #287be4;
+background-color: #ccc;
+}
+button.up:active {
+background-position: -112px -245px;
+}
+button.down:active {
+background-position: -162px -245px;
+}
+button.rangePrev:active {
+background-position: -212px -243px;
+}
+button.rangeNext:active {
+background-position: -262px -243px;
+}
+.layerDiv li > button:hover {
+border: 1px solid #287be4;
+background-color: #eee;
+}
+button.up:hover {
+background-position: -112px -245px;
+}
+button.down:hover {
+background-position: -162px -245px;
+}
+button.rangePrev:hover {
+background-position: -212px -243px;
+}
+button.rangeNext:hover {
+background-position: -262px -243px;
+}

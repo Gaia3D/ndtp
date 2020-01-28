@@ -13,7 +13,7 @@ var Simulation = function(magoInstance) {
 	var observerConfig = { attributes: true};
 	
 	var cache = {};
-	
+	//zBounceSpring zBounceLinear
 	//건설공정 조회
 	$('#constructionProcess .execute').click(function(){
 		var targetArea = $('input[name="cpProtoArea"]:checked').val();
@@ -33,7 +33,7 @@ var Simulation = function(magoInstance) {
 		//레인지, 레전드 보이기
 		$('div.sliderWrap, #constructionProcess .profileInfo').show();
 		
-		slider.setValue(0);
+		//slider.setValue(0);
 		simulating = true;
 		
 		if(!cache[dataName]) {
@@ -136,6 +136,11 @@ var Simulation = function(magoInstance) {
 			
 			node.changeLocationAndRotation(geo.latitude, geo.longitude, newHeight, heading, pitch, roll,magoManager);
 			
+			magoManager.effectsManager.addEffect(data.nodeId, new Mago3D.Effect({
+				effectType      : pitch > 0 ? "zBounceLinear":"zBounceSpring",
+				durationSeconds : 0.4
+			}));
+			
 			node.setRenderCondition(function(data){
 				var attributes = data.attributes; 
 				if(!simulating) {
@@ -170,6 +175,12 @@ var Simulation = function(magoInstance) {
 					}
 				} else {
 					attributes.isVisible = false;
+					if(!magoManager.effectsManager.hasEffects(dataId)) {
+						magoManager.effectsManager.addEffect(dataId, new Mago3D.Effect({
+							effectType      : pitch > 0 ? "zBounceLinear":"zBounceSpring",
+							durationSeconds : 0.4
+						}));
+					}
 				}
 			})
 		}
