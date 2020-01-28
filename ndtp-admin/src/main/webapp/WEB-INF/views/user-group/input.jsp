@@ -37,7 +37,7 @@
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input">
-										<form:input path="userGroupName" cssClass="l" />
+										<form:input path="userGroupName" cssClass="l" maxlength="100" />
 										<form:errors path="userGroupName" cssClass="error" />
 									</td>
 								</tr>
@@ -129,7 +129,7 @@
 			$("#userGroupKey").focus();
 			return false;
 		}
-		if (!number.test($("#userGroupKey").val())) {
+		if (!exceptKorean.test($("#userGroupKey").val())) {
 			alert("사용자 그룹Key는 한글을 입력할 수 없습니다.");
 			$("#userGroupKey").val("");
 			$("#userGroupKey").focus();
@@ -183,7 +183,7 @@
 						$("#duplicationValue").val(msg.duplication);
 					}
 				} else {
-					alert(JS_MESSAGE[msg.errorCode]);
+					alert(JS_MESSAGE[msg.message]);
 					console.log("---- " + msg.message);
 				}
 			},

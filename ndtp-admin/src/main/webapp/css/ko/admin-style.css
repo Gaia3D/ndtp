@@ -2554,3 +2554,9 @@ tr:hover td {
 .selectBoxClass {
 	height: 30px; margin-bottom: 7px; border-color: #d5d5d5;
 }
+
+.nowrap {
+	max-width: 400px;
+	overflow:hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis; }
