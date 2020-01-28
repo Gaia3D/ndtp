@@ -63,6 +63,7 @@ create table data_info(
 	data_type					varchar(30),
 	sharing						varchar(30)							default 'public',
 	user_id						varchar(32),
+	update_user_id				varchar(32),
 	mapping_type				varchar(30)							default 'origin',
 	location		 			GEOMETRY(POINT, 4326),
 	altitude					numeric(13,7),
@@ -92,6 +93,7 @@ comment on column data_info.data_name is 'data 이름';
 comment on column data_info.data_type is '데이터 타입(중복). 3ds,obj,dae,collada,ifc,las,citygml,indoorgml,etc';
 comment on column data_info.sharing is 'common : 공통, public : 공개, private : 비공개, group : 그룹';
 comment on column data_info.user_id is '고유번호';
+comment on column data_info.update_user_id is '수정자 아이디';
 comment on column data_info.mapping_type is '기본값 origin : latitude, longitude, height를 origin에 맞춤. boundingboxcenter : latitude, longitude, height를 boundingboxcenter 맞춤';
 comment on column data_info.location is 'POINT(위도, 경도). 공간 검색 속도 때문에 altitude는 분리';
 comment on column data_info.altitude is '높이';

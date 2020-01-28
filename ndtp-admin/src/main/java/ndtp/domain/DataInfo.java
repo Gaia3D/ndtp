@@ -51,6 +51,8 @@ public class DataInfo extends Search implements Serializable {
 	
 	// 사용자명
 	private String userId;
+	// 수정자 아이디
+	private String updateUserId;
 	private String userName;
 	
 	/****** validator ********/
@@ -64,6 +66,8 @@ public class DataInfo extends Search implements Serializable {
 	private Long converterJobFileId;
 	// Data Group 이름
 	private String dataGroupName;
+	// admin : 관리자용 데이터 그룹, user : 일반 사용자용 데이터 그룹
+	private String dataGroupTarget;
 	// data 고유 식별번호
 	private String dataKey;
 	// data 고유 식별번호

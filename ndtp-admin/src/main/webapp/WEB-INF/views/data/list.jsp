@@ -110,7 +110,7 @@
 									<th scope="col" class="col-number"><spring:message code='number'/></th>
 									<th scope="col" class="col-name">그룹명</th>
 									<th scope="col" class="col-name">데이터명</th>
-									<th scope="col" class="col-name">소유자 아이디</th>
+									<th scope="col" class="col-name">아이디</th>
 									<th scope="col" class="col-name">데이터타입</th>
 									<th scope="col" class="col-name">공유유형</th>
 									<th scope="col" class="col-name">매핑타입</th>

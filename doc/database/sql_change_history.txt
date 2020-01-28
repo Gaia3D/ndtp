@@ -1,3 +1,12 @@
+1 28
+alter table data_info_log add column update_user_id				varchar(32);
+comment on column data_info_log.update_user_id is '수정자 아이디';
+commit;
+
+alter table data_info add column update_user_id				varchar(32);
+comment on column data_info.update_user_id is '수정자 아이디';
+commit;
+
 1 24
 update policy set user_upload_type = '3ds,obj,dae,collada,ifc,las,citygml,indoorgml,jpg,jpeg,gif,png,bmp,dds,zip,mtl';
 update policy set user_converter_type =	'3ds,obj,dae,collada,ifc,las,citygml,indoorgml';

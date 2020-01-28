@@ -18,6 +18,10 @@
 			<td id="dataType" class="col-data">{{dataType}}</td>
 		</tr>
 		<tr>
+			<th class="col-label" scope="row">사용자 아이디</th>
+			<td id="dataType" class="col-data">{{userId}}</td>
+		</tr>
+		<tr>
 			<th class="col-label" scope="row">공유 유형</th>
 			<td id="sharing" class="col-data">{{sharing}}</td>
 		</tr>

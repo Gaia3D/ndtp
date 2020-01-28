@@ -58,7 +58,7 @@
 	<!-- Data 목록 -->
 	<select id="getAllListData" parameterType="dataInfo" resultType="dataInfo">
 		/* getAllListData */
-		SELECT A.*, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude, B.data_group_name
+		SELECT A.*, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude, B.data_group_name, B.data_group_target
 		FROM data_info A, data_group B
 		WHERE A.data_group_id = #{dataGroupId}
 			AND A.data_group_id = B.data_group_id
@@ -74,54 +74,49 @@
 	<!-- Data 목록 -->
 	<select id="getListData" parameterType="dataInfo" resultType="dataInfo">
 		/* getListData */
-		SELECT X.*, ST_X(X.location) AS longitude, ST_Y(X.location) AS latitude,
-			(SELECT data_group_name FROM data_group WHERE data_group_id = X.data_group_id) AS dataGroupName
-		FROM (
-			SELECT *
-			FROM data_info
-			<trim prefix="WHERE" prefixOverrides="AND">
-				<if test="dataGroupId != null and dataGroupId > 0">
-				data_group_id = #{dataGroupId}
-				</if>
-				<if test="dataType != null and dataType != ''">
-				AND data_type = #{dataType}
-				</if>
-				<if test="sharing != null and sharing != ''">
-				AND sharing = #{sharing}
-				</if>
-				<if test="userId != null and userId != ''">
-				AND user_id = #{userId}
-				</if>
-				<if test="status != null and status != ''">
-				AND status = #{status}
-				</if>
-				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
-				AND ${searchWord} = #{searchValue}
-				</if>
-				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
-				AND ${searchWord} LIKE '%' || #{searchValue} || '%'
-				</if>
-				<if test="startDate != null and startDate != ''">
-				<![CDATA[
-				AND insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
-				]]>
-				</if>
-				<if test="endDate != null and endDate != ''">
-				<![CDATA[
-				AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
-				]]>
-				</if>
-			</trim>
-			<choose>
-			<when test="orderWord != null and orderWord != '' and orderValue != null and orderValue != ''">
-			ORDER BY ${orderWord} ${orderValue}
-			</when>
-			<otherwise>
-			ORDER BY insert_date DESC, data_id DESC
-			</otherwise>
-			</choose>
-			OFFSET #{offset} LIMIT #{limit}
-		) X
+		SELECT *, ST_X(B.location) AS longitude, ST_Y(B.location) AS latitude, B.data_group_name
+		FROM data_info A, data_group B
+		WHERE A.data_group_Id = B.data_group_id
+			<if test="dataGroupId != null and dataGroupId > 0">
+			AND A.data_group_id = #{dataGroupId}
+			</if>
+			<if test="dataType != null and dataType != ''">
+			AND A.data_type = #{dataType}
+			</if>
+			<if test="sharing != null and sharing != ''">
+			AND A.sharing = #{sharing}
+			</if>
+			<if test="userId != null and userId != ''">
+			AND A.user_id = #{userId}
+			</if>
+			<if test="status != null and status != ''">
+			AND A.status = #{status}
+			</if>
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
+			AND A.${searchWord} = #{searchValue}
+			</if>
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
+			AND A.${searchWord} LIKE '%' || #{searchValue} || '%'
+			</if>
+			<if test="startDate != null and startDate != ''">
+			<![CDATA[
+			AND A.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+			]]>
+			</if>
+			<if test="endDate != null and endDate != ''">
+			<![CDATA[
+			AND A.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+			]]>
+			</if>
+		<choose>
+		<when test="orderWord != null and orderWord != '' and orderValue != null and orderValue != ''">
+		ORDER BY A.${orderWord} ${orderValue}
+		</when>
+		<otherwise>
+		ORDER BY A.insert_date DESC, A.data_id DESC
+		</otherwise>
+		</choose>
+		OFFSET #{offset} LIMIT #{limit}
 	</select>
 	
 	<!-- 공유 유형별 데이터 통계 -->
@@ -138,7 +133,7 @@
 	<!-- Data 정보 -->
 	<select id="getData" parameterType="dataInfo" resultType="dataInfo">
 		/* getData */
-		SELECT A.*, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude, B.data_group_name
+		SELECT A.*, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude, B.data_group_name, B.data_group_target
 		FROM data_info A, data_group B
 		WHERE data_id = #{dataId}
 			AND A.data_group_id = B.data_group_id
@@ -259,6 +254,9 @@
 			</if>
 			<if test="dataName != null and dataName != ''">
 			data_name = #{dataName},
+			</if>
+			<if test="updateUserId != null and updateUserId != ''">
+			update_user_id = #{updateUserId},
 			</if>
 			<if test="dataType != null and dataType != ''">
 			data_type = #{dataType},
