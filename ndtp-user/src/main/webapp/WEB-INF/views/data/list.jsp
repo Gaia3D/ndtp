@@ -8,7 +8,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<title>데이터 목록 | NDTP</title>
-	
+
 	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
 	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
@@ -24,10 +24,10 @@
 <div id="wrap">
 	<!-- S: NAVWRAP -->
 	<div class="navWrap">
-	 	<%@ include file="/WEB-INF/views/layouts/menu.jsp" %> 
+	 	<%@ include file="/WEB-INF/views/layouts/menu.jsp" %>
 	</div>
 	<!-- E: NAVWRAP -->
-	
+
 	<div class="container" style="float:left; width: calc(100% - 78px);">
 		<div style="padding: 20px 20px 0px 10px; font-size: 18px;">3D 업로딩 데이터 자동 변환</div>
 		<div class="tabs" >
@@ -85,13 +85,13 @@
 			</div>
 			</form:form>
 		</div>
-		
+
 		<div class="list">
 			<form:form id="listForm" modelAttribute="dataInfo" method="post">
 				<input type="hidden" id="checkIds" name="checkIds" value="" />
 			<div class="list-header row">
 				<div class="list-desc u-pull-left">
-					<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/> 
+					<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/>
 					<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/>
 				</div>
 			</div>
@@ -135,7 +135,7 @@
 
 					<tr>
 						<td class="col-number">${pagination.rowNumber - status.index }</td>
-						<td class="col-name">${dataInfo.dataGroupName }</td>
+						<td class="col-name ellipsis" style="max-width: 300px;">${dataInfo.dataGroupName }</td>
 						<td class="col-name">
 		<c:if test="${dataInfo.dataGroupTarget eq 'admin'}">
 							<a href="/data-log/modify?dataId=${dataInfo.dataId}">${dataInfo.dataName }</a>
@@ -147,16 +147,16 @@
 			<c:if test="${dataInfo.userId ne owner}">
 							<a href="/data-log/modify?dataId=${dataInfo.dataId}">${dataInfo.dataName }</a>
 			</c:if>
-		</c:if>					
+		</c:if>
 						</td>
 						<td class="col-name">
-		<c:if test="${dataInfo.userId eq owner}">				
+		<c:if test="${dataInfo.userId eq owner}">
 							${dataInfo.userId }
 		</c:if>
 		<c:if test="${dataInfo.userId ne owner}">
 							<span style="color: blue;">${dataInfo.userId }</span>
 		</c:if>
-						</td>	
+						</td>
 						<td class="col-name">${dataInfo.dataType }</td>
 						<td class="col-type">
 		<c:if test="${dataInfo.sharing eq 'common'}">공통</c:if>
@@ -177,26 +177,26 @@
 		</c:if>
 		<c:if test="${dataInfo.status eq 'delete' }">
 							삭제
-		</c:if>		
+		</c:if>
 						</td>
 						<td class="col-type">
 							<a href="#" onclick="viewDataInfo('${dataInfo.dataId}'); return false;">보기</a>
 						</td>
 						<td class="col-type">
-		<c:if test="${dataInfo.attributeExist eq 'true' }">	
+		<c:if test="${dataInfo.attributeExist eq 'true' }">
 							등록
 		</c:if>
 		<c:if test="${dataInfo.attributeExist eq 'false' }">
 							미등록
-		</c:if>				
+		</c:if>
 						</td>
 						<td class="col-type">
-		<c:if test="${dataInfo.objectAttributeExist eq 'true' }">	
+		<c:if test="${dataInfo.objectAttributeExist eq 'true' }">
 							등록
 		</c:if>
 		<c:if test="${dataInfo.objectAttributeExist eq 'false' }">
 							미등록
-		</c:if>							
+		</c:if>
 						<td class="col-date">
 							<fmt:parseDate value="${dataInfo.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
 							<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
@@ -207,11 +207,11 @@
 				</tbody>
 			</table>
 			</form:form>
-				
+
 		</div>
 		<%@ include file="/WEB-INF/views/common/pagination.jsp" %>
 	</div>
-	
+
 </div>
 <!-- E: WRAP -->
 
@@ -226,32 +226,32 @@
 		var orderWord = "${dataInfo.orderWord}";
 		var orderValue = "${dataInfo.orderValue}";
 		var listCounter = "${dataInfo.listCounter}";
-		
+
 		if(searchWord != "") $("#searchWord").val("${dataInfo.searchWord}");
 		if(searchOption != "") $("#searchOption").val("${dataInfo.searchOption}");
 		if(orderWord != "") $("#orderWord").val("${dataInfo.orderWord}");
 		if(orderValue != "") $("#orderValue").val("${dataInfo.orderValue}");
 		if(listCounter != "") $("#listCounter").val("${dataInfo.listCounter}");
-		
+
 		initDatePicker();
 		initCalendar(new Array("startDate", "endDate"), new Array("${dataInfo.startDate}", "${dataInfo.endDate}"));
 	});
-	
-	//전체 선택 
+
+	//전체 선택
 	$("#chkAll").click(function() {
 		$(":checkbox[name=dataId]").prop("checked", this.checked);
 	});
-	
+
 	//지도에서 찾기
 	function viewDataInfo(dataId) {
 		var url = "/map/find-data-point?dataId=" + dataId + "&referrer=list";
 		var width = 1024;
 		var height = 700;
-	
+
 		var popupX = (window.screen.width / 2) - (width / 2);
 		// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
 		var popupY= (window.screen.height / 2) - (height / 2);
-		
+
 	    var popWin = window.open(url, "", "toolbar=no, width=" + width + ", height=" + height + ", top=" + popupY + ", left=" + popupX
 	            + ", directories=no, status=yes, scrollbars=no, menubar=no, location=no");
 	    //popWin.document.title = layerName;

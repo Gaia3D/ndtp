@@ -137,13 +137,13 @@
 										<input type="checkbox" id="dataId_${dataInfo.dataId}" name="dataId" value="${dataInfo.dataId}" />
 									</td>
 									<td class="col-number">${pagination.rowNumber - status.index }</td>
-									<td class="col-name">
+									<td class="col-name ellipsis" style="max-width:200px;">
 										<a href="#" class="view-group-detail" onclick="detailDataGroup('${dataInfo.dataGroupId }'); return false;">${dataInfo.dataGroupName }</a></td>
 									<td class="col-name">
 										<a href="/data/modify?dataId=${dataInfo.dataId }&amp;pageNo=${pagination.pageNo }${pagination.searchParameters}">
 										${dataInfo.dataName }</a>
 									</td>
-									<td class="col-name">${dataInfo.userId }</td>	
+									<td class="col-name">${dataInfo.userId }</td>
 									<td class="col-name">${dataInfo.dataType }</td>
 									<td class="col-type">
 		<c:if test="${dataInfo.sharing eq 'common'}">공통</c:if>

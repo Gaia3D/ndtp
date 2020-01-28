@@ -101,7 +101,7 @@
             <c:set var="ancestorClass" value="ancestor-${userGroup.ancestor }" />
         </c:if>
 									<tr class="${depthClass } ${depthParentClass} ${ancestorClass }" style="${depthStyleDisplay}">
-										<td class="col-key nowrap" style="text-align: left;" nowrap="nowrap">
+										<td class="col-key ellipsis" style="text-align: left;" nowrap="nowrap">
         <c:if test="${userGroup.depth eq 1 }">
 					                        <span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"
 					                        	onclick="childrenDisplayToggle('${userGroup.depth}', '${userGroup.userGroupId}', '${userGroup.ancestor}');">

@@ -119,9 +119,9 @@
         <c:set var="ancestorFolderClass" value="ancestorFolder-${dataGroup.ancestor }" />
     </c:if>
 					<tr class="${depthClass } ${depthParentClass} ${ancestorClass }" style="${depthStyleDisplay}">
-						<td class="col-key" style="text-align: left;" nowrap="nowrap">
+						<td class="col-key ellipsis" style="max-width: 400px; width: 50px; text-align: left;" nowrap="nowrap">
     <c:if test="${dataGroup.depth eq 1 }">
-    						<span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;" 
+    						<span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"
 	                        	onclick="childrenDisplayToggle('${dataGroup.depth}', '${dataGroup.dataGroupId}', '${dataGroup.ancestor}');">
 	                            <i id="oneDepthArrow-${dataGroup.dataGroupId }" class="fa fa-caret-right oneArrow" aria-hidden="true"></i>
 	                        </span>&nbsp;

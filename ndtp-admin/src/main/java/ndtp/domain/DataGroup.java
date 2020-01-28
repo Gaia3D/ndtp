@@ -3,6 +3,8 @@ package ndtp.domain;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import javax.validation.constraints.Size;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
@@ -48,6 +50,7 @@ public class DataGroup extends Search {
 	// old 고유 식별번호
 	private String oldDataGroupKey;
 	// 그룹명
+	@Size(max = 100)
 	private String dataGroupName;
 	// 서비스 경로
 	private String dataGroupPath;
