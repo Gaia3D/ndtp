@@ -11,7 +11,7 @@
 					</th>
 					<td class="col-input">
 						<form:input path="userIdMinLength" maxlength="2" cssClass="s" />
-						<span class="table-desc">5이상</span>
+						<span class="table-desc">이상</span>
 						<form:errors path="userIdMinLength" cssClass="error" />
 					</td>
 				</tr>
