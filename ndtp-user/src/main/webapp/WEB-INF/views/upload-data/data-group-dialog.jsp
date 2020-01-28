@@ -23,7 +23,7 @@
 		<tr>
 			<td colspan="6" class="col-none">데이터 그룹이 존재하지 않습니다.</td>
 		</tr>
-</c:if>								
+</c:if>
 <c:if test="${!empty dataGroupList }">
 	<c:set var="paddingLeftValue" value="0" />
 	<c:forEach var="dataGroup" items="${dataGroupList}" varStatus="status">
@@ -39,10 +39,10 @@
            <c:set var="depthClass" value="threeDepthClass" />
            <c:set var="paddingLeftValue" value="80px" />
        </c:if>
-		
+
 		<tr class="${depthClass } ${depthParentClass} ${ancestorClass }" style="${depthStyleDisplay}">
-			<td class="col-name" style="text-align: left;" nowrap="nowrap">
-				<span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"></span> 
+			<td class="col-name ellipsis" style="max-width:300px; text-align: left;" nowrap="nowrap">
+				<span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"></span>
 		<c:if test="${dataGroup.depth eq 1 }">
 				<span style="font-size: 1.5em; color: Dodgerblue;">
 	            	<i class="fa fa-folder oneFolder" aria-hidden="true"></i>
@@ -51,13 +51,13 @@
 		<c:if test="${dataGroup.depth eq 2 }">
 				<span style="font-size: 1.5em; color: Mediumslateblue;">
 	            	<i class="fa fa-folder oneFolder" aria-hidden="true"></i>
-	            </span>	
-		</c:if>		
+	            </span>
+		</c:if>
 		<c:if test="${dataGroup.depth eq 3 }">
 				<span style="font-size: 1.5em; color: Tomato;;">
 	            	<i class="fa fa-folder oneFolder" aria-hidden="true"></i>
 	            </span>
-		</c:if>		
+		</c:if>
 				${dataGroup.dataGroupName }
 			</td>
 			<td class="col-type">
@@ -76,7 +76,7 @@
 		    </td>
 		    <td class="col-toggle">
 		    	<a href="#" onclick="confirmDataGroup('${dataGroup.dataGroupId}', '${dataGroup.dataGroupName}'); return false;">확인</a></td>
-		</tr>	
+		</tr>
 	</c:forEach>
 </c:if>
 		</tbody>
