@@ -61,7 +61,7 @@
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input">
-										<form:input path="userName" class="m" />
+										<form:input path="userName" class="m" maxlength="64" />
 				  						<form:errors path="userName" cssClass="error" />
 									</td>
 								</tr>
@@ -214,6 +214,10 @@
 			alert(JS_MESSAGE["user.id.empty"]);
 			$("#userId").focus();
 			return false;
+		} else if (userId.length < "${policy.userIdMinLength}"*1) {
+			alert(JS_MESSAGE["user.id.min_length.invalid"]);
+			$("#userId").focus();
+			return false;
 		}
 		$.ajax({
 			url: "/users/duplication",
@@ -281,6 +285,8 @@
 	}
 
 	function checkData() {
+		var passwordValidation = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{${policy.passwordMinLength},${policy.passwordMaxLength}}$/;
+
 		if($("#duplicationValue").val() == null || $("#duplicationValue").val() == "") {
 			alert(JS_MESSAGE["check.id.duplication"]);
 			return false;
@@ -298,7 +304,25 @@
 			$("#userName").focus();
 			return false;
 		}
+		if ($("#password").val() == "") {
+			alert(JS_MESSAGE["password.empty"]);
+			$("#password").focus();
+			return false;
+		} else if(!passwordValidation.test($("#password").val())) {
+			alert(JS_MESSAGE["user.password.invalid"]);
+			$("#password").focus();
+			return false;
+		} else if($("#passwordConfirm").val() == "") {
+			alert(JS_MESSAGE["password.correct.empty"]);
+			$("#passwordConfirm").focus();
+			return false;
+		} else if($("#password").val() !== $("#passwordConfirm").val()) {
+			alert("입력한 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+			$("#passwordConfirm").focus();
+			return false;
+		}
 	}
+
 	// 초기화
 	function formClear() {
 		$("#userId").val("");
@@ -307,6 +331,7 @@
 		$("#userName").val("");
 		$("#password").val("");
 		$("#passwordConfirm").val("");
+		$("#duplicationValue").val("");
 	}
 
 </script>

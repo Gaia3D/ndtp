@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -53,6 +54,7 @@ public class UserInfo extends Search implements Serializable {
 	// 사용자 그룹명(화면용)
 	private String userGroupName;
 	// 이름
+	@Size(max = 64)
 	private String userName;
 	// 비밀번호
 	@NotBlank

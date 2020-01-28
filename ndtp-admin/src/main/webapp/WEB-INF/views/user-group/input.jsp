@@ -143,7 +143,7 @@
 			return false;
 		}
 		if($("#parent").val() === null || $("#parent").val() === "" || !number.test($("#parent").val())) {
-			alert("상위 데이터 그룹을 선택해 주세요.");
+			alert("상위 사용자 그룹을 선택해 주세요.");
 			$("#parent").focus();
 			return false;
 		}
@@ -183,7 +183,7 @@
 						$("#duplicationValue").val(msg.duplication);
 					}
 				} else {
-					alert(JS_MESSAGE[msg.message]);
+					alert(JS_MESSAGE[msg.errorCode]);
 					console.log("---- " + msg.message);
 				}
 			},
