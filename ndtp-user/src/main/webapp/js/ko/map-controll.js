@@ -259,7 +259,6 @@ function MapControll(viewer, option) {
     
     $('#rotateLeft').click(function(){
     	that._scene.camera.twistLeft(Cesium.Math.toRadians(10));
-    	console.log(Cesium.Math.toDegrees(viewer.camera.heading));
     	var currentHeading = Math.round(Cesium.Math.toDegrees(viewer.camera.heading));
     	if(currentHeading > 180){
     		currentHeading = currentHeading - 360;
@@ -269,7 +268,6 @@ function MapControll(viewer, option) {
     
     $('#rotateRight').click(function(){
     	that._scene.camera.twistRight(Cesium.Math.toRadians(10));
-    	console.log(Cesium.Math.toDegrees(viewer.camera.heading));
     	var currentHeading = Math.round(Cesium.Math.toDegrees(viewer.camera.heading));
     	if(currentHeading > 180){
     		currentHeading = currentHeading - 360;
@@ -289,7 +287,7 @@ function MapControll(viewer, option) {
 	 */
     
     viewer.camera.changed.addEventListener(function() {
-    	  var currentHeading = Math.round( Cesium.Math.toDegrees(viewer.camera.heading))
+    	  var currentHeading = Math.round( Cesium.Math.toDegrees(viewer.camera.heading));
     	  //console.log('Heading:', currentHeading)
     	  
     	  if(currentHeading > 180){

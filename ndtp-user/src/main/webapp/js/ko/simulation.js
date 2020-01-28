@@ -27,13 +27,13 @@ var Simulation = function(magoInstance) {
 			notyetAlram();
 			return;
 		}
-		$('div.sliderWrap, #constructionProcess .profileInfo').show();
 		if(!slider) {
 			slider = new KotSlider('rangeInput');
 		}
 		//레인지, 레전드 보이기
+		$('div.sliderWrap, #constructionProcess .profileInfo').show();
 		
-		//slider.setValue(0);
+		slider.setValue(0);
 		simulating = true;
 		
 		if(!cache[dataName]) {

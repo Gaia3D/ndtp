@@ -103,7 +103,7 @@
 			</ul>
 		</div>
 	</li>
-	<li>
+	<li id="analysisRasterHighLowPointsList">
 		<p>지형 최고/최저 점</p>
 		<div class="listContents" id="analysisRasterHighLowPoints">
 			<ul class="analysisGroup">
