@@ -187,9 +187,13 @@
 	$(document).ready(function() {
 	});
 
-	// 입력값이 변경되면 중복체크 필요
-	$("#dataGroupKey").on("keyup", function() {
+	// 입력값이 변경되면 중복체크, 영문+숫자
+	$("#dataGroupKey").on("keyup", function(event) {
 		$("#duplication").val(null);
+		if (!(event.keyCode >=37 && event.keyCode<=40)) {
+			var inputValue = $(this).val();
+			$(this).val(inputValue.replace(/[^a-z0-9]/gi,''));
+		}
 	});
 
 	// 그룹Key 중복 확인
