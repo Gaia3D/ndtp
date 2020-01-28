@@ -314,7 +314,7 @@
 			updateUserFlag = false;
 			var formData = $("#userInfo").serialize();
 			$.ajax({
-				url: "/user/update",
+				url: "/users/update",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 		        data: formData,

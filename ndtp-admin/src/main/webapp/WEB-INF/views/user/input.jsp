@@ -212,23 +212,24 @@
 			return false;
 		}
 		$.ajax({
-			url: "/user/duplication-check",
+			url: "/users/duplication",
 			type: "POST",
 			data: {"userId": userId},
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 			dataType: "json",
 			success: function(msg){
-				if(msg.result == "success") {
-					if(msg.duplicationValue != "0") {
+				if(msg.statusCode <= 200) {
+					if(msg.duplication == true) {
 						alert(JS_MESSAGE["user.id.duplication"]);
 						$("#userId").focus();
 						return false;
 					} else {
 						alert(JS_MESSAGE["user.id.enable"]);
-						$("#duplicationValue").val(msg.duplicationValue);
+						$("#duplicationValue").val(msg.duplication);
 					}
 				} else {
-					alert(JS_MESSAGE[msg.result]);
+					alert(JS_MESSAGE[msg.errorCode]);
+					console.log("---- " + msg.message);
 				}
 			},
 			error:function(request, status, error) {
@@ -248,7 +249,7 @@
 			insertUserFlag = false;
 			var info = $("#userInfo").serialize();
 			$.ajax({
-				url: "/user/insert",
+				url: "/users/insert",
 				type: "POST",
 				data: info,
 				headers: {"X-Requested-With": "XMLHttpRequest"},
@@ -281,6 +282,11 @@
 			return false;
 		} else if($("#duplicationValue").val() == "1") {
 			alert(JS_MESSAGE["user.id.duplication"]);
+			return false;
+		}
+		if ($("#userGroupId").val() == "") {
+			alert(JS_MESSAGE["user.group.select"]);
+			$("#userGroupId").focus();
 			return false;
 		}
 		if ($("#userName").val() == "") {

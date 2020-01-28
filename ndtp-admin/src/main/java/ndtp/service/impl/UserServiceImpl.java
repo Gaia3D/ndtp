@@ -53,14 +53,14 @@ public class UserServiceImpl implements UserService {
 		return userMapper.getUser(userId);
 	}
 
-	/**
-	 * 사용자 ID 중복 체크
-	 * @param userId
-	 * @return
-	 */
-	@Transactional(readOnly=true)
-	public int getDuplicationIdCount(String userId) {
-		return userMapper.getDuplicationIdCount(userId);
+    /**
+     * 사용자 ID 중복 체크
+     * @param userInfo
+     * @return
+     */
+	@Transactional(readOnly = true)
+	public Boolean isUserIdDuplication(UserInfo userInfo) {
+		return userMapper.isUserIdDuplication(userInfo);
 	}
 
 	/**

@@ -101,9 +101,15 @@
 	</select>
 
 	<!-- 사용자 ID 중복 체크 -->
-	<select id="getDuplicationIdCount" parameterType="string" resultType="int">
-		/* getDuplicationIdCount */
-		SELECT COUNT(user_id) AS count FROM user_info WHERE user_id = #{userId}
+	<select id="isUserIdDuplication" parameterType="userInfo" resultType="boolean">
+		/* isUserIdDuplication */
+		SELECT
+			CASE
+				WHEN COUNT(*) > 0 THEN true
+				ELSE false
+			END AS duplication
+		FROM user_info
+		WHERE user_id = #{userId}
 	</select>
 
 	<!-- 사용자 등록 -->
