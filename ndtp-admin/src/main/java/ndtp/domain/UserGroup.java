@@ -2,6 +2,8 @@ package ndtp.domain;
 
 import java.sql.Timestamp;
 
+import javax.validation.constraints.Size;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
@@ -48,6 +50,7 @@ public class UserGroup {
 	// 링크 활용 등을 위한 확장 컬럼
 	private String userGroupKey;
 	// 그룹명
+	@Size(max = 100)
 	private String userGroupName;
 	// 부서번호
 	private String deptNo;

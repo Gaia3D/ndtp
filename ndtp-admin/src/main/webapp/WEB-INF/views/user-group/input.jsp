@@ -37,7 +37,7 @@
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input">
-										<form:input path="userGroupName" cssClass="l" />
+										<form:input path="userGroupName" cssClass="l" maxlength="100" />
 										<form:errors path="userGroupName" cssClass="error" />
 									</td>
 								</tr>
@@ -129,7 +129,7 @@
 			$("#userGroupKey").focus();
 			return false;
 		}
-		if (!number.test($("#userGroupKey").val())) {
+		if (!exceptKorean.test($("#userGroupKey").val())) {
 			alert("사용자 그룹Key는 한글을 입력할 수 없습니다.");
 			$("#userGroupKey").val("");
 			$("#userGroupKey").focus();
@@ -149,9 +149,13 @@
 		}
 	}
 
-	// 입력값이 변경되면 중복체크 필요
-	$("#userGroupKey").on("keyup", function() {
+	// 입력값이 변경되면 중복체크, 영문+숫자
+	$("#userGroupKey").on("keyup", function(event) {
 		$("#duplicationValue").val(null);
+		if (!(event.keyCode >=37 && event.keyCode<=40)) {
+			var inputValue = $(this).val();
+			$(this).val(inputValue.replace(/[^a-z0-9]/gi,''));
+		}
 	});
 
 	// 그룹Key 중복 확인
@@ -179,7 +183,7 @@
 						$("#duplicationValue").val(msg.duplication);
 					}
 				} else {
-					alert(JS_MESSAGE[msg.errorCode]);
+					alert(JS_MESSAGE[msg.message]);
 					console.log("---- " + msg.message);
 				}
 			},
