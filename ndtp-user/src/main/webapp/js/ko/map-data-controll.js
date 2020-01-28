@@ -127,7 +127,9 @@ var MapDataControll = function(magoInstance) {
 	$('#dcAltUp,#dcAltDown').on('mouseup mouseleave',function() {
 		clearInterval(locAltholdInterval);
 	});
-	
+	$('#dcShowAttr').click(function(){
+		detailDataInfo(dataId);
+	});
 	$('#dcSavePosRot').click(function() {
 		if(confirm('현재 입력된 위치와 회전 정보를 db에 저장하시겠습니까?')) {
 			if(!dataId) {

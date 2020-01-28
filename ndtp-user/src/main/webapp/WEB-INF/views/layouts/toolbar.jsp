@@ -100,7 +100,10 @@ border-radius:10px;
 		    	<input type="text" id="dcRoll" name="roll" size="2" readonly/><button type="button" class="dcRangeBtn" data-type="prev" id="rcRollPrev"></button><input id="dcRollRange" data-type="Roll" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/><button type="button" class="dcRangeBtn" data-type="next" id="rcRollNext"></button><br/>
 		    	<label for="dcHeading">z(heading)</label>
 		    	<input type="text" id="dcHeading" name="heading" size="2" readonly/><button type="button" class="dcRangeBtn" data-type="prev" id="rcHeadingPrev"></button><input id="dcHeadingRange" data-type="Heading" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/><button type="button" class="dcRangeBtn" data-type="next" id="rcHeadingNext"></button>
-		    	<button type="button" id="dcSavePosRot" class="btnTextF" style="display: block;margin-top: 8px;">높이회전 저장</button>
+		    	<div >
+			    	<button type="button" id="dcSavePosRot" class="btnTextF" style="display: inline-block;margin-top: 8px;">높이회전 저장</button>
+			    	<button type="button" id="dcShowAttr" class="btnTextF" style="display: inline-block;margin-top: 8px;">속성조회</button>
+		    	</div>
 		    </form>
 	    </div>
     </div>

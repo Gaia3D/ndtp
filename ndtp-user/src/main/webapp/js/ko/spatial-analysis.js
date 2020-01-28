@@ -9,6 +9,10 @@ var SpatialAnalysis = function(magoInstance) {
 	var layerDEM = 'mago3d:dem';
 	var rasterProfileChart = null;
 	var domeIds = [];
+	
+	var minMaxObserver;
+	var minMaxObserverTarget = document.getElementById('analysisRasterHighLowPointsList');
+	var minMaxObserverConfig = { attributes: true};
 
 	//취소 버튼 클릭 시 해당 분석 위치 입력값 초기화.
 	$('#spatialContent .reset').click(function() {
@@ -64,7 +68,7 @@ var SpatialAnalysis = function(magoInstance) {
 		}
 	});
 	
-	// TODO: mago3djs draw interaction 으로 devlope 예정
+	// TODO: mago3djs draw interaction 으로 devlope 예정, CallBackProperty 도입
 	magoManager.on(Mago3D.MagoManager.EVENT_TYPE.MOUSEMOVE, function(result) {
 		var selectedBtn = $('#spatialContent button[class*="draw"].on');
 		var drawType = selectedBtn.data('drawType');
