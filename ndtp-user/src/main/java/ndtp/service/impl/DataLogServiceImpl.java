@@ -7,11 +7,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ndtp.domain.ApprovalStatus;
+import ndtp.domain.ApprovalType;
 import ndtp.domain.DataInfo;
 import ndtp.domain.DataInfoLog;
+import ndtp.domain.GeoPolicy;
 import ndtp.persistence.DataLogMapper;
 import ndtp.service.DataLogService;
 import ndtp.service.DataService;
+import ndtp.service.GeoPolicyService;
 
 /**
  * Data Change Request Log
@@ -26,6 +29,8 @@ public class DataLogServiceImpl implements DataLogService {
 	
 	@Autowired
 	private DataLogMapper dataLogMapper;
+	@Autowired
+	private GeoPolicyService geoPolicyService;
 	
 	/**
 	 * Data 변경 요청 수
@@ -58,58 +63,48 @@ public class DataLogServiceImpl implements DataLogService {
 	}
 	
 	/**
-	 * 데이터 로그 상태 변경
+	 * 데이터 위치 변경 요청 이력 등록
 	 * @param dataInfoLog
 	 * @return
 	 */
 	@Transactional
-	public int updateDataInfoLogStatus(DataInfoLog dataInfoLog) {
-		DataInfoLog dbDataInfoLog = dataLogMapper.getDataInfoLog(dataInfoLog.getDataInfoLogId());
+	public int insertDataInfoLog(DataInfoLog dataInfoLog) {
 		
-		DataInfo dataInfo = new DataInfo();
-		if(ApprovalStatus.APPROVAL == ApprovalStatus.valueOf(dataInfoLog.getStatus())) {
-			// 화면에서 승인으로 상태 변경을 요청한 경우. 대기 상태여야 함
-			if(ApprovalStatus.REQUEST != ApprovalStatus.valueOf(dbDataInfoLog.getStatus())) {
-				throw new IllegalArgumentException("DataInfoLog Status Exception");
-			}
+		GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
+		String dataChangeRequestDecision = geoPolicy.getDataChangeRequestDecision();
+		
+		DataInfo dataInfo = dataService.getData(DataInfo.builder().dataId(dataInfoLog.getDataId()).build());
+		String location = "POINT(" + dataInfo.getLongitude() + " " + dataInfo.getLatitude() + ")";
+		
+		dataInfoLog.setDataGroupId(dataInfo.getDataGroupId());
+		dataInfoLog.setUserId(dataInfo.getUserId());
+		dataInfoLog.setBeforeLocation(location);
+		dataInfoLog.setBeforeAltitude(dataInfo.getAltitude());
+		dataInfoLog.setBeforeHeading(dataInfo.getHeading());
+		dataInfoLog.setBeforePitch(dataInfo.getPitch());
+		dataInfoLog.setBeforeRoll(dataInfo.getRoll());
+		dataInfoLog.setLocation("POINT(" + dataInfoLog.getLongitude() + " " + dataInfoLog.getLatitude() + ")");
+		
+		if(ApprovalType.AUTO == ApprovalType.valueOf(dataChangeRequestDecision.toUpperCase())) {
+			// 자동 승인의 경우
+			dataInfoLog.setStatus(ApprovalStatus.APPROVAL.name().toLowerCase());
 			
+			// TODO 데이터 그룹의 init 이 데이터로 되어 있을 경우 이 값도 update 해 줘야 함
 			// data_info 를 update
-			dataInfo.setDataId(dbDataInfoLog.getDataId());
-			if(dbDataInfoLog.getLatitude() != null && dbDataInfoLog.getLatitude().floatValue() != 0f &&
-					dbDataInfoLog.getLongitude() != null && dbDataInfoLog.getLongitude().floatValue() != 0f) {
-				dataInfo.setLocation("POINT(" + dbDataInfoLog.getLongitude() + " " + dbDataInfoLog.getLatitude() + ")");
-			}
-			dataInfo.setAltitude(dbDataInfoLog.getAltitude());
-			dataInfo.setHeading(dbDataInfoLog.getHeading());
-			dataInfo.setPitch(dbDataInfoLog.getPitch());
-			dataInfo.setRoll(dbDataInfoLog.getRoll());
+			dataInfo.setLocation("POINT(" + dataInfoLog.getLongitude() + " " + dataInfoLog.getLatitude() + ")");
+			dataInfo.setAltitude(dataInfoLog.getAltitude());
+			dataInfo.setHeading(dataInfoLog.getHeading());
+			dataInfo.setPitch(dataInfoLog.getPitch());
+			dataInfo.setRoll(dataInfoLog.getRoll());
 			dataService.updateData(dataInfo);
-		} else if(ApprovalStatus.REJECT == ApprovalStatus.valueOf(dataInfoLog.getStatus())) {
-			// 화면에서 기각으로 상태 변경을 요청한 경우. 대기 상태여야 함
-			if(ApprovalStatus.REQUEST != ApprovalStatus.valueOf(dbDataInfoLog.getStatus())) {
-				throw new IllegalArgumentException("DataInfoLog Status Exception");
-			}
-			// 아무 처리도 하지 않음
-		} else if(ApprovalStatus.ROLLBACK == ApprovalStatus.valueOf(dataInfoLog.getStatus())) {
-			// 화면에서 원복으로 상태 변경을 요청한 경우. 승인 또는 기각 상태여야 함
+		} else if(ApprovalType.APPROVAL == ApprovalType.valueOf(dataChangeRequestDecision.toUpperCase())) {
+			// 승인이 필요한 경우
+			dataInfoLog.setStatus(ApprovalStatus.REQUEST.name().toLowerCase());
+		} else {
+			// 기타
 			
-			if(ApprovalStatus.APPROVAL != ApprovalStatus.valueOf(dbDataInfoLog.getStatus())
-					&& ApprovalStatus.REJECT != ApprovalStatus.valueOf(dbDataInfoLog.getStatus())) {
-				throw new IllegalArgumentException("DataInfoLog Status Exception");
-			}
-			// data_info 의 상태를 원래대로 되돌림. 를 update
-			dataInfo.setDataId(dbDataInfoLog.getDataId());
-			if(dbDataInfoLog.getLatitude() != null && dbDataInfoLog.getLatitude().floatValue() != 0f &&
-					dbDataInfoLog.getLongitude() != null && dbDataInfoLog.getLongitude().floatValue() != 0f) {
-				dataInfo.setLocation("POINT(" + dbDataInfoLog.getLongitude() + " " + dbDataInfoLog.getLatitude() + ")");
-			}
-			dataInfo.setAltitude(dbDataInfoLog.getBeforeAltitude());
-			dataInfo.setHeading(dbDataInfoLog.getBeforeHeading());
-			dataInfo.setPitch(dbDataInfoLog.getBeforePitch());
-			dataInfo.setRoll(dbDataInfoLog.getBeforeRoll());
-			dataService.updateData(dataInfo);
 		}
-		
-		return dataLogMapper.updateDataInfoLogStatus(dataInfoLog);
+				
+		return dataLogMapper.insertDataInfoLog(dataInfoLog);
 	}
 }

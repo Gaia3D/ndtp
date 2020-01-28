@@ -41,8 +41,8 @@ public class DataLogRestController {
 	 * @param dataInfo
 	 * @return
 	 */
-	@PostMapping(value = "update-data-log-status")
-	public Map<String, Object> updateDataInfoLogStatus(HttpServletRequest request, @Valid DataInfoLog dataInfoLog, Errors errors) {
+	@PostMapping
+	public Map<String, Object> insert(HttpServletRequest request, @Valid DataInfoLog dataInfoLog, Errors errors) {
 		log.info("@@ dataInfoLog = {}", dataInfoLog);
 		
 		Map<String, Object> result = new HashMap<>();
@@ -50,7 +50,6 @@ public class DataLogRestController {
 		String errorCode = null;
 		String message = null;
 		try {
-			dataInfoLog.setMethodMode("update");
 			if(errors.hasErrors()) {
 				message = errors.getAllErrors().get(0).getDefaultMessage();
 				statusCode = HttpStatus.BAD_REQUEST.value();
@@ -62,15 +61,7 @@ public class DataLogRestController {
 				return result;
             }
 			
-			if(ApprovalStatus.APPROVAL == ApprovalStatus.valueOf(dataInfoLog.getStatusLevel().toUpperCase())) {
-				dataInfoLog.setStatus(ApprovalStatus.APPROVAL.name().toLowerCase());
-			} else if(ApprovalStatus.REJECT == ApprovalStatus.valueOf(dataInfoLog.getStatusLevel().toUpperCase())) {
-				dataInfoLog.setStatus(ApprovalStatus.REJECT.name().toLowerCase());
-			} else if(ApprovalStatus.ROLLBACK == ApprovalStatus.valueOf(dataInfoLog.getStatusLevel().toUpperCase())) {
-				dataInfoLog.setStatus(ApprovalStatus.ROLLBACK.name().toLowerCase());
-			}
-			
-			dataLogService.updateDataInfoLogStatus(dataInfoLog);
+			dataLogService.insertDataInfoLog(dataInfoLog);
 			
 			// TODO cache 갱신 되어야 함
 		} catch(Exception e) {
