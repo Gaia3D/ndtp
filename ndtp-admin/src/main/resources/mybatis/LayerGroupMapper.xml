@@ -130,7 +130,9 @@
 			<if test="description != null and description != ''">
 			description = #{description},
 			</if>
+			<if test="available != null">
             available = #{available},
+            </if>
 			update_date = NOW()
 		WHERE layer_group_id = #{layerGroupId}
 		<if test="userId != null and userId != ''">
