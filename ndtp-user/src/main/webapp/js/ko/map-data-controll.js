@@ -120,8 +120,7 @@ var MapDataControll = function(magoInstance) {
 			$('#dcAltitude').val(alt + offset);
 			
 			changeF4d();
-		});
-		
+		},50);
 	});
 	$('#dcAltUp,#dcAltDown').on('mouseup mouseleave',function() {
 		clearInterval(locAltholdInterval);

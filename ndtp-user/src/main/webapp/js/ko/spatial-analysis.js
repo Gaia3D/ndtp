@@ -1,7 +1,7 @@
 var SpatialAnalysis = function(magoInstance) {
 	
 	//본인 환경에 맞게 일단은 수정바람...
-	var WPS_URL = 'http://localhost:8082/geoserver/wps';
+	var WPS_URL = NDTP.policy.geoserverDataUrl + '/wps';
 	var magoManager = magoInstance.getMagoManager();
 	var viewer = magoInstance.getViewer();
 	var entities = viewer.entities;
