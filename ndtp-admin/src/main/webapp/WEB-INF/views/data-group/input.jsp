@@ -186,7 +186,12 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 	});
-	
+
+	// 입력값이 변경되면 중복체크 필요
+	$("#dataGroupKey").on("keyup", function() {
+		$("#duplication").val(null);
+	});
+
 	// 그룹Key 중복 확인
  	$( "#duplicationButtion" ).on( "click", function() {
 		var dataGroupKey = $("#dataGroupKey").val();

@@ -198,6 +198,11 @@
 		userDialog.dialog("close");
 	}
 
+	// 입력값이 변경되면 중복체크 필요
+	$("#userId").on("keyup", function() {
+		$("#duplicationValue").val(null);
+	});
+
 	// 아이디 중복 확인
  	$("#userDuplicationButton").on("click", function() {
 		var userId = $("#userId").val();

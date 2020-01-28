@@ -136,7 +136,7 @@
 			return false;
 		}
 		if($("#duplicationValue").val() == null || $("#duplicationValue").val() == "") {
-			alert(JS_MESSAGE["check.group.key.duplication"]);
+			alert(JS_MESSAGE["group.key.duplication.check"]);
 			return false;
 		} else if($("#duplicationValue").val() == "1") {
 			alert(JS_MESSAGE["group.key.duplication"]);
@@ -148,6 +148,11 @@
 			return false;
 		}
 	}
+
+	// 입력값이 변경되면 중복체크 필요
+	$("#userGroupKey").on("keyup", function() {
+		$("#duplicationValue").val(null);
+	});
 
 	// 그룹Key 중복 확인
  	$("#userGroupDuplicationButton").on("click", function() {
