@@ -13,7 +13,7 @@
 				</td>
 				<td style="padding: 7px 7px 3px 7px;">
 					<input type="text" id="searchDataName" name="searchDataName" placeholder=" 데이터명을 입력하여 주십시오. " style="height: 26px;" size="30" />
-				</td>	
+				</td>
 			</tr>
 			<tr style="height: 30px;">
 				<td style="text-align: left; padding: 4px 7px 3px 7px;">
@@ -49,10 +49,10 @@
 		</table>
 		</form:form>
 	</div>
-	
+
 	<div id="dataInfoListArea">
 		<h3 style="margin-top: 30px; margin-bottom: 10px;">
-			<spring:message code='all.d'/> <fmt:formatNumber value="${pagination.totalCount}" type="number"/> <spring:message code='search.what.count'/>, 
+			<spring:message code='all.d'/> <fmt:formatNumber value="${pagination.totalCount}" type="number"/> <spring:message code='search.what.count'/>,
 			<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/>
 		</h3>
 		<div class="dataBtns"></div>
@@ -74,9 +74,9 @@
 					<tr>
 						<td colspan="4" class="col-none">데이터가 존재하지 않습니다.</td>
 					</tr>
-		</c:if>								
+		</c:if>
 		<c:if test="${!empty dataList }">
-			<c:forEach var="dataInfo" items="${dataList}" varStatus="status">		
+			<c:forEach var="dataInfo" items="${dataList}" varStatus="status">
 					<tr style="height: 35px;">
 						<td rowspan="2" style="vertical-align: middle; text-align: center; padding: 0px;">${pagination.rowNumber - status.index }</td>
 						<td colspan="3" style="vertical-align: middle; text-align: left; padding: 0px 0px 0px 5px;">
@@ -84,7 +84,7 @@
 						</td>
 					</tr>
 					<tr style="height: 35px;">
-						<td style="padding: 0px; vertical-align: middle; text-align: left; padding: 0px 0px 0px 5px;">${dataInfo.dataGroupName }</td>
+						<td class="ellipsis" style="max-width:100px; padding: 0px; vertical-align: middle; text-align: left; padding: 0px 0px 0px 5px;">${dataInfo.dataGroupName }</td>
 						<td style="padding: 0px; vertical-align: middle; ">
 				<c:if test="${dataInfo.status eq 'processing' }">
 							변환중
@@ -97,10 +97,10 @@
 				</c:if>
 				<c:if test="${dataInfo.status eq 'delete' }">
 							삭제
-				</c:if>		
+				</c:if>
 						</td>
 						<td style="padding: 0px; vertical-align: middle; ">
-							<button type="button" title="바로가기" class="goto" style="margin: 0px; padding: 0px;" 
+							<button type="button" title="바로가기" class="goto" style="margin: 0px; padding: 0px;"
 								onclick="flyTo('${dataInfo.longitude}', '${dataInfo.latitude}', '${dataInfo.altitude}', '2');">바로가기</button></td>
 					</tr>
 			</c:forEach>
@@ -108,7 +108,7 @@
 				</tbody>
 			</table>
 		</div>
-		
+
 		<%@ include file="/WEB-INF/views/data/data-pagination.jsp" %>
 	</div>
 </div>
