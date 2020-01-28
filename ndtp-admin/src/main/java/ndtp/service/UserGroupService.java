@@ -55,12 +55,12 @@ public interface UserGroupService {
      */
     int insertUserGroup(UserGroup userGroup);
 
-	/**
-	 * 그룹Key 중복 체크
-	 * @param userGroupKey
-	 * @return
-	 */
-	int getDuplicationKeyCount(String userGroupKey);
+    /**
+     * 사용자 그룹 Key 중복 확인
+     * @param userGroup
+     * @return
+     */
+    Boolean isUserGroupKeyDuplication(UserGroup userGroup);
 
 	/**
 	 * 사용자 그룹 수정

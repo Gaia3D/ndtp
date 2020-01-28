@@ -111,14 +111,14 @@ public class UserGroupServiceImpl implements UserGroupService {
     	return result;
     }
 
-	/**
-	 * 그룹Key 중복 체크
-	 * @param userGroupKey
-	 * @return
-	 */
-	@Transactional(readOnly=true)
-	public int getDuplicationKeyCount(String userGroupKey) {
-		return userGroupMapper.getDuplicationKeyCount(userGroupKey);
+    /**
+     * 사용자 그룹 Key 중복 확인
+     * @param userGroup
+     * @return
+     */
+	@Transactional(readOnly = true)
+	public Boolean isUserGroupKeyDuplication(UserGroup userGroup) {
+		return userGroupMapper.isUserGroupKeyDuplication(userGroup);
 	}
 
 	/**

@@ -176,10 +176,16 @@
 		ORDER BY A.insert_date DESC
 	</select>
 
-	<!-- 그룹Key 중복 체크 -->
-	<select id="getDuplicationKeyCount" parameterType="string" resultType="int">
-		/* getDuplicationKeyCount */
-		SELECT COUNT(user_group_key) AS count FROM user_group WHERE user_group_key = #{userGroupKey}
+	<!-- 사용자 그룹 Key 중복 확인 -->
+	<select id="isUserGroupKeyDuplication" parameterType="userGroup" resultType="boolean">
+		/* isUserGroupKeyDuplication */
+		SELECT
+			CASE
+				WHEN COUNT(*) > 0 THEN true
+				ELSE false
+			END AS duplication
+		FROM user_group
+		WHERE user_group_key = #{userGroupKey}
 	</select>
 
     <!-- 사용자 그룹 등록 -->

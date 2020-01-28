@@ -105,7 +105,7 @@
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
-	<%@ include file="/WEB-INF/views/user/group-dialog.jsp" %>
+	<%@ include file="/WEB-INF/views/user-group/dialog.jsp" %>
 
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
@@ -158,23 +158,24 @@
 			return false;
 		}
 		$.ajax({
-			url: "/user-group/duplication-check",
-			type: "POST",
+			url: "/user-groups/duplication",
+			type: "GET",
 			data: {"userGroupKey": userGroupKey},
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 			dataType: "json",
 			success: function(msg){
-				if(msg.result == "success") {
-					if(msg.duplicationValue != "0") {
+				if(msg.statusCode <= 200) {
+					if(msg.duplication == true) {
 						alert(JS_MESSAGE["group.key.duplication"]);
 						$("#userGroupKey").focus();
 						return false;
 					} else {
 						alert(JS_MESSAGE["group.key.enable"]);
-						$("#duplicationValue").val(msg.duplicationValue);
+						$("#duplicationValue").val(msg.duplication);
 					}
 				} else {
-					alert(JS_MESSAGE[msg.result]);
+					alert(JS_MESSAGE[msg.errorCode]);
+					console.log("---- " + msg.message);
 				}
 			},
 			error:function(request, status, error) {
@@ -194,7 +195,7 @@
 			insertUserGroupFlag = false;
 			var formData = $("#userGroup").serialize();
 			$.ajax({
-				url: "/user-group/insert",
+				url: "/user-groups/insert",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 		        data: formData,

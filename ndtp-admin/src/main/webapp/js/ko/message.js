@@ -167,3 +167,7 @@ JS_MESSAGE["converter.usf.empty"] = "Unit Scale Factor 를 입력하여 주십�
 JS_MESSAGE["search.option.warning"] = "포함 옵션을 사용하실 경우 1분 이상이 소요될 수 있습니다. 계속 진행 하시겠습니까?";
 JS_MESSAGE["search.date.warning"] = "시작일이 종료일보다 클수 없습니다.";
 
+JS_MESSAGE["group.key.empty"] = "그룹 Key 를 입력하여 주십시오.";
+JS_MESSAGE["group.key.duplication"] = "사용중인 그룹 Key 입니다. 다른 이름을 사용해 주십시오.";
+JS_MESSAGE["group.key.enable"] = "사용 가능한 그룹 Key 입니다.";
+JS_MESSAGE["group.key.duplication.check"] = "그룹 Key 중복 확인이 필요 합니다.";
