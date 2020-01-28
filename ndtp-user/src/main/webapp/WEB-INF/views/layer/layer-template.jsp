@@ -2,17 +2,17 @@
 <script id="templateLayerList" type="text/x-handlebars-template">
 	{{#ifMatch depth 1}}
 		<li class="mapLayer on" data-depth="{{layerGroupId}}">
-		<p class="depthOne"><span class="folder"></span>{{layerGroupName}}</p>
-		<ul>		
+		<p class="depthOne ellipsis"><span class="folder"></span>{{layerGroupName}}</p>
+		<ul>
 	{{/ifMatch}}
 	{{#ifMatch depth 2}}
 		<li class="mapLayer" data-depth="{{layerGroupId}}">
-		<p><span class="folder"></span>{{layerGroupName}}</p>
+		<p class="ellipsis"><span class="folder"></span>{{layerGroupName}}</p>
 		<ul>
 	{{/ifMatch}}
 	{{#ifMatch depth 3}}
 		<li class="mapLayer" data-depth="{{layerGroupId}}">
-		<p><span class="depthThree"></span>{{layerGroupName}}</p>
+		<p class="ellipsis"><span class="depthThree"></span>{{layerGroupName}}</p>
 		<ul>
 	{{/ifMatch}}
 		{{#if layerList}}
@@ -27,7 +27,7 @@
 						data-layer-name="{{layerKey}}">
         				<p><span></span>{{layerName}}</p>
     				</li>
-				{{/each}}				
+				{{/each}}
 		{{/if}}
 		</ul>
     	</li>
