@@ -11,7 +11,7 @@
 					</th>
 					<td class="col-input radio-set">
 						<form:radiobutton label="${use }" path="securitySessionTimeoutYn" value="Y" />
-						<form:radiobutton label="${notuse }" path="securitySessionTimeoutYn" value="N" />
+						<form:radiobutton label="${notuse }(기본값)" path="securitySessionTimeoutYn" value="N" />
 						<form:errors path="securitySessionTimeoutYn" cssClass="error" />
 					</td>
 				</tr>
@@ -33,7 +33,7 @@
 					</th>
 					<td class="col-input radio-set">
 						<form:radiobutton label="${use }" path="securityUserIpCheckYn" value="Y" />
-						<form:radiobutton label="${notuse }" path="securityUserIpCheckYn" value="N" />
+						<form:radiobutton label="${notuse }(기본값)" path="securityUserIpCheckYn" value="N" />
 						<form:errors path="securityUserIpCheckYn" cssClass="error" />
 					</td>
 				</tr>
@@ -42,8 +42,10 @@
 						<form:label path="securitySessionHijacking">보안 세션 하이재킹 처리</form:label>
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
-					<td class="col-input">
-						<form:input path="securitySessionHijacking" maxlength="2" cssClass="s" />
+					<td class="col-input radio-set">
+						<form:radiobutton label="${use }(기본값)" path="securitySessionHijacking" value="1" />
+						<form:radiobutton label="${notuse }" path="securitySessionHijacking" value="0" />
+						<form:radiobutton label="OTP 추가 인증" path="securitySessionHijacking" value="2" />
 						<form:errors path="securitySessionHijacking" cssClass="error" />
 					</td>
 				</tr>
@@ -52,8 +54,9 @@
 						<form:label path="securityLogSaveType">보안 로그 저장 방법</form:label>
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
-					<td class="col-input">
-						<form:input path="securityLogSaveType" maxlength="2" cssClass="s" />
+					<td class="col-input radio-set">
+						<form:radiobutton label="DB(기본값)" path="securityLogSaveType" value="0" />
+						<form:radiobutton label="파일" path="securityLogSaveType" value="1" />
 						<form:errors path="securityLogSaveType" cssClass="error" />
 					</td>
 				</tr>
@@ -64,6 +67,7 @@
 					</th>
 					<td class="col-input">
 						<form:input path="securityLogSaveTerm" maxlength="2" cssClass="s" />
+						<span class="table-desc">년</span>
 						<form:errors path="securityLogSaveTerm" cssClass="error" />
 					</td>
 				</tr>
@@ -74,7 +78,7 @@
 					</th>
 					<td class="col-input radio-set">
 						<form:radiobutton label="${use }" path="securityDynamicBlockYn" value="Y" />
-						<form:radiobutton label="${notuse }" path="securityDynamicBlockYn" value="N" />
+						<form:radiobutton label="${notuse }(기본값)" path="securityDynamicBlockYn" value="N" />
 						<form:errors path="securityDynamicBlockYn" cssClass="error" />
 					</td>
 				</tr>
@@ -85,7 +89,7 @@
 					</th>
 					<td class="col-input radio-set">
 						<form:radiobutton label="${use }" path="securityApiResultSecureYn" value="Y" />
-						<form:radiobutton label="${notuse }" path="securityApiResultSecureYn" value="N" />
+						<form:radiobutton label="${notuse }(기본값)" path="securityApiResultSecureYn" value="N" />
 						<form:errors path="securityApiResultSecureYn" cssClass="error" />
 					</td>
 				</tr>
@@ -95,7 +99,7 @@
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
 					<td class="col-input radio-set">
-						<form:radiobutton label="${use }" path="securityMaskingYn" value="Y" />
+						<form:radiobutton label="${use }(기본값)" path="securityMaskingYn" value="Y" />
 						<form:radiobutton label="${notuse }" path="securityMaskingYn" value="N" />
 						<form:errors path="securityMaskingYn" cssClass="error" />
 					</td>

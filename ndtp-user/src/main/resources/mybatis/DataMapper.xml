@@ -74,7 +74,7 @@
 	<!-- Data 목록 -->
 	<select id="getListData" parameterType="dataInfo" resultType="dataInfo">
 		/* getListData */
-		SELECT *, ST_X(B.location) AS longitude, ST_Y(B.location) AS latitude, B.data_group_name
+		SELECT *, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude, B.data_group_name
 		FROM data_info A, data_group B
 		WHERE A.data_group_Id = B.data_group_id
 			<if test="dataGroupId != null and dataGroupId > 0">

@@ -11,7 +11,7 @@
 					</th>
 					<td class="col-input">
 						<form:input path="userIdMinLength" maxlength="2" cssClass="s" />
-						<span class="table-desc">5이상</span>
+						<span class="table-desc">이상</span>
 						<form:errors path="userIdMinLength" cssClass="error" />
 					</td>
 				</tr>
@@ -55,7 +55,7 @@
 					</th>
 					<td class="col-input radio-set">
 						<form:radiobutton label="${use }" path="userDuplicationSigninYn" value="Y" />
-						<form:radiobutton label="${notuse }" path="userDuplicationSigninYn" value="N" />
+						<form:radiobutton label="${notuse }(기본값)" path="userDuplicationSigninYn" value="N" />
 						<form:errors path="userDuplicationSigninYn" cssClass="error" />
 					</td>
 				</tr>
@@ -64,8 +64,13 @@
 						<form:label path="userSigninType">사용자 로그인 인증 방법</form:label>
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
-					<td class="col-input">
-						<form:input path="userSigninType" maxlength="2" cssClass="s" />
+					<td class="col-input radio-set">
+						<form:radiobutton label="일반(아이디/비밀번호)(기본값)" path="userSigninType" value="0" />
+						<form:radiobutton label="기업용(사번추가)" path="userSigninType" value="1" />
+						<form:radiobutton label="일반 + OTP" path="userSigninType" value="2" />
+						<form:radiobutton label="일반 + 인증서" path="userSigninType" value="3" />
+						<form:radiobutton label="OTP + 인증서" path="userSigninType" value="4" />
+						<form:radiobutton label="일반 + OTP + 인증서" path="userSigninType" value="5" />
 						<form:errors path="userSigninType" cssClass="error" />
 					</td>
 				</tr>
@@ -74,8 +79,9 @@
 						<form:label path="userDeleteType">사용자 정보 삭제 방법</form:label>
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
-					<td class="col-input">
-						<form:input path="userDeleteType" maxlength="2" cssClass="s" />
+					<td class="col-input radio-set">
+						<form:radiobutton label="논리적(기본값)" path="userDeleteType" value="0" />
+						<form:radiobutton label="물리적(DB 삭제)" path="userDeleteType" value="1" />
 						<form:errors path="userDeleteType" cssClass="error" />
 					</td>
 				</tr>

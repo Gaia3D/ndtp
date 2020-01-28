@@ -37,7 +37,7 @@
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input">
-										<form:input path="layerGroupName" cssClass="l" />
+										<form:input path="layerGroupName" cssClass="l" maxlength="256" />
 										<form:errors path="layerGroupName" cssClass="error" />
 									</td>
 								</tr>
@@ -49,7 +49,7 @@
 									<td class="col-input">
 										<form:hidden path="parent" />
 			 							<form:input path="parentName" cssClass="l" readonly="true" />
-										<input type="button" id="layerGroupButtion" value="상위 그룹 선택" />
+										<input type="button" id="layerGroupButtion" value="상위 레이어 그룹 선택" />
 									</td>
 								</tr>
 								<tr>
@@ -89,7 +89,6 @@
 	<!-- Dialog -->
 	<div id="layerGroupDialog" class="dialog">
 		<table class="list-table scope-col">
-			<col class="col-number" />
 			<col class="col-name" />
 			<col class="col-toggle" />
 			<col class="col-id" />
@@ -98,10 +97,9 @@
 			<col class="col-toggle" />
 			<thead>
 				<tr>
-					<th scope="col" class="col-number">Depth</th>
 					<th scope="col" class="col-name">Layer 그룹명</th>
 					<th scope="col" class="col-toggle">사용 여부</th>
-					<th scope="col" class="col-toggle">사용자 아이디</th>
+					<th scope="col" class="col-toggle">등록자</th>
 					<th scope="col" class="col-toggle">설명</th>
 					<th scope="col" class="col-date">등록일</th>
 					<th scope="col" class="col-date">선택</th>
@@ -110,7 +108,7 @@
 			<tbody>
 <c:if test="${empty layerGroupList }">
 			<tr>
-				<td colspan="7" class="col-none">Layer 그룹이 존재하지 않습니다.</td>
+				<td colspan="6" class="col-none">Layer 그룹이 존재하지 않습니다.</td>
 			</tr>
 </c:if>
 <c:if test="${!empty layerGroupList }">
@@ -130,11 +128,8 @@
         </c:if>
 
 			<tr class="${depthClass } ${depthParentClass} ${ancestorClass }" style="${depthStyleDisplay}">
-				<td class="col-key" style="text-align: left;" nowrap="nowrap">
+				<td class="col-name nowrap" style="max-width:200px; text-align: left;" nowrap="nowrap">
 					<span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"></span>
-					${layerGroup.depth }
-				</td>
-				<td class="col-name">
 					${layerGroup.layerGroupName }
 				</td>
 				<td class="col-type">
@@ -145,7 +140,7 @@
         			미사용
         </c:if>
 			    </td>
-			    <td class="col-key">${layerGroup.userId }</td>
+			    <td class="col-type">${layerGroup.userId }</td>
 			    <td class="col-key">${layerGroup.description }</td>
 			    <td class="col-date">
 			    	<fmt:parseDate value="${layerGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
@@ -233,7 +228,7 @@
 	// 상위 Layer Group 찾기
 	$( "#layerGroupButtion" ).on( "click", function() {
 		layerGroupDialog.dialog( "open" );
-		layerGroupDialog.dialog( "option", "title", "Layer 그룹 선택");
+		layerGroupDialog.dialog( "option", "title", "레이어 그룹 선택");
 	});
 
 	// 상위 Node

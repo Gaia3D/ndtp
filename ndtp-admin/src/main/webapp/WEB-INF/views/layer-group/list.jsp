@@ -101,7 +101,7 @@
             <c:set var="ancestorClass" value="ancestor-${layerGroup.ancestor }" />
         </c:if>
 									<tr class="${depthClass } ${depthParentClass} ${ancestorClass }" style="${depthStyleDisplay}">
-										<td class="col-key" style="text-align: left;" nowrap="nowrap">
+										<td class="col-key nowrap" style="text-align: left;" nowrap="nowrap">
         <c:if test="${layerGroup.depth eq '1' }">
 					                        <span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"
 					                        	onclick="childrenDisplayToggle('${layerGroup.depth}', '${layerGroup.layerGroupId}', '${layerGroup.ancestor}');">

@@ -61,7 +61,7 @@
 									<td class="col-input">
 										<form:hidden path="parent" />
 			 							<form:input path="parentName" cssClass="l" readonly="true" />
-										<input type="button" id="userGroupButtion" value="상위 그룹 선택" />
+										<input type="button" id="userGroupButtion" value="상위 사용자 그룹 선택" />
 									</td>
 								</tr>
 				                <tr>
@@ -143,7 +143,7 @@
 			return false;
 		}
 		if($("#parent").val() === null || $("#parent").val() === "" || !number.test($("#parent").val())) {
-			alert("상위 데이터 그룹을 선택해 주세요.");
+			alert("상위 사용자 그룹을 선택해 주세요.");
 			$("#parent").focus();
 			return false;
 		}
@@ -183,7 +183,7 @@
 						$("#duplicationValue").val(msg.duplication);
 					}
 				} else {
-					alert(JS_MESSAGE[msg.message]);
+					alert(JS_MESSAGE[msg.errorCode]);
 					console.log("---- " + msg.message);
 				}
 			},
@@ -241,7 +241,7 @@
 	// 상위 Layer Group 찾기
 	$( "#userGroupButtion" ).on( "click", function() {
 		userGroupDialog.dialog( "open" );
-		userGroupDialog.dialog( "option", "title", "데이터 그룹 선택");
+		userGroupDialog.dialog( "option", "title", "사용자 그룹 선택");
 	});
 
 	// 상위 Node

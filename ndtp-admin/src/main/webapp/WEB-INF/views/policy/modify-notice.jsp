@@ -11,7 +11,7 @@
 					</th>
 					<td class="col-input radio-set">
 						<form:radiobutton label="${use }" path="noticeServiceYn" value="Y" />
-						<form:radiobutton label="${notuse }" path="noticeServiceYn" value="N" />
+						<form:radiobutton label="${notuse }(기본값)" path="noticeServiceYn" value="N" />
 						<form:errors path="noticeServiceYn" cssClass="error" />
 					</td>
 				</tr>
@@ -20,8 +20,10 @@
 						<form:label path="noticeServiceSendType">알림 발송 매체</form:label>
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
-					<td class="col-input">
-						<form:input path="noticeServiceSendType" maxlength="2" cssClass="s" />
+					<td class="col-input radio-set">
+						<form:radiobutton label="SMS(기본값)" path="noticeServiceSendType" value="0" />
+						<form:radiobutton label="이메일" path="noticeServiceSendType" value="1" />
+						<form:radiobutton label="메신저" path="noticeServiceSendType" value="2" />
 						<form:errors path="noticeServiceSendType" cssClass="error" />
 					</td>
 				</tr>
@@ -32,7 +34,7 @@
 					</th>
 					<td class="col-input radio-set">
 						<form:radiobutton label="${use }" path="noticeRiskYn" value="Y" />
-						<form:radiobutton label="${notuse }" path="noticeRiskYn" value="N" />
+						<form:radiobutton label="${notuse }(기본값)" path="noticeRiskYn" value="N" />
 						<form:errors path="noticeRiskYn" cssClass="error" />
 					</td>
 				</tr>
@@ -41,8 +43,10 @@
 						<form:label path="noticeRiskSendType">알림 장애 발송 매체</form:label>
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
-					<td class="col-input">
-						<form:input path="noticeRiskSendType" maxlength="2" cssClass="s" />
+					<td class="col-input radio-set">
+						<form:radiobutton label="SMS(기본값)" path="noticeRiskSendType" value="0" />
+						<form:radiobutton label="이메일" path="noticeRiskSendType" value="1" />
+						<form:radiobutton label="메신저" path="noticeRiskSendType" value="2" />
 						<form:errors path="noticeRiskSendType" cssClass="error" />
 					</td>
 				</tr>
@@ -51,8 +55,10 @@
 						<form:label path="noticeRiskGrade">알림 발송 장애 등급</form:label>
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
-					<td class="col-input">
-						<form:input path="noticeRiskGrade" maxlength="2" cssClass="s" />
+					<td class="col-input radio-set">
+						<form:radiobutton label="1등급(기본값)" path="noticeRiskGrade" value="1" />
+						<form:radiobutton label="2등급" path="noticeRiskGrade" value="2" />
+						<form:radiobutton label="3등급" path="noticeRiskGrade" value="3" />
 						<form:errors path="noticeRiskGrade" cssClass="error" />
 					</td>
 				</tr>

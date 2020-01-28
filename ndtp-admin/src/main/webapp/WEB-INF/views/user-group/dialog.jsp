@@ -7,7 +7,7 @@
 			<col class="col-data" />
 			<tr>
 				<th class="col-label" scope="row">사용자 그룹명</th>
-				<td id="userGroupNameInfo" class="col-data"></td>
+				<td id="userGroupNameInfo" class="col-data nowrap"></td>
 			</tr>
 			<tr>
 				<th class="col-label" scope="row">그룹Key</th>
@@ -68,7 +68,7 @@
 				            <c:set var="paddingLeftValue" value="80px" />
 				        </c:if>
 						<tr class="${depthClass} ${depthParentClass} ${ancestorClass}" style="${depthStyleDisplay}">
-							<td class="col-name" style="text-align: left;" nowrap="nowrap">
+							<td class="col-name nowrap" style="max-width:200px; text-align: left;" nowrap="nowrap">
 								<span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"></span>
 								${userGroup.userGroupName }
 							</td>

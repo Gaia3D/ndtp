@@ -1509,3 +1509,8 @@ background-position: -212px -243px;
 button.rangeNext:hover {
 background-position: -262px -243px;
 }
+.ellipsis {
+overflow:hidden;
+white-space: nowrap;
+text-overflow: ellipsis; 
+}

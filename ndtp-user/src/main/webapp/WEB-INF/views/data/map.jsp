@@ -249,10 +249,8 @@
 	function dataList(dataGroupArray) {
 		var dataArray = new Array();
 		var dataGroupArrayLength = dataGroupArray.length;
-		var cnt = 0;
 		for(var i=0; i<dataGroupArrayLength; i++) {
 			var dataGroup = dataGroupArray[i];
-			if(dataGroup.dataCount === 0) delete dataGroupArray[i];
 			var f4dController = MAGO3D_INSTANCE.getF4dController();
 			$.ajax({
 				url: "/datas/" + dataGroup.dataGroupId + "/list",
@@ -262,8 +260,7 @@
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						var dataInfoList = msg.dataInfoList;
-
-						if(dataInfoList.length > 0) {
+						if(dataInfoList != null && dataInfoList.length > 0) {
 							var dataInfoFirst = dataInfoList[0];
 							var dataInfoGroupId = dataInfoFirst.dataGroupId;
 							var group;
@@ -277,7 +274,6 @@
 							group.datas = dataInfoList;
 							f4dController.addF4dGroup(group);
 						}
-						cnt++;
 					} else {
 						alert(JS_MESSAGE[msg.errorCode]);
 					}

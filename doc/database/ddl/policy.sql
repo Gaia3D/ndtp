@@ -34,8 +34,8 @@ create table policy(
 	notice_approval_delay_yn				char(1)				default 'N',
 	notice_risk_yn							char(1)				default 'N',
 	notice_risk_send_type					char(1)				default '0',
-	notice_risk_grade						char(1)				default '0',
-	
+	notice_risk_grade						char(1)				default '1',
+
 	security_session_timeout_yn				char(1)				default 'N',
 	security_session_timeout				varchar(4)			default '30',
 	security_user_ip_check_yn				char(1)				default 'N',

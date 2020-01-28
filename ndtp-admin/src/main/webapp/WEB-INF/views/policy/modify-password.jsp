@@ -97,8 +97,9 @@
 						<form:label path="passwordCreateType">초기 패스워드 생성 방법</form:label>
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
-					<td class="col-input">
-						<form:input path="passwordCreateType" maxlength="1" cssClass="s" />
+					<td class="col-input radio-set">
+						<form:radiobutton label="사용자ID+초기문자(기본값)" path="passwordCreateType" value="0" />
+						<form:radiobutton label="초기문자" path="passwordCreateType" value="1" />
 						<form:errors path="passwordCreateType" cssClass="error" />
 					</td>
 				</tr>

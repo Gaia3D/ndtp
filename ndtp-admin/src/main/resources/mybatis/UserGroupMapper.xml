@@ -274,8 +274,12 @@
 			<if test="children != null and children != ''">
             children = #{children},
             </if>
+			<if test="basic != null">
             basic = #{basic},
+            </if>
+			<if test="available != null">
             available = #{available},
+            </if>
             user_group_name = #{userGroupName}
         WHERE user_group_id = #{userGroupId}
     </update>

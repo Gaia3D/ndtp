@@ -100,7 +100,7 @@ public class Policy {
  	private String securityUserIpCheckYn;
  	// 보안 세션 하이재킹 처리. 0 : 미사용, 1 : 사용(기본값), 2 : OTP 추가 인증
  	private String securitySessionHijacking;
- 	// 보안 로그 보존 방법. 1 : DB(기본값), 2 : 파일
+ 	// 보안 로그 보존 방법. 0 : DB(기본값), 1 : 파일
  	private String securityLogSaveType;
  	// 보안 로그 보존 기간. 2년 기본값
  	private String securityLogSaveTerm;

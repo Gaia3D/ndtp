@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 
+import javax.validation.constraints.Size;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
@@ -41,8 +43,9 @@ public class LayerGroup implements Serializable {
 	/**
 	 * 레이어 그룹명
 	 */
-	private String layerGroupName; 
-	
+	@Size(max = 256)
+	private String layerGroupName;
+
 	/**
 	 * 사용자 아이디
 	 */
