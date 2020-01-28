@@ -75,13 +75,16 @@ border-radius:10px;
 			<p class="layerDivTit">선택된 데이터 :  <span>test / 오전반1조_행복관_s</span></p>
 			<div class="layerDiv">
 				<h4 class="category">색상 변경</h4>
-				<label for="dcColorPicker">색상</label>
-				<input type="color" id="dcColorPicker">
-				<input type="text" id="dcColorInput" value="#000000" size="6" readonly style="color: rgb(0, 0, 0);">
-				<button type="button" id="dcColorApply" class="btnTextF">적용</button>
-				<button type="button" id="dcColorCancle" class="btnText">되돌리기</button>
+				<ul>
+					<li>
+						<label for="dcColorPicker">색상</label>
+						<input type="color" id="dcColorPicker">
+						<input type="text" id="dcColorInput" value="#000000" size="6" readonly style="color: rgb(0, 0, 0);">
+						<button type="button" id="dcColorApply" class="btnTextF">적용</button>
+						<button type="button" id="dcColorCancle" class="btnText">되돌리기</button>
+					</li>
+				</ul>
 			</div>	
-	
 			<form id="dcRotLocForm">
 				<ul class="layerDiv">
 					<h4 class="category">위치 변경</h4>
