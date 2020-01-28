@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<script id="templateDataList" type="text/x-handlebars-template">	
+<script id="templateDataList" type="text/x-handlebars-template">
 	<h3 style="margin-top: 30px; margin-bottom: 10px;">
-		<spring:message code='all.d'/> {{formatNumber pagination.totalCount}} <spring:message code='search.what.count'/>, 
+		<spring:message code='all.d'/> {{formatNumber pagination.totalCount}} <spring:message code='search.what.count'/>,
 		{{formatNumber pagination.pageNo}} / {{formatNumber pagination.lastPage}} <spring:message code='search.page'/>
 	</h3>
 	<div class="dataBtns"></div>
@@ -21,7 +21,7 @@
 			</thead>
 			<tbody>
 {{#greaterThan dataList.length 0}}
-	{{#each dataList}}		
+	{{#each dataList}}
 				<tr style="height: 35px;">
 					<td rowspan="2" style="vertical-align: middle; text-align: center; padding: 0px;">{{subtract ../pagination.rowNumber @index}}</td>
 					<td colspan="3" style="vertical-align: middle; text-align: left; padding: 0px 0px 0px 5px;">
@@ -29,7 +29,7 @@
 					</td>
 				</tr>
 				<tr style="height: 35px;">
-					<td style="padding: 0px; vertical-align: middle; text-align: left; padding: 0px 0px 0px 5px;">{{dataGroupName}}</td>
+					<td class="ellipsis" style="max-width:100px; padding: 0px; vertical-align: middle; text-align: left; padding: 0px 0px 0px 5px;">{{dataGroupName}}</td>
 					<td style="padding: 0px; vertical-align: middle; ">
 		{{#ifMatch status 'processing'}}
 						변환중
@@ -45,7 +45,7 @@
 		{{/ifMatch}}
 					</td>
 					<td style="padding: 0px; vertical-align: middle; ">
-						<button type="button" title="바로가기" class="goto" style="margin: 0px; padding: 0px;" 	
+						<button type="button" title="바로가기" class="goto" style="margin: 0px; padding: 0px;"
 							onclick="flyTo('{{longitude}}', '{{latitude}}', '{{altitude}}', '2');">바로가기</button></td>
 				</tr>
 	{{/each}}
@@ -53,7 +53,7 @@
 				<tr>
 					<td colspan="4" class="col-none">데이터가 존재하지 않습니다.</td>
 				</tr>
-{{/greaterThan}}		
+{{/greaterThan}}
 			</tbody>
 		</table>
 	</div>
@@ -72,10 +72,10 @@
 			<li onclick="pagingDataInfoList({{this}}, '{{../pagination.searchParameters}}');">{{this}}</li>
 		{{/numberEqual}}
 	{{/forEachStep}}
-	
+
 	{{#if pagination.existNextPage}}
 		<li class="ico back" onclick="pagingDataInfoList({{pagination.nextPageNo}}, '{{pagination.searchParameters}}');">뒤로</li>
-	{{/if}}	
+	{{/if}}
 		<li class="ico end"  onclick="pagingDataInfoList({{pagination.lastPage}}, '{{pagination.searchParameters}}');">마지막</li>
 	</ul>
 {{/greaterThan}}

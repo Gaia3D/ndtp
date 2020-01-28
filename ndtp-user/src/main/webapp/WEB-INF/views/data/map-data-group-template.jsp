@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<script id="templateDataGroupList" type="text/x-handlebars-template">	
+<script id="templateDataGroupList" type="text/x-handlebars-template">
 	<h3 style="margin-top: 30px; margin-bottom: 10px;">
-		<spring:message code='all.d'/> {{formatNumber pagination.totalCount}} <spring:message code='search.what.count'/>, 
+		<spring:message code='all.d'/> {{formatNumber pagination.totalCount}} <spring:message code='search.what.count'/>,
 		{{formatNumber pagination.pageNo}} / {{formatNumber pagination.lastPage}} <spring:message code='search.page'/>
 	</h3>
 	<div class="tableList">
@@ -18,10 +18,10 @@
 			</thead>
 			<tbody>
 {{#greaterThan dataGroupList.length 0}}
-	{{#each dataGroupList}}		
+	{{#each dataGroupList}}
 				<tr style="height: 35px;">
 					<td>{{subtract ../pagination.rowNumber @index}}</td>
-					<td>
+					<td class="ellipsis" style="max-width:100px;">
 						{{dataGroupName}}
 					</td>
 					<td>
@@ -32,14 +32,14 @@
 					</td>
 					<td>
 						<button type="button" title="바로가기" class="goto" onclick="flyTo('{{longitude}}', '{{latitude}}', '{{altitude}}', '2');">바로가기</button>
-					</td>					
+					</td>
 				</tr>
 	{{/each}}
 {{else}}
 				<tr>
 					<td colspan="5" class="col-none">데이터 그룹이 존재하지 않습니다.</td>
 				</tr>
-{{/greaterThan}}		
+{{/greaterThan}}
 			</tbody>
 		</table>
 	</div>
@@ -58,10 +58,10 @@
 			<li onclick="pagingDataGroupList({{this}}, '{{../pagination.searchParameters}}');">{{this}}</li>
 		{{/numberEqual}}
 	{{/forEachStep}}
-	
+
 	{{#if pagination.existNextPage}}
 		<li class="ico back" onclick="pagingDataGroupList({{pagination.nextPageNo}}, '{{pagination.searchParameters}}');">뒤로</li>
-	{{/if}}	
+	{{/if}}
 		<li class="ico end"  onclick="pagingDataGroupList({{pagination.lastPage}}, '{{pagination.searchParameters}}');">마지막</li>
 	</ul>
 {{/greaterThan}}

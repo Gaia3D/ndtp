@@ -37,7 +37,7 @@
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input">
-										<form:input path="dataGroupName" cssClass="l" />
+										<form:input path="dataGroupName" cssClass="l" maxlength="100" />
 										<form:errors path="dataGroupName" cssClass="error" />
 									</td>
 								</tr>

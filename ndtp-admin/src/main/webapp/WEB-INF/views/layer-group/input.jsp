@@ -128,7 +128,7 @@
         </c:if>
 
 			<tr class="${depthClass } ${depthParentClass} ${ancestorClass }" style="${depthStyleDisplay}">
-				<td class="col-name nowrap" style="max-width:200px; text-align: left;" nowrap="nowrap">
+				<td class="col-name ellipsis" style="max-width:200px; text-align: left;" nowrap="nowrap">
 					<span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"></span>
 					${layerGroup.layerGroupName }
 				</td>

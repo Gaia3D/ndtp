@@ -41,7 +41,7 @@
         </c:if>
 
 		<tr class="${depthClass } ${depthParentClass} ${ancestorClass }" style="${depthStyleDisplay}">
-			<td class="col-name" style="text-align: left;" nowrap="nowrap">
+			<td class="col-name ellipsis" style="max-width:200px; text-align: left;" nowrap="nowrap">
 				<span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"></span>
 		<c:if test="${dataGroup.depth eq 1 }">
 				<span style="font-size: 1.5em; color: Dodgerblue;">
