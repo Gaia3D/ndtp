@@ -266,6 +266,16 @@ public class DataGroupRestController {
 				dataGroup.setLocationUpdateType(LocationUdateType.USER.name().toLowerCase());
 				dataGroup.setLocation("POINT(" + dataGroup.getLongitude() + " " + dataGroup.getLatitude() + ")");
 			}
+			
+			Boolean duplication = dataGroupService.isDataGroupKeyDuplication(dataGroup);
+			if(duplication) {
+				log.info("@@@@@ key duplication duplication = {}", duplication);
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "data.group.key.duplication");
+				result.put("message", message);
+	            return result;
+			}
+			
 			dataGroupService.insertDataGroup(dataGroup);
 		} catch (Exception e) {
 			e.printStackTrace();
