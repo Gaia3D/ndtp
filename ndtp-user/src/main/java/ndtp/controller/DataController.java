@@ -226,6 +226,10 @@ public class DataController {
 		dataInfo.setDataId(dataId);
 		
 		dataInfo = dataService.getData(dataInfo);
+		if(!userSession.getUserId().equals(dataInfo.getUserId())) {
+			// 자신이 등록한 데이터가 아니면 수정할 수 없음
+			return "redirect:/data-logs/modify?dataId=" + dataInfo.getDataId();
+		}
 		
 		model.addAttribute("dataInfo", dataInfo);
 		

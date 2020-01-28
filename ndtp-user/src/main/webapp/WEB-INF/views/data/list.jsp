@@ -103,6 +103,7 @@
 				<col class="col-name" />
 				<col class="col-name" />
 				<col class="col-name" />
+				<col class="col-name" />
 				<col class="col-functions" />
 				<col class="col-functions" />
 				<col class="col-functions" />
@@ -112,6 +113,7 @@
 						<th scope="col" class="col-number"><spring:message code='number'/></th>
 						<th scope="col" class="col-name">그룹명</th>
 						<th scope="col" class="col-name">데이터명</th>
+						<th scope="col" class="col-name">아이디</th>
 						<th scope="col" class="col-name">데이터 타입</th>
 						<th scope="col" class="col-name">공유 유형</th>
 						<th scope="col" class="col-name">매핑타입</th>
@@ -125,7 +127,7 @@
 				<tbody>
 <c:if test="${empty dataInfoList }">
 					<tr>
-						<td colspan="11" class="col-none">데이터가 존재하지 않습니다.</td>
+						<td colspan="12" class="col-none">데이터가 존재하지 않습니다.</td>
 					</tr>
 </c:if>
 <c:if test="${!empty dataInfoList }">
@@ -135,13 +137,26 @@
 						<td class="col-number">${pagination.rowNumber - status.index }</td>
 						<td class="col-name">${dataInfo.dataGroupName }</td>
 						<td class="col-name">
-		<c:if test="${dataInfo.userId eq owner}">
-							<a href="/data/modify?dataId=${dataInfo.dataId}">${dataInfo.dataName }</a>
+		<c:if test="${dataInfo.dataGroupTarget eq 'admin'}">
+							<a href="/data-log/modify?dataId=${dataInfo.dataId}">${dataInfo.dataName }</a>
 		</c:if>
-		<c:if test="${dataInfo.userId ne owner}">
-							${dataInfo.dataName }[ADMIN]
+		<c:if test="${dataInfo.dataGroupTarget eq 'user'}">
+			<c:if test="${dataInfo.userId eq owner}">
+							<a href="/data/modify?dataId=${dataInfo.dataId}">${dataInfo.dataName }</a>
+			</c:if>
+			<c:if test="${dataInfo.userId ne owner}">
+							<a href="/data-log/modify?dataId=${dataInfo.dataId}">${dataInfo.dataName }</a>
+			</c:if>
 		</c:if>					
 						</td>
+						<td class="col-name">
+		<c:if test="${dataInfo.userId eq owner}">				
+							${dataInfo.userId }
+		</c:if>
+		<c:if test="${dataInfo.userId ne owner}">
+							<span style="color: blue;">${dataInfo.userId }</span>
+		</c:if>
+						</td>	
 						<td class="col-name">${dataInfo.dataType }</td>
 						<td class="col-type">
 		<c:if test="${dataInfo.sharing eq 'common'}">공통</c:if>

@@ -237,6 +237,9 @@
 			<if test="dataName != null and dataName != ''">
 			data_name = #{dataName},
 			</if>
+			<if test="updateUserId != null and updateUserId != ''">
+			update_user_id = #{updateUserId},
+			</if>
 			<if test="dataType != null and dataType != ''">
 			data_type = #{dataType},
 			</if>

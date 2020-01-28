@@ -29,6 +29,7 @@ create table data_info_log(
 	data_group_id					integer,
 	data_id							bigint,
 	user_id							varchar(32),
+	update_user_id					varchar(32),
 	location		 				GEOMETRY(POINT, 4326),
 	altitude						numeric(13,7),
 	heading							numeric(8,5),
@@ -50,7 +51,8 @@ comment on table data_info_log is 'Data 변경 이력 정보';
 comment on column data_info_log.data_info_log_id is '고유번호';
 comment on column data_info_log.data_group_id is '데이터 그룹 고유번호, join 성능때문에 중복 허용';
 comment on column data_info_log.data_id is 'Data 고유번호';
-comment on column data_info_log.user_id is '사용자 고유번호';
+comment on column data_info_log.user_id is '사용자 아이디';
+comment on column data_info_log.user_id is '수정 요청자 아이디';
 comment on column data_info_log.location is '위치';
 comment on column data_info_log.altitude is '높이';
 comment on column data_info_log.heading is 'heading';
