@@ -78,6 +78,8 @@ public class DataInfoLog extends Search {
 	private String status;
 	// status 의 ajax 처리 값
 	private String statusLevel;
+	// 변경 타입
+	private String changeType;
 	// 설명
 	private String description;
 	// 수정일 

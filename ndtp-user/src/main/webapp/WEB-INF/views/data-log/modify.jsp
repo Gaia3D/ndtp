@@ -41,6 +41,7 @@
 			</ul>
 		</div>
 		<form:form id="dataInfo" modelAttribute="dataInfo" method="post" onsubmit="return false;">
+			<form:hidden path="dataId"/>
 		<table class="input-table scope-row">
 			<col class="col-label l" />
 			<col class="col-input" />
@@ -216,7 +217,7 @@
 		</table>
 		<div class="button-group">
 			<div class="center-buttons">
-				<input type="submit" value="데이터 위치 변경 요청" onclick="updateDataInfo();"/>
+				<input type="submit" value="데이터 위치 변경 요청" onclick="insertDataInfoLog();"/>
 				<a href="/data/list" class="button">목록</a>
 			</div>
 		</div>
@@ -232,60 +233,52 @@
 <script type="text/javascript" src="/js/${lang}/ui-controll.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-		$("#mappingType").val("${dataInfo.mappingType}");
-		$("#status").val("${dataInfo.status}");
 	});
 	
 	function validate() {
 		if ($("#longitude").val() === "") {
-			alert("대표 위치(경도)를 입력하여 주십시오.");
+			alert("경도를 입력하여 주십시오.");
 			$("#longitude").focus();
 			return false;
 		}
 		if ($("#latitude").val() === "") {
-			alert("대표 위치(위도)를 입력하여 주십시오.");
+			alert("위도를 입력하여 주십시오.");
 			$("#latitude").focus();
 			return false;
 		}
 		if ($("#altitude").val() === "") {
-			alert("대표 위치(높이)를 입력하여 주십시오.");
+			alert("높이를 입력하여 주십시오.");
 			$("#altitude").focus();
-			return false;
-		}
-		if ($("#metainfo").val() === "") {
-			alert("메타 정보를 입력하여 주십시오.");
-			$("#metainfo").focus();
 			return false;
 		}
 	}
 	
 	// 수정
-	var updateDataInfoFlag = true;
-	function updateDataInfo() {
+	var insertDataInfoLogFlag = true;
+	function insertDataInfoLog() {
 		if (validate() == false) {
 			return false;
 		}
-		if(updateDataInfoFlag) {
-			updateDataInfoFlag = false;
+		if(insertDataInfoLogFlag) {
+			insertDataInfoLogFlag = false;
 			var formData = $("#dataInfo").serialize();		
 			$.ajax({
-				url: "/datas/${dataInfo.dataId}",
+				url: "/data-logs",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				data: formData,
 				success: function(msg){
 					if(msg.statusCode <= 200) {
-						alert(JS_MESSAGE["update"]);
-						window.location.reload();
+						alert("요청 하였습니다.");
 					} else {
 						alert(JS_MESSAGE[msg.errorCode]);
 						console.log("---- " + msg.message);
 					}
-					updateDataInfoFlag = true;
+					insertDataInfoLogFlag = true;
 				},
 				error:function(request, status, error){
 			        alert(JS_MESSAGE["ajax.error.message"]);
-			        updateDataInfoFlag = true;
+			        insertDataInfoLogFlag = true;
 				}
 			});
 		} else {
