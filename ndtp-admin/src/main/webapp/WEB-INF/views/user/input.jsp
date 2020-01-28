@@ -285,7 +285,7 @@
 	}
 
 	function checkData() {
-		var passwordValidation = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{${policy.passwordMinLength},${policy.passwordMaxLength}}$/;
+		var passwordValidation = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!#^%*?&])[A-Za-z\d$@$!#^%*?&]{${policy.passwordMinLength},${policy.passwordMaxLength}}$/;
 
 		if($("#duplicationValue").val() == null || $("#duplicationValue").val() == "") {
 			alert(JS_MESSAGE["check.id.duplication"]);
