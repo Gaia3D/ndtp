@@ -28,7 +28,6 @@ public interface UserMapper {
 	 */
 	List<UserInfo> getListUser(UserInfo userInfo);
 
-
 	/**
 	 * 사용자 정보 취득
 	 * @param userId
@@ -36,12 +35,12 @@ public interface UserMapper {
 	 */
 	UserInfo getUser(String userId);
 
-	/**
-	 * 사용자 ID 중복 체크
-	 * @param userId
-	 * @return
-	 */
-	int getDuplicationIdCount(String userId);
+    /**
+     * 사용자 ID 중복 체크
+     * @param userInfo
+     * @return
+     */
+    Boolean isUserIdDuplication(UserInfo userInfo);
 
 	/**
 	 * 사용자 등록
