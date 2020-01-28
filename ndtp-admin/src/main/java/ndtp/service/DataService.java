@@ -55,11 +55,18 @@ public interface DataService {
 	DataInfo getDataByDataKey(DataInfo dataInfo);
 	
 	/**
-	 * Data Attribute 정보 취득
-	 * @param dataId
+	 * Data 정보 취득
+	 * @param dataInfo
 	 * @return
 	 */
-	DataInfoAttribute getDataAttribute(Long dataId);
+	DataInfo getDataByConverterJobFile(DataInfo dataInfo);
+	
+//	/**
+//	 * Data Attribute 정보 취득
+//	 * @param dataId
+//	 * @return
+//	 */
+//	DataInfoAttribute getDataAttribute(Long dataId);
 //	
 //	/**
 //	 * Data Object Attribute 정보 취득
@@ -156,4 +163,11 @@ public interface DataService {
 	 * @return
 	 */
 	int deleteDataObjects(Long dataId);
+	
+	/**
+	 * Data 삭제
+	 * @param dataInfo
+	 * @return
+	 */
+	int deleteDataByConverterJobFile(DataInfo dataInfo);
 }

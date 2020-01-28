@@ -68,15 +68,10 @@ public class DataLogController {
 		dataGroup.setUserId(userSession.getUserId());
 		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup(dataGroup);
 		
-		String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
-		if(StringUtils.isEmpty(dataInfoLog.getStartDate())) {
-			dataInfoLog.setStartDate(today.substring(0,4) + DateUtils.START_DAY_TIME);
-		} else {
+		if(!StringUtils.isEmpty(dataInfoLog.getStartDate())) {
 			dataInfoLog.setStartDate(dataInfoLog.getStartDate().substring(0, 8) + DateUtils.START_TIME);
 		}
-		if(StringUtils.isEmpty(dataInfoLog.getEndDate())) {
-			dataInfoLog.setEndDate(today + DateUtils.END_TIME);
-		} else {
+		if(!StringUtils.isEmpty(dataInfoLog.getEndDate())) {
 			dataInfoLog.setEndDate(dataInfoLog.getEndDate().substring(0, 8) + DateUtils.END_TIME);
 		}
 

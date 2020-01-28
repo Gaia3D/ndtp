@@ -241,9 +241,7 @@ public class ConverterServiceImpl implements ConverterService {
 			dataInfo.setLatitude(uploadDataFile.getLatitude());
 			dataInfo.setLongitude(uploadDataFile.getLongitude());
 			dataInfo.setAltitude(uploadDataFile.getAltitude());
-			if(uploadDataFile.getLongitude() != null && uploadDataFile.getLatitude() != null) {
-				dataInfo.setLocation("POINT(" + uploadDataFile.getLongitude() + " " + uploadDataFile.getLatitude() + ")");
-			}
+			dataInfo.setLocation("POINT(" + uploadDataFile.getLongitude() + " " + uploadDataFile.getLatitude() + ")");
 			dataInfo.setMetainfo(metainfo);
 			dataInfo.setStatus(DataStatus.PROCESSING.name().toLowerCase());
 			dataService.insertData(dataInfo);

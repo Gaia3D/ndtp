@@ -95,10 +95,10 @@
 			<form:hidden path="uploadDataId" />
 		<table class="input-table scope-row">
 			<colgroup>
-				<col class="col-label l" style="width: 15%" >
-				<col class="col-input" style="width: 35%" >
-				<col class="col-label l" style="width: 15%" >
-				<col class="col-input" style="width: 35%" >
+				<col class="col-label l" style="width: 13%" >
+				<col class="col-input" style="width: 37%" >
+				<col class="col-label l" style="width: 13%" >
+				<col class="col-input" style="width: 37%" >
             </colgroup>
 			<tr>
 				<th class="col-label" scope="row">
@@ -157,7 +157,7 @@
 					<form:input path="longitude" cssClass="m" placeholder="longitude" />
 					<form:input path="latitude" cssClass="m" placeholder="latitude" />
 					<form:input path="altitude" cssClass="m" placeholder="altitude" />
-					<input type="button" id="mapButtion" value="지도에서 찾기" />
+					<input type="button" id="mapButtion" value="지도" />
 					<form:errors path="longitude" cssClass="error" />
 					<form:errors path="latitude" cssClass="error" />
 					<form:errors path="altitude" cssClass="error" />
@@ -303,7 +303,7 @@
 		}
 	}
 	
-	//수정
+	// 수정
 	var updateFlag = true;
 	$( "#updateButton" ).on( "click", function() {
 		if (validate() == false) {

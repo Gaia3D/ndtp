@@ -87,10 +87,10 @@
 						<form:form id="uploadData" modelAttribute="uploadData" method="post" onsubmit="return false;">
 						<table class="input-table scope-row">
 							<colgroup>
-			                    <col class="col-label l" style="width: 15%" >
-			                    <col class="col-input" style="width: 35%" >
-			                    <col class="col-label l" style="width: 15%" >
-			                    <col class="col-input" style="width: 35%" >
+			                    <col class="col-label l" style="width: 13%" >
+								<col class="col-input" style="width: 37%" >
+								<col class="col-label l" style="width: 13%" >
+								<col class="col-input" style="width: 37%" >
 			                </colgroup>
 							<tr>
 								<th class="col-label" scope="row">
@@ -141,20 +141,20 @@
 								</td>
 							</tr>
 							<tr>
-				<th class="col-label" scope="row">
-					<form:label path="longitude">대표 위치 (경도/위도/높이) </form:label>
-					<span class="icon-glyph glyph-emark-dot color-warning"></span>
-				</th>
-				<td colspan="3"  class="col-input">
-					<form:input path="longitude" cssClass="m" placeholder="longitude" />
-					<form:input path="latitude" cssClass="m" placeholder="latitude" />
-					<form:input path="altitude" cssClass="m" placeholder="altitude" />
-					<input type="button" id="mapButtion" value="지도에서 찾기" />
-					<form:errors path="longitude" cssClass="error" />
-					<form:errors path="latitude" cssClass="error" />
-					<form:errors path="altitude" cssClass="error" />
-				</td>
-			</tr>
+								<th class="col-label" scope="row">
+									<form:label path="longitude">대표 위치 (경도/위도/높이) </form:label>
+									<span class="icon-glyph glyph-emark-dot color-warning"></span>
+								</th>
+								<td colspan="3"  class="col-input">
+									<form:input path="longitude" cssClass="m" placeholder="longitude" />
+									<form:input path="latitude" cssClass="m" placeholder="latitude" />
+									<form:input path="altitude" cssClass="m" placeholder="altitude" />
+									<input type="button" id="mapButtion" value="지도" />
+									<form:errors path="longitude" cssClass="error" />
+									<form:errors path="latitude" cssClass="error" />
+									<form:errors path="altitude" cssClass="error" />
+								</td>
+							</tr>
 							<tr>
 								<th class="col-label" scope="row">
 									<form:label path="description"><spring:message code='description'/></form:label>
@@ -167,16 +167,16 @@
 						</table>
 						</form:form>
 						<div style="padding: 20px 20px 10px 10px; font-size: 18px;">파일 업로딩</div>
-		<div class="fileSection" style="font-size: 17px;">
-	    	<form id="my-dropzone" action="" class="dropzone hzScroll"></form>
-	    </div>
-	    <div class="button-group" style="margin-top: 30px;">
-			<div class="center-buttons">
-				<button id="allFileUpload">업로드</button>
-				<button id="allFileClear">All Clear</button>
-				<a href="/upload-data/list" class="button">목록</a>
-			</div>
-		</div>
+						<div class="fileSection" style="font-size: 17px;">
+					    	<form id="my-dropzone" action="" class="dropzone hzScroll"></form>
+					    </div>
+					    <div class="button-group" style="margin-top: 30px;">
+							<div class="center-buttons">
+								<button id="allFileUpload">업로드</button>
+								<button id="allFileClear">All Clear</button>
+								<a href="/upload-data/list" class="button">목록</a>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

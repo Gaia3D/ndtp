@@ -179,7 +179,7 @@
 		FROM data_info 
 		WHERE converter_job_file_id = #{converterJobFileId}
 			<if test="userId != null and userId != ''">
-			AND A.user_id = #{userId}
+			AND user_id = #{userId}
 			</if>
 	</select>
 	

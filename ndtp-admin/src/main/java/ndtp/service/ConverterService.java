@@ -17,14 +17,14 @@ public interface ConverterService {
 	 * @param converterJob
 	 * @return
 	 */
-	public Long getListConverterJobTotalCount(ConverterJob converterJob);
+	public Long getConverterJobTotalCount(ConverterJob converterJob);
 	
 	/**
 	 * converter job file 총 건수
 	 * @param converterJobFile
 	 * @return
 	 */
-	public Long getListConverterJobFileTotalCount(ConverterJobFile converterJobFile);
+	public Long getConverterJobFileTotalCount(ConverterJobFile converterJobFile);
 	
 	/**
 	 * f4d converter job 목록

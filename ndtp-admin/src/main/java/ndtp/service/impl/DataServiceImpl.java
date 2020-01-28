@@ -99,14 +99,24 @@ public class DataServiceImpl implements DataService {
 	}
 	
 	/**
-	 * Data Attribute 정보 취득
-	 * @param dataId
+	 * Data 정보 취득
+	 * @param dataInfo
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public DataInfoAttribute getDataAttribute(Long dataId) {
-		return dataMapper.getDataAttribute(dataId);
+	public DataInfo getDataByConverterJobFile(DataInfo dataInfo) {
+		return dataMapper.getDataByConverterJobFile(dataInfo);
 	}
+	
+//	/**
+//	 * Data Attribute 정보 취득
+//	 * @param dataId
+//	 * @return
+//	 */
+//	@Transactional(readOnly=true)
+//	public DataInfoAttribute getDataAttribute(Long dataId) {
+//		return dataMapper.getDataAttribute(dataId);
+//	}
 	
 //	/**
 //	 * Data Object Attribute 정보 취득
@@ -296,5 +306,15 @@ public class DataServiceImpl implements DataService {
 	@Transactional
 	public int deleteDataObjects(Long dataId) {
 		return dataMapper.deleteDataObjects(dataId);
+	}
+	
+	/**
+	 * Data 삭제
+	 * @param dataInfo
+	 * @return
+	 */
+	@Transactional
+	public int deleteDataByConverterJobFile(DataInfo dataInfo) {
+		return dataMapper.deleteDataByConverterJobFile(dataInfo);
 	}
 }

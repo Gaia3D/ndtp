@@ -22,7 +22,6 @@ import ndtp.domain.ConverterJob;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
-import ndtp.domain.UploadData;
 import ndtp.domain.UserSession;
 import ndtp.service.ConverterService;
 import ndtp.utils.DateUtils;
@@ -35,7 +34,7 @@ import ndtp.utils.FormatUtils;
  */
 @Slf4j
 @Controller
-@RequestMapping("/converter/")
+@RequestMapping("/converter")
 public class ConverterController {
 	
 	@Autowired
@@ -45,54 +44,6 @@ public class ConverterController {
 	private ConverterService converterService;
 	
 	/**
-	 * TODO 우선은 여기서 적당히 구현해 두고... 나중에 좀 깊이 생각해 보자. converter에 어디까지 넘겨야 할지
-	 * converter job insert
-	 * @param model
-	 * @return
-	 */
-	@RequestMapping(value = "insert")
-	@ResponseBody
-	public Map<String, Object> insert(HttpServletRequest request, ConverterJob converterJob) {
-		log.info("@@@ converterJob = {}", converterJob);
-		
-		Map<String, Object> result = new HashMap<>();
-		int statusCode = 0;
-		String errorCode = null;
-		String message = null;
-		try {
-			if(converterJob.getConverterCheckIds().length() <= 0) {
-				log.info("@@@@@ message = {}", message);
-				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-				result.put("errorCode", "check.value.required");
-				result.put("message", message);
-	            return result;
-			}
-			if(StringUtils.isEmpty(converterJob.getTitle())) {
-				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-				result.put("errorCode", "converter.title.empty");
-				result.put("message", message);
-	            return result;
-			}
-			
-			UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-			converterJob.setUserId(userSession.getUserId());
-			
-			converterService.insertConverter(converterJob);
-		} catch(Exception e) {
-			e.printStackTrace();
-			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-			errorCode = "db.exception";
-			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-		}
-		
-		result.put("statusCode", statusCode);
-		result.put("errorCode", errorCode);
-		result.put("message", message);
-		
-		return result;
-	}
-	
-	/**
 	 * converter job 목록
 	 * @param request
 	 * @param membership_id
@@ -100,26 +51,21 @@ public class ConverterController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = "list")
+	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest request, ConverterJob converterJob, @RequestParam(defaultValue="1") String pageNo, Model model) {
 		
 //		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 //		converterJob.setUserId(userSession.getUserId());		
 		log.info("@@ converterJob = {}", converterJob);
 		
-		String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
-		if(StringUtils.isEmpty(converterJob.getStartDate())) {
-			converterJob.setStartDate(today.substring(0,4) + DateUtils.START_DAY_TIME);
-		} else {
+		if(!StringUtils.isEmpty(converterJob.getStartDate())) {
 			converterJob.setStartDate(converterJob.getStartDate().substring(0, 8) + DateUtils.START_TIME);
 		}
-		if(StringUtils.isEmpty(converterJob.getEndDate())) {
-			converterJob.setEndDate(today + DateUtils.END_TIME);
-		} else {
+		if(!StringUtils.isEmpty(converterJob.getEndDate())) {
 			converterJob.setEndDate(converterJob.getEndDate().substring(0, 8) + DateUtils.END_TIME);
 		}
 		
-		long totalCount = converterService.getListConverterJobTotalCount(converterJob);
+		long totalCount = converterService.getConverterJobTotalCount(converterJob);
 		
 		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, converterJob), totalCount, Long.valueOf(pageNo).longValue());
 		log.info("@@ pagination = {}", pagination);

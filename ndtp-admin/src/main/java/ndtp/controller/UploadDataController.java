@@ -113,15 +113,10 @@ public class UploadDataController {
 //		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 //		uploadData.setUserId(userSession.getUserId());
 		
-		String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
-		if(StringUtils.isEmpty(uploadData.getStartDate())) {
-			uploadData.setStartDate(today.substring(0,4) + DateUtils.START_DAY_TIME);
-		} else {
+		if(!StringUtils.isEmpty(uploadData.getStartDate())) {
 			uploadData.setStartDate(uploadData.getStartDate().substring(0, 8) + DateUtils.START_TIME);
 		}
-		if(StringUtils.isEmpty(uploadData.getEndDate())) {
-			uploadData.setEndDate(today + DateUtils.END_TIME);
-		} else {
+		if(!StringUtils.isEmpty(uploadData.getEndDate())) {
 			uploadData.setEndDate(uploadData.getEndDate().substring(0, 8) + DateUtils.END_TIME);
 		}
 		
@@ -138,6 +133,7 @@ public class UploadDataController {
 		}
 		
 		model.addAttribute(pagination);
+		model.addAttribute("uploadData", uploadData);
 		model.addAttribute("converterJobForm", new ConverterJob());
 		model.addAttribute("uploadDataList", uploadDataList);
 		

@@ -30,11 +30,11 @@
 						<div class="input-group row">
 							<div class="input-set">
 								<label for="searchWord"><spring:message code='search.word'/></label>
-								<select id="searchWord" name="searchWord" class="select" style="height: 30px;">
+								<select id="searchWord" name="searchWord" class="selectBoxClass">
 									<option value=""><spring:message code='select'/></option>
 				          			<option value="title">제목</option>
 								</select>
-								<select id="searchOption" name="searchOption" class="select" style="height: 30px;">
+								<select id="searchOption" name="searchOption" class="selectBoxClass">
 									<option value="0"><spring:message code='search.same'/></option>
 									<option value="1"><spring:message code='search.include'/></option>
 								</select>
@@ -48,17 +48,17 @@
 							</div>
 							<div class="input-set">
 								<label for="orderWord"><spring:message code='search.order'/></label>
-								<select id="orderWord" name="orderWord" class="select" style="height: 30px;">
+								<select id="orderWord" name="orderWord" class="selectBoxClass">
 									<option value=""> <spring:message code='search.basic'/> </option>
 									<option value="title">제목</option>
 									<option value="insertDate"> <spring:message code='search.insert.date'/> </option>
 								</select>
-								<select id="orderValue" name="orderValue" class="select" style="height: 30px;">
+								<select id="orderValue" name="orderValue" class="selectBoxClass">
 			                		<option value=""> <spring:message code='search.basic'/> </option>
 				                	<option value="ASC"> <spring:message code='search.ascending'/> </option>
 									<option value="DESC"> <spring:message code='search.descending.order'/> </option>
 								</select>
-								<select id="listCounter" name="listCounter" class="select" style="height: 30px;">
+								<select id="listCounter" name="listCounter" class="selectBoxClass">
 			                		<option value="10"> <spring:message code='search.ten.count'/> </option>
 				                	<option value="50"> <spring:message code='search.fifty.count'/> </option>
 									<option value="100"> <spring:message code='search.hundred.count'/> </option>
@@ -83,11 +83,9 @@
 							<col class="col-number" />
 							<col class="col-name" />
 							<col class="col-name" />
-							<col class="col-name" />
 							<col class="col-number" />
+							<col class="col-type" />
 							<col class="col-number" />
-							<col class="col-number" />
-							<col class="col-functions" />
 							<col class="col-functions" />
 							<col class="col-functions" />
 							<thead>
@@ -95,6 +93,7 @@
 									<th scope="col" class="col-number"><spring:message code='number'/></th>
 									<th scope="col" class="col-name">변환 유형</th>
 									<th scope="col" class="col-name">제목</th>
+									<th scope="col" class="col-name">U.S.F</th>
 									<th scope="col" class="col-name">상태</th>
 									<th scope="col" class="col-name">파일 개수</th>
 									<th scope="col" class="col-name">에러코드</th>
@@ -104,7 +103,7 @@
 							<tbody>
 <c:if test="${empty converterJobList }">
 								<tr>
-									<td colspan="7" class="col-none">Converter Job이 존재하지 않습니다.</td>
+									<td colspan="8" class="col-none">Converter Job이 존재하지 않습니다.</td>
 								</tr>
 </c:if>
 <c:if test="${!empty converterJobList }">
@@ -118,9 +117,15 @@
 		<c:if test="${converterJob.converterTemplate eq 'extra-big-building'}">초대형 빌딩</c:if>
 		<c:if test="${converterJob.converterTemplate eq 'single-realistic-mesh'}">단일 point cloud</c:if>
 		<c:if test="${converterJob.converterTemplate eq 'splitted-realistic-mesh'}">분할 point cloud</c:if>
-		<c:if test="${converterJob.converterTemplate eq '3'}">초대형 건물</c:if>
 									</td>
 									<td class="col-name">${converterJob.title }</td>
+									<td class="col-count"><fmt:formatNumber value="${converterJob.usf}" type="number"/>
+		<c:if test="${converterJob.usf ge 1 and converterJob.usf lt 10}"> m</c:if>
+		<c:if test="${converterJob.usf ge 0.1 and converterJob.usf lt 1 }"> cm</c:if>
+		<c:if test="${converterJob.usf ge 0.01 and converterJob.usf lt 0.1}"> cm</c:if>
+		<c:if test="${converterJob.usf ge 0.001 and converterJob.usf lt 0.01}"> mm</c:if>
+		<c:if test="${converterJob.usf ge 10}"> m</c:if>						
+									</td>
 									<td class="col-type">
 		<c:if test="${converterJob.status eq 'ready'}">준비</c:if>
 		<c:if test="${converterJob.status eq 'success'}">성공</c:if>
@@ -128,12 +133,12 @@
 		<c:if test="${converterJob.status eq 'fail'}">실패</c:if>								
 									</td>
 									<td class="col-count"><fmt:formatNumber value="${converterJob.fileCount}" type="number"/> 개</td>
-									<td class="col-count">
+									<td class="col-type">
 		<c:if test="${empty converterJob.errorCode }">
-										없음
+												없음
 		</c:if>
 		<c:if test="${!empty converterJob.errorCode }">
-										<a href="#" onclick="detailErrorCode('${converterJob.errorCode}'); return false;">[보기]</a>
+												<a href="#" onclick="detailErrorCode('${converterJob.errorCode}'); return false;">[보기]</a>
 		</c:if>								
 									</td>
 									<td class="col-type">
@@ -163,6 +168,22 @@
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript">
+	$(document).ready(function() {
+		var searchWord = "${converterJob.searchWord}";
+		var searchOption = "${converterJob.searchOption}";
+		var orderWord = "${converterJob.orderWord}";
+		var orderValue = "${converterJob.orderValue}";
+		var listCounter = "${converterJob.listCounter}";
+		
+		if(searchWord != "") $("#searchWord").val("${converterJob.searchWord}");
+		if(searchOption != "") $("#searchOption").val("${converterJob.searchOption}");
+		if(orderWord != "") $("#orderWord").val("${converterJob.orderWord}");
+		if(orderValue != "") $("#orderValue").val("${converterJob.orderValue}");
+		if(listCounter != "") $("#listCounter").val("${converterJob.listCounter}");
+		
+		initDatePicker();
+		initCalendar(new Array("startDate", "endDate"), new Array("${converterJob.startDate}", "${converterJob.endDate}"));
+	});
 	
 	//전체 선택 
 	$("#chkAll").click(function() {

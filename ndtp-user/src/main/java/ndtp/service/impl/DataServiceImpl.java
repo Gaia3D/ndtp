@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
 import ndtp.persistence.DataMapper;
+import ndtp.service.DataGroupService;
 import ndtp.service.DataService;
 
 /**
@@ -22,6 +24,8 @@ public class DataServiceImpl implements DataService {
 	private DataMapper dataMapper;
 //	@Autowired
 //	private DataLogMapper dataLogMapper;
+	@Autowired
+	private DataGroupService dataGroupService;
 	
 	/**
 	 * Data 수
@@ -277,9 +281,20 @@ public class DataServiceImpl implements DataService {
 	 */
 	@Transactional
 	public int deleteData(DataInfo dataInfo) {
-//		Policy policy = CacheManager.getPolicy();
-//		String dataDeleteType = policy.getData_delete_type();
+		// 데이터 그룹 count -1
+		dataInfo = dataMapper.getData(dataInfo);
+		
+		DataGroup dataGroup = new DataGroup();
+		dataGroup.setDataGroupId(dataInfo.getDataGroupId());
+		dataGroup = dataGroupService.getDataGroup(dataGroup);
+		
+		DataGroup tempDataGroup = DataGroup.builder()
+				.dataGroupId(dataGroup.getDataGroupId())
+				.dataCount(dataGroup.getDataCount() - 1).build();
+		dataGroupService.updateDataGroup(tempDataGroup);
+		
 		return dataMapper.deleteData(dataInfo);
+		// TODO 디렉토리도 삭제 해야 함
 	}
 	
 	/**

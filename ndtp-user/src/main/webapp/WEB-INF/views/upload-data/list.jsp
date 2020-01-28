@@ -66,7 +66,7 @@
 					<label for="orderWord"><spring:message code='search.order'/></label>
 					<select id="orderWord" name="orderWord" class="selectBoxClass">
 						<option value=""> <spring:message code='search.basic'/> </option>
-						<option value="data_name">파일명</option>
+						<option value="data_name">데이터명</option>
 						<option value="insertDate"> <spring:message code='search.insert.date'/> </option>
 					</select>
 					<select id="orderValue" name="orderValue" class="selectBoxClass">
