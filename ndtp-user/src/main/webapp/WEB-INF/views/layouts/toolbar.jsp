@@ -37,74 +37,105 @@ border-radius:10px;
         <button type="button" class="layerClose" title="닫기">닫기</button>
     </div>
     <div class="layerContents">
-    	<ul class="category">
-    		<li>객체정보</li>
-    	</ul>
-			<input type="radio" id="datainfoDisplayY" name="datainfoDisplay" value="true"/>
+		<div class="layerDiv">
+			<h4 class="category">객체정보</h4>
+			<input type="radio" id="datainfoDisplayY" name="datainfoDisplay" value="true">
 			<label for="datainfoDisplayY">표시</label>
-			<input type="radio" id="datainfoDisplayN" name="datainfoDisplay" value="false" checked/>
+			<input type="radio" id="datainfoDisplayN" name="datainfoDisplay" value="false" checked>
 			<label for="datainfoDisplayN">비표시</label>
-		<ul class="category">
-    		<li>Origin</li>
-    	</ul>
-			<input type="radio" id="originDisplayY" name="originDisplay" value="true"/>
+		</div>	
+	
+		<div class="layerDiv">	
+			<h4 class="category">Origin</h4>
+			<input type="radio" id="originDisplayY" name="originDisplay" value="true">
 			<label for="originDisplayY">표시</label>
-			<input type="radio" id="originDisplayN" name="originDisplay" value="false" checked/>
+			<input type="radio" id="originDisplayN" name="originDisplay" value="false" checked>
 			<label for="originDisplayN">비표시</label>
-		<ul class="category">
-    		<li>Bounding Box</li>
-    	</ul>
-	    	<input type="radio" id="bboxDisplayY" name="bboxDisplay" value="true"/>
+		</div>	
+	
+		<div class="layerDiv">	
+			<h4 class="category">Bounding Box</h4>
+			<input type="radio" id="bboxDisplayY" name="bboxDisplay" value="true">
 			<label for="bboxDisplayY">표시</label>
-			<input type="radio" id="bboxDisplayN" name="bboxDisplay" value="false" checked/>
+			<input type="radio" id="bboxDisplayN" name="bboxDisplay" value="false" checked>
 			<label for="bboxDisplayN">비표시</label>
-		<ul class="category">
-    		<li>선택 및 이동</li>
-    	</ul>
-	    	<input type="radio" id="objectNoneMove" name="objectMoveMode" value="2" checked/>
+		</div>
+	
+		<div class="layerDiv">
+			<h4 class="category">선택 및 이동</h4>
+			<input type="radio" id="objectNoneMove" name="objectMoveMode" value="2" checked>
 			<label for="objectNoneMove">None</label>
-			<input type="radio" id="objectAllMove" name="objectMoveMode" value="0"/>
+			<input type="radio" id="objectAllMove" name="objectMoveMode" value="0">
 			<label for="objectAllMove">All</label>
-			<input type="radio" id="objectMove" name="objectMoveMode" value="1"/>
+			<input type="radio" id="objectMove" name="objectMoveMode" value="1">
 			<label for="objectMove">Object</label>
+		</div>
+	
 		<div id="dataControllWrap" style="display:none;">
-			<h3>mipo blockA</h3>
-			<ul class="category">
-	    		<li>색상 변경</li>
-	    	</ul>
-		    	<label for="dcColorPicker">색상</label>
-		    	<input type="color" id="dcColorPicker"/>
-		    	<input type="text" id="dcColorInput" value="#000000" size="6" readonly/>
-		    	<button type="button" id="dcColorApply" class="btnTextF">적용</button>
-		    	<button type="button" id="dcColorCancle" class="btnText">되돌리기</button>
-		    <form id="dcRotLocForm">
-		    <ul class="category">
-	    		<li>위치 변경</li>
-	    	</ul>
-	    		<label for="dcLongitude">위도</label>
-		    	<input type="text" id="dcLongitude" name="longitude" readonly/><br/>
-		    	<label for="dcLatitude" >경도</label>
-		    	<input type="text" id="dcLatitude" name="latitude" readonly/><br/>
-		    	<label for="dcAltitude" >높이</label>
-		    	<input type="text" id="dcAltitude" name="altitude" readonly/>
-		    	<button id="dcAltUp" data-type="up" type="button" style="height:26px;width:28px;background-image:url(/images/ko/black_arrow_26.png);"></button>
-		    	<button id="dcAltDown" data-type="down" type="button" style="height:26px;width:28px;background-image:url(/images/ko/black_arrow_26.png);transform: rotate(180deg);"></button>
-		    	<label for="dcAltitude" >높이 offset</label>
-		    	<input type="text" id="dcAltitudeOffset" value="1" size="1"/>
-		    <ul class="category">
-	    		<li>회전 변경</li>
-	    	</ul>
-	    		<label for="dcPitch">x(pitch)</label>
-		    	<input type="text" id="dcPitch" name="pitch" size="2" readonly/><button type="button" class="dcRangeBtn" data-type="prev" id="rcPitchPrev"></button><input id="dcPitchRange" data-type="Pitch" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/><button type="button" class="dcRangeBtn" data-type="next" id="rcPitchNext"></button><br/>
-		    	<label for="dcRoll">y(roll)</label>
-		    	<input type="text" id="dcRoll" name="roll" size="2" readonly/><button type="button" class="dcRangeBtn" data-type="prev" id="rcRollPrev"></button><input id="dcRollRange" data-type="Roll" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/><button type="button" class="dcRangeBtn" data-type="next" id="rcRollNext"></button><br/>
-		    	<label for="dcHeading">z(heading)</label>
-		    	<input type="text" id="dcHeading" name="heading" size="2" readonly/><button type="button" class="dcRangeBtn" data-type="prev" id="rcHeadingPrev"></button><input id="dcHeadingRange" data-type="Heading" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1"/><button type="button" class="dcRangeBtn" data-type="next" id="rcHeadingNext"></button>
-		    	<div >
-			    	<button type="button" id="dcSavePosRot" class="btnTextF" style="display: inline-block;margin-top: 8px;">높이회전 저장</button>
-			    	<button type="button" id="dcShowAttr" class="btnTextF" style="display: inline-block;margin-top: 8px;">속성조회</button>
-		    	</div>
-		    </form>
-	    </div>
-    </div>
+			<p class="layerDivTit">선택된 데이터 :  <span>test / 오전반1조_행복관_s</span></p>
+			<div class="layerDiv">
+				<h4 class="category">색상 변경</h4>
+				<label for="dcColorPicker">색상</label>
+				<input type="color" id="dcColorPicker">
+				<input type="text" id="dcColorInput" value="#000000" size="6" readonly style="color: rgb(0, 0, 0);">
+				<button type="button" id="dcColorApply" class="btnTextF">적용</button>
+				<button type="button" id="dcColorCancle" class="btnText">되돌리기</button>
+			</div>	
+	
+			<form id="dcRotLocForm">
+				<ul class="layerDiv">
+					<h4 class="category">위치 변경</h4>
+					<li>
+						<label for="dcLongitude">위도</label>
+						<input type="text" id="dcLongitude" name="longitude" readonly>
+					</li>
+					<li>
+						<label for="dcLatitude">경도</label>
+						<input type="text" id="dcLatitude" name="latitude" readonly>
+					</li>
+					<li>
+						<label for="dcAltitude">높이</label>
+						<input type="text" id="dcAltitude" name="altitude" readonly>
+						<button id="dcAltUp" data-type="up" type="button" class="up"></button>
+						<button id="dcAltDown" data-type="down" type="button" class="down"></button>
+	
+						<label for="dcAltitude">높이 offset</label>
+						<input type="text" id="dcAltitudeOffset" value="1" size="1">
+					</li>
+				</ul>
+	
+				<ul class="layerDiv">
+					<h4 class="category">회전 변경</h4>
+					<li>
+						<label for="dcPitch">x(pitch)</label>
+						<input type="text" id="dcPitch" name="pitch" size="2" readonly>
+						<button type="button" class="dcRangeBtn rangePrev" data-type="prev" id="rcPitchPrev"></button>
+						<input id="dcPitchRange" data-type="Pitch" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1">
+						<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcPitchNext"></button>
+					</li>
+	
+					<li>
+						<label for="dcRoll">y(roll)</label>
+						<input type="text" id="dcRoll" name="roll" size="2" readonly>
+						<button type="button" class="dcRangeBtn rangePrev" data-type="prev" id="rcRollPrev"></button>
+						<input id="dcRollRange" data-type="Roll" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1">
+						<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcRollNext"></button>
+					</li>
+	
+					<li>
+						<label for="dcHeading">z(heading)</label>
+						<input type="text" id="dcHeading" name="heading" size="2" readonly>
+						<button type="button" class="dcRangeBtn rangePrev" data-type="prev" id="rcHeadingPrev"></button>
+						<input id="dcHeadingRange" data-type="Heading" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1">
+						<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcHeadingNext"></button>
+					</li>
+				</ul>
+	
+				<div>
+					<button type="button" id="dcSavePosRot" class="btnTextF" style="display: inline-block;margin-top: 8px;">높이회전 저장</button>
+					<button type="button" id="dcShowAttr" class="btnTextF" style="display: inline-block;margin-top: 8px;">속성조회</button>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
