@@ -123,13 +123,14 @@ var MapDataControll = function(magoInstance) {
 		});
 		
 	});
-	
 	$('#dcAltUp,#dcAltDown').on('mouseup mouseleave',function() {
 		clearInterval(locAltholdInterval);
 	});
+	//속성조회
 	$('#dcShowAttr').click(function(){
 		detailDataInfo(dataId);
 	});
+	//위치회전정보 저장
 	$('#dcSavePosRot').click(function() {
 		if(confirm('현재 입력된 위치와 회전 정보를 db에 저장하시겠습니까?')) {
 			if(!dataId) {
@@ -161,6 +162,7 @@ var MapDataControll = function(magoInstance) {
 			alert('no');
 		}
 	});
+	
 	var changeF4d = function() {
 		var lat = parseFloat($('#dcLatitude').val());
 		var lon = parseFloat($('#dcLongitude').val());

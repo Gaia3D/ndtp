@@ -27,6 +27,8 @@ public class DataInfoLog extends Search {
 	
 	// 사용자명
 	private String userId;
+	// 수정자 아이디
+	private String updateUserId;
 	private String userName;
 	
 	/****** validator ********/
