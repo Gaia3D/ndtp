@@ -7,7 +7,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Layer 그룹 수정 | NDTP</title>
+	<title>Layer 그룹 등록 | NDTP</title>
 	<link rel="stylesheet" href="/css/${lang}/font/font.css" />
 	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
 	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
@@ -28,56 +28,56 @@
 							<div class="content-desc u-pull-right"><span class="icon-glyph glyph-emark-dot color-warning"></span><spring:message code='check'/></div>
 						</div>
 						<form:form id="layerGroup" modelAttribute="layerGroup" method="post" onsubmit="return false;">
-						<form:hidden path="layerGroupId"/>
-						<table class="input-table scope-row">
-							<col class="col-label l" />
-							<col class="col-input" />
-							<tr>
-								<th class="col-label" scope="row">
-									<form:label path="layerGroupName">Layer 그룹명</form:label>
-									<span class="icon-glyph glyph-emark-dot color-warning"></span>
-								</th>
-								<td class="col-input">
-									<form:input path="layerGroupName" cssClass="l" />
-									<form:errors path="layerGroupName" cssClass="error" />
-								</td>
-							</tr>
-							<tr>
-								<th class="col-label" scope="row">
-									<form:label path="parentName">상위 그룹</form:label>
-									<span class="icon-glyph glyph-emark-dot color-warning"></span>
-								</th>
-								<td class="col-input">
-									<form:hidden path="parent" />
-		 							<form:input path="parentName" cssClass="l" readonly="true" />
-									<input type="button" id="layerGroupButtion" value="상위 그룹 선택" />
-								</td>
-							</tr>
-							<tr>
-								<th class="col-label l" scope="row">
-									<span>사용여부</span>
-									<span class="icon-glyph glyph-emark-dot color-warning"></span>
-								</th>
-								<td class="col-input radio-set">
-									<form:radiobutton label="사용" path="available" value="true" />
-									<form:radiobutton label="미사용" path="available" value="false" />
-									<form:errors path="available" cssClass="error" />
-								</td>
-							</tr>
-							<tr>
-								<th class="col-label l" scope="row"><form:label path="description"><spring:message code='description'/></form:label></th>
-								<td class="col-input">
-									<form:input path="description" cssClass="xl" />
-									<form:errors path="description" cssClass="error" />
-								</td>
-							</tr>
-						</table>
-						<div class="button-group">
-							<div class="center-buttons">
-								<input type="submit" value="<spring:message code='save'/>" onclick="updateLayerGroup();"/>
-								<a href="/layer-group/list" class="button">목록</a>
+							<table class="input-table scope-row">
+								<col class="col-label l" />
+								<col class="col-input" />
+								<tr>
+									<th class="col-label" scope="row">
+										<form:label path="layerGroupName">Layer 그룹명</form:label>
+										<span class="icon-glyph glyph-emark-dot color-warning"></span>
+									</th>
+									<td class="col-input">
+										<form:input path="layerGroupName" cssClass="l" />
+										<form:errors path="layerGroupName" cssClass="error" />
+									</td>
+								</tr>
+								<tr>
+									<th class="col-label" scope="row">
+										<form:label path="parentName">상위 그룹</form:label>
+										<span class="icon-glyph glyph-emark-dot color-warning"></span>
+									</th>
+									<td class="col-input">
+										<form:hidden path="parent" />
+			 							<form:input path="parentName" cssClass="l" readonly="true" />
+										<input type="button" id="layerGroupButtion" value="상위 그룹 선택" />
+									</td>
+								</tr>
+								<tr>
+									<th class="col-label l" scope="row">
+										<span>사용여부</span>
+										<span class="icon-glyph glyph-emark-dot color-warning"></span>
+									</th>
+									<td class="col-input radio-set">
+										<form:radiobutton label="사용" path="available" value="true" checked="checked" />
+										<form:radiobutton label="미사용" path="available" value="false" />
+										<form:errors path="available" cssClass="error" />
+									</td>
+								</tr>
+								<tr>
+									<th class="col-label l" scope="row"><form:label path="description"><spring:message code='description'/></form:label></th>
+									<td class="col-input">
+										<form:input path="description" cssClass="xl" />
+										<form:errors path="description" cssClass="error" />
+									</td>
+								</tr>
+							</table>
+							<div class="button-group">
+								<div class="center-buttons">
+									<input type="submit" value="<spring:message code='save'/>" onclick="insertLayerGroup();"/>
+									<input type="submit" onClick="formClear(); return false;" value="초기화" />
+									<a href="/layer-group/list" class="button">목록</a>
+								</div>
 							</div>
-						</div>
 						</form:form>
 					</div>
 				</div>
@@ -186,6 +186,41 @@
 		}
 	}
 
+	// 저장
+	var insertLayerGroupFlag = true;
+	function insertLayerGroup() {
+		if (validate() == false) {
+			return false;
+		}
+		if(insertLayerGroupFlag) {
+			insertLayerGroupFlag = false;
+			var formData = $("#layerGroup").serialize();
+			$.ajax({
+				url: "/layer-groups/insert",
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+		        data: formData,
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert(JS_MESSAGE["insert"]);
+						window.location.reload();
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
+					insertLayerGroupFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        insertLayerGroupFlag = true;
+				}
+			});
+		} else {
+			alert(JS_MESSAGE["button.dobule.click"]);
+			return;
+		}
+	}
+
 	var layerGroupDialog = $( ".dialog" ).dialog({
 		autoOpen: false,
 		height: 600,
@@ -214,40 +249,10 @@
 		layerGroupDialog.dialog( "close" );
 	});
 
-	// 저장
-	var updateLayerGroupFlag = true;
-	function updateLayerGroup() {
-		if (validate() == false) {
-			return false;
-		}
-		if(updateLayerGroupFlag) {
-			updateLayerGroupFlag = false;
-			var formData = $("#layerGroup").serialize();
-			$.ajax({
-				url: "/layer-group/update",
-				type: "POST",
-				headers: {"X-Requested-With": "XMLHttpRequest"},
-		        data: formData,
-				success: function(msg){
-					if(msg.statusCode <= 200) {
-						alert(JS_MESSAGE["update"]);
-						window.location.reload();
-					} else {
-						alert(JS_MESSAGE[msg.errorCode]);
-						console.log("---- " + msg.message);
-					}
-					updateLayerGroupFlag = true;
-				},
-				error:function(request, status, error){
-			        alert(JS_MESSAGE["ajax.error.message"]);
-			        updateLayerGroupFlag = true;
-				}
-			});
-		} else {
-			alert(JS_MESSAGE["button.dobule.click"]);
-			return;
-		}
+	function formClear() {
+
 	}
+
 </script>
 </body>
 </html>

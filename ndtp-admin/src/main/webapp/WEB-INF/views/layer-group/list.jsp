@@ -297,7 +297,7 @@
 
             var formData = "updateType=UP";
     	    $.ajax({
-    			url: "/layer-group/view-order/" + id,
+    			url: "/layer-groups/view-order/" + id,
     			type: "POST",
     			headers: {"X-Requested-With": "XMLHttpRequest"},
     	        data: formData,
@@ -335,7 +335,7 @@
             downFlag = false;
             var formData = "updateType=DOWN";
     	    $.ajax({
-    			url: "/layer-group/view-order/" + id,
+    			url: "/layer-groups/view-order/" + id,
     			type: "POST",
     			headers: {"X-Requested-With": "XMLHttpRequest"},
     	        data: formData,
