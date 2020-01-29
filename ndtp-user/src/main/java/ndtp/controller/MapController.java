@@ -51,7 +51,7 @@ public class MapController {
      */
     @GetMapping(value = "/find-data-point")
     public String findDataPoint(HttpServletRequest request, DataInfo dataInfo, Model model) {
-    	log.info("@@@@@@ dataInfo = {}, referrer = ", dataInfo.getReferrer());
+    	log.info("@@@@@@ dataInfo referrer = {}", dataInfo.getReferrer());
     	
     	// list, modify 에서 온것 구분하기 위함
     	String referrer = dataInfo.getReferrer();

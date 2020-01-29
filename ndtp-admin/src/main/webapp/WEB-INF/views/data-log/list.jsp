@@ -150,16 +150,16 @@
 									<td class="col-functions">
 										<span class="button-group">
 		<c:if test="${dataInfoLog.status eq 'request'}">
-										<a href="#" onclick="return warning('APPROVAL', '${dataInfoLog.dataGroupId}', '${dataInfoLog.dataInfoLogId}');" class="button" >
+										<a href="#" onclick="return warning('APPROVAL', '${dataInfoLog.dataInfoLogId}');" class="button" >
 											승인
 										</a>
-										<a href="#" onclick="return warning('REJECT', '${dataInfoLog.dataGroupId}', '${dataInfoLog.dataInfoLogId}');" class="button" >
+										<a href="#" onclick="return warning('REJECT', '${dataInfoLog.dataInfoLogId}');" class="button" >
 											반려
 										</a>
 		</c:if>
 		<c:if test="${dataInfoLog.status eq 'complete'}">
-										<a href="#" onclick="return warning('ROLLBACK', '${dataInfoLog.dataGroupId}', '${dataInfoLog.dataInfoLogId}');" class="button" >
-											원본
+										<a href="#" onclick="return warning('ROLLBACK', '${dataInfoLog.dataInfoLogId}');" class="button" >
+											원복
 										</a>
 		</c:if>
 												</span>
@@ -185,7 +185,7 @@
 <%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
 
 <%@ include file="/WEB-INF/views/data/group-dialog.jsp" %>
-<%@ include file="/WEB-INF/views/data/data-info-log-dialog.jsp" %>
+<%@ include file="/WEB-INF/views/data-log/data-info-log-dialog.jsp" %>
 
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
@@ -204,8 +204,8 @@
 
 	var dataGroupDialog = $( ".dataGroupDialog" ).dialog({
 		autoOpen: false,
-		height: 300,
-		width: 400,
+		width: 500,
+		height: 530,
 		modal: true,
 		resizable: false
 	});
@@ -219,22 +219,22 @@
 	// project 정보
 	function viewDataGroup(dataGroupId) {
 		$.ajax({
-			url: "/data-group/detail",
-			data: { dataGroupId : dataGroupId },
+			url: "/data-groups/" + dataGroupId,
+			//data: { dataGroupId : dataGroupId },
 			type: "GET",
 			dataType: "json",
 			headers: {"X-Requested-With": "XMLHttpRequest"},
-	        success: function(msg){
+			success: function(msg){
 				if(msg.statusCode <= 200) {
 					drawDataGroup(msg.dataGroup);
 				} else {
 					alert(JS_MESSAGE[msg.errorCode]);
 					console.log("---- " + msg.message);
 				}
-				insertDataGroupFlag = true;
 			},
 			error:function(request, status, error){
 		        alert(JS_MESSAGE["ajax.error.message"]);
+		        console.log("code : " + request.status + "\n message : " + request.responseText + "\n error : " + error);
 			}
 		});
 	}
@@ -243,14 +243,21 @@
 	function drawDataGroup(dataGroup) {
 		$("#dataGroupNameInfo").html(dataGroup.dataGroupName);
 		$("#dataGroupKeyInfo").html(dataGroup.dataGroupKey);
+		$("#dataGroupTargetInfo").html(dataGroup.dataGroupTarget);
+		$("#sharingInfo").html(dataGroup.sharing);
+		$("#userIdInfo").html(dataGroup.userId);
+		$("#basicInfo").html(dataGroup.basic);
 		$("#availableInfo").html(dataGroup.available);
+		$("#locationInfo").html(dataGroup.longitude + "/" + dataGroup.latitude);
+		$("#dataCountInfo").html(dataGroup.dataCount);
+		$("#metainfoInfo").html(dataGroup.metainfo);
 		$("#descriptionInfo").html(dataGroup.description);
 	}
 
 	// data info change request log
 	var dataInfoLogDialog = $( ".dataInfoLogDialog" ).dialog({
 	    autoOpen: false,
-	    width: 400,
+	    width: 500,
 	    height: 380,
 	    modal: true,
 	    resizable: false
@@ -273,14 +280,14 @@
 	}
 
 	var warningFlag = true;
-	function warning(statusLevel, dataGroupId, dataInfoLogId) {
+	function warning(status, dataInfoLogId) {
 		if(confirm("계속 진행 하시겠습니까?")) {
 			if(warningFlag) {
 				warningFlag = false;
 				$.ajax({
-					url: "/data/update-data-log-status",
+					url: "/data-log/status/" + dataInfoLogId,
 					type: "POST",
-					data: { statusLevel : statusLevel, dataGroupId : dataGroupId, dataInfoLogId : dataInfoLogId },
+					data: { status : status},
 					dataType: "json",
 					headers: {"X-Requested-With": "XMLHttpRequest"},
 					success: function(msg){

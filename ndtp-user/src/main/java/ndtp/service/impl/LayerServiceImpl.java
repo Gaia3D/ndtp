@@ -36,7 +36,7 @@ public class LayerServiceImpl implements LayerService {
      * @return
      */
     @Transactional(readOnly=true)
-    public List<String> getListDefaultDisplayLayer() {
-    	return layerMapper.getListDefaultDisplayLayer();
+    public List<String> getListDefaultDisplayLayer(Layer layer) {
+    	return layerMapper.getListDefaultDisplayLayer(layer);
     }
 }

@@ -16,5 +16,5 @@ public interface LayerService {
      * 기본 사용 레이어 목록 
      * @return
      */
-    List<String> getListDefaultDisplayLayer();
+    List<String> getListDefaultDisplayLayer(Layer layer);
 }

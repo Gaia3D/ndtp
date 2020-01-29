@@ -12,8 +12,16 @@
 			<td id="dataGroupKeyInfo" class="col-data"></td>
 		</tr>
 		<tr>
+			<th class="col-label" scope="row">그룹 분류</th>
+			<td id="dataGroupTargetInfo" class="col-data"></td>
+		</tr>
+		<tr>
 			<th class="col-label" scope="row">공유타입</th>
 			<td id="sharingInfo" class="col-data"></td>
+		</tr>
+		<tr>
+			<th class="col-label" scope="row">사용자 아디디</th>
+			<td id="userIdInfo" class="col-data"></td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">기본유무</th>

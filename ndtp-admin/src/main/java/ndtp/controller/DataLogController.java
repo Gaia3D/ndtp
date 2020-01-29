@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.extern.slf4j.Slf4j;
-import ndtp.domain.ApprovalStatus;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfoLog;
 import ndtp.domain.Key;
@@ -32,7 +31,6 @@ import ndtp.domain.UserSession;
 import ndtp.service.DataGroupService;
 import ndtp.service.DataLogService;
 import ndtp.utils.DateUtils;
-import ndtp.utils.FormatUtils;
 
 /**
  * Data
@@ -41,7 +39,7 @@ import ndtp.utils.FormatUtils;
  */
 @Slf4j
 @Controller
-@RequestMapping("/data/")
+@RequestMapping("/data-log")
 public class DataLogController {
 	
 	@Autowired
@@ -58,8 +56,8 @@ public class DataLogController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "list-data-log")
-	public String listDataLog(Locale locale, HttpServletRequest request, DataInfoLog dataInfoLog, @RequestParam(defaultValue="1") String pageNo, Model model) {
+	@GetMapping(value = "/list")
+	public String list(Locale locale, HttpServletRequest request, DataInfoLog dataInfoLog, @RequestParam(defaultValue="1") String pageNo, Model model) {
 		
 		log.info("@@ dataInfoLog = {}", dataInfoLog);
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
@@ -93,7 +91,7 @@ public class DataLogController {
 		model.addAttribute(pagination);
 		model.addAttribute("dataGroupList", dataGroupList);
 		model.addAttribute("dataInfoLogList", dataInfoLogList);
-		return "/data/list-data-log";
+		return "/data-log/list";
 	}
 	
 	/**
@@ -102,7 +100,7 @@ public class DataLogController {
 	 * @param dataInfo
 	 * @return
 	 */
-	@PostMapping(value = "update-data-log-status")
+	@PostMapping(value = "/status/{dataInfoLogId}")
 	@ResponseBody
 	public Map<String, Object> updateDataInfoLogStatus(HttpServletRequest request, @Valid DataInfoLog dataInfoLog, Errors errors) {
 		log.info("@@ dataInfoLog = {}", dataInfoLog);
@@ -124,16 +122,7 @@ public class DataLogController {
 				return result;
             }
 			
-			if(ApprovalStatus.APPROVAL == ApprovalStatus.valueOf(dataInfoLog.getStatusLevel().toUpperCase())) {
-				dataInfoLog.setStatus(ApprovalStatus.APPROVAL.name().toLowerCase());
-			} else if(ApprovalStatus.REJECT == ApprovalStatus.valueOf(dataInfoLog.getStatusLevel().toUpperCase())) {
-				dataInfoLog.setStatus(ApprovalStatus.REJECT.name().toLowerCase());
-			} else if(ApprovalStatus.ROLLBACK == ApprovalStatus.valueOf(dataInfoLog.getStatusLevel().toUpperCase())) {
-				dataInfoLog.setStatus(ApprovalStatus.ROLLBACK.name().toLowerCase());
-			}
-			
 			dataLogService.updateDataInfoLogStatus(dataInfoLog);
-			
 			// TODO cache 갱신 되어야 함
 		} catch(Exception e) {
 			e.printStackTrace();

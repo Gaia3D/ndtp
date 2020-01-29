@@ -92,11 +92,13 @@
     		SELECT NEXTVAL('data_info_log_seq')
   		</selectKey>
 		INSERT INTO data_info_log(
-			data_info_log_id, data_group_id, data_id, user_id, location, altitude, heading, pitch, roll,
+			data_info_log_id, data_group_id, data_id, user_id, 
+			location, altitude, heading, pitch, roll,
 			before_location, before_altitude, before_heading, before_pitch, before_roll, change_type, description
 		) VALUES (
-			#{dataInfoLogId}, #{dataGroupId}, #{dataId}, #{userId}, #{location}, #{altitude}, #{heading}, #{pitch}, #{roll},
-			#{beforeLocation}, #{beforeAltitude}, #{beforeHeading}, #{beforePitch}, #{beforeRoll}, #{changeType}, #{description}
+			#{dataInfoLogId}, #{dataGroupId}, #{dataId}, #{userId},
+			ST_GeomFromText(#{location}, 4326), #{altitude}, COALESCE(#{heading}, 0), COALESCE(#{pitch}, 0), COALESCE(#{roll}, 0),
+			ST_GeomFromText(#{beforeLocation}, 4326), #{beforeAltitude}, #{beforeHeading}, #{beforePitch}, #{beforeRoll}, #{changeType}, #{description}
 		)
 	</insert>
 	
