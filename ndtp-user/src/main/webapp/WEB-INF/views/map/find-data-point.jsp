@@ -180,7 +180,7 @@
 			border: none;
 			text-indent: -999em;
 			background-image: url(/images/ko/ico.png);
-			background-position: -6px 590px;
+			background-position: -10px 792px;
 		}
 		.labelLayer div.layerContents > ul.category {
 			list-style: circle;

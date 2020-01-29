@@ -86,8 +86,8 @@ border-radius:10px;
 				</ul>
 			</div>	
 			<form id="dcRotLocForm">
+				<h4 class="category" style="padding: 0 0 0 12px; font-size: 15px; margin-bottom: 7px; background: url(/images/ko/ico.png) no-repeat left -815px;}">위치 변경</h4>
 				<ul class="layerDiv">
-					<h4 class="category">위치 변경</h4>
 					<li>
 						<label for="dcLongitude">위도</label>
 						<input type="text" id="dcLongitude" name="longitude" readonly>
@@ -107,8 +107,8 @@ border-radius:10px;
 					</li>
 				</ul>
 	
+				<h4 class="category" style="padding: 0 0 0 12px; font-size: 15px; margin-bottom: 7px; background: url(/images/ko/ico.png) no-repeat left -815px;}">회전 변경</h4>
 				<ul class="layerDiv">
-					<h4 class="category">회전 변경</h4>
 					<li>
 						<label for="dcPitch">x(pitch)</label>
 						<input type="text" id="dcPitch" name="pitch" size="2" readonly>
