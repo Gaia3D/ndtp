@@ -61,7 +61,7 @@
 		/* getListData */
 		SELECT X.*, ST_X(X.location) AS longitude, ST_Y(X.location) AS latitude
 		FROM (
-			SELECT a.*, b.data_group_name
+			SELECT A.*, B.data_group_name
 			FROM data_info A
 	        LEFT JOIN data_group B
 	        ON A.data_group_id = B.data_group_id
