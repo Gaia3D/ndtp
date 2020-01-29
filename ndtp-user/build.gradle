@@ -86,6 +86,9 @@ dependencies {
 	
 	runtimeOnly 'org.postgresql:postgresql'
 	
+	// 전자 정부 프레임워크 연동 - name : egovframe runtime environment. version : 3.8.0
+	compile fileTree(dir: 'libs', include: ['*.jar']) 
+	
 	providedRuntime 'org.apache.tomcat.embed:tomcat-embed-jasper'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	

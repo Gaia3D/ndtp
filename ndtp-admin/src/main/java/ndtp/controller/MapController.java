@@ -81,6 +81,8 @@ public class MapController {
 //			geoPolicy.setSsaoRadius(userPolicy.getSsaoRadius());
 //		}
         
+		geoPolicy.setInitCameraEnable(false);
+		
         String geoPolicyJson = "";
 		try {
 			geoPolicyJson = objectMapper.writeValueAsString(geoPolicy);

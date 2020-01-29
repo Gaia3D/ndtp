@@ -354,13 +354,13 @@
 
 		//우측 상단 지도 컨트롤러
 		MapControll(viewer);
-		dataGroupList();
+		dataGroupList(magoInstance);
         // 환경 설정.
         UserPolicy(magoInstance);
 				
      	// 선택 및 이동 all 로 선택
 		changeObjectMoveAPI(magoInstance, "0");
-		
+     	
 		//선택된 데이터 이동 시 결과 리턴
 	    magoManager.on(Mago3D.MagoManager.EVENT_TYPE.SELECTEDF4DMOVED, function(result) {
 	    	//console.info(result);
@@ -390,7 +390,7 @@
 	} */
 	
 	// 데이터 그룹 목록
-	function dataGroupList() {
+	function dataGroupList(magoInstance) {
 		$.ajax({
 			url: "/data-groups/${dataInfo.dataGroupId}",
 			type: "GET",
@@ -400,7 +400,7 @@
 				if(msg.statusCode <= 200) {
 					var dataGroup = msg.dataGroup;
 					if(dataGroup !== null && dataGroup !== undefined) {
-						dataList(dataGroup);
+						dataList(magoInstance, dataGroup);
 					}
 				} else {
 					alert(JS_MESSAGE[msg.errorCode]);
@@ -413,7 +413,7 @@
 	}
 	
 	// 데이터 정보 목록
-	function dataList(dataGroup) {
+	function dataList(magoInstance, dataGroup) {
 		var dataInfoJson = ${dataInfoJson};
 		
 		var f4dController = MAGO3D_INSTANCE.getF4dController();
@@ -427,14 +427,15 @@
 			
 		dataGroup.datas = dataInfoList;
 		f4dController.addF4dGroup(dataGroup);
+		
+		setTimeout(function() {
+			flyTo(magoInstance);
+		}, 500);
 	}
 	
-	function flyTo(longitude, latitude, altitude, duration) {
-		if(longitude === null || longitude === '' || latitude === null || latitude === '' || altitude === null || altitude === '') {
-			alert("위치 정보가 올바르지 않습니다. 확인하여 주십시오.");
-			return;
-		}
-		gotoFlyAPI(MAGO3D_INSTANCE, parseFloat(longitude), parseFloat(latitude), parseFloat(altitude), parseFloat(duration));
+	function flyTo(magoInstance) {
+		//  searchDataAPI
+		searchDataAPI(magoInstance, "${dataInfo.dataGroupKey}", "${dataInfo.dataKey}");
 	}
 	
 	function remove(entityStored) {

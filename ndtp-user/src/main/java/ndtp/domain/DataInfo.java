@@ -59,12 +59,14 @@ public class DataInfo extends Search implements Serializable {
 	private Long dataId;
 	// Data Group 고유번호
 	private Integer dataGroupId;
-	// converter job file 고유번호
-	private Long converterJobFileId;
+	// converter job 고유번호
+	private Long converterJobId;
 	// Data Group 이름
 	private String dataGroupName;
 	// admin : 관리자용 데이터 그룹, user : 일반 사용자용 데이터 그룹
 	private String dataGroupTarget;
+	// data group key
+	private String dataGroupKey;
 	// data 고유 식별번호
 	private String dataKey;
 	// data 고유 식별번호

@@ -286,12 +286,14 @@
 		
 	}
 	
-	function flyTo(longitude, latitude, altitude, duration) {
-		if(longitude === null || longitude === '' || latitude === null || latitude === '' || altitude === null || altitude === '') {
+	function flyTo(dataGroupKey, dataKey) {
+		if(dataGroupKey === null || dataGroupKey === '' || dataKey === null || dataKey === '') {
 			alert("위치 정보가 올바르지 않습니다. 확인하여 주십시오.");
 			return;
 		}
-		gotoFlyAPI(MAGO3D_INSTANCE, parseFloat(longitude), parseFloat(latitude), parseFloat(altitude), parseFloat(duration));
+		
+		//  searchDataAPI
+		 searchDataAPI(MAGO3D_INSTANCE, dataGroupKey, dataKey);
 	}
 	
 	var dataInfoDialog = $( "#dataInfoDialog" ).dialog({

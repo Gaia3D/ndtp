@@ -268,6 +268,7 @@ public class UploadDataRestController {
 //			}
 			
 			uploadData.setFileCount(uploadDataFileList.size());
+			uploadData.setConverterTargetCount(converterTargetCount);
 			uploadData.setDescription(request.getParameter("description"));
 			
 			log.info("@@@@@@@@@@@@ uploadData = {}", uploadData);

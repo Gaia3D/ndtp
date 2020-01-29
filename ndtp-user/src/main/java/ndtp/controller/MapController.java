@@ -68,6 +68,7 @@ public class MapController {
 //			geoPolicy.setInitLatitude(userPolicy.getInitLatitude());
 //			geoPolicy.setInitLongitude(userPolicy.getInitLongitude());
 //			geoPolicy.setInitAltitude(userPolicy.getInitAltitude());
+			geoPolicy.setInitCameraEnable(false);
 			geoPolicy.setInitLongitude(dataInfo.getLongitude().toString());
 			geoPolicy.setInitLatitude(dataInfo.getLatitude().toString());
 			BigDecimal altitude = new BigDecimal(dataInfo.getAltitude().toString());

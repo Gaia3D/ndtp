@@ -57,7 +57,7 @@ comment on column data_group.insert_date is '등록일';
 create table data_info(
 	data_id						bigint,
 	data_group_id				integer								not null,
-	converter_job_file_id		bigint,
+	converter_job_id		bigint,
 	data_key					varchar(128)						not null,
 	data_name					varchar(256),
 	data_type					varchar(30),
@@ -87,7 +87,7 @@ create table data_info(
 comment on table data_info is 'Data 정보';
 comment on column data_info.data_id is '고유번호';
 comment on column data_info.data_group_id is 'data_group 고유번호';
-comment on column data_info.converter_job_file_id is 'converter job file 고유번호';
+comment on column data_info.converter_job_id is 'converter job 고유번호';
 comment on column data_info.data_key is 'data 고유 식별번호';
 comment on column data_info.data_name is 'data 이름';
 comment on column data_info.data_type is '데이터 타입(중복). 3ds,obj,dae,collada,ifc,las,citygml,indoorgml,etc';

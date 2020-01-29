@@ -104,7 +104,7 @@
 										<th scope="col" class="col-name">공유 유형</th>
 										<th scope="col" class="col-name">데이터 타입</th>
 										<th scope="col" class="col-name">데이터명</th>
-										<th scope="col" class="col-name">파일 개수</th>
+										<th scope="col" class="col-name">3D파일/전체파일</th>
 										<th scope="col" class="col-name">Converter 횟수</th>
 										<th scope="col" class="col-functions">Converter</th>
 										<th scope="col" class="col-functions">삭제</th>
@@ -146,7 +146,12 @@
 													${uploadData.dataName }
 											</a>
 										</td>
-										<td class="col-count"><fmt:formatNumber value="${uploadData.fileCount}" type="number"/> 개</td>
+										<td class="col-count">
+											<span style="color:blue; font-weight: bold;">
+											<fmt:formatNumber value="${uploadData.converterTargetCount}" type="number"/>
+											</span> / 
+											<fmt:formatNumber value="${uploadData.fileCount}" type="number"/> 개
+										</td>
 										<td class="col-count"><fmt:formatNumber value="${uploadData.converterCount}" type="number"/> 건</td>
 										<td class="col-functions">
 											<span class="button-group">

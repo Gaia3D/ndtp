@@ -134,16 +134,16 @@
 									<td class="col-toggle">${dataInfoLog.altitude}</td>
 									<td class="col-toggle">
 										<span class="icon-glyph glyph-on on"></span>
-		<c:if test="${dataInfoLog.status eq 'request'}">
+		<c:if test="${dataInfoLog.status eq 'REQUEST'}">
 										<span class="icon-text">요청</span>
 		</c:if>
-		<c:if test="${dataInfoLog.status eq 'complete'}">
+		<c:if test="${dataInfoLog.status eq 'APPROVAL'}">
 										<span class="icon-text">승인</span>
 		</c:if>
-		<c:if test="${dataInfoLog.status eq 'reject'}">
+		<c:if test="${dataInfoLog.status eq 'REJECT'}">
 										<span class="icon-text">반려</span>
 		</c:if>
-		<c:if test="${dataInfoLog.status eq 'rollback'}">
+		<c:if test="${dataInfoLog.status eq 'ROLLBACK'}">
 										<span class="icon-text">원복</span>
 		</c:if>
 									</td>
@@ -248,7 +248,7 @@
 		$("#userIdInfo").html(dataGroup.userId);
 		$("#basicInfo").html(dataGroup.basic);
 		$("#availableInfo").html(dataGroup.available);
-		$("#locationInfo").html(dataGroup.longitude + "/" + dataGroup.latitude);
+		$("#locationInfo").html(dataGroup.longitude + " / " + dataGroup.latitude);
 		$("#dataCountInfo").html(dataGroup.dataCount);
 		$("#metainfoInfo").html(dataGroup.metainfo);
 		$("#descriptionInfo").html(dataGroup.description);

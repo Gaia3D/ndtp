@@ -58,7 +58,7 @@
 	<!-- Data 목록 -->
 	<select id="getAllListData" parameterType="dataInfo" resultType="dataInfo">
 		/* getAllListData */
-		SELECT A.*, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude, B.data_group_name, B.data_group_target
+		SELECT A.*, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude, B.data_group_name, B.data_group_target, B.data_group_key
 		FROM data_info A, data_group B
 		WHERE A.data_group_id = #{dataGroupId}
 			AND A.data_group_id = B.data_group_id
@@ -74,7 +74,7 @@
 	<!-- Data 목록 -->
 	<select id="getListData" parameterType="dataInfo" resultType="dataInfo">
 		/* getListData */
-		SELECT *, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude, B.data_group_name
+		SELECT *, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude, B.data_group_name, B.data_group_key
 		FROM data_info A, data_group B
 		WHERE A.data_group_Id = B.data_group_id
 			<if test="dataGroupId != null and dataGroupId > 0">
@@ -133,7 +133,7 @@
 	<!-- Data 정보 -->
 	<select id="getData" parameterType="dataInfo" resultType="dataInfo">
 		/* getData */
-		SELECT A.*, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude, B.data_group_name, B.data_group_target
+		SELECT A.*, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude, B.data_group_name, B.data_group_target, B.data_group_key
 		FROM data_info A, data_group B
 		WHERE data_id = #{dataId}
 			AND A.data_group_id = B.data_group_id
@@ -192,13 +192,13 @@
 			AND data_id != #{dataId}
 	</select>
 	
-	<!-- converterJobFile 정보를 이용하여 data 정보 취득 -->
-	<select id="getDataByConverterJobFile" parameterType="dataInfo" resultType="dataInfo">
-		/* getDataByConverterJobFile */
-		SELECT * 
+	<!-- converterJob 정보를 이용하여 data 정보 취득 -->
+	<select id="getDataByConverterJob" parameterType="dataInfo" resultType="dataInfo">
+		/* getDataByConverterJob */
+		SELECT data_id, data_group_id
 		FROM data_info 
 		WHERE user_id = #{userId}
-			AND converter_job_file_id = #{converterJobFileId}
+			AND converter_job_id = #{converterJobId}
 	</select>
 	
 	<!-- Data Attribute 정보 -->
@@ -216,7 +216,7 @@
     		SELECT NEXTVAL('data_info_seq')
   		</selectKey>
 		INSERT INTO data_info(
-			data_id, data_group_id, converter_job_file_id, data_key, data_name, data_type, sharing, user_id, mapping_type,
+			data_id, data_group_id, converter_job_id, data_key, data_name, data_type, sharing, user_id, mapping_type,
 			<if test="location != null">
 			location,
 			</if>
@@ -226,7 +226,7 @@
 			</if>
 			status, description
 		) VALUES (
-			#{dataId}, #{dataGroupId}, #{converterJobFileId}, #{dataKey}, #{dataName}, #{dataType}, #{sharing}, #{userId}, #{mappingType},
+			#{dataId}, #{dataGroupId}, #{converterJobId}, #{dataKey}, #{dataName}, #{dataType}, #{sharing}, #{userId}, #{mappingType},
 			<if test="location != null">
 			ST_GeomFromText(#{location}, 4326),
 			</if>
@@ -246,8 +246,8 @@
 			<if test="dataGroupId != null and dataGroupId > 0">
 			data_group_id = #{dataGroupId},
 			</if>
-			<if test="converterJobFileId != null and converterJobFileId > 0">
-			converter_job_file_id = #{converterJobFileId},
+			<if test="converterJobId != null and converterJobId > 0">
+			converter_job_id = #{converterJobId},
 			</if>
 			<if test="sharing != null and sharing != ''">
 			sharing = #{sharing},
@@ -333,12 +333,15 @@
 			AND user_id = #{userId}
 	</delete>
 	
-	<!-- converterJobFile 정보를 이용하여 data 정보 삭제 -->
-	<delete id="deleteDataByConverterJobFile" parameterType="dataInfo">
-		/* deleteDataByConverterJobFile */
+	<!-- converterJob 정보를 이용하여 data 정보 삭제 -->
+	<delete id="deleteDataByConverterJob" parameterType="dataInfo">
+		/* deleteDataByConverterJob */
 		DELETE
 		FROM data_info 
 		WHERE user_id = #{userId}
-			AND converter_job_file_id = #{converterJobFileId}
+			AND converter_job_id = #{converterJobId}
+			<if test="dataId != null and dataId != ''">
+			AND data_id = #{dataId}
+			</if>
 	</delete>
 </mapper>
