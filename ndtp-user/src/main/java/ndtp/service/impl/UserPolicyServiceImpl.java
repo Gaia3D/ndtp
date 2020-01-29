@@ -10,7 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.GeoPolicy;
+import ndtp.domain.Layer;
+import ndtp.domain.LayerGroup;
 import ndtp.domain.UserPolicy;
+import ndtp.persistence.LayerGroupMapper;
 import ndtp.persistence.UserPolicyMapper;
 import ndtp.service.GeoPolicyService;
 import ndtp.service.LayerService;
@@ -27,6 +30,8 @@ public class UserPolicyServiceImpl implements UserPolicyService {
 	private GeoPolicyService geoPolicyService;
 	@Autowired
 	private LayerService layerService;
+	@Autowired
+	private LayerGroupMapper layerGroupMapper;
 
     @Transactional(readOnly = true)
     public UserPolicy getUserPolicy(String userId) {
@@ -94,11 +99,21 @@ public class UserPolicyServiceImpl implements UserPolicyService {
 	}
     
     private String defaultLayers() {
-    	List<String> layerKeyList = layerService.getListDefaultDisplayLayer();
+    	List<LayerGroup> layerGroupList = layerGroupMapper.getListLayerGroup();
+    	List<String> baseLayerList = new ArrayList<>();
     	String dataStore = geoPolicyService.getGeoPolicy().getGeoserverDataStore();
-    	String baseLayers = layerKeyList.stream()
-    				.map(layerKey -> String.valueOf(dataStore + ":" + layerKey))
-    				.collect(Collectors.joining(","));
-    	return baseLayers.toString();
+		layerGroupList.stream()
+						.forEach(group -> {
+							Layer layer = Layer.builder()
+											.layerGroupId(group.getLayerGroupId())
+											.build();
+							baseLayerList.addAll(layerService.getListDefaultDisplayLayer(layer));
+						});
+		
+		String baseLayers = baseLayerList.stream()
+				.map(layerKey -> String.valueOf(dataStore + ":" + layerKey))
+				.collect(Collectors.joining(","));
+		
+    	return baseLayers;
     }
 }

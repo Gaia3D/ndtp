@@ -11,10 +11,14 @@
         LEFT JOIN layer_group b
         ON a.layer_group_id = b.layer_group_id
         WHERE a.layer_group_id = #{layerGroupId}
+        ORDER BY z_index
     </select>
     
-    <select id="getListDefaultDisplayLayer" resultType="string">
+    <select id="getListDefaultDisplayLayer" parameterType="layer" resultType="string">
         /* getListDefaultDisplayLayer */
-        SELECT layer_key FROM layer WHERE default_display = TRUE
+        SELECT layer_key FROM layer
+        WHERE layer_group_id = #{layerGroupId} 
+        AND default_display = TRUE
+        ORDER BY z_index
     </select>
 </mapper>
