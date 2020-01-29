@@ -265,15 +265,30 @@
 			dataType: "json",
 			success: function(msg){
 				if(msg.statusCode <= 200) {
+					
+					
+					var sharing = msg.dataGroup.sharing;
+					
+					if(sharing == "common") {
+						sharing = "공통";
+					} else if(sharing == "public") {
+						sharing = "공개";
+					} else if(sharing == "private") {
+						sharing = "비공개";
+					} else if(sharing == "group") {
+						sharing = "그룹";
+					}
+					
 					$("#dataGroupNameInfo").html(msg.dataGroup.dataGroupName);
 					$("#dataGroupKeyInfo").html(msg.dataGroup.dataGroupKey);
-					$("#sharingInfo").html(msg.dataGroup.sharing);
-					$("#basicInfo").html(msg.dataGroup.basic);
-					$("#availableInfo").html(msg.dataGroup.available);
+					$("#sharingInfo").html(sharing);
+					$("#basicInfo").html(msg.dataGroup.basic?'기본':'선택');
+					$("#availableInfo").html(msg.dataGroup.available?'사용':'미사용');
 					$("#locationInfo").html(msg.dataGroup.longitude + " / " + msg.dataGroup.latitude);
 					$("#dataCountInfo").html(msg.dataGroup.dataCount);
 					$("#metainfoInfo").html(msg.dataGroup.metainfo);
 					$("#descriptionInfo").html(msg.dataGroup.description);
+					
 				} else {
 					alert(JS_MESSAGE[msg.errorCode]);
 				}
