@@ -26,6 +26,16 @@
 				</tr>
 				<tr>
 					<th class="col-label l" scope="row">
+						<form:label path="shapeUploadType">shpae 업로딩 가능 확장자</form:label>
+						<span class="icon-glyph glyph-emark-dot color-warning"></span>
+					</th>
+					<td class="col-input">
+						<form:input path="shapeUploadType" maxlength="256" cssClass="l" />
+						<form:errors path="shapeUploadType" cssClass="error" />
+					</td>
+				</tr>
+				<tr>
+					<th class="col-label l" scope="row">
 						<form:label path="userUploadMaxFilesize">최대 업로딩 사이즈</form:label>
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>

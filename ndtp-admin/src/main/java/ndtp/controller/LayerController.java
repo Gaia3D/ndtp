@@ -53,6 +53,7 @@ import ndtp.domain.Pagination;
 import ndtp.domain.Policy;
 import ndtp.domain.RoleKey;
 import ndtp.domain.ShapeFileExt;
+import ndtp.domain.ShapeFileField;
 import ndtp.domain.UserSession;
 import ndtp.geospatial.ShapeFileParser;
 import ndtp.service.GeoPolicyService;
@@ -319,6 +320,15 @@ public class LayerController implements AuthorizationController {
 				}
 			}
 			
+			// shape 필수 파일 확인 
+			errorCode = shapeFileValidate(layerFileInfoList);
+			if(!StringUtils.isEmpty(errorCode)) {
+				log.info("@@@@@@@@@@@@ errorCode = {}", errorCode);
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", errorCode);
+	            return result;
+			}
+			
 			// shp 파일 필수 필드 확인
 			ShapeFileParser shapeFileParser = new ShapeFileParser(makedDirectory + groupFileName + "." + ShapeFileExt.SHP.getValue());
 			if(!shapeFileParser.fieldValidate()) {
@@ -484,6 +494,15 @@ public class LayerController implements AuthorizationController {
 					layerFileInfoList.add(layerFileInfo);
                 }
             }
+            
+            // shape 필수 파일 확인 
+ 			errorCode = shapeFileValidate(layerFileInfoList);
+ 			if(!StringUtils.isEmpty(errorCode)) {
+ 				log.info("@@@@@@@@@@@@ errorCode = {}", errorCode);
+ 				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+ 				result.put("errorCode", errorCode);
+ 	            return result;
+ 			}
             
             // shp 파일 필수 필드 확인
  			ShapeFileParser shapeFileParser = new ShapeFileParser(makedDirectory + groupFileName + "." + ShapeFileExt.SHP.getValue());
@@ -921,6 +940,22 @@ public class LayerController implements AuthorizationController {
         }
 
         return null;
+    }
+    
+    // shape필수 파일 있는지 확인 
+    private String shapeFileValidate(List<LayerFileInfo> layerFileInfoList) {
+    	if(!layerFileInfoList.isEmpty()) {
+    		long validCount = layerFileInfoList.stream()
+    				.filter(layerFileInfo -> {
+    					String fileExt = layerFileInfo.getFileExt().toLowerCase().trim();
+    					return fileExt.equals(ShapeFileExt.SHP.getValue()) || fileExt.equals(ShapeFileExt.DBF.getValue()) || fileExt.equals(ShapeFileExt.SHX.getValue());
+    				})
+    				.count();
+    		if(ShapeFileExt.values().length-1 != (int)validCount) {
+    			return "upload.shpfile.invalid";
+    		}
+    	}
+    	return null;
     }
 
     /**

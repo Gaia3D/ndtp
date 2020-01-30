@@ -139,7 +139,9 @@ public class Policy {
  	// 최대 업로딩 사이즈(단위M). 기본값 10000M
  	private Long userUploadMaxFilesize;
  	// 1회, 최대 업로딩 파일 수. 기본값 500개
- 	private Integer userUploadMaxCount;	
+ 	private Integer userUploadMaxCount;
+ 	// shape 파일 업로드 가능 확장자
+ 	private String shapeUploadType;
  	
  	// 등록일
  	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")

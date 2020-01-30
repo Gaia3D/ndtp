@@ -61,6 +61,7 @@ create table policy(
 	user_converter_type						varchar(256)		default '3ds,obj,dae,collada,ifc,las,citygml,indoorgml',
 	user_upload_max_filesize				integer				default 10000,
 	user_upload_max_count					integer				default 500,
+	shape_upload_type						varchar(256)		default 'cpg,dbf,idx,sbn,sbx,shp,shx,prj,qpj,zip',
 	
 	insert_date								timestamp with time zone			default now(),
 	constraint policy_pk primary key (policy_id)	

@@ -3,6 +3,8 @@ package ndtp.domain;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.geotools.data.shapefile.dbf.DbaseFileHeader;
 import org.geotools.data.shapefile.dbf.DbaseFileReader;
@@ -10,9 +12,8 @@ import org.geotools.data.shapefile.files.ShpFiles;
 import org.junit.jupiter.api.Test;
 
 
-public class ShapeFileValidation {
+public class ShapeFileValidationTest {
 	
-	@Test
 	public void test() {
 		DbaseFileReader r = null;
         try {
@@ -44,5 +45,31 @@ public class ShapeFileValidation {
         } catch (IOException e) {
             e.printStackTrace();
         } 
+	}
+	
+	@Test
+	public void count() {
+		LayerFileInfo file0 = new LayerFileInfo();
+		file0.setFileExt("shp");
+		LayerFileInfo file1 = new LayerFileInfo();
+		file1.setFileExt("dbf");
+		LayerFileInfo file2 = new LayerFileInfo();
+		file2.setFileExt("shx");
+		LayerFileInfo file3 = new LayerFileInfo();
+		file3.setFileExt("prj");
+		List<LayerFileInfo> layerFileInfoList = new ArrayList<>();
+		layerFileInfoList.add(file0);
+		layerFileInfoList.add(file1);
+//		layerFileInfoList.add(file2);
+//		layerFileInfoList.add(file3);
+		long validCount = layerFileInfoList.stream()
+				.filter(layerFileInfo -> {
+					String fileExt = layerFileInfo.getFileExt().toLowerCase();
+					return fileExt.equals(ShapeFileExt.SHP.getValue()) || fileExt.equals(ShapeFileExt.DBF.getValue()) || fileExt.equals(ShapeFileExt.SHX.getValue());
+				})
+				.count();
+		
+		System.out.println("validCount ======================== " + validCount);
+		System.out.println("ShapeFileExt enum size ======= " + ShapeFileExt.values().length);
 	}
 }

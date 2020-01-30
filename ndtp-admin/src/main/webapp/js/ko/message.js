@@ -160,6 +160,7 @@ JS_MESSAGE["data.group.key.duplication.check"] = "데이터 그룹 Key 중복 �
 JS_MESSAGE["upload.data.id.empty"] = "업로더 데이터 삭제 정보가 유효하지 않습니다.";
 JS_MESSAGE["upload.file.type.invalid"] = "업로드 파일 타입이 유효하지 않습니다.";
 JS_MESSAGE["upload.shpfile.requried"] = "enable_yn, version_id 필드가 필요합니다.";
+JS_MESSAGE["upload.shpfile.invalid"] = "shp, shx, dbf 파일이 필요합니다.";
 
 JS_MESSAGE["converter.title.empty"] = "제목을 입력하여 주십시오.";
 JS_MESSAGE["converter.usf.empty"] = "Unit Scale Factor 를 입력하여 주십시오.";

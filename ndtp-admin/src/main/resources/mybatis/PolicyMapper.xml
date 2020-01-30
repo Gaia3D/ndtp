@@ -98,8 +98,10 @@
 		/* updatePolicyUserUpload */
 		UPDATE policy
 		SET user_upload_type = #{userUploadType},
+			user_converter_type = #{userConverterType},
 			user_upload_max_filesize = #{userUploadMaxFilesize},
-			user_upload_max_count = #{userUploadMaxCount}
+			user_upload_max_count = #{userUploadMaxCount},
+			shape_upload_type = #{shapeUploadType}
 		WHERE policy_id = #{policyId}
 	</update>
 	
