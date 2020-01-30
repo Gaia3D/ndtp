@@ -199,6 +199,7 @@
 			<button type="button" class="zoomout" id="mapCtrlZoomOut" title="축소">축소</button>
 			<button type="button" class="measures distance" id="mapCtrlDistance" data-type="LineString" title="거리">거리</button>
 			<button type="button" class="measures area" id="mapCtrlArea" data-type="Polygon" title="면적">면적</button>
+			<button type="button" id="mapCapture" class="" data-type="" title="화면캡처">캡처</button>
 		</div>
 		<div class="rotate"> 
 			<button type="button" class="rotateReset on" id="rotateReset" title="방향초기화">방향 초기화</button>
@@ -279,6 +280,7 @@
 <script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>
 <script type="text/javascript" src="/externlib/decodeTextAlternative/encoding-indexes.js"></script>
 <script type="text/javascript" src="/externlib/decodeTextAlternative/encoding.js"></script>
+<script type="text/javascript" src="/externlib/moment-2.22.2/moment-with-locales.min.js"></script>
 <script type="text/javascript" src="/js/mago3d.js"></script>
 <script type="text/javascript" src="/js/mago3d_lx.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
@@ -288,6 +290,7 @@
 <script type="text/javascript" src="/js/${lang}/data-info.js"></script>
 <script type="text/javascript" src="/js/${lang}/user-policy.js"></script>
 <%-- <script type="text/javascript" src="/js/${lang}/layer.js"></script> --%>
+<script type="text/javascript" src="/js/${lang}/map-data-controll.js"></script>
 
 <script type="text/javascript">
 	$(document).ready(function() {

@@ -1,22 +1,23 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <style>
 .dcRangeBtn{
-height: 14px;
-width: 14px;
-margin-top: 4px;
-margin-left: 3px;
-background-color: black;
-border-radius:10px;
+	height: 14px;
+	width: 14px;
+	margin-top: 4px;
+	margin-left: 3px;
+	background-color: black;
+	border-radius:10px;
 }
 </style>
 <div class="ctrlWrap">
 	<div class="zoom">
-		<button type="button" class="reset" id="mapCtrlReset" title="초기화">초기화</button>
-		<button type="button" class="zoomall" id="mapCtrlAll" title="전체보기">전체보기</button>
-		<button type="button" class="zoomin" id="mapCtrlZoomIn" title="확대">확대</button>
-		<button type="button" class="zoomout" id="mapCtrlZoomOut" title="축소">축소</button>
-		<button type="button" class="measures distance" id="mapCtrlDistance" data-type="LineString" title="거리">거리</button>
-		<button type="button" class="measures area" id="mapCtrlArea" data-type="Polygon" title="면적">면적</button>
+		<button type="button" id="mapCtrlReset" class="reset" title="초기화">초기화</button>
+		<button type="button" id="mapCtrlAll" class="zoomall" title="전체보기">전체보기</button>
+		<button type="button" id="mapCtrlZoomIn" class="zoomin" title="확대">확대</button>
+		<button type="button" id="mapCtrlZoomOut" class="zoomout" title="축소">축소</button>
+		<button type="button" id="mapCtrlDistance" class="measures distance" data-type="LineString" title="거리">거리</button>
+		<button type="button" id="mapCtrlArea" class="measures area" data-type="Polygon" title="면적">면적</button>
+		<button type="button" id="mapCapture" class="" data-type="" title="화면캡처">캡처</button>
 	</div>
 	<div class="rotate"> 
 		<button type="button" class="rotateReset on" id="rotateReset" title="방향초기화"></button>
