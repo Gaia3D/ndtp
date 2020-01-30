@@ -291,7 +291,7 @@ function MapControll(viewer, option) {
 	 */
     
     viewer.camera.changed.addEventListener(function() {
-    	  var currentHeading = Math.round( Cesium.Math.toDegrees(viewer.camera.heading))
+    	  var currentHeading = Math.round( Cesium.Math.toDegrees(viewer.camera.heading));
     	  //console.log('Heading:', currentHeading)
     	  
     	  if(currentHeading > 180){
@@ -353,6 +353,51 @@ function MapControll(viewer, option) {
         }
     });
     
+    $('#mapCapture').click(function() {
+    	// console.log("맵컨트롤 : 저장");
+        var targetResolutionScale = 1.0;
+        var timeout = 1000; // in ms
+
+        var scene =that._scene;
+        if (!scene) {
+            console.error("No scene");
+        }
+
+        // define callback functions
+        var prepareScreenshot = function(){
+            var canvas = scene.canvas;
+            viewer.resolutionScale = targetResolutionScale;
+            scene.preRender.removeEventListener(prepareScreenshot);
+            // take snapshot after defined timeout to allow scene update (ie. loading data)
+            setTimeout(function(){
+                scene.postRender.addEventListener(takeScreenshot);
+            }, timeout);
+        }
+
+        var takeScreenshot = function(){
+            scene.postRender.removeEventListener(takeScreenshot);
+            var canvas = scene.canvas;
+            canvas.toBlob(function(blob){
+                var url = URL.createObjectURL(blob);
+                downloadURI(url, "snapshot-" + moment().format("YYYYMMDDHHmmss") + ".png");
+                // reset resolutionScale
+                viewer.resolutionScale = 1.0;
+            });
+        }
+
+        scene.preRender.addEventListener(prepareScreenshot);
+    });
+    
+    function downloadURI(uri, name) {
+        var link = document.createElement("a");
+        link.download = name;
+        link.href = uri;
+        // mimic click on "download button"
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        delete link;
+    }
     
     $('#mapCtrlZoomIn').click(function () {
         console.log("맵컨트롤 : 확대");
