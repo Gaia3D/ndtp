@@ -15,7 +15,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,19 +25,18 @@ import ndtp.domain.Pagination;
 import ndtp.domain.Role;
 import ndtp.service.RoleService;
 import ndtp.utils.DateUtils;
-import ndtp.utils.FormatUtils;
 
 @Slf4j
 @Controller
 @RequestMapping("/role/")
 public class RoleController {
-	
+
 	private final RoleService roleService;
-	
+
 	public  RoleController(RoleService roleService) {
 		this.roleService = roleService;
 	}
-	
+
 	/**
 	 * Role 목록
 	 * @param request
@@ -47,34 +45,34 @@ public class RoleController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = "list")
+	@GetMapping(value = "list")
 	public String list(HttpServletRequest request, @RequestParam(defaultValue="1") String pageNo, Role role, Model model) {
-		
+
 		if(!StringUtils.isEmpty(role.getStartDate())) {
 			role.setStartDate(role.getStartDate().substring(0, 8) + DateUtils.START_TIME);
 		}
 		if(!StringUtils.isEmpty(role.getEndDate())) {
 			role.setEndDate(role.getEndDate().substring(0, 8) + DateUtils.END_TIME);
 		}
-		
+
 		long totalCount = roleService.getRoleTotalCount(role);
 		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(role), totalCount, Long.valueOf(pageNo).longValue());
 		log.info("@@ pagination = {}", pagination);
-		
+
 		role.setOffset(pagination.getOffset());
 		role.setLimit(pagination.getPageRows());
 		List<Role> roleList = new ArrayList<>();
 		if(totalCount > 0l) {
 			roleList = roleService.getListRole(role);
 		}
-		
+
 		model.addAttribute(pagination);
 		model.addAttribute("role", role);
 		model.addAttribute("roleList", roleList);
-		
+
 		return "/role/list";
 	}
-	
+
 	/**
 	 * Role 등록 화면
 	 * @param model
@@ -84,11 +82,11 @@ public class RoleController {
 	public String input(Model model) {
 		Role role = new Role();
 		role.setMethodMode("insert");
-		
+
 		model.addAttribute("role", role);
 		return "/role/input";
 	}
-	
+
 	/**
 	 * Role 등록
 	 * @param role
@@ -104,7 +102,7 @@ public class RoleController {
 		String errorCode = null;
 		String message = null;
 		try {
-			
+
 			if(bindingResult.hasErrors()) {
 				message = bindingResult.getAllErrors().get(0).getDefaultMessage();
 				log.info("@@@@@ message = {}", message);
@@ -113,7 +111,7 @@ public class RoleController {
 				result.put("message", message);
 	            return result;
 			}
-		
+
 			roleService.insertRole(role);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -121,13 +119,13 @@ public class RoleController {
             errorCode = "db.exception";
             message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 		}
-		
+
 		result.put("statusCode", statusCode);
 		result.put("errorCode", errorCode);
 		result.put("message", message);
 		return result;
 	}
-	
+
 	/**
 	 * 수정 페이지로 이동
 	 * @param request
@@ -136,15 +134,15 @@ public class RoleController {
 	 * @return
 	 */
 	@RequestMapping(value = "modify")
-	public String modify(HttpServletRequest request, @RequestParam Integer roleId, Model model) {		
-		
+	public String modify(HttpServletRequest request, @RequestParam Integer roleId, Model model) {
+
 		Role role = roleService.getRole(roleId);
 
 		model.addAttribute(role);
-		
+
 		return "/role/modify";
 	}
-	
+
 	/**
 	 * Role 정보 수정
 	 * @param role
@@ -159,7 +157,7 @@ public class RoleController {
 		int statusCode = 0;
 		String errorCode = null;
 		String message = null;
-		
+
 		try {
 			if(bindingResult.hasErrors()) {
 				message = bindingResult.getAllErrors().get(0).getDefaultMessage();
@@ -169,7 +167,7 @@ public class RoleController {
 				result.put("message", message);
 	            return result;
 			}
-		
+
 			roleService.updateRole(role);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -177,13 +175,13 @@ public class RoleController {
             errorCode = "db.exception";
             message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 		}
-		
+
 		result.put("statusCode", statusCode);
 		result.put("errorCode", errorCode);
 		result.put("message", message);
 		return result;
 	}
-	
+
 	/**
 	 * Role 삭제
 	 * @param roleId
@@ -204,13 +202,13 @@ public class RoleController {
             errorCode = "db.exception";
             message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 		}
-		
+
 		result.put("statusCode", statusCode);
 		result.put("errorCode", errorCode);
 		result.put("message", message);
 		return result;
 	}
-	
+
 	/**
 	 * 검색 조건
 	 * @param search

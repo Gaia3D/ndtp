@@ -55,7 +55,7 @@ public class UserController implements AuthorizationController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = "/list")
+	@GetMapping(value = "/list")
 	public String list(HttpServletRequest request, @RequestParam(defaultValue="1") String pageNo, UserInfo userInfo, Model model) {
 		String roleCheckResult = roleValidate(request);
     	if(roleValidate(request) != null) return roleCheckResult;
