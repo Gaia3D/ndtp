@@ -121,5 +121,6 @@ comment on column policy.user_upload_type is '업로딩 가능 확장자. 3ds,ob
 comment on column policy.user_converter_type is '변환 가능 확장자. 3ds,obj,dae,collada,ifc,las,citygml,indoorgml';
 comment on column policy.user_upload_max_filesize is '최대 업로딩 사이즈(단위M). 500M';
 comment on column policy.user_upload_max_count is '1회, 최대 업로딩 파일 수. 50개';
+comment on column policy.shape_upload_type is 'shape 파일 업로드 가능 확장자';
 
 comment on column policy.insert_date is '등록일';
