@@ -541,6 +541,7 @@ font-size: 17px;
 font-weight: bold;
 text-align: right;
 background: url(/images/ko/ico.png) no-repeat 0 -487px;
+margin-left:-10px;
 }
 
 
@@ -585,7 +586,7 @@ color: #287be4;
 margin: 20px 0;
 }
 .agreeNew > input {
-width: 198px;
+width: 65%;
 padding: 7px 7px 7px 30px;
 border: 2px solid #555;
 background: url(/images/ko/ico.png) no-repeat 7px -490px;	
@@ -694,6 +695,13 @@ background-color: #fff;
 }
 button.basicA {
 padding: 8px;
+color: #fff;
+border-radius: 3px;
+border: 1px solid #51515b;
+background-color: #51515b;
+}
+button.basicA:hover {
+padding: 8px;
 color: #51515b;
 border: 1px solid #9898a0;
 border-radius: 3px;
@@ -702,9 +710,16 @@ background-color: #fff;
 button.focusA {
 padding: 8px 30px;
 color: #fff;
-border: 1px solid #414149;
 border-radius: 3px;
+border: 1px solid #51515b;
 background-color: #51515b;
+}
+button.focusA:hover {
+padding: 8px 30px;
+color: #477cdb;
+border: 1px solid #477cdb;
+border-radius: 3px;
+background-color: #fff;
 }
 button.focusC {
 padding: 8px 30px;
@@ -713,7 +728,21 @@ border: 1px solid #9898a0;
 border-radius: 3px;
 background-color: #fff;
 }
+button.focusC:hover {
+padding: 8px 30px;
+color: #477cdb;
+border: 1px solid #477cdb;
+border-radius: 3px;
+background-color: #fff;
+}
 button.focusAgree {
+padding: 8px 12px;
+color: #fff;
+border-radius: 3px;
+border: 1px solid #51515b;
+background-color: #51515b;
+}
+button.focusAgree:hover {
 padding: 8px 12px;
 color: #51515b;
 border: 1px solid #9898a0;
