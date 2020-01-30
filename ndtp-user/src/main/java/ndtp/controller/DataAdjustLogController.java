@@ -17,35 +17,35 @@ import org.springframework.web.bind.annotation.RequestParam;
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
-import ndtp.domain.DataInfoLog;
+import ndtp.domain.DataInfoAdjustLog;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
 import ndtp.domain.UserSession;
+import ndtp.service.DataAdjustLogService;
 import ndtp.service.DataGroupService;
-import ndtp.service.DataLogService;
 import ndtp.service.DataService;
 import ndtp.utils.DateUtils;
 
 /**
- * Data
+ * 데이터 geometry 변경 이력
  * @author jeongdae
  *
  */
 @Slf4j
 @Controller
-@RequestMapping("/data-log")
-public class DataLogController {
+@RequestMapping("/data-adjust-log")
+public class DataAdjustLogController {
 	
 	@Autowired
 	private DataService dataService;
 	@Autowired
 	private DataGroupService dataGroupService;
 	@Autowired
-	private DataLogService dataLogService;
+	private DataAdjustLogService dataAdjustLogService;
 	
 	/**
-	 * 사용자 데이터 수정 화면
+	 * 데이터 geometry 변경 이력 수정 화면
 	 * @param request
 	 * @param dataId
 	 * @param model
@@ -63,64 +63,64 @@ public class DataLogController {
 		
 		model.addAttribute("dataInfo", dataInfo);
 		
-		return "/data-log/modify";
+		return "/data-adjust-log/modify";
 	}
 
 	
 	/**
-	 * Data 목록
+	 * 데이터 geometry 변경 이력 목록
+	 * @param locale
 	 * @param request
-	 * @param dataInfo
+	 * @param dataInfoAdjustLog
 	 * @param pageNo
-	 * @param list_counter
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "list-data-log")
-	public String listDataLog(Locale locale, HttpServletRequest request, DataInfoLog dataInfoLog, @RequestParam(defaultValue="1") String pageNo, Model model) {
+	@GetMapping(value = "/list")
+	public String list(Locale locale, HttpServletRequest request, DataInfoAdjustLog dataInfoAdjustLog, @RequestParam(defaultValue="1") String pageNo, Model model) {
 		
-		log.info("@@ dataInfoLog = {}", dataInfoLog);
+		log.info("@@ dataInfoAdjustLog = {}", dataInfoAdjustLog);
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		
 		DataGroup dataGroup = new DataGroup();
 		dataGroup.setUserId(userSession.getUserId());
 		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup(dataGroup);
 		
-		if(!StringUtils.isEmpty(dataInfoLog.getStartDate())) {
-			dataInfoLog.setStartDate(dataInfoLog.getStartDate().substring(0, 8) + DateUtils.START_TIME);
+		if(!StringUtils.isEmpty(dataInfoAdjustLog.getStartDate())) {
+			dataInfoAdjustLog.setStartDate(dataInfoAdjustLog.getStartDate().substring(0, 8) + DateUtils.START_TIME);
 		}
-		if(!StringUtils.isEmpty(dataInfoLog.getEndDate())) {
-			dataInfoLog.setEndDate(dataInfoLog.getEndDate().substring(0, 8) + DateUtils.END_TIME);
+		if(!StringUtils.isEmpty(dataInfoAdjustLog.getEndDate())) {
+			dataInfoAdjustLog.setEndDate(dataInfoAdjustLog.getEndDate().substring(0, 8) + DateUtils.END_TIME);
 		}
 
-		long totalCount = dataLogService.getDataInfoLogTotalCount(dataInfoLog);
+		long totalCount = dataAdjustLogService.getDataAdjustLogTotalCount(dataInfoAdjustLog);
 		Pagination pagination = new Pagination(	request.getRequestURI(), 
-												getSearchParameters(PageType.LIST, dataInfoLog), 
+												getSearchParameters(PageType.LIST, dataInfoAdjustLog), 
 												totalCount, 
 												Long.valueOf(pageNo).longValue(), 
-												dataInfoLog.getListCounter());
+												dataInfoAdjustLog.getListCounter());
 		log.info("@@ pagination = {}", pagination);
 		
-		dataInfoLog.setOffset(pagination.getOffset());
-		dataInfoLog.setLimit(pagination.getPageRows());
-		List<DataInfoLog> dataInfoLogList = new ArrayList<>();
+		dataInfoAdjustLog.setOffset(pagination.getOffset());
+		dataInfoAdjustLog.setLimit(pagination.getPageRows());
+		List<DataInfoAdjustLog> dataAdjustLogList = new ArrayList<>();
 		if(totalCount > 0l) {
-			dataInfoLogList = dataLogService.getListDataInfoLog(dataInfoLog);
+			dataAdjustLogList = dataAdjustLogService.getListDataAdjustLog(dataInfoAdjustLog);
 		}
 		
 		model.addAttribute(pagination);
 		model.addAttribute("dataGroupList", dataGroupList);
-		model.addAttribute("dataInfoLogList", dataInfoLogList);
-		return "/data/list-data-log";
+		model.addAttribute("dataAdjustLogList", dataAdjustLogList);
+		return "/data-adjust-log/list";
 	}
 	
 	/**
 	 * 검색 조건
 	 * @param pageType
-	 * @param dataInfoLog
+	 * @param dataInfoAdjustLog
 	 * @return
 	 */
-	private String getSearchParameters(PageType pageType, DataInfoLog dataInfoLog) {
-		return dataInfoLog.getParameters();
+	private String getSearchParameters(PageType pageType, DataInfoAdjustLog dataInfoAdjustLog) {
+		return dataInfoAdjustLog.getParameters();
 	}
 }

@@ -23,6 +23,7 @@ import ndtp.domain.AccessLog;
 import ndtp.domain.CivilVoice;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
+import ndtp.domain.DataInfoAdjustLog;
 import ndtp.domain.DataInfoLog;
 import ndtp.domain.DataStatus;
 import ndtp.domain.Key;
@@ -33,6 +34,7 @@ import ndtp.domain.UserStatus;
 import ndtp.domain.Widget;
 import ndtp.service.AccessLogService;
 import ndtp.service.CivilVoiceService;
+import ndtp.service.DataAdjustLogService;
 import ndtp.service.DataGroupService;
 import ndtp.service.DataLogService;
 import ndtp.service.DataService;
@@ -66,7 +68,7 @@ public class MainController {
 	private DataService dataService;
 
 	@Autowired
-	private DataLogService dataLogService;
+	private DataAdjustLogService dataAdjustLogService;
 
 //	@Autowired
 //	private IssueService issueService;
@@ -430,7 +432,7 @@ public class MainController {
 	 */
 	@GetMapping(value = "ajax-data-info-log-widget")
 	@ResponseBody
-	public Map<String, Object> ajaxDataInfoLogWidget(HttpServletRequest request) {
+	public Map<String, Object> ajaxDataAdjustLogWidget(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
 		try {
@@ -442,14 +444,14 @@ public class MainController {
 			String startDate = searchDay + DateUtils.START_TIME;
 			String endDate = today + DateUtils.END_TIME;
 
-			DataInfoLog dataInfoLog = new DataInfoLog();
-			dataInfoLog.setStartDate(startDate);
-			dataInfoLog.setEndDate(endDate);
-			dataInfoLog.setOffset(0l);
-			dataInfoLog.setLimit(WIDGET_LIST_VIEW_COUNT);
-			List<DataInfoLog> dataInfoLogList = dataLogService.getListDataInfoLog(dataInfoLog);
+			DataInfoAdjustLog dataInfoAdjustLog = new DataInfoAdjustLog();
+			dataInfoAdjustLog.setStartDate(startDate);
+			dataInfoAdjustLog.setEndDate(endDate);
+			dataInfoAdjustLog.setOffset(0l);
+			dataInfoAdjustLog.setLimit(WIDGET_LIST_VIEW_COUNT);
+			List<DataInfoAdjustLog> dataAdjustLogList = dataAdjustLogService.getListDataAdjustLog(dataInfoAdjustLog);
 
-			map.put("dataInfoLogList", dataInfoLogList);
+			map.put("dataAdjustLogList", dataAdjustLogList);
 		} catch(Exception e) {
 			e.printStackTrace();
 			result = "db.exception";

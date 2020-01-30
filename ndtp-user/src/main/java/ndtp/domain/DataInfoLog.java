@@ -35,7 +35,7 @@ public class DataInfoLog extends Search {
 	private String methodMode;
 
 	// 고유번호
-	private Long dataInfoLogId;
+	private Long dataLogId;
 	// Data group 고유번호
 	private Integer dataGroupId;
 	// Data project 이름

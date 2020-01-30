@@ -1,3 +1,7 @@
+1 30
+update menu set url = '/data-adjust-log/list' where menu_id = 44;
+commit;
+
 1 29
 update menu set url = '/data-log/list' where menu_id = 44;
 commit;

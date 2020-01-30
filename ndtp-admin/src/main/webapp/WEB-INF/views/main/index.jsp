@@ -654,34 +654,34 @@
 			dataType : "json",
 			success : function(msg) {
 				if (msg.result == "success") {
-					var dataInfoLogList = msg.dataInfoLogList;
+					var dataAdjustLogList = msg.dataAdjustLogList;
 					var content = "";
 					content 	= "<table class=\"widget-table\">"
 								+	"<col class=\"col-left\" />"
 								+	"<col class=\"col-left\" />";
 								+	"<col class=\"col-left\" />";
-					if(dataInfoLogList == null || dataInfoLogList.length == 0) {
+					if(dataAdjustLogList == null || dataAdjustLogList.length == 0) {
 						content += 	"<tr>"
 								+	"	<td colspan=\"3\" class=\"col-none\">데이터 변경 요청 이력이 존재하지 않습니다.</td>"
 								+	"</tr>";
 					} else {
-						for(i=0; i<dataInfoLogList.length; i++ ) {
-							var dataInfoLog = null;
-							dataInfoLog = dataInfoLogList[i];
+						for(i=0; i<dataAdjustLogList.length; i++ ) {
+							var dataInfoAdjustLog = null;
+							dataInfoAdjustLog = dataAdjustLogList[i];
 							var viewStatus = "";
-							if(dataInfoLog.status === "0") viewStatus = "<spring:message code='request'/>";
-							else if(dataInfoLog.status === "1") viewStatus = "<spring:message code='complete'/>";
-							else if(dataInfoLog.status === "2") viewStatus = "<spring:message code='reject'/>";
-							else if(dataInfoLog.status === "3") viewStatus = "<spring:message code='reset'/>";
+							if(dataInfoAdjustLog.status === "0") viewStatus = "<spring:message code='request'/>";
+							else if(dataInfoAdjustLog.status === "1") viewStatus = "<spring:message code='complete'/>";
+							else if(dataInfoAdjustLog.status === "2") viewStatus = "<spring:message code='reject'/>";
+							else if(dataInfoAdjustLog.status === "3") viewStatus = "<spring:message code='reset'/>";
 
 							content = content
 								+ 	"<tr>"
 								+ 	"	<td class=\"col-left\">"
 								+		"	<span class=\"index\"></span>"
-								+		"	<em>" + dataInfoLog.dataName + "</em>"
+								+		"	<em>" + dataInfoAdjustLog.dataName + "</em>"
 								+		"</td>"
 								+ 		"<td class=\"col-left\">" + viewStatus + "</td>"
-								+ 		"<td class=\"col-left\">" + dataInfoLog.viewInsertDate + "</td>"
+								+ 		"<td class=\"col-left\">" + dataInfoAdjustLog.viewInsertDate + "</td>"
 								+ 	"</tr>";
 						}
 					}
@@ -692,6 +692,7 @@
 				}
 			},
 			error : function(request, status, error) {
+				console.log("code : " + request.status + "\n message : " + request.responseText + "\n error : " + error);
 				alert(JS_MESSAGE["ajax.error.message"]);
 			}
 		});

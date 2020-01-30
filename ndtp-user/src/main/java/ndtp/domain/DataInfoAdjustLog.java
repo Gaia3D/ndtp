@@ -13,7 +13,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Data 정보 이력
+ * Data geometry 정보 변경 요청 이력
  * @author Cheon JeongDae
  *
  */
@@ -23,7 +23,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DataInfoLog extends Search {
+public class DataInfoAdjustLog extends Search {
 	
 	// 사용자명
 	private String userId;
@@ -35,7 +35,7 @@ public class DataInfoLog extends Search {
 	private String methodMode;
 
 	// 고유번호
-	private Long dataLogId;
+	private Long dataAdjustLogId;
 	// Data group 고유번호
 	private Integer dataGroupId;
 	// Data project 이름

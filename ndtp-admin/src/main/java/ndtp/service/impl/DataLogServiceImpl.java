@@ -64,7 +64,7 @@ public class DataLogServiceImpl implements DataLogService {
 	 */
 	@Transactional
 	public int updateDataInfoLogStatus(DataInfoLog dataInfoLog) {
-		DataInfoLog dbDataInfoLog = dataLogMapper.getDataInfoLog(dataInfoLog.getDataInfoLogId());
+		DataInfoLog dbDataInfoLog = dataLogMapper.getDataInfoLog(dataInfoLog.getDataLogId());
 		
 		DataInfo dataInfo = new DataInfo();
 		if(ApprovalStatus.APPROVAL == ApprovalStatus.valueOf(dataInfoLog.getStatus().toUpperCase())) {

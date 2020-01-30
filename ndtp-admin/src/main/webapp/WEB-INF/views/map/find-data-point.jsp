@@ -429,10 +429,14 @@
 			
 		dataGroup.datas = dataInfoList;
 		f4dController.addF4dGroup(dataGroup);
-		
-		setTimeout(function() {
+
+		magoInstance.getMagoManager().on(Mago3D.MagoManager.EVENT_TYPE.F4DLOADEND,function(e){
 			flyTo(magoInstance);
-		}, 500);
+		});
+		
+		/* setTimeout(function() {
+			flyTo(magoInstance);
+		}, 500); */
 	}
 	
 	function flyTo(magoInstance) {
