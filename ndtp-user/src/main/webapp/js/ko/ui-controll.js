@@ -1,4 +1,21 @@
 $(function() {
+	var observerTarget = document.getElementById('contentsWrap');
+	if(observerTarget) {
+		var observerConfig = { attributes: true, attributeFilter:['style'],subtree: false};
+		
+		var observer = new MutationObserver(function(mutations) {
+			var mutation = mutations[0];
+			var display = mutation.target.style.display;
+			var navWidth = document.getElementsByClassName('nav')[0].offsetWidth;
+			var contentWidth = observerTarget.offsetWidth;
+			
+			var offsetWidth = (display === 'none') ? navWidth : navWidth+contentWidth;
+			var cssWidth = 'calc(100% - ' + offsetWidth + 'px)';
+			$('#magoContainer').css('width',cssWidth);
+		});
+		observer.observe(observerTarget, observerConfig);
+	}
+	
 	var currentUrl = location.href;
 	var defaultMenuId = "";
 	

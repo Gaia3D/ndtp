@@ -23225,6 +23225,16 @@ var MagoManager = function()
 	
 	this.f4dController = new F4dController(this);
 	this.effectsManager = new EffectsManager();
+	
+	//CODE.magoCurrentProcess = {
+	//"Unknown"  : 0,
+	//"DepthRendering"  : 1,
+	//"ColorRendering" : 2,
+	//"ColorCodeRendering" : 3,
+	//"DepthShadowRendering" : 4
+
+	this.currentProcess = CODE.magoCurrentProcess.Unknown;
+
 };
 
 MagoManager.prototype = Object.create(Emitter.prototype);
@@ -23237,6 +23247,8 @@ MagoManager.EVENT_TYPE = {
 	'MOUSEMOVE'          	: 'mousemove',
 	'SMARTTILELOADSTART' 	: 'smarttileloadstart',
 	'SMARTTILELOADEND'   	: 'smarttileloadend',
+	'F4DLOADSTART'      		: 'f4dloadstart',
+	'F4DLOADEND'       			: 'f4dloadend',
 	'SELECTEDF4D'      	 	: 'selectedf4d',
 	'SELECTEDF4DMOVED'    : 'selectedf4dmoved',
 	'SELECTEDF4DOBJECT'  	: 'selectedf4dobject',
@@ -23617,7 +23629,7 @@ MagoManager.prototype.upDateSceneStateMatrices = function(sceneState)
 	// update sun if exist.
 	if (!this.isCameraMoving && !this.mouseLeftDown && !this.mouseMiddleDown)
 	{
-		if (this.sceneState.sunSystem && this.sceneState.applySunShadows && this.currentFrustumIdx === 0)
+		if (this.sceneState.sunSystem && this.sceneState.applySunShadows && this.isFarestFrustum())
 		{
 			this.sceneState.sunSystem.updateSun(this);
 		}
@@ -24854,7 +24866,7 @@ MagoManager.prototype.mouseActionLeftUp = function(mouseX, mouseY)
 	}
 	
 	// test zBouncing.************************
-	/*
+	
 	var nodeSelected = this.selectionManager.currentNodeSelected;
 	if (nodeSelected)
 	{
@@ -24865,7 +24877,12 @@ MagoManager.prototype.mouseActionLeftUp = function(mouseX, mouseY)
 		});
 		
 		this.effectsManager.addEffect(nodeId, effect);
-	}*/
+		
+		// shadow on-off test.
+		var data = nodeSelected.data;
+		var attributes = data.attributes;
+		attributes.castShadow = false;
+	}
 };
 
 /**
@@ -25042,8 +25059,31 @@ MagoManager.prototype.keyDown = function(key)
 	}
 	else if (key === 84) // 84 = 't'.***
 	{
-		// do test.***
-		var wcPos = ManagerUtils.calculatePixelPositionWorldCoord(this.getGl(), 1000, 500, undefined, undefined, undefined, undefined, this);
+		// change sunPosition test.***
+		/*
+		var sunSystem = this.sceneState.sunSystem;
+		if (this.dateTest === undefined)
+		{
+			this.dateTest = new Date();
+			this.dateTest.setMonth(2);
+			this.dateTest.setHours(9);
+			this.dateTest.setMinutes(30);
+		}
+		
+		var currHour = this.dateTest.getHours();
+		var currMin = this.dateTest.getMinutes()+10;
+		if (currMin >= 50)
+		{
+			this.dateTest.setMinutes(0);
+			currHour += 1;
+			this.dateTest.setHours(currHour);
+		}
+		else 
+		{
+			this.dateTest.setMinutes(currMin);
+		}
+		sunSystem.setDate(this.dateTest);
+		*/
 		
 		// another test.***
 		if (this.modeler !== undefined)
@@ -28221,12 +28261,21 @@ MagoManager.prototype.makeSmartTile = function(buildingSeedList, projectId, f4dO
 	}
 	this.calculateBoundingBoxesNodes(projectId);
 	
+
+	var auxNodesArray = JSON.parse(JSON.stringify(physicalNodesArray));
 	// now, make smartTiles.
 	// there are 2 general smartTiles: AsiaSide & AmericaSide.
 	var targetDepth = 15;
 	this.smartTileManager.makeTreeByDepth(targetDepth, physicalNodesArray, this);
 
 	this.buildingSeedList.buildingSeedArray.length = 0; // init.
+
+	
+	this.emit(MagoManager.EVENT_TYPE.F4DLOADEND, {
+		type      : MagoManager.EVENT_TYPE.F4DLOADEND,
+		f4d       : auxNodesArray,
+		timestamp : new Date()
+	});
 
 	function getProjectFolderName(json) 
 	{
@@ -34244,6 +34293,12 @@ SunSystem.prototype.getLightsPosHIGHFloat32Array = function()
 	return this.lightPosHIGHFloat32Array;
 };
 
+SunSystem.prototype.setDate = function(date) 
+{
+	this.date = date;
+	this.calculateSunGeographicCoords();
+};
+
 SunSystem.prototype.setAnimation = function(options) 
 {
 	if (options === undefined)
@@ -34271,12 +34326,15 @@ SunSystem.prototype.calculateSunGeographicCoords = function()
 	//https://astronomy.stackexchange.com/questions/20560/how-to-calculate-the-position-of-the-sun-in-long-lat
 	// The boilerplate: fiddling with dates
 	var radToDeg = 180/Math.PI;
-	var date = new Date();
+	if (this.date === undefined)
+	{
+		this.date = new Date();
+		this.date.setMonth(2);
+		this.date.setHours(15);
+		this.date.setMinutes(30);
+	}
 	
-	// test setting hour.
-	date.setMonth(2);
-	date.setHours(15);
-	date.setMinutes(30);
+	var date = this.date;
 	
 	var fullYear = date.getFullYear();
 	var soy = (new Date(date.getFullYear(), 0, 0)).getTime();
@@ -34307,9 +34365,7 @@ SunSystem.prototype.calculateSunGeographicCoords = function()
 
 SunSystem.prototype.updateSun = function(magoManager, options) 
 {
-	// test.
 	this.calculateSunGeographicCoords(); // test.***
-	// end test.---
 	
 	if (this.lightSourcesArray === undefined)
 	{ return; }
@@ -38388,6 +38444,14 @@ CODE.magoMode = {
 	"DRAWING" : 1
 };
 
+CODE.magoCurrentProcess = {
+	"Unknown"              : 0,
+	"DepthRendering"       : 1,
+	"ColorRendering"       : 2,
+	"ColorCodeRendering"   : 3,
+	"DepthShadowRendering" : 4
+};
+
 CODE.modelerMode = {
 	"INACTIVE"                 : 0,
 	"DRAWING_POLYLINE"         : 1,
@@ -39408,257 +39472,6 @@ Policy.prototype.setSsaoRadius = function(ssaoRadius)
 {
 	this.ssaoRadius = ssaoRadius;
 };
-
-'use strict';
-
-/**
- * @alias Effect
- * @class Effect
- */
-var Effect = function(options) 
-{
-	if (!(this instanceof Effect)) 
-	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
-	}
-	
-	// Test class to do effects.
-	this.effectsManager;
-	this.birthData;
-	this.durationSeconds;
-	this.effectType = "unknown";
-	
-	if (options)
-	{
-		if (options.effectType)
-		{ this.effectType = options.effectType; }
-		
-		if (options.durationSeconds)
-		{ this.durationSeconds = options.durationSeconds; }
-	}
-	
-	// available effectType:
-	// 1: zBounceLinear
-	// 2: zBounceSpring
-};
-
-/**
- *
- */
-Effect.prototype.execute = function(currTimeSec)
-{
-	var effectFinished = false;
-	if (this.birthData === undefined)
-	{
-		this.birthData = currTimeSec;
-		return effectFinished;
-	}
-	
-	
-	
-	if (this.effectType === "zBounceSpring")
-	{
-		var timeDiffSeconds = (currTimeSec - this.birthData);
-		var zScale = 1.0;
-		var gl = this.effectsManager.gl;
-		if (timeDiffSeconds >= this.durationSeconds)
-		{
-			zScale = 1.0;
-			effectFinished = true; // if return true, then this effect is finished, so this effect will be deleted.
-		}
-		else
-		{
-			//https://en.wikipedia.org/wiki/Damped_sine_wave
-			var amp = 1.0;
-			var lambda = 0.1; // is the decay constant, in the reciprocal of the time units of the X axis.
-			var w = 5/this.durationSeconds; // angular frequency.
-			var t = timeDiffSeconds;
-			var fita = 0.0; // initial angle in t=0.
-			zScale = amp*Math.pow(Math.E, -lambda*t)*(Math.cos(w*t+fita) + Math.sin(w*t+fita));
-			zScale = (1.0-zScale)*Math.log(t/this.durationSeconds+1.1);
-		}
-		gl.uniform3fv(this.effectsManager.currShader.scaleLC_loc, [1.0, 1.0, zScale]); // init referencesMatrix.
-		return effectFinished;
-	}
-	else if (this.effectType === "zBounceLinear")
-	{
-		var timeDiffSeconds = (currTimeSec - this.birthData);
-		var zScale = 1.0;
-		var gl = this.effectsManager.gl;
-		if (timeDiffSeconds >= this.durationSeconds)
-		{
-			zScale = 1.0;
-			effectFinished = true; // if return true, then this effect is finished, so this effect will be deleted.
-		}
-		else
-		{
-			zScale = timeDiffSeconds/this.durationSeconds;
-		}
-		gl.uniform3fv(this.effectsManager.currShader.scaleLC_loc, [1.0, 1.0, zScale]); // init referencesMatrix.
-		return effectFinished;
-	}
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'use strict';
-
-/**
- * @alias EffectsManager
- * @class EffectsManager
- */
-var EffectsManager = function(options) 
-{
-	if (!(this instanceof EffectsManager)) 
-	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
-	}
-	
-	this.effectsObjectsMap = {};
-	this.gl;
-	this.currShader;
-};
-
-/**
- *
- */
-EffectsManager.prototype.setCurrentShader = function(shader)
-{
-	this.currShader = shader;
-};
-
-/**
- *
- */
-EffectsManager.prototype.getEffectsObject = function(id)
-{
-	return this.effectsObjectsMap[id];
-};
-
-EffectsManager.prototype.hasEffects = function(id) 
-{
-	
-	if (!this.effectsObjectsMap[id]) 
-	{
-		return false;
-	}
-
-	if (!this.effectsObjectsMap[id].effectsArray || this.effectsObjectsMap[id].effectsArray.length === 0)
-	{
-		return false;
-	}
-
-	return true;
-};
-
-
-/**
- *
- */
-EffectsManager.prototype.addEffect = function(id, effect)
-{
-	var effectsObject = this.getEffectsObject(id);
-	
-	if (effectsObject === undefined)
-	{
-		effectsObject = {};
-		this.effectsObjectsMap[id] = effectsObject;
-	}
-	
-	if (effectsObject.effectsArray === undefined)
-	{ effectsObject.effectsArray = []; }
-	
-	effect.effectsManager = this;
-	effectsObject.effectsArray.push(effect);
-};
-
-EffectsManager.prototype.executeEffects = function(id, currTime)
-{
-	var effectsObject = this.getEffectsObject(id);
-	var effectExecuted = false;
-	if (effectsObject === undefined)
-	{ return false; }
-	
-	var effectsCount = effectsObject.effectsArray.length;
-	for (var i=0; i<effectsCount; i++)
-	{
-		var effect = effectsObject.effectsArray[i];
-		if (effect.execute(currTime/1000))
-		{
-			effectsObject.effectsArray.splice(i, 1);
-			effectsCount = effectsObject.effectsArray.length;
-		}
-		effectExecuted = true;
-		
-		if (effectsObject.effectsArray.length === 0)
-		{ this.effectsObjectsMap[id] = undefined; }
-	}
-	
-	return effectExecuted;
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 'use strict';
 
@@ -47685,16 +47498,24 @@ Node.prototype.renderContent = function(magoManager, shader, renderType, refMatr
 		return;
 	}
 	
-	if (data.attributes && data.attributes.isVisible !== undefined && data.attributes.isVisible === false) 
+	var attributes = data.attributes;
+	
+	if (attributes)
 	{
-		return;
+		if (attributes.isVisible !== undefined && attributes.isVisible === false) 
+		{
+			return;
+		}
+		
+		if (magoManager.currentProcess === CODE.magoCurrentProcess.DepthShadowRendering)
+		{
+			if (attributes.castShadow !== undefined && attributes.castShadow === false) 
+			{
+				return;
+			}
+		}
 	}
-	
-	//if (data.attributes && data.attributes.castShadow !== undefined && data.attributes.castShadow === true) 
-	//{
-	//	//
-	//}
-	
+
 	// Check if there are effects.
 	if (renderType !== 2)
 	{ var executedEffects = magoManager.effectsManager.executeEffects(data.nodeId, magoManager.getCurrentTime()); }
@@ -55831,6 +55652,260 @@ TinTerrainManager.prototype.render = function(magoManager, bDepth, renderType, s
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+/**
+ * @alias Effect
+ * @class Effect
+ */
+var Effect = function(options) 
+{
+	if (!(this instanceof Effect)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+	
+	// Test class to do effects.
+	this.effectsManager;
+	this.birthData;
+	this.durationSeconds;
+	this.effectType = "unknown";
+	
+	if (options)
+	{
+		if (options.effectType)
+		{ this.effectType = options.effectType; }
+		
+		if (options.durationSeconds)
+		{ this.durationSeconds = options.durationSeconds; }
+	}
+	
+	// available effectType:
+	// 1: zBounceLinear
+	// 2: zBounceSpring
+};
+
+/**
+ *
+ */
+Effect.prototype.execute = function(currTimeSec)
+{
+	var effectFinished = false;
+	if (this.birthData === undefined)
+	{
+		this.birthData = currTimeSec;
+		return effectFinished;
+	}
+	
+	
+	
+	if (this.effectType === "zBounceSpring")
+	{
+		var timeDiffSeconds = (currTimeSec - this.birthData);
+		var zScale = 1.0;
+		var gl = this.effectsManager.gl;
+		if (timeDiffSeconds >= this.durationSeconds)
+		{
+			zScale = 1.0;
+			effectFinished = true; // if return true, then this effect is finished, so this effect will be deleted.
+		}
+		else
+		{
+			//https://en.wikipedia.org/wiki/Damped_sine_wave
+			var amp = 1.0;
+			var lambda = 0.1; // is the decay constant, in the reciprocal of the time units of the X axis.
+			var w = 5/this.durationSeconds; // angular frequency.
+			var t = timeDiffSeconds;
+			var fita = 0.0; // initial angle in t=0.
+			zScale = amp*Math.pow(Math.E, -lambda*t)*(Math.cos(w*t+fita) + Math.sin(w*t+fita));
+			zScale = (1.0-zScale)*Math.log(t/this.durationSeconds+1.1);
+		}
+		gl.uniform3fv(this.effectsManager.currShader.scaleLC_loc, [1.0, 1.0, zScale]); // init referencesMatrix.
+		return effectFinished;
+	}
+	else if (this.effectType === "zBounceLinear")
+	{
+		var timeDiffSeconds = (currTimeSec - this.birthData);
+		var zScale = 1.0;
+		var gl = this.effectsManager.gl;
+		if (timeDiffSeconds >= this.durationSeconds)
+		{
+			zScale = 1.0;
+			effectFinished = true; // if return true, then this effect is finished, so this effect will be deleted.
+		}
+		else
+		{
+			zScale = timeDiffSeconds/this.durationSeconds;
+		}
+		gl.uniform3fv(this.effectsManager.currShader.scaleLC_loc, [1.0, 1.0, zScale]); // init referencesMatrix.
+		return effectFinished;
+	}
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+/**
+ * @alias EffectsManager
+ * @class EffectsManager
+ */
+var EffectsManager = function(options) 
+{
+	if (!(this instanceof EffectsManager)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+	
+	this.effectsObjectsMap = {};
+	this.gl;
+	this.currShader;
+};
+
+/**
+ *
+ */
+EffectsManager.prototype.setCurrentShader = function(shader)
+{
+	this.currShader = shader;
+};
+
+/**
+ *
+ */
+EffectsManager.prototype.getEffectsObject = function(id)
+{
+	return this.effectsObjectsMap[id];
+};
+
+EffectsManager.prototype.hasEffects = function(id) 
+{
+	
+	if (!this.effectsObjectsMap[id]) 
+	{
+		return false;
+	}
+
+	if (!this.effectsObjectsMap[id].effectsArray || this.effectsObjectsMap[id].effectsArray.length === 0)
+	{
+		return false;
+	}
+
+	return true;
+};
+
+
+/**
+ *
+ */
+EffectsManager.prototype.addEffect = function(id, effect)
+{
+	var effectsObject = this.getEffectsObject(id);
+	
+	if (effectsObject === undefined)
+	{
+		effectsObject = {};
+		this.effectsObjectsMap[id] = effectsObject;
+	}
+	
+	if (effectsObject.effectsArray === undefined)
+	{ effectsObject.effectsArray = []; }
+	
+	effect.effectsManager = this;
+	effectsObject.effectsArray.push(effect);
+};
+
+EffectsManager.prototype.executeEffects = function(id, currTime)
+{
+	var effectsObject = this.getEffectsObject(id);
+	var effectExecuted = false;
+	if (effectsObject === undefined)
+	{ return false; }
+	
+	var effectsCount = effectsObject.effectsArray.length;
+	for (var i=0; i<effectsCount; i++)
+	{
+		var effect = effectsObject.effectsArray[i];
+		if (effect.execute(currTime/1000))
+		{
+			effectsObject.effectsArray.splice(i, 1);
+			effectsCount = effectsObject.effectsArray.length;
+		}
+		effectExecuted = true;
+		
+		if (effectsObject.effectsArray.length === 0)
+		{ 
+			this.effectsObjectsMap[id] = undefined;
+			delete this.effectsObjectsMap[id];
+		}
+	}
+	
+	return effectExecuted;
+};
 
 
 
@@ -74481,111 +74556,6 @@ VtxSegment.prototype.intersectionWithPoint = function(point, error)
 'use strict';
 
 /**
- * 메세지
- * 
- * @class
- */
-var Message = function(i18next, message) 
-{
-	this.handle  = i18next;
-	this.message = message || MessageSource;
-};
-
-/**
- * 메세지 클래스 초기화
- *
- * @param {Function} callback
- */
-Message.prototype.init = function (callback)
-{
-	var h = this.handle;
-	this.handle.use(i18nextXHRBackend)
-		.use(i18nextBrowserLanguageDetector)
-		.init({
-			// Useful for debuging, displays which key is missing
-			debug: false,
-
-			detection: {
-				// keys or params to lookup language from
-				lookupQuerystring  : 'lang',
-				lookupCookie       : 'i18nextLang',
-				lookupLocalStorage : 'i18nextLang',
-			},
-    
-			// If translation key is missing, which lang use instead
-			fallbackLng: 'en',
-
-			resources: this.message,
-
-			// all, languageOnly
-			load: "languageOnly",
-
-			ns        : ['common'],
-			// Namespace to use by default, when not indicated
-			defaultNS : 'common',
-    
-			keySeparator     : ".",
-			nsSeparator      : ":",
-			pluralSeparator  : "_",
-			contextSeparator : "_"
-
-		}, function(err, t)
-		{
-			console.log("detected user language: " + h.language);
-			console.log("loaded languages: " + h.languages.join(', '));
-			h.changeLanguage(h.languages[0]);
-			callback(err, t);
-		});
-};
-
-/**
- * 메세지 핸들러를 가져온다.
- *
- * @returns {i18next} message handler
- */
-Message.prototype.getHandle = function ()
-{
-	return this.handle;
-};
-
-/**
- * 메세지를 가져온다.
- *
- * @returns {Object} message
- */
-Message.prototype.getMessage = function ()
-{
-	return this.message;
-};
-
-'use strict';
-var MessageSource = {};
-MessageSource.en = {
-  "common": {
-    "welcome" : "Welcome",
-    "error": {
-        "title" : "Error",
-        "construct" : {
-            "create" : "This object should be created using new."
-        }
-    }
-  }
-};
-MessageSource.ko = {
-    "common": {
-      "welcome" : "환영합니다.",
-      "error": {
-          "title" : "오류",
-          "construct" : {
-              "create" : "이 객체는 new 를 사용하여 생성해야 합니다."
-          }
-      }
-    }
-  };
-
-'use strict';
-
-/**
  * Geoserver for mago3Djs object.
  * @class Geoserver
  */
@@ -79050,6 +79020,7 @@ Renderer.prototype.renderGeometryDepth = function(gl, renderType, visibleObjCont
 	
 	var magoManager = this.magoManager;
 	var renderType = 0;
+	magoManager.currentProcess = CODE.magoCurrentProcess.DepthRendering;
 	
 	// Test Modeler Rendering.********************************************************************
 	// Test Modeler Rendering.********************************************************************
@@ -79235,8 +79206,13 @@ Renderer.prototype.renderDepthSunPointOfView = function(gl, visibleObjControlerN
 {
 	if (sunLight.tMatrix === undefined)
 	{ return; }
+
+	// collect all shadowCaster's nodes.
+	//var resultVisiblesArray = [].concat(visibleObjControlerNodes.currentVisibles0, visibleObjControlerNodes.currentVisibles2, visibleObjControlerNodes.currentVisibles3);
+	//var 
 	
 	var magoManager = this.magoManager;
+	magoManager.currentProcess = CODE.magoCurrentProcess.DepthShadowRendering;
 
 	// Do the depth render.***
 	var shaderName = "orthogonalDepth";
@@ -79720,7 +79696,8 @@ Renderer.prototype.renderGeometry = function(gl, renderType, visibleObjControler
 		var textureAux1x1 = magoManager.texturesStore.getTextureAux1x1();
 		var noiseTexture = magoManager.texturesStore.getNoiseTexture4x4();
 		
-
+		magoManager.currentProcess = CODE.magoCurrentProcess.ColorRendering;
+		
 		// Test TinTerrain.**************************************************************************
 		// Test TinTerrain.**************************************************************************
 		// render tiles, rendertiles.***
@@ -81513,6 +81490,111 @@ SelectionManager.prototype.TEST__CurrGeneralObjSel = function()
 	else
 	{ return false; }
 };
+
+'use strict';
+
+/**
+ * 메세지
+ * 
+ * @class
+ */
+var Message = function(i18next, message) 
+{
+	this.handle  = i18next;
+	this.message = message || MessageSource;
+};
+
+/**
+ * 메세지 클래스 초기화
+ *
+ * @param {Function} callback
+ */
+Message.prototype.init = function (callback)
+{
+	var h = this.handle;
+	this.handle.use(i18nextXHRBackend)
+		.use(i18nextBrowserLanguageDetector)
+		.init({
+			// Useful for debuging, displays which key is missing
+			debug: false,
+
+			detection: {
+				// keys or params to lookup language from
+				lookupQuerystring  : 'lang',
+				lookupCookie       : 'i18nextLang',
+				lookupLocalStorage : 'i18nextLang',
+			},
+    
+			// If translation key is missing, which lang use instead
+			fallbackLng: 'en',
+
+			resources: this.message,
+
+			// all, languageOnly
+			load: "languageOnly",
+
+			ns        : ['common'],
+			// Namespace to use by default, when not indicated
+			defaultNS : 'common',
+    
+			keySeparator     : ".",
+			nsSeparator      : ":",
+			pluralSeparator  : "_",
+			contextSeparator : "_"
+
+		}, function(err, t)
+		{
+			console.log("detected user language: " + h.language);
+			console.log("loaded languages: " + h.languages.join(', '));
+			h.changeLanguage(h.languages[0]);
+			callback(err, t);
+		});
+};
+
+/**
+ * 메세지 핸들러를 가져온다.
+ *
+ * @returns {i18next} message handler
+ */
+Message.prototype.getHandle = function ()
+{
+	return this.handle;
+};
+
+/**
+ * 메세지를 가져온다.
+ *
+ * @returns {Object} message
+ */
+Message.prototype.getMessage = function ()
+{
+	return this.message;
+};
+
+'use strict';
+var MessageSource = {};
+MessageSource.en = {
+  "common": {
+    "welcome" : "Welcome",
+    "error": {
+        "title" : "Error",
+        "construct" : {
+            "create" : "This object should be created using new."
+        }
+    }
+  }
+};
+MessageSource.ko = {
+    "common": {
+      "welcome" : "환영합니다.",
+      "error": {
+          "title" : "오류",
+          "construct" : {
+              "create" : "이 객체는 new 를 사용하여 생성해야 합니다."
+          }
+      }
+    }
+  };
 
 'use strict';
 
