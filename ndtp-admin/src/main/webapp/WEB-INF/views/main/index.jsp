@@ -561,7 +561,7 @@
                 placement : "outside",
                 rendererOptions: {
                     numberRows: 7,
-                    numberCols: 1
+                    numberColumns: 1
                 },
                 location: "e",
                 //border: "none",
