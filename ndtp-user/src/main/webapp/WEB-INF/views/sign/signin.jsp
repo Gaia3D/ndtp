@@ -44,7 +44,7 @@
 				<div class="panel row">
 					<h2 class="sign-title"><span class="text-sub">사용자</span><br /><span class="text-main">SIGN IN</span></h2>
 					<div class="sign-inputs">
-						<div class="sign-desc">National Digital Twin Platform Pilot Service</div>
+						<div class="sign-desc" style="font-size: 16px;">National Digital Twin Platform Pilot Service</div>
 						
 						<form:form id="signinForm" modelAttribute="signinForm" method="post" action="/sign/process-signin">
 							<label for="userId"><span class="icon-glyph glyph-users"></span></label>
@@ -53,15 +53,13 @@
 							<input type="password" id="password" name="password" maxlength="32" title="비밀번호" placeholder="비밀번호" required="required" />
 							<input type="submit" value="Sign In" class="sign-submit" />
 						</form:form>					
-						<div class="sign-links">
-							Don't have an account? &nbsp;<a href="#">Sign up</a>
-							<br />
-							Forgot your password? &nbsp;<a href="<c:url value="/sign/find-password"/>" onclick="alert('준비중입니다.); return false;">Click</a>
+						<div class="sign-links" style="font-size: 16px;">
+							Don't have an account? &nbsp;<a href="#" onclick="alert('관리자에게 문의하여 주십시오.'); return false;">Sign up</a>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="" style="text-align: center; margin-top: 50px;">
+			<div class="" style="text-align: center; margin-top: 50px; font-size: 16px;">
 				NDTP (c) LX LH Gaia3D, Inc All Rights Reserved
 			</div>
  		</div>
