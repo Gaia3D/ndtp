@@ -90,11 +90,11 @@
 				<h4 class="category" style="padding: 0 0 0 12px; font-size: 15px; margin-bottom: 7px; background: url(/images/ko/ico.png) no-repeat left -815px;}">위치 변경</h4>
 				<ul class="layerDiv">
 					<li>
-						<label for="dcLongitude">위도</label>
+						<label for="dcLongitude">경도</label>
 						<input type="text" id="dcLongitude" name="longitude" readonly>
 					</li>
 					<li>
-						<label for="dcLatitude">경도</label>
+						<label for="dcLatitude">위도</label>
 						<input type="text" id="dcLatitude" name="latitude" readonly>
 					</li>
 					<li>

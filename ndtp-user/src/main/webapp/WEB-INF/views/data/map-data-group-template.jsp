@@ -31,7 +31,7 @@
 						{{dataCount}}
 					</td>
 					<td>
-						<button type="button" title="바로가기" class="goto" onclick="flyTo('{{longitude}}', '{{latitude}}', '{{altitude}}', '2');">바로가기</button>
+						<button type="button" title="바로가기" class="goto" onclick="flyToGroup('{{longitude}}', '{{latitude}}', '{{altitude}}', '2');">바로가기</button>
 					</td>
 				</tr>
 	{{/each}}
