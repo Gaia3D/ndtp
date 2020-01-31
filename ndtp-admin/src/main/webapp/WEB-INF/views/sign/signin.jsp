@@ -26,7 +26,7 @@
 		}
 		::-ms-input-placeholder { /* Microsoft Edge */
 			color: white;
-		}	
+		}
 	</style>
 </head>
 <body class="sign">
@@ -36,7 +36,7 @@
 				<div class="row">
 					<h1 style="padding-bottom:10px; font-size:38px; font-family:Lousianne; color:#573592;">NDTP</h1>
 <c:if test="${signinForm.errorCode ne null && signinForm.errorCode ne ''}">
-					<h6 style="padding-left: 10px; color: red;">* 
+					<h6 style="padding-left: 10px; color: red;">*
 						<spring:message code="${signinForm.errorCode}" />
 					</h6>
 </c:if>
@@ -45,18 +45,16 @@
 					<h2 class="sign-title"><span class="text-sub">Administrator</span><br /><span class="text-main">SIGN IN</span></h2>
 					<div class="sign-inputs">
 						<div class="sign-desc">National Digital Twin Platform Pilot Service</div>
-						
+
 						<form:form id="signinForm" modelAttribute="signinForm" method="post" action="/sign/process-signin">
 							<label for="userId"><span class="icon-glyph glyph-users"></span></label>
 							<input type="text" id="userId" name="userId" maxlength="32" title="아이디" placeholder="아이디" required="required" autofocus="autofocus" />
 							<label for="password"><span class="icon-glyph glyph-lock"></span></label>
 							<input type="password" id="password" name="password" maxlength="32" title="비밀번호" placeholder="비밀번호" required="required" />
 							<input type="submit" value="Sign In" class="sign-submit" />
-						</form:form>					
+						</form:form>
 						<div class="sign-links">
-							Don't have an account? &nbsp;<a href="#">Sign up</a>
-							<br />
-							Forgot your password? &nbsp;<a href="<c:url value="/sign/find-password"/>" onclick="alert('준비중입니다.); return false;">Click</a>
+							Don't have an account? &nbsp;<a href="#" onclick="alert('Please contact the administrator for sign up.'); return false;">Sign up</a>
 						</div>
 					</div>
 				</div>
@@ -66,7 +64,7 @@
 			</div>
  		</div>
 	</div>
-	
+
 <script type="text/javascript">
 </script>
 </body>

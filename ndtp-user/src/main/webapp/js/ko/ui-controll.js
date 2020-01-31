@@ -81,7 +81,7 @@ $(function() {
         if(location.href.indexOf("upload") > 0 
         	|| location.href.indexOf("converter") > 0 
         	|| location.href.indexOf("group") > 0 
-        	|| location.href.indexOf("/data/list") > 0 || location.href.indexOf("/data/modify") > 0) {
+        	|| location.href.indexOf("/data/list") > 0 || location.href.indexOf("/data/modify") > 0 || location.href.indexOf("/data-adjust-log/modify") > 0) {
         	$(this).removeClass('on');
         	var classId = $(this).attr('class');
         	window.location="../data/map#" + classId;

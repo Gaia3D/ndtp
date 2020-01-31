@@ -135,7 +135,7 @@
 			updateUserGroupRoleFlag = false;
 
 			$.ajax({
-    			url: "/user-group/role",
+    			url: "/user-groups/role",
     			type: "POST",
     			headers: {"X-Requested-With": "XMLHttpRequest"},
     	        data: {userGroupId: "${userGroup.userGroupId}", checkIds: $("#checkIds").val()},

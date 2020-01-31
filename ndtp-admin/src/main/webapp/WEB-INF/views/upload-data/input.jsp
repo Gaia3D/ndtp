@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="/externlib/dropzone/dropzone.min.css">
     <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
     <script type="text/javascript" src="/externlib/dropzone/dropzone.min.js"></script>
-    
+
     <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
     <style type="text/css">
@@ -30,17 +30,17 @@
             white-space: nowrap;
             border: 1px solid #e5e5e5;
         }
-        
+
         .loader-txt p {
             font-size: 13px;
             color: #666;
         }
-    
+
         .loader-txt p small {
             font-size: 11.5px;
             color: #999;
         }
-        
+
         .loader {
             position: relative;
             text-align: center;
@@ -55,13 +55,13 @@
             animation: spin 1s ease-in-out infinite;
             -webkit-animation: spin 1s ease-in-out infinite;
         }
-    
+
         @keyframes spin {
             to {
                 -webkit-transform: rotate(360deg);
             }
         }
-    
+
         @-webkit-keyframes spin {
             to {
                 -webkit-transform: rotate(360deg);
@@ -73,7 +73,7 @@
 <body>
 	<%@ include file="/WEB-INF/views/layouts/header.jsp" %>
 	<%@ include file="/WEB-INF/views/layouts/menu.jsp" %>
-	
+
 	<div class="site-body">
 		<div class="container">
 			<div class="site-content">
@@ -183,19 +183,20 @@
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
-	
+
 	<!-- Dialog -->
 	<%@ include file="/WEB-INF/views/upload-data/data-group-dialog.jsp" %>
 	<%@ include file="/WEB-INF/views/upload-data/spinner-dialog.jsp" %>
-	
-	
+
+
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
+<script type="text/javascript" src="/js/navigation.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-		
+
 	});
-	
+
 	var dataGroupDialog = $( ".dialog" ).dialog({
 		autoOpen: false,
 		height: 500,
@@ -204,20 +205,20 @@
 		overflow : "auto",
 		resizable: false
 	});
-	
+
 	// 상위 Layer Group 찾기
 	$( "#dataGroupButtion" ).on( "click", function() {
 		dataGroupDialog.dialog( "open" );
 		dataGroupDialog.dialog( "option", "title", "데이터 그룹 선택");
 	});
-	
+
 	// 데이터 그룹 선택
 	function confirmDataGroup(dataGroupId, dataGroupName) {
 		$("#dataGroupId").val(dataGroupId);
 		$("#dataGroupName").val(dataGroupName);
 		dataGroupDialog.dialog( "close" );
 	}
-	
+
 	var fileUploadDialog = $( ".spinner-dialog" ).dialog({
 		autoOpen: false,
 		width: 250,
@@ -225,13 +226,13 @@
 		modal: true,
 		resizable: false
 	});
-	
+
 	// 업로딩 파일 개수
 	var uploadFileCount = 0;
 	// dropzone 업로딩 결과(n개 파일을 올리면 n개 리턴이 옴)
 	var uploadFileResultCount = 0;
 	Dropzone.options.myDropzone = {
-		url: "/upload-datas",	
+		url: "/upload-datas",
 		//paramName: "file",
 		// Prevents Dropzone from uploading dropped files immediately
 		timeout: 3600000,
@@ -263,17 +264,17 @@
 			var myDropzone = this; // closure
 			var uploadTask = document.querySelector("#allFileUpload");
 			var clearTask = document.querySelector("#allFileClear");
-			
+
 			uploadTask.addEventListener("click", function(e) {
 				if (validate() === false) {
 					return;
 				}
-				
+
 				uploadFileCount = 0;
 	            uploadFileResultCount = 0;
 	            e.preventDefault();
 	            e.stopPropagation();
-				
+
 	            if (myDropzone.getQueuedFiles().length > 0) {
 	                uploadFileCount = myDropzone.getQueuedFiles().length;
 	                myDropzone.processQueue();
@@ -283,14 +284,14 @@
 	                return;
 	            }
 			});
-	
+
 			clearTask.addEventListener("click", function () {
 	            if (confirm("정말 전체 항목을 삭제하겠습니까?")) {
 	            	// true 주면 업로드 중인 파일도 다 같이 삭제
 	            	myDropzone.removeAllFiles(true);
 	            }
 	        });
-        	
+
 			this.on("sending", function(file, xhr, formData) {
 				formData.append("dataName", $("#dataName").val());
 				formData.append("dataGroupId", $("#dataGroupId").val());
@@ -301,14 +302,14 @@
 				formData.append("altitude", $("#altitude").val());
 				formData.append("description", $("#description").val());
 			});
-			
+
 			// maxFiles 카운터를 초과하면 경고창
 			this.on("maxfilesexceeded", function (data) {
 				myDropzone.removeAllFiles(true);
 				alert("최대 업로드 파일 수는 500개 입니다.");
 				return;
 			});
-			
+
 			this.on("success", function(file, response) {
 				if(file !== undefined && file.name !== undefined) {
 	                console.log("file name = " + file.name);
@@ -329,7 +330,7 @@
 	        });
 		}
 	};
-	
+
 	function validate() {
 		if ($("#dataName").val() === "") {
 			alert("데이터명을 입력하여 주십시오.");
@@ -352,7 +353,7 @@
 			return false;
 		}
 	}
-	
+
 	function alertMessage(response) {
 		if(uploadFileResultCount === 0) {
 			if(response.errorCode === "converter.target.count.invalid") {
@@ -386,17 +387,17 @@
 		}
 	    return;
 	}
-	
+
 	//지도에서 찾기
 	$( "#mapButtion" ).on( "click", function() {
 		var url = "/map/find-point";
 		var width = 800;
 		var height = 700;
-	
+
 		var popupX = (window.screen.width / 2) - (width / 2);
 		// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
 		var popupY= (window.screen.height / 2) - (height / 2);
-		
+
 	    var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height + ", top=" + popupY + ", left="+popupX
 	            + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
 	    //popWin.document.title = layerName;

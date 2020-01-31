@@ -48,7 +48,7 @@
 		<!-- E: NAVWRAP -->	
 		
 		<div id="contentsWrap" class="contentsWrap" style="display: none;">
-			<div id="searchContent" class="contents yScroll" style="display:none;">
+			<div id="searchContent" class="contents yScroll fullHeight" style="display:none;">
 				<%@ include file="/WEB-INF/views/search/district.jsp" %>
 			</div>
 			<div id="dataContent" class="contents fullHeight">
@@ -69,11 +69,11 @@
 			<div id="simulationContent" class="contentsList yScroll" style="display:none;">
 				<%@ include file="/WEB-INF/views/simulation/simulation.jsp" %>
 			</div>
-			<div id="civilVoiceContent" class="contents" style="display:none;">
-				<%@ include file="/WEB-INF/views/civil-voice/input.jsp" %>
+			<div id="civilVoiceContent" class="contents yScroll" style="display:none;">
+				<%@ include file="/WEB-INF/views/civil-voice/list.jsp" %>
 			</div>
 			
-			<div id="layerContent" class="contents" style="display:none;">
+			<div id="layerContent" class="contents fullHeight" style="display:none;">
 				<%@ include file="/WEB-INF/views/layer/list.jsp" %>
 			</div>
 			
@@ -146,11 +146,12 @@
 <script type="text/javascript" src="/js/${lang}/simulation.js"></script>
 <script type="text/javascript" src="/js/${lang}/layer.js"></script>
 <script type="text/javascript" src="/js/${lang}/map-data-controll.js"></script>
+<script type="text/javascript" src="/js/${lang}/civil-voice.js"></script>
 <script type="text/javascript">
 	// 임시로...
 	$(document).ready(function() {
 		$(".ui-slider-handle").slider({});
-		initDataGroupList();
+ 		initDataGroupList();
 	});
 	
 	//Cesium.Ion.defaultAccessToken = '';

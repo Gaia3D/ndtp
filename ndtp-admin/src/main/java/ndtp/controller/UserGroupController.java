@@ -69,7 +69,7 @@ public class UserGroupController implements AuthorizationController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "input")
+	@GetMapping(value = "/input")
 	public String input(Model model) {
 		Policy policy = policyService.getPolicy();
 
@@ -93,7 +93,7 @@ public class UserGroupController implements AuthorizationController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "modify")
+	@GetMapping(value = "/modify")
 	public String modify(HttpServletRequest request, @RequestParam Integer userGroupId, Model model) {
 		UserGroup userGroup = new UserGroup();
 		userGroup.setUserGroupId(userGroupId);
@@ -112,7 +112,7 @@ public class UserGroupController implements AuthorizationController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "delete")
+	@GetMapping(value = "/delete")
 	public String delete(@RequestParam("userGroupId") Integer userGroupId, Model model) {
 
 		// TODO validation 체크 해야 함
@@ -131,7 +131,7 @@ public class UserGroupController implements AuthorizationController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "menu")
+	@GetMapping(value = "/menu")
 	public String menu(HttpServletRequest request, @RequestParam Integer userGroupId, Model model) {
 		Menu menu = new Menu();
 		menu.setMenuTarget(MenuTarget.ADMIN.getValue());
@@ -170,7 +170,7 @@ public class UserGroupController implements AuthorizationController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "role")
+	@GetMapping(value = "/role")
 	public String role(HttpServletRequest request, @RequestParam Integer userGroupId, Model model) {
 		Role role = new Role();
 		role.setOffset(0l);

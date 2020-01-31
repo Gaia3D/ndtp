@@ -648,7 +648,7 @@
             "x-csrf-token": document.querySelectorAll("meta[name=csrf-token]")[0].getAttributeNode("content").value,
         }, */
         // 허용 확장자
-        acceptedFiles: ".cpg, .dbf, .idx, .sbn, .sbx, .shp, .shx, .prj, .qpj, .zip",
+        acceptedFiles: initAcceptedFiles("${policy.shapeUploadType}"),
         // 업로드 취소 및 추가 삭제 미리 보기 그림 링크를 기본 추가 하지 않음
         // 기본 true false 로 주면 아무 동작 못함
         //clickable: true,

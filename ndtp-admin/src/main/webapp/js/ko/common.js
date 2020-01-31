@@ -243,3 +243,17 @@ function isHangul(value) {
 	}
 }
 
+/**
+ * dropzone에 사용할 파일 포맷 정보 리턴
+ * @param fileType
+ * @returns
+ */
+function initAcceptedFiles(fileType){
+    var extension = fileType;
+    var result="";
+    extension = extension.split(",");
+    for(var item in extension){
+        result +="."+extension[item].trim()+",";
+    }
+    return result;
+}

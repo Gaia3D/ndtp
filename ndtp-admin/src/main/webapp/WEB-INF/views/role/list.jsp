@@ -26,51 +26,55 @@
 					<%@ include file="/WEB-INF/views/layouts/page_header.jsp" %>
 					<div class="page-content">
 						<div class="filters">
-						<form:form id="searchForm" modelAttribute="role" method="get" action="/role/list" onsubmit="return searchCheck();">
-						<div class="input-group row">
-							<div class="input-set">
-								<label for="searchWord">검색어</label>
-								<select id="searchWord" name="searchWord">
-									<option value="">선택</option>
-									<option value="role_name">Role명</option>
-								</select>
-								<select id="searchOption" name="searchOption">
-									<option value="0">일치</option>
-									<option value="1">포함</option>
-								</select>
-								<form:input path="searchValue"/>
-							</div>
-							<div class="input-set">
-								<label for="startDate">기간</label>
-								<input type="text" id="startDate" name="startDate" class="date"/>
-								<span class="delimeter tilde">~</span>
-								<input type="text" id="endDate" name="endDate" class="date"/>
-							</div>
-			
-							<div class="input-set">
-								<label for="orderWord">표시순서</label>
-								<select id="orderWord" name="orderWord">
-									<option value="">기본</option>
-									<option value="role_name">Role명</option>
-									<option value="insert_date">등록일</option>
-								</select>
-								<select id="orderValue" name="orderValue">
-									<option value="">기본</option>
-									<option value="ASC">오름차순</option>
-									<option value="DESC">내림차순</option>
-								</select>
-							</div>
-							<div class="input-set">
-								<input type="submit" value="검색" class="searchBtn"/>
-							</div>
+							<form:form id="searchForm" modelAttribute="role" method="get" action="/role/list" onsubmit="return searchCheck();">
+								<div class="input-group row">
+									<div class="input-set">
+										<label for="searchWord"><spring:message code='search.word'/></label>
+										<select id="searchWord" name="searchWord" class="select" style="height: 30px;">
+											<option value=""><spring:message code='select'/></option>
+											<option value="role_name">Role명</option>
+										</select>
+										<form:select path="searchOption" class="select" style="height: 30px;">
+											<form:option value="0"><spring:message code='search.same'/></form:option>
+											<form:option value="1"><spring:message code='search.include'/></form:option>
+										</form:select>
+										<form:input path="searchValue" type="search" cssClass="m" cssStyle="float: right;" />
+									</div>
+									<div class="input-set">
+										<label for="startDate"><spring:message code='search.date'/></label>
+										<input type="text" class="s date" id="startDate" name="startDate" />
+										<span class="delimeter tilde">~</span>
+										<input type="text" class="s date" id="endDate" name="endDate" />
+									</div>
+									<div class="input-set">
+										<label for="orderWord"><spring:message code='search.order'/></label>
+										<select id="orderWord" name="orderWord" class="select" style="height: 30px;">
+											<option value=""><spring:message code='search.basic'/></option>
+											<option value="role_name">Role명</option>
+											<option value="insert_date"><spring:message code='search.insert.date'/></option>
+										</select>
+										<select id="orderValue" name="orderValue" class="select" style="height: 30px;">
+					                		<option value=""><spring:message code='search.basic'/></option>
+						                	<option value="ASC"><spring:message code='search.ascending'/></option>
+											<option value="DESC"><spring:message code='search.descending.order'/></option>
+										</select>
+										<form:select path="listCounter" class="select" style="height: 30px;">
+					                		<form:option value="10"><spring:message code='search.ten.count'/></form:option>
+						                	<form:option value="50"><spring:message code='search.fifty.count'/></form:option>
+											<form:option value="100"><spring:message code='search.hundred.count'/></form:option>
+										</form:select>
+									</div>
+									<div class="input-set">
+										<input type="submit" value="<spring:message code='search'/>" />
+									</div>
+								</div>
+							</form:form>
 						</div>
-						</form:form>
-						</div>
-						
+
 						<div class="list">
 					    	<div class="list-header row">
 								<div class="list-desc u-pull-left">
-									전체: <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em> 건, 
+									전체: <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em> 건,
 									<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> 페이지
 								</div>
 								<div class="list-functions u-pull-right">
@@ -152,7 +156,7 @@
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
-	
+
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>

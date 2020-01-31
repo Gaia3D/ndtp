@@ -31,7 +31,7 @@
 								<li><a href="#geopolicyTab">공간정보</a></li>
 								<li><a href="#geoserverTab">GeoServer</a></li>
 							</ul>
-							<spring:message var="notuse" code='no.use'/>
+							<spring:message var="notuse" code='not.use'/>
 							<spring:message var="use" code='use'/>
 							<%@ include file="/WEB-INF/views/geopolicy/modify-geopolicy.jsp" %>
 							<%@ include file="/WEB-INF/views/geopolicy/modify-geoserver.jsp" %>

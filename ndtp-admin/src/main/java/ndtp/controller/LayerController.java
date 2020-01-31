@@ -94,10 +94,10 @@ public class LayerController implements AuthorizationController {
 	@GetMapping(value = "list")
 	public String list(HttpServletRequest request, @RequestParam(defaultValue="1") String pageNo, Layer layer, Model model) {
 		log.info("@@ layer = {}", layer);
-		
+
 		String roleCheckResult = roleValidate(request);
     	if(roleValidate(request) != null) return roleCheckResult;
-		
+
 		String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
 		if(StringUtils.isEmpty(layer.getStartDate())) {
 			layer.setStartDate(today.substring(0,4) + DateUtils.START_DAY_TIME);
@@ -109,26 +109,26 @@ public class LayerController implements AuthorizationController {
 		} else {
 			layer.setEndDate(layer.getEndDate().substring(0, 8) + DateUtils.END_TIME);
 		}
-		
+
 		Long totalCount = layerService.getLayerTotalCount(layer);
 		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(layer), totalCount, Long.valueOf(pageNo).longValue());
 		log.info("@@ pagination = {}", pagination);
-		
+
 		layer.setOffset(pagination.getOffset());
 		layer.setLimit(pagination.getPageRows());
 		List<Layer> layerList = new ArrayList<>();
 		if(totalCount > 0l) {
 			layerList = layerService.getListLayer(layer);
 		}
-		
+
 		model.addAttribute(pagination);
 		model.addAttribute("layer", layer);
 		model.addAttribute("totalCount", totalCount);
 		model.addAttribute("layerList", layerList);
-		
+
 		return "/layer/list";
 	}
-    
+
     /**
      * layer 등록
      * @param model
@@ -141,11 +141,11 @@ public class LayerController implements AuthorizationController {
 
     	Policy policy = policyService.getPolicy();
     	List<LayerGroup> layerGroupList = layerGroupService.getListLayerGroup();
-    	
+
     	model.addAttribute("policy", policy);
     	model.addAttribute("layer", new Layer());
     	model.addAttribute("layerGroupList", layerGroupList);
-    	
+
     	return "/layer/input";
     }
 
@@ -176,14 +176,14 @@ public class LayerController implements AuthorizationController {
         model.addAttribute("layerFileInfo", layerFileInfo);
         model.addAttribute("layerFileInfoList", layerFileInfoList);
         model.addAttribute("layerFileInfoListSize", layerFileInfoList.size());
-        
+
         return "/layer/modify";
     }
-    
+
 	/**
 	 * shape 파일 변환 TODO dropzone 이 파일 갯수만큼 form data를 전송해 버려서 command 패턴을(Layer
 	 * layer) 사용할 수 없음 dropzone 이 예외 처리가 이상해서 BAD_REQUEST 를 던지지 않고 OK 를 넣짐
-	 * 
+	 *
 	 * @param model
 	 * @return
 	 */
@@ -215,7 +215,7 @@ public class LayerController implements AuthorizationController {
 			GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
 			String shapeEncoding = replaceInvalidValue(request.getParameter("shapeEncoding"));
 			String today = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-			// 레이어 객체 생성 
+			// 레이어 객체 생성
 			Layer layer = Layer.builder()
 							.layerGroupId(Integer.valueOf(request.getParameter("layerGroupId")))
 							.sharing(request.getParameter("sharing"))
@@ -314,11 +314,20 @@ public class LayerController implements AuthorizationController {
 						e.printStackTrace();
 						layerFileInfo.setErrorMessage(e.getMessage());
 					}
-					
+
 					layerFileInfoList.add(layerFileInfo);
 				}
 			}
-			
+
+			// shape 필수 파일 확인
+			errorCode = shapeFileValidate(layerFileInfoList);
+			if(!StringUtils.isEmpty(errorCode)) {
+				log.info("@@@@@@@@@@@@ errorCode = {}", errorCode);
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", errorCode);
+	            return result;
+			}
+
 			// shp 파일 필수 필드 확인
 			ShapeFileParser shapeFileParser = new ShapeFileParser(makedDirectory + groupFileName + "." + ShapeFileExt.SHP.getValue());
 			if(!shapeFileParser.fieldValidate()) {
@@ -375,7 +384,7 @@ public class LayerController implements AuthorizationController {
 		int statusCode = 0;
 		String errorCode = null;
 		String message = null;
-    	
+
         boolean isRollback = false;
         Layer rollbackLayer = new Layer();
         boolean isLayerFileInfoExist = false;
@@ -484,7 +493,16 @@ public class LayerController implements AuthorizationController {
 					layerFileInfoList.add(layerFileInfo);
                 }
             }
-            
+
+            // shape 필수 파일 확인
+ 			errorCode = shapeFileValidate(layerFileInfoList);
+ 			if(!StringUtils.isEmpty(errorCode)) {
+ 				log.info("@@@@@@@@@@@@ errorCode = {}", errorCode);
+ 				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+ 				result.put("errorCode", errorCode);
+ 	            return result;
+ 			}
+
             // shp 파일 필수 필드 확인
  			ShapeFileParser shapeFileParser = new ShapeFileParser(makedDirectory + groupFileName + "." + ShapeFileExt.SHP.getValue());
  			if(!shapeFileParser.fieldValidate()) {
@@ -492,7 +510,7 @@ public class LayerController implements AuthorizationController {
  				result.put("errorCode", "upload.shpfile.requried");
  				return result;
  			}
-            
+
             layer.setLayerId(layerId);
             layer.setLayerGroupId(Integer.valueOf(request.getParameter("layerGroupId")));
             layer.setSharing(request.getParameter("sharing"));
@@ -541,7 +559,7 @@ public class LayerController implements AuthorizationController {
                 // 6. geoserver에 신규 등록일 경우 등록, 아닐경우 통과
                 layerService.registerLayer(geoPolicy, layer.getLayerKey());
             }
-            
+
             layerService.updateLayerStyle(layer);
 
             statusCode = HttpStatus.OK.value();
@@ -556,13 +574,13 @@ public class LayerController implements AuthorizationController {
             errorCode = "db.exception";
             message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
         }
-        
+
         result.put("statusCode", statusCode);
 		result.put("errorCode", errorCode);
 		result.put("message", message);
 		return result;
     }
-	
+
 	/**
 	 * 레이어 삭제 삭제
 	 * @param roleId
@@ -583,7 +601,7 @@ public class LayerController implements AuthorizationController {
             errorCode = "db.exception";
             message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 		}
-		
+
 		result.put("statusCode", statusCode);
 		result.put("errorCode", errorCode);
 		result.put("message", message);
@@ -603,7 +621,7 @@ public class LayerController implements AuthorizationController {
 		int statusCode = 0;
 		String errorCode = null;
 		String message = null;
-		
+
 		List<LayerFileInfo> layerFileInfoList = new ArrayList<>();
         try {
             layerFileInfoList = layerFileInfoService.getListLayerFileInfo(layerId);
@@ -630,7 +648,7 @@ public class LayerController implements AuthorizationController {
     @GetMapping(value = "{layerId}/layer-file-info/{layerFileInfoGroupId}/download")
     public void download(HttpServletRequest request, HttpServletResponse response,
             @PathVariable Integer layerId, @PathVariable Integer layerFileInfoGroupId) {
-    	
+
         log.info("@@@@@@@@@@@@ layerId = {}, layerFileInfoGroupId = {}", layerId, layerFileInfoGroupId);
         try {
 
@@ -640,7 +658,7 @@ public class LayerController implements AuthorizationController {
             String fileRealName = layer.getLayerKey() + "_" + today + "_" + System.nanoTime();
             createDirectory(filePath);
             log.info("@@@@@@@ zip directory = {}", filePath);
-            
+
             List<LayerFileInfo> layerFileInfoList = layerFileInfoService.getLayerFileInfoGroup(layerFileInfoGroupId);
             LayerFileInfo layerFileInfo = layerFileInfoList.get(0);
             layerFileInfo.setFilePath(filePath);
@@ -651,7 +669,7 @@ public class LayerController implements AuthorizationController {
             String zipFileName = filePath + fileRealName + ".zip";
             List<LayerFileInfo> makeFileList = new ArrayList<>();
             for(ShapeFileExt shapeFileExt : ShapeFileExt.values()) {
-				LayerFileInfo fileInfo = new LayerFileInfo(); 
+				LayerFileInfo fileInfo = new LayerFileInfo();
 				fileInfo.setFilePath(filePath);
 				fileInfo.setFileRealName(fileRealName + "." + shapeFileExt.getValue());
 				makeFileList.add(fileInfo);
@@ -707,7 +725,7 @@ public class LayerController implements AuthorizationController {
             errorCode = "db.exception";
             message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
         }
-        
+
         result.put("statusCode", statusCode);
 		result.put("errorCode", errorCode);
 		result.put("message", message);
@@ -717,7 +735,7 @@ public class LayerController implements AuthorizationController {
     @GetMapping(value = "/file-info/{layerFileInfoId}")
     @ResponseBody
     public Map<String, Object> viewFileDetail(@PathVariable Integer layerFileInfoId) {
-    	
+
     	Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String errorCode = null;
@@ -734,7 +752,7 @@ public class LayerController implements AuthorizationController {
             errorCode = "db.exception";
             message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
         }
-    	
+
     	result.put("statusCode", statusCode);
 		result.put("errorCode", errorCode);
 		result.put("message", message);
@@ -773,7 +791,7 @@ public class LayerController implements AuthorizationController {
 
         return "/layer/popup-map";
     }
-    
+
     private String replaceInvalidValue(String value) {
         if("null".equals(value)) value = null;
         return value;
@@ -923,6 +941,22 @@ public class LayerController implements AuthorizationController {
         return null;
     }
 
+    // shape필수 파일 있는지 확인
+    private String shapeFileValidate(List<LayerFileInfo> layerFileInfoList) {
+    	if(!layerFileInfoList.isEmpty()) {
+    		long validCount = layerFileInfoList.stream()
+    				.filter(layerFileInfo -> {
+    					String fileExt = layerFileInfo.getFileExt().toLowerCase().trim();
+    					return fileExt.equals(ShapeFileExt.SHP.getValue()) || fileExt.equals(ShapeFileExt.DBF.getValue()) || fileExt.equals(ShapeFileExt.SHX.getValue());
+    				})
+    				.count();
+    		if(ShapeFileExt.values().length-1 != (int)validCount) {
+    			return "upload.shpfile.invalid";
+    		}
+    	}
+    	return null;
+    }
+
     /**
     * @param userId
     * @param today
@@ -991,7 +1025,7 @@ public class LayerController implements AuthorizationController {
             response.setContentType("application/octet-stream;charset=UTF-8");
         }
     }
-    
+
     private String roleValidate(HttpServletRequest request) {
     	UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		int httpStatusCode = getRoleStatusCode(userSession.getUserGroupId(), RoleKey.ADMIN_LAYER_MANAGE.name());
@@ -1000,10 +1034,10 @@ public class LayerController implements AuthorizationController {
 			request.setAttribute("httpStatusCode", httpStatusCode);
 			return "/error/error";
 		}
-		
+
 		return null;
     }
-    
+
     /**
 	 * 검색 조건
 	 * @param search

@@ -27,52 +27,51 @@
 					<div class="page-content">
 						<div class="filters">
 							<form:form id="layer" modelAttribute="layer" method="get" action="/layer/list" onsubmit="return searchCheck();">
-							<div class="input-group row">
-								<div class="input-set">
-									<label for="searchWord"><spring:message code='search.word'/></label>
-									<select id="searchWord" name="searchWord" class="select" style="height: 30px;">
-										<option value=""><spring:message code='select'/></option>
-										<option value="layer_name">레이어 명</option>
-										<option value="layer_key">레이어 Key</option>
-										<option value="layer_group_name">레이어 그룹명</option>
-									</select>
-									<select id="searchOption" name="searchOption" class="select" style="height: 30px;">
-										<option value="0"><spring:message code='search.same'/></option>
-										<option value="1"><spring:message code='search.include'/></option>
-									</select>
-									<form:input path="searchValue" type="search" cssClass="m" cssStyle="float: right;" />
+								<div class="input-group row">
+									<div class="input-set">
+										<label for="searchWord"><spring:message code='search.word'/></label>
+										<select id="searchWord" name="searchWord" class="select" style="height: 30px;">
+											<option value=""><spring:message code='select'/></option>
+											<option value="layer_name">레이어 명</option>
+											<option value="layer_key">레이어 Key</option>
+											<option value="layer_group_name">레이어 그룹명</option>
+										</select>
+										<form:select path="searchOption" class="select" style="height: 30px;">
+											<form:option value="0"><spring:message code='search.same'/></form:option>
+											<form:option value="1"><spring:message code='search.include'/></form:option>
+										</form:select>
+										<form:input path="searchValue" type="search" cssClass="m" cssStyle="float: right;" />
+									</div>
+									<div class="input-set">
+										<label for="startDate"><spring:message code='search.date'/></label>
+										<input type="text" class="s date" id="startDate" name="startDate" />
+										<span class="delimeter tilde">~</span>
+										<input type="text" class="s date" id="endDate" name="endDate" />
+									</div>
+									<div class="input-set">
+										<label for="orderWord"><spring:message code='search.order'/></label>
+										<select id="orderWord" name="orderWord" class="select" style="height: 30px;">
+											<option value=""> <spring:message code='search.basic'/> </option>
+											<option value="layer_name">레이어 명</option>
+											<option value="layer_key">레이어 Key</option>
+											<option value="layer_group_name">레이어 그룹명</option>
+											<option value="insert_date"> <spring:message code='search.insert.date'/> </option>
+										</select>
+										<select id="orderValue" name="orderValue" class="select" style="height: 30px;">
+					                		<option value=""> <spring:message code='search.basic'/> </option>
+						                	<option value="ASC"> <spring:message code='search.ascending'/> </option>
+											<option value="DESC"> <spring:message code='search.descending.order'/> </option>
+										</select>
+										<form:select path="listCounter" class="select" style="height: 30px;">
+					                		<form:option value="10"><spring:message code='search.ten.count'/></form:option>
+						                	<form:option value="50"><spring:message code='search.fifty.count'/></form:option>
+											<form:option value="100"><spring:message code='search.hundred.count'/></form:option>
+										</form:select>
+									</div>
+									<div class="input-set">
+										<input type="submit" value="<spring:message code='search'/>" />
+									</div>
 								</div>
-								<div class="input-set">
-									<label for="startDate"><spring:message code='search.date'/></label>
-									<input type="text" class="s date" id="startDate" name="startDate" />
-									<span class="delimeter tilde">~</span>
-									<input type="text" class="s date" id="endDate" name="endDate" />
-								</div>
-
-								<div class="input-set">
-									<label for="orderWord"><spring:message code='search.order'/></label>
-									<select id="orderWord" name="orderWord" class="select" style="height: 30px;">
-										<option value=""> <spring:message code='search.basic'/> </option>
-										<option value="layer_name">레이어 명</option>
-										<option value="layer_key">레이어 Key</option>
-										<option value="layer_group_name">레이어 그룹명</option>
-										<option value="insert_date"> <spring:message code='search.insert.date'/> </option>
-									</select>
-									<select id="orderValue" name="orderValue" class="select" style="height: 30px;">
-				                		<option value=""> <spring:message code='search.basic'/> </option>
-					                	<option value="ASC"> <spring:message code='search.ascending'/> </option>
-										<option value="DESC"> <spring:message code='search.descending.order'/> </option>
-									</select>
-									<select id="listCounter" name="listCounter" class="select" style="height: 30px;">
-				                		<option value="10"> <spring:message code='search.ten.count'/> </option>
-					                	<option value="50"> <spring:message code='search.fifty.count'/> </option>
-										<option value="100"> <spring:message code='search.hundred.count'/> </option>
-									</select>
-								</div>
-								<div class="input-set">
-									<input type="submit" value="<spring:message code='search'/>" />
-								</div>
-							</div>
 							</form:form>
 						</div>
 						<div class="list">

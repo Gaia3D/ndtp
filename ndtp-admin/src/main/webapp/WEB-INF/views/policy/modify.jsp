@@ -35,7 +35,7 @@
 								<li><a href="#contentTab">컨텐트</a></li>
 								<li><a href="#uploadTab">사용자 업로딩 파일</a></li>
 							</ul>
-							<spring:message var="notuse" code='no.use'/>
+							<spring:message var="notuse" code='not.use'/>
 							<spring:message var="use" code='use'/>
 							<%@ include file="/WEB-INF/views/policy/modify-user.jsp" %>
 							<%@ include file="/WEB-INF/views/policy/modify-password.jsp" %>

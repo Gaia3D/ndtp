@@ -82,7 +82,7 @@ public class UserGroupRestController implements AuthorizationController {
 	 * @param userGroup
 	 * @return
 	 */
-	@GetMapping(value = "detail")
+	@GetMapping(value = "/detail")
 	public Map<String, Object> detail(UserGroup userGroup) {
 
 		log.info("@@@@@ detail-group userGroup = {}", userGroup);
@@ -123,7 +123,7 @@ public class UserGroupRestController implements AuthorizationController {
 	 * @param bindingResult
 	 * @return
 	 */
-	@PostMapping(value = "insert")
+	@PostMapping(value = "/insert")
 	public Map<String, Object> insert(HttpServletRequest request, @Valid @ModelAttribute UserGroup userGroup, BindingResult bindingResult) {
 
 		log.info("@@@@@ insert userGroup = {}", userGroup);
@@ -168,7 +168,7 @@ public class UserGroupRestController implements AuthorizationController {
 	 * @param bindingResult
 	 * @return
 	 */
-	@PostMapping(value = "update")
+	@PostMapping(value = "/update")
 	public Map<String, Object> update(HttpServletRequest request, @Valid UserGroup userGroup, BindingResult bindingResult) {
 		log.info("@@ userGroup = {}", userGroup);
 		Map<String, Object> result = new HashMap<>();
@@ -207,7 +207,7 @@ public class UserGroupRestController implements AuthorizationController {
 	 * @param userGroupMenu
 	 * @return
 	 */
-	@PostMapping(value = "menu")
+	@PostMapping(value = "/menu")
 	public Map<String, Object> updateMenu(HttpServletRequest request, @ModelAttribute UserGroupMenu userGroupMenu) {
 		log.info("@@ userGroupMenu = {}", userGroupMenu);
 
@@ -244,7 +244,7 @@ public class UserGroupRestController implements AuthorizationController {
 	 * @param userGroupRole
 	 * @return
 	 */
-	@PostMapping(value = "role")
+	@PostMapping(value = "/role")
 	public Map<String, Object> updateRole(HttpServletRequest request, @ModelAttribute UserGroupRole userGroupRole) {
 		log.info("@@ userGroupRole = {}", userGroupRole);
 
@@ -281,7 +281,7 @@ public class UserGroupRestController implements AuthorizationController {
 	 * @param userGroup
 	 * @return
 	 */
-	@PostMapping(value = "view-order/{userGroupId}")
+	@PostMapping(value = "/view-order/{userGroupId}")
 	public Map<String, Object> moveUserGroup(HttpServletRequest request, @PathVariable Integer userGroupId, @ModelAttribute UserGroup userGroup) {
 		log.info("@@ userGroup = {}", userGroup);
 

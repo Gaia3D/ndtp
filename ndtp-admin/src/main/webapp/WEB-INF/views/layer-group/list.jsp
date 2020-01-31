@@ -45,14 +45,12 @@
 								<col class="col-functions" />
 								<col class="col-functions" />
 								<col class="col-functions" />
-								<col class="col-functions" />
 								<col class="col-date" />
 								<thead>
 									<tr>
 										<th scope="col">그룹명</th>
 					                    <th scope="col">사용유무</th>
 					                    <th scope="col">등록자</th>
-					                    <th scope="col">설명</th>
 					                    <th scope="col">레이어</th>
 					                    <th scope="col">순서</th>
 					                    <th scope="col">편집</th>
@@ -62,7 +60,7 @@
 								<tbody>
 <c:if test="${empty layerGroupList }">
 									<tr>
-										<td colspan="8" class="col-none">Layer 그룹이 존재하지 않습니다.</td>
+										<td colspan="7" class="col-none">Layer 그룹이 존재하지 않습니다.</td>
 									</tr>
 </c:if>
 <c:if test="${!empty layerGroupList }">
@@ -139,7 +137,6 @@
         </c:if>
 					                    </td>
 					                    <td class="col-key">${layerGroup.userId }</td>
-					                    <td class="col-key">${layerGroup.description }</td>
 					                    <td class="col-type"><a href="/layer/list?searchOption=0&searchWord=layer_group_name&searchValue=${layerGroup.layerGroupName}" class="linkButton">보기</a>
 					                    </td>
 					                    <td class="col-type">
