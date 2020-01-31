@@ -19023,7 +19023,7 @@ F4dController.prototype.addF4dGroup = function(f4dObject)
 	}
 	else 
 	{
-		var groupId = f4dObject.data_key || f4dObject.dataKey || f4dObject.dataGroupKey;
+		var groupId = f4dObject.data_key || f4dObject.dataKey || f4dObject.dataGroupId;
 		var groupDataFolder;
 
 		if (f4dObject.data_key) 
@@ -24866,7 +24866,7 @@ MagoManager.prototype.mouseActionLeftUp = function(mouseX, mouseY)
 	}
 	
 	// test zBouncing.************************
-	
+	/*
 	var nodeSelected = this.selectionManager.currentNodeSelected;
 	if (nodeSelected)
 	{
@@ -24879,10 +24879,14 @@ MagoManager.prototype.mouseActionLeftUp = function(mouseX, mouseY)
 		this.effectsManager.addEffect(nodeId, effect);
 		
 		// shadow on-off test.
-		var data = nodeSelected.data;
-		var attributes = data.attributes;
-		attributes.castShadow = false;
+		var effect = new Effect({
+			effectType      : "borningLight",
+			durationSeconds : 1.0
+		});
+		
+		this.effectsManager.addEffect(nodeId, effect);
 	}
+	*/
 };
 
 /**
@@ -38445,11 +38449,12 @@ CODE.magoMode = {
 };
 
 CODE.magoCurrentProcess = {
-	"Unknown"              : 0,
-	"DepthRendering"       : 1,
-	"ColorRendering"       : 2,
-	"ColorCodeRendering"   : 3,
-	"DepthShadowRendering" : 4
+	"Unknown"                    : 0,
+	"DepthRendering"             : 1,
+	"ColorRendering"             : 2,
+	"ColorCodeRendering"         : 3,
+	"DepthShadowRendering"       : 4,
+	"StencilSilhouetteRendering" : 5
 };
 
 CODE.modelerMode = {
@@ -39472,6 +39477,273 @@ Policy.prototype.setSsaoRadius = function(ssaoRadius)
 {
 	this.ssaoRadius = ssaoRadius;
 };
+
+'use strict';
+
+/**
+ * @alias Effect
+ * @class Effect
+ */
+var Effect = function(options) 
+{
+	if (!(this instanceof Effect)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+	
+	// Test class to do effects.
+	this.effectsManager;
+	this.birthData;
+	this.durationSeconds;
+	this.effectType = "unknown";
+	
+	if (options)
+	{
+		if (options.effectType)
+		{ this.effectType = options.effectType; }
+		
+		if (options.durationSeconds)
+		{ this.durationSeconds = options.durationSeconds; }
+	}
+	
+	// available effectType:
+	// 1: zBounceLinear
+	// 2: zBounceSpring
+	// 3: borningLight
+};
+
+/**
+ *
+ */
+Effect.prototype.execute = function(currTimeSec)
+{
+	var effectFinished = false;
+	if (this.birthData === undefined)
+	{
+		this.birthData = currTimeSec;
+		return effectFinished;
+	}
+	
+	var timeDiffSeconds = (currTimeSec - this.birthData);
+	var gl = this.effectsManager.gl;
+	
+	if (this.effectType === "zBounceSpring")
+	{
+		var zScale = 1.0;
+		if (timeDiffSeconds >= this.durationSeconds)
+		{
+			zScale = 1.0;
+			effectFinished = true; // if return true, then this effect is finished, so this effect will be deleted.
+		}
+		else
+		{
+			//https://en.wikipedia.org/wiki/Damped_sine_wave
+			var amp = 1.0;
+			var lambda = 0.1; // is the decay constant, in the reciprocal of the time units of the X axis.
+			var w = 5/this.durationSeconds; // angular frequency.
+			var t = timeDiffSeconds;
+			var fita = 0.0; // initial angle in t=0.
+			zScale = amp*Math.pow(Math.E, -lambda*t)*(Math.cos(w*t+fita) + Math.sin(w*t+fita));
+			zScale = (1.0-zScale)*Math.log(t/this.durationSeconds+1.1);
+		}
+		gl.uniform3fv(this.effectsManager.currShader.scaleLC_loc, [1.0, 1.0, zScale]); // init referencesMatrix.
+		return effectFinished;
+	}
+	else if (this.effectType === "zBounceLinear")
+	{
+		var zScale = 1.0;
+		if (timeDiffSeconds >= this.durationSeconds)
+		{
+			zScale = 1.0;
+			effectFinished = true; // if return true, then this effect is finished, so this effect will be deleted.
+		}
+		else
+		{
+			zScale = timeDiffSeconds/this.durationSeconds;
+		}
+		gl.uniform3fv(this.effectsManager.currShader.scaleLC_loc, [1.0, 1.0, zScale]); // init referencesMatrix.
+		return effectFinished;
+	}
+	else if (this.effectType === "borningLight")
+	{
+		var colorMultiplier = 1.0;
+		if (timeDiffSeconds >= this.durationSeconds)
+		{
+			colorMultiplier = 1.0;
+			effectFinished = true; // if return true, then this effect is finished, so this effect will be deleted.
+		}
+		else
+		{
+			colorMultiplier = 1/(timeDiffSeconds/this.durationSeconds);
+		}
+		gl.uniform4fv(this.effectsManager.currShader.colorMultiplier_loc, [colorMultiplier, colorMultiplier, colorMultiplier, 1.0]);
+		return effectFinished;
+	}
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+/**
+ * @alias EffectsManager
+ * @class EffectsManager
+ */
+var EffectsManager = function(options) 
+{
+	if (!(this instanceof EffectsManager)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+	
+	this.effectsObjectsMap = {};
+	this.gl;
+	this.currShader;
+};
+
+/**
+ *
+ */
+EffectsManager.prototype.setCurrentShader = function(shader)
+{
+	this.currShader = shader;
+};
+
+/**
+ *
+ */
+EffectsManager.prototype.getEffectsObject = function(id)
+{
+	return this.effectsObjectsMap[id];
+};
+
+EffectsManager.prototype.hasEffects = function(id) 
+{
+	
+	if (!this.effectsObjectsMap[id]) 
+	{
+		return false;
+	}
+
+	if (!this.effectsObjectsMap[id].effectsArray || this.effectsObjectsMap[id].effectsArray.length === 0)
+	{
+		return false;
+	}
+
+	return true;
+};
+
+
+/**
+ *
+ */
+EffectsManager.prototype.addEffect = function(id, effect)
+{
+	var effectsObject = this.getEffectsObject(id);
+	
+	if (effectsObject === undefined)
+	{
+		effectsObject = {};
+		this.effectsObjectsMap[id] = effectsObject;
+	}
+	
+	if (effectsObject.effectsArray === undefined)
+	{ effectsObject.effectsArray = []; }
+	
+	effect.effectsManager = this;
+	effectsObject.effectsArray.push(effect);
+};
+
+EffectsManager.prototype.executeEffects = function(id, currTime)
+{
+	var effectsObject = this.getEffectsObject(id);
+	var effectExecuted = false;
+	if (effectsObject === undefined)
+	{ return false; }
+	
+	var effectsCount = effectsObject.effectsArray.length;
+	for (var i=0; i<effectsCount; i++)
+	{
+		var effect = effectsObject.effectsArray[i];
+		if (effect.execute(currTime/1000))
+		{
+			effectsObject.effectsArray.splice(i, 1);
+			effectsCount = effectsObject.effectsArray.length;
+		}
+		effectExecuted = true;
+		
+		if (effectsObject.effectsArray.length === 0)
+		{ 
+			this.effectsObjectsMap[id] = undefined;
+			delete this.effectsObjectsMap[id];
+		}
+	}
+	
+	return effectExecuted;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 'use strict';
 
@@ -47517,7 +47789,7 @@ Node.prototype.renderContent = function(magoManager, shader, renderType, refMatr
 	}
 
 	// Check if there are effects.
-	if (renderType !== 2)
+	if (renderType !== 2 && magoManager.currentProcess !== CODE.magoCurrentProcess.StencilSilhouetteRendering)
 	{ var executedEffects = magoManager.effectsManager.executeEffects(data.nodeId, magoManager.getCurrentTime()); }
 	
 	// check if this is a multiBuildings.
@@ -47690,6 +47962,11 @@ Node.prototype.renderContent = function(magoManager, shader, renderType, refMatr
 	{
 		// must return all uniforms changed for effects.
 		gl.uniform3fv(shader.scaleLC_loc, [1.0, 1.0, 1.0]); // init local scale.
+		
+		if (renderType === 1)
+		{
+			gl.uniform4fv(shader.colorMultiplier_loc, [1.0, 1.0, 1.0, 1.0]);
+		}
 	}
 };
 
@@ -48503,10 +48780,10 @@ Node.prototype.changeLocationAndRotation = function(latitude, longitude, elevati
 		}
 		neoBuilding.calculateBBoxCenterPositionWorldCoord(geoLocationData);
 		nodeRoot.bboxAbsoluteCenterPos = undefined; // provisional.
-		nodeRoot.calculateBBoxCenterPositionWorldCoord(geoLocationData); // provisional.
+		nodeRoot.bboxAbsoluteCenterPos = nodeRoot.calculateBBoxCenterPositionWorldCoord(geoLocationData); // provisional.
 		
 		aNode.bboxAbsoluteCenterPos = undefined; // provisional.
-		aNode.calculateBBoxCenterPositionWorldCoord(geoLocationData); // provisional.
+		aNode.bboxAbsoluteCenterPos = aNode.calculateBBoxCenterPositionWorldCoord(geoLocationData); // provisional.
 		
 		// Now, calculate the geoCoords of the bbox.
 		if (nodeRoot.data.bbox.geographicCoord === undefined)
@@ -55691,256 +55968,107 @@ TinTerrainManager.prototype.render = function(magoManager, bDepth, renderType, s
 'use strict';
 
 /**
- * @alias Effect
- * @class Effect
+ * 메세지
+ * 
+ * @class
  */
-var Effect = function(options) 
+var Message = function(i18next, message) 
 {
-	if (!(this instanceof Effect)) 
-	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
-	}
-	
-	// Test class to do effects.
-	this.effectsManager;
-	this.birthData;
-	this.durationSeconds;
-	this.effectType = "unknown";
-	
-	if (options)
-	{
-		if (options.effectType)
-		{ this.effectType = options.effectType; }
-		
-		if (options.durationSeconds)
-		{ this.durationSeconds = options.durationSeconds; }
-	}
-	
-	// available effectType:
-	// 1: zBounceLinear
-	// 2: zBounceSpring
+	this.handle  = i18next;
+	this.message = message || MessageSource;
 };
 
 /**
+ * 메세지 클래스 초기화
  *
+ * @param {Function} callback
  */
-Effect.prototype.execute = function(currTimeSec)
+Message.prototype.init = function (callback)
 {
-	var effectFinished = false;
-	if (this.birthData === undefined)
-	{
-		this.birthData = currTimeSec;
-		return effectFinished;
-	}
-	
-	
-	
-	if (this.effectType === "zBounceSpring")
-	{
-		var timeDiffSeconds = (currTimeSec - this.birthData);
-		var zScale = 1.0;
-		var gl = this.effectsManager.gl;
-		if (timeDiffSeconds >= this.durationSeconds)
+	var h = this.handle;
+	this.handle.use(i18nextXHRBackend)
+		.use(i18nextBrowserLanguageDetector)
+		.init({
+			// Useful for debuging, displays which key is missing
+			debug: false,
+
+			detection: {
+				// keys or params to lookup language from
+				lookupQuerystring  : 'lang',
+				lookupCookie       : 'i18nextLang',
+				lookupLocalStorage : 'i18nextLang',
+			},
+    
+			// If translation key is missing, which lang use instead
+			fallbackLng: 'en',
+
+			resources: this.message,
+
+			// all, languageOnly
+			load: "languageOnly",
+
+			ns        : ['common'],
+			// Namespace to use by default, when not indicated
+			defaultNS : 'common',
+    
+			keySeparator     : ".",
+			nsSeparator      : ":",
+			pluralSeparator  : "_",
+			contextSeparator : "_"
+
+		}, function(err, t)
 		{
-			zScale = 1.0;
-			effectFinished = true; // if return true, then this effect is finished, so this effect will be deleted.
-		}
-		else
-		{
-			//https://en.wikipedia.org/wiki/Damped_sine_wave
-			var amp = 1.0;
-			var lambda = 0.1; // is the decay constant, in the reciprocal of the time units of the X axis.
-			var w = 5/this.durationSeconds; // angular frequency.
-			var t = timeDiffSeconds;
-			var fita = 0.0; // initial angle in t=0.
-			zScale = amp*Math.pow(Math.E, -lambda*t)*(Math.cos(w*t+fita) + Math.sin(w*t+fita));
-			zScale = (1.0-zScale)*Math.log(t/this.durationSeconds+1.1);
-		}
-		gl.uniform3fv(this.effectsManager.currShader.scaleLC_loc, [1.0, 1.0, zScale]); // init referencesMatrix.
-		return effectFinished;
-	}
-	else if (this.effectType === "zBounceLinear")
-	{
-		var timeDiffSeconds = (currTimeSec - this.birthData);
-		var zScale = 1.0;
-		var gl = this.effectsManager.gl;
-		if (timeDiffSeconds >= this.durationSeconds)
-		{
-			zScale = 1.0;
-			effectFinished = true; // if return true, then this effect is finished, so this effect will be deleted.
-		}
-		else
-		{
-			zScale = timeDiffSeconds/this.durationSeconds;
-		}
-		gl.uniform3fv(this.effectsManager.currShader.scaleLC_loc, [1.0, 1.0, zScale]); // init referencesMatrix.
-		return effectFinished;
-	}
+			console.log("detected user language: " + h.language);
+			console.log("loaded languages: " + h.languages.join(', '));
+			h.changeLanguage(h.languages[0]);
+			callback(err, t);
+		});
 };
 
+/**
+ * 메세지 핸들러를 가져온다.
+ *
+ * @returns {i18next} message handler
+ */
+Message.prototype.getHandle = function ()
+{
+	return this.handle;
+};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/**
+ * 메세지를 가져온다.
+ *
+ * @returns {Object} message
+ */
+Message.prototype.getMessage = function ()
+{
+	return this.message;
+};
 
 'use strict';
-
-/**
- * @alias EffectsManager
- * @class EffectsManager
- */
-var EffectsManager = function(options) 
-{
-	if (!(this instanceof EffectsManager)) 
-	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
-	}
-	
-	this.effectsObjectsMap = {};
-	this.gl;
-	this.currShader;
+var MessageSource = {};
+MessageSource.en = {
+  "common": {
+    "welcome" : "Welcome",
+    "error": {
+        "title" : "Error",
+        "construct" : {
+            "create" : "This object should be created using new."
+        }
+    }
+  }
 };
-
-/**
- *
- */
-EffectsManager.prototype.setCurrentShader = function(shader)
-{
-	this.currShader = shader;
-};
-
-/**
- *
- */
-EffectsManager.prototype.getEffectsObject = function(id)
-{
-	return this.effectsObjectsMap[id];
-};
-
-EffectsManager.prototype.hasEffects = function(id) 
-{
-	
-	if (!this.effectsObjectsMap[id]) 
-	{
-		return false;
-	}
-
-	if (!this.effectsObjectsMap[id].effectsArray || this.effectsObjectsMap[id].effectsArray.length === 0)
-	{
-		return false;
-	}
-
-	return true;
-};
-
-
-/**
- *
- */
-EffectsManager.prototype.addEffect = function(id, effect)
-{
-	var effectsObject = this.getEffectsObject(id);
-	
-	if (effectsObject === undefined)
-	{
-		effectsObject = {};
-		this.effectsObjectsMap[id] = effectsObject;
-	}
-	
-	if (effectsObject.effectsArray === undefined)
-	{ effectsObject.effectsArray = []; }
-	
-	effect.effectsManager = this;
-	effectsObject.effectsArray.push(effect);
-};
-
-EffectsManager.prototype.executeEffects = function(id, currTime)
-{
-	var effectsObject = this.getEffectsObject(id);
-	var effectExecuted = false;
-	if (effectsObject === undefined)
-	{ return false; }
-	
-	var effectsCount = effectsObject.effectsArray.length;
-	for (var i=0; i<effectsCount; i++)
-	{
-		var effect = effectsObject.effectsArray[i];
-		if (effect.execute(currTime/1000))
-		{
-			effectsObject.effectsArray.splice(i, 1);
-			effectsCount = effectsObject.effectsArray.length;
-		}
-		effectExecuted = true;
-		
-		if (effectsObject.effectsArray.length === 0)
-		{ 
-			this.effectsObjectsMap[id] = undefined;
-			delete this.effectsObjectsMap[id];
-		}
-	}
-	
-	return effectExecuted;
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+MessageSource.ko = {
+    "common": {
+      "welcome" : "환영합니다.",
+      "error": {
+          "title" : "오류",
+          "construct" : {
+              "create" : "이 객체는 new 를 사용하여 생성해야 합니다."
+          }
+      }
+    }
+  };
 
 'use strict';
 
@@ -79646,50 +79774,48 @@ Renderer.prototype.renderGeometry = function(gl, renderType, visibleObjControler
 			
 			this.renderAxisNodes(nodes, renderType);
 		}
-		
-		if (!magoManager.isCesiumGlobe())
+
+		var sceneState = magoManager.sceneState;
+		//sceneState.applySunShadows = true;
+		// SunLight.***
+		if (sceneState.applySunShadows && !this.isCameraMoving && !this.mouseLeftDown && !this.mouseMiddleDown)
 		{
-			var sceneState = magoManager.sceneState;
-			//sceneState.applySunShadows = true;
-			// SunLight.***
-			if (sceneState.applySunShadows && !this.isCameraMoving && !this.mouseLeftDown && !this.mouseMiddleDown)
+			visibleObjControlerNodes.calculateBoundingFrustum(sceneState.camera);
+		
+			var sunSystem = sceneState.sunSystem;
+			var sunLightsCount = sunSystem.lightSourcesArray.length;
+			for (var i=0; i<sunLightsCount; i++)
 			{
-				visibleObjControlerNodes.calculateBoundingFrustum(sceneState.camera);
-			
-				var sunSystem = sceneState.sunSystem;
-				var sunLightsCount = sunSystem.lightSourcesArray.length;
-				for (var i=0; i<sunLightsCount; i++)
-				{
-					var sunLight = sunSystem.getLight(i);
-					var imageWidth = sunLight.targetTextureWidth;
-					var imageHeight = sunLight.targetTextureHeight;
-					
-					if (sunLight.depthFbo === undefined) 
-					{ 
-						sunLight.depthFbo = new FBO(gl, imageWidth, imageHeight ); 
-					}
-					
-					// Must swap rendering phase before render depth from the sun.***
-					magoManager.swapRenderingFase();
-					
-					sunLight.depthFbo.bind();
-					if (magoManager.isFarestFrustum())
-					{
-						gl.clearColor(1, 1, 1, 1);
-						gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-					}
-					gl.viewport(0, 0, imageWidth, imageHeight);
-					
-					this.renderDepthSunPointOfView(gl, visibleObjControlerNodes, sunLight, sunSystem);
-					
-					sunLight.depthFbo.unbind();
+				var sunLight = sunSystem.getLight(i);
+				var imageWidth = sunLight.targetTextureWidth;
+				var imageHeight = sunLight.targetTextureHeight;
+				
+				if (sunLight.depthFbo === undefined) 
+				{ 
+					sunLight.depthFbo = new FBO(gl, imageWidth, imageHeight ); 
 				}
 				
-				magoManager.depthFboNeo.bind(); 
-				gl.viewport(0, 0, sceneState.drawingBufferWidth[0], sceneState.drawingBufferHeight[0]);
-				gl.clearColor(0, 0, 0, 1);
+				// Must swap rendering phase before render depth from the sun.***
+				magoManager.swapRenderingFase();
+				
+				sunLight.depthFbo.bind();
+				if (magoManager.isFarestFrustum())
+				{
+					gl.clearColor(1, 1, 1, 1);
+					gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+				}
+				gl.viewport(0, 0, imageWidth, imageHeight);
+				
+				this.renderDepthSunPointOfView(gl, visibleObjControlerNodes, sunLight, sunSystem);
+				
+				sunLight.depthFbo.unbind();
 			}
+			
+			magoManager.depthFboNeo.bind(); 
+			gl.viewport(0, 0, sceneState.drawingBufferWidth[0], sceneState.drawingBufferHeight[0]);
+			gl.clearColor(0, 0, 0, 1);
 		}
+		
 	}
 	if (renderType === 1) 
 	{
@@ -79797,6 +79923,7 @@ Renderer.prototype.renderGeometry = function(gl, renderType, visibleObjControler
 			gl.uniform1i(currentShader.textureFlipYAxis_loc, magoManager.sceneState.textureFlipYAxis);
 			gl.uniform1i(currentShader.refMatrixType_loc, 0); // init referencesMatrix.
 			gl.uniform3fv(currentShader.scaleLC_loc, [1.0, 1.0, 1.0]); // init local scale.
+			gl.uniform4fv(currentShader.colorMultiplier_loc, [1.0, 1.0, 1.0, 1.0]);
 			
 			// Test sphericalKernel for ssao.************************
 			//gl.uniform3fv(currentShader.kernel32_loc, magoManager.sceneState.ssaoSphereKernel32);
@@ -79886,6 +80013,8 @@ Renderer.prototype.renderGeometry = function(gl, renderType, visibleObjControler
 				var maxSizeToRender = 0.0;
 				var refMatrixIdxKey = 0;
 				
+				magoManager.currentProcess = CODE.magoCurrentProcess.StencilSilhouetteRendering;
+				
 				// do as the "getSelectedObjectPicking".**********************************************************
 				currentShader = magoManager.postFxShadersManager.getModelRefSilhouetteShader(); // silhouette shader.***
 				currentShader.useProgram();
@@ -79952,6 +80081,8 @@ Renderer.prototype.renderGeometry = function(gl, renderType, visibleObjControler
 					var geoLocDataManager = node.getNodeGeoLocDataManager();
 					neoBuilding = magoManager.buildingSelected;
 					var buildingGeoLocation = geoLocDataManager.getCurrentGeoLocationData();
+					
+					magoManager.currentProcess = CODE.magoCurrentProcess.StencilSilhouetteRendering;
 				
 					currentShader = magoManager.postFxShadersManager.getModelRefSilhouetteShader(); // silhouette shader.***
 					currentShader.useProgram();
@@ -81051,6 +81182,15 @@ var SceneState = function()
 };
 
 /**
+ */
+SceneState.prototype.restoreDefaultValuesAmbientDiffuseSpecularCoeficients = function() 
+{
+	this.ambientReflectionCoef[0] = 0.7; 
+	this.diffuseReflectionCoef[0] = 0.40; 
+	this.specularReflectionCoef[0] = 0.6; 
+};
+
+/**
  * Returns the modelViewMatrixInverse.
  * @returns {Matrix4} modelViewMatrixInv.
  */
@@ -81073,21 +81213,6 @@ SceneState.prototype.getCamera = function()
 SceneState.prototype.setApplySunShadows = function(bApplySunShadows) 
 {
 	this.applySunShadows = bApplySunShadows;
-	
-	if (this.applySunShadows)
-	{
-		this.ambientReflectionCoef = new Float32Array([1.0]); // 0.2.
-		this.diffuseReflectionCoef = new Float32Array([0.30]); // 1.0
-		this.specularReflectionCoef = new Float32Array([0.4]); // 0.7
-		this.specularColor = new Float32Array([0.7, 0.7, 0.7]);
-	}
-	else
-	{
-		this.ambientReflectionCoef = new Float32Array([0.7]); // 0.2.
-		this.diffuseReflectionCoef = new Float32Array([0.40]); // 1.0
-		this.specularReflectionCoef = new Float32Array([0.6]); // 0.7
-		this.specularColor = new Float32Array([0.7, 0.7, 0.7]);
-	}
 };
 
 
@@ -81490,111 +81615,6 @@ SelectionManager.prototype.TEST__CurrGeneralObjSel = function()
 	else
 	{ return false; }
 };
-
-'use strict';
-
-/**
- * 메세지
- * 
- * @class
- */
-var Message = function(i18next, message) 
-{
-	this.handle  = i18next;
-	this.message = message || MessageSource;
-};
-
-/**
- * 메세지 클래스 초기화
- *
- * @param {Function} callback
- */
-Message.prototype.init = function (callback)
-{
-	var h = this.handle;
-	this.handle.use(i18nextXHRBackend)
-		.use(i18nextBrowserLanguageDetector)
-		.init({
-			// Useful for debuging, displays which key is missing
-			debug: false,
-
-			detection: {
-				// keys or params to lookup language from
-				lookupQuerystring  : 'lang',
-				lookupCookie       : 'i18nextLang',
-				lookupLocalStorage : 'i18nextLang',
-			},
-    
-			// If translation key is missing, which lang use instead
-			fallbackLng: 'en',
-
-			resources: this.message,
-
-			// all, languageOnly
-			load: "languageOnly",
-
-			ns        : ['common'],
-			// Namespace to use by default, when not indicated
-			defaultNS : 'common',
-    
-			keySeparator     : ".",
-			nsSeparator      : ":",
-			pluralSeparator  : "_",
-			contextSeparator : "_"
-
-		}, function(err, t)
-		{
-			console.log("detected user language: " + h.language);
-			console.log("loaded languages: " + h.languages.join(', '));
-			h.changeLanguage(h.languages[0]);
-			callback(err, t);
-		});
-};
-
-/**
- * 메세지 핸들러를 가져온다.
- *
- * @returns {i18next} message handler
- */
-Message.prototype.getHandle = function ()
-{
-	return this.handle;
-};
-
-/**
- * 메세지를 가져온다.
- *
- * @returns {Object} message
- */
-Message.prototype.getMessage = function ()
-{
-	return this.message;
-};
-
-'use strict';
-var MessageSource = {};
-MessageSource.en = {
-  "common": {
-    "welcome" : "Welcome",
-    "error": {
-        "title" : "Error",
-        "construct" : {
-            "create" : "This object should be created using new."
-        }
-    }
-  }
-};
-MessageSource.ko = {
-    "common": {
-      "welcome" : "환영합니다.",
-      "error": {
-          "title" : "오류",
-          "construct" : {
-              "create" : "이 객체는 new 를 사용하여 생성해야 합니다."
-          }
-      }
-    }
-  };
 
 'use strict';
 
@@ -82281,6 +82301,7 @@ PostFxShader.prototype.createUniformLocals = function(gl, shader, sceneState)
 	shader.frustumFar_loc = gl.getUniformLocation(shader.program, "far");
 	
 	shader.scaleLC_loc = gl.getUniformLocation(shader.program, "scaleLC");
+	shader.colorMultiplier_loc = gl.getUniformLocation(shader.program, "colorMultiplier");
 };
 
 'use strict';
@@ -83983,8 +84004,9 @@ uniform float ambientReflectionCoef;\n\
 uniform float diffuseReflectionCoef;  \n\
 uniform float specularReflectionCoef; \n\
 uniform bool bApplySsao;\n\
-uniform float externalAlpha;\n\
 uniform bool bApplyShadow;\n\
+uniform float externalAlpha;\n\
+uniform vec4 colorMultiplier;\n\
 \n\
 //uniform int sunIdx;\n\
 \n\
@@ -84333,6 +84355,7 @@ void main()\n\
 	else{\n\
 		finalColor = vec4((textureColor.xyz) * occlusion * shadow_occlusion, alfa);\n\
 	}\n\
+	finalColor *= colorMultiplier;\n\
 	//finalColor = vec4(linearDepth, linearDepth, linearDepth, 1.0); // test to render depth color coded.***\n\
     gl_FragColor = finalColor; \n\
 \n\

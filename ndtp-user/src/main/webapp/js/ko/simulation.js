@@ -140,6 +140,13 @@ var Simulation = function(magoInstance) {
 				effectType      : pitch > 0 ? "zBounceLinear":"zBounceSpring",
 				durationSeconds : 0.4
 			}));
+			magoManager.effectsManager.addEffect(data.nodeId, new Mago3D.Effect({
+				effectType      : "borningLight",
+				durationSeconds : 0.6
+			}));
+			
+			
+			
 			
 			node.setRenderCondition(function(data){
 				var attributes = data.attributes; 
@@ -179,6 +186,10 @@ var Simulation = function(magoInstance) {
 						magoManager.effectsManager.addEffect(dataId, new Mago3D.Effect({
 							effectType      : pitch > 0 ? "zBounceLinear":"zBounceSpring",
 							durationSeconds : 0.4
+						}));
+						magoManager.effectsManager.addEffect(dataId, new Mago3D.Effect({
+							effectType      : 'borningLight',
+							durationSeconds : 0.6
 						}));
 					}
 				}
