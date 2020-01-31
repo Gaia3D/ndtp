@@ -298,7 +298,7 @@
 			check();
 
 			$.ajax({
-				url: "/user-group/menu",
+				url: "/user-groups/menu",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				data: $("#userGroupMenu").serialize()+ "&userGroupId=${userGroup.userGroupId}",
