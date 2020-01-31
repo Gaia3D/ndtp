@@ -46,7 +46,7 @@
 					</td>
 					<td style="padding: 0px; vertical-align: middle; ">
 						<button type="button" title="바로가기" class="goto" style="margin: 0px; padding: 0px;"
-							onclick="flyTo('{{longitude}}', '{{latitude}}', '{{altitude}}', '2');">바로가기</button></td>
+							onclick="flyTo('{{dataGroupId}}', '{{dataKey}}');">바로가기</button></td>
 				</tr>
 	{{/each}}
 {{else}}

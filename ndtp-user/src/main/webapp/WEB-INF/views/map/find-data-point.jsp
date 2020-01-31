@@ -442,7 +442,7 @@
 	
 	function flyTo(magoInstance) {
 		//  searchDataAPI
-		searchDataAPI(magoInstance, "${dataInfo.dataGroupKey}", "${dataInfo.dataKey}");
+		searchDataAPI(magoInstance, "${dataInfo.dataGroupId}", "${dataInfo.dataKey}");
 	}
 	
 	function remove(entityStored) {

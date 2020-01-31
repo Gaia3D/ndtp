@@ -288,14 +288,22 @@
 		
 	}
 	
-	function flyTo(dataGroupKey, dataKey) {
-		if(dataGroupKey === null || dataGroupKey === '' || dataKey === null || dataKey === '') {
+	function flyTo(dataGroupId, dataKey) {
+		if(dataGroupId === null || dataGroupId === '' || dataKey === null || dataKey === '') {
 			alert("위치 정보가 올바르지 않습니다. 확인하여 주십시오.");
 			return;
 		}
 		
 		//  searchDataAPI
-		 searchDataAPI(MAGO3D_INSTANCE, dataGroupKey, dataKey);
+		 searchDataAPI(MAGO3D_INSTANCE, dataGroupId, dataKey);
+	}
+	
+	function flyToGroup(longitude, latitude, altitude, duration) {
+		if(longitude === null || longitude === '' || latitude === null || latitude === '' || altitude === null || altitude === '') {
+			alert("위치 정보가 올바르지 않습니다. 확인하여 주십시오.");
+			return;
+		}
+		gotoFlyAPI(MAGO3D_INSTANCE, parseFloat(longitude), parseFloat(latitude), parseFloat(altitude), parseFloat(duration));
 	}
 	
 	var dataInfoDialog = $( "#dataInfoDialog" ).dialog({
