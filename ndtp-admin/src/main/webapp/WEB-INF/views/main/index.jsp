@@ -12,8 +12,21 @@
 	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
 	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
+	<link rel="stylesheet" href="/externlib/jqplot/jquery.jqplot.min.css" />
 	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css">
     <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
+    <style type="text/css">
+        .jqplot-table-legend {
+            width: 0%;
+            border-collapse: inherit;
+        }
+        .jqplot-table-legend-label {
+			max-width: 150px;
+			overflow:hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+        }
+    </style>
 </head>
 <body>
 	<%@ include file="/WEB-INF/views/layouts/header.jsp" %>
@@ -40,7 +53,7 @@
 									<div>
 										<span class="banner-title"><spring:message code='main.data.new'/></span>
 										<span id="firstCountSpinner" class="banner-number"></span>
-										<span class="banner-unit"> 10 <spring:message code='main.count'/> </span>	<!-- ${issueTotalCount} -->
+										<span class="banner-unit"> ${issueTotalCount} <spring:message code='main.count'/> </span>
 									</div>
 								</div>
 							</div>
@@ -551,7 +564,7 @@
                     numberCols: 1
                 },
                 location: "e",
-                border: "none",
+                //border: "none",
                 marginLeft: "10px"
             }
         });

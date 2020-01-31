@@ -24,7 +24,6 @@ import ndtp.domain.CivilVoice;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
 import ndtp.domain.DataInfoAdjustLog;
-import ndtp.domain.DataInfoLog;
 import ndtp.domain.DataStatus;
 import ndtp.domain.Key;
 import ndtp.domain.Policy;
@@ -36,7 +35,6 @@ import ndtp.service.AccessLogService;
 import ndtp.service.CivilVoiceService;
 import ndtp.service.DataAdjustLogService;
 import ndtp.service.DataGroupService;
-import ndtp.service.DataLogService;
 import ndtp.service.DataService;
 import ndtp.service.PolicyService;
 import ndtp.service.UserService;
@@ -149,8 +147,8 @@ public class MainController {
 				isDataInfoLogListDraw = true;
 				dataInfoLogListWidget(startDate, endDate, model);
 			} else if("issueWidget".equals(dbWidget.getName())) {
-//				isIssueDraw = true;
-//				issueWidget(startDate, endDate, model);
+				isIssueDraw = true;
+				issueWidget(startDate, endDate, model);
 			} else if("userWidget".equals(dbWidget.getName())) {
 				isUserDraw = true;
 				userWidget(startDate, endDate, model);
@@ -229,14 +227,14 @@ public class MainController {
 	 * @param endDate
 	 * @param model
 	 */
-//	private void issueWidget(String startDate, String endDate, Model model) {
-//		Issue issue = new Issue();
-//		issue.setStartDate(startDate);
-//		issue.setEndDate(endDate);
-//		Long issueTotalCount = issueService.getIssueTotalCount(issue);
-//
-//		model.addAttribute("issueTotalCount", issueTotalCount);
-//	}
+	private void issueWidget(String startDate, String endDate, Model model) {
+		DataGroup issue = new DataGroup();
+		issue.setStartDate(startDate);
+		issue.setEndDate(endDate);
+		Long issueTotalCount = dataGroupService.getDataGroupTotalCount(issue);
+
+		model.addAttribute("issueTotalCount", issueTotalCount);
+	}
 
 	/**
 	 * 사용자 현황
@@ -371,11 +369,11 @@ public class MainController {
 		String result = "success";
 		try {
 			UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-			
+
 			DataGroup dataGroup = new DataGroup();
 			dataGroup.setUserId(userSession.getUserId());
 			List<DataGroup> dataGroupList = dataGroupService.getListDataGroup(dataGroup);
-			
+
 			List<String> dataGroupNameList = new ArrayList<>();
 			List<Long> dataGroupTotalCountList = new ArrayList<>();
 			for(DataGroup dbDataGroup : dataGroupList) {
