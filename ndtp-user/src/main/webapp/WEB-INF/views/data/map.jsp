@@ -151,7 +151,7 @@
 	// 임시로...
 	$(document).ready(function() {
 		$(".ui-slider-handle").slider({});
-// 		initDataGroupList();
+ 		initDataGroupList();
 	});
 	
 	//Cesium.Ion.defaultAccessToken = '';
