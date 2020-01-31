@@ -3,6 +3,8 @@ package ndtp.controller;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -374,6 +376,7 @@ public class MainController {
 			dataGroup.setUserId(userSession.getUserId());
 			List<DataGroup> dataGroupList = dataGroupService.getListDataGroup(dataGroup);
 
+			// TODO: 코드 정리 필요
 			List<String> dataGroupNameList = new ArrayList<>();
 			List<Long> dataGroupTotalCountList = new ArrayList<>();
 			for(DataGroup dbDataGroup : dataGroupList) {
@@ -384,8 +387,26 @@ public class MainController {
 				dataGroupTotalCountList.add(dataTotalCount);
 			}
 
-			map.put("dataGroupNameList", dataGroupNameList);
-			map.put("dataGroupTotalCountList", dataGroupTotalCountList);
+			// 결과를 Map 형식으로 변환
+			List<Map<String, Object>> sortList = new ArrayList<>();
+			for(int i=0, length=dataGroupList.size(); i<length; i++) {
+				Map<String, Object> mapp = new HashMap<>();
+				mapp.put("name", dataGroupNameList.get(i));
+				mapp.put("count", dataGroupTotalCountList.get(i));
+				sortList.add(mapp);
+			}
+
+			// 건수를 기준으로 DESC 정렬
+			Collections.sort(sortList, new Comparator<Map<String, Object>>() {
+				@Override
+	            public int compare(final Map<String, Object> o1, final Map<String, Object> o2) {
+					Integer i1 = Math.toIntExact((long) o1.get("count"));
+					Integer i2 = Math.toIntExact((long) o2.get("count"));
+	                return i2.compareTo(i1);
+	            }
+	        });
+
+			map.put("dataGroupList", sortList);
 		} catch(Exception e) {
 			e.printStackTrace();
 			result = "db.exception";
