@@ -15,59 +15,58 @@
     <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
 </head>
 <body>
-
-<%@ include file="/WEB-INF/views/layouts/header.jsp" %>
+	<%@ include file="/WEB-INF/views/layouts/header.jsp" %>
 	<%@ include file="/WEB-INF/views/layouts/menu.jsp" %>
 	<div class="site-body">
-		<div class="container">
+		<div class="container">e
 			<div class="site-content">
 				<%@ include file="/WEB-INF/views/layouts/sub_menu.jsp" %>
 				<div class="page-area">
 					<%@ include file="/WEB-INF/views/layouts/page_header.jsp" %>
 					<div class="page-content">
 						<div class="filters">
-							<form:form id="searchForm" modelAttribute="uploadData" method="post" action="/upload-data/list-upload-data" onsubmit="return searchCheck();">
-							<div class="input-group row">
-								<div class="input-set">
-									<label for="searchWord"><spring:message code='search.word'/></label>
-									<select id="searchWord" name="searchWord" class="selectBoxClass">
-										<option value=""><spring:message code='select'/></option>
-	          							<option value="data_name">데이터명</option>
-									</select>
-									<select id="searchOption" name="searchOption" class="selectBoxClass">
-										<option value="0"><spring:message code='search.same'/></option>
-										<option value="1"><spring:message code='search.include'/></option>
-									</select>
-									<form:input path="searchValue" type="search" cssClass="m" cssStyle="float: right;" />
+							<form:form id="searchForm" modelAttribute="uploadData" method="get" action="/upload-data/list" onsubmit="return searchCheck();">
+								<div class="input-group row">
+									<div class="input-set">
+										<label for="searchWord"><spring:message code='search.word'/></label>
+										<select id="searchWord" name="searchWord" class="selectBoxClass">
+											<option value=""><spring:message code='select'/></option>
+		          							<option value="data_name">데이터명</option>
+										</select>
+										<form:select path="searchOption" class="select" style="height: 30px;">
+											<form:option value="0"><spring:message code='search.same'/></form:option>
+											<form:option value="1"><spring:message code='search.include'/></form:option>
+										</form:select>
+										<form:input path="searchValue" type="search" cssClass="m" cssStyle="float: right;" />
+									</div>
+									<div class="input-set">
+										<label for="startDate"><spring:message code='search.date'/></label>
+										<input type="text" id="startDate" name="startDate" class="s date" />
+										<span class="delimeter tilde">~</span>
+										<input type="text" id="endDate" name="endDate" class="s date" />
+									</div>
+									<div class="input-set">
+										<label for="orderWord"><spring:message code='search.order'/></label>
+										<select id="orderWord" name="orderWord" class="selectBoxClass">
+											<option value=""> <spring:message code='search.basic'/> </option>
+											<option value="data_name">데이터명</option>
+											<option value="insertDate"> <spring:message code='search.insert.date'/> </option>
+										</select>
+										<select id="orderValue" name="orderValue" class="selectBoxClass">
+					                		<option value=""> <spring:message code='search.basic'/> </option>
+						                	<option value="ASC"> <spring:message code='search.ascending'/> </option>
+											<option value="DESC"> <spring:message code='search.descending.order'/> </option>
+										</select>
+										<form:select path="listCounter" class="select" style="height: 30px;">
+					                		<form:option value="10"><spring:message code='search.ten.count'/></form:option>
+						                	<form:option value="50"><spring:message code='search.fifty.count'/></form:option>
+											<form:option value="100"><spring:message code='search.hundred.count'/></form:option>
+										</form:select>
+									</div>
+									<div class="input-set">
+										<input type="submit" value="<spring:message code='search'/>" />
+									</div>
 								</div>
-								<div class="input-set">
-									<label for="startDate"><spring:message code='search.date'/></label>
-									<input type="text" id="startDate" name="startDate" class="s date" />
-									<span class="delimeter tilde">~</span>
-									<input type="text" id="endDate" name="endDate" class="s date" />
-								</div>
-								<div class="input-set">
-									<label for="orderWord"><spring:message code='search.order'/></label>
-									<select id="orderWord" name="orderWord" class="selectBoxClass">
-										<option value=""> <spring:message code='search.basic'/> </option>
-										<option value="data_name">데이터명</option>
-										<option value="insertDate"> <spring:message code='search.insert.date'/> </option>
-									</select>
-									<select id="orderValue" name="orderValue" class="selectBoxClass">
-				                		<option value=""> <spring:message code='search.basic'/> </option>
-					                	<option value="ASC"> <spring:message code='search.ascending'/> </option>
-										<option value="DESC"> <spring:message code='search.descending.order'/> </option>
-									</select>
-									<select id="listCounter" name="listCounter" class="selectBoxClass">
-				                		<option value="10"> <spring:message code='search.ten.count'/> </option>
-					                	<option value="50"> <spring:message code='search.fifty.count'/> </option>
-										<option value="100"> <spring:message code='search.hundred.count'/> </option>
-									</select>
-								</div>
-								<div class="input-set">
-									<input type="submit" value="<spring:message code='search'/>" />
-								</div>
-							</div>
 							</form:form>
 						</div>
 						<div class="list">
@@ -75,12 +74,12 @@
 								<input type="hidden" id="checkIds" name="checkIds" value="" />
 							<div class="list-header row">
 								<div class="list-desc u-pull-left">
-									<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/> 
+									<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/>
 									<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/>
 								</div>
 								<div class="list-functions u-pull-right">
 									<div style="padding-bottom: 3px;" class="button-group">
-										<a href="#" onclick="converterFiles(); return false;" class="button">F4D 일괄 변환</a>	
+										<a href="#" onclick="converterFiles(); return false;" class="button">F4D 일괄 변환</a>
 									</div>
 								</div>
 							</div>
@@ -119,7 +118,7 @@
 </c:if>
 <c:if test="${!empty uploadDataList }">
 	<c:forEach var="uploadData" items="${uploadDataList}" varStatus="status">
-				
+
 									<tr>
 										<td class="col-checkbox">
 											<input type="checkbox" id="uploadDataId_${uploadData.uploadDataId}" name="uploadDataId" value="${uploadData.uploadDataId}" />
@@ -149,7 +148,7 @@
 										<td class="col-count">
 											<span style="color:blue; font-weight: bold;">
 											<fmt:formatNumber value="${uploadData.converterTargetCount}" type="number"/>
-											</span> / 
+											</span> /
 											<fmt:formatNumber value="${uploadData.fileCount}" type="number"/> 개
 										</td>
 										<td class="col-count"><fmt:formatNumber value="${uploadData.converterCount}" type="number"/> 건</td>
@@ -177,23 +176,22 @@
 								</tbody>
 							</table>
 							</form:form>
-								
+
 						</div>
 						<%@ include file="/WEB-INF/views/common/pagination.jsp" %>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>	
+	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
+	<%@ include file="/WEB-INF/views/upload-data/converter-dialog.jsp" %>
 
-<%@ include file="/WEB-INF/views/upload-data/converter-dialog.jsp" %>
-
-<%-- F4D Converter Job 등록 --%>
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
+<script type="text/javascript" src="/js/navigation.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		var searchWord = "${uploadData.searchWord}";
@@ -201,22 +199,22 @@
 		var orderWord = "${uploadData.orderWord}";
 		var orderValue = "${uploadData.orderValue}";
 		var listCounter = "${uploadData.listCounter}";
-		
+
 		if(searchWord != "") $("#searchWord").val("${uploadData.searchWord}");
 		if(searchOption != "") $("#searchOption").val("${uploadData.searchOption}");
 		if(orderWord != "") $("#orderWord").val("${uploadData.orderWord}");
 		if(orderValue != "") $("#orderValue").val("${uploadData.orderValue}");
 		if(listCounter != "") $("#listCounter").val("${uploadData.listCounter}");
-		
+
 		initDatePicker();
 		initCalendar(new Array("startDate", "endDate"), new Array("${uploadData.startDate}", "${uploadData.endDate}"));
 	});
-	
-	//전체 선택 
+
+	//전체 선택
 	$("#chkAll").click(function() {
 		$(":checkbox[name=uploadDataId]").prop("checked", this.checked);
 	});
-	
+
 	var dialogConverterJob = $( ".dialogConverterJob" ).dialog({
 		autoOpen: false,
 		height: 315,
@@ -226,18 +224,18 @@
 		close: function() {
 			$("#converterCheckIds").val("");
 			$("#title").val("");
-			//location.reload(); 
+			//location.reload();
 		}
 	});
-	
+
 	// F4D Converter Button Click
 	function converterFile(uploadDataId, dataName) {
 		$("#converterCheckIds").val(uploadDataId + ",");
 		$("#title").val(dataName);
-		
+
 		dialogConverterJob.dialog( "open" );
 	}
-	
+
 	// All F4D Converter Button Click
 	function converterFiles() {
 		var checkedValue = "";
@@ -249,10 +247,10 @@
 			return;
 		}
 		$("#converterCheckIds").val(checkedValue);
-		
+
 		dialogConverterJob.dialog( "open" );
 	}
-	
+
 	// F4D Converter 일괄 변환
 	var saveConverterJobFlag = true;
 	function saveConverterJob() {
@@ -261,7 +259,7 @@
 			$("#title").focus();
 			return false;
 		}
-		
+
 		if(saveConverterJobFlag) {
 			saveConverterJobFlag = false;
 			var formData =$("#converterJobForm").serialize();
@@ -273,11 +271,11 @@
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				success: function(msg){
 					if(msg.statusCode <= 200) {
-						alert(JS_MESSAGE["insert"]);	
+						alert(JS_MESSAGE["insert"]);
 					} else {
 						alert(JS_MESSAGE[msg.errorCode]);
 					}
-					
+
 					$("#converterCheckIds").val("");
 					$("#title").val("");
 					$(":checkbox[name=uploadDataId]").prop("checked", false);
@@ -295,7 +293,7 @@
 			return;
 		}
 	}
-	
+
 	var deleteUploadDataFlag = true;
 	function deleteUploadData(uploadDataId) {
 		if(confirm(JS_MESSAGE["delete.confirm"])) {
@@ -309,7 +307,7 @@
 					headers: {"X-Requested-With": "XMLHttpRequest"},
 					success: function(msg){
 						if(msg.statusCode <= 200) {
-							alert(JS_MESSAGE["delete"]);	
+							alert(JS_MESSAGE["delete"]);
 							location.reload();
 						} else {
 							alert(JS_MESSAGE[msg.errorCode]);
