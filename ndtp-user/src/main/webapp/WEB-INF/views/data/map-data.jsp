@@ -27,8 +27,8 @@
 			<option value="3ds">3ds</option>
 		</select>
 	</div>
-	<div class="form-group" style="text-align:right;background:#fff">
-		<button type="button" id="mapDataSearch" class="btnText" title="검색">검색</button>
+	<div class="form-group button-group-center">
+		<button type="button" id="mapDataSearch" class="btnTextF" title="검색">검색</button>
 	</div>
 
 	</form:form>
@@ -43,9 +43,9 @@
 			<table class="table-word-break">
 				<colgroup>
 					<col />
-					<col class="col-4" />
-					<col class="col-4" />
-					<col class="col-4" />
+					<col class="col-width-28" />
+					<col class="col-width-28" />
+					<col class="col-width-28" />
 				</colgroup>
 				<thead>
 					<tr>
@@ -61,7 +61,7 @@
 				<tbody>
 		<c:if test="${empty dataList }">
 					<tr>
-						<td colspan="4" class="col-none">데이터가 존재하지 않습니다.</td>
+						<td colspan="4" class="center">데이터가 존재하지 않습니다.</td>
 					</tr>
 		</c:if>
 		<c:if test="${!empty dataList }">
@@ -89,7 +89,7 @@
 				</c:if>
 						</td>
 						<td>
-							<button type="button" title="바로가기" class="goto" onclick="flyTo('${dataInfo.dataGroupKey}', '${dataInfo.dataKey}');">바로가기</button>
+							<button type="button" title="바로가기" class="goto" onclick="flyTo('${dataInfo.dataGroupId}', '${dataInfo.dataKey}');">바로가기</button>
 						</td>
 					</tr>
 			</c:forEach>

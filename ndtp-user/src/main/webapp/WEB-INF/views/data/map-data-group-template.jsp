@@ -8,11 +8,11 @@
 	<div class="dataGroupSummary table-data-group-summary table-font-small">
 		<table class="table-word-break">
 			<colgroup>
-				<col class="col-1" />
+				<col class="col-width-12" />
 				<col />
-				<col class="col-3" />
-				<col class="col-2" />
-				<col class="col-1" />
+				<col class="col-width-19" />
+				<col class="col-width-17" />
+				<col class="col-width-12" />
 			</colgroup>
 			<thead>
 				<tr>
@@ -44,7 +44,7 @@
 	{{/each}}
 {{else}}
 				<tr>
-					<td colspan="5" class="col-none">데이터 그룹이 존재하지 않습니다.</td>
+					<td colspan="5" class="center">데이터 그룹이 존재하지 않습니다.</td>
 				</tr>
 {{/greaterThan}}
 			</tbody>

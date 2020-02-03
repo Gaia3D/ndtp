@@ -53,9 +53,9 @@
 			</div>
 			<div id="dataContent" class="contents-margin-default fullHeight">
 				<div class="tabs" >
-					<ul id="dataInfoTab" class="tab">
+					<ul id="dataInfoTab" class="tab tab-divide">
 						<li data-nav="dataGroupInfoContent">데이터 그룹</li>
-						<li class="on" data-nav="dataInfoContent">데이터 목록</li>
+						<li data-nav="dataInfoContent" class="on">데이터 목록</li>
 					</ul>
 				</div>
 				<%@ include file="/WEB-INF/views/data/map-data.jsp" %>

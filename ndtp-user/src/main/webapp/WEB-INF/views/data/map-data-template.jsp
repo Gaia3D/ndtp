@@ -9,9 +9,9 @@
 		<table class="table-word-break">
 			<colgroup>
 				<col />
-				<col class="col-4" />
-				<col class="col-4" />
-				<col class="col-4" />
+				<col class="col-width-28" />
+				<col class="col-width-28" />
+				<col class="col-width-28" />
 			</colgroup>
 			<thead>
 				<tr>
@@ -56,7 +56,7 @@
 	{{/each}}
 {{else}}
 				<tr>
-					<td colspan="4" class="col-none">데이터가 존재하지 않습니다.</td>
+					<td colspan="4" class="center">데이터가 존재하지 않습니다.</td>
 				</tr>
 {{/greaterThan}}
 			</tbody>

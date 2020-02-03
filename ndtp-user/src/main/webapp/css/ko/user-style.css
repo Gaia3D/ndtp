@@ -777,8 +777,8 @@ padding: 2px 10px;
 font-size: 0.9em;
 color: #fff;
 border-radius: 2px;
-border: 1px solid #51515b;
-background-color: #51515b;
+border: 1px solid #727272;
+background-color: #636363;
 background-image: none;
 }
 .btnTextF:hover {
@@ -1566,7 +1566,6 @@ text-overflow: ellipsis;
 .summary-group-divide {
 	height: 20px;
 }
-
 .table-word-break {
 	table-layout: fixed;
 }
@@ -1578,29 +1577,15 @@ text-overflow: ellipsis;
 .table-font-small > table tr td {
 	font-size: small;
 }
-
-.table-data-group > table tr:nth-child(odd) td:last-child {
+.table-data-group > table tr:nth-child(odd) td:last-child:not(.center) {
 	text-align: left;
 }
 .table-data-group > table tr:nth-child(even) td:last-child {
 	padding: 0;
 }
-
-.heading-bullet-point {
-/* 	display: list-item;
-	list-style-type: disc;
-	list-style-position: inside;
-	margin-top: 10px; */
-	margin-bottom: 10px;
-    padding-left: 12px;
-    font-size: 14px;
-    font-weight: normal;
-    background: url(/images/ko/ico.png) no-repeat 3px -592px;
-}
 .float-right {
 	float: right;
 }
-
 .contents-nopadding {
 	padding: 0;
 }
@@ -1612,57 +1597,32 @@ text-overflow: ellipsis;
 }
 .contents-margin-none {
 	margin: 0;
+	border-top: none;
 }
-
 .tab-divide > li {
 	width: calc(50% - 5px);
 }
-
 ul.listDrop li.list-drop-button-none {
 	cursor: auto;
 }
 ul.listDrop li.list-drop-button-none > p {
 	background-image: none;
 }
-
 .button-right-margin {
 	margin-right: 10px;
 }
-
-.col-1 {
+.col-width-12 {
 	width: 12%;
 }
-.col-2 {
+.col-width-17 {
 	width: 17%;
 }
-.col-3 {
+.col-width-19 {
 	width: 19%;
 }
-.col-4 {
+.col-width-28 {
 	width: 28%;
 }
-/*
-.table-scroll-tbody {
-	display: inline-block;
-    width: 332px;
-    max-height: 340px;
-    overflow-x: hidden;
-    overflow-y: scroll;
-}
-.scroll-col-1 {
-	width: 29px;
-}
-.scroll-col-2 {
-	width: 33px;
-}
-.scroll-col-3 {
-	width: 44px;
-}
-.scroll-col-4 {
-	width: 52px;
-}
- */
-
 .form-group {
 	margin-bottom: 5px;
 	padding: 5px;
@@ -1690,9 +1650,14 @@ ul.listDrop li.list-drop-button-none > p {
 	line-height: 1.5em;
 }
 .form-group > button {
-	width: 30%;
-	padding: 9px;
+	width: 100%;
+	padding: 5px;
 	line-height: 1.5em;
-	font-size: 1.1em;
+	font-size: small;
 	vertical-align: middle;
+}
+.button-group-center {
+	background: #fff;
+	margin-bottom: 20px;
+	text-align: center;
 }
