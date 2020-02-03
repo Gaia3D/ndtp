@@ -8,7 +8,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<title>업로딩 데이터 목록 | NDTP</title>
-	
+
 	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
 	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
@@ -24,10 +24,10 @@
 <div id="wrap">
 	<!-- S: NAVWRAP -->
 	<div class="navWrap">
-	 	<%@ include file="/WEB-INF/views/layouts/menu.jsp" %> 
+	 	<%@ include file="/WEB-INF/views/layouts/menu.jsp" %>
 	</div>
 	<!-- E: NAVWRAP -->
-	
+
 	<div class="container" style="float:left; width: calc(100% - 78px);">
 		<div style="padding: 20px 20px 0px 10px; font-size: 18px;">3D 업로딩 데이터 자동 변환</div>
 		<div class="tabs" >
@@ -40,7 +40,7 @@
 			  	<li onclick="location.href='/data/list'">데이터 목록</li>
 			</ul>
 		</div>
-		
+
 		<div class="filters">
 			<form:form id="searchForm" modelAttribute="uploadData" method="get" action="/upload-data/list" onsubmit="return searchCheck();">
 			<div class="input-group row">
@@ -86,18 +86,18 @@
 			</div>
 			</form:form>
 		</div>
-		
+
 		<div class="list">
 			<form:form id="listForm" modelAttribute="uploadData" method="post">
 				<input type="hidden" id="checkIds" name="checkIds" value="" />
 			<div class="list-header row">
 				<div class="list-desc u-pull-left">
-					<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/> 
+					<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/>
 					<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/>
 				</div>
 				<div class="list-functions u-pull-right">
 					<div style="padding-bottom: 3px;" class="button-group">
-						<a href="#" onclick="converterFiles(); return false;" class="button">F4D 일괄 변환</a>	
+						<a href="#" onclick="converterFiles(); return false;" class="button">F4D 일괄 변환</a>
 					</div>
 				</div>
 			</div>
@@ -142,7 +142,7 @@
 							<input type="checkbox" id="uploadDataId_${uploadData.uploadDataId}" name="uploadDataId" value="${uploadData.uploadDataId}" />
 						</td>
 						<td class="col-number">${pagination.rowNumber - status.index }</td>
-						<td class="col-name">${uploadData.dataGroupName }</td>
+						<td class="col-name ellipsis" style="max-width:200px;">${uploadData.dataGroupName }</td>
 						<td class="col-type">
 <c:if test="${uploadData.sharing eq 'common' }">
 							공통
@@ -166,13 +166,13 @@
 						<td class="col-count">
 							<span style="color:blue; font-weight: bold;">
 							<fmt:formatNumber value="${uploadData.converterTargetCount}" type="number"/>
-							</span> / 
+							</span> /
 							<fmt:formatNumber value="${uploadData.fileCount}" type="number"/> 개
 						</td>
 						<td class="col-count"><fmt:formatNumber value="${uploadData.converterCount}" type="number"/> 건</td>
 						<td class="col-functions">
 							<span class="button-group">
-								<a href="#" onclick="converterFile('${uploadData.uploadDataId}', '${uploadData.dataName}'); return false;" 
+								<a href="#" onclick="converterFile('${uploadData.uploadDataId}', '${uploadData.dataName}'); return false;"
 									class="button" style="text-decoration: none;">
 									F4D 변환
 								</a>
@@ -180,7 +180,7 @@
 						</td>
 						<td class="col-functions">
 							<span class="button-group">
-								<a href="#" onclick="deleteUploadData('${uploadData.uploadDataId }'); return false;" 
+								<a href="#" onclick="deleteUploadData('${uploadData.uploadDataId }'); return false;"
 									class="image-button button-delete"><spring:message code='delete'/></a>
 							</span>
 						</td>
@@ -195,9 +195,9 @@
 			</table>
 			</form:form>
 		</div>
-		
+
 		<%@ include file="/WEB-INF/views/common/pagination.jsp" %>
-		
+
 	</div>
 </div>
 <!-- E: WRAP -->
@@ -215,22 +215,22 @@
 		var orderWord = "${uploadData.orderWord}";
 		var orderValue = "${uploadData.orderValue}";
 		var listCounter = "${uploadData.listCounter}";
-		
+
 		if(searchWord != "") $("#searchWord").val("${uploadData.searchWord}");
 		if(searchOption != "") $("#searchOption").val("${uploadData.searchOption}");
 		if(orderWord != "") $("#orderWord").val("${uploadData.orderWord}");
 		if(orderValue != "") $("#orderValue").val("${uploadData.orderValue}");
 		if(listCounter != "") $("#listCounter").val("${uploadData.listCounter}");
-		
+
 		initDatePicker();
 		initCalendar(new Array("startDate", "endDate"), new Array("${uploadData.startDate}", "${uploadData.endDate}"));
 	});
-	
-	//전체 선택 
+
+	//전체 선택
 	$("#chkAll").click(function() {
 		$(":checkbox[name=uploadDataId]").prop("checked", this.checked);
 	});
-	
+
 	var dialogConverterJob = $( ".dialogConverterJob" ).dialog({
 		autoOpen: false,
 		height: 315,
@@ -240,18 +240,18 @@
 		close: function() {
 			$("#converterCheckIds").val("");
 			$("#title").val("");
-			//location.reload(); 
+			//location.reload();
 		}
 	});
-	
+
 	// F4D Converter Button Click
 	function converterFile(uploadDataId, dataName) {
 		$("#converterCheckIds").val(uploadDataId + ",");
 		$("#title").val(dataName);
-		
+
 		dialogConverterJob.dialog( "open" );
 	}
-	
+
 	// All F4D Converter Button Click
 	function converterFiles() {
 		var checkedValue = "";
@@ -263,10 +263,10 @@
 			return;
 		}
 		$("#converterCheckIds").val(checkedValue);
-		
+
 		dialogConverterJob.dialog( "open" );
 	}
-	
+
 	// F4D Converter 일괄 변환
 	var saveConverterJobFlag = true;
 	function saveConverterJob() {
@@ -275,7 +275,7 @@
 			$("#title").focus();
 			return false;
 		}
-		
+
 		if(saveConverterJobFlag) {
 			saveConverterJobFlag = false;
 			var formData =$("#converterJobForm").serialize();
@@ -287,11 +287,11 @@
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				success: function(msg){
 					if(msg.statusCode <= 200) {
-						alert(JS_MESSAGE["insert"]);	
+						alert(JS_MESSAGE["insert"]);
 					} else {
 						alert(JS_MESSAGE[msg.errorCode]);
 					}
-					
+
 					$("#converterCheckIds").val("");
 					$("#title").val("");
 					$(":checkbox[name=uploadDataId]").prop("checked", false);
@@ -309,7 +309,7 @@
 			return;
 		}
 	}
-	
+
 	var deleteUploadDataFlag = true;
 	function deleteUploadData(uploadDataId) {
 		if(confirm(JS_MESSAGE["delete.confirm"])) {
@@ -323,7 +323,7 @@
 					headers: {"X-Requested-With": "XMLHttpRequest"},
 					success: function(msg){
 						if(msg.statusCode <= 200) {
-							alert(JS_MESSAGE["delete"]);	
+							alert(JS_MESSAGE["delete"]);
 							location.reload();
 						} else {
 							alert(JS_MESSAGE[msg.errorCode]);

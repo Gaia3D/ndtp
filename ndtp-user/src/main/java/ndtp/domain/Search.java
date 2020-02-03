@@ -1,7 +1,5 @@
 package ndtp.domain;
 
-import java.net.URLEncoder;
-
 /**
  * 검색 공통 항목
  * @author Jeongdae

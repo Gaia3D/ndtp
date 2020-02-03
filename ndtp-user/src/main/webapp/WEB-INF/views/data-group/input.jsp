@@ -8,7 +8,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<title>데이터 그룹 등록 | NDTP</title>
-	
+
 	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
 	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
@@ -25,10 +25,10 @@
 <div id="wrap">
 	<!-- S: NAVWRAP -->
 	<div class="navWrap">
-	 	<%@ include file="/WEB-INF/views/layouts/menu.jsp" %> 
+	 	<%@ include file="/WEB-INF/views/layouts/menu.jsp" %>
 	</div>
 	<!-- E: NAVWRAP -->
-	
+
 	<div class="container" style="float:left; width: calc(100% - 78px);">
 		<div style="padding: 20px 20px 0px 10px; font-size: 18px;">3D 업로딩 데이터 자동 변환</div>
 		<div class="tabs" >
@@ -51,7 +51,7 @@
 					<span class="icon-glyph glyph-emark-dot color-warning"></span>
 				</th>
 				<td class="col-input">
-					<form:input path="dataGroupName" cssClass="l" />
+					<form:input path="dataGroupName" cssClass="l" maxlength="100" />
 					<form:errors path="dataGroupName" cssClass="error" />
 				</td>
 			</tr>
@@ -176,7 +176,7 @@
 		</div>
 		</form:form>
 	</div>
-	
+
 </div>
 <!-- E: WRAP -->
 
@@ -190,7 +190,16 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 	});
-	
+
+	// 입력값이 변경되면 중복체크, 영문+숫자
+	$("#dataGroupKey").on("keyup", function(event) {
+		$("#duplication").val(null);
+		if (!(event.keyCode >=37 && event.keyCode<=40)) {
+			var inputValue = $(this).val();
+			$(this).val(inputValue.replace(/[^a-z0-9]/gi,''));
+		}
+	});
+
 	// 데이터 그룹 중복 확인
 	$( "#duplicationButtion" ).on( "click", function() {
 		var dataGroupKey = $("#dataGroupKey").val();
@@ -227,7 +236,7 @@
 			}
 		});
 	});
-	
+
 	function validate() {
 		var number = /^[0-9]+$/;
 		if ($("#dataGroupName").val() === null || $("#dataGroupName").val() === "") {
@@ -261,7 +270,7 @@
 			}
 		}
 	}
-	
+
 	// 저장
 	var insertDataGroupFlag = true;
 	function insertDataGroup() {
@@ -270,7 +279,7 @@
 		}
 		if(insertDataGroupFlag) {
 			insertDataGroupFlag = false;
-			var formData = $("#dataGroup").serialize();		
+			var formData = $("#dataGroup").serialize();
 			$.ajax({
 				url: "/data-groups",
 				type: "POST",
@@ -296,7 +305,7 @@
 			return;
 		}
 	}
-	
+
 	var dataGroupDialog = $( ".dialog" ).dialog({
 		autoOpen: false,
 		height: 500,
@@ -305,13 +314,13 @@
 		overflow : "auto",
 		resizable: false
 	});
-	
+
 	// 상위 데이터 그룹 찾기
 	$( "#dataGroupButtion" ).on( "click", function() {
 		dataGroupDialog.dialog( "open" );
 		dataGroupDialog.dialog( "option", "title", "데이터 그룹 선택");
 	});
-	
+
 	// 다이얼로그에서 선택
 	function confirmParent(parent, parentName, parentDepth) {
 		if(parentDepth >= 3) {
@@ -322,23 +331,23 @@
 		$("#parentName").val(parentName);
 		dataGroupDialog.dialog( "close" );
 	}
-	
+
 	$( "#rootParentSelect" ).on( "click", function() {
 		$("#parent").val(0);
 		$("#parentName").val("${dataGroup.parentName}");
 		dataGroupDialog.dialog( "close" );
 	});
-	
+
 	// 지도에서 찾기
 	$( "#mapButtion" ).on( "click", function() {
 		var url = "/map/find-point";
 		var width = 800;
 		var height = 700;
-	
+
 		var popupX = (window.screen.width / 2) - (width / 2);
 		// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
 		var popupY= (window.screen.height / 2) - (height / 2);
-		
+
 	    var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height + ", top=" + popupY + ", left="+popupX
 	            + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
 	    //popWin.document.title = layerName;

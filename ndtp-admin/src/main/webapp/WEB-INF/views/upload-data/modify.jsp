@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="/externlib/dropzone/dropzone.min.css">
     <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
     <script type="text/javascript" src="/externlib/dropzone/dropzone.min.js"></script>
-    
+
     <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
     <style type="text/css">
@@ -30,17 +30,17 @@
             white-space: nowrap;
             border: 1px solid #e5e5e5;
         }
-        
+
         .loader-txt p {
             font-size: 13px;
             color: #666;
         }
-    
+
         .loader-txt p small {
             font-size: 11.5px;
             color: #999;
         }
-        
+
         .loader {
             position: relative;
             text-align: center;
@@ -55,13 +55,13 @@
             animation: spin 1s ease-in-out infinite;
             -webkit-animation: spin 1s ease-in-out infinite;
         }
-    
+
         @keyframes spin {
             to {
                 -webkit-transform: rotate(360deg);
             }
         }
-    
+
         @-webkit-keyframes spin {
             to {
                 -webkit-transform: rotate(360deg);
@@ -73,7 +73,7 @@
 <body>
 	<%@ include file="/WEB-INF/views/layouts/header.jsp" %>
 	<%@ include file="/WEB-INF/views/layouts/menu.jsp" %>
-	
+
 	<div class="site-body">
 		<div class="container">
 			<div class="site-content">
@@ -108,7 +108,7 @@
 									</th>
 									<td class="col-input">
 										<form:hidden path="dataGroupId" />
-											<form:input path="dataGroupName" cssClass="ml" readonly="true" />
+											<form:input path="dataGroupName" cssClass="m" readonly="true" />
 										<input type="button" id="dataGroupButtion" value="데이터 그룹 선택" />
 									</td>
 								</tr>
@@ -182,7 +182,7 @@
 									<a href="/upload-data/list" class="button">목록</a>
 								</div>
 							</div>
-										
+
 							<table class="input-table scope-row">
 								<colgroup>
 					                   <col class="col-label l" style="width: 15%" >
@@ -196,8 +196,8 @@
 									</th>
 									<td colspan="3" class="col-input">
 										<ul style="list-style: none; margin-bottom: 20px;">
-					
-<c:set var="converterFileStyle" value="" />									
+
+<c:set var="converterFileStyle" value="" />
 <c:forEach var="uploadDataFile" items="${uploadDataFileList}" varStatus="status">
 	<c:if test="${uploadDataFile.depth == 1 }">
 		<c:set var="paddingLeft" value="0px;" />
@@ -211,7 +211,7 @@
 	<c:if test="${uploadDataFile.depth == 4 }">
 		<c:set var="paddingLeft" value="150px" />
 	</c:if>
-	
+
 	<c:if test="${uploadDataFile.fileType eq 'DIRECTORY' }">
 											<li style="padding-left: ${paddingLeft}; height: 25px;">[ ${uploadDataFile.fileType } ] ${uploadDataFile.fileSubPath }</li>
 	</c:if>
@@ -221,10 +221,10 @@
 	<c:if test="${uploadDataFile.converterTarget eq 'false' }">
 		<c:set var="converterFileStyle" value="" />
 	</c:if>
-						
+
 	<c:if test="${uploadDataFile.fileType eq 'FILE' }">
 											<li style="padding-left: ${paddingLeft}; height: 25px; ${converterFileStyle}">
-												[ ${uploadDataFile.fileType } ] ${uploadDataFile.fileName } 
+												[ ${uploadDataFile.fileType } ] ${uploadDataFile.fileName }
 												(<fmt:formatNumber value="${uploadDataFile.viewFileSizeUnitKB }" type="number"/>)KB
 											</li>
 	</c:if>
@@ -235,12 +235,12 @@
 							</table>
 						</form:form>
 					</div>
-				</div>			
+				</div>
 			</div>
-		</div>	
+		</div>
 	</div>
 <%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
-	
+
 <!-- E: WRAP -->
 <%@ include file="/WEB-INF/views/upload-data/data-group-dialog.jsp" %>
 
@@ -252,7 +252,7 @@
 		$("#dataType").val("${uploadData.dataType}");
 		$("#mappingType").val("${uploadData.mappingType}");
 	});
-	
+
 	var dataGroupDialog = $( ".dialog" ).dialog({
 		autoOpen: false,
 		height: 500,
@@ -261,20 +261,20 @@
 		overflow : "auto",
 		resizable: false
 	});
-	
+
 	// 상위 Layer Group 찾기
 	$( "#dataGroupButtion" ).on( "click", function() {
 		dataGroupDialog.dialog( "open" );
 		dataGroupDialog.dialog( "option", "title", "데이터 그룹 선택");
 	});
-	
+
 	// 데이터 그룹 선택
 	function confirmDataGroup(dataGroupId, dataGroupName) {
 		$("#dataGroupId").val(dataGroupId);
 		$("#dataGroupName").val(dataGroupName);
 		dataGroupDialog.dialog( "close" );
 	}
-	
+
 	function validate() {
 		if ($("#dataName").val() === "") {
 			alert("데이터명을 입력하여 주십시오.");
@@ -297,7 +297,7 @@
 			return false;
 		}
 	}
-	
+
 	// 수정
 	var updateFlag = true;
 	$( "#updateButton" ).on( "click", function() {
@@ -306,7 +306,7 @@
 		}
 		if(updateFlag) {
 			updateFlag = false;
-			var formData = $("#uploadData").serialize();		
+			var formData = $("#uploadData").serialize();
 			$.ajax({
 				url: "/upload-datas/${uploadData.uploadDataId}",
 				type: "POST",
@@ -331,17 +331,17 @@
 			return;
 		}
 	});
-	
+
 	//지도에서 찾기
 	$( "#mapButtion" ).on( "click", function() {
 		var url = "/map/find-point";
 		var width = 800;
 		var height = 700;
-	
+
 		var popupX = (window.screen.width / 2) - (width / 2);
 		// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
 		var popupY= (window.screen.height / 2) - (height / 2);
-		
+
 	    var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height + ", top=" + popupY + ", left="+popupX
 	            + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
 	    //popWin.document.title = layerName;

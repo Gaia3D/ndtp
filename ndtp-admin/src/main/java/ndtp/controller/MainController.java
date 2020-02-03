@@ -376,28 +376,22 @@ public class MainController {
 			dataGroup.setUserId(userSession.getUserId());
 			List<DataGroup> dataGroupList = dataGroupService.getListDataGroup(dataGroup);
 
-			// TODO: 코드 정리 필요
-			List<String> dataGroupNameList = new ArrayList<>();
-			List<Long> dataGroupTotalCountList = new ArrayList<>();
+			List<Map<String, Object>> dataGroupWidgetList = new ArrayList<>();
 			for(DataGroup dbDataGroup : dataGroupList) {
-				dataGroupNameList.add(dbDataGroup.getDataGroupName());
+				// get count
 				DataInfo dataInfo = new DataInfo();
 				dataInfo.setDataGroupId(dbDataGroup.getDataGroupId());
 				Long dataTotalCount = dataService.getDataTotalCount(dataInfo);
-				dataGroupTotalCountList.add(dataTotalCount);
-			}
 
-			// 결과를 Map 형식으로 변환
-			List<Map<String, Object>> sortList = new ArrayList<>();
-			for(int i=0, length=dataGroupList.size(); i<length; i++) {
-				Map<String, Object> mapp = new HashMap<>();
-				mapp.put("name", dataGroupNameList.get(i));
-				mapp.put("count", dataGroupTotalCountList.get(i));
-				sortList.add(mapp);
+				// set list
+				Map<String, Object> tempMap = new HashMap<>();
+				tempMap.put("name", dbDataGroup.getDataGroupName());
+				tempMap.put("count", dataTotalCount);
+				dataGroupWidgetList.add(tempMap);
 			}
 
 			// 건수를 기준으로 DESC 정렬
-			Collections.sort(sortList, new Comparator<Map<String, Object>>() {
+			Collections.sort(dataGroupWidgetList, new Comparator<Map<String, Object>>() {
 				@Override
 	            public int compare(final Map<String, Object> o1, final Map<String, Object> o2) {
 					Integer i1 = Math.toIntExact((long) o1.get("count"));
@@ -406,7 +400,7 @@ public class MainController {
 	            }
 	        });
 
-			map.put("dataGroupList", sortList);
+			map.put("dataGroupWidgetList", dataGroupWidgetList);
 		} catch(Exception e) {
 			e.printStackTrace();
 			result = "db.exception";
