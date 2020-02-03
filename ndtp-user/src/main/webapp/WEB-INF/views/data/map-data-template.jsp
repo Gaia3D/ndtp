@@ -1,36 +1,41 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-
 <script id="templateDataList" type="text/x-handlebars-template">
-	<h3 style="margin-top: 30px; margin-bottom: 10px;">
-		<spring:message code='all.d'/> {{formatNumber pagination.totalCount}} <spring:message code='search.what.count'/>,
-		{{formatNumber pagination.pageNo}} / {{formatNumber pagination.lastPage}} <spring:message code='search.page'/>
-	</h3>
+	<div>
+		<span><spring:message code='all.d'/> {{formatNumber pagination.totalCount}} <spring:message code='search.what.count'/></span>
+		<span class="float-right">{{formatNumber pagination.pageNo}} / {{formatNumber pagination.lastPage}} <spring:message code='search.page'/></span>
+	</div>
 	<div class="dataBtns"></div>
-	<div class="dataGroupSummary">
-		<table>
+	<div class="dataGroupSummary table-data-group-summary table-data-group table-font-small">
+		<table class="table-word-break">
+			<colgroup>
+				<col />
+				<col class="col-width-28" />
+				<col class="col-width-28" />
+				<col class="col-width-28" />
+			</colgroup>
 			<thead>
-				<tr style="height: 30px;">
-					<th rowspan="2" style="vertical-align: middle; text-align: center; background-color: #f3f3f3;">번호</th>
-					<th colspan="3" style="background-color: #f3f3f3;">데이터명[타입]</th>
+				<tr>
+					<th rowspan="2">번호</th>
+					<th colspan="3">데이터명[타입]</th>
 				</tr>
-				<tr style="height: 30px;">
-					<th style="background-color: #f3f3f3;">데이터그룹</th>
-					<th style="background-color: #f3f3f3;">상태</th>
-					<th style="background-color: #f3f3f3;">보기</th>
+				<tr>
+					<th>데이터그룹</th>
+					<th>상태</th>
+					<th>보기</th>
 				</tr>
 			</thead>
 			<tbody>
 {{#greaterThan dataList.length 0}}
 	{{#each dataList}}
-				<tr style="height: 35px;">
-					<td rowspan="2" style="vertical-align: middle; text-align: center; padding: 0px;">{{subtract ../pagination.rowNumber @index}}</td>
-					<td colspan="3" style="vertical-align: middle; text-align: left; padding: 0px 0px 0px 5px;">
+				<tr>
+					<td rowspan="2">{{subtract ../pagination.rowNumber @index}}</td>
+					<td colspan="3" class="ellipsis" style="max-width:260px;">
 						<a href="#" onclick="detailDataInfo('{{dataId}}'); return false;">{{dataName}}</a> [{{dataType}}]
 					</td>
 				</tr>
-				<tr style="height: 35px;">
-					<td class="ellipsis" style="max-width:100px; padding: 0px; vertical-align: middle; text-align: left; padding: 0px 0px 0px 5px;">{{dataGroupName}}</td>
-					<td style="padding: 0px; vertical-align: middle; ">
+				<tr>
+					<td class="ellipsis" style="max-width:100px;">{{dataGroupName}}</td>
+					<td>
 		{{#ifMatch status 'processing'}}
 						변환중
 		{{/ifMatch}}
@@ -44,14 +49,14 @@
 						삭제
 		{{/ifMatch}}
 					</td>
-					<td style="padding: 0px; vertical-align: middle; ">
+					<td>
 						<button type="button" title="바로가기" class="goto" style="margin: 0px; padding: 0px;"
 							onclick="flyTo('{{dataGroupId}}', '{{dataKey}}');">바로가기</button></td>
 				</tr>
 	{{/each}}
 {{else}}
 				<tr>
-					<td colspan="4" class="col-none">데이터가 존재하지 않습니다.</td>
+					<td colspan="4" class="center">데이터가 존재하지 않습니다.</td>
 				</tr>
 {{/greaterThan}}
 			</tbody>

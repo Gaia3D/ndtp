@@ -1,91 +1,80 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<div id="dataInfoContent" style="display:block;">
-	<div class="listSearch">
-		<form:form id="searchDataForm" modelAttribute="searchDataForm" method="post" onsubmit="return false;">
-		<table class="basicTable" style="width: 100%; background-color: white; padding: 5px;">
-			<colgroup>
-				<col class="col-label l" style="width: 25%" >
-				<col class="col-input" style="width: 75%" >
-	        </colgroup>
-			<tr style="height: 30px;">
-				<td style="padding: 7px 7px 3px 7px;">
-					<span style="display: inline-block; width: 80px; height:23px;  background-color: #f3f3f3; text-align: center; padding-top: 6px;"><b>데이터명</b></span>
-				</td>
-				<td style="padding: 7px 7px 3px 7px;">
-					<input type="text" id="searchDataName" name="searchDataName" placeholder=" 데이터명을 입력해주세요. " style="height: 26px;" size="26" />
-				</td>
-			</tr>
-			<tr style="height: 30px;">
-				<td style="text-align: left; padding: 4px 7px 3px 7px;">
-					<span style="display: inline-block; width: 80px; height:23px;  background-color: #f3f3f3; text-align: center; padding-top: 6px;"><b>상태</b></span>
-				</td>
-				<td style="width: 100%; background-color: white; padding: 4px 7px 3px 7px;">
-					<select id="searchDataStatus" name="searchDataStatus" style="height: 30px;">
-						<option value="">&nbsp;&nbsp;전체&nbsp;&nbsp;</option>
-						<option value="use">&nbsp;&nbsp;사용중&nbsp;&nbsp;</option>
-						<option value="unused">&nbsp;&nbsp;사용중지&nbsp;&nbsp;</option>
-					</select>&nbsp;&nbsp;
-				</td>
-			</tr>
-			<tr style="height: 30px;">
-				<td style="text-align: left; padding: 4px 7px 3px 7px;">
-					<span style="display: inline-block; width: 80px; height:23px;  background-color: #f3f3f3; text-align: center; padding-top: 6px;"><b>타입</b></span>
-				</td>
-				<td style="padding: 7px; padding: 4px 7px 3px 7px;">
-					<select id="searchDataType" name="searchDataType" style="height: 30px;">
-						<option value="">&nbsp;&nbsp;전체&nbsp;&nbsp;</option>
-						<option value="citygml">&nbsp;&nbsp;citygml&nbsp;&nbsp;</option>
-						<option value="indoorgml">&nbsp;&nbsp;indoorgml&nbsp;&nbsp;</option>
-						<option value="las">&nbsp;&nbsp;las&nbsp;&nbsp;</option>
-						<option value="ifc">&nbsp;&nbsp;ifc&nbsp;&nbsp;</option>
-						<option value="collada">&nbsp;&nbsp;collada&nbsp;&nbsp;</option>
-						<option value="dae">&nbsp;&nbsp;dae&nbsp;&nbsp;</option>
-						<option value="obj">&nbsp;&nbsp;obj&nbsp;&nbsp;</option>
-						<option value="3ds">&nbsp;&nbsp;3ds&nbsp;&nbsp;</option>
-					</select>&nbsp;&nbsp;
-					<button type="button" id="mapDataSearch" title="검색" style="width: 70px; height: 30px;">검색</button>
-				</td>
-			</tr>
-		</table>
-		</form:form>
+<div id="dataInfoContent" class="contents contents-margin-none" style="display:block;">
+	<form:form id="searchDataForm" modelAttribute="searchDataForm" method="post" onsubmit="return false;">
+	<div class="form-group">
+		<label>데이터명</label>
+		<input type="text" id="searchDataName" name="searchDataName" placeholder=" 데이터명을 입력하여 주십시오. " size="30" />
+	</div>
+	<div class="form-group">
+		<label>상태</label>
+		<select id="searchDataStatus" name="searchDataStatus">
+			<option value="">전체</option>
+			<option value="use">사용중</option>
+			<option value="unused">사용중지</option>
+		</select>
+	</div>
+	<div class="form-group">
+		<label>타입</label>
+		<select id="searchDataType" name="searchDataType">
+			<option value="">전체</option>
+			<option value="citygml">citygml</option>
+			<option value="indoorgml">indoorgml</option>
+			<option value="las">las</option>
+			<option value="ifc">ifc</option>
+			<option value="collada">collada</option>
+			<option value="dae">dae</option>
+			<option value="obj">obj</option>
+			<option value="3ds">3ds</option>
+		</select>
+	</div>
+	<div class="form-group button-group-center">
+		<button type="button" id="mapDataSearch" class="btnTextF" title="검색">검색</button>
 	</div>
 
+	</form:form>
+
 	<div id="dataInfoListArea">
-		<h3 style="margin-top: 30px; margin-bottom: 10px;">
-			<spring:message code='all.d'/> <fmt:formatNumber value="${pagination.totalCount}" type="number"/> <spring:message code='search.what.count'/>,
-			<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/>
-		</h3>
+		<div>
+			<span><spring:message code='all.d'/> <fmt:formatNumber value="${pagination.totalCount}" type="number"/> <spring:message code='search.what.count'/></span>
+			<span class="float-right"><fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/></span>
+		</div>
 		<div class="dataBtns"></div>
-		<div class="dataGroupSummary">
-			<table>
+		<div class="dataGroupSummary table-data-group-summary table-data-group table-font-small">
+			<table class="table-word-break">
+				<colgroup>
+					<col />
+					<col class="col-width-28" />
+					<col class="col-width-28" />
+					<col class="col-width-28" />
+				</colgroup>
 				<thead>
-					<tr style="height: 30px;">
-						<th rowspan="2" style="vertical-align: middle; text-align: center; background-color: #f3f3f3;">번호</th>
-						<th colspan="3" style="background-color: #f3f3f3;">데이터명[타입]</th>
+					<tr>
+						<th rowspan="2">번호</th>
+						<th colspan="3">데이터명[타입]</th>
 					</tr>
-					<tr style="height: 30px;">
-						<th style="background-color: #f3f3f3;">데이터그룹</th>
-						<th style="background-color: #f3f3f3;">상태</th>
-						<th style="background-color: #f3f3f3;">보기</th>
+					<tr>
+						<th>데이터그룹</th>
+						<th>상태</th>
+						<th>보기</th>
 					</tr>
 				</thead>
 				<tbody>
 		<c:if test="${empty dataList }">
 					<tr>
-						<td colspan="4" class="col-none">데이터가 존재하지 않습니다.</td>
+						<td colspan="4" class="center">데이터가 존재하지 않습니다.</td>
 					</tr>
 		</c:if>
 		<c:if test="${!empty dataList }">
 			<c:forEach var="dataInfo" items="${dataList}" varStatus="status">
-					<tr style="height: 35px;">
-						<td rowspan="2" style="vertical-align: middle; text-align: center; padding: 0px;">${pagination.rowNumber - status.index }</td>
-						<td colspan="3" style="vertical-align: middle; text-align: left; padding: 0px 0px 0px 5px;">
+					<tr>
+						<td rowspan="2">${pagination.rowNumber - status.index }</td>
+						<td colspan="3" class="ellipsis" style="max-width:260px;">
 							<a href="#" onclick="detailDataInfo('${dataInfo.dataId}'); return false;">${dataInfo.dataName }</a> [${dataInfo.dataType }]
 						</td>
 					</tr>
-					<tr style="height: 35px;">
-						<td class="ellipsis" style="max-width:100px; padding: 0px; vertical-align: middle; text-align: left; padding: 0px 0px 0px 5px;">${dataInfo.dataGroupName }</td>
-						<td style="padding: 0px; vertical-align: middle; ">
+					<tr>
+						<td class="ellipsis" style="max-width:100px;">${dataInfo.dataGroupName }</td>
+						<td>
 				<c:if test="${dataInfo.status eq 'processing' }">
 							변환중
 				</c:if>
@@ -99,9 +88,9 @@
 							삭제
 				</c:if>
 						</td>
-						<td style="padding: 0px; vertical-align: middle; ">
-							<button type="button" title="바로가기" class="goto" style="margin: 0px; padding: 0px;"
-								onclick="flyTo('${dataInfo.dataGroupId}', '${dataInfo.dataKey}');">바로가기</button></td>
+						<td>
+							<button type="button" title="바로가기" class="goto" onclick="flyTo('${dataInfo.dataGroupId}', '${dataInfo.dataKey}');">바로가기</button>
+						</td>
 					</tr>
 			</c:forEach>
 		</c:if>
