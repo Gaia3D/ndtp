@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ndtp.persistence.CivilVoiceCommentMapper">
+	 <!-- 시민 참여 댓글 목록 조회 -->
+	<select id="getListCivilVoiceComment" parameterType="long" resultType="civilVoice">
+		/* getListCivilVoiceComment */
+		SELECT * FROM tn_civil_voice_comment WHERE civil_voice_id = #{civilVoiceId} 
+	</select>
+	
+	<!-- 등록 -->
+	<insert id="insertCivilVoiceComment" parameterType="civilVoiceComment">
+		/* insertCivilVoiceComment */
+		<selectKey keyProperty="civilVoiceCommentId" resultType="long" order="BEFORE">
+			SELECt NEXTVAL('civil_voice_comment_seq')
+		</selectKey>
+		INSERT INTO tn_civil_voice_comment(
+			civil_voice_comment_id, civil_voice_id, user_id, user_ip, title, regist_dt
+		) VALUES (
+			#{civilVoiceCommentId}, #{civilVoiceId}, #{userId}, #{userIp}, #{title}, NOW() 
+		)
+	</insert>	
+	
+	<!-- 수정 -->
+	<update id="updateCivilVoiceComment" parameterType="civilVoiceComment">
+		/* updateCivilVoiceComment */
+		UPDATE tn_civil_voice_comment SET
+			title = #{title}, 
+			update_dt = NOW()
+		WHERE civil_voice_comment_id = #{civilVoiceCommentId}
+	</update>
+	
+	<!-- 삭제 -->	
+	<delete id="deleteCivilVoiceComment" parameterType="long">
+		/* deleteCivilVoiceComment */
+		DELETE FROM tn_civil_voice_comment WHERE civil_voice_comment_id = #{civilVoiceCommentId}
+	</delete>
+</mapper>
