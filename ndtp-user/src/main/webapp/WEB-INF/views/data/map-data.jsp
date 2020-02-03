@@ -12,7 +12,7 @@
 					<span style="display: inline-block; width: 80px; height:23px;  background-color: #f3f3f3; text-align: center; padding-top: 6px;"><b>데이터명</b></span>
 				</td>
 				<td style="padding: 7px 7px 3px 7px;">
-					<input type="text" id="searchDataName" name="searchDataName" placeholder=" 데이터명을 입력하여 주십시오. " style="height: 26px;" size="30" />
+					<input type="text" id="searchDataName" name="searchDataName" placeholder=" 데이터명을 입력해주세요. " style="height: 26px;" size="26" />
 				</td>
 			</tr>
 			<tr style="height: 30px;">
