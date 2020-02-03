@@ -1,12 +1,19 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <script id="templateDataGroupList" type="text/x-handlebars-template">
-	<h3 style="margin-top: 30px; margin-bottom: 10px;">
-		<spring:message code='all.d'/> {{formatNumber pagination.totalCount}} <spring:message code='search.what.count'/>,
-		{{formatNumber pagination.pageNo}} / {{formatNumber pagination.lastPage}} <spring:message code='search.page'/>
-	</h3>
-	<div class="tableList">
-		<table>
+	<div>
+		<span><spring:message code='all.d'/> {{formatNumber pagination.totalCount}} <spring:message code='search.what.count'/></span>
+		<span class="float-right">{{formatNumber pagination.pageNo}} / {{formatNumber pagination.lastPage}} <spring:message code='search.page'/></span>
+	</div>
+	<div class="dataGroupSummary table-data-group-summary table-font-small">
+		<table class="table-word-break">
+			<colgroup>
+				<col class="col-1" />
+				<col />
+				<col class="col-3" />
+				<col class="col-2" />
+				<col class="col-1" />
+			</colgroup>
 			<thead>
 				<tr>
 					<th>번호</th>
@@ -19,7 +26,7 @@
 			<tbody>
 {{#greaterThan dataGroupList.length 0}}
 	{{#each dataGroupList}}
-				<tr style="height: 35px;">
+				<tr>
 					<td>{{subtract ../pagination.rowNumber @index}}</td>
 					<td class="ellipsis" style="max-width:100px;">
 						{{dataGroupName}}

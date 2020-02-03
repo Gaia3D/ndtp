@@ -46,7 +46,7 @@ right: 0;
 margin: 10px;
 font-size: 15px;
 color: #fff;
-text-align: right; 
+text-align: right;
 width: calc(100% - 500px);
 }
 .signArea > span {
@@ -147,7 +147,7 @@ letter-spacing: -1px;
 background-color: #eee;
 }
 .districtLayer > ul li.on {
-background-color: #dbf1ff;	
+background-color: #dbf1ff;
 }
 .districtBtn {
 width: 335px;
@@ -217,7 +217,7 @@ background-position: -360px -190px;
 /* right: -25px; */
 position: relative;
 right: -395px;
-top: 50%;	
+top: 50%;
 }
 .contentsBtn > button {
 /* position:fixed; */
@@ -279,7 +279,7 @@ height: calc(100% - 37px);
 .contents > h3 {
 margin-bottom: 10px;
 padding-left: 12px;
-font-size: 16px;
+font-size: 14px;
 background: url(/images/ko/ico.png) no-repeat 3px -592px;
 }
 /* MAP / CTRLBTNS */
@@ -389,10 +389,10 @@ margin-right: 0;
 }
 .dataGroupSum li > label {
 display: block;
-padding: 1px 6px;	
+padding: 1px 6px;
 border-radius: 3px;
 border: 1px solid #dcdcdc;
-background-color: #f1f1f1;		
+background-color: #f1f1f1;
 }
 .dataGroupSum li > span {
 font-size: 17px;
@@ -415,7 +415,7 @@ color: #287be4;
 	width: 100%;
 }
 .dataGroupSummary > table thead th {
-	padding: 5px;	
+	padding: 5px;
 	border: 1px solid #ccc;
 }
 .dataGroupSummary > table tbody tr:hover {
@@ -449,7 +449,7 @@ position: relative;
 width: 100%;
 }
 .tableList > table thead th {
-padding: 5px;	
+padding: 5px;
 border: 1px solid #43444c;
 }
 .tableList > table tbody tr:hover {
@@ -506,7 +506,7 @@ border: 1px solid #9898a0;
 border-radius: 3px;
 background-color: #fff;
 }
-.dataBtns > button.on { 
+.dataBtns > button.on {
 color: #fff;
 border: 1px solid #414149;
 border-radius: 3px;
@@ -574,7 +574,7 @@ height: calc(100% - 485px)
 }
 .agreeWrap p.agree {
 padding: 0 0 0 25px;
-background: url(/images/ko/ico.png) no-repeat 0 -495px;	
+background: url(/images/ko/ico.png) no-repeat 0 -495px;
 }
 .agreeCount {
 margin: 7px 0;
@@ -589,7 +589,7 @@ margin: 20px 0;
 width: 65%;
 padding: 7px 7px 7px 30px;
 border: 2px solid #555;
-background: url(/images/ko/ico.png) no-repeat 7px -490px;	
+background: url(/images/ko/ico.png) no-repeat 7px -490px;
 }
 
 /* 의견등록 */
@@ -615,19 +615,27 @@ text-align: right;
 color: #287be4
 }
 
-/* 목록검색 */
+/* 목록검색 - 정연화 수정 */
 .listSearch {
 margin-bottom: 10px;
 padding: 7px;
 background-color: #f3f3f3;
 }
 .listSearch  > input {
-width: 230px;
+/* width: 230px; */
+width: 62%;
 padding: 10px;
 font-size: 1.1em;
 border: none;
 }
 .listSearch > button {
+width: 30%;
+padding: 9px;
+line-height: 1.5em;
+font-size: 1.1em;
+vertical-align: middle;
+float: right;
+/*
 width: 30px;
 height: 30px;
 margin-left: -5px;
@@ -636,6 +644,7 @@ text-indent: -999em;
 background-image: url(/images/ko/ico.png);
 background-repeat: no-repeat;
 background-position: 0px -110px;
+ */
 }
 
 /* PAGINATION */
@@ -649,7 +658,7 @@ display: inline-block;
 margin: 0;
 padding: 0;
 font-size: 13px;
-padding: 2px 5px;
+padding: 0px 7px;
 cursor: pointer;
 }
 .pagination li * {
@@ -786,7 +795,8 @@ cursor: pointer;
 ul.listDrop li > p {
 padding: 8px;
 font-weight: bold;
-border:1px solid #e0e0e0;
+/* border:1px solid #e0e0e0; */
+border-bottom: 3px solid #eaeaea;
 background-image: url(/images/ko/ico.png);
 background-repeat: no-repeat;
 background-position: 320px -738px;
@@ -800,7 +810,6 @@ display: none;
 }
 ul.listDrop li.on > p {
 color: #fff;
-border-bottom: 3px solid #eaeaea;
 background-color: #287be4;
 background-image: url(/images/ko/ico.png);
 background-repeat: no-repeat;
@@ -809,6 +818,9 @@ background-position: 320px -688px;
 ul.listDrop li p span {
 display: inline-block;
 margin-left: 10px;
+}
+ul.listDrop li.on p span {
+color: #aef;
 }
 ul.listDrop li.on > ul {
 overflow-x: hidden;
@@ -1171,7 +1183,7 @@ font-weight: 900;
 font: #f00;
 color: red;
 font-size: 16px;
-cursor: pointer;	
+cursor: pointer;
 }
 
 .tab {
@@ -1195,12 +1207,12 @@ text-align: center;
 color: #fff;
 border: 1px solid #006bd2;
 background-color: #0073e2;
-} 
+}
 .input-set {
 margin: 10px 20px 10px 10px;
-float: left; 
+float: left;
 }
-#loadingWrap{	
+#loadingWrap{
 position: fixed;
 top: 50px;
 z-index: 100;
@@ -1225,8 +1237,8 @@ border-radius: 50%;
 animation: spinning 0.8s infinite linear;
 }
 @keyframes spinning {
-100% { 
-	transform: rotate(360deg); 
+100% {
+	transform: rotate(360deg);
 }
 }
 
@@ -1271,7 +1283,7 @@ background-color: #f1f1f1;
 margin: 15px 20px;
 }
 .layerHeader > h3 {
-margin-top:5px;	
+margin-top:5px;
 }
 .layerClose {
 position: absolute;
@@ -1412,7 +1424,7 @@ background-color: #fff;
 	width: 100%;
 }
 .basicTable > table thead th {
-	padding: 5px;	
+	padding: 5px;
 	border: 1px solid #ccc;
 }
 .basicTable > table tbody tr:hover {
@@ -1423,7 +1435,7 @@ background-color: #fff;
 	background-color: #d6dcf2;
 }
 .basicTable > table th {
-	padding: 5px;	
+	padding: 5px;
 	border: 1px solid #ccc;
 	background-color: #ddd;
 }
@@ -1454,7 +1466,7 @@ display: inline-block;
 padding-left: 10px;
 font-size: 13px;
 font-weight: bold;
-background: url(/images/ko/ico.png) no-repeat left -865px;   
+background: url(/images/ko/ico.png) no-repeat left -865px;
 }
 .layerDiv {
 margin-bottom: 20px;
@@ -1541,5 +1553,146 @@ background-position: -262px -243px;
 .ellipsis {
 overflow:hidden;
 white-space: nowrap;
-text-overflow: ellipsis; 
+text-overflow: ellipsis;
+}
+
+/* 정연화 추가 */
+.table-data-group-summary {
+	margin: 10px 0;
+}
+.table-data-group-summary th {
+	background-color: #f3f3f3;
+}
+.summary-group-divide {
+	height: 20px;
+}
+
+.table-word-break {
+	table-layout: fixed;
+}
+.table-word-break th,
+.table-word-break td {
+	word-break: break-all;
+	vertical-align: middle;
+}
+.table-font-small > table tr td {
+	font-size: small;
+}
+
+.table-data-group > table tr:nth-child(odd) td:last-child {
+	text-align: left;
+}
+.table-data-group > table tr:nth-child(even) td:last-child {
+	padding: 0;
+}
+
+.heading-bullet-point {
+/* 	display: list-item;
+	list-style-type: disc;
+	list-style-position: inside;
+	margin-top: 10px; */
+	margin-bottom: 10px;
+    padding-left: 12px;
+    font-size: 14px;
+    font-weight: normal;
+    background: url(/images/ko/ico.png) no-repeat 3px -592px;
+}
+.float-right {
+	float: right;
+}
+
+.contents-nopadding {
+	padding: 0;
+}
+.contents-fullheight {
+	height: calc(100% - 20px);
+}
+.contents-margin-default {
+	margin: 7px;
+}
+.contents-margin-none {
+	margin: 0;
+}
+
+.tab-divide > li {
+	width: calc(50% - 5px);
+}
+
+ul.listDrop li.list-drop-button-none {
+	cursor: auto;
+}
+ul.listDrop li.list-drop-button-none > p {
+	background-image: none;
+}
+
+.button-right-margin {
+	margin-right: 10px;
+}
+
+.col-1 {
+	width: 12%;
+}
+.col-2 {
+	width: 17%;
+}
+.col-3 {
+	width: 19%;
+}
+.col-4 {
+	width: 28%;
+}
+/*
+.table-scroll-tbody {
+	display: inline-block;
+    width: 332px;
+    max-height: 340px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+.scroll-col-1 {
+	width: 29px;
+}
+.scroll-col-2 {
+	width: 33px;
+}
+.scroll-col-3 {
+	width: 44px;
+}
+.scroll-col-4 {
+	width: 52px;
+}
+ */
+
+.form-group {
+	margin-bottom: 5px;
+	padding: 5px;
+	background-color: #f3f3f3;
+}
+.form-group > label {
+    width: 20%;
+	padding: 7px;
+    vertical-align: middle;
+    display: inline-block;
+  	text-align: justify;
+}
+.form-group > input {
+	width: 65%;
+	padding: 5px;
+	border: none;
+	font-size: small;
+}
+.form-group > select {
+	width: 65%;
+	padding: 5px;
+	border-color: #d5d5d5;
+	color: #7d7d7d;
+	font-size: small;
+	line-height: 1.5em;
+}
+.form-group > button {
+	width: 30%;
+	padding: 9px;
+	line-height: 1.5em;
+	font-size: 1.1em;
+	vertical-align: middle;
 }

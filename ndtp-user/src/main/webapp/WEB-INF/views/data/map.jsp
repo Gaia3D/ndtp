@@ -43,15 +43,15 @@
 <div id="wrap">
 	<!-- S: NAVWRAP -->
 	<div class="navWrap">
-	 	<%@ include file="/WEB-INF/views/layouts/menu.jsp" %> 
-		
-		<!-- E: NAVWRAP -->	
-		
+	 	<%@ include file="/WEB-INF/views/layouts/menu.jsp" %>
+
+		<!-- E: NAVWRAP -->
+
 		<div id="contentsWrap" class="contentsWrap" style="display: none;">
 			<div id="searchContent" class="contents yScroll fullHeight" style="display:none;">
 				<%@ include file="/WEB-INF/views/search/district.jsp" %>
 			</div>
-			<div id="dataContent" class="contents fullHeight">
+			<div id="dataContent" class="contents-margin-default fullHeight">
 				<div class="tabs" >
 					<ul id="dataInfoTab" class="tab">
 						<li data-nav="dataGroupInfoContent">데이터 그룹</li>
@@ -62,9 +62,9 @@
 				<%@ include file="/WEB-INF/views/data/map-data-group.jsp" %>
 			</div>
 			<!-- E: 데이터 -->
-			
+
 			<div id="spatialContent" class="contentsList yScroll" style="display:none;height: 798px;background-color: #fff;">
-				<%@ include file="/WEB-INF/views/spatial/spatial.jsp" %> 
+				<%@ include file="/WEB-INF/views/spatial/spatial.jsp" %>
 			</div>
 			<div id="simulationContent" class="contentsList yScroll" style="display:none;">
 				<%@ include file="/WEB-INF/views/simulation/simulation.jsp" %>
@@ -72,18 +72,18 @@
 			<div id="civilVoiceContent" class="contents yScroll" style="display:none;">
 				<%@ include file="/WEB-INF/views/civil-voice/list.jsp" %>
 			</div>
-			
+
 			<div id="layerContent" class="contents fullHeight" style="display:none;">
 				<%@ include file="/WEB-INF/views/layer/list.jsp" %>
 			</div>
-			
+
 			<div id="userPolicyContent" class="contents" style="display:none;">
 				<%@ include file="/WEB-INF/views/user-policy/modify.jsp" %>
 			</div>
 			<!-- E: CONTENTS -->
 			<!-- E: CONTENTS -->
-			
-			
+
+
 			<!-- E: CONTENTSBTN -->
 		</div>
 		<div class="contentsBtn">
@@ -93,8 +93,8 @@
 
 	</div>
 	<!-- E: NAVWRAP -->
-	
-	<!-- S: GNB WRAP -->	
+
+	<!-- S: GNB WRAP -->
 	<%@ include file="/WEB-INF/views/layouts/global-search.jsp" %>
 	<!-- E: GNB WRAP -->
 
@@ -153,7 +153,7 @@
 		$(".ui-slider-handle").slider({});
  		initDataGroupList();
 	});
-	
+
 	//Cesium.Ion.defaultAccessToken = '';
 	//var viewer = new Cesium.Viewer('magoContainer');
 	var MAGO3D_INSTANCE;
@@ -165,10 +165,10 @@
 		districtProvider : {}
 	};
 	magoInit();
-	
+
 	function magoInit() {
 		var geoPolicyJson = ${geoPolicyJson};
-		
+
 		var cesiumViewerOption = {};
 		cesiumViewerOption.infoBox = false;
 		cesiumViewerOption.navigationHelpButton = false;
@@ -178,14 +178,14 @@
 		cesiumViewerOption.geocoder = false;
 		cesiumViewerOption.baseLayerPicker = false;
 		cesiumViewerOption.sceneModePicker = false;
-			
+
 		/**
 		 * @param {Stirng} containerId container div id. required.
 		 * @param {object} serverPolicy mage3d geopolicy. required.
 		 * @param {object} callback loadstart callback, loadend callback. option.
 		 * @param {object} options Cesium viewer parameter. option.
 		 * @param {Cesium.Viewer} legacyViewer 타 시스템과의 연동의 경우 view 객체가 생성되어서 넘어 오는 경우가 있음. option.
-		*/	
+		*/
 		MAGO3D_INSTANCE = new Mago3D.Mago3d('magoContainer', geoPolicyJson, {loadend : magoLoadEnd}, cesiumViewerOption);
 
 	}
@@ -193,10 +193,10 @@
 	function magoLoadEnd(e) {
 		var magoInstance = e;
 		var geoPolicyJson = ${geoPolicyJson};
-		var viewer = magoInstance.getViewer(); 
+		var viewer = magoInstance.getViewer();
 		var magoManager = magoInstance.getMagoManager();
 		var f4dController = magoInstance.getF4dController();
-		
+
 		// TODO : 세슘 MAP 선택 UI 제거,엔진에서 처리로 변경 예정.
 		viewer.baseLayerPicker.destroy();
 		viewer.scene.globe.depthTestAgainstTerrain = true;
@@ -207,7 +207,7 @@
 		MapControll(viewer);
 		//공간분석 기능 수행
 		SpatialAnalysis(magoInstance);
-		// 행정 구역 이동 
+		// 행정 구역 이동
         DistrictControll(magoInstance);
 
         dataGroupList();
@@ -223,7 +223,7 @@
 		//지도상에 데이터 다루는거
 		MapDataControll(magoInstance);
 	}
-	
+
 	// 데이터 그룹 목록
 	function dataGroupList() {
 		$.ajax({
@@ -246,7 +246,7 @@
 			}
 		});
 	}
-	
+
 	// 데이터 정보 목록
 	function dataList(dataGroupArray) {
 		var dataArray = new Array();
@@ -283,21 +283,21 @@
 				error:function(request,status,error){
 					alert(JS_MESSAGE["ajax.error.message"]);
 				}
-			});			
+			});
 		}
-		
+
 	}
-	
+
 	function flyTo(dataGroupId, dataKey) {
 		if(dataGroupId === null || dataGroupId === '' || dataKey === null || dataKey === '') {
 			alert("위치 정보가 올바르지 않습니다. 확인하여 주십시오.");
 			return;
 		}
-		
+
 		//  searchDataAPI
 		 searchDataAPI(MAGO3D_INSTANCE, dataGroupId, dataKey);
 	}
-	
+
 	function flyToGroup(longitude, latitude, altitude, duration) {
 		if(longitude === null || longitude === '' || latitude === null || latitude === '' || altitude === null || altitude === '') {
 			alert("위치 정보가 올바르지 않습니다. 확인하여 주십시오.");
@@ -305,7 +305,7 @@
 		}
 		gotoFlyAPI(MAGO3D_INSTANCE, parseFloat(longitude), parseFloat(latitude), parseFloat(altitude), parseFloat(duration));
 	}
-	
+
 	var dataInfoDialog = $( "#dataInfoDialog" ).dialog({
 		autoOpen: false,
 		width: 500,
@@ -314,7 +314,7 @@
 		overflow : "auto",
 		resizable: false
 	});
-	
+
 	// 데이터 상세 정보 조회
 	function detailDataInfo(dataId) {
 		dataInfoDialog.dialog( "open" );
@@ -326,11 +326,11 @@
 			success: function(msg){
 				if(msg.statusCode <= 200) {
 					dataInfoDialog.dialog( "option", "title", msg.dataInfo.dataName + " 상세 정보");
-					
+
 					var source = $("#templateDataInfo").html();
 				    var template = Handlebars.compile(source);
 				    var dataInfoHtml = template(msg.dataInfo);
-				    
+
 				    $("#dataInfoDialog").html("");
 	                $("#dataInfoDialog").append(dataInfoHtml);
 				} else {
@@ -342,12 +342,12 @@
 			}
 		});
 	}
-	
+
 	// 데이터 검색 버튼 클릭
 	$("#mapDataSearch").click(function() {
 		mapDataInfoList(1, $("#searchDataName").val(), $("#searchDataStatus").val(), $("#searchDataType").val());
 	});
-	
+
 	// 데이터 검색 페이징에서 호출됨
 	function pagingDataInfoList(pageNo, searchParameters) {
 		// searchParameters=&searchWord=dataName&searchOption=&searchValue=%ED%95%9C%EA%B8%80&startDate=&endDate=&orderWord=&orderValue=&status=&dataType=
@@ -367,20 +367,20 @@
 				dataType = tempDataType[1];
 			}
 		}
-		
+
 		mapDataInfoList(pageNo, dataName, status, dataType);
 	}
-	
+
 	// 데이터 검색
 	var dataSearchFlag = true;
 	function mapDataInfoList(pageNo, searchDataName, searchStatus, searchDataType) {
 		// searchOption : 1 like
-		
+
 		//searchDataName
 		if(dataSearchFlag) {
 			dataSearchFlag = false;
 			//var formData =$("#searchDataForm").serialize();
-		
+
 			$.ajax({
 				url: "/datas",
 				type: "GET",
@@ -390,11 +390,11 @@
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						$("#dataInfoListArea").html("");
-						
+
 						var source = $("#templateDataList").html();
 		                //핸들바 템플릿 컴파일
 		                var template = Handlebars.compile(source);
-		                
+
 		               	//핸들바 템플릿에 데이터를 바인딩해서 HTML 생성
 		                var dataInfoListHtml = template(msg);
 		                $("#dataInfoListArea").html("");
@@ -414,18 +414,18 @@
 			return;
 		}
 	}
-	
+
 	// 데이터 그룹 목록 초기화
 	function initDataGroupList() {
 		mapDataGroupList(1, null);
 	}
-	
+
 	// 데이터 그룹 검색 버튼 클릭
 	$("#mapDataGroupSearch").click(function() {
 		mapDataGroupList(1, $("#searchDataGroupName").val());
 	});
-	
-	$("#searchDataGroupName").keyup(function(e) { 
+
+	$("#searchDataGroupName").keyup(function(e) {
 		if(e.keyCode == 13) mapDataGroupList(1, $("#searchDataGroupName").val());
 	});
 
@@ -440,20 +440,20 @@
 				dataGroupName = tempDataName[1];
 			}
 		}
-		
+
 		mapDataGroupList(pageNo, dataGroupName);
 	}
-	
+
 	// 데이터 그룹 검색
 	var dataGroupSearchFlag = true;
 	function mapDataGroupList(pageNo, searchDataGroupName) {
 		// searchOption : 1 like
-		
+
 		//searchDataName
 		if(dataGroupSearchFlag) {
 			dataGroupSearchFlag = false;
 			//var formData =$("#searchDataForm").serialize();
-		
+
 			$.ajax({
 				url: "/data-groups",
 				type: "GET",
@@ -463,11 +463,11 @@
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						$("#dataGroupListArea").html("");
-						
+
 						var source = $("#templateDataGroupList").html();
 		                //핸들바 템플릿 컴파일
 		                var template = Handlebars.compile(source);
-		                
+
 		                //핸들바 템플릿에 데이터를 바인딩해서 HTML 생성
 		                var dataGroupListHtml = template(msg);
 		                $("#dataGroupListArea").html("");
