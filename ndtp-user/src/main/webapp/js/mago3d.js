@@ -24860,7 +24860,7 @@ MagoManager.prototype.mouseActionLeftUp = function(mouseX, mouseY)
 	this.mustCheckIfDragging = true;
 	this.thereAreStartMovePoint = false;
 
-	/*this.dateSC = new Date();
+	this.dateSC = new Date();
 	this.currentTimeSC = this.dateSC.getTime();
 	var miliSecondsUsed = this.currentTimeSC - this.startTimeSC;
 	if (miliSecondsUsed < 1500) 
@@ -24869,7 +24869,7 @@ MagoManager.prototype.mouseActionLeftUp = function(mouseX, mouseY)
 		{
 			this.bPicking = true;
 		}
-	}*/
+	}
 	
 	this.setCameraMotion(true);
 	
@@ -25513,16 +25513,6 @@ MagoManager.prototype.mouseActionLeftDown = function(mouseX, mouseY)
 	//this.isCameraMoving = true;
 	MagoWorld.updateMouseStartClick(mouseX, mouseY, this);
 
-	this.dateSC = new Date();
-	this.currentTimeSC = this.dateSC.getTime();
-	var miliSecondsUsed = this.currentTimeSC - this.startTimeSC;
-	if (miliSecondsUsed < 1500) 
-	{
-		if (this.mouse_x === mouseX && this.mouse_y === mouseY) 
-		{
-			this.bPicking = true;
-		}
-	}
 	/*if (!this.isCesiumGlobe()) 
 	{
 		MagoWorld.updateMouseStartClick(mouseX, mouseY, this);
