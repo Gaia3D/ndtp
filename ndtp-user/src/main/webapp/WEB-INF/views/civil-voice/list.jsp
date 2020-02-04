@@ -1,114 +1,113 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<div id="civilVoiceListContent" class="contents fullHeight" style="display:block;">
-	<h3>시민참여</h3>
-
+<div id="civilVoiceListContent" class="contents" style="display:block;">
+	<h3 class="h3-margin">시민참여</h3>
 <!-- 데이터 검색 -->
-	<div class="listSearch">
+	<div class="listSearch search-margin flex-align-center">
 		<input type="text" placeholder="검색어를 입력하세요.">
-		<button type="button" title="검색">검색</button>
+		<button type="button" class="btnTotalSearch" title="검색">검색</button>
 	</div>
-	
-	<div class="bothSide">
+
+	<div class="bothSide flex-align-center">
 		<div>
 			전체
 			<span>78</span> 건
 		</div>
 		<div>
-			<button type="button" id="civilVoiceInputButton" title="의견등록" class="basicA">의견등록</button>
+			<button type="button" id="civilVoiceInputButton" title="의견등록" class="focusA padding-7">의견등록</button>
 		</div>
 	</div>
-	
+
 	<ul id="civilVoiceList" class="comment">
-		<li>
+		<li class="flex-align-center">
 			<p>
 				이 구간에 과속하는 차량이 많습니다
 				<span class="id">pororo178</span>
 			</p>
-			<p class="count">123</p>
+			<p class="count"><span class="likes-icon">icon</span>123</p>
 		</li>
-		<li>
+		<li class="flex-align-center">
 			<p>
 				이 구간에 과속하는 차량이 많습니다 글자수가 넘치면 이렇게 됩니다.
 				<span class="id">pororo178</span>
 			</p>
-			<p class="count">1,234</p>
+			<p class="count"><span class="likes-icon">icon</span>1,234</p>
 		</li>
-		<li>
+		<li class="flex-align-center">
+			<p>
+				이 구간에 과속하는 차량이 많습니다
+				<span class="id"><span class="likes-icon">icon</span>pororo178</span>
+			</p>
+			<p class="count"><span class="likes-icon">icon</span>123</p>
+		</li>
+		<li class="flex-align-center">
 			<p>
 				이 구간에 과속하는 차량이 많습니다
 				<span class="id">pororo178</span>
 			</p>
-			<p class="count">123</p>
+			<p class="count"><span class="likes-icon">icon</span>123</p>
 		</li>
-		<li>
+		<li class="flex-align-center">
 			<p>
 				이 구간에 과속하는 차량이 많습니다
 				<span class="id">pororo178</span>
 			</p>
-			<p class="count">123</p>
+			<p class="count"><span class="likes-icon">icon</span>123</p>
 		</li>
-		<li>
+		<li class="flex-align-center">
 			<p>
 				이 구간에 과속하는 차량이 많습니다
 				<span class="id">pororo178</span>
 			</p>
-			<p class="count">123</p>
+			<p class="count"><span class="likes-icon">icon</span>123</p>
 		</li>
-		<li>
+		<li class="flex-align-center">
 			<p>
 				이 구간에 과속하는 차량이 많습니다
 				<span class="id">pororo178</span>
 			</p>
-			<p class="count">123</p>
+			<p class="count"><span class="likes-icon">icon</span>123</p>
 		</li>
-		<li>
+		<li class="flex-align-center">
 			<p>
 				이 구간에 과속하는 차량이 많습니다
 				<span class="id">pororo178</span>
 			</p>
-			<p class="count">123</p>
+			<p class="count"><span class="likes-icon">icon</span>123</p>
 		</li>
-		<li>
+		<li class="flex-align-center">
 			<p>
 				이 구간에 과속하는 차량이 많습니다
 				<span class="id">pororo178</span>
 			</p>
-			<p class="count">123</p>
+			<p class="count"><span class="likes-icon">icon</span>123</p>
 		</li>
-		<li>
+		<li class="flex-align-center">
 			<p>
 				이 구간에 과속하는 차량이 많습니다
 				<span class="id">pororo178</span>
 			</p>
-			<p class="count">123</p>
+			<p class="count"><span class="likes-icon">icon</span>123</p>
 		</li>
-		<li>
+		<li class="flex-align-center">
 			<p>
 				이 구간에 과속하는 차량이 많습니다
 				<span class="id">pororo178</span>
 			</p>
-			<p class="count">123</p>
+			<p class="count"><span class="likes-icon">icon</span>123</p>
 		</li>
-		<li>
+		<li class="flex-align-center">
 			<p>
 				이 구간에 과속하는 차량이 많습니다
 				<span class="id">pororo178</span>
 			</p>
-			<p class="count">123</p>
+			<p class="count"><span class="likes-icon">icon</span>123</p>
 		</li>
-		<li>
+		<li class="flex-align-center">
 			<p>
 				이 구간에 과속하는 차량이 많습니다
 				<span class="id">pororo178</span>
 			</p>
-			<p class="count">123</p>
-		</li>
-		<li>
-			<p>
-				이 구간에 과속하는 차량이 많습니다
-				<span class="id">pororo178</span>
-			</p>
-			<p class="count">123</p>
+			<p class="count"><span class="likes-icon">icon</span>123</p>
 		</li>
 	</ul>
 

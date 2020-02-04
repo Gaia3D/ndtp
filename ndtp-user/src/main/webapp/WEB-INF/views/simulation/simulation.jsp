@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <ul class="listDrop">
 	<li>
-		<p>경관 분석(일조분석)</p>
+		<p>경관 분석(일조분석)<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="solarAnalysis">
 			<ul class="analysisGroup">
 				<li>
@@ -21,19 +21,19 @@
 		</div>
 	</li>
 	<li class="on">
-		<p>건설 공정</p>
+		<p>건설 공정<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="constructionProcess">
 			<ul class="analysisGroup">
 				<li>
 					<span style="display: inline-block;padding: 3px 0;margin-right: 20px;">위치</span>
 					<!-- <input class="" type="text" placeholder="" value=""/>
 					<button type="button" class="btnText drawObserverPoint">찾기</button> -->
-					<label style="width:26px;" for="cpSejong">세종</label> 
+					<label style="width:26px;" for="cpSejong">세종</label>
 					<input style="width:20px;" type="radio" id="cpSejong" name="cpProtoArea" value="s" checked/>
 					<label style="width:26px;" for="cpBusan">부산</label>
 					<input style="width:20px;" type="radio" id="cpBusan"  name="cpProtoArea" value="p"/>
 				</li>
-				
+
 				<li class="btns">
 					<button type="button" class="btnTextF execute" title="공정 조회">조회</button>
 					<button type="button" class="btnText reset" title="취소">취소</button>

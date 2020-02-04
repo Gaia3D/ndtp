@@ -482,16 +482,17 @@ text-indent: -999em;
 background: url(/images/ko/ico.png) no-repeat -462px -697px;
 }
 
-/* 양쪽으로 나눠진 구분DIV */
+/* 양쪽으로 나눠진 구분DIV - 정연화 수정 */
 .bothSide {
 display: flex;
-margin-bottom: 3px;
+/* margin-bottom: 3px; */
+margin-bottom: 5px;
 }
 .bothSide > div {
 flex: auto;
 }
 .bothSide > div:first-child {
-margin-top: 8px;
+/* margin-top: 8px; */
 }
 .bothSide > div:first-child > span {
 color: #287be4
@@ -513,7 +514,7 @@ border-radius: 3px;
 background-color: #51515b;
 }
 
-/*  ///// 시민참여 ///// */
+/*  ///// 시민참여 ///// - 정연화 수정 */
 .comment > li {
 display: flex;
 position: relative;
@@ -522,26 +523,34 @@ padding: 7px;
 border-radius: 5px;
 border: 1px solid #c7e0f2;
 background-color: #ecf7ff;
+cursor: pointer;
+}
+.comment > li:hover {
+border: 1px solid #ecf7ff;
+background-color: #c7e0f2;
 }
 .comment li > p {
 flex: auto;
-padding-right: 10px;
+/* padding-right: 10px; */
 }
 .comment li > p:first-child {
-min-width: 215px;
+/* min-width: 215px; */
+min-width: 220px;
 }
 .comment span.id {
 display: block;
 color: #999;
 }
 .comment p.count {
-min-width: 40px;
-padding: 8px 5px 0 15px;
-font-size: 17px;
+/* min-width: 40px; */
+min-width: 80px;
+/* padding: 8px 5px 0 15px; */
+/* font-size: 17px; */
+font-size: 14px;
 font-weight: bold;
 text-align: right;
-background: url(/images/ko/ico.png) no-repeat 0 -487px;
-margin-left:-10px;
+/* background: url(/images/ko/ico.png) no-repeat 0 -487px; */
+/* margin-left:-10px; */
 }
 
 
@@ -573,8 +582,8 @@ background-color: #f1f1f1;
 height: calc(100% - 485px)
 }
 .agreeWrap p.agree {
-padding: 0 0 0 25px;
-background: url(/images/ko/ico.png) no-repeat 0 -495px;
+/* padding: 0 0 0 25px; */
+/* background: url(/images/ko/ico.png) no-repeat 0 -495px; */
 }
 .agreeCount {
 margin: 7px 0;
@@ -621,30 +630,36 @@ margin-bottom: 10px;
 padding: 7px;
 background-color: #f3f3f3;
 }
-.listSearch  > input {
-/* width: 230px; */
-width: 62%;
+.listSearch > input {
+width: 240px;
 padding: 10px;
 font-size: 1.1em;
 border: none;
 }
 .listSearch > button {
+width: 30px;
+height: 30px;
+border: none;
+text-indent: -999em;
+background-image: url(/images/ko/ico.png);
+background-repeat: no-repeat;
+background-position: -6px -110px;
+margin: 6px;
+}
+.search-text > input {
+width: 62%;
+}
+.search-text > button {
 width: 30%;
+height: 100%;
+margin: 0;
 padding: 9px;
 line-height: 1.5em;
 font-size: 1.1em;
 vertical-align: middle;
 float: right;
-/*
-width: 30px;
-height: 30px;
-margin-left: -5px;
-border: none;
-text-indent: -999em;
-background-image: url(/images/ko/ico.png);
-background-repeat: no-repeat;
-background-position: 0px -110px;
- */
+background-image: none;
+text-indent: unset;
 }
 
 /* PAGINATION */
@@ -795,8 +810,8 @@ cursor: pointer;
 ul.listDrop li > p {
 padding: 8px;
 font-weight: bold;
-/* border:1px solid #e0e0e0; */
-border-bottom: 3px solid #eaeaea;
+border:1px solid #e0e0e0;
+/* border-bottom: 3px solid #eaeaea; */
 background-image: url(/images/ko/ico.png);
 background-repeat: no-repeat;
 background-position: 320px -738px;
@@ -810,6 +825,7 @@ display: none;
 }
 ul.listDrop li.on > p {
 color: #fff;
+border-bottom: 3px solid #eaeaea;
 background-color: #287be4;
 background-image: url(/images/ko/ico.png);
 background-repeat: no-repeat;
@@ -818,9 +834,6 @@ background-position: 320px -688px;
 ul.listDrop li p span {
 display: inline-block;
 margin-left: 10px;
-}
-ul.listDrop li.on p span {
-color: #aef;
 }
 ul.listDrop li.on > ul {
 overflow-x: hidden;
@@ -1599,6 +1612,9 @@ text-overflow: ellipsis;
 	margin: 0;
 	border-top: none;
 }
+.contents-background-none {
+	background: none;
+}
 .tab-divide > li {
 	width: calc(50% - 5px);
 }
@@ -1660,4 +1676,53 @@ ul.listDrop li.list-drop-button-none > p {
 	background: #fff;
 	margin-bottom: 20px;
 	text-align: center;
+}
+ul.listDrop li > p {
+	background: none;
+	background-color: #fff;
+}
+ul.listDrop li.on > p {
+	background: none;
+	background-color: #287be4;
+}
+ul.listDrop li > p > span.collapse-icon {
+	width: 15px;
+	float: right;
+    text-indent: -999em;
+	background-image: url(/images/ko/ico.png);
+    background-repeat: no-repeat;
+    background-position: 0 -745px;
+}
+ul.listDrop li.on > p > span.collapse-icon {
+    background-position: 0 -695px;
+}
+.contents > h3.h3-margin {
+	margin: 10px 0;
+	font-size: 18px;
+}
+.search-margin {
+	margin-bottom: 20px;
+}
+.flex-align-center {
+	display: flex;
+	align-items: center;
+}
+.padding-7 {
+	padding: 7px;
+}
+.comment p.count > span.likes-icon {
+	display: inline-block;
+	width: 20px;
+	text-indent: 999em;
+	background-image: url(/images/ko/ico.png);
+	background-repeat: no-repeat;
+    background-position: 0 -497px;
+}
+.agreeWrap p.agree > span.likes-icon {
+	display: inline-block;
+	width: 20px;
+	text-indent: 999em;
+	background-image: url(/images/ko/ico.png);
+	background-repeat: no-repeat;
+    background-position: 0 -497px;
 }
