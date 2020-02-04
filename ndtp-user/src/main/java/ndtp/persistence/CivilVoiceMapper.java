@@ -2,8 +2,11 @@ package ndtp.persistence;
 
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import ndtp.domain.CivilVoice;
 
+@Repository
 public interface CivilVoiceMapper {
 	/**
 	 * 시민 참여 목록 조회

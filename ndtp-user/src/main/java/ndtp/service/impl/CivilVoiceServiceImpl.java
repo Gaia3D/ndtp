@@ -2,9 +2,12 @@ package ndtp.service.impl;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import ndtp.domain.CivilVoice;
 import ndtp.service.CivilVoiceService;
 
+@Service
 public class CivilVoiceServiceImpl implements CivilVoiceService {
 
 	@Override
