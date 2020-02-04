@@ -18,19 +18,19 @@ public interface CivilVoiceCommentService {
 	 * @param civilvoiceComment
 	 * @return
 	 */
-	int insertCivilVoiceComment(CivilVoiceComment civilvoiceComment);
+	int insertCivilVoiceComment(CivilVoiceComment civilVoiceComment);
 	
 	/**
 	 * 수정
 	 * @param civilvoiceComment
 	 * @return
 	 */
-	int updateCivilVoiceComment(CivilVoiceComment civilvoiceComment);
+	int updateCivilVoiceComment(CivilVoiceComment civilVoiceComment);
 	
 	/**
 	 * 삭제 
 	 * @param civilvoiceComment
 	 * @return
 	 */
-	int deleteCivilVoiceComment(CivilVoiceComment civilvoiceComment);
+	int deleteCivilVoiceComment(CivilVoiceComment civilVoiceComment);
 }

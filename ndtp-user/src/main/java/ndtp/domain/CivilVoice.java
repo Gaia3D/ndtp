@@ -3,6 +3,8 @@ package ndtp.domain;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import javax.validation.constraints.NotBlank;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -29,7 +31,9 @@ public class CivilVoice extends Search {
 	// 위도
 	private String latitude;
 	// 경도
-	private String longitude; 
+	private String longitude;
+	// 본인 게시글에 수정/삭제 표시 위해 사용 
+	private Boolean editable;
 	
 	/**
 	 * DB
@@ -37,6 +41,7 @@ public class CivilVoice extends Search {
 	private Long civilVoiceId;
 	private String userId;
 	private String userIp;
+	@NotBlank
 	private String title;
 	private String content;
 	private String location;

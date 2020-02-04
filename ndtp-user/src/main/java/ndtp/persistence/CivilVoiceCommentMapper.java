@@ -18,22 +18,22 @@ public interface CivilVoiceCommentMapper {
 	
 	/**
 	 * 등록
-	 * @param civilvoiceComment
+	 * @param civilVoiceComment
 	 * @return
 	 */
-	int insertCivilVoiceComment(CivilVoiceComment civilvoiceComment);
+	int insertCivilVoiceComment(CivilVoiceComment civilVoiceComment);
 	
 	/**
 	 * 수정
-	 * @param civilvoiceComment
+	 * @param civilVoiceComment
 	 * @return
 	 */
-	int updateCivilVoiceComment(CivilVoiceComment civilvoiceComment);
+	int updateCivilVoiceComment(CivilVoiceComment civilVoiceComment);
 	
 	/**
 	 * 삭제 
-	 * @param civilvoiceComment
+	 * @param civilVoiceComment
 	 * @return
 	 */
-	int deleteCivilVoiceComment(CivilVoiceComment civilvoiceComment);
+	int deleteCivilVoiceComment(CivilVoiceComment civilVoiceComment);
 }
