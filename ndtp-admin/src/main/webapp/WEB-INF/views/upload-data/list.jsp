@@ -124,7 +124,7 @@
 											<input type="checkbox" id="uploadDataId_${uploadData.uploadDataId}" name="uploadDataId" value="${uploadData.uploadDataId}" />
 										</td>
 										<td class="col-number">${pagination.rowNumber - status.index }</td>
-										<td class="col-name">${uploadData.dataGroupName }</td>
+										<td class="col-name ellipsis" style="max-width:150px;">${uploadData.dataGroupName }</td>
 										<td class="col-type">
 											<c:if test="${uploadData.sharing eq 'common' }">
 												공통

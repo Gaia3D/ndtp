@@ -509,7 +509,7 @@
 			headers: { "X-mago3D-Header" : "mago3D"},
 			success : function(msg) {
 				if(msg.result === "success") {
-					showDataGroup(msg.dataGroupList);
+					showDataGroup(msg.dataGroupWidgetList);
 				} else {
 					alert(JS_MESSAGE[msg.result]);
 				}
@@ -521,17 +521,17 @@
 		});
 	}
 
-	function showDataGroup(dataGroupList) {
+	function showDataGroup(dataGroupWidgetList) {
 
 		$("#dataGroupWidget").empty();
-		if(dataGroupList == null || dataGroupList.length == 0) {
+		if(dataGroupWidgetList == null || dataGroupWidgetList.length == 0) {
 			return;
 		}
 
 		var data = [];
-		var dataGroupCount =  dataGroupList.length;
+		var dataGroupCount =  dataGroupWidgetList.length;
 		for(i=0; i<dataGroupCount; i++ ) {
-			var dataGroupStatisticsArray = [ dataGroupList[i]["name"], dataGroupList[i]["count"]];
+			var dataGroupStatisticsArray = [ dataGroupWidgetList[i]["name"], dataGroupWidgetList[i]["count"]];
 			data.push(dataGroupStatisticsArray);
 		}
 
@@ -552,6 +552,7 @@
                     padding:8,
                     showDataLabels: true,
                     dataLabels: "value",
+                    startAngle: -90,
                     //dataLabelFormatString: "%.1f%"
                 },
             },

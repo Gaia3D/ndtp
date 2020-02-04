@@ -7,7 +7,7 @@
 		<col class="col-data" />
 		<tr>
 			<th class="col-label" scope="row">데이터 그룹명</th>
-			<td id="dataGroupName" class="col-data">{{dataGroupName}}</td>
+			<td id="dataGroupName" class="col-data ellipsis" style="max-width: 300px;">{{dataGroupName}}</td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">데이터 Key</th>

@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ndtp.domain.UserGroup;
 import ndtp.domain.UserGroupMenu;
 import ndtp.domain.UserGroupRole;
-import ndtp.domain.YOrN;
 import ndtp.persistence.UserGroupMapper;
 import ndtp.service.UserGroupService;
 

@@ -24,7 +24,7 @@
 			background-color: #eee;
 		}
 		.ctrlWrap {
-			z-index:10000;
+			z-index:100;
 		}
 		.ctrlWrap div.zoom button, .ctrlWrap div.rotate button  {
 			width:47px;

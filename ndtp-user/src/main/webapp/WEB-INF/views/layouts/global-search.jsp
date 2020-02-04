@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<div id="gnbWrap" style="z-index: 10000;">	
+<div id="gnbWrap" style="z-index: 100;">
 	<!-- S: 통합검색 -->
 	<div class="totalSearch">
 		<input type="text" id="fullTextSearch" name="fullTextSearch" placeholder="검색어를 입력하세요.">
@@ -10,7 +10,7 @@
 	<div class="district" >
 		<p id="viewDistrictName"></p>
 	</div>
-	<!-- S: 행정구역 레이어 -->	
+	<!-- S: 행정구역 레이어 -->
 	<div class="districtWrap" style="display:none;">
 		<div class="districtLayer">
 			<ul id="sdoList">

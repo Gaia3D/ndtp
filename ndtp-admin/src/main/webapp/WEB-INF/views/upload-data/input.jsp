@@ -107,7 +107,7 @@
 								</th>
 								<td class="col-input">
 									<form:hidden path="dataGroupId" />
-		 							<form:input path="dataGroupName" cssClass="ml" readonly="true" />
+		 							<form:input path="dataGroupName" cssClass="m" readonly="true" />
 									<input type="button" id="dataGroupButtion" value="데이터 그룹 선택" />
 								</td>
 							</tr>
