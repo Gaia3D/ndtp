@@ -143,24 +143,57 @@
         /* updateCivilVoice */
         UPDATE tn_civil_voice
         SET
-			user_id = #{userId},
+			<if test="title != null and title != ''">
 			title = #{title},
+			</if>
+			<if test="contents != null and contents != ''">
 			content = #{contents},
+			</if>
+			<if test="location != null and location != ''">
 			location = #{location},
+			</if>
+			<if test="altitude != null and altitude != ''">
 			heit = #{altitude},
+			</if>
+			<if test="available != null">
 			use_yn = #{available},
-			user_ip = #{userIp},
+			</if>
+			<if test="clientIp != null and clientIp != ''">
+			user_ip = #{clientIp},
+			</if>
+			<if test="viewCount != null and viewCount != ''">
 			view_count = #{viewCount},
+			</if>
+			<if test="year != null and year != ''">
 			year = #{year},
+			</if>
+			<if test="month != null and month != ''">
 			month = #{month},
+			</if>
+			<if test="day != null and day != ''">
 			day = #{day},
+			</if>
+			<if test="yearWeek != null and yearWeek != ''">
 			year_week = #{yearWeek},
+			</if>
+			<if test="week != null and week != ''">
 			week = #{week},
+			</if>
+			<if test="hour != null and hour != ''">
 			hour = #{hour},
+			</if>
+			<if test="minute != null and minute != ''">
 			minute = #{minute},
+			</if>
+			<if test="sidoCd != null and sidoCd != ''">
 			sido_cd = #{sidoCd},
+			</if>
+			<if test="sggCd != null and sggCd != ''">
 			sgg_cd = #{sggCd},
+			</if>
+			<if test="emdCd != null and emdCd != ''">
 			emd_cd = #{emdCd},
+			</if>
 			update_dt = NOW()
         WHERE civil_voice_id = #{civilVoiceId}
     </update>

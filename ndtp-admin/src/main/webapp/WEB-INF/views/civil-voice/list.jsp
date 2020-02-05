@@ -101,8 +101,8 @@
 					                    <th scope="col" style="width:600px">제목</th>
 					                    <th scope="col">아이디</th>
 					                    <th scope="col">조회수</th>
+					                    <th scope="col">편집</th>
 					                    <th scope="col">등록일</th>
-					                    <th scope="col">삭제</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -121,14 +121,13 @@
 										</td>
 										<td class="col-type">${civilVoice.userId}</td>
 										<td class="col-type">${civilVoice.viewCount}</td>
+										<td class="col-type">
+											<a href="/civil-voice/modify?civilVoiceId=${civilVoice.civilVoiceId}" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;
+											<a href="/civil-voice/delete?civilVoiceId=${civilVoice.civilVoiceId}" onclick="return deleteWarning();" class="linkButton"><spring:message code='delete'/></a>
+										</td>
 										<td class="col-functions">
 											<fmt:parseDate value="${civilVoice.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
 											<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
-										</td>
-										<td class="col-functions">
-											<span class="button-group">
-												<a href="/civil-voice/delete?civilVoiceId=${civilVoice.civilVoiceId}&amp;pageNo=${pagination.pageNo }${pagination.searchParameters}" onclick="return deleteWarning();" class="linkButton"><spring:message code='delete'/></a>
-											</span>
 										</td>
 									</tr>
 	</c:forEach>
