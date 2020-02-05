@@ -100,6 +100,34 @@ public class CivilVoiceController implements AuthorizationController {
 	}
 
 	/**
+	 * 시민참여 등록 페이지 이동
+	 * @param request
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "/input")
+	public String input(HttpServletRequest request, Model model) {
+		model.addAttribute("civilVoice", new CivilVoice());
+		return "/civil-voice/input";
+	}
+
+	/**
+	 * 시민참여 수정 페이지 이동
+	 * @param request
+	 * @param civilVoiceId
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "/modify")
+	public String modify(HttpServletRequest request, @RequestParam("civilVoiceId") Integer civilVoiceId, Model model) {
+		CivilVoice civilVoice = new CivilVoice();
+		civilVoice.setCivilVoiceId(civilVoiceId);
+		civilVoice = civilVoiceService.getCivilVoice(civilVoice);
+		model.addAttribute("civilVoice", civilVoice);
+		return "/civil-voice/modify";
+	}
+
+	/**
 	 * 시민참여 삭제
 	 * @param civilVoiceId
 	 * @param model

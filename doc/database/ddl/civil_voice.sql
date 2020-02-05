@@ -23,8 +23,8 @@ create table tn_civil_voice (
 	sgg_cd				varchar(5),
 	emd_cd				varchar(8),
 	update_dt			timestamp with time zone,
-	regist_dt			timestamp with time zone,
-	constraint tn_civil_voice_pk 	primary key (civil_voice_id)	
+	regist_dt			timestamp with time zone		default now(),
+	constraint tn_civil_voice_pk 	primary key (civil_voice_id)
 );
 
 comment on table tn_civil_voice is '시민참여';
@@ -66,7 +66,7 @@ create table tn_civil_voice_comment (
 	minute					varchar(2)						default to_char(now(), 'MI'),
 	update_dt				timestamp with time zone,
 	regist_dt				timestamp with time zone,
-	constraint tn_civil_voice_comment_pk 	primary key (civil_voice_comment_id)	
+	constraint tn_civil_voice_comment_pk 	primary key (civil_voice_comment_id)
 );
 
 comment on table tn_civil_voice_comment is '시민참여리 Comment';
