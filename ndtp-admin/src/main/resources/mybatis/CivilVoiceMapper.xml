@@ -6,6 +6,23 @@
     <!-- CivilVoice 총 건수 -->
     <select id="getCivilVoiceTotalCount" parameterType="civilVoice" resultType="long">
         /* getCivilVoiceTotalCount */
+        WITH civil_voice AS (
+	        SELECT
+				civil_voice_id,
+				user_id,
+				title,
+				content as contents,
+				location,
+				heit as altitude,
+				CASE WHEN use_yn = 'Y' THEN true ELSE false END available,
+				user_ip as client_ip,
+				view_count,
+				year, month, day, year_week, week, hour, minute,
+				update_dt as update_date,
+				regist_dt as insert_date,
+				sido_cd, sgg_cd, emd_cd
+	        FROM tn_civil_voice
+        )
         SELECT COUNT(civil_voice_id)
         FROM civil_voice
 		<trim prefix="WHERE" prefixOverrides="AND">
@@ -31,7 +48,25 @@
     <!-- CivilVoice 목록 -->
     <select id="getListCivilVoice" parameterType="civilVoice" resultType="civilVoice">
         /* getListCivilVoice */
-        SELECT *
+        WITH civil_voice AS (
+	        SELECT
+				civil_voice_id,
+				user_id,
+				title,
+				content as contents,
+				location,
+				heit as altitude,
+				CASE WHEN use_yn = 'Y' THEN true ELSE false END available,
+				user_ip as client_ip,
+				view_count,
+				year, month, day, year_week, week, hour, minute,
+				update_dt as update_date,
+				regist_dt as insert_date,
+				sido_cd, sgg_cd, emd_cd
+	        FROM tn_civil_voice
+        )
+        SELECT
+			*
         FROM civil_voice
         <trim prefix="WHERE" prefixOverrides="AND">
 			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
@@ -65,6 +100,23 @@
     <!-- 시민 참여 상세 조회 -->
     <select id="getCivilVoice" parameterType="civilVoice" resultType="civilVoice">
         /* getCivilVoice */
+        WITH civil_voice AS (
+	        SELECT
+				civil_voice_id,
+				user_id,
+				title,
+				content as contents,
+				location,
+				heit as altitude,
+				CASE WHEN use_yn = 'Y' THEN true ELSE false END available,
+				user_ip as client_ip,
+				view_count,
+				year, month, day, year_week, week, hour, minute,
+				update_dt as update_date,
+				regist_dt as insert_date,
+				sido_cd, sgg_cd, emd_cd
+	        FROM tn_civil_voice
+        )
         SELECT *
         FROM civil_voice
         WHERE civil_voice_id = #{civilVoiceId}
