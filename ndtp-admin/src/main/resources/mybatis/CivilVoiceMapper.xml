@@ -14,7 +14,7 @@
 				content as contents,
 				location,
 				heit as altitude,
-				CASE WHEN use_yn = 'Y' THEN true ELSE false END available,
+				use_yn as available,
 				user_ip as client_ip,
 				view_count,
 				year, month, day, year_week, week, hour, minute,
@@ -56,7 +56,7 @@
 				content as contents,
 				location,
 				heit as altitude,
-				CASE WHEN use_yn = 'Y' THEN true ELSE false END available,
+				use_yn as available,
 				user_ip as client_ip,
 				view_count,
 				year, month, day, year_week, week, hour, minute,
@@ -108,7 +108,7 @@
 				content as contents,
 				location,
 				heit as altitude,
-				CASE WHEN use_yn = 'Y' THEN true ELSE false END available,
+				use_yn as available,
 				user_ip as client_ip,
 				view_count,
 				year, month, day, year_week, week, hour, minute,
@@ -127,48 +127,48 @@
         <selectKey keyProperty="civilVoiceId" resultType="int" order="BEFORE">
             SELECT NEXTVAL('civil_voice_seq')
         </selectKey>
-        INSERT INTO civil_voice (
-            layer_id, layer_group_id, sharing, layer_name, layer_key, service_type, layer_type, geometry_type,
-            layer_line_color, layer_line_style, layer_fill_color, layer_alpha_style, default_display, available,
-            label_display, coordinate, description, z_index, user_id
+        INSERT INTO tn_civil_voice (
+			civil_voice_id,	user_id, title, content, location, heit,
+			user_ip, view_count, use_yn, sido_cd, sgg_cd, emd_cd,
+			year, month, day, year_week, week, hour, minute
         ) VALUES (
-         #{layerId}, #{layerGroupId}, #{sharing}, #{layerName}, #{layerKey}, #{serviceType}, #{layerType}, #{geometryType},
-         #{layerLineColor}, #{layerLineStyle}, #{layerFillColor}, #{layerAlphaStyle}, #{defaultDisplay}, #{available},
-         #{labelDisplay}, #{coordinate}, #{description}, #{zIndex}, #{userId}
+			#{civilVoiceId}, #{userId}, #{title}, #{contents}, #{location}, #{altitude},
+			#{clientIp}, #{viewCount}, #{available}, #{sidoCd}, #{sggCd}, #{emdCd},
+			#{year}, #{month}, #{day}, #{yearWeek}, #{week}, #{hour}, #{minute}
         )
     </insert>
 
     <!-- 시민 참여 수정 -->
     <update id="updateCivilVoice" parameterType="civilVoice">
         /* updateCivilVoice */
-        UPDATE civil_voice
+        UPDATE tn_civil_voice
         SET
-	        layer_name = #{layerName},
-	        layer_group_id = #{layerGroupId},
-	        sharing = #{sharing},
-	        layer_key = #{layerKey},
-	        service_type = #{serviceType},
-	        layer_type = #{layerType},
-	        geometry_type = #{geometryType},
-	        layer_line_color = #{layerLineColor},
-	        layer_line_style = #{layerLineStyle},
-	        layer_fill_color = #{layerFillColor},
-	        layer_alpha_style = #{layerAlphaStyle},
-	        default_display = #{defaultDisplay},
-	        available = #{available},
-	        label_display = #{labelDisplay},
-	        coordinate = #{coordinate},
-	        description = #{description},
-	        z_index = #{zIndex},
-	        user_id = #{userId},
-	        update_date = NOW()
-        WHERE layer_id = #{layerId}
+			user_id = #{userId},
+			title = #{title},
+			content = #{contents},
+			location = #{location},
+			heit = #{altitude},
+			use_yn = #{available},
+			user_ip = #{userIp},
+			view_count = #{viewCount},
+			year = #{year},
+			month = #{month},
+			day = #{day},
+			year_week = #{yearWeek},
+			week = #{week},
+			hour = #{hour},
+			minute = #{minute},
+			sido_cd = #{sidoCd},
+			sgg_cd = #{sggCd},
+			emd_cd = #{emdCd},
+			update_dt = NOW()
+        WHERE civil_voice_id = #{civilVoiceId}
     </update>
 
     <!-- 시민 참여 삭제 -->
     <delete id="deleteCivilVoice" parameterType="civilVoice">
         /* deleteCivilVoice */
-        DELETE FROM civil_voice WHERE civil_voice_id = #{civilVoiceId}
+        DELETE FROM tn_civil_voice WHERE civil_voice_id = #{civilVoiceId}
     </delete>
 
 </mapper>
