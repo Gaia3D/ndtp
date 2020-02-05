@@ -18,10 +18,10 @@
 		<button class="focusAgree" title="등록">등록</button>
 	</div>
 	<p class="agreeCount">동의 <span>10</span>건</p>
-	<ul class="comment agreeWrap">
+	<ul class="agreeWrap">
 		<li>
 			<p class="agree">
-				동의합니다
+				동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다동의합니다
 				<span class="id">pororo178</span>
 			</p>
 		</li>

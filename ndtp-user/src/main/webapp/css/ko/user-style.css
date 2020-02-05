@@ -576,10 +576,27 @@ background-color: #f1f1f1;
 .agreeWrap {
 height: calc(100% - 485px)
 }
+.agreeWrap > li {
+display: flex;
+position: relative;
+margin-bottom: 10px;
+padding: 7px;
+border-radius: 5px;
+border: 1px solid #d9d9d9;
+}
+.agreeWrap li > p {
+flex: auto;
+padding-right: 10px;
+}
 .agreeWrap p.agree {
 padding: 0 0 0 25px;
 background: url(/images/ko/ico.png) no-repeat 0 -495px;
 }
+.agreeWrap span.id {
+display: block;
+color: #999;
+}
+
 .agreeCount {
 margin: 7px 0;
 }
