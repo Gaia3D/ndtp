@@ -7,7 +7,7 @@
 		<input type="text" placeholder="검색어를 입력하세요.">
 		<button type="button" title="검색">검색</button>
 	</div>
-	
+
 	<div class="bothSide">
 		<div>
 			전체
@@ -17,7 +17,7 @@
 			<button type="button" id="civilVoiceInputButton" title="의견등록" class="basicA">의견등록</button>
 		</div>
 	</div>
-	
+
 	<ul id="civilVoiceList" class="comment">
 		<li>
 			<p>

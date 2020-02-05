@@ -523,6 +523,10 @@ border-radius: 5px;
 border: 1px solid #c7e0f2;
 background-color: #ecf7ff;
 }
+.comment > li:hover {
+background-color: #c7e0f2;
+cursor: pointer;
+}
 .comment li > p {
 flex: auto;
 padding-right: 10px;
