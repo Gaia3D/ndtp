@@ -32,7 +32,7 @@
 			<td id="availableInfo" class="col-data"></td>
 		</tr>
 		<tr>
-			<th class="col-label" scope="row">경도/위도</th>
+			<th class="col-label" scope="row">경도 / 위도</th>
 			<td id="locationInfo" class="col-data"></td>
 		</tr>
 		<tr>

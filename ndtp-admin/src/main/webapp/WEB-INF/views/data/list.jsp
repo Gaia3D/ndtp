@@ -264,10 +264,7 @@
 			dataType: "json",
 			success: function(msg){
 				if(msg.statusCode <= 200) {
-
-
 					var sharing = msg.dataGroup.sharing;
-
 					if(sharing == "common") {
 						sharing = "공통";
 					} else if(sharing == "public") {
@@ -280,9 +277,11 @@
 
 					$("#dataGroupNameInfo").html(msg.dataGroup.dataGroupName);
 					$("#dataGroupKeyInfo").html(msg.dataGroup.dataGroupKey);
+					$("#dataGroupTargetInfo").html(msg.dataGroup.dataGroupTarget);
 					$("#sharingInfo").html(sharing);
-					$("#basicInfo").html(msg.dataGroup.basic?'기본':'선택');
-					$("#availableInfo").html(msg.dataGroup.available?'사용':'미사용');
+					$("#userIdInfo").html(msg.dataGroup.userId);
+					$("#basicInfo").html(msg.dataGroup.basic ? '기본' : '선택');
+					$("#availableInfo").html(msg.dataGroup.available ? '사용' : '미사용');
 					$("#locationInfo").html(msg.dataGroup.longitude + " / " + msg.dataGroup.latitude);
 					$("#dataCountInfo").html(msg.dataGroup.dataCount);
 					$("#metainfoInfo").html(msg.dataGroup.metainfo);
@@ -303,7 +302,7 @@
 		dataMetainfoDialog.dialog( "open" );
 
 		$.ajax({
-			url: "/data/detail-data-info",
+			url: "/datas/detail-data-info",
 			data: { dataId : dataId },
 			type: "GET",
 			headers: {"X-Requested-With": "XMLHttpRequest"},
@@ -327,7 +326,7 @@
 		$("#data_name_for_origin").html(dataName);
 
 		$.ajax({
-			url: "/data/detail-data-attribute",
+			url: "/datas/detail-data-attribute",
 			data: { data_id : dataId },
 			type: "GET",
 			headers: {"X-Requested-With": "XMLHttpRequest"},
@@ -554,7 +553,7 @@
 				deleteDatasFlag = false;
 				var info = $("#listForm").serialize();
 				$.ajax({
-					url: "/data/ajax-delete-datas.do",
+					url: "/datas/ajax-delete-datas.do",
 					type: "POST",
 					data: info,
 					headers: {"X-Requested-With": "XMLHttpRequest"},
@@ -830,7 +829,7 @@
 	var dataGroupDialog = $( ".dataGroupDialog" ).dialog({
 		autoOpen: false,
 		width: 500,
-		height: 500,
+		height: 550,
 		modal: true,
 		resizable: false
 	});

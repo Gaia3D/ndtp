@@ -86,7 +86,7 @@
 								</tr>
 								<tr>
 									<th class="col-label" scope="row">
-										<form:label path="longitude">경도/위도/높이</form:label>
+										<form:label path="longitude">경도 / 위도 / 높이</form:label>
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input">
@@ -101,7 +101,7 @@
 								</tr>
 								<tr>
 									<th class="col-label" scope="row">
-										heading/pitch/roll
+										heading / pitch / roll
 									</th>
 									<td class="col-input">
 										${dataInfo.heading } / ${dataInfo.pitch } / ${dataInfo.roll }

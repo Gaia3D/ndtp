@@ -9,7 +9,7 @@ insert into user_info(
 	user_id, user_group_id, user_name, password, user_role_check_yn, last_signin_date)
 values
 	('admin', 1, '슈퍼관리자', '비밀번호', 'N', now()),
-	('ndtp', 2, '스마트시티', '비밀번호', 'N', now());
+	('ndtp', 2, '스마트시티', '비밀번호', 'Y', now());
 
 -- 관리자 메뉴
 insert into menu(menu_id, menu_type, menu_target, name, name_en, ancestor, parent, depth, view_order, url, url_alias, html_id, css_class, default_yn, use_yn, display_yn)
@@ -46,8 +46,10 @@ values
 	(55, '0', '1', '2D 레이어 등록', 'LAYER', 5, 5, 2, 5, '/layer/input', null, null, 'glyph-check', 'Y', 'Y', 'Y'),
 	(56, '0', '1', '2D 레이어 수정', 'LAYER', 5, 5, 2, 6, '/layer/modify', '/layer/list', null, 'glyph-check', 'N', 'Y', 'N'),
 	(7, '0', '1', '시민참여', 'CIVIL VOICE', 7, 0, 1, 7, '/civil-voice/list', null, null, 'glyph-dashboard', 'Y', 'Y', 'Y'),
-	(71, '0', '1', '시민참여', 'CIVIL VOICE', 7, 7, 2, 1, '/civil-voice/list', null, null, 'glyph-dashboard', 'Y', 'Y', 'Y'),
+	(71, '0', '1', '시민참여 목록', 'CIVIL VOICE', 7, 7, 2, 1, '/civil-voice/list', null, null, 'glyph-dashboard', 'Y', 'Y', 'Y'),
 	(72, '0', '1', '시민참여 상세 정보', 'CIVIL VOICE', 7, 7, 2, 2, '/civil-voice/detail', '/civil-voice/list', null, 'glyph-dashboard', 'N', 'Y', 'N'),
+	(73, '0', '1', '시민참여 등록', 'CIVIL VOICE', 7, 7, 2, 3, '/civil-voice/input', null, null, 'glyph-dashboard', 'Y', 'Y', 'Y'),
+	(74, '0', '1', '시민참여 수정', 'CIVIL VOICE', 7, 7, 2, 4, '/civil-voice/modify', '/civil-voice/list', null, 'glyph-dashboard', 'N', 'Y', 'N'),
 	(8, '0', '1', '환경설정', 'CONFIGURATION', 8, 0, 1, 8, '/policy/modify', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
 	(81, '0', '1', '일반 운영정책', 'CONFIGURATION', 8, 8, 2, 1, '/policy/modify', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
 	(82, '0', '1', '공간정보 운영정책', 'CONFIGURATION', 8, 8, 2, 2, '/geopolicy/modify', null, null, 'glyph-settings', 'Y', 'Y', 'Y'),
@@ -110,6 +112,8 @@ values
 	(7, 1, 7, 'Y'),
 	(71, 1, 71, 'Y'),
 	(72, 1, 72, 'Y'),
+	(73, 1, 73, 'Y'),
+	(74, 1, 74, 'Y'),
 	(8, 1, 8, 'Y'),
 	(81, 1, 81, 'Y'),
 	(82, 1, 82, 'Y'),

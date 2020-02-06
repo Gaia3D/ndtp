@@ -1,41 +1,31 @@
 package ndtp.controller;
 
-import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
-import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
 import ndtp.domain.Key;
-import ndtp.domain.LocationUdateType;
 import ndtp.domain.PageType;
-import ndtp.domain.Pagination;
 import ndtp.domain.UserSession;
 import ndtp.service.DataGroupService;
 import ndtp.service.DataService;
 import ndtp.service.GeoPolicyService;
 import ndtp.service.PolicyService;
-import ndtp.utils.DateUtils;
 
 @Slf4j
 @RestController
@@ -149,37 +139,5 @@ public class DataRestController {
 		result.put("errorCode", errorCode);
 		result.put("message", message);
 		return result;
-	}
-	
-	/**
-	 * 검색 조건
-	 * @param search
-	 * @return
-	 */
-	private String getSearchParameters(PageType pageType, DataInfo dataInfo) {
-		StringBuffer buffer = new StringBuffer(dataInfo.getParameters());
-//		buffer.append("&");
-//		try {
-//			buffer.append("dataName=" + URLEncoder.encode(getDefaultValue(dataInfo.getDataName()), "UTF-8"));
-//		} catch(Exception e) {
-//			e.printStackTrace();
-//			buffer.append("dataName=");
-//		}
-		
-		buffer.append("&");
-		buffer.append("status=");
-		buffer.append(dataInfo.getStatus());
-		buffer.append("&");
-		buffer.append("dataType=");
-		buffer.append(dataInfo.getDataType());
-		return buffer.toString();
-	}
-	
-	private String getDefaultValue(String value) {
-		if(value == null || "".equals(value.trim())) {
-			return "";
-		}
-		
-		return value;
 	}
 }

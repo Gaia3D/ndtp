@@ -173,28 +173,6 @@ public class DataController {
 	}
 
 	/**
-     * TODO 고쳐야 함... .급해서
-     * @param fileInfo
-     * @return
-     */
-    private DataAttributeFileInfo getDataFileInfoFromFileInfo(FileInfo fileInfo) {
-
-    	DataAttributeFileInfo dataFileInfo = new DataAttributeFileInfo();
-
-    	dataFileInfo.setErrorCode(fileInfo.getErrorCode());
-    	dataFileInfo.setErrorMessage(fileInfo.getErrorMessage());
-    	dataFileInfo.setJobType(fileInfo.getJobType());
-    	dataFileInfo.setUserId(fileInfo.getUserId());
-    	dataFileInfo.setFileName(fileInfo.getFileName());
-    	dataFileInfo.setFileRealName(fileInfo.getFileRealName());
-    	dataFileInfo.setFilePath(fileInfo.getFilePath());
-    	dataFileInfo.setFileSize(fileInfo.getFileSize());
-    	dataFileInfo.setFileExt(fileInfo.getFileExt());
-
-    	return dataFileInfo;
-    }
-
-	/**
 	 * 검색 조건
 	 * @param search
 	 * @return
