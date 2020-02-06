@@ -129,12 +129,10 @@
         </selectKey>
         INSERT INTO tn_civil_voice (
 			civil_voice_id,	user_id, title, content, location, heit,
-			user_ip, view_count, use_yn, sido_cd, sgg_cd, emd_cd,
-			year, month, day, year_week, week, hour, minute
+			user_ip, sido_cd, sgg_cd, emd_cd
         ) VALUES (
 			#{civilVoiceId}, #{userId}, #{title}, #{contents}, #{location}, #{altitude},
-			#{clientIp}, #{viewCount}, #{available}, #{sidoCd}, #{sggCd}, #{emdCd},
-			#{year}, #{month}, #{day}, #{yearWeek}, #{week}, #{hour}, #{minute}
+			#{clientIp}, #{sidoCd}, #{sggCd}, #{emdCd}
         )
     </insert>
 
