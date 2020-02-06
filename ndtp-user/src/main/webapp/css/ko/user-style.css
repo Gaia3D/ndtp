@@ -1316,9 +1316,10 @@ border-bottom: 1px solid #e0e0e0;
 background-color: #f1f1f1;
 }
 .labelLayer > .layerContents {
-margin: 15px 20px;
+/* margin: 15px 20px; */
 overflow-y: auto;
-max-height: 500px;
+/* max-height: 590px; */
+padding: 15px 20px;
 }
 .layerHeader > h3 {
 margin-top:5px;
@@ -1341,11 +1342,11 @@ margin-left: 10px;
 margin-top: 20px;
 }
 .labelLayer div.layerContents > div {
-margin: 20px 0 10px 0;
+/* margin: 20px 0 10px 0; */
 }
 .labelLayer div.layerContents > div label {
-display: inline-block;
-width: 69px;
+/* display: inline-block; */
+/* width: 69px; */
 }
 .labelLayer div.layerContents > div h3{
 margin-bottom:10px;
@@ -1492,25 +1493,28 @@ background-color: #fff;
 .basicTable > table tr td.center {
 	text-align: center;
 }
-/* 레이어 스타일 추가 */
+/* 레이어 스타일 추가 - 정연화 수정 */
 .layerDiv h4 {
 padding: 0 0 0 12px;
-font-size: 15px;
-margin-bottom: 7px;
+/* font-size: 15px; */
+font-size: 14px;
+/* margin-bottom: 7px; */
+margin-bottom: 5px;
 background: url(/images/ko/ico.png) no-repeat left -815px;
 }
 .layerDiv li > label {
-display: inline-block;
-padding-left: 10px;
-font-size: 13px;
+/* display: inline-block; */
+/* padding-left: 10px; */
+/* font-size: 13px; */
+font-size: 12px;
 font-weight: bold;
-background: url(/images/ko/ico.png) no-repeat left -865px;
+/* background: url(/images/ko/ico.png) no-repeat left -865px; */
 }
 .layerDiv {
-margin-bottom: 20px;
+margin-bottom: 15px;
 }
 .layerDiv li {
-margin-bottom: 10px;
+margin-bottom: 2px;
 }
 .layerDiv li * {
 vertical-align: middle;
@@ -1535,8 +1539,8 @@ width: 70px;
 padding: 3px;
 }
 .layerDiv li > button:not(.btnTextF):not(.btnText) {
-width: 30px;
-height: 30px;
+width: 20px;
+height: 20px;
 text-indent: -999em;
 border: 1px solid #ccc;
 background-image: url(/images/ko/ico.png);
@@ -1545,48 +1549,50 @@ background-color: #fff;
 }
 
 button.up {
-background-position: -112px -195px;
+background-position: -116px -199px;
 }
 button.down {
-background-position: -162px -195px;
+background-position: -166px -199px;
 }
 button.rangePrev {
-background-position: -212px -193px;
+background-position: -217px -197px;
+border-radius: 10px;
 }
 button.rangeNext {
-background-position: -262px -193px;
+background-position: -266px -197px;
+border-radius: 10px;
 }
 .layerDiv li > button:active {
 border: 1px solid #287be4;
 background-color: #ccc;
 }
 button.up:active {
-background-position: -112px -245px;
+background-position: -116px -249px;
 }
 button.down:active {
-background-position: -162px -245px;
+background-position: -166px -249px;
 }
 button.rangePrev:active {
-background-position: -212px -243px;
+background-position: -217px -247px;
 }
 button.rangeNext:active {
-background-position: -262px -243px;
+background-position: -266px -247px;
 }
 .layerDiv li > button:hover {
 border: 1px solid #287be4;
 background-color: #eee;
 }
 button.up:hover {
-background-position: -112px -245px;
+background-position: -116px -249px;
 }
 button.down:hover {
-background-position: -162px -245px;
+background-position: -166px -249px;
 }
 button.rangePrev:hover {
-background-position: -212px -243px;
+background-position: -217px -247px;
 }
 button.rangeNext:hover {
-background-position: -262px -243px;
+background-position: -266px -247px;
 }
 .ellipsis {
 overflow:hidden;
@@ -1754,4 +1760,89 @@ ul.listDrop li.on > p > span.collapse-icon {
 /* 경관분석 달력*/
 .tui-datepicker{
 z-index:100;
+}
+
+.marT5{margin-top:5px !important}
+.marT10{margin-top:10px !important}
+.marT15{margin-top:15px !important}
+.marT20{margin-top:20px !important}
+.marT25{margin-top:25px !important}
+.marT30{margin-top:30px !important}
+.marT35{margin-top:35px !important}
+.marT40{margin-top:40px !important}
+.marT45{margin-top:45px !important}
+.marT50{margin-top:50px !important}
+.marT55{margin-top:55px !important}
+.marT60{margin-top:60px !important}
+.marT65{margin-top:65px !important}
+.marT0{margin-top:0px !important}
+.marL0{margin-left:0px !important}
+.marL5{margin-left:5px !important}
+.marL10{margin-left:10px !important;}
+.marL15{margin-left:15px !important;}
+.marL20{margin-left:20px !important;}
+.marL25{margin-left:25px !important;}
+.marL40{margin-left:40px !important;}
+.marL165{margin-left:165px !important;}
+.marL250{margin-left:250px !important;}
+.marR1{margin-right:1px !important}
+.marR5{margin-right:5px !important}
+.marR10{margin-right:10px !important}
+.marM0{margin-left:0px !important}
+.marB0{margin-bottom:0 !important;}
+.marB5{margin-bottom:5px !important;}
+.marB10{margin-bottom:10px !important;}
+.marB15{margin-bottom:15px !important;}
+.marB20{margin-bottom:20px !important;}
+.marB30{margin-bottom:30px !important;}
+.marB40{margin-bottom:40px !important;}
+
+.padL30{padding-left:30px !important}
+.padL20{padding-left:20px !important}
+.padL22{padding-left:22px !important}
+.padL25{padding-left:25px !important}
+.padL15{padding-left:15px !important}
+.padL10{padding-left:10px}
+.padR0{padding-right:0 !important}
+.padR5{padding-right:5px}
+.padR8{padding-right:8px}
+.padR11{padding-right:11px !important}
+.padR15{padding-right:15px !important}
+.padR20{padding-right:20px !important}
+.padR30{padding-right:30px !important}
+
+.padB0{padding-bottom:0 !important}
+.padB5{padding-bottom:5px !important}
+.padB10{padding-bottom:10px !important}
+.padB15{padding-bottom:15px !important}
+.padB20{padding-bottom:20px !important}
+.padB25{padding-bottom:25px !important}
+.padB30{padding-bottom:30px !important}
+.padB35{padding-bottom:35px !important}
+.padB40{padding-bottom:40px !important}
+
+.f12{font-size:12px !important;}
+.f11{font-size:11px;}
+.f14{font-size:14px;}
+.f16{font-size:16px;}
+.f20{font-size:20px;}
+
+.mapSelectButton {
+	position : absolute;
+	bottom : 17px;
+	right : 20px;
+	z-index : 1;
+	width: 90px;
+	height: 40px;
+	padding: 7px;
+	font-size: 17px;
+	border-radius: 3px;
+	color: #414e80;
+	border: 1px solid #414e80;
+	background-color: #fff;
+}
+.mapSelectButton:hover {
+	color: #fff;
+	border: 1px solid #414e80;
+	background-color: #414e80;
 }

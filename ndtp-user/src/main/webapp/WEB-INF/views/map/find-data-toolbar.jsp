@@ -127,7 +127,7 @@
 				</ul>
 
 				<div>
-					<button type="button" id="dcSavePosRot" class="btnTextF">높이회전 저장</button>
+					<button type="button" id="dcSavePosRotPop" class="btnTextF">높이회전 저장</button>
 					<button type="button" id="dcShowAttr" class="btnTextF">속성조회</button>
 				</div>
 			</form>
