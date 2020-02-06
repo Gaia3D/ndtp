@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <ul class="listDrop">
-	<li>
+	<li class="on">
 		<p>경관 분석(일조분석)<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="solarAnalysis">
 			<ul class="analysisGroup">
@@ -11,7 +11,13 @@
 				</li>
 				<li>
 					<label for="">날짜</label>
-					<input class="" type="text" placeholder="" value=""/>
+					<!-- <input class="" type="text" id="solayDatePicker" placeholder="" value=""/> -->
+					 <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+			            <input type="text" id="datepicker-input" aria-label="Date-Time">
+			            <span class="tui-ico-date"></span>
+			        </div>
+			        <div id="solayDatePicker" style="margin-top: -1px;"></div>
+
 				</li>
 				<li class="btns">
 					<button type="button" class="btnTextF execute" title="분석">분석</button>

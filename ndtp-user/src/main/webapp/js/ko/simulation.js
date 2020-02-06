@@ -1,18 +1,93 @@
 var Simulation = function(magoInstance) {
 	var that = this;
 	var CAMERA_MOVE_NEED_DISTANCE = 5000;
-	var SEJONG_TILE_NAME = 'sejong_time_series_tiles';
-	var SEJONG_POSITION = new Cesium.Cartesian3(-3108649.1049808883, 4086368.566202183, 3773910.6726226895);
-	var magoManager = magoInstance.getMagoManager();
 	
-	var slider;
-	var simulating = false;
+	var magoManager = magoInstance.getMagoManager();
 	
 	var observer;
 	var observerTarget = document.getElementById('simulationContent');
 	var observerConfig = { attributes: true};
 	
+	
+	var datepicker = new tui.DatePicker('#solayDatePicker', {
+        date: new Date(),
+        input: {
+            element: '#datepicker-input',
+            format: 'yyyy-MM-dd'
+        }
+    });
+
+	var timeSlider;
+	var solarMode = false;
+	//일조분석 조회
+	$('#solarAnalysis .execute').click(function(){
+		if(!timeSlider) {
+			timeSlider = new KotSlider('timeInput');
+			timeSlider.setMin(1);
+			timeSlider.setMax(24);
+			timeSlider.setDuration(200);
+			var html = '';
+			for(var i=1;i<25;i++){
+				if(i === 1 || 1 === 10) {
+					html += '<span style="margin-left:22px;">' + i + '</span>';
+				} else if(i < 10) {
+					html += '<span style="margin-left:27px;">' + i + '</span>';
+				} else {
+					html += '<span style="margin-left:19px;">' + i + '</span>';
+				}
+				
+			}
+			
+			$('#saRange .rangeWrapChild.legend').html(html);
+			$('#saRange .rangeWrapChild.legend').on('click','span',function(){
+				timeSlider.setValue(parseInt($(this).index())+1);
+			});
+		}
+		//레인지 보이기
+		$('#saRange').show();
+		$('#csRange').hide();
+		magoInstance.getViewer().scene.globe.enableLighting = true;
+		magoManager.sceneState.setApplySunShadows(true);
+		solarMode = true;
+		
+		changeDateTime();
+	});
+	
+	//경관 분석 취소
+	$('#solarAnalysis .reset').click(function(){
+		setDate(new Date());
+		$('#saRange').hide();
+		magoInstance.getViewer().scene.globe.enableLighting = false;
+		magoManager.sceneState.setApplySunShadows(false);
+	});
+
+	datepicker.on('change', function() {
+		changeDateTime();
+	});
+	
+	//회전 변경 range 조절
+	$('#timeInput').on('input change',function(){
+		changeDateTime();
+	});
+	
+	var changeDateTime = function() {
+		var date = datepicker.getDate();
+		var hours = $('#timeInput').val();
+		date.setHours(hours);
+		setDate(date);
+	}
+	
+	var setDate = function(date){
+		var jd = Cesium.JulianDate.fromDate(date, jd);
+		magoInstance.getViewer().clock.currentTime = jd;
+		magoManager.sceneState.sunSystem.setDate(date);
+	}
+	
 	var cache = {};
+	var SEJONG_TILE_NAME = 'sejong_time_series_tiles';
+	var SEJONG_POSITION = new Cesium.Cartesian3(-3108649.1049808883, 4086368.566202183, 3773910.6726226895);
+	var slider;
+	var simulating = false;
 	//zBounceSpring zBounceLinear
 	//건설공정 조회
 	$('#constructionProcess .execute').click(function(){
@@ -31,7 +106,8 @@ var Simulation = function(magoInstance) {
 			slider = new KotSlider('rangeInput');
 		}
 		//레인지, 레전드 보이기
-		$('div.sliderWrap, #constructionProcess .profileInfo').show();
+		$('#csRange, #constructionProcess .profileInfo').show();
+		$('#saRange').hide();
 		
 		//slider.setValue(0);
 		simulating = true;
@@ -49,8 +125,8 @@ var Simulation = function(magoInstance) {
 				html += '<span>5단계</span>';
 				html += '<span>6단계</span>';
 				
-				$('div.sliderWrap .rangeWrapChild.legend').html(html);
-				$('div.sliderWrap .rangeWrapChild.legend').on('click','span',function(){
+				$('#csRange .rangeWrapChild.legend').html(html);
+				$('#csRange .rangeWrapChild.legend').on('click','span',function(){
 					slider.setValue($(this).index());
 				});
 			}
@@ -73,16 +149,6 @@ var Simulation = function(magoInstance) {
 	
 	//경관 분석 위치지정
 	$('#solarAnalysis .drawObserverPoint').click(function(){
-		notyetAlram();
-	});
-	
-	//경관 분석 조회
-	$('#solarAnalysis .execute').click(function(){
-		notyetAlram();
-	});
-	
-	//경관 분석 취소
-	$('#solarAnalysis .reset').click(function(){
 		notyetAlram();
 	});
 	
@@ -144,9 +210,6 @@ var Simulation = function(magoInstance) {
 				effectType      : "borningLight",
 				durationSeconds : 0.6
 			}));
-			
-			
-			
 			
 			node.setRenderCondition(function(data){
 				var attributes = data.attributes; 
@@ -212,6 +275,6 @@ var Simulation = function(magoInstance) {
 	var constructionProcessReset = function() {
 		simulating = false;
 		//레인지, 레전드 끄기
-		$('div.sliderWrap, #constructionProcess .profileInfo').hide();
+		$('#csRange, #constructionProcess .profileInfo').hide();
 	}
 }

@@ -1008,7 +1008,9 @@ z-index: 9;
 display: none;
 width:900px;
 }
-
+#saRange{
+width:1000px;
+}
 /*========================================== temp css =========================================================*/
 .userPolicyContentWrap > p {
 padding: 8px;
@@ -1294,6 +1296,8 @@ background-color: #f1f1f1;
 }
 .labelLayer > .layerContents {
 margin: 15px 20px;
+overflow-y: auto;
+max-height: 500px;
 }
 .layerHeader > h3 {
 margin-top:5px;
@@ -1725,4 +1729,8 @@ ul.listDrop li.on > p > span.collapse-icon {
 	background-image: url(/images/ko/ico.png);
 	background-repeat: no-repeat;
     background-position: 0 -497px;
+}
+/* 경관분석 달력*/
+.tui-datepicker{
+z-index:100;
 }
