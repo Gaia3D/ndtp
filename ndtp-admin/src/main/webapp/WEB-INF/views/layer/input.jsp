@@ -661,6 +661,7 @@
                 formData.append("coordinate", $("#coordinate").val());
                 formData.append("description", $("#description").val());
                 formData.append("shapeEncoding", $("#shapeEncoding").val());
+                formData.append("layerInsertType", $("#layerInsertType").val());
                 var zIndex = 0;
                 if($("#zIndex").val()) zIndex = $("#zIndex").val();
                 formData.append("zIndex", zIndex);

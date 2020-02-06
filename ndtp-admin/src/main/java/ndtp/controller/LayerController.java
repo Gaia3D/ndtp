@@ -200,8 +200,7 @@ public class LayerController implements AuthorizationController {
 			Boolean layerKeyDuplication = layerService.isLayerKeyDuplication(request.getParameter("layerKey"));
 			if(layerKeyDuplication) {
 				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-				result.put("errorCode", errorCode);
-				result.put("message", "layer.key.duplication");
+				result.put("errorCode", "layer.key.duplication");
 				return result;
 			}
 			List<LayerFileInfo> layerFileInfoList = new ArrayList<>();
@@ -269,6 +268,7 @@ public class LayerController implements AuthorizationController {
 							.layerKey(request.getParameter("layerKey"))
 							.serviceType(request.getParameter("serviceType"))
 							.layerType(request.getParameter("layerType"))
+							.layerInsertType(request.getParameter("layerInsertType"))
 							.geometryType(request.getParameter("geometryType"))
 							.layerLineColor(request.getParameter("layerLineColor"))
 							.layerLineStyle(Float.valueOf(request.getParameter("layerLineStyle")))

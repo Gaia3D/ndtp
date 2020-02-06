@@ -154,11 +154,11 @@
         INSERT INTO layer (
             layer_id, layer_group_id, sharing, layer_name, layer_key, service_type, layer_type, geometry_type,
             layer_line_color, layer_line_style, layer_fill_color, layer_alpha_style, default_display, available,
-            label_display, coordinate, description, z_index, user_id
+            label_display, coordinate, description, z_index, user_id, layer_insert_type
         ) VALUES (
          #{layerId}, #{layerGroupId}, #{sharing}, #{layerName}, #{layerKey}, #{serviceType}, #{layerType}, #{geometryType},
          #{layerLineColor}, #{layerLineStyle}, #{layerFillColor}, #{layerAlphaStyle}, #{defaultDisplay}, #{available},
-         #{labelDisplay}, #{coordinate}, #{description}, #{zIndex}, #{userId}
+         #{labelDisplay}, #{coordinate}, #{description}, #{zIndex}, #{userId}, #{layerInsertType}
         )
     </insert>
 
