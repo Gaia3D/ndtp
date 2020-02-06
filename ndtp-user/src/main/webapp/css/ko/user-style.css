@@ -1306,6 +1306,8 @@ border-radius: 5px;
 box-shadow: 1px 1px 2px 0 #333;
 background-color: #fff;
 z-index:1;
+overflow-y: auto;
+max-height: calc(100% - 90px);
 }
 .labelLayer > .layerHeader {
 height: 35px;
@@ -1317,8 +1319,6 @@ background-color: #f1f1f1;
 }
 .labelLayer > .layerContents {
 /* margin: 15px 20px; */
-overflow-y: auto;
-/* max-height: 590px; */
 padding: 15px 20px;
 }
 .layerHeader > h3 {
@@ -1539,20 +1539,28 @@ width: 70px;
 padding: 3px;
 }
 .layerDiv li > button:not(.btnTextF):not(.btnText) {
-width: 20px;
-height: 20px;
 text-indent: -999em;
 border: 1px solid #ccc;
 background-image: url(/images/ko/ico.png);
 background-repeat: no-repeat;
 background-color: #fff;
 }
+.layerDiv li > button.up,
+.layerDiv li > button.down {
+width: 30px;
+height: 30px;
+}
+.layerDiv li > button.rangePrev,
+.layerDiv li > button.rangeNext {
+width: 20px;
+height: 20px;
+}
 
 button.up {
-background-position: -116px -199px;
+background-position: -112px -195px;
 }
 button.down {
-background-position: -166px -199px;
+background-position: -162px -195px;
 }
 button.rangePrev {
 background-position: -217px -197px;
@@ -1567,10 +1575,10 @@ border: 1px solid #287be4;
 background-color: #ccc;
 }
 button.up:active {
-background-position: -116px -249px;
+background-position: -112px -245px;
 }
 button.down:active {
-background-position: -166px -249px;
+background-position: -162px -245px;
 }
 button.rangePrev:active {
 background-position: -217px -247px;
@@ -1583,10 +1591,10 @@ border: 1px solid #287be4;
 background-color: #eee;
 }
 button.up:hover {
-background-position: -116px -249px;
+background-position: -112px -245px;
 }
 button.down:hover {
-background-position: -166px -249px;
+background-position: -162px -245px;
 }
 button.rangePrev:hover {
 background-position: -217px -247px;
