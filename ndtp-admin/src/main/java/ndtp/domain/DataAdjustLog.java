@@ -23,7 +23,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DataInfoAdjustLog extends Search {
+public class DataAdjustLog extends Search {
 	
 	// 사용자명
 	private String userId;

@@ -1,3 +1,15 @@
+2월 6일
+이 파일 재실행
+data_adjust_log.sql
+data_attribute.sql
+data_attribute_file_info.sql
+
+create sequence data_adjust_log_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
+create sequence data_attribute_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
+create sequence data_object_attribute_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
+create sequence data_attribute_file_info_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
+
+
 1 30
 update menu set url = '/data-adjust-log/list' where menu_id = 44;
 commit;

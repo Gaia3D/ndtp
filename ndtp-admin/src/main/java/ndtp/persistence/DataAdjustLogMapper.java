@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import ndtp.domain.DataInfoAdjustLog;
+import ndtp.domain.DataAdjustLog;
 
 /**
  * 데이터 geometry 변경 이력
@@ -16,36 +16,36 @@ public interface DataAdjustLogMapper {
 
 	/**
 	 * 데이터 geometry 변경 요청 수
-	 * @param dataInfo
+	 * @param dataAdjustLog
 	 * @return
 	 */
-	Long getDataAdjustLogTotalCount(DataInfoAdjustLog dataInfoAdjustLog);
+	Long getDataAdjustLogTotalCount(DataAdjustLog dataAdjustLog);
 	
 	/**
 	 * 데이터 geometry 변경 요청 목록
-	 * @param dataInfoAdjustLog
+	 * @param dataAdjustLog
 	 * @return
 	 */
-	List<DataInfoAdjustLog> getListDataAdjustLog(DataInfoAdjustLog dataInfoAdjustLog);
+	List<DataAdjustLog> getListDataAdjustLog(DataAdjustLog dataAdjustLog);
 	
 	/**
 	 * 데이터 geometry 변경 이력 조회
 	 * @param dataAdjustLogId
 	 * @return
 	 */
-	DataInfoAdjustLog getDataAdjustLog(Long dataAdjustLogId);
+	DataAdjustLog getDataAdjustLog(Long dataAdjustLogId);
 	
 	/**
 	 * 데이터 geometry 변경 이력 저장
-	 * @param dataInfoAdjustLog
+	 * @param dataAdjustLog
 	 * @return
 	 */
-	int insertDataAdjustLog(DataInfoAdjustLog dataInfoAdjustLog);
+	int insertDataAdjustLog(DataAdjustLog dataAdjustLog);
 	
 	/**
 	 * 데이터 geometry 변경 요청 상태 변경
-	 * @param dataInfoAdjustLog
+	 * @param dataAdjustLog
 	 * @return
 	 */
-	int updateDataAdjustLogStatus(DataInfoAdjustLog dataInfoAdjustLog);
+	int updateDataAdjustLogStatus(DataAdjustLog dataAdjustLog);
 }
