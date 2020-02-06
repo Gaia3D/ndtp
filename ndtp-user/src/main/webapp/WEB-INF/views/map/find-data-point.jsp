@@ -246,6 +246,7 @@
 		if (groupId) {
 			var title = groupId + ' / ' + (dataInfo.dataName || dataInfo.dataKey);
 			$header.text(title);
+			$header.attr('title', title);
 		}
 
 		$('#dcLongitude').val(dataInfo.longitude);
@@ -307,11 +308,15 @@
 						$opnerAlt.val($("#dcAltitude").val());
 					}
 
-					$('#dcPitch,#dcPitchRange').val(dataInfo.pitch);
-					$('#dcHeading,#dcHeadingRange').val(dataInfo.heading);
-					$('#dcRoll,#dcRollRange').val(dataInfo.roll);
+					var $opnerHeading = $(opener.document).find("#heading");
+					var $opnerPitch = $(opener.document).find("#pitch");
+					var $opnerRoll = $(opener.document).find("#roll");
 
-
+					if ($opnerHeading && $opnerPitch && $opnerRoll) {
+						$opnerHeading.val($("#dcHeading").val());
+						$opnerPitch.val($("#dcPitch").val());
+						$opnerRoll.val($("#dcRoll").val());
+					}
 					window.close();
 
 					updateDataInfoFlag = true;

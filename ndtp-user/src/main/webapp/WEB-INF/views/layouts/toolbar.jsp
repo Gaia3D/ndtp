@@ -89,12 +89,10 @@
 					</li>
 					<li>
 						<label for="dcAltitude">높이</label>
-						<input type="text" id="dcAltitude" name="altitude" readonly>
+						<input type="text" id="dcAltitude" name="altitude" size="10" readonly>
 						<button id="dcAltUp" data-type="up" type="button" class="up"></button>
 						<button id="dcAltDown" data-type="down" type="button" class="down"></button>
-					</li>
-					<li>
-						<label for="dcAltitude">높이 offset</label>
+						<label for="dcAltitudeOffset" style="width: 40px;">offset</label>
 						<input type="text" id="dcAltitudeOffset" value="1" size="1">
 					</li>
 				</ul>
@@ -105,7 +103,7 @@
 						<label for="dcPitch">x(pitch)</label>
 						<input type="text" id="dcPitch" name="pitch" size="2" readonly>
 						<button type="button" class="dcRangeBtn rangePrev" data-type="prev" id="rcPitchPrev"></button>
-						<input id="dcPitchRange" data-type="Pitch" style="width: 130px;" type="range" min="-360" max="360" step="1" value="1">
+						<input id="dcPitchRange" data-type="Pitch" style="width: 140px;" type="range" min="-360" max="360" step="1" value="1">
 						<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcPitchNext"></button>
 					</li>
 
@@ -113,7 +111,7 @@
 						<label for="dcRoll">y(roll)</label>
 						<input type="text" id="dcRoll" name="roll" size="2" readonly>
 						<button type="button" class="dcRangeBtn rangePrev" data-type="prev" id="rcRollPrev"></button>
-						<input id="dcRollRange" data-type="Roll" style="width: 130px;" type="range" min="-360" max="360" step="1" value="1">
+						<input id="dcRollRange" data-type="Roll" style="width: 140px;" type="range" min="-360" max="360" step="1" value="1">
 						<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcRollNext"></button>
 					</li>
 
@@ -121,7 +119,7 @@
 						<label for="dcHeading">z(heading)</label>
 						<input type="text" id="dcHeading" name="heading" size="2" readonly>
 						<button type="button" class="dcRangeBtn rangePrev" data-type="prev" id="rcHeadingPrev"></button>
-						<input id="dcHeadingRange" data-type="Heading" style="width: 130px;" type="range" min="-360" max="360" step="1" value="1">
+						<input id="dcHeadingRange" data-type="Heading" style="width: 140px;" type="range" min="-360" max="360" step="1" value="1">
 						<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcHeadingNext"></button>
 					</li>
 				</ul>

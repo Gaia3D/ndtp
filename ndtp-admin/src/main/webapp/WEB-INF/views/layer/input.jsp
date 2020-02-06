@@ -74,10 +74,18 @@
 				<div class="page-area">
 					<%@ include file="/WEB-INF/views/layouts/page_header.jsp" %>
 					<div class="page-content">
-						<div class="input-header row">
-							<div class="content-desc u-pull-right"><span class="icon-glyph glyph-emark-dot color-warning"></span><spring:message code='check'/></div>
+						<div class="content-desc u-pull-right"><span class="icon-glyph glyph-emark-dot color-warning"></span><spring:message code='check'/></div>
+						<div class="tabs" id="layerTabControl">
+							<ul>
+								<li><a href="#uploadLayerTab">업로드 레이어</a></li>
+								<li><a href="#geoserverLayerTab">Geoserver 레이어</a></li>
+							</ul>
+ 						<!-- 탭 제어를 위한 빈껍데기  -->
+						<div id="uploadLayerTab"></div>
+						<div id="geoserverLayerTab"></div>
 						</div>
 						<form:form id="layer" modelAttribute="layer" method="post" onsubmit="return false;">
+						<form:hidden path="layerInsertType" />
 						<table class="input-table scope-row">
 							<colgroup>
 			                    <col class="col-label l" style="width: 15%" >
@@ -246,10 +254,10 @@
 			                        <form:input path="description" cssClass="l" />
 			                        <form:errors path="description" cssClass="error" />
 			                    </td>
-			                    <th class="col-label" scope="row">
+			                    <th class="col-label shapeEncodingArea" scope="row">
 			                        <form:label path="shapeEncoding">SHP 파일 인코딩</form:label>
 			                    </th>
-			                    <td class="col-input">
+			                    <td class="col-input shapeEncodingArea">
 			                    	<select id="shapeEncoding" name="shapeEncoding" style="width:100px; height: 30px;">
 				                    	<option value="CP949">CP949</option>
 				                        <option value="UTF-8">UTF-8</option>
@@ -258,18 +266,30 @@
 			                </tr>
 						</table>
 						</form:form>
-
-						<h4 style="margin-top: 30px; margin-bottom: 5px;">파일 업로딩</h4>
-				        <div class="fileSection" style="font-size: 17px;">
-				            <form id="my-dropzone" action="" class="dropzone hzScroll"></form>
-				        </div>
-				        <div class="button-group">
-							<div class="center-buttons">
-								<input type="submit" id="allFileUpload" value="<spring:message code='save'/>"/>
-								<input type="submit" id="allFileClear" onClick="formClear(); return false;" value="초기화" />
-								<a href="/layer/list" class="button">목록</a>
-							</div>
-						</div>
+						
+						<ul id="layerButtonArea">
+							<li id="uploadLayerButton" class="onArea">
+								<h4 style="margin-top: 30px; margin-bottom: 5px;">파일 업로딩</h4>
+						        <div class="fileSection" style="font-size: 17px;">
+						            <form id="my-dropzone" action="" class="dropzone hzScroll"></form>
+						        </div>
+						        <div class="button-group">
+									<div class="center-buttons">
+										<input type="submit" id="allFileUpload" value="<spring:message code='save'/>"/>
+										<input type="submit" id="allFileClear" onClick="formClear(); return false;" value="초기화" />
+										<a href="/layer/list" class="button">목록</a>
+									</div>
+								</div>
+							</li>
+							<li id="geoserverLayerButton" style="margin-top:30px;">
+								<div class="button-group">
+									<div class="center-buttons">
+										<input type="submit" id="geoserverLayerSave" value="<spring:message code='save'/>"/>
+										<a href="/layer/list" class="button">목록</a>
+									</div>
+								</div>
+							</li>
+						</ul>
 					</div>
 				</div>
 			</div>
@@ -354,6 +374,7 @@
 <script type="text/javascript" src="/js/navigation.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
+		$( ".tabs" ).tabs();
 		showRange(100);
 		changeLayerType(null);
 		changeGeometryType(null);
@@ -362,6 +383,21 @@
 		$("input[name='defaultDisplay']").filter("[value='true']").prop("checked", true);
 		$("input[name='available']").filter("[value='true']").prop("checked", true);
         $("input[name='labelDisplay']").filter("[value='true']").prop("checked", true);
+	});
+	
+	// 레이어 탭 이벤트 
+	$("#layerTabControl ul li").click(function(){
+		var activeTab = $(this).find("a").attr("href");
+		$("#layerButtonArea li").removeClass("onArea");
+		if(activeTab === '#uploadLayerTab') {
+			$("#uploadLayerButton").addClass("onArea");
+			$(".shapeEncodingArea").show();
+			$("#layerInsertType").val("upload");
+		} else {
+			$("#geoserverLayerButton").addClass("onArea");
+			$(".shapeEncodingArea").hide();
+			$("#layerInsertType").val("geoserver");
+		}
 	});
 
 	$('[name=layerType]').on('change', function() {
