@@ -182,9 +182,17 @@
 			dataGroup.datas = dataInfoList;
 			f4dController.addF4dGroup(dataGroup);
 
+			// 로드되는 시점
 			magoInstance.getMagoManager().on(Mago3D.MagoManager.EVENT_TYPE.F4DLOADEND,function(e){
 				flyTo(magoInstance);
-				//selectF4dAPI(magoInstance, "${dataInfo.dataGroupId}", "${dataInfo.dataKey}");
+			});
+
+			// 화면에 표출할 준비가 된 시점
+			magoInstance.getMagoManager().on(Mago3D.MagoManager.EVENT_TYPE.F4DRENDERREADY, function(e){
+				var data = e.f4d.data;
+				if (data.dataGroupId === parseInt("${dataInfo.dataGroupId}") && data.nodeId === "${dataInfo.dataKey}") {
+					selectF4dAPI(magoInstance, data.dataGroupId, data.nodeId);
+				}
 			});
 
 		}
