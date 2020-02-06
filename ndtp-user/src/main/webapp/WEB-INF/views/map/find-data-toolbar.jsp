@@ -24,7 +24,7 @@
 </div>
 <div id="mago3DSettingLabelLayer" class="labelLayer" style="display:none;">
     <div class="layerHeader">
-        <h3>Mago3D 설정</h3>
+        <h3 class="ellipsis" style="max-width:260px;">Mago3D 설정</h3>
         <button type="button" class="layerClose" title="닫기">닫기</button>
     </div>
     <div class="layerContents">
@@ -125,7 +125,7 @@
 				</ul>
 
 				<div>
-					<button type="button" id="dcSavePosRot" class="btnTextF">높이회전 저장</button>
+					<button type="button" id="dcSavePosRotPop" class="btnTextF">높이회전 저장</button>
 					<button type="button" id="dcShowAttr" class="btnTextF">속성조회</button>
 				</div>
 			</form>
