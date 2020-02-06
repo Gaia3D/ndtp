@@ -1,4 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<style>
+.dcRangeBtn{
+	height: 14px;
+	width: 14px;
+	margin-top: 4px;
+	margin-left: 3px;
+	background-color: black;
+	border-radius:10px;
+}
+</style>
 <div class="ctrlWrap">
 	<div class="zoom">
 		<button type="button" id="mapCtrlReset" class="reset" title="초기화">초기화</button>
@@ -9,9 +19,9 @@
 		<button type="button" id="mapCtrlArea" class="measures area" data-type="Polygon" title="면적">면적</button>
 		<button type="button" id="mapCapture" class="" data-type="" title="화면캡처">캡처</button>
 	</div>
-	<div class="rotate">
+	<div class="rotate"> 
 		<button type="button" class="rotateReset on" id="rotateReset" title="방향초기화"></button>
-		<!-- <input type="text" placeholder="0" id="rotateInput"/>&deg; -->
+		<!-- <input type="text" placeholder="0" id="rotateInput"/>&deg; --> 
 		<input type="text" id="rotateInput" placeholder="0" readonly>&deg;
         <input type="text" id="pitchInput" placeholder="-90" readonly>&deg;
 		<button type="button" class="rotateLeft" id="rotateLeft" title="왼쪽으로 회전">왼쪽으로 회전</button>
@@ -22,36 +32,36 @@
 		<button type="button" class="magoSet" id="mapPolicy" title="Mago3D 설정">Mago3D</button>
 	</div>
 </div>
-<div id="mago3DSettingLabelLayer" class="labelLayer" style="display:none;">
+<div class="labelLayer" style="display:none;">
     <div class="layerHeader">
         <h3>Mago3D 설정</h3>
         <button type="button" class="layerClose" title="닫기">닫기</button>
     </div>
     <div class="layerContents">
-		<div id="datainfoDisplay" class="layerDiv marT0">
+		<div class="layerDiv">
 			<h4 class="category">객체정보</h4>
 			<input type="radio" id="datainfoDisplayY" name="datainfoDisplay" value="true">
 			<label for="datainfoDisplayY">표시</label>
 			<input type="radio" id="datainfoDisplayN" name="datainfoDisplay" value="false" checked>
 			<label for="datainfoDisplayN">비표시</label>
-		</div>
-
-		<div class="layerDiv">
+		</div>	
+	
+		<div class="layerDiv">	
 			<h4 class="category">Origin</h4>
 			<input type="radio" id="originDisplayY" name="originDisplay" value="true">
 			<label for="originDisplayY">표시</label>
 			<input type="radio" id="originDisplayN" name="originDisplay" value="false" checked>
 			<label for="originDisplayN">비표시</label>
-		</div>
-
-		<div class="layerDiv">
+		</div>	
+	
+		<div class="layerDiv">	
 			<h4 class="category">Bounding Box</h4>
 			<input type="radio" id="bboxDisplayY" name="bboxDisplay" value="true">
 			<label for="bboxDisplayY">표시</label>
 			<input type="radio" id="bboxDisplayN" name="bboxDisplay" value="false" checked>
 			<label for="bboxDisplayN">비표시</label>
 		</div>
-
+	
 		<div class="layerDiv">
 			<h4 class="category">선택 및 이동</h4>
 			<input type="radio" id="objectNoneMove" name="objectMoveMode" value="2" checked>
@@ -61,7 +71,7 @@
 			<input type="radio" id="objectMove" name="objectMoveMode" value="1">
 			<label for="objectMove">Object</label>
 		</div>
-
+	
 		<div id="dataControllWrap" style="display:none;">
 			<p class="layerDivTit">선택된 데이터 :  <span>test / 오전반1조_행복관_s</span></p>
 			<div class="layerDiv">
@@ -75,9 +85,9 @@
 						<button type="button" id="dcColorCancle" class="btnText">되돌리기</button>
 					</li>
 				</ul>
-			</div>
-			<form id="dcRotLocForm" class="layerDiv marB0">
-				<h4 class="category">위치 변경</h4>
+			</div>	
+			<form id="dcRotLocForm">
+				<h4 class="category" style="padding: 0 0 0 12px; font-size: 15px; margin-bottom: 7px; background: url(/images/ko/ico.png) no-repeat left -815px;}">위치 변경</h4>
 				<ul class="layerDiv">
 					<li>
 						<label for="dcLongitude">경도</label>
@@ -89,44 +99,45 @@
 					</li>
 					<li>
 						<label for="dcAltitude">높이</label>
-						<input type="text" id="dcAltitude" name="altitude" size="10" readonly>
+						<input type="text" id="dcAltitude" name="altitude" readonly>
 						<button id="dcAltUp" data-type="up" type="button" class="up"></button>
 						<button id="dcAltDown" data-type="down" type="button" class="down"></button>
-						<label for="dcAltitudeOffset" style="width: 40px;">offset</label>
+	
+						<label for="dcAltitude">높이 offset</label>
 						<input type="text" id="dcAltitudeOffset" value="1" size="1">
 					</li>
 				</ul>
-
-				<h4 class="category">회전 변경</h4>
+	
+				<h4 class="category" style="padding: 0 0 0 12px; font-size: 15px; margin-bottom: 7px; background: url(/images/ko/ico.png) no-repeat left -815px;}">회전 변경</h4>
 				<ul class="layerDiv">
 					<li>
 						<label for="dcPitch">x(pitch)</label>
 						<input type="text" id="dcPitch" name="pitch" size="2" readonly>
 						<button type="button" class="dcRangeBtn rangePrev" data-type="prev" id="rcPitchPrev"></button>
-						<input id="dcPitchRange" data-type="Pitch" style="width: 140px;" type="range" min="-360" max="360" step="1" value="1">
+						<input id="dcPitchRange" data-type="Pitch" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1">
 						<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcPitchNext"></button>
 					</li>
-
+	
 					<li>
 						<label for="dcRoll">y(roll)</label>
 						<input type="text" id="dcRoll" name="roll" size="2" readonly>
 						<button type="button" class="dcRangeBtn rangePrev" data-type="prev" id="rcRollPrev"></button>
-						<input id="dcRollRange" data-type="Roll" style="width: 140px;" type="range" min="-360" max="360" step="1" value="1">
+						<input id="dcRollRange" data-type="Roll" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1">
 						<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcRollNext"></button>
 					</li>
-
+	
 					<li>
 						<label for="dcHeading">z(heading)</label>
 						<input type="text" id="dcHeading" name="heading" size="2" readonly>
 						<button type="button" class="dcRangeBtn rangePrev" data-type="prev" id="rcHeadingPrev"></button>
-						<input id="dcHeadingRange" data-type="Heading" style="width: 140px;" type="range" min="-360" max="360" step="1" value="1">
+						<input id="dcHeadingRange" data-type="Heading" style="margin-left: 5px;width: 200px;" type="range" min="-360" max="360" step="1" value="1">
 						<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcHeadingNext"></button>
 					</li>
 				</ul>
-
+	
 				<div>
-					<button type="button" id="dcSavePosRot" class="btnTextF">높이회전 저장</button>
-					<button type="button" id="dcShowAttr" class="btnTextF">속성조회</button>
+					<button type="button" id="dcSavePosRot" class="btnTextF" style="display: inline-block;margin-top: 8px;">높이회전 저장</button>
+					<button type="button" id="dcShowAttr" class="btnTextF" style="display: inline-block;margin-top: 8px;">속성조회</button>
 				</div>
 			</form>
 		</div>

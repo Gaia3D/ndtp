@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <ul class="listDrop">
 	<li class="on">
-		<p>방사형 가시성 분석<span class="collapse-icon">icon</span></p>
+		<p>방사형 가시성 분석</p>
 		<div class="listContents" id="analysisRadialLineOfSight">
 			<ul class="analysisGroup">
 				<li>
@@ -38,7 +38,7 @@
 		</div>
 	</li>
 	<li>
-		<p>가시선 분석<span class="collapse-icon">icon</span></p>
+		<p>가시선 분석</p>
 		<div class="listContents" id="analysisLinearLineOfSight">
 			<ul class="analysisGroup">
 				<li>
@@ -72,7 +72,7 @@
 		</div>
 	</li>
 	<li>
-		<p>지형 단면 분석<span class="collapse-icon">icon</span></p>
+		<p>지형 단면 분석</p>
 		<div class="listContents" id="analysisRasterProfile">
 			<ul class="analysisGroup">
 				<li>
@@ -104,7 +104,7 @@
 		</div>
 	</li>
 	<li id="analysisRasterHighLowPointsList">
-		<p>지형 최고/최저 점<span class="collapse-icon">icon</span></p>
+		<p>지형 최고/최저 점</p>
 		<div class="listContents" id="analysisRasterHighLowPoints">
 			<ul class="analysisGroup">
 				<li>
@@ -142,7 +142,7 @@
 		</div>
 	</li>
 	<li>
-		<p>위험 돔 분석<span class="collapse-icon">icon</span></p>
+		<p>위험 돔 분석</p>
 		<div class="listContents" id="analysisRangeDome">
 			<ul class="analysisGroup">
 				<li>

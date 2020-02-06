@@ -245,8 +245,8 @@
 	//지도에서 찾기
 	function viewDataInfo(dataId) {
 		var url = "/map/find-data-point?dataId=" + dataId + "&referrer=list";
-		var width = 1200;
-		var height = 760;
+		var width = 1024;
+		var height = 700;
 
 		var popupX = (window.screen.width / 2) - (width / 2);
 		// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음

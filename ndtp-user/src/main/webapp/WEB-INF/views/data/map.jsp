@@ -53,7 +53,7 @@
 				<%@ include file="/WEB-INF/views/search/district.jsp" %>
 			</div>
 			<div id="dataContent" class="contents-margin-default fullHeight">
-				<div class="tabs">
+				<div class="tabs" >
 					<ul id="dataInfoTab" class="tab tab-divide">
 						<li data-nav="dataGroupInfoContent">데이터 그룹</li>
 						<li data-nav="dataInfoContent" class="on">데이터 목록</li>
@@ -64,13 +64,13 @@
 			</div>
 			<!-- E: 데이터 -->
 
-			<div id="spatialContent" class="contents yScroll fullHeight" style="display:none;">
+			<div id="spatialContent" class="contentsList yScroll" style="display:none;height: 798px;background-color: #fff;">
 				<%@ include file="/WEB-INF/views/spatial/spatial.jsp" %>
 			</div>
-			<div id="simulationContent" class="contents yScroll fullHeight" style="display:none;">
+			<div id="simulationContent" class="contentsList yScroll" style="display:none;height: 600px;">
 				<%@ include file="/WEB-INF/views/simulation/simulation.jsp" %>
 			</div>
-			<div id="civilVoiceContent" class="yScroll" style="display:none;">
+			<div id="civilVoiceContent" class="contents yScroll" style="display:none;">
 				<%@ include file="/WEB-INF/views/civil-voice/list.jsp" %>
 			</div>
 

@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!-- S: 시민참여 의견 등록 -->
 <div id="civilVoiceInputContent" class="contents fullHeight" style="display:none;">
-	<h3 class="h3-margin">시민참여 의견등록</h3>
+	<h3>시민참여 의견등록</h3>
 	<ul class="commentNew">
 		<li>
 			<label for="">제목</label>
@@ -22,6 +22,6 @@
 			<button id="civilVoiceCancleButton" class="focusC" title="취소">취소</button>
 		</li>
 	</ul>
-
+	
 </div>
 <!-- E: 시민참여 의견 등록 -->
