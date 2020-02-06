@@ -211,6 +211,7 @@ public class DataRestController {
 			result.put("parseSuccessCount", dataAttributeFileInfo.getParseSuccessCount());
 			result.put("parseErrorCount", dataAttributeFileInfo.getParseErrorCount());
 			result.put("insertSuccessCount", dataAttributeFileInfo.getInsertSuccessCount());
+			result.put("updateSuccessCount", dataAttributeFileInfo.getUpdateSuccessCount());
 			result.put("insertErrorCount", dataAttributeFileInfo.getInsertErrorCount());
 			
 			// 파일 삭제

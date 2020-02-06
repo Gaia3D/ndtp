@@ -13,6 +13,7 @@
 	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
     <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
+     <link rel="stylesheet" href="/externlib/json-viewer/json-viewer.css" />
 </head>
 <body>
 	<%@ include file="/WEB-INF/views/layouts/header.jsp" %>
@@ -220,6 +221,7 @@
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.form.min.js"></script>
 <script type="text/javascript" src="/externlib/handlebars-4.1.2/handlebars.js"></script>
+<script type="text/javascript" src="/externlib/json-viewer/json-viewer.js"></script>
 <script type="text/javascript" src="/js/${lang}/handlebarsHelper.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
@@ -328,7 +330,11 @@
 			success: function(msg){
 				if(msg.statusCode <= 200) {
 					if(msg.dataInfoAttribute !== null) {
-						$("#dataAttributeForOrigin").html(msg.dataAttribute.attributes);
+						//$("#dataAttributeForOrigin").html(msg.dataAttribute.attributes);
+						$("#dataAttributeForOrigin").html("");
+						var jsonViewer = new JSONViewer();
+						document.querySelector("#dataAttributeForOrigin").appendChild(jsonViewer.getContainer());
+						jsonViewer.showJSON(JSON.parse(msg.dataAttribute.attributes), -1, -1);
 					}
 				} else {
 					alert(JS_MESSAGE[msg.errorCode]);
@@ -382,6 +388,9 @@
 						var source = $("#templateDataAttributeUploadLog").html();
 						var template = Handlebars.compile(source);
 						var dataAttributeUploadHtml = template(msg);
+						
+						$("#dataAttributeUploadLog").html("");
+		                $("#dataAttributeUploadLog").append(dataAttributeUploadHtml);
 					} else {
 						alert(JS_MESSAGE[msg.errorCode]);
 	    			}
@@ -792,7 +801,7 @@
 		modal: true,
 		resizable: false
 	});
-	// 데이터 제어 속성 다이얼 로그
+	// 데이터 metainfo 다이얼 로그
 	var dataMetainfoDialog = $( ".dataMetainfoDialog" ).dialog({
 		autoOpen: false,
 		width: 500,
@@ -803,8 +812,8 @@
 	// 데이터 속성 다이얼 로그
 	var dataAttributeDialog = $( ".dataAttributeDialog" ).dialog({
 		autoOpen: false,
-		width: 600,
-		height: 350,
+		width: 800,
+		height: 550,
 		modal: true,
 		resizable: false
 	});

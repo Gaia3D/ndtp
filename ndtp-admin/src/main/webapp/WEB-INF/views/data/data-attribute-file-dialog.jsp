@@ -25,11 +25,16 @@
 			<input type="button" onclick="dataAttributeFileUpload();" class="button" value="<spring:message code='data.file.save'/>"/>
 		</div>
 		
-		<script id="templateDataAttributeUploadLog" type="text/x-handlebars-template">
-		<table id="dataAttributeUploadLog" class="inner-table scope-row" style="width: 95%;">
+		<table class="inner-table scope-row" style="width: 95%;">
 			<col class="col-sub-label xl" />
 			<col class="col-data" />
-			<tbody>
+			<tbody id="dataAttributeUploadLog">
+			</tbody>
+		</table>
+	</form>
+</div>
+
+<script id="templateDataAttributeUploadLog" type="text/x-handlebars-template">
 			<tr>
 				<td colspan="2" style="text-align: center;">Result of parsing</td>
 			</tr>
@@ -51,14 +56,10 @@
 			</tr>
 			<tr>
 				<td> DB 수정 건수 </td>
-				<td> {{update_success_count}} </td>
+				<td> {{updateSuccessCount}} </td>
 			</tr>
 			<tr>
 				<td> DB 실패 건수 </td>"
 				<td> {{insertErrorCount}}</td>
 			</tr>
-			</tbody>
-		</table>
-		</script>
-	</form>
-</div>
+</script>
