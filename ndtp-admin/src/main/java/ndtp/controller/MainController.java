@@ -25,7 +25,7 @@ import ndtp.domain.AccessLog;
 import ndtp.domain.CivilVoice;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
-import ndtp.domain.DataInfoAdjustLog;
+import ndtp.domain.DataAdjustLog;
 import ndtp.domain.DataStatus;
 import ndtp.domain.Key;
 import ndtp.domain.Policy;
@@ -457,12 +457,12 @@ public class MainController {
 			String startDate = searchDay + DateUtils.START_TIME;
 			String endDate = today + DateUtils.END_TIME;
 
-			DataInfoAdjustLog dataInfoAdjustLog = new DataInfoAdjustLog();
+			DataAdjustLog dataInfoAdjustLog = new DataAdjustLog();
 			dataInfoAdjustLog.setStartDate(startDate);
 			dataInfoAdjustLog.setEndDate(endDate);
 			dataInfoAdjustLog.setOffset(0l);
 			dataInfoAdjustLog.setLimit(WIDGET_LIST_VIEW_COUNT);
-			List<DataInfoAdjustLog> dataAdjustLogList = dataAdjustLogService.getListDataAdjustLog(dataInfoAdjustLog);
+			List<DataAdjustLog> dataAdjustLogList = dataAdjustLogService.getListDataAdjustLog(dataInfoAdjustLog);
 
 			map.put("dataAdjustLogList", dataAdjustLogList);
 		} catch(Exception e) {

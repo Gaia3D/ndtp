@@ -95,6 +95,8 @@ dependencies {
     implementation 'org.geotools.xsd:gt-xsd-sld:22.2'
     implementation 'org.apache.commons:commons-compress:1.18'
 	
+	implementation 'org.modelmapper:modelmapper:2.3.6'
+	
 	runtimeOnly 'org.postgresql:postgresql'
 	
 	providedRuntime 'org.apache.tomcat.embed:tomcat-embed-jasper'

@@ -16,7 +16,7 @@ import lombok.ToString;
 public class DataAttributeFileInfo extends FileInfo {
 	
 	// 고유번호
-	private Long dataFileInfoId;
+	private Long dataAttributeFileInfoId;
 	// 데이터 고유번호
 	private Long dataId;
 	

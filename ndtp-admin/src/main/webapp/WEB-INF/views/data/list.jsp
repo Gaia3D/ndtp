@@ -100,8 +100,7 @@
 								<col class="col-name" />
 								<col class="col-functions" />
 								<col class="col-functions" />
-								<!-- <col class="col-functions" />
-								<col class="col-functions" /> -->
+								<col class="col-functions" />
 								<col class="col-functions" />
 								<thead>
 									<tr>
@@ -112,12 +111,11 @@
 										<th scope="col" class="col-name">아이디</th>
 										<th scope="col" class="col-name">데이터타입</th>
 										<th scope="col" class="col-name">공유유형</th>
-										<th scope="col" class="col-name">매핑타입</th>
 										<th scope="col" class="col-name">상태</th>
 										<th scope="col" class="col-name">지도</th>
 										<th scope="col" class="col-name">메타정보</th>
-										<!-- <th scope="col" class="col-name">속성</th>
-										<th scope="col" class="col-name">오브젝트 속성</th> -->
+										<th scope="col" class="col-name">속성</th>
+										<th scope="col" class="col-name">오브젝트 속성</th>
 										<th scope="col" class="col-name">삭제</th>
 										<th scope="col" class="col-date">등록일</th>
 									</tr>
@@ -125,7 +123,7 @@
 								<tbody>
 	<c:if test="${empty dataList }">
 									<tr>
-										<td colspan="13" class="col-none"><spring:message code='data.does.not.exist'/></td>
+										<td colspan="14" class="col-none"><spring:message code='data.does.not.exist'/></td>
 									</tr>
 	</c:if>
 	<c:if test="${!empty dataList }">
@@ -150,7 +148,6 @@
 			<c:if test="${dataInfo.sharing eq 'private'}">개인</c:if>
 			<c:if test="${dataInfo.sharing eq 'group'}">그룹</c:if>
 										</td>
-										<td class="col-name">${dataInfo.mappingType }</td>
 										<td class="col-type">
 			<c:if test="${dataInfo.status eq 'processing' }">
 											변환중
@@ -171,27 +168,22 @@
 										<td class="col-type">
 											<a href="#" onclick="detailMetainfo('${dataInfo.dataId }'); return false;">보기</a>
 										</td>
-										<%-- <td class="col-functions">
-											<span class="button-group">
+										<td class="col-functions">
 			<c:if test="${dataInfo.attributeExist eq 'true' }">
-												<a href="#" onclick="detailDataAttribute('${dataInfo.dataId }', '${dataInfo.dataName }'); return false;">보기</a>
+												<a href="#" onclick="detailDataAttribute('${dataInfo.dataId }', '${dataInfo.dataName }'); return false;">보기</a>&nbsp;&nbsp;
 			</c:if>
-												<a href="#" class="image-button button-edit"
-													onclick="uploadDataAttribute('${dataInfo.dataId }', '${dataInfo.dataName }'); return false;">
+												<a href="#" onclick="uploadDataAttribute('${dataInfo.dataId }', '${dataInfo.dataName }'); return false;">
 													<spring:message code='modified'/></a>
-											</span>
 										</td>
 										<td class="col-functions">
 			<c:if test="${dataInfo.objectAttributeExist eq 'true' }">
+												<a href="#" onclick="detailDataObjectAttribute('${dataInfo.dataId }', '${dataInfo.dataName }'); return false;">보기</a>&nbsp;&nbsp;
 			</c:if>
 			<c:if test="${dataInfo.objectAttributeExist eq 'false' }">
-											<span class="button-group">
-												<a href="#" class="image-button button-edit"
-													onclick="uploadDataObjectAttribute('${dataInfo.dataId }', '${dataInfo.dataName }'); return false;">
+												<a href="#" onclick="uploadDataObjectAttribute('${dataInfo.dataId }', '${dataInfo.dataName }'); return false;">
 													<spring:message code='modified'/></a>
-											</span>
 			</c:if>
-										</td> --%>
+										</td>
 										<td class="col-functions">
 											<a href="/data/delete?dataId=${dataInfo.dataId }" onclick="return deleteWarning();"
 												class="image-button button-delete"><spring:message code='delete'/></a>
@@ -226,6 +218,9 @@
 
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.form.min.js"></script>
+<script type="text/javascript" src="/externlib/handlebars-4.1.2/handlebars.js"></script>
+<script type="text/javascript" src="/js/${lang}/handlebarsHelper.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript" src="/js/navigation.js"></script>
@@ -297,13 +292,13 @@
 		});
 	}
 
-		// 제어 속성
+	// 메타 정보
 	function detailMetainfo(dataId) {
 		dataMetainfoDialog.dialog( "open" );
 
 		$.ajax({
-			url: "/datas/detail-data-info",
-			data: { dataId : dataId },
+			url: "/datas/" + dataId,
+			//data: { dataId : dataId },
 			type: "GET",
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 			dataType: "json",
@@ -323,18 +318,17 @@
 	// 데이터 속성
 	function detailDataAttribute(dataId, dataName) {
 		dataAttributeDialog.dialog( "open" );
-		$("#data_name_for_origin").html(dataName);
+		$("#dataNameForOrigin").html(dataName);
 
 		$.ajax({
-			url: "/datas/detail-data-attribute",
-			data: { data_id : dataId },
+			url: "/datas/attributes/" + dataId,
 			type: "GET",
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 			dataType: "json",
 			success: function(msg){
 				if(msg.statusCode <= 200) {
 					if(msg.dataInfoAttribute !== null) {
-						$("#dataAttributeForOrigin").html(msg.dataInfoAttribute.attributes);
+						$("#dataAttributeForOrigin").html(msg.dataAttribute.attributes);
 					}
 				} else {
 					alert(JS_MESSAGE[msg.errorCode]);
@@ -358,9 +352,6 @@
 	// origin 속성 파일 upload
 	var dataAttributeFileUploadFlag = true;
 	function dataAttributeFileUpload() {
-		alert("준비 중입니다.");
-		return;
-
 		var fileName = $("#attributeFileName").val();
 		if(fileName === "") {
 			alert(JS_MESSAGE["file.name.empty"]);
@@ -375,12 +366,6 @@
 
 		if(dataAttributeFileUploadFlag) {
 			dataAttributeFileUploadFlag = false;
-			var totalNumber = "총건수";
-			var successParsing = "성공 건수";
-			var failedParsing = "실패 건수";
-			var insertSuccessCount = "DB 등록 건수'/>";
-			var updateSuccessCount = "DB 수정 건수'/>";
-			var failCount = "DB 실패 건수'/>";
 			$("#dataAttributeInfo").ajaxSubmit({
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
@@ -393,36 +378,10 @@
 						} else {
 							alert(JS_MESSAGE["update"]);
 						}
-						var content = ""
-							+ "<tr>"
-							+ 	"<td colspan=\"2\" style=\"text-align: center;\">Result of parsing</td>"
-							+ "</tr>"
-							+ "<tr>"
-							+ 	"<td> " + totalNumber + "</td>"
-							+ 	"<td> " + msg.totalCount + "</td>"
-							+ "</tr>"
-							+ "<tr>"
-							+ 	"<td> " + successParsing + "</td>"
-							+ 	"<td> " + msg.parseSuccessCount + "</td>"
-							+ "</tr>"
-							+ "<tr>"
-							+ 	"<td> " + failedParsing + "</td>"
-							+ 	"<td> " + msg.parseErrorCount + "</td>"
-							+ "</tr>"
-							+ "<tr>"
-							+ 	"<td> " + insertSuccessCount + "</td>"
-							+ 	"<td> " + msg.insertSuccessCount + "</td>"
-							+ "</tr>"
-							/* + "<tr>"
-							+ 	"<td> " + updateSuccessCount + "</td>"
-							+ 	"<td> " + msg.update_success_count + "</td>"
-							+ "</tr>" */
-							+ "<tr>"
-							+ 	"<td> " + failCount + "</td>"
-							+ 	"<td> " + msg.insertErrorCount + "</td>"
-							+ "</tr>";
-							$("#dataAttributeUploadLog > tbody:last").html("");
-							$("#dataAttributeUploadLog > tbody:last").append(content);
+						
+						var source = $("#templateDataAttributeUploadLog").html();
+						var template = Handlebars.compile(source);
+						var dataAttributeUploadHtml = template(msg);
 					} else {
 						alert(JS_MESSAGE[msg.errorCode]);
 	    			}

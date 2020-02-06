@@ -2,7 +2,7 @@ package ndtp.parser;
 
 import java.util.Map;
 
-import ndtp.domain.FileInfo;
+import ndtp.domain.DataAttributeFileInfo;
 
 /**
  * @author Cheon JeongDae
@@ -16,5 +16,5 @@ public interface DataAttributeFileParser {
 	 * @param fileInfo
 	 * @return
 	 */
-	Map<String, Object> parse(Long dataId, FileInfo fileInfo);
+	Map<String, Object> parse(Long dataId, DataAttributeFileInfo dataAttributeFileInfo);
 }
