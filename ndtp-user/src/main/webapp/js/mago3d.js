@@ -14839,6 +14839,7 @@ var ViewerInit = function(containerId, serverPolicy)
 	this.viewer;
 	this.policy = MagoConfig.getPolicy();
 
+	MagoConfig.setContainerId(this.targetId);
 	this.init();
 };
 
@@ -26982,7 +26983,7 @@ MagoManager.prototype.getObjectLabel = function()
 		if (this.canvasObjectLabel === undefined)
 		{ return; }
 
-		var magoDiv = document.getElementById('magoContainer');
+		var magoDiv = document.getElementById(MagoConfig.getContainerId());
 		var offsetLeft = magoDiv.offsetLeft;
 		var offsetTop = magoDiv.offsetTop;
 		var offsetWidth = magoDiv.offsetWidth;
@@ -38667,6 +38668,16 @@ Constant.INTERSECTION_POINT_B = 4;
  * @class MagoConfig
  */
 var MagoConfig = {};
+
+MagoConfig.setContainerId = function(containerId) 
+{
+	this.containerId = containerId;
+};
+
+MagoConfig.getContainerId = function() 
+{
+	return this.containerId;
+};
 
 MagoConfig.getPolicy = function() 
 {
