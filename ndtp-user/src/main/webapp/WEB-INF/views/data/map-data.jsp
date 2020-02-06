@@ -28,7 +28,7 @@
 		</select>
 	</div>
 	<div class="form-group button-group-center">
-		<button type="button" id="mapDataSearch" class="btnTextF" title="검색">검색</button>
+		<button type="button" id="mapDataSearch" class="btnTextF search-text" title="검색">검색</button>
 	</div>
 
 	</form:form>

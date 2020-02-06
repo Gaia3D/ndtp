@@ -40,9 +40,10 @@ create table layer (
 	layer_name					varchar(256)					not null,
 	user_id						varchar(32),
 	
-	sharing					varchar(30)						default 'public',
+	sharing						varchar(30)						default 'public',
 	service_type				varchar(30),	
 	layer_type					varchar(30),
+	layer_insert_type			varchar(30),
 	geometry_type				varchar(30),
 	
 	layer_fill_color			varchar(30),	
@@ -71,6 +72,7 @@ comment on column layer.user_id is '사용자명';
 comment on column layer.sharing is '공유 유형. common : 공통, public : 공개, private : 개인, group : 그룹';
 comment on column layer.service_type is '서비스 타입 (wms, wfs, wcs, wps)';
 comment on column layer.layer_type is '레이어 타입 (Raster, Vector)';
+comment on column layer.layer_insert_type is '레이어 등록 타입(파일, geoserver)';
 comment on column layer.geometry_type is '도형 타입';
 comment on column layer.layer_fill_color is '외곽선 색상';
 comment on column layer.layer_line_color is '외곽선 두께';

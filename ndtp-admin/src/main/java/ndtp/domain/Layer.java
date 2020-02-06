@@ -82,6 +82,8 @@ public class Layer extends Search implements Serializable {
     private String serviceType;
     // 레이어 타입 (Raster, Vector)	
     private String layerType;
+    // 레이어 등록 타입 
+    private String layerInsertType;
     // 도형 타입 (point, line, polygon)
     private String geometryType;
     
