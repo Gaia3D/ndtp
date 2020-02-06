@@ -85,7 +85,7 @@
 						<div id="geoserverLayerTab"></div>
 						</div>
 						<form:form id="layer" modelAttribute="layer" method="post" onsubmit="return false;">
-						<form:hidden path="layerInsertType" />
+						<form:hidden path="layerInsertType" value="upload"/>
 						<table class="input-table scope-row">
 							<colgroup>
 			                    <col class="col-label l" style="width: 15%" >
@@ -127,6 +127,9 @@
 			                    </th>
 			                    <td class="col-input">
 			                        <form:input path="layerKey" cssClass="m" maxlength="100" />
+			                        <select id="layerKeySelect" style="display:none;">
+										<option value="">선택</option>
+									</select>
 			                        <form:errors path="layerKey" cssClass="error" />
 			                    </td>
 			                </tr>
@@ -201,7 +204,7 @@
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 								<td class="col-input">
-									<input type="text" id="sliderValue" name="layerAlphaStyle" class="slider" alt="투명도">
+									<form:input type="text"  path="layerAlphaStyle" class="slider" alt="투명도"/>
 									<input type="range" id="sliderRange" min="0" max="100" value="100" alt="투명도">
 								</td>
 			                    <th class="col-label" scope="row">
@@ -276,7 +279,7 @@
 						        <div class="button-group">
 									<div class="center-buttons">
 										<input type="submit" id="allFileUpload" value="<spring:message code='save'/>"/>
-										<input type="submit" id="allFileClear" onClick="formClear(); return false;" value="초기화" />
+										<input type="submit" id="allFileClear" value="초기화" />
 										<a href="/layer/list" class="button">목록</a>
 									</div>
 								</div>
@@ -284,7 +287,7 @@
 							<li id="geoserverLayerButton" style="margin-top:30px;">
 								<div class="button-group">
 									<div class="center-buttons">
-										<input type="submit" id="geoserverLayerSave" value="<spring:message code='save'/>"/>
+										<input type="submit" onClick="geoserverLayerSave(); return false;" value="<spring:message code='save'/>"/>
 										<a href="/layer/list" class="button">목록</a>
 									</div>
 								</div>
@@ -378,7 +381,14 @@
 		showRange(100);
 		changeLayerType(null);
 		changeGeometryType(null);
-
+		
+		// geoserver layerList 
+		var geoserverLayerList = JSON.parse('${geoserverLayerJson}').layers.layer;
+		for(var i=0; i< geoserverLayerList.length; i++) {
+			var name = geoserverLayerList[i].name;
+			$("#layerKeySelect").append("<option value="+name+">"+name+"</option>");	
+		}
+		
 		$("input[name='sharing']").filter("[value='public']").prop("checked", true);
 		$("input[name='defaultDisplay']").filter("[value='true']").prop("checked", true);
 		$("input[name='available']").filter("[value='true']").prop("checked", true);
@@ -393,10 +403,14 @@
 			$("#uploadLayerButton").addClass("onArea");
 			$(".shapeEncodingArea").show();
 			$("#layerInsertType").val("upload");
+			$("#layerKey").show();
+			$("#layerKeySelect").hide();
 		} else {
 			$("#geoserverLayerButton").addClass("onArea");
 			$(".shapeEncodingArea").hide();
 			$("#layerInsertType").val("geoserver");
+			$("#layerKey").hide();
+			$("#layerKeySelect").show();
 		}
 	});
 
@@ -441,7 +455,7 @@
 
 	// 슬라이더
 	function showRange(valus) {
-		$('#sliderValue').val(valus + "%");
+		$('#layerAlphaStyle').val(valus + "%");
 	}
 
 	var rangeSlider = function(){
@@ -513,9 +527,14 @@
 			$("#layerName").focus();
 			return false;
 		}
-		if (!$("#layerKey").val()) {
+		if($("#layerInsertType").val() === 'upload' && !$("#layerKey").val()) {
 			alert("Layer key를 입력하여 주십시오.");
 			$("#layerKey").focus();
+			return false;
+		} 
+		if($("#layerInsertType").val() === 'geoserver' && !$("#layerKeySelect").val()) {
+			alert("Layer key를 선택하여 주십시오.");
+			$("#layerKeySelect").focus();
 			return false;
 		}
 		if (!$("select[name=serviceType]").val()) {
@@ -670,6 +689,7 @@
 						}
 	                } else {
 	                	alert(JS_MESSAGE[response.errorCode]);
+	                	myDropzone.removeAllFiles(true);
 						console.log("---- " + res.message);
 	                }
 	            } else {
@@ -678,6 +698,7 @@
 		        		alert(JS_MESSAGE["insert"]);
 					} else {
 						alert(JS_MESSAGE[response.errorCode]);
+						myDropzone.removeAllFiles(true);
 						console.log("---- " + res.message);
 					}
 	            }
@@ -689,9 +710,44 @@
             }); */
         }
     };
-
-	function formClear() {
-
+    
+	var insertGeoserverLayerFlag = true;
+	function geoserverLayerSave() {
+	    if(insertGeoserverLayerFlag) {
+	    	if (check() === false) {
+                return;
+            }
+	    	insertGeoserverLayerFlag = false;
+	    	$("#layerKey").val($("#layerKeySelect").val());
+	    	$("#layerAlphaStyle").val($("#sliderRange").val() / 100);
+            var zIndex = 0;
+            if($("#zIndex").val()) zIndex = $("#zIndex").val();
+            var layerLineStyle = 0;
+            if($("#layerLineStyle").val()) layerLineStyle = $("#layerLineStyle").val();
+	        var formData = $('#layer').serialize();
+	        $.ajax({
+				url: "/layer/insert-geoserver",
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+		        data: formData,
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert(JS_MESSAGE["insert"]);
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
+					insertGeoserverLayerFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        insertGeoserverLayerFlag = true;
+				}
+			});
+	    } else {
+	        alert("진행 중입니다.");
+	        return;
+		}
 	}
 
 </script>

@@ -29,6 +29,13 @@ public interface LayerMapper {
     * @return
     */
     Layer getLayer(Integer layerId);
+    
+    /**
+     * layerKey 중복 체크 
+     * @param layerKey
+     * @return
+     */
+    Boolean isLayerKeyDuplication(String layerKey);
 
     /**
     * 자식 레이어 중 순서가 최대인 레이어를 검색
