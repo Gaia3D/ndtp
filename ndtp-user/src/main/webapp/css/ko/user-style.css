@@ -514,8 +514,8 @@ border-radius: 3px;
 background-color: #51515b;
 }
 
-/*  ///// 시민참여 ///// - 정연화 수정 */
-.comment > li {
+/*  ///// 시민참여 ///// */
+.commentWrap > li.comment {
 display: flex;
 position: relative;
 margin-bottom: 10px;
@@ -525,47 +525,53 @@ border: 1px solid #c7e0f2;
 background-color: #ecf7ff;
 cursor: pointer;
 }
-.comment > li:hover {
-border: 1px solid #ecf7ff;
-background-color: #c7e0f2;
-}
-.comment > li:hover {
+.commentWrap > li.comment:hover {
 background-color: #c7e0f2;
 cursor: pointer;
 }
-.comment li > p {
-flex: auto;
-/* padding-right: 10px; */
+.commentWrap > li.comment:hover .title {
+text-decoration: underline;
 }
-.comment li > p:first-child {
-/* min-width: 215px; */
+.commentWrap > li.comment > p {
+flex: auto;
+padding-right: 10px;
+}
+.commentWrap > li.comment > p:first-child {
 min-width: 220px;
 }
-.comment span.id {
+.commentWrap > li.none {
+display: flex;
+position: relative;
+margin-bottom: 10px;
+padding: 7px;
+border-radius: 5px;
+border: 1px solid #d9d9d9;
+background-color: white;
+cursor: default;
+}
+.commentWrap span.id {
 display: block;
 color: #999;
 }
-.comment p.count {
-/* min-width: 40px; */
-min-width: 80px;
-/* padding: 8px 5px 0 15px; */
-/* font-size: 17px; */
-font-size: 14px;
+.commentWrap p.count {
+min-width: 40px;
+/* padding: 8px 5px 0 15px;
+font-size: 17px; */
 font-weight: bold;
 text-align: right;
-/* background: url(/images/ko/ico.png) no-repeat 0 -487px; */
+color: #287be4;
+/* background: url(/images/ko/ico.png) no-repeat 0 -968px; */
 /* margin-left:-10px; */
 }
 
 
 /* 의견보기 */
 .commentView {
-margin: 10px 0 20px;
 }
 .commentView > div {
 margin-bottom: 5px;
 }
-.commentView > .title {
+.commentView .title {
 margin-bottom: 10px;
 padding: 10px 0 0 25px;
 font-size: 18px;
@@ -573,8 +579,12 @@ font-weight: bold;
 border-radius: 5px;
 background: url(/images/ko/ico.png) no-repeat 3px -639px;
 }
+.commentView .modify {
+float: right;
+text-decoration: underline;
+}
 .commentView > .con {
-max-height: 250px;
+max-height: 240px;
 overflow-y: auto;
 padding: 10px;
 font-size: 14px;
@@ -598,8 +608,8 @@ flex: auto;
 padding-right: 10px;
 }
 .agreeWrap p.agree {
-/* padding: 0 0 0 25px; */
-/* background: url(/images/ko/ico.png) no-repeat 0 -495px; */
+/* padding: 0 0 0 25px;
+background: url(/images/ko/ico.png) no-repeat 0 -968px; */
 }
 .agreeWrap span.id {
 display: block;
@@ -607,19 +617,19 @@ color: #999;
 }
 
 .agreeCount {
-margin: 7px 0;
+margin-top: 20px;
 }
 .agreeCount > span {
 color: #287be4;
 }
 .agreeNew {
-margin: 20px 0;
+margin: 10px 0;
 }
 .agreeNew > input {
 width: 65%;
 padding: 7px 7px 7px 30px;
 border: 2px solid #555;
-background: url(/images/ko/ico.png) no-repeat 7px -490px;
+background: url(/images/ko/ico.png) no-repeat 6px -971px;
 }
 
 /* 의견등록 */
@@ -1716,6 +1726,12 @@ ul.listDrop li.list-drop-button-none > p {
 	margin-bottom: 20px;
 	text-align: center;
 }
+.button-group-top-center {
+	background: #fff;
+	margin-top: 20px;
+	text-align: center;
+}
+
 ul.listDrop li > p {
 	background: none;
 	background-color: #fff;
@@ -1749,22 +1765,15 @@ ul.listDrop li.on > p > span.collapse-icon {
 .padding-7 {
 	padding: 7px;
 }
-.comment p.count > span.likes-icon {
+.likes-icon {
 	display: inline-block;
 	width: 20px;
 	text-indent: 999em;
 	background-image: url(/images/ko/ico.png);
 	background-repeat: no-repeat;
-    background-position: 0 -497px;
+    background-position: 0 -978px;
 }
-.agreeWrap p.agree > span.likes-icon {
-	display: inline-block;
-	width: 20px;
-	text-indent: 999em;
-	background-image: url(/images/ko/ico.png);
-	background-repeat: no-repeat;
-    background-position: 0 -497px;
-}
+
 /* 경관분석 달력*/
 .tui-datepicker{
 z-index:100;
