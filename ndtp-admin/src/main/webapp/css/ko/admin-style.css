@@ -2560,3 +2560,15 @@ tr:hover td {
 	overflow:hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis; }
+
+/* 관리자 레이어 관련 */
+#layerButtonArea {
+list-style:none;
+}
+/* 기존 사용하는 on 클래스에 색상이 있어서 onArea 클래스사용 */
+#layerButtonArea li.onArea {
+display:block;	
+}
+#layerButtonArea li {
+display:none;	
+}
