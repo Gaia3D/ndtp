@@ -9,8 +9,8 @@
 	</div>
 
 	<div class="bothSide">
-		<div>전체 <span id="civilVoiceTotalCount">0</span>건</div>
-		<div></div>
+		<div><spring:message code='all'/> <span id="civilVoiceTotalCount">0</span> <spring:message code='search.what.count'/></div>
+		<div><span id="civilVoiceCurrentPage">0</span> / <span id="civilVoiceLastPage">0</span> <spring:message code='search.page'/></div>
 	</div>
 
 	<ul id="civilVoiceList" class="commentWrap"></ul>

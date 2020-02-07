@@ -492,18 +492,22 @@ background: url(/images/ko/ico.png) no-repeat -462px -697px;
 
 /* 양쪽으로 나눠진 구분DIV - 정연화 수정 */
 .bothSide {
-display: flex;
+/* display: flex; */
 /* margin-bottom: 3px; */
+flex: auto;
 margin-bottom: 5px;
+display: list-item;
 }
 .bothSide > div:first-child {
 /* margin-top: 8px; */
+float: left;
 }
 .bothSide > div:first-child > span {
 color: #287be4
 }
 .bothSide > div:last-child {
-text-align: right;
+/* text-align: right; */
+float: right;
 }
 .dataBtns > button {
 padding: 4px 10px;
