@@ -854,15 +854,16 @@ public class LayerController implements AuthorizationController {
         }
 
         String policyJson = "";
-
+        String layerJson = "";
         try {
             policyJson = objectMapper.writeValueAsString(policy);
+            layerJson = objectMapper.writeValueAsString(layer);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         model.addAttribute("policyJson", policyJson);
-        model.addAttribute("layer", layer);
+        model.addAttribute("layerJson", layerJson);
         model.addAttribute("versionId", versionId);
 
         return "/layer/popup-map";
