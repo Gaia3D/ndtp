@@ -282,8 +282,29 @@
 		$(".labelLayer").hide();
 	});
 
-	// 위치 정보 적용 버튼 클릭
+	function validate() {
+		if ($("#dcLongitude").val() === "") {
+			alert("경도를 입력하여 주십시오.");
+			$("#dcLongitude").focus();
+			return false;
+		}
+		if ($("#dcLatitude").val() === "") {
+			alert("위도를 입력하여 주십시오.");
+			$("#dcLatitude").focus();
+			return false;
+		}
+		if ($("#dcAltitude").val() === "") {
+			alert("높이를 입력하여 주십시오.");
+			$("#dcAltitude").focus();
+			return false;
+		}
+	}
+	
+	// 높이회전 저장 버튼 클릭
 	$("#dcSavePosRotPop").click(function(){
+		if (validate() == false) {
+			return false;
+		}
 		var dataId = parseInt("${dataInfo.dataId}");
 		if(confirm('현재 입력된 위치와 회전 정보를 db에 저장하시겠습니까?')) {
 			if(!dataId) {
@@ -336,6 +357,40 @@
 			}).always(stopLoading);
 		} else {
 			alert('no');
+		}
+	});
+	
+	// 높이회전 저장 요청 버튼 클릭
+	var insertDataAdjustLogFlag = true;
+	$("#dcSavePosRotReqPop").click(function(){
+		if (validate() == false) {
+			return false;
+		}
+		if(insertDataAdjustLogFlag) {
+			insertDataAdjustLogFlag = false;
+			var formData = $("#dataInfo").serialize();		
+			$.ajax({
+				url: "/data-adjust-logs",
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+				data: formData,
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert("요청 하였습니다.");
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
+					insertDataAdjustLogFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        insertDataAdjustLogFlag = true;
+				}
+			});
+		} else {
+			alert(JS_MESSAGE["button.dobule.click"]);
+			return;
 		}
 	});
 

@@ -290,7 +290,7 @@
 	// 지도에서 찾기 -- common.js, openFindDataPoint
 	$( "#mapButtion" ).on( "click", function() {
 		openFindDataPoint("${dataInfo.dataId}", "MODIFY");
-	};
+	});
 	
 </script>
 </body>
