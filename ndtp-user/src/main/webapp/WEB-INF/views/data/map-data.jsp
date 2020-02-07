@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<div id="dataInfoContent" class="contents contents-margin-none" style="display:block;">
+<div id="dataInfoContent" class="contents contents-margin-none yScroll fullHeight" style="display:block;">
 	<form:form id="searchDataForm" modelAttribute="searchDataForm" method="post" onsubmit="return false;">
 	<div class="form-group">
 		<label>데이터명</label>

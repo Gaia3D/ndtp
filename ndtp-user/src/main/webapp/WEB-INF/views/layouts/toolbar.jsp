@@ -7,7 +7,7 @@
 		<button type="button" id="mapCtrlZoomOut" class="zoomout" title="축소">축소</button>
 		<button type="button" id="mapCtrlDistance" class="measures distance" data-type="LineString" title="거리">거리</button>
 		<button type="button" id="mapCtrlArea" class="measures area" data-type="Polygon" title="면적">면적</button>
-		<button type="button" id="mapCapture" class="" data-type="" title="화면캡처">캡처</button>
+		<button type="button" id="mapCapture" class="save" data-type="" title="저장">저장</button>
 	</div>
 	<div class="rotate">
 		<button type="button" class="rotateReset on" id="rotateReset" title="방향초기화"></button>
@@ -19,7 +19,7 @@
 <!-- 		<button type="button" class="mapPolicy" id="mapPolicy" title="지도 설정">지도 설정</button> -->
 	</div>
 	<div class="index">
-		<button type="button" class="magoSet" id="mapPolicy" title="Mago3D 설정">Mago3D</button>
+		<button type="button" class="magoSet" id="mapPolicy" title="Mago3D 설정">Mago3D 설정</button>
 	</div>
 </div>
 <div id="mago3DSettingLabelLayer" class="labelLayer" style="display:none;">

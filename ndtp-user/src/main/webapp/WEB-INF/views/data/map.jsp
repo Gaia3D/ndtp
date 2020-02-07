@@ -27,10 +27,12 @@
 		.ctrlWrap {
 			z-index:100;
 		}
+		/* 
 		.ctrlWrap div.zoom button, .ctrlWrap div.rotate button  {
 			width:47px;
 			height:47px;
 		}
+		*/
     </style>
 </head>
 <body>
@@ -70,15 +72,15 @@
 			<div id="simulationContent" class="contents yScroll fullHeight" style="display:none;">
 				<%@ include file="/WEB-INF/views/simulation/simulation.jsp" %>
 			</div>
-			<div id="civilVoiceContent" class="yScroll" style="display:none;">
+			<div id="civilVoiceContent" class="contents yScroll fullHeight" style="display:none;">
 				<%@ include file="/WEB-INF/views/civil-voice/list.jsp" %>
 			</div>
 
-			<div id="layerContent" class="contents fullHeight" style="display:none;">
+			<div id="layerContent" class="contents yScroll fullHeight" style="display:none;">
 				<%@ include file="/WEB-INF/views/layer/list.jsp" %>
 			</div>
 
-			<div id="userPolicyContent" class="contents" style="display:none;">
+			<div id="userPolicyContent" class="contents yScroll fullHeight" style="display:none;">
 				<%@ include file="/WEB-INF/views/user-policy/modify.jsp" %>
 			</div>
 			<!-- E: CONTENTS -->

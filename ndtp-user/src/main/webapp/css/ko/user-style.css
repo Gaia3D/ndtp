@@ -300,19 +300,12 @@ border-radius: 25px;
 background-color: transparent;
 background-image: url(/images/ko/ico.png);
 background-repeat: no-repeat;
+width: 50px;
+height: 50px;
+text-indent: -999em;
 }
 .ctrlWrap div button:hover {
 background-color: #333446;
-}
-.ctrlWrap div.zoom button {
-width: 50px;
-height: 50px;
-text-indent: -999em;
-}
-.ctrlWrap div.rotate button {
-width: 50px;
-height: 50px;
-text-indent: -999em;
 }
 .ctrlWrap div > button.reset {
 background-position: 15px 0;
@@ -353,16 +346,31 @@ background-position: -340px 0;
 .ctrlWrap div > button.rotateRight {
 background-position: -390px 0;
 }
+.ctrlWrap div > button.print {
+background-position: -151px -52px;
+}
+.ctrlWrap div > button.print.on {
+background-position: -151px -102px;
+background-color: #fff600;		
+}
+.ctrlWrap div > button.save {
+background-position: -351px -52px;
+}
+.ctrlWrap div > button.save.on {
+background-position: -351px -102px;
+background-color: #fff600;		
+}
 .ctrlWrap div > button.magoSet {
 background-position: -85px -52px;
 }
 .ctrlWrap div > button.magoSet.on {
 background-position: -85px -102px;
+background-color: #fff600;	
 }
 
 .ctrlWrap div > input {
 width: 30px;
-margin-top: 3px;
+/* margin-top: 3px; */
 padding: 8px;
 font-size: 17px;
 color: #fff;
@@ -487,9 +495,6 @@ background: url(/images/ko/ico.png) no-repeat -462px -697px;
 display: flex;
 /* margin-bottom: 3px; */
 margin-bottom: 5px;
-}
-.bothSide > div {
-flex: auto;
 }
 .bothSide > div:first-child {
 /* margin-top: 8px; */
@@ -1042,7 +1047,12 @@ width:900px;
 #saRange{
 width:1000px;
 }
+
 /*========================================== temp css =========================================================*/
+
+
+/* ////////// POLICY ////////// */
+/* 
 .userPolicyContentWrap > p {
 padding: 8px;
 font-weight: bold;
@@ -1052,7 +1062,6 @@ background-repeat: no-repeat;
 background-position: right -255px;
 background-color: #fff;
 }
-
 .userPolicyContentWrap > div {
 padding-bottom: 7px;
 border-bottom: 1px dotted #888;
@@ -1064,11 +1073,17 @@ margin-bottom: 5px;
 }
 .userPolicyContentWrap div.userPolicyContent{
 margin-top : 8px;
-/* border-bottom: 1px dotted #888; */
+border-bottom: 1px dotted #888;
 }
 .userPolicyContentWrap div.userPolicyContent div.userPolicyContentDetail{
 margin-left : 10px;
 margin-top : 5px;
+}
+*/
+.userPolicyContent {
+padding: 5px 10px;
+margin-bottom: 20px;
+border: 1px solid #ccc;
 }
 button.focusB{
 padding: 5px 15px;
@@ -1169,7 +1184,6 @@ text-align: center;
 border-bottom: 1px solid #757575;
 }
 .pagerB div > button {
-
 margin: 0 -2px;
 background-color: #fff;
 background-image: url(../images/ico.png);
@@ -1287,7 +1301,7 @@ animation: spinning 0.8s infinite linear;
 	transform: rotate(360deg);
 }
 }
-
+/* 
 #mapPolicy {
 width: 110px;
 height: 50px;
@@ -1298,14 +1312,14 @@ font-size: 16px;
 font-weight: bold;
 letter-spacing: -1px;
 border-radius: 25px;
-/* background-position: -451px -588px; */
+background-position: -451px -588px;
 }
 #mapPolicy.on {
 color: #000;
 background-color: #fff600;
 border: 1px solid #333446;
 }
-
+*/
 .labelLayer {
 position: absolute;
 top:60px;
@@ -1721,6 +1735,18 @@ ul.listDrop li.list-drop-button-none > p {
 	font-size: small;
 	vertical-align: middle;
 }
+.form-group-policy {
+	margin-bottom: 4px;
+	padding: 4px;
+}
+.form-group-policy > label {
+	width: 30%;
+}
+.form-group-policy > input {
+	width: 45%;
+	margin-right: 5px;
+}
+
 .button-group-center {
 	background: #fff;
 	margin-bottom: 20px;
@@ -1730,6 +1756,20 @@ ul.listDrop li.list-drop-button-none > p {
 	background: #fff;
 	margin-top: 20px;
 	text-align: center;
+}
+.button-group {
+	width: 100%;
+    height: 100%;
+}
+.button-group > * {
+	display: inline-block;
+	vertical-align: middle;
+}
+.button-group > button.left-align {
+	float: left;
+}
+.button-group > button.right-align {
+	float: right;
 }
 
 ul.listDrop li > p {
@@ -1773,12 +1813,41 @@ ul.listDrop li.on > p > span.collapse-icon {
 	background-repeat: no-repeat;
     background-position: 0 -978px;
 }
-
 /* 경관분석 달력*/
 .tui-datepicker{
 z-index:100;
 }
+.mapSelectButton {
+	position : absolute;
+	bottom : 17px;
+	right : 20px;
+	z-index : 1;
+	width: 90px;
+	height: 40px;
+	padding: 7px;
+	font-size: 17px;
+	border-radius: 3px;
+	color: #414e80;
+	border: 1px solid #414e80;
+	background-color: #fff;
+}
+.mapSelectButton:hover {
+	color: #fff;
+	border: 1px solid #414e80;
+	background-color: #414e80;
+}
+.h3-heading {
+	padding-left: 12px;
+	font-size: 14px;
+	background: url(/images/ko/ico.png) no-repeat 3px -592px;
+}
+.btn-full {
+	width: 100%;
+}
 
+/* ////////// CUSTOM - 정연화 추가 ////////// */
+
+.mar0{margin:0 !important}
 .marT5{margin-top:5px !important}
 .marT10{margin-top:10px !important}
 .marT15{margin-top:15px !important}
@@ -1814,6 +1883,7 @@ z-index:100;
 .marB30{margin-bottom:30px !important;}
 .marB40{margin-bottom:40px !important;}
 
+.pad0{padding:0 !important}
 .padL30{padding-left:30px !important}
 .padL20{padding-left:20px !important}
 .padL22{padding-left:22px !important}
@@ -1827,7 +1897,6 @@ z-index:100;
 .padR15{padding-right:15px !important}
 .padR20{padding-right:20px !important}
 .padR30{padding-right:30px !important}
-
 .padB0{padding-bottom:0 !important}
 .padB5{padding-bottom:5px !important}
 .padB10{padding-bottom:10px !important}
@@ -1844,22 +1913,4 @@ z-index:100;
 .f16{font-size:16px;}
 .f20{font-size:20px;}
 
-.mapSelectButton {
-	position : absolute;
-	bottom : 17px;
-	right : 20px;
-	z-index : 1;
-	width: 90px;
-	height: 40px;
-	padding: 7px;
-	font-size: 17px;
-	border-radius: 3px;
-	color: #414e80;
-	border: 1px solid #414e80;
-	background-color: #fff;
-}
-.mapSelectButton:hover {
-	color: #fff;
-	border: 1px solid #414e80;
-	background-color: #414e80;
-}
+.border-none{border:none}
