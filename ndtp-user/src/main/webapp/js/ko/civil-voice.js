@@ -40,15 +40,9 @@ function getCivilVoiceList() {
 		dataType: 'json',
 		success: function(res){
 			if(res.statusCode <= 200) {
-				var count = res.civilVoiceList.length;
-				$('#civilVoiceTotalCount').text(count);
-
-				if(count > 0) {
-					// html 생성
-					createCivilVoiceHtml(res.civilVoiceList);
-				} else {
-
-				}
+				// html 생성
+				createCivilVoiceHtml(res.civilVoiceList);
+				$('#civilVoiceTotalCount').text(res.civilVoiceList.length);
 			} else {
 				alert(JS_MESSAGE[res.errorCode]);
 				console.log("---- " + res.message);
