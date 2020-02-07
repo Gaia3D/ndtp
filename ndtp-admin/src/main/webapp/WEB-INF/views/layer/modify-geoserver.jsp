@@ -81,7 +81,7 @@
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 			                    <td class="col-input">
-			                        <select name="serviceType">
+			                        <select name="serviceType" class="selectBoxClass">
 										<option value="">선택</option>
 										<option value="wms">WMS</option>
 										<option value="wfs">WFS</option>
@@ -94,7 +94,7 @@
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 			                    <td class="col-input">
-			                        <select name="layerType">
+			                        <select name="layerType" class="selectBoxClass">
 										<option value="">선택</option>
 										<option value="Vector">Vector</option>
 										<option value="Raster">Raster</option>
@@ -107,7 +107,7 @@
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 								<td class="col-input">
-									<select name="geometryType" class="forRaster">
+									<select name="geometryType" class="forRaster selectBoxClass">
 										<option value="">선택</option>
 										<option value="Point">Point</option>
 										<option value="Line">Line</option>
@@ -183,15 +183,6 @@
 			                        <form:radiobutton id="labelDisplayTrue"  path="labelDisplay" value="true" label="표시" />
 									<form:radiobutton id="labelDisplayFalse" path="labelDisplay" value="false" label="비표시" />
 			                    </td>
-			                    <th class="col-label" scope="row">
-			                        <form:label path="coordinate">좌표계</form:label>
-			                    </th>
-			                    <td class="col-input">
-			                        <form:input path="coordinate" cssClass="m" />
-			                        <form:errors path="coordinate" cssClass="error" />
-			                    </td>
-			                </tr>
-			                <tr>
 			                    <th class="col-label" scope="row">
 			                        <form:label path="description">설명</form:label>
 			                    </th>

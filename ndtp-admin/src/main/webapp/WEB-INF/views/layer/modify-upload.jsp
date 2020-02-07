@@ -129,7 +129,7 @@
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 			                    <td class="col-input">
-			                        <select name="serviceType">
+			                        <select name="serviceType" class="selectBoxClass">
 										<option value="">선택</option>
 										<option value="wms">WMS</option>
 										<option value="wfs">WFS</option>
@@ -142,7 +142,7 @@
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 			                    <td class="col-input">
-			                        <select name="layerType">
+			                        <select name="layerType" class="selectBoxClass">
 										<option value="">선택</option>
 										<option value="Vector">Vector</option>
 										<option value="Raster">Raster</option>
@@ -155,7 +155,7 @@
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 								<td class="col-input">
-									<select name="geometryType" class="forRaster">
+									<select name="geometryType" class="forRaster selectBoxClass">
 										<option value="">선택</option>
 										<option value="Point">Point</option>
 										<option value="Line">Line</option>
@@ -232,26 +232,52 @@
 									<form:radiobutton id="labelDisplayFalse" path="labelDisplay" value="false" label="비표시" />
 			                    </td>
 			                    <th class="col-label" scope="row">
-			                        <form:label path="coordinate">좌표계</form:label>
-			                    </th>
-			                    <td class="col-input">
-			                        <form:input path="coordinate" cssClass="m" />
-			                        <form:errors path="coordinate" cssClass="error" />
-			                    </td>
-			                </tr>
-			                <tr>
-			                    <th class="col-label" scope="row">
 			                        <form:label path="description">설명</form:label>
 			                    </th>
 			                    <td class="col-input">
 			                        <form:input path="description" cssClass="l" />
 			                        <form:errors path="description" cssClass="error" />
 			                    </td>
+			                </tr>
+			                <tr>
+			                    <th class="col-label" scope="row">
+			                        <form:label path="coordinate">좌표계</form:label>
+			                    </th>
+			                    <td class="col-input">
+			                        <select id="coordinate"name="coordinate" class="selectBoxClass">
+										<option value="EPSG:2096">EPSG:2096</option>
+										<option value="EPSG:2097">EPSG:2097</option>
+										<option value="EPSG:2098">EPSG:2098</option>
+										<option value="EPSG:3857">EPSG:3857</option>
+										<option value="EPSG:32651">EPSG:32651</option>
+										<option value="EPSG:32652">EPSG:32652</option>
+										<option value="EPSG:4004">EPSG:4004</option>
+										<option value="EPSG:4019">EPSG:4019</option>
+										<option value="EPSG:4326">EPSG:4326</option>
+										<option value="EPSG:5173">EPSG:5173</option>
+										<option value="EPSG:5174">EPSG:5174</option>
+										<option value="EPSG:5175">EPSG:5175</option>
+										<option value="EPSG:5176">EPSG:5176</option>
+										<option value="EPSG:5177">EPSG:5177</option>
+										<option value="EPSG:5178">EPSG:5178</option>
+										<option value="EPSG:5179">EPSG:5179</option>
+										<option value="EPSG:5180">EPSG:5180</option>
+										<option value="EPSG:5181">EPSG:5181</option>
+										<option value="EPSG:5182">EPSG:5182</option>
+										<option value="EPSG:5183">EPSG:5183</option>
+										<option value="EPSG:5184">EPSG:5184</option>
+										<option value="EPSG:5185">EPSG:5185</option>
+										<option value="EPSG:5186">EPSG:5186</option>
+										<option value="EPSG:5187">EPSG:5187</option>
+										<option value="EPSG:5188">EPSG:5188</option>
+									</select>
+			                        <form:errors path="coordinate" cssClass="error" />
+			                    </td>
 			                    <th class="col-label" scope="row">
 			                        <form:label path="shapeEncoding">SHP 파일 인코딩</form:label>
 			                    </th>
 			                    <td class="col-input">
-			                    	<select id="shapeEncoding" name="shapeEncoding" style="width:100px; height: 30px;">
+			                    	<select id="shapeEncoding" class="selectBoxClass" name="shapeEncoding" style="width:100px; height: 30px;">
 				                    	<option value="CP949">CP949</option>
 				                        <option value="UTF-8">UTF-8</option>
 				                    </select>
@@ -463,6 +489,7 @@
         $("select[name=geometryType] option[value='${layer.geometryType}'").prop('selected',true);
         $("select[name=layerType] option[value='${layer.layerType}'").prop('selected',true);
         $("select[name=shapeEncoding] option[value='${layer.shapeEncoding}'").prop('selected',true);
+        $("select[name=coordinate] option[value='${layer.coordinate}'").prop('selected',true);
         $(".forLineColor").val("${layer.layerLineColor}");
         $(".forPolygon").val("${layer.layerFillColor}");
 	});
@@ -598,6 +625,11 @@
 		if ($("select[name=geometryType]").val().toLowerCase() === 'vector') {
 			alert("도형 타입을 선택해 주십시오.");
 			$("#geometryType").focus();
+			return false;
+		}
+		if (!$("#coordinate").val()) {
+			alert("좌표계를 선택해주세요.");
+			$("#coordinate").focus();
 			return false;
 		}
 	}
