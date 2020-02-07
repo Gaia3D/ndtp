@@ -4,7 +4,7 @@
 <form:form id="userPolicy" modelAttribute="userPolicy" method="post" onsubmit="return false;">
 <form:hidden path="userPolicyId"/>
 <div class="userPolicyContent">
-	<div class="button-group marB10">
+	<div class="button-group-align marB10">
 		<h3 class="h3-heading">시작 위치</h3>
 		<button type="button" id="findStartPoint" class="btnTextF right-align">선택</button>
 	</div>
@@ -28,7 +28,7 @@
 	</div>
 </div>
 <div class="userPolicyContent">
-	<h3 class="h3-heading">FOV (Field Of View)</h3>
+	<h3 class="h3-heading marB10">FOV (Field Of View)</h3>
 	<div class="userPolicyContentDetail">
 		<div class="form-group form-group-policy">
 			<label for="initfieldOfView">각도</label>
@@ -37,7 +37,7 @@
 	</div>
 </div>
 <div class="userPolicyContent">
-	<div class="button-group marB10">
+	<div class="button-group-align marB10">
 		<h3 class="h3-heading">LOD (Level Of Detail)</h3>
 		<button type="button" id="changeLodButton" class="btnTextF right-align">적용</button>
 	</div>
@@ -69,7 +69,7 @@
 	</div>
 </div>
 <div class="userPolicyContent">
-	<div class="button-group marB10">
+	<div class="button-group-align marB10">
 		<h3 class="h3-heading">SSAO</h3>
 		<button type="button" id="changeSsaoButton" class="btnTextF right-align">적용</button>
 	</div>

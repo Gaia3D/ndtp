@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<div class="uploadDataAttributeDialog" title="Data Origin Attribute">
+<div class="uploadDataAttributeDialog" title="Data Attribute">
 	<form id="dataAttributeInfo" name="dataAttributeInfo" action="/datas/attributes" method="post" enctype="multipart/form-data">
 		<input type="hidden" id="attributeFileDataId" name="attributeFileDataId" value="" />
 		<table class="inner-table scope-row" style="width: 95%;">

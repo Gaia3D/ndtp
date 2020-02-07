@@ -1757,18 +1757,18 @@ ul.listDrop li.list-drop-button-none > p {
 	margin-top: 20px;
 	text-align: center;
 }
-.button-group {
+.button-group-align {
 	width: 100%;
     height: 100%;
 }
-.button-group > * {
+.button-group-align > * {
 	display: inline-block;
 	vertical-align: middle;
 }
-.button-group > button.left-align {
+.button-group-align > button.left-align {
 	float: left;
 }
-.button-group > button.right-align {
+.button-group-align > button.right-align {
 	float: right;
 }
 

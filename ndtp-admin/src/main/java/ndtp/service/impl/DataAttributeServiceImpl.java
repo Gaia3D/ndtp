@@ -108,14 +108,4 @@ public class DataAttributeServiceImpl implements DataAttributeService {
 		
 		return dataAttributeFileInfo;
 	}
-	
-	/**
-	 * 파일 정보 등록
-	 * @param dataFileInfo
-	 * @return
-	 */
-	@Transactional
-	public int insertDataAttributeFileInfo(DataAttributeFileInfo dataFileInfo) {
-		return dataAttributeMapper.insertDataAttributeFileInfo(dataFileInfo);
-	}
 }

@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%-- data object attribute 등록 --%>
 <div class="uploadDataObjectAttributeDialog" title="Data Object Attribute">
-	<form id="dataObjectAttributeInfo" name="dataObjectAttributeInfo" action="/data/insert-data-object-attribute-file" method="post" enctype="multipart/form-data">
+	<form id="dataObjectAttributeInfo" name="dataObjectAttributeInfo" action="/datas/object/attributes" method="post" enctype="multipart/form-data">
 		<input type="hidden" id="objectAttributeFileDataId" name="objectAttributeFileDataId" value="" />
 		<table class="inner-table scope-row" style="width: 95%;">
 			<col class="col-sub-label xl" />
@@ -25,12 +25,41 @@
 		<div class="button-group">
 			<input type="button" onclick="dataObjectAttributeFileUpload();" class="button" value="<spring:message code='data.file.save'/>"/>
 		</div>
-		<table id="dataObjectAttributeUploadLog" class="inner-table scope-row" style="width: 95%;">
+		<table class="inner-table scope-row" style="width: 95%;">
 			<col class="col-sub-label xl" />
 			<col class="col-data" />
-			<tbody>
+			<tbody id="dataObjectAttributeUploadLog">
 			</tbody>
 		</table>
 	</form>
 </div>
-	
+
+<script id="templateDataObjectAttributeUploadLog" type="text/x-handlebars-template">
+			<tr>
+				<td colspan="2" style="text-align: center;">Result of parsing</td>
+			</tr>
+			<tr>
+				<td> 총 건 수</td>
+				<td>{{totalCount}}</td>
+			</tr>
+			<tr>
+				<td> 성공 건수 </td>
+				<td>{{parseSuccessCount}}</td>
+			</tr>
+			<tr>
+				<td> 실패 건수 </td>
+				<td> {{parseErrorCount}}</td>
+			</tr>
+			<tr>
+				<td> DB 등록 건수 </td>
+				<td> {{insertSuccessCount}} </td>
+			</tr>
+			<tr>
+				<td> DB 수정 건수 </td>
+				<td> {{updateSuccessCount}} </td>
+			</tr>
+			<tr>
+				<td> DB 실패 건수 </td>"
+				<td> {{insertErrorCount}}</td>
+			</tr>
+</script>
