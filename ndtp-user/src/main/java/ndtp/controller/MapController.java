@@ -55,9 +55,10 @@ public class MapController {
     	// list, modify 에서 온것 구분하기 위함
     	String referrer = dataInfo.getReferrer();
         UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+        String userId = userSession.getUserId();
         
         GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
-		UserPolicy userPolicy = userPolicyService.getUserPolicy(userSession.getUserId());
+		UserPolicy userPolicy = userPolicyService.getUserPolicy(userId);
 		
 //		dataInfo.setUserId(userSession.getUserId());
 		dataInfo = dataService.getData(dataInfo);
@@ -104,6 +105,7 @@ public class MapController {
 		model.addAttribute("baseLayers", userPolicy.getBaseLayers());
 		model.addAttribute("dataInfo", dataInfo);
 		model.addAttribute("dataInfoJson", dataInfoJson);
+		model.addAttribute("owner", userId);
         
         return "/map/find-data-point";
     }

@@ -125,7 +125,17 @@
 				</ul>
 
 				<div>
-					<button type="button" id="dcSavePosRotPop" class="btnTextF">높이회전 저장</button>
+					<c:if test="${dataInfo.dataGroupTarget eq 'admin'}">
+						<button type="button" id="dcSavePosRotReqPop" class="btnTextF" title="높이회전 저장 요청">높이회전 저장 요청</button>
+					</c:if>
+					<c:if test="${dataInfo.dataGroupTarget eq 'user'}">
+						<c:if test="${dataInfo.userId eq owner}">
+							<button type="button" id="dcSavePosRotPop" class="btnTextF" title="높이회전 저장">높이회전 저장</button>
+						</c:if>
+						<c:if test="${dataInfo.userId ne owner}">
+							<button type="button" id="dcSavePosRotReqPop" class="btnTextF" title="높이회전 저장 요청">높이회전 저장 요청</button>	
+						</c:if>
+					</c:if>
 					<button type="button" id="dcShowAttr" class="btnTextF">속성조회</button>
 				</div>
 			</form>
