@@ -43,10 +43,13 @@ function getCivilVoiceList(page) {
 		data: {pageNo: page},
 		success: function(res){
 			if(res.statusCode <= 200) {
-				// 전체 건수
+				// 페이지 정보
 				$('#civilVoiceTotalCount').text(res.totalCount);
-				// html 생성
+				$('#civilVoiceCurrentPage').text(res.pagination.pageNo);
+				$('#civilVoiceLastPage').text(res.pagination.lastPage);
+				// 리스트 구성
 				createCivilVoiceHtml(res.civilVoiceList);
+				// 페이징 구성
 				createCivilVoicePagination(res);
 			} else {
 				alert(JS_MESSAGE[res.errorCode]);
