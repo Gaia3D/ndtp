@@ -23,10 +23,13 @@ import ndtp.config.PropertiesConfig;
 import ndtp.domain.DataAttribute;
 import ndtp.domain.DataAttributeFileInfo;
 import ndtp.domain.DataInfo;
+import ndtp.domain.DataObjectAttribute;
+import ndtp.domain.DataObjectAttributeFileInfo;
 import ndtp.domain.FileInfo;
 import ndtp.domain.Key;
 import ndtp.domain.UserSession;
 import ndtp.service.DataAttributeService;
+import ndtp.service.DataObjectAttributeService;
 import ndtp.service.DataService;
 import ndtp.utils.FileUtils;
 
@@ -39,6 +42,8 @@ public class DataRestController {
 	private DataService dataService;
 	@Autowired
 	private DataAttributeService dataAttributeService;
+	@Autowired
+	private DataObjectAttributeService dataObjectAttributeService;
 	@Autowired
 	private PropertiesConfig propertiesConfig;
 	
@@ -173,6 +178,45 @@ public class DataRestController {
 	}
 	
 	/**
+	 * 데이터 속성 정보
+	 * @param dataId
+	 * @return
+	 */
+	@GetMapping("/object/attributes/{dataId}")
+	public Map<String, Object> detailObjectAttribute(HttpServletRequest request, @PathVariable Long dataId) {
+		
+		log.info("@@@@@ dataId = {}", dataId);
+		
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		try {
+			if(dataId == null || dataId.longValue() <=0l) {
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "input.invalid");
+				result.put("message", message);
+				return result;
+			}
+			
+			DataObjectAttribute dataObjectAttribute = dataObjectAttributeService.getDataObjectAttribute(dataId);
+			result.put("dataObjectAttribute", dataObjectAttribute);
+		} catch(Exception e) {
+			e.printStackTrace();
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+		
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		
+		return result;
+	}
+	
+	/**
 	 * Data Attribute 수정
 	 * @param model
 	 * @return
@@ -213,6 +257,66 @@ public class DataRestController {
 			result.put("insertSuccessCount", dataAttributeFileInfo.getInsertSuccessCount());
 			result.put("updateSuccessCount", dataAttributeFileInfo.getUpdateSuccessCount());
 			result.put("insertErrorCount", dataAttributeFileInfo.getInsertErrorCount());
+			
+			// 파일 삭제
+			File copyFile = new File(fileInfo.getFilePath() + fileInfo.getFileRealName());
+			if(copyFile.exists()) {
+				copyFile.delete();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+		
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
+	}
+	
+	/**
+	 * Data object Attribute 수정
+	 * @param model
+	 * @return
+	 */
+	@PostMapping(value = "/object/attributes")
+	public Map<String, Object> insertDataObjectAttribute(MultipartHttpServletRequest request) {
+		
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		try {
+			Long dataId = Long.valueOf(request.getParameter("objectAttributeFileDataId"));
+			MultipartFile multipartFile = request.getFile("objectAttributeFileName");
+			// TODO
+			FileInfo fileInfo = FileUtils.upload(multipartFile, FileUtils.DATA_ATTRIBUTE_UPLOAD, propertiesConfig.getDataAttributeUploadDir());
+			if(fileInfo.getErrorCode() != null && !"".equals(fileInfo.getErrorCode())) {
+				log.info("@@@@@@@@@@@@@@@@@@@@ error_code = {}", fileInfo.getErrorCode());
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", fileInfo.getErrorCode());
+				result.put("message", message);
+				
+				return result;
+			}
+			
+			UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+			
+			ModelMapper modelMapper = new ModelMapper();
+			DataObjectAttributeFileInfo dataObjectAttributeFileInfo = modelMapper.map(fileInfo, DataObjectAttributeFileInfo.class);
+			dataObjectAttributeFileInfo.setUserId(userSession.getUserId());
+			dataObjectAttributeFileInfo.setDataId(dataId);
+			
+			dataObjectAttributeFileInfo = dataObjectAttributeService.insertDataObjectAttribute(dataId, dataObjectAttributeFileInfo);
+			
+			result.put("totalCount", dataObjectAttributeFileInfo.getTotalCount());
+			result.put("parseSuccessCount", dataObjectAttributeFileInfo.getParseSuccessCount());
+			result.put("parseErrorCount", dataObjectAttributeFileInfo.getParseErrorCount());
+			result.put("insertSuccessCount", dataObjectAttributeFileInfo.getInsertSuccessCount());
+			result.put("updateSuccessCount", dataObjectAttributeFileInfo.getUpdateSuccessCount());
+			result.put("insertErrorCount", dataObjectAttributeFileInfo.getInsertErrorCount());
 			
 			// 파일 삭제
 			File copyFile = new File(fileInfo.getFilePath() + fileInfo.getFileRealName());

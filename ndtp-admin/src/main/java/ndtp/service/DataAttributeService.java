@@ -2,6 +2,8 @@ package ndtp.service;
 
 import ndtp.domain.DataAttribute;
 import ndtp.domain.DataAttributeFileInfo;
+import ndtp.domain.DataObjectAttribute;
+import ndtp.domain.DataObjectAttributeFileInfo;
 
 /**
  * 데이터 파일 속성 관리

@@ -5,27 +5,27 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-import ndtp.domain.DataAttributeFileInfo;
-import ndtp.parser.DataAttributeFileParser;
+import ndtp.domain.DataObjectAttributeFileInfo;
+import ndtp.parser.DataObjectAttributeFileParser;
 
-public class DataAttributeFileJsonParser implements DataAttributeFileParser {
+public class DataObjectAttributeFileJsonParser implements DataObjectAttributeFileParser {
 
 	@Override
-	public Map<String, Object> parse(Long dataId, DataAttributeFileInfo dataAttributeFileInfo) {
+	public Map<String, Object> parse(Long dataId, DataObjectAttributeFileInfo dataObjectAttributeFileInfo) {
 		
 		int parseSuccessCount = 0;
 		int parseErrorCount = 0;
 		String attribute = null;
 		
 		try {
-			byte[] jsonData = Files.readAllBytes(Paths.get(dataAttributeFileInfo.getFilePath() + dataAttributeFileInfo.getFileRealName()));
+			byte[] jsonData = Files.readAllBytes(Paths.get(dataObjectAttributeFileInfo.getFilePath() + dataObjectAttributeFileInfo.getFileRealName()));
 			attribute = new String(jsonData);
 			
 			parseSuccessCount++;
 		} catch (Exception e) {
 			parseErrorCount++;
 			e.printStackTrace();
-			throw new RuntimeException("Data 속성 파일 파싱 오류!");
+			throw new RuntimeException("Data Object 속성 파일 파싱 오류!");
 		}
 		
 		Map<String, Object> result = new HashMap<>();

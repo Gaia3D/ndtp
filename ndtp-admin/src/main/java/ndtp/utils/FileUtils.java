@@ -64,8 +64,8 @@ public class FileUtils {
 	// JEXCEL이 2007버전(xlsx) 을 읽지 못하기 때문에 POI를 병행해서 사용
 	public static final String EXCEL_EXTENSION_XLSX = "xlsx";
 	
-	// 업로더 가능한 파일 사이즈
-	public static final long FILE_UPLOAD_SIZE = 10000000l;
+	// 업로더 가능한 파일 사이즈(2G)
+	public static final long FILE_UPLOAD_SIZE = 2_000_000_000l;
 	// 파일 copy 시 버퍼 사이즈
 	public static final int BUFFER_SIZE = 8192;
 	
