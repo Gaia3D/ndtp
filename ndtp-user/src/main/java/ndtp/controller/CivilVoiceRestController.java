@@ -62,7 +62,6 @@ public class CivilVoiceRestController {
 		civilVoice.setClientIp(WebUtils.getClientIp(request));
 		try {
 			long totalCount = civilVoiceService.getCivilVoiceTotalCount(civilVoice);
-
 			Pagination pagination = new Pagination(	request.getRequestURI(),
 													getSearchParameters(PageType.LIST, civilVoice),
 													totalCount,
@@ -78,6 +77,7 @@ public class CivilVoiceRestController {
 				civilVoiceList = civilVoiceService.getListCivilVoice(civilVoice);
 			}
 
+			result.put("totalCount", totalCount);
 			result.put("pagination", pagination);
 			result.put("civilVoiceList", civilVoiceList);
 		} catch(Exception e) {
