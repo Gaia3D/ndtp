@@ -80,6 +80,46 @@ public class LayerServiceImpl implements LayerService {
     public List<Layer> getListLayer(Layer layer) {
         return layerMapper.getListLayer(layer);
     }
+    
+    /**
+     * geoserver layer 목록 조회 
+     */
+    @Transactional(readOnly=true)
+    public String getListGeoserverLayer(GeoPolicy geoPolicy) {
+    	String geoserverLayerJson = null;
+    	try {
+			RestTemplate restTemplate = new RestTemplate();
+			
+			HttpHeaders headers = new HttpHeaders();
+			// 클라이언트가 서버에 어떤 형식(MediaType)으로 달라는 요청을 할 수 있는데 이게 Accpet 헤더를 뜻함.
+			List<MediaType> acceptList = new ArrayList<>();
+			acceptList.add(MediaType.ALL);
+			headers.setAccept(acceptList);
+			// 클라이언트가 request에 실어 보내는 데이타(body)의 형식(MediaType)를 표현
+			headers.setContentType(MediaType.TEXT_XML);
+			// geoserver basic 암호화 아이디:비밀번호 를 base64로 encoding 
+			headers.add("Authorization", "Basic " + Base64.getEncoder().
+					encodeToString((geoPolicy.getGeoserverUser() + ":" + geoPolicy.getGeoserverPassword()).getBytes()));
+			
+			List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
+			//Add the String Message converter
+			messageConverters.add(new StringHttpMessageConverter());
+			//Add the message converters to the restTemplate
+			restTemplate.setMessageConverters(messageConverters);
+		    
+			HttpEntity<String> entity = new HttpEntity<>(headers);
+			
+			String url = "http://localhost:8080/geoserver/rest/workspaces/" + geoPolicy.getGeoserverDataWorkspace()+ "/layers";
+			ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+			log.info("-------- statusCode = {}, body = {}", response.getStatusCodeValue(), response.getBody());
+			geoserverLayerJson = response.getBody().toString();
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+    	
+    	return geoserverLayerJson;
+    }
 
     /**
     * layer 정보 취득
@@ -89,6 +129,11 @@ public class LayerServiceImpl implements LayerService {
     @Transactional(readOnly=true)
     public Layer getLayer(Integer layerId) {
         return layerMapper.getLayer(layerId);
+    }
+    
+    @Transactional(readOnly=true)
+    public Boolean isLayerKeyDuplication(String layerKey) {
+    	return layerMapper.isLayerKeyDuplication(layerKey);
     }
 
     /**

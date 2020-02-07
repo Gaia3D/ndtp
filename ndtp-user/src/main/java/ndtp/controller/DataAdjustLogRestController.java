@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
-import ndtp.domain.DataInfoAdjustLog;
+import ndtp.domain.DataAdjustLog;
 import ndtp.service.DataAdjustLogService;
 
 /**
@@ -37,7 +37,7 @@ public class DataAdjustLogRestController {
 	 * @return
 	 */
 	@PostMapping
-	public Map<String, Object> insert(HttpServletRequest request, @Valid DataInfoAdjustLog dataInfoAdjustLog, Errors errors) {
+	public Map<String, Object> insert(HttpServletRequest request, @Valid DataAdjustLog dataInfoAdjustLog, Errors errors) {
 		log.info("@@ dataInfoAdjustLog = {}", dataInfoAdjustLog);
 		
 		Map<String, Object> result = new HashMap<>();

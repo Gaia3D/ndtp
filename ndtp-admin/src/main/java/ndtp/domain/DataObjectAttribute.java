@@ -12,7 +12,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Data Attribute 정보
+ * Data Object Attribute 정보
  * @author Cheon JeongDae
  *
  */
@@ -22,7 +22,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DataInfoAttribute extends Search {
+public class DataObjectAttribute extends Search {
 	
 	/******** 화면 오류 표시용 ********/
 	private String messageCode;
@@ -34,17 +34,17 @@ public class DataInfoAttribute extends Search {
 	/****** validator ********/
 	private String methodMode;
 	
-	// 데이터 그룹별 데이터 attribute 파일 경로
-	private String dataGroupDataAttributePath;
+	// 데이터 그룹별 데이터 object attribute 파일 경로
+	private String dataGroupDataObjectAttributePath;
 
 	// Data Attribute 고유번호
-	private Long dataAttributeId;
+	private Long dataObjectAttributeId;
+	// 데이터 그룹 고유번호
+	private Integer dataGroupId;
 	// Data 고유번호
 	private Long dataId;
-	// Data Group 고유번호
-	private Integer dataGroupId;
-	// Data Group 이름
-	private String dataGroupName;
+	// Data Object 고유번호
+	private String objectId;
 	// data 고유 식별번호
 	private String dataKey;
 	// data 이름

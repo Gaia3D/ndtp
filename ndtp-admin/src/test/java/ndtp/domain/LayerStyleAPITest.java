@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -20,6 +22,44 @@ import ndtp.geospatial.LayerStyleParser;
 
 @Slf4j
 public class LayerStyleAPITest {
+	
+	@Test
+	public void getLayerList() {
+		try {
+			RestTemplate restTemplate = new RestTemplate();
+			
+			HttpHeaders headers = new HttpHeaders();
+			// 클라이언트가 서버에 어떤 형식(MediaType)으로 달라는 요청을 할 수 있는데 이게 Accpet 헤더를 뜻함.
+			List<MediaType> acceptList = new ArrayList<>();
+			acceptList.add(MediaType.ALL);
+			headers.setAccept(acceptList);
+			// 클라이언트가 request에 실어 보내는 데이타(body)의 형식(MediaType)를 표현
+			headers.setContentType(MediaType.TEXT_XML);
+			// geoserver basic 암호화 아이디:비밀번호 를 base64로 encoding 
+			headers.add("Authorization", "Basic " + Base64.getEncoder().encodeToString( ("admin:geoserver").getBytes()) );
+			
+			List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
+			//Add the String Message converter
+			messageConverters.add(new StringHttpMessageConverter());
+			//Add the message converters to the restTemplate
+			restTemplate.setMessageConverters(messageConverters);
+		    
+			HttpEntity<String> entity = new HttpEntity<>(headers);
+			
+//			String url = "http://localhost:8080/geoserver/rest/workspaces/ndtp/layers";
+			String url = "http://192.168.10.9:8080/geoserver/rest/layers";
+			ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+			JSONObject layerJson = new JSONObject((String)response.getBody());
+			JSONArray layerList = layerJson.getJSONObject("layers").getJSONArray("layer");
+			log.info("layerList ================== {} " ,layerList);
+			for(int i=0; i < layerList.length(); i++) {
+				log.info("layerName =============== {} ", (String) layerList.getJSONObject(i).get("name"));
+			}
+			log.info("-------- statusCode = {}, body = {}", response.getStatusCodeValue(), response.getBody());
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 	
 	public void stylesInsert() {
@@ -84,7 +124,7 @@ public class LayerStyleAPITest {
 				response.getBody());
 	}
 	
-	@Test
+	
 	public void deleteGeoserverLayer() {
 		HttpStatus httpStatus = null;
 		try {

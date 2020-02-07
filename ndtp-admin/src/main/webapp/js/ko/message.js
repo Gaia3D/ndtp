@@ -172,3 +172,5 @@ JS_MESSAGE["group.key.empty"] = "그룹 Key 를 입력하여 주십시오.";
 JS_MESSAGE["group.key.duplication"] = "사용중인 그룹 Key 입니다. 다른 이름을 사용해 주십시오.";
 JS_MESSAGE["group.key.enable"] = "사용 가능한 그룹 Key 입니다.";
 JS_MESSAGE["group.key.duplication.check"] = "그룹 Key 중복 확인이 필요 합니다.";
+
+JS_MESSAGE["layer.key.duplication"] = "사용중인 layer Key 입니다. 다른 이름을 사용해 주십시오.";

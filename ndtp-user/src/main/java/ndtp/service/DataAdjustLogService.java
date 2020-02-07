@@ -2,7 +2,7 @@ package ndtp.service;
 
 import java.util.List;
 
-import ndtp.domain.DataInfoAdjustLog;
+import ndtp.domain.DataAdjustLog;
 
 /**
  * 데이터 geometry 변경 이력 관리
@@ -16,26 +16,26 @@ public interface DataAdjustLogService {
 	 * @param dataInfo
 	 * @return
 	 */
-	Long getDataAdjustLogTotalCount(DataInfoAdjustLog dataInfoAdjustLog);
+	Long getDataAdjustLogTotalCount(DataAdjustLog dataInfoAdjustLog);
 	
 	/**
 	 * 데이터 geometry 변경 요청 목록
 	 * @param dataInfoAdjustLog
 	 * @return
 	 */
-	List<DataInfoAdjustLog> getListDataAdjustLog(DataInfoAdjustLog dataInfoAdjustLog);
+	List<DataAdjustLog> getListDataAdjustLog(DataAdjustLog dataInfoAdjustLog);
 	
 	/**
 	 * 데이터 geometry 변경 이력 조회
 	 * @param dataAdjustLogId
 	 * @return
 	 */
-	DataInfoAdjustLog getDataAdjustLog(Long dataAdjustLogId);
+	DataAdjustLog getDataAdjustLog(Long dataAdjustLogId);
 	
 	/**
 	 * 데이터 geometry 변경 이력 저장
 	 * @param dataInfoAdjustLog
 	 * @return
 	 */
-	int insertDataAdjustLog(DataInfoAdjustLog dataInfoAdjustLog);
+	int insertDataAdjustLog(DataAdjustLog dataInfoAdjustLog);
 }

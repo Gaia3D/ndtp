@@ -69,187 +69,187 @@ public class FileUtils {
 	// 파일 copy 시 버퍼 사이즈
 	public static final int BUFFER_SIZE = 8192;
 	
-	/**
-	 * 파일 등록 
-	 * @param multipartFile
-	 * @param jobType
-	 * @param directory
-	 * @return
-	 */
-	public static FileInfo upload(MultipartFile multipartFile, String jobType, String directory) {
-	
-		FileInfo fileInfo = new FileInfo();
-		fileInfo.setJobType(jobType);
-		
-		// 파일 기본 validation 체크
-		fileInfo = fileValidation(multipartFile, fileInfo);
-		if(fileInfo.getErrorCode() != null && !"".equals(fileInfo.getErrorCode())) {
-			return fileInfo;
-		}
-		
-		// 파일을 upload 디렉토리로 복사
-		fileInfo = fileCopy(multipartFile, fileInfo, directory);
-		
-		return fileInfo;
-	}
-	
-	/**
-	 * 업로딩 파일에 대한 기본적인 validation 체크. 이름, 확장자, 사이즈
-	 * @param multipartFile
-	 * @param fileInfo
-	 * @return
-	 */
-	private static FileInfo fileValidation(MultipartFile multipartFile, FileInfo fileInfo) {
-		return fileValidation(multipartFile, fileInfo, 0l);
-	}
-	
-	/**
-	 * 업로딩 파일에 대한 기본적인 validation 체크. 이름, 확장자, 사이즈
-	 * @param multipartFile
-	 * @param fileInfo
-	 * @return
-	 */
-	private static FileInfo fileValidation(MultipartFile multipartFile, FileInfo fileInfo, long fileUploadSize) {
-		
-		// 1 파일 공백 체크
-		if(multipartFile == null || multipartFile.getSize() == 0l) {
-			log.info("@@ multipartFile is null");
-			fileInfo.setErrorCode("fileinfo.invalid");
-			return fileInfo;
-		}
-		
-		// 2 파일 이름
-		String fileName = multipartFile.getOriginalFilename();
-		if(fileName == null) {
-			log.info("@@ fileName is null");
-			fileInfo.setErrorCode("fileinfo.name.invalid");
-			return fileInfo;
-		} else if(fileName.indexOf("..") >= 0 || fileName.indexOf("/") >= 0) {
-			// TODO File.seperator 정규 표현식이 안 먹혀서 이렇게 처리함
-			log.info("@@ fileName = {}", fileName);
-			fileInfo.setErrorCode("fileinfo.name.invalid");
-			return fileInfo;
-		}
-		
-		// 3 파일 확장자
-		String[] fileNameValues = fileName.split("\\.");
-		if(fileNameValues.length != 2) {
-			log.info("@@ fileNameValues.length = {}, fileName = {}", fileNameValues.length, fileName);
-			fileInfo.setErrorCode("fileinfo.name.invalid");
-			return fileInfo;
-		}
-		if(fileNameValues[0].indexOf(".") >= 0 || fileNameValues[0].indexOf("..") >= 0) {
-			log.info("@@ fileNameValues[0] = {}", fileNameValues[0]);
-			fileInfo.setErrorCode("fileinfo.name.invalid");
-			return fileInfo;
-		}
-		String extension = fileNameValues[1];
-		List<String> extList = null;
-		if(USER_FILE_UPLOAD.equals(fileInfo.getJobType())) {
-			extList = Arrays.asList(USER_FILE_TYPE);
-		} else if(DATA_FILE_UPLOAD.equals(fileInfo.getJobType())) {
-			extList = Arrays.asList(DATA_FILE_TYPE);
-		} else if(DATA_ATTRIBUTE_UPLOAD.equals(fileInfo.getJobType())) {
-			extList = Arrays.asList(DATA_ATTRIBUTE_FILE_TYPE);
-		} else if(DATA_OBJECT_ATTRIBUTE_UPLOAD.equals(fileInfo.getJobType())) {
-			extList = Arrays.asList(DATA_OBJECT_ATTRIBUTE_FILE_TYPE);
-		} else {
-			extList =  Arrays.asList(ISSUE_FILE_TYPE);
-		}
-		if(!extList.contains(extension)) {
-			log.info("@@ extList = {}, extension = {}", extList, extension);
-			fileInfo.setErrorCode("fileinfo.ext.invalid");
-			return fileInfo;
-		}
-		
-		// 4 파일 사이즈
-		// TODO data object attribute 파일은 사이즈가 커서 제한을 하지 않음
-		if(!DATA_OBJECT_ATTRIBUTE_UPLOAD.equals(fileInfo.getJobType())) {
-			long fileSize = multipartFile.getSize();
-			log.info("@@@@@@@@@@@ file size = {} KB", (fileSize / 1000));
-			if(fileSize > FILE_UPLOAD_SIZE) {
-				log.info("@@ fileSize = {}, limit = {}", fileSize, FILE_UPLOAD_SIZE);
-				fileInfo.setErrorCode("fileinfo.size.invalid");
-				return fileInfo;
-			}
-		}
-		
-		fileInfo.setFileName(fileName);
-		fileInfo.setFileExt(extension);
-		
-		return fileInfo;
-	}
-	
-	private static FileInfo fileCopy(MultipartFile multipartFile, FileInfo fileInfo, String directory) {
-		return fileCopy(null, 1, multipartFile, fileInfo, directory);
-	}
-	
-	/**
-	 * 파일 복사
-	 * @param multipartFile
-	 * @param fileInfo
-	 * @param targetDirectory
-	 * @return
-	 */
-	private static FileInfo fileCopy(String userId, int subDirectoryType, MultipartFile multipartFile, FileInfo fileInfo, String targetDirectory) {
-		
-		// 최상위 /upload/user/ 생성
-		File rootDirectory = new File(targetDirectory);
-		if(!rootDirectory.exists()) {
-			rootDirectory.mkdir();
-		}
-		
-		// 현재년 sub 디렉토리 생성
-		String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY_TIME14);
-		String year = today.substring(0,4);
-		String month = today.substring(4,6);
-		String day = today.substring(6,8);
-		String sourceDirectory = targetDirectory;
-		
-		if(subDirectoryType >= FileUtils.SUBDIRECTORY_YEAR) {
-			File yearDirectory = new File(targetDirectory + year);
-			if(!yearDirectory.exists()) {
-				yearDirectory.mkdir();
-			}
-			sourceDirectory = targetDirectory + year + File.separator;
-		}
-		if(subDirectoryType >= FileUtils.SUBDIRECTORY_YEAR_MONTH) {
-			File monthDirectory = new File(targetDirectory + year + File.separator + month);
-			if(!monthDirectory.exists()) {
-				monthDirectory.mkdir();
-			}
-			sourceDirectory = targetDirectory + year + File.separator + month + File.separator;
-		}
-		if(subDirectoryType >= FileUtils.SUBDIRECTORY_YEAR_MONTH_DAY) {
-			File dayDirectory = new File(targetDirectory + year + File.separator + month + File.separator + day);
-			if(!dayDirectory.exists()) {
-				dayDirectory.mkdir();
-			}
-			sourceDirectory = targetDirectory + year + File.separator + month + File.separator + day + File.separator;
-		}
-		
-		String saveFileName = userId + "_" + today + "_" + System.nanoTime() + "." + fileInfo.getFileExt();
-		long size = 0L;
-		try (	InputStream inputStream = multipartFile.getInputStream();
-				OutputStream outputStream = new FileOutputStream(sourceDirectory + saveFileName)) {
-		
-			int bytesRead = 0;
-			byte[] buffer = new byte[BUFFER_SIZE];
-			while ((bytesRead = inputStream.read(buffer, 0, BUFFER_SIZE)) != -1) {
-				size += bytesRead;
-				outputStream.write(buffer, 0, bytesRead);
-			}
-		
-			fileInfo.setFileRealName(saveFileName);
-			fileInfo.setFileSize(String.valueOf(size));
-			fileInfo.setFilePath(sourceDirectory);
-		} catch(Exception e) {
-			e.printStackTrace();
-			fileInfo.setErrorCode("fileinfo.copy.exception");
-		}
-
-		return fileInfo;
-	}
+//	/**
+//	 * 파일 등록 
+//	 * @param multipartFile
+//	 * @param jobType
+//	 * @param directory
+//	 * @return
+//	 */
+//	public static FileInfo upload(MultipartFile multipartFile, String jobType, String directory) {
+//	
+//		FileInfo fileInfo = new FileInfo();
+//		fileInfo.setJobType(jobType);
+//		
+//		// 파일 기본 validation 체크
+//		fileInfo = fileValidation(multipartFile, fileInfo);
+//		if(fileInfo.getErrorCode() != null && !"".equals(fileInfo.getErrorCode())) {
+//			return fileInfo;
+//		}
+//		
+//		// 파일을 upload 디렉토리로 복사
+//		fileInfo = fileCopy(multipartFile, fileInfo, directory);
+//		
+//		return fileInfo;
+//	}
+//	
+//	/**
+//	 * 업로딩 파일에 대한 기본적인 validation 체크. 이름, 확장자, 사이즈
+//	 * @param multipartFile
+//	 * @param fileInfo
+//	 * @return
+//	 */
+//	private static FileInfo fileValidation(MultipartFile multipartFile, FileInfo fileInfo) {
+//		return fileValidation(multipartFile, fileInfo, 0l);
+//	}
+//	
+//	/**
+//	 * 업로딩 파일에 대한 기본적인 validation 체크. 이름, 확장자, 사이즈
+//	 * @param multipartFile
+//	 * @param fileInfo
+//	 * @return
+//	 */
+//	private static FileInfo fileValidation(MultipartFile multipartFile, FileInfo fileInfo, long fileUploadSize) {
+//		
+//		// 1 파일 공백 체크
+//		if(multipartFile == null || multipartFile.getSize() == 0l) {
+//			log.info("@@ multipartFile is null");
+//			fileInfo.setErrorCode("fileinfo.invalid");
+//			return fileInfo;
+//		}
+//		
+//		// 2 파일 이름
+//		String fileName = multipartFile.getOriginalFilename();
+//		if(fileName == null) {
+//			log.info("@@ fileName is null");
+//			fileInfo.setErrorCode("fileinfo.name.invalid");
+//			return fileInfo;
+//		} else if(fileName.indexOf("..") >= 0 || fileName.indexOf("/") >= 0) {
+//			// TODO File.seperator 정규 표현식이 안 먹혀서 이렇게 처리함
+//			log.info("@@ fileName = {}", fileName);
+//			fileInfo.setErrorCode("fileinfo.name.invalid");
+//			return fileInfo;
+//		}
+//		
+//		// 3 파일 확장자
+//		String[] fileNameValues = fileName.split("\\.");
+//		if(fileNameValues.length != 2) {
+//			log.info("@@ fileNameValues.length = {}, fileName = {}", fileNameValues.length, fileName);
+//			fileInfo.setErrorCode("fileinfo.name.invalid");
+//			return fileInfo;
+//		}
+//		if(fileNameValues[0].indexOf(".") >= 0 || fileNameValues[0].indexOf("..") >= 0) {
+//			log.info("@@ fileNameValues[0] = {}", fileNameValues[0]);
+//			fileInfo.setErrorCode("fileinfo.name.invalid");
+//			return fileInfo;
+//		}
+//		String extension = fileNameValues[1];
+//		List<String> extList = null;
+//		if(USER_FILE_UPLOAD.equals(fileInfo.getJobType())) {
+//			extList = Arrays.asList(USER_FILE_TYPE);
+//		} else if(DATA_FILE_UPLOAD.equals(fileInfo.getJobType())) {
+//			extList = Arrays.asList(DATA_FILE_TYPE);
+//		} else if(DATA_ATTRIBUTE_UPLOAD.equals(fileInfo.getJobType())) {
+//			extList = Arrays.asList(DATA_ATTRIBUTE_FILE_TYPE);
+//		} else if(DATA_OBJECT_ATTRIBUTE_UPLOAD.equals(fileInfo.getJobType())) {
+//			extList = Arrays.asList(DATA_OBJECT_ATTRIBUTE_FILE_TYPE);
+//		} else {
+//			extList =  Arrays.asList(ISSUE_FILE_TYPE);
+//		}
+//		if(!extList.contains(extension)) {
+//			log.info("@@ extList = {}, extension = {}", extList, extension);
+//			fileInfo.setErrorCode("fileinfo.ext.invalid");
+//			return fileInfo;
+//		}
+//		
+//		// 4 파일 사이즈
+//		// TODO data object attribute 파일은 사이즈가 커서 제한을 하지 않음
+//		if(!DATA_OBJECT_ATTRIBUTE_UPLOAD.equals(fileInfo.getJobType())) {
+//			long fileSize = multipartFile.getSize();
+//			log.info("@@@@@@@@@@@ file size = {} KB", (fileSize / 1000));
+//			if(fileSize > FILE_UPLOAD_SIZE) {
+//				log.info("@@ fileSize = {}, limit = {}", fileSize, FILE_UPLOAD_SIZE);
+//				fileInfo.setErrorCode("fileinfo.size.invalid");
+//				return fileInfo;
+//			}
+//		}
+//		
+//		fileInfo.setFileName(fileName);
+//		fileInfo.setFileExt(extension);
+//		
+//		return fileInfo;
+//	}
+//	
+//	private static FileInfo fileCopy(MultipartFile multipartFile, FileInfo fileInfo, String directory) {
+//		return fileCopy(null, 1, multipartFile, fileInfo, directory);
+//	}
+//	
+//	/**
+//	 * 파일 복사
+//	 * @param multipartFile
+//	 * @param fileInfo
+//	 * @param targetDirectory
+//	 * @return
+//	 */
+//	private static FileInfo fileCopy(String userId, int subDirectoryType, MultipartFile multipartFile, FileInfo fileInfo, String targetDirectory) {
+//		
+//		// 최상위 /upload/user/ 생성
+//		File rootDirectory = new File(targetDirectory);
+//		if(!rootDirectory.exists()) {
+//			rootDirectory.mkdir();
+//		}
+//		
+//		// 현재년 sub 디렉토리 생성
+//		String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY_TIME14);
+//		String year = today.substring(0,4);
+//		String month = today.substring(4,6);
+//		String day = today.substring(6,8);
+//		String sourceDirectory = targetDirectory;
+//		
+//		if(subDirectoryType >= FileUtils.SUBDIRECTORY_YEAR) {
+//			File yearDirectory = new File(targetDirectory + year);
+//			if(!yearDirectory.exists()) {
+//				yearDirectory.mkdir();
+//			}
+//			sourceDirectory = targetDirectory + year + File.separator;
+//		}
+//		if(subDirectoryType >= FileUtils.SUBDIRECTORY_YEAR_MONTH) {
+//			File monthDirectory = new File(targetDirectory + year + File.separator + month);
+//			if(!monthDirectory.exists()) {
+//				monthDirectory.mkdir();
+//			}
+//			sourceDirectory = targetDirectory + year + File.separator + month + File.separator;
+//		}
+//		if(subDirectoryType >= FileUtils.SUBDIRECTORY_YEAR_MONTH_DAY) {
+//			File dayDirectory = new File(targetDirectory + year + File.separator + month + File.separator + day);
+//			if(!dayDirectory.exists()) {
+//				dayDirectory.mkdir();
+//			}
+//			sourceDirectory = targetDirectory + year + File.separator + month + File.separator + day + File.separator;
+//		}
+//		
+//		String saveFileName = userId + "_" + today + "_" + System.nanoTime() + "." + fileInfo.getFileExt();
+//		long size = 0L;
+//		try (	InputStream inputStream = multipartFile.getInputStream();
+//				OutputStream outputStream = new FileOutputStream(sourceDirectory + saveFileName)) {
+//		
+//			int bytesRead = 0;
+//			byte[] buffer = new byte[BUFFER_SIZE];
+//			while ((bytesRead = inputStream.read(buffer, 0, BUFFER_SIZE)) != -1) {
+//				size += bytesRead;
+//				outputStream.write(buffer, 0, bytesRead);
+//			}
+//		
+//			fileInfo.setFileRealName(saveFileName);
+//			fileInfo.setFileSize(String.valueOf(size));
+//			fileInfo.setFilePath(sourceDirectory);
+//		} catch(Exception e) {
+//			e.printStackTrace();
+//			fileInfo.setErrorCode("fileinfo.copy.exception");
+//		}
+//
+//		return fileInfo;
+//	}
 	
 	public static boolean makeDirectory(String targetDirectory) {
 		File directory = new File(targetDirectory);
