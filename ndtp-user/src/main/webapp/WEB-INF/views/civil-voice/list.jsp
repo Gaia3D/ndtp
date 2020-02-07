@@ -4,29 +4,17 @@
 
 	<!-- 시민참여 검색 -->
 	<div class="listSearch search-margin flex-align-center">
-		<input type="text" id="searchCivilVoiceTitle" name="searchCivilVoiceTitle" placeholder="검색어를 입력하세요.">
+		<input type="text" id="getCivilVoiceListTitle" name="getCivilVoiceListTitle" placeholder="검색어를 입력하세요.">
 		<button type="button" id="civilVoiceSearch" class="btnTotalSearch" title="검색">검색</button>
 	</div>
 
 	<div class="bothSide">
-		<div>전체 <span class="civilVoiceTotalCount">0</span>건</div>
+		<div>전체 <span id="civilVoiceTotalCount">0</span>건</div>
 		<div></div>
 	</div>
 
 	<ul id="civilVoiceList" class="commentWrap"></ul>
-
-	<ul class="pagination">
-		<li class="ico first" title="맨앞으로">처음</li>
-		<li class="ico forward" title="앞으로">앞으로</li>
-		<li>1</li>
-		<li>2</li>
-		<li>3</li>
-		<li class="on">4</li>
-		<li>5</li>
-		<li>6</li>
-		<li class="ico back" title="뒤로">뒤로</li>
-		<li class="ico end" title="맨뒤로">마지막</li>
-	</ul>
+	<ul id="civilVoicePagination" class="pagination"></ul>
 
 	<div class="form-group button-group-top-center">
 		<button type="button" id="civilVoiceInputButton" title="의견등록" class="btnTextF">의견 등록</button>
@@ -52,4 +40,29 @@
 		<li class="none">등록된 글이 없습니다.</li>
 	{{/if}}
 </script>
+
+<script id="templateCivilVoicePagination" type="text/x-handlebars-template">
+	{{#if pagination.totalCount}}
+    	<ul class="pagination">
+    	{{#if pagination.existPrePage}}
+       	 	<li class="ico first" onClick="getCivilVoiceList({{pagination.firstPage}});"></li>
+        	<li class="ico forward" onClick="getCivilVoiceList({{pagination.prePageNo}});"></li>
+    	{{/if}}
+
+    	{{#forEachStep pagination.startPage pagination.endPage 1}}
+        	{{#if (indexCompare this ../pagination.pageNo)}}
+           		<li class="on"><a href='#'>{{this}}</a></li>
+        	{{else}}
+         		<li onClick="getCivilVoiceList({{this}});"><a href='#'>{{this}}</a></li>
+        	{{/if}}
+    	{{/forEachStep}}
+
+    	{{#if pagination.existNextPage}}
+        	<li class="ico back" onClick="getCivilVoiceList({{pagination.nextPageNo}});"></li>
+        	<li class="ico end" onClick="getCivilVoiceList({{pagination.lastPage}});"></li>
+    	{{/if}}
+    	</ul>
+	{{/if}}
+</script>
+
 <!-- <span class="likes-icon">icon</span> -->
