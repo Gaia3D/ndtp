@@ -140,11 +140,14 @@ public class LayerController implements AuthorizationController {
     	if(roleValidate(request) != null) return roleCheckResult;
 
     	Policy policy = policyService.getPolicy();
+    	GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
     	List<LayerGroup> layerGroupList = layerGroupService.getListLayerGroup();
-
+    	String geoserverLayerJson = layerService.getListGeoserverLayer(geoPolicy);
+    	
     	model.addAttribute("policy", policy);
     	model.addAttribute("layer", new Layer());
     	model.addAttribute("layerGroupList", layerGroupList);
+    	model.addAttribute("geoserverLayerJson", geoserverLayerJson);
 
     	return "/layer/input";
     }
@@ -179,6 +182,42 @@ public class LayerController implements AuthorizationController {
 
         return "/layer/modify";
     }
+    
+    /**
+     * geoserver 레이어를 서비스 레이어로 등록 
+     * @param request
+     * @param layer
+     * @return
+     */
+    @PostMapping(value ="insert-geoserver")
+    @ResponseBody
+    public Map<String, Object> geoserverInsert(HttpServletRequest request, Layer layer) {
+    	Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		try {
+			Boolean layerKeyDuplication = layerService.isLayerKeyDuplication(request.getParameter("layerKey"));
+			if(layerKeyDuplication) {
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "layer.key.duplication");
+				return result;
+			}
+			List<LayerFileInfo> layerFileInfoList = new ArrayList<>();
+			layerService.insertLayer(layer, layerFileInfoList);
+			layerService.updateLayerStyle(layer);
+		} catch (Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
+    }
 
 	/**
 	 * shape 파일 변환 TODO dropzone 이 파일 갯수만큼 form data를 전송해 버려서 command 패턴을(Layer
@@ -204,6 +243,12 @@ public class LayerController implements AuthorizationController {
 				result.put("errorCode", errorCode);
 				return result;
 			}
+			Boolean layerKeyDuplication = layerService.isLayerKeyDuplication(request.getParameter("layerKey"));
+			if(layerKeyDuplication) {
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "layer.key.duplication");
+				return result;
+			}
 
 			UserSession userSession = (UserSession) request.getSession().getAttribute(Key.USER_SESSION.name());
 			String userId = userSession.getUserId();
@@ -223,6 +268,7 @@ public class LayerController implements AuthorizationController {
 							.layerKey(request.getParameter("layerKey"))
 							.serviceType(request.getParameter("serviceType"))
 							.layerType(request.getParameter("layerType"))
+							.layerInsertType(request.getParameter("layerInsertType"))
 							.geometryType(request.getParameter("geometryType"))
 							.layerLineColor(request.getParameter("layerLineColor"))
 							.layerLineStyle(Float.valueOf(request.getParameter("layerLineStyle")))
@@ -791,7 +837,7 @@ public class LayerController implements AuthorizationController {
 
         return "/layer/popup-map";
     }
-
+    
     private String replaceInvalidValue(String value) {
         if("null".equals(value)) value = null;
         return value;

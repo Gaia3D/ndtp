@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ndtp.domain.ApprovalStatus;
 import ndtp.domain.ApprovalType;
 import ndtp.domain.DataInfo;
-import ndtp.domain.DataInfoAdjustLog;
+import ndtp.domain.DataAdjustLog;
 import ndtp.domain.GeoPolicy;
 import ndtp.persistence.DataAdjustLogMapper;
 import ndtp.service.DataAdjustLogService;
@@ -38,7 +38,7 @@ public class DataAdjustLogServiceImpl implements DataAdjustLogService {
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public Long getDataAdjustLogTotalCount(DataInfoAdjustLog dataInfoAdjustLog) {
+	public Long getDataAdjustLogTotalCount(DataAdjustLog dataInfoAdjustLog) {
 		return dataAdjustLogMapper.getDataAdjustLogTotalCount(dataInfoAdjustLog);
 	}
 	
@@ -48,7 +48,7 @@ public class DataAdjustLogServiceImpl implements DataAdjustLogService {
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public List<DataInfoAdjustLog> getListDataAdjustLog(DataInfoAdjustLog dataInfoAdjustLog) {
+	public List<DataAdjustLog> getListDataAdjustLog(DataAdjustLog dataInfoAdjustLog) {
 		return dataAdjustLogMapper.getListDataAdjustLog(dataInfoAdjustLog);
 	}
 	
@@ -58,7 +58,7 @@ public class DataAdjustLogServiceImpl implements DataAdjustLogService {
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public DataInfoAdjustLog getDataAdjustLog(Long dataAdjustLogId) {
+	public DataAdjustLog getDataAdjustLog(Long dataAdjustLogId) {
 		return dataAdjustLogMapper.getDataAdjustLog(dataAdjustLogId);
 	}
 	
@@ -68,7 +68,7 @@ public class DataAdjustLogServiceImpl implements DataAdjustLogService {
 	 * @return
 	 */
 	@Transactional
-	public int insertDataAdjustLog(DataInfoAdjustLog dataInfoAdjustLog) {
+	public int insertDataAdjustLog(DataAdjustLog dataInfoAdjustLog) {
 		
 		GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
 		String dataChangeRequestDecision = geoPolicy.getDataChangeRequestDecision();

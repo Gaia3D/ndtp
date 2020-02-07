@@ -271,21 +271,21 @@ public class DataController {
 //	/**
 //	 * Data Attribute 정보
 //	 * @param request
-//	 * @param dataInfoAttribute
+//	 * @param dataAttribute
 //	 * @return
 //	 */
 //	@GetMapping(value = "detail-data-attribute")
 //	@ResponseBody
-//	public Map<String, Object> detailDataAttribute(HttpServletRequest request, DataInfoAttribute dataInfoAttribute) {
-//		log.info("@@ dataInfoAttribute = {}", dataInfoAttribute);
+//	public Map<String, Object> detailDataAttribute(HttpServletRequest request, DataAttribute dataAttribute) {
+//		log.info("@@ dataAttribute = {}", dataAttribute);
 //		
 //		Map<String, Object> result = new HashMap<>();
 //		int statusCode = 0;
 //		String errorCode = null;
 //		String message = null;
 //		try {
-//			dataInfoAttribute = dataService.getDataAttribute(dataInfoAttribute.getDataId());
-//			result.put("dataInfoAttribute", dataInfoAttribute);
+//			dataAttribute = dataService.getDataAttribute(dataAttribute.getDataId());
+//			result.put("dataAttribute", dataAttribute);
 //		} catch(Exception e) {
 //			e.printStackTrace();
 //            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
@@ -302,7 +302,7 @@ public class DataController {
 //	/**
 //	 * Data Origin Attribute 한건 등록
 //	 * @param request
-//	 * @param dataInfoAttribute
+//	 * @param dataAttribute
 //	 * @return
 //	 */
 //	@PostMapping(value = "insert-data-attribute-file")

@@ -133,7 +133,7 @@ public class DataServiceImpl implements DataService {
 //	 * @return
 //	 */
 //	@Transactional(readOnly=true)
-//	public DataInfoAttribute getDataAttribute(Long dataId) {
+//	public DataAttribute getDataAttribute(Long dataId) {
 //		return dataMapper.getDataAttribute(dataId);
 //	}
 	
@@ -197,12 +197,12 @@ public class DataServiceImpl implements DataService {
 	
 //	/**
 //	 * Data 속성 등록
-//	 * @param dataInfoAttribute
+//	 * @param dataAttribute
 //	 * @return
 //	 */
 //	@Transactional
-//	public int insertDataAttribute(DataInfoAttribute dataInfoAttribute) {
-//		return dataMapper.insertDataAttribute(dataInfoAttribute);
+//	public int insertDataAttribute(DataAttribute dataAttribute) {
+//		return dataMapper.insertDataAttribute(dataAttribute);
 //	}
 //	
 //	/**
@@ -228,12 +228,12 @@ public class DataServiceImpl implements DataService {
 	
 //	/**
 //	 * Data 속성 수정
-//	 * @param dataInfoAttribute
+//	 * @param dataAttribute
 //	 * @return
 //	 */
 //	@Transactional
-//	public int updateDataAttribute(DataInfoAttribute dataInfoAttribute) {
-//		return dataMapper.updateDataAttribute(dataInfoAttribute);
+//	public int updateDataAttribute(DataAttribute dataAttribute) {
+//		return dataMapper.updateDataAttribute(dataAttribute);
 //	}
 	
 	/**
