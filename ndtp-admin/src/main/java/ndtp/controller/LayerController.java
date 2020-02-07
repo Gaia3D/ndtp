@@ -172,11 +172,11 @@ public class LayerController implements AuthorizationController {
         model.addAttribute("layerGroupList", layerGroupList);
         
         // 파일업로드로 레이어를 등록한 경우
-        if(layer.getLayerInsertType().equals(LayerInsertType.UPLOAD.getValue())) {
+        if(LayerInsertType.UPLOAD == LayerInsertType.valueOf(layer.getLayerInsertType().toUpperCase())) {
         	List<LayerFileInfo> layerFileInfoList = layerFileInfoService.getListLayerFileInfo(layerId);
             LayerFileInfo layerFileInfo = new LayerFileInfo();
             for(int i = 0; i < layerFileInfoList.size(); i++) {
-                if(layerFileInfoList.get(i).getFileExt().equals("shp")) {
+                if(ShapeFileExt.SHP == ShapeFileExt.valueOf(layerFileInfoList.get(i).getFileExt().toUpperCase())) {
                     layerFileInfo = layerFileInfoList.get(i);
                 }
             }
@@ -204,7 +204,7 @@ public class LayerController implements AuthorizationController {
 		String errorCode = null;
 		String message = null;
 		try {
-			Boolean layerKeyDuplication = layerService.isLayerKeyDuplication(request.getParameter("layerKey"));
+			Boolean layerKeyDuplication = layerService.isLayerKeyDuplication(layer.getLayerKey());
 			if(layerKeyDuplication) {
 				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
 				result.put("errorCode", "layer.key.duplication");
