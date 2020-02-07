@@ -49,6 +49,7 @@ import ndtp.domain.Key;
 import ndtp.domain.Layer;
 import ndtp.domain.LayerFileInfo;
 import ndtp.domain.LayerGroup;
+import ndtp.domain.LayerInsertType;
 import ndtp.domain.Pagination;
 import ndtp.domain.Policy;
 import ndtp.domain.RoleKey;
@@ -165,22 +166,28 @@ public class LayerController implements AuthorizationController {
         Policy policy = policyService.getPolicy();
         Layer layer = layerService.getLayer(layerId);
         List<LayerGroup> layerGroupList = layerGroupService.getListLayerGroup();
-
-        List<LayerFileInfo> layerFileInfoList = layerFileInfoService.getListLayerFileInfo(layerId);
-        LayerFileInfo layerFileInfo = new LayerFileInfo();
-        for(int i = 0; i < layerFileInfoList.size(); i++) {
-            if(layerFileInfoList.get(i).getFileExt().equals("shp")) {
-                layerFileInfo = layerFileInfoList.get(i);
-            }
-        }
+        
         model.addAttribute("policy", policy);
         model.addAttribute("layer", layer);
         model.addAttribute("layerGroupList", layerGroupList);
-        model.addAttribute("layerFileInfo", layerFileInfo);
-        model.addAttribute("layerFileInfoList", layerFileInfoList);
-        model.addAttribute("layerFileInfoListSize", layerFileInfoList.size());
-
-        return "/layer/modify";
+        
+        // 파일업로드로 레이어를 등록한 경우
+        if(layer.getLayerInsertType().equals(LayerInsertType.UPLOAD.getValue())) {
+        	List<LayerFileInfo> layerFileInfoList = layerFileInfoService.getListLayerFileInfo(layerId);
+            LayerFileInfo layerFileInfo = new LayerFileInfo();
+            for(int i = 0; i < layerFileInfoList.size(); i++) {
+                if(layerFileInfoList.get(i).getFileExt().equals("shp")) {
+                    layerFileInfo = layerFileInfoList.get(i);
+                }
+            }
+            model.addAttribute("layerFileInfo", layerFileInfo);
+            model.addAttribute("layerFileInfoList", layerFileInfoList);
+            model.addAttribute("layerFileInfoListSize", layerFileInfoList.size());
+            
+            return "/layer/modify-upload";
+        } else { //geoserver 레이어를 등록한 경우 
+        	return "/layer/modify-geoserver";
+        }
     }
     
     /**
@@ -191,7 +198,7 @@ public class LayerController implements AuthorizationController {
      */
     @PostMapping(value ="insert-geoserver")
     @ResponseBody
-    public Map<String, Object> geoserverInsert(HttpServletRequest request, Layer layer) {
+    public Map<String, Object> insertGeoserverLayer(HttpServletRequest request, Layer layer) {
     	Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String errorCode = null;
@@ -413,7 +420,30 @@ public class LayerController implements AuthorizationController {
 		result.put("message", message);
 		return result;
 	}
+	
+	@PostMapping(value = "update-geoserver")
+	@ResponseBody
+	public Map<String, Object> updateGeoserverLayer(HttpServletRequest request, Layer layer) {
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		try {
+			List<LayerFileInfo> layerFileInfoList = new ArrayList<>();
+			layerService.updateLayer(layer, false, layerFileInfoList);
+			layerService.updateLayerStyle(layer);
+		} catch (Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
 
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
+	}
     /**
     * shape 파일 변환
     * TODO dropzone 이 파일 갯수만큼 form data를 전송해 버려서 command 패턴을(Layer layer) 사용할 수 없음
