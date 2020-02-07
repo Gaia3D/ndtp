@@ -28,7 +28,7 @@
 	</div>
 </div>
 <div class="userPolicyContent">
-	<h3 class="h3-heading">FOV (Field Of View)</h3>
+	<h3 class="h3-heading marB10">FOV (Field Of View)</h3>
 	<div class="userPolicyContentDetail">
 		<div class="form-group form-group-policy">
 			<label for="initfieldOfView">각도</label>
