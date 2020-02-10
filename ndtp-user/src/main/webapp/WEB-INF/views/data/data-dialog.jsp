@@ -23,7 +23,20 @@
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">공유 유형</th>
-			<td id="sharing" class="col-data">{{sharing}}</td>
+			<td id="sharing" class="col-data">
+{{#ifMatch sharing 'common'}}
+				공통
+{{/ifMatch}}
+{{#ifMatch sharing 'public'}}
+				공개
+{{/ifMatch}}
+{{#ifMatch sharing 'private'}}
+				개인
+{{/ifMatch}}
+{{#ifMatch sharing 'group'}}
+				그룹
+{{/ifMatch}}			
+			</td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">매핑 타입</th>
