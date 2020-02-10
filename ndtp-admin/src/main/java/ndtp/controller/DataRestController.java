@@ -178,7 +178,7 @@ public class DataRestController {
 	}
 	
 	/**
-	 * 데이터 속성 정보
+	 * 데이터 Object 속성 정보
 	 * @param dataId
 	 * @return
 	 */

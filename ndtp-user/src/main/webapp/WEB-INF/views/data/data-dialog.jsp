@@ -59,11 +59,23 @@
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">속성 존재 유무</th>
-			<td id="attributeExist" class="col-data">{{attributeExist}}</td>
+			<td id="attributeExist" class="col-data">
+{{#if attributeExist}}
+				<a href="#" onclick="detailDataAttribute('{{dataId }}', '{{dataName}}'); return false;">보기</a>
+{{else}}
+				미등록
+{{/if}}
+			</td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">Object 속성 존재 유무</th>
-			<td id="objectAttributeExist" class="col-data">{{objectAttributeExist}}</td>
+			<td id="objectAttributeExist" class="col-data">
+{{#if objectAttributeExist}}
+				<a href="#" onclick="detailDataObjectAttribute('{{dataId }}', '{{dataName}}'); return false;">보기</a>
+{{else}}
+				미등록
+{{/if}}
+			</td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">설명</th>

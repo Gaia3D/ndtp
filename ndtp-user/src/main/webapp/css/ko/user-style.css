@@ -50,7 +50,7 @@ text-align: right;
 width: calc(100% - 500px);
 }
 .signArea > span {
-border-bottom: 1px solid #fff;
+/*	border-bottom: 1px solid #fff;	*/
 }
 .signArea * {
 vertical-align: middle;
