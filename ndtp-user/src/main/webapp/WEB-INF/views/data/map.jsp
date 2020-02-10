@@ -320,7 +320,7 @@
 	var dataInfoDialog = $( "#dataInfoDialog" ).dialog({
 		autoOpen: false,
 		width: 500,
-		height: 700,
+		height: 720,
 		modal: true,
 		overflow : "auto",
 		resizable: false
