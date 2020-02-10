@@ -11,14 +11,19 @@ import ndtp.service.CivilVoiceCommentService;
 @Service
 public class CivilVoiceCommentServiceImpl implements CivilVoiceCommentService {
 	private final CivilVoiceCommentMapper civilVoiceCommentMapper;
-	
+
 	public CivilVoiceCommentServiceImpl(CivilVoiceCommentMapper civilVoiceCommentMapper) {
 		this.civilVoiceCommentMapper = civilVoiceCommentMapper;
 	}
-	
+
 	@Override
-	public List<CivilVoiceComment> getListCivilVoiceComment(Long CivilVoiceId) {
-		return civilVoiceCommentMapper.getListCivilVoiceComment(CivilVoiceId);
+	public List<CivilVoiceComment> getListCivilVoiceComment(CivilVoiceComment civilVoiceComment) {
+		return civilVoiceCommentMapper.getListCivilVoiceComment(civilVoiceComment);
+	}
+
+	@Override
+	public Long getListCivilVoiceCommentTotalCount(CivilVoiceComment civilVoiceComment) {
+		return civilVoiceCommentMapper.getListCivilVoiceCommentTotalCount(civilVoiceComment);
 	}
 
 	@Override

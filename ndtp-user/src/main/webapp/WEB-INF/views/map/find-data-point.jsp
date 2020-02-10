@@ -306,7 +306,7 @@
 			return false;
 		}
 		var dataId = parseInt("${dataInfo.dataId}");
-		if(confirm('현재 입력된 위치와 회전 정보를 db에 저장하시겠습니까?')) {
+		if(confirm(JS_MESSAGE["data.update.check"])) {
 			if(!dataId) {
 				alert('선택된 데이터가 없습니다.');
 				return false;

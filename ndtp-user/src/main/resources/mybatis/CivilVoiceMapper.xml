@@ -33,6 +33,7 @@
 			AND ${title} = #{title}
 			</if>
 		</trim>
+		ORDER BY civil_voice_id DESC
 		OFFSET #{offset} LIMIT #{limit}
 	</select>
 
@@ -68,7 +69,26 @@
 	<!-- 시민 참여 한건에 대한 정보 조회 -->
 	<select id="getCivilVocieById" parameterType="long" resultType="civilVoice">
 		/* getCivilVocieById */
-		SELECT * FROM tn_civil_voice WHERE civil_voice_id = #{civilVoiceId}
+        WITH civil_voice AS (
+	        SELECT
+				civil_voice_id,
+				user_id,
+				title,
+				content as contents,
+				location,
+				heit as altitude,
+				use_yn as available,
+				user_ip as client_ip,
+				view_count,
+				year, month, day, year_week, week, hour, minute,
+				update_dt as update_date,
+				regist_dt as insert_date,
+				sido_cd, sgg_cd, emd_cd
+	        FROM tn_civil_voice
+        )
+		SELECT *
+		FROM civil_voice
+		WHERE civil_voice_id = #{civilVoiceId}
 	</select>
 
 	<!-- 등록 -->
@@ -77,24 +97,71 @@
 		<selectKey keyProperty="civilVoiceId" resultType="long" order="BEFORE">
 			SELECt NEXTVAL('civil_voice_seq')
 		</selectKey>
-		INSERT INTO tn_civil_voice(
-			civil_voice_id, user_id, user_ip, title, content, location, heit, sido_cd, sgg_cd, emd_cd, regist_dt
-		) VALUES (
-			#{civilVoiceId}, #{userId}, #{userIp}, #{title}, #{content}, ST_GeomFromText(#{location}, 4326), #{heit}, #{sidoCd}, #{sggCd}, #{emdCd}, NOW()
-		)
+		INSERT INTO tn_civil_voice (
+			civil_voice_id,	user_id, title, content, location, heit,
+			user_ip, sido_cd, sgg_cd, emd_cd
+        ) VALUES (
+			#{civilVoiceId}, #{userId}, #{title}, #{contents}, #{location}, #{altitude},
+			#{clientIp}, #{sidoCd}, #{sggCd}, #{emdCd}
+        )
 	</insert>
 
 	<!-- 수정 -->
 	<update id="updateCivilVoice" parameterType="civilVoice">
 		/* updateCivilVoice */
-		UPDATE tn_civil_voice SET
+		UPDATE tn_civil_voice
+		SET
+			<if test="title != null and title != ''">
 			title = #{title},
-			content = #{content},
-			location = ST_GeomFromText(#{location}, 4326),
-			heit = #{heit},
+			</if>
+			<if test="contents != null and contents != ''">
+			content = #{contents},
+			</if>
+			<if test="location != null and location != ''">
+			location = #{location},
+			</if>
+			<if test="altitude != null and altitude != ''">
+			heit = #{altitude},
+			</if>
+			<if test="available != null">
+			use_yn = #{available},
+			</if>
+			<if test="clientIp != null and clientIp != ''">
+			user_ip = #{clientIp},
+			</if>
+			<if test="viewCount != null and viewCount != ''">
+			view_count = #{viewCount},
+			</if>
+			<if test="year != null and year != ''">
+			year = #{year},
+			</if>
+			<if test="month != null and month != ''">
+			month = #{month},
+			</if>
+			<if test="day != null and day != ''">
+			day = #{day},
+			</if>
+			<if test="yearWeek != null and yearWeek != ''">
+			year_week = #{yearWeek},
+			</if>
+			<if test="week != null and week != ''">
+			week = #{week},
+			</if>
+			<if test="hour != null and hour != ''">
+			hour = #{hour},
+			</if>
+			<if test="minute != null and minute != ''">
+			minute = #{minute},
+			</if>
+			<if test="sidoCd != null and sidoCd != ''">
 			sido_cd = #{sidoCd},
+			</if>
+			<if test="sggCd != null and sggCd != ''">
 			sgg_cd = #{sggCd},
+			</if>
+			<if test="emdCd != null and emdCd != ''">
 			emd_cd = #{emdCd},
+			</if>
 			update_dt = NOW()
 		WHERE civil_voice_id = #{civilVoiceId}
 	</update>

@@ -220,14 +220,7 @@
 	        <button type="button" class="layerClose" title="닫기">닫기</button>
 	    </div>
 	    <div class="layerContents">
-	    	<!-- <ul class="category">
-	    		<li>객체정보</li>
-	    	</ul>
-				<input type="radio" id="datainfoDisplayY" name="datainfoDisplay" value="true"/>
-				<label for="datainfoDisplayY">표시</label>
-				<input type="radio" id="datainfoDisplayN" name="datainfoDisplay" value="false" checked/>
-				<label for="datainfoDisplayN">비표시</label> -->
-			<ul class="category">
+	    	<ul class="category">
 	    		<li>Origin</li>
 	    	</ul>
 				<input type="radio" id="originDisplayY" name="originDisplay" value="true"/>

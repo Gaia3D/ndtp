@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
-import ndtp.domain.CivilVoice;
+import ndtp.domain.CivilVoiceComment;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
@@ -30,57 +30,58 @@ import ndtp.utils.WebUtils;
 
 @Slf4j
 @RestController
-@RequestMapping("/civil-voices")
-public class CivilVoiceRestController {
+@RequestMapping("/civil-voice-comments")
+public class CivilVoiceCommentRestController {
 
 	private static final long PAGE_ROWS = 5l;
 	private static final long PAGE_LIST_COUNT = 5l;
 	private final CivilVoiceService civilVoiceService;
 	private final CivilVoiceCommentService civilVoiceCommentService;
 
-	public CivilVoiceRestController(CivilVoiceService civilVoiceService, CivilVoiceCommentService civilVoiceCommentService) {
+	public CivilVoiceCommentRestController(CivilVoiceService civilVoiceService, CivilVoiceCommentService civilVoiceCommentService) {
 		this.civilVoiceService = civilVoiceService;
 		this.civilVoiceCommentService = civilVoiceCommentService;
 	}
 
 	/**
-	 * 시민 참여 목록 조회
+	 * 시민 참여 댓글 목록 조회
 	 * @param request
 	 * @param civilVoice
 	 * @param pageNo
 	 * @return
 	 */
-	@GetMapping
-	public Map<String, Object> list(HttpServletRequest request, CivilVoice civilVoice, @RequestParam(defaultValue="1") String pageNo) {
-		log.info("civilVoice list ===================== {} " , civilVoice);
+	@GetMapping("/{civilVoiceId}")
+	public Map<String, Object> list(HttpServletRequest request, @PathVariable Long civilVoiceId, CivilVoiceComment civilVoiceComment, @RequestParam(defaultValue="1") String pageNo) {
+		log.info("civilVoiceComment list ===================== {} " , civilVoiceComment);
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String errorCode = null;
 		String message = null;
 
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-		civilVoice.setUserId(userSession.getUserId());
-		civilVoice.setClientIp(WebUtils.getClientIp(request));
+		civilVoiceComment.setUserId(userSession.getUserId());
+		civilVoiceComment.setClientIp(WebUtils.getClientIp(request));
+		civilVoiceComment.setCivilVoiceId(civilVoiceId);
 		try {
-			long totalCount = civilVoiceService.getCivilVoiceTotalCount(civilVoice);
+			long totalCount = civilVoiceCommentService.getListCivilVoiceCommentTotalCount(civilVoiceComment);
 			Pagination pagination = new Pagination(	request.getRequestURI(),
-													getSearchParameters(PageType.LIST, civilVoice),
+													getSearchParameters(PageType.LIST, civilVoiceComment),
 													totalCount,
 													Long.valueOf(pageNo).longValue(),
 													PAGE_ROWS,
 													PAGE_LIST_COUNT);
 			log.info("@@ pagination = {}", pagination);
 
-			civilVoice.setOffset(pagination.getOffset());
-			civilVoice.setLimit(pagination.getPageRows());
-			List<CivilVoice> civilVoiceList = new ArrayList<>();
+			civilVoiceComment.setOffset(pagination.getOffset());
+			civilVoiceComment.setLimit(pagination.getPageRows());
+			List<CivilVoiceComment> civilVoiceCommentList = new ArrayList<>();
 			if(totalCount > 0l) {
-				civilVoiceList = civilVoiceService.getListCivilVoice(civilVoice);
+				civilVoiceCommentList = civilVoiceCommentService.getListCivilVoiceComment(civilVoiceComment);
 			}
 
 			result.put("totalCount", totalCount);
 			result.put("pagination", pagination);
-			result.put("civilVoiceList", civilVoiceList);
+			result.put("civilVoiceCommentList", civilVoiceCommentList);
 		} catch(Exception e) {
 			e.printStackTrace();
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
@@ -96,56 +97,15 @@ public class CivilVoiceRestController {
 	}
 
 	/**
-	 * 시민 참여 상세 조회
+	 * 시민참여 댓글 등록
 	 * @param request
-	 * @param civilVoiceId
-	 * @param civilVoice
-	 * @return
-	 */
-	@GetMapping("/{civilVoiceId}")
-	public Map<String, Object> detail(HttpServletRequest request, @PathVariable Long civilVoiceId, CivilVoice civilVoice) {
-		log.info("@@@@@ detail civilVoice = {}, civilVoiceId = {}", civilVoice, civilVoiceId);
-		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-
-		Map<String, Object> result = new HashMap<>();
-		int statusCode = 0;
-		String errorCode = null;
-		String message = null;
-		try {
-			// TODO @Valid 로 구현해야 함
-			if(civilVoiceId == null) {
-				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-				result.put("errorCode", "input.invalid");
-				result.put("message", message);
-				return result;
-			}
-			civilVoice = civilVoiceService.getCivilVocieById(civilVoiceId);
-			statusCode = HttpStatus.OK.value();
-			result.put("civilVoice", civilVoice);
-		} catch(Exception e) {
-			e.printStackTrace();
-			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-			errorCode = "db.exception";
-			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-		}
-
-		result.put("statusCode", statusCode);
-		result.put("errorCode", errorCode);
-		result.put("message", message);
-
-		return result;
-	}
-
-	/**
-	 * 시민참여 등록
-	 * @param request
-	 * @param civilVoice
+	 * @param civilVoiceComment
 	 * @param bindingResult
 	 * @return
 	 */
 	@PostMapping
-	public Map<String, Object> insert(HttpServletRequest request, @Valid @ModelAttribute CivilVoice civilVoice, BindingResult bindingResult) {
-		log.info("civilVoice ======================= {} " , civilVoice.getTitle());
+	public Map<String, Object> insert(HttpServletRequest request, @Valid @ModelAttribute CivilVoiceComment civilVoiceComment, BindingResult bindingResult) {
+		log.info("civilVoiceComment ======================= {} " , civilVoiceComment.getTitle());
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 
 		Map<String, Object> result = new HashMap<>();
@@ -162,12 +122,8 @@ public class CivilVoiceRestController {
 				result.put("message", message);
 	            return result;
 			}
-
-			civilVoice.setUserId(userSession.getUserId());
-			if(civilVoice.getLongitude() != null && civilVoice.getLatitude() != null) {
-				civilVoice.setLocation("POINT(" + civilVoice.getLongitude() + " " + civilVoice.getLatitude() + ")");
-			}
-			civilVoiceService.insertCivilVoice(civilVoice);
+			civilVoiceComment.setUserId(userSession.getUserId());
+			civilVoiceCommentService.insertCivilVoiceComment(civilVoiceComment);
 		} catch (Exception e) {
 			e.printStackTrace();
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
@@ -184,11 +140,11 @@ public class CivilVoiceRestController {
 	/**
 	 * 검색 조건
 	 * @param pageType
-	 * @param dataGroup
+	 * @param civilVoiceComment
 	 * @return
 	 */
-	private String getSearchParameters(PageType pageType, CivilVoice civilVoice) {
-		StringBuffer buffer = new StringBuffer(civilVoice.getParameters());
+	private String getSearchParameters(PageType pageType, CivilVoiceComment civilVoiceComment) {
+		StringBuffer buffer = new StringBuffer(civilVoiceComment.getParameters());
 		return buffer.toString();
 	}
 }

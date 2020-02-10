@@ -37,14 +37,6 @@
 		</div>
 
 		<div class="layerDiv">
-			<h4 class="category">Origin</h4>
-			<input type="radio" id="originDisplayY" name="originDisplay" value="true">
-			<label for="originDisplayY">표시</label>
-			<input type="radio" id="originDisplayN" name="originDisplay" value="false" checked>
-			<label for="originDisplayN">비표시</label>
-		</div>
-
-		<div class="layerDiv">
 			<h4 class="category">Bounding Box</h4>
 			<input type="radio" id="bboxDisplayY" name="bboxDisplay" value="true">
 			<label for="bboxDisplayY">표시</label>
@@ -77,6 +69,7 @@
 				</ul>
 			</div>
 			<form id="dcRotLocForm" class="layerDiv marB0">
+				<input type="hidden" name="dataId" value="" />
 				<h4 class="category">위치 변경</h4>
 				<ul class="layerDiv">
 					<li>
@@ -125,7 +118,10 @@
 				</ul>
 
 				<div>
-					<button type="button" id="dcSavePosRot" class="btnTextF">높이회전 저장</button>
+					<button type="button" id="dcSavePosRot" class="btnTextF" 
+							title="<spring:message code='data.transform.save'/>">
+						<spring:message code='data.transform.save'/>
+					</button>
 					<button type="button" id="dcShowAttr" class="btnTextF">속성조회</button>
 				</div>
 			</form>
