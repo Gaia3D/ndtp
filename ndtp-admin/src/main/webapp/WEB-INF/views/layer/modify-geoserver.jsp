@@ -97,8 +97,8 @@
 			                    <td class="col-input">
 			                        <select name="layerType" class="selectBoxClass">
 										<option value="">선택</option>
-										<option value="Vector">Vector</option>
-										<option value="Raster">Raster</option>
+										<option value="vector">Vector</option>
+										<option value="raster">Raster</option>
 									</select>
 			                    </td>
 			                </tr>
@@ -246,7 +246,7 @@
 	
 	// 레이어 타입 Raster 선택 시 입력폼 변경
 	function changeLayerType(layerType) {
-		if(layerType == 'Vector') {
+		if(layerType == 'vector') {
 			$('.forRaster').attr('disabled', false);
 			$('.forRaster').removeClass('disabled');
 			$('.picker').attr('disabled', false);

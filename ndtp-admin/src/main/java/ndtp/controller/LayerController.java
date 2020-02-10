@@ -50,6 +50,7 @@ import ndtp.domain.Layer;
 import ndtp.domain.LayerFileInfo;
 import ndtp.domain.LayerGroup;
 import ndtp.domain.LayerInsertType;
+import ndtp.domain.LayerType;
 import ndtp.domain.Pagination;
 import ndtp.domain.Policy;
 import ndtp.domain.RoleKey;
@@ -213,7 +214,11 @@ public class LayerController implements AuthorizationController {
 			}
 			List<LayerFileInfo> layerFileInfoList = new ArrayList<>();
 			layerService.insertLayer(layer, layerFileInfoList);
-			layerService.updateLayerStyle(layer);
+			String layerType = layer.getLayerType();
+			// 레이어 타입이 vector일 경우에만 스타일 설정 
+			if(LayerType.VECTOR == LayerType.valueOf(layerType.toUpperCase())) {
+				layerService.updateLayerStyle(layer);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
@@ -406,7 +411,11 @@ public class LayerController implements AuthorizationController {
 				layerFileInfoService.updateOgr2OgrDataFileVersion(orgMap);
 				// 6. geoserver에 신규 등록일 경우 등록, 아닐경우 통과
 				layerService.registerLayer(geoPolicy, layer.getLayerKey());
-				layerService.updateLayerStyle(layer);
+				String layerType = layer.getLayerType();
+				// 레이어 타입이 vector일 경우에만 스타일 설정 
+				if(LayerType.VECTOR == LayerType.valueOf(layerType.toUpperCase())) {
+					layerService.updateLayerStyle(layer);
+				}
 			}
 
 			statusCode = HttpStatus.OK.value();
@@ -438,7 +447,11 @@ public class LayerController implements AuthorizationController {
 		try {
 			List<LayerFileInfo> layerFileInfoList = new ArrayList<>();
 			layerService.updateLayer(layer, false, layerFileInfoList);
-			layerService.updateLayerStyle(layer);
+			String layerType = layer.getLayerType();
+			// 레이어 타입이 vector일 경우에만 스타일 설정 
+			if(LayerType.VECTOR == LayerType.valueOf(layerType.toUpperCase())) {
+				layerService.updateLayerStyle(layer);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
@@ -642,8 +655,11 @@ public class LayerController implements AuthorizationController {
                 // 6. geoserver에 신규 등록일 경우 등록, 아닐경우 통과
                 layerService.registerLayer(geoPolicy, layer.getLayerKey());
             }
-
-            layerService.updateLayerStyle(layer);
+            String layerType = layer.getLayerType();
+			// 레이어 타입이 vector일 경우에만 스타일 설정 
+			if(LayerType.VECTOR == LayerType.valueOf(layerType.toUpperCase())) {
+				layerService.updateLayerStyle(layer);
+			}
 
             statusCode = HttpStatus.OK.value();
         } catch(Exception e) {
