@@ -12,7 +12,7 @@ create table layer_group (
 	view_order					integer							default 1,	
 	children					integer							default 0,
 	available					boolean							default true,
-	description					varchar(1000),	
+	description					varchar(256),	
 	update_date             	timestamp with time zone,	
 	insert_date					timestamp with time zone		default now(),
 	constraint layer_group_pk 		primary key (layer_group_id)
@@ -57,7 +57,7 @@ create table layer (
 	label_display				boolean							default false,
 	
 	coordinate					varchar(256),
-	description					varchar(4000),
+	description					varchar(256),
 	update_date					timestamp with time zone		default now(),
 	insert_date					timestamp with time zone 		default now(),
 	constraint layer_pk 		primary key (layer_id)

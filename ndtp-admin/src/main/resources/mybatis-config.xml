@@ -18,6 +18,7 @@
 		<typeAlias type="ndtp.domain.DataAttribute" alias="dataAttribute" />
 		<typeAlias type="ndtp.domain.DataAttributeFileInfo" alias="dataAttributeFileInfo" />
 		<typeAlias type="ndtp.domain.DataObjectAttribute" alias="dataObjectAttribute" />
+		<typeAlias type="ndtp.domain.DataObjectAttributeFileInfo" alias="dataObjectAttributeFileInfo" />
 		<typeAlias type="ndtp.domain.DataGroup" alias="dataGroup" />
 		<typeAlias type="ndtp.domain.DataInfo" alias="dataInfo" />
 		<typeAlias type="ndtp.domain.DataInfoLog" alias="dataInfoLog" />

@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -94,6 +95,54 @@ public class CivilVoiceRestController {
 		return result;
 	}
 
+	/**
+	 * 시민 참여 상세 조회
+	 * @param request
+	 * @param civilVoiceId
+	 * @param civilVoice
+	 * @return
+	 */
+	@GetMapping("/{civilVoiceId}")
+	public Map<String, Object> detail(	HttpServletRequest request, @PathVariable Long civilVoiceId, CivilVoice civilVoice) {
+		log.info("@@@@@ detail civilVoice = {}, civilVoiceId = {}", civilVoice, civilVoiceId);
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		try {
+			// TODO @Valid 로 구현해야 함
+			if(civilVoiceId == null) {
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "input.invalid");
+				result.put("message", message);
+				return result;
+			}
+			civilVoice = civilVoiceService.getCivilVocieById(civilVoiceId);
+			statusCode = HttpStatus.OK.value();
+			result.put("civilVoice", civilVoice);
+		} catch(Exception e) {
+			e.printStackTrace();
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+
+		return result;
+	}
+
+	/**
+	 * 시민참여 등록
+	 * @param request
+	 * @param civilVoice
+	 * @param bindingResult
+	 * @return
+	 */
 	@PostMapping
 	public Map<String, Object> insert(HttpServletRequest request, @Valid @ModelAttribute CivilVoice civilVoice, BindingResult bindingResult) {
 		log.info("civilVoice ======================= {} " , civilVoice.getTitle());
