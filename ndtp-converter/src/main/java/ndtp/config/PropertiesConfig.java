@@ -35,5 +35,7 @@ public class PropertiesConfig {
 	
 	// F4D Converter.exe 가 있는 경로
 	private String converterDir;	
+	// F4D Converter manager
+	private String converterManager;
 	
 }
