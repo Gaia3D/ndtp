@@ -2,7 +2,6 @@ package ndtp.config;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +30,6 @@ public class AMQPSubscribe {
 	public void handleMessage(QueueMessage queueMessage) {
 		Long converterJobId = queueMessage.getConverterJobId();
 		log.info(" @@@@@@ handleMessage start. converterJobId = {}", converterJobId);
-		log.info("  @@@@@@ " + Paths.get("").toAbsolutePath().toString());
 		
 		Long converterJobFileId = queueMessage.getConverterJobFileId();
 		String userId = queueMessage.getUserId();
@@ -39,17 +37,6 @@ public class AMQPSubscribe {
 		
 		CompletableFuture.supplyAsync( () -> {
 			List<String> command = new ArrayList<>();
-			//command.add(propertiesConfig.getConverterDir());
-			//command.add("java");
-			//command.add(propertiesConfig.getConverterManager());
-			
-			//java -classpath d:\\ndtp-converter-manager.jar ndtp.domain.F4DConverterManager
-			
-			command.add("java");
-			command.add("-classpath");
-			command.add("d:\\ndtp-converter-manager.jar");
-			command.add("ndtp.domain.F4DConverterManager");
-			
 			command.add(propertiesConfig.getConverterDir());
 			command.add("#inputFolder");
 			command.add(queueMessage.getInputFolder());
