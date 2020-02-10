@@ -536,7 +536,7 @@
 		modal: true,
 		resizable: false
 	});
-	// 데이터 속성 다이얼 로그
+	// 데이터 Object 속성 다이얼 로그
 	var dataObjectAttributeDialog = $( ".dataObjectAttributeDialog" ).dialog({
 		autoOpen: false,
 		width: 800,
