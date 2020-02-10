@@ -1,7 +1,7 @@
 $(document).ready(function (){
 
 	$('#civilVoiceMenu').on('click', function() {
-		// 초기 레이어 트리 그리기
+		// 초기 시민참여 조회
 		getCivilVoiceList();
 	});
 
@@ -26,10 +26,12 @@ $(document).ready(function (){
 	// 의견 목록 선택시 상세보기 이벤트
 	$('#civilVoiceList').on('click', 'li.comment', function(){
 		var id = $(this).data('id');
-		getCivilVoiceDetail(id);
-		getCivilVoiceAgreeList(id);
+		$('#civilVoiceId').val(id);
 		$("#civilVoiceListContent").hide();
 		$("#civilVoiceDetailContent").show();
+
+		getCivilVoiceDetail();
+		getCivilVoiceCommentList();
 	});
 });
 
@@ -46,13 +48,10 @@ function getCivilVoiceList(page) {
 		data: {pageNo: page},
 		success: function(res){
 			if(res.statusCode <= 200) {
-				// 페이지 정보
 				$('#civilVoiceTotalCount').text(res.totalCount);
 				$('#civilVoiceCurrentPage').text(res.pagination.pageNo);
 				$('#civilVoiceLastPage').text(res.pagination.lastPage);
-				// 리스트 구성
 				drawHandlebarsHtml(res, 'templateCivilVoiceList', 'civilVoiceList');
-				// 페이징 구성
 				drawHandlebarsHtml(res, 'templateCivilVoicePagination', 'civilVoicePagination');
 			} else {
 				alert(JS_MESSAGE[res.errorCode]);
@@ -67,6 +66,8 @@ function getCivilVoiceList(page) {
 
 // 시민참여 상세 조회
 function getCivilVoiceDetail(id) {
+	var id = $('#civilVoiceId').val();
+
 	$.ajax({
 		url: '/civil-voices/' + id,
 		type: 'GET',
@@ -89,9 +90,10 @@ function getCivilVoiceDetail(id) {
 	});
 }
 
-// 시민참여 동의 조회
-function getCivilVoiceAgreeList(id, page) {
+// 시민참여 댓글 조회
+function getCivilVoiceCommentList(page) {
 	if(!page) page = 1;
+	var id = $('#civilVoiceId').val();
 
 	$.ajax({
 		url: '/civil-voice-comments/' + id,
@@ -102,7 +104,9 @@ function getCivilVoiceAgreeList(id, page) {
 		data: {pageNo: page},
 		success: function(res){
 			if(res.statusCode <= 200) {
-				debugger;
+				$('#civilVoiceCommentTotalCount').text(res.totalCount);
+				drawHandlebarsHtml(res, 'templateCivilVoiceComment', 'civilVoiceComment');
+				drawHandlebarsHtml(res, 'templateCivilVoiceCommentPagination', 'civilVoiceCommentPagination');
 			} else {
 				alert(JS_MESSAGE[res.errorCode]);
 				console.log("---- " + res.message);
