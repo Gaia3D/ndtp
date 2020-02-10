@@ -23,12 +23,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
+import ndtp.domain.DataAttribute;
 import ndtp.domain.DataInfo;
+import ndtp.domain.DataObjectAttribute;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
 import ndtp.domain.UserSession;
+import ndtp.service.DataAttributeService;
 import ndtp.service.DataGroupService;
+import ndtp.service.DataObjectAttributeService;
 import ndtp.service.DataService;
 import ndtp.service.GeoPolicyService;
 import ndtp.service.PolicyService;
@@ -45,6 +49,10 @@ public class DataRestController {
 	private DataGroupService dataGroupService;
 	@Autowired
 	private DataService dataService;
+	@Autowired
+	private DataAttributeService dataAttributeService;
+	@Autowired
+	private DataObjectAttributeService dataObjectAttributeService;
 
 	@Autowired
 	private GeoPolicyService geoPolicyService;
@@ -274,6 +282,84 @@ public class DataRestController {
 		result.put("statusCode", statusCode);
 		result.put("errorCode", errorCode);
 		result.put("message", message);
+		return result;
+	}
+	
+	/**
+	 * 데이터 속성 정보
+	 * @param dataId
+	 * @return
+	 */
+	@GetMapping("/attributes/{dataId}")
+	public Map<String, Object> detailAttribute(HttpServletRequest request, @PathVariable Long dataId) {
+		
+		log.info("@@@@@ dataId = {}", dataId);
+		
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		try {
+			if(dataId == null || dataId.longValue() <=0l) {
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "input.invalid");
+				result.put("message", message);
+				return result;
+			}
+			
+			DataAttribute dataAttribute = dataAttributeService.getDataAttribute(dataId);
+			result.put("dataAttribute", dataAttribute);
+		} catch(Exception e) {
+			e.printStackTrace();
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+		
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		
+		return result;
+	}
+	
+	/**
+	 * 데이터 속성 정보
+	 * @param dataId
+	 * @return
+	 */
+	@GetMapping("/object/attributes/{dataId}")
+	public Map<String, Object> detailObjectAttribute(HttpServletRequest request, @PathVariable Long dataId) {
+		
+		log.info("@@@@@ dataId = {}", dataId);
+		
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		try {
+			if(dataId == null || dataId.longValue() <=0l) {
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "input.invalid");
+				result.put("message", message);
+				return result;
+			}
+			
+			DataObjectAttribute dataObjectAttribute = dataObjectAttributeService.getDataObjectAttribute(dataId);
+			result.put("dataObjectAttribute", dataObjectAttribute);
+		} catch(Exception e) {
+			e.printStackTrace();
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+		
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		
 		return result;
 	}
 	

@@ -221,4 +221,12 @@
         /* deleteLayer */
         DROP TABLE ${value}
     </delete>
+    
+    <select id="isLayerExists" parameterType="string" resultType="string">
+        /* isLayerExists */
+        SELECT tablename
+			FROM pg_tables
+		WHERE schemaname = 'public'
+		AND tablename = #{value}
+    </select>
 </mapper>

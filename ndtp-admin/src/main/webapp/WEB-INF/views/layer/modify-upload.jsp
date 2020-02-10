@@ -11,6 +11,7 @@
 	<link rel="stylesheet" href="/css/${lang}/font/font.css" />
 	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
 	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
+	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css">
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
 	<link rel="stylesheet" href="/externlib/dropzone/dropzone.min.css">
     <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
@@ -129,7 +130,7 @@
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 			                    <td class="col-input">
-			                        <select name="serviceType">
+			                        <select name="serviceType" class="selectBoxClass">
 										<option value="">선택</option>
 										<option value="wms">WMS</option>
 										<option value="wfs">WFS</option>
@@ -142,10 +143,10 @@
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 			                    <td class="col-input">
-			                        <select name="layerType">
+			                        <select name="layerType" class="selectBoxClass">
 										<option value="">선택</option>
-										<option value="Vector">Vector</option>
-										<option value="Raster">Raster</option>
+										<option value="vector">Vector</option>
+										<option value="raster">Raster</option>
 									</select>
 			                    </td>
 			                </tr>
@@ -155,7 +156,7 @@
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 								<td class="col-input">
-									<select name="geometryType" class="forRaster">
+									<select name="geometryType" class="forRaster selectBoxClass">
 										<option value="">선택</option>
 										<option value="Point">Point</option>
 										<option value="Line">Line</option>
@@ -232,26 +233,52 @@
 									<form:radiobutton id="labelDisplayFalse" path="labelDisplay" value="false" label="비표시" />
 			                    </td>
 			                    <th class="col-label" scope="row">
-			                        <form:label path="coordinate">좌표계</form:label>
-			                    </th>
-			                    <td class="col-input">
-			                        <form:input path="coordinate" cssClass="m" />
-			                        <form:errors path="coordinate" cssClass="error" />
-			                    </td>
-			                </tr>
-			                <tr>
-			                    <th class="col-label" scope="row">
 			                        <form:label path="description">설명</form:label>
 			                    </th>
 			                    <td class="col-input">
 			                        <form:input path="description" cssClass="l" />
 			                        <form:errors path="description" cssClass="error" />
 			                    </td>
+			                </tr>
+			                <tr>
+			                    <th class="col-label" scope="row">
+			                        <form:label path="coordinate">좌표계</form:label>
+			                    </th>
+			                    <td class="col-input">
+			                        <select id="coordinate"name="coordinate" class="selectBoxClass">
+										<option value="EPSG:2096">EPSG:2096</option>
+										<option value="EPSG:2097">EPSG:2097</option>
+										<option value="EPSG:2098">EPSG:2098</option>
+										<option value="EPSG:3857">EPSG:3857</option>
+										<option value="EPSG:32651">EPSG:32651</option>
+										<option value="EPSG:32652">EPSG:32652</option>
+										<option value="EPSG:4004">EPSG:4004</option>
+										<option value="EPSG:4019">EPSG:4019</option>
+										<option value="EPSG:4326">EPSG:4326</option>
+										<option value="EPSG:5173">EPSG:5173</option>
+										<option value="EPSG:5174">EPSG:5174</option>
+										<option value="EPSG:5175">EPSG:5175</option>
+										<option value="EPSG:5176">EPSG:5176</option>
+										<option value="EPSG:5177">EPSG:5177</option>
+										<option value="EPSG:5178">EPSG:5178</option>
+										<option value="EPSG:5179">EPSG:5179</option>
+										<option value="EPSG:5180">EPSG:5180</option>
+										<option value="EPSG:5181">EPSG:5181</option>
+										<option value="EPSG:5182">EPSG:5182</option>
+										<option value="EPSG:5183">EPSG:5183</option>
+										<option value="EPSG:5184">EPSG:5184</option>
+										<option value="EPSG:5185">EPSG:5185</option>
+										<option value="EPSG:5186">EPSG:5186</option>
+										<option value="EPSG:5187">EPSG:5187</option>
+										<option value="EPSG:5188">EPSG:5188</option>
+									</select>
+			                        <form:errors path="coordinate" cssClass="error" />
+			                    </td>
 			                    <th class="col-label" scope="row">
 			                        <form:label path="shapeEncoding">SHP 파일 인코딩</form:label>
 			                    </th>
 			                    <td class="col-input">
-			                    	<select id="shapeEncoding" name="shapeEncoding" style="width:100px; height: 30px;">
+			                    	<select id="shapeEncoding" class="selectBoxClass" name="shapeEncoding" style="width:100px; height: 30px;">
 				                    	<option value="CP949">CP949</option>
 				                        <option value="UTF-8">UTF-8</option>
 				                    </select>
@@ -342,78 +369,7 @@
 	<%@ include file="/WEB-INF/views/layer/spinner-dialog.jsp" %>
 	<%@ include file="/WEB-INF/views/layer/fileInfo-deatil-dialog.jsp"%>
 	<!-- Dialog -->
-	<div id="layerGroupDialog" class="dialog">
-		<table class="list-table scope-col">
-			<col class="col-number" />
-			<col class="col-name" />
-			<col class="col-toggle" />
-			<col class="col-id" />
-			<col class="col-function" />
-			<col class="col-date" />
-			<col class="col-toggle" />
-			<thead>
-				<tr>
-					<th scope="col" class="col-number">Depth</th>
-					<th scope="col" class="col-name">Layer 그룹명</th>
-					<th scope="col" class="col-toggle">사용 여부</th>
-					<th scope="col" class="col-toggle">사용자 아이디</th>
-					<th scope="col" class="col-toggle">설명</th>
-					<th scope="col" class="col-date">등록일</th>
-					<th scope="col" class="col-date">선택</th>
-				</tr>
-			</thead>
-			<tbody>
-<c:if test="${empty layerGroupList }">
-			<tr>
-				<td colspan="7" class="col-none">Layer 그룹이 존재하지 않습니다.</td>
-			</tr>
-</c:if>								
-<c:if test="${!empty layerGroupList }">
-	<c:set var="paddingLeftValue" value="0" />
-	<c:forEach var="layerGroup" items="${layerGroupList}" varStatus="status">
-		<c:if test="${layerGroup.depth eq '1' }">
-            <c:set var="depthClass" value="oneDepthClass" />
-            <c:set var="paddingLeftValue" value="0px" />
-        </c:if>
-        <c:if test="${layerGroup.depth eq '2' }">
-            <c:set var="depthClass" value="twoDepthClass" />
-            <c:set var="paddingLeftValue" value="40px" />
-        </c:if>
-        <c:if test="${layerGroup.depth eq '3' }">
-            <c:set var="depthClass" value="threeDepthClass" />
-            <c:set var="paddingLeftValue" value="80px" />
-        </c:if>
-			
-			<tr class="${depthClass } ${depthParentClass} ${ancestorClass }" style="${depthStyleDisplay}">
-				<td class="col-key" style="text-align: left;" nowrap="nowrap">
-					<span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"></span> 
-					${layerGroup.depth }
-				</td>
-				<td class="col-name">
-					${layerGroup.layerGroupName }
-				</td>
-				<td class="col-type">
-        <c:if test="${layerGroup.available eq 'true' }">
-                	사용
-        </c:if>
-        <c:if test="${layerGroup.available eq 'false' }">
-        			미사용
-        </c:if>
-			    </td>
-			    <td class="col-key">${layerGroup.userId }</td>
-			    <td class="col-key">${layerGroup.description }</td>
-			    <td class="col-date">
-			    	<fmt:parseDate value="${layerGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
-					<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
-			    </td>
-			    <td class="col-toggle">
-			    	<a href="#" onclick="confirmParent('${layerGroup.layerGroupId}', '${layerGroup.layerGroupName}'); return false;">확인</a></td>
-			</tr>	
-	</c:forEach>
-</c:if>
-			</tbody>
-		</table>
-	</div>
+	<%@ include file="/WEB-INF/views/layer/layer-group-dialog.jsp" %>
 
 <script id="templateLayerFileInfoList" type="text/x-handlebars-template">
 {{#each layerFileInfoList}}
@@ -463,6 +419,7 @@
         $("select[name=geometryType] option[value='${layer.geometryType}'").prop('selected',true);
         $("select[name=layerType] option[value='${layer.layerType}'").prop('selected',true);
         $("select[name=shapeEncoding] option[value='${layer.shapeEncoding}'").prop('selected',true);
+        $("select[name=coordinate] option[value='${layer.coordinate}'").prop('selected',true);
         $(".forLineColor").val("${layer.layerLineColor}");
         $(".forPolygon").val("${layer.layerFillColor}");
 	});
@@ -477,7 +434,7 @@
 	
 	// 레이어 타입 Raster 선택 시 입력폼 변경
 	function changeLayerType(layerType) {
-		if(layerType == 'Vector') {
+		if(layerType == 'vector') {
 			$('.forRaster').attr('disabled', false);
 			$('.forRaster').removeClass('disabled');
 			$('.picker').attr('disabled', false);
@@ -598,6 +555,11 @@
 		if ($("select[name=geometryType]").val().toLowerCase() === 'vector') {
 			alert("도형 타입을 선택해 주십시오.");
 			$("#geometryType").focus();
+			return false;
+		}
+		if (!$("#coordinate").val()) {
+			alert("좌표계를 선택해주세요.");
+			$("#coordinate").focus();
 			return false;
 		}
 	}

@@ -16,6 +16,10 @@
 		<typeAlias type="ndtp.domain.DataInfo" alias="dataInfo" />
 		<typeAlias type="ndtp.domain.DataAdjustLog" alias="dataAdjustLog" />
 		<typeAlias type="ndtp.domain.DataInfoLog" alias="dataInfoLog" />
+		<typeAlias type="ndtp.domain.DataAttribute" alias="dataAttribute" />
+		<typeAlias type="ndtp.domain.DataAttributeFileInfo" alias="dataAttributeFileInfo" />
+		<typeAlias type="ndtp.domain.DataObjectAttribute" alias="dataObjectAttribute" />
+		<typeAlias type="ndtp.domain.DataObjectAttributeFileInfo" alias="dataObjectAttributeFileInfo" />
 		<typeAlias type="ndtp.domain.GeoPolicy" alias="geoPolicy" />
     	<typeAlias type="ndtp.domain.Layer" alias="layer" />
     	<typeAlias type="ndtp.domain.LayerGroup" alias="layerGroup" />

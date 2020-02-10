@@ -70,4 +70,11 @@ public interface LayerFileInfoService {
 	 */
 	int updateOgr2OgrDataFileVersion(Map<String, String> map);
 	
+	/**
+	 * group id 로 레이어 파일 이력을 삭제
+	 * @param deleteLayerFileInfoGroupId
+	 * @return
+	 */
+	int deleteLayerFileInfoByGroupId(Integer deleteLayerFileInfoGroupId);
+	
 }

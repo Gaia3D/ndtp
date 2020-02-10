@@ -10,7 +10,6 @@
 	</select>
 
 	<!-- 데이터 속성 정보 등록 -->
-	<!-- Data Attribute 등록 -->
 	<insert id="insertDataAttribute" parameterType="dataAttribute">
 		/* insertDataAttribute */
 		<selectKey keyProperty="dataAttributeId" resultType="long" order="BEFORE">
@@ -22,7 +21,6 @@
 			#{dataAttributeId}, #{dataId}, TO_JSON(#{attributes}::json)
 		)
 	</insert>
-
 
 	<!-- 파일 정보 저장 -->
 	<insert id="insertDataAttributeFileInfo" parameterType="dataAttributeFileInfo" >
