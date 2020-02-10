@@ -77,6 +77,7 @@
 				</ul>
 			</div>
 			<form id="dcRotLocForm" class="layerDiv marB0">
+				<input type="hidden" name="dataId" value="" />
 				<h4 class="category">위치 변경</h4>
 				<ul class="layerDiv">
 					<li>
@@ -125,7 +126,10 @@
 				</ul>
 
 				<div>
-					<button type="button" id="dcSavePosRot" class="btnTextF">높이회전 저장</button>
+					<button type="button" id="dcSavePosRot" class="btnTextF" 
+							title="<spring:message code='data.transform.save'/>">
+						<spring:message code='data.transform.save'/>
+					</button>
 					<button type="button" id="dcShowAttr" class="btnTextF">속성조회</button>
 				</div>
 			</form>

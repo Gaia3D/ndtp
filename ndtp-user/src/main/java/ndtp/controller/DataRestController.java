@@ -1,5 +1,6 @@
 package ndtp.controller;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -202,6 +203,13 @@ public class DataRestController {
 		return result;
 	}
 	
+	private Map<String, Object> createUpdateRequestResult(Map<String, Object> result) {
+		result.put("statusCode", HttpStatus.PRECONDITION_REQUIRED.value());
+		result.put("errorCode", "data.update.request.check");
+		result.put("message", null);
+		return result;
+	}
+	
 	/**
 	 * 사용자 데이터 수정
 	 * @param request
@@ -210,7 +218,8 @@ public class DataRestController {
 	 * @return
 	 */
 	@PostMapping("/{dataId}")
-	public Map<String, Object> update(HttpServletRequest request, @PathVariable Integer dataId, @ModelAttribute DataInfo dataInfo) {
+	public Map<String, Object> update(HttpServletRequest request, @PathVariable Long dataId, 
+										@ModelAttribute DataInfo dataInfo) {
 		
 		log.info("@@@@@ update dataInfo = {}, dataId = {}", dataInfo, dataId);
 		
@@ -227,15 +236,34 @@ public class DataRestController {
 				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
 				result.put("errorCode", "input.invalid");
 				result.put("message", message);
-				
 				return result;
 			}
 			
-			dataInfo.setUserId(userSession.getUserId());
-			if(dataInfo.getLongitude() != null && dataInfo.getLatitude() != null) {
-				dataInfo.setLocation("POINT(" + dataInfo.getLongitude() + " " + dataInfo.getLatitude() + ")");
+			DataInfo preDataInfo = new DataInfo();
+			//dataInfo.setUserId(userSession.getUserId());
+			dataInfo.setDataId(dataId);
+			preDataInfo = dataService.getData(dataInfo);
+			String groupTarget = preDataInfo.getDataGroupTarget();
+			
+			// 관리자가 업로드 한 경우
+			if ("admin".equalsIgnoreCase(groupTarget)) {
+				// 변경요청
+				return createUpdateRequestResult(result);
+			} else if ("user".equalsIgnoreCase(groupTarget)) {
+				// 로그인한 아이디와 요청한 아이디가 같을 경우
+				if (userSession.getUserId().equals(preDataInfo.getUserId())) {
+					BigDecimal longitude = dataInfo.getLongitude();
+					BigDecimal latitude = dataInfo.getLatitude();
+					if(longitude != null && latitude != null) {
+						dataInfo.setLocation("POINT(" + longitude + " " + latitude + ")");
+					}
+					dataService.updateData(dataInfo);
+				} else {
+					// 다를 경우 변경 요청
+					return createUpdateRequestResult(result);
+				}
 			}
-			dataService.updateData(dataInfo);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
