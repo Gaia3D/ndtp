@@ -33,7 +33,7 @@ public enum UserStatus {
 	 */
 	public static UserStatus findBy(String value) {
 		for(UserStatus userStatus : values()) {
-			if(userStatus.getValue().equals(value)) return userStatus; 
+			if(userStatus.getValue().trim().equals(value.trim())) return userStatus; 
 		}
 		return null;
 	}
