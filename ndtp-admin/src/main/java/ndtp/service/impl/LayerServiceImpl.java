@@ -293,7 +293,7 @@ public class LayerServiceImpl implements LayerService {
         }
 
         GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
-        String layerSourceCoordinate = geoPolicy.getLayerSourceCoordinate();
+        String layerSourceCoordinate = layer.getCoordinate();
         String layerTargetCoordinate = geoPolicy.getLayerTargetCoordinate();
 //		ShapeFileParser shapeFileParser = new ShapeFileParser();
 //		shapeFileParser.parse(shapeFileName);

@@ -4,74 +4,83 @@
 <form:form id="userPolicy" modelAttribute="userPolicy" method="post" onsubmit="return false;">
 <form:hidden path="userPolicyId"/>
 <div class="userPolicyContent">
-	<h3>시작 위치</h3>
+	<div class="button-group-align marB10">
+		<h3 class="h3-heading">시작 위치</h3>
+		<button type="button" id="findStartPoint" class="btnTextF right-align">선택</button>
+	</div>
 	<div class="userPolicyContentDetail">
-		<div style="height: 30px;">
-			<div style="display: inline-block; width: 70px;">위도</div>
-			<form:input type="text" id="initLatitude" path="initLatitude" size="15" />&nbsp;M
-			<button type="button" id="findStartPoint" class="btnTextF" style="margin-left: 50px;">선택</button>
+		<div class="form-group form-group-policy">
+			<label for="initLatitude">위도</label>
+			<form:input type="text" id="initLatitude" path="initLatitude" size="15" />M
 		</div>
-		<div style="height: 30px;">
-			<div style="display: inline-block; width: 70px;">경도</div>
-			<form:input type="text" id="initLongitude" path="initLongitude" size="15" />&nbsp;M
+		<div class="form-group form-group-policy">
+			<label for="initLongitude">경도</label>
+			<form:input type="text" id="initLongitude" path="initLongitude" size="15" />M
 		</div>
-		<div style="height: 30px;">
-			<div style="display: inline-block; width: 70px;">높이</div>
-			<form:input type="text" id="initAltitude" path="initAltitude" size="15" />&nbsp;M
+		<div class="form-group form-group-policy">
+			<label for="initAltitude">높이</label>
+			<form:input type="text" id="initAltitude" path="initAltitude" size="15" />M
 		</div>
-		<div style="height: 30px;">
-			<div style="display: inline-block; width: 70px;">이동 속도</div>
-			<form:input type="text" id="initDuration" path="initDuration" size="15" />&nbsp;초
+		<div class="form-group form-group-policy">
+			<label for="initDuration">이동 속도</label>
+			<form:input type="text" id="initDuration" path="initDuration" size="15" />초
 		</div>
 	</div>
 </div>
-<div style="height: 40px;margin-top:10px;margin-bottom:15px;" class="userPolicyContent">
-	<h3>Field Of View</h3>
+<div class="userPolicyContent">
+	<h3 class="h3-heading marB10">FOV (Field Of View)</h3>
 	<div class="userPolicyContentDetail">
-		<div style="display: inline-block; width: 70px;">각도</div>
-		<form:input type="text" id="initfieldOfView" path="initDefaultFov" size="14" style="margin-left:3px;" />&nbsp;M
-	</div>
-</div>
-<div class="userPolicyContent" style="margin-top:5px;">
-	<h3>LOD</h3>
-	<div class="userPolicyContentDetail">
-		<div style="height: 30px;">
-			<div style="display: inline-block; width: 70px;">LOD0</div>
-			<form:input type="text" id="geoLod0" path="lod0" size="15" />&nbsp;M
-		</div>
-		<div style="height: 30px;">
-			<div style="display: inline-block; width: 70px;">LOD1</div>
-			<form:input type="text" id="geoLod1" path="lod1" size="15" />&nbsp;M
-		</div>
-		<div style="height: 30px;">
-			<div style="display: inline-block; width: 70px;">LOD2</div>
-			<form:input type="text" id="geoLod2" path="lod2" size="15" />&nbsp;M
-		</div>
-		<div style="height: 30px;">
-			<div style="display: inline-block; width: 70px;">LOD3</div>
-			<form:input type="text" id="geoLod3" path="lod3" size="15" />&nbsp;M
-		</div>
-		<div style="height: 30px;">
-			<div style="display: inline-block; width: 70px;">LOD4</div>
-			<form:input type="text" id="geoLod4" path="lod4" size="15" />&nbsp;M
-		</div>
-		<div style="height: 30px;">
-			<div style="display: inline-block; width: 70px;">LOD5</div>
-			<form:input type="text" id="geoLod5" path="lod5" size="15" />&nbsp;M
-			<button type="button" id="changeLodButton" class="btnTextF" style="margin-left: 50px;">적용</button>
+		<div class="form-group form-group-policy">
+			<label for="initfieldOfView">각도</label>
+			<form:input type="text" id="initfieldOfView" path="initDefaultFov" size="14" />M
 		</div>
 	</div>
 </div>
-<div style="height: 30px;margin-top:5px;margin-bottom:10px;" class="userPolicyContent">
-	<h3>SSAO</h3>
+<div class="userPolicyContent">
+	<div class="button-group-align marB10">
+		<h3 class="h3-heading">LOD (Level Of Detail)</h3>
+		<button type="button" id="changeLodButton" class="btnTextF right-align">적용</button>
+	</div>
 	<div class="userPolicyContentDetail">
-		<div style="display: inline-block; width: 70px;">그림자 반경</div>
-		<form:input type="text" id="ssaoRadius" path="ssaoRadius" size="15" />&nbsp;M
-		<button type="button" id="changeSsaoButton" class="btnTextF" style="margin-left: 50px;">적용</button>
+		<div class="form-group form-group-policy">
+			<label for="geoLod0">LOD0</label>
+			<form:input type="text" id="geoLod0" path="lod0" size="15" />M
+		</div>
+		<div class="form-group form-group-policy">
+			<label for="geoLod1">LOD1</label>
+			<form:input type="text" id="geoLod1" path="lod1" size="15" />M
+		</div>
+		<div class="form-group form-group-policy">
+			<label for="geoLod2">LOD2</label>
+			<form:input type="text" id="geoLod2" path="lod2" size="15" />M
+		</div>
+		<div class="form-group form-group-policy">
+			<label for="geoLod3">LOD3</label>
+			<form:input type="text" id="geoLod3" path="lod3" size="15" />M
+		</div>
+		<div class="form-group form-group-policy">
+			<label for="geoLod4">LOD4</label>
+			<form:input type="text" id="geoLod4" path="lod4" size="15" />M
+		</div>
+		<div class="form-group form-group-policy">
+			<label for="geoLod5">LOD5</label>
+			<form:input type="text" id="geoLod5" path="lod5" size="15" />M
+		</div>
 	</div>
 </div>
-
-<button class="focusA" style="width:100%;margin-top:20px;" title="저장" onclick="update();">저장</button>
+<div class="userPolicyContent">
+	<div class="button-group-align marB10">
+		<h3 class="h3-heading">SSAO</h3>
+		<button type="button" id="changeSsaoButton" class="btnTextF right-align">적용</button>
+	</div>
+	<div class="userPolicyContentDetail">
+		<div class="form-group form-group-policy">
+			<label for="ssaoRadius">그림자 반경</label>
+			<form:input type="text" id="ssaoRadius" path="ssaoRadius" size="15" />M
+		</div>
+	</div>
+</div>
+<button class="focusA btn-full" title="저장" onclick="update();">저장</button>
 </form:form>
 </div>
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>

@@ -20,7 +20,7 @@ create table user_info(
 	postal_code					varchar(6),
 	address						varchar(256),
 	address_etc					varchar(1000),
-	status						char(1)								default '0',
+	status						char(20)							default '0',
 	user_role_check_yn			char(1)								default 'Y',
 	signin_count				bigint								default 0,
 	fail_signin_count			integer								default 0,

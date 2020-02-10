@@ -7,7 +7,7 @@
 		<button type="button" id="mapCtrlZoomOut" class="zoomout" title="축소">축소</button>
 		<button type="button" id="mapCtrlDistance" class="measures distance" data-type="LineString" title="거리">거리</button>
 		<button type="button" id="mapCtrlArea" class="measures area" data-type="Polygon" title="면적">면적</button>
-		<button type="button" id="mapCapture" class="" data-type="" title="화면캡처">캡처</button>
+		<button type="button" id="mapCapture" class="save" data-type="" title="저장">저장</button>
 	</div>
 	<div class="rotate">
 		<button type="button" class="rotateReset on" id="rotateReset" title="방향초기화"></button>
@@ -125,7 +125,17 @@
 				</ul>
 
 				<div>
-					<button type="button" id="dcSavePosRotPop" class="btnTextF">높이회전 저장</button>
+					<c:if test="${dataInfo.dataGroupTarget eq 'admin'}">
+						<button type="button" id="dcSavePosRotReqPop" class="btnTextF" title="높이회전 저장 요청">높이회전 저장 요청</button>
+					</c:if>
+					<c:if test="${dataInfo.dataGroupTarget eq 'user'}">
+						<c:if test="${dataInfo.userId eq owner}">
+							<button type="button" id="dcSavePosRotPop" class="btnTextF" title="높이회전 저장">높이회전 저장</button>
+						</c:if>
+						<c:if test="${dataInfo.userId ne owner}">
+							<button type="button" id="dcSavePosRotReqPop" class="btnTextF" title="높이회전 저장 요청">높이회전 저장 요청</button>	
+						</c:if>
+					</c:if>
 					<button type="button" id="dcShowAttr" class="btnTextF">속성조회</button>
 				</div>
 			</form>

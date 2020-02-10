@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<div id="dataInfoContent" class="contents contents-margin-none" style="display:block;">
+<div id="dataInfoContent" class="contents contents-margin-none yScroll fullHeight" style="display:block;">
 	<form:form id="searchDataForm" modelAttribute="searchDataForm" method="post" onsubmit="return false;">
 	<div class="form-group">
 		<label>데이터명</label>
@@ -34,9 +34,9 @@
 	</form:form>
 
 	<div id="dataInfoListArea">
-		<div>
-			<span><spring:message code='all.d'/> <fmt:formatNumber value="${pagination.totalCount}" type="number"/> <spring:message code='search.what.count'/></span>
-			<span class="float-right"><fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/></span>
+		<div class="bothSide">
+			<div><spring:message code='all'/> <span><fmt:formatNumber value="${pagination.totalCount}" type="number"/></span> <spring:message code='search.what.count'/></div>
+			<div class="float-right"><fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/></div>
 		</div>
 		<div class="dataBtns"></div>
 		<div class="dataGroupSummary table-data-group-summary table-data-group table-font-small">

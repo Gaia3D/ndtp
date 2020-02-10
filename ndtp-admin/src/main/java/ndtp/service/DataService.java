@@ -3,8 +3,6 @@ package ndtp.service;
 import java.util.List;
 
 import ndtp.domain.DataInfo;
-import ndtp.domain.DataAttribute;
-import ndtp.domain.FileInfo;
 
 /**
  * Data 관리

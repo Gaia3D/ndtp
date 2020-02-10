@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 import ndtp.domain.DataAttribute;
 import ndtp.domain.DataAttributeFileInfo;
 
-
 /**
  * 데이터 속성 파일 관리
  * @author jeongdae
@@ -48,5 +47,4 @@ public interface DataAttributeMapper {
 	 * @return
 	 */
 	int updateDataAttributeFileInfo(DataAttributeFileInfo dataAttributeFileInfo);
-	
 }

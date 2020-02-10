@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<div id="dataGroupInfoContent" class="contents contents-margin-none" style="display:none;">
+<div id="dataGroupInfoContent" class="contents contents-margin-none yScroll fullHeight" style="display:none;">
 	<h3>데이터 공유 유형별 현황</h3>
 	<form:form id="searchDataGroupForm" modelAttribute="searchDataGroupForm" method="post" onsubmit="return false;">
 	<div class="dataGroupSummary table-data-group-summary">

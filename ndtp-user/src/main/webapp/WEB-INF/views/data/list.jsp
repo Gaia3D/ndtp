@@ -242,19 +242,9 @@
 		$(":checkbox[name=dataId]").prop("checked", this.checked);
 	});
 
-	//지도에서 찾기
+	// 지도에서 찾기 -- common.js, openFindDataPoint
 	function viewDataInfo(dataId) {
-		var url = "/map/find-data-point?dataId=" + dataId + "&referrer=list";
-		var width = 1200;
-		var height = 760;
-
-		var popupX = (window.screen.width / 2) - (width / 2);
-		// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
-		var popupY= (window.screen.height / 2) - (height / 2);
-
-	    var popWin = window.open(url, "", "toolbar=no, width=" + width + ", height=" + height + ", top=" + popupY + ", left=" + popupX
-	            + ", directories=no, status=yes, scrollbars=no, menubar=no, location=no");
-	    //popWin.document.title = layerName;
+		openFindDataPoint(dataId, "list");
 	}
 </script>
 </body>
