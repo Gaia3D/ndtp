@@ -147,6 +147,6 @@
     <!-- group id 로 레이어 파일 이력을 삭제 -->
     <delete id="deleteLayerFileInfoByGroupId" parameterType="int">
         /* deleteLayerFileInfoByGroupId */
-        DELETE FROM layer_file_info WHERE layer_file_info_group_id = #{deleteLayerFileInfoGroupId}
+        DELETE FROM layer_file_info WHERE layer_file_info_group_id = #{layerFileInfoGroupId}
     </delete>
 </mapper>

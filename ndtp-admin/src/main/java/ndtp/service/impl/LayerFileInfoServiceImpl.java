@@ -112,7 +112,7 @@ public class LayerFileInfoServiceImpl implements LayerFileInfoService {
 	 * @return
 	 */
 	@Transactional
-	public int deleteLayerFileInfoByGroupId(Integer deleteLayerFileInfoGroupId) {
-		return layerFileInfoMapper.deleteLayerFileInfoByGroupId(deleteLayerFileInfoGroupId);
+	public int deleteLayerFileInfoByGroupId(Integer layerFileInfoGroupId) {
+		return layerFileInfoMapper.deleteLayerFileInfoByGroupId(layerFileInfoGroupId);
 	}
 }

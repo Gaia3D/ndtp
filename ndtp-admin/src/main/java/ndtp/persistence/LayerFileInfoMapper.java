@@ -145,5 +145,5 @@ public interface LayerFileInfoMapper {
 	 * @param deleteLayerFileInfoGroupId
 	 * @return
 	 */
-	int deleteLayerFileInfoByGroupId(Integer deleteLayerFileInfoGroupId);
+	int deleteLayerFileInfoByGroupId(Integer layerFileInfoGroupId);
 }
