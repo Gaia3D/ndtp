@@ -44,8 +44,8 @@
 				<div class="panel row">
 					<h2 class="sign-title"><span class="text-sub">Administrator</span><br /><span class="text-main">SIGN IN</span></h2>
 					<div class="sign-inputs">
-						<div class="sign-desc">National Digital Twin Platform Pilot Service</div>
-
+						<div class="sign-desc" style="font-size: 16px; margin-top: 10px; margin-right: 25px;">National Digital Twin Platform Pilot Service</div>
+						
 						<form:form id="signinForm" modelAttribute="signinForm" method="post" action="/sign/process-signin">
 							<label for="userId"><span class="icon-glyph glyph-users"></span></label>
 							<input type="text" id="userId" name="userId" maxlength="32" title="아이디" placeholder="아이디" required="required" autofocus="autofocus" />

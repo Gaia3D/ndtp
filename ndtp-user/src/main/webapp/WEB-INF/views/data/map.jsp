@@ -17,6 +17,7 @@
 	<link rel="stylesheet" href="/externlib/kotSlider/range.css" />
 	<link rel="stylesheet" href="/externlib/tuidatepicker-4.0.3/tui-date-picker.min.css" />
 	<link rel="stylesheet" href="/css/${lang}/user-style.css" />
+	<link rel="stylesheet" href="/externlib/json-viewer/json-viewer.css" />
 	<style type="text/css">
 	    .mapWrap {
 	    	float:right;
@@ -125,9 +126,12 @@
 <%@ include file="/WEB-INF/views/data/data-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/map-data-template.jsp" %>
 <%@ include file="/WEB-INF/views/data/map-data-group-template.jsp" %>
+<%@ include file="/WEB-INF/views/data/data-attribute-dialog.jsp" %>
+<%@ include file="/WEB-INF/views/data/data-object-attribute-dialog.jsp" %>
 
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/externlib/json-viewer/json-viewer.js"></script>
 <script type="text/javascript" src="/externlib/handlebars-4.1.2/handlebars.js"></script>
 <script type="text/javascript" src="/js/${lang}/handlebarsHelper.js"></script>
 <script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>
@@ -493,6 +497,83 @@
 			alert(JS_MESSAGE["button.dobule.click"]);
 			return;
 		}
+	}
+	
+	// 데이터 속성 다이얼 로그
+	var dataAttributeDialog = $( "#dataAttributeDialog" ).dialog({
+		autoOpen: false,
+		width: 600,
+		height: 350,
+		modal: true,
+		resizable: false
+	});
+	
+	// 데이터 속성
+	function detailDataAttribute(dataId, dataName) {
+		//jQuery('#id').css("display", "block");   
+		dataAttributeDialog.dialog( "open" );
+		$("#dataNameForAttribute").html(dataName);
+
+		$.ajax({
+			url: "/datas/attributes/" + dataId,
+			type: "GET",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			dataType: "json",
+			success: function(msg){
+				if(msg.statusCode <= 200) {
+					if(msg.dataAttribute !== null) {
+						//$("#dataAttributeForOrigin").html(msg.dataAttribute.attributes);
+						$("#dataAttributeViewer").html("");
+						var jsonViewer = new JSONViewer();
+						document.querySelector("#dataAttributeViewer").appendChild(jsonViewer.getContainer());
+						jsonViewer.showJSON(JSON.parse(msg.dataAttribute.attributes), -1, -1);
+					}
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+				}
+			},
+			error:function(request,status,error){
+				alert(JS_MESSAGE["ajax.error.message"]);
+			}
+		});
+	}
+	
+	// 데이터 Object 속성 다이얼 로그
+	var dataObjectAttributeDialog = $( "#dataObjectAttributeDialog" ).dialog({
+		autoOpen: false,
+		width: 800,
+		height: 550,
+		modal: true,
+		resizable: false
+	});
+	
+	// 데이터 Object 속성
+	function detailDataObjectAttribute(dataId, dataName) {
+		dataObjectAttributeDialog.dialog( "open" );
+		$("#dataNameForObjectAttribute").html(dataName);
+
+		$.ajax({
+			url: "/datas/object/attributes/" + dataId,
+			type: "GET",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			dataType: "json",
+			success: function(msg){
+				if(msg.statusCode <= 200) {
+					if(msg.dataObjectAttribute !== null) {
+						//$("#dataObjectAttributeForOrigin").html(msg.dataObjectAttribute.attributes);
+						$("#dataObjectAttributeViewer").html("");
+						var jsonViewer = new JSONViewer();
+						document.querySelector("#dataObjectAttributeViewer").appendChild(jsonViewer.getContainer());
+						jsonViewer.showJSON(JSON.parse(msg.dataObjectAttribute.attributes), -1, -1);
+					}
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+				}
+			},
+			error:function(request,status,error){
+				alert(JS_MESSAGE["ajax.error.message"]);
+			}
+		});
 	}
 </script>
 </body>

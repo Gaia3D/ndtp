@@ -17,11 +17,4 @@ public interface DataAttributeService {
 	 */
 	DataAttribute getDataAttribute(Long dataId);
 	
-	/**
-	 * Data Attribute 등록
-	 * @param dataId
-	 * @param dataAttributeFileInfo
-	 * @return
-	 */
-	DataAttributeFileInfo insertDataAttribute(Long dataId, DataAttributeFileInfo dataAttributeFileInfo);
 }

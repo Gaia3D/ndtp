@@ -13,7 +13,7 @@
 	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
     <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
-     <link rel="stylesheet" href="/externlib/json-viewer/json-viewer.css" />
+	<link rel="stylesheet" href="/externlib/json-viewer/json-viewer.css" />
 </head>
 <body>
 	<%@ include file="/WEB-INF/views/layouts/header.jsp" %>
@@ -212,6 +212,7 @@
 <%@ include file="/WEB-INF/views/data/data-object-attribute-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/data-attribute-file-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/data-object-attribute-file-dialog.jsp" %>
+
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.form.min.js"></script>
@@ -241,7 +242,7 @@
 
 	// 전체 선택
 	$("#chkAll").click(function() {
-		$(":checkbox[name=dataGroupid]").prop("checked", this.checked);
+		$(":checkbox[name=dataId]").prop("checked", this.checked);
 	});
 
 	// 데이터 그룹 정보
@@ -345,7 +346,7 @@
 	function uploadDataAttribute(dataId, dataName) {
 		uploadDataAttributeDialog.dialog( "open" );
 		$("#attributeFileName").val("");
-		$("#dataAttributeUploadLog > tbody:last").html("");
+		$("#dataAttributeUploadLog").html("");
 		$("#attributeFileDataId").val(dataId);
 		$("#attributeDataName").html(dataName);
 	}
@@ -434,7 +435,7 @@
 	function uploadDataObjectAttribute(dataId, dataName) {
 		uploadDataObjectAttributeDialog.dialog( "open" );
 		$("#objectAttributeFileName").val("");
-		$("#dataObjectAttributeUploadLog > tbody:last").html("");
+		$("#dataObjectAttributeUploadLog").html("");
 		$("#objectAttributeFileDataId").val(dataId);
 		$("#objectAttributeDataName").html(dataName);
 	}

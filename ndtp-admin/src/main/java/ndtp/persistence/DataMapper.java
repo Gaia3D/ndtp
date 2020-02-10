@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
-import ndtp.domain.DataAttribute;
 import ndtp.domain.FileInfo;
 
 /**

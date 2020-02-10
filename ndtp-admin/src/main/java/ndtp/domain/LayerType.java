@@ -6,7 +6,5 @@ package ndtp.domain;
  *
  */
 public enum LayerType {
-	BUILDING, 
-	FACILITY, 
-	TERRAIN;
+
 }
