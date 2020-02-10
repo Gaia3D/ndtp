@@ -62,6 +62,63 @@ function getCivilVoiceList(page) {
 	});
 }
 
+// 시민참여 목록 조회
+function getCivilVoiceDetail(id) {
+	if(!page) page = 1;
+
+	$.ajax({
+		url: '/civil-voices/' + id,
+		type: 'GET',
+		headers: {'X-Requested-With': 'XMLHttpRequest'},
+		contentType: "application/json; charset=utf-8",
+		dataType: 'json',
+		data: {pageNo: page},
+		success: function(res){
+			if(res.statusCode <= 200) {
+				debugger
+			} else {
+				alert(JS_MESSAGE[res.errorCode]);
+				console.log("---- " + res.message);
+				}
+		},
+		error: function(request, status, error) {
+			alert(JS_MESSAGE["ajax.error.message"]);
+		}
+	});
+}
+
+// 시민참여 목록 조회
+function getCivilVoiceAgreeList(page) {
+	if(!page) page = 1;
+
+	$.ajax({
+		url: '/civil-voices/agree',
+		type: 'GET',
+		headers: {'X-Requested-With': 'XMLHttpRequest'},
+		contentType: "application/json; charset=utf-8",
+		dataType: 'json',
+		data: {pageNo: page},
+		success: function(res){
+			if(res.statusCode <= 200) {
+				// 페이지 정보
+				$('#civilVoiceTotalCount').text(res.totalCount);
+				$('#civilVoiceCurrentPage').text(res.pagination.pageNo);
+				$('#civilVoiceLastPage').text(res.pagination.lastPage);
+				// 리스트 구성
+				createCivilVoiceHtml(res.civilVoiceList);
+				// 페이징 구성
+				createCivilVoicePagination(res);
+			} else {
+				alert(JS_MESSAGE[res.errorCode]);
+				console.log("---- " + res.message);
+			}
+		},
+		error: function(request, status, error) {
+			alert(JS_MESSAGE["ajax.error.message"]);
+		}
+	});
+}
+
 // 시민참여 HTML 렌더링
 function createCivilVoiceHtml(list) {
 	var source = $("#templateCivilVoiceList").html();
