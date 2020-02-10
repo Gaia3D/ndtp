@@ -11,6 +11,7 @@
 	<link rel="stylesheet" href="/css/${lang}/font/font.css" />
 	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
 	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
+    <link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css">
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
 	<link rel="stylesheet" href="/externlib/dropzone/dropzone.min.css">
     <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
@@ -328,73 +329,7 @@
 	<%@ include file="/WEB-INF/views/layer/spinner-dialog.jsp" %>
 
 	<!-- Dialog -->
-	<div id="layerGroupDialog" class="dialog">
-		<table class="list-table scope-col">
-			<col class="col-name" />
-			<col class="col-toggle" />
-			<col class="col-id" />
-			<col class="col-function" />
-			<col class="col-date" />
-			<col class="col-toggle" />
-			<thead>
-				<tr>
-					<th scope="col" class="col-name">Layer 그룹명</th>
-					<th scope="col" class="col-toggle">사용 여부</th>
-					<th scope="col" class="col-toggle">등록자</th>
-					<th scope="col" class="col-toggle">설명</th>
-					<th scope="col" class="col-date">등록일</th>
-					<th scope="col" class="col-date">선택</th>
-				</tr>
-			</thead>
-			<tbody>
-<c:if test="${empty layerGroupList }">
-			<tr>
-				<td colspan="6" class="col-none">Layer 그룹이 존재하지 않습니다.</td>
-			</tr>
-</c:if>
-<c:if test="${!empty layerGroupList }">
-	<c:set var="paddingLeftValue" value="0" />
-	<c:forEach var="layerGroup" items="${layerGroupList}" varStatus="status">
-		<c:if test="${layerGroup.depth eq '1' }">
-            <c:set var="depthClass" value="oneDepthClass" />
-            <c:set var="paddingLeftValue" value="0px" />
-        </c:if>
-        <c:if test="${layerGroup.depth eq '2' }">
-            <c:set var="depthClass" value="twoDepthClass" />
-            <c:set var="paddingLeftValue" value="40px" />
-        </c:if>
-        <c:if test="${layerGroup.depth eq '3' }">
-            <c:set var="depthClass" value="threeDepthClass" />
-            <c:set var="paddingLeftValue" value="80px" />
-        </c:if>
-
-			<tr class="${depthClass } ${depthParentClass} ${ancestorClass }" style="${depthStyleDisplay}">
-				<td class="col-name ellipsis" style="max-width:200px; text-align: left;" nowrap="nowrap">
-					<span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"></span>
-					${layerGroup.layerGroupName }
-				</td>
-				<td class="col-type">
-        <c:if test="${layerGroup.available eq 'true' }">
-                	사용
-        </c:if>
-        <c:if test="${layerGroup.available eq 'false' }">
-        			미사용
-        </c:if>
-			    </td>
-			    <td class="col-type">${layerGroup.userId }</td>
-			    <td class="col-key">${layerGroup.description }</td>
-			    <td class="col-date">
-			    	<fmt:parseDate value="${layerGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
-					<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
-			    </td>
-			    <td class="col-toggle">
-			    	<a href="#" onclick="confirmParent('${layerGroup.layerGroupId}', '${layerGroup.layerGroupName}'); return false;">확인</a></td>
-			</tr>
-	</c:forEach>
-</c:if>
-			</tbody>
-		</table>
-	</div>
+	<%@ include file="/WEB-INF/views/layer/layer-group-dialog.jsp" %>
 
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
