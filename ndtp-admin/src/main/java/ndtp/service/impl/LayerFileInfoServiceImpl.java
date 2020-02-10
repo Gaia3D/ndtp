@@ -105,4 +105,14 @@ public class LayerFileInfoServiceImpl implements LayerFileInfoService {
 	public int updateOgr2OgrDataFileVersion(Map<String, String> map) {
 		return layerFileInfoMapper.updateOgr2OgrDataFileVersion(map);
 	}
+	
+	/**
+	 * group id 로 레이어 파일 이력을 삭제
+	 * @param deleteLayerFileInfoGroupId
+	 * @return
+	 */
+	@Transactional
+	public int deleteLayerFileInfoByGroupId(Integer deleteLayerFileInfoGroupId) {
+		return layerFileInfoMapper.deleteLayerFileInfoByGroupId(deleteLayerFileInfoGroupId);
+	}
 }

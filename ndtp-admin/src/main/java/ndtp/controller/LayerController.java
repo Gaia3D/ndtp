@@ -56,6 +56,7 @@ import ndtp.domain.RoleKey;
 import ndtp.domain.ShapeFileExt;
 import ndtp.domain.UserSession;
 import ndtp.geospatial.ShapeFileParser;
+import ndtp.persistence.LayerFileInfoMapper;
 import ndtp.service.GeoPolicyService;
 import ndtp.service.LayerFileInfoService;
 import ndtp.service.LayerGroupService;
@@ -242,6 +243,7 @@ public class LayerController implements AuthorizationController {
 		String errorCode = null;
 		String message = null;
 		boolean isLayerFileInfoExist = false;
+		Map<String, Object> updateLayerMap = new HashMap<>();
 
 		try {
 			errorCode = layerValidate(request);
@@ -389,7 +391,7 @@ public class LayerController implements AuthorizationController {
 				return result;
 			}
 			// 3. 레이어 기본 정보 및 레이어 이력 정보 등록
-			Map<String, Object> updateLayerMap = layerService.insertLayer(layer, layerFileInfoList);
+			updateLayerMap = layerService.insertLayer(layer, layerFileInfoList);
 			if (!layerFileInfoList.isEmpty()) {
 				// 4. org2ogr 실행
 				layerService.insertOgr2Ogr(layer, isLayerFileInfoExist, (String) updateLayerMap.get("shapeFileName"),
@@ -409,6 +411,11 @@ public class LayerController implements AuthorizationController {
 
 			statusCode = HttpStatus.OK.value();
 		} catch (Exception e) {
+			// ogr2ogr2 실행하다가 에러날경우 이미 들어간 레이어, 레이러 파일정보 삭제 
+			Integer layerId = (Integer) updateLayerMap.get("layerId");
+			Integer layerFileInfoGroupId = (Integer) updateLayerMap.get("layerFileInfoGroupId");
+			layerService.deleteLayer(layerId);
+			layerFileInfoService.deleteLayerFileInfoByGroupId(layerFileInfoGroupId);
 			e.printStackTrace();
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "db.exception";

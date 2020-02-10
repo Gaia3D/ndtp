@@ -113,4 +113,11 @@ public interface LayerMapper {
      * @return
      */
     String getLayerColumn(String layerKey);
+    
+    /**
+     * 테이블이 존재 하는지 확인 
+     * @param layerKey
+     * @return
+     */
+    String isLayerExists(String layerKey);
 }
