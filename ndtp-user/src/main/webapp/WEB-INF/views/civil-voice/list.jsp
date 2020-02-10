@@ -26,9 +26,9 @@
 <%@ include file="/WEB-INF/views/civil-voice/modify.jsp" %>
 
 <script id="templateCivilVoiceList" type="text/x-handlebars-template">
-	{{#if this}}
-		{{#each this}}
-			<li class="comment flex-align-center" data-id="{{id}}">
+	{{#if civilVoiceList}}
+		{{#each civilVoiceList}}
+			<li class="comment flex-align-center" data-id="{{civilVoiceId}}">
 				<p>
 					<span class="title">{{title}}</span>
 					<span class="id">{{userId}}</span>
