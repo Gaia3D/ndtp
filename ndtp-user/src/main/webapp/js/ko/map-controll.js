@@ -373,6 +373,7 @@ function MapControll(viewer, option) {
             viewer.resolutionScale = targetResolutionScale;
             scene.preRender.removeEventListener(prepareScreenshot);
             // take snapshot after defined timeout to allow scene update (ie. loading data)
+            startLoading();
             setTimeout(function(){
                 scene.postRender.addEventListener(takeScreenshot);
             }, timeout);
@@ -386,6 +387,7 @@ function MapControll(viewer, option) {
                 downloadURI(url, "snapshot-" + moment().format("YYYYMMDDHHmmss") + ".png");
                 // reset resolutionScale
                 viewer.resolutionScale = 1.0;
+                stopLoading();
             });
         }
 
