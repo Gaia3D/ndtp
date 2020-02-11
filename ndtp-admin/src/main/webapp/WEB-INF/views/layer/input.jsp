@@ -338,6 +338,7 @@
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
 	<%@ include file="/WEB-INF/views/layer/spinner-dialog.jsp" %>
+	<%@ include file="/WEB-INF/views/layer/loading-dialog.jsp" %>
 
 	<!-- Dialog -->
 	<%@ include file="/WEB-INF/views/layer/layer-group-dialog.jsp" %>
@@ -349,25 +350,26 @@
 <script type="text/javascript" src="/js/navigation.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-		$( ".tabs" ).tabs();
+		$(".tabs").tabs();
 		showRange(100);
 		changeLayerType(null);
 		changeGeometryType(null);
-		
-		// geoserver layerList 
-		var geoserverLayerList = JSON.parse('${geoserverLayerJson}').layers;
-		if(geoserverLayerList) {
-			geoserverLayerList = geoserverLayerList.layer;
-			for(var i=0; i< geoserverLayerList.length; i++) {
-				var name = geoserverLayerList[i].name;
-				$("#layerKeySelect").append("<option value="+name+">"+name+"</option>");	
-			}
-		}
 		
 		$("input[name='sharing']").filter("[value='public']").prop("checked", true);
 		$("input[name='defaultDisplay']").filter("[value='true']").prop("checked", true);
 		$("input[name='available']").filter("[value='true']").prop("checked", true);
         $("input[name='labelDisplay']").filter("[value='true']").prop("checked", true);
+        
+        // geoserver layerlist 가져올 동안 스피너 
+		var layerLoadingDialog = $("#layerLoadingDialog").dialog({
+			autoOpen: false,
+			width: 250,
+			height: 290,
+			modal: true,
+			resizable: false
+		});
+		layerLoadingDialog.dialog("open");
+        getGeoserverLayerList(layerLoadingDialog);
 	});
 	
 	// 레이어 탭 이벤트 
@@ -739,6 +741,33 @@
 	        alert("진행 중입니다.");
 	        return;
 		}
+	}
+	
+	function getGeoserverLayerList(layerLoadingDialog) {
+        $.ajax({
+			url: "/layer/list-geoserver",
+			type: "GET",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			success: function(msg){
+				if(msg.statusCode <= 200) {
+					var geoserverLayerList = JSON.parse(msg.geoserverLayerJson).layers;
+					if(geoserverLayerList) {
+						geoserverLayerList = geoserverLayerList.layer;
+						for(var i=0; i< geoserverLayerList.length; i++) {
+							var name = geoserverLayerList[i].name;
+							$("#layerKeySelect").append("<option value="+name+">"+name+"</option>");	
+						}
+					}
+					layerLoadingDialog.dialog("close");
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+					console.log("---- " + msg.message);
+				}
+			},
+			error:function(request, status, error){
+		        alert(JS_MESSAGE["ajax.error.message"]);
+			}
+		});
 	}
 
 </script>

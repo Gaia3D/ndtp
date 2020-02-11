@@ -374,6 +374,7 @@
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
+	<%@ include file="/WEB-INF/views/layer/loading-dialog.jsp" %>
 	<%@ include file="/WEB-INF/views/layer/spinner-dialog.jsp" %>
 	<%@ include file="/WEB-INF/views/layer/fileInfo-deatil-dialog.jsp"%>
 	<!-- Dialog -->
@@ -596,6 +597,14 @@
 		resizable: false
 	});
 	
+	var layerLoadingDialog = $("#layerLoadingDialog").dialog({
+		autoOpen: false,
+		width: 250,
+		height: 290,
+		modal: true,
+		resizable: false
+	});
+	
 	function alertMessage(response) {
 		if(uploadFileResultCount === 0) {
 			if(response.result === "upload.file.type.invalid") {
@@ -664,6 +673,7 @@
                     //startSpinner("fileUploadSpinner");
                     fileUploadDialog.dialog( "open" );
                 } else {
+                	layerLoadingDialog.dialog("open");
                     //send empty
                     //myDropzone.uploadFiles([{ name: 'nofiles', upload: { filename: 'nofiles' } }]);
                     myDropzone._uploadData([{ upload: { filename: '' } }], [{ filename: '', name: '', data: new Blob() }]);
@@ -729,7 +739,10 @@
 	            } else {
 					console.log("------- success response = " + response);
 					if(response.statusCode <= 200) {
-		        		alert(JS_MESSAGE["update"]);
+						layerLoadingDialog.dialog("close");
+						setTimeout(function(){
+		        			alert(JS_MESSAGE["update"]);
+						},100);
 					} else {
 						alert(JS_MESSAGE[response.errorCode]);
 						console.log("---- " + res.message);

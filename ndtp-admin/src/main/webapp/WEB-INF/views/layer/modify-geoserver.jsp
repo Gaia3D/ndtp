@@ -215,6 +215,7 @@
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
+	<%@ include file="/WEB-INF/views/layer/loading-dialog.jsp" %>
 	<!-- Dialog -->
 	<%@ include file="/WEB-INF/views/layer/layer-group-dialog.jsp" %>
 	
@@ -406,6 +407,14 @@
 	    	$("#layerAlphaStyle").val($("#sliderRange").val() / 100);
 	    	if(!$("#zIndex").val()) $("#zIndex").val(0);
 	        var formData = $('#layer').serialize();
+	        var layerLoadingDialog = $("#layerLoadingDialog").dialog({
+	    		autoOpen: false,
+	    		width: 250,
+	    		height: 290,
+	    		modal: true,
+	    		resizable: false
+	    	});
+	        layerLoadingDialog.dialog("open");
 	        $.ajax({
 				url: "/layer/update-geoserver",
 				type: "POST",
@@ -413,7 +422,10 @@
 		        data: formData,
 				success: function(msg){
 					if(msg.statusCode <= 200) {
-						alert(JS_MESSAGE["update"]);
+						layerLoadingDialog.dialog("close");
+						setTimeout(function(){
+							alert(JS_MESSAGE["update"]);
+						},100);
 					} else {
 						alert(JS_MESSAGE[msg.errorCode]);
 						console.log("---- " + msg.message);

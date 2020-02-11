@@ -132,6 +132,30 @@ public class LayerController implements AuthorizationController {
 		return "/layer/list";
 	}
 
+	@GetMapping(value = "list-geoserver")
+	@ResponseBody
+	public Map<String, Object> geoserverLayerList(HttpServletRequest request) {
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		String geoserverLayerJson = null;
+		try {
+			GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
+			geoserverLayerJson = layerService.getListGeoserverLayer(geoPolicy);
+		} catch (Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		result.put("geoserverLayerJson", geoserverLayerJson);
+		return result;
+	}
     /**
      * layer 등록
      * @param model
@@ -143,14 +167,11 @@ public class LayerController implements AuthorizationController {
     	if(roleValidate(request) != null) return roleCheckResult;
 
     	Policy policy = policyService.getPolicy();
-    	GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
     	List<LayerGroup> layerGroupList = layerGroupService.getListLayerGroup();
-    	String geoserverLayerJson = layerService.getListGeoserverLayer(geoPolicy);
     	
     	model.addAttribute("policy", policy);
     	model.addAttribute("layer", new Layer());
     	model.addAttribute("layerGroupList", layerGroupList);
-    	model.addAttribute("geoserverLayerJson", geoserverLayerJson);
 
     	return "/layer/input";
     }
