@@ -227,6 +227,8 @@
         Simulation(magoInstance);
         // 환경 설정.
         UserPolicy(magoInstance);
+        // 시민참여
+        CivilVoice(magoInstance);
         // 기본 레이어 랜더링
         setTimeout(function(){
         	initLayer(magoInstance, NDTP.baseLayers);

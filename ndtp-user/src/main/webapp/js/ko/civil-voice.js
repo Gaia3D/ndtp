@@ -50,7 +50,7 @@ $(document).ready(function (){
 
 	// 위치 지정
 	$('#civilVoiceLocation').on('click', function() {
-		getGeographicCoord();
+		civilVoice.getGeographicCoord();
 	});
 });
 
@@ -214,42 +214,6 @@ function saveCivilVoiceComment() {
 	}
 }
 
-var beforePointId = null;
-function getGeographicCoord() {
-	var viewer = MAGO3D_INSTANCE.getViewer();
-	var magoManager = MAGO3D_INSTANCE.getMagoManager();
-	magoManager.once(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
-		if(beforePointId !== undefined && beforePointId !== null) {
-			remove(beforePointId);
-		}
-
-		var geographicCoord = result.clickCoordinate.geographicCoordinate;
-		var worldCoordinate = result.clickCoordinate.worldCoordinate;
-		$('#civilVoiceForm [name=longitude]').val(geographicCoord.longitude);
-		$('#civilVoiceForm [name=latitude]').val(geographicCoord.latitude);
-
-		var pointGraphic = new Cesium.PointGraphics({
-			pixelSize : 10,
-			heightReference : Cesium.HeightReference.CLAMP_TO_GROUND,
-			color : Cesium.Color.AQUAMARINE,
-			outlineColor : Cesium.Color.WHITE,
-			outlineWidth : 2
-		});
-
-		var addedEntity = viewer.entities.add({
-			position : new Cesium.Cartesian3(worldCoordinate.x, worldCoordinate.y, worldCoordinate.z),
-			point : pointGraphic
-		});
-
-		beforePointId = addedEntity.id;
-	});
-}
-
-function remove(entityStored) {
-	var viewer = MAGO3D_INSTANCE.getViewer();
-	viewer.entities.removeById(entityStored);
-}
-
 // 등록 폼 초기화
 function initFormContent(formId) {
 	$('#' + formId + ' input').val("");
@@ -262,4 +226,64 @@ function drawHandlebarsHtml(data, templateId, targetId) {
 	var template = Handlebars.compile(source);
 	var html = template(data);
 	$('#' + targetId).empty().append(html);
+}
+
+
+/******************************/
+
+
+var civilVoice;
+function CivilVoice(magoInstance) {
+	var viewer = magoInstance.getViewer();
+	civilVoice = new CivilVoiceControll(magoInstance, viewer);
+}
+
+function CivilVoiceControll(magoInstance, viewer) {
+	var that = this;
+	var magoManager = magoInstance.getMagoManager();
+
+	var store = {
+		name: {
+			longitude: $('#civilVoiceForm [name=longitude]'),
+			latitude: $('#civilVoiceForm [name=latitude]')
+		},
+		beforeEntity: null
+	}
+
+	var action = {
+		remove: function(storedEntity) {
+			viewer.entities.removeById(storedEntity);
+		}
+	}
+
+	// public
+	return {
+		getGeographicCoord: function() {
+			magoManager.once(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
+				if(store.beforeEntity) {
+					action.remove(store.beforeEntity);
+				}
+
+				var geographicCoord = result.clickCoordinate.geographicCoordinate;
+				var worldCoordinate = result.clickCoordinate.worldCoordinate;
+
+				var pointGraphic = new Cesium.PointGraphics({
+					pixelSize : 10,
+					heightReference : Cesium.HeightReference.CLAMP_TO_GROUND,
+					color : Cesium.Color.AQUAMARINE,
+					outlineColor : Cesium.Color.WHITE,
+					outlineWidth : 2
+				});
+
+				var addedEntity = viewer.entities.add({
+					position : new Cesium.Cartesian3(worldCoordinate.x, worldCoordinate.y, worldCoordinate.z),
+					point : pointGraphic
+				});
+
+				store.beforeEntity = addedEntity.id;
+				store.name.longitude.val(geographicCoord.longitude);
+				store.name.latitude.val(geographicCoord.latitude);
+			});
+		}
+	}
 }
