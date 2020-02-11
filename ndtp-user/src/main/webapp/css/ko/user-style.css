@@ -583,14 +583,16 @@ margin-bottom: 5px;
 .commentView .title {
 margin-bottom: 10px;
 padding: 10px 0 0 25px;
-font-size: 18px;
+font-size: 15px;
 font-weight: bold;
 border-radius: 5px;
-background: url(/images/ko/ico.png) no-repeat 3px -639px;
+background: url(/images/ko/ico.png) no-repeat 3px -637px;
 }
 .commentView .modify {
 float: right;
 text-decoration: underline;
+margin: 3px;
+cursor: pointer;
 }
 .commentView > .con {
 max-height: 240px;
@@ -944,7 +946,7 @@ border: none;
 border-bottom: 1px solid #e0e0e0;
 }
 .analysisGroup li input.withBtn {
-width: 120px;
+width: 100px;
 }
 
 .analysisGroup li span.coordText {
@@ -1329,7 +1331,7 @@ position: absolute;
 top:60px;
 right: 5px;
 min-width: 200px;
-min-height: 233px;
+min-height: 200px;
 border-radius: 5px;
 box-shadow: 1px 1px 2px 0 #333;
 background-color: #fff;
@@ -1348,6 +1350,7 @@ background-color: #f1f1f1;
 .labelLayer > .layerContents {
 /* margin: 15px 20px; */
 padding: 15px 20px;
+max-width: 330px;
 }
 .layerHeader > h3 {
 margin-top:5px;
@@ -1847,6 +1850,16 @@ z-index:100;
 }
 .btn-full {
 	width: 100%;
+}
+.inline-toggle {
+	display: inline-block;
+	width: 100%;
+	margin-bottom: 10px;
+}
+.inline-toggle > *{
+	width: 40%;
+	float: left;
+	line-height: 2.4em;
 }
 
 /* ////////// CUSTOM - 정연화 추가 ////////// */
