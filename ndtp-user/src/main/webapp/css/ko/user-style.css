@@ -568,7 +568,7 @@ min-width: 40px;
 font-size: 17px; */
 font-weight: bold;
 text-align: right;
-color: #287be4;
+color: #646464;
 /* background: url(/images/ko/ico.png) no-repeat 0 -968px; */
 /* margin-left:-10px; */
 }
@@ -1815,7 +1815,7 @@ ul.listDrop li.on > p > span.collapse-icon {
 	text-indent: 999em;
 	background-image: url(/images/ko/ico.png);
 	background-repeat: no-repeat;
-    background-position: 0 -978px;
+    background-position: 0 -977px;
 }
 /* 경관분석 달력*/
 .tui-datepicker{

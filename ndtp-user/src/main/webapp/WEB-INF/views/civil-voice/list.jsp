@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <div id="civilVoiceListContent" class="contents mar0 pad0 border-none" style="display:block;">
-	<h3 class="h3-margin">시민참여</h3>
+	<h3 class="h3-heading">시민참여</h3>
 
 	<!-- 시민참여 검색 -->
 	<div class="listSearch search-margin flex-align-center">
