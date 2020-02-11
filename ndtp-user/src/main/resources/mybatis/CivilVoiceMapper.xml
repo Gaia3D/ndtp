@@ -104,7 +104,7 @@
 			civil_voice_id,	user_id, title, content, location, heit,
 			user_ip, sido_cd, sgg_cd, emd_cd
         ) VALUES (
-			#{civilVoiceId}, #{userId}, #{title}, #{contents}, #{location}, #{altitude},
+			#{civilVoiceId}, #{userId}, #{title}, #{contents}, ST_GeomFromText(#{location}, 4326), #{altitude},
 			#{clientIp}, #{sidoCd}, #{sggCd}, #{emdCd}
         )
 	</insert>

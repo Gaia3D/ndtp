@@ -8,6 +8,10 @@
 		<button type="button" id="civilVoiceSearch" class="btnTotalSearch" title="검색">검색</button>
 	</div>
 
+	<div class="form-group button-group-top-center">
+		<button type="button" id="civilVoiceInputButton" title="의견등록" class="btnTextF">의견 등록</button>
+	</div>
+
 	<div class="bothSide">
 		<div><spring:message code='all'/> <span id="civilVoiceTotalCount">0</span> <spring:message code='search.what.count'/></div>
 		<div><span id="civilVoiceCurrentPage">0</span> / <span id="civilVoiceLastPage">0</span> <spring:message code='search.page'/></div>
@@ -15,10 +19,6 @@
 
 	<ul id="civilVoiceList" class="commentWrap"></ul>
 	<ul id="civilVoicePagination" class="pagination"></ul>
-
-	<div class="form-group button-group-top-center">
-		<button type="button" id="civilVoiceInputButton" title="의견등록" class="btnTextF">의견 등록</button>
-	</div>
 </div>
 <!-- E: 시민참여 목록 -->
 <%@ include file="/WEB-INF/views/civil-voice/detail.jsp" %>

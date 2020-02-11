@@ -47,6 +47,11 @@ $(document).ready(function (){
 	$('#civilVoiceAgree').on('click', function() {
 		saveCivilVoiceComment();
 	});
+
+	// 위치 지정
+	$('#civilVoiceLocation').on('click', function() {
+		getGeographicCoord();
+	});
 });
 
 // 시민참여 목록 조회
@@ -209,6 +214,42 @@ function saveCivilVoiceComment() {
 		alert("진행 중입니다.");
 		return;
 	}
+}
+
+var beforePointId = null;
+function getGeographicCoord() {
+	var viewer = MAGO3D_INSTANCE.getViewer();
+	var magoManager = MAGO3D_INSTANCE.getMagoManager();
+	magoManager.once(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
+		if(beforePointId !== undefined && beforePointId !== null) {
+			remove(beforePointId);
+		}
+
+		var geographicCoord = result.clickCoordinate.geographicCoordinate;
+		var worldCoordinate = result.clickCoordinate.worldCoordinate;
+		$('#civilVoiceForm [name=longitude]').val(geographicCoord.longitude);
+		$('#civilVoiceForm [name=latitude]').val(geographicCoord.latitude);
+
+		var pointGraphic = new Cesium.PointGraphics({
+			pixelSize : 10,
+			heightReference : Cesium.HeightReference.CLAMP_TO_GROUND,
+			color : Cesium.Color.AQUAMARINE,
+			outlineColor : Cesium.Color.WHITE,
+			outlineWidth : 2
+		});
+
+		var addedEntity = viewer.entities.add({
+			position : new Cesium.Cartesian3(worldCoordinate.x, worldCoordinate.y, worldCoordinate.z),
+			point : pointGraphic
+		});
+
+		beforePointId = addedEntity.id;
+	});
+}
+
+function remove(entityStored) {
+	var viewer = MAGO3D_INSTANCE.getViewer();
+	viewer.entities.removeById(entityStored);
 }
 
 // 등록 폼 초기화
