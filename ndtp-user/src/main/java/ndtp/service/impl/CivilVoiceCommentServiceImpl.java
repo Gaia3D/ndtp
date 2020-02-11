@@ -36,6 +36,7 @@ public class CivilVoiceCommentServiceImpl implements CivilVoiceCommentService {
 
 		CivilVoice civilVoice = new CivilVoice();
 		civilVoice.setCivilVoiceId(civilVoiceComment.getCivilVoiceId());
+		civilVoice.setUserId(civilVoiceComment.getUserId());
 		civilVoice = civilVoiceMapper.getCivilVocieById(civilVoice);
 		civilVoice.setCommentCount(civilVoice.getCommentCount() + 1);
 		civilVoiceMapper.updateCivilVoice(civilVoice);

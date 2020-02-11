@@ -591,6 +591,8 @@ background: url(/images/ko/ico.png) no-repeat 3px -637px;
 .commentView .modify {
 float: right;
 text-decoration: underline;
+margin: 3px;
+cursor: pointer;
 }
 .commentView > .con {
 max-height: 240px;

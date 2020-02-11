@@ -84,7 +84,7 @@ function getCivilVoiceList(page) {
 }
 
 // 시민참여 상세 조회
-function getCivilVoiceDetail(id) {
+function getCivilVoiceDetail() {
 	var id = $('#civilVoiceId').val();
 
 	$.ajax({
@@ -95,9 +95,7 @@ function getCivilVoiceDetail(id) {
 		dataType: 'json',
 		success: function(res){
 			if(res.statusCode <= 200) {
-				var data = res.civilVoice;
-				$('#civilVoiceTitle').text(data.title);
-				$('#civilVoiceContents').text(data.contents);
+				drawHandlebarsHtml(res, 'templateCivilVoiceView', 'civilVoiceView');
 			} else {
 				alert(JS_MESSAGE[res.errorCode]);
 				console.log("---- " + res.message);

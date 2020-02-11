@@ -12,7 +12,7 @@
 				user_id,
 				title,
 				content as contents,
-				location,
+				location as geometry,
 				heit as altitude,
 				use_yn as available,
 				user_ip as client_ip,
@@ -26,7 +26,7 @@
         )
         SELECT
 			civil_voice.*,
-			ST_X(location) AS longitude, ST_Y(location) AS latitude,
+			ST_X(geometry) AS longitude, ST_Y(geometry) AS latitude, ST_AsText(geometry) AS location,
 			CASE WHEN user_id = #{userId} THEN true ELSE false END as editable
         FROM civil_voice
 		<trim prefix="WHERE" prefixOverrides="AND">
@@ -47,7 +47,7 @@
 				user_id,
 				title,
 				content as contents,
-				location,
+				location as geometry,
 				heit as altitude,
 				use_yn as available,
 				user_ip as client_ip,
@@ -77,7 +77,7 @@
 				user_id,
 				title,
 				content as contents,
-				location,
+				location as geometry,
 				heit as altitude,
 				use_yn as available,
 				user_ip as client_ip,
@@ -89,7 +89,10 @@
 				sido_cd, sgg_cd, emd_cd
 	        FROM tn_civil_voice
         )
-		SELECT *
+		SELECT
+			civil_voice.*,
+			ST_X(geometry) AS longitude, ST_Y(geometry) AS latitude, ST_AsText(geometry) AS location,
+			CASE WHEN user_id = #{userId} THEN true ELSE false END as editable
 		FROM civil_voice
 		WHERE civil_voice_id = #{civilVoiceId}
 	</select>
@@ -121,7 +124,7 @@
 			content = #{contents},
 			</if>
 			<if test="location != null and location != ''">
-			location = #{location},
+			location = ST_GeomFromText(#{location}, 4326),
 			</if>
 			<if test="altitude != null and altitude != ''">
 			heit = #{altitude},
