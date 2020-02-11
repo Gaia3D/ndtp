@@ -71,9 +71,7 @@
 				<%@ include file="/WEB-INF/views/spatial/spatial.jsp" %>
 			</div>
 			<div id="simulationContent" class="contents yScroll fullHeight" style="display:none;">
-<%--				todo: temp--%>
-<%--				<%@ include file="/WEB-INF/views/simulation/simulation.jsp" %>--%>
-				<%@ include file="/WEB-INF/views/perm-request/application-register.jsp" %>
+				<%@ include file="/WEB-INF/views/simulation/simulation.jsp" %>
 			</div>
 			<div id="civilVoiceContent" class="contents yScroll fullHeight" style="display:none;">
 				<%@ include file="/WEB-INF/views/civil-voice/list.jsp" %>
