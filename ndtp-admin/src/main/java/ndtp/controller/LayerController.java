@@ -50,12 +50,14 @@ import ndtp.domain.Layer;
 import ndtp.domain.LayerFileInfo;
 import ndtp.domain.LayerGroup;
 import ndtp.domain.LayerInsertType;
+import ndtp.domain.LayerType;
 import ndtp.domain.Pagination;
 import ndtp.domain.Policy;
 import ndtp.domain.RoleKey;
 import ndtp.domain.ShapeFileExt;
 import ndtp.domain.UserSession;
 import ndtp.geospatial.ShapeFileParser;
+import ndtp.persistence.LayerFileInfoMapper;
 import ndtp.service.GeoPolicyService;
 import ndtp.service.LayerFileInfoService;
 import ndtp.service.LayerGroupService;
@@ -212,7 +214,11 @@ public class LayerController implements AuthorizationController {
 			}
 			List<LayerFileInfo> layerFileInfoList = new ArrayList<>();
 			layerService.insertLayer(layer, layerFileInfoList);
-			layerService.updateLayerStyle(layer);
+			String layerType = layer.getLayerType();
+			// 레이어 타입이 vector일 경우에만 스타일 설정 
+			if(LayerType.VECTOR == LayerType.valueOf(layerType.toUpperCase())) {
+				layerService.updateLayerStyle(layer);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
@@ -242,6 +248,7 @@ public class LayerController implements AuthorizationController {
 		String errorCode = null;
 		String message = null;
 		boolean isLayerFileInfoExist = false;
+		Map<String, Object> updateLayerMap = new HashMap<>();
 
 		try {
 			errorCode = layerValidate(request);
@@ -389,7 +396,7 @@ public class LayerController implements AuthorizationController {
 				return result;
 			}
 			// 3. 레이어 기본 정보 및 레이어 이력 정보 등록
-			Map<String, Object> updateLayerMap = layerService.insertLayer(layer, layerFileInfoList);
+			updateLayerMap = layerService.insertLayer(layer, layerFileInfoList);
 			if (!layerFileInfoList.isEmpty()) {
 				// 4. org2ogr 실행
 				layerService.insertOgr2Ogr(layer, isLayerFileInfoExist, (String) updateLayerMap.get("shapeFileName"),
@@ -404,11 +411,20 @@ public class LayerController implements AuthorizationController {
 				layerFileInfoService.updateOgr2OgrDataFileVersion(orgMap);
 				// 6. geoserver에 신규 등록일 경우 등록, 아닐경우 통과
 				layerService.registerLayer(geoPolicy, layer.getLayerKey());
-				layerService.updateLayerStyle(layer);
+				String layerType = layer.getLayerType();
+				// 레이어 타입이 vector일 경우에만 스타일 설정 
+				if(LayerType.VECTOR == LayerType.valueOf(layerType.toUpperCase())) {
+					layerService.updateLayerStyle(layer);
+				}
 			}
 
 			statusCode = HttpStatus.OK.value();
 		} catch (Exception e) {
+			// ogr2ogr2 실행하다가 에러날경우 이미 들어간 레이어, 레이러 파일정보 삭제 
+			Integer layerId = (Integer) updateLayerMap.get("layerId");
+			Integer layerFileInfoGroupId = (Integer) updateLayerMap.get("layerFileInfoGroupId");
+			layerService.deleteLayer(layerId);
+			layerFileInfoService.deleteLayerFileInfoByGroupId(layerFileInfoGroupId);
 			e.printStackTrace();
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "db.exception";
@@ -431,7 +447,11 @@ public class LayerController implements AuthorizationController {
 		try {
 			List<LayerFileInfo> layerFileInfoList = new ArrayList<>();
 			layerService.updateLayer(layer, false, layerFileInfoList);
-			layerService.updateLayerStyle(layer);
+			String layerType = layer.getLayerType();
+			// 레이어 타입이 vector일 경우에만 스타일 설정 
+			if(LayerType.VECTOR == LayerType.valueOf(layerType.toUpperCase())) {
+				layerService.updateLayerStyle(layer);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
@@ -635,8 +655,11 @@ public class LayerController implements AuthorizationController {
                 // 6. geoserver에 신규 등록일 경우 등록, 아닐경우 통과
                 layerService.registerLayer(geoPolicy, layer.getLayerKey());
             }
-
-            layerService.updateLayerStyle(layer);
+            String layerType = layer.getLayerType();
+			// 레이어 타입이 vector일 경우에만 스타일 설정 
+			if(LayerType.VECTOR == LayerType.valueOf(layerType.toUpperCase())) {
+				layerService.updateLayerStyle(layer);
+			}
 
             statusCode = HttpStatus.OK.value();
         } catch(Exception e) {

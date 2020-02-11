@@ -131,7 +131,7 @@ var MapDataControll = function(magoInstance) {
 	});
 	//위치회전정보 저장
 	$('#dcSavePosRot').click(function() {
-		if(confirm('현재 입력된 위치와 회전 정보를 db에 저장하시겠습니까?')) {
+		if(confirm(JS_MESSAGE["data.update.check"])) {
 			if(!dataId) {
 				alert('선택된 데이터가 없습니다.');
 				return false;
@@ -146,6 +146,33 @@ var MapDataControll = function(magoInstance) {
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						alert(JS_MESSAGE["update"]);
+					} else if (msg.statusCode == 428) {
+						if(confirm(JS_MESSAGE[msg.errorCode])) {
+							$('input[name="dataId"]').val(dataId);
+							var formData = $('#dcRotLocForm').serialize();
+							$.ajax({
+								url: "/data-adjust-logs",
+								type: "POST",
+								headers: {"X-Requested-With": "XMLHttpRequest"},
+								data: formData,
+								success: function(msg){
+									if(msg.statusCode <= 200) {
+										alert("요청 하였습니다.");
+									} else {
+										alert(JS_MESSAGE[msg.errorCode]);
+										console.log("---- " + msg.message);
+									}
+									insertDataAdjustLogFlag = true;
+								},
+								error: function(request, status, error){
+							        alert(JS_MESSAGE["ajax.error.message"]);
+							        insertDataAdjustLogFlag = true;
+								},
+								always: function(msg) {
+									$('input[name="dataId"]').val("");
+								}
+							});
+						}
 					} else {
 						alert(JS_MESSAGE[msg.errorCode]);
 						console.log("---- " + msg.message);

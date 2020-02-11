@@ -123,7 +123,7 @@
             </c:if>
         </c:if>
         <c:if test="${layerGroup.depth eq '3' }">
-                        					<span style="padding-left: ${paddingLeftValue}; font-size: 1.5em; color: Tomato;"><i class="fa fa-file-alt" aria-hidden="true"></i></span>
+                        					<span style="padding-left: ${paddingLeftValue}; font-size: 1.5em; color: Tomato;"><i class="fa fa-folder oneFolder" aria-hidden="true"></i></span>
         </c:if>
 
                         					${layerGroup.layerGroupName }

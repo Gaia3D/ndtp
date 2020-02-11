@@ -217,7 +217,8 @@
 		</table>
 		<div class="button-group">
 			<div class="center-buttons">
-				<input type="submit" value="데이터 위치 변경 요청" onclick="insertDataAdjustLog();"/>
+				<input type="submit" value="<spring:message code='data.transform.save.request'/>" 
+						onclick="insertDataAdjustLog();"/>
 				<a href="/data/list" class="button">목록</a>
 			</div>
 		</div>

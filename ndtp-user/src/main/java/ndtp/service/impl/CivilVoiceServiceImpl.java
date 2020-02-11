@@ -12,11 +12,11 @@ import ndtp.service.CivilVoiceService;
 @Service
 public class CivilVoiceServiceImpl implements CivilVoiceService {
 	private final CivilVoiceMapper civilVoiceMapper;
-	
+
 	public CivilVoiceServiceImpl(CivilVoiceMapper civilVoiceMapper) {
 		this.civilVoiceMapper = civilVoiceMapper;
 	}
-	
+
 	@Override
 	@Transactional(readOnly = true)
 	public List<CivilVoice> getListCivilVoice(CivilVoice civilvoice) {
@@ -31,8 +31,8 @@ public class CivilVoiceServiceImpl implements CivilVoiceService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public CivilVoice getCivilVocieById(Long civilVoiceId) {
-		return civilVoiceMapper.getCivilVocieById(civilVoiceId);
+	public CivilVoice getCivilVocieById(CivilVoice civilVoice) {
+		return civilVoiceMapper.getCivilVocieById(civilVoice);
 	}
 
 	@Override
@@ -49,8 +49,8 @@ public class CivilVoiceServiceImpl implements CivilVoiceService {
 
 	@Override
 	@Transactional
-	public int deleteCivilVoice(Long civilVoiceId) {
-		return civilVoiceMapper.deleteCivilVoice(civilVoiceId);
+	public int deleteCivilVoice(CivilVoice civilVoice) {
+		return civilVoiceMapper.deleteCivilVoice(civilVoice);
 	}
 
 }

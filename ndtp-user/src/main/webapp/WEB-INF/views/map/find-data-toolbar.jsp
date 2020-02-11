@@ -28,14 +28,6 @@
         <button type="button" class="layerClose" title="닫기">닫기</button>
     </div>
     <div class="layerContents">
-		<div id="datainfoDisplay" class="layerDiv marT0">
-			<h4 class="category">객체정보</h4>
-			<input type="radio" id="datainfoDisplayY" name="datainfoDisplay" value="true">
-			<label for="datainfoDisplayY">표시</label>
-			<input type="radio" id="datainfoDisplayN" name="datainfoDisplay" value="false" checked>
-			<label for="datainfoDisplayN">비표시</label>
-		</div>
-
 		<div class="layerDiv">
 			<h4 class="category">Origin</h4>
 			<input type="radio" id="originDisplayY" name="originDisplay" value="true">
@@ -77,6 +69,7 @@
 				</ul>
 			</div>
 			<form id="dcRotLocForm" class="layerDiv marB0">
+				<input type="hidden" name="dataId" value="${dataInfo.dataId}" />
 				<h4 class="category">위치 변경</h4>
 				<ul class="layerDiv">
 					<li>
@@ -126,14 +119,23 @@
 
 				<div>
 					<c:if test="${dataInfo.dataGroupTarget eq 'admin'}">
-						<button type="button" id="dcSavePosRotReqPop" class="btnTextF" title="높이회전 저장 요청">높이회전 저장 요청</button>
+						<button type="button" id="dcSavePosRotReqPop" class="btnTextF" 
+								title="<spring:message code='data.transform.save.request'/>">
+								<spring:message code='data.transform.save.request'/>
+						</button>
 					</c:if>
 					<c:if test="${dataInfo.dataGroupTarget eq 'user'}">
 						<c:if test="${dataInfo.userId eq owner}">
-							<button type="button" id="dcSavePosRotPop" class="btnTextF" title="높이회전 저장">높이회전 저장</button>
+							<button type="button" id="dcSavePosRotPop" class="btnTextF" 
+									title="<spring:message code='data.transform.save'/>">
+								<spring:message code='data.transform.save'/>
+							</button>
 						</c:if>
 						<c:if test="${dataInfo.userId ne owner}">
-							<button type="button" id="dcSavePosRotReqPop" class="btnTextF" title="높이회전 저장 요청">높이회전 저장 요청</button>	
+							<button type="button" id="dcSavePosRotReqPop" class="btnTextF" 
+									title="<spring:message code='data.transform.save.request'/>">
+									<spring:message code='data.transform.save.request'/>
+							</button>	
 						</c:if>
 					</c:if>
 					<button type="button" id="dcShowAttr" class="btnTextF">속성조회</button>

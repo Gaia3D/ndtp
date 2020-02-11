@@ -196,6 +196,7 @@ public class LayerServiceImpl implements LayerService {
             layerFileInfoGroupMap.put("shapeEncoding", shapeEncoding);
             layerFileInfoGroupMap.put("layerFileInfoGroupId", layerFileInfoGroupId);
             layerFileInfoGroupMap.put("layerFileInfoGroupIdList", layerFileInfoGroupIdList);
+            layerFileInfoGroupMap.put("layerId", layerId);
             log.info("+++ layerFileInfoGroupMap = {}", layerFileInfoGroupMap);
             layerFileInfoMapper.updateLayerFileInfoGroup(layerFileInfoGroupMap);
         }
@@ -420,7 +421,10 @@ public class LayerServiceImpl implements LayerService {
 			// layer_file_info 히스토리 삭제
 			layerFileInfoMapper.deleteLayerFileInfo(layerId);
 			// 공간정보 테이블 삭제
-			layerMapper.deleteLayerTable(layer.getLayerKey());
+			String layerExists = layerMapper.isLayerExists(layer.getLayerKey());
+			if(layerExists != null) {
+				layerMapper.deleteLayerTable(layer.getLayerKey());
+			}
 		}
 		// 레이어 메타정보 삭제 
 		return layerMapper.deleteLayer(layerId);

@@ -66,6 +66,7 @@ public class UserPolicyServiceImpl implements UserPolicyService {
         	if(userPolicy.getLod4() == null) userPolicy.setLod4(geoPolicy.getLod4());
         	if(userPolicy.getLod5() == null) userPolicy.setLod5(geoPolicy.getLod5());
         	if(userPolicy.getSsaoRadius() == null) userPolicy.setSsaoRadius(geoPolicy.getSsaoRadius());
+        	if(userPolicy.getBaseLayers() == null) userPolicy.setBaseLayers(defaultLayers());
         }
 
         return userPolicy;

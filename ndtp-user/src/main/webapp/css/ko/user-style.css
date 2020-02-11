@@ -50,7 +50,7 @@ text-align: right;
 width: calc(100% - 500px);
 }
 .signArea > span {
-border-bottom: 1px solid #fff;
+/*	border-bottom: 1px solid #fff;	*/
 }
 .signArea * {
 vertical-align: middle;
@@ -351,21 +351,21 @@ background-position: -151px -52px;
 }
 .ctrlWrap div > button.print.on {
 background-position: -151px -102px;
-background-color: #fff600;		
+background-color: #fff600;
 }
 .ctrlWrap div > button.save {
 background-position: -351px -52px;
 }
 .ctrlWrap div > button.save.on {
 background-position: -351px -102px;
-background-color: #fff600;		
+background-color: #fff600;
 }
 .ctrlWrap div > button.magoSet {
 background-position: -85px -52px;
 }
 .ctrlWrap div > button.magoSet.on {
 background-position: -85px -102px;
-background-color: #fff600;	
+background-color: #fff600;
 }
 
 .ctrlWrap div > input {
@@ -568,7 +568,7 @@ min-width: 40px;
 font-size: 17px; */
 font-weight: bold;
 text-align: right;
-color: #287be4;
+color: #646464;
 /* background: url(/images/ko/ico.png) no-repeat 0 -968px; */
 /* margin-left:-10px; */
 }
@@ -1056,7 +1056,7 @@ width:1000px;
 
 
 /* ////////// POLICY ////////// */
-/* 
+/*
 .userPolicyContentWrap > p {
 padding: 8px;
 font-weight: bold;
@@ -1305,7 +1305,7 @@ animation: spinning 0.8s infinite linear;
 	transform: rotate(360deg);
 }
 }
-/* 
+/*
 #mapPolicy {
 width: 110px;
 height: 50px;
@@ -1329,7 +1329,7 @@ position: absolute;
 top:60px;
 right: 5px;
 min-width: 200px;
-min-height: 333px;
+min-height: 233px;
 border-radius: 5px;
 box-shadow: 1px 1px 2px 0 #333;
 background-color: #fff;
@@ -1411,12 +1411,12 @@ background-repeat: no-repeat;
 ul.layerList li p.depthOne {
 font-weight: bold;
 font-size: 15px;
-background-color: #ececec;
+background-color: #ffffff;
 }
 ul.layerList li.on p.depthOne {
 font-weight: bold;
 font-size: 15px;
-background-color: #454554;
+background-color: #287be4;
 color: white;
 }
 ul.layerList li p.depthOne > span.folder {
@@ -1432,10 +1432,10 @@ ul.layerList li.on > p > span.folder {
 background-position: 0 -101px;
 }
 ul.layerList li > p > span.depthThree {
-background-position: 0 -300px;
+background-position: 0 -298px;
 }
 ul.layerList li.on > p > span.depthThree {
-background-position: 0 -347px;
+background-position: 0 -348px;
 }
 ul.layerList li > ul {
 display: none;
@@ -1815,7 +1815,7 @@ ul.listDrop li.on > p > span.collapse-icon {
 	text-indent: 999em;
 	background-image: url(/images/ko/ico.png);
 	background-repeat: no-repeat;
-    background-position: 0 -978px;
+    background-position: 0 -977px;
 }
 /* 경관분석 달력*/
 .tui-datepicker{
