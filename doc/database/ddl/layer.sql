@@ -55,6 +55,7 @@ create table layer (
 	default_display				boolean							default false,
 	available					boolean							default true,
 	label_display				boolean							default false,
+	cache_available				boolean							default false,
 	
 	coordinate					varchar(256),
 	description					varchar(256),
@@ -82,6 +83,7 @@ comment on column layer.z_index is '지도위에 노출 순위(css z-index와 �
 comment on column layer.default_display is '기본 표시';
 comment on column layer.available is '사용유무.';
 comment on column layer.label_display is '레이블 표시';
+comment on column layer.cache_available is '캐시 사용 유무';
 comment on column layer.coordinate is '좌표계 정보';
 comment on column layer.description is '설명';
 comment on column layer.update_date is '수정일';

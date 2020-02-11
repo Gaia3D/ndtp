@@ -149,6 +149,15 @@
 									</select>
 			                    </td>
 			                    <th class="col-label" scope="row">
+			                        <label for="cacheAvailableTrue">Cache 사용 유무</label>
+			                    </th>
+			                    <td class="col-input radio-set">
+			                        <form:radiobutton id="cacheAvailableTrue"  path="cacheAvailable" value="true" label="사용" />
+									<form:radiobutton id="cacheAvailableFalse" path="cacheAvailable" value="false" label="미사용" checked="checked"/>
+			                    </td>
+			                </tr>
+			                <tr>
+			                	<th class="col-label" scope="row">
 			                        <form:label path="layerType">Layer 타입</form:label>
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
@@ -159,8 +168,6 @@
 										<option value="raster">Raster</option>
 									</select>
 			                    </td>
-			                </tr>
-			                <tr>
 			                    <th class="col-label" scope="row">
 			                        <form:label path="geometryType">도형 타입</form:label>
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
@@ -173,7 +180,10 @@
 										<option value="Polygon">Polygon</option>
 									</select>
 								</td>
-			                    <th class="col-label" scope="row">
+			                    
+							</tr>
+							<tr>
+								<th class="col-label" scope="row">
 			                        <form:label path="geometryType">외곽선 색상</form:label>
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
@@ -181,15 +191,16 @@
 									<input id="lineColorValue" placeholder="RGB" class="forRaster" />
 									<input type="color" id="layerLineColor" name="layerLineColor" class="picker" alt="외곽선 색상" />
 								</td>
-							</tr>
-							<tr>
 								<th class="col-label" scope="row">
 			                        <form:label path="layerLineStyle">외곽선 두께</form:label>
 			                    </th>
 								<td class="col-input">
 									<input type="number" id="layerLineStyle"  name="layerLineStyle" class="forRaster" alt="외곽선 두께" min="0.1" max="5.0" size="3" step="0.1">
 								</td>
-								<th class="col-label" scope="row">
+							</tr>
+
+			                <tr>
+			                	<th class="col-label" scope="row">
 			                        <form:label path="layerFillColor">채우기 색상</form:label>
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
@@ -197,9 +208,6 @@
 									<input id="fillColorValue" placeholder="RGB" class="forRaster forPolygon">
 									<input type="color" id="layerFillColor" name="layerFillColor" class="picker forPolygon" alt="채우기 색상">
 								</td>
-							</tr>
-
-			                <tr>
 			                	<th class="col-label" scope="row">
 			                        <form:label path="layerAlphaStyle">투명도</form:label>
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
@@ -208,15 +216,16 @@
 									<form:input type="text"  path="layerAlphaStyle" class="slider" alt="투명도"/>
 									<input type="range" id="sliderRange" min="0" max="100" value="100" alt="투명도">
 								</td>
-			                    <th class="col-label" scope="row">
+			                    
+			                </tr>
+			                <tr>
+			                	<th class="col-label" scope="row">
 			                        <label for="zIndex">표시 순서(Z-Index)</label>
 			                    </th>
 			                    <td class="col-input">
 			                        <form:input path="zIndex" cssClass="s" />
 			                        <form:errors path="zIndex" cssClass="error" />
 			                    </td>
-			                </tr>
-			                <tr>
 			                    <th class="col-label" scope="row">
 			                        <label for="defaultDisplayTrue">기본 표시</label>
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
@@ -225,7 +234,9 @@
 			                        <form:radiobutton id="defaultDisplayTrue"  path="defaultDisplay" value="true" label="사용" />
 									<form:radiobutton id="defaultDisplayFlase" path="defaultDisplay" value="false" label="미사용" />
 			                    </td>
-			                    <th class="col-label" scope="row">
+			                </tr>
+			                <tr>
+			                	<th class="col-label" scope="row">
 			                        <label for="useY">사용유무</label>
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
@@ -233,21 +244,12 @@
 			                        <form:radiobutton id="availableTrue"  path="available" value="true" label="사용" />
 									<form:radiobutton id="availableFalse" path="available" value="false" label="미사용" />
 			                    </td>
-			                </tr>
-			                <tr>
 			                    <th class="col-label" scope="row">
 			                        <label for="labelDisplayTrue">Label 표시 유무</label>
 			                    </th>
 			                    <td class="col-input radio-set">
 			                        <form:radiobutton id="labelDisplayTrue"  path="labelDisplay" value="true" label="표시" />
 									<form:radiobutton id="labelDisplayFalse" path="labelDisplay" value="false" label="비표시" />
-			                    </td>
-			                    <th class="col-label" scope="row">
-			                        <form:label path="description">설명</form:label>
-			                    </th>
-			                    <td class="col-input">
-			                        <form:input path="description" cssClass="l" />
-			                        <form:errors path="description" cssClass="error" />
 			                    </td>
 			                </tr>
 			                <tr class="uploadLayerArea">
@@ -292,6 +294,15 @@
 				                    	<option value="CP949">CP949</option>
 				                        <option value="UTF-8">UTF-8</option>
 				                    </select>
+			                    </td>
+			                </tr>
+			                <tr>
+			                	<th class="col-label" scope="row">
+			                        <form:label path="description">설명</form:label>
+			                    </th>
+			                    <td class="col-input" colspan="3">
+			                        <form:input path="description" cssClass="l" style="width:100%;"/>
+			                        <form:errors path="description" cssClass="error" />
 			                    </td>
 			                </tr>
 						</table>
@@ -344,10 +355,13 @@
 		changeGeometryType(null);
 		
 		// geoserver layerList 
-		var geoserverLayerList = JSON.parse('${geoserverLayerJson}').layers.layer;
-		for(var i=0; i< geoserverLayerList.length; i++) {
-			var name = geoserverLayerList[i].name;
-			$("#layerKeySelect").append("<option value="+name+">"+name+"</option>");	
+		var geoserverLayerList = JSON.parse('${geoserverLayerJson}').layers;
+		if(geoserverLayerList) {
+			geoserverLayerList = geoserverLayerList.layer;
+			for(var i=0; i< geoserverLayerList.length; i++) {
+				var name = geoserverLayerList[i].name;
+				$("#layerKeySelect").append("<option value="+name+">"+name+"</option>");	
+			}
 		}
 		
 		$("input[name='sharing']").filter("[value='public']").prop("checked", true);
@@ -381,6 +395,17 @@
 
 	$('[name=geometryType]').on('change', function() {
 		changeGeometryType($("[name=geometryType]").val());
+	});
+	
+	// wms일 경우에만 cache 설정 할 수 있도록 활성화
+	$("select[name=serviceType]").change(function(e){
+		var value = $(this).val();
+	    if(value === "wms") {
+	    	$("input[name='cacheAvailable']").attr("disabled", false);
+	    } else {
+	    	$("input[name='cacheAvailable']").attr("disabled", true);
+	    	$("input[name='cacheAvailable']").filter("[value='false']").prop("checked", true);
+	    }
 	});
 
 	// 레이어 타입 Raster 선택 시 입력폼 변경
@@ -628,6 +653,7 @@
                 formData.append("description", $("#description").val());
                 formData.append("shapeEncoding", $("#shapeEncoding").val());
                 formData.append("layerInsertType", $("#layerInsertType").val());
+                formData.append("cacheAvailable", $(':radio[name="cacheAvailable"]:checked').val());
                 var zIndex = 0;
                 if($("#zIndex").val()) zIndex = $("#zIndex").val();
                 formData.append("zIndex", zIndex);
@@ -687,10 +713,8 @@
 	    	insertGeoserverLayerFlag = false;
 	    	$("#layerKey").val($("#layerKeySelect").val());
 	    	$("#layerAlphaStyle").val($("#sliderRange").val() / 100);
-            var zIndex = 0;
-            if($("#zIndex").val()) zIndex = $("#zIndex").val();
-            var layerLineStyle = 0;
-            if($("#layerLineStyle").val()) layerLineStyle = $("#layerLineStyle").val();
+	    	$("#coordinate").val("EPSG:4326");
+            if(!$("#zIndex").val()) $("#zIndex").val(0);
 	        var formData = $('#layer').serialize();
 	        $.ajax({
 				url: "/layer/insert-geoserver",

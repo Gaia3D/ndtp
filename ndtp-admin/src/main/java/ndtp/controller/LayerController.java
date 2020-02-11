@@ -212,6 +212,9 @@ public class LayerController implements AuthorizationController {
 				result.put("errorCode", "layer.key.duplication");
 				return result;
 			}
+			UserSession userSession = (UserSession) request.getSession().getAttribute(Key.USER_SESSION.name());
+			String userId = userSession.getUserId();
+			layer.setUserId(userId);
 			List<LayerFileInfo> layerFileInfoList = new ArrayList<>();
 			layerService.insertLayer(layer, layerFileInfoList);
 			String layerType = layer.getLayerType();
@@ -294,6 +297,7 @@ public class LayerController implements AuthorizationController {
 							.coordinate(request.getParameter("coordinate"))
 							.description(request.getParameter("description"))
 							.zIndex(Integer.valueOf(request.getParameter("zIndex")))
+							.cacheAvailable(Boolean.valueOf(request.getParameter("cacheAvailable")))
 							.userId(userId)
 							.build();
 			log.info("@@ layer = {}", layer);
@@ -445,6 +449,9 @@ public class LayerController implements AuthorizationController {
 		String errorCode = null;
 		String message = null;
 		try {
+			UserSession userSession = (UserSession) request.getSession().getAttribute(Key.USER_SESSION.name());
+			String userId = userSession.getUserId();
+			layer.setUserId(userId);
 			List<LayerFileInfo> layerFileInfoList = new ArrayList<>();
 			layerService.updateLayer(layer, false, layerFileInfoList);
 			String layerType = layer.getLayerType();
@@ -625,6 +632,7 @@ public class LayerController implements AuthorizationController {
 			layer.setCoordinate(request.getParameter("coordinate"));
 			layer.setDescription(request.getParameter("description"));
 			layer.setZIndex(Integer.valueOf(request.getParameter("zIndex")));
+			layer.setCacheAvailable(Boolean.valueOf(request.getParameter("cacheAvailable")));
 			layer.setUserId(userId);
 
             // TODO geoserver 에서 postgresql 로 hang 걸리는게 있어서 우선 이럻게 처리 함. 추후 개선 예정
