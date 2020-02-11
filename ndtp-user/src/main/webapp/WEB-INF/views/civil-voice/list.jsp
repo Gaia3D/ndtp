@@ -33,7 +33,7 @@
 					<span class="title">{{title}}</span>
 					<span class="id">{{userId}}</span>
 				</p>
-         	   <p class="count">{{viewCount}}</p>
+         	   <p class="count">{{commentCount}}</p>
 			</li>
 		{{/each}}
 	{{else}}

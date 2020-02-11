@@ -37,7 +37,7 @@ public class CivilVoice extends Search {
 
 	/********** DB 사용 *************/
     // 고유번호
-	private Integer civilVoiceId;
+	private Long civilVoiceId;
     // 사용자 아이디
 	private String userId;
 	// 제목
@@ -55,6 +55,8 @@ public class CivilVoice extends Search {
 	private String clientIp;
 	// 조회수
 	private Integer viewCount;
+	// 댓글수
+	private Integer commentCount;
 	// 년
 	private String year;
 	// 월

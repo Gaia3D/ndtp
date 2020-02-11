@@ -57,6 +57,8 @@ public class CivilVoice extends Search implements Serializable {
 	private String clientIp;
 	// 조회수
 	private Integer viewCount;
+	// 댓글수
+	private Integer commentCount;
 	// 년
 	private String year;
 	// 월
