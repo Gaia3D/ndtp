@@ -47,6 +47,11 @@ $(document).ready(function (){
 	$('#civilVoiceAgree').on('click', function() {
 		saveCivilVoiceComment();
 	});
+
+	// 위치 지정
+	$('#civilVoiceLocation').on('click', function() {
+		civilVoice.getGeographicCoord();
+	});
 });
 
 // 시민참여 목록 조회
@@ -79,7 +84,7 @@ function getCivilVoiceList(page) {
 }
 
 // 시민참여 상세 조회
-function getCivilVoiceDetail(id) {
+function getCivilVoiceDetail() {
 	var id = $('#civilVoiceId').val();
 
 	$.ajax({
@@ -90,9 +95,7 @@ function getCivilVoiceDetail(id) {
 		dataType: 'json',
 		success: function(res){
 			if(res.statusCode <= 200) {
-				var data = res.civilVoice;
-				$('#civilVoiceTitle').text(data.title);
-				$('#civilVoiceContents').text(data.contents);
+				drawHandlebarsHtml(res, 'templateCivilVoiceView', 'civilVoiceView');
 			} else {
 				alert(JS_MESSAGE[res.errorCode]);
 				console.log("---- " + res.message);
@@ -223,4 +226,64 @@ function drawHandlebarsHtml(data, templateId, targetId) {
 	var template = Handlebars.compile(source);
 	var html = template(data);
 	$('#' + targetId).empty().append(html);
+}
+
+
+/******************************/
+
+
+var civilVoice;
+function CivilVoice(magoInstance) {
+	var viewer = magoInstance.getViewer();
+	civilVoice = new CivilVoiceControll(magoInstance, viewer);
+}
+
+function CivilVoiceControll(magoInstance, viewer) {
+	var that = this;
+	var magoManager = magoInstance.getMagoManager();
+
+	var store = {
+		name: {
+			longitude: $('#civilVoiceForm [name=longitude]'),
+			latitude: $('#civilVoiceForm [name=latitude]')
+		},
+		beforeEntity: null
+	}
+
+	var action = {
+		remove: function(storedEntity) {
+			viewer.entities.removeById(storedEntity);
+		}
+	}
+
+	// public
+	return {
+		getGeographicCoord: function() {
+			magoManager.once(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
+				if(store.beforeEntity) {
+					action.remove(store.beforeEntity);
+				}
+
+				var geographicCoord = result.clickCoordinate.geographicCoordinate;
+				var worldCoordinate = result.clickCoordinate.worldCoordinate;
+
+				var pointGraphic = new Cesium.PointGraphics({
+					pixelSize : 10,
+					heightReference : Cesium.HeightReference.CLAMP_TO_GROUND,
+					color : Cesium.Color.AQUAMARINE,
+					outlineColor : Cesium.Color.WHITE,
+					outlineWidth : 2
+				});
+
+				var addedEntity = viewer.entities.add({
+					position : new Cesium.Cartesian3(worldCoordinate.x, worldCoordinate.y, worldCoordinate.z),
+					point : pointGraphic
+				});
+
+				store.beforeEntity = addedEntity.id;
+				store.name.longitude.val(geographicCoord.longitude);
+				store.name.latitude.val(geographicCoord.latitude);
+			});
+		}
+	}
 }

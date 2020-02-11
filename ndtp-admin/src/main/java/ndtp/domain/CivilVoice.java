@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -44,6 +45,7 @@ public class CivilVoice extends Search implements Serializable {
 	private String userId;
 	// 제목
 	@NotBlank
+	@Size(max = 256)
 	private String title;
 	// 내용
 	private String contents;
