@@ -33,7 +33,7 @@
 					<span class="title">{{title}}</span>
 					<span class="id">{{userId}}</span>
 				</p>
-         	   <p class="count">{{commentCount}}</p>
+         	   <p class="count"><span class="likes-icon">icon</span>{{commentCount}}</p>
 			</li>
 		{{/each}}
 	{{else}}
@@ -64,5 +64,3 @@
     	</ul>
 	{{/if}}
 </script>
-
-<!-- <span class="likes-icon">icon</span> -->
