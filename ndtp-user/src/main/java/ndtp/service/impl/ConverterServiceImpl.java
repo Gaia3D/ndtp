@@ -230,7 +230,7 @@ public class ConverterServiceImpl implements ConverterService {
 		Integer dataGroupId = uploadDataFile.getDataGroupId();
 		String dataKey = uploadDataFile.getFileRealName().substring(0, uploadDataFile.getFileRealName().lastIndexOf("."));
 		String dataName = uploadDataFile.getFileName().substring(0, uploadDataFile.getFileName().lastIndexOf("."));
-		String dataType = uploadDataFile.getDataName();
+		String dataType = uploadDataFile.getDataType();
 		String sharing = uploadDataFile.getSharing();
 		String mappingType = uploadDataFile.getMappingType();
 		BigDecimal latitude = uploadDataFile.getLatitude();
