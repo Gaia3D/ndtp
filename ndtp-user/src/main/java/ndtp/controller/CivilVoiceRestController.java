@@ -119,7 +119,9 @@ public class CivilVoiceRestController {
 				result.put("message", message);
 				return result;
 			}
-			civilVoice = civilVoiceService.getCivilVocieById(civilVoiceId);
+			civilVoice.setCivilVoiceId(civilVoiceId);
+			civilVoice.setUserId(userSession.getUserId());
+			civilVoice = civilVoiceService.getCivilVocieById(civilVoice);
 			statusCode = HttpStatus.OK.value();
 			result.put("civilVoice", civilVoice);
 		} catch(Exception e) {

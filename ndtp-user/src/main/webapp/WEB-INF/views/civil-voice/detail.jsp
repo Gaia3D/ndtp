@@ -1,21 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!-- S: 시민참여 의견 -->
 <div id="civilVoiceDetailContent" class="contents mar0 pad0 border-none" style="display:none;">
-	<div class="commentView">
-		<div style="margin-bottom: 15px;">
-			<input type="hidden" id="civilVoiceId" value=""/>
-			<span class="title"  id="civilVoiceTitle"></span>
-			<!-- TODO: 본인 글에만 수정 버튼 -->
-			<span class="modify" id="civilVoiceUpdateButton">수정</span>
-		</div>
-		<div class="con" id="civilVoiceContents"></div>
-	</div>
+	<input type="hidden" id="civilVoiceId" value="">
+	<div id="civilVoiceView" class="commentView"></div>
 
-	<p class="agreeCount">동의 <span id="civilVoiceCommentTotalCount">10</span> 건</p>
-	<div class="agreeNew">
-		<input type="text" placeholder="동의합니다">
-		<button class="focusAgree" title="동의">동의</button>
-	</div>
+	<p class="agreeCount">동의 <span id="civilVoiceCommentTotalCount">0</span> 건</p>
+	<form:form id="civilVoiceCommentForm" modelAttribute="civilVoiceComment" method="post" onsubmit="return false;">
+		<div class="agreeNew">
+			<input type="text" name="title" placeholder="동의합니다" value="">
+			<button class="focusAgree" id="civilVoiceAgree" title="동의">동의</button>
+		</div>
+	</form:form>
 	<ul id="civilVoiceComment" class="agreeWrap"></ul>
 	<ul id="civilVoiceCommentPagination" class="pagination"></ul>
 
@@ -24,6 +19,19 @@
 	</div>
 </div>
 <!-- E: 시민참여 의견 -->
+
+<script id="templateCivilVoiceView" type="text/x-handlebars-template">
+	<div style="margin-bottom: 15px;">
+		<span class="title"  id="civilVoiceTitle">
+			{{civilVoice.title}}
+		</span>
+		{{#if civilVoice.editable}}
+			<span class="modify" id="civilVoiceDeleteButton">삭제</span>
+			<span class="modify" id="civilVoiceUpdateButton">수정</span>
+		{{/if}}
+	</div>
+	<div class="con" id="civilVoiceContents">{{civilVoice.contents}}</div>
+</script>
 
 <script id="templateCivilVoiceComment" type="text/x-handlebars-template">
 	{{#if civilVoiceCommentList}}

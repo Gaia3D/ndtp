@@ -12,11 +12,12 @@
 				user_id,
 				title,
 				content as contents,
-				location,
+				location as geometry,
 				heit as altitude,
 				use_yn as available,
 				user_ip as client_ip,
 				view_count,
+				comment_count,
 				year, month, day, year_week, week, hour, minute,
 				update_dt as update_date,
 				regist_dt as insert_date,
@@ -54,11 +55,12 @@
 				user_id,
 				title,
 				content as contents,
-				location,
+				location as geometry,
 				heit as altitude,
 				use_yn as available,
 				user_ip as client_ip,
 				view_count,
+				comment_count,
 				year, month, day, year_week, week, hour, minute,
 				update_dt as update_date,
 				regist_dt as insert_date,
@@ -66,7 +68,9 @@
 	        FROM tn_civil_voice
         )
         SELECT
-			*
+			civil_voice.*,
+			ST_X(geometry) AS longitude, ST_Y(geometry) AS latitude, ST_AsText(geometry) AS location,
+			CASE WHEN user_id = #{userId} THEN true ELSE false END AS editable
         FROM civil_voice
         <trim prefix="WHERE" prefixOverrides="AND">
 			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
@@ -106,18 +110,22 @@
 				user_id,
 				title,
 				content as contents,
-				location,
+				location as geometry,
 				heit as altitude,
 				use_yn as available,
 				user_ip as client_ip,
 				view_count,
+				comment_count,
 				year, month, day, year_week, week, hour, minute,
 				update_dt as update_date,
 				regist_dt as insert_date,
 				sido_cd, sgg_cd, emd_cd
 	        FROM tn_civil_voice
         )
-        SELECT *
+        SELECT
+			civil_voice.*,
+			ST_X(geometry) AS longitude, ST_Y(geometry) AS latitude, ST_AsText(geometry) AS location,
+			CASE WHEN user_id = #{userId} THEN true ELSE false END AS editable
         FROM civil_voice
         WHERE civil_voice_id = #{civilVoiceId}
     </select>
@@ -131,7 +139,7 @@
 			civil_voice_id,	user_id, title, content, location, heit,
 			user_ip, sido_cd, sgg_cd, emd_cd
         ) VALUES (
-			#{civilVoiceId}, #{userId}, #{title}, #{contents}, #{location}, #{altitude},
+			#{civilVoiceId}, #{userId}, #{title}, #{contents}, ST_GeomFromText(#{location}, 4326), #{altitude},
 			#{clientIp}, #{sidoCd}, #{sggCd}, #{emdCd}
         )
     </insert>
@@ -148,7 +156,7 @@
 			content = #{contents},
 			</if>
 			<if test="location != null and location != ''">
-			location = #{location},
+			location = ST_GeomFromText(#{location}, 4326),
 			</if>
 			<if test="altitude != null and altitude != ''">
 			heit = #{altitude},
@@ -159,8 +167,11 @@
 			<if test="clientIp != null and clientIp != ''">
 			user_ip = #{clientIp},
 			</if>
-			<if test="viewCount != null and viewCount != ''">
+			<if test="viewCount != null">
 			view_count = #{viewCount},
+			</if>
+			<if test="commentCount != null">
+			comment_count = #{commentCount},
 			</if>
 			<if test="year != null and year != ''">
 			year = #{year},

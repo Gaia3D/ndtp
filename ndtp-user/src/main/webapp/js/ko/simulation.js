@@ -43,6 +43,11 @@ var Simulation = function(magoInstance) {
 				timeSlider.setValue(parseInt($(this).index())+1);
 			});
 		}
+		
+		var currentHour = new Date().getHours();
+		currentHour  = currentHour === 0 ? 24 : currentHour;
+		timeSlider.setValue(currentHour);
+		
 		//레인지 보이기
 		$('#saRange').show();
 		$('#csRange').hide();

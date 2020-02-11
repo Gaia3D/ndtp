@@ -1,6 +1,6 @@
-drop table if exists layer;
-drop table if exists layer_group;
-drop table if exists layer_file_info;
+drop table if exists layer cascade;
+drop table if exists layer_group cascade;
+drop table if exists layer_file_info cascade;
 
 create table layer_group (
 	layer_group_id				integer,

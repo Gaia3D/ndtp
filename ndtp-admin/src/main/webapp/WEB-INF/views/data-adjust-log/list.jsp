@@ -25,7 +25,7 @@
 					<%@ include file="/WEB-INF/views/layouts/page_header.jsp" %>
 					<div class="page-content">
 						<div class="filters">
-							<form:form id="searchForm" modelAttribute="dataInfoAdjustLog" method="get" action="/data-adjust-log/list" onsubmit="return searchCheck();">
+							<form:form id="searchForm" modelAttribute="dataAdjustLog" method="get" action="/data-adjust-log/list" onsubmit="return searchCheck();">
 								<div class="input-group row">
 									<div class="input-set">
 										<label for="searchWord"><spring:message code='search.word'/></label>

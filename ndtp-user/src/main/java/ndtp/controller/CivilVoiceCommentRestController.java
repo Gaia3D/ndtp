@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -113,6 +114,10 @@ public class CivilVoiceCommentRestController {
 		String errorCode = null;
 		String message = null;
 
+		if(StringUtils.isEmpty(civilVoiceComment.getTitle())) {
+			civilVoiceComment.setTitle("동의합니다");
+		}
+
 		try {
 			if(bindingResult.hasErrors()) {
 				message = bindingResult.getAllErrors().get(0).getDefaultMessage();
@@ -123,6 +128,7 @@ public class CivilVoiceCommentRestController {
 	            return result;
 			}
 			civilVoiceComment.setUserId(userSession.getUserId());
+			civilVoiceComment.setClientIp(WebUtils.getClientIp(request));
 			civilVoiceCommentService.insertCivilVoiceComment(civilVoiceComment);
 		} catch (Exception e) {
 			e.printStackTrace();
