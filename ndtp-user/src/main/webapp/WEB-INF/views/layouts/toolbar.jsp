@@ -28,34 +28,54 @@
         <button type="button" class="layerClose" title="닫기">닫기</button>
     </div>
     <div class="layerContents">
-		<div id="datainfoDisplay" class="layerDiv marT0">
+		<div class="inline-toggle">
 			<h4 class="category">객체정보</h4>
-			<input type="radio" id="datainfoDisplayY" name="datainfoDisplay" value="true">
-			<label for="datainfoDisplayY">표시</label>
-			<input type="radio" id="datainfoDisplayN" name="datainfoDisplay" value="false" checked>
-			<label for="datainfoDisplayN">비표시</label>
+			<div id="datainfoDisplay" class="switch-toggle switch-ios">
+				<input type="radio" id="datainfoDisplayY" name="datainfoDisplay" value="true">
+				<label for="datainfoDisplayY">표시</label>
+				<input type="radio" id="datainfoDisplayN" name="datainfoDisplay" value="false" checked>
+				<label for="datainfoDisplayN">비표시</label>
+				<a></a>
+			</div>
 		</div>
-
-		<div class="layerDiv">
+		
+		<div class="inline-toggle">
+			<h4 class="category">Origin</h4>
+			<div id="datainfoDisplay" class="switch-toggle switch-ios">
+				<input type="radio" id="originDisplayY" name="originDisplay" value="true">
+	            <label for="originDisplayY">표시</label>
+	            <input type="radio" id="originDisplayN" name="originDisplay" value="false" checked>
+	            <label for="originDisplayN">비표시</label>
+				<a></a>
+			</div>
+		</div>
+		
+		<div class="inline-toggle">
 			<h4 class="category">Bounding Box</h4>
-			<input type="radio" id="bboxDisplayY" name="bboxDisplay" value="true">
-			<label for="bboxDisplayY">표시</label>
-			<input type="radio" id="bboxDisplayN" name="bboxDisplay" value="false" checked>
-			<label for="bboxDisplayN">비표시</label>
+			<div id="datainfoDisplay" class="switch-toggle switch-ios">
+				<input type="radio" id="bboxDisplayY" name="bboxDisplay" value="true">
+				<label for="bboxDisplayY">표시</label>
+				<input type="radio" id="bboxDisplayN" name="bboxDisplay" value="false" checked>
+				<label for="bboxDisplayN">비표시</label>
+				<a></a>
+			</div>
 		</div>
 
-		<div class="layerDiv">
+		<div class="inline-toggle marB20">
 			<h4 class="category">선택 및 이동</h4>
-			<input type="radio" id="objectNoneMove" name="objectMoveMode" value="2" checked>
-			<label for="objectNoneMove">None</label>
-			<input type="radio" id="objectAllMove" name="objectMoveMode" value="0">
-			<label for="objectAllMove">All</label>
-			<input type="radio" id="objectMove" name="objectMoveMode" value="1">
-			<label for="objectMove">Object</label>
+			<div class="switch-toggle switch-ios" style="width: 60%;">
+				<input type="radio" id="objectNoneMove" name="objectMoveMode" value="2" checked>
+				<label for="objectNoneMove">None</label>
+				<input type="radio" id="objectAllMove" name="objectMoveMode" value="0">
+				<label for="objectAllMove">All</label>
+				<input type="radio" id="objectMove" name="objectMoveMode" value="1">
+				<label for="objectMove">Object</label>
+				<a></a>
+			</div>
 		</div>
 
 		<div id="dataControllWrap" style="display:none;">
-			<p class="layerDivTit">선택된 데이터 :  <span>test / 오전반1조_행복관_s</span></p>
+			<p class="layerDivTit"><span>test / 오전반1조_행복관_s</span></p>
 			<div class="layerDiv">
 				<h4 class="category">색상 변경</h4>
 				<ul>

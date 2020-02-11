@@ -1329,7 +1329,7 @@ position: absolute;
 top:60px;
 right: 5px;
 min-width: 200px;
-min-height: 233px;
+min-height: 200px;
 border-radius: 5px;
 box-shadow: 1px 1px 2px 0 #333;
 background-color: #fff;
@@ -1348,6 +1348,7 @@ background-color: #f1f1f1;
 .labelLayer > .layerContents {
 /* margin: 15px 20px; */
 padding: 15px 20px;
+max-width: 330px;
 }
 .layerHeader > h3 {
 margin-top:5px;
@@ -1847,6 +1848,16 @@ z-index:100;
 }
 .btn-full {
 	width: 100%;
+}
+.inline-toggle {
+	display: inline-block;
+	width: 100%;
+	margin-bottom: 10px;
+}
+.inline-toggle > *{
+	width: 40%;
+	float: left;
+	line-height: 2.4em;
 }
 
 /* ////////// CUSTOM - 정연화 추가 ////////// */
