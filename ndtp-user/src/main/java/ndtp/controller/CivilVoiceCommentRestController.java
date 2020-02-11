@@ -113,6 +113,10 @@ public class CivilVoiceCommentRestController {
 		String errorCode = null;
 		String message = null;
 
+		if(civilVoiceComment.getTitle() == null || civilVoiceComment.getTitle().equals("")) {
+			civilVoiceComment.setTitle("동의합니다");
+		}
+
 		try {
 			if(bindingResult.hasErrors()) {
 				message = bindingResult.getAllErrors().get(0).getDefaultMessage();
@@ -123,6 +127,7 @@ public class CivilVoiceCommentRestController {
 	            return result;
 			}
 			civilVoiceComment.setUserId(userSession.getUserId());
+			civilVoiceComment.setClientIp(WebUtils.getClientIp(request));
 			civilVoiceCommentService.insertCivilVoiceComment(civilVoiceComment);
 		} catch (Exception e) {
 			e.printStackTrace();
