@@ -29,11 +29,11 @@
     </div>
     <div class="layerContents">
 		<div id="datainfoDisplay" class="layerDiv marT0">
-			<h4 class="category">객체정보</h4>
-			<input type="radio" id="datainfoDisplayY" name="datainfoDisplay" value="true">
-			<label for="datainfoDisplayY">표시</label>
-			<input type="radio" id="datainfoDisplayN" name="datainfoDisplay" value="false" checked>
-			<label for="datainfoDisplayN">비표시</label>
+			<h4 class="category">레이블</h4>
+			<input type="radio" id="labelDisplayY" name="labelDisplay" value="true">
+			<label for="labelDisplayY">표시</label>
+			<input type="radio" id="labelDisplayN" name="labelDisplay" value="false" checked>
+			<label for="labelDisplayN">비표시</label>
 		</div>
 
 		<div class="layerDiv">
@@ -55,7 +55,7 @@
 		</div>
 
 		<div id="dataControllWrap" style="display:none;">
-			<p class="layerDivTit">선택된 데이터 :  <span>test / 오전반1조_행복관_s</span></p>
+			<p class="layerDivTit">선택 데이터 : <span>test / 오전반1조_행복관_s</span></p>
 			<div class="layerDiv">
 				<h4 class="category">색상 변경</h4>
 				<ul>
@@ -118,10 +118,10 @@
 				</ul>
 
 				<div>
-					<button type="button" id="dcSavePosRot" class="btnTextF" 
-							title="<spring:message code='data.transform.save'/>">
+					<button type="button" id="dcSavePosRot" class="btnTextF" title="<spring:message code='data.transform.save'/>">
 						<spring:message code='data.transform.save'/>
 					</button>
+					<button type="button" id="issueButton" class="btnTextF">이슈 등록</button>
 					<button type="button" id="dcShowAttr" class="btnTextF">속성조회</button>
 				</div>
 			</form>

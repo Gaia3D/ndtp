@@ -128,6 +128,7 @@
 <%@ include file="/WEB-INF/views/data/map-data-group-template.jsp" %>
 <%@ include file="/WEB-INF/views/data/data-attribute-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/data-object-attribute-dialog.jsp" %>
+<%@ include file="/WEB-INF/views/issue/issue-dialog.jsp" %>
 
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
@@ -574,6 +575,95 @@
 				alert(JS_MESSAGE["ajax.error.message"]);
 			}
 		});
+	}
+	
+	// 이슈 등록 버튼 클릭
+	$("#issueButton").click(function() {
+		//magoManager selectionManager.currentReferenceSelected
+		//magoManager selectionManager.currentOctreeSelected
+		//magoManager selectionManager.currentBuildingSelected
+		//magoManager selectionManager.currentNodeSelected
+		
+		//console.log("---- logn = " + $("#dcLongitude").val());
+		//console.log("---- lat = " + $("#dcLatitude").val());
+		//console.log("---- alt = " + $("#dcAltitude").val());
+		//console.log("---- data_name = " + MAGO3D_INSTANCE.getMagoManager().selectionManager.currentNodeSelected.data.data_name );
+		//console.log("---- dataId = " + MAGO3D_INSTANCE.getMagoManager().selectionManager.currentNodeSelected.data.dataId );
+		//console.log("---- dataGroupId = " + MAGO3D_INSTANCE.getMagoManager().selectionManager.currentNodeSelected.data.dataGroupId );
+		//console.log("---- dataGroupName = " + MAGO3D_INSTANCE.getMagoManager().selectionManager.currentNodeSelected.data.projectFolderName );
+		//console.log("---- objectId = " + MAGO3D_INSTANCE.getMagoManager().selectionManager.currentReferenceSelected.objectId );
+		//console.log("---- dataKey = " + MAGO3D_INSTANCE.getMagoManager().selectionManager.currentNodeSelected.data.nodeId );
+		
+		$("#issueDataId").val("1234");
+		$("#issueDataKey").val("test");
+		$("#issueDataName").html("테스트");
+		$("#issueObjectKey").val("233232");
+		$("#issueDataGroupId").val("1");
+		$("#issueDataGroupName").html("basic");
+		$("#issueLongitude").val("132");
+		$("#issueLatitude").val("37");
+		$("#issueAltitude").val("54.000");
+		
+		issueDialog.dialog( "open" );
+	});
+	// 이슈 다이얼 로그
+	var issueDialog = $( "#issueDialog" ).dialog({
+		autoOpen: false,
+		width: 500,
+		height: 500,
+		modal: true,
+		overflow : "auto",
+		resizable: false
+	});
+	
+	// 이슈 등록
+	var insertIssueFlag = true;
+	function insertIssue() {
+		if (validate() == false) {
+			return false;
+		}
+		if(insertIssueFlag) {
+			insertIssueFlag = false;
+			$.ajax({
+				url: "/issues",
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+				data: { "dataId" : $("#issueDataId").val(), "dataGroupId" : $("#issueDataGroupId").val(),
+					"longitude" : $("#issueLongitude").val(), "latitude" : $("#issueLatitude").val(), "altitude" : $("#issueAltitude").val(),
+					"title" : $("#issueTitle").val(), "contents" : $("#issueContents").val()
+				},
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert(JS_MESSAGE["insert"]);
+						issueDialog.close();
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
+					insertIssueFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        insertIssueFlag = true;
+				}
+			});
+		} else {
+			alert(JS_MESSAGE["button.dobule.click"]);
+			return;
+		}
+	}
+	
+	function validate() {
+		if ($("#issueTitle").val() === "") {
+			alert("제목을 입력하여 주십시오.");
+			$("#issueTitle").focus();
+			return false;
+		}
+		if ($("#issueContents").val() === "") {
+			alert("내용을 입력하여 주십시오.");
+			$("#issueContents").focus();
+			return false;
+		}
 	}
 </script>
 </body>
