@@ -290,7 +290,7 @@ function hexToDoubleHex (hex){
 function openFindDataPoint(dataId, referrer) {
 	var url = "/map/find-data-point?dataId=" + dataId + "&referrer=" + referrer;
 	var width = 1200;
-	var height = 760;
+	var height = 740;
 
 	var popupX = (window.screen.width / 2) - (width / 2);
 	// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음

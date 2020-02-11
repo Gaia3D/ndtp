@@ -18,6 +18,7 @@
 	<link rel="stylesheet" href="/externlib/tuidatepicker-4.0.3/tui-date-picker.min.css" />
 	<link rel="stylesheet" href="/css/${lang}/user-style.css" />
 	<link rel="stylesheet" href="/externlib/json-viewer/json-viewer.css" />
+	<link rel="stylesheet" href="/externlib/css-toggle-switch/toggle-switch.css" />
 	<style type="text/css">
 	    .mapWrap {
 	    	float:right;
