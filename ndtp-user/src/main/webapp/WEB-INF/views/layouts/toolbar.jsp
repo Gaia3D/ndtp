@@ -37,14 +37,6 @@
 		</div>
 
 		<div class="layerDiv">
-			<h4 class="category">Origin</h4>
-			<input type="radio" id="originDisplayY" name="originDisplay" value="true">
-			<label for="originDisplayY">표시</label>
-			<input type="radio" id="originDisplayN" name="originDisplay" value="false" checked>
-			<label for="originDisplayN">비표시</label>
-		</div>
-
-		<div class="layerDiv">
 			<h4 class="category">Bounding Box</h4>
 			<input type="radio" id="bboxDisplayY" name="bboxDisplay" value="true">
 			<label for="bboxDisplayY">표시</label>

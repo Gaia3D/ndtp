@@ -28,14 +28,6 @@
         <button type="button" class="layerClose" title="닫기">닫기</button>
     </div>
     <div class="layerContents">
-		<div id="datainfoDisplay" class="layerDiv marT0">
-			<h4 class="category">객체정보</h4>
-			<input type="radio" id="datainfoDisplayY" name="datainfoDisplay" value="true">
-			<label for="datainfoDisplayY">표시</label>
-			<input type="radio" id="datainfoDisplayN" name="datainfoDisplay" value="false" checked>
-			<label for="datainfoDisplayN">비표시</label>
-		</div>
-
 		<div class="layerDiv">
 			<h4 class="category">Origin</h4>
 			<input type="radio" id="originDisplayY" name="originDisplay" value="true">

@@ -21,6 +21,8 @@
 		SELECT *
 		FROM civil_voice_comment
 		WHERE civil_voice_id = #{civilVoiceId}
+		ORDER BY civil_voice_comment_id DESC
+		OFFSET #{offset} LIMIT #{limit}
 	</select>
 
 	<!-- 시민 참여 댓글 전체 건수 조회 -->
