@@ -2,6 +2,8 @@
 <%@ include file="/WEB-INF/views/common/taglib.jsp" %>
 <%@ include file="/WEB-INF/views/common/config.jsp" %>
 
+<%@ include file="/WEB-INF/views/perm-request/application-register.jsp" %>
+
 <!DOCTYPE html>
 <html lang="${accessibility}">
 <head>
@@ -165,6 +167,20 @@
  		initDataGroupList();
 	});
 
+	var permRequestDialog = $( "#permRequestDialog" ).dialog({
+		autoOpen: false,
+		width: 1100,
+		height: 650,
+		modal: true,
+		overflow : "auto",
+		resizable: false
+	});
+
+	$("#permRequest").on('click', function() {
+		console.log("permRequest");
+		permRequestDialog.dialog( "open" );
+		// var source = $("#permRequestDialogTemplate").html();
+	});
 	//Cesium.Ion.defaultAccessToken = '';
 	//var viewer = new Cesium.Viewer('magoContainer');
 	var MAGO3D_INSTANCE;

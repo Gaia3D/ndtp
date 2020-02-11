@@ -18,6 +18,9 @@
 
 	<div class="form-group button-group-top-center">
 		<button type="button" id="civilVoiceInputButton" title="의견등록" class="btnTextF">의견 등록</button>
+		<button type="button" id="permRequest" title="건축인 허가 신청" class="btnTextF" style="margin-top:10px;">
+			건축인 허가 신청
+		</button>
 	</div>
 </div>
 <!-- E: 시민참여 목록 -->
