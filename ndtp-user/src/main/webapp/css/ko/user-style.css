@@ -583,10 +583,10 @@ margin-bottom: 5px;
 .commentView .title {
 margin-bottom: 10px;
 padding: 10px 0 0 25px;
-font-size: 18px;
+font-size: 15px;
 font-weight: bold;
 border-radius: 5px;
-background: url(/images/ko/ico.png) no-repeat 3px -639px;
+background: url(/images/ko/ico.png) no-repeat 3px -637px;
 }
 .commentView .modify {
 float: right;
@@ -944,7 +944,7 @@ border: none;
 border-bottom: 1px solid #e0e0e0;
 }
 .analysisGroup li input.withBtn {
-width: 120px;
+width: 100px;
 }
 
 .analysisGroup li span.coordText {
