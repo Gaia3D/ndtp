@@ -81,12 +81,6 @@
             <button id="permReqCancel" class="focusC" type="button" title="취소">취소</button>
         </div>
 
-
-
-
-
-<%--        <button id="upload_cityplan" type="submit" class="btnTextF" title="업로드">등록</button>--%>
-<%--        <button type="button" class="btnText reset" title="취소">취소</button>--%>
     </form>
 
 
@@ -99,8 +93,14 @@
         var index = parentObj.index();
         $('#permRequestDialog ul.listDrop > li').eq(index).toggleClass('on');
     });
+
     $('#permReqCancel').click(function() {
-        console.log("cancel");
+        $("#permRequestDialog").dialog("close");
+    });
+    $('#permReqRegister').click(function() {
+        setTimeout(() => {
+            $("#permRequestDialog").dialog("close");
+        }, 1000);
     });
 
 </script>
