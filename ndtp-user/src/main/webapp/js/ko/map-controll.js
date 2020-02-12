@@ -428,7 +428,11 @@ function MapControll(viewer, option) {
     function startDrawPolyLine() {
         handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
         var dynamicPositions = new Cesium.CallbackProperty(function () {
-            return new Cesium.PolygonHierarchy(activeShapePoints);
+        	if(drawingMode === 'polygon') {
+        		return new Cesium.PolygonHierarchy(activeShapePoints);
+        	} else {
+        		return activeShapePoints;
+        	}
         }, false);
         
         handler.setInputAction(function (event) {
