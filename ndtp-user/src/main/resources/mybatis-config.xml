@@ -46,6 +46,7 @@
  		<typeAlias type="ndtp.domain.CivilVoiceComment" alias="civilVoiceComment"/>
 
 		<typeAlias type="ndtp.domain.SimFileMaster" alias="simFileInfo"/>
+		<typeAlias type="ndtp.domain.StructPermission" alias="structPermission"/>
     </typeAliases>
 
 </configuration>

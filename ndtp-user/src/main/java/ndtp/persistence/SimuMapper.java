@@ -10,11 +10,6 @@ import ndtp.domain.UserSession;
 @Repository
 public interface SimuMapper {
 
-	/**
-	 * 시뮬레이션 도시계획 파일 Insert
-	 * @param userSession
-	 * @return
-	 */
 	int insertSimCityPlanFile(SimFileMaster simFileInfo);
 
 	SimFileMaster getSimCityPlanFileList();

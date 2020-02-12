@@ -4,14 +4,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import ndtp.domain.*;
+import ndtp.persistence.SimuMapper;
+import ndtp.persistence.StructPermissionMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -30,21 +31,18 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
-import ndtp.domain.CivilVoice;
-import ndtp.domain.Key;
-import ndtp.domain.PageType;
-import ndtp.domain.Pagination;
-import ndtp.domain.SimFileMaster;
-import ndtp.domain.UserSession;
 import ndtp.service.CivilVoiceCommentService;
 import ndtp.service.CivilVoiceService;
 import ndtp.service.impl.SimuServiceImpl;
 import ndtp.utils.WebUtils;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 @Slf4j
 @RestController
 @RequestMapping("/data/simulation-rest")
 public class SimulationRestController {
+	@Autowired
+	private StructPermissionMapper structPermissionMapper;
 
 	private static final long PAGE_ROWS = 5l;
 	private static final long PAGE_LIST_COUNT = 5l;
@@ -56,99 +54,6 @@ public class SimulationRestController {
 		this.civilVoiceService = civilVoiceService;
 		this.civilVoiceCommentService = civilVoiceCommentService;
 		this.simServiceImpl = simServiceImpl;
-	}
-
-	/**
-	 * 시민 참여 목록 조회
-	 * @param request
-	 * @param civilVoice
-	 * @param pageNo
-	 * @return
-	 */
-	@GetMapping
-	public Map<String, Object> list(HttpServletRequest request, CivilVoice civilVoice, @RequestParam(defaultValue="1") String pageNo) {
-		log.info("civilVoice list ===================== {} " , civilVoice);
-		Map<String, Object> result = new HashMap<>();
-		int statusCode = 0;
-		String errorCode = null;
-		String message = null;
-
-		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-		civilVoice.setUserId(userSession.getUserId());
-		civilVoice.setClientIp(WebUtils.getClientIp(request));
-		try {
-			long totalCount = civilVoiceService.getCivilVoiceTotalCount(civilVoice);
-			Pagination pagination = new Pagination(	request.getRequestURI(),
-					getSearchParameters(PageType.LIST, civilVoice),
-					totalCount,
-					Long.valueOf(pageNo).longValue(),
-					PAGE_ROWS,
-					PAGE_LIST_COUNT);
-			log.info("@@ pagination = {}", pagination);
-
-			civilVoice.setOffset(pagination.getOffset());
-			civilVoice.setLimit(pagination.getPageRows());
-			List<CivilVoice> civilVoiceList = new ArrayList<>();
-			if(totalCount > 0l) {
-				civilVoiceList = civilVoiceService.getListCivilVoice(civilVoice);
-			}
-
-			result.put("totalCount", totalCount);
-			result.put("pagination", pagination);
-			result.put("civilVoiceList", civilVoiceList);
-		} catch(Exception e) {
-			e.printStackTrace();
-			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-			errorCode = "db.exception";
-			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-		}
-
-		result.put("statusCode", statusCode);
-		result.put("errorCode", errorCode);
-		result.put("message", message);
-
-		return result;
-	}
-
-	/**
-	 * 시민 참여 상세 조회
-	 * @param request
-	 * @param civilVoiceId
-	 * @param civilVoice
-	 * @return
-	 */
-	@GetMapping("/{civilVoiceId}")
-	public Map<String, Object> detail(HttpServletRequest request, @PathVariable Long civilVoiceId, CivilVoice civilVoice) {
-		log.info("@@@@@ detail civilVoice = {}, civilVoiceId = {}", civilVoice, civilVoiceId);
-		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-
-		Map<String, Object> result = new HashMap<>();
-		int statusCode = 0;
-		String errorCode = null;
-		String message = null;
-		try {
-			// TODO @Valid 로 구현해야 함
-			if(civilVoiceId == null) {
-				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-				result.put("errorCode", "input.invalid");
-				result.put("message", message);
-				return result;
-			}
-			civilVoice = civilVoiceService.getCivilVocieById(civilVoiceId);
-			statusCode = HttpStatus.OK.value();
-			result.put("civilVoice", civilVoice);
-		} catch(Exception e) {
-			e.printStackTrace();
-			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-			errorCode = "db.exception";
-			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-		}
-
-		result.put("statusCode", statusCode);
-		result.put("errorCode", errorCode);
-		result.put("message", message);
-
-		return result;
 	}
 
 	@RequestMapping(value = "/select", method = RequestMethod.GET)
@@ -170,67 +75,26 @@ public class SimulationRestController {
 	}
 
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	public List<String> upload(MultipartFile[] files) {
+	public List<String> upload(MultipartHttpServletRequest mReq) {
+		Map<String, MultipartFile> fileMap = mReq.getFileMap();
+		Collection<MultipartFile> mFileCollection = fileMap.values();
+
+		MultipartFile[] files = mFileCollection.toArray(MultipartFile[]::new);
+
+		String constructor = mReq.getParameter("constructor");
+		String constructor_type = mReq.getParameter("constructor_type");
+		String birthday = mReq.getParameter("birthday");
+		String license_num = mReq.getParameter("license_num");
+		String phone_number = mReq.getParameter("phone_number");
+
+		structPermissionMapper.insertStructPermission(
+				new StructPermission(constructor, constructor_type, birthday, license_num, phone_number));
+
 		List<String> result = this.simServiceImpl.procStroeShp(files);
 		return result;
-		// PROCESS...
 
 	}
 
 
-	/**
-	 * 시민참여 등록
-	 * @param request
-	 * @param civilVoice
-	 * @param bindingResult
-	 * @return
-	 */
-	@PostMapping
-	public Map<String, Object> insert(HttpServletRequest request, @Valid @ModelAttribute CivilVoice civilVoice, BindingResult bindingResult) {
-		log.info("civilVoice ======================= {} " , civilVoice.getTitle());
-		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 
-		Map<String, Object> result = new HashMap<>();
-		int statusCode = 0;
-		String errorCode = null;
-		String message = null;
-
-		try {
-			if(bindingResult.hasErrors()) {
-				message = bindingResult.getAllErrors().get(0).getDefaultMessage();
-				log.info("@@@@@ message = {}", message);
-				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-				result.put("errorCode", errorCode);
-				result.put("message", message);
-				return result;
-			}
-
-			civilVoice.setUserId(userSession.getUserId());
-			if(civilVoice.getLongitude() != null && civilVoice.getLatitude() != null) {
-				civilVoice.setLocation("POINT(" + civilVoice.getLongitude() + " " + civilVoice.getLatitude() + ")");
-			}
-			civilVoiceService.insertCivilVoice(civilVoice);
-		} catch (Exception e) {
-			e.printStackTrace();
-			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-			errorCode = "db.exception";
-			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-		}
-
-		result.put("statusCode", statusCode);
-		result.put("errorCode", errorCode);
-		result.put("message", message);
-		return result;
-	}
-
-	/**
-	 * 검색 조건
-	 * @param pageType
-	 * @param dataGroup
-	 * @return
-	 */
-	private String getSearchParameters(PageType pageType, CivilVoice civilVoice) {
-		StringBuffer buffer = new StringBuffer(civilVoice.getParameters());
-		return buffer.toString();
-	}
 }
