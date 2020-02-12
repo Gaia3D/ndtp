@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ndtp.persistence.SimuMapper">
+
+	<!-- 세션 정보 -->
+	<select id="getSimCityPlanFileList" resultType="simFileInfo">
+		select sim_file_seq, origin_file_name, save_file_name, save_file_path, create_dt from sim_file_master;
+	</select>
+
+	<insert id="insertSimCityPlanFile" parameterType="simFileInfo">
+		<![CDATA[
+			INSERT INTO public.sim_file_master
+			(sim_file_seq, origin_file_name, save_file_name, save_file_path, create_dt)
+			VALUES(0, '${origin_file_name}', '${save_file_name}', '${save_file_path}', now())
+		]]>
+	</insert>
+
+</mapper>

@@ -177,9 +177,7 @@
 	});
 
 	$("#permRequest").on('click', function() {
-		console.log("permRequest");
 		permRequestDialog.dialog( "open" );
-		// var source = $("#permRequestDialogTemplate").html();
 	});
 	//Cesium.Ion.defaultAccessToken = '';
 	//var viewer = new Cesium.Viewer('magoContainer');

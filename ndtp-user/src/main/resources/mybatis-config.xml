@@ -44,6 +44,8 @@
  		
  		<typeAlias type="ndtp.domain.CivilVoice" alias="civilVoice"/>
  		<typeAlias type="ndtp.domain.CivilVoiceComment" alias="civilVoiceComment"/>
+
+		<typeAlias type="ndtp.domain.SimFileMaster" alias="simFileInfo"/>
     </typeAliases>
 
 </configuration>

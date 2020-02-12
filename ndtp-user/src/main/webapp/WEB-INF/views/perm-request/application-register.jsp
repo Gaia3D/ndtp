@@ -63,6 +63,17 @@
         <button class="focusA" title="등록" style="width: 200px;">등록</button>
         <button class="focusC" title="취소">취소</button>
     </div>
+
+    <li>
+        <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
+        <form id="file_upload" name="file_upload"method="post" enctype="multipart/form-data" action="simulation-rest/upload" style="width:100%" target="dummyframe">
+            <input type="file" name="files" style="width:100%" multiple>
+
+            <button id="upload_cityplan" type="submit" class="btnTextF" title="업로드">업로드</button>
+            <button type="button" class="btnText reset" title="취소">취소</button>
+        </form>
+    </li>
+
 </div>
 
 
