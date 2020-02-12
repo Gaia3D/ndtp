@@ -489,6 +489,14 @@ border:none;
 text-indent: -999em;
 background: url(/images/ko/ico.png) no-repeat -462px -697px;
 }
+button.goto:hover {
+width: 32px;
+height: 32px;
+border:none;
+text-indent: -999em;
+background: url(/images/ko/ico.png) no-repeat -462px -697px;
+transform: scale(1.1);
+}
 
 /* 양쪽으로 나눠진 구분DIV - 정연화 수정 */
 .bothSide {
@@ -587,6 +595,7 @@ font-size: 15px;
 font-weight: bold;
 border-radius: 5px;
 background: url(/images/ko/ico.png) no-repeat 3px -637px;
+letter-spacing: -.1rem;
 }
 .commentView .modify {
 float: right;

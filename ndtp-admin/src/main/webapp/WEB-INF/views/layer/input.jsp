@@ -535,7 +535,7 @@
 			$("#layerType").focus();
 			return false;
 		}
-		if ($("select[name=geometryType]").val().toLowerCase() === 'vector') {
+		if ($("select[name=layerType]").val() ==='vector' && !$("select[name=geometryType]").val()) {
 			alert("도형 타입을 선택해 주십시오.");
 			$("#geometryType").focus();
 			return false;

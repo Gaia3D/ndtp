@@ -6,10 +6,12 @@
 	</div>
 
 	<!-- 시민참여 검색 -->
+	<form:form id="civilVoiceSearchForm" modelAttribute="civilVoice" method="get" onsubmit="return false;">
 	<div class="listSearch search-margin flex-align-center">
-		<input type="text" id="getCivilVoiceListTitle" name="getCivilVoiceListTitle" placeholder="검색어를 입력하세요.">
+		<input type="text" id="getCivilVoiceListTitle" name="title" maxlength="256" placeholder="검색어를 입력하세요.">
 		<button type="button" id="civilVoiceSearch" class="btnTotalSearch" title="검색">검색</button>
 	</div>
+	</form:form>
 
 	<div class="bothSide">
 		<div><spring:message code='all'/> <span id="civilVoiceTotalCount">0</span> <spring:message code='search.what.count'/></div>
@@ -28,12 +30,13 @@
 <script id="templateCivilVoiceList" type="text/x-handlebars-template">
 	{{#if civilVoiceList}}
 		{{#each civilVoiceList}}
-			<li class="comment flex-align-center" data-id="{{civilVoiceId}}">
+			<li class="comment flex-align-center" data-id="{{civilVoiceId}}" title="상세보기">
+				<button type="button" class="goto" data-longitude={{longitude}} data-latitude={{latitude}} style="width:30px; margin-right:10px;" title="위치보기">위치보기</button>
 				<p>
 					<span class="title">{{title}}</span>
 					<span class="id">{{userId}}</span>
 				</p>
-         	   <p class="count"><span class="likes-icon">icon</span>{{commentCount}}</p>
+         	   	<p class="count" style="width: 60px;"><span class="likes-icon">icon</span>{{commentCount}}</p>
 			</li>
 		{{/each}}
 	{{else}}

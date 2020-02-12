@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<div id="dataInfoDialog" class="basicTable" style="display: none;">
+<div id="dataGroupDialog" class="basicTable" style="display: none;">
 </div>
-<script id="templateDataInfo" type="text/x-handlebars-template">
+<script id="templateDataGroup" type="text/x-handlebars-template">
 	<table>
 		<col class="col-label" />
 		<col class="col-data" />
@@ -10,16 +10,8 @@
 			<td id="dataGroupName" class="col-data ellipsis" style="max-width: 300px;">{{dataGroupName}}</td>
 		</tr>
 		<tr>
-			<th class="col-label" scope="row">데이터 Key</th>
-			<td id="dataKey" class="col-data">{{dataKey}}</td>
-		</tr>
-		<tr>
-			<th class="col-label" scope="row">데이터 타입</th>
-			<td id="dataType" class="col-data">{{dataType}}</td>
-		</tr>
-		<tr>
-			<th class="col-label" scope="row">사용자 아이디</th>
-			<td id="userId" class="col-data">{{userId}}</td>
+			<th class="col-label" scope="row">데이터 타켓</th>
+			<td id="dataGroupTarget" class="col-data">{{dataGroupTarget}}</td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">공유 유형</th>
@@ -39,8 +31,32 @@
 			</td>
 		</tr>
 		<tr>
-			<th class="col-label" scope="row">매핑 타입</th>
-			<td id="mappingType" class="col-data">{{mappingType}}</td>
+			<th class="col-label" scope="row">사용자 아이디</th>
+			<td id="userId" class="col-data">{{userId}}</td>
+		</tr>
+		<tr>
+			<th class="col-label" scope="row">기본유무</th>
+			<td id="basic" class="col-data">
+{{#if basic}}
+				기본
+{{else}}
+				선택
+{{/if}}			
+			</td>
+		</tr>
+		<tr>
+			<th class="col-label" scope="row">사용유무</th>
+			<td id="available" class="col-data">
+{{#if available}}
+				사용
+{{else}}
+				미사용
+{{/if}}			
+			</td>
+		</tr>
+		<tr>
+			<th class="col-label" scope="row">데이터 건수</th>
+			<td id="dataCount" class="col-data">{{dataCount}}</td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">경도</th>
@@ -55,40 +71,12 @@
 			<td id="altitude" class="col-data">{{altitude}}</td>
 		</tr>
 		<tr>
-			<th class="col-label" scope="row">Heading</th>
-			<td id="heading" class="col-data">{{heading}}</td>
-		</tr>
-		<tr>
-			<th class="col-label" scope="row">Pitch</th>
-			<td id="pitch" class="col-data">{{pitch}}</td>
-		</tr>
-		<tr>
-			<th class="col-label" scope="row">Roll</th>
-			<td id="roll" class="col-data">{{roll}}</td>
+			<th class="col-label" scope="row">이동시간</th>
+			<td id="duration" class="col-data">{{duration}}</td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">메타정보</th>
 			<td id="metainfo" class="col-data">{{metainfo}}</td>
-		</tr>
-		<tr>
-			<th class="col-label" scope="row">속성 존재 유무</th>
-			<td id="attributeExist" class="col-data">
-{{#if attributeExist}}
-				<a href="#" onclick="detailDataAttribute('{{dataId }}', '{{dataName}}'); return false;">보기</a>
-{{else}}
-				미등록
-{{/if}}
-			</td>
-		</tr>
-		<tr>
-			<th class="col-label" scope="row">Object 속성 존재 유무</th>
-			<td id="objectAttributeExist" class="col-data">
-{{#if objectAttributeExist}}
-				<a href="#" onclick="detailDataObjectAttribute('{{dataId }}', '{{dataName}}'); return false;">보기</a>
-{{else}}
-				미등록
-{{/if}}
-			</td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">설명</th>

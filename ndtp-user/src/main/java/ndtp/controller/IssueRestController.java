@@ -105,6 +105,7 @@ public class IssueRestController {
 				return result;
             }
 			
+			issue.setLocation("POINT(" + issue.getLongitude() + " " + issue.getLatitude() + ")");
 			issue.setUserId(userSession.getUserId());
 			issue.setClientIp(WebUtils.getClientIp(request));
 			issueService.insertIssue(issue);

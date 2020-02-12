@@ -1,10 +1,17 @@
 $(document).ready(function (){
 
+	getCivilVoiceList();
+
 	// 탭 클릭시 시민참여 조회
 	$('#civilVoiceMenu').on('click', function() {
 		if($(this).hasClass('on')){
 			getCivilVoiceList();
 		}
+	});
+
+	// 시민참여 검색
+	$('#civilVoiceSearch').on('click', function() {
+		getCivilVoiceList();
 	});
 
 	// 시민참여 입력 폼 조회
@@ -33,6 +40,14 @@ $(document).ready(function (){
 
 		getCivilVoiceDetail();
 		getCivilVoiceCommentList();
+	});
+
+	// 시민참여 위치보기
+	$('#civilVoiceList').on('click', '.goto', function(e) {
+		e.stopPropagation();
+		var longitude = $(this).data('longitude');
+		var latitude = $(this).data('latitude');
+		civilVoice.flyTo(longitude, latitude);
 	});
 
 	// 시민참여 목록 보기
@@ -73,14 +88,15 @@ $(document).ready(function (){
 // 시민참여 목록 조회
 function getCivilVoiceList(page) {
 	if(!page) page = 1;
+	var formId = 'civilVoiceSearchForm';
+	var formData = $('#' + formId).serialize();
 
 	$.ajax({
 		url: '/civil-voices',
 		type: 'GET',
 		headers: {'X-Requested-With': 'XMLHttpRequest'},
-		contentType: "application/json; charset=utf-8",
+		data: formData + '&pageNo='+page,
 		dataType: 'json',
-		data: {pageNo: page},
 		success: function(res){
 			if(res.statusCode <= 200) {
 				$('#civilVoiceTotalCount').text(res.totalCount);
@@ -151,9 +167,31 @@ function getCivilVoiceCommentList(page) {
 	});
 }
 
+function civilVoiceValidation() {
+	var form = $('#civilVoiceForm');
+	if(!form.find('[name=title]').val()) {
+		alert("제목을 입력하여 주십시오.");
+		form.find('[name=title]').focus();
+		return false;
+	}
+	if(!form.find('[name=longitude]').val() || !form.find('[name=longitude]').val()) {
+		alert("위치를 지정하여 주십시오.");
+		form.find('[name=longitude]').focus();
+		return false;
+	}
+	if(!form.find('[name=contents]').val()) {
+		alert("내용을 입력하여 주십시오.");
+		form.find('[name=contents]').focus();
+		return false;
+	}
+	return true;
+}
+
 // 시민참여 등록
 var insertCivilVoiceFlag = true;
 function saveCivilVoice() {
+	if(!civilVoiceValidation()) return false;
+
 	if(insertCivilVoiceFlag) {
 		insertCivilVoiceFlag = false;
 		var url = "/civil-voices";
@@ -274,6 +312,11 @@ function CivilVoiceControll(magoInstance, viewer) {
 
 	// public
 	return {
+		flyTo: function(longitude, latitude) {
+			var altitude = 100;
+			var duration = 5;
+			magoManager.flyTo(longitude, latitude, altitude, duration);
+		},
 		getGeographicCoord: function() {
 			magoManager.once(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
 				if(store.beforeEntity) {

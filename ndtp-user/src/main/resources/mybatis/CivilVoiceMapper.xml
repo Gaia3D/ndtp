@@ -31,7 +31,7 @@
         FROM civil_voice
 		<trim prefix="WHERE" prefixOverrides="AND">
 			<if test="title != null and title != '' ">
-			AND ${title} = #{title}
+			AND title LIKE #{title} || '%'
 			</if>
 		</trim>
 		ORDER BY civil_voice_id DESC
@@ -63,7 +63,7 @@
         FROM civil_voice
 		<trim prefix="WHERE" prefixOverrides="AND">
 			<if test="title != null and title != '' ">
-			AND ${title} = #{title}
+			AND title LIKE #{title} || '%'
 			</if>
 		</trim>
 	</select>
@@ -138,9 +138,6 @@
 			<if test="viewCount != null">
 			view_count = #{viewCount},
 			</if>
-			<if test="commentCount != null">
-			comment_count = #{commentCount},
-			</if>
 			<if test="year != null and year != ''">
 			year = #{year},
 			</if>
@@ -174,6 +171,16 @@
 			update_dt = NOW()
 		WHERE civil_voice_id = #{civilVoiceId}
 	</update>
+
+	<!-- 댓글 수 수정 -->
+	<update id="updateCivilVoiceCommentCount" parameterType="civilVoice">
+		/* updateCivilVoiceCommentCount */
+		UPDATE tn_civil_voice
+		SET
+			comment_count = (SELECT COUNT(1) + 1 FROM tn_civil_voice_comment WHERE civil_voice_id = #{civilVoiceId})
+		WHERE civil_voice_id = #{civilVoiceId}
+	</update>
+
 
 	<!-- 삭제 -->
 	<delete id="deleteCivilVoice" parameterType="long">

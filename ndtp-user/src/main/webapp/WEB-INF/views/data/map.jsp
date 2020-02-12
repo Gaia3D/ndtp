@@ -125,6 +125,7 @@
 <!-- E: WRAP -->
 
 <%@ include file="/WEB-INF/views/data/data-dialog.jsp" %>
+<%@ include file="/WEB-INF/views/data/data-group-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/map-data-template.jsp" %>
 <%@ include file="/WEB-INF/views/data/map-data-group-template.jsp" %>
 <%@ include file="/WEB-INF/views/data/data-attribute-dialog.jsp" %>
@@ -570,6 +571,44 @@
 						document.querySelector("#dataObjectAttributeViewer").appendChild(jsonViewer.getContainer());
 						jsonViewer.showJSON(JSON.parse(msg.dataObjectAttribute.attributes), -1, -1);
 					}
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+				}
+			},
+			error:function(request,status,error){
+				alert(JS_MESSAGE["ajax.error.message"]);
+			}
+		});
+	}
+	
+	// 데이터 그룹 다이얼로그
+	var dataGroupDialog = $( "#dataGroupDialog" ).dialog({
+		autoOpen: false,
+		width: 500,
+		height: 620,
+		modal: true,
+		overflow : "auto",
+		resizable: false
+	});
+
+	// 데이터 그룹 상세 정보 조회
+	function detailDataGroup(dataGroupId) {
+		dataGroupDialog.dialog( "open" );
+		$.ajax({
+			url: "/data-groups/" + dataGroupId,
+			type: "GET",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			dataType: "json",
+			success: function(msg){
+				if(msg.statusCode <= 200) {
+					dataGroupDialog.dialog( "option", "title", msg.dataGroup.dataGroupName + " 상세 정보");
+
+					var source = $("#templateDataGroup").html();
+				    var template = Handlebars.compile(source);
+				    var dataGroupHtml = template(msg.dataGroup);
+
+				    $("#dataGroupDialog").html("");
+	                $("#dataGroupDialog").append(dataGroupHtml);
 				} else {
 					alert(JS_MESSAGE[msg.errorCode]);
 				}
