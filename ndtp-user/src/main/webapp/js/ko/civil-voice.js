@@ -24,14 +24,6 @@ $(document).ready(function (){
 		$("#civilVoiceInputContent").hide();
 	});
 
-	// 시민참여 목록 보기
-	$("#civilVoiceListButton").click(function(){
-		$("#civilVoiceListContent").show();
-		$("#civilVoiceDetailContent").hide();
-
-		getCivilVoiceList();
-	});
-
 	// 시민참여 상세보기
 	$('#civilVoiceList').on('click', 'li.comment', function(){
 		var id = $(this).data('id');
@@ -41,6 +33,30 @@ $(document).ready(function (){
 
 		getCivilVoiceDetail();
 		getCivilVoiceCommentList();
+	});
+
+	// 시민참여 목록 보기
+	$('#civilVoiceDetailContent').on('click', '#civilVoiceListButton', function(){
+		$("#civilVoiceListContent").show();
+		$("#civilVoiceDetailContent").hide();
+
+		getCivilVoiceList();
+	});
+
+	// 시민참여 수정 폼 조회
+	$('#civilVoiceDetailContent').on('click', '#civilVoiceDeleteButton', function(){
+		$("#civilVoiceListContent").show();
+		$("#civilVoiceDetailContent").hide();
+
+		getCivilVoiceList();
+	});
+
+	// 시민참여 삭제
+	$('#civilVoiceDetailContent').on('click', '#civilVoiceUpdateButton', function(){
+		$("#civilVoiceListContent").show();
+		$("#civilVoiceDetailContent").hide();
+
+		getCivilVoiceList();
 	});
 
 	// 시민참여 댓글 등록
