@@ -125,12 +125,6 @@ public class DataInfo extends Search implements Serializable {
 	@Setter(AccessLevel.NONE)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 	private Timestamp viewInsertDate;
-	public Timestamp getInsertDate() {
-		return insertDate;
-	}
-	public void setInsertDate(Timestamp insertDate) {
-		this.insertDate = insertDate;
-	}
 	
 	public Timestamp getViewUpdateDate() {
 		return this.updateDate;
