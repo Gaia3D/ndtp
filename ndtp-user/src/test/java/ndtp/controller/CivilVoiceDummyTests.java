@@ -7,7 +7,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 
 import org.assertj.core.internal.bytebuddy.implementation.bind.annotation.IgnoreForBinding;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -71,10 +70,12 @@ public class CivilVoiceDummyTests extends BaseControllerTest {
 	public void 시민참여_댓글_생성() throws Exception {
 		// 목록 가져옴
 		List<CivilVoice> listCivilVoice = civilVoiceService.getListCivilVoice(new CivilVoice());
+		int min = 1;
+		int max = 150;
 
 		for(CivilVoice civilVoice : listCivilVoice) {
 			if(civilVoice.getCommentCount() == 0) {
-				int random = (int)(Math.random() * 100);
+				int random = (int)(Math.random() * (max - min) + min);
 				log.info(">>>>>>>>>>>>>>> {} >>>>>>>>> {} 건 생성", civilVoice.getCivilVoiceId(), random);
 
 				for(int i=0; i<random; i++) {

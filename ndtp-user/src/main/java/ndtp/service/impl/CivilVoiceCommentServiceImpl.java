@@ -33,13 +33,9 @@ public class CivilVoiceCommentServiceImpl implements CivilVoiceCommentService {
 
 	@Transactional
 	public int insertCivilVoiceComment(CivilVoiceComment civilVoiceComment) {
-
 		CivilVoice civilVoice = new CivilVoice();
 		civilVoice.setCivilVoiceId(civilVoiceComment.getCivilVoiceId());
-		civilVoice.setUserId(civilVoiceComment.getUserId());
-		civilVoice = civilVoiceMapper.getCivilVocieById(civilVoice);
-		civilVoice.setCommentCount(civilVoice.getCommentCount() + 1);
-		civilVoiceMapper.updateCivilVoice(civilVoice);
+		civilVoiceMapper.updateCivilVoiceCommentCount(civilVoice);
 
 		return civilVoiceCommentMapper.insertCivilVoiceComment(civilVoiceComment);
 	}
