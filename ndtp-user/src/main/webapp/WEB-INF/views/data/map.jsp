@@ -3,6 +3,7 @@
 <%@ include file="/WEB-INF/views/common/config.jsp" %>
 
 <%@ include file="/WEB-INF/views/perm-request/application-register.jsp" %>
+<%@ include file="/WEB-INF/views/notification/notification.jsp" %>
 
 <!DOCTYPE html>
 <html lang="${accessibility}">

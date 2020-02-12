@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ include file="/WEB-INF/views/notification/notification.jsp" %>
+
 <div id="gnbWrap" style="z-index: 100;">
 	<!-- S: 통합검색 -->
 	<div class="totalSearch">

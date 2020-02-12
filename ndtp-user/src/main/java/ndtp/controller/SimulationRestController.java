@@ -92,9 +92,17 @@ public class SimulationRestController {
 
 		List<String> result = this.simServiceImpl.procStroeShp(files);
 		return result;
-
 	}
 
+	@RequestMapping(value = "/getPermRequest", method = RequestMethod.POST)
+	public List<StructPermission> getPermRequest(HttpServletRequest request, StructPermission structPermission) {
 
+		String is_complete = structPermission.getIs_complete();
+		String constructor = structPermission.getConstructor();
+
+		List<StructPermission> result = structPermissionMapper.selectStructPermission();
+
+		return result;
+	}
 
 }

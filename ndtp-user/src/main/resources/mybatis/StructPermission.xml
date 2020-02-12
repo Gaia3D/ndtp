@@ -5,7 +5,8 @@
 
 	<!-- 세션 정보 -->
 	<select id="selectStructPermission" resultType="structPermission">
-		select * from struct_permission ;
+		select perm_seq, constructor, constructor_type, birthday, license_num, phone_number, is_complete, apply_date
+		 from struct_permission ;
 	</select>
 
 	<insert id="insertStructPermission" parameterType="structPermission">

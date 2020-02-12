@@ -1,10 +1,16 @@
 package ndtp.domain;
 
-import lombok.Data;
+import lombok.*;
 
 import java.util.Date;
 
 @Data
+@ToString(callSuper = true)
+@Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class StructPermission {
 	private Integer perm_seq;
 	private String constructor;
@@ -25,3 +31,5 @@ public class StructPermission {
 		this.is_complete = "N";
 	}
 }
+
+
