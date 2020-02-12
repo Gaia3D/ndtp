@@ -12,9 +12,6 @@
 			<if test="userId != null and userId != ''">
 			user_id = #{userId}
 			</if>
-			<if test="status != null and status != ''">
-			AND status = #{status}
-			</if>
 			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
 			AND ${searchWord} = #{searchValue}
 			</if>
@@ -40,14 +37,11 @@
 		SELECT X.*, 
 			(SELECT data_group_name FROM data_group WHERE data_group_id = X.data_group_id) AS data_group_name
 		FROM (
-			SELECT A.*, B.data_name, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude, ST_X(A.before_location) AS beforeLongitude, ST_Y(A.before_location) AS beforeLatitude
+			SELECT A.*, B.data_name, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude
 			FROM data_info_log A, data_info B
 			WHERE A.data_id = B.data_id
 				<if test="userId != null and userId != ''">
 				AND A.user_id = #{userId}
-				</if>
-				<if test="status != null and status != ''">
-				AND A.status = #{status}
 				</if>
 				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
 				AND A.${searchWord} = #{searchValue}

@@ -2570,7 +2570,7 @@ min-width: 325px;
 .tab li {
 display: inline-block;
 width: 180px;
-padding: 5px 0px;
+/* padding: 5px 0px; */
 color: #000;
 cursor: pointer;
 border: 1px solid #d9d9d9;
@@ -2583,7 +2583,16 @@ text-align: center;
 color: #fff;
 border: 1px solid #006bd2;
 background-color: #0073e2;
-} 
+}
+.tab li > a {
+display: inline-block;
+width: 100%;
+height: 100%;
+padding: 5px 0px;
+}
+.tab li:not(.on) > a:hover {
+color: #006bd2;
+}
 .input-set {
 margin: 10px 20px 10px 10px;
 float: left; 

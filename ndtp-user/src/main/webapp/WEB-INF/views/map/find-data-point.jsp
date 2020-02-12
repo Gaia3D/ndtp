@@ -519,7 +519,7 @@
 		}
 		if(insertDataAdjustLogFlag) {
 			insertDataAdjustLogFlag = false;
-			var formData = $("#dataInfo").serialize();		
+			var formData = $("#dcRotLocForm").serialize();		
 			$.ajax({
 				url: "/data-adjust-logs",
 				type: "POST",

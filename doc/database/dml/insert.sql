@@ -39,7 +39,8 @@ values
 	(41, '0', '1', '업로드 목록', 'DATA', 3, 3, 2, 9, '/upload-data/list', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
 	(42, '0', '1', '업로드 수정', 'DATA', 3, 3, 2, 10, '/upload-data/modify', '/upload-data/list', null, 'glyph-monitor', 'N', 'Y', 'N'),
 	(43, '0', '1', '데이터 변환 결과', 'DATA', 3, 3, 2, 11, '/converter/list', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
-	(44, '0', '1', '데이터 위치 변경 이력', 'DATA', 3, 3, 2, 12, '/data-adjust-log/list', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
+	(44, '0', '1', '데이터 위치 변경 요청 이력', 'DATA', 3, 3, 2, 12, '/data-adjust-log/list', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
+	(45, '0', '1', '데이터 변경 이력', 'DATA', 3, 3, 2, 13, '/data-log/list', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
 	(5, '0', '1', '레이어', 'LAYER', 5, 0, 1, 5, '/layer-group/list', null, null, 'glyph-check', 'Y', 'Y', 'Y'),
 	(51, '0', '1', '2D 레이어 그룹', 'LAYER', 5, 5, 2, 1, '/layer-group/list', null, null, 'glyph-check', 'Y', 'Y', 'Y'),
 	(52, '0', '1', '2D 레이어 그룹 등록', 'LAYER', 5, 5, 2, 2, '/layer-group/input', null, null, 'glyph-check', 'Y', 'Y', 'Y'),
@@ -104,6 +105,7 @@ values
 	(42, 1, 42, 'Y'),
 	(43, 1, 43, 'Y'),
 	(44, 1, 44, 'Y'),
+	(45, 1, 45, 'Y'),
 	(5, 1, 5, 'Y'),
 	(51, 1, 51, 'Y'),
 	(52, 1, 52, 'Y'),
@@ -190,15 +192,3 @@ values
 	(7, '[사용자 전용] 사용자 페이지 DATA 조회 권한', 'USER_DATA_READ', '0', '0', 'Y', 'Y');
 
 commit;
-
-
-
-
-
-
-
-
-
-
-
-
