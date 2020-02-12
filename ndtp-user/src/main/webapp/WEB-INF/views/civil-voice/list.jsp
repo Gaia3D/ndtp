@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <div id="civilVoiceListContent" class="contents mar0 pad0 border-none" style="display:block;">
-	<h3 class="h3-heading">시민참여</h3>
+	<div class="button-group-align marB10">
+		<h3 class="h3-heading">시민참여</h3>
+		<button type="button" id="civilVoiceInputButton" title="의견등록" class="btnTextF right-align">의견 등록</button>
+	</div>
 
 	<!-- 시민참여 검색 -->
 	<div class="listSearch search-margin flex-align-center">
@@ -16,9 +19,6 @@
 	<ul id="civilVoiceList" class="commentWrap"></ul>
 	<ul id="civilVoicePagination" class="pagination"></ul>
 
-	<div class="form-group button-group-top-center">
-		<button type="button" id="civilVoiceInputButton" title="의견등록" class="btnTextF">의견 등록</button>
-	</div>
 </div>
 <!-- E: 시민참여 목록 -->
 <%@ include file="/WEB-INF/views/civil-voice/detail.jsp" %>

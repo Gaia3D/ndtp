@@ -138,10 +138,10 @@
 				</ul>
 
 				<div>
-					<button type="button" id="dcSavePosRot" class="btnTextF" 
-							title="<spring:message code='data.transform.save'/>">
+					<button type="button" id="dcSavePosRot" class="btnTextF" title="<spring:message code='data.transform.save'/>">
 						<spring:message code='data.transform.save'/>
 					</button>
+					<button type="button" id="issueButton" class="btnTextF">이슈 등록</button>
 					<button type="button" id="dcShowAttr" class="btnTextF">속성조회</button>
 				</div>
 			</form>

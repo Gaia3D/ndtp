@@ -132,6 +132,30 @@ public class LayerController implements AuthorizationController {
 		return "/layer/list";
 	}
 
+	@GetMapping(value = "list-geoserver")
+	@ResponseBody
+	public Map<String, Object> geoserverLayerList(HttpServletRequest request) {
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		String geoserverLayerJson = null;
+		try {
+			GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
+			geoserverLayerJson = layerService.getListGeoserverLayer(geoPolicy);
+		} catch (Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		result.put("geoserverLayerJson", geoserverLayerJson);
+		return result;
+	}
     /**
      * layer 등록
      * @param model
@@ -143,14 +167,11 @@ public class LayerController implements AuthorizationController {
     	if(roleValidate(request) != null) return roleCheckResult;
 
     	Policy policy = policyService.getPolicy();
-    	GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
     	List<LayerGroup> layerGroupList = layerGroupService.getListLayerGroup();
-    	String geoserverLayerJson = layerService.getListGeoserverLayer(geoPolicy);
     	
     	model.addAttribute("policy", policy);
     	model.addAttribute("layer", new Layer());
     	model.addAttribute("layerGroupList", layerGroupList);
-    	model.addAttribute("geoserverLayerJson", geoserverLayerJson);
 
     	return "/layer/input";
     }
@@ -212,6 +233,9 @@ public class LayerController implements AuthorizationController {
 				result.put("errorCode", "layer.key.duplication");
 				return result;
 			}
+			UserSession userSession = (UserSession) request.getSession().getAttribute(Key.USER_SESSION.name());
+			String userId = userSession.getUserId();
+			layer.setUserId(userId);
 			List<LayerFileInfo> layerFileInfoList = new ArrayList<>();
 			layerService.insertLayer(layer, layerFileInfoList);
 			String layerType = layer.getLayerType();
@@ -294,6 +318,7 @@ public class LayerController implements AuthorizationController {
 							.coordinate(request.getParameter("coordinate"))
 							.description(request.getParameter("description"))
 							.zIndex(Integer.valueOf(request.getParameter("zIndex")))
+							.cacheAvailable(Boolean.valueOf(request.getParameter("cacheAvailable")))
 							.userId(userId)
 							.build();
 			log.info("@@ layer = {}", layer);
@@ -445,6 +470,9 @@ public class LayerController implements AuthorizationController {
 		String errorCode = null;
 		String message = null;
 		try {
+			UserSession userSession = (UserSession) request.getSession().getAttribute(Key.USER_SESSION.name());
+			String userId = userSession.getUserId();
+			layer.setUserId(userId);
 			List<LayerFileInfo> layerFileInfoList = new ArrayList<>();
 			layerService.updateLayer(layer, false, layerFileInfoList);
 			String layerType = layer.getLayerType();
@@ -625,6 +653,7 @@ public class LayerController implements AuthorizationController {
 			layer.setCoordinate(request.getParameter("coordinate"));
 			layer.setDescription(request.getParameter("description"));
 			layer.setZIndex(Integer.valueOf(request.getParameter("zIndex")));
+			layer.setCacheAvailable(Boolean.valueOf(request.getParameter("cacheAvailable")));
 			layer.setUserId(userId);
 
             // TODO geoserver 에서 postgresql 로 hang 걸리는게 있어서 우선 이럻게 처리 함. 추후 개선 예정

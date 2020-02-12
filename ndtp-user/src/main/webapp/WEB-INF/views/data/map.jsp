@@ -129,6 +129,7 @@
 <%@ include file="/WEB-INF/views/data/map-data-group-template.jsp" %>
 <%@ include file="/WEB-INF/views/data/data-attribute-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/data-object-attribute-dialog.jsp" %>
+<%@ include file="/WEB-INF/views/issue/issue-dialog.jsp" %>
 
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
@@ -227,6 +228,8 @@
         Simulation(magoInstance);
         // 환경 설정.
         UserPolicy(magoInstance);
+        // 시민참여
+        CivilVoice(magoInstance);
         // 기본 레이어 랜더링
         setTimeout(function(){
         	initLayer(magoInstance, NDTP.baseLayers);
@@ -575,6 +578,72 @@
 				alert(JS_MESSAGE["ajax.error.message"]);
 			}
 		});
+	}
+	
+	// 이슈 등록 버튼 클릭
+	$("#issueButton").click(function() {
+		issueDialog.dialog( "open" );
+	});
+	// 이슈 다이얼 로그
+	var issueDialog = $( "#issueDialog" ).dialog({
+		autoOpen: false,
+		width: 500,
+		height: 500,
+		modal: true,
+		overflow : "auto",
+		resizable: false
+	});
+	
+	// 이슈 등록
+	var insertIssueFlag = true;
+	function insertIssue() {
+		if (validate() == false) {
+			return false;
+		}
+		if(insertIssueFlag) {
+			insertIssueFlag = false;
+			$.ajax({
+				url: "/issues",
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+				data: { "dataId" : $("#issueDataId").val(), "dataGroupId" : $("#issueDataGroupId").val(),
+					"dataKey" : $("#issueDataKey").val(), "dataGroupName" : $("#issueDataGroupName").val(), "objectKey" : $("#issueObjectKey").val(),
+					"longitude" : $("#issueLongitude").val(), "latitude" : $("#issueLatitude").val(), "altitude" : $("#issueAltitude").val(),
+					"title" : $("#issueTitle").val(), "contents" : $("#issueContents").val()
+				},
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert(JS_MESSAGE["insert"]);
+						insertIssueFlag = true;
+						issueDialog.close();
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
+					insertIssueFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        insertIssueFlag = true;
+				}
+			});
+		} else {
+			alert(JS_MESSAGE["button.dobule.click"]);
+			return;
+		}
+	}
+	
+	function validate() {
+		if ($("#issueTitle").val() === "") {
+			alert("제목을 입력하여 주십시오.");
+			$("#issueTitle").focus();
+			return false;
+		}
+		if ($("#issueContents").val() === "") {
+			alert("내용을 입력하여 주십시오.");
+			$("#issueContents").focus();
+			return false;
+		}
 	}
 </script>
 </body>

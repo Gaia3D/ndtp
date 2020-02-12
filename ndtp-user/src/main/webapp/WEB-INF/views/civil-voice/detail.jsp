@@ -1,16 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!-- S: 시민참여 의견 -->
 <div id="civilVoiceDetailContent" class="contents mar0 pad0 border-none" style="display:none;">
-
-	<div class="commentView">
-		<div style="margin-bottom: 15px;">
-			<input type="hidden" id="civilVoiceId" value="">
-			<span class="title"  id="civilVoiceTitle"></span>
-			<!-- TODO: 본인 글에만 수정 버튼 -->
-			<span class="modify" id="civilVoiceUpdateButton">수정</span>
-		</div>
-		<div class="con" id="civilVoiceContents"></div>
-	</div>
+	<input type="hidden" id="civilVoiceId" value="">
+	<div id="civilVoiceView" class="commentView"></div>
 
 	<p class="agreeCount">동의 <span id="civilVoiceCommentTotalCount">0</span> 건</p>
 	<form:form id="civilVoiceCommentForm" modelAttribute="civilVoiceComment" method="post" onsubmit="return false;">
@@ -22,11 +14,24 @@
 	<ul id="civilVoiceComment" class="agreeWrap"></ul>
 	<ul id="civilVoiceCommentPagination" class="pagination"></ul>
 
-	<div class="form-group button-group-top-center">
-		<button type="button" id="civilVoiceListButton" title="목록" class="btnTextF">목록</button>
-	</div>
 </div>
 <!-- E: 시민참여 의견 -->
+
+<script id="templateCivilVoiceView" type="text/x-handlebars-template">
+	<div style="margin-bottom: 15px;">
+		<div class="button-group-align marB10" style="display: inline-block;">
+			{{#if civilVoice.editable}}
+				<button type="button" id="civilVoiceUpdateButton" title="목록" class="btnText left-align reset marR5">수정</button>
+				<button type="button" id="civilVoiceDeleteButton" title="목록" class="btnText left-align reset marR5">삭제</button>
+			{{/if}}
+			<button type="button" id="civilVoiceListButton" title="목록" class="btnTextF right-align">목록</button>
+		</div>
+		<span class="title"  id="civilVoiceTitle">
+			{{civilVoice.title}}
+		</span>
+	</div>
+	<div class="con" id="civilVoiceContents">{{civilVoice.contents}}</div>
+</script>
 
 <script id="templateCivilVoiceComment" type="text/x-handlebars-template">
 	{{#if civilVoiceCommentList}}

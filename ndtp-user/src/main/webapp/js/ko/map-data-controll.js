@@ -42,7 +42,41 @@ var MapDataControll = function(magoInstance) {
 				$('#mapPolicy').trigger('click');
 			}
 			$dataControlWrap.show();
+			
+			setIssueFormValue(f4d, null, currentGeoCoord);
 		}
+	});
+    
+  //지도상에서 데이터 object 선택 시 
+    magoManager.on(Mago3D.MagoManager.EVENT_TYPE.SELECTEDF4DOBJECT, function(result) {
+    	console.info(result);
+    	var resultObj = result.object;
+    	var resultBuilding = result.octree;
+    	if(resultObj && resultBuilding) {
+    		clearDataControl();
+    		var node = resultBuilding.nodeOwner;
+			var data = node.data;
+			dataId = data.dataId;
+			dataKey = data.nodeId;
+			projectId = data.projectId;
+			var objectId = resultObj.objectId;
+			var title = projectId + ' / ' + (data.data_name || data.nodeId) + ' / ' + objectId;
+			$header.text(title);
+			
+			var block = resultBuilding.motherBlocksArray[resultObj._block_idx];
+			var bbCenter = block.bbox.getCenterPoint();
+			var orgMat = resultObj._originalMatrix4;
+			var auxLocalPoint = orgMat.transformPoint3D(bbCenter);
+			var geoLocData = node.getCurrentGeoLocationData();
+			var pinPoint = geoLocData.tMatrix.transformPoint3D(auxLocalPoint);
+			
+			$dataControlWrap.show();
+			
+			var pinGeoCoord = Mago3D.ManagerUtils.pointToGeographicCoord(pinPoint);
+			//issue 인풋에 값 세팅
+			setIssueFormValue(node, objectId, pinGeoCoord);
+			
+    	}
 	});
   	//선택된 데이터 이동 시 결과 리턴
     magoManager.on(Mago3D.MagoManager.EVENT_TYPE.SELECTEDF4DMOVED, function(result) {
@@ -58,10 +92,11 @@ var MapDataControll = function(magoInstance) {
 	});
 
   	//지도상에서 데이터 all 선택해제시 
-	magoManager.on(Mago3D.MagoManager.EVENT_TYPE.DESELECTEDF4D, function(result) {
-		clearDataControl();
-		$dataControlWrap.hide();
-	});
+	magoManager.on(Mago3D.MagoManager.EVENT_TYPE.DESELECTEDF4D, deselectCallback);
+	//magoManager.on(Mago3D.MagoManager.EVENT_TYPE.DESELECTEDF4D, function(){alert(1);});
+	
+	//지도상에서 데이터 object 선택해제시 
+	magoManager.on(Mago3D.MagoManager.EVENT_TYPE.DESELECTEDF4DOBJECT, deselectCallback);
 	
 	//색상변경 적용
 	$('#dcColorApply').click(function() {
@@ -206,5 +241,52 @@ var MapDataControll = function(magoInstance) {
 		dataKey = undefined;
 		projectId = undefined;
 		$header.empty();
+	}
+	function deselectCallback(result) {
+		clearDataControl();
+		$dataControlWrap.hide();
+		
+		//clear issue form;
+		setIssueFormValue();
+	}
+	
+	function setIssueFormValue(f4d, objectId, coord) {
+		//test로 점 하나 찍어봅니다
+        /*var pointGraphic = new Cesium.PointGraphics({
+            pixelSize : 10,
+            color : Cesium.Color.AQUAMARINE,
+            outlineColor : Cesium.Color.WHITE,
+            outlineWidth : 2
+        });
+
+        var addedEntity = magoInstance.getViewer().entities.add({
+            position : Cesium.Cartesian3.fromDegrees(coord.longitude, coord.latitude, coord.altitude),
+            point : pointGraphic
+        });*/
+		if(f4d) {
+			var data = f4d.data;
+			var tempDataGroupName = data.projectFolderName;
+			var dataGroupName = tempDataGroupName.split("/").reverse()[0];
+			
+			$("#issueDataId").val(data.dataId);
+			$("#issueDataKey").val(data.nodeId);
+			$("#issueDataName").html(data.data_name);
+			$("#issueObjectKey").val(objectId);
+			$("#issueDataGroupId").val(data.projectId);
+			$("#issueDataGroupName").html(data.projectId);//no exist..
+			$("#issueLongitude").val(coord.longitude);
+			$("#issueLatitude").val(coord.latitude);
+			$("#issueAltitude").val(coord.altitude);
+		} else {
+			$("#issueDataId").val('');
+			$("#issueDataKey").val('');
+			$("#issueDataName").html('');
+			$("#issueObjectKey").val('');
+			$("#issueDataGroupId").val('');
+			$("#issueDataGroupName").html('');
+			$("#issueLongitude").val('');
+			$("#issueLatitude").val('');
+			$("#issueAltitude").val('');
+		}
 	}
 }
