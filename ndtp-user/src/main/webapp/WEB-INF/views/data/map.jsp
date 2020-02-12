@@ -607,12 +607,14 @@
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				data: { "dataId" : $("#issueDataId").val(), "dataGroupId" : $("#issueDataGroupId").val(),
+					"dataKey" : $("#issueDataKey").val(), "dataGroupName" : $("#issueDataGroupName").val(), "objectKey" : $("#issueObjectKey").val(),
 					"longitude" : $("#issueLongitude").val(), "latitude" : $("#issueLatitude").val(), "altitude" : $("#issueAltitude").val(),
 					"title" : $("#issueTitle").val(), "contents" : $("#issueContents").val()
 				},
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						alert(JS_MESSAGE["insert"]);
+						insertIssueFlag = true;
 						issueDialog.close();
 					} else {
 						alert(JS_MESSAGE[msg.errorCode]);
