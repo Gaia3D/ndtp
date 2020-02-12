@@ -29,7 +29,9 @@
 				<tr>
 					<td>{{subtract ../pagination.rowNumber @index}}</td>
 					<td class="ellipsis" style="max-width:100px;">
-						{{dataGroupName}}
+						<a href="#" onclick="detailDataGroup('{{dataGroupId}}'); return false;">
+							{{dataGroupName}}
+						</a>
 					</td>
 					<td>
 						{{sharing}}
