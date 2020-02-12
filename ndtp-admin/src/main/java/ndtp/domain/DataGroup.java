@@ -7,6 +7,9 @@ import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -93,6 +96,24 @@ public class DataGroup extends Search {
 	private String metainfo;
 	// 설명
 	private String description;
+	
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+	private Timestamp viewUpdateDate;
+	
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+	private Timestamp viewInsertDate;
+	
+	public Timestamp getViewUpdateDate() {
+		return this.updateDate;
+	}
+	public Timestamp getViewInsertDate() {
+		return this.insertDate;
+	}
+	
 	// 수정일
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Timestamp updateDate;
