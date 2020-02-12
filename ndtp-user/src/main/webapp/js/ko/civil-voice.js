@@ -35,6 +35,14 @@ $(document).ready(function (){
 		getCivilVoiceCommentList();
 	});
 
+	// 시민참여 위치보기
+	$('#civilVoiceList').on('click', '.goto', function(e) {
+		e.stopPropagation();
+		var longitude = $(this).data('longitude');
+		var latitude = $(this).data('latitude');
+		civilVoice.flyTo(longitude, latitude);
+	});
+
 	// 시민참여 목록 보기
 	$('#civilVoiceDetailContent').on('click', '#civilVoiceListButton', function(){
 		$("#civilVoiceListContent").show();
@@ -274,6 +282,11 @@ function CivilVoiceControll(magoInstance, viewer) {
 
 	// public
 	return {
+		flyTo: function(longitude, latitude) {
+			var altitude = 100;
+			var duration = 5;
+			magoManager.flyTo(longitude, latitude, altitude, duration);
+		},
 		getGeographicCoord: function() {
 			magoManager.once(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
 				if(store.beforeEntity) {
