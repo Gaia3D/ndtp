@@ -151,6 +151,7 @@ JS_MESSAGE["data.longitude.empty"] = "경도를  입력하여 주십시오.";
 JS_MESSAGE["data.altitude.empty"] = "높이를  입력하여 주십시오.";
 JS_MESSAGE["data.file.empty"] = "파일을 입력하여 주십시오.";
 JS_MESSAGE["data.insert"] = "데이터를 등록 하였습니다.";
+JS_MESSAGE["data.update.check"] = "현재 입력된 위치와 회전 정보를 db에 저장하시겠습니까?";
 
 JS_MESSAGE["data.group.key.empty"] = "데이터 그룹 Key 를 입력하여 주십시오.";
 JS_MESSAGE["data.group.key.duplication"] = "사용중인 데이터 그룹 Key 입니다. 다른 이름을 사용해 주십시오.";

@@ -2,9 +2,10 @@ var MapDataControll = function(magoInstance) {
 	
 	var magoManager = magoInstance.getMagoManager();
 	var $dataControlWrap = $('#dataControllWrap');
-	var $header = $dataControlWrap.find('h3');
+	var $header = $dataControlWrap.find('.layerDivTit span');
 	var projectId;
 	var dataKey;
+	var dataId;
 	//지도상에서 데이터 all 선택 시 
     magoManager.on(Mago3D.MagoManager.EVENT_TYPE.SELECTEDF4D, function(result) {
     	var f4d = result.f4d;
@@ -12,9 +13,10 @@ var MapDataControll = function(magoInstance) {
 			clearDataControl();
 			
 			var data = f4d.data;
+			dataId = data.dataId;
 			dataKey = data.nodeId;
 			projectId = data.projectId;
-			var title = '선택된 데이터 :  ' + projectId + ' / ' + dataKey;
+			var title = projectId + ' / ' + (data.data_name || data.nodeId);
 			$header.text(title);
 			
 			var currentGeoLocData = f4d.getCurrentGeoLocationData();
@@ -89,11 +91,27 @@ var MapDataControll = function(magoInstance) {
 		changeF4d();
 	});
 	
+	//회전 변경 버튼 조절
+	var rotBtnHoldInterval
+	$('.dcRangeBtn').on('mousedown',function() {
+		var $this = $(this);
+		rotBtnHoldInterval = setInterval(function(){
+			var type = $this.data('type');
+			var range = (type ==='prev') ?  $this.next() : $this.prev();
+			var offset = (type ==='prev') ? -1 : 1;
+			var curVal = parseFloat(range.val()); 
+			range.val(curVal + offset).change();
+		},50);
+	});
+	$('.dcRangeBtn').on('mouseup mouseleave',function() {
+		clearInterval(rotBtnHoldInterval);
+	});
+	
 	//데이터 높이 이벤트
-	var holdInterval;
+	var locAltholdInterval;
 	$('#dcAltUp,#dcAltDown').on('mousedown',function() {
 		var $this = $(this);
-		holdInterval = setInterval(function(){
+		locAltholdInterval = setInterval(function(){
 			var type = $this.data('type');
 			var offset = parseFloat($('#dcAltitudeOffset').val());
 			offset = (type==='up') ? offset : -offset;
@@ -102,21 +120,75 @@ var MapDataControll = function(magoInstance) {
 			$('#dcAltitude').val(alt + offset);
 			
 			changeF4d();
-		});
-		
+		},50);
 	});
-	
 	$('#dcAltUp,#dcAltDown').on('mouseup mouseleave',function() {
-		clearInterval(holdInterval);
+		clearInterval(locAltholdInterval);
 	});
-	
+	//속성조회
+	$('#dcShowAttr').click(function(){
+		detailDataInfo(dataId);
+	});
+	//위치회전정보 저장
 	$('#dcSavePosRot').click(function() {
-		if(confirm('현재 입력된 위치와 회전 정보를 db에 저장하시겠습니까?')) {
-			alert('save');
+		if(confirm(JS_MESSAGE["data.update.check"])) {
+			if(!dataId) {
+				alert('선택된 데이터가 없습니다.');
+				return false;
+			}
+			startLoading();
+			var formData = $('#dcRotLocForm').serialize();
+			$.ajax({
+				url: "/datas/" + dataId,
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+				data: formData,
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert(JS_MESSAGE["update"]);
+					} else if (msg.statusCode == 428) {
+						if(confirm(JS_MESSAGE[msg.errorCode])) {
+							$('input[name="dataId"]').val(dataId);
+							var formData = $('#dcRotLocForm').serialize();
+							$.ajax({
+								url: "/data-adjust-logs",
+								type: "POST",
+								headers: {"X-Requested-With": "XMLHttpRequest"},
+								data: formData,
+								success: function(msg){
+									if(msg.statusCode <= 200) {
+										alert("요청 하였습니다.");
+									} else {
+										alert(JS_MESSAGE[msg.errorCode]);
+										console.log("---- " + msg.message);
+									}
+									insertDataAdjustLogFlag = true;
+								},
+								error: function(request, status, error){
+							        alert(JS_MESSAGE["ajax.error.message"]);
+							        insertDataAdjustLogFlag = true;
+								},
+								always: function(msg) {
+									$('input[name="dataId"]').val("");
+								}
+							});
+						}
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
+					updateDataInfoFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        updateDataInfoFlag = true;
+				}
+			}).always(stopLoading);
 		} else {
 			alert('no');
 		}
 	});
+	
 	var changeF4d = function() {
 		var lat = parseFloat($('#dcLatitude').val());
 		var lon = parseFloat($('#dcLongitude').val());
@@ -130,6 +202,7 @@ var MapDataControll = function(magoInstance) {
 	}
 	
 	var clearDataControl = function() {
+		dataId = undefined;
 		dataKey = undefined;
 		projectId = undefined;
 		$header.empty();

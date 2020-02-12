@@ -92,7 +92,7 @@
 				<input type="hidden" id="checkIds" name="checkIds" value="" />
 			<div class="list-header row">
 				<div class="list-desc u-pull-left">
-					<spring:message code='all'/> <span style="color: #287be4;"><fmt:formatNumber value="${pagination.totalCount}" type="number"/></span> <spring:message code='search.what.count'/>
+					<spring:message code='all'/> <span style="color: #287be4;"><fmt:formatNumber value="${pagination.totalCount}" type="number"/></span> <spring:message code='search.what.count'/>,
 					<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/>
 				</div>
 				<div class="list-functions u-pull-right">
