@@ -7,6 +7,11 @@ $(document).ready(function (){
 		}
 	});
 
+	// 시민참여 검색
+	$('#civilVoiceSearch').on('click', function() {
+		getCivilVoiceList();
+	});
+
 	// 시민참여 입력 폼 조회
 	$("#civilVoiceInputButton").click(function(){
 		$("#civilVoiceListContent").hide();
@@ -81,14 +86,15 @@ $(document).ready(function (){
 // 시민참여 목록 조회
 function getCivilVoiceList(page) {
 	if(!page) page = 1;
+	var formId = 'civilVoiceSearchForm';
+	var formData = $('#' + formId).serialize();
 
 	$.ajax({
 		url: '/civil-voices',
 		type: 'GET',
 		headers: {'X-Requested-With': 'XMLHttpRequest'},
-		contentType: "application/json; charset=utf-8",
+		data: formData + '&pageNo='+page,
 		dataType: 'json',
-		data: {pageNo: page},
 		success: function(res){
 			if(res.statusCode <= 200) {
 				$('#civilVoiceTotalCount').text(res.totalCount);

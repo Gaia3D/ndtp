@@ -31,7 +31,7 @@
         FROM civil_voice
 		<trim prefix="WHERE" prefixOverrides="AND">
 			<if test="title != null and title != '' ">
-			AND ${title} = #{title}
+			AND title LIKE #{title} || '%'
 			</if>
 		</trim>
 		ORDER BY civil_voice_id DESC
@@ -63,7 +63,7 @@
         FROM civil_voice
 		<trim prefix="WHERE" prefixOverrides="AND">
 			<if test="title != null and title != '' ">
-			AND ${title} = #{title}
+			AND title LIKE #{title} || '%'
 			</if>
 		</trim>
 	</select>
