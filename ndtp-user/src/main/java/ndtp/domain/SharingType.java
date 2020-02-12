@@ -1,13 +1,23 @@
 package ndtp.domain;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public enum SharingType {
 
 	// 공통
-	COMMON,
+	COMMON("공통"),
 	// 공개
-	PUBLIC,
+	PUBLIC("공개"),
 	// 비공개
-	PRIVATE,
+	PRIVATE("비공개"),
 	// 그룹
-	GROUP;
+	GROUP("그룹");
+	
+	private @Setter @Getter String sharing;
+	
+	private SharingType(String sharing) {
+		this.sharing = sharing;
+	}
+	
 }

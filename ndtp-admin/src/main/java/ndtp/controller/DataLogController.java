@@ -81,6 +81,9 @@ public class DataLogController {
 			dataInfoLogList = dataLogService.getListDataInfoLog(dataInfoLog);
 		}
 		
+		// TODO 다국어 지원 시 변경 필요
+		dataInfoLogList.stream().forEach(DataInfoLog::convertDto);
+		
 		model.addAttribute(pagination);
 		model.addAttribute("dataGroupList", dataGroupList);
 		model.addAttribute("dataInfoLogList", dataInfoLogList);

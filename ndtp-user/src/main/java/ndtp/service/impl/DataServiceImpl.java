@@ -232,6 +232,7 @@ public class DataServiceImpl implements DataService {
 	public int updateData(DataInfo dataInfo) {
 		// TODO 환경 설정 값을 읽어 와서 update 할 건지, delete 할건지 분기를 타야 함
 		dataMapper.updateData(dataInfo);
+		dataInfo = dataMapper.getData(dataInfo);
 		DataInfoLog dataInfoLog = new DataInfoLog(dataInfo);
 		dataInfoLog.setChangeType(MethodType.UPDATE.name().toLowerCase());
 		dataInfoLog.setUpdateUserId(dataInfo.getUserId());
