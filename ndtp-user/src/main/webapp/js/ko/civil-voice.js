@@ -1,5 +1,7 @@
 $(document).ready(function (){
 
+	getCivilVoiceList();
+
 	// 탭 클릭시 시민참여 조회
 	$('#civilVoiceMenu').on('click', function() {
 		if($(this).hasClass('on')){
@@ -165,9 +167,31 @@ function getCivilVoiceCommentList(page) {
 	});
 }
 
+function civilVoiceValidation() {
+	var form = $('#civilVoiceForm');
+	if(!form.find('[name=title]').val()) {
+		alert("제목을 입력하여 주십시오.");
+		form.find('[name=title]').focus();
+		return false;
+	}
+	if(!form.find('[name=longitude]').val() || !form.find('[name=longitude]').val()) {
+		alert("위치를 지정하여 주십시오.");
+		form.find('[name=longitude]').focus();
+		return false;
+	}
+	if(!form.find('[name=contents]').val()) {
+		alert("내용을 입력하여 주십시오.");
+		form.find('[name=contents]').focus();
+		return false;
+	}
+	return true;
+}
+
 // 시민참여 등록
 var insertCivilVoiceFlag = true;
 function saveCivilVoice() {
+	if(!civilVoiceValidation()) return false;
+
 	if(insertCivilVoiceFlag) {
 		insertCivilVoiceFlag = false;
 		var url = "/civil-voices";

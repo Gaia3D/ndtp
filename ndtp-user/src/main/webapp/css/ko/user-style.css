@@ -595,6 +595,7 @@ font-size: 15px;
 font-weight: bold;
 border-radius: 5px;
 background: url(/images/ko/ico.png) no-repeat 3px -637px;
+letter-spacing: -.1rem;
 }
 .commentView .modify {
 float: right;

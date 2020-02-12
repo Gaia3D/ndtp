@@ -46,6 +46,7 @@ public class CivilVoice extends Search {
 	@Size(max = 256)
 	private String title;
 	// 내용
+	@NotBlank
 	private String contents;
 	// 위치
 	private String location;
