@@ -8,6 +8,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<title>데이터 수정 | NDTP</title>
+
 	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
 	<link rel="stylesheet" href="/css/${lang}/font/font.css" />
 	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
@@ -101,10 +102,13 @@
 								</tr>
 								<tr>
 									<th class="col-label" scope="row">
-										heading / pitch / roll
+										<form:label path="heading">heading/pitch/roll</form:label>
+					
 									</th>
 									<td class="col-input">
-										${dataInfo.heading } / ${dataInfo.pitch } / ${dataInfo.roll }
+										<form:input path="heading" cssClass="m" />
+										<form:input path="pitch" cssClass="m" />
+										<form:input path="roll" cssClass="m" />
 									</td>
 								</tr>
 								<tr>
@@ -262,19 +266,9 @@
 		}
 	}
 	
-	// 지도에서 찾기
+	// 지도에서 찾기 -- common.js, openFindDataPoint
 	$( "#mapButtion" ).on( "click", function() {
-		var url = "/map/find-data-point?dataId=${dataInfo.dataId}&referrer=MODIFY";
-		var width = 1400;
-		var height = 700;
-	
-		var popupX = (window.screen.width / 2) - (width / 2);
-		// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
-		var popupY= (window.screen.height / 2) - (height / 2);
-		
-	    var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height + ", top=" + popupY + ", left="+popupX
-	            + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
-	    //popWin.document.title = layerName;
+		openFindDataPoint("${dataInfo.dataId}", "MODIFY");
 	});
 
 </script>

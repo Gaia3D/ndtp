@@ -29,7 +29,7 @@
     </div>
     <div class="layerContents">
 		<div class="inline-toggle">
-			<h4 class="category">객체정보</h4>
+			<h4 class="category">레이블</h4>
 			<div id="datainfoDisplay" class="switch-toggle switch-ios">
 				<input type="radio" id="datainfoDisplayY" name="datainfoDisplay" value="true">
 				<label for="datainfoDisplayY">표시</label>

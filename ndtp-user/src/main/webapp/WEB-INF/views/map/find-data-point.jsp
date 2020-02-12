@@ -451,7 +451,7 @@
 		}
 	}
 	
-	// 높이회전 저장 버튼 클릭
+	// 위치/회전 저장 버튼 클릭
 	$("#dcSavePosRotPop").click(function(){
 		if (validate() == false) {
 			return false;
@@ -511,7 +511,7 @@
 		}
 	});
 	
-	// 높이회전 저장 요청 버튼 클릭
+	// 위치/회전 저장 요청 버튼 클릭
 	var insertDataAdjustLogFlag = true;
 	$("#dcSavePosRotReqPop").click(function(){
 		if (validate() == false) {

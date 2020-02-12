@@ -582,31 +582,6 @@
 	
 	// 이슈 등록 버튼 클릭
 	$("#issueButton").click(function() {
-		//magoManager selectionManager.currentReferenceSelected
-		//magoManager selectionManager.currentOctreeSelected
-		//magoManager selectionManager.currentBuildingSelected
-		//magoManager selectionManager.currentNodeSelected
-		
-		//console.log("---- logn = " + $("#dcLongitude").val());
-		//console.log("---- lat = " + $("#dcLatitude").val());
-		//console.log("---- alt = " + $("#dcAltitude").val());
-		//console.log("---- data_name = " + MAGO3D_INSTANCE.getMagoManager().selectionManager.currentNodeSelected.data.data_name );
-		//console.log("---- dataId = " + MAGO3D_INSTANCE.getMagoManager().selectionManager.currentNodeSelected.data.dataId );
-		//console.log("---- dataGroupId = " + MAGO3D_INSTANCE.getMagoManager().selectionManager.currentNodeSelected.data.dataGroupId );
-		//console.log("---- dataGroupName = " + MAGO3D_INSTANCE.getMagoManager().selectionManager.currentNodeSelected.data.projectFolderName );
-		//console.log("---- objectId = " + MAGO3D_INSTANCE.getMagoManager().selectionManager.currentReferenceSelected.objectId );
-		//console.log("---- dataKey = " + MAGO3D_INSTANCE.getMagoManager().selectionManager.currentNodeSelected.data.nodeId );
-		
-		$("#issueDataId").val("1234");
-		$("#issueDataKey").val("test");
-		$("#issueDataName").html("테스트");
-		$("#issueObjectKey").val("233232");
-		$("#issueDataGroupId").val("1");
-		$("#issueDataGroupName").html("basic");
-		$("#issueLongitude").val("132");
-		$("#issueLatitude").val("37");
-		$("#issueAltitude").val("54.000");
-		
 		issueDialog.dialog( "open" );
 	});
 	// 이슈 다이얼 로그
@@ -632,12 +607,14 @@
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				data: { "dataId" : $("#issueDataId").val(), "dataGroupId" : $("#issueDataGroupId").val(),
+					"dataKey" : $("#issueDataKey").val(), "dataGroupName" : $("#issueDataGroupName").val(), "objectKey" : $("#issueObjectKey").val(),
 					"longitude" : $("#issueLongitude").val(), "latitude" : $("#issueLatitude").val(), "altitude" : $("#issueAltitude").val(),
 					"title" : $("#issueTitle").val(), "contents" : $("#issueContents").val()
 				},
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						alert(JS_MESSAGE["insert"]);
+						insertIssueFlag = true;
 						issueDialog.close();
 					} else {
 						alert(JS_MESSAGE[msg.errorCode]);

@@ -52,7 +52,7 @@ public class DataLogServiceImpl implements DataLogService {
 	}
 	
 	/**
-	 * 데이터 위치 변경 요청 이력 등록
+	 * 데이터 변경 이력 등록
 	 * @param dataInfoLog
 	 * @return
 	 */

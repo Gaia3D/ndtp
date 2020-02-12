@@ -1,7 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!-- S: 시민참여 의견 등록 -->
 <div id="civilVoiceInputContent" class="contents mar0 pad0 border-none" style="display:none;">
-	<h3 class="h3-heading">시민참여 의견등록</h3>
+	<div class="button-group-align marB10">
+		<h3 class="h3-heading">시민참여 의견등록</h3>
+		<button type="button" id="civilVoiceCancleButton" class="btnText right-align reset" title="취소">취소</button>
+	</div>
+
 	<form:form id="civilVoiceForm" modelAttribute="civilVoice" method="post" onsubmit="return false;">
 		<ul class="commentNew">
 			<li>
@@ -20,9 +24,9 @@
 				<label for="contents">내용</label>
 				<textarea name="contents" id="contents" cols="46" rows="10"></textarea>
 			</li>
-			<li class="btnCenter">
-				<button id="civilVoiceCreateButton" class="focusA" title="등록" style="width: 200px;">등록</button>
-				<button id="civilVoiceCancleButton" class="focusC" title="취소">취소</button>
+			<li class="form-group button-group-center">
+				<button id="civilVoiceCreateButton" class="btnTextF" title="등록" style="width: 200px;">등록</button>
+				<!-- <button id="civilVoiceCancleButton" class="focusC" title="취소">취소</button> -->
 			</li>
 		</ul>
 	</form:form>

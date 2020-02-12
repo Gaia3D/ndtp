@@ -73,3 +73,21 @@ Mago3D.ManagerUtils.getCoordinateFromWKT = function(wkt, type) {
 		}
 	}
 }
+Mago3D.Color.prototype.getHexCode = function() {
+	var r = this.r * 255;
+	var g = this.g * 255;
+	var b = this.b * 255;
+	
+	var hexR = r.toString(16).padStart(2, '0'); //String.padStart i.e no support..TT 
+	var hexG = g.toString(16).padStart(2, '0');
+	var hexB = b.toString(16).padStart(2, '0');
+	
+	return '#'+hexR+hexG+hexB;
+}
+Mago3D.Node.prototype.getCurrentGeoLocationData = function() {
+	if(!this.isReadyToRender() || !this.data || !this.data.geoLocDataManager) {
+		throw new Error('this node is not ready to use.');
+	}
+	
+	return this.data.geoLocDataManager.getCurrentGeoLocationData()
+}

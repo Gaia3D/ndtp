@@ -62,9 +62,9 @@ public class Issue extends Search {
 	// 데이터 고유 번호
 	private Long dataId;
 	// 데이터 키
-	private Long dataKey;
+	private String dataKey;
 	// 오브젝트 키
-	private Long objectKey;	
+	private String objectKey;	
 	// 사용자 아이디
 	private String userId;
 	// 이슈명

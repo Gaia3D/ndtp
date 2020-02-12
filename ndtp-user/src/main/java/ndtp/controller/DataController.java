@@ -61,7 +61,7 @@ public class DataController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = "/list")
+	@GetMapping(value = "/list")
 	public String list(HttpServletRequest request, DataInfo dataInfo, @RequestParam(defaultValue="1") String pageNo, Model model) {
 
 		log.info("@@ dataInfo = {}, pageNo = {}", dataInfo, pageNo);

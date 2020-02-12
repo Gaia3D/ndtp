@@ -18,7 +18,7 @@
 	<%@ include file="/WEB-INF/views/layouts/header.jsp" %>
 	<%@ include file="/WEB-INF/views/layouts/menu.jsp" %>
 	<div class="site-body">
-		<div class="container">e
+		<div class="container">
 			<div class="site-content">
 				<%@ include file="/WEB-INF/views/layouts/sub_menu.jsp" %>
 				<div class="page-area">

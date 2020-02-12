@@ -66,11 +66,11 @@
 					</th>
 					<td class="col-input radio-set">
 						<form:radiobutton label="일반(아이디/비밀번호)(기본값)" path="userSigninType" value="0" />
-						<form:radiobutton label="기업용(사번추가)" path="userSigninType" value="1" />
+						<!-- <form:radiobutton label="기업용(사번추가)" path="userSigninType" value="1" />
 						<form:radiobutton label="일반 + OTP" path="userSigninType" value="2" />
 						<form:radiobutton label="일반 + 인증서" path="userSigninType" value="3" />
 						<form:radiobutton label="OTP + 인증서" path="userSigninType" value="4" />
-						<form:radiobutton label="일반 + OTP + 인증서" path="userSigninType" value="5" />
+						<form:radiobutton label="일반 + OTP + 인증서" path="userSigninType" value="5" /> -->
 						<form:errors path="userSigninType" cssClass="error" />
 					</td>
 				</tr>

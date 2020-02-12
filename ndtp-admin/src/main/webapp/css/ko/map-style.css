@@ -300,19 +300,12 @@ border-radius: 25px;
 background-color: transparent;
 background-image: url(/images/ko/ico.png);
 background-repeat: no-repeat;
+width: 50px;
+height: 50px;
+text-indent: -999em;
 }
 .ctrlWrap div button:hover {
 background-color: #333446;
-}
-.ctrlWrap div.zoom button {
-width: 50px;
-height: 50px;
-text-indent: -999em;
-}
-.ctrlWrap div.rotate button {
-width: 50px;
-height: 50px;
-text-indent: -999em;
 }
 .ctrlWrap div > button.reset {
 background-position: 15px 0;
@@ -353,11 +346,26 @@ background-position: -340px 0;
 .ctrlWrap div > button.rotateRight {
 background-position: -390px 0;
 }
+.ctrlWrap div > button.print {
+background-position: -151px -52px;
+}
+.ctrlWrap div > button.print.on {
+background-position: -151px -102px;
+background-color: #fff600;
+}
+.ctrlWrap div > button.save {
+background-position: -351px -52px;
+}
+.ctrlWrap div > button.save.on {
+background-position: -351px -102px;
+background-color: #fff600;
+}
 .ctrlWrap div > button.magoSet {
 background-position: -85px -52px;
 }
 .ctrlWrap div > button.magoSet.on {
 background-position: -85px -102px;
+background-color: #fff600;
 }
 
 .ctrlWrap div > input {
@@ -1200,7 +1208,7 @@ animation: spinning 0.8s infinite linear;
 	transform: rotate(360deg); 
 }
 }
-
+/* 
 #mapPolicy {
 width: 110px;
 height: 50px;
@@ -1211,24 +1219,26 @@ font-size: 16px;
 font-weight: bold;
 letter-spacing: -1px;
 border-radius: 25px;
-/* background-position: -451px -588px; */
+background-position: -451px -588px;
 }
 #mapPolicy.on {
 color: #000;
 background-color: #fff600;
 border: 1px solid #333446;
 }
-
+*/
 .labelLayer {
 position: absolute;
 top:60px;
 right: 5px;
 min-width: 200px;
-min-height: 333px;
+min-height: 200px;
 border-radius: 5px;
 box-shadow: 1px 1px 2px 0 #333;
 background-color: #fff;
 z-index:1;
+overflow-y: auto;
+max-height: calc(100% - 90px);
 }
 .labelLayer > .layerHeader {
 height: 35px;
@@ -1239,7 +1249,9 @@ border-bottom: 1px solid #e0e0e0;
 background-color: #f1f1f1;
 }
 .labelLayer > .layerContents {
-margin: 15px 20px;
+/* margin: 15px 20px; */
+padding: 15px 20px;
+max-width: 330px;
 }
 .layerHeader > h3 {
 margin-top:5px;	
@@ -1253,7 +1265,7 @@ height: 30px;
 border: none;
 text-indent: -999em;
 background-image: url(/images/ko/ico.png);
-background-position: -6px 590px;
+background-position: -10px 792px;
 }
 .labelLayer div.layerContents > ul.category {
 list-style: circle;
@@ -1262,11 +1274,11 @@ margin-left: 10px;
 margin-top: 20px;
 }
 .labelLayer div.layerContents > div {
-margin: 20px 0 10px 0;
+/* margin: 20px 0 10px 0; */
 }
 .labelLayer div.layerContents > div label {
-display: inline-block;
-width: 69px;
+/* display: inline-block; */
+/* width: 69px; */
 }
 .labelLayer div.layerContents > div h3{
 margin-bottom:10px;
@@ -1412,4 +1424,151 @@ background-color: #fff;
 }
 .basicTable > table tr td.center {
 	text-align: center;
+}
+
+/* 레이어 스타일 추가 - 정연화 수정 */
+.layerDiv h4 {
+padding: 0 0 0 12px;
+/* font-size: 15px; */
+font-size: 14px;
+/* margin-bottom: 7px; */
+margin-bottom: 5px;
+background: url(/images/ko/ico.png) no-repeat left -815px;
+}
+.layerDiv li > label {
+/* display: inline-block; */
+/* padding-left: 10px; */
+/* font-size: 13px; */
+font-size: 12px;
+font-weight: bold;
+/* background: url(/images/ko/ico.png) no-repeat left -865px; */
+}
+.layerDiv {
+margin-bottom: 15px;
+}
+.layerDiv li {
+margin-bottom: 2px;
+}
+.layerDiv li * {
+vertical-align: middle;
+}
+.layerDivTit {
+margin-bottom: 10px;
+padding: 7px;
+color: #fff;
+border-radius: 5px;
+background-color: #444a61;
+}
+.layerDivTit > span {
+color: #fff;
+font-size: 16px;
+font-weight: bold;
+}
+.layerDiv label {
+display: inline-block;
+width: 70px;
+}
+.layerDiv input  {
+padding: 3px;
+}
+.layerDiv li > button:not(.btnTextF):not(.btnText) {
+text-indent: -999em;
+border: 1px solid #ccc;
+background-image: url(/images/ko/ico.png);
+background-repeat: no-repeat;
+background-color: #fff;
+}
+.layerDiv li > button.up,
+.layerDiv li > button.down {
+width: 30px;
+height: 30px;
+}
+.layerDiv li > button.rangePrev,
+.layerDiv li > button.rangeNext {
+width: 20px;
+height: 20px;
+}
+
+button.up {
+background-position: -112px -195px;
+}
+button.down {
+background-position: -162px -195px;
+}
+button.rangePrev {
+background-position: -217px -197px;
+border-radius: 10px;
+}
+button.rangeNext {
+background-position: -266px -197px;
+border-radius: 10px;
+}
+.layerDiv li > button:active {
+border: 1px solid #287be4;
+background-color: #ccc;
+}
+button.up:active {
+background-position: -112px -245px;
+}
+button.down:active {
+background-position: -162px -245px;
+}
+button.rangePrev:active {
+background-position: -217px -247px;
+}
+button.rangeNext:active {
+background-position: -266px -247px;
+}
+.layerDiv li > button:hover {
+border: 1px solid #287be4;
+background-color: #eee;
+}
+button.up:hover {
+background-position: -112px -245px;
+}
+button.down:hover {
+background-position: -162px -245px;
+}
+button.rangePrev:hover {
+background-position: -217px -247px;
+}
+button.rangeNext:hover {
+background-position: -266px -247px;
+}
+.ellipsis {
+overflow:hidden;
+white-space: nowrap;
+text-overflow: ellipsis;
+}
+
+.mapSelectButton {
+	position : absolute;
+	bottom : 17px;
+	right : 20px;
+	z-index : 1;
+	width: 90px;
+	height: 40px;
+	padding: 7px;
+	font-size: 17px;
+	border-radius: 3px;
+	color: #414e80;
+	border: 1px solid #414e80;
+	background-color: #fff;
+}
+.mapSelectButton:hover {
+	color: #fff;
+	border: 1px solid #414e80;
+	background-color: #414e80;
+}
+
+/* Mago3D 설정창 Toolbar 관련 - 정연화 추가 */
+.inline-toggle {
+	display: inline-block;
+	width: 100%;
+	margin-bottom: 10px;
+}
+.inline-toggle > *{
+	width: 40%;
+	float: left;
+	line-height: 2.4em;
 }
