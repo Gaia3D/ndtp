@@ -265,22 +265,25 @@ var MapDataControll = function(magoInstance) {
         });*/
 		if(f4d) {
 			var data = f4d.data;
+			var tempDataGroupName = data.projectFolderName;
+			var dataGroupName = tempDataGroupName.split("/").reverse()[0];
+			
 			$("#issueDataId").val(data.dataId);
 			$("#issueDataKey").val(data.nodeId);
-			$("#issueDataName").val(data.data_name);
+			$("#issueDataName").html(data.data_name);
 			$("#issueObjectKey").val(objectId);
 			$("#issueDataGroupId").val(data.projectId);
-			$("#issueDataGroupName").val(data.projectId);//no exist..
+			$("#issueDataGroupName").html(data.projectId);//no exist..
 			$("#issueLongitude").val(coord.longitude);
 			$("#issueLatitude").val(coord.latitude);
 			$("#issueAltitude").val(coord.altitude);
 		} else {
 			$("#issueDataId").val('');
 			$("#issueDataKey").val('');
-			$("#issueDataName").val('');
+			$("#issueDataName").html('');
 			$("#issueObjectKey").val('');
 			$("#issueDataGroupId").val('');
-			$("#issueDataGroupName").val('');
+			$("#issueDataGroupName").html('');
 			$("#issueLongitude").val('');
 			$("#issueLatitude").val('');
 			$("#issueAltitude").val('');
