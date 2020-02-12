@@ -26,7 +26,7 @@
 						<form:errors path="securitySessionTimeout" cssClass="error" />
 					</td>
 				</tr>
-				<tr>
+				<%-- <tr>
 					<th class="col-label l" scope="row">
 						<form:label path="securityUserIpCheckYn">로그인 사용자 IP 체크 유무</form:label>
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
@@ -36,8 +36,8 @@
 						<form:radiobutton label="${notuse }(기본값)" path="securityUserIpCheckYn" value="N" />
 						<form:errors path="securityUserIpCheckYn" cssClass="error" />
 					</td>
-				</tr>
-				<tr>
+				</tr> --%>
+				<%-- <tr>
 					<th class="col-label l" scope="row">
 						<form:label path="securitySessionHijacking">보안 세션 하이재킹 처리</form:label>
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
@@ -92,7 +92,7 @@
 						<form:radiobutton label="${notuse }(기본값)" path="securityApiResultSecureYn" value="N" />
 						<form:errors path="securityApiResultSecureYn" cssClass="error" />
 					</td>
-				</tr>
+				</tr> --%>
 				<tr>
 					<th class="col-label l" scope="row">
 						<form:label path="securityMaskingYn">개인정보 마스킹 처리</form:label>
