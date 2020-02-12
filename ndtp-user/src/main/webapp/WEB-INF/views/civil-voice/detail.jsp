@@ -14,21 +14,21 @@
 	<ul id="civilVoiceComment" class="agreeWrap"></ul>
 	<ul id="civilVoiceCommentPagination" class="pagination"></ul>
 
-	<div class="form-group button-group-top-center">
-		<button type="button" id="civilVoiceListButton" title="목록" class="btnTextF">목록</button>
-	</div>
 </div>
 <!-- E: 시민참여 의견 -->
 
 <script id="templateCivilVoiceView" type="text/x-handlebars-template">
 	<div style="margin-bottom: 15px;">
+		<div class="button-group-align marB10" style="display: inline-block;">
+			{{#if civilVoice.editable}}
+				<button type="button" id="civilVoiceUpdateButton" title="목록" class="btnText left-align reset marR5">수정</button>
+				<button type="button" id="civilVoiceDeleteButton" title="목록" class="btnText left-align reset marR5">삭제</button>
+			{{/if}}
+			<button type="button" id="civilVoiceListButton" title="목록" class="btnTextF right-align">목록</button>
+		</div>
 		<span class="title"  id="civilVoiceTitle">
 			{{civilVoice.title}}
 		</span>
-		{{#if civilVoice.editable}}
-			<span class="modify" id="civilVoiceDeleteButton">삭제</span>
-			<span class="modify" id="civilVoiceUpdateButton">수정</span>
-		{{/if}}
 	</div>
 	<div class="con" id="civilVoiceContents">{{civilVoice.contents}}</div>
 </script>
