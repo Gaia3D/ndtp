@@ -201,7 +201,7 @@
 		var cesiumViewerOption = {};
 		cesiumViewerOption.infoBox = false;
 		cesiumViewerOption.navigationHelpButton = false;
-		cesiumViewerOption.selectionIndicator = false;
+		cesiumViewerOption.selectionIndicator = true;
 		cesiumViewerOption.homeButton = false;
 		cesiumViewerOption.fullscreenButton = false;
 		cesiumViewerOption.geocoder = false;
@@ -241,7 +241,8 @@
 
         dataGroupList();
 
-        Simulation(magoInstance);
+        var cesiumInit = Cesium;
+        Simulation(magoInstance, viewer, $);
         // 환경 설정.
         UserPolicy(magoInstance);
         // 시민참여
