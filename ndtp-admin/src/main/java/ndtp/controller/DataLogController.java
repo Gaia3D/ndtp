@@ -1,25 +1,18 @@
 package ndtp.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.DataGroup;
@@ -88,54 +81,13 @@ public class DataLogController {
 			dataInfoLogList = dataLogService.getListDataInfoLog(dataInfoLog);
 		}
 		
+		// TODO 다국어 지원 시 변경 필요
+		dataInfoLogList.stream().forEach(DataInfoLog::convertDto);
+		
 		model.addAttribute(pagination);
 		model.addAttribute("dataGroupList", dataGroupList);
 		model.addAttribute("dataInfoLogList", dataInfoLogList);
 		return "/data-log/list";
-	}
-	
-	/**
-	 * Data Info Log 상태 수정
-	 * @param request
-	 * @param dataInfo
-	 * @return
-	 */
-	@PostMapping(value = "/status/{dataInfoLogId}")
-	@ResponseBody
-	public Map<String, Object> updateDataInfoLogStatus(HttpServletRequest request, @Valid DataInfoLog dataInfoLog, Errors errors) {
-		log.info("@@ dataInfoLog = {}", dataInfoLog);
-		
-		Map<String, Object> result = new HashMap<>();
-		int statusCode = 0;
-		String errorCode = null;
-		String message = null;
-		try {
-			dataInfoLog.setMethodMode("update");
-			if(errors.hasErrors()) {
-				message = errors.getAllErrors().get(0).getDefaultMessage();
-				statusCode = HttpStatus.BAD_REQUEST.value();
-				
-				result.put("statusCode", statusCode);
-				result.put("errorCode", "validation.error");
-				result.put("message", message);
-				
-				return result;
-            }
-			
-			dataLogService.updateDataInfoLogStatus(dataInfoLog);
-			// TODO cache 갱신 되어야 함
-		} catch(Exception e) {
-			e.printStackTrace();
-			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-			errorCode = "db.exception";
-			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-		}
-		
-		result.put("statusCode", statusCode);
-		result.put("errorCode", errorCode);
-		result.put("message", message);
-		
-		return result;
 	}
 		
 	/**

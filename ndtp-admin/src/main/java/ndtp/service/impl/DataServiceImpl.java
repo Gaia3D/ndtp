@@ -8,8 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
+import ndtp.domain.DataInfoLog;
+import ndtp.domain.MethodType;
 import ndtp.persistence.DataMapper;
 import ndtp.service.DataGroupService;
+import ndtp.service.DataLogService;
 import ndtp.service.DataService;
 
 /**
@@ -22,10 +25,12 @@ public class DataServiceImpl implements DataService {
 
 	@Autowired
 	private DataMapper dataMapper;
-//	@Autowired
-//	private DataLogMapper dataLogMapper;
+	
 	@Autowired
 	private DataGroupService dataGroupService;
+	
+	@Autowired
+	private DataLogService dataLogService;
 	
 	/**
 	 * Data 수
@@ -172,7 +177,10 @@ public class DataServiceImpl implements DataService {
 	 */
 	@Transactional
 	public int insertData(DataInfo dataInfo) {
-		return dataMapper.insertData(dataInfo);
+		dataMapper.insertData(dataInfo);
+		DataInfoLog dataInfoLog = new DataInfoLog(dataInfo);
+		dataInfoLog.setChangeType(MethodType.INSERT.name().toLowerCase());
+		return dataLogService.insertDataInfoLog(dataInfoLog);
 	}
 	
 //	
@@ -194,7 +202,12 @@ public class DataServiceImpl implements DataService {
 	@Transactional
 	public int updateData(DataInfo dataInfo) {
 		// TODO 환경 설정 값을 읽어 와서 update 할 건지, delete 할건지 분기를 타야 함
-		return dataMapper.updateData(dataInfo);
+		dataMapper.updateData(dataInfo);
+		dataInfo = dataMapper.getData(dataInfo);
+		DataInfoLog dataInfoLog = new DataInfoLog(dataInfo);
+		dataInfoLog.setChangeType(MethodType.UPDATE.name().toLowerCase());
+		dataInfoLog.setUpdateUserId(dataInfo.getUserId());
+		return dataLogService.insertDataInfoLog(dataInfoLog);
 	}
 	
 //	/**

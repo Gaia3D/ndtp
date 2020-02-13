@@ -489,6 +489,14 @@ border:none;
 text-indent: -999em;
 background: url(/images/ko/ico.png) no-repeat -462px -697px;
 }
+button.goto:hover {
+width: 32px;
+height: 32px;
+border:none;
+text-indent: -999em;
+background: url(/images/ko/ico.png) no-repeat -462px -697px;
+transform: scale(1.1);
+}
 
 /* 양쪽으로 나눠진 구분DIV - 정연화 수정 */
 .bothSide {
@@ -568,7 +576,7 @@ min-width: 40px;
 font-size: 17px; */
 font-weight: bold;
 text-align: right;
-color: #287be4;
+color: #646464;
 /* background: url(/images/ko/ico.png) no-repeat 0 -968px; */
 /* margin-left:-10px; */
 }
@@ -583,14 +591,17 @@ margin-bottom: 5px;
 .commentView .title {
 margin-bottom: 10px;
 padding: 10px 0 0 25px;
-font-size: 18px;
+font-size: 15px;
 font-weight: bold;
 border-radius: 5px;
-background: url(/images/ko/ico.png) no-repeat 3px -639px;
+background: url(/images/ko/ico.png) no-repeat 3px -637px;
+letter-spacing: -.1rem;
 }
 .commentView .modify {
 float: right;
 text-decoration: underline;
+margin: 3px;
+cursor: pointer;
 }
 .commentView > .con {
 max-height: 240px;
@@ -944,7 +955,7 @@ border: none;
 border-bottom: 1px solid #e0e0e0;
 }
 .analysisGroup li input.withBtn {
-width: 120px;
+width: 100px;
 }
 
 .analysisGroup li span.coordText {
@@ -1258,7 +1269,7 @@ min-width: 325px;
 .tab li {
 display: inline-block;
 width: 145px;
-padding: 5px 0px;
+/* padding: 5px 0px; */
 color: #000;
 cursor: pointer;
 border: 1px solid #d9d9d9;
@@ -1329,7 +1340,7 @@ position: absolute;
 top:60px;
 right: 5px;
 min-width: 200px;
-min-height: 233px;
+min-height: 200px;
 border-radius: 5px;
 box-shadow: 1px 1px 2px 0 #333;
 background-color: #fff;
@@ -1348,6 +1359,7 @@ background-color: #f1f1f1;
 .labelLayer > .layerContents {
 /* margin: 15px 20px; */
 padding: 15px 20px;
+max-width: 330px;
 }
 .layerHeader > h3 {
 margin-top:5px;
@@ -1815,7 +1827,7 @@ ul.listDrop li.on > p > span.collapse-icon {
 	text-indent: 999em;
 	background-image: url(/images/ko/ico.png);
 	background-repeat: no-repeat;
-    background-position: 0 -978px;
+    background-position: 0 -977px;
 }
 /* 경관분석 달력*/
 .tui-datepicker{
@@ -1847,6 +1859,17 @@ z-index:100;
 }
 .btn-full {
 	width: 100%;
+}
+/* Mago3D 설정창 Toolbar 관련 - 정연화 추가 */
+.inline-toggle {
+	display: inline-block;
+	width: 100%;
+	margin-bottom: 10px;
+}
+.inline-toggle > *{
+	width: 40%;
+	float: left;
+	line-height: 2.4em;
 }
 
 /* ////////// CUSTOM - 정연화 추가 ////////// */

@@ -19,7 +19,7 @@
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">사용자 아이디</th>
-			<td id="dataType" class="col-data">{{userId}}</td>
+			<td id="userId" class="col-data">{{userId}}</td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">공유 유형</th>
@@ -48,11 +48,11 @@
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">위도</th>
-			<td id="longitude" class="col-data">{{latitude}}</td>
+			<td id="latitude" class="col-data">{{latitude}}</td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">높이</th>
-			<td id="longitude" class="col-data">{{altitude}}</td>
+			<td id="altitude" class="col-data">{{altitude}}</td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">Heading</th>
@@ -60,11 +60,11 @@
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">Pitch</th>
-			<td id="heading" class="col-data">{{pitch}}</td>
+			<td id="pitch" class="col-data">{{pitch}}</td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">Roll</th>
-			<td id="heading" class="col-data">{{roll}}</td>
+			<td id="roll" class="col-data">{{roll}}</td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">메타정보</th>

@@ -3,6 +3,7 @@ package ndtp.domain;
 import java.sql.Timestamp;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -37,13 +38,15 @@ public class CivilVoice extends Search {
 
 	/********** DB 사용 *************/
     // 고유번호
-	private Integer civilVoiceId;
+	private Long civilVoiceId;
     // 사용자 아이디
 	private String userId;
 	// 제목
 	@NotBlank
+	@Size(max = 256)
 	private String title;
 	// 내용
+	@NotBlank
 	private String contents;
 	// 위치
 	private String location;
@@ -55,6 +58,8 @@ public class CivilVoice extends Search {
 	private String clientIp;
 	// 조회수
 	private Integer viewCount;
+	// 댓글수
+	private Integer commentCount;
 	// 년
 	private String year;
 	// 월

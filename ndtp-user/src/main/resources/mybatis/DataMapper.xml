@@ -210,7 +210,7 @@
 	</select> -->
 	
 	<!-- Data 등록 -->
-	<insert id="insertData" parameterType="dataInfo">
+	<insert id="insertData" useGeneratedKeys="true" keyProperty="dataId" parameterType="dataInfo">
 		/* insertData */
 		<selectKey keyProperty="dataId" resultType="long" order="BEFORE">
     		SELECT NEXTVAL('data_info_seq')

@@ -109,7 +109,7 @@ public class LayerServiceImpl implements LayerService {
 		    
 			HttpEntity<String> entity = new HttpEntity<>(headers);
 			
-			String url = "http://localhost:8080/geoserver/rest/workspaces/" + geoPolicy.getGeoserverDataWorkspace()+ "/layers";
+			String url = geoPolicy.getGeoserverDataUrl() + "/rest/workspaces/" + geoPolicy.getGeoserverDataWorkspace()+ "/layers";
 			ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 			log.info("-------- statusCode = {}, body = {}", response.getStatusCodeValue(), response.getBody());
 			geoserverLayerJson = response.getBody().toString();

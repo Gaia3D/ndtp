@@ -14,10 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.extern.slf4j.Slf4j;
-import ndtp.domain.DataAttributeFileInfo;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
-import ndtp.domain.FileInfo;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
@@ -36,25 +34,28 @@ public class DataController {
 
 	@Autowired
 	private DataGroupService dataGroupService;
+	
 	@Autowired
 	private DataService dataService;
+	
 	@Autowired
 	private PolicyService policyService;
 
 	/**
-	 * converter job 목록
+	 * 데이터 목록
 	 * @param request
-	 * @param membership_id
+	 * @param dataInfo
 	 * @param pageNo
 	 * @param model
 	 * @return
 	 */
 	@GetMapping(value = "/list")
 	public String list(HttpServletRequest request, DataInfo dataInfo, @RequestParam(defaultValue="1") String pageNo, Model model) {
+		
+		log.info("@@ dataInfo = {}, pageNo = {}", dataInfo, pageNo);
 
 //		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-//		converterJob.setUserId(userSession.getUserId());
-		log.info("@@ dataInfo = {}", dataInfo);
+//		dataInfo.setUserId(userSession.getUserId());
 
 		if(!StringUtils.isEmpty(dataInfo.getStartDate())) {
 			dataInfo.setStartDate(dataInfo.getStartDate().substring(0, 8) + DateUtils.START_TIME);
@@ -133,7 +134,7 @@ public class DataController {
 	 */
 	@GetMapping(value = "/modify")
 	public String modify(HttpServletRequest request, @RequestParam("dataId") Long dataId, Model model) {
-		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		//UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 
 		DataInfo dataInfo = new DataInfo();
 		//dataInfo.setUserId(userSession.getUserId());
@@ -155,7 +156,7 @@ public class DataController {
 	@GetMapping(value = "/delete")
 	public String delete(HttpServletRequest request, @RequestParam("dataId") Long dataId, Model model) {
 
-		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		//UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 
 		// TODO validation 체크 해야 함
 		if(dataId == null) {

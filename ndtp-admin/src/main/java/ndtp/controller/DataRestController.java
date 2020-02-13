@@ -57,7 +57,7 @@ public class DataRestController {
 		
 		log.info("@@@@@ dataId = {}", dataId);
 		
-		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		//UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String errorCode = null;
@@ -103,7 +103,7 @@ public class DataRestController {
 		
 		log.info("@@@@@ update dataInfo = {}, dataId = {}", dataInfo, dataId);
 		
-		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		//UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
@@ -116,7 +116,6 @@ public class DataRestController {
 				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
 				result.put("errorCode", "input.invalid");
 				result.put("message", message);
-				
 				return result;
 			}
 			
@@ -148,7 +147,7 @@ public class DataRestController {
 		
 		log.info("@@@@@ dataId = {}", dataId);
 		
-		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		//UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String errorCode = null;
@@ -187,7 +186,7 @@ public class DataRestController {
 		
 		log.info("@@@@@ dataId = {}", dataId);
 		
-		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		//UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String errorCode = null;

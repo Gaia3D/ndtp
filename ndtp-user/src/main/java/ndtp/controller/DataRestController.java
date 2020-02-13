@@ -19,23 +19,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.extern.slf4j.Slf4j;
-import ndtp.config.PropertiesConfig;
 import ndtp.domain.DataAttribute;
 import ndtp.domain.DataInfo;
 import ndtp.domain.DataObjectAttribute;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
+import ndtp.domain.ServerTarget;
 import ndtp.domain.UserSession;
 import ndtp.service.DataAttributeService;
-import ndtp.service.DataGroupService;
 import ndtp.service.DataObjectAttributeService;
 import ndtp.service.DataService;
-import ndtp.service.GeoPolicyService;
-import ndtp.service.PolicyService;
 import ndtp.utils.DateUtils;
 
 @Slf4j
@@ -46,24 +41,14 @@ public class DataRestController {
 	private static final long PAGE_LIST_COUNT = 5l;
 	
 	@Autowired
-	private DataGroupService dataGroupService;
-	@Autowired
 	private DataService dataService;
+	
 	@Autowired
 	private DataAttributeService dataAttributeService;
+	
 	@Autowired
 	private DataObjectAttributeService dataObjectAttributeService;
 
-	@Autowired
-	private GeoPolicyService geoPolicyService;
-	
-	@Autowired
-	private ObjectMapper objectMapper;
-	@Autowired
-	private PolicyService policyService;
-	
-	@Autowired
-	private PropertiesConfig propertiesConfig;
 	
 	/**
 	 * 데이터 그룹 정보
@@ -254,10 +239,10 @@ public class DataRestController {
 			String groupTarget = preDataInfo.getDataGroupTarget();
 			
 			// 관리자가 업로드 한 경우
-			if ("admin".equalsIgnoreCase(groupTarget)) {
+			if (ServerTarget.ADMIN == ServerTarget.valueOf(groupTarget.toUpperCase())) {
 				// 변경요청
 				return createUpdateRequestResult(result);
-			} else if ("user".equalsIgnoreCase(groupTarget)) {
+			} else if (ServerTarget.USER == ServerTarget.valueOf(groupTarget.toUpperCase())) {
 				// 로그인한 아이디와 요청한 아이디가 같을 경우
 				if (userSession.getUserId().equals(preDataInfo.getUserId())) {
 					BigDecimal longitude = dataInfo.getLongitude();

@@ -1,12 +1,20 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <div id="civilVoiceListContent" class="contents mar0 pad0 border-none" style="display:block;">
-	<h3 class="h3-margin">시민참여</h3>
+	<div class="button-group-align marB10">
+		<h3 class="h3-heading">시민참여</h3>
+		<button type="button" id="civilVoiceInputButton" title="의견등록" class="btnTextF right-align">의견 등록</button>
+		<button type="button" id="permRequest" title="건축인 허가 신청" class="btnTextF" style="margin-top:10px;">
+			건축인 허가 신청
+		</button>
+	</div>
 
 	<!-- 시민참여 검색 -->
+	<form:form id="civilVoiceSearchForm" modelAttribute="civilVoice" method="get" onsubmit="return false;">
 	<div class="listSearch search-margin flex-align-center">
-		<input type="text" id="getCivilVoiceListTitle" name="getCivilVoiceListTitle" placeholder="검색어를 입력하세요.">
+		<input type="text" id="getCivilVoiceListTitle" name="title" maxlength="256" placeholder="검색어를 입력하세요.">
 		<button type="button" id="civilVoiceSearch" class="btnTotalSearch" title="검색">검색</button>
 	</div>
+	</form:form>
 
 	<div class="bothSide">
 		<div><spring:message code='all'/> <span id="civilVoiceTotalCount">0</span> <spring:message code='search.what.count'/></div>
@@ -16,12 +24,6 @@
 	<ul id="civilVoiceList" class="commentWrap"></ul>
 	<ul id="civilVoicePagination" class="pagination"></ul>
 
-	<div class="form-group button-group-top-center">
-		<button type="button" id="civilVoiceInputButton" title="의견등록" class="btnTextF">의견 등록</button>
-		<button type="button" id="permRequest" title="건축인 허가 신청" class="btnTextF" style="margin-top:10px;">
-			건축인 허가 신청
-		</button>
-	</div>
 </div>
 <!-- E: 시민참여 목록 -->
 <%@ include file="/WEB-INF/views/civil-voice/detail.jsp" %>
@@ -31,12 +33,13 @@
 <script id="templateCivilVoiceList" type="text/x-handlebars-template">
 	{{#if civilVoiceList}}
 		{{#each civilVoiceList}}
-			<li class="comment flex-align-center" data-id="{{civilVoiceId}}">
+			<li class="comment flex-align-center" data-id="{{civilVoiceId}}" title="상세보기">
+				<button type="button" class="goto" data-longitude={{longitude}} data-latitude={{latitude}} style="width:30px; margin-right:10px;" title="위치보기">위치보기</button>
 				<p>
 					<span class="title">{{title}}</span>
 					<span class="id">{{userId}}</span>
 				</p>
-         	   <p class="count">{{viewCount}}</p>
+         	   	<p class="count" style="width: 60px;"><span class="likes-icon">icon</span>{{commentCount}}</p>
 			</li>
 		{{/each}}
 	{{else}}
@@ -67,5 +70,3 @@
     	</ul>
 	{{/if}}
 </script>
-
-<!-- <span class="likes-icon">icon</span> -->
