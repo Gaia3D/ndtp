@@ -73,4 +73,10 @@
 		/* deleteCivilVoiceComment */
 		DELETE FROM tn_civil_voice_comment WHERE civil_voice_comment_id = #{civilVoiceCommentId}
 	</delete>
+
+	<!-- 삭제 -->
+	<delete id="deleteCivilVoiceCommentFromId" parameterType="long">
+		/* deleteCivilVoiceCommentFromId */
+		DELETE FROM tn_civil_voice_comment WHERE civil_voice_id = #{civilVoiceId}
+	</delete>
 </mapper>

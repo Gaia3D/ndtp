@@ -181,7 +181,6 @@
 		WHERE civil_voice_id = #{civilVoiceId}
 	</update>
 
-
 	<!-- 삭제 -->
 	<delete id="deleteCivilVoice" parameterType="long">
 		/* deleteCivilVoice */

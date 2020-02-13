@@ -39,8 +39,15 @@ public interface CivilVoiceCommentMapper {
 
 	/**
 	 * 삭제
-	 * @param civilVoiceComment
+	 * @param civilVoiceCommentId
 	 * @return
 	 */
-	int deleteCivilVoiceComment(CivilVoiceComment civilVoiceComment);
+	int deleteCivilVoiceComment(long civilVoiceCommentId);
+
+	/**
+	 * 삭제
+	 * @param civilVoiceId
+	 * @return
+	 */
+	int deleteCivilVoiceCommentFromId(long civilVoiceId);
 }

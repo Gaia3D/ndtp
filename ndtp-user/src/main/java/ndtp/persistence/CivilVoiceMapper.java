@@ -52,10 +52,10 @@ public interface CivilVoiceMapper {
 
 	/**
 	 * 삭제
-	 * @param civilvoice
+	 * @param civilVoiceId
 	 * @return
 	 */
-	int deleteCivilVoice(CivilVoice civilVoiceId);
+	int deleteCivilVoice(long civilVoiceId);
 
 	/**
 	 * 전체 삭제

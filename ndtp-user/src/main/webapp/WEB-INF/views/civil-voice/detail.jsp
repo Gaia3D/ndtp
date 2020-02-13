@@ -21,7 +21,7 @@
 		<div class="button-group-align marB10" style="display: inline-block;">
 			{{#if civilVoice.editable}}
 				<button type="button" id="civilVoiceModifyButton" class="btnText left-align reset marR5" title="수정">수정</button>
-				<button type="button" id="civilVoiceDeleteButton" class="btnText left-align reset marR5" title="삭제">삭제</button>
+				<button type="button" class="btnText left-align reset marR5" onClick="return deleteCivilVoice({{civilVoice.civilVoiceId}});" title="삭제">삭제</button>
 			{{/if}}
 			<button type="button" id="civilVoiceListButton" data-goto="list" class="btnTextF right-align" title="목록">목록</button>
 		</div>

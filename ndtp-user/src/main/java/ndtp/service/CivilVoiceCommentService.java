@@ -36,8 +36,8 @@ public interface CivilVoiceCommentService {
 
 	/**
 	 * 삭제
-	 * @param civilvoiceComment
+	 * @param civilVoiceCommentId
 	 * @return
 	 */
-	int deleteCivilVoiceComment(CivilVoiceComment civilVoiceComment);
+	int deleteCivilVoiceComment(long civilVoiceCommentId);
 }

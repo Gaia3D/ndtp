@@ -93,12 +93,6 @@ $(document).ready(function (){
 		updateCivilVoice();
 	});
 
-	// 시민참여 삭제
-	$('#civilVoiceContent').on('click', '#civilVoiceDeleteButton', function(){
-		civilVoice.web.show('list');
-		getCivilVoiceList();
-	});
-
 	// 위치 지정
 	$('#civilVoiceLocation').on('click', function() {
 		civilVoice.getGeographicCoord();
@@ -108,6 +102,12 @@ $(document).ready(function (){
 	$('#civilVoiceContent').on('click', '[data-goto=list]', function(){
 		civilVoice.web.show('list');
 		getCivilVoiceList(civilVoice.web.currentPage);
+	});
+
+	// 시민참여 취소 / 목록 보기
+	$('#civilVoiceContent').on('click', '[data-goto=detail]', function(){
+		civilVoice.web.show('detail');
+		getCivilVoiceDetail(civilVoice.web.currentCivilVoiceId);
 	});
 
 	// 시민참여 댓글 등록
@@ -173,7 +173,7 @@ function getCivilVoiceDetail() {
 	});
 }
 
-//시민참여 상세 조회
+// 시민참여  수정 화면 요청
 function getCivilVoiceModify() {
 	var id = civilVoice.web.currentCivilVoiceId;
 
@@ -317,6 +317,42 @@ function updateCivilVoice() {
 	        error: function(request, status, error) {
 	        	alert(JS_MESSAGE["ajax.error.message"]);
 	        	updateCivilVoiceFlag = true;
+	        }
+		});
+	} else {
+		alert("진행 중입니다.");
+		return;
+	}
+}
+
+// 시민참여 삭제
+var deleteCivilVoiceFlag = true;
+function deleteCivilVoice(id) {
+	if(!deleteWarning()) return false;
+
+	if(deleteCivilVoiceFlag) {
+		deleteCivilVoiceFlag = false;
+		var url = "/civil-voices/" + id;
+
+		$.ajax({
+			url: url,
+			type: "DELETE",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			dataType: "json",
+			success: function(msg) {
+				if(msg.statusCode <= 200) {
+					alert("삭제 되었습니다.");
+					civilVoice.web.show('list');
+					getCivilVoiceList();
+				} else {
+					alert(msg.message);
+					console.log("---- " + msg.message);
+				}
+				deleteCivilVoiceFlag = true;
+			},
+	        error: function(request, status, error) {
+	        	alert(JS_MESSAGE["ajax.error.message"]);
+	        	deleteCivilVoiceFlag = true;
 	        }
 		});
 	} else {
