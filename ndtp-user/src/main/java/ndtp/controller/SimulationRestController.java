@@ -103,6 +103,7 @@ public class SimulationRestController {
 		String constructor = structPermission.getConstructor();
 
 		List<StructPermission> result = structPermissionMapper.selectStructPermission();
+		System.out.println(result);
 
 		return result;
 	}

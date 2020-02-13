@@ -22,31 +22,34 @@
         dataType: "json",
         success: function(msg){
             console.log("msg=", msg);
-            $.growl.notice({
-                title: "민원이 접수되었습니다.",
-                message: "aaa",
-                // url: "/kittens"
-            });
-            $.growl.notice({
-                title: "민원이 접수되었습니다.",
-                message: "bbb",
-                // url: "/kittens"
-            });
-            $.growl.notice({
-                title: "민원이 접수되었습니다.",
-                message: "ccc",
-                // url: "/kittens"
+
+            msg.forEach(obj => {
+                console.log("위도 =", obj.latitude, " 경도=", obj.longitude);
+                let content = obj.constructor+"님의 건축인 허가 신청입니다. 좌표 ("+obj.latitude+", "+obj.longitude+")";
+                $.growl.notice({
+                    title: "민원이 접수되었습니다.",
+                    message: content,
+                    // url: "www.naver.com"
+                });
             });
 
-            // msg.forEach(obj => {
-            //     console.log(obj);
-            //     let content = obj.constructor+"님의 건축인 허가 신청입니다.";
-            //     $.growl.notice({
-            //         title: "민원이 접수되었습니다.",
-            //         message: content,
-            //         // url: "/kittens"
-            //     });
-            // });
+            $(".growl").click(event => {
+                // a=event;
+                const eventMessage = event.delegateTarget.children[2].textContent;
+                // console.log("message=", eventMessage);
+                const openIndex = eventMessage.lastIndexOf("(");
+                const commaIndex = eventMessage.lastIndexOf(",");
+                const closeIndex = eventMessage.lastIndexOf(")");
+
+                const latitude = parseFloat(eventMessage.substring(openIndex+1, commaIndex));
+                const longitude = parseFloat(eventMessage.substring(commaIndex+2, closeIndex));
+
+                // todo: connect flyto
+                console.log("go to("+latitude+", "+longitude+")");
+                setTimeout(() => {
+                    event.delegateTarget.children[0].click();
+                }, 500);
+            });
         },
         error:function(request,status,error) {
             console.log("err=", request, status, error);
