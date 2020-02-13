@@ -173,31 +173,7 @@
  		initDataGroupList();
 	});
 
-	var permRequestDialog = $( "#permRequestDialog" ).dialog({
-		autoOpen: false,
-		width: 1100,
-		height: 650,
-		modal: true,
-		overflow : "auto",
-		resizable: false
-	});
 
-	$("#permRequest").on('click', function() {
-		permRequestDialog.dialog( "open" );
-	});
-
-	var testingDialog = $( "#testingDialog" ).dialog({
-		autoOpen: false,
-		width: 1100,
-		height: 700,
-		modal: true,
-		overflow : "auto",
-		resizable: false
-	});
-	$("#testFly").on('click', function() {
-		testingDialog.dialog("open");
-
-	});
 	//Cesium.Ion.defaultAccessToken = '';
 	//var viewer = new Cesium.Viewer('magoContainer');
 	var MAGO3D_INSTANCE;

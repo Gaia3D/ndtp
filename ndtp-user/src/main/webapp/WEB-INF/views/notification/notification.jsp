@@ -34,7 +34,7 @@
             });
 
             $(".growl").click(event => {
-                // a=event;
+                a=_viewer;
                 const eventMessage = event.delegateTarget.children[2].textContent;
                 // console.log("message=", eventMessage);
                 const openIndex = eventMessage.lastIndexOf("(");
@@ -48,7 +48,7 @@
                 console.log("go to("+latitude+", "+longitude+")");
                 setTimeout(() => {
                     event.delegateTarget.children[0].click();
-                }, 500);
+                }, 200);
             });
         },
         error:function(request,status,error) {

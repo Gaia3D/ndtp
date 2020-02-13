@@ -30,20 +30,20 @@
                             <input id="license_num" name="license_num" class="radius" type="text" placeholder="(-)는 생략하고 입력바랍니다." value="" title="관찰자 지점으로부터의 가시선 분석 수행 반경. 단위는 m">
                         </li>
                         <li>
-                            <label for="">BIM 파일</label>
-                            <input type="file" name="bim_file"  multiple>
+                            <label for="bim_file">BIM 파일</label>
+                            <input id="bim_file" type="file" name="bim_file"  multiple>
                         </li>
                         <li>
-                            <label for="">구조 계산서 파일</label>
-                            <input type="file" name="struct_calculation" multiple>
+                            <label for="struct_calculation">구조 계산서 파일</label>
+                            <input id="struct_calculation" type="file" name="struct_calculation" multiple>
                         </li>
                         <li>
-                            <label for="">구조 안전 확인서 파일</label>
-                            <input type="file" name="struct_security"  multiple>
+                            <label for="struct_security">구조 안전 확인서 파일</label>
+                            <input id="struct_security" type="file" name="struct_security"  multiple>
                         </li>
                         <li>
-                            <label for="">구조 확인서 파일</label>
-                            <input type="file" name="struct_confirm"  multiple>
+                            <label for="struct_confirm">구조 확인서 파일</label>
+                            <input id="struct_confirm" type="file" name="struct_confirm"  multiple>
                         </li>
                         <li>
                             <label for="phone_number">휴대전화</label>

@@ -27,10 +27,46 @@
 		height: auto;
 	}
 </style>
+
+<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+
 <button type="button" id="permRequest" title="건축인 허가 신청" class="btnTextF" style="margin-top:10px;">
 	건축인 허가 신청
 </button>
 <button type="button" id="testFly" class="btnTextF" style="margin-top:10px;">Fly Test</button>
+<%--<button type="button" id="testFly" class="btnTextF" style="margin-top:10px;">Fly Test</button>--%>
+
+<script>
+	var permRequestDialog = $( "#permRequestDialog" ).dialog({
+		autoOpen: false,
+		width: 1100,
+		height: 650,
+		modal: true,
+		overflow : "auto",
+		resizable: false
+	});
+	$("#permRequest").on('click', function() {
+		permRequestDialog.dialog( "open" );
+	});
+
+	var testingDialog = $( "#testingDialog" ).dialog({
+		autoOpen: false,
+		width: 1100,
+		height: 750,
+		modal: true,
+		overflow : "auto",
+		resizable: false
+	});
+	$("#testFly").on('click', function() {
+		testingDialog.dialog("open");
+	});
+
+
+</script>
+
+
+
 <!-- E: 시민참여 목록 -->
 <%@ include file="/WEB-INF/views/civil-voice/detail.jsp" %>
 <%@ include file="/WEB-INF/views/civil-voice/input.jsp" %>
