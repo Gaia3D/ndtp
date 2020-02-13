@@ -32,6 +32,9 @@ drop sequence if exists user_device_seq;
 drop sequence if exists user_policy_seq;
 drop sequence if exists widget_seq;
 
+drop sequence if exists perm_sequence;
+drop sequence if exists sim_file_sequence;
+
 create sequence access_log_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
 create sequence civil_voice_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
 create sequence civil_voice_comment_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
@@ -65,3 +68,6 @@ create sequence user_group_menu_seq increment 1 minvalue 1 maxvalue 999999999999
 create sequence user_device_seq increment 1 minvalue 1 maxvalue 999999999999 start 1 cache 1;
 create sequence user_policy_seq increment 1 minvalue 1 maxvalue 999999999999 start 1 cache 1;
 create sequence widget_seq increment 1 minvalue 1 maxvalue 999999999999 start 1 cache 1;
+
+create sequence perm_sequence increment 1 minvalue 1 maxvalue 999999999999 start 1 cache 1;
+create sequence sim_file_sequence increment 1 minvalue 1 maxvalue 999999999999 start 1 cache 1;
