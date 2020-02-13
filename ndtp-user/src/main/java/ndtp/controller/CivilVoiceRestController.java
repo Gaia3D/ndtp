@@ -184,6 +184,53 @@ public class CivilVoiceRestController {
 	}
 
 	/**
+	 * 시민참여 수정
+	 * @param request
+	 * @param civilVoiceId
+	 * @param civilVoice
+	 * @param bindingResult
+	 * @return
+	 */
+	@PostMapping("/{civilVoiceId}")
+	public Map<String, Object> update(HttpServletRequest request, @PathVariable Long civilVoiceId, @Valid @ModelAttribute CivilVoice civilVoice, BindingResult bindingResult) {
+		log.info("civilVoice ======================= {} " , civilVoice.getTitle());
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+
+		try {
+			if(bindingResult.hasErrors()) {
+				message = bindingResult.getAllErrors().get(0).getDefaultMessage();
+				log.info("@@@@@ message = {}", message);
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", errorCode);
+				result.put("message", message);
+	            return result;
+			}
+
+			civilVoice.setUserId(userSession.getUserId());
+			civilVoice.setCivilVoiceId(civilVoiceId);
+			if(civilVoice.getLongitude() != null && civilVoice.getLatitude() != null) {
+				civilVoice.setLocation("POINT(" + civilVoice.getLongitude() + " " + civilVoice.getLatitude() + ")");
+			}
+			civilVoiceService.updateCivilVoice(civilVoice);
+		} catch (Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
+	}
+
+	/**
 	 * 검색 조건
 	 * @param pageType
 	 * @param dataGroup

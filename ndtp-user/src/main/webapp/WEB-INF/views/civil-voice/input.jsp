@@ -3,7 +3,7 @@
 <div id="civilVoiceInputContent" class="contents mar0 pad0 border-none" style="display:none;">
 	<div class="button-group-align marB10">
 		<h3 class="h3-heading">시민참여 의견등록</h3>
-		<button type="button" id="civilVoiceCancleButton" class="btnText right-align reset" title="취소">취소</button>
+		<button type="button" id="civilVoiceCancleButton" data-goto="list" class="btnText right-align reset" title="취소">취소</button>
 	</div>
 
 	<form:form id="civilVoiceForm" modelAttribute="civilVoice" method="post" onsubmit="return false;">
