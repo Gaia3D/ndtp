@@ -3,6 +3,7 @@
 <%@ include file="/WEB-INF/views/common/config.jsp" %>
 
 <%@ include file="/WEB-INF/views/perm-request/application-register.jsp" %>
+<%@ include file="/WEB-INF/views/perm-request/test-fly.jsp" %>
 <%@ include file="/WEB-INF/views/notification/notification.jsp" %>
 
 <!DOCTYPE html>
@@ -165,6 +166,7 @@
 <script type="text/javascript" src="/js/${lang}/map-data-controll.js"></script>
 <script type="text/javascript" src="/js/${lang}/civil-voice.js"></script>
 <script type="text/javascript">
+	var a=1;
 	// 임시로...
 	$(document).ready(function() {
 		$(".ui-slider-handle").slider({});
@@ -182,6 +184,19 @@
 
 	$("#permRequest").on('click', function() {
 		permRequestDialog.dialog( "open" );
+	});
+
+	var testingDialog = $( "#testingDialog" ).dialog({
+		autoOpen: false,
+		width: 1100,
+		height: 700,
+		modal: true,
+		overflow : "auto",
+		resizable: false
+	});
+	$("#testFly").on('click', function() {
+		testingDialog.dialog("open");
+
 	});
 	//Cesium.Ion.defaultAccessToken = '';
 	//var viewer = new Cesium.Viewer('magoContainer');

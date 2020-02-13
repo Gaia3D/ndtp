@@ -3,9 +3,6 @@
 	<div class="button-group-align marB10">
 		<h3 class="h3-heading">시민참여</h3>
 		<button type="button" id="civilVoiceInputButton" title="의견등록" class="btnTextF right-align">의견 등록</button>
-		<button type="button" id="permRequest" title="건축인 허가 신청" class="btnTextF" style="margin-top:10px;">
-			건축인 허가 신청
-		</button>
 	</div>
 
 	<!-- 시민참여 검색 -->
@@ -25,6 +22,15 @@
 	<ul id="civilVoicePagination" class="pagination"></ul>
 
 </div>
+<style>
+	.button-group-align {
+		height: auto;
+	}
+</style>
+<button type="button" id="permRequest" title="건축인 허가 신청" class="btnTextF" style="margin-top:10px;">
+	건축인 허가 신청
+</button>
+<button type="button" id="testFly" class="btnTextF" style="margin-top:10px;">Fly Test</button>
 <!-- E: 시민참여 목록 -->
 <%@ include file="/WEB-INF/views/civil-voice/detail.jsp" %>
 <%@ include file="/WEB-INF/views/civil-voice/input.jsp" %>
