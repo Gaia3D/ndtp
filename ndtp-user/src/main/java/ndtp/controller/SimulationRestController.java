@@ -87,8 +87,10 @@ public class SimulationRestController {
 		String license_num = mReq.getParameter("license_num");
 		String phone_number = mReq.getParameter("phone_number");
 
-		structPermissionMapper.insertStructPermission(
-				new StructPermission(constructor, constructor_type, birthday, license_num, phone_number));
+		//todo: change
+		StructPermission spObj = new StructPermission(constructor, constructor_type, "ndtp", birthday,
+									license_num, phone_number, "127.786754", "36.643957");
+		structPermissionMapper.insertStructPermission(spObj);
 
 		List<String> result = this.simServiceImpl.procStroeShp(files);
 		return result;
