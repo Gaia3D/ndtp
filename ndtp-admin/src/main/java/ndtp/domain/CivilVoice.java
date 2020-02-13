@@ -48,6 +48,7 @@ public class CivilVoice extends Search implements Serializable {
 	@Size(max = 256)
 	private String title;
 	// 내용
+	@NotBlank
 	private String contents;
 	// 위치
 	private String location;

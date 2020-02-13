@@ -48,7 +48,7 @@
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input">
-										<form:input path="contents" cssClass="l" />
+										<form:textarea path="contents" cols="10" rows="10"></form:textarea>
 										<form:errors path="contents" cssClass="error" />
 									</td>
 								</tr>
@@ -77,27 +77,24 @@
 	});
 
 	function validate() {
-		return true;
-
-
 		var number = /^[0-9]+$/;
-		if ($("#dataGroupName").val() === null || $("#dataGroupName").val() === "") {
-			alert("데이터 그룹명을 입력해 주세요.");
-			$("#dataGroupName").focus();
+		if (!$("#title").val()) {
+			alert("제목을 입력해 주세요.");
+			$("#title").focus();
 			return false;
 		}
-		if($("#duration").val() !== null && $("#duration").val() !== "") {
-			if(!isNumber($("#duration").val())) {
-				$("#duration").focus();
-				return false;
-			}
+		if(!$("#contents").val()) {
+			alert("내용을 입력해 주세요.");
+			$("#contents").focus();
+			return false;
 		}
+		return true;
 	}
 
 	// 저장
 	var updateCivilVoiceFlag = true;
 	function updateCivilVoice() {
-		if (validate() == false) {
+		if (!validate()) {
 			return false;
 		}
 		if(updateCivilVoiceFlag) {

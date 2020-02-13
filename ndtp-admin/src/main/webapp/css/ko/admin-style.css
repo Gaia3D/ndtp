@@ -2567,8 +2567,17 @@ list-style:none;
 }
 /* 기존 사용하는 on 클래스에 색상이 있어서 onArea 클래스사용 */
 #layerButtonArea li.onArea {
-display:block;	
+display:block;
 }
 #layerButtonArea li {
-display:none;	
+display:none;
+}
+
+.likes-icon {
+	display: inline-block;
+	width: 20px;
+	text-indent: 999em;
+	background-image: url(/images/ko/ico.png);
+	background-repeat: no-repeat;
+    background-position: 0 -977px;
 }
