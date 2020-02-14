@@ -15,7 +15,7 @@
     Growl.settings.duration = 100000; // 100
     let data = {
         is_complete: "N",
-        constructor: "testing",
+        constructor: "아무개",
     };
 
     $.ajax({

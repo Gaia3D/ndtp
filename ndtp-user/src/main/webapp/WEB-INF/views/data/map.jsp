@@ -3,9 +3,12 @@
 <%@ include file="/WEB-INF/views/common/config.jsp" %>
 
 <%@ include file="/WEB-INF/views/perm-request/application-register.jsp" %>
+<%@ include file="/WEB-INF/views/perm-request/application-view.jsp" %>
+
 <%@ include file="/WEB-INF/views/notification/notification.jsp" %>
 <%@ include file="/WEB-INF/views/perm-request/test-fly.jsp" %>
 <%@ include file="/WEB-INF/views/perm-request/test-picking.jsp" %>
+
 
 <!DOCTYPE html>
 <html lang="${accessibility}">
@@ -172,6 +175,23 @@
 	$(document).ready(function() {
 		$(".ui-slider-handle").slider({});
  		initDataGroupList();
+	});
+
+	var permRequestDialog = $( "#permRequestDialog" ).dialog({
+		autoOpen: false,
+		width: 1100,
+		height: 650,
+		modal: true,
+		overflow : "auto",
+		resizable: false
+	});
+	var permViewDialog = $( "#permViewDialog" ).dialog({
+		autoOpen: false,
+		width: 1100,
+		height: 650,
+		modal: true,
+		overflow : "auto",
+		resizable: false
 	});
 
 

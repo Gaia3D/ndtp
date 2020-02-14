@@ -31,11 +31,12 @@
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 
-<button type="button" id="permRequest" title="건축인 허가 신청" class="btnTextF" style="margin-top:10px;">
-	건축인 허가 신청
-</button>
+<button type="button" id="permRequest" title="건축인 허가 신청" class="btnTextF" style="margin-top:10px;">건축인 허가 신청</button>
+<button type="button" id="permView" title="건축인 허가 조회" class="btnTextF" style="margin-top:10px;">건축인 허가 조회</button>
 <button type="button" id="testFly" class="btnTextF" style="margin-top:10px;">Fly Test</button>
 <button type="button" id="testingPicking" class="btnTextF" style="margin-top:10px;">testingPicking</button>
+
+
 
 <script>
 	var testingPickingDialog = $( "#testingPickingDialog" ).dialog({
@@ -49,19 +50,6 @@
 	$("#testingPicking").on('click', function() {
 		testingPickingDialog.dialog("open");
 	});
-
-	var permRequestDialog = $( "#permRequestDialog" ).dialog({
-		autoOpen: false,
-		width: 1100,
-		height: 650,
-		modal: true,
-		overflow : "auto",
-		resizable: false
-	});
-	$("#permRequest").on('click', function() {
-		permRequestDialog.dialog( "open" );
-	});
-
 	var testingDialog = $( "#testingDialog" ).dialog({
 		autoOpen: false,
 		width: 1100,
@@ -72,6 +60,44 @@
 	});
 	$("#testFly").on('click', function() {
 		testingDialog.dialog("open");
+	});
+
+
+	$("#permRequest").on('click', function() {
+		permRequestDialog.dialog( "open" );
+	});
+
+	$("#permView").on('click', function() {
+		// todo: change data
+		let data = {
+			is_complete: "N",
+			constructor: "아무개",
+		};
+		$.ajax({
+			url: "/data/simulation-rest/getPermRequestByConstructor",
+			type: "POST",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			data: data,
+			dataType: "json",
+			success: function(msg){
+				console.log("getPermRequestByConstructor msg=", msg);
+
+				$("#permViewDialog #constructor").get(0).value = msg.constructor;
+				$("#permViewDialog #constructor_type").get(0).value = msg.constructorType;
+				$("#permViewDialog #birthday").get(0).value = msg.birthday;
+				$("#permViewDialog #license_num").get(0).value = msg.licenseNum;
+				$("#permViewDialog #phone_number").get(0).value = msg.phoneNumber;
+
+				$("#permViewDialog #constructor_type").get(0).disabled = true;
+
+				permViewDialog.dialog("open");
+			},
+			error:function(request,status,error) {
+				console.log("err=", request, status, error);
+			}
+		});
+
+
 	});
 
 

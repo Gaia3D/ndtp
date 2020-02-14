@@ -100,7 +100,7 @@
     $('#permReqRegister').click(function() {
         setTimeout(() => {
             $("#permRequestDialog").dialog("close");
-        }, 1000);
+        }, 300);
     });
 
 </script>

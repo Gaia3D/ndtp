@@ -7,24 +7,14 @@ import java.io.InputStream;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 
 import ndtp.domain.*;
-import ndtp.persistence.SimuMapper;
 import ndtp.persistence.StructPermissionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 import ndtp.service.CivilVoiceCommentService;
 import ndtp.service.CivilVoiceService;
 import ndtp.service.impl.SimuServiceImpl;
-import ndtp.utils.WebUtils;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 @Slf4j
@@ -121,15 +110,21 @@ public class SimulationRestController {
 	}
 
 	@RequestMapping(value = "/getPermRequest", method = RequestMethod.POST)
-	public List<StructPermission> getPermRequest(HttpServletRequest request, StructPermission structPermission) {
-
-		String is_complete = structPermission.getIs_complete();
-		String constructor = structPermission.getConstructor();
-
+	public List<StructPermission> getPermRequest(HttpServletRequest request, StructPermission sp) {
 		List<StructPermission> result = structPermissionMapper.selectStructPermission();
 		System.out.println(result);
 
 		return result;
+	}
+	@RequestMapping(value = "/getPermRequestByConstructor", method = RequestMethod.POST)
+	public StructPermission getPermRequestByConstructor(HttpServletRequest request, StructPermission sp) {
+		String is_complete = sp.getIsComplete();
+		String constructor = sp.getConstructor();
+
+		StructPermission oneResult = structPermissionMapper.selectOne(sp);
+		System.out.println(oneResult);
+
+		return oneResult;
 	}
 
 }
