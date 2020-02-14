@@ -3,9 +3,13 @@
 <%--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js" type="text/javascript"></script>--%>
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/js/${lang}/map-controll.js"></script>
 
 <script src="/externlib/notification/jquery.growl.js" type="text/javascript"></script>
 <link href="/externlib/notification/jquery.growl.css" rel="stylesheet" type="text/css" />
+
+<script src="/externlib/cesium/Cesium.js" type="text/javascript"></script>
+<link href="/externlib/cesium/Widgets/widgets.css" rel="stylesheet" type="text/css" />
 
 <script>
     Growl.settings.duration = 100000; // 100
@@ -34,7 +38,8 @@
             });
 
             $(".growl").click(event => {
-                a=_viewer;
+                console.log("whole_viewer=", whole_viewer);
+
                 const eventMessage = event.delegateTarget.children[2].textContent;
                 // console.log("message=", eventMessage);
                 const openIndex = eventMessage.lastIndexOf("(");
@@ -46,6 +51,11 @@
 
                 // todo: connect flyto
                 console.log("go to("+latitude+", "+longitude+")");
+
+                whole_viewer.scene.camera.flyTo({
+                    destination : Cesium.Cartesian3.fromDegrees(127.786754, 36.643957, 1000)
+                });
+
                 setTimeout(() => {
                     event.delegateTarget.children[0].click();
                 }, 200);

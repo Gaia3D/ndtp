@@ -1,8 +1,10 @@
 var lengthInMeters = 0;
 var areaInMeters = 0;
+var whole_viewer;
 
 function MapControll(viewer, option) {
     console.log("in MapControll");
+    whole_viewer = viewer;
     this._viewer = viewer;
     this._scene = viewer.scene;
 
