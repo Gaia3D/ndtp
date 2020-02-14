@@ -41,9 +41,9 @@
 									</div>
 									<div class="input-set">
 										<label for="startDate"><spring:message code='search.date'/></label>
-										<input type="text" class="s date" id="startDate" name="startDate" />
+										<input type="text" class="s date" id="startDate" name="startDate" autocomplete="off" />
 										<span class="delimeter tilde">~</span>
-										<input type="text" class="s date" id="endDate" name="endDate" />
+										<input type="text" class="s date" id="endDate" name="endDate" autocomplete="off" />
 									</div>
 									<div class="input-set">
 										<label for="orderWord"><spring:message code='search.order'/></label>
@@ -150,6 +150,22 @@
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript" src="/js/navigation.js"></script>
 <script type="text/javascript">
+	$(document).ready(function() {
+		var searchWord = "${dataInfoLog.searchWord}";
+		var searchOption = "${dataInfoLog.searchOption}";
+		var orderWord = "${dataInfoLog.orderWord}";
+		var orderValue = "${dataInfoLog.orderValue}";
+		var listCounter = "${dataInfoLog.listCounter}";
+	
+		if(searchWord != "") $("#searchWord").val("${dataInfoLog.searchWord}");
+		if(searchOption != "") $("#searchOption").val("${dataInfoLog.searchOption}");
+		if(orderWord != "") $("#orderWord").val("${dataInfoLog.orderWord}");
+		if(orderValue != "") $("#orderValue").val("${dataInfoLog.orderValue}");
+		if(listCounter != "") $("#listCounter").val("${dataInfoLog.listCounter}");
+	
+		initDatePicker();
+		initCalendar(new Array("startDate", "endDate"), new Array("${dataInfoLog.startDate}", "${dataInfoLog.endDate}"));
+	});
 
 	//전체 선택
 	$("#chkAll").click(function() {
