@@ -1572,3 +1572,9 @@ text-overflow: ellipsis;
 	float: left;
 	line-height: 2.4em;
 }
+
+/* Mago3D 로고 - 정연화 추가 */
+.mago3d_logo {
+	width: 90px;
+	padding: 0 0 5px 5px;
+}
