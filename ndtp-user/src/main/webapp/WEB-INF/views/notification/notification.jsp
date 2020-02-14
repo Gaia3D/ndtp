@@ -53,7 +53,7 @@
                 console.log("go to("+latitude+", "+longitude+")");
 
                 whole_viewer.scene.camera.flyTo({
-                    destination : Cesium.Cartesian3.fromDegrees(127.786754, 36.643957, 1000)
+                    destination : Cesium.Cartesian3.fromDegrees(latitude, longitude, 1000)
                 });
 
                 setTimeout(() => {
