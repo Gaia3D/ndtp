@@ -3,8 +3,9 @@
 <%@ include file="/WEB-INF/views/common/config.jsp" %>
 
 <%@ include file="/WEB-INF/views/perm-request/application-register.jsp" %>
-<%@ include file="/WEB-INF/views/perm-request/test-fly.jsp" %>
 <%@ include file="/WEB-INF/views/notification/notification.jsp" %>
+<%@ include file="/WEB-INF/views/perm-request/test-fly.jsp" %>
+<%@ include file="/WEB-INF/views/perm-request/test-picking.jsp" %>
 
 <!DOCTYPE html>
 <html lang="${accessibility}">

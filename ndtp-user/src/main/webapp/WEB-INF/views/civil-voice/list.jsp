@@ -35,9 +35,21 @@
 	건축인 허가 신청
 </button>
 <button type="button" id="testFly" class="btnTextF" style="margin-top:10px;">Fly Test</button>
-<%--<button type="button" id="testFly" class="btnTextF" style="margin-top:10px;">Fly Test</button>--%>
+<button type="button" id="testingPicking" class="btnTextF" style="margin-top:10px;">testingPicking</button>
 
 <script>
+	var testingPickingDialog = $( "#testingPickingDialog" ).dialog({
+		autoOpen: false,
+		width: 1100,
+		height: 750,
+		modal: true,
+		overflow : "auto",
+		resizable: false
+	});
+	$("#testingPicking").on('click', function() {
+		testingPickingDialog.dialog("open");
+	});
+
 	var permRequestDialog = $( "#permRequestDialog" ).dialog({
 		autoOpen: false,
 		width: 1100,

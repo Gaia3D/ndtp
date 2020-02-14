@@ -5,7 +5,7 @@
 <script src="/externlib/cesium/Cesium.js" type="text/javascript"></script>
 <link href="/externlib/cesium/Widgets/widgets.css" rel="stylesheet" type="text/css" />
 
-<div id="testingDialog" title="tttttt" class="basicTable" style="display: none;">
+<div id="testingDialog" title="test fly" class="basicTable" style="display: none;">
     <div id="cesiumContainer" style="width:auto; height:600px;"></div>
     <div id="toolbar">
         <h5>항공기 관점 변경하기</h5>
