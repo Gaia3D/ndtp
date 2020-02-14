@@ -15,13 +15,14 @@
 	</select>
 
 	<insert id="insertStructPermission" parameterType="structPermission">
-		<![CDATA[
-			INSERT INTO struct_permission (
-				perm_seq, constructor, constructor_type, perm_officer, birthday, license_num, phone_number, is_complete, latitude, longitude, apply_date
-			) VALUES (
-				'0', '${constructor}', '${constructor_type}', '${perm_officer}', '${birthday}', '${license_num}', '${phone_number}', '${is_complete}', '${latitude}', '${longitude}', now()
-			)
-		]]>
+		<selectKey keyProperty="permSeq" resultType="int" order="BEFORE">
+			SELECt NEXTVAL('perm_sequence')
+		</selectKey>
+		INSERT INTO struct_permission(
+			perm_seq, constructor, constructor_type, perm_officer, birthday, license_num, phone_number, is_complete, latitude, longitude, apply_date
+		) VALUES (
+			#{permSeq}, #{constructor}, #{constructorType}, #{permOfficer}, #{birthday}, #{licenseNum}, #{phoneNumber}, #{isComplete}, #{latitude}, #{longitude}, NOW()
+		)
 	</insert>
 
 	<update id="updateStructPermission" parameterType="structPermission">
