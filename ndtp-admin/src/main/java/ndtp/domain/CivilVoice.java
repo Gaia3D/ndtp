@@ -28,14 +28,22 @@ import lombok.ToString;
 @AllArgsConstructor
 public class CivilVoice extends Search implements Serializable {
 
-    /**
-	 *
-	 */
 	private static final long serialVersionUID = -7636814381604940705L;
 
 	/******** 화면 오류 표시용 ********/
 	private String messageCode;
 	private String errorCode;
+
+	/**
+	 * 화면 표시용
+	 *
+	 */
+	// 위도
+	private String latitude;
+	// 경도
+	private String longitude;
+	// 본인 게시글에 수정/삭제 표시 위해 사용
+	private Boolean editable;
 
 
 	/********** DB 사용 *************/

@@ -35,16 +35,23 @@
 									<col class="col-label" />
 									<col class="col-data" />
 									<tr>
-										<th class="col-label" scope="row"><spring:message code='user.id'/></th>
-										<td class="col-data">${civilVoice.userId}</td>
-									</tr>
-									<tr>
 										<th class="col-label" scope="row"><spring:message code='title'/></th>
 										<td class="col-data">${civilVoice.title}</td>
 									</tr>
 									<tr>
+										<th class="col-label" scope="row">위치</th>
+										<td class="col-data">
+											${civilVoice.longitude}, ${civilVoice.latitude}
+											<input type="button" id="mapButtion" value="지도에서 보기" />
+										</td>
+									</tr>
+									<tr>
 										<th class="col-label" scope="row"><spring:message code='contant'/></th>
 										<td class="col-data">${civilVoice.contents}</td>
+									</tr>
+									<tr>
+										<th class="col-label" scope="row">작성자</th>
+										<td class="col-data">${civilVoice.userId}</td>
 									</tr>
 									<tr>
 										<th class="col-label" scope="row"><spring:message code='search.insert.date'/></th>
