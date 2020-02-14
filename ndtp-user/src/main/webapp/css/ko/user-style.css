@@ -1696,6 +1696,10 @@ text-overflow: ellipsis;
 }
 .tab-divide > li {
 	width: calc(50% - 5px);
+	padding: 5px 0px;
+}
+.tab-divide li:not(.on):hover {
+color: #006bd2;
 }
 ul.listDrop li.list-drop-button-none {
 	cursor: auto;
