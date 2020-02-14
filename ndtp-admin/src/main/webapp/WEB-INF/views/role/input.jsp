@@ -49,7 +49,7 @@
 									<span class="icon-glyph glyph-emark-dot color-warning"></span>
 								</th>
 								<td class="col-input">
-									<select id="roleTarget" name="roleTarget" class="select" >
+									<select id="roleTarget" name="roleTarget" class="selectBoxClass" >
 										<option value="0"> 사용자 사이트 </option>
 										<option value="1"> 관리자 사이트 </option>
 										<option value="2"> 서버 </option>
@@ -62,7 +62,7 @@
 									<span class="icon-glyph glyph-emark-dot color-warning"></span>
 								</th>
 								<td class="col-input">
-									<select id="roleType" name="roleType" class="select" >
+									<select id="roleType" name="roleType" class="selectBoxClass" >
 										<option value="0"> 사용자 </option>
 										<option value="1"> 서버 </option>
 										<option value="2"> API </option>
