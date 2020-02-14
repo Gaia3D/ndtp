@@ -70,26 +70,22 @@ public class DataAdjustLogController {
 		}
 
 		long totalCount = dataAdjustLogService.getDataAdjustLogTotalCount(dataAdjustLog);
-		Pagination pagination = new Pagination(	request.getRequestURI(), 
-												getSearchParameters(PageType.LIST, dataAdjustLog), 
-												totalCount, 
-												Long.valueOf(pageNo).longValue(), 
-												dataAdjustLog.getListCounter());
-		log.info("@@ pagination = {}", pagination);
-		
+		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, dataAdjustLog),
+				totalCount, Long.valueOf(pageNo).longValue(), dataAdjustLog.getListCounter());
 		dataAdjustLog.setOffset(pagination.getOffset());
 		dataAdjustLog.setLimit(pagination.getPageRows());
+
 		List<DataAdjustLog> dataAdjustLogList = new ArrayList<>();
 		if(totalCount > 0l) {
 			dataAdjustLogList = dataAdjustLogService.getListDataAdjustLog(dataAdjustLog);
 		}
-		
+
 		model.addAttribute(pagination);
 		model.addAttribute("dataGroupList", dataGroupList);
 		model.addAttribute("dataAdjustLogList", dataAdjustLogList);
 		return "/data-adjust-log/list";
 	}
-	
+
 	/**
 	 * 검색 조건
 	 * @param pageType
