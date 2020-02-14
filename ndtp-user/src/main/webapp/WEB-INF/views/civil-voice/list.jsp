@@ -84,11 +84,11 @@
 
 				$("#permViewDialog #constructor").get(0).value = msg.constructor;
 				$("#permViewDialog #constructor_type").get(0).value = msg.constructorType;
+				$("#permViewDialog #constructor_type").get(0).disabled = true;
 				$("#permViewDialog #birthday").get(0).value = msg.birthday;
 				$("#permViewDialog #license_num").get(0).value = msg.licenseNum;
-				$("#permViewDialog #phone_number").get(0).value = msg.phoneNumber;
 
-				$("#permViewDialog #constructor_type").get(0).disabled = true;
+				$("#permViewDialog #phone_number").get(0).value = msg.phoneNumber;
 
 				permViewDialog.dialog("open");
 			},

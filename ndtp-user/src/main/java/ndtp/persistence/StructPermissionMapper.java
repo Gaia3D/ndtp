@@ -13,4 +13,6 @@ public interface StructPermissionMapper {
 	List<StructPermission> selectStructPermission();
 	StructPermission selectOne(StructPermission structPermission);
 
+	int updateStructPermission(StructPermission structPermission);
+
 }

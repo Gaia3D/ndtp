@@ -4,7 +4,7 @@
 
 <div id="permViewDialog" title="건축인 허가 조회" class="basicTable" style="display: none;">
     <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
-    <form id="file_upload" name="file_upload"method="post" enctype="multipart/form-data" action="simulation-rest/upload" style="width:100%" target="dummyframe">
+    <form id="file_upload" name="file_upload"method="post" enctype="multipart/form-data" action="simulation-rest/updateStructPermission" style="width:100%" target="dummyframe">
         <ul class="listDrop">
             <li class="on">
                 <p>건축주<span class="collapse-icon">icon</span></p>
@@ -93,7 +93,7 @@
         </ul>
 
         <div style="display: inline-block; position: absolute; bottom: 20px; right: 20px;">
-            <button id="permSend" class="focusA" type="button" title="전송" style="width:200px;">전송</button>
+            <button id="permSend" class="focusA" type="submit" title="전송" style="width:200px;">전송</button>
             <button id="permCancel" class="focusC" type="button" title="취소" >취소</button>
         </div>
 

@@ -126,5 +126,25 @@ public class SimulationRestController {
 
 		return oneResult;
 	}
+	@RequestMapping(value = "/updateStructPermission", method = RequestMethod.POST)
+	public int updateStructPermission(HttpServletRequest req) {
+
+		String suitableCheck = req.getParameter("suitableCheck");
+		if (suitableCheck.equals("false")) {
+			return 0;
+		}
+
+		StructPermission sp = StructPermission.builder()
+				.constructor(req.getParameter("constructor"))
+				.constructorType(req.getParameter("constructor_type"))
+				.build();
+
+
+
+		int result = structPermissionMapper.updateStructPermission(sp);
+		System.out.println(result);
+
+		return result;
+	}
 
 }

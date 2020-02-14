@@ -23,4 +23,8 @@
 			)
 		]]>
 	</insert>
+
+	<update id="updateStructPermission" parameterType="structPermission">
+		update struct_permission set is_complete='Y' where constructor = #{constructor}
+	</update>
 </mapper>
