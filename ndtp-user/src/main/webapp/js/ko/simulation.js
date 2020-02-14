@@ -1,24 +1,33 @@
+
 var Simulation = function(magoInstance, viewer, $) {
 	var that = this;
 	var CAMERA_MOVE_NEED_DISTANCE = 5000;
 	console.log(viewer);
-	
 
 	var _viewer = viewer;
     var _scene = viewer.scene;
     var _polylines = [];
     var _labels = [];   
+    var _polygons = [];
+    var mesurPolyList = [];
     var handler = null;
     var drawingMode = 'line';
     var activeShapePoints = [];
     var activeShape;
     var activeLabel;
     var heightBuildingInput;
-    var runAllocBuildChkStat = false;
-    
+    var echodeltaDataSource;
+    var targetArea;
+    var nowPolygon;
     var selectEntity;
-
 	var magoManager = magoInstance.getMagoManager();
+	
+
+    var runAllocBuildChkStat = false;
+
+    var cityPlanTargetArea = 0;
+    var cityPlanTargetFloorCov = 0;
+    var cityPlanTargetBuildCov = 0;
 	
 	var observer;
 	var observerTarget = document.getElementById('simulationContent');
@@ -60,13 +69,14 @@ var Simulation = function(magoInstance, viewer, $) {
 	var timeSlider;
 	var solarMode = false;
 	//일조분석 조회
-	$('#solarAnalysis .execute').click(function(){
+	$('#solarAnalysis .execute').click(function() {
 		if(!timeSlider) {
 			timeSlider = new KotSlider('timeInput');
 			timeSlider.setMin(1);
 			timeSlider.setMax(24);
 			timeSlider.setDuration(200);
 			var html = '';
+			_viewer.shadows = true
 			for(var i=1;i<25;i++){
 				if(i === 1 || 1 === 10) {
 					html += '<span style="margin-left:22px;">' + i + '</span>';
@@ -200,13 +210,20 @@ var Simulation = function(magoInstance, viewer, $) {
 	$('#upload_cityplan').click(function() {
 		
 	});
+	
+	//건물 높이에 대해서 확정을 하는 로직
 	$('#set_height_building').click(function(e) {
-		debugger;
-		heightBuildingInput = parseInt($('#height_building_input').val());
-		 
-		selectEntity.extrudedHeight = heightBuildingInput;
+		floorNum = parseInt($('#height_building_input').val());
+		floorSize = floorNum * 3;
+		selectEntity.id.polygon.extrudedHeight = floorSize;
+		floorCoverSum = selectEntity.id.areaVal * floorSize;
+		$('#floorCoverateRatio').text('용적율 : ' + parseInt(floorCoverSum / cityPlanTargetArea * 100) + '%');
+		
+		selectBuildDialog.dialog( "close" );
+		heightBuildingInput = 0;
 	})
-
+	
+	// 에코델타 데이터 가지고와서 뿌리는 로직
 	$('#run_cityplan').click(function() {
 		Cesium.GeoJsonDataSource.load('http://localhost/data/simulation-rest/select', {
 			width : 5,
@@ -217,8 +234,8 @@ var Simulation = function(magoInstance, viewer, $) {
 	            glowPower : 0.2,
 	            rgba : [23, 184, 190,255]
 	        })
-		}).then(function(dataSource) {
-			var entitis = dataSource.entities._entities._array
+		}).then(function(dataSource) { 
+			var entitis = dataSource.entities._entities._array;
 			for(var index in entitis) {
 				var glowingLine = _viewer.entities.add({
 				    name : 'Glowing blue line on the surface',
@@ -238,34 +255,32 @@ var Simulation = function(magoInstance, viewer, $) {
 		});
 	});
 	
-    // 	면적 측정 버튼
-//	$('#run_allocate_building').click(function() {
-//		debugger;
-//		$('#run_allocate_building').toggleClass('on'); // 버튼 색 변경
-//		$('#run_allocate_building').toggleClass('on'); // 버튼 색 변경
-//		$('#run_allocate_building').trigger('afterClick');
-//	});
+	$('#move_cityplan').click(function() {
+        _viewer.scene.camera.flyTo({
+            destination : Cesium.Cartesian3.fromDegrees(128.91143708415015, 35.120229675016795, 600.0)
+        });
+	})
 	
-	$("#run_allocate_building").change(function(){
-        if($("#run_allocate_building").is(":checked")){
-    		$('#run_allocate_building').toggleClass('on'); // 버튼 색 변경
-    		$('#run_allocate_building').trigger('afterClick');
+	$("#run_work_state").change(function(value){
+		if(value.target.value === 'build') {
+    		$('#run_work_state').toggleClass('on'); // 버튼 색 변경
+    		$('#run_work_state').trigger('afterClick');
     		runAllocBuildChkStat = true;
-        }else{
-    		$('#run_allocate_building').removeClass('on');
+		} else if(value.target.value === 'location') {
+			
+		} else {
+    		$('#run_work_state').removeClass('on');
     		runAllocBuildChkStat = false;
             drawingMode = 'line';
-            debugger;
-        }
+		}
     });
 
-    $('#run_allocate_building').bind('afterClick', function () {
-		debugger;
+    $('#run_work_state').bind('afterClick', function () {
         console.log("맵컨트롤 : 면적");
         //clearMap();
         drawingMode = 'polygon';
 
-        if ($('#run_allocate_building').hasClass('on')) {
+        if ($('#run_work_state').hasClass('on')) {
             startDrawPolyLine();
         }
     });
@@ -396,7 +411,6 @@ var Simulation = function(magoInstance, viewer, $) {
 		$('#csRange, #constructionProcess .profileInfo').hide();
 	}
 
-
     function createPoint(worldPosition) {
         var entity = _viewer.entities.add({
             position: worldPosition,
@@ -418,7 +432,7 @@ var Simulation = function(magoInstance, viewer, $) {
     }, false);
 
     var dynamicLabel = new Cesium.CallbackProperty(function () {
-        return getArea(activeShapePoints);
+        return formatArea(getArea(activeShapePoints));
     }, false);
 
     function drawShape(positionData) {
@@ -436,18 +450,25 @@ var Simulation = function(magoInstance, viewer, $) {
                 }
             });
         }
+        // 폴리곤 생성
         else if (drawingMode === 'polygon') {
+            var bs = Cesium.BoundingSphere.fromPoints(activeShapePoints);
+            var position = Cesium.Ellipsoid.WGS84.scaleToGeodeticSurface(bs.center);
+            var areaVal = parseInt(getArea(activeShapePoints));
             shape = _viewer.entities.add({
                 name     : "Polygon for area measurement",
+                areaVal : areaVal,
                 polygon: {
+                    shadows: 1,
+                    areaVal : areaVal,
                     hierarchy: positionData,
                     extrudedHeight: heightBuildingInput,
-                    shadows: 1,
                     material: new Cesium.ColorMaterialProperty(Cesium.Color.GRAY.withAlpha(0.8)),
                     /* height: 0.1, */
                     //heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
                 }
             });
+            nowPolygon = shape;
         }
         return shape;
     }
@@ -476,7 +497,6 @@ var Simulation = function(magoInstance, viewer, $) {
             var points = [];
             for(var i = 0, len = positions.length; i < len; i++)
             {
-                // points.push(Cesium.Cartesian2.fromCartesian3(positions[i]));
                 var cartographic = Cesium.Cartographic.fromCartesian(positions[i]);
                 points.push(new Cesium.Cartesian2(cartographic.longitude, cartographic.latitude));
             }
@@ -489,14 +509,12 @@ var Simulation = function(magoInstance, viewer, $) {
 
             for(var i = 0, len = triangles.length; i < len; i+=3)
             {
-                // areaInMeters +=
-				// Cesium.PolygonPipeline.computeArea2D([points[triangles[i]],
-				// points[triangles[i + 1]], points[triangles[i + 2]]]);
                 areaInMeters += calArea(points[triangles[i]], points[triangles[i + 1]], points[triangles[i + 2]]);
             }
         }
-        return formatArea(areaInMeters);
+        return areaInMeters;
     }
+    
     function calArea(t1, t2, t3, i) {
         var r = Math.abs(t1.x * (t2.y - t3.y) + t2.x * (t3.y - t1.y) + t3.x * (t1.y - t2.y)) / 2;
 		var cartographic = new Cesium.Cartographic((t1.x + t2.x + t3.x) / 3, (t1.y + t2.y + t3.y) / 3);
@@ -516,24 +534,19 @@ var Simulation = function(magoInstance, viewer, $) {
                     style: Cesium.LabelStyle.FILL,
                     verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
                     disableDepthTestDistance: Number.POSITIVE_INFINITY,
-                    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND/*
-																			 * ,
-																			 * pixelOffset :
-																			 * new
-																			 * Cesium.Cartesian2(5,
-																			 * 20)
-																			 */
+                    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND 
                 }
             });
         return label;
     }
 
+    //영역 계산 라벨
     function drawAreaLabel() {
         var label;
         var bs = Cesium.BoundingSphere.fromPoints(activeShapePoints);
         var position = Cesium.Ellipsoid.WGS84.scaleToGeodeticSurface(bs.center);
-        var text = getArea(activeShapePoints);
-
+        var areaVal = getArea(activeShapePoints);
+        var text = formatArea(areaVal);
         label = _viewer.entities.add({
             name     : "Label for area measurement",
             position: position,
@@ -547,8 +560,18 @@ var Simulation = function(magoInstance, viewer, $) {
                 heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
             }
         });
-
+        
+        mesurPolyList.push(areaVal);
         return label;
+    }
+    
+    function clacArea() {
+    	var sumArea = 0;
+    	for(var i = 0; i < _polygons.length; i++) {
+    		sumArea += _polygons[i].areaVal;
+    	}
+    	var buildCoverateRatio = parseInt(sumArea/cityPlanTargetArea * 100);
+    	$('#buildCoverateRatio').text('건폐율 : ' + buildCoverateRatio + '%');
     }
 
     // Redraw the shape so it's not dynamic and remove the dynamic shape.
@@ -557,7 +580,9 @@ var Simulation = function(magoInstance, viewer, $) {
         lengthInMeters = 0;
         areaInMeters = 0
         this._polylines.push(drawShape(activeShapePoints));
-        if (drawingMode === 'polygon')  this._labels.push(drawAreaLabel());
+        if (drawingMode === 'polygon') {
+        	this._labels.push(drawAreaLabel());
+        }
 
         _viewer.entities.remove(activeShape);
         _viewer.entities.remove(activeLabel);
@@ -577,6 +602,8 @@ var Simulation = function(magoInstance, viewer, $) {
         handler.setInputAction(function (event) {
         	debugger;
             var earthPosition = _viewer.scene.pickPosition(event.position);
+            
+        	console.log('폴리곤 : ', earthPosition);
             if (Cesium.defined(earthPosition)) {
                 var cartographic = Cesium.Cartographic.fromCartesian(earthPosition);
                 var tempPosition = Cesium.Cartesian3.fromDegrees(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude));
@@ -609,10 +636,10 @@ var Simulation = function(magoInstance, viewer, $) {
                 	// 새로운 모델 선택
                     var pickedFeature = viewer.scene.pick(event.position);
                     if(pickedFeature) {
-                		permRequestDialog.dialog( "open" );
-                		selectEntity =pickedFeature.id.polygon;
+                		selectBuildDialog.dialog( "open" );
+                		selectEntity =pickedFeature;
                     } else {
-                    	selectEntity = nul;
+                    	selectEntity = undefined;
                     }
 //                    ;
 //                    _viewer._selectedEntity = pickedFeature.id.polygon;
@@ -621,12 +648,72 @@ var Simulation = function(magoInstance, viewer, $) {
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
         handler.setInputAction(function (event) {
+            var earthPosition = _viewer.scene.pickPosition(event.position);
+        	console.log('폴리곤 : ', earthPosition);
             terminateShape();
+            _polygons.push(nowPolygon);
+            clacArea();
         }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
     }
     
+    $('#set_target_area').click(function() {
+    	cityPlanTargetArea = parseInt($('#target_area_input').val());
+    	cityPlanTargetFloorCov = parseInt($('#target_floor_cov').val());
+        cityPlanTargetBuildCov = parseInt($('#target_build_cov').val());
+        $('#targetfloorCoverateRatio').text('기준 용적율 : ' + cityPlanTargetFloorCov + '%');
+        $('#targetbuildCoverateRatio').text('기준 건폐율 : ' + cityPlanTargetBuildCov + '%');;
+    })
+    
+    $('#result_build').click(function() {
+    	// console.log("맵컨트롤 : 저장");
+        var targetResolutionScale = 1.0;
+        var timeout = 500; // in ms
 
-    var permRequestDialog = $( "#permReqeustDialog" ).dialog({
+        var scene =that._scene;
+        if (!scene) {
+            console.error("No scene");
+        }
+
+        // define callback functions
+        var prepareScreenshot = function(){
+            var canvas = scene.canvas;
+            viewer.resolutionScale = targetResolutionScale;
+            scene.preRender.removeEventListener(prepareScreenshot);
+            // take snapshot after defined timeout to allow scene update (ie. loading data)
+            startLoading();
+            setTimeout(function(){
+                scene.postRender.addEventListener(takeScreenshot);
+            }, timeout);
+        }
+
+        var takeScreenshot = function(){
+            scene.postRender.removeEventListener(takeScreenshot);
+            var canvas = scene.canvas;
+            debugger;
+            $("#cityplanImg").attr("src", canvas.toDataURL());
+            viewer.resolutionScale = 1.0;
+            stopLoading();
+        	resultCityPlanDialog.dialog( "open" );
+//            canvas.toBlob(function(blob){
+//                var url = URL.createObjectURL(blob);
+//            });
+            
+        }
+
+        scene.preRender.addEventListener(prepareScreenshot);
+    	
+    })
+
+    var selectBuildDialog = $( "#selectBuildDialog" ).dialog({
+		autoOpen: false,
+		width: 200,
+		height: 200,
+		modal: true,
+		overflow : "auto",
+		resizable: false
+	});
+    
+	var resultCityPlanDialog = $( "#resultCityPlanDialog" ).dialog({
 		autoOpen: false,
 		width: 1100,
 		height: 650,
