@@ -141,17 +141,19 @@ public class Search {
 		buffer.append("orderWord=" + getDefaultValue(this.orderWord));
 		buffer.append("&");
 		buffer.append("orderValue=" + getDefaultValue(this.orderValue));
+		buffer.append("&");
+		buffer.append("listCounter=" + this.listCounter);
 		return buffer.toString();
 	}
-	
+
 	private String getDefaultValue(String value) {
 		if(value == null || "".equals(value.trim())) {
 			return "";
 		}
-		
+
 		return value;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Search [totalCount=" + totalCount + ", offset=" + offset + ", limit=" + limit + ", searchWord="

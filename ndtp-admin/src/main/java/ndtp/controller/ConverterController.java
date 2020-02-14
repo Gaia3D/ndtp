@@ -1,31 +1,24 @@
 package ndtp.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
 import ndtp.domain.ConverterJob;
-import ndtp.domain.Key;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
-import ndtp.domain.UserSession;
 import ndtp.service.ConverterService;
 import ndtp.utils.DateUtils;
-import ndtp.utils.FormatUtils;
 
 /**
  * Data Converter
@@ -53,35 +46,34 @@ public class ConverterController {
 	 */
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest request, ConverterJob converterJob, @RequestParam(defaultValue="1") String pageNo, Model model) {
-		
+
 //		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-//		converterJob.setUserId(userSession.getUserId());		
+//		converterJob.setUserId(userSession.getUserId());
 		log.info("@@ converterJob = {}", converterJob);
-		
+
 		if(!StringUtils.isEmpty(converterJob.getStartDate())) {
 			converterJob.setStartDate(converterJob.getStartDate().substring(0, 8) + DateUtils.START_TIME);
 		}
 		if(!StringUtils.isEmpty(converterJob.getEndDate())) {
 			converterJob.setEndDate(converterJob.getEndDate().substring(0, 8) + DateUtils.END_TIME);
 		}
-		
+
 		long totalCount = converterService.getConverterJobTotalCount(converterJob);
-		
-		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, converterJob), totalCount, Long.valueOf(pageNo).longValue());
-		log.info("@@ pagination = {}", pagination);
-		
+		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, converterJob),
+				totalCount, Long.valueOf(pageNo).longValue(), converterJob.getListCounter());
 		converterJob.setOffset(pagination.getOffset());
 		converterJob.setLimit(pagination.getPageRows());
+
 		List<ConverterJob> converterJobList = new ArrayList<>();
 		if(totalCount > 0l) {
 			converterJobList = converterService.getListConverterJob(converterJob);
 		}
-		
+
 		model.addAttribute(pagination);
 		model.addAttribute("converterJobList", converterJobList);
 		return "/converter/list";
 	}
-	
+
 //	/**
 //	 * converter job 파일 목록
 //	 * @param request

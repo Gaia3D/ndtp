@@ -105,7 +105,7 @@
 				<c:if test="${!empty roleList }">
 					<c:forEach var="role" items="${roleList}" varStatus="status">
 								<tr>
-									<td class="col-number">${ pagination.totalCount - ((pagination.pageNo - 1) * 10) - status.index }</td>
+									<td class="col-number">${pagination.rowNumber - status.index}</td>
 									<td class="col-name" style="text-align: left;">${role.roleName }</td>
 									<td class="col-key" style="text-align: left;">${role.roleKey }</td>
 									<td class="col-type">
@@ -150,6 +150,7 @@
 				</c:if>
 							</table>
 						</div>
+						<%@ include file="/WEB-INF/views/common/pagination.jsp" %>
 					</div>
 				</div>
 			</div>

@@ -44,6 +44,19 @@
 								</tr>
 								<tr>
 									<th class="col-label" scope="row">
+										<form:label path="longitude">위치</form:label>
+										<span class="icon-glyph glyph-emark-dot color-warning"></span>
+									</th>
+									<td class="col-input">
+										<form:input path="longitude" cssClass="m" />
+										<form:input path="latitude" cssClass="m" />
+										<input type="button" id="mapButtion" value="위치 지정" />
+										<form:errors path="longitude" cssClass="error" />
+										<form:errors path="latitude" cssClass="error" />
+									</td>
+								</tr>
+								<tr>
+									<th class="col-label" scope="row">
 										<form:label path="contents">내용</form:label>
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>

@@ -37,8 +37,21 @@
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input">
-										<form:input path="title" cssClass="l" maxlength="100" />
+										<form:input path="title" cssClass="l" />
 										<form:errors path="title" cssClass="error" />
+									</td>
+								</tr>
+								<tr>
+									<th class="col-label" scope="row">
+										<form:label path="longitude">위치</form:label>
+										<span class="icon-glyph glyph-emark-dot color-warning"></span>
+									</th>
+									<td class="col-input">
+										<form:input path="longitude" cssClass="m" />
+										<form:input path="latitude" cssClass="m" />
+										<input type="button" id="mapButtion" value="위치 지정" />
+										<form:errors path="longitude" cssClass="error" />
+										<form:errors path="latitude" cssClass="error" />
 									</td>
 								</tr>
 								<tr>
@@ -47,7 +60,7 @@
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input">
-										<form:input path="contents" cssClass="l" />
+										<form:textarea path="contents" cols="10" rows="10"></form:textarea>
 										<form:errors path="contents" cssClass="error" />
 									</td>
 								</tr>
