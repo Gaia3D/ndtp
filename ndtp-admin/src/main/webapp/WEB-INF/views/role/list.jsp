@@ -92,62 +92,70 @@
 									<th scope="col">Role Target</th>
 									<th scope="col">Role 타입</th>
 									<th scope="col">사용유무</th>
-									<th scope="col">등록일</th>
 									<th scope="col">수정</th>
 									<th scope="col">삭제</th>
+									<th scope="col">등록일</th>
 								</tr>
 								</thead>
-				<c:if test="${empty roleList }">
+<c:if test="${empty roleList }">
 								<tr>
 									<td colspan="9" class="col-none">Role 이 존재하지 않습니다.</td>
 								</tr>
-				</c:if>
-				<c:if test="${!empty roleList }">
-					<c:forEach var="role" items="${roleList}" varStatus="status">
+</c:if>
+<c:if test="${!empty roleList }">
+	<c:forEach var="role" items="${roleList}" varStatus="status">
 								<tr>
 									<td class="col-number">${pagination.rowNumber - status.index}</td>
 									<td class="col-name" style="text-align: left;">${role.roleName }</td>
 									<td class="col-key" style="text-align: left;">${role.roleKey }</td>
 									<td class="col-type">
-						<c:if test="${role.roleTarget eq '0' }">
+		<c:if test="${role.roleTarget eq '0' }">
 										사용자 사이트
-						</c:if>
-						<c:if test="${role.roleTarget eq '1' }">
+		</c:if>
+		<c:if test="${role.roleTarget eq '1' }">
 										관리자 사이트
-						</c:if>
-						<c:if test="${role.roleTarget eq '2' }">
+		</c:if>
+		<c:if test="${role.roleTarget eq '2' }">
 										서버
-						</c:if>
+		</c:if>
 									</td>
 									<td class="col-type">
-						<c:if test="${role.roleType eq '0' }">
+		<c:if test="${role.roleType eq '0' }">
 										사용자
-						</c:if>
-						<c:if test="${role.roleType eq '1' }">
+		</c:if>
+		<c:if test="${role.roleType eq '1' }">
 										서버
-						</c:if>
-						<c:if test="${role.roleType eq '2' }">
+		</c:if>
+		<c:if test="${role.roleType eq '2' }">
 										api
-						</c:if>
+		</c:if>
 									</td>
 									<td class="col-toggle">
-						<c:if test="${role.useYn eq 'Y' }">
+		<c:if test="${role.useYn eq 'Y' }">
 										사용
-						</c:if>
-						<c:if test="${role.useYn eq 'N' }">
+		</c:if>
+		<c:if test="${role.useYn eq 'N' }">
 										미사용
-						</c:if>
+		</c:if>
 									</td>
-									<td class="col-date-time">${role.insertDate }</td>
 									<td class="col-functions">
 										<a href="/role/modify?roleId=${role.roleId}" class="linkButton">수정</a>
 									</td>
 									<td class="col-functions">
+		<c:if test="${role.defaultYn eq 'Y' }">
+										삭제불가(기본)
+		</c:if>
+		<c:if test="${role.defaultYn eq 'N' }">							
 										<a href="#" onclick="deleteRole('${role.roleId}'); return false;" class="linkButton">삭제</a>
+		</c:if>
+									</td>
+									<td class="col-date-time">
+										<fmt:parseDate value="${role.insertDate }" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
+										<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
 									</td>
 								</tr>
-					</c:forEach>
-				</c:if>
+	</c:forEach>
+</c:if>
 							</table>
 						</div>
 						<%@ include file="/WEB-INF/views/common/pagination.jsp" %>
