@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -62,7 +63,7 @@ public class CivilVoiceController implements AuthorizationController {
 			civilVoice.setEndDate(civilVoice.getEndDate().substring(0, 8) + DateUtils.END_TIME);
 		}
 
-		Long totalCount = civilVoiceService.getCivilVoiceTotalCount(civilVoice);
+		long totalCount = civilVoiceService.getCivilVoiceTotalCount(civilVoice);
 		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, civilVoice), totalCount, Long.valueOf(pageNo).longValue());
 		civilVoice.setOffset(pagination.getOffset());
 		civilVoice.setLimit(pagination.getPageRows());
@@ -73,9 +74,7 @@ public class CivilVoiceController implements AuthorizationController {
 		}
 
 		model.addAttribute(pagination);
-		model.addAttribute("civilVoice", civilVoice);
 		model.addAttribute("civilVoiceList", civilVoiceList);
-
 		return "/civil-voice/list";
 	}
 

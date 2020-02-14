@@ -46,8 +46,8 @@ public class CivilVoiceCommentServiceImpl implements CivilVoiceCommentService {
 	}
 
 	@Transactional
-	public int deleteCivilVoiceComment(CivilVoiceComment civilVoiceComment) {
-		return civilVoiceCommentMapper.deleteCivilVoiceComment(civilVoiceComment);
+	public int deleteCivilVoiceComment(long civilVoiceCommentId) {
+		return civilVoiceCommentMapper.deleteCivilVoiceComment(civilVoiceCommentId);
 	}
 
 }

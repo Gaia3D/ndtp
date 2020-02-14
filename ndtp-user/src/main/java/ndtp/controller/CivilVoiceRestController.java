@@ -10,6 +10,7 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,7 +53,6 @@ public class CivilVoiceRestController {
 	 */
 	@GetMapping
 	public Map<String, Object> list(HttpServletRequest request, CivilVoice civilVoice, @RequestParam(defaultValue="1") String pageNo) {
-		log.info("civilVoice list ===================== {} " , civilVoice);
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String errorCode = null;
@@ -104,7 +104,6 @@ public class CivilVoiceRestController {
 	 */
 	@GetMapping("/{civilVoiceId}")
 	public Map<String, Object> detail(HttpServletRequest request, @PathVariable Long civilVoiceId, CivilVoice civilVoice) {
-		log.info("@@@@@ detail civilVoice = {}, civilVoiceId = {}", civilVoice, civilVoiceId);
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 
 		Map<String, Object> result = new HashMap<>();
@@ -147,7 +146,6 @@ public class CivilVoiceRestController {
 	 */
 	@PostMapping
 	public Map<String, Object> insert(HttpServletRequest request, @Valid @ModelAttribute CivilVoice civilVoice, BindingResult bindingResult) {
-		log.info("civilVoice ======================= {} " , civilVoice.getTitle());
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 
 		Map<String, Object> result = new HashMap<>();
@@ -170,6 +168,84 @@ public class CivilVoiceRestController {
 				civilVoice.setLocation("POINT(" + civilVoice.getLongitude() + " " + civilVoice.getLatitude() + ")");
 			}
 			civilVoiceService.insertCivilVoice(civilVoice);
+		} catch (Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
+	}
+
+	/**
+	 * 시민참여 수정
+	 * @param request
+	 * @param civilVoiceId
+	 * @param civilVoice
+	 * @param bindingResult
+	 * @return
+	 */
+	@PostMapping("/{civilVoiceId}")
+	public Map<String, Object> update(HttpServletRequest request, @PathVariable Long civilVoiceId, @Valid @ModelAttribute CivilVoice civilVoice, BindingResult bindingResult) {
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+
+		try {
+			if(bindingResult.hasErrors()) {
+				message = bindingResult.getAllErrors().get(0).getDefaultMessage();
+				log.info("@@@@@ message = {}", message);
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", errorCode);
+				result.put("message", message);
+	            return result;
+			}
+
+			civilVoice.setUserId(userSession.getUserId());
+			civilVoice.setCivilVoiceId(civilVoiceId);
+			if(civilVoice.getLongitude() != null && civilVoice.getLatitude() != null) {
+				civilVoice.setLocation("POINT(" + civilVoice.getLongitude() + " " + civilVoice.getLatitude() + ")");
+			}
+			civilVoiceService.updateCivilVoice(civilVoice);
+		} catch (Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
+	}
+
+	/**
+	 * 시민참여 삭제
+	 * @param request
+	 * @param civilVoiceId
+	 * @return
+	 */
+	@DeleteMapping("/{civilVoiceId}")
+	public Map<String, Object> delete(HttpServletRequest request, @PathVariable Long civilVoiceId, CivilVoice civilVoice) {
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+
+		try {
+			civilVoice.setUserId(userSession.getUserId());
+			civilVoice.setCivilVoiceId(civilVoiceId);
+			civilVoiceService.deleteCivilVoice(civilVoice);
 		} catch (Exception e) {
 			e.printStackTrace();
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();

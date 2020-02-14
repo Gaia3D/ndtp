@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!-- S: 시민참여 의견 -->
 <div id="civilVoiceDetailContent" class="contents mar0 pad0 border-none" style="display:none;">
-	<input type="hidden" id="civilVoiceId" value="">
 	<div id="civilVoiceView" class="commentView"></div>
 
 	<p class="agreeCount">동의 <span id="civilVoiceCommentTotalCount">0</span> 건</p>
@@ -21,10 +20,10 @@
 	<div style="margin-bottom: 15px;">
 		<div class="button-group-align marB10" style="display: inline-block;">
 			{{#if civilVoice.editable}}
-				<button type="button" id="civilVoiceUpdateButton" title="목록" class="btnText left-align reset marR5">수정</button>
-				<button type="button" id="civilVoiceDeleteButton" title="목록" class="btnText left-align reset marR5">삭제</button>
+				<button type="button" id="civilVoiceModifyButton" class="btnText left-align reset marR5" title="수정">수정</button>
+				<button type="button" class="btnText left-align reset marR5" onClick="return deleteCivilVoice({{civilVoice.civilVoiceId}});" title="삭제">삭제</button>
 			{{/if}}
-			<button type="button" id="civilVoiceListButton" title="목록" class="btnTextF right-align">목록</button>
+			<button type="button" id="civilVoiceListButton" data-goto="list" class="btnTextF right-align" title="목록">목록</button>
 		</div>
 		<span class="title"  id="civilVoiceTitle">
 			{{civilVoice.title}}

@@ -1,8 +1,47 @@
+var civilVoice = civilVoice || {};
+civilVoice = {
+	web: {
+		contents: {
+			list: $("#civilVoiceListContent"),
+			input: $("#civilVoiceInputContent"),
+			modify: $("#civilVoiceModifyContent"),
+			detail: $("#civilVoiceDetailContent")
+		},
+		currentCivilVoiceId: null,
+		currentPage: null,
+		// 페이지 조회
+		show: function(target) {
+			var viewList = civilVoice.web.contents;
+			// hide all
+			for(var property in viewList) {
+				var content = viewList[property];
+				content.hide();
+			}
+			// show target
+			var targetContent = viewList[target];
+			targetContent.show();
+		},
+		// 등록 폼 초기화
+		initFormContent: function(formId) {
+			$('#' + formId + ' input').val("");
+			$('#' + formId + ' textarea').val("");
+		},
+		// 핸들바 HTML 생성
+		drawHandlebarsHtml: function(data, templateId, targetId) {
+			var source = $('#' + templateId).html();
+			var template = Handlebars.compile(source);
+			var html = template(data);
+			$('#' + targetId).empty().append(html);
+		}
+	}
+}
+
 $(document).ready(function (){
 
+	// 초기 조회
 	getCivilVoiceList();
 
-	// 탭 클릭시 시민참여 조회
+	// 시민참여 탭 클릭시 조회
 	$('#civilVoiceMenu').on('click', function() {
 		if($(this).hasClass('on')){
 			getCivilVoiceList();
@@ -14,34 +53,6 @@ $(document).ready(function (){
 		getCivilVoiceList();
 	});
 
-	// 시민참여 입력 폼 조회
-	$("#civilVoiceInputButton").click(function(){
-		$("#civilVoiceListContent").hide();
-		$("#civilVoiceInputContent").show();
-	});
-
-	// 시민참여 등록
-	$('#civilVoiceCreateButton').click(function() {
-		saveCivilVoice();
-	});
-
-	// 시민참여 등록 취소
-	$("#civilVoiceCancleButton").click(function(){
-		$("#civilVoiceListContent").show();
-		$("#civilVoiceInputContent").hide();
-	});
-
-	// 시민참여 상세보기
-	$('#civilVoiceList').on('click', 'li.comment', function(){
-		var id = $(this).data('id');
-		$('#civilVoiceId').val(id);
-		$("#civilVoiceListContent").hide();
-		$("#civilVoiceDetailContent").show();
-
-		getCivilVoiceDetail();
-		getCivilVoiceCommentList();
-	});
-
 	// 시민참여 위치보기
 	$('#civilVoiceList').on('click', '.goto', function(e) {
 		e.stopPropagation();
@@ -50,44 +61,67 @@ $(document).ready(function (){
 		civilVoice.flyTo(longitude, latitude);
 	});
 
-	// 시민참여 목록 보기
-	$('#civilVoiceDetailContent').on('click', '#civilVoiceListButton', function(){
-		$("#civilVoiceListContent").show();
-		$("#civilVoiceDetailContent").hide();
-
-		getCivilVoiceList();
+	// 시민참여 상세보기
+	$('#civilVoiceContent').on('click', 'li.comment', function() {
+		civilVoice.web.show('detail');
+		// set current id
+		var id = $(this).data('id');
+		civilVoice.web.currentCivilVoiceId = id;
+		// get data
+		getCivilVoiceDetail();
+		getCivilVoiceCommentList();
 	});
 
-	// 시민참여 수정 폼 조회
-	$('#civilVoiceDetailContent').on('click', '#civilVoiceDeleteButton', function(){
-		$("#civilVoiceListContent").show();
-		$("#civilVoiceDetailContent").hide();
-
-		getCivilVoiceList();
+	// 시민참여 등록 화면 이동
+	$("#civilVoiceInputButton").click(function(){
+		civilVoice.web.show('input');
 	});
 
-	// 시민참여 삭제
-	$('#civilVoiceDetailContent').on('click', '#civilVoiceUpdateButton', function(){
-		$("#civilVoiceListContent").show();
-		$("#civilVoiceDetailContent").hide();
-
-		getCivilVoiceList();
+	// 시민참여 수정 화면 이동
+	$('#civilVoiceContent').on('click', '#civilVoiceModifyButton', function(){
+		civilVoice.web.show('modify');
+		getCivilVoiceModify();
 	});
 
-	// 시민참여 댓글 등록
-	$('#civilVoiceAgree').on('click', function() {
-		saveCivilVoiceComment();
+	// 시민참여 등록
+	$('#civilVoiceCreateButton').click(function() {
+		saveCivilVoice();
+	});
+
+	// 시민참여 수정
+	$('#civilVoiceContent').on('click', '#civilVoiceUpdateButton', function(){
+		updateCivilVoice();
 	});
 
 	// 위치 지정
 	$('#civilVoiceLocation').on('click', function() {
 		civilVoice.getGeographicCoord();
 	});
+
+	// 시민참여 취소 / 목록 보기
+	$('#civilVoiceContent').on('click', '[data-goto=list]', function(){
+		civilVoice.web.show('list');
+		getCivilVoiceList(civilVoice.web.currentPage);
+	});
+
+	// 시민참여 취소 / 목록 보기
+	$('#civilVoiceContent').on('click', '[data-goto=detail]', function(){
+		civilVoice.web.show('detail');
+		getCivilVoiceDetail(civilVoice.web.currentCivilVoiceId);
+	});
+
+	// 시민참여 댓글 등록
+	$('#civilVoiceAgree').on('click', function() {
+		saveCivilVoiceComment();
+	});
 });
 
 // 시민참여 목록 조회
 function getCivilVoiceList(page) {
 	if(!page) page = 1;
+	civilVoice.web.currentPage = page;
+	civilVoice.web.currentCivilVoiceId = null;
+
 	var formId = 'civilVoiceSearchForm';
 	var formData = $('#' + formId).serialize();
 
@@ -102,8 +136,8 @@ function getCivilVoiceList(page) {
 				$('#civilVoiceTotalCount').text(res.totalCount);
 				$('#civilVoiceCurrentPage').text(res.pagination.pageNo);
 				$('#civilVoiceLastPage').text(res.pagination.lastPage);
-				drawHandlebarsHtml(res, 'templateCivilVoiceList', 'civilVoiceList');
-				drawHandlebarsHtml(res, 'templateCivilVoicePagination', 'civilVoicePagination');
+				civilVoice.web.drawHandlebarsHtml(res, 'templateCivilVoiceList', 'civilVoiceList');
+				civilVoice.web.drawHandlebarsHtml(res, 'templateCivilVoicePagination', 'civilVoicePagination');
 			} else {
 				alert(JS_MESSAGE[res.errorCode]);
 				console.log("---- " + res.message);
@@ -117,7 +151,7 @@ function getCivilVoiceList(page) {
 
 // 시민참여 상세 조회
 function getCivilVoiceDetail() {
-	var id = $('#civilVoiceId').val();
+	var id = civilVoice.web.currentCivilVoiceId;
 
 	$.ajax({
 		url: '/civil-voices/' + id,
@@ -127,7 +161,31 @@ function getCivilVoiceDetail() {
 		dataType: 'json',
 		success: function(res){
 			if(res.statusCode <= 200) {
-				drawHandlebarsHtml(res, 'templateCivilVoiceView', 'civilVoiceView');
+				civilVoice.web.drawHandlebarsHtml(res, 'templateCivilVoiceView', 'civilVoiceView');
+			} else {
+				alert(JS_MESSAGE[res.errorCode]);
+				console.log("---- " + res.message);
+				}
+		},
+		error: function(request, status, error) {
+			alert(JS_MESSAGE["ajax.error.message"]);
+		}
+	});
+}
+
+// 시민참여  수정 화면 요청
+function getCivilVoiceModify() {
+	var id = civilVoice.web.currentCivilVoiceId;
+
+	$.ajax({
+		url: '/civil-voices/' + id,
+		type: 'GET',
+		headers: {'X-Requested-With': 'XMLHttpRequest'},
+		contentType: "application/json; charset=utf-8",
+		dataType: 'json',
+		success: function(res){
+			if(res.statusCode <= 200) {
+				civilVoice.web.drawHandlebarsHtml(res, 'templateCivilVoiceModify', 'civilVoiceModify');
 			} else {
 				alert(JS_MESSAGE[res.errorCode]);
 				console.log("---- " + res.message);
@@ -142,7 +200,7 @@ function getCivilVoiceDetail() {
 // 시민참여 댓글 조회
 function getCivilVoiceCommentList(page) {
 	if(!page) page = 1;
-	var id = $('#civilVoiceId').val();
+	var id = civilVoice.web.currentCivilVoiceId;
 
 	$.ajax({
 		url: '/civil-voice-comments/' + id,
@@ -154,8 +212,8 @@ function getCivilVoiceCommentList(page) {
 		success: function(res){
 			if(res.statusCode <= 200) {
 				$('#civilVoiceCommentTotalCount').text(res.totalCount);
-				drawHandlebarsHtml(res, 'templateCivilVoiceComment', 'civilVoiceComment');
-				drawHandlebarsHtml(res, 'templateCivilVoiceCommentPagination', 'civilVoiceCommentPagination');
+				civilVoice.web.drawHandlebarsHtml(res, 'templateCivilVoiceComment', 'civilVoiceComment');
+				civilVoice.web.drawHandlebarsHtml(res, 'templateCivilVoiceCommentPagination', 'civilVoiceCommentPagination');
 			} else {
 				alert(JS_MESSAGE[res.errorCode]);
 				console.log("---- " + res.message);
@@ -167,8 +225,7 @@ function getCivilVoiceCommentList(page) {
 	});
 }
 
-function civilVoiceValidation() {
-	var form = $('#civilVoiceForm');
+function civilVoiceValidation(form) {
 	if(!form.find('[name=title]').val()) {
 		alert("제목을 입력하여 주십시오.");
 		form.find('[name=title]').focus();
@@ -190,7 +247,7 @@ function civilVoiceValidation() {
 // 시민참여 등록
 var insertCivilVoiceFlag = true;
 function saveCivilVoice() {
-	if(!civilVoiceValidation()) return false;
+	if(!civilVoiceValidation($('#civilVoiceForm'))) return false;
 
 	if(insertCivilVoiceFlag) {
 		insertCivilVoiceFlag = false;
@@ -207,10 +264,8 @@ function saveCivilVoice() {
 			success: function(msg) {
 				if(msg.statusCode <= 200) {
 					alert("저장 되었습니다.");
-					initFormContent(formId);
-
-					$("#civilVoiceListContent").show();
-					$("#civilVoiceInputContent").hide();
+					civilVoice.web.initFormContent(formId);
+					civilVoice.web.show('list');
 					getCivilVoiceList();
 				} else {
 					alert(msg.message);
@@ -229,12 +284,89 @@ function saveCivilVoice() {
 	}
 }
 
+// 시민참여 수정
+var updateCivilVoiceFlag = true;
+function updateCivilVoice() {
+	if(!civilVoiceValidation($('#civilVoiceModifyForm'))) return false;
+	var id = civilVoice.web.currentCivilVoiceId;
+
+	if(updateCivilVoiceFlag) {
+		updateCivilVoiceFlag = false;
+		var url = "/civil-voices/" + id;
+		var formId = 'civilVoiceModifyForm';
+		var formData = $('#' + formId).serialize();
+
+		$.ajax({
+			url: url,
+			type: "POST",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			data: formData,
+			dataType: "json",
+			success: function(msg) {
+				if(msg.statusCode <= 200) {
+					alert("저장 되었습니다.");
+					civilVoice.web.initFormContent(formId);
+					civilVoice.web.show('detail');
+					getCivilVoiceDetail(id);
+				} else {
+					alert(msg.message);
+					console.log("---- " + msg.message);
+				}
+				updateCivilVoiceFlag = true;
+			},
+	        error: function(request, status, error) {
+	        	alert(JS_MESSAGE["ajax.error.message"]);
+	        	updateCivilVoiceFlag = true;
+	        }
+		});
+	} else {
+		alert("진행 중입니다.");
+		return;
+	}
+}
+
+// 시민참여 삭제
+var deleteCivilVoiceFlag = true;
+function deleteCivilVoice(id) {
+	if(!deleteWarning()) return false;
+
+	if(deleteCivilVoiceFlag) {
+		deleteCivilVoiceFlag = false;
+		var url = "/civil-voices/" + id;
+
+		$.ajax({
+			url: url,
+			type: "DELETE",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			dataType: "json",
+			success: function(msg) {
+				if(msg.statusCode <= 200) {
+					alert("삭제 되었습니다.");
+					civilVoice.web.show('list');
+					getCivilVoiceList();
+				} else {
+					alert(msg.message);
+					console.log("---- " + msg.message);
+				}
+				deleteCivilVoiceFlag = true;
+			},
+	        error: function(request, status, error) {
+	        	alert(JS_MESSAGE["ajax.error.message"]);
+	        	deleteCivilVoiceFlag = true;
+	        }
+		});
+	} else {
+		alert("진행 중입니다.");
+		return;
+	}
+}
+
 // 시민참여 댓글 등록
 var insertCivilVoiceCommentFlag = true;
 function saveCivilVoiceComment() {
 	if(insertCivilVoiceCommentFlag) {
 		insertCivilVoiceCommentFlag = false;
-		var id = $('#civilVoiceId').val();
+		var id = civilVoice.web.currentCivilVoiceId;
 		var url = "/civil-voice-comments";
 		var formId = 'civilVoiceCommentForm';
 		var formData = $('#' + formId).serialize();
@@ -248,7 +380,7 @@ function saveCivilVoiceComment() {
 			success: function(msg) {
 				if(msg.statusCode <= 200) {
 					alert("등록 되었습니다.");
-					initFormContent(formId);
+					civilVoice.web.initFormContent(formId);
 
 					getCivilVoiceCommentList();
 				} else {
@@ -268,28 +400,14 @@ function saveCivilVoiceComment() {
 	}
 }
 
-// 등록 폼 초기화
-function initFormContent(formId) {
-	$('#' + formId + ' input').val("");
-	$('#' + formId + ' textarea').val("");
-}
-
-// 핸들바 HTML 생성
-function drawHandlebarsHtml(data, templateId, targetId) {
-	var source = $('#' + templateId).html();
-	var template = Handlebars.compile(source);
-	var html = template(data);
-	$('#' + targetId).empty().append(html);
-}
 
 
 /******************************/
 
 
-var civilVoice;
 function CivilVoice(magoInstance) {
 	var viewer = magoInstance.getViewer();
-	civilVoice = new CivilVoiceControll(magoInstance, viewer);
+	civilVoice = $.extend(civilVoice, new CivilVoiceControll(magoInstance, viewer));
 }
 
 function CivilVoiceControll(magoInstance, viewer) {
