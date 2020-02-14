@@ -74,6 +74,30 @@ public class SimulationRestController {
 
 	}
 
+    @RequestMapping(value = "/cityPlanUpload", method = RequestMethod.POST)
+    public List<String> upload(MultipartFile[] files) {
+    	List<String> result = this.simServiceImpl.procStroeShp(files);
+		return result;
+        // PROCESS...
+    }
+    
+    @RequestMapping(value = "/cityPlanSelect", method = RequestMethod.GET)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public Object cityPlanSelect() {
+    	SimFileMaster sfm =  this.simServiceImpl.getSimFileMaster();
+    	String resultFullPath = sfm.getSave_file_path() + sfm.getSave_file_name(); 
+        File fi = new File(resultFullPath.trim());
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            InputStream targetStream = new FileInputStream(fi);
+            return mapper.readValue(targetStream, Object.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+        // PROCESS...
+  
+    }
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	public List<String> upload(MultipartHttpServletRequest mReq) {
 		Map<String, MultipartFile> fileMap = mReq.getFileMap();

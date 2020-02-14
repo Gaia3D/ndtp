@@ -1,7 +1,23 @@
-var Simulation = function(magoInstance) {
+var Simulation = function(magoInstance, viewer, $) {
 	var that = this;
 	var CAMERA_MOVE_NEED_DISTANCE = 5000;
+	console.log(viewer);
 	
+
+	var _viewer = viewer;
+    var _scene = viewer.scene;
+    var _polylines = [];
+    var _labels = [];   
+    var handler = null;
+    var drawingMode = 'line';
+    var activeShapePoints = [];
+    var activeShape;
+    var activeLabel;
+    var heightBuildingInput;
+    var runAllocBuildChkStat = false;
+    
+    var selectEntity;
+
 	var magoManager = magoInstance.getMagoManager();
 	
 	var observer;
@@ -17,6 +33,30 @@ var Simulation = function(magoInstance) {
         }
     });
 
+    var clearMap = function () {
+        lengthInMeters = 0;
+        areaInMeters = 0
+        if (Cesium.defined(handler)) {
+            handler.destroy();
+            handler = null;
+        }
+        for (var i = 0, len = this._polylines.length; i < len; i++) {
+            _viewer.entities.remove(this._polylines[i]);
+        }
+        for (var i = 0, len = this._labels.length; i < len; i++) {
+        	_viewer.entities.remove(this._labels[i]);
+        }
+
+        _viewer.entities.remove(activeShape);
+        _viewer.entities.remove(activeLabel);
+
+        activeShape = undefined;
+        activeLabel = undefined;
+        activeShapePoints = [];
+
+        this._polylines = [];
+        this._labels = [];
+    }
 	var timeSlider;
 	var solarMode = false;
 	//일조분석 조회
@@ -157,6 +197,79 @@ var Simulation = function(magoInstance) {
 		notyetAlram();
 	});
 	
+	$('#upload_cityplan').click(function() {
+		
+	});
+	$('#set_height_building').click(function(e) {
+		debugger;
+		heightBuildingInput = parseInt($('#height_building_input').val());
+		 
+		selectEntity.extrudedHeight = heightBuildingInput;
+	})
+
+	$('#run_cityplan').click(function() {
+		Cesium.GeoJsonDataSource.load('http://localhost/data/simulation-rest/select', {
+			width : 5,
+			leadTime : 0,
+			trailTime : 100,
+			resolution : 5,
+	        material : new Cesium.PolylineGlowMaterialProperty({
+	            glowPower : 0.2,
+	            rgba : [23, 184, 190,255]
+	        })
+		}).then(function(dataSource) {
+			var entitis = dataSource.entities._entities._array
+			for(var index in entitis) {
+				var glowingLine = _viewer.entities.add({
+				    name : 'Glowing blue line on the surface',
+				    polyline : {
+				        positions : entitis[index]._polyline.positions,
+						width : 5,
+						leadTime : 10,
+						trailTime : 100,
+						resolution : 5,
+				        material : new Cesium.PolylineGlowMaterialProperty({
+				            glowPower : 0.2,
+				            rgba : [23, 184, 190,255]
+				        })
+				    }
+				})
+			}
+		});
+	});
+	
+    // 	면적 측정 버튼
+//	$('#run_allocate_building').click(function() {
+//		debugger;
+//		$('#run_allocate_building').toggleClass('on'); // 버튼 색 변경
+//		$('#run_allocate_building').toggleClass('on'); // 버튼 색 변경
+//		$('#run_allocate_building').trigger('afterClick');
+//	});
+	
+	$("#run_allocate_building").change(function(){
+        if($("#run_allocate_building").is(":checked")){
+    		$('#run_allocate_building').toggleClass('on'); // 버튼 색 변경
+    		$('#run_allocate_building').trigger('afterClick');
+    		runAllocBuildChkStat = true;
+        }else{
+    		$('#run_allocate_building').removeClass('on');
+    		runAllocBuildChkStat = false;
+            drawingMode = 'line';
+            debugger;
+        }
+    });
+
+    $('#run_allocate_building').bind('afterClick', function () {
+		debugger;
+        console.log("맵컨트롤 : 면적");
+        //clearMap();
+        drawingMode = 'polygon';
+
+        if ($('#run_allocate_building').hasClass('on')) {
+            startDrawPolyLine();
+        }
+    });
+    
 	var smartTileLoaEndCallbak = function(evt){
 		var nodes = evt.tile.nodesArray;
 		for(var i in nodes){
@@ -282,4 +395,243 @@ var Simulation = function(magoInstance) {
 		//레인지, 레전드 끄기
 		$('#csRange, #constructionProcess .profileInfo').hide();
 	}
+
+
+    function createPoint(worldPosition) {
+        var entity = _viewer.entities.add({
+            position: worldPosition,
+            point: {
+                color: Cesium.Color.GRAY,
+                pixelSize: 5,
+                outlineColor: Cesium.Color.BLACK,
+                outlineWidth: 2,
+                disableDepthTestDistance: Number.POSITIVE_INFINITY,
+                heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+            }
+        });
+        return entity;
+    }
+
+    var dynamicCenter = new Cesium.CallbackProperty(function () {
+        var bs = Cesium.BoundingSphere.fromPoints(activeShapePoints);
+        return Cesium.Ellipsoid.WGS84.scaleToGeodeticSurface(bs.center);
+    }, false);
+
+    var dynamicLabel = new Cesium.CallbackProperty(function () {
+        return getArea(activeShapePoints);
+    }, false);
+
+    function drawShape(positionData) {
+        var shape;
+        if (drawingMode === 'line') {
+            shape = _viewer.entities.add({
+                corridor: {
+                    // polyline: {
+                    positions: positionData,
+                    material: new Cesium.ColorMaterialProperty(Cesium.Color.GRAY),
+                    //heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+                    // followSurface: true,
+                    // clampToGround : true,
+                    width: 3
+                }
+            });
+        }
+        else if (drawingMode === 'polygon') {
+            shape = _viewer.entities.add({
+                name     : "Polygon for area measurement",
+                polygon: {
+                    hierarchy: positionData,
+                    extrudedHeight: heightBuildingInput,
+                    shadows: 1,
+                    material: new Cesium.ColorMaterialProperty(Cesium.Color.GRAY.withAlpha(0.8)),
+                    /* height: 0.1, */
+                    //heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+                }
+            });
+        }
+        return shape;
+    }
+
+    // use scratch object to avoid new allocations per frame.
+    var startCartographic = new Cesium.Cartographic();
+    var endCartographic = new Cesium.Cartographic();
+    var scratch = new Cesium.Cartographic();
+    var geodesic = new Cesium.EllipsoidGeodesic();
+
+    function getLineLength(positions) {
+        lengthInMeters = 0;
+        for (var i = 1, len = positions.length; i < len; i++) {
+            var startPoint = positions[i - 1];
+            var endPoint = positions[i];
+
+            lengthInMeters += Cesium.Cartesian3.distance(startPoint, endPoint);
+        }
+        return formatDistance(lengthInMeters);
+    }
+
+    function getArea(positions) {
+        areaInMeters = 0;
+        if (positions.length >= 3)
+        {
+            var points = [];
+            for(var i = 0, len = positions.length; i < len; i++)
+            {
+                // points.push(Cesium.Cartesian2.fromCartesian3(positions[i]));
+                var cartographic = Cesium.Cartographic.fromCartesian(positions[i]);
+                points.push(new Cesium.Cartesian2(cartographic.longitude, cartographic.latitude));
+            }
+            if(Cesium.PolygonPipeline.computeWindingOrder2D(points) === Cesium.WindingOrder.CLOCKWISE)
+            {
+                points.reverse();
+            }
+
+            var triangles = Cesium.PolygonPipeline.triangulate(points);
+
+            for(var i = 0, len = triangles.length; i < len; i+=3)
+            {
+                // areaInMeters +=
+				// Cesium.PolygonPipeline.computeArea2D([points[triangles[i]],
+				// points[triangles[i + 1]], points[triangles[i + 2]]]);
+                areaInMeters += calArea(points[triangles[i]], points[triangles[i + 1]], points[triangles[i + 2]]);
+            }
+        }
+        return formatArea(areaInMeters);
+    }
+    function calArea(t1, t2, t3, i) {
+        var r = Math.abs(t1.x * (t2.y - t3.y) + t2.x * (t3.y - t1.y) + t3.x * (t1.y - t2.y)) / 2;
+		var cartographic = new Cesium.Cartographic((t1.x + t2.x + t3.x) / 3, (t1.y + t2.y + t3.y) / 3);
+		var cartesian = _viewer.scene.globe.ellipsoid.cartographicToCartesian(cartographic);
+        var magnitude = Cesium.Cartesian3.magnitude(cartesian);
+        return r * magnitude * magnitude * Math.cos(cartographic.latitude)
+    }
+
+    function drawLabel(positionData) {
+        var label;
+            label = _viewer.entities.add({
+                position: positionData,
+                label: {
+                    text: getLineLength(activeShapePoints),
+                    font: 'bold 20px sans-serif',
+                    fillColor: Cesium.Color.GRAY,
+                    style: Cesium.LabelStyle.FILL,
+                    verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                    disableDepthTestDistance: Number.POSITIVE_INFINITY,
+                    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND/*
+																			 * ,
+																			 * pixelOffset :
+																			 * new
+																			 * Cesium.Cartesian2(5,
+																			 * 20)
+																			 */
+                }
+            });
+        return label;
+    }
+
+    function drawAreaLabel() {
+        var label;
+        var bs = Cesium.BoundingSphere.fromPoints(activeShapePoints);
+        var position = Cesium.Ellipsoid.WGS84.scaleToGeodeticSurface(bs.center);
+        var text = getArea(activeShapePoints);
+
+        label = _viewer.entities.add({
+            name     : "Label for area measurement",
+            position: position,
+            label: {
+                text: text,
+                font: 'bold 20px sans-serif',
+                fillColor: Cesium.Color.BLUE,
+                style: Cesium.LabelStyle.FILL,
+                verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                disableDepthTestDistance: Number.POSITIVE_INFINITY,
+                heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+            }
+        });
+
+        return label;
+    }
+
+    // Redraw the shape so it's not dynamic and remove the dynamic shape.
+    function terminateShape() {
+        // activeShapePoints.pop();
+        lengthInMeters = 0;
+        areaInMeters = 0
+        this._polylines.push(drawShape(activeShapePoints));
+        if (drawingMode === 'polygon')  this._labels.push(drawAreaLabel());
+
+        _viewer.entities.remove(activeShape);
+        _viewer.entities.remove(activeLabel);
+        
+        activeShape = undefined;
+        activeLabel = undefined;
+        activeShapePoints = [];
+    }
+
+    function startDrawPolyLine() {
+    	debugger;
+        handler = new Cesium.ScreenSpaceEventHandler(_viewer.canvas);
+        var dynamicPositions = new Cesium.CallbackProperty(function () {
+            return new Cesium.PolygonHierarchy(activeShapePoints);
+        }, false);
+        
+        handler.setInputAction(function (event) {
+        	debugger;
+            var earthPosition = _viewer.scene.pickPosition(event.position);
+            if (Cesium.defined(earthPosition)) {
+                var cartographic = Cesium.Cartographic.fromCartesian(earthPosition);
+                var tempPosition = Cesium.Cartesian3.fromDegrees(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude));
+                if(runAllocBuildChkStat) {
+                    activeShapePoints.push(tempPosition);
+                    
+                    if (activeShapePoints.length === 1) {
+                        activeShape = drawShape(dynamicPositions);
+                        if (drawingMode === 'polygon') {
+    	                    activeLabel = _viewer.entities.add({
+    	                        name     : "TempLabel for area measurement",
+    	                        position: dynamicCenter,
+    	                        label: {
+    	                            text: dynamicLabel,
+    	                            font: 'bold 20px sans-serif',
+    	                            fillColor: Cesium.Color.BLUE,
+    	                            style: Cesium.LabelStyle.FILL,
+    	                            verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+    	                            disableDepthTestDistance: Number.POSITIVE_INFINITY,
+    	                            heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+    	                        }
+    	                    });
+                        }
+                    }
+                    else {
+                        //this._labels.push(drawLabel(tempPosition));
+                    }
+                    this._polylines.push(createPoint(tempPosition));	
+                } else {
+                	// 새로운 모델 선택
+                    var pickedFeature = viewer.scene.pick(event.position);
+                    if(pickedFeature) {
+                		permRequestDialog.dialog( "open" );
+                		selectEntity =pickedFeature.id.polygon;
+                    } else {
+                    	selectEntity = nul;
+                    }
+//                    ;
+//                    _viewer._selectedEntity = pickedFeature.id.polygon;
+                }
+            }
+        }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+        handler.setInputAction(function (event) {
+            terminateShape();
+        }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
+    }
+    
+
+    var permRequestDialog = $( "#permReqeustDialog" ).dialog({
+		autoOpen: false,
+		width: 1100,
+		height: 650,
+		modal: true,
+		overflow : "auto",
+		resizable: false
+	});
 }
