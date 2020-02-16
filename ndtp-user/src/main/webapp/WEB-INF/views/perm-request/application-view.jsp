@@ -129,7 +129,7 @@
                     const name = "PDF File Viewer";
                     const option = "width = 1000, height = 750, top = 100, left = 200, location = no";
                     window.open(url, name, option);
-                }, 200);
+                }, 1000);
 
                 // viewPdfDialog.dialog("open");
             },

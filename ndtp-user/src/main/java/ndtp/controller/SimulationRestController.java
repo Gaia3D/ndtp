@@ -36,6 +36,8 @@ public class SimulationRestController {
 	private final CivilVoiceService civilVoiceService;
 	private final CivilVoiceCommentService civilVoiceCommentService;
 	private final SimuServiceImpl simServiceImpl;
+	String PREFIX_URL = "C:\\data\\mago3d\\normal-upload-data\\";
+	String SAVE_PATH = "C:\\data\\mago3d\\normal-upload-data\\";
 
 	public SimulationRestController(CivilVoiceService civilVoiceService, CivilVoiceCommentService civilVoiceCommentService, SimuServiceImpl simServiceImpl) {
 		this.civilVoiceService = civilVoiceService;
@@ -87,11 +89,11 @@ public class SimulationRestController {
     }
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	public List<String> upload(MultipartHttpServletRequest mReq) {
-//		String PREFIX_URL = "C:\\data\\mago3d\\normal-upload-data\\";
-//		String SAVE_PATH = "C:\\data\\mago3d\\normal-upload-data\\";
-		//todo: have to change (if running window)
-		String PREFIX_URL = "/Users/junho/data/mago3d/";
-		String SAVE_PATH = "/Users/junho/data/mago3d/";
+		String os = System.getProperty("os.name").toLowerCase();
+		if (os.contains("mac")) {
+			PREFIX_URL = "/Users/junho/data/mago3d/";
+			SAVE_PATH = "/Users/junho/data/mago3d/";
+		}
 
 		Map<String, MultipartFile> fileMap = mReq.getFileMap();
 		Collection<MultipartFile> mFileCollection = fileMap.values();
@@ -179,24 +181,20 @@ public class SimulationRestController {
 
 	@RequestMapping(value = "/viewPdf", method = RequestMethod.POST)
 	public String viewPdf(HttpServletRequest req) {
-		// for Window
-//		String oriFilePath = "D:\\newFolder\\sql.jpg";
-//		String copyFilePath = "D:\\newFolder\\sql2.jpg";
-
 		String os = System.getProperty("os.name").toLowerCase();
-		System.out.println(os);
-		if (os.contains("mac")) {
-
-		} else {
-
-		}
 
 		String projectPath = System.getProperty("user.dir");
 		String fileName = req.getParameter("save_file_name");
-//		String fileName = "testfile.pdf";
+		String oriFilePath = "";
+		String copyFilePath = "";
 
-		String oriFilePath = "/Users/junho/data/mago3d/" + fileName;
-		String copyFilePath = projectPath + "/src/main/webapp/externlib/pdfjs/web/pdf_files/" + fileName;
+		if (os.contains("mac")) {
+			oriFilePath = "/Users/junho/data/mago3d/" + fileName;
+			copyFilePath = projectPath + "/src/main/webapp/externlib/pdfjs/web/pdf_files/" + fileName;
+		} else {
+			oriFilePath = SAVE_PATH + fileName;
+			copyFilePath = projectPath + "\\src\\main\\webapp\\externlib\\pdfjs\\web\\pdf_files\\" + fileName;
+		}
 
 		Path source = Paths.get(oriFilePath);
 		Path target = Paths.get(copyFilePath);
@@ -207,6 +205,9 @@ public class SimulationRestController {
 		}
 		if (target == null) {
 			throw new IllegalArgumentException("target must be specified");
+		}
+		if (Files.exists(target)) {
+			return fileName;
 		}
 
 		// 소스파일이 실제로 존재하는지 체크

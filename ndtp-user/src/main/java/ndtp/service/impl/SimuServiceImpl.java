@@ -18,6 +18,8 @@ import ndtp.persistence.SimuMapper;
 
 @Service
 public class SimuServiceImpl {
+	String PREFIX_URL = "C:\\data\\mago3d\\normal-upload-data\\";
+	String SAVE_PATH = "C:\\data\\mago3d\\normal-upload-data\\";
 
 	@Autowired
 	private SimuMapper simuMapper;
@@ -56,11 +58,11 @@ public class SimuServiceImpl {
 
 	private String restore(MultipartFile multipartFile) {
 		String url = null;
-//		String PREFIX_URL = "C:\\data\\mago3d\\normal-upload-data\\";
-//		String SAVE_PATH = "C:\\data\\mago3d\\normal-upload-data\\";
-		//todo: have to change (if running window)
-		String PREFIX_URL = "/Users/junho/data/mago3d/";
-		String SAVE_PATH = "/Users/junho/data/mago3d/";
+		String os = System.getProperty("os.name").toLowerCase();
+		if (os.contains("mac")) {
+			PREFIX_URL = "/Users/junho/data/mago3d/";
+			SAVE_PATH = "/Users/junho/data/mago3d/";
+		}
 
 		try {
 			// 파일 정보
