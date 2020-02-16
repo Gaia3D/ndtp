@@ -183,6 +183,14 @@ public class SimulationRestController {
 //		String oriFilePath = "D:\\newFolder\\sql.jpg";
 //		String copyFilePath = "D:\\newFolder\\sql2.jpg";
 
+		String os = System.getProperty("os.name").toLowerCase();
+		System.out.println(os);
+		if (os.contains("mac")) {
+
+		} else {
+
+		}
+
 		String projectPath = System.getProperty("user.dir");
 		String fileName = req.getParameter("save_file_name");
 //		String fileName = "testfile.pdf";
