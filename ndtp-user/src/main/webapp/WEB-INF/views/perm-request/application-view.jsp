@@ -99,11 +99,42 @@
 
     </form>
 
+    <button id="pdf_file" class="focusC" type="button" title="" >pdf_file</button>
 
 </div>
 
 
 <script>
+    $("#pdf_file").click(()=> {
+        console.log("clicked pdf_file");
+        let data = {
+            is_complete: "N",
+        };
+        $.ajax({
+            url: "/data/simulation-rest/viewPdf",
+            type: "POST",
+            headers: {"X-Requested-With": "XMLHttpRequest"},
+            // data: "aa",
+            // dataType: "json",
+            success: function(msg){
+                console.log("msgg=", msg);
+                setTimeout(() => {
+                    const fileLoc = "pdf_files/" + msg;
+                    console.log(fileLoc);
+
+                    const url = "/externlib/pdfjs/web/viewer.html?file=" + fileLoc;
+                    const name = "PDF File Viewer";
+                    const option = "width = 1000, height = 750, top = 100, left = 200, location = no";
+                    window.open(url, name, option);
+                }, 200);
+
+                // viewPdfDialog.dialog("open");
+            },
+            error:function(request,status,error) {
+                console.log("err=", request, status, error);
+            }
+        });
+    });
 
     $('#permViewDialog ul.listDrop li > p').click(function() {
         var parentObj = $(this).parent();

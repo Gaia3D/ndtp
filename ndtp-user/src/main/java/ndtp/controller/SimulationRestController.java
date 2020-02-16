@@ -1,9 +1,7 @@
 package ndtp.controller;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.file.*;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -152,6 +150,52 @@ public class SimulationRestController {
 		System.out.println(result);
 
 		return result;
+	}
+
+	@RequestMapping(value = "/viewPdf", method = RequestMethod.POST)
+	public String viewPdf(HttpServletRequest req) {
+		// for Window
+//		String oriFilePath = "D:\\newFolder\\sql.jpg";
+//		String copyFilePath = "D:\\newFolder\\sql2.jpg";
+
+		String projectPath = System.getProperty("user.dir");
+		String fileName = "testfile.pdf";
+
+		String oriFilePath = "/Users/junho/data/mago3d/" + fileName;
+		String copyFilePath = projectPath + "/src/main/webapp/externlib/pdfjs/web/pdf_files/" + fileName;
+
+		Path source = Paths.get(oriFilePath);
+		Path target = Paths.get(copyFilePath);
+
+		// 사전체크
+		if (source == null) {
+			throw new IllegalArgumentException("source must be specified");
+		}
+		if (target == null) {
+			throw new IllegalArgumentException("target must be specified");
+		}
+
+		// 소스파일이 실제로 존재하는지 체크
+		if (!Files.exists(source, new LinkOption[] {})) {
+			throw new IllegalArgumentException("Source file doesn't exist: "
+					+ source.toString());
+		}
+
+		try {
+			Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING); // 파일복사
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		if (Files.exists(target, new LinkOption[] {})) { // 파일이 정상적으로 생성이 되었다면
+			// System.out.println("File Copied");
+			return fileName; // true 리턴
+		} else {
+			System.out.println("File Copy Failed");
+			return "false"; // 실패시 false
+		}
+
 	}
 
 }
