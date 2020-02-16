@@ -77,7 +77,14 @@ public class SimuServiceImpl {
 
 
 			this.writeFile(multipartFile, saveFileName, SAVE_PATH);
-			simuMapper.insertSimCityPlanFile(new SimFileMaster(originFilename, saveFileName, SAVE_PATH));
+			SimFileMaster sfm = SimFileMaster.builder()
+					.originFileName(originFilename)
+					.saveFileName(saveFileName)
+					.saveFilePath(SAVE_PATH)
+					.build();
+			int result = simuMapper.insertSimCityPlanFile(sfm);
+			System.out.println(result);
+
 			url = PREFIX_URL + saveFileName;
 		}
 		catch (IOException e) {

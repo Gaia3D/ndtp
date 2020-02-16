@@ -49,7 +49,7 @@ public class SimulationRestController {
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public Object select() {
 		SimFileMaster sfm =  this.simServiceImpl.getSimFileMaster();
-		String resultFullPath = sfm.getSave_file_path() + sfm.getSave_file_name();
+		String resultFullPath = sfm.getSaveFilePath() + sfm.getSaveFileName();
 		File fi = new File(resultFullPath.trim());
 		try {
 			ObjectMapper mapper = new ObjectMapper();
@@ -74,7 +74,7 @@ public class SimulationRestController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Object cityPlanSelect() {
     	SimFileMaster sfm =  this.simServiceImpl.getSimFileMaster();
-    	String resultFullPath = sfm.getSave_file_path() + sfm.getSave_file_name(); 
+    	String resultFullPath = sfm.getSaveFilePath() + sfm.getSaveFileName();
         File fi = new File(resultFullPath.trim());
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -101,8 +101,18 @@ public class SimulationRestController {
 		String phone_number = mReq.getParameter("phone_number");
 
 		//todo: change
-		StructPermission spObj = new StructPermission(constructor, constructor_type, "ndtp", birthday,
-									license_num, phone_number, "127.786754", "36.643957");
+		StructPermission spObj = StructPermission.builder()
+				.constructor(constructor)
+				.constructorType(constructor_type)
+				.permOfficer("ndtp")
+				.birthday(birthday)
+				.licenseNum(license_num)
+				.phoneNumber(phone_number)
+				.isComplete("N")
+				.latitude("127.786754")
+				.longitude("36.643957")
+				.build();
+
 		structPermissionMapper.insertStructPermission(spObj);
 
 		List<String> result = this.simServiceImpl.procStroeShp(files);
@@ -128,7 +138,6 @@ public class SimulationRestController {
 	}
 	@RequestMapping(value = "/updateStructPermission", method = RequestMethod.POST)
 	public int updateStructPermission(HttpServletRequest req) {
-
 		String suitableCheck = req.getParameter("suitableCheck");
 		if (suitableCheck.equals("false")) {
 			return 0;
@@ -138,8 +147,6 @@ public class SimulationRestController {
 				.constructor(req.getParameter("constructor"))
 				.constructorType(req.getParameter("constructor_type"))
 				.build();
-
-
 
 		int result = structPermissionMapper.updateStructPermission(sp);
 		System.out.println(result);

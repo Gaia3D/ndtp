@@ -9,26 +9,14 @@
 	</select>
 
 	<insert id="insertSimCityPlanFile" parameterType="simFileInfo">
-		<![CDATA[
-			INSERT INTO public.sim_file_master
-			(sim_file_seq, origin_file_name, save_file_name, save_file_path, create_dt)
-			VALUES(0, '${origin_file_name}', '${save_file_name}', '${save_file_path}', now())
-		]]>
+		<selectKey keyProperty="simFileSeq" resultType="int" order="BEFORE">
+			SELECt NEXTVAL('sim_file_sequence')
+		</selectKey>
+		INSERT INTO sim_file_master(
+			sim_file_seq, origin_file_name, save_file_name, save_file_path, create_dt
+		) VALUES (
+			#{simFileSeq}, #{originFileName}, #{saveFileName}, #{saveFilePath}, NOW()
+		)
 	</insert>
-	
-	<!-- 사용자 기본 정보 중 세션 관련 정보 수정 -->
-	<update id="updateSigninUserSession" parameterType="userSession">
-		/* updateSigninUserSession */
-		UPDATE user_info
-		SET 
-		<if test="status != null and status != ''">
-			status = #{status},
-			update_date = NOW(),
-		</if>
-		<if test="failSigninCount != null and failSigninCount gte 0">
-			fail_signin_count = #{failSigninCount},
-		</if>
-			last_signin_date = NOW()
-		WHERE user_id = #{userId}
-	</update>
+
 </mapper>
