@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js" type="text/javascript"></script>--%>
-<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
-<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-<script type="text/javascript" src="/js/${lang}/map-controll.js"></script>
+<%--<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>--%>
+<%--<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>--%>
+<%--<script type="text/javascript" src="/js/${lang}/map-controll.js"></script>--%>
 
 <script src="/externlib/notification/jquery.growl.js" type="text/javascript"></script>
 <link href="/externlib/notification/jquery.growl.css" rel="stylesheet" type="text/css" />
@@ -25,7 +25,7 @@
         data: data,
         dataType: "json",
         success: function(msg){
-            console.log("msg=", msg);
+            console.log("msg  =", msg);
 
             msg.forEach(obj => {
                 console.log("위도 =", obj.latitude, " 경도=", obj.longitude);

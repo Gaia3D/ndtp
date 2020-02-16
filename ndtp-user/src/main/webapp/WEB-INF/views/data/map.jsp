@@ -5,7 +5,7 @@
 <%@ include file="/WEB-INF/views/perm-request/application-register.jsp" %>
 <%@ include file="/WEB-INF/views/perm-request/application-view.jsp" %>
 
-<%@ include file="/WEB-INF/views/notification/notification.jsp" %>
+
 <%@ include file="/WEB-INF/views/perm-request/test-fly.jsp" %>
 <%@ include file="/WEB-INF/views/perm-request/test-picking.jsp" %>
 
@@ -169,6 +169,7 @@
 <script type="text/javascript" src="/js/${lang}/layer.js"></script>
 <script type="text/javascript" src="/js/${lang}/map-data-controll.js"></script>
 <script type="text/javascript" src="/js/${lang}/civil-voice.js"></script>
+
 <script type="text/javascript">
 	var a=1;
 	// 임시로...
@@ -713,5 +714,6 @@
 		}
 	}
 </script>
+<%@ include file="/WEB-INF/views/notification/notification.jsp" %>
 </body>
 </html>
