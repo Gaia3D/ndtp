@@ -71,7 +71,7 @@
 		// todo: change data
 		let data = {
 			is_complete: "N",
-			constructor: "아무개",
+			constructor: "건축주1",
 		};
 		$.ajax({
 			url: "/data/simulation-rest/getPermRequestByConstructor",
@@ -87,8 +87,8 @@
 				$("#permViewDialog #constructor_type").get(0).disabled = true;
 				$("#permViewDialog #birthday").get(0).value = msg.birthday;
 				$("#permViewDialog #license_num").get(0).value = msg.licenseNum;
-
 				$("#permViewDialog #phone_number").get(0).value = msg.phoneNumber;
+				$("#permViewDialog #district_unit_plan").get(0).value = msg.saveFileName;
 
 				permViewDialog.dialog("open");
 			},

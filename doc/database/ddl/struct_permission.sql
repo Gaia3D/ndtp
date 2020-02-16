@@ -11,5 +11,8 @@ CREATE TABLE struct_permission (
     is_complete varchar(1) DEFAULT 'N',
     latitude varchar(30),
     longitude varchar(30),
+    save_file_path varchar(255),
+    save_file_name varchar(255),
+    origin_file_name varchar(255),
     apply_date date DEFAULT now()
 );

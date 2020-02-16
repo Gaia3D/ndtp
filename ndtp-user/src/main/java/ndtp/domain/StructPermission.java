@@ -21,6 +21,9 @@ public class StructPermission {
 	private String isComplete;
 	private String latitude;
 	private String longitude;
+	private String saveFilePath;
+	private String saveFileName;
+	private String originFileName;
 	private Date applyDate;
 }
 

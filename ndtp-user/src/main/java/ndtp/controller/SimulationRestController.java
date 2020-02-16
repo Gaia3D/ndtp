@@ -87,10 +87,32 @@ public class SimulationRestController {
     }
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	public List<String> upload(MultipartHttpServletRequest mReq) {
+//		String PREFIX_URL = "C:\\data\\mago3d\\normal-upload-data\\";
+//		String SAVE_PATH = "C:\\data\\mago3d\\normal-upload-data\\";
+		//todo: have to change (if running window)
+		String PREFIX_URL = "/Users/junho/data/mago3d/";
+		String SAVE_PATH = "/Users/junho/data/mago3d/";
+
 		Map<String, MultipartFile> fileMap = mReq.getFileMap();
 		Collection<MultipartFile> mFileCollection = fileMap.values();
 
 		MultipartFile[] files = mFileCollection.toArray(MultipartFile[]::new);
+
+		String originFileName = "";
+		String saveFileName = "";
+		for(MultipartFile mtf : files) {
+			String fileName = mtf.getOriginalFilename();
+			String extName = fileName.substring(fileName.lastIndexOf("."), fileName.length());
+			if (extName.contains("pdf")) {
+				originFileName = fileName;
+				saveFileName = genSaveFileName(extName);
+				try{
+					writeFile(mtf, saveFileName, SAVE_PATH);
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		}
 
 		String constructor = mReq.getParameter("constructor");
 		String constructor_type = mReq.getParameter("constructor_type");
@@ -109,6 +131,9 @@ public class SimulationRestController {
 				.isComplete("N")
 				.latitude("127.786754")
 				.longitude("36.643957")
+				.saveFilePath(SAVE_PATH)
+				.saveFileName(saveFileName)
+				.originFileName(originFileName)
 				.build();
 
 		structPermissionMapper.insertStructPermission(spObj);
@@ -159,7 +184,8 @@ public class SimulationRestController {
 //		String copyFilePath = "D:\\newFolder\\sql2.jpg";
 
 		String projectPath = System.getProperty("user.dir");
-		String fileName = "testfile.pdf";
+		String fileName = req.getParameter("save_file_name");
+//		String fileName = "testfile.pdf";
 
 		String oriFilePath = "/Users/junho/data/mago3d/" + fileName;
 		String copyFilePath = projectPath + "/src/main/webapp/externlib/pdfjs/web/pdf_files/" + fileName;
@@ -188,14 +214,49 @@ public class SimulationRestController {
 			e.printStackTrace();
 		}
 
+//		Base64.Encoder encoder = Base64.getEncoder();
 		if (Files.exists(target, new LinkOption[] {})) { // 파일이 정상적으로 생성이 되었다면
 			// System.out.println("File Copied");
-			return fileName; // true 리턴
+//			String a = encoder.encodeToString(fileName.getBytes());
+//			return encoder.encodeToString(fileName.getBytes());
+			return fileName;
 		} else {
 			System.out.println("File Copy Failed");
-			return "false"; // 실패시 false
+//			return encoder.encodeToString("false".getBytes());
+			return "false";
 		}
 
 	}
 
+
+
+
+
+	private String genSaveFileName(String extName) {
+		String fileName = "";
+
+		Calendar calendar = Calendar.getInstance();
+		fileName += calendar.get(Calendar.YEAR);
+		fileName += calendar.get(Calendar.MONTH);
+		fileName += calendar.get(Calendar.DATE);
+		fileName += calendar.get(Calendar.HOUR);
+		fileName += calendar.get(Calendar.MINUTE);
+		fileName += calendar.get(Calendar.SECOND);
+		fileName += calendar.get(Calendar.MILLISECOND);
+		fileName += extName;
+
+		return fileName;
+	}
+	private boolean writeFile(MultipartFile multipartFile, String saveFileName, String SAVE_PATH) throws IOException{
+		boolean result = false;
+
+		this.genSaveFileName(SAVE_PATH);
+
+		byte[] data = multipartFile.getBytes();
+		FileOutputStream fos = new FileOutputStream(SAVE_PATH + "/" + saveFileName);
+		fos.write(data);
+		fos.close();
+
+		return result;
+	}
 }

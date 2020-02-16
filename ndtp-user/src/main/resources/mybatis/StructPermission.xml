@@ -5,10 +5,7 @@
 
 	<!-- 세션 정보 -->
 	<select id="selectStructPermission" resultType="structPermission">
-		<![CDATA[
-			select perm_seq, constructor, constructor_type, perm_officer, birthday, license_num, phone_number, is_complete, latitude, longitude, apply_date
-			from struct_permission
-		]]>
+		select * from struct_permission
 	</select>
 	<select id="selectOne" parameterType="structPermission" resultType="structPermission">
 		select * from struct_permission where constructor = #{constructor}
@@ -19,9 +16,9 @@
 			SELECt NEXTVAL('perm_sequence')
 		</selectKey>
 		INSERT INTO struct_permission(
-			perm_seq, constructor, constructor_type, perm_officer, birthday, license_num, phone_number, is_complete, latitude, longitude, apply_date
+			perm_seq, constructor, constructor_type, perm_officer, birthday, license_num, phone_number, is_complete, latitude, longitude, save_file_path, save_file_name, origin_file_name, apply_date
 		) VALUES (
-			#{permSeq}, #{constructor}, #{constructorType}, #{permOfficer}, #{birthday}, #{licenseNum}, #{phoneNumber}, #{isComplete}, #{latitude}, #{longitude}, NOW()
+			#{permSeq}, #{constructor}, #{constructorType}, #{permOfficer}, #{birthday}, #{licenseNum}, #{phoneNumber}, #{isComplete}, #{latitude}, #{longitude}, #{saveFilePath}, #{saveFileName}, #{originFileName}, NOW()
 		)
 	</insert>
 

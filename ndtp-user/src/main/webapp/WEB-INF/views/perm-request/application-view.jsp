@@ -29,10 +29,12 @@
                             <label for="license_num">사업자 번호</label>
                             <input id="license_num" name="license_num" class="radius" type="text" placeholder="(-)는 생략하고 입력바랍니다." value="" title="관찰자 지점으로부터의 가시선 분석 수행 반경. 단위는 m" readonly>
                         </li>
-<%--                        <li>--%>
-<%--                            <label for="bim_file">BIM 파일</label>--%>
-<%--                            <input id="bim_file" type="file" name="bim_file"  readonly>--%>
-<%--                        </li>--%>
+                        <li>
+                            <label for="district_unit_plan">지구단위계획 파일</label>
+                            <input id="district_unit_plan" name="district_unit_plan" class="radius" type="text" value="" title="" readonly style="display:none;">
+                            <button id="district_unit_plan_viewer" class="focusC" type="button" title="지구단위계획 파일 보기" >Viewer</button>
+
+                        </li>
 <%--                        <li>--%>
 <%--                            <label for="struct_calculation">구조 계산서 파일</label>--%>
 <%--                            <input id="struct_calculation" type="file" name="struct_calculation" readonly>--%>
@@ -96,32 +98,33 @@
             <button id="permSend" class="focusA" type="submit" title="전송" style="width:200px;">전송</button>
             <button id="permCancel" class="focusC" type="button" title="취소" >취소</button>
         </div>
-
     </form>
-
-    <button id="pdf_file" class="focusC" type="button" title="" >pdf_file</button>
 
 </div>
 
 
 <script>
-    $("#pdf_file").click(()=> {
+    // function b64DecodeUnicode(str) {
+    //     // Going backwards: from bytestream, to percent-encoding, to original string.
+    //     return decodeURIComponent(atob(str).split('').map(function(c) {
+    //         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    //     }).join(''));
+    // }
+    $("#permViewDialog #district_unit_plan_viewer").click(()=> {
         console.log("clicked pdf_file");
         let data = {
-            is_complete: "N",
+            save_file_name: $("#permViewDialog #district_unit_plan").get(0).value,
         };
         $.ajax({
             url: "/data/simulation-rest/viewPdf",
             type: "POST",
             headers: {"X-Requested-With": "XMLHttpRequest"},
-            // data: "aa",
+            data: data,
             // dataType: "json",
             success: function(msg){
-                console.log("msgg=", msg);
+                console.log("msg=", msg);
                 setTimeout(() => {
                     const fileLoc = "pdf_files/" + msg;
-                    console.log(fileLoc);
-
                     const url = "/externlib/pdfjs/web/viewer.html?file=" + fileLoc;
                     const name = "PDF File Viewer";
                     const option = "width = 1000, height = 750, top = 100, left = 200, location = no";

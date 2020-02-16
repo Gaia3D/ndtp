@@ -42,8 +42,8 @@
                             <input id="struct_security" type="file" name="struct_security"  multiple>
                         </li>
                         <li>
-                            <label for="struct_confirm">구조 확인서 파일</label>
-                            <input id="struct_confirm" type="file" name="struct_confirm"  multiple>
+                            <label for="district_unit_plan">지구단위계획 파일</label>
+                            <input id="district_unit_plan" type="file" name="district_unit_plan"  multiple>
                         </li>
                         <li>
                             <label for="phone_number">휴대전화</label>
