@@ -674,6 +674,7 @@ var Simulation = function(magoInstance, viewer, $) {
     })
     
     $('#result_build').click(function() {
+    	debugger;
     	// console.log("맵컨트롤 : 저장");
         var targetResolutionScale = 1.0;
         var timeout = 500; // in ms
@@ -733,7 +734,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	        scale : scale,
 	        shadows : 1,
 	        name : name,
-	        show: false
+//	        show: false
 	    }));
 	    viewer.scene.primitives.add(model);
 	    Cesium.when(model.readyPromise).then(function(model) {
@@ -741,49 +742,49 @@ var Simulation = function(magoInstance, viewer, $) {
 	    	  model.activeAnimations.addAll({
 	    	    multiplier : 0.5
 	    	  });
-	    	model.getNode("FLOOR").show = false;
-	    	model.getNode("ROOF_1").show = false;
-	    	model.getNode("DOOR").show = false;
-	    	model.getNode("WINDOW").show = false;
-	    	model.getNode("WALL").show = false;
-	    	model.getNode("ROOF_2").show = false;
-	    	model.getNode("GROUND_FLOOR_2").show = false;
-	    	model.getNode("BALCONY").show = false;
-	    	model.getNode("LOUVER").show = false;
-	    	model.getNode("GROUND_FLOOR_1").show = false;
-
-		    model.show = true;
-
-	    	setTimeout(function() {
-		    	model.getNode("FLOOR").show = true;	    		
-	    	}, 100);
-	    	setTimeout(function() {	
-		    	model.getNode("WALL").show = true;    		
-	    	}, 300);
-	    	setTimeout(function() {	
-		    	model.getNode("GROUND_FLOOR_1").show = true;
-	    	}, 500);
-	    	setTimeout(function() {	
-		    	model.getNode("GROUND_FLOOR_2").show = true;		
-	    	}, 700);
-	    	setTimeout(function() {	
-		    	model.getNode("BALCONY").show = true;	
-	    	}, 900);
-	    	setTimeout(function() {
-		    	model.getNode("DOOR").show = true;    		
-	    	}, 1100);
-	    	setTimeout(function() {
-		    	model.getNode("WINDOW").show = true;   		
-	    	}, 1200);
-	    	setTimeout(function() {
-		    	model.getNode("ROOF_1").show = true;  		
-	    	}, 1400);
-	    	setTimeout(function() {	
-		    	model.getNode("ROOF_2").show = true;	
-	    	}, 1600);
-	    	setTimeout(function() {	
-		    	model.getNode("LOUVER").show = true;  		
-	    	}, 1800);
+//	    	model.getNode("FLOOR").show = false;
+//	    	model.getNode("ROOF_1").show = false;
+//	    	model.getNode("DOOR").show = false;
+//	    	model.getNode("WINDOW").show = false;
+//	    	model.getNode("WALL").show = false;
+//	    	model.getNode("ROOF_2").show = false;
+//	    	model.getNode("GROUND_FLOOR_2").show = false;
+//	    	model.getNode("BALCONY").show = false;
+//	    	model.getNode("LOUVER").show = false;
+//	    	model.getNode("GROUND_FLOOR_1").show = false;
+//
+//		    model.show = true;
+//
+//	    	setTimeout(function() {
+//		    	model.getNode("FLOOR").show = true;	    		
+//	    	}, 100);
+//	    	setTimeout(function() {	
+//		    	model.getNode("WALL").show = true;    		
+//	    	}, 300);
+//	    	setTimeout(function() {	
+//		    	model.getNode("GROUND_FLOOR_1").show = true;
+//	    	}, 500);
+//	    	setTimeout(function() {	
+//		    	model.getNode("GROUND_FLOOR_2").show = true;		
+//	    	}, 700);
+//	    	setTimeout(function() {	
+//		    	model.getNode("BALCONY").show = true;	
+//	    	}, 900);
+//	    	setTimeout(function() {
+//		    	model.getNode("DOOR").show = true;    		
+//	    	}, 1100);
+//	    	setTimeout(function() {
+//		    	model.getNode("WINDOW").show = true;   		
+//	    	}, 1200);
+//	    	setTimeout(function() {
+//		    	model.getNode("ROOF_1").show = true;  		
+//	    	}, 1400);
+//	    	setTimeout(function() {	
+//		    	model.getNode("ROOF_2").show = true;	
+//	    	}, 1600);
+//	    	setTimeout(function() {
+//		    	model.getNode("LOUVER").show = true;  		
+//	    	}, 1800);
 	    	
 	    	
 	    	}).otherwise(function(error){

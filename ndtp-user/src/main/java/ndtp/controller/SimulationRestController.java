@@ -10,9 +10,11 @@ import ndtp.domain.*;
 import ndtp.persistence.StructPermissionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -88,7 +90,8 @@ public class SimulationRestController {
     @RequestMapping(value = "/cityPlanModelSelect", method = RequestMethod.GET)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Object cityPlanModelSelect() {
-    	String resultFullPath = "C:\\data\\Apartment_Building_26_obj\\Apartment_Building_26_obj.gltf";
+//    	String resultFullPath = "C:\\data\\Apartment_Building_26_obj\\Apartment_Building_26_obj.gltf";
+		String resultFullPath = "C:\\data\\Apartment_Building_26_obj\\Sample.gltf";
 		String os = System.getProperty("os.name").toLowerCase();
 		if (os.contains("mac")) {
 			resultFullPath = "/Users/junho/data/mago3d/building_obj/Apartment_Building_26_obj.gltf";
@@ -104,7 +107,6 @@ public class SimulationRestController {
         }
         return null;
     }
-
 
     @RequestMapping(value = "/cityPlanResultInsert", method = RequestMethod.POST)
     public List<String> cityPlanResultInsert(CityPlanResult cityPlanResult) {
