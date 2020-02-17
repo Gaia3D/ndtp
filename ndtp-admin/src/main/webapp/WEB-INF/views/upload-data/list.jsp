@@ -41,9 +41,9 @@
 									</div>
 									<div class="input-set">
 										<label for="startDate"><spring:message code='search.date'/></label>
-										<input type="text" id="startDate" name="startDate" class="s date" />
+										<input type="text" id="startDate" name="startDate" class="s date" autocomplete="off" />
 										<span class="delimeter tilde">~</span>
-										<input type="text" id="endDate" name="endDate" class="s date" />
+										<input type="text" id="endDate" name="endDate" class="s date" autocomplete="off" />
 									</div>
 									<div class="input-set">
 										<label for="orderWord"><spring:message code='search.order'/></label>

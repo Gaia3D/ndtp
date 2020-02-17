@@ -245,6 +245,10 @@
 		/* magoManager.on(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
 			console.info(result);
 		}); */
+		
+		// mago3d logo 추가
+		Mago3D.tempCredit(viewer);
+		
 		//우측 상단 지도 컨트롤러
 		MapControll(viewer);
 		//공간분석 기능 수행

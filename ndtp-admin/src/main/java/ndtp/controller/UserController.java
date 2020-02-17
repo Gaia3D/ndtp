@@ -73,9 +73,10 @@ public class UserController implements AuthorizationController {
 		}
 
     	long totalCount = userService.getUserTotalCount(userInfo);
-    	Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, userInfo), totalCount, Long.valueOf(pageNo).longValue());
-		userInfo.setOffset(pagination.getOffset());
-		userInfo.setLimit(pagination.getPageRows());
+    	Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, userInfo),
+    			totalCount, Long.valueOf(pageNo).longValue(), userInfo.getListCounter());
+    	userInfo.setOffset(pagination.getOffset());
+    	userInfo.setLimit(pagination.getPageRows());
 
 		List<UserInfo> userList = new ArrayList<>();
 		if(totalCount > 0l) {

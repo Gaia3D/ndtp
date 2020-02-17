@@ -32,6 +32,7 @@
 										<select id="searchWord" name="searchWord" class="select" style="height: 30px;">
 											<option value=""><spring:message code='select'/></option>
 						          			<option value="title">제목명</option>
+						          			<option value="user_id">작성자</option>
 										</select>
 										<form:select path="searchOption" class="select" style="height: 30px;">
 											<form:option value="0"><spring:message code='search.same'/></form:option>
@@ -41,15 +42,16 @@
 									</div>
 									<div class="input-set">
 										<label for="startDate"><spring:message code='search.date'/></label>
-										<input type="text" class="s date" id="startDate" name="startDate" />
+										<input type="text" class="s date" id="startDate" name="startDate" autocomplete="off" />
 										<span class="delimeter tilde">~</span>
-										<input type="text" class="s date" id="endDate" name="endDate" />
+										<input type="text" class="s date" id="endDate" name="endDate" autocomplete="off" />
 									</div>
 									<div class="input-set">
 										<label for="orderWord"><spring:message code='search.order'/></label>
 										<select id="orderWord" name="orderWord" class="select" style="height: 30px;">
 											<option value=""> <spring:message code='search.basic'/> </option>
 											<option value="title">제목명</option>
+						          			<option value="user_id">작성자</option>
 											<option value="insertDate"> <spring:message code='search.insert.date'/> </option>
 										</select>
 										<select id="orderValue" name="orderValue" class="select" style="height: 30px;">
@@ -89,8 +91,8 @@
 											<th scope="col" class="col-number"><spring:message code='number'/></th>
 						                    <th scope="col">동의</th>
 						                    <th scope="col" style="width:600px">제목</th>
-						                    <th scope="col">작성자</th>
 						                    <th scope="col">편집</th>
+						                    <th scope="col">작성자</th>
 						                    <th scope="col">등록일</th>
 										</tr>
 									</thead>
@@ -109,11 +111,11 @@
 											<td class="col-name">
 												<a href="/civil-voice/detail?civilVoiceId=${civilVoice.civilVoiceId}&amp;pageNo=${pagination.pageNo }${pagination.searchParameters}" class="linkButton">${civilVoice.title}</a>
 											</td>
-											<td class="col-type">${civilVoice.userId}</td>
 											<td class="col-type">
 												<a href="/civil-voice/modify?civilVoiceId=${civilVoice.civilVoiceId}" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;
 												<a href="/civil-voice/delete?civilVoiceId=${civilVoice.civilVoiceId}" onclick="return deleteWarning();" class="linkButton"><spring:message code='delete'/></a>
 											</td>
+											<td class="col-type">${civilVoice.userId}</td>
 											<td class="col-functions">
 												<fmt:parseDate value="${civilVoice.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
 												<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.extern.slf4j.Slf4j;
+import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
 import ndtp.domain.Role;
 import ndtp.service.RoleService;
@@ -56,11 +57,11 @@ public class RoleController {
 		}
 
 		long totalCount = roleService.getRoleTotalCount(role);
-		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(role), totalCount, Long.valueOf(pageNo).longValue());
-		log.info("@@ pagination = {}", pagination);
-
+		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, role),
+				totalCount, Long.valueOf(pageNo).longValue(), role.getListCounter());
 		role.setOffset(pagination.getOffset());
 		role.setLimit(pagination.getPageRows());
+
 		List<Role> roleList = new ArrayList<>();
 		if(totalCount > 0l) {
 			roleList = roleService.getListRole(role);
@@ -211,10 +212,11 @@ public class RoleController {
 
 	/**
 	 * 검색 조건
-	 * @param search
+	 * @param pageType
+	 * @param role
 	 * @return
 	 */
-	private String getSearchParameters(Role role) {
+	private String getSearchParameters(PageType pageType, Role role) {
 		return role.getParameters();
 	}
 }

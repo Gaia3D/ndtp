@@ -30,7 +30,18 @@
 	<!-- E: NAVWRAP -->
 
 	<div class="container" style="float:left; width: calc(100% - 78px);">
-		<%@ include file="/WEB-INF/views/layouts/data-tab.jsp" %>
+		<div style="padding: 20px 20px 0px 10px; font-size: 18px;">3D 업로딩 데이터 자동 변환</div>
+		<div class="tabs" >
+			<ul class="tab">
+				<li id="tabDataGroupList"><a href="/data-group/list">데이터 그룹</a></li>
+				<li id="tabDataGroupInput"><a href="/data-group/input">데이터 그룹 등록</a></li>
+				<li id="tabUploadDataInput"><a href="/upload-data/input">업로딩 데이터</a></li>
+			   	<li id="tabUploadDataList"><a href="/upload-data/list">업로딩 데이터 목록</a></li>
+			  	<li id="tabConverterList"><a href="/converter/list">업로딩 데이터 변환 목록</a></li>
+			  	<li id="tabDataList"><a href="/data/list">데이터 목록</a></li>
+			  	<li id="tabDataLogList"><a href="/data-log/list">데이터 변경 이력</a></li>
+			</ul>
+		</div>
 		<div class="filters">
 			<form:form id="searchForm" modelAttribute="dataInfoLog" method="get" action="/data-log/list" onsubmit="return searchCheck();">
 			<div class="input-group row">
@@ -48,9 +59,9 @@
 				</div>
 				<div class="input-set">
 					<label for="startDate"><spring:message code='search.date'/></label>
-					<input type="text" class="s date" id="startDate" name="startDate" />
+					<input type="text" class="s date" id="startDate" name="startDate" autocomplete="off" />
 					<span class="delimeter tilde">~</span>
-					<input type="text" class="s date" id="endDate" name="endDate" />
+					<input type="text" class="s date" id="endDate" name="endDate" autocomplete="off" />
 				</div>
 				<div class="input-set">
 					<label for="orderWord"><spring:message code='search.order'/></label>
@@ -155,6 +166,22 @@
 <script type="text/javascript" src="/js/${lang}/map-controll.js"></script>
 <script type="text/javascript" src="/js/${lang}/ui-controll.js"></script>
 <script type="text/javascript">
+	$(document).ready(function() {
+		var searchWord = "${dataInfoLog.searchWord}";
+		var searchOption = "${dataInfoLog.searchOption}";
+		var orderWord = "${dataInfoLog.orderWord}";
+		var orderValue = "${dataInfoLog.orderValue}";
+		var listCounter = "${dataInfoLog.listCounter}";
+	
+		if(searchWord != "") $("#searchWord").val("${dataInfoLog.searchWord}");
+		if(searchOption != "") $("#searchOption").val("${dataInfoLog.searchOption}");
+		if(orderWord != "") $("#orderWord").val("${dataInfoLog.orderWord}");
+		if(orderValue != "") $("#orderValue").val("${dataInfoLog.orderValue}");
+		if(listCounter != "") $("#listCounter").val("${dataInfoLog.listCounter}");
+	
+		initDatePicker();
+		initCalendar(new Array("startDate", "endDate"), new Array("${dataInfoLog.startDate}", "${dataInfoLog.endDate}"));
+	});
 
 	//전체 선택
 	$("#chkAll").click(function() {

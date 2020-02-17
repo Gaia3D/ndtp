@@ -483,8 +483,8 @@ text-align: left;
 text-align: center;
 }
 button.goto {
-width: 30px;
-height: 30px;
+width: 32px;
+height: 32px;
 border:none;
 text-indent: -999em;
 background: url(/images/ko/ico.png) no-repeat -462px -697px;
@@ -1696,6 +1696,10 @@ text-overflow: ellipsis;
 }
 .tab-divide > li {
 	width: calc(50% - 5px);
+	padding: 5px 0px;
+}
+.tab-divide li:not(.on):hover {
+color: #006bd2;
 }
 ul.listDrop li.list-drop-button-none {
 	cursor: auto;
@@ -1860,6 +1864,7 @@ z-index:100;
 .btn-full {
 	width: 100%;
 }
+
 /* Mago3D 설정창 Toolbar 관련 - 정연화 추가 */
 .inline-toggle {
 	display: inline-block;
@@ -1870,6 +1875,12 @@ z-index:100;
 	width: 40%;
 	float: left;
 	line-height: 2.4em;
+}
+
+/* Mago3D 로고 - 정연화 추가 */
+.mago3d_logo {
+	width: 90px;
+	padding: 0 0 5px 5px;
 }
 
 /* ////////// CUSTOM - 정연화 추가 ////////// */

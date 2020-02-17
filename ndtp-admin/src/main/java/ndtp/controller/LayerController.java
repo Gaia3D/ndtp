@@ -51,13 +51,13 @@ import ndtp.domain.LayerFileInfo;
 import ndtp.domain.LayerGroup;
 import ndtp.domain.LayerInsertType;
 import ndtp.domain.LayerType;
+import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
 import ndtp.domain.Policy;
 import ndtp.domain.RoleKey;
 import ndtp.domain.ShapeFileExt;
 import ndtp.domain.UserSession;
 import ndtp.geospatial.ShapeFileParser;
-import ndtp.persistence.LayerFileInfoMapper;
 import ndtp.service.GeoPolicyService;
 import ndtp.service.LayerFileInfoService;
 import ndtp.service.LayerGroupService;
@@ -114,11 +114,11 @@ public class LayerController implements AuthorizationController {
 		}
 
 		Long totalCount = layerService.getLayerTotalCount(layer);
-		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(layer), totalCount, Long.valueOf(pageNo).longValue());
-		log.info("@@ pagination = {}", pagination);
-
+		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, layer),
+				totalCount, Long.valueOf(pageNo).longValue(), layer.getListCounter());
 		layer.setOffset(pagination.getOffset());
 		layer.setLimit(pagination.getPageRows());
+
 		List<Layer> layerList = new ArrayList<>();
 		if(totalCount > 0l) {
 			layerList = layerService.getListLayer(layer);
@@ -1169,10 +1169,11 @@ public class LayerController implements AuthorizationController {
 
     /**
 	 * 검색 조건
-	 * @param search
+	 * @param pageType
+	 * @param layer
 	 * @return
 	 */
-	private String getSearchParameters(Layer layer) {
+	private String getSearchParameters(PageType pageType, Layer layer) {
 		return layer.getParameters();
 	}
 }

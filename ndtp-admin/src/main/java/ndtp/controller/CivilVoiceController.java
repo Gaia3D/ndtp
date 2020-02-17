@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -48,6 +47,8 @@ public class CivilVoiceController implements AuthorizationController {
 	 */
     @GetMapping(value = "list")
 	public String list(HttpServletRequest request, @RequestParam(defaultValue="1") String pageNo, CivilVoice civilVoice, Model model) {
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+
 		String roleCheckResult = roleValidate(request);
     	if(roleValidate(request) != null) return roleCheckResult;
 
@@ -64,12 +65,14 @@ public class CivilVoiceController implements AuthorizationController {
 		}
 
 		long totalCount = civilVoiceService.getCivilVoiceTotalCount(civilVoice);
-		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, civilVoice), totalCount, Long.valueOf(pageNo).longValue());
+		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, civilVoice),
+				totalCount, Long.valueOf(pageNo).longValue(), civilVoice.getListCounter());
 		civilVoice.setOffset(pagination.getOffset());
 		civilVoice.setLimit(pagination.getPageRows());
 
 		List<CivilVoice> civilVoiceList = new ArrayList<>();
 		if(totalCount > 0l) {
+			civilVoice.setUserId(userSession.getUserId());
 			civilVoiceList = civilVoiceService.getListCivilVoice(civilVoice);
 		}
 
