@@ -116,7 +116,12 @@ public class ServletConfig implements WebMvcConfigurer {
 		
 		// F4D converter file 경로
 		registry.addResourceHandler("/f4d/**").addResourceLocations("file:" + propertiesConfig.getDataServiceDir());
-		registry.addResourceHandler("/data/simulation-rest/**").addResourceLocations("file:C:\\data\\Apartment_Building_26_obj\\");
+		String os = System.getProperty("os.name").toLowerCase();
+		if (os.contains("mac")) {
+			registry.addResourceHandler("/data/simulation-rest/**").addResourceLocations("file:/Users/junho/data/mago3d/building_obj/");
+		} else {
+			registry.addResourceHandler("/data/simulation-rest/**").addResourceLocations("file:C:\\data\\Apartment_Building_26_obj\\");
+		}
 		
 		registry.addResourceHandler("/css/**").addResourceLocations("/css/");
 		registry.addResourceHandler("/externlib/**").addResourceLocations("/externlib/");

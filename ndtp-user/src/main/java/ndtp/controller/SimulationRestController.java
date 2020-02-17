@@ -94,7 +94,8 @@ public class SimulationRestController {
 		String resultFullPath = "C:\\data\\Apartment_Building_26_obj\\Sample.gltf";
 		String os = System.getProperty("os.name").toLowerCase();
 		if (os.contains("mac")) {
-			resultFullPath = "/Users/junho/data/mago3d/building_obj/Apartment_Building_26_obj.gltf";
+//			resultFullPath = "/Users/junho/data/mago3d/building_obj/Apartment_Building_26_obj.gltf";
+			resultFullPath = "/Users/junho/data/mago3d/building_obj/Roof.gltf";
 		}
 
         File fi = new File(resultFullPath.trim());
@@ -158,8 +159,8 @@ public class SimulationRestController {
 				.licenseNum(license_num)
 				.phoneNumber(phone_number)
 				.isComplete("N")
-				.latitude("127.786754")
-				.longitude("36.643957")
+				.latitude("126.92377563766438")
+				.longitude("37.5241752651257")
 				.saveFilePath(SAVE_PATH)
 				.saveFileName(saveFileName)
 				.originFileName(originFileName)
