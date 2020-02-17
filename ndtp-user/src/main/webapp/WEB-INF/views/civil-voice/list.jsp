@@ -36,9 +36,13 @@
 <button type="button" id="testFly" class="btnTextF" style="margin-top:10px;">Fly Test</button>
 <button type="button" id="testingPicking" class="btnTextF" style="margin-top:10px;">testingPicking</button>
 
-
+<button type="button" id="testBuilding" class="btnTextF" style="margin-top:10px;">testBuilding</button>
 
 <script>
+	$("#testBuilding").click(()=> {
+		console.log("testBuilding");
+		genBuild(127.786754, 36.643957, 0.1);
+	});
 	var testingPickingDialog = $( "#testingPickingDialog" ).dialog({
 		autoOpen: false,
 		width: 1100,
@@ -96,10 +100,26 @@
 				console.log("err=", request, status, error);
 			}
 		});
-
-
 	});
 
+	function genBuild(lon, lat, scale) {
+		var position = Cesium.Cartesian3.fromDegrees(lon, lat, 0);
+		var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
+		// fromGltf 함수를 사용하여 key : value 값으로 요소를 지정
+		var name = '슬퍼하지마NONONO';
+		var model = whole_viewer.scene.primitives.add(Cesium.Model.fromGltf({
+			url : 'http://localhost/data/simulation-rest/cityPlanModelSelect',
+			modelMatrix : modelMatrix,
+			scale : scale,
+			shadows : 1,
+			name : name
+		}));
+		whole_viewer.scene.primitives.add(model);
+		Cesium.when(model.readyPromise).then(function(model) {
+		}).otherwise(function(error){
+			window.alert(error);
+		});
+	}
 
 </script>
 
