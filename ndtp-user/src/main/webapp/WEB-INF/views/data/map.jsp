@@ -15,6 +15,7 @@
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
 	<link rel="stylesheet" href="/externlib/geostats/geostats.css" />
 	<link rel="stylesheet" href="/externlib/kotSlider/range.css" />
+	<link rel="stylesheet" href="/externlib/tuidatepicker-4.0.3/tui-date-picker.min.css" />
 	<link rel="stylesheet" href="/css/${lang}/user-style.css" />
 	<style type="text/css">
 	    .mapWrap {
@@ -52,7 +53,7 @@
 				<%@ include file="/WEB-INF/views/search/district.jsp" %>
 			</div>
 			<div id="dataContent" class="contents-margin-default fullHeight">
-				<div class="tabs" >
+				<div class="tabs">
 					<ul id="dataInfoTab" class="tab tab-divide">
 						<li data-nav="dataGroupInfoContent">데이터 그룹</li>
 						<li data-nav="dataInfoContent" class="on">데이터 목록</li>
@@ -63,13 +64,13 @@
 			</div>
 			<!-- E: 데이터 -->
 
-			<div id="spatialContent" class="contentsList yScroll" style="display:none;height: 798px;background-color: #fff;">
+			<div id="spatialContent" class="contents yScroll fullHeight" style="display:none;">
 				<%@ include file="/WEB-INF/views/spatial/spatial.jsp" %>
 			</div>
-			<div id="simulationContent" class="contentsList yScroll" style="display:none;">
+			<div id="simulationContent" class="contents yScroll fullHeight" style="display:none;">
 				<%@ include file="/WEB-INF/views/simulation/simulation.jsp" %>
 			</div>
-			<div id="civilVoiceContent" class="contents yScroll" style="display:none;">
+			<div id="civilVoiceContent" class="yScroll" style="display:none;">
 				<%@ include file="/WEB-INF/views/civil-voice/list.jsp" %>
 			</div>
 
@@ -108,8 +109,11 @@
 			<canvas id="analysisGraphic"></canvas>
 			<div class="closeGraphic">X</div>
 		</div>
-		<div class="sliderWrap">
+		<div class="sliderWrap" id="csRange">
 			<input id="rangeInput"/>
+		</div>
+		<div class="sliderWrap" id="saRange">
+			<input id="timeInput"/>
 		</div>
 	</div>
 	<!-- E: MAP -->
@@ -131,6 +135,7 @@
 <script type="text/javascript" src="/externlib/decodeTextAlternative/encoding-indexes.js"></script>
 <script type="text/javascript" src="/externlib/decodeTextAlternative/encoding.js"></script>
 <script type="text/javascript" src="/externlib/moment-2.22.2/moment-with-locales.min.js"></script>
+<script type="text/javascript" src="/externlib/tuidatepicker-4.0.3/tui-date-picker.min.js"></script>
 <script type="text/javascript" src="/js/mago3d.js"></script>
 <script type="text/javascript" src="/js/mago3d_lx.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>

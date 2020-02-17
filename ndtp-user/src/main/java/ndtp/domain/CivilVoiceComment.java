@@ -21,6 +21,14 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CivilVoiceComment {
+	/**
+	 * 화면 표시용 
+	 */
+	private Boolean editable;
+	
+	/**
+	 * DB
+	 */
 	private Long civilVoiceCommentId;
 	private Long civilVoiceId;
 	private String userId;

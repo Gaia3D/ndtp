@@ -829,6 +829,20 @@ function togglePointCloudColorAPI(managerFactoryInstance)
 	var api = new Mago3D.API("togglePointCloudColor");
 	managerFactoryInstance.callAPI(api);
 }
+
+/**
+ * select f4d
+ * @param {ManagerFactory} managerFactoryInstance
+ */
+function selectF4dAPI(managerFactoryInstance, projectId, dataKey) 
+{
+	var api = new Mago3D.API("selectF4d");
+	api.setProjectId(projectId);
+	api.setDataKey(dataKey);
+	managerFactoryInstance.callAPI(api);
+
+	
+}
 'use strict';
 
 /**
@@ -14825,6 +14839,7 @@ var ViewerInit = function(containerId, serverPolicy)
 	this.viewer;
 	this.policy = MagoConfig.getPolicy();
 
+	MagoConfig.setContainerId(this.targetId);
 	this.init();
 };
 
@@ -23249,6 +23264,7 @@ MagoManager.EVENT_TYPE = {
 	'SMARTTILELOADEND'   	: 'smarttileloadend',
 	'F4DLOADSTART'      		: 'f4dloadstart',
 	'F4DLOADEND'       			: 'f4dloadend',
+	'F4DRENDERREADY'   			: 'f4drenderready',
 	'SELECTEDF4D'      	 	: 'selectedf4d',
 	'SELECTEDF4DMOVED'    : 'selectedf4dmoved',
 	'SELECTEDF4DOBJECT'  	: 'selectedf4dobject',
@@ -23584,6 +23600,10 @@ MagoManager.prototype.upDateSceneStateMatrices = function(sceneState)
 		//sceneState.modelViewProjRelToEyeMatrix._floatArrays = glMatrix.mat4.multiply(sceneState.modelViewProjRelToEyeMatrix._floatArrays, sceneState.projectionMatrix._floatArrays, sceneState.modelViewRelToEyeMatrix._floatArrays);
 
 	}
+	
+	
+	sceneState.modelViewProjMatrixInv = undefined; // init. Calculate when necessary.***
+	sceneState.projectionMatrixInv = undefined; // init.Calculate when necessary.***
 	
 	if (this.depthFboNeo !== undefined)
 	{
@@ -24172,6 +24192,9 @@ MagoManager.prototype.doRender = function(frustumVolumenObject)
 	this.renderer.renderMagoGeometries(renderType); //TEST
 	this.depthFboNeo.unbind();
 	this.swapRenderingFase();
+	
+	
+	
 
 	// 2) color render.************************************************************************************************************
 	if (this.isCesiumGlobe())
@@ -24180,17 +24203,23 @@ MagoManager.prototype.doRender = function(frustumVolumenObject)
 		scene._context._currentFramebuffer._bind();
 	}
 	
+	// 2.1) Render terrain shadows.*******************************************************************************************************
+	// Now render the geomatry.
+	if (this.configInformation.geo_view_library === Constant.CESIUM && this.currentFrustumIdx < 2)
+	{
+		renderType = 3;
+		this.renderer.renderTerrainShadow(gl, renderType, this.visibleObjControlerNodes);
+	}
 	//gl.clearColor(0, 0, 0, 1);
 	//gl.clearDepth(1);
 	//gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	
 	
 	renderType = 1;
 	this.renderType = 1;
 	this.renderer.renderGeometry(gl, renderType, this.visibleObjControlerNodes);
 	
-	// 3) Stencil buffer render.*******************************************************************************************************
-	//renderType = 3;
-	//this.renderer.renderGeometryStencilShadowMeshes(gl, renderType, this.visibleObjControlerNodes);
+	
 	
 	if (this.weatherStation)
 	{
@@ -24273,7 +24302,6 @@ MagoManager.prototype.startRender = function(isLastFrustum, frustumIdx, numFrust
 	this.numFrustums = numFrustums;
 	this.isLastFrustum = isLastFrustum;
 	
-
 	var gl = this.getGl();
 	this.upDateSceneStateMatrices(this.sceneState);
 	
@@ -24328,7 +24356,8 @@ MagoManager.prototype.startRender = function(isLastFrustum, frustumIdx, numFrust
 	this.visibleObjControlerNodes = visibleNodes; // set the current visible nodes.***
 
 	// prepare data if camera is no moving.***
-	if (!this.isCameraMoving && !this.mouseLeftDown && !this.mouseMiddleDown)
+	//if (!this.isCameraMoving && !this.mouseLeftDown && !this.mouseMiddleDown)
+	if (!this.isCameraMoving && !this.mouseMiddleDown)
 	{
 		this.loadAndPrepareData();
 		this.managePickingProcess();
@@ -24376,6 +24405,9 @@ MagoManager.prototype.startRender = function(isLastFrustum, frustumIdx, numFrust
 	{
 		this.drawBuildingNames(this.visibleObjControlerNodes) ;
 	}
+
+	// kjh test.***
+
 };
 
 /**
@@ -24843,7 +24875,7 @@ MagoManager.prototype.mouseActionLeftUp = function(mouseX, mouseY)
 	this.mustCheckIfDragging = true;
 	this.thereAreStartMovePoint = false;
 
-	this.dateSC = new Date();
+	/*this.dateSC = new Date();
 	this.currentTimeSC = this.dateSC.getTime();
 	var miliSecondsUsed = this.currentTimeSC - this.startTimeSC;
 	if (miliSecondsUsed < 1500) 
@@ -24852,7 +24884,7 @@ MagoManager.prototype.mouseActionLeftUp = function(mouseX, mouseY)
 		{
 			this.bPicking = true;
 		}
-	}
+	}*/
 	
 	this.setCameraMotion(true);
 	
@@ -25088,6 +25120,23 @@ MagoManager.prototype.keyDown = function(key)
 		}
 		sunSystem.setDate(this.dateTest);
 		*/
+		
+		// Stencil shadow mesh making test.********************
+		var nodeSelected = this.selectionManager.currentNodeSelected;
+		if (nodeSelected)
+		{
+			var geoLocDataManager = nodeSelected.data.geoLocDataManager;
+			var geoLocData = geoLocDataManager.getCurrentGeoLocationData();
+			var sunSystem = this.sceneState.sunSystem;
+			var sunDirWC = sunSystem.getSunDirWC();
+			var sunDirLC = geoLocData.getRotatedRelativeVector(sunDirWC, sunDirLC);
+			
+			var neoBuilding = nodeSelected.data.neoBuilding;
+			var lodBuilding = neoBuilding.lodBuildingMap.lod3;
+			if (lodBuilding)
+			{ lodBuilding.skinLego.makeStencilShadowMesh(sunDirLC); }
+		}
+		// End test----------------------------------------------------
 		
 		// another test.***
 		if (this.modeler !== undefined)
@@ -25495,6 +25544,17 @@ MagoManager.prototype.mouseActionLeftDown = function(mouseX, mouseY)
 	this.mouseLeftDown = true;
 	//this.isCameraMoving = true;
 	MagoWorld.updateMouseStartClick(mouseX, mouseY, this);
+
+	this.dateSC = new Date();
+	this.currentTimeSC = this.dateSC.getTime();
+	var miliSecondsUsed = this.currentTimeSC - this.startTimeSC;
+	if (miliSecondsUsed < 1500) 
+	{
+		if (this.mouse_x === mouseX && this.mouse_y === mouseY) 
+		{
+			this.bPicking = true;
+		}
+	}
 	/*if (!this.isCesiumGlobe()) 
 	{
 		MagoWorld.updateMouseStartClick(mouseX, mouseY, this);
@@ -26923,7 +26983,7 @@ MagoManager.prototype.getObjectLabel = function()
 		if (this.canvasObjectLabel === undefined)
 		{ return; }
 
-		var magoDiv = document.getElementById('magoContainer');
+		var magoDiv = document.getElementById(MagoConfig.getContainerId());
 		var offsetLeft = magoDiv.offsetLeft;
 		var offsetTop = magoDiv.offsetTop;
 		var offsetWidth = magoDiv.offsetWidth;
@@ -29126,6 +29186,39 @@ MagoManager.prototype.callAPI = function(api)
 		var renderingSettings = this._settings.getRenderingSettings();
 		var pointsCloudColorRamp = renderingSettings.getPointsCloudInColorRamp();
 		renderingSettings.setPointsCloudInColorRamp(!pointsCloudColorRamp);
+	}
+	else if (apiName === 'selectF4d')
+	{
+		var projectId = api.getProjectId();
+		var dataKey = api.getDataKey();
+		if (!defined(projectId))
+		{
+			throw new Error("projectId is required.");
+		}
+		if (!defined(dataKey))
+		{
+			throw new Error("dataKey is required.");
+		}
+		var node = this.hierarchyManager.getNodeByDataKey(projectId, dataKey);
+		if (!node)
+		{
+			throw new Error("f4d is not exist.");
+		}
+
+		this.magoPolicy.setObjectMoveMode(CODE.moveMode.ALL);
+
+		this.nodeSelected = node;
+		this.buildingSelected = node.data.neoBuilding;
+		this.rootNodeSelected = this.nodeSelected.getRoot();
+
+		this.selectionManager.currentBuildingSelected = this.buildingSelected;
+		this.selectionManager.currentNodeSelected = this.nodeSelected;
+
+		this.emit(MagoManager.EVENT_TYPE.SELECTEDF4D, {
+			type      : MagoManager.EVENT_TYPE.SELECTEDF4D, 
+			f4d       : node, 
+			timestamp : new Date()
+		});
 	}
 };
 
@@ -32826,6 +32919,12 @@ SmartTile.prototype.createGeometriesFromSeeds = function(magoManager)
 						neoBuilding.projectFolderName = node.data.projectFolderName;
 						
 						geometriesCreated = true;
+
+						magoManager.emit(MagoManager.EVENT_TYPE.F4DRENDERREADY, {
+							type      : MagoManager.EVENT_TYPE.F4DRENDERREADY,
+							f4d       : node,
+							timestamp : new Date()
+						});
 					}
 				}
 				//else if (attributes.objectType === "multiBuildingsTile")
@@ -37443,6 +37542,9 @@ VisibleObjectsController.prototype.calculateBoundingFrustum = function(camera)
 	{
 		var visible = filteredVisiblesArray[i];
 		var bSphere = visible.getBoundingSphereWC(bSphere);
+		if (!bSphere)
+		{ continue; }
+		
 		var centerPoint = bSphere.getCenterPoint();
 		var radius = bSphere.getRadius();
 		var projectedPoint = camDirLine.getProjectedPoint(centerPoint, undefined);
@@ -38567,6 +38669,16 @@ Constant.INTERSECTION_POINT_B = 4;
  */
 var MagoConfig = {};
 
+MagoConfig.setContainerId = function(containerId) 
+{
+	this.containerId = containerId;
+};
+
+MagoConfig.getContainerId = function() 
+{
+	return this.containerId;
+};
+
 MagoConfig.getPolicy = function() 
 {
 	return this.serverPolicy;
@@ -39574,7 +39686,8 @@ Effect.prototype.execute = function(currTimeSec)
 		}
 		else
 		{
-			colorMultiplier = 1/(timeDiffSeconds/this.durationSeconds);
+			var timeRatio = timeDiffSeconds/this.durationSeconds;
+			colorMultiplier = 1/(timeRatio*timeRatio);
 		}
 		gl.uniform4fv(this.effectsManager.currShader.colorMultiplier_loc, [colorMultiplier, colorMultiplier, colorMultiplier, 1.0]);
 		return effectFinished;
@@ -41757,6 +41870,8 @@ Lego.prototype.makeStencilShadowMesh = function(lightDirectionLC)
 		{ this.shadowMeshesArray.push(shadowMaesh); }
 	}
 	
+	return;
+	
 	// Now, detect faces on light & faces on shadow.
 	var facesInLightArray = [];
 	var facesInShadowArray = [];
@@ -41833,11 +41948,15 @@ Lego.prototype.makeStencilShadowMesh = function(lightDirectionLC)
 		//                 ||                               //                 ||                        ||
 		//          "hedge"||twin             =========>    //          "hedge"||newHedge0      newHedge2||twin 
 		//      [face]     ||     [twinFace]                //     [face]      ||       [newFace]        ||      [twinFace]
-		//                 ||                               //                 ||                        ||
+		//      [inLight]  ||     [inShadow]                //    [inLight]    ||      [inShadow]        ||      [inShadow]
 		//                 |V                               //                 |V    newHedge1           |V
 		//   ------------>(v1)----------->                  //   ----------->(v1)-------------------->(newV0)------------->
 		
-		var dist = 100.0;
+		// test.***
+		mesh.surfacesArray.length = 0;
+		// end test.---
+		
+		var dist = 1000.0;
 		var vertexList = mesh.vertexList;
 		var newSurface = mesh.newSurface();
 		var hedgesList = mesh.hedgesList;
@@ -45167,7 +45286,16 @@ NeoBuilding.prototype.renderSkin = function(magoManager, shader, renderType)
 	}
 	
 	gl.uniform1i(shader.refMatrixType_loc, 0); // in this case, there are not referencesMatrix.
-	skinLego.render(magoManager, renderType, renderTexture, shader, this);
+	
+	// TEST.*******************************
+	if (skinLego.skinLego.shadowMeshesArray && skinLego.skinLego.shadowMeshesArray.length > 0)
+	{
+		//gl.disable(gl.CULL_FACE);
+		skinLego.render(magoManager, 3, renderTexture, shader, this);
+		//gl.enable(gl.CULL_FACE);
+	}
+	else
+	{ skinLego.render(magoManager, renderType, renderTexture, shader, this); }
 	
 	if (renderType === 1 && magoManager.magoPolicy.getObjectMoveMode() === CODE.moveMode.ALL && magoManager.buildingSelected === this)
 	{
@@ -55964,111 +56092,6 @@ TinTerrainManager.prototype.render = function(magoManager, bDepth, renderType, s
 
 
 
-
-'use strict';
-
-/**
- * 메세지
- * 
- * @class
- */
-var Message = function(i18next, message) 
-{
-	this.handle  = i18next;
-	this.message = message || MessageSource;
-};
-
-/**
- * 메세지 클래스 초기화
- *
- * @param {Function} callback
- */
-Message.prototype.init = function (callback)
-{
-	var h = this.handle;
-	this.handle.use(i18nextXHRBackend)
-		.use(i18nextBrowserLanguageDetector)
-		.init({
-			// Useful for debuging, displays which key is missing
-			debug: false,
-
-			detection: {
-				// keys or params to lookup language from
-				lookupQuerystring  : 'lang',
-				lookupCookie       : 'i18nextLang',
-				lookupLocalStorage : 'i18nextLang',
-			},
-    
-			// If translation key is missing, which lang use instead
-			fallbackLng: 'en',
-
-			resources: this.message,
-
-			// all, languageOnly
-			load: "languageOnly",
-
-			ns        : ['common'],
-			// Namespace to use by default, when not indicated
-			defaultNS : 'common',
-    
-			keySeparator     : ".",
-			nsSeparator      : ":",
-			pluralSeparator  : "_",
-			contextSeparator : "_"
-
-		}, function(err, t)
-		{
-			console.log("detected user language: " + h.language);
-			console.log("loaded languages: " + h.languages.join(', '));
-			h.changeLanguage(h.languages[0]);
-			callback(err, t);
-		});
-};
-
-/**
- * 메세지 핸들러를 가져온다.
- *
- * @returns {i18next} message handler
- */
-Message.prototype.getHandle = function ()
-{
-	return this.handle;
-};
-
-/**
- * 메세지를 가져온다.
- *
- * @returns {Object} message
- */
-Message.prototype.getMessage = function ()
-{
-	return this.message;
-};
-
-'use strict';
-var MessageSource = {};
-MessageSource.en = {
-  "common": {
-    "welcome" : "Welcome",
-    "error": {
-        "title" : "Error",
-        "construct" : {
-            "create" : "This object should be created using new."
-        }
-    }
-  }
-};
-MessageSource.ko = {
-    "common": {
-      "welcome" : "환영합니다.",
-      "error": {
-          "title" : "오류",
-          "construct" : {
-              "create" : "이 객체는 new 를 사용하여 생성해야 합니다."
-          }
-      }
-    }
-  };
 
 'use strict';
 
@@ -67220,6 +67243,179 @@ Profiles2DList.prototype.deleteObjects = function()
 
 
 'use strict';
+
+var QuatTree = function(options) 
+{
+
+	//TODO : center width height required
+	// QuatTree index
+	// +-----+-----+ 
+	// |  3  |  2  | 
+	// +-----+-----+ 
+	// |  0  |  1  | 
+	// +-----+-----+ 
+	this.center = options.center || undefined;
+	this.halfWidth = options.halfWidth || undefined;
+	this.halfHeight = options.halfHeight || undefined;
+
+	this.quatOwner = options.quatOwner || undefined;
+    
+	this.numberName;
+
+	this.depth = 0;
+	this.children;
+	this.data;
+    
+	var camPos;
+	var camDir;
+};
+QuatTree.CHILDREN_CNT = 4;
+QuatTree.prototype.addPoint2DToChild = function(point2D) 
+{
+	var x = point2D.x;
+	var y = point2D.y;
+	var center = this.center;
+	var idx;
+	if (x < center.x) 
+	{
+		if (y < center.y) 
+		{
+			idx = 0;
+		}
+		else 
+		{
+			idx = 3;
+		}
+	}
+	else 
+	{
+		if (y < center.y) 
+		{
+			idx = 1;
+		}
+		else 
+		{
+			idx = 2;
+		}
+	}
+    
+	if (!this.children) 
+	{
+		this.createChildren();
+	}
+
+	if (!this.children[idx].data) 
+	{
+		this.children[idx].data = [];
+	}
+	this.children[idx].data.push(point2D);
+};
+
+QuatTree.prototype.createChildren = function() 
+{
+	this.children = [];
+	var opt = {};
+	opt.quatOwner = this;
+
+	// +-----+-----+ 
+	// |  3  |  2  | 
+	// +-----+-----+ 
+	// |  0  |  1  | 
+	// +-----+-----+
+
+	var minx = this.center.x - this.halfWidth;
+	var miny = this.center.y - this.halfWidth;
+	var maxx = this.center.x + this.halfHeight;
+	var maxy = this.center.y + this.halfHeight;
+	var midx = this.center.x;
+	var midy = this.center.y;
+
+	var child0 = new QuatTree(opt);
+	child0.depth = this.depth+1;
+	child0.setSize(minx, miny, midx, midy);
+	var child1 = new QuatTree(opt);
+	child1.depth = this.depth+1;
+	child1.setSize(midx, miny, maxx, midy);
+	var child2 = new QuatTree(opt);
+	child2.depth = this.depth+1;
+	child2.setSize(midx, midy, maxx, maxy);
+	var child3 = new QuatTree(opt);
+	child3.depth = this.depth+1;
+	child3.setSize(minx, midy, midx, maxy);
+
+	this.children.push(child0);
+	this.children.push(child1);
+	this.children.push(child2);
+	this.children.push(child3);
+};
+
+QuatTree.prototype.setSize = function(minX, minY, maxX, maxY) 
+{
+	var centerX = (maxX + minX) / 2;
+	var centerY = (maxY + minY) / 2;
+
+	this.center = new Point2D(centerX, centerY);
+	this.halfWidth = (maxX - minX)/2;
+	this.halfHeight = (maxY - minY)/2;
+};
+
+QuatTree.prototype.makeTreeByDepth = function(targetDepth) 
+{
+	if (this.depth > targetDepth) 
+	{
+		return;
+	}
+
+	if (this.data) 
+	{
+		var dataCnt = this.data.length;
+		for (var i=0;i<dataCnt;i++) 
+		{
+			var point = this.data[i];
+			this.addPoint2DToChild(point);
+		}
+		delete this.data;
+	}
+
+	
+	if (this.children) 
+	{
+		var childLength = this.children.length;
+		for (var i=0;i<childLength;i++) 
+		{
+			this.children[i].makeTreeByDepth(targetDepth);
+		}
+	}
+};
+
+QuatTree.prototype.extractLeaf = function(resultArray) 
+{
+	if (!resultArray || !Array.isArray(resultArray)) 
+	{
+		resultArray = [];
+	}
+	if (this.data && this.data.length > 0 ) 
+	{
+		resultArray.push(this);
+	}
+	
+	if (this.children) 
+	{
+		var childLength = this.children.length;
+		for (var i=0;i<childLength;i++) 
+		{
+			this.children[i].extractLeaf(resultArray);
+		}
+	}
+	return resultArray;
+};
+/*option.center
+option.hw
+option.hh
+option.data = pArray;
+
+new QuatTree(option)*/
+'use strict';
 /**
  * 중심점과 가로, 세로 길이를 가진 클래스
  * @exception {Error} Messages.CONSTRUCT_ERROR
@@ -74684,6 +74880,111 @@ VtxSegment.prototype.intersectionWithPoint = function(point, error)
 'use strict';
 
 /**
+ * 메세지
+ * 
+ * @class
+ */
+var Message = function(i18next, message) 
+{
+	this.handle  = i18next;
+	this.message = message || MessageSource;
+};
+
+/**
+ * 메세지 클래스 초기화
+ *
+ * @param {Function} callback
+ */
+Message.prototype.init = function (callback)
+{
+	var h = this.handle;
+	this.handle.use(i18nextXHRBackend)
+		.use(i18nextBrowserLanguageDetector)
+		.init({
+			// Useful for debuging, displays which key is missing
+			debug: false,
+
+			detection: {
+				// keys or params to lookup language from
+				lookupQuerystring  : 'lang',
+				lookupCookie       : 'i18nextLang',
+				lookupLocalStorage : 'i18nextLang',
+			},
+    
+			// If translation key is missing, which lang use instead
+			fallbackLng: 'en',
+
+			resources: this.message,
+
+			// all, languageOnly
+			load: "languageOnly",
+
+			ns        : ['common'],
+			// Namespace to use by default, when not indicated
+			defaultNS : 'common',
+    
+			keySeparator     : ".",
+			nsSeparator      : ":",
+			pluralSeparator  : "_",
+			contextSeparator : "_"
+
+		}, function(err, t)
+		{
+			console.log("detected user language: " + h.language);
+			console.log("loaded languages: " + h.languages.join(', '));
+			h.changeLanguage(h.languages[0]);
+			callback(err, t);
+		});
+};
+
+/**
+ * 메세지 핸들러를 가져온다.
+ *
+ * @returns {i18next} message handler
+ */
+Message.prototype.getHandle = function ()
+{
+	return this.handle;
+};
+
+/**
+ * 메세지를 가져온다.
+ *
+ * @returns {Object} message
+ */
+Message.prototype.getMessage = function ()
+{
+	return this.message;
+};
+
+'use strict';
+var MessageSource = {};
+MessageSource.en = {
+  "common": {
+    "welcome" : "Welcome",
+    "error": {
+        "title" : "Error",
+        "construct" : {
+            "create" : "This object should be created using new."
+        }
+    }
+  }
+};
+MessageSource.ko = {
+    "common": {
+      "welcome" : "환영합니다.",
+      "error": {
+          "title" : "오류",
+          "construct" : {
+              "create" : "이 객체는 new 를 사용하여 생성해야 합니다."
+          }
+      }
+    }
+  };
+
+'use strict';
+
+/**
  * Geoserver for mago3Djs object.
  * @class Geoserver
  */
@@ -79561,7 +79862,124 @@ Renderer.prototype.renderExcavationObjects = function(gl, shader, renderType, vi
  * @param {Number} renderType If renderType = 0 (depth render), renderType = 1 (color render), renderType = 2 (colorCoding render).
  * @param {VisibleObjectsController} visibleObjControlerNodes This object contains visible objects for the camera frustum.
  */
-Renderer.prototype.renderGeometryStencilShadowMeshes = function(gl, renderType, visibleObjControlerNodes) 
+Renderer.prototype.renderTerrainShadow = function(gl, renderType, visibleObjControlerNodes) 
+{
+
+	var currentShader;
+	var shaderProgram;
+	var neoBuilding;
+	var node;
+	var rootNode;
+	var geoLocDataManager;
+	var magoManager = this.magoManager;
+	var sceneState = magoManager.sceneState;
+	
+	if (magoManager.czm_globeDepthText === undefined)
+	{ magoManager.czm_globeDepthText = magoManager.scene._context._us.globeDepthTexture._texture; }
+
+	var bApplyShadow = false;
+	if (sceneState.sunSystem !== undefined && sceneState.applySunShadows)
+	{ bApplyShadow = true; }
+
+	if (!bApplyShadow || !magoManager.czm_globeDepthText)
+	{ return; }
+
+	currentShader = magoManager.postFxShadersManager.getShader("screenQuad"); 
+	currentShader.useProgram();
+	
+	currentShader.bindUniformGenerals();
+	var projectionMatrixInv = sceneState.getProjectionMatrixInv();
+	gl.uniformMatrix4fv(currentShader.projectionMatrixInv_loc, false, projectionMatrixInv._floatArrays);
+	var modelViewMatrixRelToEyeInv = sceneState.getModelViewRelToEyeMatrixInv();
+	gl.uniformMatrix4fv(currentShader.modelViewMatrixRelToEyeInv_loc, false, modelViewMatrixRelToEyeInv._floatArrays);
+	
+	gl.uniform1i(currentShader.bApplyShadow_loc, bApplyShadow);
+	var sunSystem = sceneState.sunSystem;
+	var sunLight = sunSystem.getLight(0);
+	var textureAux1x1 = magoManager.texturesStore.getTextureAux1x1();
+	
+	if (bApplyShadow)
+	{
+		// Set sunMatrix uniform.***
+		
+		var sunMatFloat32Array = sunSystem.getLightsMatrixFloat32Array();
+		var sunPosLOWFloat32Array = sunSystem.getLightsPosLOWFloat32Array();
+		var sunPosHIGHFloat32Array = sunSystem.getLightsPosHIGHFloat32Array();
+		var sunDirWC = sunSystem.getSunDirWC();
+		
+		if (sunLight.tMatrix!== undefined)
+		{
+			gl.uniformMatrix4fv(currentShader.sunMatrix_loc, false, sunMatFloat32Array);
+			gl.uniform3fv(currentShader.sunPosHigh_loc, sunPosHIGHFloat32Array);
+			gl.uniform3fv(currentShader.sunPosLow_loc, sunPosLOWFloat32Array);
+			gl.uniform1f(currentShader.shadowMapWidth_loc, sunLight.targetTextureWidth);
+			gl.uniform1f(currentShader.shadowMapHeight_loc, sunLight.targetTextureHeight);
+			gl.uniform3fv(currentShader.sunDirWC_loc, sunDirWC);
+			gl.uniform1i(currentShader.sunIdx_loc, 1);
+		}
+	}
+	
+	gl.activeTexture(gl.TEXTURE0);
+	gl.bindTexture(gl.TEXTURE_2D, magoManager.czm_globeDepthText);  // cesium globeDepthTexture.***
+	gl.activeTexture(gl.TEXTURE3); 
+	if (bApplyShadow && sunLight.depthFbo)
+	{
+		var sunSystem = sceneState.sunSystem;
+		var sunLight = sunSystem.getLight(0);
+		gl.bindTexture(gl.TEXTURE_2D, sunLight.depthFbo.colorBuffer);
+	}
+	else 
+	{
+		gl.bindTexture(gl.TEXTURE_2D, textureAux1x1);
+	}
+	
+	gl.activeTexture(gl.TEXTURE4); 
+	if (bApplyShadow && sunLight.depthFbo)
+	{
+		var sunSystem = sceneState.sunSystem;
+		var sunLight = sunSystem.getLight(1);
+		gl.bindTexture(gl.TEXTURE_2D, sunLight.depthFbo.colorBuffer);
+	}
+	else 
+	{
+		gl.bindTexture(gl.TEXTURE_2D, textureAux1x1);
+	}
+	currentShader.last_tex_id = textureAux1x1;
+			
+	
+	gl.disable(gl.POLYGON_OFFSET_FILL);
+	//gl.disable(gl.CULL_FACE);
+	gl.colorMask(true, true, true, true);
+	gl.depthMask(false);
+
+	gl.disable(gl.DEPTH_TEST);
+	gl.enable(gl.BLEND);
+	gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); // Original.***
+	//gl.cullFace(gl.FRONT);
+
+	if (this.screenQuad === undefined)
+	{
+		this.screenQuad = new ScreenQuad(magoManager.vboMemoryManager);
+	}
+	
+	this.screenQuad.render(magoManager, currentShader);
+		
+	
+	
+	// Restore settings.***
+	gl.colorMask(true, true, true, true);
+	gl.depthMask(true);
+	gl.disable(gl.BLEND);
+	gl.depthRange(0.0, 1.0);	
+};
+
+/**
+ * This function renders the stencil shadows meshes of the scene.
+ * @param {WebGLRenderingContext} gl WebGL Rendering Context.
+ * @param {Number} renderType If renderType = 0 (depth render), renderType = 1 (color render), renderType = 2 (colorCoding render).
+ * @param {VisibleObjectsController} visibleObjControlerNodes This object contains visible objects for the camera frustum.
+ */
+Renderer.prototype.renderGeometryStencilShadowMeshes__original = function(gl, renderType, visibleObjControlerNodes) 
 {
 	gl.frontFace(gl.CCW);	
 	gl.enable(gl.DEPTH_TEST);
@@ -79877,15 +80295,16 @@ Renderer.prototype.renderGeometry = function(gl, renderType, visibleObjControler
 			gl.uniform1i(currentShader.bApplySsao_loc, bApplySsao); // apply ssao default.***
 			gl.uniform1i(currentShader.bApplyShadow_loc, bApplyShadow);
 			gl.uniform1i(currentShader.bApplySpecularLighting_loc, true);
+			var sunSystem = magoManager.sceneState.sunSystem;
+			var sunLight = sunSystem.getLight(0);
 			if (bApplyShadow)
 			{
 				// Set sunMatrix uniform.***
-				var sunSystem = magoManager.sceneState.sunSystem;
 				var sunMatFloat32Array = sunSystem.getLightsMatrixFloat32Array();
 				var sunPosLOWFloat32Array = sunSystem.getLightsPosLOWFloat32Array();
 				var sunPosHIGHFloat32Array = sunSystem.getLightsPosHIGHFloat32Array();
 				var sunDirWC = sunSystem.getSunDirWC();
-				var sunLight = sunSystem.getLight(0);
+				
 				if (sunLight.tMatrix!== undefined)
 				{
 					gl.uniformMatrix4fv(currentShader.sunMatrix_loc, false, sunMatFloat32Array);
@@ -79940,7 +80359,6 @@ Renderer.prototype.renderGeometry = function(gl, renderType, visibleObjControler
 			gl.activeTexture(gl.TEXTURE3); 
 			if (bApplyShadow && sunLight.depthFbo)
 			{
-				var sunSystem = magoManager.sceneState.sunSystem;
 				var sunLight = sunSystem.getLight(0);
 				gl.bindTexture(gl.TEXTURE_2D, sunLight.depthFbo.colorBuffer);
 			}
@@ -79952,7 +80370,6 @@ Renderer.prototype.renderGeometry = function(gl, renderType, visibleObjControler
 			gl.activeTexture(gl.TEXTURE4); 
 			if (bApplyShadow && sunLight.depthFbo)
 			{
-				var sunSystem = magoManager.sceneState.sunSystem;
 				var sunLight = sunSystem.getLight(1);
 				gl.bindTexture(gl.TEXTURE_2D, sunLight.depthFbo.colorBuffer);
 			}
@@ -79985,10 +80402,6 @@ Renderer.prototype.renderGeometry = function(gl, renderType, visibleObjControler
 			
 			this.renderNodes(gl, visibleObjControlerNodes.currentVisibles2, magoManager, currentShader, renderTexture, renderType, minSizeToRender, refTMatrixIdxKey);
 			this.renderNodes(gl, visibleObjControlerNodes.currentVisibles3, magoManager, currentShader, renderTexture, renderType, minSizeToRender, refTMatrixIdxKey);
-			
-			// test.***
-			//this.renderNodes(gl, visibleObjControlerNodes.currentVisibles2, magoManager, currentShader, renderTexture, 3, minSizeToRender, refTMatrixIdxKey);
-			//this.renderNodes(gl, visibleObjControlerNodes.currentVisibles3, magoManager, currentShader, renderTexture, 3, minSizeToRender, refTMatrixIdxKey);
 			
 			// native objects.
 			this.renderNativeObjects(gl, currentShader, renderType, visibleObjControlerNodes);
@@ -81066,7 +81479,9 @@ var SceneState = function()
 	this.modelViewMatrix = new Matrix4(); // created as identity matrix.
 	this.modelViewMatrixInv = new Matrix4(); // created as identity matrix.
 	this.projectionMatrix = new Matrix4(); // created as identity matrix.
+	this.projectionMatrixInv = new Matrix4(); // created as identity matrix.
 	this.modelViewProjMatrix = new Matrix4(); // created as identity matrix.
+	this.modelViewProjMatrixInv; // initially undefined.
 	this.normalMatrix4 = new Matrix4(); // created as identity matrix.
 	this.identityMatrix4 = new Matrix4(); // created as identity matrix.
 	this.modelViewMatrixLast = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; // Number array.
@@ -81197,6 +81612,48 @@ SceneState.prototype.restoreDefaultValuesAmbientDiffuseSpecularCoeficients = fun
 SceneState.prototype.getModelViewMatrixInv = function() 
 {
 	return this.modelViewMatrixInv;
+};
+
+/**
+ * Returns the modelViewMatrixInverse.
+ * @returns {Matrix4} modelViewMatrixInv.
+ */
+SceneState.prototype.getProjectionMatrixInv = function() 
+{
+	if (this.projectionMatrixInv === undefined)
+	{
+		this.projectionMatrixInv = new Matrix4();
+		this.projectionMatrixInv._floatArrays = glMatrix.mat4.invert(this.projectionMatrixInv._floatArrays, this.projectionMatrix._floatArrays);
+	}
+	return this.projectionMatrixInv;
+};
+
+/**
+ * Returns the modelViewMatrixInverse.
+ * @returns {Matrix4} modelViewMatrixInv.
+ */
+SceneState.prototype.getModelViewProjectionMatrixInv = function() 
+{
+	if (this.modelViewProjMatrixInv === undefined)
+	{
+		this.modelViewProjMatrixInv = new Matrix4();
+		this.modelViewProjMatrixInv._floatArrays = glMatrix.mat4.invert(this.modelViewProjMatrixInv._floatArrays, this.modelViewProjMatrix._floatArrays);
+	}
+	return this.modelViewProjMatrixInv;
+};
+
+/**
+ * Returns the modelViewMatrixInverse.
+ * @returns {Matrix4} modelViewMatrixInv.
+ */
+SceneState.prototype.getModelViewRelToEyeMatrixInv = function() 
+{
+	if (this.modelViewRelToEyeMatrixInv === undefined)
+	{
+		this.modelViewRelToEyeMatrixInv = new Matrix4();
+		this.modelViewRelToEyeMatrixInv._floatArrays = glMatrix.mat4.invert(this.modelViewRelToEyeMatrixInv._floatArrays, this.modelViewRelToEyeMatrix._floatArrays);
+	}
+	return this.modelViewRelToEyeMatrixInv;
 };
 
 /**
@@ -82065,6 +82522,15 @@ PostFxShader.prototype.createUniformGenerals = function(gl, shader, sceneState)
 		uniformDataPair.floatValue = sceneState.camera.frustum.fovyRad;
 	}
 	
+	// 10.1 tangentOfHalfFovy.
+	uniformLocation = gl.getUniformLocation(shader.program, "tangentOfHalfFovy");
+	if (uniformLocation !== null && uniformLocation !== undefined)
+	{
+		uniformDataPair = shader.newUniformDataPair("1f", "tangentOfHalfFovy");
+		uniformDataPair.uniformLocation = uniformLocation;
+		uniformDataPair.floatValue = sceneState.camera.frustum.tangentOfHalfFovy;
+	}
+	
 	// 11. aspectRatio.
 	uniformLocation = gl.getUniformLocation(shader.program, "aspectRatio");
 	if (uniformLocation !== null && uniformLocation !== undefined)
@@ -82302,6 +82768,9 @@ PostFxShader.prototype.createUniformLocals = function(gl, shader, sceneState)
 	
 	shader.scaleLC_loc = gl.getUniformLocation(shader.program, "scaleLC");
 	shader.colorMultiplier_loc = gl.getUniformLocation(shader.program, "colorMultiplier");
+	shader.modelViewProjectionMatrixInv_loc = gl.getUniformLocation(shader.program, "modelViewProjectionMatrixInv");
+	shader.projectionMatrixInv_loc = gl.getUniformLocation(shader.program, "projectionMatrixInv");
+	shader.modelViewMatrixRelToEyeInv_loc = gl.getUniformLocation(shader.program, "modelViewMatrixRelToEyeInv");
 };
 
 'use strict';
@@ -83983,6 +84452,7 @@ uniform vec2 noiseScale;\n\
 uniform float near;\n\
 uniform float far;            \n\
 uniform float fov;\n\
+uniform float tangentOfHalfFovy;\n\
 uniform float aspectRatio;    \n\
 uniform float screenWidth;    \n\
 uniform float screenHeight;   \n\
@@ -84028,7 +84498,7 @@ varying float currSunIdx; \n\
 \n\
 float unpackDepth(const in vec4 rgba_depth)\n\
 {\n\
-    const vec4 bit_shift = vec4(0.000000059605, 0.000015258789, 0.00390625, 1.0);\n\
+    const vec4 bit_shift = vec4(0.000000059605, 0.000015258789, 0.00390625, 1.0);// original.***\n\
     float depth = dot(rgba_depth, bit_shift);\n\
     return depth;\n\
 }  \n\
@@ -84036,13 +84506,13 @@ float unpackDepth(const in vec4 rgba_depth)\n\
 \n\
 float UnpackDepth32( in vec4 pack )\n\
 {\n\
-    float depth = dot( pack, 1.0 / vec4(1.0, 256.0, 256.0*256.0, 16777216.0) );// 256.0*256.0*256.0 = 16777216.0\n\
-    return depth * (16777216.0) / (16777216.0 - 1.0);\n\
-}              \n\
+	float depth = dot( pack, vec4(1.0, 0.00390625, 0.000015258789, 0.000000059605) );\n\
+    return depth * 1.000000059605;// 1.000000059605 = (16777216.0) / (16777216.0 - 1.0);\n\
+}             \n\
 \n\
 vec3 getViewRay(vec2 tc)\n\
 {\n\
-    float hfar = 2.0 * tan(fov/2.0) * far;\n\
+	float hfar = 2.0 * tangentOfHalfFovy * far;\n\
     float wfar = hfar * aspectRatio;    \n\
     vec3 ray = vec3(wfar * (tc.x - 0.5), hfar * (tc.y - 0.5), -far);    \n\
     return ray;                      \n\
@@ -84198,8 +84668,6 @@ void main()\n\
 			{\n\
 				vec3 posRelToLight = vPosRelToLight.xyz / vPosRelToLight.w;\n\
 				float tolerance = 0.9963;\n\
-				//tolerance = 0.5;\n\
-				//tolerance = 1.0;\n\
 				posRelToLight = posRelToLight * 0.5 + 0.5; // transform to [0,1] range\n\
 				if(posRelToLight.x >= 0.0 && posRelToLight.x <= 1.0)\n\
 				{\n\
@@ -84216,92 +84684,6 @@ void main()\n\
 				/*\n\
 				// test. Calculate the zone inside the pixel.************************************\n\
 				//https://docs.microsoft.com/ko-kr/windows/win32/dxtecharts/cascaded-shadow-maps\n\
-				float pixelWidth = 1.0 / shadowMapWidth;\n\
-				float pixelHeight = 1.0 / shadowMapHeight;\n\
-				float currPixel_s = posRelToLight.x*pixelWidth;\n\
-				float currPixel_t = posRelToLight.y*pixelHeight;\n\
-				float currPixel_s_decimals = currPixel_s - floor(currPixel_s);\n\
-				float currPixel_t_decimals = currPixel_t - floor(currPixel_t);\n\
-				float horit = 0.0;\n\
-				float vert = 0.0;\n\
-				if(currPixel_s_decimals < 0.5)\n\
-				{\n\
-					horit = -1.0;\n\
-				}\n\
-				else //if(currPixel_s_decimals >= 0.66)\n\
-				{\n\
-					horit = 1.0;\n\
-				}\n\
-				\n\
-				if(currPixel_t_decimals < 0.5)\n\
-				{\n\
-					vert = -1.0;\n\
-				}\n\
-				else //if(currPixel_t_decimals >= 0.66)\n\
-				{\n\
-					vert = 1.0;\n\
-				}\n\
-				\n\
-				//pixelWidth *= 0.05;\n\
-				//pixelHeight *= 0.05;\n\
-				\n\
-				vec2 shadowMapTexCoord = vec2(posRelToLight.x + horit * pixelWidth, posRelToLight.y);\n\
-				float depthRelToLight = getDepthShadowMap(shadowMapTexCoord);\n\
-				if(posRelToLight.z > depthRelToLight*tolerance )\n\
-				{\n\
-					float pixelDist = 1.0;\n\
-					if(horit < 0.0)\n\
-					{\n\
-						pixelDist = 1.0 - currPixel_s_decimals;\n\
-					}\n\
-					else{\n\
-						pixelDist = currPixel_s_decimals;\n\
-					}\n\
-					\n\
-					shadow_occlusion -= (0.5/3.0)*pixelDist;\n\
-				}\n\
-				\n\
-				shadowMapTexCoord = vec2(posRelToLight.x, posRelToLight.y + vert * pixelHeight);\n\
-				depthRelToLight = getDepthShadowMap(shadowMapTexCoord);\n\
-				if(posRelToLight.z > depthRelToLight*tolerance )\n\
-				{\n\
-					float pixelDist = 1.0;\n\
-					if(vert < 0.0)\n\
-					{\n\
-						pixelDist = 1.0 - currPixel_t_decimals;\n\
-					}\n\
-					else{\n\
-						pixelDist = currPixel_t_decimals;\n\
-					}\n\
-					shadow_occlusion -= (0.5/3.0)*pixelDist;\n\
-				}\n\
-				\n\
-				shadowMapTexCoord = vec2(posRelToLight.x + horit * pixelWidth, posRelToLight.y + vert * pixelHeight);\n\
-				depthRelToLight = getDepthShadowMap(shadowMapTexCoord);\n\
-				if(posRelToLight.z > depthRelToLight*tolerance )\n\
-				{\n\
-					float pixelDistH = 1.0;\n\
-					if(horit < 0.0)\n\
-					{\n\
-						pixelDistH = 1.0 - currPixel_s_decimals;\n\
-					}\n\
-					else{\n\
-						pixelDistH = currPixel_s_decimals;\n\
-					}\n\
-					\n\
-					float pixelDistV = 1.0;\n\
-					if(vert < 0.0)\n\
-					{\n\
-						pixelDistV = 1.0 - currPixel_t_decimals;\n\
-					}\n\
-					else{\n\
-						pixelDistV = currPixel_t_decimals;\n\
-					}\n\
-					\n\
-					shadow_occlusion -= (0.5/3.0)*pixelDistV*pixelDistH;\n\
-				}\n\
-				\n\
-				// End test.---------------------------------------------------------------------\n\
 				*/\n\
 				\n\
 				\n\
@@ -85188,8 +85570,9 @@ varying vec3 vertexPos;\n\
 \n\
 vec4 packDepth(const in float depth)\n\
 {\n\
-    const vec4 bit_shift = vec4(16777216.0, 65536.0, 256.0, 1.0);\n\
-    const vec4 bit_mask  = vec4(0.0, 0.00390625, 0.00390625, 0.00390625); \n\
+    const vec4 bit_shift = vec4(16777216.0, 65536.0, 256.0, 1.0); // original.***\n\
+    const vec4 bit_mask  = vec4(0.0, 0.00390625, 0.00390625, 0.00390625);  // original.*** \n\
+	\n\
     //vec4 res = fract(depth * bit_shift); // Is not precise.\n\
 	vec4 res = mod(depth * bit_shift * vec4(255), vec4(256) ) / vec4(255); // Is better.\n\
     res -= res.xxyz * bit_mask;\n\
@@ -85290,17 +85673,173 @@ void main()\n\
 	vertexPos = (modelViewMatrixRelToEye * pos4).xyz;\n\
 		//vertexPos = objPosHigh + objPosLow;\n\
 }";
-ShaderSource.ScreenQuadFS = "precision lowp float;\n\
-varying vec4 vColor;\n\
+ShaderSource.ScreenQuadFS = "#ifdef GL_ES\n\
+    precision highp float;\n\
+#endif\n\
+\n\
+uniform sampler2D depthTex;\n\
+uniform sampler2D shadowMapTex;\n\
+uniform sampler2D shadowMapTex2;\n\
+uniform mat4 modelViewMatrix;\n\
+uniform mat4 modelViewMatrixRelToEye; \n\
+uniform mat4 modelViewMatrixInv;\n\
+uniform mat4 modelViewProjectionMatrixInv;\n\
+uniform mat4 modelViewMatrixRelToEyeInv;\n\
+uniform mat4 projectionMatrix;\n\
+uniform mat4 projectionMatrixInv;\n\
+uniform vec3 encodedCameraPositionMCHigh;\n\
+uniform vec3 encodedCameraPositionMCLow;\n\
+uniform bool bApplyShadow;\n\
+uniform mat4 sunMatrix[2]; \n\
+uniform vec3 sunPosHIGH[2];\n\
+uniform vec3 sunPosLOW[2];\n\
+uniform int sunIdx;\n\
+uniform float screenWidth;    \n\
+uniform float screenHeight;   \n\
+//uniform float shadowMapWidth;    \n\
+//uniform float shadowMapHeight;\n\
+uniform float near;\n\
+uniform float far;\n\
+uniform float fov;\n\
+uniform float tangentOfHalfFovy;\n\
+uniform float aspectRatio;\n\
+varying vec4 vColor; \n\
+\n\
+vec3 getViewRay(vec2 tc)\n\
+{\n\
+    float hfar = 2.0 * tangentOfHalfFovy * far;\n\
+    float wfar = hfar * aspectRatio;    \n\
+    vec3 ray = vec3(wfar * (tc.x - 0.5), hfar * (tc.y - 0.5), -far);    \n\
+    return ray;                      \n\
+}\n\
+\n\
+float unpackDepth(vec4 packedDepth)\n\
+{\n\
+	// See Aras Pranckevičius' post Encoding Floats to RGBA\n\
+	// http://aras-p.info/blog/2009/07/30/encoding-floats-to-rgba-the-final/\n\
+	return dot(packedDepth, vec4(1.0, 1.0 / 255.0, 1.0 / 65025.0, 1.0 / 16581375.0));\n\
+}\n\
+\n\
+float UnpackDepth32( in vec4 pack )\n\
+{\n\
+	float depth = dot( pack, vec4(1.0, 0.00390625, 0.000015258789, 0.000000059605) );\n\
+    return depth * 1.000000059605;// 1.000000059605 = (16777216.0) / (16777216.0 - 1.0);\n\
+}  \n\
+\n\
+float getDepthShadowMap(vec2 coord)\n\
+{\n\
+	// currSunIdx\n\
+	if(sunIdx == 0)\n\
+	{\n\
+		return UnpackDepth32(texture2D(shadowMapTex, coord.xy));\n\
+	}\n\
+    else if(sunIdx ==1)\n\
+	{\n\
+		return UnpackDepth32(texture2D(shadowMapTex2, coord.xy));\n\
+	}\n\
+	else\n\
+		return -1.0;\n\
+}\n\
+\n\
+bool isInShadow(vec4 pointWC, int currSunIdx)\n\
+{\n\
+	bool inShadow = false;\n\
+	vec3 currSunPosLOW;\n\
+	vec3 currSunPosHIGH;\n\
+	mat4 currSunMatrix;\n\
+	if(currSunIdx == 0)\n\
+	{\n\
+		currSunPosLOW = sunPosLOW[0];\n\
+		currSunPosHIGH = sunPosHIGH[0];\n\
+		currSunMatrix = sunMatrix[0];\n\
+	}\n\
+	else if(currSunIdx == 1)\n\
+	{\n\
+		currSunPosLOW = sunPosLOW[1];\n\
+		currSunPosHIGH = sunPosHIGH[1];\n\
+		currSunMatrix = sunMatrix[1];\n\
+	}\n\
+	else\n\
+	return false;\n\
+	\n\
+		\n\
+	vec3 highDifferenceSun = pointWC.xyz -currSunPosHIGH.xyz;\n\
+	vec3 lowDifferenceSun = -currSunPosLOW.xyz;\n\
+	vec4 pos4Sun = vec4(highDifferenceSun.xyz + lowDifferenceSun.xyz, 1.0);\n\
+	vec4 vPosRelToLight = currSunMatrix * pos4Sun;\n\
+\n\
+	vec3 posRelToLight = vPosRelToLight.xyz / vPosRelToLight.w;\n\
+	float tolerance = 0.9963;\n\
+	posRelToLight = posRelToLight * 0.5 + 0.5; // transform to [0,1] range\n\
+	if(posRelToLight.x >= 0.0 && posRelToLight.x <= 1.0)\n\
+	{\n\
+		if(posRelToLight.y >= 0.0 && posRelToLight.y <= 1.0)\n\
+		{\n\
+			float depthRelToLight;\n\
+			if(currSunIdx == 0)\n\
+			{depthRelToLight = UnpackDepth32(texture2D(shadowMapTex, posRelToLight.xy));}\n\
+			else if(currSunIdx == 1)\n\
+			{depthRelToLight = UnpackDepth32(texture2D(shadowMapTex2, posRelToLight.xy));}\n\
+			if(posRelToLight.z > depthRelToLight*tolerance )\n\
+			{\n\
+				inShadow = true;\n\
+			}\n\
+		}\n\
+	}\n\
+	\n\
+	return inShadow;\n\
+}\n\
 \n\
 void main()\n\
 {\n\
-    gl_FragColor = vColor;\n\
+	float shadow_occlusion = 1.0;\n\
+	float alpha = 0.0;\n\
+	vec4 finalColor;\n\
+	finalColor = vec4(0.2, 0.2, 0.2, 0.8);\n\
+	if(bApplyShadow)\n\
+	{\n\
+		// the sun lights count are 2.\n\
+		// 1rst, calculate the pixelPosWC.\n\
+		vec2 screenPos = vec2(gl_FragCoord.x / screenWidth, gl_FragCoord.y / screenHeight);\n\
+		float z_window  = unpackDepth(texture2D(depthTex, screenPos.xy)); // z_window  is [0.0, 1.0] range depth.\n\
+		if(z_window < 0.001)\n\
+		discard;\n\
+\n\
+		vec3 ray = getViewRay(screenPos);\n\
+		\n\
+		// https://stackoverflow.com/questions/11277501/how-to-recover-view-space-position-given-view-space-depth-value-and-ndc-xy\n\
+		float depthRange_near = 0.0;\n\
+		float depthRange_far = 1.0;\n\
+		float x_ndc = 2.0 * screenPos.x - 1.0;\n\
+		float y_ndc = 2.0 * screenPos.y - 1.0;\n\
+		float z_ndc = (2.0 * z_window - depthRange_near - depthRange_far) / (depthRange_far - depthRange_near);\n\
+		\n\
+		vec4 viewPosH = projectionMatrixInv * vec4(x_ndc, y_ndc, z_ndc, 1.0);\n\
+		vec3 posCC = viewPosH.xyz/viewPosH.w;\n\
+		vec4 posWC = modelViewMatrixRelToEyeInv * vec4(posCC.xyz, 1.0) + vec4((encodedCameraPositionMCHigh + encodedCameraPositionMCLow).xyz, 1.0);\n\
+		//----------------------------------------------------------------\n\
+	\n\
+		// 2nd, calculate the vertex relative to light.***\n\
+		// 1rst, try with the closest sun. sunIdx = 0.\n\
+		bool pointIsinShadow = isInShadow(posWC, 0);\n\
+		if(!pointIsinShadow)\n\
+		{\n\
+			pointIsinShadow = isInShadow(posWC, 1);\n\
+		}\n\
+\n\
+		if(pointIsinShadow)\n\
+		{\n\
+			shadow_occlusion = 0.5;\n\
+			alpha = 0.5;\n\
+		}\n\
+		\n\
+	}\n\
+    gl_FragColor = vec4(finalColor.rgb*shadow_occlusion, alpha);\n\
 }";
 ShaderSource.ScreenQuadVS = "precision mediump float;\n\
 \n\
 attribute vec2 position;\n\
-varying vec4 vColor;\n\
+varying vec4 vColor; \n\
 \n\
 void main() {\n\
 	vColor = vec4(0.2, 0.2, 0.2, 0.5);\n\
@@ -90842,6 +91381,7 @@ Promise.prototype.finally = Promise.prototype.finally || {
 	_mago3d['ProcessCounterManager'] = ProcessCounterManager;
 	_mago3d['Profile2D'] = Profile2D;
 	_mago3d['Profiles2DList'] = Profiles2DList;
+	_mago3d['QuatTree'] = QuatTree;
 	_mago3d['Rectangle2D'] = Rectangle2D;
 	_mago3d['Ring2D'] = Ring2D;
 	_mago3d['Ring2DList'] = Ring2DList;
