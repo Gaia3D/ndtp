@@ -206,6 +206,7 @@ public class DataController {
 		model.addAttribute("userPolicy", userPolicy);
 		model.addAttribute("geoPolicyJson", geoPolicyJson);
 		model.addAttribute("baseLayers", userPolicy.getBaseLayers());
+		model.addAttribute("owner", userSession.getUserId());
 
 		return "/data/map";
 	}

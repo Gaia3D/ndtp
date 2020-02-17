@@ -69,6 +69,17 @@
 					<tr>
 						<td rowspan="2">${pagination.rowNumber - status.index }</td>
 						<td colspan="3" class="ellipsis" style="max-width:260px;">
+							<c:if test="${dataInfo.dataGroupTarget eq 'admin'}">
+								[관리자]
+							</c:if>
+							<c:if test="${dataInfo.dataGroupTarget eq 'user'}">
+								<c:if test="${dataInfo.userId eq owner}">
+									[본인]
+								</c:if>
+								<c:if test="${dataInfo.userId ne owner}">
+									[다른 사용자]
+								</c:if>
+							</c:if>
 							<a href="#" onclick="detailDataInfo('${dataInfo.dataId}'); return false;">${dataInfo.dataName }</a> [${dataInfo.dataType }]
 						</td>
 					</tr>
