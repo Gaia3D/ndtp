@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
+import ndtp.domain.CacheManager;
 import ndtp.domain.ConverterJob;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
 import ndtp.domain.UserSession;
 import ndtp.service.ConverterService;
+import ndtp.support.RoleSupport;
 import ndtp.utils.DateUtils;
 
 /**
@@ -134,5 +136,14 @@ public class ConverterController {
 //		}
 		
 		return buffer.toString();
+	}
+	
+	private String roleValidator(HttpServletRequest request, Integer userGroupId, String roleName) {
+		List<String> userGroupRoleKeyList = CacheManager.getUserGroupRoleKeyList(userGroupId);
+        if(!RoleSupport.isUserGroupRoleValid(userGroupRoleKeyList, roleName)) {
+			request.setAttribute("httpStatusCode", 403);
+			return "/error/error";
+		}
+		return null;
 	}
 }

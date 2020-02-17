@@ -19,7 +19,7 @@ comment on table role is 'Role';
 comment on column role.role_id is '고유번호';
 comment on column role.role_name is 'Role 명';
 comment on column role.role_key is 'Role KEY';
-comment on column role.role_target is 'Role 타켓. 0 : 지리정보시스템(블럭) 사용자 사이트, 1 : 지리정보시스템(블럭) 관리자 사이트, 2 : 서버';
+comment on column role.role_target is 'Role 타켓. 0 : 사용자 사이트, 1 : 관리자 사이트, 2 : 서버';
 comment on column role.role_type is 'Role 업무 유형. 0 : 사용자, 1 : 서버, 2 : api';
 comment on column role.use_yn is '사용유무. Y : 사용, N : 사용안함';
 comment on column role.default_yn is '기본사용 유무. Y : 사용, N : 사용안함';
