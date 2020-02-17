@@ -2581,3 +2581,86 @@ display:none;
 	background-repeat: no-repeat;
     background-position: 0 -977px;
 }
+
+
+/* 게시판 / 댓글, 답글 */
+.reply {
+border-top: 1px solid #e3e3e3;
+}
+.reply li {
+position: relative;
+padding: 7px 0;
+border-bottom: 1px dotted #ccc;
+}
+.reply li > p.text {
+width:920px;
+}
+.reply li > span.date {
+display: block;
+color: #999;
+}
+.reply li div.btns {
+position: absolute;
+top: 20px;
+right: 0px;
+margin-top: -13px;
+}
+.reply li div > button {
+padding: 3px 10px;
+color: #777;
+font-size: 12px;
+border: 1px solid #999;
+background-color: #eee;
+}
+li.re {
+position: relative;
+padding: 7px 0 7px 30px;
+border-bottom: 1px dotted #ccc;
+background: #fafafa url(/images/ko/ico_comment.png) no-repeat 10px 10px;
+}
+h4.comment {
+margin-top: 30px;
+}
+.commentWrite {
+position: relative;
+margin: 10px 0;
+padding: 5px 5px 5px 30px;
+border: 1px solid #e6e6e6;
+background: #fafafa url(/images/ko/ico_comment.png) no-repeat 10px 10px;
+}
+.commentWrite p {
+margin: 0;
+}
+.commentWrite > textarea {
+width: 840px;
+height: 38px;
+padding: 10px;
+/* box-sizing: content-box; */
+}
+.user {
+/* padding: 0 0 5px 28px; */
+/* background: url(/images/ico.png) no-repeat -130px -200px; */
+}
+.commentWrite > .textCount {
+position: absolute;
+top: 10px;
+right: 85px;
+display: inline-block;
+font-size: 11px;
+color: #888;
+}
+.commentWrite > button.regist {
+padding: 20px;
+border: 1px solid #ccc;
+color: #888;
+background-color: #fff;
+}
+.commentWrite > button {
+padding: 20px;
+border: 1px solid #ccc;
+color: #888;
+background-color: #fff;
+}
+.commentWrite * {
+	vertical-align: middle;
+}
