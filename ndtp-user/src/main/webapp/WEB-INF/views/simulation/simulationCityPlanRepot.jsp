@@ -5,7 +5,7 @@
 <div id="resultCityPlanDialog" title="도시계획 시뮬레이션 결과" class="basicTable" style="display: none;">
 	<ul class="listDrop">
 	    <li class="on">
-	        <p>도시계획 시뮬레이션 결과<span class="collapse-icon">icon</span></p>
+	        <p>레포트 작성<span class="collapse-icon">icon</span></p>
 	        <div class="listContents" >
 	        <div style="display: flex;">
 	        	<img id="cityplanImg" src='' style="width: 500px; hiehgt:500px;"/>
@@ -17,29 +17,29 @@
 		                </li>
 		                <li>
 		                    <label for="constructor">대상 면적</label>
-		                    <label for="constructor">OO m</label>
+		                    <label id="cityPlanDlgArea" for="constructor">OO m</label>
 		                </li>
 		                <li>
 			                <div>
 			                    <label for="constructor">기준 용적율</label>
-			                    <label for="constructor">OO%</label>
+			                    <label id="cityPlanDlgStdFloorCov" for="constructor">OO%</label>
 			                    <label for="constructor">예측 용적율</label>
-			                    <label for="constructor">OO %</label>
+			                    <label id="cityPlanDlgFloorCov" for="constructor">OO %</label>
 			                </div>
 		                </li>
 		                <li>
 			                <div>
 			                    <label for="constructor">기준 건폐율</label>
-			                    <label for="constructor">OO%</label>
+			                    <label id="cityPlanDlgStdBuildCov" for="constructor">OO%</label>
 			                    <label for="constructor">예측 건폐율</label>
-			                    <label for="constructor">OO %</label>
+			                    <label id="cityPlanDlgBuildCov" for="constructor">OO %</label>
 			                </div>
 		                </li>
 		                <li>
 		                    <label for="constructor">용적률 적합 여부</label>
-		                    <label for="constructor">OO</label>
+		                    <label id="chkCityPlanDlgFloorCov" for="constructor">OO</label>
 		                    <label for="constructor">건폐율 적합 여부</label>
-		                    <label for="constructor">OO</label>
+		                    <label id="chkcityPlanDlgBuildCov" id="" for="constructor">OO</label>
 		                </li>
 		                <li>
 		                    <label for="constructor">일조분석 평가기준</label>
@@ -47,7 +47,7 @@
 		                </li>
 		                <li>
 		                    <label for="constructor">일조분석 의견 </label>
-		                    <input id="" class="" type="textarea" placeholder="" value="0">
+		                    <textarea id="" class="" cols="40" rows="8" value="특이사항 없음"></textarea>
 		                </li>
 		                
 		            </ul>
@@ -57,8 +57,8 @@
 	    </li>
 	</ul>
 <div style="float:right">
-    <button id="permReqRegister" class="focusA" type="submit" title="등록" style="width: 200px;">등록</button>
-    <button id="permReqCancel" class="focusC" type="button" title="취소">취소</button>
+    <button id="resultCityPlanDlgReg" class="focusA" type="submit" title="등록" style="width: 200px;">등록</button>
+    <button id="resultCityPlanDlgCle" class="focusC" type="button" title="취소">취소</button>
 </div>
 </div>
 

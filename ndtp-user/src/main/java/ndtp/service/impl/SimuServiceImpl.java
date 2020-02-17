@@ -1,5 +1,16 @@
 package ndtp.service.impl;
 
+import java.awt.Point;
+import java.awt.Transparency;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.ComponentColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -7,11 +18,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import ndtp.domain.CityPlanResult;
+import ndtp.domain.FileType;
 import ndtp.domain.SimFileMaster;
 import ndtp.persistence.SimuMapper;
 
@@ -32,11 +47,20 @@ public class SimuServiceImpl {
 		List<String> result = new ArrayList<String>();
 		for(MultipartFile mtf : files) {
 			String Name = mtf.getName();
-			result.add(this.restore(mtf));
+			result.add(this.restore(mtf, FileType.FILE));
 		}
 		return result;
 	}
 
+	@Transactional
+	public List<String> procCityPlanResult(CityPlanResult cpr) {
+		String Path = "";
+		List<String> result = new ArrayList<String>();
+
+		result.add(this.restore(cpr.getFiles(), FileType.IMGFILE));
+		return result;
+	}
+	
 	private void genFolder(String path) {
 		File Folder = new File(path);
 
@@ -54,13 +78,13 @@ public class SimuServiceImpl {
 		}
 	}
 
-	private String restore(MultipartFile multipartFile) {
+	private String restore(MultipartFile multipartFile, FileType ft) {
 		String url = null;
-//		String PREFIX_URL = "C:\\data\\mago3d\\normal-upload-data\\";
-//		String SAVE_PATH = "C:\\data\\mago3d\\normal-upload-data\\";
+		String PREFIX_URL = "C:\\data\\mago3d\\normal-upload-data\\";
+		String SAVE_PATH = "C:\\data\\mago3d\\normal-upload-data\\";
 		//todo: have to change (if running window)
-		String PREFIX_URL = "/Users/junho/data/mago3d/";
-		String SAVE_PATH = "/Users/junho/data/mago3d/";
+//		String PREFIX_URL = "/Users/junho/data/mago3d/";
+//		String SAVE_PATH = "/Users/junho/data/mago3d/";
 
 		try {
 			// 파일 정보
@@ -76,8 +100,12 @@ public class SimuServiceImpl {
 			System.out.println("saveFileName : " + saveFileName);
 
 
-			this.writeFile(multipartFile, saveFileName, SAVE_PATH);
-			simuMapper.insertSimCityPlanFile(new SimFileMaster(originFilename, saveFileName, SAVE_PATH));
+			if(ft == FileType.FILE) {
+				this.writeFile(multipartFile, saveFileName, SAVE_PATH);
+				simuMapper.insertSimCityPlanFile(new SimFileMaster(originFilename, saveFileName, SAVE_PATH));
+			} else if (ft == FileType.IMGFILE) {
+				this.writeImageFile(multipartFile, saveFileName, SAVE_PATH);
+			}
 			url = PREFIX_URL + saveFileName;
 		}
 		catch (IOException e) {
@@ -88,6 +116,7 @@ public class SimuServiceImpl {
 		}
 		return url;
 	}
+	
 	// 현재 시간을 기준으로 파일 이름 생성
 	private String genSaveFileName(String extName) {
 		String fileName = "";
@@ -104,6 +133,7 @@ public class SimuServiceImpl {
 
 		return fileName;
 	}
+	
 	// 파일을 실제로 write 하는 메서드
 	private boolean writeFile(MultipartFile multipartFile, String saveFileName, String SAVE_PATH) throws IOException{
 		boolean result = false;
@@ -112,9 +142,29 @@ public class SimuServiceImpl {
 
 		byte[] data = multipartFile.getBytes();
 		FileOutputStream fos = new FileOutputStream(SAVE_PATH + "/" + saveFileName);
+
 		fos.write(data);
 		fos.close();
 
+		return result;
+	}
+	
+	private boolean writeImageFile(MultipartFile multipartFile, String saveFileName, String SAVE_PATH) throws IOException{
+		boolean result = false;
+
+		this.genSaveFileName(SAVE_PATH);
+
+		byte[] data = multipartFile.getBytes();
+		int width = 512;
+		int height = 512;
+
+		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);
+
+		BufferedImage image = ImageIO.read(byteArrayInputStream);
+		
+		File outputFile = new File(SAVE_PATH + saveFileName);
+
+		ImageIO.write(image, "png", outputFile);
 		return result;
 	}
 }
