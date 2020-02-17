@@ -32,7 +32,7 @@
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 
 <button type="button" id="permRequest" title="건축인 허가 신청" class="btnTextF" style="margin-top:10px;">건축인 허가 신청</button>
-<button type="button" id="permView" title="건축인 허가 조회" class="btnTextF" style="margin-top:10px;">건축인 허가 조회</button>
+<button type="button" id="permView" title="인허가 시뮬레이션" class="btnTextF" style="margin-top:10px;">인허가 시뮬레이션</button>
 <button type="button" id="testFly" class="btnTextF" style="margin-top:10px;">Fly Test</button>
 <button type="button" id="testingPicking" class="btnTextF" style="margin-top:10px;">testingPicking</button>
 
@@ -101,6 +101,27 @@
 			}
 		});
 	});
+
+	function getUserInfo() {
+		$.ajax({
+			url: "/data/simulation-rest/getUserInfo",
+			type: "POST",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			// data: "",
+			// dataType: "json",
+			success: function(msg){
+				console.log("msg  =", msg);
+				if (msg === "admin") {
+					$("#permRequest").attr('style', "display:none;");
+				} else {
+					$("#permView").attr('style', "display:none;");
+				}
+			},
+			error:function(request,status,error) {
+				console.log("err=", request, status, error);
+			}
+		});
+	}
 
 	function genBuild(lon, lat, scale) {
 		var position = Cesium.Cartesian3.fromDegrees(lon, lat, 0);

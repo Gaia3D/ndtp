@@ -176,6 +176,10 @@
 	$(document).ready(function() {
 		$(".ui-slider-handle").slider({});
  		initDataGroupList();
+
+ 		$("#civilVoiceMenu").click(()=> {
+			getUserInfo();
+		});
 	});
 
 	var permRequestDialog = $( "#permRequestDialog" ).dialog({

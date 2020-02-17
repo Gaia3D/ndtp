@@ -2,7 +2,7 @@
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 
-<div id="permViewDialog" title="건축인 허가 조회" class="basicTable" style="display: none;">
+<div id="permViewDialog" title="인허가 시뮬레이션" class="basicTable" style="display: none;">
     <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
     <form id="file_upload" name="file_upload"method="post" enctype="multipart/form-data" action="simulation-rest/updateStructPermission" style="width:100%" target="dummyframe">
         <ul class="listDrop">

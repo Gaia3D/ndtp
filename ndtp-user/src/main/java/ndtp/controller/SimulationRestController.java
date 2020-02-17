@@ -251,17 +251,20 @@ public class SimulationRestController {
 //		Base64.Encoder encoder = Base64.getEncoder();
 		if (Files.exists(target, new LinkOption[] {})) { // 파일이 정상적으로 생성이 되었다면
 			// System.out.println("File Copied");
-//			String a = encoder.encodeToString(fileName.getBytes());
-//			return encoder.encodeToString(fileName.getBytes());
 			return fileName;
 		} else {
-			System.out.println("File Copy Failed");
-//			return encoder.encodeToString("false".getBytes());
+//			System.out.println("File Copy Failed");
 			return "false";
 		}
-
 	}
 
+	@RequestMapping(value = "/getUserInfo", method = RequestMethod.POST)
+	public String getUserInfo(HttpServletRequest req) {
+		UserSession userSession = (UserSession)req.getSession().getAttribute(Key.USER_SESSION.name());
+		String userID = userSession.getUserId();
+
+		return userID;
+	}
 
 
 
