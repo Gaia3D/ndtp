@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="/externlib/kotSlider/range.css" />
 <link rel="stylesheet" href="/css/ko/layout.css" />
 <link rel="stylesheet" href="/css/ko/apihelp-style.css" />
-<link rel="stylesheet" href="/externlib/highlightjs/styles/atelier-cave-dark.css">
+<link rel="stylesheet" href="/externlib/highlightjs/styles/dark.css">
 <script src="/externlib/highlightjs/highlight.pack.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
 
