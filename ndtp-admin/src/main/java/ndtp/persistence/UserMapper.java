@@ -62,6 +62,13 @@ public interface UserMapper {
 	 * @return
 	 */
 	int updateUserStatus(UserInfo userInfo);
+	
+	/**
+	 * 사용자 비밀번호 수정
+	 * @param userInfo
+	 * @return
+	 */
+	int updatePassword(UserInfo userInfo);
 
 	/**
 	 * 사용자 삭제

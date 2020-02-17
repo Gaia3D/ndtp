@@ -18,7 +18,7 @@ create table issue (
 	due_date					timestamp with time zone,
 	issue_type					varchar(30),
 	status						varchar(20),
-	location 					geography(Point, 4326),
+	location 					GEOMETRY(Point, 4326),
 	altitude					numeric(13,7),
 	
 	year						char(4)				default to_char(now(), 'YYYY'),
