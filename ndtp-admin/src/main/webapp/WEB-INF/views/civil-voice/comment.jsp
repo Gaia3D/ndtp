@@ -5,11 +5,13 @@
 		{{#each civilVoiceCommentList}}
 			<li>
 				<p class="user">{{userId}}</p>
-					{{title}}
-				<span class="date">{{insertData}}</span>
+				{{title}}
 				<div class="btns">
-					<button type="button" class="">수정</button>
-					<button type="button" class="">삭제</button>
+					<span class="date">{{viewInsertDate}}</span>
+					{{#if false}}
+						<button type="button" class="">수정</button>
+						<button type="button" class="">삭제</button>
+					{{/if}}
 				</div>
 			</li>
 		{{/each}}
@@ -32,10 +34,10 @@
         	{{/if}}
     	{{/forEachStep}}
 
-			<a href="#" onClick="getCivilVoiceCommentList({{pagination.nextPageNo}});" class="next"><span class="icon-glyph glyph-next"></span></a>
     	{{#if pagination.existNextPage}}
-			<a href="#" onClick="getCivilVoiceCommentList({{pagination.lastPage}});" class="last"><span class="icon-glyph glyph-last"></span></a>
+			<a href="#" onClick="getCivilVoiceCommentList({{pagination.nextPageNo}});" class="next"><span class="icon-glyph glyph-next"></span></a>
     	{{/if}}
+			<a href="#" onClick="getCivilVoiceCommentList({{pagination.lastPage}});" class="last"><span class="icon-glyph glyph-last"></span></a>
     	</div>
    	{{/if}}
 </script>
