@@ -19,11 +19,24 @@
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">사용자 아이디</th>
-			<td id="dataType" class="col-data">{{userId}}</td>
+			<td id="userId" class="col-data">{{userId}}</td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">공유 유형</th>
-			<td id="sharing" class="col-data">{{sharing}}</td>
+			<td id="sharing" class="col-data">
+{{#ifMatch sharing 'common'}}
+				공통
+{{/ifMatch}}
+{{#ifMatch sharing 'public'}}
+				공개
+{{/ifMatch}}
+{{#ifMatch sharing 'private'}}
+				개인
+{{/ifMatch}}
+{{#ifMatch sharing 'group'}}
+				그룹
+{{/ifMatch}}			
+			</td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">매핑 타입</th>
@@ -35,11 +48,11 @@
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">위도</th>
-			<td id="longitude" class="col-data">{{latitude}}</td>
+			<td id="latitude" class="col-data">{{latitude}}</td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">높이</th>
-			<td id="longitude" class="col-data">{{altitude}}</td>
+			<td id="altitude" class="col-data">{{altitude}}</td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">Heading</th>
@@ -47,11 +60,11 @@
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">Pitch</th>
-			<td id="heading" class="col-data">{{pitch}}</td>
+			<td id="pitch" class="col-data">{{pitch}}</td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">Roll</th>
-			<td id="heading" class="col-data">{{roll}}</td>
+			<td id="roll" class="col-data">{{roll}}</td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">메타정보</th>
@@ -59,11 +72,23 @@
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">속성 존재 유무</th>
-			<td id="attributeExist" class="col-data">{{attributeExist}}</td>
+			<td id="attributeExist" class="col-data">
+{{#if attributeExist}}
+				<a href="#" onclick="detailDataAttribute('{{dataId }}', '{{dataName}}'); return false;">보기</a>
+{{else}}
+				미등록
+{{/if}}
+			</td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">Object 속성 존재 유무</th>
-			<td id="objectAttributeExist" class="col-data">{{objectAttributeExist}}</td>
+			<td id="objectAttributeExist" class="col-data">
+{{#if objectAttributeExist}}
+				<a href="#" onclick="detailDataObjectAttribute('{{dataId }}', '{{dataName}}'); return false;">보기</a>
+{{else}}
+				미등록
+{{/if}}
+			</td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">설명</th>

@@ -82,10 +82,10 @@
 				AND A.status = #{status}
 				</if>
 				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
-				AND A.${searchWord} = #{searchValue}
+				AND ${searchWord} = #{searchValue}
 				</if>
 				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
-				AND A.${searchWord} LIKE '%' || #{searchValue} || '%'
+				AND ${searchWord} LIKE '%' || #{searchValue} || '%'
 				</if>
 				<if test="startDate != null and startDate != ''">
 				<![CDATA[
@@ -192,7 +192,7 @@
 	</select> -->
 
 	<!-- Data 등록 -->
-	<insert id="insertData" parameterType="dataInfo">
+	<insert id="insertData" useGeneratedKeys="true" keyProperty="dataId" parameterType="dataInfo">
 		/* insertData */
 		<selectKey keyProperty="dataId" resultType="long" order="BEFORE">
     		SELECT NEXTVAL('data_info_seq')

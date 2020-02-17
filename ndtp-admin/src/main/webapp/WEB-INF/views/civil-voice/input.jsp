@@ -37,8 +37,21 @@
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input">
-										<form:input path="title" cssClass="l" maxlength="100" />
+										<form:input path="title" cssClass="l" />
 										<form:errors path="title" cssClass="error" />
+									</td>
+								</tr>
+								<tr>
+									<th class="col-label" scope="row">
+										<form:label path="longitude">위치</form:label>
+										<span class="icon-glyph glyph-emark-dot color-warning"></span>
+									</th>
+									<td class="col-input">
+										<form:input path="longitude" cssClass="m" />
+										<form:input path="latitude" cssClass="m" />
+										<input type="button" id="mapButtion" value="위치 지정" />
+										<form:errors path="longitude" cssClass="error" />
+										<form:errors path="latitude" cssClass="error" />
 									</td>
 								</tr>
 								<tr>
@@ -47,7 +60,7 @@
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input">
-										<form:input path="contents" cssClass="l" />
+										<form:textarea path="contents" cols="10" rows="10"></form:textarea>
 										<form:errors path="contents" cssClass="error" />
 									</td>
 								</tr>
@@ -78,53 +91,24 @@
 	});
 
 	function validate() {
-		// temp
-		return true;
-
-
 		var number = /^[0-9]+$/;
-		if ($("#dataGroupName").val() === null || $("#dataGroupName").val() === "") {
-			alert("데이터 그룹명을 입력해 주세요.");
-			$("#dataGroupName").focus();
+		if (!$("#title").val()) {
+			alert("제목을 입력해 주세요.");
+			$("#title").focus();
 			return false;
 		}
-		if($("#duplication").val() === null || $("#duplication").val() === "") {
-			alert(JS_MESSAGE["data.group.key.duplication.check"]);
-			$("#dataGroupKey").focus();
-			return false;
-		} else if($("#duplication").val() === "true") {
-			alert(JS_MESSAGE["data.group.key.duplication"]);
-			$("#dataGroupKey").focus();
+		if(!$("#contents").val()) {
+			alert("내용을 입력해 주세요.");
+			$("#contents").focus();
 			return false;
 		}
-		if ($("#dataGroupKey").val() === null || $("#dataGroupKey").val() === "") {
-			alert("데이터 그룹 Key(한글불가)을 입력해 주세요.");
-			$("#dataGroupKey").focus();
-			return false;
-		}
-		if ($("#dataGroupKey").val().length >= 60) {
-			alert("데이터 그룹 Key는 60자를 넘길 수 없습니다.");
-			$("#dataGroupKey").focus();
-			return false;
-		}
-		//한글이 입력될 경우 "한글명은 이용할 수 없습니다."라고 출력 -> 한글 검사방법..?
-		if($("#parent").val() === null || $("#parent").val() === "" || !number.test($("#parent").val())) {
-			alert("상위 데이터 그룹을 선택해 주세요.");
-			$("#parent").focus();
-			return false;
-		}
-		if($("#duration").val() !== null && $("#duration").val() !== "") {
-			if(!isNumber($("#duration").val())) {
-				$("#duration").focus();
-				return false;
-			}
-		}
+		return true;
 	}
 
 	// 저장
 	var insertCivilCVoiceFlag = true;
 	function insertCivilCVoice() {
-		if (validate() == false) {
+		if (!validate()) {
 			return false;
 		}
 		if(insertCivilCVoiceFlag) {
@@ -155,6 +139,21 @@
 			return;
 		}
 	}
+
+	// 지도에서 찾기
+	$( "#mapButtion" ).on( "click", function() {
+		var url = "/map/find-point";
+		var width = 800;
+		var height = 700;
+
+		var popupX = (window.screen.width / 2) - (width / 2);
+		// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+		var popupY= (window.screen.height / 2) - (height / 2);
+
+	    var popWin = window.open(url, "","toolbar=no,width=" + width + ",height=" + height + ",top=" + popupY + ",left="+popupX
+	            + ",directories=no,status=yes,scrollbars=no,menubar=no,location=no");
+	    //popWin.document.title = layerName;
+	});
 
 </script>
 </body>

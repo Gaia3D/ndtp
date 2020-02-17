@@ -13,6 +13,7 @@
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
 	<link rel="stylesheet" href="/externlib/kotSlider/range.css" />
     <link rel="stylesheet" href="/css/${lang}/user-style.css" />
+    <link rel="stylesheet" href="/externlib/css-toggle-switch/toggle-switch.css" />
     <style type="text/css">
     .ctrlWrap {
 	    z-index: 10000;
@@ -20,7 +21,162 @@
     </style>
 </head>
 <body>
-	<%@ include file="/WEB-INF/views/map/find-data-toolbar.jsp" %>
+	<div class="ctrlWrap">
+		<div class="zoom">
+			<button type="button" id="mapCtrlReset" class="reset" title="초기화">초기화</button>
+			<button type="button" id="mapCtrlAll" class="zoomall" title="전체보기">전체보기</button>
+			<button type="button" id="mapCtrlZoomIn" class="zoomin" title="확대">확대</button>
+			<button type="button" id="mapCtrlZoomOut" class="zoomout" title="축소">축소</button>
+			<button type="button" id="mapCtrlDistance" class="measures distance" data-type="LineString" title="거리">거리</button>
+			<button type="button" id="mapCtrlArea" class="measures area" data-type="Polygon" title="면적">면적</button>
+			<button type="button" id="mapCapture" class="save" data-type="" title="저장">저장</button>
+		</div>
+		<div class="rotate">
+			<button type="button" class="rotateReset on" id="rotateReset" title="방향초기화"></button>
+			<!-- <input type="text" placeholder="0" id="rotateInput"/>&deg; -->
+			<input type="text" id="rotateInput" placeholder="0" readonly>&deg;
+	        <input type="text" id="pitchInput" placeholder="-90" readonly>&deg;
+			<button type="button" class="rotateLeft" id="rotateLeft" title="왼쪽으로 회전">왼쪽으로 회전</button>
+			<button type="button" class="rotateRight" id="rotateRight" title="오른쪽으로 회전">오른쪽으로 회전</button>
+	<!-- 		<button type="button" class="mapPolicy" id="mapPolicy" title="지도 설정">지도 설정</button> -->
+		</div>
+		<div class="index">
+			<button type="button" class="magoSet" id="mapPolicy" title="Mago3D 설정">Mago3D</button>
+		</div>
+	</div>
+	<div id="mago3DSettingLabelLayer" class="labelLayer" style="display:none;">
+	    <div class="layerHeader">
+	        <h3 class="ellipsis" style="max-width:260px;">Mago3D 설정</h3>
+	        <button type="button" class="layerClose" title="닫기">닫기</button>
+	    </div>
+	    <div class="layerContents">
+			
+			<div class="inline-toggle">
+				<h4 class="category">Origin</h4>
+				<div id="datainfoDisplay" class="switch-toggle switch-ios">
+					<input type="radio" id="originDisplayY" name="originDisplay" value="true">
+		            <label for="originDisplayY">표시</label>
+		            <input type="radio" id="originDisplayN" name="originDisplay" value="false" checked>
+		            <label for="originDisplayN">비표시</label>
+					<a></a>
+				</div>
+			</div>
+			
+			<div class="inline-toggle">
+				<h4 class="category">Bounding Box</h4>
+				<div id="datainfoDisplay" class="switch-toggle switch-ios">
+					<input type="radio" id="bboxDisplayY" name="bboxDisplay" value="true">
+					<label for="bboxDisplayY">표시</label>
+					<input type="radio" id="bboxDisplayN" name="bboxDisplay" value="false" checked>
+					<label for="bboxDisplayN">비표시</label>
+					<a></a>
+				</div>
+			</div>
+	
+			<div class="inline-toggle marB20">
+				<h4 class="category">선택 및 이동</h4>
+				<div class="switch-toggle switch-ios" style="width: 60%;">
+					<input type="radio" id="objectNoneMove" name="objectMoveMode" value="2" checked>
+					<label for="objectNoneMove">None</label>
+					<input type="radio" id="objectAllMove" name="objectMoveMode" value="0">
+					<label for="objectAllMove">All</label>
+					<input type="radio" id="objectMove" name="objectMoveMode" value="1">
+					<label for="objectMove">Object</label>
+					<a></a>
+				</div>
+			</div>
+
+	
+			<div id="dataControllWrap" style="display:none;">
+				<p class="layerDivTit"><span>test / 오전반1조_행복관_s</span></p>
+				<div class="layerDiv">
+					<h4 class="category">색상 변경</h4>
+					<ul>
+						<li>
+							<label for="dcColorPicker">색상</label>
+							<input type="color" id="dcColorPicker">
+							<input type="text" id="dcColorInput" value="#000000" size="6" readonly style="color: rgb(0, 0, 0);">
+							<button type="button" id="dcColorApply" class="btnTextF">적용</button>
+							<button type="button" id="dcColorCancle" class="btnText">되돌리기</button>
+						</li>
+					</ul>
+				</div>
+				<form id="dcRotLocForm" class="layerDiv marB0">
+					<input type="hidden" name="dataId" value="${dataInfo.dataId}" />
+					<h4 class="category">위치 변경</h4>
+					<ul class="layerDiv">
+						<li>
+							<label for="dcLongitude">경도</label>
+							<input type="text" id="dcLongitude" name="longitude" readonly>
+						</li>
+						<li>
+							<label for="dcLatitude">위도</label>
+							<input type="text" id="dcLatitude" name="latitude" readonly>
+						</li>
+						<li>
+							<label for="dcAltitude">높이</label>
+							<input type="text" id="dcAltitude" name="altitude" size="10" readonly>
+							<button id="dcAltUp" data-type="up" type="button" class="up"></button>
+							<button id="dcAltDown" data-type="down" type="button" class="down"></button>
+							<label for="dcAltitudeOffset" style="width: 40px;">offset</label>
+							<input type="text" id="dcAltitudeOffset" value="1" size="1">
+						</li>
+					</ul>
+	
+					<h4 class="category">회전 변경</h4>
+					<ul class="layerDiv">
+						<li>
+							<label for="dcPitch">x(pitch)</label>
+							<input type="text" id="dcPitch" name="pitch" size="2" readonly>
+							<button type="button" class="dcRangeBtn rangePrev" data-type="prev" id="rcPitchPrev"></button>
+							<input id="dcPitchRange" data-type="Pitch" style="width: 140px;" type="range" min="-360" max="360" step="1" value="1">
+							<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcPitchNext"></button>
+						</li>
+	
+						<li>
+							<label for="dcRoll">y(roll)</label>
+							<input type="text" id="dcRoll" name="roll" size="2" readonly>
+							<button type="button" class="dcRangeBtn rangePrev" data-type="prev" id="rcRollPrev"></button>
+							<input id="dcRollRange" data-type="Roll" style="width: 140px;" type="range" min="-360" max="360" step="1" value="1">
+							<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcRollNext"></button>
+						</li>
+	
+						<li>
+							<label for="dcHeading">z(heading)</label>
+							<input type="text" id="dcHeading" name="heading" size="2" readonly>
+							<button type="button" class="dcRangeBtn rangePrev" data-type="prev" id="rcHeadingPrev"></button>
+							<input id="dcHeadingRange" data-type="Heading" style="width: 140px;" type="range" min="-360" max="360" step="1" value="1">
+							<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcHeadingNext"></button>
+						</li>
+					</ul>
+	
+					<div>
+						<c:if test="${dataInfo.dataGroupTarget eq 'admin'}">
+							<button type="button" id="dcSavePosRotReqPop" class="btnTextF" 
+									title="<spring:message code='data.transform.save.request'/>">
+									<spring:message code='data.transform.save.request'/>
+							</button>
+						</c:if>
+						<c:if test="${dataInfo.dataGroupTarget eq 'user'}">
+							<c:if test="${dataInfo.userId eq owner}">
+								<button type="button" id="dcSavePosRotPop" class="btnTextF" 
+										title="<spring:message code='data.transform.save'/>">
+									<spring:message code='data.transform.save'/>
+								</button>
+							</c:if>
+							<c:if test="${dataInfo.userId ne owner}">
+								<button type="button" id="dcSavePosRotReqPop" class="btnTextF" 
+										title="<spring:message code='data.transform.save.request'/>">
+										<spring:message code='data.transform.save.request'/>
+								</button>	
+							</c:if>
+						</c:if>
+						<button type="button" id="dcShowAttr" class="btnTextF">속성조회</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
     <div id="magoContainer" style="height: 100%;"></div>
     <button class="mapSelectButton" onclick="window.close();">닫기</button>
 </body>
@@ -103,6 +259,9 @@
 			console.info(result);
 		}); */
 
+		// mago3d logo 추가
+		Mago3D.tempCredit(viewer);
+		
 		//우측 상단 지도 컨트롤러
 		MapControll(viewer);
 		dataGroupList(magoInstance);
@@ -182,9 +341,17 @@
 			dataGroup.datas = dataInfoList;
 			f4dController.addF4dGroup(dataGroup);
 
+			// 로드되는 시점
 			magoInstance.getMagoManager().on(Mago3D.MagoManager.EVENT_TYPE.F4DLOADEND,function(e){
 				flyTo(magoInstance);
-				//selectF4dAPI(magoInstance, "${dataInfo.dataGroupId}", "${dataInfo.dataKey}");
+			});
+
+			// 화면에 표출할 준비가 된 시점
+			magoInstance.getMagoManager().on(Mago3D.MagoManager.EVENT_TYPE.F4DRENDERREADY, function(e){
+				var data = e.f4d.data;
+				if (data.dataGroupId === parseInt("${dataInfo.dataGroupId}") && data.nodeId === "${dataInfo.dataKey}") {
+					selectF4dAPI(magoInstance, data.dataGroupId, data.nodeId);
+				}
 			});
 
 		}
@@ -232,15 +399,10 @@
 		//clearDataControl();
 		//$('#dcColor').hide();
 
-		$('#datainfoDisplay').hide();
-		if (!$('.layerContents > div:visible').first().hasClass('marT0')) {
-			$('.layerContents > div:visible').first().addClass('marT0');
-			$('#mago3DSettingLabelLayer').css('min-height', '260px');
-		}
-
 		var $dataControlWrap = $('#dataControllWrap');
-		$dataControlWrap.find('.layerDivTit').hide();
-		var $header = $('#mago3DSettingLabelLayer .layerHeader h3');
+		//$dataControlWrap.find('.layerDivTit').hide();
+		//var $header = $('#mago3DSettingLabelLayer .layerHeader h3');
+		var $header = $dataControlWrap.find('.layerDivTit span');
 
 		var groupId = dataInfo.dataGroupId;
 		if (groupId) {
@@ -274,10 +436,31 @@
 		$(".labelLayer").hide();
 	});
 
-	// 위치 정보 적용 버튼 클릭
+	function validate() {
+		if ($("#dcLongitude").val() === "") {
+			alert("경도를 입력하여 주십시오.");
+			$("#dcLongitude").focus();
+			return false;
+		}
+		if ($("#dcLatitude").val() === "") {
+			alert("위도를 입력하여 주십시오.");
+			$("#dcLatitude").focus();
+			return false;
+		}
+		if ($("#dcAltitude").val() === "") {
+			alert("높이를 입력하여 주십시오.");
+			$("#dcAltitude").focus();
+			return false;
+		}
+	}
+	
+	// 위치/회전 저장 버튼 클릭
 	$("#dcSavePosRotPop").click(function(){
+		if (validate() == false) {
+			return false;
+		}
 		var dataId = parseInt("${dataInfo.dataId}");
-		if(confirm('현재 입력된 위치와 회전 정보를 db에 저장하시겠습니까?')) {
+		if(confirm(JS_MESSAGE["data.update.check"])) {
 			if(!dataId) {
 				alert('선택된 데이터가 없습니다.');
 				return false;
@@ -328,6 +511,40 @@
 			}).always(stopLoading);
 		} else {
 			alert('no');
+		}
+	});
+	
+	// 위치/회전 저장 요청 버튼 클릭
+	var insertDataAdjustLogFlag = true;
+	$("#dcSavePosRotReqPop").click(function(){
+		if (validate() == false) {
+			return false;
+		}
+		if(insertDataAdjustLogFlag) {
+			insertDataAdjustLogFlag = false;
+			var formData = $("#dcRotLocForm").serialize();		
+			$.ajax({
+				url: "/data-adjust-logs",
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+				data: formData,
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert("요청 하였습니다.");
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
+					insertDataAdjustLogFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        insertDataAdjustLogFlag = true;
+				}
+			});
+		} else {
+			alert(JS_MESSAGE["button.dobule.click"]);
+			return;
 		}
 	});
 

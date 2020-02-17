@@ -26,7 +26,6 @@ import ndtp.service.AMQPPublishService;
 import ndtp.service.ConverterService;
 import ndtp.service.DataGroupService;
 import ndtp.service.DataService;
-import ndtp.service.GeoPolicyService;
 import ndtp.service.UploadDataService;
 import ndtp.utils.FileUtils;
 
@@ -41,22 +40,22 @@ public class ConverterServiceImpl implements ConverterService {
 
 	@Autowired
 	private AMQPPublishService aMQPPublishService;
-	
+
 	@Autowired
 	private DataService dataService;
-	
+
 	@Autowired
 	private DataGroupService dataGroupService;
-	@Autowired
-	private GeoPolicyService geoPolicyService;
+
 	@Autowired
 	private PropertiesConfig propertiesConfig;
+
 	@Autowired
 	private UploadDataService uploadDataService;
-	
+
 	@Autowired
 	private ConverterMapper converterMapper;
-	
+
 	/**
 	 * converter job 총 건수
 	 * @param converterJob
@@ -66,7 +65,7 @@ public class ConverterServiceImpl implements ConverterService {
 	public Long getConverterJobTotalCount(ConverterJob converterJob) {
 		return converterMapper.getConverterJobTotalCount(converterJob);
 	}
-	
+
 	/**
 	 * converter job file 총 건수
 	 * @param converterJobFile
@@ -76,7 +75,7 @@ public class ConverterServiceImpl implements ConverterService {
 	public Long getConverterJobFileTotalCount(ConverterJobFile converterJobFile) {
 		return converterMapper.getConverterJobFileTotalCount(converterJobFile);
 	}
-	
+
 	/**
 	 * converter job 목록
 	 * @param converterLog
@@ -86,7 +85,7 @@ public class ConverterServiceImpl implements ConverterService {
 	public List<ConverterJob> getListConverterJob(ConverterJob converterJob) {
 		return converterMapper.getListConverterJob(converterJob);
 	}
-	
+
 	/**
 	 * converter job file 목록
 	 * @param converterJobFile
@@ -96,7 +95,7 @@ public class ConverterServiceImpl implements ConverterService {
 	public List<ConverterJobFile> getListConverterJobFile(ConverterJobFile converterJobFile) {
 		return converterMapper.getListConverterJobFile(converterJobFile);
 	}
-	
+
 	/**
 	 * converter 변환
 	 * @param converterJob
@@ -104,14 +103,14 @@ public class ConverterServiceImpl implements ConverterService {
 	 */
 	@Transactional
 	public int insertConverter(ConverterJob converterJob) {
-		
+
 		String dataGroupRootPath = propertiesConfig.getDataServiceDir();
-		
+
 		String title = converterJob.getTitle();
 		String converterTemplate = converterJob.getConverterTemplate();
 		String userId = converterJob.getUserId();
 		BigDecimal usf = converterJob.getUsf();
-		
+
 		String[] uploadDataIds = converterJob.getConverterCheckIds().split(",");
 		for(String uploadDataId : uploadDataIds) {
 			// 1. 변환해야 할 파일 목록을 취득
@@ -120,7 +119,7 @@ public class ConverterServiceImpl implements ConverterService {
 			uploadData.setUploadDataId(Long.valueOf(uploadDataId));
 			uploadData.setConverterTarget(true);
 			List<UploadDataFile> uploadDataFileList = uploadDataService.getListUploadDataFile(uploadData);
-			
+
 			// 2. converter job 을 등록
 			ConverterJob inConverterJob = new ConverterJob();
 			inConverterJob.setUploadDataId(Long.valueOf(uploadDataId));
@@ -130,7 +129,7 @@ public class ConverterServiceImpl implements ConverterService {
 			inConverterJob.setConverterTemplate(converterTemplate);
 			inConverterJob.setFileCount(uploadDataFileList.size());
 			converterMapper.insertConverterJob(inConverterJob);
-			
+
 			Long converterJobId = inConverterJob.getConverterJobId();
 			int converterTargetCount = uploadDataFileList.size();
 			for(int i=0; i< converterTargetCount; i++) {
@@ -143,29 +142,29 @@ public class ConverterServiceImpl implements ConverterService {
 				converterJobFile.setDataGroupId(uploadDataFile.getDataGroupId());
 				converterJobFile.setUserId(userId);
 				converterJobFile.setUsf(usf);
-				
+
 				// 3. job file을 하나씩 등록
 				converterMapper.insertConverterJobFile(converterJobFile);
-				
+
 				// 4. 데이터를 등록. 상태를 ready 로 등록해야 함
-				DataInfo dataInfo = insertData(userId, converterJobId, uploadDataFile);
-				
-				// 5. 데이터 그룹 신규 생성의 경우 데이터 건수 update, location_update_type 이 auto 일 경우 dataInfo 위치 정보로 dataGroup 위치 정보 수정 
+				DataInfo dataInfo = upsertData(userId, converterJobId, uploadDataFile);
+
+				// 5. 데이터 그룹 신규 생성의 경우 데이터 건수 update, location_update_type 이 auto 일 경우 dataInfo 위치 정보로 dataGroup 위치 정보 수정
 				updateDataGroup(userId, dataInfo, uploadDataFile);
-				
+
 				if( i == converterTargetCount - 1) {
 					// queue 를 실행
 					executeConverter(userId, dataGroupRootPath, inConverterJob, uploadDataFile);
 				}
 			}
-			
+
 			uploadData.setConverterCount(1);
 			uploadDataService.updateUploadData(uploadData);
 		}
-		
+
 		return uploadDataIds.length;
 	}
-	
+
 	/**
 	 * @param userId
 	 * @param dataGroupRootPath
@@ -226,48 +225,62 @@ public class ConverterServiceImpl implements ConverterService {
 	 * @param userId
 	 * @param uploadDataFile
 	 */
-	private DataInfo insertData(String userId, Long converterJobId, UploadDataFile uploadDataFile) {
-		String dataKey = uploadDataFile.getFileRealName().substring(0, uploadDataFile.getFileRealName().lastIndexOf("."));
-		DataInfo dataInfo = new DataInfo();
-		dataInfo.setDataGroupId(uploadDataFile.getDataGroupId());
-		dataInfo.setDataKey(dataKey);
+	private DataInfo upsertData(String userId, Long converterJobId, UploadDataFile uploadDataFile) {
 		
+		Integer dataGroupId = uploadDataFile.getDataGroupId();
+		String dataKey = uploadDataFile.getFileRealName().substring(0, uploadDataFile.getFileRealName().lastIndexOf("."));
+		String dataName = uploadDataFile.getFileName().substring(0, uploadDataFile.getFileName().lastIndexOf("."));
+		String dataType = uploadDataFile.getDataType();
+		String sharing = uploadDataFile.getSharing();
+		String mappingType = uploadDataFile.getMappingType();
+		BigDecimal latitude = uploadDataFile.getLatitude();
+		BigDecimal longitude = uploadDataFile.getLongitude();
+		BigDecimal altitude = uploadDataFile.getAltitude();
+		
+		DataInfo dataInfo = new DataInfo();
+		dataInfo.setDataGroupId(dataGroupId);
+		dataInfo.setDataKey(dataKey);
+
 		dataInfo = dataService.getDataByDataKey(dataInfo);
+
 		if(dataInfo == null) {
-			int order = 1;
+			// int order = 1;
 			// TODO nodeType 도 입력해야 함
 			String metainfo = "{\"isPhysical\": true}";
 			
 			dataInfo = new DataInfo();
 			dataInfo.setMethodType(MethodType.INSERT);
-			dataInfo.setDataGroupId(uploadDataFile.getDataGroupId());
+			dataInfo.setDataGroupId(dataGroupId);
 			dataInfo.setConverterJobId(converterJobId);
-			dataInfo.setSharing(uploadDataFile.getSharing());
-			dataInfo.setMappingType(uploadDataFile.getMappingType());
-			dataInfo.setDataType(uploadDataFile.getDataType());
-			dataInfo.setDataKey(uploadDataFile.getFileRealName().substring(0, uploadDataFile.getFileRealName().lastIndexOf(".")));
-			dataInfo.setDataName(uploadDataFile.getFileName().substring(0, uploadDataFile.getFileName().lastIndexOf(".")));
+			dataInfo.setSharing(sharing);
+			dataInfo.setMappingType(mappingType);
+			dataInfo.setDataType(dataType);
+			dataInfo.setDataKey(dataKey);
+			dataInfo.setDataName(dataName);
 			dataInfo.setUserId(userId);
-			dataInfo.setLatitude(uploadDataFile.getLatitude());
-			dataInfo.setLongitude(uploadDataFile.getLongitude());
-			dataInfo.setAltitude(uploadDataFile.getAltitude());
-			dataInfo.setLocation("POINT(" + uploadDataFile.getLongitude() + " " + uploadDataFile.getLatitude() + ")");
+			dataInfo.setLatitude(latitude);
+			dataInfo.setLongitude(longitude);
+			dataInfo.setAltitude(altitude);
+			if(longitude != null && latitude != null) {
+				dataInfo.setLocation("POINT(" + longitude + " " + latitude + ")");
+			}
 			dataInfo.setMetainfo(metainfo);
 			dataInfo.setStatus(DataStatus.PROCESSING.name().toLowerCase());
 			dataService.insertData(dataInfo);
+			
 		} else {
 			dataInfo.setMethodType(MethodType.UPDATE);
 			dataInfo.setConverterJobId(converterJobId);
-			dataInfo.setSharing(uploadDataFile.getSharing());
-			dataInfo.setDataType(uploadDataFile.getDataType());
-			dataInfo.setDataName(uploadDataFile.getFileName().substring(0, uploadDataFile.getFileName().lastIndexOf(".")));
-			//dataInfo.setUserId(userId);
-			dataInfo.setMappingType(uploadDataFile.getMappingType());
-			dataInfo.setLatitude(uploadDataFile.getLatitude());
-			dataInfo.setLongitude(uploadDataFile.getLongitude());
-			dataInfo.setAltitude(uploadDataFile.getAltitude());
-			if(uploadDataFile.getLongitude() != null && uploadDataFile.getLatitude() != null) {
-				dataInfo.setLocation("POINT(" + uploadDataFile.getLongitude() + " " + uploadDataFile.getLatitude() + ")");
+			dataInfo.setSharing(sharing);
+			dataInfo.setMappingType(mappingType);
+			dataInfo.setDataType(dataType);
+			dataInfo.setDataName(dataName);
+			dataInfo.setUserId(userId);
+			dataInfo.setLatitude(latitude);
+			dataInfo.setLongitude(longitude);
+			dataInfo.setAltitude(altitude);
+			if(longitude != null && latitude != null) {
+				dataInfo.setLocation("POINT(" + longitude + " " + latitude + ")");
 			}
 			dataInfo.setStatus(DataStatus.PROCESSING.name().toLowerCase());
 			dataService.updateData(dataInfo);
@@ -275,7 +288,7 @@ public class ConverterServiceImpl implements ConverterService {
 		
 		return dataInfo;
 	}
-	
+
 	/**
 	 * dataKey 존재하지 않을 경우 insert, 존재할 경우 update
 	 * @param userId

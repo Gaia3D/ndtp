@@ -347,125 +347,131 @@ function MapControll(viewer, option) {
 		$(this).trigger('afterClick');
 	});
 
-	$('#mapCtrlArea').bind('afterClick', function () {
-		console.log("맵컨트롤 : 면적");
-		that.clearMap();
-		drawingMode = 'polygon';
+    $('#mapCtrlArea').bind('afterClick', function () {
+        console.log("맵컨트롤 : 면적");
+        that.clearMap();
+        drawingMode = 'polygon';
 
-		if ($(this).hasClass('on')) {
-			startDrawPolyLine();
-		}
-	});
+        if ($(this).hasClass('on')) {
+            startDrawPolyLine();
+        }
+    });
+    
+    $('#mapCapture').click(function() {
+    	// console.log("맵컨트롤 : 저장");
+        var targetResolutionScale = 1.0;
+        var timeout = 1000; // in ms
 
-	$('#mapCapture').click(function() {
-		// console.log("맵컨트롤 : 저장");
-		var targetResolutionScale = 1.0;
-		var timeout = 1000; // in ms
+        var scene =that._scene;
+        if (!scene) {
+            console.error("No scene");
+        }
 
-		var scene =that._scene;
-		if (!scene) {
-			console.error("No scene");
-		}
+        // define callback functions
+        var prepareScreenshot = function(){
+            var canvas = scene.canvas;
+            viewer.resolutionScale = targetResolutionScale;
+            scene.preRender.removeEventListener(prepareScreenshot);
+            // take snapshot after defined timeout to allow scene update (ie. loading data)
+            startLoading();
+            setTimeout(function(){
+                scene.postRender.addEventListener(takeScreenshot);
+            }, timeout);
+        }
 
-		// define callback functions
-		var prepareScreenshot = function(){
-			var canvas = scene.canvas;
-			viewer.resolutionScale = targetResolutionScale;
-			scene.preRender.removeEventListener(prepareScreenshot);
-			// take snapshot after defined timeout to allow scene update (ie. loading data)
-			setTimeout(function(){
-				scene.postRender.addEventListener(takeScreenshot);
-			}, timeout);
-		}
+        var takeScreenshot = function(){
+            scene.postRender.removeEventListener(takeScreenshot);
+            var canvas = scene.canvas;
+            canvas.toBlob(function(blob){
+                var url = URL.createObjectURL(blob);
+                downloadURI(url, "snapshot-" + moment().format("YYYYMMDDHHmmss") + ".png");
+                // reset resolutionScale
+                viewer.resolutionScale = 1.0;
+                stopLoading();
+            });
+        }
 
-		var takeScreenshot = function(){
-			scene.postRender.removeEventListener(takeScreenshot);
-			var canvas = scene.canvas;
-			canvas.toBlob(function(blob){
-				var url = URL.createObjectURL(blob);
-				downloadURI(url, "snapshot-" + moment().format("YYYYMMDDHHmmss") + ".png");
-				// reset resolutionScale
-				viewer.resolutionScale = 1.0;
-			});
-		}
+        scene.preRender.addEventListener(prepareScreenshot);
+    });
+    
+    function downloadURI(uri, name) {
+        var link = document.createElement("a");
+        link.download = name;
+        link.href = uri;
+        // mimic click on "download button"
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        delete link;
+    }
+    
+    $('#mapCtrlZoomIn').click(function () {
+        console.log("맵컨트롤 : 확대");
+        that._scene.camera.zoomIn(100);
+    });
 
-		scene.preRender.addEventListener(prepareScreenshot);
-	});
+    $('#mapCtrlZoomOut').click(function () {
+        console.log("맵컨트롤 : 축소");
+        that._scene.camera.zoomOut(100);
+    });
 
-	function downloadURI(uri, name) {
-		var link = document.createElement("a");
-		link.download = name;
-		link.href = uri;
-		// mimic click on "download button"
-		document.body.appendChild(link);
-		link.click();
-		document.body.removeChild(link);
-		delete link;
-	}
+    $('#distanceLayer button.focusA').click(function () {
+        that.clearMap();
+        $('#mapCtrlDistance').trigger('afterClick');
+    });
 
-	$('#mapCtrlZoomIn').click(function () {
-		console.log("맵컨트롤 : 확대");
-		that._scene.camera.zoomIn(100);
-	});
+    $('#areaLayer button.focusA').click(function () {
+        that.clearMap();
+        $('#mapCtrlArea').trigger('afterClick');
+    });
 
-	$('#mapCtrlZoomOut').click(function () {
-		console.log("맵컨트롤 : 축소");
-		that._scene.camera.zoomOut(100);
-	});
+    function startDrawPolyLine() {
+        handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
+        var dynamicPositions = new Cesium.CallbackProperty(function () {
+        	if(drawingMode === 'polygon') {
+        		return new Cesium.PolygonHierarchy(activeShapePoints);
+        	} else {
+        		return activeShapePoints;
+        	}
+        }, false);
+        
+        handler.setInputAction(function (event) {
+            var earthPosition = viewer.scene.pickPosition(event.position);
+            if (Cesium.defined(earthPosition)) {
+                var cartographic = Cesium.Cartographic.fromCartesian(earthPosition);
+                var tempPosition = Cesium.Cartesian3.fromDegrees(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude));
+                activeShapePoints.push(tempPosition);
+                
+                if (activeShapePoints.length === 1) {
+                    activeShape = drawShape(dynamicPositions);
+                    if (drawingMode === 'polygon') {
+	                    activeLabel = viewer.entities.add({
+	                        name     : "TempLabel for area measurement",
+	                        position: dynamicCenter,
+	                        label: {
+	                            text: dynamicLabel,
+	                            font: 'bold 20px sans-serif',
+	                            fillColor: Cesium.Color.BLUE,
+	                            style: Cesium.LabelStyle.FILL,
+	                            verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+	                            disableDepthTestDistance: Number.POSITIVE_INFINITY,
+	                            heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+	                        }
+	                    });
+                    }
+                }
+                else {
+                    this._labels.push(drawLabel(tempPosition));
+                }
+                this._polylines.push(createPoint(tempPosition));
+            }
+        }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
-	$('#distanceLayer button.focusA').click(function () {
-		that.clearMap();
-		$('#mapCtrlDistance').trigger('afterClick');
-	});
+        handler.setInputAction(function (event) {
+            terminateShape();
+        }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
 
-	$('#areaLayer button.focusA').click(function () {
-		that.clearMap();
-		$('#mapCtrlArea').trigger('afterClick');
-	});
-
-	function startDrawPolyLine() {
-		handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
-		var dynamicPositions = new Cesium.CallbackProperty(function () {
-			return new Cesium.PolygonHierarchy(activeShapePoints);
-		}, false);
-
-		handler.setInputAction(function (event) {
-			var earthPosition = viewer.scene.pickPosition(event.position);
-			if (Cesium.defined(earthPosition)) {
-				var cartographic = Cesium.Cartographic.fromCartesian(earthPosition);
-				var tempPosition = Cesium.Cartesian3.fromDegrees(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude));
-				activeShapePoints.push(tempPosition);
-
-				if (activeShapePoints.length === 1) {
-					activeShape = drawShape(dynamicPositions);
-					if (drawingMode === 'polygon') {
-						activeLabel = viewer.entities.add({
-							name     : "TempLabel for area measurement",
-							position: dynamicCenter,
-							label: {
-								text: dynamicLabel,
-								font: 'bold 20px sans-serif',
-								fillColor: Cesium.Color.BLUE,
-								style: Cesium.LabelStyle.FILL,
-								verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-								disableDepthTestDistance: Number.POSITIVE_INFINITY,
-								heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
-							}
-						});
-					}
-				}
-				else {
-					this._labels.push(drawLabel(tempPosition));
-				}
-				this._polylines.push(createPoint(tempPosition));
-			}
-		}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
-
-		handler.setInputAction(function (event) {
-			terminateShape();
-		}, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
-
-	}
+    }
 }
 
 var formatDistance = function (_length) {

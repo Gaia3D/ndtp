@@ -6,12 +6,13 @@ create table tn_civil_voice (
 	civil_voice_id 		bigint,
 	user_id				varchar(32)						not null,
 	user_ip 			varchar(45),
-	title				varchar(1000)					not null,
+	title				varchar(256)					not null,
 	content				text,
 	location		 	GEOMETRY(POINT, 4326),
 	heit				numeric(13,7),
 	use_yn				boolean							default true,
 	view_count			bigint							default 0,
+	comment_count		bigint							default 0,
 	year				char(4)							default to_char(now(), 'YYYY'),
 	month				varchar(2)						default to_char(now(), 'MM'),
 	day					varchar(2)						default to_char(now(), 'DD'),
@@ -37,6 +38,7 @@ comment on column tn_civil_voice.location is '위치 Point. 분석에 용이';
 comment on column tn_civil_voice.heit is '높이';
 comment on column tn_civil_voice.use_yn is '사용유무, true : 사용, false : 사용안함';
 comment on column tn_civil_voice.view_count is '조회수';
+comment on column tn_civil_voice.view_count is '댓글수';
 comment on column tn_civil_voice.year is '년';
 comment on column tn_civil_voice.month is '월';
 comment on column tn_civil_voice.day is '일';
@@ -56,7 +58,7 @@ create table tn_civil_voice_comment (
 	civil_voice_id 					bigint,
 	user_id					varchar(32)						not null,
 	user_ip 				varchar(45),
-	title					varchar(1000)					not null,
+	title					varchar(256)					not null,
 	year					char(4)							default to_char(now(), 'YYYY'),
 	month					varchar(2)						default to_char(now(), 'MM'),
 	day						varchar(2)						default to_char(now(), 'DD'),

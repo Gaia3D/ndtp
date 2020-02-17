@@ -32,12 +32,13 @@
 		<div style="padding: 20px 20px 0px 10px; font-size: 18px;">3D 업로딩 데이터 자동 변환</div>
 		<div class="tabs" >
 			<ul class="tab">
-				<li onclick="location.href='/data-group/list'">데이터 그룹</li>
-				<li onclick="location.href='/data-group/input'">데이터 그룹 등록</li>
-				<li onclick="location.href='/upload-data/input'">업로딩 데이터</li>
-			   	<li onclick="location.href='/upload-data/list'">업로딩 데이터 목록</li>
-			  	<li onclick="location.href='/converter/list'">업로딩 데이터 변환 목록</li>
-			  	<li onclick="location.href='/data/list'" class="on">데이터 목록</li>
+				<li id="tabDataGroupList"><a href="/data-group/list">데이터 그룹</a></li>
+				<li id="tabDataGroupInput"><a href="/data-group/input">데이터 그룹 등록</a></li>
+				<li id="tabUploadDataInput"><a href="/upload-data/input">업로딩 데이터</a></li>
+			   	<li id="tabUploadDataList"><a href="/upload-data/list">업로딩 데이터 목록</a></li>
+			  	<li id="tabConverterList"><a href="/converter/list">업로딩 데이터 변환 목록</a></li>
+			  	<li id="tabDataList"><a href="/data/list">데이터 목록</a></li>
+			  	<li id="tabDataLogList"><a href="/data-log/list">데이터 변경 이력</a></li>
 			</ul>
 		</div>
 		<form:form id="dataInfo" modelAttribute="dataInfo" method="post" onsubmit="return false;">
@@ -269,20 +270,11 @@
 		}
 	}
 
-	// 지도에서 찾기
+	// 지도에서 찾기 -- common.js, openFindDataPoint
 	$( "#mapButtion" ).on( "click", function() {
-		var url = "/map/find-data-point?dataId=${dataInfo.dataId}&referrer=MODIFY";
-		var width = 1200;
-		var height = 760;
-
-		var popupX = (window.screen.width / 2) - (width / 2);
-		// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
-		var popupY= (window.screen.height / 2) - (height / 2);
-
-	    var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height + ", top=" + popupY + ", left="+popupX
-	            + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
-	    //popWin.document.title = layerName;
+		openFindDataPoint("${dataInfo.dataId}", "MODIFY");
 	});
+	
 </script>
 </body>
 </html>

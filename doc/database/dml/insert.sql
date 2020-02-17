@@ -2,7 +2,9 @@
 insert into user_group(	user_group_id, user_group_key, user_group_name, ancestor, parent, depth, view_order, basic, available, description)
 values
 	(1, 'SUPER_ADMIN', '슈퍼 관리자', 1, 0, 1, 1, 'Y', 'Y', '기본값'),
-	(2, 'USER', '사용자', 1, 0, 1, 2, 'Y', 'Y', '기본값');
+	(2, 'USER', '사용자', 1, 0, 1, 2, 'Y', 'Y', '기본값'),
+	(3, 'GUEST', 'GUEST', 1, 0, 1, 3, 'Y', 'Y', '기본값'),
+	;
 
 -- 슈퍼 관리자 등록
 insert into user_info(
@@ -37,7 +39,8 @@ values
 	(41, '0', '1', '업로드 목록', 'DATA', 3, 3, 2, 9, '/upload-data/list', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
 	(42, '0', '1', '업로드 수정', 'DATA', 3, 3, 2, 10, '/upload-data/modify', '/upload-data/list', null, 'glyph-monitor', 'N', 'Y', 'N'),
 	(43, '0', '1', '데이터 변환 결과', 'DATA', 3, 3, 2, 11, '/converter/list', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
-	(44, '0', '1', '데이터 위치 변경 이력', 'DATA', 3, 3, 2, 12, '/data-adjust-log/list', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
+	(44, '0', '1', '데이터 위치 변경 요청 이력', 'DATA', 3, 3, 2, 12, '/data-adjust-log/list', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
+	(45, '0', '1', '데이터 변경 이력', 'DATA', 3, 3, 2, 13, '/data-log/list', null, null, 'glyph-monitor', 'Y', 'Y', 'Y'),
 	(5, '0', '1', '레이어', 'LAYER', 5, 0, 1, 5, '/layer-group/list', null, null, 'glyph-check', 'Y', 'Y', 'Y'),
 	(51, '0', '1', '2D 레이어 그룹', 'LAYER', 5, 5, 2, 1, '/layer-group/list', null, null, 'glyph-check', 'Y', 'Y', 'Y'),
 	(52, '0', '1', '2D 레이어 그룹 등록', 'LAYER', 5, 5, 2, 2, '/layer-group/input', null, null, 'glyph-check', 'Y', 'Y', 'Y'),
@@ -102,6 +105,7 @@ values
 	(42, 1, 42, 'Y'),
 	(43, 1, 43, 'Y'),
 	(44, 1, 44, 'Y'),
+	(45, 1, 45, 'Y'),
 	(5, 1, 5, 'Y'),
 	(51, 1, 51, 'Y'),
 	(52, 1, 52, 'Y'),
@@ -147,7 +151,11 @@ values
 	(NEXTVAL('user_group_role_seq'), 1, 2),
 	(NEXTVAL('user_group_role_seq'), 1, 3),
 	(NEXTVAL('user_group_role_seq'), 1, 4),
-	(NEXTVAL('user_group_role_seq'), 2, 5);
+	(NEXTVAL('user_group_role_seq'), 1, 5),
+	(NEXTVAL('user_group_role_seq'), 1, 6),
+	(NEXTVAL('user_group_role_seq'), 2, 4),
+	(NEXTVAL('user_group_role_seq'), 2, 5),
+	(NEXTVAL('user_group_role_seq'), 2, 6);
 
 
 -- 메인 화면 위젯
@@ -178,19 +186,8 @@ values
     (2, '[관리자 전용] 관리자 페이지 사용자 관리 권한', 'ADMIN_USER_MANAGE', '1', '0', 'Y', 'Y'),
     (3, '[관리자 전용] 관리자 페이지 Layer 관리 권한', 'ADMIN_LAYER_MANAGE', '1', '0', 'Y', 'Y'),
 
-    (4, '[관리자 전용] 사용자 페이지 SIGN IN 권한', 'USER_SIGNIN', '0', '0', 'Y', 'Y'),
-    (5, '[사용자 전용] 사용자 페이지 SIGN IN 권한', 'USER_SIGNIN', '0', '0', 'Y', 'Y');
+	(4, '[사용자 전용] 사용자 페이지 SIGN IN 권한', 'USER_SIGNIN', '0', '0', 'Y', 'Y'),
+	(5, '[사용자 전용] 사용자 페이지 DATA 등록 권한', 'USER_DATA_CREATE', '0', '0', 'Y', 'Y'),
+	(6, '[사용자 전용] 사용자 페이지 DATA 조회 권한', 'USER_DATA_READ', '0', '0', 'Y', 'Y');
 
 commit;
-
-
-
-
-
-
-
-
-
-
-
-

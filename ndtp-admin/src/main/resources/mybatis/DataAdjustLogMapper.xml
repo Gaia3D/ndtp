@@ -4,44 +4,55 @@
 <mapper namespace="ndtp.persistence.DataAdjustLogMapper">
 
 	<!-- 데이터 변경 요청 수 -->
-	<select id="getDataAdjustLogTotalCount" parameterType="dataInfoAdjustLog" resultType="long">
+	<select id="getDataAdjustLogTotalCount" parameterType="dataAdjustLog" resultType="long">
 		/* getDataAdjustLogTotalCount */
-		SELECT COUNT(data_adjust_log_id) 
-		FROM data_info_adjust_log
+		SELECT COUNT(A.data_adjust_log_id) 
+		FROM data_adjust_log A, data_info B
 		<trim prefix="WHERE" prefixOverrides="AND">
+			A.data_id = B.data_id
 			<if test="userId != null and userId != ''">
-			user_id = #{userId}
+			AND A.user_id = #{userId}
 			</if>
 			<if test="status != null and status != ''">
-			AND status = #{status}
+			AND A.status = #{status}
 			</if>
 			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
-			AND ${searchWord} = #{searchValue}
+				<if test="searchWord != 'data_name'">
+				AND A.${searchWord} = #{searchValue}		
+				</if>
+				<if test="searchWord == 'data_name'">
+				AND B.${searchWord} = #{searchValue}
+				</if>
 			</if>
 			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
-			AND ${searchWord} LIKE '%' || #{searchValue} || '%'
+				<if test="searchWord != 'data_name'">
+				AND A.${searchWord} LIKE '%' || #{searchValue} || '%'	
+				</if>
+				<if test="searchWord == 'data_name'">
+				AND B.${searchWord} LIKE '%' || #{searchValue} || '%'
+				</if>
 			</if>
 			<if test="startDate != null and startDate != ''">
 			<![CDATA[
-			AND insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+			AND A.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
 			<if test="endDate != null and endDate != ''">
 			<![CDATA[
-			AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+			AND A.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
 		</trim>
 	</select>
 	
 	<!-- 데이터 변경 요청 로그 목록. join 으로 변경해야 함 -->
-	<select id="getListDataAdjustLog" parameterType="dataInfoAdjustLog" resultType="dataInfoAdjustLog">
+	<select id="getListDataAdjustLog" parameterType="dataAdjustLog" resultType="dataAdjustLog">
 		/* getListDataAdjustLog */
 		SELECT X.*, 
 			(SELECT data_group_name FROM data_group WHERE data_group_id = X.data_group_id) AS data_group_name
 		FROM (
 			SELECT A.*, B.data_name, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude, ST_X(A.before_location) AS beforeLongitude, ST_Y(A.before_location) AS beforeLatitude
-			FROM data_info_adjust_log A, data_info B
+			FROM data_adjust_log A, data_info B
 			WHERE A.data_id = B.data_id
 				<if test="userId != null and userId != ''">
 				AND A.user_id = #{userId}
@@ -50,10 +61,20 @@
 				AND A.status = #{status}
 				</if>
 				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
-				AND A.${searchWord} = #{searchValue}
+					<if test="searchWord != 'data_name'">
+					AND A.${searchWord} = #{searchValue}		
+					</if>
+					<if test="searchWord == 'data_name'">
+					AND B.${searchWord} = #{searchValue}
+					</if>
 				</if>
 				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
-				AND A.${searchWord} LIKE '%' || #{searchValue} || '%'
+					<if test="searchWord != 'data_name'">
+					AND A.${searchWord} LIKE '%' || #{searchValue} || '%'	
+					</if>
+					<if test="searchWord == 'data_name'">
+					AND B.${searchWord} LIKE '%' || #{searchValue} || '%'
+					</if>
 				</if>
 				<if test="startDate != null and startDate != ''">
 				<![CDATA[
@@ -67,7 +88,12 @@
 				</if>
 			<choose>
 			<when test="orderWord != null and orderWord != '' and orderValue != null and orderValue != ''">
-			ORDER BY A.${orderWord} ${orderValue}
+				<if test="orderWord != 'data_name'">
+					ORDER BY A.${orderWord} ${orderValue}
+				</if>
+				<if test="orderWord == 'data_name'">
+					ORDER BY B.${orderWord} ${orderValue}
+				</if>
 			</when>
 			<otherwise>
 			ORDER BY A.insert_date DESC, A.data_id DESC
@@ -77,21 +103,21 @@
 		) X
 	</select>
 	
-	<select id="getDataAdjustLog" parameterType="long" resultType="dataInfoAdjustLog">
+	<select id="getDataAdjustLog" parameterType="long" resultType="dataAdjustLog">
 		/* getDataAdjustLog */
 		SELECT A.*, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude, B.data_name
-		FROM data_info_adjust_log A, data_info B
+		FROM data_adjust_log A, data_info B
 		WHERE A.data_adjust_log_id = #{dataAdjustLogId}
 			AND A.data_id = B.data_id
 	</select>
 
 	<!-- Data Info 변경 이력 등록 -->
-	<insert id="insertDataAdjustLog" parameterType="dataInfoAdjustLog">
+	<insert id="insertDataAdjustLog" parameterType="dataAdjustLog">
 		/* insertDataAdjustLog */
 		<selectKey keyProperty="dataInfoAdjustLogId" resultType="long" order="BEFORE">
-    		SELECT NEXTVAL('data_info_adjust_log_seq')
+    		SELECT NEXTVAL('data_adjust_log_seq')
   		</selectKey>
-		INSERT INTO data_info_adjust_log(
+		INSERT INTO data_adjust_log(
 			data_adjust_log_id, data_group_id, data_id, user_id, 
 			location, altitude, heading, pitch, roll,
 			before_location, before_altitude, before_heading, before_pitch, before_roll, change_type, description
@@ -103,9 +129,9 @@
 	</insert>
 	
 	<!-- 데이터 로그 상태 변경 -->
-	<update id="updateDataAdjustLogStatus" parameterType="dataInfoAdjustLog">
+	<update id="updateDataAdjustLogStatus" parameterType="dataAdjustLog">
 		/* updateDataAdjustLogStatus */
-		UPDATE data_info_adjust_log
+		UPDATE data_adjust_log
 		SET status = #{status},
 			update_date = NOW()
 		WHERE data_adjust_log_id = #{dataAdjustLogId}

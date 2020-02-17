@@ -41,16 +41,16 @@
 									</div>
 									<div class="input-set">
 										<label for="startDate"><spring:message code='search.date'/></label>
-										<input type="text" class="s date" id="startDate" name="startDate" />
+										<input type="text" class="s date" id="startDate" name="startDate" autocomplete="off" />
 										<span class="delimeter tilde">~</span>
-										<input type="text" class="s date" id="endDate" name="endDate" />
+										<input type="text" class="s date" id="endDate" name="endDate" autocomplete="off" />
 									</div>
 									<div class="input-set">
 										<label for="orderWord"><spring:message code='search.order'/></label>
 										<select id="orderWord" name="orderWord" class="selectBoxClass">
 											<option value=""> <spring:message code='search.basic'/> </option>
 											<option value="title">제목</option>
-											<option value="insertDate"> <spring:message code='search.insert.date'/> </option>
+											<option value="insert_date"> <spring:message code='search.insert.date'/> </option>
 										</select>
 										<select id="orderValue" name="orderValue" class="selectBoxClass">
 					                		<option value=""> <spring:message code='search.basic'/> </option>

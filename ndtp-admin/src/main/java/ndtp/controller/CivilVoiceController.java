@@ -47,6 +47,8 @@ public class CivilVoiceController implements AuthorizationController {
 	 */
     @GetMapping(value = "list")
 	public String list(HttpServletRequest request, @RequestParam(defaultValue="1") String pageNo, CivilVoice civilVoice, Model model) {
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+
 		String roleCheckResult = roleValidate(request);
     	if(roleValidate(request) != null) return roleCheckResult;
 
@@ -62,20 +64,20 @@ public class CivilVoiceController implements AuthorizationController {
 			civilVoice.setEndDate(civilVoice.getEndDate().substring(0, 8) + DateUtils.END_TIME);
 		}
 
-		Long totalCount = civilVoiceService.getCivilVoiceTotalCount(civilVoice);
-		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, civilVoice), totalCount, Long.valueOf(pageNo).longValue());
+		long totalCount = civilVoiceService.getCivilVoiceTotalCount(civilVoice);
+		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, civilVoice),
+				totalCount, Long.valueOf(pageNo).longValue(), civilVoice.getListCounter());
 		civilVoice.setOffset(pagination.getOffset());
 		civilVoice.setLimit(pagination.getPageRows());
 
 		List<CivilVoice> civilVoiceList = new ArrayList<>();
 		if(totalCount > 0l) {
+			civilVoice.setUserId(userSession.getUserId());
 			civilVoiceList = civilVoiceService.getListCivilVoice(civilVoice);
 		}
 
 		model.addAttribute(pagination);
-		model.addAttribute("civilVoice", civilVoice);
 		model.addAttribute("civilVoiceList", civilVoiceList);
-
 		return "/civil-voice/list";
 	}
 

@@ -99,8 +99,8 @@ function changeShadowAPI(managerFactoryInstance, isShow)
  * @param {ManagerFactory} managerFactoryInstance
  * @param {string} projectId 프로젝트 아이디
  * @param {string} dataKey data key
- * @param {string} objectIds object id. 복수개의 경우 , 로 입력
- * @param {string} property 속성값 예)isMain=true
+ * @param {Array[string]} objectIds object id. 복수개의 경우 , 로 입력
+ * @param {string} property 속성값 예)isPhysical=true
  * @param {string} color R, G, B 색깔을 ',' 로 연결한 string 값을 받음.
  */
 function changeColorAPI(managerFactoryInstance, projectId, dataKey, objectIds, property, color) 
@@ -14569,7 +14569,8 @@ var MagoRenderable = function(options)
 	this.selectedColor4;
 
 	this.eventObject = {};
-
+	
+	this.options = options;
 	if (options !== undefined)
 	{
 		if (options.color && options.color instanceof Color) 
@@ -14658,10 +14659,23 @@ MagoRenderable.prototype.getObject = function(idx)
 
 MagoRenderable.prototype.render = function(magoManager, shader, renderType, glPrimitive, bIsSelected) 
 {
-	if (this.attributes && this.attributes.isVisible !== undefined && this.attributes.isVisible === false) 
+	if (this.attributes) 
 	{
-		return;
+		if (this.attributes.isVisible !== undefined && this.attributes.isVisible === false) 
+		{
+			return;
+		}
+		
+		if (renderType === 2)
+		{
+			if (this.attributes.isSelectable !== undefined && this.attributes.isSelectable === false) 
+			{
+				return;
+			}
+		}
 	}
+	
+
 	if (this.dirty)
 	{ this.makeMesh(); }
 	
@@ -14673,9 +14687,45 @@ MagoRenderable.prototype.render = function(magoManager, shader, renderType, glPr
 	var buildingGeoLocation = this.geoLocDataManager.getCurrentGeoLocationData();
 	buildingGeoLocation.bindGeoLocationUniforms(gl, shader); // rotMatrix, positionHIGH, positionLOW.
 	
-	this.renderAsChild(magoManager, shader, renderType, glPrimitive, bIsSelected);
+	this.renderAsChild(magoManager, shader, renderType, glPrimitive, bIsSelected, this.options);
+	
+	// check options provisionally here.
+	if (this.options)
+	{
+		if (this.options.renderWireframe)
+		{
+			var shaderThickLine = magoManager.postFxShadersManager.getShader("thickLine");
+			shaderThickLine.useProgram();
+			shaderThickLine.bindUniformGenerals();
+			var gl = magoManager.getGl();
+
+			gl.blendEquationSeparate(gl.FUNC_ADD, gl.FUNC_ADD);
+			gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+			gl.disable(gl.CULL_FACE);
+			
+			gl.enableVertexAttribArray(shaderThickLine.prev_loc);
+			gl.enableVertexAttribArray(shaderThickLine.current_loc);
+			gl.enableVertexAttribArray(shaderThickLine.next_loc);
+			
+			var geoLocData = this.geoLocDataManager.getCurrentGeoLocationData();
+			geoLocData.bindGeoLocationUniforms(gl, shaderThickLine);
+
+			var sceneState = magoManager.sceneState;
+			var drawingBufferWidth = sceneState.drawingBufferWidth;
+			var drawingBufferHeight = sceneState.drawingBufferHeight;
+			
+			gl.uniform4fv(shaderThickLine.color_loc, [0.6, 0.8, 0.9, 1.0]);
+			gl.uniform2fv(shaderThickLine.viewport_loc, [drawingBufferWidth[0], drawingBufferHeight[0]]);
+
+			this.renderAsChild(magoManager, shaderThickLine, renderType, glPrimitive, bIsSelected, this.options);
+			
+			// Return to the currentShader.
+			shader.useProgram();
+		}
+	}
 };
-MagoRenderable.prototype.renderAsChild = function(magoManager, shader, renderType, glPrimitive, bIsSelected) 
+
+MagoRenderable.prototype.renderAsChild = function(magoManager, shader, renderType, glPrimitive, bIsSelected, options) 
 {
 	if (this.dirty)
 	{ this.makeMesh(); }
@@ -14707,7 +14757,14 @@ MagoRenderable.prototype.renderAsChild = function(magoManager, shader, renderTyp
 		else if (selectionManager.isObjectSelected(this))
 		{
 			bIsSelected = true;
-			gl.uniform4fv(shader.oneColor4_loc, [0.9, 0.1, 0.1, 1.0]);
+			var selColor = [0.9, 0.1, 0.1, 1.0];
+			if (this.attributes.selectedColor4)
+			{
+				var selectedColor = this.attributes.selectedColor4;
+				selColor = [selectedColor.r, selectedColor.g, selectedColor.b, selectedColor.a];
+			}
+			
+			gl.uniform4fv(shader.oneColor4_loc, selColor);
 		}
 		else 
 		{
@@ -14735,23 +14792,27 @@ MagoRenderable.prototype.renderAsChild = function(magoManager, shader, renderTyp
 	}
 	
 	var objectsCount = this.objectsArray.length;
+	
 	for (var i=0; i<objectsCount; i++)
 	{
-		this.objectsArray[i].renderAsChild(magoManager, shader, renderType, glPrimitive, bIsSelected);
+		this.objectsArray[i].renderAsChild(magoManager, shader, renderType, glPrimitive, bIsSelected, options);
 	}
 
 	gl.disable(gl.BLEND);
 
 	this.dispatchEvent('RENDER_END', magoManager);
 };
+
 MagoRenderable.prototype.makeMesh = function() 
 {
 	return abstract();
 };
+
 MagoRenderable.prototype.moved = function() 
 {
 	// do something.
 };
+
 MagoRenderable.prototype.updateMatrix = function(ownerMatrix) 
 {
 	if (!ownerMatrix) 
@@ -18747,7 +18808,7 @@ CollisionCheckScene.prototype.doCheck = function(resultCollidedOctreesArray)
  * Save and calculate the color value as RGB
  * @class Color
  */
-var Color = function() 
+var Color = function(red, green, blue, alpha) 
 {
 	if (!(this instanceof Color)) 
 	{
@@ -18758,6 +18819,18 @@ var Color = function()
 	this.g = 0;
 	this.b = 0;
 	this.a = 1;
+	
+	if (red !== undefined)
+	{ this.r = red; }
+	
+	if (green !== undefined)
+	{ this.g = green; }
+	
+	if (blue !== undefined)
+	{ this.b = blue; }
+	
+	if (alpha !== undefined)
+	{ this.a = alpha; }
 };
 
 
@@ -20019,6 +20092,33 @@ GeographicCoord.prototype.setLonLatAlt = function(longitude, latitude, altitude)
 };
 
 /**
+ * Set lon at this feature
+ * @param longitude 경도
+ */
+GeographicCoord.prototype.setLongitude = function(longitude) 
+{
+	this.longitude = longitude; 
+};
+
+/**
+ * Set lon at this feature
+ * @param longitude 경도
+ */
+GeographicCoord.prototype.setLatitude = function(latitude) 
+{
+	this.latitude = latitude; 
+};
+
+/**
+ * Set lon at this feature
+ * @param longitude 경도
+ */
+GeographicCoord.prototype.setAltitude = function(altitude) 
+{
+	this.altitude = altitude;
+};
+
+/**
  * Returns the latitude in radians.
  * @returns {Number}
  */
@@ -20423,6 +20523,17 @@ var GeographicCoordsList = function(geographicCoordsArray)
  * push single point
  * @param {GeographicCoord}
  */
+GeographicCoordsList.prototype.newGeoCoord = function(lon, lat, alt) 
+{
+	var geoCoord = new GeographicCoord(lon, lat, alt);
+	this.addGeoCoord(geoCoord);
+	return geoCoord;
+};
+
+/**
+ * push single point
+ * @param {GeographicCoord}
+ */
 GeographicCoordsList.prototype.addGeoCoord = function(geographicPoint) 
 {
 	this.geographicCoordsArray.push(geographicPoint);
@@ -20502,6 +20613,26 @@ GeographicCoordsList.prototype.getGeoCoordSegment = function(idx, resultGeoCoord
 	resultGeoCoordSegment.endGeoCoord = geoCoord2;
 	
 	return resultGeoCoordSegment;
+};
+
+/**
+ * 
+ * 
+ */
+GeographicCoordsList.prototype.getCopy = function(resultGeoCoordsListCopy) 
+{
+	if (resultGeoCoordsListCopy === undefined)
+	{ resultGeoCoordsListCopy = new GeographicCoordsList(); }
+	
+	var geoPointsCount = this.getGeoCoordsCount();
+	for (var i=0; i<geoPointsCount; i++)
+	{
+		var geoCoord = this.getGeoCoord(i);
+		var geoCoordCopy = new GeographicCoord(geoCoord.longitude, geoCoord.latitude, geoCoord.altitude);
+		resultGeoCoordsListCopy.addGeoCoord(geoCoordCopy);
+	}
+	
+	return resultGeoCoordsListCopy;
 };
 
 /**
@@ -20608,6 +20739,99 @@ GeographicCoordsList.prototype.test__makeThickLines = function(magoManager)
 	var resultVboKeysContainer = Point3DList.getVboThickLines(magoManager, this.points3dList.pointsArray, undefined);
 	
 	this.points3dList.vboKeysContainer = resultVboKeysContainer;
+};
+
+/**
+ * 
+ */
+GeographicCoordsList.prototype.getGeographicExtent = function(resultGeographicExtent) 
+{
+	if (!resultGeographicExtent)
+	{ resultGeographicExtent = new GeographicExtent(); }
+	
+	var geoCoord;
+	var geoCoordsCount = this.geographicCoordsArray.length;
+	for (var i=0; i<geoCoordsCount; i++)
+	{
+		geoCoord = this.geographicCoordsArray[i];
+		if (i === 0)
+		{
+			resultGeographicExtent.setInitExtent(geoCoord.longitude, geoCoord.latitude, geoCoord.altitude);
+		}
+		else 
+		{
+			resultGeographicExtent.addGeographicCoord(geoCoord);
+		}
+	}
+	
+	return resultGeographicExtent;
+};
+
+/**
+ * 
+ */
+GeographicCoordsList.prototype.getMiddleGeographicCoords = function(resultMiddleGeoCoords) 
+{
+	var geoExtent = this.getGeographicExtent();
+	return geoExtent.getMidPoint(resultMiddleGeoCoords);
+};
+
+/**
+ * 
+ */
+GeographicCoordsList.prototype.addAltitude = function(length) 
+{
+	var geoCoord;
+	var geoCoordsCount = this.geographicCoordsArray.length;
+	for (var i=0; i<geoCoordsCount; i++)
+	{
+		geoCoord = this.geographicCoordsArray[i];
+		geoCoord.altitude += length;
+	}
+};
+
+/**
+ * 
+ */
+GeographicCoordsList.prototype.getExtrudedMeshRenderableObject = function(height, bLoop, resultRenderableObject, magoManager, extrudeDirWC) 
+{
+	if (!resultRenderableObject)
+	{
+		resultRenderableObject = new RenderableObject();
+	}
+	resultRenderableObject.geoLocDataManager = new GeoLocationDataManager();
+	var geoLocData = resultRenderableObject.geoLocDataManager.newGeoLocationData();
+	
+	// The origin of this object is in the middle of this geoCoordsList.
+	var midGeoCoord = this.getMiddleGeographicCoords();
+	
+	// Make the topGeoCoordsList.
+	var topGeoCoordsList = this.getCopy();
+	
+	// Reassign the altitude on the geoCoordsListCopy.
+	topGeoCoordsList.addAltitude(height);
+	
+	// All points3d is referenced to the middleGeoCoord.
+	ManagerUtils.calculateGeoLocationData(midGeoCoord.longitude, midGeoCoord.latitude, midGeoCoord.altitude, 0, 0, 0, geoLocData);
+	var basePoints3dArray = this.getPointsRelativeToGeoLocation(geoLocData, undefined);
+	var topPoints3dArray = topGeoCoordsList.getPointsRelativeToGeoLocation(geoLocData, undefined);
+	
+	// Now, with basePoints3dArray & topPoints3dArray make a mesh.
+	// Create a VtxProfilesList.
+	var vtxProfilesList = new VtxProfilesList();
+	var baseVtxProfile = vtxProfilesList.newVtxProfile();
+	baseVtxProfile.makeByPoints3DArray(basePoints3dArray, undefined); 
+	var topVtxProfile = vtxProfilesList.newVtxProfile();
+	topVtxProfile.makeByPoints3DArray(topPoints3dArray, undefined); 
+	
+	var bIncludeBottomCap = true;
+	var bIncludeTopCap = true;
+	var solidMesh = vtxProfilesList.getMesh(undefined, bIncludeBottomCap, bIncludeTopCap);
+	var surfIndepMesh = solidMesh.getCopySurfaceIndependentMesh();
+	surfIndepMesh.calculateVerticesNormals();
+	
+	resultRenderableObject.objectsArray.push(surfIndepMesh);
+	return resultRenderableObject;
 };
 
 /**
@@ -20901,6 +21125,85 @@ GeographicExtent.prototype.setExtent = function(minLon, minLat, minAlt, maxLon, 
 	{ this.maxGeographicCoord = new GeographicCoord(); }
 	
 	this.maxGeographicCoord.setLonLatAlt(maxLon, maxLat, maxAlt);
+};
+
+/**
+ * set the value of this instance
+ * @param lon
+ * @param lat
+ * @param alt
+ */
+GeographicExtent.prototype.setInitExtent = function(lon, lat, alt) 
+{
+	this.setExtent(lon, lat, alt, lon, lat, alt);
+};
+
+/**
+ * set the value of this instance
+ * @param lon
+ * @param lat
+ * @param alt
+ */
+GeographicExtent.prototype.addGeographicCoord = function(geoCoord) 
+{
+	var lon = geoCoord.longitude;
+	var lat = geoCoord.latitude;
+	var alt = geoCoord.altitude;
+	
+	if (this.minGeographicCoord === undefined)
+	{ 
+		this.minGeographicCoord = new GeographicCoord(); 
+		this.minGeographicCoord.setLonLatAlt(lon, lat, alt);
+	}
+	else 
+	{
+		if (lon < this.minGeographicCoord.longitude)
+		{ this.minGeographicCoord.setLongitude(lon); }
+		
+		if (lat < this.minGeographicCoord.latitude)
+		{ this.minGeographicCoord.setLatitude(lat); }
+		
+		if (alt < this.minGeographicCoord.altitude)
+		{ this.minGeographicCoord.setAltitude(alt); }
+	}
+	
+	if (this.maxGeographicCoord === undefined)
+	{ 
+		this.maxGeographicCoord = new GeographicCoord(); 
+		this.maxGeographicCoord.setLonLatAlt(lon, lat, alt);
+	}
+	else 
+	{
+		if (lon > this.maxGeographicCoord.longitude)
+		{ this.maxGeographicCoord.setLongitude(lon); }
+		
+		if (lat > this.maxGeographicCoord.latitude)
+		{ this.maxGeographicCoord.setLatitude(lat); }
+		
+		if (alt > this.maxGeographicCoord.altitude)
+		{ this.maxGeographicCoord.setAltitude(alt); }
+	}
+};
+
+GeographicExtent.prototype.getCenterLongitude = function() 
+{
+	var minLon = this.minGeographicCoord.longitude;
+	var maxLon = this.maxGeographicCoord.longitude;
+	return (maxLon+minLon)/2;
+};
+
+GeographicExtent.prototype.getCenterLatitude = function() 
+{
+	var minLat = this.minGeographicCoord.latitude;
+	var maxLat = this.maxGeographicCoord.latitude;
+	return (maxLat+minLat)/2;
+};
+
+GeographicExtent.prototype.getCenterAltitude = function() 
+{
+	var minAlt = this.minGeographicCoord.altitude;
+	var maxAlt = this.maxGeographicCoord.altitude;
+	return (maxAlt+minAlt)/2;
 };
 
 /**
@@ -24007,7 +24310,7 @@ MagoManager.prototype.managePickingProcess = function()
 						timestamp : new Date()
 					});
 				}
-				else if (!auxBuildingSelected && !auxNodeSelected) 
+				else 
 				{
 					this.emit(MagoManager.EVENT_TYPE.DESELECTEDF4D, {
 						type: MagoManager.EVENT_TYPE.DESELECTEDF4D
@@ -24016,11 +24319,12 @@ MagoManager.prototype.managePickingProcess = function()
 			}
 			else if (mode === CODE.moveMode.OBJECT) 
 			{
-				if (auxOctreeSelected) 
+				if (auxOctreeSelected && this.objectSelected) 
 				{
 					this.emit(MagoManager.EVENT_TYPE.SELECTEDF4DOBJECT, {
 						type      : MagoManager.EVENT_TYPE.SELECTEDF4DOBJECT,
-						object    : auxOctreeSelected,
+						octree    : auxBuildingSelected,
+						object    : this.objectSelected,
 						timestamp : new Date()
 					});
 				}
@@ -24192,38 +24496,34 @@ MagoManager.prototype.doRender = function(frustumVolumenObject)
 	this.renderer.renderMagoGeometries(renderType); //TEST
 	this.depthFboNeo.unbind();
 	this.swapRenderingFase();
-	
-	
-	
 
 	// 2) color render.************************************************************************************************************
+	// 2.1) Render terrain shadows.*******************************************************************************************************
+	// Now render the geomatry.
 	if (this.isCesiumGlobe())
 	{
 		var scene = this.scene;
 		scene._context._currentFramebuffer._bind();
+
+		if (this.currentFrustumIdx < 2) 
+		{
+			renderType = 3;
+			this.renderer.renderTerrainShadow(gl, renderType, this.visibleObjControlerNodes);
+		}
 	}
-	
-	// 2.1) Render terrain shadows.*******************************************************************************************************
-	// Now render the geomatry.
-	if (this.configInformation.geo_view_library === Constant.CESIUM && this.currentFrustumIdx < 2)
-	{
-		renderType = 3;
-		this.renderer.renderTerrainShadow(gl, renderType, this.visibleObjControlerNodes);
-	}
+
 	//gl.clearColor(0, 0, 0, 1);
 	//gl.clearDepth(1);
 	//gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-	
 	
 	renderType = 1;
 	this.renderType = 1;
 	this.renderer.renderGeometry(gl, renderType, this.visibleObjControlerNodes);
 	
-	
-	
 	if (this.weatherStation)
 	{
-		this.weatherStation.renderLastWindLayer(this);
+		this.weatherStation.renderWindLayerDisplayPlanes(this);
+		//this.weatherStation.renderWindMultiLayers(this);
 		//this.weatherStation.test_renderWindLayer(this);
 		//this.weatherStation.test_renderTemperatureLayer(this);
 		//this.weatherStation.test_renderCuttingPlanes(this, renderType);
@@ -24372,8 +24672,10 @@ MagoManager.prototype.startRender = function(isLastFrustum, frustumIdx, numFrust
 			if (this.objMarkerSC === undefined)
 			{ this.objMarkerSC = new ObjectMarker(); }
 			
-			pixelPos = new Point3D();
-			pixelPos = ManagerUtils.calculatePixelPositionWorldCoord(gl, this.mouse_x, this.mouse_y, pixelPos, undefined, undefined, undefined, this);
+			var mouseAction = this.sceneState.mouseAction;
+			var strWC = mouseAction.getStartWorldPoint();
+			pixelPos = new Point3D(strWC.x, strWC.y, strWC.z);
+
 			var objMarker = this.objMarkerManager.newObjectMarker();
 			ManagerUtils.calculateGeoLocationDataByAbsolutePoint(pixelPos.x, pixelPos.y, pixelPos.z, objMarker.geoLocationData, this);
 		}
@@ -24385,8 +24687,9 @@ MagoManager.prototype.startRender = function(isLastFrustum, frustumIdx, numFrust
 			
 			if (pixelPos === undefined)
 			{
-				pixelPos = new Point3D();
-				pixelPos = ManagerUtils.calculatePixelPositionWorldCoord(gl, this.mouse_x, this.mouse_y, pixelPos, undefined, undefined, undefined, this);
+				var mouseAction = this.sceneState.mouseAction;
+				var strWC = mouseAction.getStartWorldPoint();
+				pixelPos = new Point3D(strWC.x, strWC.y, strWC.z);
 			}
 			
 			ManagerUtils.calculateGeoLocationDataByAbsolutePoint(pixelPos.x, pixelPos.y, pixelPos.z, this.objMarkerSC.geoLocationData, this);
@@ -24868,24 +25171,48 @@ MagoManager.prototype.mouseActionLeftUp = function(mouseX, mouseY)
 		this.saveHistoryObjectMovement(this.objectSelected, nodeSelected);
 	}
 	
+	/*if (!this.isCameraMoving) 
+	{
+		this.getSelectedObjects(this.getGl(), this.mouse_x, this.mouse_y, this.arrayAuxSC, true);
+			
+		var auxBuildingSelected = this.arrayAuxSC[0];
+		var auxOctreeSelected = this.arrayAuxSC[1];
+		var auxReferenceSelected = this.arrayAuxSC[2];
+		var auxNodeSelected = this.arrayAuxSC[3]; 
+
+		var mode = this.magoPolicy.getObjectMoveMode();
+
+		if (mode === CODE.moveMode.ALL) 
+		{
+			if (!auxBuildingSelected && !auxNodeSelected) 
+			{
+				this.emit(MagoManager.EVENT_TYPE.DESELECTEDF4D, {
+					type: MagoManager.EVENT_TYPE.DESELECTEDF4D
+				});
+			}
+		}
+		else if (mode === CODE.moveMode.OBJECT) 
+		{
+			if (!auxOctreeSelected && !auxReferenceSelected) 
+			{
+				this.emit(MagoManager.EVENT_TYPE.DESELECTEDF4DOBJECT, {
+					type: MagoManager.EVENT_TYPE.DESELECTEDF4DOBJECT
+				});
+			}
+		}
+	}*/
+
 	this.isCameraMoving = false;
 	this.mouseLeftDown = false;
 	this.mouseDragging = false;
 	this.selObjMovePlane = undefined;
+	this.selObjMovePlaneCC = undefined;
+	this.startGeoCoordDif = undefined;
 	this.mustCheckIfDragging = true;
 	this.thereAreStartMovePoint = false;
 
-	/*this.dateSC = new Date();
-	this.currentTimeSC = this.dateSC.getTime();
-	var miliSecondsUsed = this.currentTimeSC - this.startTimeSC;
-	if (miliSecondsUsed < 1500) 
-	{
-		if (this.mouse_x === mouseX && this.mouse_y === mouseY) 
-		{
-			this.bPicking = true;
-		}
-	}*/
-	
+	//this.setBPicking(mouseX, mouseY);
+
 	this.setCameraMotion(true);
 	
 	// Clear startPositions of mouseAction.***
@@ -24896,29 +25223,19 @@ MagoManager.prototype.mouseActionLeftUp = function(mouseX, mouseY)
 	{
 		this.sceneState.sunSystem.updateSun(this);
 	}
-	
-	// test zBouncing.************************
-	/*
-	var nodeSelected = this.selectionManager.currentNodeSelected;
-	if (nodeSelected)
+};
+MagoManager.prototype.setBPicking = function(mouseX, mouseY) 
+{
+	this.dateSC = new Date();
+	this.currentTimeSC = this.dateSC.getTime();
+	var miliSecondsUsed = this.currentTimeSC - this.startTimeSC;
+	if (miliSecondsUsed < 1500) 
 	{
-		var nodeId = nodeSelected.data.nodeId;
-		var effect = new Effect({
-			effectType      : "zBounceSpring",
-			durationSeconds : 0.4
-		});
-		
-		this.effectsManager.addEffect(nodeId, effect);
-		
-		// shadow on-off test.
-		var effect = new Effect({
-			effectType      : "borningLight",
-			durationSeconds : 1.0
-		});
-		
-		this.effectsManager.addEffect(nodeId, effect);
+		if (this.mouse_x === mouseX && this.mouse_y === mouseY) 
+		{
+			this.bPicking = true;
+		}
 	}
-	*/
 };
 
 /**
@@ -25005,9 +25322,9 @@ MagoManager.prototype.keyDown = function(key)
 	}
 	else if (key === 39) // 39 = 'right'.***
 	{
-		//this.modeler.mode = CODE.modelerMode.DRAWING_BSPLINE;
+		this.modeler.mode = CODE.modelerMode.DRAWING_BSPLINE;
 		//this.modeler.mode = CODE.modelerMode.DRAWING_GEOGRAPHICPOINTS;
-		this.modeler.mode = 51;
+		//this.modeler.mode = 51;
 	}
 	else if (key === 40) // 40 = 'down'.***
 	{
@@ -25121,6 +25438,8 @@ MagoManager.prototype.keyDown = function(key)
 		sunSystem.setDate(this.dateTest);
 		*/
 		
+		//this.magoPolicy.issueInsertEnable = true; // test to inser pins in scene.!!!!!!!!!!!!!!!!!!!!!! TEST.!!!
+		
 		// Stencil shadow mesh making test.********************
 		var nodeSelected = this.selectionManager.currentNodeSelected;
 		if (nodeSelected)
@@ -25153,6 +25472,7 @@ MagoManager.prototype.keyDown = function(key)
 			//{
 			//	excavation.makeExtrudeObject(this);
 			//}
+			/*
 			if (geoCoordsList !== undefined && geoCoordsList.geographicCoordsArray.length > 0)
 			{
 				// test make thickLine.
@@ -25171,7 +25491,7 @@ MagoManager.prototype.keyDown = function(key)
 				tunnel.makeMesh(this);
 				
 			}
-			
+			*/
 			// Another test: Change color by projectId & objectId.***
 			var api = new API();
 			api.apiName = "changeColor";
@@ -25289,164 +25609,20 @@ MagoManager.prototype.keyDown = function(key)
 	else if (key === 87) // 87 = 'w'.***
 	{
 		// do wind test.
-		if (this.windCounterAux === undefined)
-		{ this.windCounterAux = 0; }
-		
+		if (this.weatherStation === undefined)
+		{ this.weatherStation = new WeatherStation(); }
+	
 		var geometryDataPath = this.readerWriter.geometryDataPath;
-		var options = {
-			name              : "JeJu Island",
-			speedFactor       : 1.0,
-			dropRate          : 0.003,
-			dropRateBump      : 0.001,
-			numParticles      : 65536/4,
-			layerAltitude     : 60.0,
-			windMapFileName   : "OBS-QWM_2016062000.grib2_wind_000",
-			windMapFolderPath : geometryDataPath +"/JeJu_wind_20191127"
-		};
+		var windDataFilesNamesArray = ["OBS-QWM_2016062000.grib2_wind_000", "OBS-QWM_2016062001.grib2_wind_000", "OBS-QWM_2016062002.grib2_wind_000", "OBS-QWM_2016062003.grib2_wind_000",
+			"OBS-QWM_2016062004.grib2_wind_000", "OBS-QWM_2016062005.grib2_wind_000", "OBS-QWM_2016062006.grib2_wind_000", "OBS-QWM_2016062007.grib2_wind_000",
+			"OBS-QWM_2016062008.grib2_wind_000", "OBS-QWM_2016062009.grib2_wind_000", "OBS-QWM_2016062010.grib2_wind_000", "OBS-QWM_2016062011.grib2_wind_000",
+			"OBS-QWM_2016062012.grib2_wind_000", "OBS-QWM_2016062013.grib2_wind_000", "OBS-QWM_2016062014.grib2_wind_000", "OBS-QWM_2016062015.grib2_wind_000",
+			"OBS-QWM_2016062016.grib2_wind_000", "OBS-QWM_2016062017.grib2_wind_000", "OBS-QWM_2016062018.grib2_wind_000", "OBS-QWM_2016062019.grib2_wind_000",
+			"OBS-QWM_2016062020.grib2_wind_000", "OBS-QWM_2016062021.grib2_wind_000", "OBS-QWM_2016062022.grib2_wind_000", "OBS-QWM_2016062023.grib2_wind_000"];
+		var windMapFilesFolderPath = geometryDataPath +"/JeJu_wind_GolfPark";
 		
-		var bCreateWind = true;
-			
-		if (this.windCounterAux === 0)
-		{
-			options.windMapFileName = "OBS-QWM_2016062000.grib2_wind_000";
-			this.windCounterAux++;
-		}
-		else if (this.windCounterAux === 1)
-		{
-			options.windMapFileName = "OBS-QWM_2016062001.grib2_wind_000";
-			this.windCounterAux++;
-		}
-		else if (this.windCounterAux === 2)
-		{
-			options.windMapFileName = "OBS-QWM_2016062002.grib2_wind_000";
-			this.windCounterAux++;
-		}
-		else if (this.windCounterAux === 3)
-		{
-			options.windMapFileName = "OBS-QWM_2016062003.grib2_wind_000";
-			this.windCounterAux++;
-		}
-		else if (this.windCounterAux === 4)
-		{
-			options.windMapFileName = "OBS-QWM_2016062004.grib2_wind_000";
-			this.windCounterAux++;
-		}
-		else if (this.windCounterAux === 5)
-		{
-			options.windMapFileName = "OBS-QWM_2016062005.grib2_wind_000";
-			this.windCounterAux++;
-		}
-		else if (this.windCounterAux === 6)
-		{
-			options.windMapFileName = "OBS-QWM_2016062006.grib2_wind_000";
-			this.windCounterAux++;
-		}
-		else if (this.windCounterAux === 7)
-		{
-			options.windMapFileName = "OBS-QWM_2016062007.grib2_wind_000";
-			this.windCounterAux++;
-		}
-		else if (this.windCounterAux === 8)
-		{
-			options.windMapFileName = "OBS-QWM_2016062008.grib2_wind_000";
-			this.windCounterAux++;
-		}
-		else if (this.windCounterAux === 9)
-		{
-			options.windMapFileName = "OBS-QWM_2016062009.grib2_wind_000";
-			this.windCounterAux++;
-		}
-		else if (this.windCounterAux === 10)
-		{
-			options.windMapFileName = "OBS-QWM_2016062010.grib2_wind_000";
-			this.windCounterAux++;
-		}
-		else if (this.windCounterAux === 11)
-		{
-			options.windMapFileName = "OBS-QWM_2016062011.grib2_wind_000";
-			this.windCounterAux++;
-		}
-		else if (this.windCounterAux === 12)
-		{
-			options.windMapFileName = "OBS-QWM_2016062012.grib2_wind_000";
-			this.windCounterAux++;
-		}
-		else if (this.windCounterAux === 13)
-		{
-			options.windMapFileName = "OBS-QWM_2016062013.grib2_wind_000";
-			this.windCounterAux++;
-		}
-		else if (this.windCounterAux === 14)
-		{
-			options.windMapFileName = "OBS-QWM_2016062014.grib2_wind_000";
-			this.windCounterAux++;
-		}
-		else if (this.windCounterAux === 15)
-		{
-			options.windMapFileName = "OBS-QWM_2016062015.grib2_wind_000";
-			this.windCounterAux++;
-		}
-		else if (this.windCounterAux === 16)
-		{
-			options.windMapFileName = "OBS-QWM_2016062016.grib2_wind_000";
-			this.windCounterAux++;
-		}
-		else if (this.windCounterAux === 17)
-		{
-			options.windMapFileName = "OBS-QWM_2016062017.grib2_wind_000";
-			this.windCounterAux++;
-		}
-		else if (this.windCounterAux === 18)
-		{
-			options.windMapFileName = "OBS-QWM_2016062018.grib2_wind_000";
-			this.windCounterAux++;
-		}
-		else if (this.windCounterAux === 19)
-		{
-			options.windMapFileName = "OBS-QWM_2016062019.grib2_wind_000";
-			this.windCounterAux++;
-		}
-		else if (this.windCounterAux === 20)
-		{
-			options.windMapFileName = "OBS-QWM_2016062020.grib2_wind_000";
-			this.windCounterAux++;
-		}
-		else if (this.windCounterAux === 21)
-		{
-			options.windMapFileName = "OBS-QWM_2016062021.grib2_wind_000";
-			this.windCounterAux++;
-		}
-		else if (this.windCounterAux === 22)
-		{
-			options.windMapFileName = "OBS-QWM_2016062022.grib2_wind_000";
-			this.windCounterAux++;
-		}
-		else if (this.windCounterAux === 23)
-		{
-			options.windMapFileName = "OBS-QWM_2016062023.grib2_wind_000";
-			this.windCounterAux++;
-		}
-		else
-		{ bCreateWind = false; }
-		
-		if (bCreateWind)
-		{
-			var firstWindLayer;
-			if (this.weatherStation.getWindLayersCount() > 0)
-			{
-				// maintain the 1rst windLayer.
-				firstWindLayer = this.weatherStation.getWindLayer(0);
-			}
-			
-			var gl = this.getGl();
-			var windLayer = this.weatherStation.newWindLayer(options);
-			windLayer.init(gl);
-			
-			if (firstWindLayer !== undefined)
-			{
-				windLayer.particlesPositionTexturesArray = firstWindLayer.particlesPositionTexturesArray;
-			}
-		}
+		this.weatherStation.test_loadWindData3d(this, windDataFilesNamesArray, windMapFilesFolderPath);
+
 	}
 	else if (key === 89) // 89 = 'y'.***
 	{
@@ -25544,40 +25720,7 @@ MagoManager.prototype.mouseActionLeftDown = function(mouseX, mouseY)
 	this.mouseLeftDown = true;
 	//this.isCameraMoving = true;
 	MagoWorld.updateMouseStartClick(mouseX, mouseY, this);
-
-	this.dateSC = new Date();
-	this.currentTimeSC = this.dateSC.getTime();
-	var miliSecondsUsed = this.currentTimeSC - this.startTimeSC;
-	if (miliSecondsUsed < 1500) 
-	{
-		if (this.mouse_x === mouseX && this.mouse_y === mouseY) 
-		{
-			this.bPicking = true;
-		}
-	}
-	/*if (!this.isCesiumGlobe()) 
-	{
-		MagoWorld.updateMouseStartClick(mouseX, mouseY, this);
-	}*/
-	
-	/*
-	// Test.**********************************************************************************************************************
-	var selGeneralObjects = this.selectionManager.getSelectionCandidatesFamily("general");
-	if (selGeneralObjects)
-	{
-		var currObjectSelected = selGeneralObjects.currentSelected;
-		if (currObjectSelected)
-		{
-			// check if is a cuttingPlane.***
-			if (currObjectSelected instanceof CuttingPlane)
-			{
-				var mouseAction = this.sceneState.mouseAction;
-				mouseAction.claculateStartPositionsAux(this);
-			}
-		}
-	}
-	*/
-	// End test.-------------------------------------------------------------------------------------------------------------------
+	this.setBPicking(mouseX, mouseY);
 };
 
 /**
@@ -25920,64 +26063,89 @@ MagoManager.prototype.moveSelectedObjectGeneral = function(gl, object)
 	
 	var mouseAction = this.sceneState.mouseAction;
 
-	// create a XY_plane in the selected_pixel_position.***
-	if (this.selObjMovePlane === undefined) 
+	
+	if (this.selObjMovePlaneCC === undefined) 
 	{
-		this.selObjMovePlane = new Plane();
-		// create a local XY plane.
-		// find the pixel position relative to building.
-		var tMatrixInv = geoLocationData.getGeoLocationMatrixInv();
-		var pixelPosBuildingCoord = tMatrixInv.transformPoint3D(mouseAction.strWorldPoint, pixelPosBuildingCoord);
-		this.selObjMovePlane.setPointAndNormal(pixelPosBuildingCoord.x, pixelPosBuildingCoord.y, pixelPosBuildingCoord.z,    0.0, 0.0, 1.0); 
+		this.selObjMovePlaneCC = new Plane();
+		// calculate the pixelPos in camCoord.
+		var geoLocMatrix = geoLocationData.geoLocMatrix;
+		var mvMat = this.sceneState.modelViewMatrix;
+		var mvMatRelToEye = this.sceneState.modelViewRelToEyeMatrix;
+		var pixelPosCC = mvMat.transformPoint3D(mouseAction.strWorldPoint, undefined);
+		
+		var globeYaxisWC = new Point3D(geoLocMatrix._floatArrays[4], geoLocMatrix._floatArrays[5], geoLocMatrix._floatArrays[6]);
+		var globeYaxisCC = mvMatRelToEye.transformPoint3D(globeYaxisWC, undefined);
+		
+		var globeZaxisWC = new Point3D(geoLocMatrix._floatArrays[8], geoLocMatrix._floatArrays[9], geoLocMatrix._floatArrays[10]);
+		var globeZaxisCC = mvMatRelToEye.transformPoint3D(globeZaxisWC, undefined);
+		
+		if (attributes.movementInAxisZ)
+		{
+			this.selObjMovePlaneCC.setPointAndNormal(pixelPosCC.x, pixelPosCC.y, pixelPosCC.z,    globeYaxisCC.x, globeYaxisCC.y, globeYaxisCC.z); 
+		}
+		else 
+		{
+			// movement in plane XY.
+			this.selObjMovePlaneCC.setPointAndNormal(pixelPosCC.x, pixelPosCC.y, pixelPosCC.z,    globeZaxisCC.x, globeZaxisCC.y, globeZaxisCC.z); 
+		}
 	}
 
-	if (this.lineSC === undefined)
-	{ this.lineSC = new Line(); }
 	
-	this.lineSC = ManagerUtils.getRayWorldSpace(gl, this.mouse_x, this.mouse_y, this.lineSC, this); // rayWorldSpace.***
-
-	// transform world_ray to building_ray.***
-	var camPosBuilding = new Point3D();
-	var camDirBuilding = new Point3D();
+	if (this.lineCC === undefined)
+	{ this.lineCC = new Line(); }
+	var camRay = ManagerUtils.getRayCamSpace(this.mouse_x, this.mouse_y, camRay, this);
+	this.lineCC.setPointAndDir(0, 0, 0,  camRay[0], camRay[1], camRay[2]);
 	
-	var geoLocMatrixInv = geoLocationData.getGeoLocationMatrixInv();
-	camPosBuilding = geoLocMatrixInv.transformPoint3D(this.lineSC.point, camPosBuilding);
-	this.pointSC = geoLocMatrixInv.rotatePoint3D(this.lineSC.direction, this.pointSC);
-	camDirBuilding.x = this.pointSC.x;
-	camDirBuilding.y = this.pointSC.y;
-	camDirBuilding.z = this.pointSC.z;
-
-	// now, intersect building_ray with the selObjMovePlane.***
-	var line = new Line();
-	line.setPointAndDir(camPosBuilding.x, camPosBuilding.y, camPosBuilding.z,       camDirBuilding.x, camDirBuilding.y, camDirBuilding.z);
-
-	var intersectionPoint = new Point3D();
-	intersectionPoint = this.selObjMovePlane.intersectionLine(line, intersectionPoint);
-	intersectionPoint.set(-intersectionPoint.x, -intersectionPoint.y, -intersectionPoint.z);
 	
-	// Now, calculate the intersectionPoint in world coordinates.***
-	var intersectionPointWC = new Point3D();
-	intersectionPointWC = geoLocationData.geoLocMatrix.transformPoint3D(intersectionPoint, intersectionPointWC);
+	// Calculate intersection cameraRay with planeCC.
+	var intersectionPointCC = new Point3D();
+	intersectionPointCC = this.selObjMovePlaneCC.intersectionLine(this.lineCC, intersectionPointCC);
+	//------------------------------------------------------------------------------------------------
 
+	var mvMat = this.sceneState.modelViewMatrixInv;
+	var intersectionPointWC = mvMat.transformPoint3D(intersectionPointCC, intersectionPointWC);
+
+	
 	// register the movement.***
 	if (!this.thereAreStartMovePoint) 
 	{
 		var cartographic = ManagerUtils.pointToGeographicCoord(intersectionPointWC, cartographic, this);
-		this.startMovPoint.x = cartographic.longitude;
-		this.startMovPoint.y = cartographic.latitude;
 		this.thereAreStartMovePoint = true;
+		
+		var buildingGeoCoord = geoLocationData.geographicCoord;
+		this.startGeoCoordDif = new GeographicCoord(cartographic.longitude-buildingGeoCoord.longitude, cartographic.latitude-buildingGeoCoord.latitude, cartographic.altitude-buildingGeoCoord.altitude);
+
 	}
 	else 
 	{
 		var cartographic = ManagerUtils.pointToGeographicCoord(intersectionPointWC, cartographic, this);
-		var difX = cartographic.longitude - this.startMovPoint.x;
-		var difY = cartographic.latitude - this.startMovPoint.y;
 
-		var newLongitude = geoLocationData.geographicCoord.longitude - difX;
-		var newlatitude = geoLocationData.geographicCoord.latitude - difY;
+		var difX = cartographic.longitude - this.startGeoCoordDif.longitude;
+		var difY = cartographic.latitude - this.startGeoCoordDif.latitude;
+		var difZ = cartographic.altitude - this.startGeoCoordDif.altitude;
+		
+		var newLongitude = difX;
+		var newlatitude = difY;
+		var newAltitude = difZ;
+		
+		if (Math.abs(newAltitude) > 50)
+		{ var hola = 0; }
 		
 		// Must check if there are restrictions.***
 		var attributes = object.attributes;
+		
+		if (attributes.minAltitude !== undefined)
+		{
+			if (newAltitude < attributes.minAltitude)
+			{ newAltitude = attributes.minAltitude; }
+		}
+		
+		if (attributes.maxAltitude !== undefined)
+		{
+			if (newAltitude > attributes.maxAltitude)
+			{ newAltitude = attributes.maxAltitude; }
+		}
+		
 		if (attributes && attributes.movementRestriction)
 		{
 			var movementRestriction = attributes.movementRestriction;
@@ -26026,12 +26194,15 @@ MagoManager.prototype.moveSelectedObjectGeneral = function(gl, object)
 			}
 		}
 		
-		difX = geoLocationData.geographicCoord.longitude - newLongitude;
-		difY = geoLocationData.geographicCoord.latitude - newlatitude;
-		geoLocationData = ManagerUtils.calculateGeoLocationData(newLongitude, newlatitude, undefined, undefined, undefined, undefined, geoLocationData, this);
-		
-		this.startMovPoint.x -= difX;
-		this.startMovPoint.y -= difY;
+		if (attributes.movementInAxisZ)
+		{
+			geoLocationData = ManagerUtils.calculateGeoLocationData(undefined, undefined, newAltitude, undefined, undefined, undefined, geoLocationData, this);
+		}
+		else 
+		{
+			geoLocationData = ManagerUtils.calculateGeoLocationData(newLongitude, newlatitude, undefined, undefined, undefined, undefined, geoLocationData, this);
+		}
+
 	}
 	
 	object.moved();
@@ -26059,67 +26230,81 @@ MagoManager.prototype.moveSelectedObjectAsimetricMode = function(gl)
 		
 		var mouseAction = this.sceneState.mouseAction;
 	
-		// create a XY_plane in the selected_pixel_position.***
-		if (this.selObjMovePlane === undefined) 
+		var attributes = {};
+		
+		if (this.selObjMovePlaneCC === undefined) 
 		{
-			this.selObjMovePlane = new Plane();
-			// create a local XY plane.
-			// find the pixel position relative to building.
-			var tMatrixInv = geoLocationData.getGeoLocationMatrixInv();
-			var pixelPosBuildingCoord = tMatrixInv.transformPoint3D(mouseAction.strWorldPoint, pixelPosBuildingCoord);
-			this.selObjMovePlane.setPointAndNormal(pixelPosBuildingCoord.x, pixelPosBuildingCoord.y, pixelPosBuildingCoord.z,    0.0, 0.0, 1.0); 
+			this.selObjMovePlaneCC = new Plane();
+			// calculate the pixelPos in camCoord.
+			var geoLocMatrix = geoLocationData.geoLocMatrix;
+			var mvMat = this.sceneState.modelViewMatrix;
+			var mvMatRelToEye = this.sceneState.modelViewRelToEyeMatrix;
+			var pixelPosCC = mvMat.transformPoint3D(mouseAction.strWorldPoint, undefined);
+			
+			var globeYaxisWC = new Point3D(geoLocMatrix._floatArrays[4], geoLocMatrix._floatArrays[5], geoLocMatrix._floatArrays[6]);
+			var globeYaxisCC = mvMatRelToEye.transformPoint3D(globeYaxisWC, undefined);
+			
+			var globeZaxisWC = new Point3D(geoLocMatrix._floatArrays[8], geoLocMatrix._floatArrays[9], geoLocMatrix._floatArrays[10]);
+			var globeZaxisCC = mvMatRelToEye.transformPoint3D(globeZaxisWC, undefined);
+			
+			if (attributes.movementInAxisZ)
+			{
+				this.selObjMovePlaneCC.setPointAndNormal(pixelPosCC.x, pixelPosCC.y, pixelPosCC.z,    globeYaxisCC.x, globeYaxisCC.y, globeYaxisCC.z); 
+			}
+			else 
+			{
+				// movement in plane XY.
+				this.selObjMovePlaneCC.setPointAndNormal(pixelPosCC.x, pixelPosCC.y, pixelPosCC.z,    globeZaxisCC.x, globeZaxisCC.y, globeZaxisCC.z); 
+			}
 		}
 
-		if (this.lineSC === undefined)
-		{ this.lineSC = new Line(); }
+		if (this.lineCC === undefined)
+		{ this.lineCC = new Line(); }
+		var camRay = ManagerUtils.getRayCamSpace(this.mouse_x, this.mouse_y, camRay, this);
+		this.lineCC.setPointAndDir(0, 0, 0,  camRay[0], camRay[1], camRay[2]);
 		
-		this.lineSC = ManagerUtils.getRayWorldSpace(gl, this.mouse_x, this.mouse_y, this.lineSC, this); // rayWorldSpace.***
-
-		// transform world_ray to building_ray.***
-		var camPosBuilding = new Point3D();
-		var camDirBuilding = new Point3D();
 		
-		var geoLocMatrixInv = geoLocationData.getGeoLocationMatrixInv();
-		camPosBuilding = geoLocMatrixInv.transformPoint3D(this.lineSC.point, camPosBuilding);
-		this.pointSC = geoLocMatrixInv.rotatePoint3D(this.lineSC.direction, this.pointSC);
-		camDirBuilding.x = this.pointSC.x;
-		camDirBuilding.y = this.pointSC.y;
-		camDirBuilding.z = this.pointSC.z;
+		// Calculate intersection cameraRay with planeCC.
+		var intersectionPointCC = new Point3D();
+		intersectionPointCC = this.selObjMovePlaneCC.intersectionLine(this.lineCC, intersectionPointCC);
+		//------------------------------------------------------------------------------------------------
 
-		// now, intersect building_ray with the selObjMovePlane.***
-		var line = new Line();
-		line.setPointAndDir(camPosBuilding.x, camPosBuilding.y, camPosBuilding.z,       camDirBuilding.x, camDirBuilding.y, camDirBuilding.z);
-
-		var intersectionPoint = new Point3D();
-		intersectionPoint = this.selObjMovePlane.intersectionLine(line, intersectionPoint);
-		intersectionPoint.set(-intersectionPoint.x, -intersectionPoint.y, -intersectionPoint.z);
-		
-		// Now, calculate the intersectionPoint in world coordinates.***
-		var intersectionPointWC = new Point3D();
-		intersectionPointWC = geoLocationData.geoLocMatrix.transformPoint3D(intersectionPoint, intersectionPointWC);
-
+		var mvMat = this.sceneState.modelViewMatrixInv;
+		var intersectionPointWC = mvMat.transformPoint3D(intersectionPointCC, intersectionPointWC);
+	
 		// register the movement.***
 		if (!this.thereAreStartMovePoint) 
 		{
 			var cartographic = ManagerUtils.pointToGeographicCoord(intersectionPointWC, cartographic, this);
-			this.startMovPoint.x = cartographic.longitude;
-			this.startMovPoint.y = cartographic.latitude;
 			this.thereAreStartMovePoint = true;
+			
+			var buildingGeoCoord = geoLocationData.geographicCoord;
+			this.startGeoCoordDif = new GeographicCoord(cartographic.longitude-buildingGeoCoord.longitude, cartographic.latitude-buildingGeoCoord.latitude, cartographic.altitude-buildingGeoCoord.altitude);
 		}
 		else 
 		{
 			var cartographic = ManagerUtils.pointToGeographicCoord(intersectionPointWC, cartographic, this);
-			var difX = cartographic.longitude - this.startMovPoint.x;
-			var difY = cartographic.latitude - this.startMovPoint.y;
 
-			var newLongitude = geoLocationData.geographicCoord.longitude - difX;
-			var newlatitude = geoLocationData.geographicCoord.latitude - difY;
-
-			this.changeLocationAndRotationNode(this.selectionManager.currentNodeSelected, newlatitude, newLongitude, undefined, undefined, undefined, undefined);
-			this.displayLocationAndRotation(this.buildingSelected);
+			var difX = cartographic.longitude - this.startGeoCoordDif.longitude;
+			var difY = cartographic.latitude - this.startGeoCoordDif.latitude;
+			var difZ = cartographic.altitude - this.startGeoCoordDif.altitude;
 			
-			this.startMovPoint.x -= difX;
-			this.startMovPoint.y -= difY;
+			var newLongitude = difX;
+			var newlatitude = difY;
+			var newAltitude = difZ;
+
+			if (attributes.movementInAxisZ)
+			{
+				//geoLocationData = ManagerUtils.calculateGeoLocationData(undefined, undefined, newAltitude, undefined, undefined, undefined, geoLocationData, this);
+				this.changeLocationAndRotationNode(this.selectionManager.currentNodeSelected, undefined, undefined, newAltitude, undefined, undefined, undefined);
+			}
+			else 
+			{
+				//geoLocationData = ManagerUtils.calculateGeoLocationData(newLongitude, newlatitude, undefined, undefined, undefined, undefined, geoLocationData, this);
+				this.changeLocationAndRotationNode(this.selectionManager.currentNodeSelected, newlatitude, newLongitude, undefined, undefined, undefined, undefined);
+			}
+			
+			this.displayLocationAndRotation(this.buildingSelected);
 		}
 	}
 	else if (this.magoPolicy.objectMoveMode === CODE.moveMode.OBJECT) // objects move.***
@@ -27267,6 +27452,14 @@ MagoManager.prototype.createDefaultShaders = function(gl)
 	var ssao_vs_source = ShaderSource.ScreenQuadVS;
 	var ssao_fs_source = ShaderSource.ScreenQuadFS;
 	var shader = this.postFxShadersManager.createShaderProgram(gl, ssao_vs_source, ssao_fs_source, shaderName, this);
+	
+	// 15) Pin shader.******************************************************************************************
+	var shaderName = "pin";
+	var ssao_vs_source = ShaderSource.PngImageVS;
+	var ssao_fs_source = ShaderSource.PngImageFS;
+	var shader = this.postFxShadersManager.createShaderProgram(gl, ssao_vs_source, ssao_fs_source, shaderName, this);
+	shader.position4_loc = gl.getAttribLocation(shader.program, "position");
+	shader.texCoord2_loc = gl.getAttribLocation(shader.program, "texCoord");
 };
 
 /**
@@ -30890,6 +31083,14 @@ MouseAction.prototype.saveCurrentToStart = function()
 	}
 };
 
+/**
+ * Save the current-state on start-state vars. of worldPoint and CamCoordPoint
+ */
+MouseAction.prototype.getStartWorldPoint = function()
+{
+	return this.strWorldPoint;
+};
+
 
 
 
@@ -30962,6 +31163,20 @@ ObjectMarker.prototype.copyFrom = function(objMarker)
 	this.issue_type = objMarker.issue_type;
 };
 
+ObjectMarker.prototype.render = function(shader, renderType, magoManager) 
+{
+	var objMarkerGeoLocation = this.geoLocationData;
+	gl.bindTexture(gl.TEXTURE_2D, currentTexture.texId);
+	gl.uniform3fv(currentShader.buildingPosHIGH_loc, objMarkerGeoLocation.positionHIGH);
+	gl.uniform3fv(currentShader.buildingPosLOW_loc, objMarkerGeoLocation.positionLOW);
+
+	gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+};
+
+
+'use strict';
+
+
 /**
  * 어떤 일을 하고 있습니까?
  * @class ObjectMarkerManager
@@ -30988,6 +31203,131 @@ ObjectMarkerManager.prototype.newObjectMarker = function()
 	this.objectMarkerArray.push(objMarker);
 	return objMarker;
 };
+
+/**
+ * 어떤 일을 하고 있습니까?
+ * @class ObjectMarkerManager
+ *
+ */
+ObjectMarkerManager.prototype.render = function(magoManager, renderType)
+{
+	var objectsMarkersCount = magoManager.objMarkerManager.objectMarkerArray.length;
+	if (objectsMarkersCount > 0)
+	{
+		var gl = magoManager.getGl();
+		
+		// now repeat the objects markers for png images.***
+		// Png for pin image 128x128.********************************************************************
+		if (magoManager.pin.positionBuffer === undefined)
+		{ magoManager.pin.createPinCenterBottom(gl); }
+		
+		// check if pin textures is loaded.
+		var currentTexture = magoManager.pin.texturesArray[0];
+		if (!currentTexture || !currentTexture.texId)
+		{
+			magoManager.load_testTextures();
+			return;
+		}
+		
+		var shader = magoManager.postFxShadersManager.getShader("pin"); 
+		shader.resetLastBuffersBinded();
+		
+		var shaderProgram = shader.program;
+		
+		gl.useProgram(shaderProgram);
+		shader.bindUniformGenerals();
+		gl.uniformMatrix4fv(shader.modelViewProjectionMatrix4RelToEye_loc, false, magoManager.sceneState.modelViewProjRelToEyeMatrix._floatArrays);
+		gl.uniform3fv(shader.cameraPosHIGH_loc, magoManager.sceneState.encodedCamPosHigh);
+		gl.uniform3fv(shader.cameraPosLOW_loc, magoManager.sceneState.encodedCamPosLow);
+		gl.uniformMatrix4fv(shader.buildingRotMatrix_loc, false, magoManager.sceneState.modelViewRelToEyeMatrixInv._floatArrays);
+		
+		gl.uniform1i(shader.textureFlipYAxis_loc, magoManager.sceneState.textureFlipYAxis); 
+		// Tell the shader to get the texture from texture unit 0
+		gl.uniform1i(shader.texture_loc, 0);
+		gl.enableVertexAttribArray(shader.texCoord2_loc);
+		gl.enableVertexAttribArray(shader.position4_loc);
+		gl.activeTexture(gl.TEXTURE0);
+		
+		gl.depthRange(0, 0);
+		//var context = document.getElementById('canvas2').getContext("2d");
+		//var canvas = document.getElementById("magoContainer");
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, magoManager.pin.positionBuffer);
+		gl.vertexAttribPointer(shader.position4_loc, 4, gl.FLOAT, false, 0, 0);
+		gl.bindBuffer(gl.ARRAY_BUFFER, magoManager.pin.texcoordBuffer);
+		gl.vertexAttribPointer(shader.texCoord2_loc, 2, gl.FLOAT, false, 0, 0);
+		
+		gl.activeTexture(gl.TEXTURE0);
+		
+		gl.uniform1i(shader.colorType_loc, 2); // 0= oneColor, 1= attribColor, 2= texture.
+		
+		var j=0;
+		gl.depthMask(false);
+		for (var i=0; i<objectsMarkersCount; i++)
+		{
+			if (j>= magoManager.pin.texturesArray.length)
+			{ j=0; }
+		
+			//if (i === 4)
+			//{ gl.uniform1i(shader.colorType_loc, 0); } // 0= oneColor, 1= attribColor, 2= texture.
+
+			
+			var currentTexture = magoManager.pin.texturesArray[j];
+			var objMarker = magoManager.objMarkerManager.objectMarkerArray[i];
+			var objMarkerGeoLocation = objMarker.geoLocationData;
+			gl.bindTexture(gl.TEXTURE_2D, currentTexture.texId);
+			gl.uniform3fv(shader.buildingPosHIGH_loc, objMarkerGeoLocation.positionHIGH);
+			gl.uniform3fv(shader.buildingPosLOW_loc, objMarkerGeoLocation.positionLOW);
+
+			gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+			
+			j++;
+		}
+		gl.depthRange(0, 1);
+		gl.depthMask(true);
+		gl.useProgram(null);
+		gl.bindTexture(gl.TEXTURE_2D, null);
+		shader.disableVertexAttribArrayAll();
+		
+	}
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 'use strict';
 	
 /**
@@ -31383,6 +31723,53 @@ Pin.prototype.createPinCenterBottom = function(gl)
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
 
 	// Put a unit quad in the buffer
+	var positionsPinQuad = new Float32Array(16);
+	
+	var i =0;
+	var point3d = new Point3D(0, 0, 0);
+	positionsPinQuad[i*16] = point3d.x;
+	positionsPinQuad[i*16+1] = point3d.y;
+	positionsPinQuad[i*16+2] = point3d.z;
+	positionsPinQuad[i*16+3] = 1; // order.
+	
+	positionsPinQuad[i*16+4] = point3d.x;
+	positionsPinQuad[i*16+5] = point3d.y;
+	positionsPinQuad[i*16+6] = point3d.z;
+	positionsPinQuad[i*16+7] = -1; // order.
+	
+	positionsPinQuad[i*16+8] = point3d.x;
+	positionsPinQuad[i*16+9] = point3d.y;
+	positionsPinQuad[i*16+10] = point3d.z;
+	positionsPinQuad[i*16+11] = 2; // order.
+	
+	positionsPinQuad[i*16+12] = point3d.x;
+	positionsPinQuad[i*16+13] = point3d.y;
+	positionsPinQuad[i*16+14] = point3d.z;
+	positionsPinQuad[i*16+15] = -2; // order.
+		
+	gl.bufferData(gl.ARRAY_BUFFER, positionsPinQuad, gl.STATIC_DRAW);
+
+	this.texcoordBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.texcoordBuffer);
+	var texcoordsPinQuad = [
+		0, 0,
+		1, 0,
+		0, 1,
+		1, 1
+	];
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texcoordsPinQuad), gl.STATIC_DRAW);
+	
+};
+
+/**
+ * draw the bottom pick of the pin
+ */
+Pin.prototype.createPinCenterBottom__original = function(gl)
+{
+	this.positionBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
+
+	// Put a unit quad in the buffer
 	var positionsPinQuad = [
 		-0.5, 0, 0,
 		0.5, 0, 0,
@@ -31406,6 +31793,32 @@ Pin.prototype.createPinCenterBottom = function(gl)
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texcoordsPinQuad), gl.STATIC_DRAW);
 	
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 'use strict';
 
 /**
@@ -39936,6 +40349,14 @@ var Block = function()
 	 * @default false
 	 */
 	this.isSmallObj = false;
+	
+	/**
+	 * block bounding box
+	 * 
+	 * @type {BoundingBox} 
+	 * @default undefined
+	 */
+	this.bbox;
 
 	/**
 	 * block radius
@@ -40311,14 +40732,22 @@ BlocksList.prototype.parseBlocksListVersioned_v001 = function(arrayBuffer, readW
 		motherBlocksArray[blockIdx] = block;
 
 		// 1rst, read bbox.
-		var bbox = new BoundingBox();
-		bbox.minX = new Float32Array(arrayBuffer.slice(bytesReaded, bytesReaded+4)); bytesReaded += 4;
-		bbox.minY = new Float32Array(arrayBuffer.slice(bytesReaded, bytesReaded+4)); bytesReaded += 4;
-		bbox.minZ = new Float32Array(arrayBuffer.slice(bytesReaded, bytesReaded+4)); bytesReaded += 4;
+		block.bbox = new BoundingBox();
+		var bbox = block.bbox;
+		var minX = new Float32Array(arrayBuffer.slice(bytesReaded, bytesReaded+4)); bytesReaded += 4;
+		var minY = new Float32Array(arrayBuffer.slice(bytesReaded, bytesReaded+4)); bytesReaded += 4;
+		var minZ = new Float32Array(arrayBuffer.slice(bytesReaded, bytesReaded+4)); bytesReaded += 4;
 
-		bbox.maxX = new Float32Array(arrayBuffer.slice(bytesReaded, bytesReaded+4)); bytesReaded += 4;
-		bbox.maxY = new Float32Array(arrayBuffer.slice(bytesReaded, bytesReaded+4)); bytesReaded += 4;
-		bbox.maxZ = new Float32Array(arrayBuffer.slice(bytesReaded, bytesReaded+4)); bytesReaded += 4;
+		var maxX = new Float32Array(arrayBuffer.slice(bytesReaded, bytesReaded+4)); bytesReaded += 4;
+		var maxY = new Float32Array(arrayBuffer.slice(bytesReaded, bytesReaded+4)); bytesReaded += 4;
+		var maxZ = new Float32Array(arrayBuffer.slice(bytesReaded, bytesReaded+4)); bytesReaded += 4;
+		bbox.minX = minX[0];
+		bbox.minY = minY[0];
+		bbox.minZ = minZ[0];
+
+		bbox.maxX = maxX[0];
+		bbox.maxY = maxY[0];
+		bbox.maxZ = maxZ[0];
 
 		var maxLength = bbox.getMaxLength();
 		if (maxLength < 0.5) { block.isSmallObj = true; }
@@ -59288,6 +59717,30 @@ HalfEdge.prototype.setFace = function(face)
 };
 
 /**
+ * get segment3d.
+ * @returns {Segment3D} if this next is undefined, can't get end vertex. so return undefined.
+ */
+HalfEdge.prototype.getSegment3d = function()
+{
+	if (this.next === undefined)
+	{ return undefined; }
+
+	var strPoint3d = this.getStartVertex().getPosition();
+	var endPoint3d = this.getEndVertex().getPosition();
+	var segment3d = new Segment3D(strPoint3d, endPoint3d);
+	return segment3d;
+};
+
+/**
+ * get start vertex.
+ * @returns {Vertex|undefined} .
+ */
+HalfEdge.prototype.getStartVertex = function()
+{
+	return this.startVertex;
+};
+
+/**
  * get end vertex.
  * @returns {Vertex|undefined} if this next is undefined, can't get end vertex. so return undefined.
  */
@@ -59417,6 +59870,26 @@ var HalfEdgesList = function()
 	 * @type {Array.<HalfEdge>}
 	 */
 	this.hEdgesArray;
+};
+
+/**
+ * hEdgesArray 초기화
+ */
+HalfEdgesList.getSegment3dsFromHedgesArray = function(hedgesArray, resultSegments3dArray)
+{
+	var hedgesCount = hedgesArray.length;
+	if (hedgesCount === 0)
+	{ return resultSegments3dArray; }
+	
+	if (resultSegments3dArray === undefined)
+	{ resultSegments3dArray = []; }
+	
+	for (var i=0; i<hedgesCount; i++)
+	{
+		resultSegments3dArray.push(hedgesArray[i].getSegment3d());
+	}
+	
+	return resultSegments3dArray;
 };
 
 /**
@@ -60404,8 +60877,9 @@ MagoWorld.screenToCamCoord = function(mouseX, mouseY, magoManager, resultPointCa
  */
 MagoWorld.updateMouseStartClick = function(mouseX, mouseY, magoManager)
 {
-	var gl = magoManager.sceneState.gl;
-	var mouseAction = magoManager.sceneState.mouseAction;
+	var sceneState = magoManager.sceneState;
+	var gl = sceneState.gl;
+	var mouseAction = sceneState.mouseAction;
 	
 	MagoWorld.updateMouseClick(mouseX, mouseY, magoManager);
 	
@@ -60415,18 +60889,20 @@ MagoWorld.updateMouseStartClick = function(mouseX, mouseY, magoManager)
 	// if button = 1 (middleButton), then rotate camera.
 	mouseAction.strX = mouseX;
 	mouseAction.strY = mouseY;
-	if (magoManager.sceneState.mouseButton === 0)
+	if (sceneState.mouseButton === 0)
 	{
 		magoManager.bPicking = true;
 	}
 	
-	var camera = magoManager.sceneState.camera;
+	var camera = sceneState.camera;
 	
 	// Must find the frustum on pick(mouseX, mouseY) detected depth value.***
+	var maxDepth = 0.996;
 	var currentDepthFbo;
 	var currentFrustumFar;
 	var currentFrustumNear;
 	var currentLinearDepth;
+	var depthDetected = false;
 	var frustumsCount = magoManager.numFrustums;
 	for (var i = 0; i < frustumsCount; i++)
 	{
@@ -60434,17 +60910,31 @@ MagoWorld.updateMouseStartClick = function(mouseX, mouseY, magoManager)
 		var depthFbo = frustumVolume.depthFbo;
 
 		currentLinearDepth = ManagerUtils.calculatePixelLinearDepth(gl, mouseAction.strX, mouseAction.strY, depthFbo, magoManager);
-		if (currentLinearDepth < 0.996) // maxDepth/255 = 0.99607...
+		if (currentLinearDepth < maxDepth) // maxDepth/255 = 0.99607...
 		{ 
 			currentDepthFbo = depthFbo;
 			var frustum = camera.getFrustum(i);
 			currentFrustumFar = frustum.far[0];
 			currentFrustumNear = frustum.near[0];
+			depthDetected = true;
 			break;
 		}
 	}
 	
+
 	//if (!magoManager.isCesiumGlobe())
+
+	if (!depthDetected)
+	{
+		// in case of this is cesium globe, then check globe depth.
+		var globeDepthTex = magoManager.czm_globeDepthText;
+		var depthFbo = new FBO(gl, sceneState.drawingBufferWidth, sceneState.drawingBufferHeight);
+		depthFbo.colorBuffer = globeDepthTex;
+		currentLinearDepth = ManagerUtils.calculatePixelLinearDepthABGR(gl, mouseAction.strX, mouseAction.strY, depthFbo, magoManager);
+	}
+	
+	//if (magoManager.configInformation.geo_view_library === Constant.MAGOWORLD)
+
 	//{ currentFrustumNear = 0.0; }
 	
 	// determine world position of the X,Y.
@@ -60462,8 +60952,8 @@ MagoWorld.updateMouseStartClick = function(mouseX, mouseY, magoManager)
 	strCamera.copyPosDirUpFrom(camera);
 	
 	// copy modelViewMatrix.
-	var modelViewMatrix = magoManager.sceneState.modelViewMatrix;
-	var modelViewMatrixInv = magoManager.sceneState.modelViewMatrixInv;
+	var modelViewMatrix = sceneState.modelViewMatrix;
+	var modelViewMatrixInv = sceneState.modelViewMatrixInv;
 	mouseAction.strModelViewMatrix._floatArrays = glMatrix.mat4.copy(mouseAction.strModelViewMatrix._floatArrays, modelViewMatrix._floatArrays);
 	mouseAction.strModelViewMatrixInv._floatArrays = glMatrix.mat4.copy(mouseAction.strModelViewMatrixInv._floatArrays, modelViewMatrixInv._floatArrays);
 
@@ -60968,8 +61458,10 @@ var Mesh = function()
 	this.color4;
 
 	this.hedgesList;
+	this.edgesSegment3dsArray; // to render wireframe.
 	
 	this.vboKeysContainer;
+	this.edgesVboKeysContainer;
 	this.bbox;
 	this.material;// class Material.
 };
@@ -61160,12 +61652,12 @@ Mesh.prototype.deleteVbos = function(vboMemManager)
 /**
  * Add new surface at the surface array
  */
-Mesh.prototype.newSurface = function()
+Mesh.prototype.newSurface = function(options)
 {
 	if (this.surfacesArray === undefined)
 	{ this.surfacesArray = []; }
 	
-	var surface = new Surface();
+	var surface = new Surface(options);
 	this.surfacesArray.push(surface);
 	return surface;
 };
@@ -61598,7 +62090,7 @@ Mesh.prototype.getFrontierHalfEdges = function(resultHalfEdgesArray)
 	for (var i=0; i<surfacesCount; i++)
 	{
 		surface = this.getSurface(i);
-		resultHalfEdgesArray = surface.getFrontierHalfEdges(resultHalfEdgesArray);
+		resultHalfEdgesArray = surface.getFrontierHalfEdges(resultHalfEdgesArray); 
 	}
 	
 	return resultHalfEdgesArray;
@@ -61640,6 +62132,11 @@ Mesh.prototype.getCopy = function(resultMeshCopy)
 	{
 		surface = this.getSurface(i);
 		surfaceCopy = resultMeshCopy.newSurface();
+		
+		// copy id & name.
+		surfaceCopy.id = surface.id;
+		surfaceCopy.name = surface.name;
+	
 		facesCount = surface.getFacesCount();
 		for (var j=0; j<facesCount; j++)
 		{
@@ -61727,10 +62224,46 @@ Mesh.prototype.getTrianglesListsArrayBy2ByteSize = function(trianglesArray, resu
  * @param glPrimitive
  * @TODO : 누가 이 gl primitive의 type 정체를 안다면 좀 달아주세요ㅠㅠ 세슘 쪽인거 같은데ㅠㅠ
  */
-Mesh.prototype.renderAsChild = function (magoManager, shader, renderType, glPrimitive, isSelected) 
+Mesh.prototype.renderAsChild = function (magoManager, shader, renderType, glPrimitive, isSelected, options) 
 {
-	this.render(magoManager, shader, renderType, glPrimitive, isSelected);
+	var renderShaded = true;
+	var renderWireframe = false;
+	var depthMask = true;
+	
+	var gl = magoManager.getGl();
+	
+	if (options)
+	{
+		if (options.renderShaded !== undefined)
+		{
+			renderShaded = options.renderShaded;
+		}
+		
+		if (options.renderWireframe !== undefined)
+		{
+			renderWireframe = options.renderWireframe;
+		}
+		
+		if (options.depthMask !== undefined)
+		{
+			depthMask = options.depthMask;
+		}
+	}
+	
+	if (renderShaded)
+	{
+		gl.depthMask(depthMask);
+		this.render(magoManager, shader, renderType, glPrimitive, isSelected);
+		gl.depthMask(true);
+	}
+	
+	if (renderWireframe)
+	{
+		this.renderWireframe(magoManager, shader, renderType, glPrimitive, isSelected);
+	}
+	
 };
+
 /**
  * Render the mesh
  * @param {MagoManager}magoManager
@@ -61783,12 +62316,6 @@ Mesh.prototype.render = function(magoManager, shader, renderType, glPrimitive, i
 	{
 		// Selection render.***
 	}
-	else if (renderType === 3)
-	{
-		// Shadow mesh render.***
-		shader.disableVertexAttribArray(shader.texCoord2_loc);
-		shader.disableVertexAttribArray(shader.color4_loc);
-	}
 	
 	var vboKeysCount = this.vboKeysContainer.vboCacheKeysArray.length;
 	for (var i=0; i<vboKeysCount; i++)
@@ -61803,19 +62330,6 @@ Mesh.prototype.render = function(magoManager, shader, renderType, glPrimitive, i
 		if (!vboKey.bindDataPosition(shader, vboMemManager))
 		{ return false; }
 	
-		// test Normals.*** TEST*** TEST*** TEST*** TEST*** TEST*** TEST***
-		if (vboKey.vboBufferNor)
-		{
-			if (!vboKey.bindDataNormal(shader, vboMemManager))
-			{ return false; }
-		}
-		else 
-		{
-			shader.disableVertexAttribArray(shader.normal3_loc);
-		}
-		// End  TEST*** TEST*** TEST*** TEST*** TEST*** TEST*** TEST*** TEST***
-		
-		
 		if (renderType === 1)
 		{
 			// Normals.
@@ -61868,6 +62382,109 @@ Mesh.prototype.render = function(magoManager, shader, renderType, glPrimitive, i
 		gl.drawElements(primitive, vboKey.indicesCount, gl.UNSIGNED_SHORT, 0);
 	}
 };
+
+/**
+ * Render the mesh
+ * @param {MagoManager}magoManager
+ * @param {Shader} shader
+ * @param {Number} renderType
+ * @param glPrimitive
+ * @TODO : 누가 이 gl primitive의 type 정체를 안다면 좀 달아주세요ㅠㅠ 세슘 쪽인거 같은데ㅠㅠ
+ */
+Mesh.prototype.renderWireframe = function(magoManager, shader, renderType, glPrimitive, isSelected)
+{
+	var vboMemManager = magoManager.vboMemoryManager;
+	
+	if (this.edgesVboKeysContainer === undefined)
+	{
+		this.edgesVboKeysContainer = this.getVboEdgesThickLines(this.edgesVboKeysContainer, magoManager);
+		return;
+	}
+	
+	var gl = magoManager.sceneState.gl;
+	var primitive;
+	
+	if (renderType === 0)
+	{
+		// Depth render.***
+	}
+	else if (renderType === 1)
+	{
+		if (!isSelected)
+		{
+			// Color render.***
+			if (this.material !== undefined && this.material.diffuseTexture !== undefined && this.material.diffuseTexture.texId !== undefined)
+			{
+				var texture = this.material.diffuseTexture;
+				gl.uniform1i(shader.colorType_loc, 2); // 0= oneColor, 1= attribColor, 2= texture.
+				if (shader.last_tex_id !== texture.texId) 
+				{
+					gl.activeTexture(gl.TEXTURE2);
+					gl.bindTexture(gl.TEXTURE_2D, texture.texId);
+					shader.last_tex_id = texture.texId;
+				}
+			}
+			else if (this.color4)
+			{ 
+				gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.
+				gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, this.color4.a]); 
+			}
+		}
+	}
+	else if (renderType === 2)
+	{
+		// Selection render.***
+	}
+	
+	var vbo = this.edgesVboKeysContainer.getVboKey(0);
+	
+	// based on https://weekly-geekly.github.io/articles/331164/index.html
+	/*
+	var shader = magoManager.postFxShadersManager.getShader("thickLine");
+	shader.useProgram();
+	shader.bindUniformGenerals();
+	var gl = magoManager.getGl();
+
+	gl.blendEquationSeparate(gl.FUNC_ADD, gl.FUNC_ADD);
+	gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+	gl.disable(gl.CULL_FACE);
+	
+	gl.enableVertexAttribArray(shader.prev_loc);
+	gl.enableVertexAttribArray(shader.current_loc);
+	gl.enableVertexAttribArray(shader.next_loc);
+	
+	var geoLocData = this.geoLocDataManager.getCurrentGeoLocationData();
+	geoLocData.bindGeoLocationUniforms(gl, shader);
+
+	var sceneState = magoManager.sceneState;
+	var drawingBufferWidth = sceneState.drawingBufferWidth;
+	var drawingBufferHeight = sceneState.drawingBufferHeight;
+
+	gl.uniform4fv(shader.color_loc, [0.5, 0.7, 0.9, 1.0]);
+	gl.uniform2fv(shader.viewport_loc, [drawingBufferWidth[0], drawingBufferHeight[0]]);
+	*/
+	
+	this.thickness = 2.0;
+	gl.uniform1f(shader.thickness_loc, this.thickness);
+
+	var vboPos = vbo.vboBufferPos;
+	var dim = vboPos.dataDimensions; // in this case dimensions = 4.
+	if (!vboPos.isReady(gl, magoManager.vboMemoryManager))
+	{
+		return;
+	}
+
+	gl.bindBuffer(gl.ARRAY_BUFFER, vboPos.key);
+	gl.vertexAttribPointer(shader.prev_loc, dim, gl.FLOAT, false, 16, 0);
+	gl.vertexAttribPointer(shader.current_loc, dim, gl.FLOAT, false, 16, 64-32);
+	gl.vertexAttribPointer(shader.next_loc, dim, gl.FLOAT, false, 16, 128-32);
+
+	gl.drawArrays(gl.TRIANGLE_STRIP, 0, vbo.vertexCount-(4));
+
+	gl.enable(gl.CULL_FACE);
+	
+};
+
 /**
  * Get the VBO keys of this mesh
  * @param {VBOVertexIdxCacheKeysContainer} resultVboContainer 
@@ -61938,6 +62555,62 @@ Mesh.prototype.getVboTrianglesConvex = function(resultVboContainer, vboMemManage
 	return resultVboContainer;
 };
 
+Mesh.prototype.getEdgeSegment3ds = function(resultSegment3dsArray)
+{
+	var frontierHedgesArray = [];
+	var surface;
+	var surfacesCount = this.getSurfacesCount();
+	for (var i=0; i<surfacesCount; i++)
+	{
+		surface = this.getSurface(i);
+		if (surface.name === "outerLateral")
+		{ frontierHedgesArray = surface.getFrontierHalfEdges(frontierHedgesArray); }
+	}
+
+	var hedgesCount = frontierHedgesArray.length;
+	
+	if (hedgesCount === 0)
+	{ return resultSegment3dsArray; }
+	
+	if (!resultSegment3dsArray)
+	{ resultSegment3dsArray = []; }
+	
+	var hedge;
+	var segment3d;
+	var strVertex, endVertex;
+	var strPoint3d, endPoint3d;
+	var index = 0;
+	for (var i=0; i<hedgesCount; i++)
+	{
+		hedge = frontierHedgesArray[i];
+		strVertex = hedge.startVertex;
+		endVertex = hedge.getEndVertex();
+		
+		strPoint3d = strVertex.getPosition();
+		endPoint3d = endVertex.getPosition();
+		
+		segment3d = new Segment3D(strPoint3d, endPoint3d);
+		resultSegment3dsArray.push(segment3d);
+	}
+	
+	return resultSegment3dsArray;
+};
+
+/**
+ * Register the VBO cache keys of the half edges of this mesh to VBOMemManager.
+ * @param {VBOVertexIdxCacheKeysContainer} resultVboContainer 
+ * @param {VBOMemManager} vboMemManager
+ * @TODO : Need to change name! Not Getter!
+ */
+Mesh.prototype.getVboEdgesThickLines = function(resultVboContainer, magoManager)
+{
+	// Make edges if need render wireframe. 
+	this.edgesSegment3dsArray = []; // init.
+	this.edgesSegment3dsArray = this.getEdgeSegment3ds(this.edgesSegment3dsArray);
+	resultVboContainer = Segment3D.getVboThickLines(magoManager, this.edgesSegment3dsArray, resultVboContainer);
+	return resultVboContainer;
+};
+
 /**
  * Register the VBO cache keys of the half edges of this mesh to VBOMemManager.
  * @param {VBOVertexIdxCacheKeysContainer} resultVboContainer 
@@ -61946,6 +62619,7 @@ Mesh.prototype.getVboTrianglesConvex = function(resultVboContainer, vboMemManage
  */
 Mesh.prototype.getVboEdges = function(resultVboContainer, vboMemManager)
 {
+	// Old. deprecated.
 	if (resultVboContainer === undefined)
 	{ return; }
 	
@@ -61977,6 +62651,8 @@ Mesh.prototype.getVboEdges = function(resultVboContainer, vboMemManager)
 	var resultVbo = resultVboContainer.newVBOVertexIdxCacheKey();
 	resultVbo.setDataArrayPos(vertexArray, vboMemManager);
 	resultVbo.setDataArrayIdx(indicesArray, vboMemManager);
+	
+	return resultVboContainer;
 };
 
 
@@ -62593,14 +63269,19 @@ Modeler.prototype.createPlaneGrid = function(width, height, numCols, numRows)
 
 
 'use strict';
-
-
+// TEST OBJECT. NO USE THIS CLASS.***
+// TEST OBJECT. NO USE THIS CLASS.***
+// TEST OBJECT. NO USE THIS CLASS.***
+// TEST OBJECT. NO USE THIS CLASS.***
+// TEST OBJECT. NO USE THIS CLASS.***
 /**
  * 어떤 일을 하고 있습니까?
  * @class ParametricMesh
  */
 var ParametricMesh = function() 
 {
+	// TEST OBJECT. NO USE THIS CLASS.***
+	
 	if (!(this instanceof ParametricMesh)) 
 	{
 		throw new Error(Messages.CONSTRUCT_ERROR);
@@ -62617,6 +63298,7 @@ var ParametricMesh = function()
  */
 ParametricMesh.prototype.deleteObjects = function() 
 {
+	// TEST OBJECT. NO USE THIS CLASS.***
 	if (this.profile)
 	{ this.profile.deleteObjects(); }
 	
@@ -62629,6 +63311,7 @@ ParametricMesh.prototype.deleteObjects = function()
  */
 ParametricMesh.prototype.getVboKeysContainer = function()
 {
+	// TEST OBJECT. NO USE THIS CLASS.***
 	return this.vboKeyContainer;
 };
 
@@ -62681,6 +63364,7 @@ ParametricMesh.prototype.getSurfaceIndependentMesh = function(resultMesh, bInclu
  */
 ParametricMesh.prototype.revolve = function(profile2d, revolveAngDeg, revolveSegmentsCount, revolveSegment2d) 
 {
+	// TEST OBJECT. NO USE THIS CLASS.***
 	// Note: move this function into "VtxProfilesList" class.
 	if (profile2d === undefined)
 	{ return undefined; }
@@ -62734,6 +63418,7 @@ ParametricMesh.prototype.revolve = function(profile2d, revolveAngDeg, revolveSeg
  */
 ParametricMesh.prototype.extrude = function(profile2d, extrusionDist, extrudeSegmentsCount, extrusionVector) 
 {
+	// TEST OBJECT. NO USE THIS CLASS.***
 	// Note: move this function into "VtxProfilesList" class.
 	if (profile2d === undefined || extrusionDist === undefined)
 	{ return undefined; }
@@ -65020,7 +65705,7 @@ Point3DList.getVbo = function(magoManager, point3dArray, resultVboKeysContainer)
  * Make the vbo of this point3DList
  * @param magoManager
  */
-Point3DList.getVboThickLines = function(magoManager, point3dArray, resultVboKeysContainer)
+Point3DList.getVboThickLines__element = function(magoManager, point3dArray, resultVboKeysContainer)
 {
 	if (point3dArray === undefined || point3dArray.length < 2)
 	{ return resultVboKeysContainer; }
@@ -65029,7 +65714,7 @@ Point3DList.getVboThickLines = function(magoManager, point3dArray, resultVboKeys
 	{ resultVboKeysContainer = new VBOVertexIdxCacheKeysContainer(); }
 
 	var pointsCount = point3dArray.length;
-	/*
+	
 	// New.*************************************************************************************************************************
 	var repeats = 4;
 	var pointDimension = 3;
@@ -65053,17 +65738,26 @@ Point3DList.getVboThickLines = function(magoManager, point3dArray, resultVboKeys
 		//	posVboDataArray[i*3+1] = point3d.y;
 		//	posVboDataArray[i*3+2] = point3d.z;
 		//}
+		var idx = new Uint16Array([i]);
+		idxVboDataArray[i*4] = idx[0];
+		idxVboDataArray[i*4+1] = idx[0];
+		idxVboDataArray[i*4+2] = idx[0];
+		idxVboDataArray[i*4+3] = idx[0];
 		
-		idxVboDataArray[i*4] = i;
-		idxVboDataArray[i*4+1] = i;
-		idxVboDataArray[i*4+2] = i;
-		idxVboDataArray[i*4+3] = i;
+		//orderVboDataArray[i*4] = 2;
+		//orderVboDataArray[i*4+1] = -2;
+		//orderVboDataArray[i*4+2] = 1;
+		//orderVboDataArray[i*4+3] = -1;
 		
-		orderVboDataArray[i*4] = 1;
-		orderVboDataArray[i*4+1] = -1;
-		orderVboDataArray[i*4+2] = 2;
-		orderVboDataArray[i*4+3] = -2;
+		//orderVboDataArray[i*4] = -1;
+		//orderVboDataArray[i*4+1] = 2;
+		//orderVboDataArray[i*4+2] = -2;
+		//orderVboDataArray[i*4+3] = 1;
 		
+		orderVboDataArray[i*4] = -2;
+		orderVboDataArray[i*4+1] = 1;
+		orderVboDataArray[i*4+2] = -1;
+		orderVboDataArray[i*4+3] = 2;
 	}
 	var vboMemManager = magoManager.vboMemoryManager;
 	var vbo = resultVboKeysContainer.newVBOVertexIdxCacheKey();
@@ -65074,16 +65768,29 @@ Point3DList.getVboThickLines = function(magoManager, point3dArray, resultVboKeys
 	var name = "thickLineOrder";
 	var attribLoc = 3; // defined as "3" when create the thickLine_shader.
 	vbo.setDataArrayCustom(orderVboDataArray, vboMemManager, dimensions, name, attribLoc);
-	*/
 	
-	// Old.*************************************************************************************************************************
+	return resultVboKeysContainer;
+};
+
+/**
+ * Make the vbo of this point3DList
+ * @param magoManager
+ */
+Point3DList.getVboThickLines = function(magoManager, point3dArray, resultVboKeysContainer)
+{
+	if (point3dArray === undefined || point3dArray.length < 2)
+	{ return resultVboKeysContainer; }
+
+	if (resultVboKeysContainer === undefined)
+	{ resultVboKeysContainer = new VBOVertexIdxCacheKeysContainer(); }
+
+	var pointsCount = point3dArray.length;
+
 	// in this case make point4d (x, y, z, w). In "w" save the sign (1 or -1) for the offset in the shader to draw triangles strip.
-	// check if the indexes is bigger than 65536. TODO.
 	var repeats = 4;
 	var pointDimension = 4;
 	var posByteSize = pointsCount * pointDimension * repeats;
 	var posVboDataArray = new Float32Array(posByteSize);
-	//var idxVboDataArray = new Uint16Array(pointsCount * repeats);
 	var point3d;
 
 	for (var i=0; i<pointsCount; i++)
@@ -65108,18 +65815,11 @@ Point3DList.getVboThickLines = function(magoManager, point3dArray, resultVboKeys
 		posVboDataArray[i*16+13] = point3d.y;
 		posVboDataArray[i*16+14] = point3d.z;
 		posVboDataArray[i*16+15] = -2; // order.
-		
-		//idxVboDataArray[i*4] = i*4;
-		//idxVboDataArray[i*4+1] = i*4+1;
-		//idxVboDataArray[i*4+2] = i*4+2;
-		//idxVboDataArray[i*4+3] = i*4+3;
 	}
 	
 	
 	var vbo = resultVboKeysContainer.newVBOVertexIdxCacheKey();
 	vbo.setDataArrayPos(posVboDataArray, magoManager.vboMemoryManager, pointDimension);
-	//vbo.setDataArrayIdx(idxVboDataArray, magoManager.vboMemoryManager);
-	// End old.-----------------------------------------------------------------------------------------------------------------------
 	
 	return resultVboKeysContainer;
 };
@@ -65277,7 +65977,7 @@ Point3DList.prototype.renderAsChild = function(magoManager, shader, renderType, 
  * @param renderType
  * @param bEnableDepth if this is turned off, then the last-drawing feature will be shown at the top
  */
-Point3DList.prototype.renderThickLines = function(magoManager, shader, renderType, bEnableDepth, options)
+Point3DList.prototype.renderThickLines__element = function(magoManager, shader, renderType, bEnableDepth, options)
 {
 	if (this.vboKeysContainer === undefined)
 	{ return; }
@@ -65293,6 +65993,103 @@ Point3DList.prototype.renderThickLines = function(magoManager, shader, renderTyp
 	shader.bindUniformGenerals();
 	var gl = magoManager.getGl();
 	gl.enable(gl.BLEND);
+	gl.blendEquationSeparate(gl.FUNC_ADD, gl.FUNC_ADD);
+	gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+	gl.disable(gl.CULL_FACE);
+	
+	gl.enableVertexAttribArray(shader.prev_loc);
+	gl.enableVertexAttribArray(shader.current_loc);
+	gl.enableVertexAttribArray(shader.next_loc);
+	gl.enableVertexAttribArray(shader.order_loc);
+	
+	var orderLoc = gl.getAttribLocation(shader.program, "order");
+	
+	var geoLocData = this.geoLocDataManager.getCurrentGeoLocationData();
+	geoLocData.bindGeoLocationUniforms(gl, shader);
+
+	var sceneState = magoManager.sceneState;
+	var projMat = sceneState.projectionMatrix;
+	var viewMat = sceneState.modelViewMatrix;
+	var drawingBufferWidth = sceneState.drawingBufferWidth;
+	var drawingBufferHeight = sceneState.drawingBufferHeight;
+	
+	this.thickness = 10.0;
+	
+	gl.uniform4fv(shader.color_loc, [0.5, 0.7, 0.9, 1.0]);
+	gl.uniform2fv(shader.viewport_loc, [drawingBufferWidth[0], drawingBufferHeight[0]]);
+	gl.uniform1f(shader.thickness_loc, this.thickness);
+
+	var vboPos = vbo.vboBufferPos;
+	var dim = vboPos.dataDimensions; // in this case dimensions = 4.
+	if (!vboPos.isReady(gl, magoManager.vboMemoryManager))
+	{
+		return;
+	}
+	
+	// New.**********************
+	
+	gl.bindBuffer(gl.ARRAY_BUFFER, vboPos.key);
+	gl.vertexAttribPointer(shader.prev_loc, dim, gl.FLOAT, false, 0, 0);
+	gl.vertexAttribPointer(shader.current_loc, dim, gl.FLOAT, false, 0, 12);
+	gl.vertexAttribPointer(shader.next_loc, dim, gl.FLOAT, false, 0, 24);
+
+	var vboOrder = vbo.getVboCustom("thickLineOrder");
+	if (!vboOrder.isReady(gl, magoManager.vboMemoryManager))
+	{
+		return;
+	}
+	gl.bindBuffer(gl.ARRAY_BUFFER, vboOrder.key);
+	gl.vertexAttribPointer(shader.order_loc, vboOrder.dataDimensions, gl.FLOAT, false, 0, 0);
+
+	var indicesCount = vbo.indicesCount;
+	if (!vbo.bindDataIndice(shader, magoManager.vboMemoryManager))
+	{ return false; }
+
+	gl.disable(gl.DEPTH_TEST);
+	//gl.drawElements(gl.TRIANGLE_STRIP, indicesCount, gl.UNSIGNED_SHORT, 0); // Fill.
+	gl.drawElements(gl.LINE_STRIP, indicesCount, gl.UNSIGNED_SHORT, 0); // Fill.
+	//gl.drawArrays(gl.TRIANGLE_STRIP, 0, vbo.vertexCount-4);
+	gl.enable(gl.DEPTH_TEST);
+	
+	
+	// old.**********************************************************************************************
+	//gl.bindBuffer(gl.ARRAY_BUFFER, vboPos.key);
+	//gl.vertexAttribPointer(shader.prev_loc, dim, gl.FLOAT, false, 16, 0);
+	//gl.vertexAttribPointer(shader.current_loc, dim, gl.FLOAT, false, 16, 64-32);
+	//gl.vertexAttribPointer(shader.next_loc, dim, gl.FLOAT, false, 16, 128-32);
+	
+	//gl.drawArrays(gl.TRIANGLE_STRIP, 0, vbo.vertexCount-4);
+
+	// End old.-------------------------------------------------------------------------------------------
+	
+
+	gl.enable(gl.CULL_FACE);
+	gl.disable(gl.BLEND);
+};
+
+/**
+ * Render this point3dlist using vbo of this list. 
+ * @param magoManager
+ * @param shader 
+ * @param renderType
+ * @param bEnableDepth if this is turned off, then the last-drawing feature will be shown at the top
+ */
+Point3DList.prototype.renderThickLines = function(magoManager, shader, renderType, bEnableDepth, options)
+{
+	if (this.vboKeysContainer === undefined)
+	{ return; }
+
+	if (this.geoLocDataManager === undefined)
+	{ return; }
+	
+	var vbo = this.vboKeysContainer.getVboKey(0);
+	
+	// based on https://weekly-geekly.github.io/articles/331164/index.html
+	var shader = magoManager.postFxShadersManager.getShader("thickLine");
+	shader.useProgram();
+	shader.bindUniformGenerals();
+	var gl = magoManager.getGl();
+
 	gl.blendEquationSeparate(gl.FUNC_ADD, gl.FUNC_ADD);
 	gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 	gl.disable(gl.CULL_FACE);
@@ -65322,50 +66119,15 @@ Point3DList.prototype.renderThickLines = function(magoManager, shader, renderTyp
 	{
 		return;
 	}
-	
-	// New.**********************
-	/*
-	gl.bindBuffer(gl.ARRAY_BUFFER, vboPos.key);
-	gl.vertexAttribPointer(shader.prev_loc, dim, gl.FLOAT, false, 3, 0);
-	gl.vertexAttribPointer(shader.current_loc, dim, gl.FLOAT, false, 3, 6);
-	gl.vertexAttribPointer(shader.next_loc, dim, gl.FLOAT, false, 3, 12);
 
-	var vboOrder = vbo.getVboCustom("thickLineOrder");
-	if (!vboOrder.isReady(gl, magoManager.vboMemoryManager))
-	{
-		return;
-	}
-	gl.bindBuffer(gl.ARRAY_BUFFER, vboOrder.key);
-	gl.vertexAttribPointer(shader.order_loc, vboOrder.dataDimensions, gl.FLOAT, false, 4, 0);
-
-	var indicesCount = vbo.indicesCount;
-	if (!vbo.bindDataIndice(shader, magoManager.vboMemoryManager))
-	{ return false; }
-	gl.drawElements(gl.TRIANGLE_STRIP, indicesCount, gl.UNSIGNED_SHORT, 0); // Fill.
-	*/
-	
-	
-	// old.**********************************************************************************************
 	gl.bindBuffer(gl.ARRAY_BUFFER, vboPos.key);
 	gl.vertexAttribPointer(shader.prev_loc, dim, gl.FLOAT, false, 16, 0);
 	gl.vertexAttribPointer(shader.current_loc, dim, gl.FLOAT, false, 16, 64-32);
 	gl.vertexAttribPointer(shader.next_loc, dim, gl.FLOAT, false, 16, 128-32);
 
-	//gl.bindBuffer(gl.ARRAY_BUFFER, this._ordersBuffer);
-	//gl.vertexAttribPointer(shader.order._pName, this._ordersBuffer.itemSize, gl.FLOAT, false, 4, 0);
-
-	//gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._indexesBuffer);
-	//gl.drawElements(gl.TRIANGLE_STRIP, this._indexesBuffer.numItems, gl.UNSIGNED_INT, 0);
-	
 	gl.drawArrays(gl.TRIANGLE_STRIP, 0, vbo.vertexCount-4);
-	
-	//gl.uniform4fv(shader.color_loc, [0.0, 0.0, 0.0, 1.0]);
-	//gl.drawArrays(gl.LINE_STRIP, 0, vbo.vertexCount);
-	// End old.-------------------------------------------------------------------------------------------
-	
 
 	gl.enable(gl.CULL_FACE);
-	gl.disable(gl.BLEND);
 };
 
 /**
@@ -68608,6 +69370,83 @@ var Segment3D = function(strPoint3D, endPoint3D)
 };
 
 /**
+ * Make the vbo of this
+ * @param magoManager
+ */
+Segment3D.getVboThickLines = function(magoManager, segment3dArray, resultVboKeysContainer)
+{
+	if (segment3dArray === undefined)
+	{ return resultVboKeysContainer; }
+
+	if (resultVboKeysContainer === undefined)
+	{ resultVboKeysContainer = new VBOVertexIdxCacheKeysContainer(); }
+
+	var segmentsCount = segment3dArray.length;
+
+	// in this case make point4d (x, y, z, w). In "w" save the sign (1 or -1) for the offset in the shader to draw triangles strip.
+	// check if the indexes is bigger than 65536. TODO.
+	var repeats = 4;
+	var pointDimension = 4;
+	var pointsCount = segmentsCount * 2;
+	var posVboDataArray = new Float32Array(pointsCount * pointDimension * repeats);
+	var segment3d;
+	var point_A, point_B;
+	for (var i=0; i<segmentsCount; i++)
+	{
+		segment3d = segment3dArray[i];
+		point_A = segment3d.startPoint3d;
+		point_B = segment3d.endPoint3d;
+		
+		// point_A.
+		posVboDataArray[i*32] = point_A.x;
+		posVboDataArray[i*32+1] = point_A.y;
+		posVboDataArray[i*32+2] = point_A.z;
+		posVboDataArray[i*32+3] = 1; // order.
+		
+		posVboDataArray[i*32+4] = point_A.x;
+		posVboDataArray[i*32+5] = point_A.y;
+		posVboDataArray[i*32+6] = point_A.z;
+		posVboDataArray[i*32+7] = -1; // order.
+		
+		posVboDataArray[i*32+8] = point_A.x;
+		posVboDataArray[i*32+9] = point_A.y;
+		posVboDataArray[i*32+10] = point_A.z;
+		posVboDataArray[i*32+11] = 2; // order.
+		
+		posVboDataArray[i*32+12] = point_A.x;
+		posVboDataArray[i*32+13] = point_A.y;
+		posVboDataArray[i*32+14] = point_A.z;
+		posVboDataArray[i*32+15] = -2; // order.
+		
+		// point_B.
+		posVboDataArray[i*32+16] = point_B.x;
+		posVboDataArray[i*32+17] = point_B.y;
+		posVboDataArray[i*32+18] = point_B.z;
+		posVboDataArray[i*32+19] = 1; // order.
+		
+		posVboDataArray[i*32+20] = point_B.x;
+		posVboDataArray[i*32+21] = point_B.y;
+		posVboDataArray[i*32+22] = point_B.z;
+		posVboDataArray[i*32+23] = -1; // order.
+		
+		posVboDataArray[i*32+24] = point_B.x;
+		posVboDataArray[i*32+25] = point_B.y;
+		posVboDataArray[i*32+26] = point_B.z;
+		posVboDataArray[i*32+27] = 2; // order.
+		
+		posVboDataArray[i*32+28] = point_B.x;
+		posVboDataArray[i*32+29] = point_B.y;
+		posVboDataArray[i*32+30] = point_B.z;
+		posVboDataArray[i*32+31] = -2; // order.
+	}
+	
+	var vbo = resultVboKeysContainer.newVBOVertexIdxCacheKey();
+	vbo.setDataArrayPos(posVboDataArray, magoManager.vboMemoryManager, pointDimension);
+	
+	return resultVboKeysContainer;
+};
+
+/**
  * 선분에 포인트를 설정한다.
  *
  * @param {Point3D} strPoint3D 시작 포인트
@@ -69199,12 +70038,15 @@ StaticModelsManager.manageStaticModel = function(node, magoManager)
  * 
  * @class
  */
-var Surface = function()
+var Surface = function(options)
 {
 	if (!(this instanceof Surface))
 	{
 		throw new Error(Messages.CONSTRUCT_ERROR);
 	}
+	
+	this.id;
+	this.name;
 
 	/** 
 	 * Surface 가 가진 Face 배열
@@ -69226,6 +70068,15 @@ var Surface = function()
 	 * @type {Object[]}
 	 */
 	this.localHedgesList = undefined;
+	
+	if (options !== undefined)
+	{
+		if (options.id !== undefined)
+		{ this.id = options.id; }
+		
+		if (options.name !== undefined)
+		{ this.name = options.name; }
+	}
 };
 
 /**
@@ -69442,6 +70293,8 @@ Surface.prototype.getCopyIndependentSurface = function(result)
 	}
 
 	var resultLocalvertexList = result.localVertexList;
+	result.id = this.id;
+	result.name = this.name;
 
 	// copy the localVertexList.
 	var vertex;
@@ -73671,7 +74524,6 @@ VtxProfilesList.prototype.getMesh = function(resultMesh, bIncludeBottomCap, bInc
 	// 3-------2
 	// |       |
 	// |       |
-	// |       |
 	// 0-------1
 	
 	if (this.vtxProfilesArray === undefined)
@@ -73686,6 +74538,7 @@ VtxProfilesList.prototype.getMesh = function(resultMesh, bIncludeBottomCap, bInc
 		bIncludeBottomCap = false;
 		bIncludeTopCap = false;
 	}
+	
 	
 	// outerLateral.
 	var vtxProfilesCount = this.getVtxProfilesCount();
@@ -73716,10 +74569,11 @@ VtxProfilesList.prototype.getMesh = function(resultMesh, bIncludeBottomCap, bInc
 	var facesArray = [];
 	var prevFacesArray;
 	var elemsCount = outerVtxRing.elemsIndexRangesArray.length;
-	
+	var options = {};
+	options.name = "outerLateral";
 	for (var i=0; i<elemsCount; i++)
 	{
-		surface = resultMesh.newSurface();
+		surface = resultMesh.newSurface(options);
 		prevFacesArray = undefined;
 		elemIndexRange = outerVtxRing.getElementIndexRange(i);
 		for (var j=0; j<vtxProfilesCount; j++)
@@ -73765,6 +74619,7 @@ VtxProfilesList.prototype.getMesh = function(resultMesh, bIncludeBottomCap, bInc
 	}
 	
 	// Inner laterals.
+	options.name = "innerLateral";
 	var innerVtxRing;
 	var innerRinsCount = bottomVtxProfile.getInnerVtxRingsCount();
 	for (var k=0; k<innerRinsCount; k++)
@@ -73773,7 +74628,7 @@ VtxProfilesList.prototype.getMesh = function(resultMesh, bIncludeBottomCap, bInc
 		elemsCount = innerVtxRing.elemsIndexRangesArray.length;
 		for (var i=0; i<elemsCount; i++)
 		{
-			surface = resultMesh.newSurface();
+			surface = resultMesh.newSurface(options);
 			prevFacesArray = undefined;
 			elemIndexRange = innerVtxRing.getElementIndexRange(i);
 			for (var j=0; j<vtxProfilesCount; j++)
@@ -73835,22 +74690,24 @@ VtxProfilesList.prototype.getMesh = function(resultMesh, bIncludeBottomCap, bInc
 	// in this case, there are a surface with multiple convex faces.
 	if (bIncludeTopCap === undefined || bIncludeTopCap === true)
 	{
+		options.name = "top";
 		topVtxProfile = this.getVtxProfile(vtxProfilesCount-1);
-		resultSurface = resultMesh.newSurface();
+		resultSurface = resultMesh.newSurface(options);
 		resultSurface = VtxProfilesList.getTransversalSurface(topVtxProfile, this.convexFacesIndicesData, resultSurface);
 	}
 
 	// Bottom profile.**
 	if (bIncludeBottomCap === undefined || bIncludeBottomCap === true)
 	{
+		options.name = "bottom";
 		bottomVtxProfile = this.getVtxProfile(0);
-		resultSurface = resultMesh.newSurface();
+		resultSurface = resultMesh.newSurface(options);
 		resultSurface = VtxProfilesList.getTransversalSurface(bottomVtxProfile, this.convexFacesIndicesData, resultSurface);
 		
 		// in bottomSurface inverse sense of faces.
 		resultSurface.reverseSense();
 	}
-	
+
 	return resultMesh;
 };
 
@@ -74232,6 +75089,15 @@ VtxRing.prototype.makeByPoints3DArray = function(point3dArray)
 	{ this.vertexList = new VertexList(); }
 	
 	this.vertexList.copyFromPoint3DArray(point3dArray);
+	
+	// Now, in this case, mark all vertex.vertexType = 1 (bcos all elems are lines).
+	var vertexCount = this.vertexList.getVertexCount();
+	var vertex;
+	for (var i=0; i<vertexCount; i++)
+	{
+		vertex = this.vertexList.getVertex(i);
+		vertex.setVertexType(1);
+	}
 	this.calculateElementsIndicesRange();
 };
 
@@ -77254,6 +78120,25 @@ Pipe.prototype.render = function(magoManager, shader, renderType, glPrimitive)
 
 
 
+'use strict';
+
+/**
+ * RenderableObject geometry.
+ * @class RenderableObject
+ */
+var RenderableObject = function(options) 
+{
+	MagoRenderable.call(this);
+	if (!(this instanceof RenderableObject)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+	// See MagoRenderable's members.
+	this.setDirty(false);
+
+};
+RenderableObject.prototype = Object.create(MagoRenderable.prototype);
+RenderableObject.prototype.constructor = RenderableObject;
 'use strict';
 
 /**
@@ -80678,66 +81563,8 @@ Renderer.prototype.renderGeometry = function(gl, renderType, visibleObjControler
 		}
 		
 		// 4) Render ObjectMarkers.********************************************************************************************************
-		// 4) Render ObjectMarkers.********************************************************************************************************
-		// 4) Render ObjectMarkers.********************************************************************************************************
-		var objectsMarkersCount = magoManager.objMarkerManager.objectMarkerArray.length;
-		if (objectsMarkersCount > 0)
-		{
-			// now repeat the objects markers for png images.***
-			// Png for pin image 128x128.********************************************************************
-			if (magoManager.pin.positionBuffer === undefined)
-			{ magoManager.pin.createPinCenterBottom(gl); }
-			
-			currentShader = magoManager.postFxShadersManager.pngImageShader; // png image shader.***
-			currentShader.resetLastBuffersBinded();
-			
-			shaderProgram = currentShader.program;
-			
-			gl.useProgram(shaderProgram);
-			gl.uniformMatrix4fv(currentShader.modelViewProjectionMatrix4RelToEye_loc, false, magoManager.sceneState.modelViewProjRelToEyeMatrix._floatArrays);
-			gl.uniform3fv(currentShader.cameraPosHIGH_loc, magoManager.sceneState.encodedCamPosHigh);
-			gl.uniform3fv(currentShader.cameraPosLOW_loc, magoManager.sceneState.encodedCamPosLow);
-			gl.uniformMatrix4fv(currentShader.buildingRotMatrix_loc, false, magoManager.sceneState.modelViewRelToEyeMatrixInv._floatArrays);
-			
-			gl.uniform1i(currentShader.textureFlipYAxis_loc, magoManager.sceneState.textureFlipYAxis); 
-			// Tell the shader to get the texture from texture unit 0
-			gl.uniform1i(currentShader.texture_loc, 0);
-			gl.enableVertexAttribArray(currentShader.texCoord2_loc);
-			gl.enableVertexAttribArray(currentShader.position3_loc);
-			gl.activeTexture(gl.TEXTURE0);
-			
-			gl.depthRange(0, 0);
-			//var context = document.getElementById('canvas2').getContext("2d");
-			//var canvas = document.getElementById("magoContainer");
-			
-			gl.bindBuffer(gl.ARRAY_BUFFER, magoManager.pin.positionBuffer);
-			gl.vertexAttribPointer(currentShader.position3_loc, 3, gl.FLOAT, false, 0, 0);
-			gl.bindBuffer(gl.ARRAY_BUFFER, magoManager.pin.texcoordBuffer);
-			gl.vertexAttribPointer(currentShader.texCoord2_loc, 2, gl.FLOAT, false, 0, 0);
-			var j=0;
-			for (var i=0; i<objectsMarkersCount; i++)
-			{
-				if (j>= magoManager.pin.texturesArray.length)
-				{ j=0; }
-				
-				var currentTexture = magoManager.pin.texturesArray[j];
-				var objMarker = magoManager.objMarkerManager.objectMarkerArray[i];
-				var objMarkerGeoLocation = objMarker.geoLocationData;
-				gl.bindTexture(gl.TEXTURE_2D, currentTexture.texId);
-				gl.uniform3fv(currentShader.buildingPosHIGH_loc, objMarkerGeoLocation.positionHIGH);
-				gl.uniform3fv(currentShader.buildingPosLOW_loc, objMarkerGeoLocation.positionLOW);
+		magoManager.objMarkerManager.render(magoManager);
 
-				gl.drawArrays(gl.TRIANGLES, 0, 6);
-				
-				j++;
-			}
-			gl.depthRange(0, 1);
-			gl.useProgram(null);
-			gl.bindTexture(gl.TEXTURE_2D, null);
-			currentShader.disableVertexAttribArrayAll();
-			
-		}
-		
 		// test renders.***
 		// render cctv.***
 		/*
@@ -82844,6 +83671,21 @@ PostFxShadersManager.prototype.createShaderProgram = function(gl, vertexSource, 
 	shader.createUniformGenerals(gl, shader, magoManager.sceneState);
 	shader.createUniformLocals(gl, shader, magoManager.sceneState);
 	
+	
+	// keep shader locations.
+	var numAttributes = gl.getProgramParameter(shader.program, gl.ACTIVE_ATTRIBUTES);
+	for (var i = 0; i < numAttributes; i++) 
+	{
+		var attribute = gl.getActiveAttrib(shader.program, i);
+		shader[attribute.name] = gl.getAttribLocation(shader.program, attribute.name);
+	}
+	var numUniforms = gl.getProgramParameter(shader.program, gl.ACTIVE_UNIFORMS);
+	for (var i = 0; i < numUniforms; i++) 
+	{
+		var uniform = gl.getActiveUniform(shader.program, i);
+		shader[uniform.name] = gl.getUniformLocation(shader.program, uniform.name);
+	}
+
 	return shader;
 };
 
@@ -82875,7 +83717,6 @@ PostFxShadersManager.prototype.createShader = function(gl, source, type, typeStr
  */
 PostFxShadersManager.prototype.createDefaultShaders = function(gl, sceneState) 
 {
-	this.pngImageShader = this.createPngImageShader(gl); // 13.
 	this.modelRefSilhouetteShader = this.createSilhouetteShaderModelRef(gl); // 14.
 	this.triPolyhedronShader = this.createSsaoShaderBox(gl); // 12.
 	
@@ -82912,45 +83753,6 @@ PostFxShadersManager.prototype.getTriPolyhedronShader = function()
 PostFxShadersManager.prototype.getInvertedBoxShader = function() 
 {
 	return this.invertedBoxShader;
-};
-
-// PNG images shader.
-/**
- * 어떤 일을 하고 있습니까?
- * @param gl 변수
- */
-PostFxShadersManager.prototype.createPngImageShader = function(gl) 
-{
-	// 13.
-	var shader = new PostFxShader(this.gl);
-	this.pFx_shaders_array.push(shader);
-
-	var ssao_vs_source = ShaderSource.PngImageVS;
-	var ssao_fs_source = ShaderSource.PngImageFS;
-
-	shader.program = gl.createProgram();
-	shader.shader_vertex = this.createShader(gl, ssao_vs_source, gl.VERTEX_SHADER, "VERTEX");
-	shader.shader_fragment = this.createShader(gl, ssao_fs_source, gl.FRAGMENT_SHADER, "FRAGMENT");
-
-	gl.attachShader(shader.program, shader.shader_vertex);
-	gl.attachShader(shader.program, shader.shader_fragment);
-	shader.bindAttribLocations(gl, shader); // Do this before linkProgram.
-	gl.linkProgram(shader.program);
-
-	shader.texture_loc = gl.getUniformLocation(shader.program, "u_texture"); 
-	shader.cameraPosHIGH_loc = gl.getUniformLocation(shader.program, "encodedCameraPositionMCHigh");
-	shader.cameraPosLOW_loc = gl.getUniformLocation(shader.program, "encodedCameraPositionMCLow");
-	shader.buildingPosHIGH_loc = gl.getUniformLocation(shader.program, "buildingPosHIGH");
-	shader.buildingPosLOW_loc = gl.getUniformLocation(shader.program, "buildingPosLOW");
-	shader.modelViewProjectionMatrix4RelToEye_loc = gl.getUniformLocation(shader.program, "ModelViewProjectionMatrixRelToEye");
-	shader.buildingRotMatrix_loc = gl.getUniformLocation(shader.program, "buildingRotMatrix");
-	
-	shader.position3_loc = gl.getAttribLocation(shader.program, "a_position");
-	shader.texCoord2_loc = gl.getAttribLocation(shader.program, "a_texcoord");
-	
-	shader.textureFlipYAxis_loc = gl.getUniformLocation(shader.program, "textureFlipYAxis");
-	return shader;
-	
 };
 
 // 14) Silhouette shader.
@@ -83777,14 +84579,15 @@ void main() {\n\
 	}\n\
 }\n\
 ";
-ShaderSource.draw_frag3D = "precision mediump float;\n\
+ShaderSource.draw_frag3D = "precision highp float;\n\
 \n\
 uniform sampler2D u_wind;\n\
 uniform vec2 u_wind_min;\n\
 uniform vec2 u_wind_max;\n\
 uniform bool u_flipTexCoordY_windMap;\n\
 uniform bool u_colorScale;\n\
-uniform float u_alpha;\n\
+uniform float u_tailAlpha;\n\
+uniform float u_externAlpha;\n\
 \n\
 varying vec2 v_particle_pos;\n\
 \n\
@@ -83878,13 +84681,13 @@ void main() {\n\
 		}\n\
 		vec3 col3 = getRainbowColor_byHeight(speed_t);\n\
 		float r = speed_t;\n\
-		gl_FragColor = vec4(col3.x, col3.y, col3.z ,u_alpha);\n\
+		gl_FragColor = vec4(col3.x, col3.y, col3.z ,u_tailAlpha*u_externAlpha);\n\
 	}\n\
 	else{\n\
 		float intensity = speed_t*3.0;\n\
 		if(intensity > 1.0)\n\
 			intensity = 1.0;\n\
-		gl_FragColor = vec4(intensity,intensity,intensity,u_alpha);\n\
+		gl_FragColor = vec4(intensity,intensity,intensity,u_tailAlpha*u_externAlpha);\n\
 	}\n\
 }";
 ShaderSource.draw_vert = "precision mediump float;\n\
@@ -83910,25 +84713,52 @@ void main() {\n\
     gl_Position = vec4(2.0 * v_particle_pos.x - 1.0, 1.0 - 2.0 * v_particle_pos.y, 0, 1);\n\
 }\n\
 ";
-ShaderSource.draw_vert3D = "precision mediump float;\n\
+ShaderSource.draw_vert3D = "precision highp float;\n\
 \n\
 // This shader draws windParticles in 3d directly from positions on u_particles image.***\n\
 attribute float a_index;\n\
 \n\
 uniform sampler2D u_particles;\n\
 uniform float u_particles_res;\n\
+uniform mat4 buildingRotMatrix;\n\
 uniform mat4 ModelViewProjectionMatrix;\n\
+uniform mat4 ModelViewProjectionMatrixRelToEye;\n\
+uniform vec3 buildingPosHIGH;\n\
+uniform vec3 buildingPosLOW;\n\
+uniform vec3 encodedCameraPositionMCHigh;\n\
+uniform vec3 encodedCameraPositionMCLow;\n\
 uniform vec3 u_camPosWC;\n\
 uniform vec3 u_geoCoordRadiansMax;\n\
 uniform vec3 u_geoCoordRadiansMin;\n\
 uniform float pendentPointSize;\n\
-uniform float u_alpha;\n\
+uniform float u_tailAlpha;\n\
 uniform float u_layerAltitude;\n\
 \n\
 varying vec2 v_particle_pos;\n\
 \n\
 #define M_PI 3.1415926535897932384626433832795\n\
-vec4 geographicToWorldCoord(float lonRad, float latRad, float alt)\n\
+\n\
+vec2 splitValue(float value)\n\
+{\n\
+	float doubleHigh;\n\
+	vec2 resultSplitValue;\n\
+	if (value >= 0.0) \n\
+	{\n\
+		doubleHigh = floor(value / 65536.0) * 65536.0; //unsigned short max\n\
+		resultSplitValue.x = doubleHigh;\n\
+		resultSplitValue.y = value - doubleHigh;\n\
+	}\n\
+	else \n\
+	{\n\
+		doubleHigh = floor(-value / 65536.0) * 65536.0;\n\
+		resultSplitValue.x = -doubleHigh;\n\
+		resultSplitValue.y = value + doubleHigh;\n\
+	}\n\
+	\n\
+	return resultSplitValue;\n\
+}\n\
+	\n\
+vec3 geographicToWorldCoord(float lonRad, float latRad, float alt)\n\
 {\n\
 	// defined in the LINZ standard LINZS25000 (Standard for New Zealand Geodetic Datum 2000)\n\
 	// https://www.linz.govt.nz/data/geodetic-system/coordinate-conversion/geodetic-datum-conversions/equations-used-datum\n\
@@ -83949,7 +84779,13 @@ vec4 geographicToWorldCoord(float lonRad, float latRad, float alt)\n\
 	float v = a/sqrt(1.0 - e2 * sinLat * sinLat);\n\
 	float h = alt;\n\
 	\n\
-	vec4 resultCartesian = vec4((v+h)*cosLat*cosLon, (v+h)*cosLat*sinLon, (v*(1.0-e2)+h)*sinLat, 1.0);\n\
+	float x = (v+h)*cosLat*cosLon;\n\
+	float y = (v+h)*cosLat*sinLon;\n\
+	float z = (v*(1.0-e2)+h)*sinLat;\n\
+	\n\
+	\n\
+	vec3 resultCartesian = vec3(x, y, z);\n\
+	\n\
 	return resultCartesian;\n\
 }\n\
 \n\
@@ -83976,15 +84812,47 @@ void main() {\n\
 	float latitudeRad = maxLatRad - v_particle_pos.y * latRadRange;\n\
 	\n\
 	// Now, calculate worldPosition of the geographicCoords (lon, lat, alt).***\n\
-	vec4 worldPos = geographicToWorldCoord(longitudeRad, latitudeRad, altitude);\n\
+	//vec3 posWC = geographicToWorldCoord(longitudeRad, latitudeRad, altitude);\n\
+	//vec4 posCC = vec4((posWC - encodedCameraPositionMCHigh) - encodedCameraPositionMCLow, 1.0);\n\
+	\n\
+	// Alternative.\n\
+	\n\
+	vec3 buildingPos = buildingPosHIGH + buildingPosLOW;\n\
+	float radius = length(buildingPos);\n\
+	float xOffset = (v_particle_pos.x - 0.5) * lonRadRange * radius;\n\
+	float yOffset = (0.5 - v_particle_pos.y) * latRadRange * radius;\n\
+	vec4 rotatedPos = buildingRotMatrix * vec4(xOffset, yOffset, 0.0, 1.0);\n\
+	\n\
+	\n\
+	vec4 posWC = vec4((rotatedPos.xyz+buildingPosLOW) +( buildingPosHIGH ), 1.0);\n\
+	vec4 posCC = vec4((rotatedPos.xyz+buildingPosLOW- encodedCameraPositionMCLow) +( buildingPosHIGH- encodedCameraPositionMCHigh), 1.0);\n\
 	\n\
 	// Now calculate the position on camCoord.***\n\
-	gl_Position = ModelViewProjectionMatrix * worldPos;\n\
-	float dist = distance(vec4(u_camPosWC.xyz, 1.0), worldPos);\n\
-	gl_PointSize = (2.0 + pendentPointSize/(dist))*u_alpha; \n\
+	//gl_Position = ModelViewProjectionMatrix * posWC;\n\
+	gl_Position = ModelViewProjectionMatrixRelToEye * posCC;\n\
+	//gl_Position = vec4(2.0 * v_particle_pos.x - 1.0, 1.0 - 2.0 * v_particle_pos.y, 0, 1);\n\
+	//gl_Position = vec4(v_particle_pos.x, v_particle_pos.y, 0, 1);\n\
+	\n\
+	// Now calculate the point size.\n\
+	float dist = distance(vec4(u_camPosWC.xyz, 1.0), vec4(posWC.xyz, 1.0));\n\
+	gl_PointSize = (1.0 + pendentPointSize/(dist))*u_tailAlpha; \n\
+	\n\
 	if(gl_PointSize > 10.0)\n\
 	gl_PointSize = 10.0;\n\
-}";
+}\n\
+\n\
+\n\
+\n\
+\n\
+\n\
+\n\
+\n\
+\n\
+\n\
+\n\
+\n\
+\n\
+";
 ShaderSource.filterSilhouetteFS = "precision mediump float;\n\
 \n\
 uniform sampler2D depthTex;\n\
@@ -84959,52 +85827,112 @@ void main()\n\
 	depth = gl_Position.z*0.5+0.5;\n\
 }\n\
 ";
-ShaderSource.PngImageFS = "precision mediump float;\n\
+ShaderSource.PngImageFS = "precision highp float;\n\
 varying vec2 v_texcoord;\n\
 uniform bool textureFlipYAxis;\n\
 uniform sampler2D u_texture;\n\
+uniform highp int colorType; // 0= oneColor, 1= attribColor, 2= texture.\n\
 \n\
 void main()\n\
 {\n\
     vec4 textureColor;\n\
-    if(textureFlipYAxis)\n\
-    {\n\
-        textureColor = texture2D(u_texture, vec2(v_texcoord.s, 1.0 - v_texcoord.t));\n\
-    }\n\
-    else\n\
-    {\n\
-        textureColor = texture2D(u_texture, v_texcoord);\n\
-    }\n\
-    if(textureColor.w < 0.1)\n\
-    {\n\
-        discard;\n\
-    }\n\
+	if(colorType == 2)\n\
+	{\n\
+		if(textureFlipYAxis)\n\
+		{\n\
+			textureColor = texture2D(u_texture, vec2(v_texcoord.s, 1.0 - v_texcoord.t));\n\
+		}\n\
+		else\n\
+		{\n\
+			textureColor = texture2D(u_texture, v_texcoord);\n\
+		}\n\
+		if(textureColor.w < 0.05)\n\
+		{\n\
+			discard;\n\
+		}\n\
+	}\n\
+	else if( colorType == 0)\n\
+	{\n\
+		textureColor = vec4(1.0, 0.5, 0.5, 0.5);\n\
+	}\n\
 \n\
     gl_FragColor = textureColor;\n\
 }";
-ShaderSource.PngImageVS = "attribute vec3 a_position;\n\
-attribute vec2 a_texcoord;\n\
-uniform mat4 buildingRotMatrix;  \n\
+ShaderSource.PngImageVS = "attribute vec4 position;\n\
+attribute vec2 texCoord;\n\
+uniform mat4 buildingRotMatrix;\n\
+uniform mat4 modelViewMatrixRelToEye;  \n\
 uniform mat4 ModelViewProjectionMatrixRelToEye;  \n\
 uniform vec3 buildingPosHIGH;\n\
 uniform vec3 buildingPosLOW;\n\
 uniform vec3 encodedCameraPositionMCHigh;\n\
 uniform vec3 encodedCameraPositionMCLow;\n\
+//uniform float screenWidth;    \n\
+//uniform float screenHeight;\n\
 varying vec2 v_texcoord;\n\
 \n\
 void main()\n\
 {\n\
-    vec4 position2 = vec4(a_position.xyz, 1.0);\n\
+    vec4 position2 = vec4(position.xyz, 1.0);\n\
     vec4 rotatedPos = buildingRotMatrix * vec4(position2.xyz, 1.0);\n\
     vec3 objPosHigh = buildingPosHIGH;\n\
     vec3 objPosLow = buildingPosLOW.xyz + rotatedPos.xyz;\n\
     vec3 highDifference = objPosHigh.xyz - encodedCameraPositionMCHigh.xyz;\n\
     vec3 lowDifference = objPosLow.xyz - encodedCameraPositionMCLow.xyz;\n\
     vec4 pos4 = vec4(highDifference.xyz + lowDifference.xyz, 1.0);\n\
+	\n\
+	float order_w = position.w;\n\
+	float sense = 1.0;\n\
+	int orderInt = 0;\n\
+	if(order_w > 0.0)\n\
+	{\n\
+		sense = -1.0;\n\
+		if(order_w < 1.5)\n\
+		{\n\
+			orderInt = 1;\n\
+		}\n\
+		else{\n\
+			orderInt = 2;\n\
+		}\n\
+	}\n\
+	else\n\
+	{\n\
+		sense = 1.0;\n\
+		if(order_w > -1.5)\n\
+		{\n\
+			orderInt = -1;\n\
+		}\n\
+		else{\n\
+			orderInt = -2;\n\
+		}\n\
+	}\n\
+	\n\
+    v_texcoord = texCoord;\n\
+	vec4 projected = ModelViewProjectionMatrixRelToEye * pos4;\n\
+	//vec4 projected2 = modelViewMatrixRelToEye * pos4;\n\
+	float thickness = 30.0;\n\
+	vec4 offset;\n\
+	float projectedDepth = projected.w;\n\
+	float offsetQuantity = (thickness*projectedDepth)/1000.0;\n\
+	// Offset our position along the normal\n\
+	if(orderInt == 1)\n\
+	{\n\
+		offset = vec4(-offsetQuantity, 0.0, 0.0, 1.0);\n\
+	}\n\
+	else if(orderInt == -1)\n\
+	{\n\
+		offset = vec4(offsetQuantity, 0.0, 0.0, 1.0);\n\
+	}\n\
+	else if(orderInt == 2)\n\
+	{\n\
+		offset = vec4(-offsetQuantity, offsetQuantity*4.0, 0.0, 1.0);\n\
+	}\n\
+	else if(orderInt == -2)\n\
+	{\n\
+		offset = vec4(offsetQuantity, offsetQuantity*4.0, 0.0, 1.0);\n\
+	}\n\
 \n\
-    v_texcoord = a_texcoord;\n\
-\n\
-    gl_Position = ModelViewProjectionMatrixRelToEye * pos4;\n\
+	gl_Position = projected + offset; \n\
 }\n\
 ";
 ShaderSource.PointCloudDepthFS = "#ifdef GL_ES\n\
@@ -85671,7 +86599,6 @@ void main()\n\
 \n\
     gl_Position = ModelViewProjectionMatrixRelToEye * pos4;\n\
 	vertexPos = (modelViewMatrixRelToEye * pos4).xyz;\n\
-		//vertexPos = objPosHigh + objPosLow;\n\
 }";
 ShaderSource.ScreenQuadFS = "#ifdef GL_ES\n\
     precision highp float;\n\
@@ -85704,14 +86631,6 @@ uniform float fov;\n\
 uniform float tangentOfHalfFovy;\n\
 uniform float aspectRatio;\n\
 varying vec4 vColor; \n\
-\n\
-vec3 getViewRay(vec2 tc)\n\
-{\n\
-    float hfar = 2.0 * tangentOfHalfFovy * far;\n\
-    float wfar = hfar * aspectRatio;    \n\
-    vec3 ray = vec3(wfar * (tc.x - 0.5), hfar * (tc.y - 0.5), -far);    \n\
-    return ray;                      \n\
-}\n\
 \n\
 float unpackDepth(vec4 packedDepth)\n\
 {\n\
@@ -85804,8 +86723,6 @@ void main()\n\
 		float z_window  = unpackDepth(texture2D(depthTex, screenPos.xy)); // z_window  is [0.0, 1.0] range depth.\n\
 		if(z_window < 0.001)\n\
 		discard;\n\
-\n\
-		vec3 ray = getViewRay(screenPos);\n\
 		\n\
 		// https://stackoverflow.com/questions/11277501/how-to-recover-view-space-position-given-view-space-depth-value-and-ndc-xy\n\
 		float depthRange_near = 0.0;\n\
@@ -86109,10 +87026,11 @@ uniform vec4 color;\n\
 void main() {\n\
 	gl_FragColor = color;\n\
 }";
-ShaderSource.thickLineVS = "attribute vec4 prev;\n\
+ShaderSource.thickLineVS = "\n\
+attribute vec4 prev;\n\
 attribute vec4 current;\n\
 attribute vec4 next;\n\
-attribute float order;\n\
+//attribute float order;\n\
 uniform float thickness;\n\
 uniform mat4 buildingRotMatrix;\n\
 uniform mat4 projectionMatrix;\n\
@@ -86124,6 +87042,7 @@ uniform vec3 buildingPosHIGH;\n\
 uniform vec3 buildingPosLOW;\n\
 uniform vec3 encodedCameraPositionMCHigh;\n\
 uniform vec3 encodedCameraPositionMCLow;\n\
+\n\
 \n\
 const float error = 0.001;\n\
 \n\
@@ -86159,7 +87078,7 @@ void main(){\n\
 	vec4 vNext = getPointRelToEye(vec4(next.xyz, 1.0));\n\
 	\n\
 	float order_w = current.w;\n\
-	//float order_w = order;\n\
+	//float order_w = float(order);\n\
 	float sense = 1.0;\n\
 	int orderInt = 0;\n\
 	if(order_w > 0.0)\n\
@@ -86215,7 +87134,21 @@ void main(){\n\
 	// Offset our position along the normal\n\
 	vec4 offset = vec4(normal * direction, 0.0, 1.0);\n\
 	gl_Position = currentProjected + offset; \n\
-}";
+	\n\
+}\n\
+\n\
+\n\
+\n\
+\n\
+\n\
+\n\
+\n\
+\n\
+\n\
+\n\
+\n\
+\n\
+";
 ShaderSource.TinTerrainFS = "#ifdef GL_ES\n\
     precision highp float;\n\
 #endif\n\
@@ -86549,7 +87482,7 @@ vec2 lookup_wind(const vec2 uv) {\n\
     vec2 bl = texture2D(u_wind, vc + vec2(0, px.y)).rg;\n\
     vec2 br = texture2D(u_wind, vc + px).rg;\n\
     return mix(mix(tl, tr, f.x), mix(bl, br, f.x), f.y);\n\
-\n\
+	\n\
 }\n\
 \n\
 bool checkFrustumCulling(vec2 pos)\n\
@@ -86599,12 +87532,12 @@ void main() {\n\
 \n\
     // update particle position, wrapping around the date line\n\
     pos = fract(1.0 + pos + offset);\n\
-	//pos = pos + offset;\n\
+\n\
 \n\
     // drop rate is a chance a particle will restart at random position, to avoid degeneration\n\
 	float drop = 0.0;\n\
 \n\
-	if(u_interpolation < 0.9) // 0.9\n\
+	if(u_interpolation < 0.99) // 0.9\n\
 	{\n\
 		drop = 0.0;\n\
 	}\n\
@@ -89261,6 +90194,41 @@ ManagerUtils.calculatePixelLinearDepth = function(gl, pixelX, pixelY, depthFbo, 
 };
 
 /**
+ * Calculates the pixel linear depth value.
+ * @param {WebGLRenderingContext} gl WebGL Rendering Context.
+ * @param {Number} pixelX Screen x position of the pixel.
+ * @param {Number} pixelY Screen y position of the pixel.
+ * @param {FBO} depthFbo Depth frameBuffer object.
+ * @param {MagoManager} magoManager Mago3D main manager.
+ * @returns {Number} linearDepth Returns the linear depth [0.0, 1.0] ranged value.
+ */
+ManagerUtils.calculatePixelLinearDepthABGR = function(gl, pixelX, pixelY, depthFbo, magoManager) 
+{
+	// Test function.
+	
+	if (depthFbo === undefined)
+	{ depthFbo = magoManager.depthFboNeo; }
+
+	if (!depthFbo) 
+	{
+		return;
+	}
+	
+	if (depthFbo) 
+	{
+		depthFbo.bind(); 
+	}
+	
+	// Now, read the pixel and find the pixel position.
+	var depthPixels = new Uint8Array(4 * 1 * 1); // 4 x 1x1 pixel.
+	gl.readPixels(pixelX, magoManager.sceneState.drawingBufferHeight - pixelY, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, depthPixels);
+	
+	var zDepth = depthPixels[3]/(255.0*255.0*255.0) + depthPixels[2]/(255.0*255.0) + depthPixels[1]/255.0 + depthPixels[0]; // 0 to 256 range depth.
+	var linearDepth = zDepth / 255.0; // LinearDepth. Convert to [0.0, 1.0] range depth.
+	return linearDepth;
+};
+
+/**
  * Calculates the pixel position in camera coordinates.
  * @param {WebGLRenderingContext} gl WebGL Rendering Context.
  * @param {Number} pixelX Screen x position of the pixel.
@@ -89271,6 +90239,59 @@ ManagerUtils.calculatePixelLinearDepth = function(gl, pixelX, pixelY, depthFbo, 
  */
 ManagerUtils.calculatePixelPositionCamCoord = function(gl, pixelX, pixelY, resultPixelPos, depthFbo, frustumNear, frustumFar, magoManager) 
 {
+	/*
+	vec2 screenPos = vec2(gl_FragCoord.x / screenWidth, gl_FragCoord.y / screenHeight);
+		float z_window  = unpackDepth(texture2D(depthTex, screenPos.xy)); // z_window  is [0.0, 1.0] range depth.
+		if(z_window < 0.001)
+		discard;
+	
+		float depthRange_near = 0.0;
+		float depthRange_far = 1.0;
+		float x_ndc = 2.0 * screenPos.x - 1.0;
+		float y_ndc = 2.0 * screenPos.y - 1.0;
+		float z_ndc = (2.0 * z_window - depthRange_near - depthRange_far) / (depthRange_far - depthRange_near);
+		
+		vec4 viewPosH = projectionMatrixInv * vec4(x_ndc, y_ndc, z_ndc, 1.0);
+		vec3 posCC = viewPosH.xyz/viewPosH.w;
+		vec4 posWC = modelViewMatrixRelToEyeInv * vec4(posCC.xyz, 1.0) + vec4((encodedCameraPositionMCHigh + encodedCameraPositionMCLow).xyz, 1.0);
+		*/
+	// New.*** New.*** New.*** New.*** New.*** New.*** New.*** New.*** New.*** New.*** New.*** New.*** New.*** New.*** New.*** New.*** New.*** New.***
+	/*
+	if (depthFbo) 
+	{
+		depthFbo.bind(); 
+	}
+	
+	var sceneState = magoManager.sceneState;
+	var screenW = sceneState.drawingBufferWidth;
+	var screenH = sceneState.drawingBufferHeight;
+
+	// Now, read the pixel and find the pixel position.
+	var depthPixels = new Uint8Array(4 * 1 * 1); // 4 x 1x1 pixel.
+	gl.readPixels(pixelX, screenH - pixelY, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, depthPixels);
+	
+	// Unpack the depthPixels.
+	//var dot(packedDepth, vec4(1.0, 1.0 / 255.0, 1.0 / 65025.0, 1.0 / 16581375.0));
+
+	var zDepth2 = depthPixels[0]/(256.0*256.0*256.0) + depthPixels[1]/(256.0*256.0) + depthPixels[2]/256.0 + depthPixels[3]; 
+	var zDepth = depthPixels[3]/(256.0*256.0*256.0) + depthPixels[2]/(256.0*256.0) + depthPixels[1]/256.0 + depthPixels[0]; 
+	
+	//zDepth /= 256.0;
+	// Calculate NDC coord.
+	var depthRange_near = 0.0;
+	var depthRange_far = 1.0;
+	var screenPos = new Point2D(pixelX/screenW, pixelY/screenH);
+	var xNdc = 2.0 * screenPos.x - 1.0;
+	var yNdc = 2.0 * screenPos.y - 1.0;
+	var zNdc = (2.0 * zDepth - depthRange_near - depthRange_far) / (depthRange_far - depthRange_near);
+	
+	var projectMatInv = sceneState.getProjectionMatrixInv();
+	var viewPosH = projectMatInv.transformPoint4D__test([xNdc, yNdc, zNdc, 1.0], undefined);
+	var viewPosCC = new Point3D(viewPosH[0]/viewPosH[3], viewPosH[1]/viewPosH[3], viewPosH[2]/viewPosH[3]);
+	
+	//********************************************************************************************************************************************
+	// Old.*** Old.*** Old.*** Old.*** Old.*** Old.*** Old.*** Old.*** Old.*** Old.*** Old.*** Old.*** Old.*** Old.*** Old.*** Old.***
+	*/
 	if (frustumFar === undefined)
 	{ frustumFar = magoManager.sceneState.camera.frustum.far; }
 
@@ -91278,6 +92299,7 @@ Promise.prototype.finally = Promise.prototype.finally || {
 	_mago3d['Message'] = Message;
 	_mago3d['MouseAction'] = MouseAction;
 	_mago3d['ObjectMarker'] = ObjectMarker;
+	_mago3d['ObjectMarkerManager'] = ObjectMarkerManager;
 	_mago3d['OcclusionCullingOctree'] = OcclusionCullingOctree;
 	_mago3d['OcclusionCullingOctreeCell'] = OcclusionCullingOctreeCell;
 	_mago3d['Pin'] = Pin;
@@ -91421,6 +92443,7 @@ Promise.prototype.finally = Promise.prototype.finally || {
 	_mago3d['Ellipsoid'] = Ellipsoid;
 	_mago3d['ImageViewerRectangle'] = ImageViewerRectangle;
 	_mago3d['Pipe'] = Pipe;
+	_mago3d['RenderableObject'] = RenderableObject;
 	_mago3d['SkeletalAnimationObject'] = SkeletalAnimationObject;
 	_mago3d['TestFreeContourWallBuilding'] = TestFreeContourWallBuilding;
 	_mago3d['Tube'] = Tube;

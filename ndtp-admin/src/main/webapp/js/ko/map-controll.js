@@ -22,7 +22,7 @@ function MapControll(viewer, option) {
     /**
 	 * 나침반 동작
 	 */
-    /*viewer.scene.postRender.addEventListener(function () {
+    viewer.scene.postRender.addEventListener(function () {
         var camera = this._viewer.camera;
         var angle = Cesium.Math.toDegrees(camera.heading);
         if (angle > 359.9 || angle < .1) {
@@ -43,7 +43,7 @@ function MapControll(viewer, option) {
                 'transform': 'rotate(' + -angle + 'deg)'
             });
         }
-    });*/
+    });
     
 
     function createPoint(worldPosition) {
@@ -78,7 +78,7 @@ function MapControll(viewer, option) {
                     // polyline: {
                     positions: positionData,
                     material: new Cesium.ColorMaterialProperty(Cesium.Color.YELLOW),
-                    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+                    //heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
                     // followSurface: true,
                     // clampToGround : true,
                     width: 3
@@ -92,9 +92,7 @@ function MapControll(viewer, option) {
                     hierarchy: positionData,
                     material: new Cesium.ColorMaterialProperty(Cesium.Color.YELLOW.withAlpha(0.3)),
                     /* height: 0.1, */
-                    outline: true,
-                    outlineColor: Cesium.Color.BLACK,
-                    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+                    //heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
                 }
             });
         }
@@ -261,7 +259,6 @@ function MapControll(viewer, option) {
     
     $('#rotateLeft').click(function(){
     	that._scene.camera.twistLeft(Cesium.Math.toRadians(10));
-    	console.log(Cesium.Math.toDegrees(viewer.camera.heading));
     	var currentHeading = Math.round(Cesium.Math.toDegrees(viewer.camera.heading));
     	if(currentHeading > 180){
     		currentHeading = currentHeading - 360;
@@ -271,7 +268,6 @@ function MapControll(viewer, option) {
     
     $('#rotateRight').click(function(){
     	that._scene.camera.twistRight(Cesium.Math.toRadians(10));
-    	console.log(Cesium.Math.toDegrees(viewer.camera.heading));
     	var currentHeading = Math.round(Cesium.Math.toDegrees(viewer.camera.heading));
     	if(currentHeading > 180){
     		currentHeading = currentHeading - 360;
@@ -318,9 +314,18 @@ function MapControll(viewer, option) {
 		});
     });
     
+    $('#mapCtrlAll').click(function (){
+    	that._scene.camera.flyTo({
+			destination: new Cesium.Cartesian3(-3158185.8634899906, 4713784.056940694, 4516771.367915208), //대략적인 한반도 좌표..
+			duration: parseInt(Mago3D.MagoConfig.getPolicy().initDuration)
+		});
+    });
+    
+    
     // 거리 측정 버튼
 	$('#mapCtrlDistance').click(function() {
 		$(this).toggleClass('on'); // 버튼 색 변경
+		$('#mapCtrlArea').removeClass('on');
 		$(this).trigger('afterClick');
 	});
 
@@ -337,9 +342,8 @@ function MapControll(viewer, option) {
     
     // 	면적 측정 버튼
 	$('#mapCtrlArea').click(function() {
-		alert('기능수정중입니다.');
-		return;
 		$(this).toggleClass('on'); // 버튼 색 변경
+		$('#mapCtrlDistance').removeClass('on');
 		$(this).trigger('afterClick');
 	});
 
@@ -369,6 +373,7 @@ function MapControll(viewer, option) {
             viewer.resolutionScale = targetResolutionScale;
             scene.preRender.removeEventListener(prepareScreenshot);
             // take snapshot after defined timeout to allow scene update (ie. loading data)
+            startLoading();
             setTimeout(function(){
                 scene.postRender.addEventListener(takeScreenshot);
             }, timeout);
@@ -382,6 +387,7 @@ function MapControll(viewer, option) {
                 downloadURI(url, "snapshot-" + moment().format("YYYYMMDDHHmmss") + ".png");
                 // reset resolutionScale
                 viewer.resolutionScale = 1.0;
+                stopLoading();
             });
         }
 
@@ -422,7 +428,7 @@ function MapControll(viewer, option) {
     function startDrawPolyLine() {
         handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
         var dynamicPositions = new Cesium.CallbackProperty(function () {
-            return activeShapePoints;
+            return new Cesium.PolygonHierarchy(activeShapePoints);
         }, false);
         
         handler.setInputAction(function (event) {
@@ -430,9 +436,8 @@ function MapControll(viewer, option) {
             if (Cesium.defined(earthPosition)) {
                 var cartographic = Cesium.Cartographic.fromCartesian(earthPosition);
                 var tempPosition = Cesium.Cartesian3.fromDegrees(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude));
-                console.info(dynamicCenter);
-                console.info(dynamicLabel);
                 activeShapePoints.push(tempPosition);
+                
                 if (activeShapePoints.length === 1) {
                     activeShape = drawShape(dynamicPositions);
                     if (drawingMode === 'polygon') {

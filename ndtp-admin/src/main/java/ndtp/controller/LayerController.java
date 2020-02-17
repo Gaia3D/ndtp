@@ -49,6 +49,9 @@ import ndtp.domain.Key;
 import ndtp.domain.Layer;
 import ndtp.domain.LayerFileInfo;
 import ndtp.domain.LayerGroup;
+import ndtp.domain.LayerInsertType;
+import ndtp.domain.LayerType;
+import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
 import ndtp.domain.Policy;
 import ndtp.domain.RoleKey;
@@ -111,11 +114,11 @@ public class LayerController implements AuthorizationController {
 		}
 
 		Long totalCount = layerService.getLayerTotalCount(layer);
-		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(layer), totalCount, Long.valueOf(pageNo).longValue());
-		log.info("@@ pagination = {}", pagination);
-
+		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, layer),
+				totalCount, Long.valueOf(pageNo).longValue(), layer.getListCounter());
 		layer.setOffset(pagination.getOffset());
 		layer.setLimit(pagination.getPageRows());
+
 		List<Layer> layerList = new ArrayList<>();
 		if(totalCount > 0l) {
 			layerList = layerService.getListLayer(layer);
@@ -129,6 +132,30 @@ public class LayerController implements AuthorizationController {
 		return "/layer/list";
 	}
 
+	@GetMapping(value = "list-geoserver")
+	@ResponseBody
+	public Map<String, Object> geoserverLayerList(HttpServletRequest request) {
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		String geoserverLayerJson = null;
+		try {
+			GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
+			geoserverLayerJson = layerService.getListGeoserverLayer(geoPolicy);
+		} catch (Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		result.put("geoserverLayerJson", geoserverLayerJson);
+		return result;
+	}
     /**
      * layer 등록
      * @param model
@@ -141,7 +168,7 @@ public class LayerController implements AuthorizationController {
 
     	Policy policy = policyService.getPolicy();
     	List<LayerGroup> layerGroupList = layerGroupService.getListLayerGroup();
-
+    	
     	model.addAttribute("policy", policy);
     	model.addAttribute("layer", new Layer());
     	model.addAttribute("layerGroupList", layerGroupList);
@@ -162,22 +189,71 @@ public class LayerController implements AuthorizationController {
         Policy policy = policyService.getPolicy();
         Layer layer = layerService.getLayer(layerId);
         List<LayerGroup> layerGroupList = layerGroupService.getListLayerGroup();
-
-        List<LayerFileInfo> layerFileInfoList = layerFileInfoService.getListLayerFileInfo(layerId);
-        LayerFileInfo layerFileInfo = new LayerFileInfo();
-        for(int i = 0; i < layerFileInfoList.size(); i++) {
-            if(layerFileInfoList.get(i).getFileExt().equals("shp")) {
-                layerFileInfo = layerFileInfoList.get(i);
-            }
-        }
+        
         model.addAttribute("policy", policy);
         model.addAttribute("layer", layer);
         model.addAttribute("layerGroupList", layerGroupList);
-        model.addAttribute("layerFileInfo", layerFileInfo);
-        model.addAttribute("layerFileInfoList", layerFileInfoList);
-        model.addAttribute("layerFileInfoListSize", layerFileInfoList.size());
+        
+        // 파일업로드로 레이어를 등록한 경우
+        if(LayerInsertType.UPLOAD == LayerInsertType.valueOf(layer.getLayerInsertType().toUpperCase())) {
+        	List<LayerFileInfo> layerFileInfoList = layerFileInfoService.getListLayerFileInfo(layerId);
+            LayerFileInfo layerFileInfo = new LayerFileInfo();
+            for(int i = 0; i < layerFileInfoList.size(); i++) {
+                if(ShapeFileExt.SHP == ShapeFileExt.valueOf(layerFileInfoList.get(i).getFileExt().toUpperCase())) {
+                    layerFileInfo = layerFileInfoList.get(i);
+                }
+            }
+            model.addAttribute("layerFileInfo", layerFileInfo);
+            model.addAttribute("layerFileInfoList", layerFileInfoList);
+            model.addAttribute("layerFileInfoListSize", layerFileInfoList.size());
+            
+            return "/layer/modify-upload";
+        } else { //geoserver 레이어를 등록한 경우 
+        	return "/layer/modify-geoserver";
+        }
+    }
+    
+    /**
+     * geoserver 레이어를 서비스 레이어로 등록 
+     * @param request
+     * @param layer
+     * @return
+     */
+    @PostMapping(value ="insert-geoserver")
+    @ResponseBody
+    public Map<String, Object> insertGeoserverLayer(HttpServletRequest request, Layer layer) {
+    	Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		try {
+			Boolean layerKeyDuplication = layerService.isLayerKeyDuplication(layer.getLayerKey());
+			if(layerKeyDuplication) {
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "layer.key.duplication");
+				return result;
+			}
+			UserSession userSession = (UserSession) request.getSession().getAttribute(Key.USER_SESSION.name());
+			String userId = userSession.getUserId();
+			layer.setUserId(userId);
+			List<LayerFileInfo> layerFileInfoList = new ArrayList<>();
+			layerService.insertLayer(layer, layerFileInfoList);
+			String layerType = layer.getLayerType();
+			// 레이어 타입이 vector일 경우에만 스타일 설정 
+			if(LayerType.VECTOR == LayerType.valueOf(layerType.toUpperCase())) {
+				layerService.updateLayerStyle(layer);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
 
-        return "/layer/modify";
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
     }
 
 	/**
@@ -196,12 +272,19 @@ public class LayerController implements AuthorizationController {
 		String errorCode = null;
 		String message = null;
 		boolean isLayerFileInfoExist = false;
+		Map<String, Object> updateLayerMap = new HashMap<>();
 
 		try {
 			errorCode = layerValidate(request);
 			if (!StringUtils.isEmpty(errorCode)) {
 				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
 				result.put("errorCode", errorCode);
+				return result;
+			}
+			Boolean layerKeyDuplication = layerService.isLayerKeyDuplication(request.getParameter("layerKey"));
+			if(layerKeyDuplication) {
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "layer.key.duplication");
 				return result;
 			}
 
@@ -223,6 +306,7 @@ public class LayerController implements AuthorizationController {
 							.layerKey(request.getParameter("layerKey"))
 							.serviceType(request.getParameter("serviceType"))
 							.layerType(request.getParameter("layerType"))
+							.layerInsertType(request.getParameter("layerInsertType"))
 							.geometryType(request.getParameter("geometryType"))
 							.layerLineColor(request.getParameter("layerLineColor"))
 							.layerLineStyle(Float.valueOf(request.getParameter("layerLineStyle")))
@@ -234,6 +318,7 @@ public class LayerController implements AuthorizationController {
 							.coordinate(request.getParameter("coordinate"))
 							.description(request.getParameter("description"))
 							.zIndex(Integer.valueOf(request.getParameter("zIndex")))
+							.cacheAvailable(Boolean.valueOf(request.getParameter("cacheAvailable")))
 							.userId(userId)
 							.build();
 			log.info("@@ layer = {}", layer);
@@ -336,7 +421,7 @@ public class LayerController implements AuthorizationController {
 				return result;
 			}
 			// 3. 레이어 기본 정보 및 레이어 이력 정보 등록
-			Map<String, Object> updateLayerMap = layerService.insertLayer(layer, layerFileInfoList);
+			updateLayerMap = layerService.insertLayer(layer, layerFileInfoList);
 			if (!layerFileInfoList.isEmpty()) {
 				// 4. org2ogr 실행
 				layerService.insertOgr2Ogr(layer, isLayerFileInfoExist, (String) updateLayerMap.get("shapeFileName"),
@@ -351,11 +436,20 @@ public class LayerController implements AuthorizationController {
 				layerFileInfoService.updateOgr2OgrDataFileVersion(orgMap);
 				// 6. geoserver에 신규 등록일 경우 등록, 아닐경우 통과
 				layerService.registerLayer(geoPolicy, layer.getLayerKey());
-				layerService.updateLayerStyle(layer);
+				String layerType = layer.getLayerType();
+				// 레이어 타입이 vector일 경우에만 스타일 설정 
+				if(LayerType.VECTOR == LayerType.valueOf(layerType.toUpperCase())) {
+					layerService.updateLayerStyle(layer);
+				}
 			}
 
 			statusCode = HttpStatus.OK.value();
 		} catch (Exception e) {
+			// ogr2ogr2 실행하다가 에러날경우 이미 들어간 레이어, 레이러 파일정보 삭제 
+			Integer layerId = (Integer) updateLayerMap.get("layerId");
+			Integer layerFileInfoGroupId = (Integer) updateLayerMap.get("layerFileInfoGroupId");
+			layerService.deleteLayer(layerId);
+			layerFileInfoService.deleteLayerFileInfoByGroupId(layerFileInfoGroupId);
 			e.printStackTrace();
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "db.exception";
@@ -367,7 +461,37 @@ public class LayerController implements AuthorizationController {
 		result.put("message", message);
 		return result;
 	}
+	
+	@PostMapping(value = "update-geoserver")
+	@ResponseBody
+	public Map<String, Object> updateGeoserverLayer(HttpServletRequest request, Layer layer) {
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		try {
+			UserSession userSession = (UserSession) request.getSession().getAttribute(Key.USER_SESSION.name());
+			String userId = userSession.getUserId();
+			layer.setUserId(userId);
+			List<LayerFileInfo> layerFileInfoList = new ArrayList<>();
+			layerService.updateLayer(layer, false, layerFileInfoList);
+			String layerType = layer.getLayerType();
+			// 레이어 타입이 vector일 경우에만 스타일 설정 
+			if(LayerType.VECTOR == LayerType.valueOf(layerType.toUpperCase())) {
+				layerService.updateLayerStyle(layer);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
 
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
+	}
     /**
     * shape 파일 변환
     * TODO dropzone 이 파일 갯수만큼 form data를 전송해 버려서 command 패턴을(Layer layer) 사용할 수 없음
@@ -529,6 +653,7 @@ public class LayerController implements AuthorizationController {
 			layer.setCoordinate(request.getParameter("coordinate"));
 			layer.setDescription(request.getParameter("description"));
 			layer.setZIndex(Integer.valueOf(request.getParameter("zIndex")));
+			layer.setCacheAvailable(Boolean.valueOf(request.getParameter("cacheAvailable")));
 			layer.setUserId(userId);
 
             // TODO geoserver 에서 postgresql 로 hang 걸리는게 있어서 우선 이럻게 처리 함. 추후 개선 예정
@@ -559,8 +684,11 @@ public class LayerController implements AuthorizationController {
                 // 6. geoserver에 신규 등록일 경우 등록, 아닐경우 통과
                 layerService.registerLayer(geoPolicy, layer.getLayerKey());
             }
-
-            layerService.updateLayerStyle(layer);
+            String layerType = layer.getLayerType();
+			// 레이어 타입이 vector일 경우에만 스타일 설정 
+			if(LayerType.VECTOR == LayerType.valueOf(layerType.toUpperCase())) {
+				layerService.updateLayerStyle(layer);
+			}
 
             statusCode = HttpStatus.OK.value();
         } catch(Exception e) {
@@ -778,20 +906,21 @@ public class LayerController implements AuthorizationController {
         }
 
         String policyJson = "";
-
+        String layerJson = "";
         try {
             policyJson = objectMapper.writeValueAsString(policy);
+            layerJson = objectMapper.writeValueAsString(layer);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         model.addAttribute("policyJson", policyJson);
-        model.addAttribute("layer", layer);
+        model.addAttribute("layerJson", layerJson);
         model.addAttribute("versionId", versionId);
 
         return "/layer/popup-map";
     }
-
+    
     private String replaceInvalidValue(String value) {
         if("null".equals(value)) value = null;
         return value;
@@ -1040,10 +1169,11 @@ public class LayerController implements AuthorizationController {
 
     /**
 	 * 검색 조건
-	 * @param search
+	 * @param pageType
+	 * @param layer
 	 * @return
 	 */
-	private String getSearchParameters(Layer layer) {
+	private String getSearchParameters(PageType pageType, Layer layer) {
 		return layer.getParameters();
 	}
 }

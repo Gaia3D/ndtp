@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
-import ndtp.domain.DataInfoAdjustLog;
+import ndtp.domain.DataAdjustLog;
 import ndtp.service.DataAdjustLogService;
 
 /**
@@ -31,14 +31,14 @@ public class DataAdjustLogRestController {
 	private DataAdjustLogService dataAdjustLogService;
 	
 	/**
-	 * Data Info Log 상태 수정
+	 * 데이터 위치 변경 요청 수정
 	 * @param request
-	 * @param dataInfoAdjustLog
+	 * @param dataAdjustLog
 	 * @return
 	 */
 	@PostMapping(value = "/status/{dataAdjustLogId}")
-	public Map<String, Object> update(HttpServletRequest request, @Valid DataInfoAdjustLog dataInfoAdjustLog, Errors errors) {
-		log.info("@@ dataInfoAdjustLog = {}", dataInfoAdjustLog);
+	public Map<String, Object> update(HttpServletRequest request, @Valid DataAdjustLog dataAdjustLog, Errors errors) {
+		log.info("@@ dataAdjustLog = {}", dataAdjustLog);
 		
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
@@ -56,7 +56,7 @@ public class DataAdjustLogRestController {
 				return result;
             }
 			
-			dataAdjustLogService.updateDataAdjustLogStatus(dataInfoAdjustLog);
+			dataAdjustLogService.updateDataAdjustLogStatus(dataAdjustLog);
 			// TODO cache 갱신 되어야 함
 		} catch(Exception e) {
 			e.printStackTrace();

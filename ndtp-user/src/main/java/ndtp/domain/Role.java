@@ -1,10 +1,10 @@
 package ndtp.domain;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 import javax.validation.constraints.NotBlank;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -49,15 +49,8 @@ public class Role extends Search {
 	private String defaultYn;
 	// 설명
 	private String description;
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
-	private LocalDateTime insertDate;
 	
-//	public String getViewInsertDate() {
-//		if(getInsertDate() == null) {
-//			return "";
-//		}
-//		
-//		String tempDate = FormatUtil.getViewDateyyyyMMddHHmmss(getInsertDate());
-//		return tempDate.substring(0, 19);
-//	}
+	// 등록일
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Timestamp insertDate;
 }

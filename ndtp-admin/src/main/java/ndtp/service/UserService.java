@@ -61,6 +61,13 @@ public interface UserService {
 	 * @return
 	 */
 	List<String> updateUserStatus(String statusValue, String checkIds);
+	
+	/**
+	 * 사용자 비밀번호 수정
+	 * @param userInfo
+	 * @return
+	 */
+	int updatePassword(UserInfo userInfo);
 
 	/**
 	 * 사용자 삭제

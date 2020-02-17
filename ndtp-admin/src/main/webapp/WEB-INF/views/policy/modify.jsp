@@ -30,7 +30,7 @@
 							<ul>
 								<li><a href="#userTab">사용자</a></li>
 								<li><a href="#passwordTab">비밀번호</a></li>
-								<li><a href="#noticeTab">알림</a></li>
+								<!-- <li><a href="#noticeTab">알림</a></li> -->
 								<li><a href="#securityTab">보안</a></li>
 								<li><a href="#contentTab">컨텐트</a></li>
 								<li><a href="#uploadTab">사용자 업로딩 파일</a></li>
@@ -39,7 +39,7 @@
 							<spring:message var="use" code='use'/>
 							<%@ include file="/WEB-INF/views/policy/modify-user.jsp" %>
 							<%@ include file="/WEB-INF/views/policy/modify-password.jsp" %>
-							<%@ include file="/WEB-INF/views/policy/modify-notice.jsp" %>
+							<%-- <%@ include file="/WEB-INF/views/policy/modify-notice.jsp" %> --%>
 							<%@ include file="/WEB-INF/views/policy/modify-security.jsp" %>
 							<%@ include file="/WEB-INF/views/policy/modify-content.jsp" %>
 							<%@ include file="/WEB-INF/views/policy/modify-upload.jsp" %>

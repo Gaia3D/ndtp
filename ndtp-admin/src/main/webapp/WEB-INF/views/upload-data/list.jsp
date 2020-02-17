@@ -18,7 +18,7 @@
 	<%@ include file="/WEB-INF/views/layouts/header.jsp" %>
 	<%@ include file="/WEB-INF/views/layouts/menu.jsp" %>
 	<div class="site-body">
-		<div class="container">e
+		<div class="container">
 			<div class="site-content">
 				<%@ include file="/WEB-INF/views/layouts/sub_menu.jsp" %>
 				<div class="page-area">
@@ -41,16 +41,16 @@
 									</div>
 									<div class="input-set">
 										<label for="startDate"><spring:message code='search.date'/></label>
-										<input type="text" id="startDate" name="startDate" class="s date" />
+										<input type="text" id="startDate" name="startDate" class="s date" autocomplete="off" />
 										<span class="delimeter tilde">~</span>
-										<input type="text" id="endDate" name="endDate" class="s date" />
+										<input type="text" id="endDate" name="endDate" class="s date" autocomplete="off" />
 									</div>
 									<div class="input-set">
 										<label for="orderWord"><spring:message code='search.order'/></label>
 										<select id="orderWord" name="orderWord" class="selectBoxClass">
 											<option value=""> <spring:message code='search.basic'/> </option>
 											<option value="data_name">데이터명</option>
-											<option value="insertDate"> <spring:message code='search.insert.date'/> </option>
+											<option value="insert_date"> <spring:message code='search.insert.date'/> </option>
 										</select>
 										<select id="orderValue" name="orderValue" class="selectBoxClass">
 					                		<option value=""> <spring:message code='search.basic'/> </option>

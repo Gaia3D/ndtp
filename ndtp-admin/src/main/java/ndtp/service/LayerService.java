@@ -21,6 +21,12 @@ public interface LayerService {
     * @return
     */
     List<Layer> getListLayer(Layer layer);
+    
+    /**
+     * geoserver에 등록된 레이어 목록 조회 
+     * @return
+     */
+    String getListGeoserverLayer(GeoPolicy geoPolicy);
 
     /**
     * layer 정보 취득
@@ -28,6 +34,13 @@ public interface LayerService {
     * @return
     */
     Layer getLayer(Integer layerId);
+    
+    /**
+     * layerKey 중복 체크 
+     * @param layerKey
+     * @return
+     */
+    Boolean isLayerKeyDuplication(String layerKey);
     
     /**
     * 레이어 테이블의 컬럼 타입이 어떤 geometry 타입인지를 구함

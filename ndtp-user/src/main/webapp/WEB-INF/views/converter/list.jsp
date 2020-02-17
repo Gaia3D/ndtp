@@ -32,12 +32,13 @@
 		<div style="padding: 20px 20px 0px 10px; font-size: 18px;">3D 업로딩 데이터 자동 변환</div>
 		<div class="tabs" >
 			<ul class="tab">
-				<li onclick="location.href='/data-group/list'">데이터 그룹</li>
-				<li onclick="location.href='/data-group/input'">데이터 그룹 등록</li>
-				<li onclick="location.href='/upload-data/input'">업로딩 데이터</li>
-			   	<li onclick="location.href='/upload-data/list'">업로딩 데이터 목록</li>
-			  	<li onclick="location.href='/converter/list'" class="on">업로딩 데이터 변환 목록</li>
-			  	<li onclick="location.href='/data/list'">데이터 목록</li>
+				<li id="tabDataGroupList"><a href="/data-group/list">데이터 그룹</a></li>
+				<li id="tabDataGroupInput"><a href="/data-group/input">데이터 그룹 등록</a></li>
+				<li id="tabUploadDataInput"><a href="/upload-data/input">업로딩 데이터</a></li>
+			   	<li id="tabUploadDataList"><a href="/upload-data/list">업로딩 데이터 목록</a></li>
+			  	<li id="tabConverterList"><a href="/converter/list">업로딩 데이터 변환 목록</a></li>
+			  	<li id="tabDataList"><a href="/data/list">데이터 목록</a></li>
+			  	<li id="tabDataLogList"><a href="/data-log/list">데이터 변경 이력</a></li>
 			</ul>
 		</div>
 		<div class="filters">
@@ -57,9 +58,9 @@
 				</div>
 				<div class="input-set">
 					<label for="startDate"><spring:message code='search.date'/></label>
-					<input type="text" class="s date" id="startDate" name="startDate" />
+					<input type="text" class="s date" id="startDate" name="startDate" autocomplete="off" />
 					<span class="delimeter tilde">~</span>
-					<input type="text" class="s date" id="endDate" name="endDate" />
+					<input type="text" class="s date" id="endDate" name="endDate" autocomplete="off" />
 				</div>
 				<div class="input-set">
 					<label for="orderWord"><spring:message code='search.order'/></label>
@@ -91,7 +92,7 @@
 				<input type="hidden" id="checkIds" name="checkIds" value="" />
 			<div class="list-header row">
 				<div class="list-desc u-pull-left">
-					<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/> 
+					<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/>, 
 					<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/>
 				</div>
 			</div>

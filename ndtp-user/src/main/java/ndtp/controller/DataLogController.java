@@ -76,14 +76,15 @@ public class DataLogController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "list-data-log")
-	public String listDataLog(Locale locale, HttpServletRequest request, DataInfoLog dataInfoLog, @RequestParam(defaultValue="1") String pageNo, Model model) {
+	@GetMapping(value = "/list")
+	public String list(Locale locale, HttpServletRequest request, DataInfoLog dataInfoLog, @RequestParam(defaultValue="1") String pageNo, Model model) {
 		
 		log.info("@@ dataInfoLog = {}", dataInfoLog);
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		
 		DataGroup dataGroup = new DataGroup();
 		dataGroup.setUserId(userSession.getUserId());
+		dataInfoLog.setUserId(userSession.getUserId());
 		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup(dataGroup);
 		
 		if(!StringUtils.isEmpty(dataInfoLog.getStartDate())) {
@@ -108,10 +109,13 @@ public class DataLogController {
 			dataInfoLogList = dataLogService.getListDataInfoLog(dataInfoLog);
 		}
 		
+		// TODO 다국어 지원 시 변경 필요
+		dataInfoLogList.stream().forEach(DataInfoLog::convertDto);
+		
 		model.addAttribute(pagination);
 		model.addAttribute("dataGroupList", dataGroupList);
 		model.addAttribute("dataInfoLogList", dataInfoLogList);
-		return "/data/list-data-log";
+		return "/data-log/list";
 	}
 	
 	/**

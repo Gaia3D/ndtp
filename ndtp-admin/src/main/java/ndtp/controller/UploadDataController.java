@@ -109,37 +109,36 @@ public class UploadDataController {
 	@GetMapping(value = "/list")
 	public String list(HttpServletRequest request, UploadData uploadData, @RequestParam(defaultValue="1") String pageNo, Model model) {
 		log.info("@@ uploadData = {}", uploadData);
-		
+
 //		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 //		uploadData.setUserId(userSession.getUserId());
-		
+
 		if(!StringUtils.isEmpty(uploadData.getStartDate())) {
 			uploadData.setStartDate(uploadData.getStartDate().substring(0, 8) + DateUtils.START_TIME);
 		}
 		if(!StringUtils.isEmpty(uploadData.getEndDate())) {
 			uploadData.setEndDate(uploadData.getEndDate().substring(0, 8) + DateUtils.END_TIME);
 		}
-		
+
 		long totalCount = uploadDataService.getUploadDataTotalCount(uploadData);
-		
-		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, uploadData), totalCount, Long.valueOf(pageNo).longValue());
-		log.info("@@ pagination = {}", pagination);
-		
+		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, uploadData),
+				totalCount, Long.valueOf(pageNo).longValue(), uploadData.getListCounter());
 		uploadData.setOffset(pagination.getOffset());
 		uploadData.setLimit(pagination.getPageRows());
+
 		List<UploadData> uploadDataList = new ArrayList<>();
 		if(totalCount > 0l) {
 			uploadDataList = uploadDataService.getListUploadData(uploadData);
 		}
-		
+
 		model.addAttribute(pagination);
 		model.addAttribute("uploadData", uploadData);
 		model.addAttribute("converterJobForm", new ConverterJob());
 		model.addAttribute("uploadDataList", uploadDataList);
-		
+
 		return "/upload-data/list";
 	}
-	
+
 	/**
 	 * 데이터 upload 수정
 	 * @param model

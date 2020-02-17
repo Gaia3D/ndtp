@@ -17,6 +17,8 @@
 	<link rel="stylesheet" href="/externlib/kotSlider/range.css" />
 	<link rel="stylesheet" href="/externlib/tuidatepicker-4.0.3/tui-date-picker.min.css" />
 	<link rel="stylesheet" href="/css/${lang}/user-style.css" />
+	<link rel="stylesheet" href="/externlib/json-viewer/json-viewer.css" />
+	<link rel="stylesheet" href="/externlib/css-toggle-switch/toggle-switch.css" />
 	<style type="text/css">
 	    .mapWrap {
 	    	float:right;
@@ -27,10 +29,12 @@
 		.ctrlWrap {
 			z-index:100;
 		}
+		/* 
 		.ctrlWrap div.zoom button, .ctrlWrap div.rotate button  {
 			width:47px;
 			height:47px;
 		}
+		*/
     </style>
 </head>
 <body>
@@ -70,15 +74,15 @@
 			<div id="simulationContent" class="contents yScroll fullHeight" style="display:none;">
 				<%@ include file="/WEB-INF/views/simulation/simulation.jsp" %>
 			</div>
-			<div id="civilVoiceContent" class="yScroll" style="display:none;">
+			<div id="civilVoiceContent" class="contents yScroll fullHeight" style="display:none;">
 				<%@ include file="/WEB-INF/views/civil-voice/list.jsp" %>
 			</div>
 
-			<div id="layerContent" class="contents fullHeight" style="display:none;">
+			<div id="layerContent" class="contents yScroll fullHeight" style="display:none;">
 				<%@ include file="/WEB-INF/views/layer/list.jsp" %>
 			</div>
 
-			<div id="userPolicyContent" class="contents" style="display:none;">
+			<div id="userPolicyContent" class="contents yScroll fullHeight" style="display:none;">
 				<%@ include file="/WEB-INF/views/user-policy/modify.jsp" %>
 			</div>
 			<!-- E: CONTENTS -->
@@ -121,11 +125,16 @@
 <!-- E: WRAP -->
 
 <%@ include file="/WEB-INF/views/data/data-dialog.jsp" %>
+<%@ include file="/WEB-INF/views/data/data-group-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/map-data-template.jsp" %>
 <%@ include file="/WEB-INF/views/data/map-data-group-template.jsp" %>
+<%@ include file="/WEB-INF/views/data/data-attribute-dialog.jsp" %>
+<%@ include file="/WEB-INF/views/data/data-object-attribute-dialog.jsp" %>
+<%@ include file="/WEB-INF/views/issue/issue-dialog.jsp" %>
 
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/externlib/json-viewer/json-viewer.js"></script>
 <script type="text/javascript" src="/externlib/handlebars-4.1.2/handlebars.js"></script>
 <script type="text/javascript" src="/js/${lang}/handlebarsHelper.js"></script>
 <script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>
@@ -208,6 +217,10 @@
 		/* magoManager.on(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
 			console.info(result);
 		}); */
+		
+		// mago3d logo 추가
+		Mago3D.tempCredit(viewer);
+		
 		//우측 상단 지도 컨트롤러
 		MapControll(viewer);
 		//공간분석 기능 수행
@@ -220,6 +233,8 @@
         Simulation(magoInstance);
         // 환경 설정.
         UserPolicy(magoInstance);
+        // 시민참여
+        CivilVoice(magoInstance);
         // 기본 레이어 랜더링
         setTimeout(function(){
         	initLayer(magoInstance, NDTP.baseLayers);
@@ -314,7 +329,7 @@
 	var dataInfoDialog = $( "#dataInfoDialog" ).dialog({
 		autoOpen: false,
 		width: 500,
-		height: 700,
+		height: 720,
 		modal: true,
 		overflow : "auto",
 		resizable: false
@@ -490,6 +505,187 @@
 		} else {
 			alert(JS_MESSAGE["button.dobule.click"]);
 			return;
+		}
+	}
+	
+	// 데이터 속성 다이얼 로그
+	var dataAttributeDialog = $( "#dataAttributeDialog" ).dialog({
+		autoOpen: false,
+		width: 600,
+		height: 350,
+		modal: true,
+		resizable: false
+	});
+	
+	// 데이터 속성
+	function detailDataAttribute(dataId, dataName) {
+		//jQuery('#id').css("display", "block");   
+		dataAttributeDialog.dialog( "open" );
+		$("#dataNameForAttribute").html(dataName);
+
+		$.ajax({
+			url: "/datas/attributes/" + dataId,
+			type: "GET",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			dataType: "json",
+			success: function(msg){
+				if(msg.statusCode <= 200) {
+					if(msg.dataAttribute !== null) {
+						//$("#dataAttributeForOrigin").html(msg.dataAttribute.attributes);
+						$("#dataAttributeViewer").html("");
+						var jsonViewer = new JSONViewer();
+						document.querySelector("#dataAttributeViewer").appendChild(jsonViewer.getContainer());
+						jsonViewer.showJSON(JSON.parse(msg.dataAttribute.attributes), -1, -1);
+					}
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+				}
+			},
+			error:function(request,status,error){
+				alert(JS_MESSAGE["ajax.error.message"]);
+			}
+		});
+	}
+	
+	// 데이터 Object 속성 다이얼 로그
+	var dataObjectAttributeDialog = $( "#dataObjectAttributeDialog" ).dialog({
+		autoOpen: false,
+		width: 800,
+		height: 550,
+		modal: true,
+		resizable: false
+	});
+	
+	// 데이터 Object 속성
+	function detailDataObjectAttribute(dataId, dataName) {
+		dataObjectAttributeDialog.dialog( "open" );
+		$("#dataNameForObjectAttribute").html(dataName);
+
+		$.ajax({
+			url: "/datas/object/attributes/" + dataId,
+			type: "GET",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			dataType: "json",
+			success: function(msg){
+				if(msg.statusCode <= 200) {
+					if(msg.dataObjectAttribute !== null) {
+						//$("#dataObjectAttributeForOrigin").html(msg.dataObjectAttribute.attributes);
+						$("#dataObjectAttributeViewer").html("");
+						var jsonViewer = new JSONViewer();
+						document.querySelector("#dataObjectAttributeViewer").appendChild(jsonViewer.getContainer());
+						jsonViewer.showJSON(JSON.parse(msg.dataObjectAttribute.attributes), -1, -1);
+					}
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+				}
+			},
+			error:function(request,status,error){
+				alert(JS_MESSAGE["ajax.error.message"]);
+			}
+		});
+	}
+	
+	// 데이터 그룹 다이얼로그
+	var dataGroupDialog = $( "#dataGroupDialog" ).dialog({
+		autoOpen: false,
+		width: 500,
+		height: 620,
+		modal: true,
+		overflow : "auto",
+		resizable: false
+	});
+
+	// 데이터 그룹 상세 정보 조회
+	function detailDataGroup(dataGroupId) {
+		dataGroupDialog.dialog( "open" );
+		$.ajax({
+			url: "/data-groups/" + dataGroupId,
+			type: "GET",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			dataType: "json",
+			success: function(msg){
+				if(msg.statusCode <= 200) {
+					dataGroupDialog.dialog( "option", "title", msg.dataGroup.dataGroupName + " 상세 정보");
+
+					var source = $("#templateDataGroup").html();
+				    var template = Handlebars.compile(source);
+				    var dataGroupHtml = template(msg.dataGroup);
+
+				    $("#dataGroupDialog").html("");
+	                $("#dataGroupDialog").append(dataGroupHtml);
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+				}
+			},
+			error:function(request,status,error){
+				alert(JS_MESSAGE["ajax.error.message"]);
+			}
+		});
+	}
+	
+	// 이슈 등록 버튼 클릭
+	$("#issueButton").click(function() {
+		issueDialog.dialog( "open" );
+	});
+	// 이슈 다이얼 로그
+	var issueDialog = $( "#issueDialog" ).dialog({
+		autoOpen: false,
+		width: 500,
+		height: 500,
+		modal: true,
+		overflow : "auto",
+		resizable: false
+	});
+	
+	// 이슈 등록
+	var insertIssueFlag = true;
+	function insertIssue() {
+		if (validate() == false) {
+			return false;
+		}
+		if(insertIssueFlag) {
+			insertIssueFlag = false;
+			$.ajax({
+				url: "/issues",
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+				data: { "dataId" : $("#issueDataId").val(), "dataGroupId" : $("#issueDataGroupId").val(),
+					"dataKey" : $("#issueDataKey").val(), "dataGroupName" : $("#issueDataGroupName").val(), "objectKey" : $("#issueObjectKey").val(),
+					"longitude" : $("#issueLongitude").val(), "latitude" : $("#issueLatitude").val(), "altitude" : $("#issueAltitude").val(),
+					"title" : $("#issueTitle").val(), "contents" : $("#issueContents").val()
+				},
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert(JS_MESSAGE["insert"]);
+						insertIssueFlag = true;
+						issueDialog.close();
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
+					insertIssueFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        insertIssueFlag = true;
+				}
+			});
+		} else {
+			alert(JS_MESSAGE["button.dobule.click"]);
+			return;
+		}
+	}
+	
+	function validate() {
+		if ($("#issueTitle").val() === "") {
+			alert("제목을 입력하여 주십시오.");
+			$("#issueTitle").focus();
+			return false;
+		}
+		if ($("#issueContents").val() === "") {
+			alert("내용을 입력하여 주십시오.");
+			$("#issueContents").focus();
+			return false;
 		}
 	}
 </script>

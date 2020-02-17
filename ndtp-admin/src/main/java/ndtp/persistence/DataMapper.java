@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
-import ndtp.domain.DataInfoAttribute;
+import ndtp.domain.FileInfo;
 
 /**
  * Data
@@ -91,7 +91,7 @@ public interface DataMapper {
 //	 * @param dataId
 //	 * @return
 //	 */
-//	DataInfoAttribute getDataAttribute(Long dataId);
+//	DataAttribute getDataAttribute(Long dataId);
 //	
 //	/**
 //	 * Data Object Attribute 정보 취득
@@ -120,7 +120,7 @@ public interface DataMapper {
 //	 * @param data_key
 //	 * @return
 //	 */
-//	DataInfoAttribute getDataIdAndDataAttributeIDByDataKey(String data_key);
+//	DataAttribute getDataIdAndDataAttributeIDByDataKey(String data_key);
 //	
 //	/**
 //	 * Data Object 조회
@@ -136,12 +136,19 @@ public interface DataMapper {
 	 */
 	int insertData(DataInfo dataInfo);
 	
+	/**
+	 * 데이터 속성 파일 정보 등록
+	 * @param fileInfo
+	 * @return
+	 */
+	int insertDataAttributeFileInfo(FileInfo fileInfo);
+	
 //	/**
 //	 * Data 속성 등록
-//	 * @param dataInfoAttribute
+//	 * @param dataAttribute
 //	 * @return
 //	 */
-//	int insertDataAttribute(DataInfoAttribute dataInfoAttribute);
+//	int insertDataAttribute(DataAttribute dataAttribute);
 //	
 //	/**
 //	 * Data Object 속성 등록
@@ -159,10 +166,10 @@ public interface DataMapper {
 	
 //	/**
 //	 * Data 속성 수정
-//	 * @param dataInfoAttribute
+//	 * @param dataAttribute
 //	 * @return
 //	 */
-//	int updateDataAttribute(DataInfoAttribute dataInfoAttribute);
+//	int updateDataAttribute(DataAttribute dataAttribute);
 //	
 	/**
 	 * Data 테이블의 Data 그룹 정보 변경

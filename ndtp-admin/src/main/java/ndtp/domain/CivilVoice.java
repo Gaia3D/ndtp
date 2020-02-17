@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -27,14 +28,22 @@ import lombok.ToString;
 @AllArgsConstructor
 public class CivilVoice extends Search implements Serializable {
 
-    /**
-	 *
-	 */
 	private static final long serialVersionUID = -7636814381604940705L;
 
 	/******** 화면 오류 표시용 ********/
 	private String messageCode;
 	private String errorCode;
+
+	/**
+	 * 화면 표시용
+	 *
+	 */
+	// 위도
+	private String latitude;
+	// 경도
+	private String longitude;
+	// 본인 게시글에 수정/삭제 표시 위해 사용
+	private Boolean editable;
 
 
 	/********** DB 사용 *************/
@@ -44,8 +53,10 @@ public class CivilVoice extends Search implements Serializable {
 	private String userId;
 	// 제목
 	@NotBlank
+	@Size(max = 256)
 	private String title;
 	// 내용
+	@NotBlank
 	private String contents;
 	// 위치
 	private String location;
@@ -57,6 +68,8 @@ public class CivilVoice extends Search implements Serializable {
 	private String clientIp;
 	// 조회수
 	private Integer viewCount;
+	// 댓글수
+	private Integer commentCount;
 	// 년
 	private String year;
 	// 월

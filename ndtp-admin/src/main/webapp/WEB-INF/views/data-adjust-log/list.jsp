@@ -25,7 +25,7 @@
 					<%@ include file="/WEB-INF/views/layouts/page_header.jsp" %>
 					<div class="page-content">
 						<div class="filters">
-							<form:form id="searchForm" modelAttribute="dataInfoAdjustLog" method="get" action="/data-adjust-log/list" onsubmit="return searchCheck();">
+							<form:form id="searchForm" modelAttribute="dataAdjustLog" method="get" action="/data-adjust-log/list" onsubmit="return searchCheck();">
 								<div class="input-group row">
 									<div class="input-set">
 										<label for="searchWord"><spring:message code='search.word'/></label>
@@ -41,16 +41,16 @@
 									</div>
 									<div class="input-set">
 										<label for="startDate"><spring:message code='search.date'/></label>
-										<input type="text" class="s date" id="startDate" name="startDate" />
+										<input type="text" class="s date" id="startDate" name="startDate" autocomplete="off" />
 										<span class="delimeter tilde">~</span>
-										<input type="text" class="s date" id="endDate" name="endDate" />
+										<input type="text" class="s date" id="endDate" name="endDate" autocomplete="off" />
 									</div>
 									<div class="input-set">
 										<label for="orderWord"><spring:message code='search.order'/></label>
 										<select id="orderWord" name="orderWord" class="select" style="height: 30px;">
 											<option value=""> <spring:message code='search.basic'/> </option>
 											<option value="data_name">데이터명</option>
-											<option value="insertDate"> <spring:message code='search.insert.date'/> </option>
+											<option value="insert_date"> <spring:message code='search.insert.date'/> </option>
 										</select>
 										<select id="orderValue" name="orderValue" class="select" style="height: 30px;">
 					                		<option value=""> <spring:message code='search.basic'/> </option>
@@ -191,7 +191,23 @@
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript" src="/js/navigation.js"></script>
 <script type="text/javascript">
-
+	$(document).ready(function() {
+		var searchWord = "${dataAdjustLog.searchWord}";
+		var searchOption = "${dataAdjustLog.searchOption}";
+		var orderWord = "${dataAdjustLog.orderWord}";
+		var orderValue = "${dataAdjustLog.orderValue}";
+		var listCounter = "${dataAdjustLog.listCounter}";
+	
+		if(searchWord != "") $("#searchWord").val("${dataAdjustLog.searchWord}");
+		if(searchOption != "") $("#searchOption").val("${dataAdjustLog.searchOption}");
+		if(orderWord != "") $("#orderWord").val("${dataAdjustLog.orderWord}");
+		if(orderValue != "") $("#orderValue").val("${dataAdjustLog.orderValue}");
+		if(listCounter != "") $("#listCounter").val("${dataAdjustLog.listCounter}");
+	
+		initDatePicker();
+		initCalendar(new Array("startDate", "endDate"), new Array("${dataAdjustLog.startDate}", "${dataAdjustLog.endDate}"));
+	});
+	
 	//전체 선택
 	$("#chkAll").click(function() {
 		$(":checkbox[name=dataAdjustLogId]").prop("checked", this.checked);

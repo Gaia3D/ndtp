@@ -11,6 +11,7 @@
 	<link rel="stylesheet" href="/css/${lang}/font/font.css" />
 	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
 	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
+    <link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css">
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
 	<link rel="stylesheet" href="/externlib/dropzone/dropzone.min.css">
     <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
@@ -85,7 +86,7 @@
 						<div id="geoserverLayerTab"></div>
 						</div>
 						<form:form id="layer" modelAttribute="layer" method="post" onsubmit="return false;">
-						<form:hidden path="layerInsertType" />
+						<form:hidden path="layerInsertType" value="upload"/>
 						<table class="input-table scope-row">
 							<colgroup>
 			                    <col class="col-label l" style="width: 15%" >
@@ -127,6 +128,9 @@
 			                    </th>
 			                    <td class="col-input">
 			                        <form:input path="layerKey" cssClass="m" maxlength="100" />
+			                        <select id="layerKeySelect" class="selectBoxClass" style="display:none;">
+										<option value="">선택</option>
+									</select>
 			                        <form:errors path="layerKey" cssClass="error" />
 			                    </td>
 			                </tr>
@@ -136,7 +140,7 @@
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 			                    <td class="col-input">
-			                        <select name="serviceType">
+			                        <select name="serviceType" class="selectBoxClass">
 										<option value="">선택</option>
 										<option value="wms">WMS</option>
 										<option value="wfs">WFS</option>
@@ -145,31 +149,41 @@
 									</select>
 			                    </td>
 			                    <th class="col-label" scope="row">
+			                        <label for="cacheAvailableTrue">Cache 사용 유무</label>
+			                    </th>
+			                    <td class="col-input radio-set">
+			                        <form:radiobutton id="cacheAvailableTrue"  path="cacheAvailable" value="true" label="사용" />
+									<form:radiobutton id="cacheAvailableFalse" path="cacheAvailable" value="false" label="미사용" checked="checked"/>
+			                    </td>
+			                </tr>
+			                <tr>
+			                	<th class="col-label" scope="row">
 			                        <form:label path="layerType">Layer 타입</form:label>
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 			                    <td class="col-input">
-			                        <select name="layerType">
+			                        <select name="layerType" class="selectBoxClass">
 										<option value="">선택</option>
-										<option value="Vector">Vector</option>
-										<option value="Raster">Raster</option>
+										<option value="vector">Vector</option>
+										<option value="raster">Raster</option>
 									</select>
 			                    </td>
-			                </tr>
-			                <tr>
 			                    <th class="col-label" scope="row">
 			                        <form:label path="geometryType">도형 타입</form:label>
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 								<td class="col-input">
-									<select name="geometryType" class="forRaster">
+									<select name="geometryType" class="forRaster selectBoxClass" >
 										<option value="">선택</option>
 										<option value="Point">Point</option>
 										<option value="Line">Line</option>
 										<option value="Polygon">Polygon</option>
 									</select>
 								</td>
-			                    <th class="col-label" scope="row">
+			                    
+							</tr>
+							<tr>
+								<th class="col-label" scope="row">
 			                        <form:label path="geometryType">외곽선 색상</form:label>
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
@@ -177,15 +191,16 @@
 									<input id="lineColorValue" placeholder="RGB" class="forRaster" />
 									<input type="color" id="layerLineColor" name="layerLineColor" class="picker" alt="외곽선 색상" />
 								</td>
-							</tr>
-							<tr>
 								<th class="col-label" scope="row">
 			                        <form:label path="layerLineStyle">외곽선 두께</form:label>
 			                    </th>
 								<td class="col-input">
 									<input type="number" id="layerLineStyle"  name="layerLineStyle" class="forRaster" alt="외곽선 두께" min="0.1" max="5.0" size="3" step="0.1">
 								</td>
-								<th class="col-label" scope="row">
+							</tr>
+
+			                <tr>
+			                	<th class="col-label" scope="row">
 			                        <form:label path="layerFillColor">채우기 색상</form:label>
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
@@ -193,26 +208,24 @@
 									<input id="fillColorValue" placeholder="RGB" class="forRaster forPolygon">
 									<input type="color" id="layerFillColor" name="layerFillColor" class="picker forPolygon" alt="채우기 색상">
 								</td>
-							</tr>
-
-			                <tr>
 			                	<th class="col-label" scope="row">
 			                        <form:label path="layerAlphaStyle">투명도</form:label>
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 								<td class="col-input">
-									<input type="text" id="sliderValue" name="layerAlphaStyle" class="slider" alt="투명도">
+									<form:input type="text"  path="layerAlphaStyle" class="slider" alt="투명도"/>
 									<input type="range" id="sliderRange" min="0" max="100" value="100" alt="투명도">
 								</td>
-			                    <th class="col-label" scope="row">
+			                    
+			                </tr>
+			                <tr>
+			                	<th class="col-label" scope="row">
 			                        <label for="zIndex">표시 순서(Z-Index)</label>
 			                    </th>
 			                    <td class="col-input">
 			                        <form:input path="zIndex" cssClass="s" />
 			                        <form:errors path="zIndex" cssClass="error" />
 			                    </td>
-			                </tr>
-			                <tr>
 			                    <th class="col-label" scope="row">
 			                        <label for="defaultDisplayTrue">기본 표시</label>
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
@@ -221,7 +234,9 @@
 			                        <form:radiobutton id="defaultDisplayTrue"  path="defaultDisplay" value="true" label="사용" />
 									<form:radiobutton id="defaultDisplayFlase" path="defaultDisplay" value="false" label="미사용" />
 			                    </td>
-			                    <th class="col-label" scope="row">
+			                </tr>
+			                <tr>
+			                	<th class="col-label" scope="row">
 			                        <label for="useY">사용유무</label>
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
@@ -229,8 +244,6 @@
 			                        <form:radiobutton id="availableTrue"  path="available" value="true" label="사용" />
 									<form:radiobutton id="availableFalse" path="available" value="false" label="미사용" />
 			                    </td>
-			                </tr>
-			                <tr>
 			                    <th class="col-label" scope="row">
 			                        <label for="labelDisplayTrue">Label 표시 유무</label>
 			                    </th>
@@ -238,30 +251,58 @@
 			                        <form:radiobutton id="labelDisplayTrue"  path="labelDisplay" value="true" label="표시" />
 									<form:radiobutton id="labelDisplayFalse" path="labelDisplay" value="false" label="비표시" />
 			                    </td>
+			                </tr>
+			                <tr class="uploadLayerArea">
 			                    <th class="col-label" scope="row">
 			                        <form:label path="coordinate">좌표계</form:label>
 			                    </th>
 			                    <td class="col-input">
-			                        <form:input path="coordinate" cssClass="m" />
+			                        <select id="coordinate"name="coordinate" class="selectBoxClass">
+										<option value="EPSG:2096">EPSG:2096</option>
+										<option value="EPSG:2097">EPSG:2097</option>
+										<option value="EPSG:2098">EPSG:2098</option>
+										<option value="EPSG:3857" selected>EPSG:3857</option>
+										<option value="EPSG:32651">EPSG:32651</option>
+										<option value="EPSG:32652">EPSG:32652</option>
+										<option value="EPSG:4004">EPSG:4004</option>
+										<option value="EPSG:4019">EPSG:4019</option>
+										<option value="EPSG:4326">EPSG:4326</option>
+										<option value="EPSG:5173">EPSG:5173</option>
+										<option value="EPSG:5174">EPSG:5174</option>
+										<option value="EPSG:5175">EPSG:5175</option>
+										<option value="EPSG:5176">EPSG:5176</option>
+										<option value="EPSG:5177">EPSG:5177</option>
+										<option value="EPSG:5178">EPSG:5178</option>
+										<option value="EPSG:5179">EPSG:5179</option>
+										<option value="EPSG:5180">EPSG:5180</option>
+										<option value="EPSG:5181">EPSG:5181</option>
+										<option value="EPSG:5182">EPSG:5182</option>
+										<option value="EPSG:5183">EPSG:5183</option>
+										<option value="EPSG:5184">EPSG:5184</option>
+										<option value="EPSG:5185">EPSG:5185</option>
+										<option value="EPSG:5186">EPSG:5186</option>
+										<option value="EPSG:5187">EPSG:5187</option>
+										<option value="EPSG:5188">EPSG:5188</option>
+									</select>
 			                        <form:errors path="coordinate" cssClass="error" />
 			                    </td>
-			                </tr>
-			                <tr>
 			                    <th class="col-label" scope="row">
-			                        <form:label path="description">설명</form:label>
-			                    </th>
-			                    <td class="col-input">
-			                        <form:input path="description" cssClass="l" />
-			                        <form:errors path="description" cssClass="error" />
-			                    </td>
-			                    <th class="col-label shapeEncodingArea" scope="row">
 			                        <form:label path="shapeEncoding">SHP 파일 인코딩</form:label>
 			                    </th>
-			                    <td class="col-input shapeEncodingArea">
-			                    	<select id="shapeEncoding" name="shapeEncoding" style="width:100px; height: 30px;">
+			                    <td class="col-input">
+			                    	<select id="shapeEncoding" class="selectBoxClass" name="shapeEncoding" style="width:100px; height: 30px;">
 				                    	<option value="CP949">CP949</option>
 				                        <option value="UTF-8">UTF-8</option>
 				                    </select>
+			                    </td>
+			                </tr>
+			                <tr>
+			                	<th class="col-label" scope="row">
+			                        <form:label path="description">설명</form:label>
+			                    </th>
+			                    <td class="col-input" colspan="3">
+			                        <form:input path="description" cssClass="l" style="width:100%;"/>
+			                        <form:errors path="description" cssClass="error" />
 			                    </td>
 			                </tr>
 						</table>
@@ -276,7 +317,7 @@
 						        <div class="button-group">
 									<div class="center-buttons">
 										<input type="submit" id="allFileUpload" value="<spring:message code='save'/>"/>
-										<input type="submit" id="allFileClear" onClick="formClear(); return false;" value="초기화" />
+										<input type="submit" id="allFileClear" value="초기화" />
 										<a href="/layer/list" class="button">목록</a>
 									</div>
 								</div>
@@ -284,7 +325,7 @@
 							<li id="geoserverLayerButton" style="margin-top:30px;">
 								<div class="button-group">
 									<div class="center-buttons">
-										<input type="submit" id="geoserverLayerSave" value="<spring:message code='save'/>"/>
+										<input type="submit" onClick="geoserverLayerSave(); return false;" value="<spring:message code='save'/>"/>
 										<a href="/layer/list" class="button">목록</a>
 									</div>
 								</div>
@@ -297,75 +338,10 @@
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
 	<%@ include file="/WEB-INF/views/layer/spinner-dialog.jsp" %>
+	<%@ include file="/WEB-INF/views/layer/loading-dialog.jsp" %>
 
 	<!-- Dialog -->
-	<div id="layerGroupDialog" class="dialog">
-		<table class="list-table scope-col">
-			<col class="col-name" />
-			<col class="col-toggle" />
-			<col class="col-id" />
-			<col class="col-function" />
-			<col class="col-date" />
-			<col class="col-toggle" />
-			<thead>
-				<tr>
-					<th scope="col" class="col-name">Layer 그룹명</th>
-					<th scope="col" class="col-toggle">사용 여부</th>
-					<th scope="col" class="col-toggle">등록자</th>
-					<th scope="col" class="col-toggle">설명</th>
-					<th scope="col" class="col-date">등록일</th>
-					<th scope="col" class="col-date">선택</th>
-				</tr>
-			</thead>
-			<tbody>
-<c:if test="${empty layerGroupList }">
-			<tr>
-				<td colspan="6" class="col-none">Layer 그룹이 존재하지 않습니다.</td>
-			</tr>
-</c:if>
-<c:if test="${!empty layerGroupList }">
-	<c:set var="paddingLeftValue" value="0" />
-	<c:forEach var="layerGroup" items="${layerGroupList}" varStatus="status">
-		<c:if test="${layerGroup.depth eq '1' }">
-            <c:set var="depthClass" value="oneDepthClass" />
-            <c:set var="paddingLeftValue" value="0px" />
-        </c:if>
-        <c:if test="${layerGroup.depth eq '2' }">
-            <c:set var="depthClass" value="twoDepthClass" />
-            <c:set var="paddingLeftValue" value="40px" />
-        </c:if>
-        <c:if test="${layerGroup.depth eq '3' }">
-            <c:set var="depthClass" value="threeDepthClass" />
-            <c:set var="paddingLeftValue" value="80px" />
-        </c:if>
-
-			<tr class="${depthClass } ${depthParentClass} ${ancestorClass }" style="${depthStyleDisplay}">
-				<td class="col-name ellipsis" style="max-width:200px; text-align: left;" nowrap="nowrap">
-					<span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"></span>
-					${layerGroup.layerGroupName }
-				</td>
-				<td class="col-type">
-        <c:if test="${layerGroup.available eq 'true' }">
-                	사용
-        </c:if>
-        <c:if test="${layerGroup.available eq 'false' }">
-        			미사용
-        </c:if>
-			    </td>
-			    <td class="col-type">${layerGroup.userId }</td>
-			    <td class="col-key">${layerGroup.description }</td>
-			    <td class="col-date">
-			    	<fmt:parseDate value="${layerGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
-					<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
-			    </td>
-			    <td class="col-toggle">
-			    	<a href="#" onclick="confirmParent('${layerGroup.layerGroupId}', '${layerGroup.layerGroupName}'); return false;">확인</a></td>
-			</tr>
-	</c:forEach>
-</c:if>
-			</tbody>
-		</table>
-	</div>
+	<%@ include file="/WEB-INF/views/layer/layer-group-dialog.jsp" %>
 
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
@@ -374,15 +350,26 @@
 <script type="text/javascript" src="/js/navigation.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-		$( ".tabs" ).tabs();
+		$(".tabs").tabs();
 		showRange(100);
 		changeLayerType(null);
 		changeGeometryType(null);
-
+		
 		$("input[name='sharing']").filter("[value='public']").prop("checked", true);
 		$("input[name='defaultDisplay']").filter("[value='true']").prop("checked", true);
 		$("input[name='available']").filter("[value='true']").prop("checked", true);
         $("input[name='labelDisplay']").filter("[value='true']").prop("checked", true);
+        
+        // geoserver layerlist 가져올 동안 스피너 
+		var layerLoadingDialog = $("#layerLoadingDialog").dialog({
+			autoOpen: false,
+			width: 250,
+			height: 290,
+			modal: true,
+			resizable: false
+		});
+		layerLoadingDialog.dialog("open");
+        getGeoserverLayerList(layerLoadingDialog);
 	});
 	
 	// 레이어 탭 이벤트 
@@ -391,12 +378,16 @@
 		$("#layerButtonArea li").removeClass("onArea");
 		if(activeTab === '#uploadLayerTab') {
 			$("#uploadLayerButton").addClass("onArea");
-			$(".shapeEncodingArea").show();
+			$(".uploadLayerArea").show();
 			$("#layerInsertType").val("upload");
+			$("#layerKey").show();
+			$("#layerKeySelect").hide();
 		} else {
 			$("#geoserverLayerButton").addClass("onArea");
-			$(".shapeEncodingArea").hide();
+			$(".uploadLayerArea").hide();
 			$("#layerInsertType").val("geoserver");
+			$("#layerKey").hide();
+			$("#layerKeySelect").show();
 		}
 	});
 
@@ -407,10 +398,21 @@
 	$('[name=geometryType]').on('change', function() {
 		changeGeometryType($("[name=geometryType]").val());
 	});
+	
+	// wms일 경우에만 cache 설정 할 수 있도록 활성화
+	$("select[name=serviceType]").change(function(e){
+		var value = $(this).val();
+	    if(value === "wms") {
+	    	$("input[name='cacheAvailable']").attr("disabled", false);
+	    } else {
+	    	$("input[name='cacheAvailable']").attr("disabled", true);
+	    	$("input[name='cacheAvailable']").filter("[value='false']").prop("checked", true);
+	    }
+	});
 
 	// 레이어 타입 Raster 선택 시 입력폼 변경
 	function changeLayerType(layerType) {
-		if(layerType == 'Vector') {
+		if(layerType == 'vector') {
 			$('.forRaster').attr('disabled', false);
 			$('.forRaster').removeClass('disabled');
 			$('.picker').attr('disabled', false);
@@ -441,7 +443,7 @@
 
 	// 슬라이더
 	function showRange(valus) {
-		$('#sliderValue').val(valus + "%");
+		$('#layerAlphaStyle').val(valus + "%");
 	}
 
 	var rangeSlider = function(){
@@ -513,9 +515,14 @@
 			$("#layerName").focus();
 			return false;
 		}
-		if (!$("#layerKey").val()) {
+		if($("#layerInsertType").val() === 'upload' && !$("#layerKey").val()) {
 			alert("Layer key를 입력하여 주십시오.");
 			$("#layerKey").focus();
+			return false;
+		} 
+		if($("#layerInsertType").val() === 'geoserver' && !$("#layerKeySelect").val()) {
+			alert("Layer key를 선택하여 주십시오.");
+			$("#layerKeySelect").focus();
 			return false;
 		}
 		if (!$("select[name=serviceType]").val()) {
@@ -528,9 +535,14 @@
 			$("#layerType").focus();
 			return false;
 		}
-		if ($("select[name=geometryType]").val().toLowerCase() === 'vector') {
+		if ($("select[name=layerType]").val() ==='vector' && !$("select[name=geometryType]").val()) {
 			alert("도형 타입을 선택해 주십시오.");
 			$("#geometryType").focus();
+			return false;
+		}
+		if (!$("#coordinate").val()) {
+			alert("좌표계를 선택해주세요.");
+			$("#coordinate").focus();
 			return false;
 		}
 	}
@@ -642,6 +654,8 @@
                 formData.append("coordinate", $("#coordinate").val());
                 formData.append("description", $("#description").val());
                 formData.append("shapeEncoding", $("#shapeEncoding").val());
+                formData.append("layerInsertType", $("#layerInsertType").val());
+                formData.append("cacheAvailable", $(':radio[name="cacheAvailable"]:checked').val());
                 var zIndex = 0;
                 if($("#zIndex").val()) zIndex = $("#zIndex").val();
                 formData.append("zIndex", zIndex);
@@ -670,6 +684,7 @@
 						}
 	                } else {
 	                	alert(JS_MESSAGE[response.errorCode]);
+	                	myDropzone.removeAllFiles(true);
 						console.log("---- " + res.message);
 	                }
 	            } else {
@@ -678,6 +693,7 @@
 		        		alert(JS_MESSAGE["insert"]);
 					} else {
 						alert(JS_MESSAGE[response.errorCode]);
+						myDropzone.removeAllFiles(true);
 						console.log("---- " + res.message);
 					}
 	            }
@@ -689,9 +705,69 @@
             }); */
         }
     };
-
-	function formClear() {
-
+    
+	var insertGeoserverLayerFlag = true;
+	function geoserverLayerSave() {
+	    if(insertGeoserverLayerFlag) {
+	    	if (check() === false) {
+                return;
+            }
+	    	insertGeoserverLayerFlag = false;
+	    	$("#layerKey").val($("#layerKeySelect").val());
+	    	$("#layerAlphaStyle").val($("#sliderRange").val() / 100);
+	    	$("#coordinate").val("EPSG:4326");
+            if(!$("#zIndex").val()) $("#zIndex").val(0);
+	        var formData = $('#layer').serialize();
+	        $.ajax({
+				url: "/layer/insert-geoserver",
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+		        data: formData,
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert(JS_MESSAGE["insert"]);
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
+					insertGeoserverLayerFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        insertGeoserverLayerFlag = true;
+				}
+			});
+	    } else {
+	        alert("진행 중입니다.");
+	        return;
+		}
+	}
+	
+	function getGeoserverLayerList(layerLoadingDialog) {
+        $.ajax({
+			url: "/layer/list-geoserver",
+			type: "GET",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			success: function(msg){
+				if(msg.statusCode <= 200) {
+					var geoserverLayerList = JSON.parse(msg.geoserverLayerJson).layers;
+					if(geoserverLayerList) {
+						geoserverLayerList = geoserverLayerList.layer;
+						for(var i=0; i< geoserverLayerList.length; i++) {
+							var name = geoserverLayerList[i].name;
+							$("#layerKeySelect").append("<option value="+name+">"+name+"</option>");	
+						}
+					}
+					layerLoadingDialog.dialog("close");
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+					console.log("---- " + msg.message);
+				}
+			},
+			error:function(request, status, error){
+		        alert(JS_MESSAGE["ajax.error.message"]);
+			}
+		});
 	}
 
 </script>

@@ -99,6 +99,9 @@
 		// TODO : 세슘 MAP 선택 UI 제거,엔진에서 처리로 변경 예정.
 		viewer.baseLayerPicker.destroy();
 		
+		// mago3d logo 추가
+		Mago3D.tempCredit(viewer);
+		
 		magoManager.on(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
 			if(beforePointId !== undefined && beforePointId !== null) {
 				remove(beforePointId);

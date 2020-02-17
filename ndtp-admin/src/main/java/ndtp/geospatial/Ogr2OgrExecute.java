@@ -47,9 +47,9 @@ public class Ogr2OgrExecute {
         List<String> command = new ArrayList<>();
         command.add("ogr2ogr");
         command.add("-s_srs");
-        command.add(layerTargetCoordinate);
-        command.add("-t_srs");
         command.add(layerSourceCoordinate);
+        command.add("-t_srs");
+        command.add(layerTargetCoordinate);
         command.add("--config");
 
         command.add("SHAPE_ENCODING");
@@ -87,9 +87,9 @@ public class Ogr2OgrExecute {
         List<String> command = new ArrayList<>();
         command.add("ogr2ogr");
         command.add("-s_srs");
-        command.add(layerTargetCoordinate);
-        command.add("-t_srs");
         command.add(layerSourceCoordinate);
+        command.add("-t_srs");
+        command.add(layerTargetCoordinate);
         command.add("--config");
 
         command.add("SHAPE_ENCODING");

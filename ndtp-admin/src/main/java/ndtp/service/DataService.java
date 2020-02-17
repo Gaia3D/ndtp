@@ -3,7 +3,6 @@ package ndtp.service;
 import java.util.List;
 
 import ndtp.domain.DataInfo;
-import ndtp.domain.DataInfoAttribute;
 
 /**
  * Data 관리
@@ -66,7 +65,7 @@ public interface DataService {
 //	 * @param dataId
 //	 * @return
 //	 */
-//	DataInfoAttribute getDataAttribute(Long dataId);
+//	DataAttribute getDataAttribute(Long dataId);
 //	
 //	/**
 //	 * Data Object Attribute 정보 취득
@@ -89,12 +88,6 @@ public interface DataService {
 	 */
 	int insertData(DataInfo dataInfo);
 	
-//	/**
-//	 * Data 속성 등록
-//	 * @param dataInfoAttribute
-//	 * @return
-//	 */
-//	int insertDataAttribute(DataInfoAttribute dataInfoAttribute);
 //	
 //	/**
 //	 * Data Object 속성 등록
@@ -118,10 +111,10 @@ public interface DataService {
 	
 //	/**
 //	 * Data Attribute 수정
-//	 * @param dataInfoAttribute
+//	 * @param dataAttribute
 //	 * @return
 //	 */
-//	int updateDataAttribute(DataInfoAttribute dataInfoAttribute);
+//	int updateDataAttribute(DataAttribute dataAttribute);
 	
 	/**
 	 * Data 상태 수정
