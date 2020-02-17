@@ -41,31 +41,33 @@ font-weight: normal;
 background: url(/images/ko/logo.png) no-repeat 0 0;
 }
 
-.signArea {
+.gnb {
+position: absolute;
 right: 0;
 margin: 10px;
 font-size: 15px;
 color: #fff;
-text-align: right;
-width: calc(100% - 500px);
 }
-.signArea > span {
+.gnb li {
+display: inline-block;
+padding-top: 5px;
+}
+.gnb li:last-child {
+margin-left: 10px;
+}
+.user > span {
 border-bottom: 1px solid #fff;
 }
-.signArea * {
+.gnb li > span * {
 vertical-align: middle;
 }
-.signArea > span * {
-vertical-align: middle;
-}
-.signArea > .signButton {
-	margin: 0px 25px 0px 20px;
-	padding: 5px 25px 10px 25px;
-	height: 50px;
-	color: #fff;
-	border-radius: 15px;
-	border: none;
-	background-color: #262b3f;
+.gnb li > button {
+margin-top: -5px;
+padding: 5px 10px 7px;
+color: #fff;
+border-radius: 15px;
+border: none;
+background-color: #262b3f;
 }
 
 

@@ -130,4 +130,27 @@ public class MapController {
         
         return "/map/find-point";
     }
+    
+    /**
+	 * 위치(경도, 위도) 찾기
+     * @param request
+     * @param model
+     * @return
+     */
+    @GetMapping(value = "/help")
+    public String gotoApiHelp(HttpServletRequest request, Model model) {
+
+        UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+        UserPolicy userPolicy = userPolicyService.getUserPolicy(userSession.getUserId());
+        GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
+        try {
+            model.addAttribute("geoPolicyJson", objectMapper.writeValueAsString(geoPolicy));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        model.addAttribute("baseLayers", userPolicy.getBaseLayers());
+        
+        return "/api-help/layout";
+    }
 }
