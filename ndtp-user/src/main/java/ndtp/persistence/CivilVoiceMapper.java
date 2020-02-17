@@ -8,6 +8,7 @@ import ndtp.domain.CivilVoice;
 
 @Repository
 public interface CivilVoiceMapper {
+
 	/**
 	 * 시민 참여 목록 조회
 	 * @param civilvoice

@@ -104,7 +104,7 @@ $(document).ready(function (){
 		getCivilVoiceList(civilVoice.web.currentPage);
 	});
 
-	// 시민참여 취소 / 목록 보기
+	// 시민참여 취소 / 상세 보기
 	$('#civilVoiceContent').on('click', '[data-goto=detail]', function(){
 		civilVoice.web.show('detail');
 		getCivilVoiceDetail(civilVoice.web.currentCivilVoiceId);
