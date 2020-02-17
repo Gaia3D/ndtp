@@ -52,7 +52,7 @@
 											<option value=""> <spring:message code='search.basic'/> </option>
 											<option value="title">제목명</option>
 						          			<option value="user_id">작성자</option>
-											<option value="insertDate"> <spring:message code='search.insert.date'/> </option>
+											<option value="insert_date"> <spring:message code='search.insert.date'/> </option>
 										</select>
 										<select id="orderValue" name="orderValue" class="select" style="height: 30px;">
 					                		<option value=""> <spring:message code='search.basic'/> </option>
