@@ -6,29 +6,40 @@
 	<!-- 데이터 변경 요청 수 -->
 	<select id="getDataAdjustLogTotalCount" parameterType="dataAdjustLog" resultType="long">
 		/* getDataAdjustLogTotalCount */
-		SELECT COUNT(data_adjust_log_id) 
-		FROM data_adjust_log
+		SELECT COUNT(A.data_adjust_log_id) 
+		FROM data_adjust_log A, data_info B
 		<trim prefix="WHERE" prefixOverrides="AND">
+			A.data_id = B.data_id
 			<if test="userId != null and userId != ''">
-			user_id = #{userId}
+			AND A.user_id = #{userId}
 			</if>
 			<if test="status != null and status != ''">
-			AND status = #{status}
+			AND A.status = #{status}
 			</if>
 			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
-			AND ${searchWord} = #{searchValue}
+				<if test="searchWord != 'data_name'">
+				AND A.${searchWord} = #{searchValue}		
+				</if>
+				<if test="searchWord == 'data_name'">
+				AND B.${searchWord} = #{searchValue}
+				</if>
 			</if>
 			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
-			AND ${searchWord} LIKE '%' || #{searchValue} || '%'
+				<if test="searchWord != 'data_name'">
+				AND A.${searchWord} LIKE '%' || #{searchValue} || '%'	
+				</if>
+				<if test="searchWord == 'data_name'">
+				AND B.${searchWord} LIKE '%' || #{searchValue} || '%'
+				</if>
 			</if>
 			<if test="startDate != null and startDate != ''">
 			<![CDATA[
-			AND insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+			AND A.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
 			<if test="endDate != null and endDate != ''">
 			<![CDATA[
-			AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+			AND A.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
 		</trim>
@@ -50,10 +61,20 @@
 				AND A.status = #{status}
 				</if>
 				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
-				AND A.${searchWord} = #{searchValue}
+					<if test="searchWord != 'data_name'">
+					AND A.${searchWord} = #{searchValue}		
+					</if>
+					<if test="searchWord == 'data_name'">
+					AND B.${searchWord} = #{searchValue}
+					</if>
 				</if>
 				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
-				AND A.${searchWord} LIKE '%' || #{searchValue} || '%'
+					<if test="searchWord != 'data_name'">
+					AND A.${searchWord} LIKE '%' || #{searchValue} || '%'	
+					</if>
+					<if test="searchWord == 'data_name'">
+					AND B.${searchWord} LIKE '%' || #{searchValue} || '%'
+					</if>
 				</if>
 				<if test="startDate != null and startDate != ''">
 				<![CDATA[
@@ -67,7 +88,12 @@
 				</if>
 			<choose>
 			<when test="orderWord != null and orderWord != '' and orderValue != null and orderValue != ''">
-			ORDER BY A.${orderWord} ${orderValue}
+				<if test="orderWord != 'data_name'">
+					ORDER BY A.${orderWord} ${orderValue}
+				</if>
+				<if test="orderWord == 'data_name'">
+					ORDER BY B.${orderWord} ${orderValue}
+				</if>
 			</when>
 			<otherwise>
 			ORDER BY A.insert_date DESC, A.data_id DESC

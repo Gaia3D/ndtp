@@ -50,7 +50,7 @@
 										<select id="orderWord" name="orderWord" class="selectBoxClass">
 											<option value=""> <spring:message code='search.basic'/> </option>
 											<option value="title">제목</option>
-											<option value="insertDate"> <spring:message code='search.insert.date'/> </option>
+											<option value="insert_date"> <spring:message code='search.insert.date'/> </option>
 										</select>
 										<select id="orderValue" name="orderValue" class="selectBoxClass">
 					                		<option value=""> <spring:message code='search.basic'/> </option>
