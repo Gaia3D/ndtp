@@ -5,11 +5,13 @@
 		{{#each civilVoiceCommentList}}
 			<li>
 				<p class="user">{{userId}}</p>
-					{{title}}
-				<span class="date">{{insertData}}</span>
+				{{title}}
 				<div class="btns">
-					<button type="button" class="">수정</button>
-					<button type="button" class="">삭제</button>
+					<span class="date">{{viewInsertDate}}</span>
+					{{#if false}}
+						<button type="button" class="">수정</button>
+						<button type="button" class="">삭제</button>
+					{{/if}}
 				</div>
 			</li>
 		{{/each}}
