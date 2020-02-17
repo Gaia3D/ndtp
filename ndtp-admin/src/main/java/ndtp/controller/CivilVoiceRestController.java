@@ -56,7 +56,11 @@ public class CivilVoiceRestController {
 				result.put("message", message);
 	            return result;
 			}
+
 			civilVoice.setUserId(userSession.getUserId());
+			if(civilVoice.getLongitude() != null && civilVoice.getLatitude() != null) {
+				civilVoice.setLocation("POINT(" + civilVoice.getLongitude() + " " + civilVoice.getLatitude() + ")");
+			}
 			civilVoiceService.insertCivilVoice(civilVoice);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -79,7 +83,8 @@ public class CivilVoiceRestController {
 	 * @return
 	 */
 	@PostMapping("/{civilVoiceId}")
-	public Map<String, Object> update(HttpServletRequest request, @PathVariable Integer civilVoiceId, @Valid CivilVoice civilVoice, BindingResult bindingResult) {
+	public Map<String, Object> update(HttpServletRequest request, @PathVariable Long civilVoiceId, @Valid CivilVoice civilVoice, BindingResult bindingResult) {
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		log.info("@@ civilVoice = {}", civilVoice);
 
 		Map<String, Object> result = new HashMap<>();
@@ -94,6 +99,12 @@ public class CivilVoiceRestController {
 				result.put("message", message);
 
 				return result;
+			}
+
+			civilVoice.setUserId(userSession.getUserId());
+			civilVoice.setCivilVoiceId(civilVoiceId);
+			if(civilVoice.getLongitude() != null && civilVoice.getLatitude() != null) {
+				civilVoice.setLocation("POINT(" + civilVoice.getLongitude() + " " + civilVoice.getLatitude() + ")");
 			}
 			civilVoiceService.updateCivilVoice(civilVoice);
 		} catch (Exception e) {

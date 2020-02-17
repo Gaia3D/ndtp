@@ -34,10 +34,10 @@
         	{{/if}}
     	{{/forEachStep}}
 
-			<a href="#" onClick="getCivilVoiceCommentList({{pagination.nextPageNo}});" class="next"><span class="icon-glyph glyph-next"></span></a>
     	{{#if pagination.existNextPage}}
-			<a href="#" onClick="getCivilVoiceCommentList({{pagination.lastPage}});" class="last"><span class="icon-glyph glyph-last"></span></a>
+			<a href="#" onClick="getCivilVoiceCommentList({{pagination.nextPageNo}});" class="next"><span class="icon-glyph glyph-next"></span></a>
     	{{/if}}
+			<a href="#" onClick="getCivilVoiceCommentList({{pagination.lastPage}});" class="last"><span class="icon-glyph glyph-last"></span></a>
     	</div>
    	{{/if}}
 </script>
