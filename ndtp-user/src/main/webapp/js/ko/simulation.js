@@ -23,11 +23,13 @@ var Simulation = function(magoInstance, viewer, $) {
 	var magoManager = magoInstance.getMagoManager();
 	
 
-    var runAllocBuildChkStat = false;
+    var runAllocBuildStat = "";
 
-    var cityPlanTargetArea = 0;
-    var cityPlanTargetFloorCov = 0;
-    var cityPlanTargetBuildCov = 0;
+    var cityPlanTargetArea = 0; // 기준 면적
+    var cityPlanStdFloorCov = 0; // 기준 용적률
+    var floorCoverateRatio = 0; // 용적률
+    var cityPlanStdBuildCov = 0; // 기준 건폐율
+    var buildCoverateRatio = 0; // 건폐율
 	
 	var observer;
 	var observerTarget = document.getElementById('simulationContent');
@@ -217,7 +219,8 @@ var Simulation = function(magoInstance, viewer, $) {
 		floorSize = floorNum * 3;
 		selectEntity.id.polygon.extrudedHeight = floorSize;
 		floorCoverSum = selectEntity.id.areaVal * floorSize;
-		$('#floorCoverateRatio').text('용적율 : ' + parseInt(floorCoverSum / cityPlanTargetArea * 100) + '%');
+		floorCoverateRatio = parseInt(floorCoverSum / cityPlanTargetArea * 100);
+		$('#floorCoverateRatio').text('용적율 : ' + floorCoverateRatio + '%');
 		
 		selectBuildDialog.dialog( "close" );
 		heightBuildingInput = 0;
@@ -262,15 +265,19 @@ var Simulation = function(magoInstance, viewer, $) {
 	})
 	
 	$("#run_work_state").change(function(value){
-		if(value.target.value === 'build') {
+		if(value.target.value === 'imsiBuild') {
     		$('#run_work_state').toggleClass('on'); // 버튼 색 변경
     		$('#run_work_state').trigger('afterClick');
-    		runAllocBuildChkStat = true;
-		} else if(value.target.value === 'location') {
+    		runAllocBuildStat = "imsiBuild";
+		} else if(value.target.value === 'autoBuild') {
+    		$('#run_work_state').toggleClass('on'); // 버튼 색 변경
+    		$('#run_work_state').trigger('afterClick');
+    		runAllocBuildStat = "autoBuild";
+		}  else if(value.target.value === 'location') {
 			
 		} else {
     		$('#run_work_state').removeClass('on');
-    		runAllocBuildChkStat = false;
+    		runAllocBuildStat = "";
             drawingMode = 'line';
 		}
     });
@@ -349,7 +356,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				if(!simulating) {
 					attributes.isVisible = false;
 					return;
-				} 
+				}
 				var sliderValue = slider.getValue();
 				
 				var dataId =data.nodeId;
@@ -570,7 +577,7 @@ var Simulation = function(magoInstance, viewer, $) {
     	for(var i = 0; i < _polygons.length; i++) {
     		sumArea += _polygons[i].areaVal;
     	}
-    	var buildCoverateRatio = parseInt(sumArea/cityPlanTargetArea * 100);
+    	buildCoverateRatio = parseInt(sumArea/cityPlanTargetArea * 100);
     	$('#buildCoverateRatio').text('건폐율 : ' + buildCoverateRatio + '%');
     }
 
@@ -607,7 +614,7 @@ var Simulation = function(magoInstance, viewer, $) {
             if (Cesium.defined(earthPosition)) {
                 var cartographic = Cesium.Cartographic.fromCartesian(earthPosition);
                 var tempPosition = Cesium.Cartesian3.fromDegrees(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude));
-                if(runAllocBuildChkStat) {
+                if(runAllocBuildStat === "imsiBuild") {
                     activeShapePoints.push(tempPosition);
                     
                     if (activeShapePoints.length === 1) {
@@ -632,7 +639,9 @@ var Simulation = function(magoInstance, viewer, $) {
                         //this._labels.push(drawLabel(tempPosition));
                     }
                     this._polylines.push(createPoint(tempPosition));	
-                } else {
+                } else if (runAllocBuildStat === "autoBuild") {
+                	genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0.05)
+                }else {
                 	// 새로운 모델 선택
                     var pickedFeature = viewer.scene.pick(event.position);
                     if(pickedFeature) {
@@ -658,10 +667,10 @@ var Simulation = function(magoInstance, viewer, $) {
     
     $('#set_target_area').click(function() {
     	cityPlanTargetArea = parseInt($('#target_area_input').val());
-    	cityPlanTargetFloorCov = parseInt($('#target_floor_cov').val());
-        cityPlanTargetBuildCov = parseInt($('#target_build_cov').val());
-        $('#targetfloorCoverateRatio').text('기준 용적율 : ' + cityPlanTargetFloorCov + '%');
-        $('#targetbuildCoverateRatio').text('기준 건폐율 : ' + cityPlanTargetBuildCov + '%');;
+    	cityPlanStdFloorCov = parseInt($('#target_floor_cov').val());
+        cityPlanStdBuildCov = parseInt($('#target_build_cov').val());
+        $('#targetfloorCoverateRatio').text('기준 용적율 : ' + cityPlanStdFloorCov + '%');
+        $('#targetbuildCoverateRatio').text('기준 건폐율 : ' + cityPlanStdBuildCov + '%');;
     })
     
     $('#result_build').click(function() {
@@ -693,16 +702,94 @@ var Simulation = function(magoInstance, viewer, $) {
             $("#cityplanImg").attr("src", canvas.toDataURL());
             viewer.resolutionScale = 1.0;
             stopLoading();
-        	resultCityPlanDialog.dialog( "open" );
+            openCityPlanResultDlg();
 //            canvas.toBlob(function(blob){
 //                var url = URL.createObjectURL(blob);
 //            });
-            
         }
-
         scene.preRender.addEventListener(prepareScreenshot);
     	
     })
+    
+    function openCityPlanResultDlg() {
+        simCityPlanDlgInit();
+    	resultCityPlanDialog.dialog( "open" );
+    }
+    
+    $("#modelView").click(function() {
+	 // Gltf포맷 활용가능하게함.
+
+    })
+    
+    function genBuild(lon, lat, scale) {
+    	debugger;
+    	var position = Cesium.Cartesian3.fromDegrees(lon, lat, 0);
+	    var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
+	    // fromGltf 함수를 사용하여 key : value 값으로 요소를 지정
+	    var name = '슬퍼하지마NONONO'; 
+	    var model = _viewer.scene.primitives.add(Cesium.Model.fromGltf({
+	        url : 'http://localhost/data/simulation-rest/cityPlanModelSelect',
+	        modelMatrix : modelMatrix,
+	        scale : scale,
+	        shadows : 1,
+	        name : name,
+	        show: false
+	    }));
+	    viewer.scene.primitives.add(model);
+	    Cesium.when(model.readyPromise).then(function(model) {
+	    	debugger;
+	    	  model.activeAnimations.addAll({
+	    	    multiplier : 0.5
+	    	  });
+	    	model.getNode("FLOOR").show = false;
+	    	model.getNode("ROOF_1").show = false;
+	    	model.getNode("DOOR").show = false;
+	    	model.getNode("WINDOW").show = false;
+	    	model.getNode("WALL").show = false;
+	    	model.getNode("ROOF_2").show = false;
+	    	model.getNode("GROUND_FLOOR_2").show = false;
+	    	model.getNode("BALCONY").show = false;
+	    	model.getNode("LOUVER").show = false;
+	    	model.getNode("GROUND_FLOOR_1").show = false;
+
+		    model.show = true;
+
+	    	setTimeout(function() {
+		    	model.getNode("FLOOR").show = true;	    		
+	    	}, 100);
+	    	setTimeout(function() {	
+		    	model.getNode("WALL").show = true;    		
+	    	}, 300);
+	    	setTimeout(function() {	
+		    	model.getNode("GROUND_FLOOR_1").show = true;
+	    	}, 500);
+	    	setTimeout(function() {	
+		    	model.getNode("GROUND_FLOOR_2").show = true;		
+	    	}, 700);
+	    	setTimeout(function() {	
+		    	model.getNode("BALCONY").show = true;	
+	    	}, 900);
+	    	setTimeout(function() {
+		    	model.getNode("DOOR").show = true;    		
+	    	}, 1100);
+	    	setTimeout(function() {
+		    	model.getNode("WINDOW").show = true;   		
+	    	}, 1200);
+	    	setTimeout(function() {
+		    	model.getNode("ROOF_1").show = true;  		
+	    	}, 1400);
+	    	setTimeout(function() {	
+		    	model.getNode("ROOF_2").show = true;	
+	    	}, 1600);
+	    	setTimeout(function() {	
+		    	model.getNode("LOUVER").show = true;  		
+	    	}, 1800);
+	    	
+	    	
+	    	}).otherwise(function(error){
+	    	  window.alert(error);
+    	});
+    }
 
     var selectBuildDialog = $( "#selectBuildDialog" ).dialog({
 		autoOpen: false,
@@ -721,4 +808,83 @@ var Simulation = function(magoInstance, viewer, $) {
 		overflow : "auto",
 		resizable: false
 	});
+	
+	function simCityPlanDlgInit() {
+		$('#cityPlanDlgArea').text(cityPlanTargetArea + "m");
+		$('#cityPlanDlgStdFloorCov').text(cityPlanStdFloorCov + "%");
+		$('#cityPlanDlgFloorCov').text(floorCoverateRatio + "%");
+		$('#cityPlanDlgStdBuildCov').text(cityPlanStdBuildCov + "%");
+		$('#cityPlanDlgBuildCov').text(buildCoverateRatio + "%");
+		
+		var chkCityPlanStdFloorCov = ""
+		var chkbuildCoverateRatio = ""
+		if(cityPlanTargetArea > cityPlanStdFloorCov) { 
+			chkCityPlanStdFloorCov = "부적합";
+		} else { 
+			chkCityPlanStdFloorCov = "적합";
+		}
+		$('#chkCityPlanDlgFloorCov').text(chkCityPlanStdFloorCov);
+
+		if(cityPlanStdBuildCov > buildCoverateRatio) {  
+			chkbuildCoverateRatio = "부적합";
+		} else {
+			chkbuildCoverateRatio = "적합";
+		}
+		$('#chkcityPlanDlgBuildCov').text(chkbuildCoverateRatio);
+	}
+	
+	$("#resultCityPlanDlgReg").click(function() {
+		var cityPlanResult = new FormData();
+		cityPlanResult.append('cityPlanTargetArea', cityPlanTargetArea);
+		cityPlanResult.append('cityPlanStdFloorCov', cityPlanStdFloorCov);
+		cityPlanResult.append('floorCoverateRatio', floorCoverateRatio);
+		cityPlanResult.append('cityPlanStdBuildCov', cityPlanStdBuildCov);
+		cityPlanResult.append('buildCoverateRatio', buildCoverateRatio);
+		debugger;
+		
+		// 실제 데이터는 iVBO...부터이므로 split한다.
+		var imgData = atob($('#cityplanImg').attr('src').split(',')[1])
+		var len = imgData.length
+		var buf = new ArrayBuffer(len) // 비트를 담을 버퍼를 만든다.
+		var view = new Uint8Array(buf) // 버퍼를 8bit Unsigned Int로 담는다.
+		var blob, i
+
+		for (i = 0; i < len; i++) {
+		  view[i] = imgData.charCodeAt(i) & 0xff // 비트 마스킹을 통해 msb를 보호한다.
+		}
+		// Blob 객체를 image/png 타입으로 생성한다. (application/octet-stream도 가능)
+		blob = new Blob([view], { type: "image/png" })
+		
+		cityPlanResult.append("files", blob, "aaa.png");
+		debugger;
+		$.ajax({
+			url: "/data/simulation-rest/cityPlanResultInsert",
+			type: "POST",
+			data: cityPlanResult,
+			dataType: "json",
+		    contentType: false,
+		    processData: false,
+			success: function(msg){
+				debugger;
+				if(msg.statusCode <= 200) {
+					alert(JS_MESSAGE["insert"]);
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+				}
+
+				$("#converterCheckIds").val("");
+				$("#title").val("");
+				$(":checkbox[name=uploadDataId]").prop("checked", false);
+				dialogConverterJob.dialog( "close" );
+				saveConverterJobFlag = true;
+			},
+			error:function(request,status,error){
+				alert(JS_MESSAGE["ajax.error.message"]);
+				debugger;
+			}
+		});
+	})
+	$("#resultCityPlanDlgCle").click(function() {
+		
+	})
 }

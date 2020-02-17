@@ -60,7 +60,6 @@ public class SimulationRestController {
 		}
 		return null;
 		// PROCESS...
-
 	}
 
     @RequestMapping(value = "/cityPlanUpload", method = RequestMethod.POST)
@@ -84,9 +83,30 @@ public class SimulationRestController {
             e.printStackTrace();
         }
         return null;
-        // PROCESS...
-  
     }
+
+    @RequestMapping(value = "/cityPlanModelSelect", method = RequestMethod.GET)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public Object cityPlanModelSelect() {
+    	String resultFullPath = "C:\\data\\Apartment_Building_26_obj\\Apartment_Building_26_obj.gltf"; 
+        File fi = new File(resultFullPath.trim());
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            InputStream targetStream = new FileInputStream(fi);
+            return mapper.readValue(targetStream, Object.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    @RequestMapping(value = "/cityPlanResultInsert", method = RequestMethod.POST)
+    public List<String> cityPlanResultInsert(CityPlanResult cityPlanResult) {
+    	List<String> result = this.simServiceImpl.procCityPlanResult(cityPlanResult);
+		return null;
+    }
+    
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	public List<String> upload(MultipartHttpServletRequest mReq) {
 		String os = System.getProperty("os.name").toLowerCase();

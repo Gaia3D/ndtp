@@ -112,12 +112,14 @@
 					<label for="">작업 선택</label>
 					<select id="run_work_state" name="searchDataStatus">
 						<option value="none">선택안함</option>
-						<option value="build">건물 배치 모드</option>
+						<option value="imsiBuild">임시 건물 배치 모드</option>
+						<option value="autoBuild">자동 건물 배치 모드</option>
 						<option value="location">경관 좌표 배치 모드</option>
 					</select>
 				</li>
 				<li>
 					<button id="result_build" type="button" class="btnText drawObserverPoint">결과 산출</button>
+					<button id="modelView">모델보기</button>
 				</li>
 			</ul>
 		</div>
