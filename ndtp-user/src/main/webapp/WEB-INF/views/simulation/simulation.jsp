@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="/WEB-INF/views/simulation/simulationCityPlanRepot.jsp" %>
 <ul class="listDrop">
-	<li class="on">
+	<li>
 		<p>경관 분석(일조분석)<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="solarAnalysis">
 			<ul class="analysisGroup">
@@ -26,7 +27,7 @@
 			</ul>
 		</div>
 	</li>
-	<li class="on">
+	<li>
 		<p>건설 공정<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="constructionProcess">
 			<ul class="analysisGroup">
@@ -90,60 +91,40 @@
 						<button type="button" class="btnText reset" title="취소">취소</button>
 					</form>
 					<button id="run_cityplan" type="button" class="btnTextF" title="가시화">가시화</button>
-					<button id="move_cityplan" type="button" class="btnTextF" title="가시화">5-1 이동</button>
+					<button id="move_cityplan" type="button" class="btnTextF" title="가시화">이동</button>
 				</li>
 				<li>
 					<label for="">대상 면적</label>
 					<input id="target_area_input" class="" type="number" placeholder="" value="0"/>
+					<label for="">기준 용적률</label>
+					<input id="target_floor_cov" class="" type="number" placeholder="" value="0"/>
+					<label for="">기준 건폐율</label>
+					<input id="target_build_cov" class="" type="number" placeholder="" value="0"/>
 					<button id="set_target_area" type="button" class="btnText drawObserverPoint">면적 설정</button>
 				</li>
 				<li>
-					<label for="">용적률 00%</label>
-					<label for="">건폐율 00%</label>
+					<label id="targetfloorCoverateRatio" for="">기준 용적율 00%</label>
+					<label id="floorCoverateRatio" for="">용적률 00%</label>
+					<label id="targetbuildCoverateRatio" for="">기준 건폐율 00%</label>
+					<label id="buildCoverateRatio" for="">건폐율 00%</label>
 				</li>
 				<li>
-					<label for="">3차원 건물 배치</label>
-					<input id="run_allocate_building" type="checkbox" class="btnTextF" title="체크박스"></input>
+					<label for="">작업 선택</label>
+					<select id="run_work_state" name="searchDataStatus">
+						<option value="none">선택안함</option>
+						<option value="build">건물 배치 모드</option>
+						<option value="location">경관 좌표 배치 모드</option>
+					</select>
 				</li>
-				<li class="profileInfo" style="display:none;cursor: default;">
-					<div class="legend">
-						<div class="geostats-legend">
-							<div class="geostats-legend-title">Legend</div>
-							<div class="level" data-level="1" style="width: 80px;display: inline-block;">
-								<div class="geostats-legend-block" style="background-color:#e60800"></div>
-								<span class="geostats-legend-counter" style="font-size: 1em;">1단계</span>
-							</div>
-							<div class="level" data-level="2" style="width: 80px;display: inline-block;">
-								<div class="geostats-legend-block" style="background-color:#ff641c"></div>
-								<span class="geostats-legend-counter" style="font-size: 1em;">2단계</span>
-							</div>
-							<div class="level" data-level="3" style="width: 80px;display: inline-block;">
-								<div class="geostats-legend-block" style="background-color:#8d1e4d"></div>
-								<span class="geostats-legend-counter" style="font-size: 1em;">3단계</span>
-							</div>
-							<div class="level" data-level="4" style="width: 80px;display: inline-block;">
-								<div class="geostats-legend-block" style="background-color:#7d2c79"></div>
-								<span class="geostats-legend-counter" style="font-size: 1em;">4단계</span>
-							</div>
-							<div class="level" data-level="5" style="width: 80px;display: inline-block;">
-								<div class="geostats-legend-block" style="background-color:#ffd009"></div>
-								<span class="geostats-legend-counter" style="font-size: 1em;">5단계</span>
-							</div>
-							<div class="level" data-level="6" style="width: 80px;display: inline-block;">
-								<div class="geostats-legend-block" style="background-color:#00a9b6"></div>
-								<span class="geostats-legend-counter" style="font-size: 1em;">6단계</span>
-							</div>
-						</div>
-					</div>
+				<li>
+					<button id="result_build" type="button" class="btnText drawObserverPoint">결과 산출</button>
 				</li>
 			</ul>
 		</div>
-	</li>
+	</li>    
 </ul>
-<div id="permReqeustDialog">
-	<li>
-		<label for="">건물 높이</label>
-		<input id="height_building_input" class="" type="number" placeholder="" value="50"/>
-		<button id="set_height_building" type="button" class="btnText drawObserverPoint">위치지정</button>
-	</li>
+<div id="selectBuildDialog" title="건물 층수 설정">
+	<label for="">건물 층수</label>
+	<input id="height_building_input" class="" type="number" placeholder="" value="0"/>
+	<button id="set_height_building" type="button" class="btnText drawObserverPoint">설정</button>
 </div>
