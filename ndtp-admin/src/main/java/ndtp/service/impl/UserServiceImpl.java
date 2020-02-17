@@ -116,6 +116,16 @@ public class UserServiceImpl implements UserService {
 
 		return result;
 	}
+	
+	/**
+	 * 사용자 비밀번호 수정
+	 * @param userInfo
+	 * @return
+	 */
+	@Transactional
+	public int updatePassword(UserInfo userInfo) {
+		return userMapper.updatePassword(userInfo);
+	}
 
 	/**
 	 * 사용자 삭제

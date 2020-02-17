@@ -10,7 +10,7 @@ import ndtp.domain.UserInfo;
 public class PasswordSupport {
 
 	/**
-	 * Optional 로 고쳐야 하나? 확장용으로 만들어 둠
+	 * Optional 로 고쳐야 하나?
 	 * @param password
 	 * @return
 	 */
@@ -47,9 +47,6 @@ public class PasswordSupport {
 	 * @return
 	 */
 	public static String validateUserPassword(Policy policy, UserInfo userInfo) {
-		
-		
-		
 		
 		// 임시 비밀번호 변경 화면
 		String password = userInfo.getNewPassword();
