@@ -554,7 +554,7 @@ flex: auto;
 padding-right: 10px;
 }
 .commentWrap > li.comment > p:first-child {
-min-width: 220px;
+/* min-width: 220px; */
 }
 .commentWrap > li.none {
 display: flex;
@@ -571,14 +571,16 @@ display: block;
 color: #999;
 }
 .commentWrap p.count {
-min-width: 40px;
+width: 60px;
 /* padding: 8px 5px 0 15px;
 font-size: 17px; */
 font-weight: bold;
-text-align: right;
+text-align: left;
 color: #646464;
 /* background: url(/images/ko/ico.png) no-repeat 0 -968px; */
 /* margin-left:-10px; */
+margin-left: 7px;
+white-space: nowrap;
 }
 
 

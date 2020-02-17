@@ -31,12 +31,12 @@
 	{{#if civilVoiceList}}
 		{{#each civilVoiceList}}
 			<li class="comment flex-align-center" data-id="{{civilVoiceId}}" title="상세보기">
-				<button type="button" class="goto" data-longitude={{longitude}} data-latitude={{latitude}} style="width:30px; margin-right:10px;" title="위치보기">위치보기</button>
+				<p class="count" style=""><span class="likes-icon">icon</span>{{commentCount}}</p>
 				<p>
 					<span class="title">{{title}}</span>
 					<span class="id">{{userId}}</span>
 				</p>
-         	   	<p class="count" style="width: 60px;"><span class="likes-icon">icon</span>{{commentCount}}</p>
+				<button type="button" class="goto" data-longitude={{longitude}} data-latitude={{latitude}} style="width:30px; margin-right:10px;" title="위치보기">위치보기</button>
 			</li>
 		{{/each}}
 	{{else}}
