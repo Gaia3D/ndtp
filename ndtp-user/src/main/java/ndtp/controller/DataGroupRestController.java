@@ -126,8 +126,8 @@ public class DataGroupRestController {
 			if(totalCount > 0l) {
 				dataGroupList = dataGroupService.getListDataGroup(dataGroup);
 			}
-			
 			result.put("pagination", pagination);
+			result.put("owner", userSession.getUserId());
 			result.put("dataGroupList", dataGroupList);
 		} catch(Exception e) {
 			e.printStackTrace();

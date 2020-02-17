@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <script id="templateDataList" type="text/x-handlebars-template">
 	<div>
-		<span><spring:message code='all.d'/> {{formatNumber pagination.totalCount}} <spring:message code='search.what.count'/></span>
+		<span><spring:message code='all.d'/> <span>{{formatNumber pagination.totalCount}}</span> <spring:message code='search.what.count'/></span>
 		<span class="float-right">{{formatNumber pagination.pageNo}} / {{formatNumber pagination.lastPage}} <spring:message code='search.page'/></span>
 	</div>
 	<div class="dataBtns"></div>
@@ -30,6 +30,15 @@
 				<tr>
 					<td rowspan="2">{{subtract ../pagination.rowNumber @index}}</td>
 					<td colspan="3" class="ellipsis" style="max-width:260px;">
+						{{#ifMatch dataGroupTarget 'admin'}}
+							[관리자]
+						{{else}}
+							{{#ifMatch userId ../owner}}
+								[본인]
+							{{else}}
+								[다른 사용자]
+							{{/ifMatch}}
+						{{/ifMatch}}
 						<a href="#" onclick="detailDataInfo('{{dataId}}'); return false;">{{dataName}}</a> [{{dataType}}]
 					</td>
 				</tr>

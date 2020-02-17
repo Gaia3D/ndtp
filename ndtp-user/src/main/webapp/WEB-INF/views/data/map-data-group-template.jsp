@@ -29,6 +29,15 @@
 				<tr>
 					<td>{{subtract ../pagination.rowNumber @index}}</td>
 					<td class="ellipsis" style="max-width:100px;">
+						{{#ifMatch dataGroupTarget 'admin'}}
+							[관리자]
+						{{else}}
+							{{#ifMatch userId ../owner}}
+								[본인]
+							{{else}}
+								[다른 사용자]
+							{{/ifMatch}}
+						{{/ifMatch}}
 						<a href="#" onclick="detailDataGroup('{{dataGroupId}}'); return false;">
 							{{dataGroupName}}
 						</a>

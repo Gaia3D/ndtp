@@ -136,6 +136,7 @@ public class DataRestController {
 			}
 			
 			result.put("pagination", pagination);
+			result.put("owner", userSession.getUserId());
 			result.put("dataList", dataList);
 			
 		} catch(Exception e) {
