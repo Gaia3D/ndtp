@@ -247,7 +247,7 @@
 		}); */
 		
 		// mago3d logo 추가
-		Mago3D.tempCredit(viewer);
+		// Mago3D.tempCredit(viewer);
 		
 		//우측 상단 지도 컨트롤러
 		MapControll(viewer);

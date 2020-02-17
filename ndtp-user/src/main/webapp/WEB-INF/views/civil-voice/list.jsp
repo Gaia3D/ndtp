@@ -41,7 +41,7 @@
 <script>
 	$("#testBuilding").click(()=> {
 		console.log("testBuilding");
-		genBuild(127.786754, 36.643957, 0.1);
+		genBuild(127.786754, 36.643957, 0.5);
 	});
 	var testingPickingDialog = $( "#testingPickingDialog" ).dialog({
 		autoOpen: false,
