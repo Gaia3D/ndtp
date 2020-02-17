@@ -2,6 +2,7 @@ package ndtp.service.impl;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,13 +14,13 @@ import ndtp.service.CivilVoiceCommentService;
 
 @Service
 public class CivilVoiceCommentServiceImpl implements CivilVoiceCommentService {
-	private final CivilVoiceMapper civilVoiceMapper;
-	private final CivilVoiceCommentMapper civilVoiceCommentMapper;
 
-	public CivilVoiceCommentServiceImpl(CivilVoiceMapper civilVoiceMapper, CivilVoiceCommentMapper civilVoiceCommentMapper) {
-		this.civilVoiceMapper = civilVoiceMapper;
-		this.civilVoiceCommentMapper = civilVoiceCommentMapper;
-	}
+	@Autowired
+	private CivilVoiceMapper civilVoiceMapper;
+
+	@Autowired
+	private CivilVoiceCommentMapper civilVoiceCommentMapper;
+
 
 	@Transactional(readOnly=true)
 	public List<CivilVoiceComment> getListCivilVoiceComment(CivilVoiceComment civilVoiceComment) {

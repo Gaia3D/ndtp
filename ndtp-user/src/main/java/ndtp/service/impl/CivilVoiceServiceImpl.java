@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ndtp.domain.CivilVoice;
-import ndtp.domain.CivilVoiceComment;
 import ndtp.persistence.CivilVoiceCommentMapper;
 import ndtp.persistence.CivilVoiceMapper;
 import ndtp.service.CivilVoiceService;

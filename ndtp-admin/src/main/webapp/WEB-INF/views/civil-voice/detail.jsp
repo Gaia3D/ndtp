@@ -69,158 +69,121 @@
 								<a href="/civil-voice/modify?civilVoiceId=${civilVoice.civilVoiceId}&amp;${listParameters}" class="button"><spring:message code='modified'/></a>
 							</div>
 						</div>
+
+						<!-- 댓글 등록 -->
+						<form:form id="civilVoiceCommentForm" modelAttribute="civilVoiceComment" method="post" onsubmit="return false;">
+						<h4 class="comment">댓글쓰기</h4>
+						<div class="commentWrite">
+							<p class="user"></p>
+							<textarea name="" id="" class="reply"></textarea>
+							<span class="textCount">0/256</span>
+							<button type="button" title="등록" class="regist">등록</button>
+						</div>
+						</form:form>
+						<ul id="civilVoiceComment" class="reply"></ul>
+						<div id="civilVoiceCommentPagination" class="pagination"></div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
+	<%@ include file="/WEB-INF/views/civil-voice/comment.jsp" %>
 
 <%-- F4D Converter Job 등록 --%>
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/externlib/handlebars-4.1.2/handlebars.js"></script>
+<script type="text/javascript" src="/js/${lang}/handlebarsHelper.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript">
+
 	$(document).ready(function() {
-		$( ".tabs" ).tabs();
+		getCivilVoiceCommentList();
 	});
 
-	//전체 선택
-	$("#chkAll").click(function() {
-		$(":checkbox[name=uploadDataId]").prop("checked", this.checked);
+	// 시민참여 댓글 등록
+	$('#civilVoiceAgree').on('click', function() {
+		saveCivilVoiceComment();
 	});
 
-	var dialogConverterJob = $( ".dialogConverterJob" ).dialog({
-		autoOpen: false,
-		height: 280,
-		width: 600,
-		modal: true,
-		resizable: false,
-		close: function() {
-			$("#converterCheckIds").val("");
-			$("#title").val("");
-			//location.reload();
-		}
-	});
-
-	// F4D Converter Button Click
-	function converterFile(uploadDataId, dataName) {
-		$("#converterCheckIds").val(uploadDataId + ",");
-		$("#title").val(dataName);
-
-		dialogConverterJob.dialog( "open" );
+	function drawHandlebarsHtml(data, templateId, targetId) {
+		var source = $('#' + templateId).html();
+		var template = Handlebars.compile(source);
+		var html = template(data);
+		$('#' + targetId).empty().append(html);
 	}
 
-	// All F4D Converter Button Click
-	function converterFiles() {
-		var checkedValue = "";
-		$("input:checkbox[name=uploadDataId]:checked").each(function(index) {
-			checkedValue += $(this).val() + ",";
-		});
-		if(checkedValue === "") {
-			alert("파일을 선택해 주십시오.");
-			return;
-		}
-		$("#converterCheckIds").val(checkedValue);
-
-		dialogConverterJob.dialog( "open" );
+	function initFormContent(formId) {
+		$('#' + formId + ' input').val("");
+		$('#' + formId + ' textarea').val("");
 	}
 
-	// F4D Converter 일괄 변환
-	var saveConverterJobFlag = true;
-	function saveConverterJob() {
-		if($("#title").val() === null || $("#title").val() === "") {
-			alert("제목을 입력하여 주십시오.");
-			$("#title").focus();
-			return false;
-		}
+	// 시민참여 댓글 조회
+	function getCivilVoiceCommentList(page) {
+		if(!page) page = 1;
+		var id = '392';
 
-		if(saveConverterJobFlag) {
-			saveConverterJobFlag = false;
-			var formData =$("#converterJobForm").serialize();
-			$.ajax({
-				url: "/converter/insert",
-				type: "POST",
-				data: formData,
-				dataType: "json",
-				headers: {"X-Requested-With": "XMLHttpRequest"},
-				success: function(msg){
-					if(msg.statusCode <= 200) {
-						alert(JS_MESSAGE["insert"]);
-					} else {
-						alert(JS_MESSAGE[msg.errorCode]);
-					}
-
-					$("#converterCheckIds").val("");
-					$("#title").val("");
-					$(":checkbox[name=uploadDataId]").prop("checked", false);
-					dialogConverterJob.dialog( "close" );
-					saveConverterJobFlag = true;
-				},
-				error:function(request,status,error){
-					alert(JS_MESSAGE["ajax.error.message"]);
-					dialogConverterJob.dialog( "close" );
-					saveConverterJobFlag = true;
+		$.ajax({
+			url: '/civil-voice-comments/' + id,
+			type: 'GET',
+			headers: {'X-Requested-With': 'XMLHttpRequest'},
+			contentType: "application/json; charset=utf-8",
+			dataType: 'json',
+			data: {pageNo: page},
+			success: function(res){
+				if(res.statusCode <= 200) {
+					debugger
+					$('#civilVoiceCommentTotalCount').text(res.totalCount);
+					drawHandlebarsHtml(res, 'templateCivilVoiceComment', 'civilVoiceComment');
+					drawHandlebarsHtml(res, 'templateCivilVoiceCommentPagination', 'civilVoiceCommentPagination');
+				} else {
+					alert(JS_MESSAGE[res.errorCode]);
+					console.log("---- " + res.message);
 				}
+			},
+			error: function(request, status, error) {
+				alert(JS_MESSAGE["ajax.error.message"]);
+			}
+		});
+	}
+
+	// 시민참여 댓글 등록
+	var insertCivilVoiceCommentFlag = true;
+	function saveCivilVoiceComment() {
+		if(insertCivilVoiceCommentFlag) {
+			insertCivilVoiceCommentFlag = false;
+			var id = '392';
+			var url = "/civil-voice-comments";
+			var formId = 'civilVoiceCommentForm';
+			var formData = $('#' + formId).serialize();
+
+			$.ajax({
+				url: url,
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+				data: formData + '&civilVoiceId=' + id,
+				dataType: "json",
+				success: function(msg) {
+					if(msg.statusCode <= 200) {
+						alert("등록 되었습니다.");
+						initFormContent(formId);
+						getCivilVoiceCommentList();
+					} else {
+						alert(msg.message);
+						console.log("---- " + msg.message);
+					}
+					insertCivilVoiceCommentFlag = true;
+				},
+		        error: function(request, status, error) {
+		        	alert(JS_MESSAGE["ajax.error.message"]);
+		        	insertCivilVoiceCommentFlag = true;
+		        }
 			});
 		} else {
-			alert(JS_MESSAGE["button.dobule.click"]);
+			alert("진행 중입니다.");
 			return;
-		}
-	}
-
-	function deleteUploadData(uploadDataId) {
-		deleteAllUploadData(uploadDataId);
-	}
-
-	// 삭제
-	var deleteUploadDataFlag = true;
-	function deleteAllUploadData(uploadDataId) {
-		var formData = null;
-		if(uploadDataId === undefined) {
-			if($("input:checkbox[name=uploadDataId]:checked").length == 0) {
-				alert(JS_MESSAGE["check.value.required"]);
-				return false;
-			} else {
-				var checkedValue = "";
-				$("input:checkbox[name=uploadDataId]:checked").each(function(index){
-					checkedValue += $(this).val() + ",";
-				});
-				$("#checkIds").val(checkedValue);
-			}
-			formData = "checkIds=" + $("#checkIds").val();
-		} else {
-			formData = "checkIds=" + uploadDataId;
-		}
-
-		if(confirm(JS_MESSAGE["delete.confirm"])) {
-			if(deleteUploadDataFlag) {
-				deleteUploadDataFlag = false;
-				$.ajax({
-					url: "/upload-data/delete",
-					type: "POST",
-					data: formData,
-					dataType: "json",
-					headers: {"X-Requested-With": "XMLHttpRequest"},
-					success: function(msg){
-						if(msg.statusCode <= 200) {
-							alert(JS_MESSAGE["delete"]);
-							location.reload();
-						} else {
-							alert(JS_MESSAGE[msg.errorCode]);
-						}
-						deleteDatasFlag = true;
-					},
-					error:function(request,status,error){
-				        alert(JS_MESSAGE["ajax.error.message"]);
-				        deleteDatasFlag = true;
-					}
-				});
-			} else {
-				alert(JS_MESSAGE["button.dobule.click"]);
-				return;
-			}
 		}
 	}
 
