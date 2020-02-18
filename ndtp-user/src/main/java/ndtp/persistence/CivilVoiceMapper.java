@@ -17,6 +17,13 @@ public interface CivilVoiceMapper {
 	List<CivilVoice> getListCivilVoice(CivilVoice civilVoice);
 
 	/**
+	 * 시민 참여 전체 목록 조회
+	 * @param civilvoice
+	 * @return
+	 */
+	List<CivilVoice> getListAllCivilVoice(CivilVoice civilVoice);
+
+	/**
 	 * 시민 참여 전체 건수 조회
 	 * @param civilvoice
 	 * @return
@@ -50,6 +57,13 @@ public interface CivilVoiceMapper {
 	 * @return
 	 */
 	int updateCivilVoiceCommentCount(CivilVoice civilVoice);
+
+	/**
+	 * 조회 수 수정
+	 * @param civilvoice
+	 * @return
+	 */
+	int updateCivilVoiceViewCount(CivilVoice civilVoice);
 
 	/**
 	 * 삭제

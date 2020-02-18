@@ -181,7 +181,7 @@
    		    billboard : {
    	        	disableDepthTestDistance : Number.POSITIVE_INFINITY,
    				heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
-   		        image: '/images/ko/logo.png'
+   		        image: '/images/ko/marker.png'
    		    }
    		});
 	}
@@ -189,8 +189,8 @@
 	function flyToPointClose() {
 		if(beforePointId && !${readOnly}) {
 			alert("위치가 변경되었습니다.");
-			window.close();
 		}
+		window.close();
 	}
 </script>
 </html>

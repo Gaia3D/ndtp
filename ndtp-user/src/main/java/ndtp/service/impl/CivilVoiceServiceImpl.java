@@ -26,6 +26,11 @@ public class CivilVoiceServiceImpl implements CivilVoiceService {
 	}
 
 	@Transactional(readOnly = true)
+	public List<CivilVoice> getListAllCivilVoice(CivilVoice civilvoice) {
+		return civilVoiceMapper.getListAllCivilVoice(civilvoice);
+	}
+
+	@Transactional(readOnly = true)
 	public Long getCivilVoiceTotalCount(CivilVoice civilVoice) {
 		return civilVoiceMapper.getCivilVoiceTotalCount(civilVoice);
 	}
@@ -43,6 +48,11 @@ public class CivilVoiceServiceImpl implements CivilVoiceService {
 	@Transactional
 	public int updateCivilVoice(CivilVoice civilVoice) {
 		return civilVoiceMapper.updateCivilVoice(civilVoice);
+	}
+
+	@Transactional
+	public int updateCivilVoiceViewCount(CivilVoice civilVoice) {
+		return civilVoiceMapper.updateCivilVoiceViewCount(civilVoice);
 	}
 
 	@Transactional

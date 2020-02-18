@@ -11,7 +11,6 @@
 					<th class="col-sub-label">데이터명</th>
 					<td id="objectAttributeDataName"></td>
 				</tr>
-				
 				<tr>
 					<th class="col-sub-label">업로딩 파일</th>
 					<td>

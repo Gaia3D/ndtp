@@ -96,6 +96,46 @@ public class CivilVoiceRestController {
 	}
 
 	/**
+	 * 시민 참여 전체 목록 조회
+	 * @param request
+	 * @param civilVoice
+	 * @param pageNo
+	 * @return
+	 */
+	@GetMapping("/all")
+	public Map<String, Object> listAll(HttpServletRequest request, CivilVoice civilVoice) {
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		civilVoice.setUserId(userSession.getUserId());
+		civilVoice.setClientIp(WebUtils.getClientIp(request));
+		try {
+			long totalCount = civilVoiceService.getCivilVoiceTotalCount(civilVoice);
+			List<CivilVoice> civilVoiceList = new ArrayList<>();
+			if(totalCount > 0l) {
+				civilVoiceList = civilVoiceService.getListAllCivilVoice(civilVoice);
+			}
+
+			result.put("totalCount", totalCount);
+			result.put("civilVoiceList", civilVoiceList);
+		} catch(Exception e) {
+			e.printStackTrace();
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+
+		return result;
+	}
+
+	/**
 	 * 시민 참여 상세 조회
 	 * @param request
 	 * @param civilVoiceId
@@ -103,7 +143,8 @@ public class CivilVoiceRestController {
 	 * @return
 	 */
 	@GetMapping("/{civilVoiceId}")
-	public Map<String, Object> detail(HttpServletRequest request, @PathVariable Long civilVoiceId, CivilVoice civilVoice) {
+	public Map<String, Object> detail(HttpServletRequest request, @PathVariable Long civilVoiceId,
+			@RequestParam(value="readOnly",required=false) Boolean readOnly, CivilVoice civilVoice) {
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 
 		Map<String, Object> result = new HashMap<>();
@@ -123,6 +164,11 @@ public class CivilVoiceRestController {
 			civilVoice = civilVoiceService.getCivilVocieById(civilVoice);
 			statusCode = HttpStatus.OK.value();
 			result.put("civilVoice", civilVoice);
+
+			// 조회 수 수정
+			if(readOnly==null || readOnly) {
+				civilVoiceService.updateCivilVoiceViewCount(civilVoice);
+			}
 		} catch(Exception e) {
 			e.printStackTrace();
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();

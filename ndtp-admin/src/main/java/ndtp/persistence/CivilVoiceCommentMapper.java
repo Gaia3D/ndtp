@@ -50,4 +50,11 @@ public interface CivilVoiceCommentMapper {
 	 * @return
 	 */
 	int deleteCivilVoiceCommentFromId(long civilVoiceId);
+
+	/**
+	 * 동의 여부 확인
+	 * @param civilVoiceComment
+	 * @return
+	 */
+	Boolean alreadyRegistered(CivilVoiceComment civilVoiceComment);
 }

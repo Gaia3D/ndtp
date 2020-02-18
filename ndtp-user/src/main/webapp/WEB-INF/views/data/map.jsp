@@ -29,6 +29,14 @@
 		.ctrlWrap {
 			z-index:100;
 		}
+		#objectLabel {
+		    background-color: transparent;
+		    position: absolute;
+		    left: 0px;
+		    top: 0px;
+		    z-index: 10;
+		    pointer-events: none;
+	   	}
 		/* 
 		.ctrlWrap div.zoom button, .ctrlWrap div.rotate button  {
 			width:47px;
@@ -120,6 +128,7 @@
 			<input id="timeInput"/>
 		</div>
 	</div>
+	<canvas id="objectLabel"></canvas>	
 	<!-- E: MAP -->
 </div>
 <!-- E: WRAP -->
@@ -161,6 +170,7 @@
 <script type="text/javascript" src="/js/${lang}/layer.js"></script>
 <script type="text/javascript" src="/js/${lang}/map-data-controll.js"></script>
 <script type="text/javascript" src="/js/${lang}/civil-voice.js"></script>
+<script type="text/javascript" src="/js/${lang}/issue-controller.js"></script>
 <script type="text/javascript">
 	// 임시로...
 	$(document).ready(function() {
@@ -237,11 +247,13 @@
         CivilVoice(magoInstance);
         // 기본 레이어 랜더링
         setTimeout(function(){
-        	initLayer(magoInstance, NDTP.baseLayers);
+        	//initLayer(magoInstance, NDTP.baseLayers);
         }, geoPolicyJson.initDuration * 1000);
 
 		//지도상에 데이터 다루는거
 		MapDataControll(magoInstance);
+
+		NDTP.issueController = new IssueController(magoInstance);
 	}
 
 	// 데이터 그룹 목록
@@ -273,39 +285,40 @@
 		var dataGroupArrayLength = dataGroupArray.length;
 		for(var i=0; i<dataGroupArrayLength; i++) {
 			var dataGroup = dataGroupArray[i];
-			var f4dController = MAGO3D_INSTANCE.getF4dController();
-			$.ajax({
-				url: "/datas/" + dataGroup.dataGroupId + "/list",
-				type: "GET",
-				headers: {"X-Requested-With": "XMLHttpRequest"},
-				dataType: "json",
-				success: function(msg){
-					if(msg.statusCode <= 200) {
-						var dataInfoList = msg.dataInfoList;
-						if(dataInfoList != null && dataInfoList.length > 0) {
-							var dataInfoFirst = dataInfoList[0];
-							var dataInfoGroupId = dataInfoFirst.dataGroupId;
-							var group;
-							for(var j in dataGroupArray) {
-								if(dataGroupArray[j].dataGroupId === dataInfoGroupId) {
-									group = dataGroupArray[j];
-									break;
+			if(!dataGroup.tiling) {
+				var f4dController = MAGO3D_INSTANCE.getF4dController();
+				$.ajax({
+					url: "/datas/" + dataGroup.dataGroupId + "/list",
+					type: "GET",
+					headers: {"X-Requested-With": "XMLHttpRequest"},
+					dataType: "json",
+					success: function(msg){
+						if(msg.statusCode <= 200) {
+							var dataInfoList = msg.dataInfoList;
+							if(dataInfoList != null && dataInfoList.length > 0) {
+								var dataInfoFirst = dataInfoList[0];
+								var dataInfoGroupId = dataInfoFirst.dataGroupId;
+								var group;
+								for(var j in dataGroupArray) {
+									if(dataGroupArray[j].dataGroupId === dataInfoGroupId) {
+										group = dataGroupArray[j];
+										break;
+									}
 								}
+	
+								group.datas = dataInfoList;
+								f4dController.addF4dGroup(group);
 							}
-
-							group.datas = dataInfoList;
-							f4dController.addF4dGroup(group);
+						} else {
+							alert(JS_MESSAGE[msg.errorCode]);
 						}
-					} else {
-						alert(JS_MESSAGE[msg.errorCode]);
+					},
+					error:function(request,status,error){
+						alert(JS_MESSAGE["ajax.error.message"]);
 					}
-				},
-				error:function(request,status,error){
-					alert(JS_MESSAGE["ajax.error.message"]);
-				}
-			});
+				});
+			}
 		}
-
 	}
 
 	function flyTo(dataGroupId, dataKey) {
@@ -324,6 +337,25 @@
 			return;
 		}
 		gotoFlyAPI(MAGO3D_INSTANCE, parseFloat(longitude), parseFloat(latitude), parseFloat(altitude), parseFloat(duration));
+	}
+	
+	//데이터 3D Instance show/hide
+	function showHideData(dataGroupId, dataKey) {
+		if(dataGroupId === null || dataGroupId === '' || dataKey === null || dataKey === '') {
+			alert("객체 정보가 올바르지 않습니다. 확인하여 주십시오.");
+			return;
+		}
+		
+		//버튼에 id와 class(= "on")가 부여되어있어야 함 (또는, isVisible : !option)
+		$('#showHideButton').toggleClass("on");
+		
+		var option = $('#showHideButton').hasClass("on");
+		
+		var optionObject = {
+				isVisible : option
+			}
+		
+		setNodeAttributeAPI(MAGO3D_INSTANCE, dataGroupId, dataKey, optionObject);
 	}
 
 	var dataInfoDialog = $( "#dataInfoDialog" ).dialog({
@@ -625,7 +657,10 @@
 	
 	// 이슈 등록 버튼 클릭
 	$("#issueButton").click(function() {
+		$('#issueTitle,#issueContents').prop('readonly',false);
+		$('#issueSaveButton').parent('.btns').show();
 		issueDialog.dialog( "open" );
+		issueDialog.dialog( "option", "title", "이슈 등록");
 	});
 	// 이슈 다이얼 로그
 	var issueDialog = $( "#issueDialog" ).dialog({
@@ -636,6 +671,40 @@
 		overflow : "auto",
 		resizable: false
 	});
+
+	// 이슈 상세 정보 조회
+	function detailIssueInfo(issueId) {
+		
+		$.ajax({
+			url: "/issues/" + issueId,
+			type: "GET",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			dataType: "json",
+			success: function(msg){
+				if(msg.statusCode <= 200) {
+					issueDialog.dialog( "open" );
+					issueDialog.dialog( "option", "title", "이슈 상세 정보");
+					$('#issueSaveButton').parent('.btns').hide();
+					
+					$('#issueTitle,#issueContents').prop('readonly',true);
+					
+					var issue = msg.issue;
+					$('#issueDataGroupName').text(issue.dataGroupName);
+					$('#issueDataName').text(issue.dataKey);
+					$('#issueLongitude').val(issue.longitude);
+					$('#issueLatitude').val(issue.latitude);
+					$('#issueAltitude').val(issue.altitude);
+					$('#issueTitle').val(issue.title);
+					$('#issueContents').val(issue.contents);
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+				}
+			},
+			error:function(request,status,error){
+				alert(JS_MESSAGE["ajax.error.message"]);
+			}
+		});
+	}
 	
 	// 이슈 등록
 	var insertIssueFlag = true;

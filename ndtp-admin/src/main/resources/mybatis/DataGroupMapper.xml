@@ -45,12 +45,12 @@
 		/* getListLayerGroup */
 		WITH RECURSIVE data_group_tree (
 			data_group_id, data_group_name, data_group_key, data_group_path, sharing, user_id, ancestor, parent, depth, view_order,
-			children, basic, available, data_count, location, altitude, duration, location_update_type, metainfo, description, update_date, insert_date,
-			path, cycle
+			children, basic, available, tiling, data_count, location, altitude, duration, location_update_type, metainfo, description, 
+			update_date, insert_date, path, cycle
 		) AS (
 	        SELECT A.data_group_id, A.data_group_name, A.data_group_key, A.data_group_path, A.sharing, A.user_id, A.ancestor, A.parent, A.depth, A.view_order,
-	        	A.children, A.basic, A.available, A.data_count, A.location, A.altitude, A.duration, A.location_update_type, A.metainfo, A.description, A.update_date, A.insert_date,
-	        	ARRAY[A.view_order], false
+	        	A.children, A.basic, A.available, A.tiling, A.data_count, A.location, A.altitude, A.duration, A.location_update_type, A.metainfo, A.description, 
+	        	A.update_date, A.insert_date, ARRAY[A.view_order], false
 			FROM data_group A
 			WHERE A.parent = 0
 				AND A.data_group_target = 'admin'
@@ -59,13 +59,13 @@
 			</if>
 			UNION ALL
 	        SELECT A.data_group_id, A.data_group_name, A.data_group_key, A.data_group_path, A.sharing, A.user_id, A.ancestor, A.parent, A.depth, A.view_order,
-	        	A.children, A.basic, A.available, A.data_count, A.location, A.altitude, A.duration, A.location_update_type, A.metainfo, A.description, A.update_date, A.insert_date,
-	        	path || A.view_order, A.data_group_id = ANY(path)
+	        	A.children, A.basic, A.available, A.tiling, A.data_count, A.location, A.altitude, A.duration, A.location_update_type, A.metainfo, A.description,
+	        	A.update_date, A.insert_date, path || A.view_order, A.data_group_id = ANY(path)
 	        FROM data_group A, data_group_tree B
 	        WHERE A.parent = B.data_group_id AND not cycle
 		)
 	    SELECT data_group_id, data_group_name, data_group_key, data_group_path, sharing, user_id, ancestor, parent, depth, view_order,
-	    	children, basic, available, data_count, location, altitude, duration, location_update_type, metainfo, description, update_date, insert_date,
+	    	children, basic, available, tiling, data_count, location, altitude, duration, location_update_type, metainfo, description, update_date, insert_date,
 	    	path
 	    FROM data_group_tree
 	    ORDER BY path
@@ -178,6 +178,9 @@
 			<if test="available != null">
 			available,
 			</if>
+			<if test="tiling != null">
+			tiling,
+			</if>
 			data_count,
 			<if test="location != null">
 			location,
@@ -220,6 +223,9 @@
 			</if>
 			<if test="available != null">
 			#{available},
+			</if>
+			<if test="tiling != null">
+			#{tiling},
 			</if>
 			COALESCE(#{dataCount}, 0),
 			<if test="location != null">
@@ -307,6 +313,9 @@
 			</if>
 			<if test="available != null">
 			available = #{available},
+			</if>
+			<if test="tiling != null">
+			tiling = #{tiling},
 			</if>
 			<if test="dataCount != null and dataCount gte 0">
 			data_count = #{dataCount},
