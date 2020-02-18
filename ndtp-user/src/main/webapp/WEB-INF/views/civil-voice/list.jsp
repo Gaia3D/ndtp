@@ -47,8 +47,8 @@
 <script id="templateCivilVoicePagination" type="text/x-handlebars-template">
 	{{#if pagination.totalCount}}
     	<ul class="pagination">
-       	 	<li class="ico first" onClick="getCivilVoiceList({{pagination.firstPage}});"></li>
     	{{#if pagination.existPrePage}}
+       	 	<li class="ico first" onClick="getCivilVoiceList({{pagination.firstPage}});"></li>
         	<li class="ico forward" onClick="getCivilVoiceList({{pagination.prePageNo}});"></li>
     	{{/if}}
 
@@ -62,8 +62,8 @@
 
     	{{#if pagination.existNextPage}}
         	<li class="ico back" onClick="getCivilVoiceList({{pagination.nextPageNo}});"></li>
-    	{{/if}}
         	<li class="ico end" onClick="getCivilVoiceList({{pagination.lastPage}});"></li>
+    	{{/if}}
     	</ul>
 	{{/if}}
 </script>

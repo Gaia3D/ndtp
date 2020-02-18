@@ -150,8 +150,8 @@ public class MapController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
-        //model.addAttribute("baseLayers", userPolicy.getBaseLayers());
+//        
+//        model.addAttribute("baseLayers", userPolicy.getBaseLayers());
         
         return "/api-help/layout";
     }
