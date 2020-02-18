@@ -16,5 +16,6 @@ public class SimFileMaster {
 	private String saveFileName;
 	private String saveFilePath;
 	private Date createDt;
+	private FileType saveFileType;
 
 }

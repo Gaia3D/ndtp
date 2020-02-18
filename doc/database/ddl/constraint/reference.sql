@@ -30,3 +30,4 @@ alter table only user_group_role add constraint user_group_role_fk_role_id forei
 
 alter table only user_policy add constraint user_policy_fk_user_id foreign key (user_id) references user_info(user_id);
 
+alter table only city_plan_result add constraint sim_file_master_fk_city_plan_result foreign key (sim_file_master_img_num) references sim_file_master(sim_file_seq);

@@ -48,8 +48,11 @@ public class SimuServiceImpl {
 		String Path = "";
 		List<String> result = new ArrayList<String>();
 		for(MultipartFile mtf : files) {
-			String Name = mtf.getName();
-			result.add(this.restore(mtf, FileType.FILE));
+			String Name = mtf.getOriginalFilename();
+			if(!Name.contains(".geojson")) {
+				throw new IllegalArgumentException("target must be specified");
+			}
+			result.add(this.restore(mtf, FileType.ECHODELTASHP));
 		}
 		return result;
 	}
@@ -59,7 +62,7 @@ public class SimuServiceImpl {
 		String Path = "";
 		List<String> result = new ArrayList<String>();
 
-		result.add(this.restore(cpr.getFiles(), FileType.IMGFILE));
+		result.add(this.restore(cpr, FileType.IMGFILE));
 		return result;
 	}
 	
@@ -102,16 +105,66 @@ public class SimuServiceImpl {
 			System.out.println("extensionName : " + extName);
 			System.out.println("saveFileName : " + saveFileName);
 
-			if(ft == FileType.FILE) {
+			if(ft == FileType.ECHODELTASHP) {
 				this.writeFile(multipartFile, saveFileName, SAVE_PATH);
 				SimFileMaster sfm = SimFileMaster.builder()
 						.originFileName(originFilename)
 						.saveFileName(saveFileName)
 						.saveFilePath(SAVE_PATH)
+						.saveFileType(ft)
 						.build();
 				int result = simuMapper.insertSimCityPlanFile(sfm);
-			} else if (ft == FileType.IMGFILE) {
+			}
+			url = PREFIX_URL + saveFileName;
+		}
+		catch (IOException e) {
+			// 원래라면 RuntimeException 을 상속받은 예외가 처리되어야 하지만
+			// 편의상 RuntimeException을 던진다.
+			// throw new FileUploadException();
+			throw new RuntimeException(e);
+		}
+		return url;
+	}
+
+	private String restore(CityPlanResult cpr, FileType ft) {
+		String url = null;
+		MultipartFile multipartFile = cpr.getFiles();
+
+		String os = System.getProperty("os.name").toLowerCase();
+		if (os.contains("mac")) {
+			PREFIX_URL = "/Users/junho/data/mago3d/";
+			SAVE_PATH = "/Users/junho/data/mago3d/";
+		}
+		String PREFIX_URL = "C:\\data\\mago3d\\normal-upload-data\\";
+		String SAVE_PATH = "C:\\data\\mago3d\\normal-upload-data\\";
+
+		try {
+			// 파일 정보
+			String originFilename = multipartFile.getOriginalFilename();
+			String extName = originFilename.substring(originFilename.lastIndexOf("."), originFilename.length());
+			Long size = multipartFile.getSize();
+
+			// 서버에서 저장 할 파일 이름
+			String saveFileName = genSaveFileName(extName);
+
+			System.out.println("originFilename : " + originFilename);
+			System.out.println("extensionName : " + extName);
+			System.out.println("saveFileName : " + saveFileName);
+
+			if (ft == FileType.IMGFILE) {
+				// 도시계획 시뮬레이션 결과 저장
 				this.writeImageFile(multipartFile, saveFileName, SAVE_PATH);
+
+				SimFileMaster sfm = SimFileMaster.builder()
+						.originFileName(originFilename)
+						.saveFileName(saveFileName)
+						.saveFilePath(SAVE_PATH)
+						.saveFileType(ft)
+						.build();
+				int cityPlanFileInsert = simuMapper.insertSimCityPlanFile(sfm);
+				cpr.setCityPlanResultSeq(sfm.getSimFileSeq());
+				int result = simuMapper.insertSimCityPlanFileResult(cpr);
+				
 			}
 
 			url = PREFIX_URL + saveFileName;

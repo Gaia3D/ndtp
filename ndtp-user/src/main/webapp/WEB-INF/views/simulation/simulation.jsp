@@ -6,10 +6,27 @@
 
 <ul class="listDrop">
 	<li>
-		<p>경관 분석(일조분석)<span class="collapse-icon">icon</span></p>
+		<p>좌표 정보<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="solarAnalysis">
 			<ul class="analysisGroup">
 				<li>
+					<label for="">위도</label>
+					<label id="monitorLon" for="">OO</label>
+					<label for="">경도</label>
+					<label id="monitorLat" for="">OO</label>
+				</li>
+				<li>
+					<label for="">위치 정보 모니터링</label>
+					<input id="locaMonitorChk" type="checkbox" class="btnText">
+				</li>
+			</ul>
+		</div>
+	</li>
+	<li>
+		<p>경관 분석(일조분석)<span class="collapse-icon">icon</span></p>
+		<div class="listContents" id="solarAnalysis">
+			<ul class="analysisGroup">
+				<li style="display:none;">
 					<label for="">관찰자 위치</label>
 					<input class="" type="text" placeholder="" value=""/>
 					<button type="button" class="btnText drawObserverPoint">위치지정</button>
@@ -22,11 +39,20 @@
 			            <span class="tui-ico-date"></span>
 			        </div>
 			        <div id="solayDatePicker" style="margin-top: -1px;"></div>
-
 				</li>
 				<li class="btns">
 					<button type="button" class="btnTextF execute" title="분석">분석</button>
 					<button type="button" class="btnText reset" title="취소">취소</button>
+				</li>
+				<li>
+					<label for="">카메라 위치</label>
+					<button id="cameraLocaSave" type="button" class="btnText">카메라 위치 저장</button>
+					
+					<label for="">경관 리스트</label>
+					<select id="camera_scene_list" name="searchDataStatus">
+						<option value="none">선택안함</option>
+					</select>
+					<button id="cameraLocaMove" type="button" class="btnText">이동</button>
 				</li>
 			</ul>
 		</div>
@@ -92,10 +118,9 @@
 					<form id="file_upload" name="file_upload"method="post" enctype="multipart/form-data" action="simulation-rest/upload" style="width:100%" target="dummyframe">
 						<input type="file" name="files" style="width:100%" multiple>
 						<button id="upload_cityplan" type="submit" class="btnTextF" title="업로드">업로드</button>
-						<button type="button" class="btnText reset" title="취소">취소</button>
+						<button id="run_cityplan" type="button" class="btnTextF" title="가시화">가시화</button>
+						<button id="move_cityplan" type="button" class="btnTextF" title="가시화" style='display:none'>이동</button>
 					</form>
-					<button id="run_cityplan" type="button" class="btnTextF" title="가시화">가시화</button>
-					<button id="move_cityplan" type="button" class="btnTextF" title="가시화">이동</button>
 				</li>
 				<li>
 					<label for="">대상 면적</label>
@@ -115,7 +140,8 @@
 				<li>
 					<label for="">작업 선택</label>
 					<select id="run_work_state" name="searchDataStatus">
-						<option value="none">선택안함</option>
+						<option value="">선택안함</option>
+						<option value="imsiBuildSelect">건물 선택 모드</option>
 						<option value="imsiBuild">임시 건물 배치 모드</option>
 						<option value="autoBuild">자동 건물 배치 모드</option>
 						<option value="location">경관 좌표 배치 모드</option>
@@ -123,7 +149,6 @@
 				</li>
 				<li>
 					<button id="result_build" type="button" class="btnText drawObserverPoint">결과 산출</button>
-					<button id="modelView">모델보기</button>
 				</li>
 			</ul>
 		</div>

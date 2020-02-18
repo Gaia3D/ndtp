@@ -89,15 +89,14 @@ public class SimulationRestController {
 
     @RequestMapping(value = "/cityPlanModelSelect", method = RequestMethod.GET)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public Object cityPlanModelSelect() {
-//    	String resultFullPath = "C:\\data\\Apartment_Building_26_obj\\Apartment_Building_26_obj.gltf";
-		String resultFullPath = "C:\\data\\Apartment_Building_26_obj\\Sample.gltf";
-		String os = System.getProperty("os.name").toLowerCase();
+    public Object cityPlanModelSelect(String FileName) {
+//    	String resultFullPath = "C:\\data\\Apartment_Building_26_obj\\Apartment_Building_26_obj.gltf"; 
+    	String resultFullPath = "C:\\data\\Apartment_Building_26_obj\\" + FileName; 
+    	String os = System.getProperty("os.name").toLowerCase();
 		if (os.contains("mac")) {
 			resultFullPath = "/Users/junho/data/mago3d/building_obj/Apartment_Building_26_obj.gltf";
 //			resultFullPath = "/Users/junho/data/mago3d/building_obj/Roof.gltf";
 		}
-
         File fi = new File(resultFullPath.trim());
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -112,7 +111,7 @@ public class SimulationRestController {
     @RequestMapping(value = "/cityPlanResultInsert", method = RequestMethod.POST)
     public List<String> cityPlanResultInsert(CityPlanResult cityPlanResult) {
     	List<String> result = this.simServiceImpl.procCityPlanResult(cityPlanResult);
-		return null;
+		return result;
     }
     
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
@@ -138,7 +137,7 @@ public class SimulationRestController {
 				saveFileName = genSaveFileName(extName);
 				try{
 					writeFile(mtf, saveFileName, SAVE_PATH);
-				}catch(Exception e){
+				} catch(Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -268,10 +267,6 @@ public class SimulationRestController {
 
 		return userID;
 	}
-
-
-
-
 	private String genSaveFileName(String extName) {
 		String fileName = "";
 
