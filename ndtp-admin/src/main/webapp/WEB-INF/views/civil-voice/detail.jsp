@@ -170,7 +170,7 @@
 						initFormContent(formId);
 						getCivilVoiceCommentList();
 					} else {
-						alert(msg.message);
+			        	alert(JS_MESSAGE[msg.errorCode]);
 						console.log("---- " + msg.message);
 					}
 					insertCivilVoiceCommentFlag = true;

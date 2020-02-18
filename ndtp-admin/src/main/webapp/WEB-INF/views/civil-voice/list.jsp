@@ -83,7 +83,7 @@
 									<col class="col-number" />
 									<col class="col-type" />
 									<col class="col-name" />
-									<col class="col-name" />
+									<col class="col-type" />
 									<col class="col-type" />
 									<col class="col-functions" />
 									<col class="col-functions" />
@@ -113,7 +113,7 @@
 											<td class="col-name">
 												<a href="/civil-voice/detail?civilVoiceId=${civilVoice.civilVoiceId}&amp;pageNo=${pagination.pageNo }${pagination.searchParameters}" class="linkButton">${civilVoice.title}</a>
 											</td>
-											<td class="col-name">${civilVoice.viewCount}</td>
+											<td class="col-type">${civilVoice.viewCount}</td>
 											<td class="col-type">
 												<a href="/civil-voice/modify?civilVoiceId=${civilVoice.civilVoiceId}" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;
 												<a href="/civil-voice/delete?civilVoiceId=${civilVoice.civilVoiceId}" onclick="return deleteWarning();" class="linkButton"><spring:message code='delete'/></a>
