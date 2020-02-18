@@ -254,13 +254,14 @@ function magoLoadEnd2(e) {
 	viewer.scene.globe.depthTestAgainstTerrain = true;
 	
 	$.ajax({
-		url: "/js/temp/sample_f4d.json",
+		url: "/sample/json/sample_f4d.json",
 		type: "GET",
 		headers: {"X-Requested-With": "XMLHttpRequest"},
 		dataType: "json",
 		success: function(res){
 			if(res) {
 				var policy = Mago3D.MagoConfig.getPolicy();
+				console.log(res);
 				var initLat = parseFloat(policy.initLatitude);
 				var initLon = parseFloat(policy.initLongitude);
 				var childs = res.children;
@@ -275,7 +276,7 @@ function magoLoadEnd2(e) {
 			}
 		},
 		error:function(request,status,error){
-			alert(JS_MESSAGE["ajax.error.message"]);
+			//alert(JS_MESSAGE["ajax.error.message"]);
 		}
 	});
 }
