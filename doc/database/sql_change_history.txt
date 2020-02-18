@@ -1,3 +1,9 @@
+2월 18일
+ALTER TABLE converter_job DROP COLUMN is_y_axis_up;
+
+ALTER TABLE converter_job ADD COLUMN y_axis_up char(1) default 'N';
+comment on column converter_job.y_axis_up is '높이방향. y축이 건물의 천장을 향하는 경우 Y. default = N';
+
 2월 17일
 ALTER TABLE converter_job ADD COLUMN is_y_axis_up varchar(1) default 'N';
 comment on column converter_job.is_y_axis_up is '높이방향. y축이 건물의 천장을 향하는 경우 Y. default = N';
