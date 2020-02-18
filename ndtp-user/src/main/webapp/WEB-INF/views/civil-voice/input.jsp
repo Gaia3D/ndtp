@@ -18,14 +18,14 @@
 				<label for="">위치 <span style="color: red;">*</span></label>
 				<input type="text" name="longitude" style="width:30%;">
 				<input type="text" name="latitude" style="width:30%;">
-				<button type="button" id="civilVoiceLocation" class="basicA" title="위치지정">위치지정</button>
+				<button type="button" id="civilVoiceLocation" onClick="civilVoice.getGeographicCoord();" class="basicA" title="위치지정">위치지정</button>
 			</li>
 			<li>
 				<label for="contents">내용 <span style="color: red;">*</span></label>
 				<textarea id="contents" name="contents" cols="47" rows="10"></textarea>
 			</li>
 			<li class="form-group button-group-center">
-				<button id="civilVoiceCreateButton" class="btnTextF" title="등록" style="width: 200px;">등록</button>
+				<button id="civilVoiceCreateButton" onClick="saveCivilVoice();" class="btnTextF" title="등록" style="width: 200px;">등록</button>
 				<!-- <button id="civilVoiceCancleButton" class="focusC" title="취소">취소</button> -->
 			</li>
 		</ul>
