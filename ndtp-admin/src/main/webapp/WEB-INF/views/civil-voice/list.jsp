@@ -85,6 +85,7 @@
 									<col class="col-name" />
 									<col class="col-type" />
 									<col class="col-type" />
+									<col class="col-type" />
 									<col class="col-functions" />
 									<col class="col-functions" />
 									<thead>
@@ -93,6 +94,7 @@
 						                    <th scope="col">동의</th>
 						                    <th scope="col" style="width:600px">제목</th>
 						                    <th scope="col">조회수</th>
+						                    <th scope="col">위치</th>
 						                    <th scope="col">편집</th>
 						                    <th scope="col">작성자</th>
 						                    <th scope="col">등록일</th>
@@ -114,6 +116,9 @@
 												<a href="/civil-voice/detail?civilVoiceId=${civilVoice.civilVoiceId}&amp;pageNo=${pagination.pageNo }${pagination.searchParameters}" class="linkButton">${civilVoice.title}</a>
 											</td>
 											<td class="col-type">${civilVoice.viewCount}</td>
+											<td class="col-type">
+												<a href="#" onClick="flyToPoint(${civilVoice.longitude}, ${civilVoice.latitude});">보기</a>
+											</td>
 											<td class="col-type">
 												<a href="/civil-voice/modify?civilVoiceId=${civilVoice.civilVoiceId}" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;
 												<a href="/civil-voice/delete?civilVoiceId=${civilVoice.civilVoiceId}" onclick="return deleteWarning();" class="linkButton"><spring:message code='delete'/></a>
@@ -175,6 +180,24 @@
 		}
 		return true;
 	}
+
+	// 지도에서 찾기
+	function flyToPoint(longitude, latitude) {
+		var readOnly = true;
+
+		var url = "/map/fly-to-point?readOnly=" + readOnly + "&longitude=" + longitude + "&latitude=" + latitude;
+		var width = 800;
+		var height = 700;
+
+		var popupX = (window.screen.width / 2) - (width / 2);
+		// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+		var popupY= (window.screen.height / 2) - (height / 2);
+
+	    var popWin = window.open(url, "","toolbar=no,width=" + width + ",height=" + height + ",top=" + popupY + ",left="+popupX
+	            + ",directories=no,status=yes,scrollbars=no,menubar=no,location=no");
+	    //popWin.document.title = layerName;
+	}
+
 </script>
 </body>
 </html>

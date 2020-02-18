@@ -30,18 +30,18 @@
     <div class="layerContents">
 		<div class="inline-toggle">
 			<h4 class="category">레이블</h4>
-			<div id="datainfoDisplay" class="switch-toggle switch-ios">
-				<input type="radio" id="datainfoDisplayY" name="datainfoDisplay" value="true">
-				<label for="datainfoDisplayY">표시</label>
-				<input type="radio" id="datainfoDisplayN" name="datainfoDisplay" value="false" checked>
-				<label for="datainfoDisplayN">비표시</label>
+			<div id="labelDisplay" class="switch-toggle switch-ios">
+				<input type="radio" id="labelDisplayY" name="labelDisplay" value="true">
+				<label for="labelDisplayY">표시</label>
+				<input type="radio" id="labelDisplayN" name="labelDisplay" value="false" checked>
+				<label for="labelDisplayN">비표시</label>
 				<a></a>
 			</div>
 		</div>
 		
 		<div class="inline-toggle">
 			<h4 class="category">Origin</h4>
-			<div id="datainfoDisplay" class="switch-toggle switch-ios">
+			<div id="originDisplay" class="switch-toggle switch-ios">
 				<input type="radio" id="originDisplayY" name="originDisplay" value="true">
 	            <label for="originDisplayY">표시</label>
 	            <input type="radio" id="originDisplayN" name="originDisplay" value="false" checked>
@@ -52,11 +52,33 @@
 		
 		<div class="inline-toggle">
 			<h4 class="category">Bounding Box</h4>
-			<div id="datainfoDisplay" class="switch-toggle switch-ios">
+			<div id="bboxDisplay" class="switch-toggle switch-ios">
 				<input type="radio" id="bboxDisplayY" name="bboxDisplay" value="true">
 				<label for="bboxDisplayY">표시</label>
 				<input type="radio" id="bboxDisplayN" name="bboxDisplay" value="false" checked>
 				<label for="bboxDisplayN">비표시</label>
+				<a></a>
+			</div>
+		</div>
+		
+		<div class="inline-toggle">
+			<h4 class="category">중심 반경 이슈</h4>
+			<div id="nearIssueDisplay" class="switch-toggle switch-ios">
+				<input type="radio" id="nearIssueDisplayY" name="nearIssueDisplay" value="true">
+				<label for="nearIssueDisplayY">표시</label>
+				<input type="radio" id="nearIssueDisplayN" name="nearIssueDisplay" value="false" checked>
+				<label for="nearIssueDisplayN">비표시</label>
+				<a></a>
+			</div>
+		</div>
+		
+		<div class="inline-toggle">
+			<h4 class="category">그림자</h4>
+			<div id="shadowDisplay" class="switch-toggle switch-ios">
+				<input type="radio" id="shadowDisplayY" name="shadowDisplay" value="true">
+				<label for="shadowDisplayY">표시</label>
+				<input type="radio" id="shadowDisplayN" name="shadowDisplay" value="false" checked>
+				<label for="shadowDisplayN">비표시</label>
 				<a></a>
 			</div>
 		</div>

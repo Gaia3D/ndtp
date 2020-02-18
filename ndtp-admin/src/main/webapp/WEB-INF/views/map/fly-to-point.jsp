@@ -189,8 +189,8 @@
 	function flyToPointClose() {
 		if(beforePointId && !${readOnly}) {
 			alert("위치가 변경되었습니다.");
-			window.close();
 		}
+		window.close();
 	}
 </script>
 </html>

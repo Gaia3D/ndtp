@@ -7,7 +7,7 @@
 	<form:form id="civilVoiceCommentForm" modelAttribute="civilVoiceComment" method="post" onsubmit="return false;">
 		<div class="agreeNew">
 			<input type="text" name="title" placeholder="동의합니다" value="">
-			<button class="focusAgree" id="civilVoiceAgree" title="동의">동의</button>
+			<button id="civilVoiceAgree" onClick="saveCivilVoiceComment();" class="focusAgree" title="동의">동의</button>
 		</div>
 	</form:form>
 	<ul id="civilVoiceComment" class="agreeWrap"></ul>
