@@ -9,6 +9,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import lombok.extern.slf4j.Slf4j;
@@ -44,12 +45,18 @@ public class AMQPSubscribe {
 			command.add(queueMessage.getOutputFolder());
 			command.add("#meshType");
 			command.add(queueMessage.getMeshType());
+			if (!StringUtils.isEmpty(queueMessage.getSkinLevel())) {
+				command.add("#skinLevel");
+				command.add(queueMessage.getSkinLevel());
+			}
 			command.add("#log");
 			command.add(queueMessage.getLogPath());
 			command.add("#indexing");
 			command.add(queueMessage.getIndexing());
 			command.add("#usf");
 			command.add(queueMessage.getUsf().toString());
+			command.add("#isYAxisUp");
+			command.add(queueMessage.getIsYAxisUp());
 			
 			log.info(" >>>>>> command = {}", command.toString());
 			

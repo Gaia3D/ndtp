@@ -1,3 +1,13 @@
+2월 17일
+ALTER TABLE converter_job ADD COLUMN is_y_axis_up varchar(1) default 'N';
+comment on column converter_job.is_y_axis_up is '높이방향. y축이 건물의 천장을 향하는 경우 Y. default = N';
+
+UPDATE converter_job
+SET converter_template = 'point-cloud'
+WHERE 
+	converter_template = 'single-realistic-mesh' or 
+	converter_template = 'splitted-realistic-mesh'
+
 2월 6일
 이 파일 재실행
 data_adjust_log.sql

@@ -37,7 +37,10 @@
 									<tr>
 										<th class="col-label" scope="row">위치</th>
 										<td class="col-data">
-											${civilVoice.longitude}, ${civilVoice.latitude}
+											<span id="longitude">${civilVoice.longitude}</span>
+											&emsp;
+											<span id="latitude">${civilVoice.latitude}</span>
+											&emsp;
 											<input type="button" id="mapButtion" value="지도에서 보기" />
 										</td>
 									</tr>
@@ -185,7 +188,11 @@
 
 	// 지도에서 찾기
 	$( "#mapButtion" ).on( "click", function() {
-		var url = "/map/find-point";
+		var longitude = Number($('#longitude').text());
+		var latitude = Number($('#latitude').text());
+		var readOnly = true;
+
+		var url = "/map/fly-to-point?read-only=" + readOnly + "&longitude=" + longitude + "&latitude=" + latitude;
 		var width = 800;
 		var height = 700;
 
