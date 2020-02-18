@@ -64,13 +64,9 @@ public class CivilVoiceCommentRestController {
 		civilVoiceComment.setClientIp(WebUtils.getClientIp(request));
 		civilVoiceComment.setCivilVoiceId(civilVoiceId);
 		try {
-			long totalCount = civilVoiceCommentService.getListCivilVoiceCommentTotalCount(civilVoiceComment);
-			Pagination pagination = new Pagination(	request.getRequestURI(),
-													getSearchParameters(PageType.LIST, civilVoiceComment),
-													totalCount,
-													Long.valueOf(pageNo).longValue(),
-													PAGE_ROWS,
-													PAGE_LIST_COUNT);
+			long totalCount = civilVoiceCommentService.getCivilVoiceCommentTotalCount(civilVoiceComment);
+			Pagination pagination = new Pagination(	request.getRequestURI(), getSearchParameters(PageType.LIST, civilVoiceComment),
+					totalCount, Long.valueOf(pageNo).longValue(), PAGE_ROWS, PAGE_LIST_COUNT);
 			log.info("@@ pagination = {}", pagination);
 
 			civilVoiceComment.setOffset(pagination.getOffset());
@@ -127,7 +123,16 @@ public class CivilVoiceCommentRestController {
 				result.put("message", message);
 	            return result;
 			}
+
 			civilVoiceComment.setUserId(userSession.getUserId());
+            Boolean alreadyRegistered = civilVoiceCommentService.alreadyRegistered(civilVoiceComment);
+            if(alreadyRegistered) {
+                result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+                result.put("errorCode", "already.agreed");
+                result.put("message", message);
+                return result;
+            }
+
 			civilVoiceComment.setClientIp(WebUtils.getClientIp(request));
 			civilVoiceCommentService.insertCivilVoiceComment(civilVoiceComment);
 		} catch (Exception e) {

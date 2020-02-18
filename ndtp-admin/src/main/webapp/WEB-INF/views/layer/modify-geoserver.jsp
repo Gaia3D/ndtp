@@ -15,6 +15,41 @@
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
     <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
     <style type="text/css">
+    	.loader-txt p {
+            font-size: 13px;
+            color: #666;
+        }
+    
+        .loader-txt p small {
+            font-size: 11.5px;
+            color: #999;
+        }
+        
+        .loader {
+            position: relative;
+            text-align: center;
+            margin: 15px auto 35px auto;
+            z-index: 9999;
+            display: block;
+            width: 80px;
+            height: 80px;
+            border: 10px solid rgba(0, 0, 0, 0.3);
+            border-radius: 50%;
+            border-top-color: #000;
+            animation: spin 1s ease-in-out infinite;
+            -webkit-animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+    
+        @-webkit-keyframes spin {
+            to {
+                -webkit-transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body>
@@ -346,6 +381,14 @@
 		width: 1200,
 		modal: true,
 		overflow : "auto",
+		resizable: false
+	});
+	
+	var layerLoadingDialog = $("#layerLoadingDialog").dialog({
+		autoOpen: false,
+		width: 250,
+		height: 290,
+		modal: true,
 		resizable: false
 	});
 	

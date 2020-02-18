@@ -141,7 +141,11 @@
 
 	// 지도에서 찾기
 	$( "#mapButtion" ).on( "click", function() {
-		var url = "/map/find-point";
+		var longitude = $('#longitude').val();
+		var latitude = $('#latitude').val();
+		var readOnly = false;
+
+		var url = "/map/fly-to-point?readOnly=" + readOnly + "&longitude=" + longitude + "&latitude=" + latitude;
 		var width = 800;
 		var height = 700;
 

@@ -7,11 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ndtp.domain.CivilVoice;
+import ndtp.persistence.CivilVoiceCommentMapper;
 import ndtp.persistence.CivilVoiceMapper;
 import ndtp.service.CivilVoiceService;
 
 /**
- * 
+ *
  * @author kimhj
  *
  */
@@ -19,35 +20,40 @@ import ndtp.service.CivilVoiceService;
 public class CivilVoiceServiceImpl implements CivilVoiceService {
 
 	@Autowired
-    private CivilVoiceMapper civilVoiceMapper;
+	private CivilVoiceMapper civilVoiceMapper;
 
-    @Transactional(readOnly=true)
+	@Autowired
+	private CivilVoiceCommentMapper civilVoiceCommentMapper;
+
+
+	@Transactional(readOnly = true)
+	public List<CivilVoice> getListCivilVoice(CivilVoice civilvoice) {
+		return civilVoiceMapper.getListCivilVoice(civilvoice);
+	}
+
+	@Transactional(readOnly = true)
 	public Long getCivilVoiceTotalCount(CivilVoice civilVoice) {
-    	return civilVoiceMapper.getCivilVoiceTotalCount(civilVoice);
+		return civilVoiceMapper.getCivilVoiceTotalCount(civilVoice);
 	}
 
-    @Transactional(readOnly=true)
-	public List<CivilVoice> getListCivilVoice(CivilVoice civilVoice) {
-		return civilVoiceMapper.getListCivilVoice(civilVoice);
+	@Transactional(readOnly = true)
+	public CivilVoice getCivilVocieById(CivilVoice civilVoice) {
+		return civilVoiceMapper.getCivilVocieById(civilVoice);
 	}
 
-    @Transactional(readOnly=true)
-	public CivilVoice getCivilVoice(CivilVoice civilVoice) {
-		return civilVoiceMapper.getCivilVoice(civilVoice);
-	}
-
-    @Transactional
+	@Transactional
 	public int insertCivilVoice(CivilVoice civilVoice) {
 		return civilVoiceMapper.insertCivilVoice(civilVoice);
 	}
 
-    @Transactional
+	@Transactional
 	public int updateCivilVoice(CivilVoice civilVoice) {
 		return civilVoiceMapper.updateCivilVoice(civilVoice);
 	}
 
-    @Transactional
+	@Transactional
 	public int deleteCivilVoice(CivilVoice civilVoice) {
-		return civilVoiceMapper.deleteCivilVoice(civilVoice);
+		civilVoiceCommentMapper.deleteCivilVoiceCommentFromId(civilVoice.getCivilVoiceId());
+		return civilVoiceMapper.deleteCivilVoice(civilVoice.getCivilVoiceId());
 	}
 }

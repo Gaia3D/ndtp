@@ -33,7 +33,6 @@ public class CivilVoiceController implements AuthorizationController {
 
 	@Autowired
     private CivilVoiceService civilVoiceService;
-
 	@Autowired
     private PolicyService policyService;
 
@@ -92,12 +91,12 @@ public class CivilVoiceController implements AuthorizationController {
 	public String detail(HttpServletRequest request, CivilVoice civilVoice, Model model) {
 		String listParameters = getSearchParameters(PageType.DETAIL, civilVoice);
 
-		civilVoice =  civilVoiceService.getCivilVoice(civilVoice);
+		civilVoice =  civilVoiceService.getCivilVocieById(civilVoice);
 		Policy policy = policyService.getPolicy();
 
 		model.addAttribute("policy", policy);
-		model.addAttribute("listParameters", listParameters);
 		model.addAttribute("civilVoice", civilVoice);
+		model.addAttribute("listParameters", listParameters);
 		return "/civil-voice/detail";
 	}
 
@@ -121,10 +120,10 @@ public class CivilVoiceController implements AuthorizationController {
 	 * @return
 	 */
 	@GetMapping(value = "/modify")
-	public String modify(HttpServletRequest request, @RequestParam("civilVoiceId") Integer civilVoiceId, Model model) {
+	public String modify(HttpServletRequest request, @RequestParam("civilVoiceId") Long civilVoiceId, Model model) {
 		CivilVoice civilVoice = new CivilVoice();
 		civilVoice.setCivilVoiceId(civilVoiceId);
-		civilVoice = civilVoiceService.getCivilVoice(civilVoice);
+		civilVoice = civilVoiceService.getCivilVocieById(civilVoice);
 		model.addAttribute("civilVoice", civilVoice);
 		return "/civil-voice/modify";
 	}
@@ -136,12 +135,11 @@ public class CivilVoiceController implements AuthorizationController {
 	 * @return
 	 */
 	@GetMapping(value = "delete")
-	public String delete(@RequestParam("civilVoiceId") Integer civilVoiceId, Model model) {
+	public String delete(@RequestParam("civilVoiceId") Long civilVoiceId, Model model) {
 
 		// TODO validation 체크 해야 함
 		CivilVoice civilVoice = new CivilVoice();
 		civilVoice.setCivilVoiceId(civilVoiceId);
-
 		civilVoiceService.deleteCivilVoice(civilVoice);
 
 		return "redirect:/civil-voice/list";

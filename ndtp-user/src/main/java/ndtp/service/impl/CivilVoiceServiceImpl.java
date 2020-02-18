@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ndtp.domain.CivilVoice;
-import ndtp.domain.CivilVoiceComment;
 import ndtp.persistence.CivilVoiceCommentMapper;
 import ndtp.persistence.CivilVoiceMapper;
 import ndtp.service.CivilVoiceService;
@@ -44,6 +43,11 @@ public class CivilVoiceServiceImpl implements CivilVoiceService {
 	@Transactional
 	public int updateCivilVoice(CivilVoice civilVoice) {
 		return civilVoiceMapper.updateCivilVoice(civilVoice);
+	}
+
+	@Transactional
+	public int updateCivilVoiceViewCount(CivilVoice civilVoice) {
+		return civilVoiceMapper.updateCivilVoiceViewCount(civilVoice);
 	}
 
 	@Transactional

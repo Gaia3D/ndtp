@@ -27,8 +27,8 @@ public class CivilVoiceCommentServiceImpl implements CivilVoiceCommentService {
 	}
 
 	@Transactional(readOnly=true)
-	public Long getListCivilVoiceCommentTotalCount(CivilVoiceComment civilVoiceComment) {
-		return civilVoiceCommentMapper.getListCivilVoiceCommentTotalCount(civilVoiceComment);
+	public Long getCivilVoiceCommentTotalCount(CivilVoiceComment civilVoiceComment) {
+		return civilVoiceCommentMapper.getCivilVoiceCommentTotalCount(civilVoiceComment);
 	}
 
 	@Transactional
@@ -50,4 +50,8 @@ public class CivilVoiceCommentServiceImpl implements CivilVoiceCommentService {
 		return civilVoiceCommentMapper.deleteCivilVoiceComment(civilVoiceCommentId);
 	}
 
+	@Transactional(readOnly=true)
+	public Boolean alreadyRegistered(CivilVoiceComment civilVoiceComment) {
+		return civilVoiceCommentMapper.alreadyRegistered(civilVoiceComment);
+	}
 }

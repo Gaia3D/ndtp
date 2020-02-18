@@ -48,7 +48,7 @@ public class CivilVoice extends Search implements Serializable {
 
 	/********** DB 사용 *************/
     // 고유번호
-	private Integer civilVoiceId;
+	private Long civilVoiceId;
     // 사용자 아이디
 	private String userId;
 	// 제목

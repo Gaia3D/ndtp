@@ -10,6 +10,7 @@ create table converter_job(
 	title							varchar(256)						not null,
 	converter_template				varchar(30)							default 'basic',
 	usf								numeric(13,5),
+	y_axis_up						char(1)								default 'N',
 	file_count						integer								default 0,
 	status							varchar(20)							default 'ready',
 	error_code						varchar(4000),
@@ -30,8 +31,9 @@ comment on column converter_job.converter_job_id is '고유번호';
 comment on column converter_job.upload_data_id is '업로드 데이터 고유번호';
 comment on column converter_job.title is '제목';
 comment on column converter_job.user_id is '사용자 아이디';
-comment on column converter_job.converter_template is '변환 유형. basic : 기본, building : 빌딩, extra-big-building : 초대형 빌딩, single-realistic-mesh : 단일 point cloud 데이터, splitted-realistic-mesh : 분할 point cloud 데이터';
+comment on column converter_job.converter_template is '변환 유형. basic : 기본, building : 빌딩, extra-big-building : 초대형 빌딩, point-cloud : point cloud 데이터';
 comment on column converter_job.usf is 'unit scale factor. 설계 파일의 1이 의미하는 단위. 기본 1 = 0.01m';
+comment on column converter_job.y_axis_up is '높이방향. y축이 건물의 천장을 향하는 경우 Y. default = N';
 comment on column converter_job.file_count is '대상 file 개수';
 comment on column converter_job.status is '상태. ready : 준비, success : 성공, waiting : 승인대기, fail : 실패';
 comment on column converter_job.error_code is '에러 코드';

@@ -8,6 +8,7 @@ import ndtp.domain.CivilVoice;
 
 @Repository
 public interface CivilVoiceMapper {
+
 	/**
 	 * 시민 참여 목록 조회
 	 * @param civilvoice
@@ -49,6 +50,13 @@ public interface CivilVoiceMapper {
 	 * @return
 	 */
 	int updateCivilVoiceCommentCount(CivilVoice civilVoice);
+
+	/**
+	 * 조회 수 수정
+	 * @param civilvoice
+	 * @return
+	 */
+	int updateCivilVoiceViewCount(CivilVoice civilVoice);
 
 	/**
 	 * 삭제

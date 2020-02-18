@@ -104,10 +104,10 @@ $(document).ready(function (){
 		getCivilVoiceList(civilVoice.web.currentPage);
 	});
 
-	// 시민참여 취소 / 목록 보기
+	// 시민참여 취소 / 상세 보기
 	$('#civilVoiceContent').on('click', '[data-goto=detail]', function(){
 		civilVoice.web.show('detail');
-		getCivilVoiceDetail(civilVoice.web.currentCivilVoiceId);
+		//getCivilVoiceDetail(civilVoice.web.currentCivilVoiceId);
 	});
 
 	// 시민참여 댓글 등록
@@ -183,6 +183,7 @@ function getCivilVoiceModify() {
 		headers: {'X-Requested-With': 'XMLHttpRequest'},
 		contentType: "application/json; charset=utf-8",
 		dataType: 'json',
+		data: {readOnly: false},
 		success: function(res){
 			if(res.statusCode <= 200) {
 				civilVoice.web.drawHandlebarsHtml(res, 'templateCivilVoiceModify', 'civilVoiceModify');
@@ -384,7 +385,7 @@ function saveCivilVoiceComment() {
 
 					getCivilVoiceCommentList();
 				} else {
-					alert(msg.message);
+		        	alert(JS_MESSAGE[msg.errorCode]);
 					console.log("---- " + msg.message);
 				}
 				insertCivilVoiceCommentFlag = true;

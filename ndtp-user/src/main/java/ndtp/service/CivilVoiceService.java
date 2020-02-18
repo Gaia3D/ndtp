@@ -41,6 +41,13 @@ public interface CivilVoiceService {
 	int updateCivilVoice(CivilVoice civilVoice);
 
 	/**
+	 * 조회 수 수정
+	 * @param civilvoice
+	 * @return
+	 */
+	int updateCivilVoiceViewCount(CivilVoice civilVoice);
+
+	/**
 	 * 삭제
 	 * @param civilvoice
 	 * @return

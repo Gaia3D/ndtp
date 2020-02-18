@@ -13,8 +13,9 @@
 	                		<option value="basic"> 기본 </option>
 		                	<option value="building"> 빌딩 </option>
 							<option value="extra-big-building"> 초대형 빌딩 </option>
-							<option value="single-realistic-mesh"> 단일 Point Cloud </option>
-							<option value="splitted-realistic-mesh"> 분할 Point Cloud </option>
+							<option value="point-cloud"> Point Cloud </option>
+							<!-- <option value="single-realistic-mesh"> 단일 Point Cloud </option> -->
+							<!-- <option value="splitted-realistic-mesh"> 분할 Point Cloud </option> -->
 						</select>
 					</td>
 				</tr>
@@ -38,8 +39,16 @@
 						</select>
 					</td>
 				</tr>
-				
-				
+				<tr>
+					<th class="col-sub-label x">높이 방향</th>
+					<td>
+						<select id="yAxisUp" name="yAxisUp" class="select" style="height: 30px;">
+							<option value="N">Z축</option>
+							<option value="Y">Y축</option>
+						</select>
+						<span class="marL10">Z축이 건물의 천장을 향하는 경우</span>
+					</td>
+				</tr>
 			</tbody>
 		</table>
 		<div class="button-group">

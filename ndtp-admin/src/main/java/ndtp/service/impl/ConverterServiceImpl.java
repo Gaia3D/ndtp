@@ -12,6 +12,7 @@ import ndtp.config.PropertiesConfig;
 import ndtp.domain.ConverterJob;
 import ndtp.domain.ConverterJobFile;
 import ndtp.domain.ConverterJobStatus;
+import ndtp.domain.ConverterTemplate;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
 import ndtp.domain.DataStatus;
@@ -128,6 +129,7 @@ public class ConverterServiceImpl implements ConverterService {
 			inConverterJob.setUsf(usf);
 			inConverterJob.setConverterTemplate(converterTemplate);
 			inConverterJob.setFileCount(uploadDataFileList.size());
+			inConverterJob.setYAxisUp(converterJob.getYAxisUp());
 			converterMapper.insertConverterJob(inConverterJob);
 
 			Long converterJobId = inConverterJob.getConverterJobId();
@@ -164,7 +166,7 @@ public class ConverterServiceImpl implements ConverterService {
 
 		return uploadDataIds.length;
 	}
-
+	
 	/**
 	 * @param userId
 	 * @param dataGroupRootPath
@@ -196,11 +198,17 @@ public class ConverterServiceImpl implements ConverterService {
 //		queueMessage.setConverterJobFileId(inConverterJob.getConverterJobFileId());
 		queueMessage.setInputFolder(uploadDataFile.getFilePath());
 		queueMessage.setOutputFolder(dataGroupRootPath + dataGroupFilePath);
-		queueMessage.setMeshType("0");
+//		queueMessage.setMeshType("0");
 		queueMessage.setLogPath(dataGroupRootPath + dataGroupFilePath + "logTest.txt");
 		queueMessage.setIndexing("y");
 		queueMessage.setUsf(inConverterJob.getUsf());
+		queueMessage.setIsYAxisUp(inConverterJob.getYAxisUp());
 		queueMessage.setUserId(userId);
+		
+		// 템플릿 별 meshType과 skinLevel 설정
+		ConverterTemplate template = ConverterTemplate.findBy(inConverterJob.getConverterTemplate());
+		queueMessage.setMeshType(template.getMeshType());
+		queueMessage.setSkinLevel(template.getSkinLevel());
 		
 		// TODO
 		// 조금 미묘하다. transaction 처리를 할지, 관리자 UI 재 실행을 위해서는 여기가 맞는거 같기도 하고....
