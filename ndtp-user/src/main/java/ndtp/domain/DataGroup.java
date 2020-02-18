@@ -77,6 +77,8 @@ public class DataGroup extends Search {
 	private Boolean basic;
 	// true : 사용, false : 사용안함
 	private Boolean available;
+	// 스마트 타일링 사용유무. true : 사용, false : 사용안함(기본)
+	private Boolean tiling;
 	
 	// 데이터 총 건수
 	private Integer dataCount;

@@ -18,6 +18,7 @@ create table data_group (
 	children					integer								default 0,
 	basic						boolean								default false,
 	available					boolean								default true,
+	tiling						boolean								default false,
 	data_count					integer								default 0,
 	location		 			GEOMETRY(POINT, 4326),
 	altitude					numeric(13,7),
@@ -43,6 +44,7 @@ comment on column data_group.view_order is '나열 순서';
 comment on column data_group.children is '자식 존재 개수';
 comment on column data_group.basic is 'true : 기본, false : 선택';
 comment on column data_group.available is 'true : 사용, false : 사용안함';
+comment on column data_group.tiling is 'true : 사용, false : 사용안함(기본)';
 comment on column data_group.location is 'POINT(위도, 경도). 공간 검색 속도 때문에 altitude는 분리';
 comment on column data_group.altitude is '높이';
 comment on column data_group.duration is 'Map 이동시간';
@@ -57,7 +59,7 @@ comment on column data_group.insert_date is '등록일';
 create table data_info(
 	data_id						bigint,
 	data_group_id				integer								not null,
-	converter_job_id		bigint,
+	converter_job_id			bigint,
 	data_key					varchar(128)						not null,
 	data_name					varchar(256),
 	data_type					varchar(30),
