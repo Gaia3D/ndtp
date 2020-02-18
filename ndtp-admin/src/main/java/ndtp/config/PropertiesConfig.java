@@ -52,6 +52,8 @@ public class PropertiesConfig {
     private String userDataServiceDir;
     private String userDataServicePath;
     
+    // smart tiling 데이터 업로드 디렉토리
+    private String dataSmartTilingDir;
     private String dataAttributeDir;
     private String dataAttributeUploadDir;
     private String dataObjectAttributeUploadDir;

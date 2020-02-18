@@ -170,7 +170,7 @@
 						initFormContent(formId);
 						getCivilVoiceCommentList();
 					} else {
-						alert(msg.message);
+			        	alert(JS_MESSAGE[msg.errorCode]);
 						console.log("---- " + msg.message);
 					}
 					insertCivilVoiceCommentFlag = true;
@@ -192,7 +192,7 @@
 		var latitude = Number($('#latitude').text());
 		var readOnly = true;
 
-		var url = "/map/fly-to-point?read-only=" + readOnly + "&longitude=" + longitude + "&latitude=" + latitude;
+		var url = "/map/fly-to-point?readOnly=" + readOnly + "&longitude=" + longitude + "&latitude=" + latitude;
 		var width = 800;
 		var height = 700;
 

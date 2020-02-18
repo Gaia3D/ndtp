@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
+import ndtp.domain.DataInfoSimple;
 import ndtp.domain.FileInfo;
 
 /**
@@ -30,13 +31,6 @@ public interface DataMapper {
 	 */
 	Long getDataTotalCountByStatus(String status);
 	
-//	/**
-//	 * Data Object 총건수
-//	 * @param dataInfoObjectAttribute
-//	 * @return
-//	 */
-//	Long getDataObjectAttributeTotalCount(DataInfoObjectAttribute dataInfoObjectAttribute);
-	
 	/**
 	 * Data 목록
 	 * @param dataInfo
@@ -45,11 +39,11 @@ public interface DataMapper {
 	List<DataInfo> getListData(DataInfo dataInfo);
 	
 	/**
-	 * DataGroupId를 제외한 Data 목록
-	 * @param dataInfo
+	 * 데이터 그룹에 포함되는 모든 데이터를 취득
+	 * @param dataGroupId
 	 * @return
 	 */
-	List<DataInfo> getListExceptDataGroupDataByGroupId(DataInfo dataInfo);
+	List<DataInfoSimple> getListAllDataByDataGroupId(Integer dataGroupId);
 	
 	/**
 	 * Data Key 중복 건수
@@ -86,20 +80,6 @@ public interface DataMapper {
 	 */
 	List<DataInfo> getDataByConverterJob(DataInfo dataInfo);
 	
-//	/**
-//	 * Data Attribute 정보 취득
-//	 * @param dataId
-//	 * @return
-//	 */
-//	DataAttribute getDataAttribute(Long dataId);
-//	
-//	/**
-//	 * Data Object Attribute 정보 취득
-//	 * @param data_object_attribute_id
-//	 * @return
-//	 */
-//	DataInfoObjectAttribute getDataObjectAttribute(Long data_object_attribute_id);
-	
 	/**
 	 * 표시 순서
 	 * @param dataInfo
@@ -114,21 +94,6 @@ public interface DataMapper {
 	 */
 	Integer getRootParentCount(DataInfo dataInfo);
 	
-//	/**
-//	 * data_key 를 이용하여 data_attribute_id 를 얻음
-//	 * TODO 9.6 이후에 merge로 변경 예정 
-//	 * @param data_key
-//	 * @return
-//	 */
-//	DataAttribute getDataIdAndDataAttributeIDByDataKey(String data_key);
-//	
-//	/**
-//	 * Data Object 조회
-//	 * @param dataInfoObjectAttribute
-//	 * @return
-//	 */
-//	List<DataInfoObjectAttribute> getListDataObjectAttribute(DataInfoObjectAttribute dataInfoObjectAttribute);
-//	
 	/**
 	 * Data 등록
 	 * @param dataInfo
@@ -143,20 +108,6 @@ public interface DataMapper {
 	 */
 	int insertDataAttributeFileInfo(FileInfo fileInfo);
 	
-//	/**
-//	 * Data 속성 등록
-//	 * @param dataAttribute
-//	 * @return
-//	 */
-//	int insertDataAttribute(DataAttribute dataAttribute);
-//	
-//	/**
-//	 * Data Object 속성 등록
-//	 * @param dataInfoObjectAttribute
-//	 * @return
-//	 */
-//	int insertDataObjectAttribute(DataInfoObjectAttribute dataInfoObjectAttribute);
-	
 	/**
 	 * Data 수정
 	 * @param dataInfo
@@ -164,13 +115,6 @@ public interface DataMapper {
 	 */
 	int updateData(DataInfo dataInfo);
 	
-//	/**
-//	 * Data 속성 수정
-//	 * @param dataAttribute
-//	 * @return
-//	 */
-//	int updateDataAttribute(DataAttribute dataAttribute);
-//	
 	/**
 	 * Data 테이블의 Data 그룹 정보 변경
 	 * @param dataInfo

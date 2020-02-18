@@ -51,4 +51,8 @@ public class CivilVoiceCommentServiceImpl implements CivilVoiceCommentService {
 		return civilVoiceCommentMapper.deleteCivilVoiceComment(civilVoiceCommentId);
 	}
 
+	@Transactional(readOnly=true)
+	public Boolean alreadyRegistered(CivilVoiceComment civilVoiceComment) {
+		return civilVoiceCommentMapper.alreadyRegistered(civilVoiceComment);
+	}
 }

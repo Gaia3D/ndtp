@@ -145,7 +145,7 @@
 		var latitude = $('#latitude').val();
 		var readOnly = false;
 
-		var url = "/map/fly-to-point?read-only=" + readOnly + "&longitude=" + longitude + "&latitude=" + latitude;
+		var url = "/map/fly-to-point?readOnly=" + readOnly + "&longitude=" + longitude + "&latitude=" + latitude;
 		var width = 800;
 		var height = 700;
 

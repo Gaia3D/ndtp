@@ -181,6 +181,17 @@
 		WHERE civil_voice_id = #{civilVoiceId}
 	</update>
 
+	<!-- 조회 수 수정 -->
+	<update id="updateCivilVoiceViewCount" parameterType="civilVoice">
+		/* updateCivilVoiceViewCount */
+		UPDATE tn_civil_voice target
+		SET
+			view_count = before.view_count + 1
+		FROM tn_civil_voice before
+		WHERE target.civil_voice_id = before.civil_voice_id
+		AND target.civil_voice_id = #{civilVoiceId}
+	</update>
+
 	<!-- 삭제 -->
 	<delete id="deleteCivilVoice" parameterType="long">
 		/* deleteCivilVoice */

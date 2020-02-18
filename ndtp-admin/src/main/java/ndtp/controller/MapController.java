@@ -140,8 +140,8 @@ public class MapController {
      * @return
      */
     @GetMapping(value = "/fly-to-point")
-    public String flyToPoint(HttpServletRequest request, Model model, @RequestParam(value="read-only") Boolean readOnly,
-    		@RequestParam(value="longitude") String longitude, @RequestParam(value="latitude") String latitude) {
+    public String flyToPoint(HttpServletRequest request, Model model, @RequestParam(value="readOnly",required=false) Boolean readOnly,
+    		@RequestParam(value="longitude",required=false) String longitude, @RequestParam(value="latitude",required=false) String latitude) {
 
         UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
         UserPolicy userPolicy = userPolicyService.getUserPolicy(userSession.getUserId());
@@ -152,6 +152,9 @@ public class MapController {
         	}
         	if(!StringUtils.isEmpty(latitude)) {
             	geoPolicy.setInitLatitude(latitude);
+        	}
+        	if(readOnly == null) {
+        		readOnly = true;
         	}
             model.addAttribute("geoPolicyJson", objectMapper.writeValueAsString(geoPolicy));
         } catch (Exception e) {

@@ -69,6 +69,14 @@ border-radius: 15px;
 border: none;
 background-color: #262b3f;
 }
+.gnb li > a {
+margin-top: -5px;
+padding: 5px 10px 7px;
+color: #fff;
+border-radius: 15px;
+border: none;
+background-color: #262b3f;
+}
 
 
 /* ///// GNB WRAP ///// */
