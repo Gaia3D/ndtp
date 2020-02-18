@@ -9,6 +9,8 @@ drop sequence if exists data_info_log_seq;
 drop sequence if exists data_adjust_log_seq;
 drop sequence if exists data_attribute_seq;
 drop sequence if exists data_object_attribute_seq;
+drop sequence if exists data_smart_tiling_file_info_seq;
+drop sequence if exists data_smart_tiling_file_parse_log_seq;
 drop sequence if exists data_attribute_file_info_seq;
 drop sequence if exists data_object_attribute_file_info_seq;
 drop sequence if exists geopolicy_seq;
@@ -44,6 +46,8 @@ create sequence data_adjust_log_seq increment 1 minvalue 1 maxvalue 999999999999
 create sequence data_attribute_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
 create sequence data_object_attribute_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
 create sequence data_attribute_file_info_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
+create sequence data_smart_tiling_file_info_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
+create sequence data_smart_tiling_file_parse_log_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
 create sequence data_object_attribute_file_info_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
 create sequence geopolicy_seq increment 1 minvalue 1 maxvalue 999999999999 start 2 cache 1;
 create sequence issue_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;

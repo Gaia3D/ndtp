@@ -38,6 +38,8 @@ public class FileUtils {
 	public static final String USER_FILE_UPLOAD = "USER_FILE_UPLOAD";
 	// Data 일괄 등록
 	public static final String DATA_FILE_UPLOAD = "DATA_FILE_UPLOAD";
+	// Smart Tiling Data 일괄 등록
+	public static final String DATA_SMART_TILING_FILE_UPLOAD = "DATA_SMART_TILING_FILE_UPLOAD";
 	// Issue 등록
 	public static final String ISSUE_FILE_UPLOAD = "ISSUE_FILE_UPLOAD";
 	// Data Attribute
@@ -49,6 +51,8 @@ public class FileUtils {
 	public static final String[] USER_FILE_TYPE = {"xlsx", "xls"};
 	// 데이터 일괄 등록 문서 타입
 	public static final String[] DATA_FILE_TYPE = {"xlsx", "xls", "json", "txt"};
+	// Smart Tiling 데이터 일괄 등록 문서 타입
+	public static final String[] DATA_SMART_TILING_FILE_TYPE = {"json", "txt"};
 	// issue 등록의 경우 허용 문서 타입
 	public static final String[] ISSUE_FILE_TYPE = {"png", "jpg", "jpeg", "gif", "tiff", "xlsx", "xls", "docx", "doc", "pptx", "ppt"};
 	// data attribute 허용 문서 타입
@@ -76,7 +80,7 @@ public class FileUtils {
 	 * @param directory
 	 * @return
 	 */
-	public static FileInfo upload(MultipartFile multipartFile, String jobType, String directory) {
+	public static FileInfo upload(String userId, MultipartFile multipartFile, String jobType, String directory) {
 	
 		FileInfo fileInfo = new FileInfo();
 		fileInfo.setJobType(jobType);
@@ -88,7 +92,7 @@ public class FileUtils {
 		}
 		
 		// 파일을 upload 디렉토리로 복사
-		fileInfo = fileCopy(multipartFile, fileInfo, directory);
+		fileInfo = fileCopy(userId, 2, multipartFile, fileInfo, directory);
 		
 		return fileInfo;
 	}
@@ -149,6 +153,8 @@ public class FileUtils {
 			extList = Arrays.asList(USER_FILE_TYPE);
 		} else if(DATA_FILE_UPLOAD.equals(fileInfo.getJobType())) {
 			extList = Arrays.asList(DATA_FILE_TYPE);
+		} else if(DATA_SMART_TILING_FILE_UPLOAD.equals(fileInfo.getJobType())) {
+			extList = Arrays.asList(DATA_SMART_TILING_FILE_TYPE);
 		} else if(DATA_ATTRIBUTE_UPLOAD.equals(fileInfo.getJobType())) {
 			extList = Arrays.asList(DATA_ATTRIBUTE_FILE_TYPE);
 		} else if(DATA_OBJECT_ATTRIBUTE_UPLOAD.equals(fileInfo.getJobType())) {

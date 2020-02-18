@@ -25,12 +25,14 @@ import ndtp.domain.DataAttributeFileInfo;
 import ndtp.domain.DataInfo;
 import ndtp.domain.DataObjectAttribute;
 import ndtp.domain.DataObjectAttributeFileInfo;
+import ndtp.domain.DataSmartTilingFileInfo;
 import ndtp.domain.FileInfo;
 import ndtp.domain.Key;
 import ndtp.domain.UserSession;
 import ndtp.service.DataAttributeService;
 import ndtp.service.DataObjectAttributeService;
 import ndtp.service.DataService;
+import ndtp.service.DataSmartTilingService;
 import ndtp.utils.FileUtils;
 
 @Slf4j
@@ -40,6 +42,8 @@ public class DataRestController {
 	
 	@Autowired
 	private DataService dataService;
+	@Autowired
+	private DataSmartTilingService dataSmartTilingService;
 	@Autowired
 	private DataAttributeService dataAttributeService;
 	@Autowired
@@ -216,6 +220,65 @@ public class DataRestController {
 	}
 	
 	/**
+	 * Smart Tiling 데이터 수정
+	 * @param model
+	 * @return
+	 */
+	@PostMapping(value = "/smart-tiling")
+	public Map<String, Object> upsertDataSmartTiling(MultipartHttpServletRequest request) {
+		
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		try {
+			UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+			
+			Integer dataGroupId = Integer.valueOf(request.getParameter("smartTilingFileDataGroupId"));
+			MultipartFile multipartFile = request.getFile("smartTilingFileName");
+			// TODO
+			FileInfo fileInfo = FileUtils.upload(userSession.getUserId(), multipartFile, FileUtils.DATA_SMART_TILING_FILE_UPLOAD, propertiesConfig.getDataSmartTilingDir());
+			if(fileInfo.getErrorCode() != null && !"".equals(fileInfo.getErrorCode())) {
+				log.info("@@@@@@@@@@@@@@@@@@@@ error_code = {}", fileInfo.getErrorCode());
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", fileInfo.getErrorCode());
+				result.put("message", message);
+				
+				return result;
+			}
+			
+			ModelMapper modelMapper = new ModelMapper();
+			DataSmartTilingFileInfo dataSmartTilingFileInfo = modelMapper.map(fileInfo, DataSmartTilingFileInfo.class);
+			dataSmartTilingFileInfo.setUserId(userSession.getUserId());
+			dataSmartTilingFileInfo.setDataGroupId(dataGroupId);
+			dataSmartTilingFileInfo = dataSmartTilingService.upsertDataSmartTiling(dataSmartTilingFileInfo);
+			
+			result.put("totalCount", dataSmartTilingFileInfo.getTotalCount());
+			result.put("parseSuccessCount", dataSmartTilingFileInfo.getParseSuccessCount());
+			result.put("parseErrorCount", dataSmartTilingFileInfo.getParseErrorCount());
+			result.put("insertSuccessCount", dataSmartTilingFileInfo.getInsertSuccessCount());
+			result.put("updateSuccessCount", dataSmartTilingFileInfo.getUpdateSuccessCount());
+			result.put("insertErrorCount", dataSmartTilingFileInfo.getInsertErrorCount());
+			
+			// 파일 삭제
+			File copyFile = new File(fileInfo.getFilePath() + fileInfo.getFileRealName());
+			if(copyFile.exists()) {
+				copyFile.delete();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+		
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
+	}
+	
+	/**
 	 * Data Attribute 수정
 	 * @param model
 	 * @return
@@ -228,10 +291,12 @@ public class DataRestController {
 		String errorCode = null;
 		String message = null;
 		try {
+			UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+			
 			Long dataId = Long.valueOf(request.getParameter("attributeFileDataId"));
 			MultipartFile multipartFile = request.getFile("attributeFileName");
 			// TODO
-			FileInfo fileInfo = FileUtils.upload(multipartFile, FileUtils.DATA_ATTRIBUTE_UPLOAD, propertiesConfig.getDataAttributeUploadDir());
+			FileInfo fileInfo = FileUtils.upload(userSession.getUserId(), multipartFile, FileUtils.DATA_ATTRIBUTE_UPLOAD, propertiesConfig.getDataAttributeUploadDir());
 			if(fileInfo.getErrorCode() != null && !"".equals(fileInfo.getErrorCode())) {
 				log.info("@@@@@@@@@@@@@@@@@@@@ error_code = {}", fileInfo.getErrorCode());
 				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
@@ -240,8 +305,6 @@ public class DataRestController {
 				
 				return result;
 			}
-			
-			UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 			
 			ModelMapper modelMapper = new ModelMapper();
 			DataAttributeFileInfo dataAttributeFileInfo = modelMapper.map(fileInfo, DataAttributeFileInfo.class);
@@ -288,10 +351,12 @@ public class DataRestController {
 		String errorCode = null;
 		String message = null;
 		try {
+			UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+			
 			Long dataId = Long.valueOf(request.getParameter("objectAttributeFileDataId"));
 			MultipartFile multipartFile = request.getFile("objectAttributeFileName");
 			// TODO
-			FileInfo fileInfo = FileUtils.upload(multipartFile, FileUtils.DATA_ATTRIBUTE_UPLOAD, propertiesConfig.getDataAttributeUploadDir());
+			FileInfo fileInfo = FileUtils.upload(userSession.getUserId(), multipartFile, FileUtils.DATA_ATTRIBUTE_UPLOAD, propertiesConfig.getDataAttributeUploadDir());
 			if(fileInfo.getErrorCode() != null && !"".equals(fileInfo.getErrorCode())) {
 				log.info("@@@@@@@@@@@@@@@@@@@@ error_code = {}", fileInfo.getErrorCode());
 				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
@@ -300,8 +365,6 @@ public class DataRestController {
 				
 				return result;
 			}
-			
-			UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 			
 			ModelMapper modelMapper = new ModelMapper();
 			DataObjectAttributeFileInfo dataObjectAttributeFileInfo = modelMapper.map(fileInfo, DataObjectAttributeFileInfo.class);

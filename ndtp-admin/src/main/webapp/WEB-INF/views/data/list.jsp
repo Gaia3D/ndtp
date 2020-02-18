@@ -80,15 +80,11 @@
 									<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/>
 									<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/>
 								</div>
-								<%-- <div class="list-functions u-pull-right">
+								<!-- <div class="list-functions u-pull-right">
 									<div class="button-group">
-										<a href="#" onclick="updateDataStatus('DATA', 'USE'); return false;" class="button">사용</a>
-										<a href="#" onclick="updateDataStatus('DATA', 'UNUSED'); return false;" class="button">사용중지</a>
-										<a href="#" onclick="deleteDatas(); return false;" class="button"><spring:message code='data.all.delete'/></a>
-										<a href="#" onclick="uploadDataGroupDataAttribute(); return false;" class="button"><spring:message code='data.attribute.insert'/></a>
-										<a href="#" onclick="uploadDataGroupDataObjectAttribute(); return false;" class="button"><spring:message code='data.object.attribute.insert'/></a>
+										<a href="#" onclick="uploadTilingData(); return false;" class="button">Smart Tiling 데이터 업로드</a>
 									</div>
-								</div> --%>
+								</div> -->
 							</div>
 							<table class="list-table scope-col">
 								<col class="col-checkbox" />
@@ -206,6 +202,7 @@
 		</div>
 	</div>
 <%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
+
 <%@ include file="/WEB-INF/views/data/group-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/data-metainfo-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/data-attribute-dialog.jsp" %>

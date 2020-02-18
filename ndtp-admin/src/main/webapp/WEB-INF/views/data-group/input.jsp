@@ -111,6 +111,18 @@
 									</td>
 								</tr>
 								<tr>
+									<th class="col-label l" scope="row">
+										Tiling 사용 여부
+										<span class="icon-glyph glyph-emark-dot color-warning"></span>
+									</th>
+									<td class="col-input radio-set">
+										<input type="radio" id="tilingTrue" name="tiling" value="true">
+										<label for="tilingTrue">사용</label>
+										<input type="radio" id="tilingFalse" name="tiling" value="false" checked>
+										<label for="tilingFalse">미사용</label>
+									</td>
+								</tr>
+								<tr>
 									<th class="col-label" scope="row">
 										<form:label path="longitude">경도</form:label>
 									</th>

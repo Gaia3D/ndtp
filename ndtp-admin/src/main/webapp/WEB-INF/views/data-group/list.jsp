@@ -48,6 +48,7 @@
 								<col class="col-functions" />
 								<col class="col-functions" />
 								<col class="col-functions" />
+								<col class="col-functions" />
 								<col class="col-date" />
 								<thead>
 									<tr>
@@ -58,6 +59,7 @@
 					                    <th scope="col">사용 여부</th>
 					                    <th scope="col">데이터 건수</th>
 					                    <th scope="col">순서</th>
+					                    <th scope="col">SmartTiling 데이터</th>
 					                    <th scope="col">수정</th>
 					                    <th scope="col">삭제</th>
 					                    <th scope="col">등록일</th>
@@ -66,7 +68,7 @@
 								<tbody>
 <c:if test="${empty dataGroupList }">
 									<tr>
-										<td colspan="10" class="col-none">데이터 그룹이 존재하지 않습니다.</td>
+										<td colspan="11" class="col-none">데이터 그룹이 존재하지 않습니다.</td>
 									</tr>
 </c:if>
 <c:if test="${!empty dataGroupList }">
@@ -170,6 +172,16 @@
 													class="button" style="text-decoration:none;">아래로</a>
 					                    	</div>
 					                    </td>
+					                    <td class="col-functions">
+	<c:if test="${dataGroup.tiling eq 'true' }">
+											<a href="#" onclick="uploadSmartTilingData('${dataGroup.dataGroupId }', '${dataGroup.dataGroupName }'); return false;">
+												수정</a>&nbsp;&nbsp;&nbsp;&nbsp;
+											<a href="/data-groups/download/${dataGroup.dataGroupId }">내보내기	</a>	
+	</c:if>
+	<c:if test="${dataGroup.tiling eq 'false' }">
+											미사용
+	</c:if>											
+										</td>
 					                    <td class="col-type">
 											<a href="/data-group/modify?dataGroupId=${dataGroup.dataGroupId }" class="image-button button-edit">수정</a>
 					                    </td>
@@ -200,8 +212,11 @@
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
 
+	<%@ include file="/WEB-INF/views/data-group/data-smart-tiling-file-dialog.jsp" %>
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.form.min.js"></script>
+<script type="text/javascript" src="/externlib/handlebars-4.1.2/handlebars.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript" src="/js/navigation.js"></script>
@@ -390,6 +405,77 @@
             return;
         }
     }
+    
+	// smart tiling 데이터 등록 다이얼 로그
+	var uploadDataSmartTilingDialog = $( ".uploadDataSmartTilingDialog" ).dialog({
+		autoOpen: false,
+		width: 600,
+		height: 445,
+		modal: true,
+		resizable: false
+	});
+	
+	// 데이터 속성 수정
+	function uploadSmartTilingData(dataGroupId, dataGroupName) {
+		uploadDataSmartTilingDialog.dialog( "open" );
+		// 파일 입력 초기화
+		$("#smartTilingFileName").val("");
+		// 파싱 로그 초기화
+		$("#dataSmartTilingUploadLog").html("");
+		$("#smartTilingFileDataGroupId").val(dataGroupId);
+		$("#smartTilingDataGroupName").html(dataGroupName);
+	}
+
+	// 데이터 속성 파일 upload
+	var dataSmartTilingFileUploadFlag = true;
+	function dataSmartTilingFileUpload() {
+		var fileName = $("#smartTilingFileName").val();
+		if(fileName === "") {
+			alert(JS_MESSAGE["file.name.empty"]);
+			$("#smartTilingFileName").focus();
+			return false;
+		}
+		if( fileName.lastIndexOf("json") <=0 && fileName.lastIndexOf("txt") <=0 ) {
+			alert(JS_MESSAGE["file.ext.invalid"]);
+			$("#smartTilingFileName").focus();
+			return false;
+		}
+
+		if(dataSmartTilingFileUploadFlag) {
+			dataSmartTilingFileUploadFlag = false;
+			$("#dataSmartTilingFileInfo").ajaxSubmit({
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+				dataType: "json",
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						if(msg.parseErrorCount != 0 || msg.insertErrorCount != 0) {
+							alert(JS_MESSAGE["error.exist.in.processing"]);
+						} else {
+							alert(JS_MESSAGE["update"]);
+						}
+						
+						var source = $("#templateDataSmartTilingUploadLog").html();
+						var template = Handlebars.compile(source);
+						var html = template(msg);
+						
+						$("#dataSmartTilingUploadLog").html("");
+		                $("#dataSmartTilingUploadLog").append(html);
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+	    			}
+					dataSmartTilingFileUploadFlag = true;
+				},
+				error:function(request,status,error){
+					alert(JS_MESSAGE["ajax.error.message"]);
+					dataSmartTilingFileUploadFlag = true;
+				}
+			});
+		} else {
+			alert(JS_MESSAGE["button.dobule.click"]);
+			return;
+		}
+	}
 </script>
 </body>
 </html>
