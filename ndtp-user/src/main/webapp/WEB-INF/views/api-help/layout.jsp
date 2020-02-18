@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="/externlib/kotSlider/range.css" />
 <link rel="stylesheet" href="/css/ko/layout.css" />
 <link rel="stylesheet" href="/css/ko/apihelp-style.css" />
-<link rel="stylesheet" href="/externlib/highlightjs/styles/atelier-cave-dark.css">
+<link rel="stylesheet" href="/externlib/highlightjs/styles/dark.css">
 <script src="/externlib/highlightjs/highlight.pack.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
 
@@ -168,7 +168,7 @@
 
 		for(var i = 1; i<apiList.length+1; i++){
 			console.log(i);
-			$(".popupSub").children('ul').append("<li class=\"item\"><a class=\"name\" href=\"#\" onclick=\"changeToggleTab(api"+i+");\">"+apiList[i]+"</a></li>");
+			$(".popupSub").children('ul').append("<li class=\"item\" onclick=\"changeToggleTab(api"+i+");\"><a class=\"name\" href=\"#\">"+apiList[i]+"</a></li>");
 			var parmScript = document.createTextNode(($('.paramContainer').get(i-1).innerHTML).replace(/\s{2,}/gi, ' '));
 			var script = document.createTextNode($('.apihelptoggle').next()[i-1].text);
 			var preTagBr = document.createElement("br");
