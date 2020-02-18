@@ -12,7 +12,7 @@ import ndtp.service.GeoPolicyService;
 
 @Controller
 @RequestMapping("/guide")
-public class guideController {
+public class GuideController {
 	
 	@Autowired
 	private GeoPolicyService geoPolicyService;
@@ -29,6 +29,6 @@ public class guideController {
             e.printStackTrace();
         }
         
-        return "/api-help/layout";
+        return "/guide/help";
     }
 }
