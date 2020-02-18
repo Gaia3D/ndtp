@@ -16,18 +16,23 @@
 		if (userSession != null && userSession.getUserId() != null && !"".equals(userSession.getUserId())) {
 		%>
 		<li class="user">
-		<span><%=userSession.getUserName()%> 님</span> <a href="/sign/signout"
+		
+		<span><%=userSession.getUserName()%> 님</span>
+		<button type="button"  class="magoSet" id="magoHelp">API도움말</button>
+		 <a href="/sign/signout"
 			>Sign out</a></li>
+			
 		<%
 			} else {
 		%>
+		<li>
+		<button type="button"  class="magoSet" id="magoHelp">API도움말</button>
+		</li>
 		<li class="user"><a href="/sign/signin">Sign in</a></li>
 		<%
 			}
 		%>
-		<li>
-		<button type="button"  class="magoSet" id="magoHelp">Mago3D</button>
-		</li>
+		
 	</div>
 	
 	

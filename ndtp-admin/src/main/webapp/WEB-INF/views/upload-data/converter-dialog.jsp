@@ -42,7 +42,7 @@
 				<tr>
 					<th class="col-sub-label x">높이 방향</th>
 					<td>
-						<select id="isYAxisUp" name="isYAxisUp" class="select" style="height: 30px;">
+						<select id="yAxisUp" name="yAxisUp" class="select" style="height: 30px;">
 							<option value="N">Z축</option>
 							<option value="Y">Y축</option>
 						</select>

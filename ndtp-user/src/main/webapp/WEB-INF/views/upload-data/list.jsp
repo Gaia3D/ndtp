@@ -342,7 +342,7 @@
 		}
 	}
 	
-	$('#isYAxisUp').change(function() {
+	$('#yAxisUp').change(function() {
 		var desc = $(this).siblings('span');
 		var value = $(this).val();
 		if (value === 'Y') {

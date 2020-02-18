@@ -146,8 +146,8 @@
 <c:if test="${converterJob.usf ge 10}"> m</c:if>						
 						</td>
 						<td class="col-type">
-<c:if test="${converterJob.isYAxisUp eq 'N'}">Z축</c:if>
-<c:if test="${converterJob.isYAxisUp eq 'Y'}">Y축</c:if>
+<c:if test="${converterJob.viewYAxisUp eq 'N'}">Z축</c:if>
+<c:if test="${converterJob.viewYAxisUp eq 'Y'}">Y축</c:if>
 						</td>
 						<td class="col-type">
 <c:if test="${converterJob.status eq 'ready'}">준비</c:if>
