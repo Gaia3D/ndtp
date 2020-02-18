@@ -161,6 +161,7 @@
 <script type="text/javascript" src="/js/${lang}/layer.js"></script>
 <script type="text/javascript" src="/js/${lang}/map-data-controll.js"></script>
 <script type="text/javascript" src="/js/${lang}/civil-voice.js"></script>
+<script type="text/javascript" src="/js/${lang}/map-init.js"></script>
 <script type="text/javascript">
 	// 임시로...
 	$(document).ready(function() {
@@ -174,8 +175,10 @@
 	// ndtp 전역 네임스페이스
 	var NDTP = NDTP ||{
 		policy : ${geoPolicyJson},
-		baseLayers : "${baseLayers}",
+		baseLayers : ${baseLayerJson},
 		wmsProvider : {},
+		wfsProvider : {},
+		tileProvider : {},
 		districtProvider : {}
 	};
 	magoInit();
@@ -237,7 +240,7 @@
         CivilVoice(magoInstance);
         // 기본 레이어 랜더링
         setTimeout(function(){
-        	initLayer(magoInstance, NDTP.baseLayers);
+        	initLayer(magoInstance, ${baseLayerJson}, ${geoPolicyJson});
         }, geoPolicyJson.initDuration * 1000);
 
 		//지도상에 데이터 다루는거

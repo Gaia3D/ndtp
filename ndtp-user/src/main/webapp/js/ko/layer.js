@@ -11,26 +11,31 @@ $(document).ready(function (){
     	$target.toggleClass('on');
     });
     
+    // wms layer on/off
     $('#layerContent').on('click', '.wmsLayer p', function(e) {
-    	initLayer(MAGO3D_INSTANCE);
+//    	initLayer(MAGO3D_INSTANCE);
     });
-
+    
+    // wfs layer on/off
+    $('#layerContent').on('click', '.wfsLayer p', function(e) {
+//    	initLayer(MAGO3D_INSTANCE);
+    });
 });
 
 // 관리자 레이어에서 기본표시가  사용인 항목들을 랜더링 
 function initLayer(magoInstance, baseLayers) {
-	var viewer = magoInstance.getViewer();
-	var layerList = [];
-	if(baseLayers) {
-		layerList = baseLayers.split(",");
-	} else {
-		$("ul.layerList li ul li.wmsLayer.on").each(function(){
-			var layerKey = $(this).attr("data-layer-name");
-			layerList.push(NDTP.policy.geoserverDataStore+':'+layerKey);
-		});
-	}
-	
-	createWmsProvider(viewer, layerList);
+//	var viewer = magoInstance.getViewer();
+//	var layerList = [];
+//	if(baseLayers) {
+//		layerList = baseLayers.split(",");
+//	} else {
+//		$("ul.layerList li ul li.wmsLayer.on").each(function(){
+//			var layerKey = $(this).attr("data-layer-name");
+//			layerList.push(NDTP.policy.geoserverDataStore+':'+layerKey);
+//		});
+//	}
+//	
+//	createWmsProvider(viewer, layerList);
 }
 
 // wmsProvider 생성 
@@ -74,15 +79,6 @@ function getLayerList() {
         	if(res.statusCode <= 200) {
             	// html 생성
                 createLayerHtml(res.layerGroupList);
-                var baseLayers = NDTP.baseLayers;
-                if(baseLayers) {
-            		layerList = baseLayers.split(",");
-            		layerList.forEach(function(layer) {
-            			var layer = layer.split(":")[1];
-                		var target = $('#layerContent [data-layer-name="'+layer+'"]');
-                		target.addClass("on");
-                	});
-                } 
 			} else {
 				alert(JS_MESSAGE[res.errorCode]);
 				console.log("---- " + res.message);
@@ -121,7 +117,7 @@ function saveUserLayers() {
 	var dataInfo = {};
 	$("ul.layerList li ul li.wmsLayer.on").each(function(){
 	    var layerKey = $(this).attr("data-layer-name");
-	    layerList.push(NDTP.policy.geoserverDataStore+':'+layerKey);
+	    layerList.push(layerKey);
 	});
 	dataInfo.baseLayers = layerList.join(",");
 	
