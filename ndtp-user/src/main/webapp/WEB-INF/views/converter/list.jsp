@@ -100,12 +100,10 @@
 				<col class="col-number" />
 				<col class="col-name" />
 				<col class="col-name" />
+				<col class="col-number" />
 				<col class="col-name" />
+				<col class="col-type" />
 				<col class="col-number" />
-				<col class="col-number" />
-				<col class="col-number" />
-				<col class="col-number" />
-				<col class="col-functions" />
 				<col class="col-functions" />
 				<col class="col-functions" />
 				<thead>
@@ -114,6 +112,7 @@
 						<th scope="col" class="col-name">변환 유형</th>
 						<th scope="col" class="col-name">제목</th>
 						<th scope="col" class="col-name">U.S.F</th>
+						<th scope="col" class="col-name">높이방향</th>
 						<th scope="col" class="col-name">상태</th>
 						<th scope="col" class="col-name">파일 개수</th>
 						<th scope="col" class="col-name">에러코드</th>
@@ -145,6 +144,10 @@
 <c:if test="${converterJob.usf ge 0.01 and converterJob.usf lt 0.1}"> cm</c:if>
 <c:if test="${converterJob.usf ge 0.001 and converterJob.usf lt 0.01}"> mm</c:if>
 <c:if test="${converterJob.usf ge 10}"> m</c:if>						
+						</td>
+						<td class="col-type">
+<c:if test="${converterJob.isYAxisUp eq 'N'}">Z축</c:if>
+<c:if test="${converterJob.isYAxisUp eq 'Y'}">Y축</c:if>
 						</td>
 						<td class="col-type">
 <c:if test="${converterJob.status eq 'ready'}">준비</c:if>
