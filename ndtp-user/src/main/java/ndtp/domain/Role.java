@@ -1,13 +1,10 @@
 package ndtp.domain;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.format.annotation.DateTimeFormat;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

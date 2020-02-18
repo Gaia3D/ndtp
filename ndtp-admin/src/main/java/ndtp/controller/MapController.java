@@ -7,9 +7,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.DataInfo;
 import ndtp.domain.GeoPolicy;
@@ -125,9 +127,39 @@ public class MapController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         model.addAttribute("baseLayers", userPolicy.getBaseLayers());
-        
+
         return "/map/find-point";
+    }
+
+    /**
+	 * 위치(경도, 위도) 보기
+     * @param request
+     * @param model
+     * @return
+     */
+    @GetMapping(value = "/fly-to-point")
+    public String flyToPoint(HttpServletRequest request, Model model, @RequestParam(value="read-only") Boolean readOnly,
+    		@RequestParam(value="longitude") String longitude, @RequestParam(value="latitude") String latitude) {
+
+        UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+        UserPolicy userPolicy = userPolicyService.getUserPolicy(userSession.getUserId());
+        GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
+        try {
+        	if(!StringUtils.isEmpty(longitude)) {
+            	geoPolicy.setInitLongitude(longitude);
+        	}
+        	if(!StringUtils.isEmpty(latitude)) {
+            	geoPolicy.setInitLatitude(latitude);
+        	}
+            model.addAttribute("geoPolicyJson", objectMapper.writeValueAsString(geoPolicy));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        model.addAttribute("readOnly", readOnly);
+        model.addAttribute("baseLayers", userPolicy.getBaseLayers());
+        return "/map/fly-to-point";
     }
 }

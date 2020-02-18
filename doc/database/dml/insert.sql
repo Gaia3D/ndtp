@@ -151,11 +151,11 @@ values
 	(NEXTVAL('user_group_role_seq'), 1, 2),
 	(NEXTVAL('user_group_role_seq'), 1, 3),
 	(NEXTVAL('user_group_role_seq'), 1, 4),
+	(NEXTVAL('user_group_role_seq'), 1, 5),
 	(NEXTVAL('user_group_role_seq'), 1, 6),
-	(NEXTVAL('user_group_role_seq'), 1, 7),
+	(NEXTVAL('user_group_role_seq'), 2, 4),
 	(NEXTVAL('user_group_role_seq'), 2, 5),
-	(NEXTVAL('user_group_role_seq'), 2, 6),
-	(NEXTVAL('user_group_role_seq'), 2, 7);
+	(NEXTVAL('user_group_role_seq'), 2, 6);
 
 
 -- 메인 화면 위젯
@@ -186,9 +186,8 @@ values
     (2, '[관리자 전용] 관리자 페이지 사용자 관리 권한', 'ADMIN_USER_MANAGE', '1', '0', 'Y', 'Y'),
     (3, '[관리자 전용] 관리자 페이지 Layer 관리 권한', 'ADMIN_LAYER_MANAGE', '1', '0', 'Y', 'Y'),
 
-	(4, '[관리자 전용] 사용자 페이지 SIGN IN 권한', 'USER_SIGNIN', '0', '0', 'Y', 'Y'),
-	(5, '[사용자 전용] 사용자 페이지 SIGN IN 권한', 'USER_SIGNIN', '0', '0', 'Y', 'Y'),
-	(6, '[사용자 전용] 사용자 페이지 DATA 등록 권한', 'USER_DATA_CREATE', '0', '0', 'Y', 'Y'),
-	(7, '[사용자 전용] 사용자 페이지 DATA 조회 권한', 'USER_DATA_READ', '0', '0', 'Y', 'Y');
+	(4, '[사용자 전용] 사용자 페이지 SIGN IN 권한', 'USER_SIGNIN', '0', '0', 'Y', 'Y'),
+	(5, '[사용자 전용] 사용자 페이지 DATA 등록 권한', 'USER_DATA_CREATE', '0', '0', 'Y', 'Y'),
+	(6, '[사용자 전용] 사용자 페이지 DATA 조회 권한', 'USER_DATA_READ', '0', '0', 'Y', 'Y');
 
 commit;

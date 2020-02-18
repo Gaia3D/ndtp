@@ -139,6 +139,25 @@
 		}
 	}
 
+	// 지도에서 찾기
+	$( "#mapButtion" ).on( "click", function() {
+		var longitude = $('#longitude').val();
+		var latitude = $('#latitude').val();
+		var readOnly = false;
+
+		var url = "/map/fly-to-point?read-only=" + readOnly + "&longitude=" + longitude + "&latitude=" + latitude;
+		var width = 800;
+		var height = 700;
+
+		var popupX = (window.screen.width / 2) - (width / 2);
+		// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+		var popupY= (window.screen.height / 2) - (height / 2);
+
+	    var popWin = window.open(url, "","toolbar=no,width=" + width + ",height=" + height + ",top=" + popupY + ",left="+popupX
+	            + ",directories=no,status=yes,scrollbars=no,menubar=no,location=no");
+	    //popWin.document.title = layerName;
+	});
+
 </script>
 </body>
 </html>

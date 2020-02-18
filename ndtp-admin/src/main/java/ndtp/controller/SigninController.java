@@ -29,6 +29,7 @@ import ndtp.listener.Gaia3dHttpSessionBindingListener;
 import ndtp.service.PolicyService;
 import ndtp.service.RoleService;
 import ndtp.service.SigninService;
+import ndtp.support.PasswordSupport;
 import ndtp.support.RoleSupport;
 import ndtp.support.SessionUserSupport;
 import ndtp.utils.WebUtils;
@@ -157,18 +158,7 @@ public class SigninController {
 		}
 		
 		// 비밀번호 불일치
-		boolean isPasswordEquals = false;
-		try {
-			BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(10);
-			if(bCryptPasswordEncoder.matches(signinForm.getPassword(), userSession.getPassword())) {
-				log.error("@@ 비밀번호 matches = true. ");
-				isPasswordEquals = true;
-			}
-		} catch(Exception e) {
-			log.error("@@ 사인인 체크 암호화 처리 모듈에서 오류가 발생 했습니다. ");
-			e.printStackTrace();
-		}
-		if(!isPasswordEquals) {
+		if(!PasswordSupport.isEquals(userSession.getPassword(), signinForm.getPassword())) {
 			return "usersession.password.invalid";
 		}
 		

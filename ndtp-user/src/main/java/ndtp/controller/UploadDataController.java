@@ -15,17 +15,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
+import ndtp.domain.CacheManager;
 import ndtp.domain.ConverterJob;
 import ndtp.domain.DataGroup;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
+import ndtp.domain.RoleKey;
 import ndtp.domain.SharingType;
 import ndtp.domain.UploadData;
 import ndtp.domain.UploadDataFile;
 import ndtp.domain.UserSession;
 import ndtp.service.DataGroupService;
 import ndtp.service.UploadDataService;
+import ndtp.support.RoleSupport;
 import ndtp.utils.DateUtils;
 import ndtp.utils.FileUtils;
 
@@ -63,6 +66,10 @@ public class UploadDataController {
 		log.info("@@ uploadData = {}", uploadData);
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		
+		String roleCheckResult = roleValidator(request, userSession.getUserGroupId(), RoleKey.USER_DATA_CREATE.name());
+		if(roleCheckResult != null) return roleCheckResult;
+		
 		uploadData.setUserId(userSession.getUserId());
 		
 		if(!StringUtils.isEmpty(uploadData.getStartDate())) {
@@ -101,6 +108,10 @@ public class UploadDataController {
 	public String input(HttpServletRequest request, Model model) {
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		
+		String roleCheckResult = roleValidator(request, userSession.getUserGroupId(), RoleKey.USER_DATA_CREATE.name());
+		if(roleCheckResult != null) return roleCheckResult;
+		
 		DataGroup dataGroup = new DataGroup();
 		dataGroup.setUserId(userSession.getUserId());
 		List<DataGroup> dataGroupList = dataGroupService.getAllListDataGroup(dataGroup);
@@ -174,5 +185,14 @@ public class UploadDataController {
 //		}
 		
 		return buffer.toString();
+	}
+	
+	private String roleValidator(HttpServletRequest request, Integer userGroupId, String roleName) {
+		List<String> userGroupRoleKeyList = CacheManager.getUserGroupRoleKeyList(userGroupId);
+        if(!RoleSupport.isUserGroupRoleValid(userGroupRoleKeyList, roleName)) {
+			request.setAttribute("httpStatusCode", 403);
+			return "/error/error";
+		}
+		return null;
 	}
 }

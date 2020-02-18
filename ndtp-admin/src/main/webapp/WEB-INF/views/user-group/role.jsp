@@ -64,20 +64,20 @@
 												<td class="col-checkbox">
 													<input type="checkbox" id="roleId${role.roleId}" name="roleId" value="${role.roleId}" />
 												</td>
-												<td class="col-id">
+												<td class="col-type">
 													<c:if test="${role.roleTarget eq '0'}">사용자 사이트</c:if>
 													<c:if test="${role.roleTarget eq '1'}">관리자 사이트</c:if>
 													<c:if test="${role.roleTarget eq '2'}">서버</c:if>
 												</td>
-												<td class="col-id">
+												<td class="col-type">
 													<c:if test="${role.roleType eq '0'}">사용자</c:if>
 													<c:if test="${role.roleType eq '1'}">서버</c:if>
 													<c:if test="${role.roleType eq '2'}">API</c:if>
 												</td>
 												<td class="col-id" style="text-align: left;">${role.roleName }</td>
 												<td class="col-name" style="text-align: left;">${role.roleKey }</td>
-												<td class="col-id">${role.useYn }</td>
-												<td class="col-id">${role.defaultYn }</td>
+												<td class="col-type">${role.useYn }</td>
+												<td class="col-type">${role.defaultYn }</td>
 												<td class="col-id">${role.description }</td>
 											</tr>
 											</c:forEach>

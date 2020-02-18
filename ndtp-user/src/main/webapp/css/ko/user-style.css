@@ -41,31 +41,33 @@ font-weight: normal;
 background: url(/images/ko/logo.png) no-repeat 0 0;
 }
 
-.signArea {
+.gnb {
+position: absolute;
 right: 0;
 margin: 10px;
 font-size: 15px;
 color: #fff;
-text-align: right;
-width: calc(100% - 500px);
 }
-.signArea > span {
-/*	border-bottom: 1px solid #fff;	*/
+.gnb li {
+display: inline-block;
+padding-top: 5px;
 }
-.signArea * {
+.gnb li:last-child {
+margin-left: 10px;
+}
+.user > span {
+border-bottom: 1px solid #fff;
+}
+.gnb li > span * {
 vertical-align: middle;
 }
-.signArea > span * {
-vertical-align: middle;
-}
-.signArea > .signButton {
-	margin: 0px 25px 0px 20px;
-	padding: 5px 25px 10px 25px;
-	height: 50px;
-	color: #fff;
-	border-radius: 15px;
-	border: none;
-	background-color: #262b3f;
+.gnb li > button {
+margin-top: -5px;
+padding: 5px 10px 7px;
+color: #fff;
+border-radius: 15px;
+border: none;
+background-color: #262b3f;
 }
 
 
@@ -554,7 +556,7 @@ flex: auto;
 padding-right: 10px;
 }
 .commentWrap > li.comment > p:first-child {
-min-width: 220px;
+/* min-width: 220px; */
 }
 .commentWrap > li.none {
 display: flex;
@@ -571,14 +573,16 @@ display: block;
 color: #999;
 }
 .commentWrap p.count {
-min-width: 40px;
+width: 60px;
 /* padding: 8px 5px 0 15px;
 font-size: 17px; */
 font-weight: bold;
-text-align: right;
+text-align: left;
 color: #646464;
 /* background: url(/images/ko/ico.png) no-repeat 0 -968px; */
 /* margin-left:-10px; */
+margin-left: 7px;
+white-space: nowrap;
 }
 
 

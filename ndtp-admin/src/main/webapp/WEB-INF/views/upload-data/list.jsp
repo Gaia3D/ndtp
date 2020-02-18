@@ -50,7 +50,7 @@
 										<select id="orderWord" name="orderWord" class="selectBoxClass">
 											<option value=""> <spring:message code='search.basic'/> </option>
 											<option value="data_name">데이터명</option>
-											<option value="insertDate"> <spring:message code='search.insert.date'/> </option>
+											<option value="insert_date"> <spring:message code='search.insert.date'/> </option>
 										</select>
 										<select id="orderValue" name="orderValue" class="selectBoxClass">
 					                		<option value=""> <spring:message code='search.basic'/> </option>
@@ -238,7 +238,7 @@
 
 	var dialogConverterJob = $( ".dialogConverterJob" ).dialog({
 		autoOpen: false,
-		height: 315,
+		/* height: 315, */
 		width: 600,
 		modal: true,
 		resizable: false,
@@ -346,6 +346,16 @@
 			}
 		}
 	}
+	
+	$('#yAxisUp').change(function() {
+		var desc = $(this).siblings('span');
+		var value = $(this).val();
+		if (value === 'Y') {
+			desc.text('Y축이 건물의 천장을 향하는 경우');
+		} else if (value === 'N') {
+			desc.text('Z축이 건물의 천장을 향하는 경우');
+		}
+	});
 </script>
 </body>
 </html>

@@ -43,12 +43,12 @@
 	{{#if civilVoiceList}}
 		{{#each civilVoiceList}}
 			<li class="comment flex-align-center" data-id="{{civilVoiceId}}" title="상세보기">
-				<button type="button" class="goto" data-longitude={{longitude}} data-latitude={{latitude}} style="width:30px; margin-right:10px;" title="위치보기">위치보기</button>
+				<p class="count" style=""><span class="likes-icon">icon</span>{{commentCount}}</p>
 				<p>
 					<span class="title">{{title}}</span>
 					<span class="id">{{userId}}</span>
 				</p>
-         	   	<p class="count" style="width: 60px;"><span class="likes-icon">icon</span>{{commentCount}}</p>
+				<button type="button" class="goto" data-longitude={{longitude}} data-latitude={{latitude}} style="width:30px; margin-right:10px;" title="위치보기">위치보기</button>
 			</li>
 		{{/each}}
 	{{else}}
@@ -59,8 +59,8 @@
 <script id="templateCivilVoicePagination" type="text/x-handlebars-template">
 	{{#if pagination.totalCount}}
     	<ul class="pagination">
-    	{{#if pagination.existPrePage}}
        	 	<li class="ico first" onClick="getCivilVoiceList({{pagination.firstPage}});"></li>
+    	{{#if pagination.existPrePage}}
         	<li class="ico forward" onClick="getCivilVoiceList({{pagination.prePageNo}});"></li>
     	{{/if}}
 
@@ -74,8 +74,8 @@
 
     	{{#if pagination.existNextPage}}
         	<li class="ico back" onClick="getCivilVoiceList({{pagination.nextPageNo}});"></li>
-        	<li class="ico end" onClick="getCivilVoiceList({{pagination.lastPage}});"></li>
     	{{/if}}
+        	<li class="ico end" onClick="getCivilVoiceList({{pagination.lastPage}});"></li>
     	</ul>
 	{{/if}}
 </script>
