@@ -50,7 +50,10 @@ public class ConverterJob extends Search {
 	// unit scale factor. 설계 파일의 1이 의미하는 단위. 기본 1 = 0.01m
 	private BigDecimal usf;
 	// 높이방향. y축이 건물의 천장을 향하는 경우 Y. default = N
-	private String isYAxisUp;
+	private String yAxisUp;
+	public String getViewYAxisUp() {
+		return this.yAxisUp;
+	}
 	// 대상 file 개수
 	private Integer fileCount;
 	// 상태. ready : 준비, success : 성공, waiting : 승인대기, fail : 실패

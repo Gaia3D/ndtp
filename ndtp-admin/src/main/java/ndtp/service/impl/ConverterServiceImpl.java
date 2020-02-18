@@ -129,7 +129,7 @@ public class ConverterServiceImpl implements ConverterService {
 			inConverterJob.setUsf(usf);
 			inConverterJob.setConverterTemplate(converterTemplate);
 			inConverterJob.setFileCount(uploadDataFileList.size());
-			inConverterJob.setIsYAxisUp(converterJob.getIsYAxisUp());
+			inConverterJob.setYAxisUp(converterJob.getYAxisUp());
 			converterMapper.insertConverterJob(inConverterJob);
 
 			Long converterJobId = inConverterJob.getConverterJobId();
@@ -202,7 +202,7 @@ public class ConverterServiceImpl implements ConverterService {
 		queueMessage.setLogPath(dataGroupRootPath + dataGroupFilePath + "logTest.txt");
 		queueMessage.setIndexing("y");
 		queueMessage.setUsf(inConverterJob.getUsf());
-		queueMessage.setIsYAxisUp(inConverterJob.getIsYAxisUp());
+		queueMessage.setIsYAxisUp(inConverterJob.getYAxisUp());
 		queueMessage.setUserId(userId);
 		
 		// 템플릿 별 meshType과 skinLevel 설정
