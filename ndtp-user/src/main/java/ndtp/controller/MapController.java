@@ -142,16 +142,16 @@ public class MapController {
     @GetMapping(value = "/help")
     public String gotoApiHelp(HttpServletRequest request, Model model) {
 
-        UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-        UserPolicy userPolicy = userPolicyService.getUserPolicy(userSession.getUserId());
+//        UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+//        UserPolicy userPolicy = userPolicyService.getUserPolicy(userSession.getUserId());
         GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
         try {
             model.addAttribute("geoPolicyJson", objectMapper.writeValueAsString(geoPolicy));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
-        model.addAttribute("baseLayers", userPolicy.getBaseLayers());
+//        
+//        model.addAttribute("baseLayers", userPolicy.getBaseLayers());
         
         return "/api-help/layout";
     }
