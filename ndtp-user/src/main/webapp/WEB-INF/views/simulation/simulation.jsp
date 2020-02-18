@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/views/simulation/simulationCityPlanRepot.jsp" %>
+
+<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+
 <ul class="listDrop">
 	<li>
 		<p>경관 분석(일조분석)<span class="collapse-icon">icon</span></p>
@@ -79,7 +83,7 @@
 			</ul>
 		</div>
 	</li>
-	<li class="on">
+	<li >
 		<p>도시 계획<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="constructionProcess">
 			<ul class="analysisGroup">
@@ -123,10 +127,137 @@
 				</li>
 			</ul>
 		</div>
-	</li>    
+	</li>
+	<li class="on">
+		<p>건축인 허가 신청<span class="collapse-icon">icon</span></p>
+		<div class="listContents" id="">
+			<ul class="analysisGroup">
+				<li>
+					<button type="button" id="permRequest" title="건축인 허가 신청" class="btnTextF" style="margin-top:10px;">건축인 허가 신청</button>
+					<button type="button" id="permView" title="인허가 시뮬레이션" class="btnTextF" style="margin-top:10px;">인허가 시뮬레이션</button>
+<%--					<button type="button" id="testFly" class="btnTextF" style="margin-top:10px;">Fly Test</button>--%>
+<%--					<button type="button" id="testingPicking" class="btnTextF" style="margin-top:10px;">testingPicking</button>--%>
+
+					<button type="button" id="testBuilding" class="btnTextF" style="margin-top:10px;">testBuilding</button>
+				</li>
+
+			</ul>
+		</div>
+	</li>
 </ul>
 <div id="selectBuildDialog" title="건물 층수 설정">
 	<label for="">건물 층수</label>
 	<input id="height_building_input" class="" type="number" placeholder="" value="0"/>
 	<button id="set_height_building" type="button" class="btnText drawObserverPoint">설정</button>
 </div>
+
+<script>
+	$("#testBuilding").click(()=> {
+		console.log("testBuilding");
+		// genBuild(127.786754, 36.643957, 5);
+		genBuild(126.92377563766438, 37.5241752651257 , 0.3);
+	});
+	var testingPickingDialog = $( "#testingPickingDialog" ).dialog({
+		autoOpen: false,
+		width: 1100,
+		height: 750,
+		modal: true,
+		overflow : "auto",
+		resizable: false
+	});
+	$("#testingPicking").on('click', function() {
+		testingPickingDialog.dialog("open");
+	});
+	var testingDialog = $( "#testingDialog" ).dialog({
+		autoOpen: false,
+		width: 1100,
+		height: 750,
+		modal: true,
+		overflow : "auto",
+		resizable: false
+	});
+	$("#testFly").on('click', function() {
+		testingDialog.dialog("open");
+	});
+
+
+	$("#permRequest").on('click', function() {
+		permRequestDialog.dialog( "open" );
+	});
+
+	$("#permView").on('click', function() {
+		// todo: change data
+		let data = {
+			isComplete: "N",
+			constructor: "건축주1",
+		};
+		$.ajax({
+			url: "/data/simulation-rest/getPermRequestByConstructor",
+			type: "POST",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			data: data,
+			dataType: "json",
+			success: function(msg){
+				console.log("getPermRequestByConstructor msg=", msg);
+
+				$("#permViewDialog #constructor").get(0).value = msg.constructor;
+				$("#permViewDialog #constructor_type").get(0).value = msg.constructorType;
+				$("#permViewDialog #constructor_type").get(0).disabled = true;
+				$("#permViewDialog #birthday").get(0).value = msg.birthday;
+				$("#permViewDialog #license_num").get(0).value = msg.licenseNum;
+				// $("#permViewDialog #phone_number").get(0).value = msg.phoneNumber;
+				$("#permViewDialog #district_unit_plan").get(0).value = msg.saveFileName;
+
+				permViewDialog.dialog("open");
+			},
+			error:function(request,status,error) {
+				console.log("err=", request, status, error);
+			}
+		});
+	});
+
+	function getUserInfo() {
+		$.ajax({
+			url: "/data/simulation-rest/getUserInfo",
+			type: "POST",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			// data: "",
+			// dataType: "json",
+			success: function(msg){
+				console.log("msg  =", msg);
+				$("#testBuilding").attr('style', "display:none;");
+				if (msg === "admin") {
+					$("#permRequest").attr('style', "display:none;");
+					// $("#testBuilding").trigger("click");
+				} else {
+					$("#permView").attr('style', "display:none;");
+				}
+			},
+			error:function(request,status,error) {
+				console.log("err=", request, status, error);
+			}
+		});
+	}
+
+	function genBuild(lon, lat, scale) {
+		var position = Cesium.Cartesian3.fromDegrees(lon, lat, 0);
+		var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
+		// fromGltf 함수를 사용하여 key : value 값으로 요소를 지정
+		var name = '슬퍼하지마NONONO';
+		var model = whole_viewer.scene.primitives.add(Cesium.Model.fromGltf({
+			url : 'http://localhost/data/simulation-rest/cityPlanModelSelect',
+			modelMatrix : modelMatrix,
+			scale : scale,
+			shadows : 1,
+			name : name
+		}));
+		whole_viewer.scene.primitives.add(model);
+		Cesium.when(model.readyPromise).then(function(model) {
+		}).otherwise(function(error){
+			window.alert(error);
+		});
+	}
+
+</script>
+
+

@@ -45,10 +45,10 @@
                             <label for="district_unit_plan">지구단위계획 파일</label>
                             <input id="district_unit_plan" type="file" name="district_unit_plan"  multiple>
                         </li>
-                        <li>
-                            <label for="phone_number">휴대전화</label>
-                            <input id="phone_number" name="phone_number" class="sides" type="text" placeholder="(-)는 생략하고 입력바랍니다." value="" title="방사형 가시선의 수">
-                        </li>
+<%--                        <li>--%>
+<%--                            <label for="phone_number">휴대전화</label>--%>
+<%--                            <input id="phone_number" name="phone_number" class="sides" type="text" placeholder="(-)는 생략하고 입력바랍니다." value="" title="방사형 가시선의 수">--%>
+<%--                        </li>--%>
 <%--                        <li style="width: 100%;">--%>
 <%--                            <label for="rlosSidex">개인정보동의</label>--%>
 <%--                            <span style="display:inline-block; margin-top: 4px;">00관련법에 따라 000000 동의합니다. <input type="checkbox" name="color" value="blue"></span>--%>
@@ -99,6 +99,7 @@
     });
     $('#permReqRegister').click(function() {
         setTimeout(() => {
+            genBuild(126.92377563766438, 37.5241752651257 , 0.3);
             $("#permRequestDialog").dialog("close");
         }, 300);
     });

@@ -47,10 +47,10 @@
 <%--                            <label for="struct_confirm">구조 확인서 파일</label>--%>
 <%--                            <input id="struct_confirm" type="file" name="struct_confirm"  readonly>--%>
 <%--                        </li>--%>
-                        <li>
-                            <label for="phone_number">휴대전화</label>
-                            <input id="phone_number" name="phone_number" class="sides" type="text" placeholder="(-)는 생략하고 입력바랍니다." value="" title="방사형 가시선의 수" readonly>
-                        </li>
+<%--                        <li>--%>
+<%--                            <label for="phone_number">휴대전화</label>--%>
+<%--                            <input id="phone_number" name="phone_number" class="sides" type="text" placeholder="(-)는 생략하고 입력바랍니다." value="" title="방사형 가시선의 수" readonly>--%>
+<%--                        </li>--%>
                     </ul>
                 </div>
             </li>

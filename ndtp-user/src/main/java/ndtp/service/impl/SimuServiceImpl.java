@@ -88,8 +88,6 @@ public class SimuServiceImpl {
 			PREFIX_URL = "/Users/junho/data/mago3d/";
 			SAVE_PATH = "/Users/junho/data/mago3d/";
 		}
-		String PREFIX_URL = "C:\\data\\mago3d\\normal-upload-data\\";
-		String SAVE_PATH = "C:\\data\\mago3d\\normal-upload-data\\";
 
 		try {
 			// 파일 정보

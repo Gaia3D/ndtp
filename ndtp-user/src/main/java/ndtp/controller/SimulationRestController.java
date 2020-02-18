@@ -94,8 +94,8 @@ public class SimulationRestController {
 		String resultFullPath = "C:\\data\\Apartment_Building_26_obj\\Sample.gltf";
 		String os = System.getProperty("os.name").toLowerCase();
 		if (os.contains("mac")) {
-//			resultFullPath = "/Users/junho/data/mago3d/building_obj/Apartment_Building_26_obj.gltf";
-			resultFullPath = "/Users/junho/data/mago3d/building_obj/Roof.gltf";
+			resultFullPath = "/Users/junho/data/mago3d/building_obj/Apartment_Building_26_obj.gltf";
+//			resultFullPath = "/Users/junho/data/mago3d/building_obj/Roof.gltf";
 		}
 
         File fi = new File(resultFullPath.trim());

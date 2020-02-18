@@ -52,6 +52,10 @@
                 // todo: connect flyto
                 console.log("go to("+latitude+", "+longitude+")");
 
+                // genBuild(126.92377563766438, 37.5241752651257 , 0.3);
+                // genBuild(longitude, latitude , 0.3);
+                $("#testBuilding").trigger("click");
+
                 whole_viewer.scene.camera.flyTo({
                     destination : Cesium.Cartesian3.fromDegrees(latitude, longitude, 1000)
                 });

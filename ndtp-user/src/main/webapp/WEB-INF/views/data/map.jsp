@@ -177,7 +177,7 @@
 		$(".ui-slider-handle").slider({});
  		initDataGroupList();
 
- 		$("#civilVoiceMenu").click(()=> {
+ 		$("#simulationMenu").click(()=> {
 			getUserInfo();
 		});
 	});
