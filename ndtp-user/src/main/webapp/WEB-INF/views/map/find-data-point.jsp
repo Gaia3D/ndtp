@@ -197,6 +197,7 @@
 <script type="text/javascript" src="/js/${lang}/data-info.js"></script>
 <script type="text/javascript" src="/js/${lang}/user-policy.js"></script>
 <script type="text/javascript" src="/js/${lang}/map-data-controll.js"></script>
+<script type="text/javascript" src="/js/${lang}/map-init.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("#magoTool").addClass("on");
@@ -283,7 +284,8 @@
 
 	    // 기본 레이어 랜더링
 		setTimeout(function(){
-        	initLayer('${baseLayers}');
+			var map = new mapInit(magoInstance, ${baseLayerJson}, ${geoPolicyJson});
+        	map.initLayer();
         }, geoPolicyJson.initDuration * 1000);
 
 		/* setTimeout(function(){
@@ -367,31 +369,6 @@
 
 	function remove(entityStored) {
 		entities.removeById(entityStored);
-	}
-
-	function initLayer(baseLayers) {
-		if(!baseLayers) return;
-		var layerList = baseLayers.split(",");
-		var queryString = "enable_yn='Y'";
-	    var queryStrings = layerList.map(function(){ return queryString; }).join(';');	// map: ie9부터 지원
-		var provider = new Cesium.WebMapServiceImageryProvider({
-	        url : geoPolicyJson.geoserverDataUrl + "/wms",
-	        layers : layerList.join(","),
-	        parameters : {
-	            service : 'WMS'
-	            ,version : '1.1.1'
-	            ,request : 'GetMap'
-	            ,transparent : 'true'
-	            ,format : 'image/png'
-	            ,time : 'P2Y/PRESENT'
-	            ,maxZoom : 25
-	            ,maxNativeZoom : 23
-	            ,CQL_FILTER: queryStrings
-	        },
-	        enablePickFeatures : false
-	    });
-
-		viewer.imageryLayers.addImageryProvider(provider);
 	}
 
 	function initData(dataInfo) {

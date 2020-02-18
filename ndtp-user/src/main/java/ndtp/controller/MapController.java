@@ -1,6 +1,7 @@
 package ndtp.controller;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,11 +17,14 @@ import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.DataInfo;
 import ndtp.domain.GeoPolicy;
 import ndtp.domain.Key;
+import ndtp.domain.LayerGroup;
 import ndtp.domain.UserPolicy;
 import ndtp.domain.UserSession;
 import ndtp.service.DataService;
 import ndtp.service.GeoPolicyService;
+import ndtp.service.LayerGroupService;
 import ndtp.service.UserPolicyService;
+import ndtp.support.LayerDisplaySupport;
 
 /**
  * 지도에서 위치 찾기, 보기 등을 위한 공통 클래스
@@ -38,6 +42,8 @@ public class MapController {
 	private GeoPolicyService geoPolicyService;
 	@Autowired
 	private UserPolicyService userPolicyService;
+	@Autowired
+	private LayerGroupService layerGroupService;
 	@Autowired
 	private ObjectMapper objectMapper;
 	
@@ -93,8 +99,11 @@ public class MapController {
 		}
 		
 		String dataInfoJson = "";
+		String baseLayerJson = "";
 		try {
 			dataInfoJson = objectMapper.writeValueAsString(dataInfo);
+			List<LayerGroup> layerGroupList = LayerDisplaySupport.getListDisplayLayer(layerGroupService.getListLayerGroupAndLayer(), userPolicy.getBaseLayers());
+			baseLayerJson = objectMapper.writeValueAsString(layerGroupList);
 		} catch(Exception e) {
 			log.info("@@ objectMapper exception");
 			e.printStackTrace();
@@ -102,7 +111,7 @@ public class MapController {
 		
 		model.addAttribute("referrer", referrer);
 		model.addAttribute("geoPolicyJson", geoPolicyJson);
-		model.addAttribute("baseLayers", userPolicy.getBaseLayers());
+		model.addAttribute("baseLayerJson", baseLayerJson);
 		model.addAttribute("dataInfo", dataInfo);
 		model.addAttribute("dataInfoJson", dataInfoJson);
 		model.addAttribute("owner", userId);
@@ -123,12 +132,12 @@ public class MapController {
         UserPolicy userPolicy = userPolicyService.getUserPolicy(userSession.getUserId());
         GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
         try {
+        	List<LayerGroup> layerGroupList = LayerDisplaySupport.getListDisplayLayer(layerGroupService.getListLayerGroupAndLayer(), userPolicy.getBaseLayers());
             model.addAttribute("geoPolicyJson", objectMapper.writeValueAsString(geoPolicy));
+            model.addAttribute("baseLayerJson", objectMapper.writeValueAsString(layerGroupList));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
-        model.addAttribute("baseLayers", userPolicy.getBaseLayers());
         
         return "/map/find-point";
     }
