@@ -13,7 +13,12 @@ $(document).ready(function (){
     
     // wms layer on/off
     $('#layerContent').on('click', '.wmsLayer p', function(e) {
-//    	initLayer(MAGO3D_INSTANCE);
+    	var layerList = [];
+    	$("ul.layerList li ul li.wmsLayer.on").each(function(){
+			var layerKey = $(this).attr("data-layer-name");
+			layerList.push(layerKey);
+			NDTP.map.initWMSLayer(layerList);
+		});
     });
     
     // wfs layer on/off
@@ -22,20 +27,21 @@ $(document).ready(function (){
     });
 });
 
+/*
 // 관리자 레이어에서 기본표시가  사용인 항목들을 랜더링 
 function initLayer(magoInstance, baseLayers) {
-//	var viewer = magoInstance.getViewer();
-//	var layerList = [];
-//	if(baseLayers) {
-//		layerList = baseLayers.split(",");
-//	} else {
-//		$("ul.layerList li ul li.wmsLayer.on").each(function(){
-//			var layerKey = $(this).attr("data-layer-name");
-//			layerList.push(NDTP.policy.geoserverDataStore+':'+layerKey);
-//		});
-//	}
-//	
-//	createWmsProvider(viewer, layerList);
+	var viewer = magoInstance.getViewer();
+	var layerList = [];
+	if(baseLayers) {
+		layerList = baseLayers.split(",");
+	} else {
+		$("ul.layerList li ul li.wmsLayer.on").each(function(){
+			var layerKey = $(this).attr("data-layer-name");
+			layerList.push(NDTP.policy.geoserverDataStore+':'+layerKey);
+		});
+	}
+	
+	createWmsProvider(viewer, layerList);
 }
 
 // wmsProvider 생성 
@@ -66,7 +72,7 @@ function createWmsProvider(viewer, layerList) {
     
 	NDTP.wmsProvider = viewer.imageryLayers.addImageryProvider(provider);
 }
-
+*/
 //레이어 메뉴 목록 조회
 function getLayerList() {
     $.ajax({
