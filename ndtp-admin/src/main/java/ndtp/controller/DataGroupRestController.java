@@ -1,9 +1,11 @@
 package ndtp.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +23,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.DataGroup;
+import ndtp.domain.DataInfo;
+import ndtp.domain.DataInfoSimple;
 import ndtp.domain.Key;
 import ndtp.domain.LocationUdateType;
 import ndtp.domain.UserSession;
 import ndtp.service.DataGroupService;
+import ndtp.service.DataService;
 import ndtp.service.PolicyService;
 
 @Slf4j
@@ -32,6 +37,8 @@ import ndtp.service.PolicyService;
 @RequestMapping("/data-groups")
 public class DataGroupRestController {
 
+	@Autowired
+	private DataService dataService;
 	@Autowired
 	private DataGroupService dataGroupService;
 
@@ -252,5 +259,34 @@ public class DataGroupRestController {
 		result.put("errorCode", errorCode);
 		result.put("message", message);
 		return result;
+	}
+	
+	/**
+	 * Smart Tiling 데이터 다운로드
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "/download/{dataGroupId}")
+	public String downloadTxtUser(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dataGroupId) {
+		
+		log.info("@@ dataGroupId = {}", dataGroupId);
+		
+		response.setContentType("application/force-download");
+		response.setHeader("Content-Transfer-Encoding", "binary");
+		response.setHeader("Content-Disposition", "attachment; filename=\"" + dataGroupId + ".json \"");
+		
+		DataGroup dataGroup = DataGroup.builder().dataGroupId(dataGroupId).build();
+		dataGroup = dataGroupService.getDataGroup(dataGroup);
+		
+		List<DataInfoSimple> dataInfoList = dataService.getListAllDataByDataGroupId(dataGroupId);
+		dataGroup.setDatas(dataInfoList);
+		try {
+			String dataJson = objectMapper.writeValueAsString(dataGroup);
+			response.getWriter().write(dataJson);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+			
+		return null;
 	}
 }

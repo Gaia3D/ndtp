@@ -49,7 +49,6 @@ var MapDataControll = function(magoInstance) {
     
   //지도상에서 데이터 object 선택 시 
     magoManager.on(Mago3D.MagoManager.EVENT_TYPE.SELECTEDF4DOBJECT, function(result) {
-    	console.info(result);
     	var resultObj = result.object;
     	var resultBuilding = result.octree;
     	if(resultObj && resultBuilding) {
@@ -251,18 +250,6 @@ var MapDataControll = function(magoInstance) {
 	}
 	
 	function setIssueFormValue(f4d, objectId, coord) {
-		//test로 점 하나 찍어봅니다
-        /*var pointGraphic = new Cesium.PointGraphics({
-            pixelSize : 10,
-            color : Cesium.Color.AQUAMARINE,
-            outlineColor : Cesium.Color.WHITE,
-            outlineWidth : 2
-        });
-
-        var addedEntity = magoInstance.getViewer().entities.add({
-            position : Cesium.Cartesian3.fromDegrees(coord.longitude, coord.latitude, coord.altitude),
-            point : pointGraphic
-        });*/
 		if(f4d) {
 			var data = f4d.data;
 			var tempDataGroupName = data.projectFolderName;
@@ -273,7 +260,7 @@ var MapDataControll = function(magoInstance) {
 			$("#issueDataName").html(data.data_name);
 			$("#issueObjectKey").val(objectId);
 			$("#issueDataGroupId").val(data.projectId);
-			$("#issueDataGroupName").html(data.projectId);//no exist..
+			$("#issueDataGroupName").html(dataGroupName);//no exist..
 			$("#issueLongitude").val(coord.longitude);
 			$("#issueLatitude").val(coord.latitude);
 			$("#issueAltitude").val(coord.altitude);

@@ -37,6 +37,14 @@
 		.ctrlWrap {
 			z-index:100;
 		}
+		#objectLabel {
+		    background-color: transparent;
+		    position: absolute;
+		    left: 0px;
+		    top: 0px;
+		    z-index: 10;
+		    pointer-events: none;
+	   	}
 		/* 
 		.ctrlWrap div.zoom button, .ctrlWrap div.rotate button  {
 			width:47px;
@@ -128,6 +136,7 @@
 			<input id="timeInput"/>
 		</div>
 	</div>
+	<canvas id="objectLabel"></canvas>	
 	<!-- E: MAP -->
 </div>
 <!-- E: WRAP -->
@@ -170,6 +179,7 @@
 <script type="text/javascript" src="/js/${lang}/map-data-controll.js"></script>
 <script type="text/javascript" src="/js/${lang}/civil-voice.js"></script>
 
+<script type="text/javascript" src="/js/${lang}/issue-controller.js"></script>
 <script type="text/javascript">
 	var a=1;
 	// 임시로...
@@ -270,11 +280,13 @@
         CivilVoice(magoInstance);
         // 기본 레이어 랜더링
         setTimeout(function(){
-        	initLayer(magoInstance, NDTP.baseLayers);
+        	//initLayer(magoInstance, NDTP.baseLayers);
         }, geoPolicyJson.initDuration * 1000);
 
 		//지도상에 데이터 다루는거
 		MapDataControll(magoInstance);
+
+		NDTP.issueController = new IssueController(magoInstance);
 	}
 
 	// 데이터 그룹 목록
@@ -677,7 +689,10 @@
 	
 	// 이슈 등록 버튼 클릭
 	$("#issueButton").click(function() {
+		$('#issueTitle,#issueContents').prop('readonly',false);
+		$('#issueSaveButton').parent('.btns').show();
 		issueDialog.dialog( "open" );
+		issueDialog.dialog( "option", "title", "이슈 등록");
 	});
 	// 이슈 다이얼 로그
 	var issueDialog = $( "#issueDialog" ).dialog({
@@ -688,6 +703,40 @@
 		overflow : "auto",
 		resizable: false
 	});
+
+	// 이슈 상세 정보 조회
+	function detailIssueInfo(issueId) {
+		
+		$.ajax({
+			url: "/issues/" + issueId,
+			type: "GET",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			dataType: "json",
+			success: function(msg){
+				if(msg.statusCode <= 200) {
+					issueDialog.dialog( "open" );
+					issueDialog.dialog( "option", "title", "이슈 상세 정보");
+					$('#issueSaveButton').parent('.btns').hide();
+					
+					$('#issueTitle,#issueContents').prop('readonly',true);
+					
+					var issue = msg.issue;
+					$('#issueDataGroupName').text(issue.dataGroupName);
+					$('#issueDataName').text(issue.dataKey);
+					$('#issueLongitude').val(issue.longitude);
+					$('#issueLatitude').val(issue.latitude);
+					$('#issueAltitude').val(issue.altitude);
+					$('#issueTitle').val(issue.title);
+					$('#issueContents').val(issue.contents);
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+				}
+			},
+			error:function(request,status,error){
+				alert(JS_MESSAGE["ajax.error.message"]);
+			}
+		});
+	}
 	
 	// 이슈 등록
 	var insertIssueFlag = true;

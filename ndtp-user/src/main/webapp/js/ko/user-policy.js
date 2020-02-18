@@ -1,9 +1,9 @@
 var UserPolicy = function(magoInstance) {
 	
-	//객체정보 변경
-	$("input[name='datainfoDisplay']").change(function(e){
+	//레이블 온오프
+	$("input[name='labelDisplay']").change(function(e){
 		var flag = JSON.parse($(this).val().toLowerCase());
-		changeObjectInfoViewModeAPI(magoInstance, flag);
+		changeLabelAPI(magoInstance, flag);
 	});
 	
 	//오리진 표시 유무 변경
@@ -16,6 +16,29 @@ var UserPolicy = function(magoInstance) {
 	$("input[name='bboxDisplay']").change(function(e){
 		var flag = JSON.parse($(this).val().toLowerCase());
 		changeBoundingBoxAPI(magoInstance, flag);
+	});
+	
+	//중심 반경 이슈 변경
+	$("input[name='nearIssueDisplay']").change(function(e){
+		var flag = JSON.parse($(this).val().toLowerCase());
+		var campos = getCameraCurrentPositionAPI(magoInstance);
+		if(campos.alt > 5000 && flag) {
+			alert('카메라를 지표면에 더 가까이 이동해주세요.');
+			$('#nearIssueDisplayN').prop('checked',true);
+			return false;
+		}
+		
+		if(flag) {
+			getCenterRadiusIssue();
+		} else {
+			clearCenterRadiusIssue();
+		}
+	});
+	
+	//그림자 표시 유무 변경
+	$("input[name='shadowDisplay']").change(function(e){
+		var flag = JSON.parse($(this).val().toLowerCase());
+		changeShadowAPI(magoInstance, flag);
 	});
 	
 	$("input[name='objectMoveMode']").change(function(e){
@@ -63,4 +86,15 @@ var UserPolicy = function(magoInstance) {
 			$("#initAltitude").val(altitude);
 		});
 	});
+	
+
+	//카메라 위치 기반 이슈 가져오기
+	function getCenterRadiusIssue(){
+		NDTP.issueController.getCenterRadiusIssue();
+	}
+	
+	//이슈 클리어, layer 도입해야함
+	function clearCenterRadiusIssue(){
+		NDTP.issueController.clearIssue();
+	}
 }

@@ -2,14 +2,14 @@
 <div id="civilVoiceListContent" class="contents mar0 pad0 border-none" style="display:block;">
 	<div class="button-group-align marB10">
 		<h3 class="h3-heading">시민참여</h3>
-		<button type="button" id="civilVoiceInputButton" title="의견등록" class="btnTextF right-align">의견 등록</button>
+		<button type="button" id="civilVoiceInputButton" class="btnTextF right-align" title="의견등록">의견 등록</button>
 	</div>
 
 	<!-- 시민참여 검색 -->
 	<form:form id="civilVoiceSearchForm" modelAttribute="civilVoice" method="get" onsubmit="return false;">
 	<div class="listSearch search-margin flex-align-center">
 		<input type="text" id="getCivilVoiceListTitle" name="title" maxlength="256" placeholder="검색어를 입력하세요.">
-		<button type="button" id="civilVoiceSearch" class="btnTotalSearch" title="검색">검색</button>
+		<button type="button" id="civilVoiceSearch" onClick="getCivilVoiceList();" class="btnTotalSearch" title="검색">검색</button>
 	</div>
 	</form:form>
 
