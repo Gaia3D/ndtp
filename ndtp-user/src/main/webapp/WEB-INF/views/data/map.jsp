@@ -285,39 +285,40 @@
 		var dataGroupArrayLength = dataGroupArray.length;
 		for(var i=0; i<dataGroupArrayLength; i++) {
 			var dataGroup = dataGroupArray[i];
-			var f4dController = MAGO3D_INSTANCE.getF4dController();
-			$.ajax({
-				url: "/datas/" + dataGroup.dataGroupId + "/list",
-				type: "GET",
-				headers: {"X-Requested-With": "XMLHttpRequest"},
-				dataType: "json",
-				success: function(msg){
-					if(msg.statusCode <= 200) {
-						var dataInfoList = msg.dataInfoList;
-						if(dataInfoList != null && dataInfoList.length > 0) {
-							var dataInfoFirst = dataInfoList[0];
-							var dataInfoGroupId = dataInfoFirst.dataGroupId;
-							var group;
-							for(var j in dataGroupArray) {
-								if(dataGroupArray[j].dataGroupId === dataInfoGroupId) {
-									group = dataGroupArray[j];
-									break;
+			if(!dataGroup.tiling) {
+				var f4dController = MAGO3D_INSTANCE.getF4dController();
+				$.ajax({
+					url: "/datas/" + dataGroup.dataGroupId + "/list",
+					type: "GET",
+					headers: {"X-Requested-With": "XMLHttpRequest"},
+					dataType: "json",
+					success: function(msg){
+						if(msg.statusCode <= 200) {
+							var dataInfoList = msg.dataInfoList;
+							if(dataInfoList != null && dataInfoList.length > 0) {
+								var dataInfoFirst = dataInfoList[0];
+								var dataInfoGroupId = dataInfoFirst.dataGroupId;
+								var group;
+								for(var j in dataGroupArray) {
+									if(dataGroupArray[j].dataGroupId === dataInfoGroupId) {
+										group = dataGroupArray[j];
+										break;
+									}
 								}
+	
+								group.datas = dataInfoList;
+								f4dController.addF4dGroup(group);
 							}
-
-							group.datas = dataInfoList;
-							f4dController.addF4dGroup(group);
+						} else {
+							alert(JS_MESSAGE[msg.errorCode]);
 						}
-					} else {
-						alert(JS_MESSAGE[msg.errorCode]);
+					},
+					error:function(request,status,error){
+						alert(JS_MESSAGE["ajax.error.message"]);
 					}
-				},
-				error:function(request,status,error){
-					alert(JS_MESSAGE["ajax.error.message"]);
-				}
-			});
+				});
+			}
 		}
-
 	}
 
 	function flyTo(dataGroupId, dataKey) {
