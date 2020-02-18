@@ -26,10 +26,6 @@
 					<div class="page-content">
 						<div class="content-desc u-pull-right"><span class="icon-glyph glyph-emark-dot color-warning"></span><spring:message code='check'/></div>
 						<div class="tabs">
-							<ul>
-								<li><a href="#userInfoTab"><spring:message code='user.input.information'/></a></li>
-								<%-- <li><a href="#userDeviceTab"><spring:message code='user.input.device'/></a></li> --%>
-							</ul>
 							<div id="userInfoTab">
 								<table class="inner-table scope-row">
 									<col class="col-label" />
@@ -41,7 +37,10 @@
 									<tr>
 										<th class="col-label" scope="row">위치</th>
 										<td class="col-data">
-											${civilVoice.longitude}, ${civilVoice.latitude}
+											<span id="longitude">${civilVoice.longitude}</span>
+											&emsp;
+											<span id="latitude">${civilVoice.latitude}</span>
+											&emsp;
 											<input type="button" id="mapButtion" value="지도에서 보기" />
 										</td>
 									</tr>
@@ -72,16 +71,17 @@
 
 						<!-- 댓글 등록 -->
 						<form:form id="civilVoiceCommentForm" modelAttribute="civilVoiceComment" method="post" onsubmit="return false;">
-						<h4 class="comment">댓글쓰기</h4>
+						<h4 class="comment">의견</h4>
 						<div class="commentWrite">
 							<p class="user"></p>
-							<textarea name="" id="" class="reply"></textarea>
-							<span class="textCount">0/256</span>
-							<button type="button" title="등록" class="regist">등록</button>
+							<!-- <textarea name="" id="" class="reply"></textarea>
+							<span class="textCount">0/256</span> -->
+							<input type="text" name="title" placeholder="동의합니다" value="">
+							<button type="button" id="civilVoiceAgree" class="regist" title="등록">등록</button>
 						</div>
 						</form:form>
 						<ul id="civilVoiceComment" class="reply"></ul>
-						<div id="civilVoiceCommentPagination" class="pagination"></div>
+						<div id="civilVoiceCommentPagination" class="pagination" style="margin:10px;"></div>
 					</div>
 				</div>
 			</div>
@@ -123,7 +123,7 @@
 	// 시민참여 댓글 조회
 	function getCivilVoiceCommentList(page) {
 		if(!page) page = 1;
-		var id = '392';
+		var id = "${civilVoice.civilVoiceId}";
 
 		$.ajax({
 			url: '/civil-voice-comments/' + id,
@@ -134,7 +134,6 @@
 			data: {pageNo: page},
 			success: function(res){
 				if(res.statusCode <= 200) {
-					debugger
 					$('#civilVoiceCommentTotalCount').text(res.totalCount);
 					drawHandlebarsHtml(res, 'templateCivilVoiceComment', 'civilVoiceComment');
 					drawHandlebarsHtml(res, 'templateCivilVoiceCommentPagination', 'civilVoiceCommentPagination');
@@ -154,7 +153,7 @@
 	function saveCivilVoiceComment() {
 		if(insertCivilVoiceCommentFlag) {
 			insertCivilVoiceCommentFlag = false;
-			var id = '392';
+			var id = "${civilVoice.civilVoiceId}";
 			var url = "/civil-voice-comments";
 			var formId = 'civilVoiceCommentForm';
 			var formData = $('#' + formId).serialize();
@@ -189,7 +188,11 @@
 
 	// 지도에서 찾기
 	$( "#mapButtion" ).on( "click", function() {
-		var url = "/map/find-point";
+		var longitude = Number($('#longitude').text());
+		var latitude = Number($('#latitude').text());
+		var readOnly = true;
+
+		var url = "/map/fly-to-point?read-only=" + readOnly + "&longitude=" + longitude + "&latitude=" + latitude;
 		var width = 800;
 		var height = 700;
 
