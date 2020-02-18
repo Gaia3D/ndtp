@@ -5,6 +5,7 @@ CREATE TABLE sim_file_master (
 	origin_file_name varchar(255),
 	save_file_name varchar(255),
 	save_file_path varchar(255),
-	create_dt date DEFAULT now()
+	create_dt date DEFAULT now(),
+	constraint sim_file_master_pk	primary key (sim_file_seq)
 );
 

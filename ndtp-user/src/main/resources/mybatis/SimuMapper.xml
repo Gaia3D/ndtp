@@ -2,10 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="ndtp.persistence.SimuMapper">
-
 	<!-- 세션 정보 -->
 	<select id="getSimCityPlanFileList" resultType="simFileInfo">
-		select sim_file_seq, origin_file_name, save_file_name, save_file_path, create_dt from sim_file_master;
+		<![CDATA[
+			select sim_file_seq, origin_file_name, save_file_name, save_file_path, create_dt, save_file_type from sim_file_master where save_file_type = 'ECHODELTASHP' limit 1;
+		]]>
 	</select>
 
 	<insert id="insertSimCityPlanFile" parameterType="simFileInfo">
@@ -13,10 +14,20 @@
 			SELECt NEXTVAL('sim_file_sequence')
 		</selectKey>
 		INSERT INTO sim_file_master(
-			sim_file_seq, origin_file_name, save_file_name, save_file_path, create_dt
+			sim_file_seq, origin_file_name, save_file_name, save_file_path, create_dt, save_file_type
 		) VALUES (
-			#{simFileSeq}, #{originFileName}, #{saveFileName}, #{saveFilePath}, NOW()
+			#{simFileSeq}, #{originFileName}, #{saveFileName}, #{saveFilePath}, NOW(), #{saveFileType} 
 		)
 	</insert>
-
+	
+	<insert id="insertSimCityPlanFileResult" parameterType="cityPlanResult">
+		<selectKey keyProperty="cityPlanResultSeq" resultType="int" order="BEFORE">
+			SELECt NEXTVAL('city_plan_result_sequence')
+		</selectKey>
+			INSERT INTO public.city_plan_result
+			(city_plan_result_seq, city_plan_target_area, city_plan_std_floor_cov, floor_coverate_ratio, city_plan_std_build_cov, build_coverate_ratio, sim_file_master_img_num, create_dt)
+			VALUES(#{cityPlanResultSeq}, #{cityPlanTargetArea}, #{cityPlanStdFloorCov}, #{floorCoverateRatio},  #{cityPlanStdBuildCov}, #{buildCoverateRatio},  #{simFileMasterImgNum}, now());
+	</insert>
+	
+	
 </mapper>

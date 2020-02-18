@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import ndtp.domain.CityPlanResult;
 import ndtp.domain.SimFileMaster;
 import ndtp.domain.UserSession;
 
@@ -11,6 +12,7 @@ import ndtp.domain.UserSession;
 public interface SimuMapper {
 
 	int insertSimCityPlanFile(SimFileMaster simFileInfo);
+	int insertSimCityPlanFileResult(CityPlanResult simFileInfo);
 
 	SimFileMaster getSimCityPlanFileList();
 

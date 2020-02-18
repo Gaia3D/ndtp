@@ -57,8 +57,8 @@
 	    </li>
 	</ul>
 <div style="float:right">
-    <button id="resultCityPlanDlgReg" class="focusA" type="submit" title="등록" style="width: 200px;">등록</button>
-    <button id="resultCityPlanDlgCle" class="focusC" type="button" title="취소">취소</button>
+    <button id="resultCityPlanDlgReg" class="focusA" type="submit" title="적합" style="width: 200px;">적합</button>
+    <button id="resultCityPlanDlgCle" class="focusC" type="button" title="부적합">부적합</button>
 </div>
 </div>
 
