@@ -83,6 +83,7 @@
 									<col class="col-number" />
 									<col class="col-type" />
 									<col class="col-name" />
+									<col class="col-name" />
 									<col class="col-type" />
 									<col class="col-functions" />
 									<col class="col-functions" />
@@ -91,6 +92,7 @@
 											<th scope="col" class="col-number"><spring:message code='number'/></th>
 						                    <th scope="col">동의</th>
 						                    <th scope="col" style="width:600px">제목</th>
+						                    <th scope="col">조회수</th>
 						                    <th scope="col">편집</th>
 						                    <th scope="col">작성자</th>
 						                    <th scope="col">등록일</th>
@@ -111,6 +113,7 @@
 											<td class="col-name">
 												<a href="/civil-voice/detail?civilVoiceId=${civilVoice.civilVoiceId}&amp;pageNo=${pagination.pageNo }${pagination.searchParameters}" class="linkButton">${civilVoice.title}</a>
 											</td>
+											<td class="col-name">${civilVoice.viewCount}</td>
 											<td class="col-type">
 												<a href="/civil-voice/modify?civilVoiceId=${civilVoice.civilVoiceId}" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;
 												<a href="/civil-voice/delete?civilVoiceId=${civilVoice.civilVoiceId}" onclick="return deleteWarning();" class="linkButton"><spring:message code='delete'/></a>

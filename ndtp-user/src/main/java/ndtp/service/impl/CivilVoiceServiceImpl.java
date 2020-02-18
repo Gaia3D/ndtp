@@ -46,6 +46,11 @@ public class CivilVoiceServiceImpl implements CivilVoiceService {
 	}
 
 	@Transactional
+	public int updateCivilVoiceViewCount(CivilVoice civilVoice) {
+		return civilVoiceMapper.updateCivilVoiceViewCount(civilVoice);
+	}
+
+	@Transactional
 	public int deleteCivilVoice(CivilVoice civilVoice) {
 		civilVoiceCommentMapper.deleteCivilVoiceCommentFromId(civilVoice.getCivilVoiceId());
 		return civilVoiceMapper.deleteCivilVoice(civilVoice.getCivilVoiceId());
