@@ -28,13 +28,18 @@
 			AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
+			<if test="location != null and location != ''">
+			<![CDATA[
+			AND ST_CONTAINS(ST_BUFFER(ST_GeomFromText(#{location}, 4326),0.2), location)
+			]]>
+			</if>
 		</trim>
 	</select>
 
 	<!-- 이슈 목록 -->
 	<select id="getListIssue" parameterType="issue" resultType="issue">
 		/* getListIssue */
-		SELECT A.*, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude,
+		SELECT A.*, ST_X(A.location::geometry) AS longitude, ST_Y(A.location::geometry) AS latitude,
 			(SELECT user_name FROM user_info WHERE user_id = A.user_id) AS userName
 		FROM(
 			SELECT *
@@ -57,6 +62,11 @@
 				<if test="endDate != null and endDate != ''">
 				<![CDATA[
 				AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+				]]>
+				</if>
+				<if test="location != null and location != ''">
+				<![CDATA[
+				AND ST_CONTAINS(ST_BUFFER(ST_GeomFromText(#{location}, 4326),0.2), location)
 				]]>
 				</if>
 			</trim>
