@@ -45,10 +45,12 @@ public class ConverterJob extends Search {
 	private String userId;
 	// title
 	private String title;
-	// 변환 유형. basic : 기본, building : 빌딩, extra-big-building : 초대형 빌딩, single-realistic-mesh : 단일 point cloud 데이터, splitted-realistic-mesh : 분할 point cloud 데이터
+	// 변환 유형. basic : 기본, building : 빌딩, extra-big-building : 초대형 빌딩, point-cloud : point cloud 데이터
 	private String converterTemplate;
 	// unit scale factor. 설계 파일의 1이 의미하는 단위. 기본 1 = 0.01m
 	private BigDecimal usf;
+	// 높이방향. y축이 건물의 천장을 향하는 경우 Y. default = N
+	private String isYAxisUp;
 	// 대상 file 개수
 	private Integer fileCount;
 	// 상태. ready : 준비, success : 성공, waiting : 승인대기, fail : 실패
