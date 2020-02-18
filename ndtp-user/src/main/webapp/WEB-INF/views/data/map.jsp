@@ -175,11 +175,7 @@
 	// ndtp 전역 네임스페이스
 	var NDTP = NDTP ||{
 		policy : ${geoPolicyJson},
-		baseLayers : ${baseLayerJson},
-		wmsProvider : {},
-		wfsProvider : {},
-		tileProvider : {},
-		districtProvider : {}
+		baseLayers : ${baseLayerJson}
 	};
 	magoInit();
 
@@ -240,7 +236,8 @@
         CivilVoice(magoInstance);
         // 기본 레이어 랜더링
         setTimeout(function(){
-        	initLayer(magoInstance, ${baseLayerJson}, ${geoPolicyJson});
+        	NDTP.map = new mapInit(magoInstance, ${baseLayerJson}, ${geoPolicyJson});
+        	NDTP.map.initLayer();
         }, geoPolicyJson.initDuration * 1000);
 
 		//지도상에 데이터 다루는거

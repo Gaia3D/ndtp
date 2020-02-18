@@ -34,14 +34,15 @@ function District(magoInstance, viewer)
             enablePickFeatures : false
         });
         
-        NDTP.districtProvider = viewer.imageryLayers.addImageryProvider(provider);
+        var layer = viewer.imageryLayers.addImageryProvider(provider);
+        layer.id="district";
     }
 
     this.deleteDistrict = function () {
-        if(NDTP.districtProvider !== null && NDTP.districtProvider !== undefined) {
-            viewer.imageryLayers.remove(NDTP.districtProvider, true);
-        }
-        NDTP.districtProvider = null;
+    	var districtProvider = NDTP.map.getImageryLayerById('district');
+    	if(districtProvider) {
+    		viewer.imageryLayers.remove(districtProvider);
+    	}
     }
 }
 loadDistrict();
@@ -256,7 +257,6 @@ function getCentroid(name, sdoCode, sggCode, emdCode) {
     });		
 }
 
-function gotoFly(longitude, latitude, altitude, duration)
-{
+function gotoFly(longitude, latitude, altitude, duration) {
   gotoFlyAPI(MAGO3D_INSTANCE, longitude, latitude, altitude, duration);
 }
