@@ -103,7 +103,8 @@ public class CivilVoiceRestController {
 	 * @return
 	 */
 	@GetMapping("/{civilVoiceId}")
-	public Map<String, Object> detail(HttpServletRequest request, @PathVariable Long civilVoiceId, CivilVoice civilVoice) {
+	public Map<String, Object> detail(HttpServletRequest request, @PathVariable Long civilVoiceId,
+			@RequestParam(value="readOnly",required=false) Boolean readOnly, CivilVoice civilVoice) {
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 
 		Map<String, Object> result = new HashMap<>();
@@ -123,6 +124,11 @@ public class CivilVoiceRestController {
 			civilVoice = civilVoiceService.getCivilVocieById(civilVoice);
 			statusCode = HttpStatus.OK.value();
 			result.put("civilVoice", civilVoice);
+
+			// 조회 수 수정
+			if(readOnly==null || readOnly) {
+				civilVoiceService.updateCivilVoiceViewCount(civilVoice);
+			}
 		} catch(Exception e) {
 			e.printStackTrace();
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();

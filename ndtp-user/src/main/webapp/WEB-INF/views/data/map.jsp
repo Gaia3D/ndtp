@@ -358,6 +358,25 @@
 		}
 		gotoFlyAPI(MAGO3D_INSTANCE, parseFloat(longitude), parseFloat(latitude), parseFloat(altitude), parseFloat(duration));
 	}
+	
+	//데이터 3D Instance show/hide
+	function showHideData(dataGroupId, dataKey) {
+		if(dataGroupId === null || dataGroupId === '' || dataKey === null || dataKey === '') {
+			alert("객체 정보가 올바르지 않습니다. 확인하여 주십시오.");
+			return;
+		}
+		
+		//버튼에 id와 class(= "on")가 부여되어있어야 함 (또는, isVisible : !option)
+		$('#showHideButton').toggleClass("on");
+		
+		var option = $('#showHideButton').hasClass("on");
+		
+		var optionObject = {
+				isVisible : option
+			}
+		
+		setNodeAttributeAPI(MAGO3D_INSTANCE, dataGroupId, dataKey, optionObject);
+	}
 
 	var dataInfoDialog = $( "#dataInfoDialog" ).dialog({
 		autoOpen: false,
