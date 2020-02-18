@@ -52,6 +52,13 @@ public interface CivilVoiceMapper {
 	int updateCivilVoiceCommentCount(CivilVoice civilVoice);
 
 	/**
+	 * 조회 수 수정
+	 * @param civilvoice
+	 * @return
+	 */
+	int updateCivilVoiceViewCount(CivilVoice civilVoice);
+
+	/**
 	 * 삭제
 	 * @param civilVoiceId
 	 * @return

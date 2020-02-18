@@ -40,4 +40,11 @@ public interface CivilVoiceCommentService {
 	 * @return
 	 */
 	int deleteCivilVoiceComment(long civilVoiceCommentId);
+
+	/**
+	 * 동의 여부 확인
+	 * @param civilVoiceComment
+	 * @return
+	 */
+	Boolean alreadyRegistered(CivilVoiceComment civilVoiceComment);
 }

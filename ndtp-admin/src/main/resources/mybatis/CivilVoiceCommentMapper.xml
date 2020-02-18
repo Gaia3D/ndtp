@@ -45,6 +45,16 @@
 		WHERE civil_voice_id = #{civilVoiceId}
 	</select>
 
+	<!-- 동의 여부 확인 -->
+	<select id="alreadyRegistered" parameterType="civilVoiceComment" resultType="boolean">
+		/* alreadyRegistered */
+		SELECT
+			CASE WHEN COUNT(1) > 0 THEN true ELSE false END
+		FROM tn_civil_voice_comment
+		WHERE civil_voice_id = #{civilVoiceId}
+		AND user_id = #{userId}
+	</select>
+
 	<!-- 등록 -->
 	<insert id="insertCivilVoiceComment" parameterType="civilVoiceComment">
 		/* insertCivilVoiceComment */

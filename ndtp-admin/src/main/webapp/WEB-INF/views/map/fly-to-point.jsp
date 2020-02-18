@@ -181,7 +181,7 @@
    		    billboard : {
    	        	disableDepthTestDistance : Number.POSITIVE_INFINITY,
    				heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
-   		        image: '/images/ko/logo.png'
+   		        image: '/images/ko/marker.png'
    		    }
    		});
 	}

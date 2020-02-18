@@ -46,4 +46,5 @@ public interface CivilVoiceService {
 	 * @return
 	 */
 	int deleteCivilVoice(CivilVoice civilVoice);
+
 }
