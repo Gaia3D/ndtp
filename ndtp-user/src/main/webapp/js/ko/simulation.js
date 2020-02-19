@@ -33,6 +33,8 @@ var Simulation = function(magoInstance, viewer, $) {
     var floorCoverateRatio = 0; // 용적률
     var cityPlanStdBuildCov = 0; // 기준 건폐율
     var buildCoverateRatio = 0; // 건폐율
+    
+    var stdFairRate = 0;
 	
 	var observer;
 	var observerTarget = document.getElementById('simulationContent');
@@ -145,7 +147,9 @@ var Simulation = function(magoInstance, viewer, $) {
 	
 	var cache = {};
 	var SEJONG_TILE_NAME = 'sejong_time_series_tiles';
+	var BUSAN_TILE_NAME = 'busan_time_series_tiles';
 	var SEJONG_POSITION = new Cesium.Cartesian3(-3108649.1049808883, 4086368.566202183, 3773910.6726226895);
+	var BUSAN_POSITION = new Cesium.Cartesian3(-3108649.1049808883, 4086368.566202183, 0);
 	var slider;
 	var simulating = false;
 	//zBounceSpring zBounceLinear
@@ -169,7 +173,7 @@ var Simulation = function(magoInstance, viewer, $) {
 			
 			//slider.setValue(0);
 			simulating = true;
-			
+			debugger;
 			if(!cache[dataName]) {
 				if(dataName.indexOf('tiles') > 0) {
 					magoManager.getObjectIndexFileSmartTileF4d(dataName);
@@ -199,9 +203,8 @@ var Simulation = function(magoInstance, viewer, $) {
 			}
 			setObserver();
 		} else {
-
-			dataName = SEJONG_TILE_NAME;
-			initPosition = SEJONG_POSITION;
+			dataName = BUSAN_TILE_NAME;
+			initPosition = BUSAN_POSITION;
 
 			if(!slider) {
 				slider = new KotSlider('rangeInput');
@@ -214,8 +217,8 @@ var Simulation = function(magoInstance, viewer, $) {
 			if(!cache[dataName]) {
 				debugger;
 				if(dataName.indexOf('tiles') > 0) {
-					magoManager.getObjectIndexFileSmartTileF4d(dataName);
-					magoManager.on(Mago3D.MagoManager.EVENT_TYPE.SMARTTILELOADEND, smartTileLoaEndCallbak);
+//					magoManager.getObjectIndexFileSmartTileF4d(dataName);
+//					magoManager.on(Mago3D.MagoManager.EVENT_TYPE.SMARTTILELOADEND, smartTileLoaEndCallbak);
 					
 					var html = '';
 					html += '<span>1단계</span>';
@@ -224,18 +227,21 @@ var Simulation = function(magoInstance, viewer, $) {
 					html += '<span>4단계</span>';
 					html += '<span>5단계</span>';
 					html += '<span>6단계</span>';
-					
 					$('#csRange .rangeWrapChild.legend').html(html);
 					$('#csRange .rangeWrapChild.legend').on('click','span',function(){
 						slider.setValue($(this).index());
 					});
+					$('#rangeInput').on('change', function(data) {
+						var index = $('#rangeInput').val();
+						genConsProcBuild(126.90497956470877, 37.521051475771344, 0, 0.0025, "NewFeatureType"+index+".gltf", 0)
+					})
 				}
 			}
-						
-        	for(var i = 0; i < 6; i++) {
-        		console.log("NewFeatureType"+i+".gltf");
-            	genBuild(126.9058759845711,  37.52099174336722, 0, 0.025, "NewFeatureType"+i+".gltf")	
-        	}
+			
+			genConsProcBuild(126.90497956470877,  37.521051475771344, 0, 0.0025, "NewFeatureType0.gltf", 0);
+			_viewer.camera.flyTo({
+			    destination : Cesium.Cartesian3.fromDegrees(126.90497956470877,  37.521051475771344, 1000)
+			});
 		}
 	});
 	
@@ -280,6 +286,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	//건물 높이에 대해서 확정을 하는 로직, 용적률과 연관
 	//고도에 대한 불확실성
 	$('#set_height_building').click(function(e) {
+		debugger;
 		floorNum = parseInt($('#height_building_input').val());
 		var floorSize = floorNum * 3;
 		selectEntity.id.polygon.extrudedHeight = floorSize;
@@ -395,6 +402,7 @@ var Simulation = function(magoInstance, viewer, $) {
     });
     
 	var smartTileLoaEndCallbak = function(evt){
+		debugger;
 		var nodes = evt.tile.nodesArray;
 		for(var i in nodes){
 			var node = nodes[i];
@@ -547,6 +555,7 @@ var Simulation = function(magoInstance, viewer, $) {
     function drawShape(positionData) {
         var shape;
         if (drawingMode === 'line') {
+            debugger;
             shape = _viewer.entities.add({
                 corridor: {
                     // polyline: {
@@ -564,6 +573,7 @@ var Simulation = function(magoInstance, viewer, $) {
             var bs = Cesium.BoundingSphere.fromPoints(activeShapePoints);
             var position = Cesium.Ellipsoid.WGS84.scaleToGeodeticSurface(bs.center);
             var areaVal = parseInt(getArea(activeShapePoints));
+            debugger;
             shape = _viewer.entities.add({
                 name     : "Polygon for area measurement",
                 areaVal : areaVal,
@@ -727,7 +737,6 @@ var Simulation = function(magoInstance, viewer, $) {
             if (Cesium.defined(earthPosition)) {
                 var cartographic = Cesium.Cartographic.fromCartesian(earthPosition);
                 var tempPosition = Cesium.Cartesian3.fromDegrees(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude));
-                debugger;
                 if(runAllocBuildStat === "imsiBuild") {
                     activeShapePoints.push(tempPosition);
                     
@@ -846,6 +855,7 @@ var Simulation = function(magoInstance, viewer, $) {
         	$('#camera_scene_list').append(obj);
     	}
     }
+    
     $('#cameraLocaMove').click(function() {
     	var index = $('#camera_scene_list').val();
     	var cameraObj = _camera_scene[index];
@@ -859,6 +869,7 @@ var Simulation = function(magoInstance, viewer, $) {
 		});
     });
     
+    // 카메라 위치 저장
     $("#cameraLocaSave").click(function() {
     	var camera = _viewer.scene.camera;
         var store = {
@@ -890,36 +901,9 @@ var Simulation = function(magoInstance, viewer, $) {
             message: "카메라 위치가 저장되었습니다",
             duration: 1000
         });
-//		$.ajax({
-//			url: "/data/simulation-rest/cityPlanResultInsert",
-//			type: "POST",
-//			data: cityPlanResult,
-//			dataType: "json",
-//		    contentType: false,
-//		    processData: false,
-//			success: function(msg){
-//				debugger;
-//				if(msg.statusCode <= 200) {
-//					alert(JS_MESSAGE["insert"]);
-//				} else {
-//					alert(JS_MESSAGE[msg.errorCode]);
-//				}
-//
-//				$("#converterCheckIds").val("");
-//				$("#title").val("");
-//				$(":checkbox[name=uploadDataId]").prop("checked", false);
-//				dialogConverterJob.dialog( "close" );
-//				saveConverterJobFlag = true;
-//			},
-//			error:function(request,status,error){
-//				alert(JS_MESSAGE["ajax.error.message"]);
-//				debugger;
-//			}
-//		});
     })
     
     function genBuild(lon, lat, alt, scale, fileName) {
-    	debugger;
     	var position = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
 	    var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
 	    // fromGltf 함수를 사용하여 key : value 값으로 요소를 지정
@@ -929,6 +913,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	        url : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName,
 	        modelMatrix : modelMatrix,
 	        scale : scale,
+	        debugWireframe: true,
 	        shadows : 1,
 	        name : name,
 	        show: false
@@ -941,7 +926,6 @@ var Simulation = function(magoInstance, viewer, $) {
 	    Cesium.when(primiti_model.readyPromise).then(function(model) {
 	    	  clacArea();
 	    	  calcFloorCoverage();
-	  		debugger;
 	  		model._nodeCommands.forEach(function(data) {
 	  			data.show = false;
 	  		})
@@ -960,7 +944,73 @@ var Simulation = function(magoInstance, viewer, $) {
 	    	  window.alert(error);
     	});
     }
+    
+    // 부산공정관리 빌딩 생성
+    function genConsProcBuild(lon, lat, alt, scale, fileName, fairRate) {
+    	var position = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
+//	    var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
+	    // fromGltf 함수를 사용하여 key : value 값으로 요소를 지정
+	    
 
+    	var pinBuilder = new Cesium.PinBuilder();
+    	if(stdFairRate < fairRate) {
+    	    var entity = viewer.entities.add({
+    	        position : position,
+        	    billboard : {
+        	        image : pinBuilder.fromText('?', Cesium.Color.BLACK, 48).toDataURL(),
+        	        verticalOrigin : Cesium.VerticalOrigin.BOTTOM
+        	    },
+    	        model : {
+    	            uri : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName,
+    	            scale : scale,
+    	            name : name
+    	        }
+    	    });	
+    	} else {
+    	    var entity = viewer.entities.add({
+    	        position : position,
+        	    billboard : {
+        	        image : pinBuilder.fromText('?', Cesium.Color.BLACK, 48).toDataURL(),
+        	        verticalOrigin : Cesium.VerticalOrigin.BOTTOM
+        	    },
+    	        model : {
+    	            uri : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName,
+    	            scale : scale,
+    	            name : name
+    	        }
+    	    });
+    	}
+//    	var questionPin = viewer.entities.add({
+//    	    name : 'Question mark',
+//    	    position : Cesium.Cartesian3.fromDegrees(-75.1698529, 39.9220071),
+//    	    billboard : {
+//    	        image : pinBuilder.fromText('?', Cesium.Color.BLACK, 48).toDataURL(),
+//    	        verticalOrigin : Cesium.VerticalOrigin.BOTTOM
+//    	    }
+//    	});
+
+    	
+    	
+    	
+//	    var name = '슬퍼하지마NONONO'; 
+//	    // GLTF 모델 데이터 삽입
+//	    var _model = Cesium.Model.fromGltf({
+//	        url : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName,
+//	        modelMatrix : modelMatrix,
+//	        scale : scale,
+//	        shadows : 1,
+//	        name : name
+//	    });
+//	    var primiti_model = _viewer.scene.primitives.add(_model);
+//	    viewer.scene.primitives.add(primiti_model);
+//	    viwer.scene
+//	    Cesium.when(primiti_model.readyPromise).then(function(model) {
+//	    	}).otherwise(function(error){
+//	    	  window.alert(error);
+//    	});
+    }
+
+    
     var selectBuildDialog = $( "#selectBuildDialog" ).dialog({
 		autoOpen: false,
 		width: 200,
@@ -1071,19 +1121,27 @@ var Simulation = function(magoInstance, viewer, $) {
 	    var horizontalDegrees = 10.0;
 	    var verticalDegrees = 10.0;
 	    var viewRect = _viewer.camera.computeViewRectangle();
+	    var viewDirection = _viewer.camera.direction;
+	    debugger;
 	    if (Cesium.defined(viewRect)) {
 	        horizontalDegrees *= Cesium.Math.toDegrees(viewRect.east - viewRect.west) / 360.0;
 	        verticalDegrees *= Cesium.Math.toDegrees(viewRect.north - viewRect.south) / 180.0;
 	    }
 	    
-	    if (event.keyCode === 104) {  // right arrow 
+	    if (event.keyCode === 40) {  // right arrow 
 	    	_viewer.camera.rotateRight(Cesium.Math.toRadians(horizontalDegrees) /1000);
-	    } else if (event.keyCode === 100) {  // left arrow
+	    } else if (event.keyCode === 38) {  // left arrow
 	    	_viewer.camera.rotateLeft(Cesium.Math.toRadians(horizontalDegrees) /1000);
-	    } else if (event.keyCode === 102) {  // up arrow
+	    } else if (event.keyCode === 37) {  // up arrow
 	    	_viewer.camera.rotateUp(Cesium.Math.toRadians(verticalDegrees) /1000);
-	    } else if (event.keyCode === 98) {  // down arrow
+	    } else if (event.keyCode === 39) {  // down arrow
 	    	_viewer.camera.rotateDown(Cesium.Math.toRadians(verticalDegrees) /1000);
+	    } else if (event.keyCode === 104) {  // yaw  8
+	    	viewDirection.x *= -1
+	    } else if (event.keyCode === 100) {  // pitch 4
+	    	viewDirection.y *= -1
+	    } else if (event.keyCode === 102) {  // row  6
+	    	viewDirection.z *= -1
 	    }
 	}
 
