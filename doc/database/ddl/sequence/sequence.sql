@@ -37,6 +37,7 @@ drop sequence if exists widget_seq;
 drop sequence if exists perm_sequence;
 drop sequence if exists sim_file_sequence;
 drop sequence if exists city_plan_result_sequence;
+drop sequence if exists comment_sequence;
 
 create sequence access_log_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
 create sequence civil_voice_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
@@ -77,3 +78,4 @@ create sequence widget_seq increment 1 minvalue 1 maxvalue 999999999999 start 1 
 create sequence perm_sequence increment 1 minvalue 1 maxvalue 999999999999 start 1 cache 1;
 create sequence sim_file_sequence increment 1 minvalue 1 maxvalue 999999999999 start 1 cache 1;
 create sequence city_plan_result_sequence increment 1 minvalue 1 maxvalue 999999999999 start 1 cache 1;
+create sequence comment_sequence increment 1 minvalue 1 maxvalue 999999999999 start 1 cache 1;

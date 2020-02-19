@@ -50,6 +50,7 @@
 		<typeAlias type="ndtp.domain.SimFileMaster" alias="simFileInfo"/>
 		<typeAlias type="ndtp.domain.StructPermission" alias="structPermission"/>
 		<typeAlias type="ndtp.domain.CityPlanResult" alias="cityPlanResult"/>
+		<typeAlias type="ndtp.domain.CommentManage" alias="commentManage"/>
     </typeAliases>
 
 </configuration>

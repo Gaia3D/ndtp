@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ndtp.persistence.CommentManageMapper">
+
+	<select id="selectCondition" parameterType="commentManage" resultType="commentManage">
+		select * from comment_manage where object_name = #{objectName}
+	</select>
+
+	<insert id="insertCommentManage" parameterType="commentManage">
+		<selectKey keyProperty="commentSeq" resultType="int" order="BEFORE">
+			SELECt NEXTVAL('comment_sequence')
+		</selectKey>
+		INSERT INTO comment_manage(
+			comment_seq, writer, object_name, comment_title, comment_content, latitude, longitude, height
+		) VALUES (
+			#{commentSeq}, #{writer}, #{objectName}, #{commentTitle}, #{commentContent}, #{latitude}, #{longitude}, #{height}
+		)
+	</insert>
+
+</mapper>

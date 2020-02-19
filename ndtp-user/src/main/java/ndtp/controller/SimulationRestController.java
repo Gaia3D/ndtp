@@ -7,6 +7,7 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 
 import ndtp.domain.*;
+import ndtp.persistence.CommentManageMapper;
 import ndtp.persistence.StructPermissionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -32,6 +33,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 public class SimulationRestController {
 	@Autowired
 	private StructPermissionMapper structPermissionMapper;
+	@Autowired
+	private CommentManageMapper commentManageMapper;
 
 	private static final long PAGE_ROWS = 5l;
 	private static final long PAGE_LIST_COUNT = 5l;
@@ -267,6 +270,41 @@ public class SimulationRestController {
 
 		return userID;
 	}
+
+	@RequestMapping(value = "/commentList", method = RequestMethod.POST)
+	public List<CommentManage> commentList(HttpServletRequest req, CommentManage cm) {
+		List<CommentManage> res = commentManageMapper.selectCondition(cm);
+		return res;
+	}
+	@RequestMapping(value = "/commentRegister", method = RequestMethod.POST)
+	public List<CommentManage> commentRegister(HttpServletRequest req, CommentManage cm) {
+		UserSession userSession = (UserSession)req.getSession().getAttribute(Key.USER_SESSION.name());
+		String writer = userSession.getUserId();
+		String commentTitle = cm.getCommentTitle();
+		String commentContent = cm.getCommentContent();
+
+		cm.setWriter(writer);
+		cm.setObjectName("testObject");
+		int resultInsert = commentManageMapper.insertCommentManage(cm);
+
+		List<CommentManage> res = commentManageMapper.selectCondition(cm);
+
+		return res;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	private String genSaveFileName(String extName) {
 		String fileName = "";
 

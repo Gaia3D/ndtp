@@ -75,6 +75,7 @@
 					<button type="button" class="btnTextF execute" title="공정 조회">조회</button>
 					<button type="button" class="btnText reset" title="취소">취소</button>
 				</li>
+
 				<li class="profileInfo" style="display:none;cursor: default;">
 					<div class="legend">
 						<div class="geostats-legend">
@@ -164,6 +165,7 @@
 <%--					<button type="button" id="testingPicking" class="btnTextF" style="margin-top:10px;">testingPicking</button>--%>
 
 					<button type="button" id="testBuilding" class="btnTextF" style="margin-top:10px;">testBuilding</button>
+					<button type="button" id="comment" class="btnTextF" style="margin-top:10px;">comment</button>
 				</li>
 
 			</ul>
@@ -177,6 +179,39 @@
 </div>
 
 <script>
+
+	$("#comment").on('click', function() {
+		let commentData = {
+			// todo: 클릭시 오브젝트에서 정보 가져와서 셋팅
+			objectName: "testObject"
+		};
+		$.ajax({
+			url: "/data/simulation-rest/commentList",
+			type: "POST",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			data: commentData,
+			dataType: "json",
+			success: function(commentList){
+				const commentListViewer = document.getElementById("commentListViewer");
+				commentListViewer.setAttribute("objectName", commentData.objectName);
+				const abc = document.getElementById("commentViewDialog");
+				abc.setAttribute("title", "의견 교환창" + commentData.objectName);
+
+				commentViewFunc(commentList);
+
+				$("#commentContent").val("");
+				commentViewDialog.dialog("open");
+			},
+			error:function(request,status,error) {
+				console.log("err=", request, status, error);
+			}
+		});
+
+
+	});
+
+
+
 	$("#testBuilding").click(()=> {
 		console.log("testBuilding");
 		// genBuild(127.786754, 36.643957, 5);
@@ -250,7 +285,7 @@
 			// dataType: "json",
 			success: function(msg){
 				console.log("msg  =", msg);
-				$("#testBuilding").attr('style', "display:none;");
+				// $("#testBuilding").attr('style', "display:none;");
 				if (msg === "admin") {
 					$("#permRequest").attr('style', "display:none;");
 					// $("#testBuilding").trigger("click");
@@ -276,12 +311,48 @@
 			shadows : 1,
 			name : name
 		}));
+		model.type = "accept";
 		whole_viewer.scene.primitives.add(model);
 		Cesium.when(model.readyPromise).then(function(model) {
 		}).otherwise(function(error){
 			window.alert(error);
 		});
 	}
+
+	function commentViewFunc(commentList){
+		const commentListViewer = document.getElementById("commentListViewer");
+
+		commentListViewer.innerHTML = "";
+		// console.log("commentList=", commentList);
+
+		commentList.map((comment, idx) => {
+			const li = document.createElement("li");
+			li.setAttribute("class", "comment flex-align-center");
+			li.setAttribute("commentSeq", comment.commentSeq);
+			li.setAttribute("objectName", comment.objectName);
+			li.setAttribute("commentTitle", comment.commentTitle);
+			li.setAttribute("commentContent", comment.commentContent);
+
+			const idSpan = document.createElement("span");
+			idSpan.setAttribute("class", "id");
+			idSpan.textContent = comment.writer + ":";
+			const titleSpan = document.createElement("span");
+			titleSpan.setAttribute("class", "title");
+			titleSpan.textContent = comment.commentContent;
+			// titleSpan.textContent = comment.commentTitle;
+			const timeSpan = document.createElement("div");
+			let writeDate = new Date(comment.applyDate);
+			timeSpan.setAttribute("class", "commentTime");
+			timeSpan.textContent = writeDate.format('yyyy-MM-dd(KS) HH:mm:ss');
+
+			li.append(idSpan);
+			li.append(titleSpan);
+			commentListViewer.append(li);
+			commentListViewer.append(timeSpan);
+		});
+	}
+
+
 
 </script>
 
