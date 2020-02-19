@@ -559,13 +559,6 @@ cursor: pointer;
 .commentWrap > li.comment:hover .title {
 text-decoration: underline;
 }
-.commentWrap > li.comment > p {
-flex: auto;
-padding-right: 10px;
-}
-.commentWrap > li.comment > p:first-child {
-/* min-width: 220px; */
-}
 .commentWrap > li.none {
 display: flex;
 position: relative;
@@ -581,7 +574,7 @@ display: block;
 color: #999;
 }
 .commentWrap p.count {
-width: 60px;
+width: 50px;
 /* padding: 8px 5px 0 15px;
 font-size: 17px; */
 font-weight: bold;
@@ -591,6 +584,7 @@ color: #646464;
 /* margin-left:-10px; */
 margin-left: 7px;
 white-space: nowrap;
+padding-right: 10px;
 }
 
 

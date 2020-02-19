@@ -32,11 +32,11 @@
 		{{#each civilVoiceList}}
 			<li class="comment flex-align-center" data-id="{{civilVoiceId}}" title="상세보기">
 				<p class="count" style=""><span class="likes-icon">icon</span>{{commentCount}}</p>
-				<p>
+				<p style="width: 210px;">
 					<span class="title">{{title}}</span>
 					<span class="id">{{userId}}</span>
 				</p>
-				<button type="button" class="goto" data-longitude={{longitude}} data-latitude={{latitude}} style="width:30px; margin-right:10px;" title="위치보기">위치보기</button>
+				<button type="button" class="goto" data-longitude={{longitude}} data-latitude={{latitude}} style="width:30px; position: relative; left: 7px;" title="위치보기">위치보기</button>
 			</li>
 		{{/each}}
 	{{else}}
