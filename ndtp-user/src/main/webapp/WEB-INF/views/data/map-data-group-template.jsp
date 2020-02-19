@@ -5,21 +5,21 @@
 		<span><spring:message code='all.d'/> {{formatNumber pagination.totalCount}} <spring:message code='search.what.count'/></span>
 		<span class="float-right">{{formatNumber pagination.pageNo}} / {{formatNumber pagination.lastPage}} <spring:message code='search.page'/></span>
 	</div>
-	<div class="dataGroupSummary table-data-group-summary table-font-small">
+	<div class="dataGroupSummary table-data-group-summary table-font-small yScroll" style="height:100%">
 		<table class="table-word-break">
 			<colgroup>
 				<col class="col-width-12" />
+				<col class="col-width-12" />
 				<col />
-				<col class="col-width-19" />
 				<col class="col-width-17" />
 				<col class="col-width-12" />
 			</colgroup>
 			<thead>
 				<tr>
 					<th>번호</th>
+					<th>공유 유형</th>
 					<th>그룹명</th>
-					<th>공유유형</th>
-					<th>데이터건수</th>
+					<th>데이터 건수</th>
 					<th>보기</th>
 				</tr>
 			</thead>
@@ -28,22 +28,33 @@
 	{{#each dataGroupList}}
 				<tr>
 					<td>{{subtract ../pagination.rowNumber @index}}</td>
-					<td class="ellipsis" style="max-width:100px;">
-						{{#ifMatch dataGroupTarget 'admin'}}
-							[관리자]
-						{{else}}
-							{{#ifMatch userId ../owner}}
-								[본인]
-							{{else}}
-								[다른 사용자]
-							{{/ifMatch}}
-						{{/ifMatch}}
+					<td>
+		{{#ifMatch sharing 'common'}}
+							<span class="legend co mar0">C</span>	
+		{{/ifMatch}}
+		{{#ifMatch sharing 'public'}}
+							<span class="legend pu mar0">O</span>
+		{{/ifMatch}}
+		{{#ifMatch sharing 'private'}}
+							<span class="legend pr mar0">P</span>
+		{{/ifMatch}}
+		{{#ifMatch sharing 'group'}}
+							<span class="legend gr mar0">G</span>
+		{{/ifMatch}}
+					</td>
+					<td class="ellipsis alignLeft" style="max-width:100px;">
+		{{#ifMatch dataGroupTarget 'admin'}}
+							[<span style="color:blue">관리자</span>]
+		{{else}}
+			{{#ifMatch userId ../owner}}
+								<%-- [<span>{{userId}}</span>] --%>
+			{{else}}
+								[<span style="color:blue">{{userId}}</span>]
+			{{/ifMatch}}
+		{{/ifMatch}}
 						<a href="#" onclick="detailDataGroup('{{dataGroupId}}'); return false;">
 							{{dataGroupName}}
 						</a>
-					</td>
-					<td>
-						{{sharing}}
 					</td>
 					<td>
 						{{dataCount}}

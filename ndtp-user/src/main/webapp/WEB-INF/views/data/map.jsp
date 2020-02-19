@@ -34,7 +34,7 @@
 		    position: absolute;
 		    left: 0px;
 		    top: 0px;
-		    z-index: 10;
+		    /* z-index: 10; */
 		    pointer-events: none;
 	   	}
 		/* 
@@ -61,7 +61,7 @@
 		<!-- E: NAVWRAP -->
 
 		<div id="contentsWrap" class="contentsWrap" style="display: none;">
-			<div id="searchContent" class="contents yScroll fullHeight" style="display:none;">
+			<div id="searchContent" class="contents fullHeight" style="display:none;">
 				<%@ include file="/WEB-INF/views/search/district.jsp" %>
 			</div>
 			<div id="dataContent" class="contents-margin-default fullHeight">
@@ -371,24 +371,54 @@
 	}
 	
 	//데이터 3D Instance show/hide
+	$('#dataInfoListArea').on('click', '.showHideButton', function() {
+		var dataGroupId = $(this).data('group-id');
+		var dataKey = $(this).data('key');
+		
+		if(dataGroupId === null || dataGroupId === '' || dataKey === null || dataKey === '') {
+			alert("객체 정보가 올바르지 않습니다. 확인하여 주십시오.");
+			return;
+		}
+		
+		var option = true;
+		if ($(this).hasClass("show")) {
+			$(this).removeClass("show");
+			$(this).addClass("hide");
+			option = false;
+		} else {
+			$(this).removeClass("hide");
+			$(this).addClass("show");
+		}
+		
+		var optionObject = { isVisible : option };
+		setNodeAttributeAPI(MAGO3D_INSTANCE, dataGroupId, dataKey, optionObject);
+		
+	});
+	
+	/*
 	function showHideData(dataGroupId, dataKey) {
+		
 		if(dataGroupId === null || dataGroupId === '' || dataKey === null || dataKey === '') {
 			alert("객체 정보가 올바르지 않습니다. 확인하여 주십시오.");
 			return;
 		}
 		
 		//버튼에 id와 class(= "on")가 부여되어있어야 함 (또는, isVisible : !option)
-		$('#showHideButton').toggleClass("on");
+		var option = true;
+		if ($('#showHideButton').hasClass("show")) {
+			$('#showHideButton').removeClass("show");
+			$('#showHideButton').addClass("hide");
+			option = false;
+		} else {
+			$('#showHideButton').removeClass("hide");
+			$('#showHideButton').addClass("show");
+		}
 		
-		var option = $('#showHideButton').hasClass("on");
-		
-		var optionObject = {
-				isVisible : option
-			}
-		
+		var optionObject = { isVisible : option };
 		setNodeAttributeAPI(MAGO3D_INSTANCE, dataGroupId, dataKey, optionObject);
 	}
-
+	*/
+	
 	var dataInfoDialog = $( "#dataInfoDialog" ).dialog({
 		autoOpen: false,
 		width: 500,

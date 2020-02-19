@@ -493,15 +493,13 @@ text-align: left;
 text-align: center;
 }
 button.goto {
-width: 32px;
-height: 32px;
+width: 30px;
+height: 30px;
 border:none;
 text-indent: -999em;
 background: url(/images/ko/ico.png) no-repeat -462px -697px;
 }
 button.goto:hover {
-width: 32px;
-height: 32px;
 border:none;
 text-indent: -999em;
 background: url(/images/ko/ico.png) no-repeat -462px -697px;
@@ -729,7 +727,7 @@ text-align: center;
 display: inline-block;
 margin: 0;
 padding: 0;
-font-size: 13px;
+font-size: 14px;
 padding: 0px 7px;
 cursor: pointer;
 }
@@ -897,6 +895,8 @@ overflow-x: hidden;
 overflow-y: auto;
 display: block;
 background-color: #fff;
+min-height: 420px;
+border: 1px solid #e0e0e0;
 }
 ul.listDrop li.on > ul li {
 padding: 10px;
@@ -1703,16 +1703,19 @@ text-overflow: ellipsis;
 .tab-divide > li {
 	width: calc(50% - 5px);
 	padding: 5px 0px;
+	font-size: 14px;
 }
 .tab-divide li:not(.on):hover {
 color: #006bd2;
 }
+/* 
 ul.listDrop li.list-drop-button-none {
 	cursor: auto;
 }
 ul.listDrop li.list-drop-button-none > p {
 	background-image: none;
 }
+*/
 .button-right-margin {
 	margin-right: 10px;
 }
@@ -1805,6 +1808,8 @@ ul.listDrop li > p {
 ul.listDrop li.on > p {
 	background: none;
 	background-color: #287be4;
+	border: none;
+    border-bottom: 3px solid #eaeaea;
 }
 ul.listDrop li > p > span.collapse-icon {
 	width: 15px;
@@ -1958,3 +1963,180 @@ z-index:100;
 .f20{font-size:20px;}
 
 .border-none{border:none}
+
+
+/* LIST / 검색결과 */
+ul.listDefault {
+height: calc(100% - 40px);
+}
+ul.listDefault > li {
+margin-bottom: 3px;
+height: 100%;
+}
+ul.listDefault li > p {
+padding: 10px;
+font-size: 15px;
+/* font-weight: bold; */
+background-color: #fff;
+}
+ul.listDefault li > p > span {
+float: right;
+font-weight: normal;
+}
+ul.listDefault li > ul {
+display: none;
+}
+ul.listDefault li.on > p {
+color: #fff;
+background-color: #287be4;
+}
+ul.listDefault li.on > ul {
+height: calc(100% - 40px);
+display: block;
+background-color: #fff;
+}
+ul.listDefault li.on > ul li {
+cursor: pointer;
+padding: 10px;
+border-bottom: 1px dotted #999;
+}
+ul.listDefault li.on > ul li:hover {
+background-color: #dbf1ff;
+}
+ul.listDefault li.on > ul li > * {
+vertical-align: middle;
+}
+ul.listDefault li.on ul li > span {
+width: 80%;
+display: inline-block;
+}
+ul.listDefault li.on ul li > span.title {
+text-decoration: underline;
+}
+ul.listDefault li.on > ul li > button {
+float: right;
+}
+
+/* 데이터 목록 / 범례 */
+.legendWrap {
+margin-bottom: 10px;
+text-align: center;
+border: 1px solid #ddd;
+padding: 10px;
+}
+.legendWrap li {
+display: inline-flex;
+margin-right: 10px;
+align-items: center;
+}
+.legendWrap li > * {
+vertical-align: middle;
+}
+span.legend {
+display: inline-block;
+width: 16px;
+height: 16px;
+line-height: 16px;
+padding: 4px;
+font-size: 13px;
+font-weight: bold;
+color: #fff;
+text-align: center;
+border-radius: 50%;
+margin-right: 5px;
+}
+span.co {
+background-color: cornflowerblue;
+}
+span.pu {
+background-color: darkseagreen;
+}
+span.pr {
+background-color: coral;
+}
+span.gr {
+background-color: darkturquoise
+}
+
+/* 데이터 상세 */
+.dataList {
+position: relative;
+margin-bottom: 5px;
+padding: 8px 10px;
+border-radius: 5px;
+border-right: 2px solid #c7e0f2;
+border-bottom: 2px solid #c7e0f2;
+background-color: #ecf7ff;
+}
+.dataList > li.group {
+margin-bottom: 3px;
+color: #777;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
+}
+.dataList > li.dataName {
+margin-bottom: 7px;
+font-size: 15px;
+cursor: pointer;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;	
+font-weight: bold;
+}
+.dataList > li.btn {
+position: absolute;
+bottom: 3px;
+right: 3px;
+}
+.dataList > li.btn > button {
+width: 30px;
+height: 30px;
+text-indent: -999em;
+border: none;
+background-image: url(/images/ko/ico.png);
+background-repeat: no-repeat;
+background-color: transparent;
+}
+.dataList > li.btn > button.show {
+background-position: -97px -345px;
+}
+.dataList > li.btn > button.hide {
+background-position: -147px -345px;
+}
+.dataList > li.group > .no {
+min-width: 30px;
+margin-right: 10px;
+/* font-weight: bold; */
+font-size: 13px;
+color: #000;
+}
+.dataList > li.group > span {
+display: inline-block;
+}
+.dataList > li.group  {
+display: inline-flex;
+align-items: center;
+width: 100%;
+padding-bottom: 5px;
+border-bottom: 1px dotted #999;
+}
+.dataList li.group > span.tag {
+margin-right: 7px;
+padding: 2px 7px;
+font-size: 11px;
+color: #222;
+border-radius: 10px;
+background-color: #c4dcee;
+}
+.dataList > .dataInfo > span.infoTag {
+padding: 2px 6px;
+font-size: 11px;
+border: 1px solid #c7e0f2;
+background-color: #fff;
+}
+.dataList > .dataInfo > span.infoTag > span {
+display: inline-block;
+margin-right: 5px;
+color: #999;
+}
