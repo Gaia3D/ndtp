@@ -212,8 +212,7 @@ public class DataRestController {
 	 * @return
 	 */
 	@PostMapping("/{dataId}")
-	public Map<String, Object> update(HttpServletRequest request, @PathVariable Long dataId, 
-										@ModelAttribute DataInfo dataInfo) {
+	public Map<String, Object> update(HttpServletRequest request, @PathVariable Long dataId, @ModelAttribute DataInfo dataInfo) {
 		
 		log.info("@@@@@ update dataInfo = {}, dataId = {}", dataInfo, dataId);
 		
