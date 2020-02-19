@@ -59,8 +59,13 @@
 		{{/ifMatch}}
 					</td>
 					<td>
+		{{#if tiling}}
 						<button type="button" title="바로가기" class="goto" style="margin: 0px; padding: 0px;"
-							onclick="flyTo('{{dataGroupId}}', '{{dataKey}}');">바로가기</button></td>
+							onclick="gotoFly('{{longitude}}', '{{latitude}}', '{{altitude}}');">바로가기</button>
+		{{else}}
+						<button type="button" title="바로가기" class="goto" style="margin: 0px; padding: 0px;" 	onclick="flyTo('{{dataGroupId}}', '{{dataKey}}');">바로가기</button>
+		{{/if}}
+					</td>
 				</tr>
 	{{/each}}
 {{else}}

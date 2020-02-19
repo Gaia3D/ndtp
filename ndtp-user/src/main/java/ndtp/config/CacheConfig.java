@@ -14,22 +14,30 @@ import ndtp.domain.CacheManager;
 import ndtp.domain.CacheName;
 import ndtp.domain.CacheParams;
 import ndtp.domain.CacheType;
+import ndtp.domain.DataGroup;
+import ndtp.domain.DataInfoSimple;
 import ndtp.domain.Menu;
 import ndtp.domain.MenuTarget;
 import ndtp.domain.RoleTarget;
 import ndtp.domain.UserGroup;
 import ndtp.domain.UserGroupMenu;
 import ndtp.domain.UserGroupRole;
+import ndtp.service.DataGroupService;
+import ndtp.service.DataService;
 import ndtp.service.MenuService;
 import ndtp.service.UserGroupService;
 
 @Slf4j
 @Component
 public class CacheConfig {
-
+	
+	@Autowired
+	private DataService dataService;
+	@Autowired
+	private DataGroupService dataGroupService;
 	@Autowired
 	private MenuService menuService;
-    @Autowired
+	@Autowired
     private UserGroupService userGroupService;
 
     @PostConstruct
@@ -43,6 +51,8 @@ public class CacheConfig {
         
         // 사용자 그룹별 메뉴, Role
         userGroupMenuAndRole(cacheParams);
+        // Smart Tiling 데이터 그룹별 데이터 목록
+//        smartTilingData(cacheParams);
         
         log.info("*************************************************");
         log.info("************* User Cache Init End **************");
@@ -55,6 +65,7 @@ public class CacheConfig {
 		if(cacheName == CacheName.POLICY) policy(cacheParams);
 		else if(cacheName == CacheName.MENU) menu(cacheParams);
 		else if(cacheName == CacheName.USER_GROUP) userGroupMenuAndRole(cacheParams);
+		else if(cacheName == CacheName.SMART_TILING_DATA) smartTilingData(cacheParams);
 	}
     
     /**
@@ -124,8 +135,30 @@ public class CacheConfig {
     	CacheManager.setUserGroupMenuMap(userGroupMenuMap);
     	CacheManager.setUserGroupRoleMap(userGroupRoleMap);
     	
-    	CacheType cacheType = cacheParams.getCacheType();
+//    	CacheType cacheType = cacheParams.getCacheType();
 		
+    }
+    
+    /**
+     * Smart Tiling 데이터
+     * @param cacheParams
+     */
+    private void smartTilingData(CacheParams cacheParams) {
+    	Map<Integer, List<DataInfoSimple>> smartTilingDataMap = new HashMap<>();
+    	
+    	DataGroup smartTilingDataGroup = DataGroup.builder().tiling(true).build();
+    	List<DataGroup> smartTilingDataGroupList = dataGroupService.getAllListDataGroup(smartTilingDataGroup);
+    	for(DataGroup dataGroup : smartTilingDataGroupList) {
+    		List<DataInfoSimple> dataList = dataService.getListAllDataByDataGroupId(dataGroup.getDataGroupId());
+    		smartTilingDataMap.put(dataGroup.getDataGroupId(), dataList);
+    	}
+    	
+    	CacheManager.setSmartTilingDataMap(smartTilingDataMap);
+    	
+//    	CacheType cacheType = cacheParams.getCacheType();
+//    	if(cacheType == CacheType.BROADCAST) {
+//    		callRemoteCache(cacheParams);
+//    	}
     }
     
     /**
