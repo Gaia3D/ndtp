@@ -389,7 +389,7 @@
 
 		var groupId = dataInfo.dataGroupId;
 		if (groupId) {
-			var title = groupId + ' / ' + (dataInfo.dataName || dataInfo.dataKey);
+			var title = dataInfo.dataGroupName + ' / ' + (dataInfo.dataName || dataInfo.dataKey);
 			$header.text(title);
 			$header.attr('title', title);
 		}
