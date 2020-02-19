@@ -147,6 +147,7 @@
 <script type="text/javascript" src="/externlib/handlebars-4.1.2/handlebars.js"></script>
 <script type="text/javascript" src="/js/${lang}/handlebarsHelper.js"></script>
 <script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>
+<script type="text/javascript" src="/externlib/cesium-geoserver-terrain-provider/GeoserverTerrainProvider.js"></script>
 <script type="text/javascript" src="/externlib/geostats/geostats.js"></script>
 <script type="text/javascript" src="/externlib/chartjs/Chart.min.js"></script>
 <script type="text/javascript" src="/externlib/kotSlider/range.js"></script>
@@ -744,6 +745,19 @@
 						alert(JS_MESSAGE["insert"]);
 						insertIssueFlag = true;
 						issueDialog.close();
+						console.info(msg);
+						/* var magoManager = this.magoInstance.getMagoManager();
+						if(Array.isArray(issue)) {
+							for(var i in issue) {
+								this.addIssue(issue[i]);
+							}
+						} else {
+							var point = Mago3D.ManagerUtils.geographicCoordToWorldPoint(issue.longitude,issue.latitude,issue.altitude);
+							option.positionWC = point;
+							
+							var objMarker = magoManager.objMarkerManager.newObjectMarker(option, magoManager);
+							objMarker.issueId = issue.issueId;
+						} */
 					} else {
 						alert(JS_MESSAGE[msg.errorCode]);
 						console.log("---- " + msg.message);
