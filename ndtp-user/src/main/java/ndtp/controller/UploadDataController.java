@@ -27,6 +27,7 @@ import ndtp.domain.UploadData;
 import ndtp.domain.UploadDataFile;
 import ndtp.domain.UserSession;
 import ndtp.service.DataGroupService;
+import ndtp.service.PolicyService;
 import ndtp.service.UploadDataService;
 import ndtp.support.RoleSupport;
 import ndtp.utils.DateUtils;
@@ -48,10 +49,15 @@ public class UploadDataController {
 	
 	@Autowired
 	private DataGroupService dataGroupService;
+	
 	@Autowired
-	private UploadDataService uploadDataService;
+	private PolicyService policyService;
+	
 	@Autowired
 	private PropertiesConfig propertiesConfig;
+	
+	@Autowired
+	private UploadDataService uploadDataService;
 	
 	/**
 	 * 업로딩 파일 목록
@@ -135,8 +141,11 @@ public class UploadDataController {
 											dataGroupId(basicDataGroup.getDataGroupId()).
 											dataGroupName(basicDataGroup.getDataGroupName()).build();
 		
+		String acceptedFiles = policyService.getUserUploadType();
+		
 		model.addAttribute("uploadData", uploadData);
 		model.addAttribute("dataGroupList", dataGroupList);
+		model.addAttribute("acceptedFiles", acceptedFiles);
 		
 		return "/upload-data/input";
 	}

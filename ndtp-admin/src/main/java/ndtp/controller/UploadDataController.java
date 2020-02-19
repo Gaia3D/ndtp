@@ -30,7 +30,6 @@ import ndtp.service.PolicyService;
 import ndtp.service.UploadDataService;
 import ndtp.utils.DateUtils;
 import ndtp.utils.FileUtils;
-import ndtp.utils.FormatUtils;
 
 /**
  * 3D 데이터 파일 업로더
@@ -65,6 +64,7 @@ public class UploadDataController {
 	 */
 	@GetMapping(value = "/input")
 	public String input(HttpServletRequest request, Model model) {
+		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		
 		DataGroup dataGroup = new DataGroup();
@@ -92,8 +92,11 @@ public class UploadDataController {
 											dataGroupId(basicDataGroup.getDataGroupId()).
 											dataGroupName(basicDataGroup.getDataGroupName()).build();
 		
+		String acceptedFiles = policyService.getUserUploadType();
+		
 		model.addAttribute("uploadData", uploadData);
 		model.addAttribute("dataGroupList", dataGroupList);
+		model.addAttribute("acceptedFiles", acceptedFiles);
 		
 		return "/upload-data/input";
 	}
