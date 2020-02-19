@@ -100,25 +100,8 @@ function CivilVoiceControll(magoInstance, viewer) {
 		},
 		getGeographicCoord: function() {
 			magoManager.once(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
-				removeStoredEntity();
-
 				var geographicCoord = result.clickCoordinate.geographicCoordinate;
-				var worldCoordinate = result.clickCoordinate.worldCoordinate;
-
-				var pointGraphic = new Cesium.PointGraphics({
-					pixelSize : 10,
-					heightReference : Cesium.HeightReference.CLAMP_TO_GROUND,
-					color : Cesium.Color.AQUAMARINE,
-					outlineColor : Cesium.Color.WHITE,
-					outlineWidth : 2
-				});
-
-				var addedEntity = viewer.entities.add({
-					position : new Cesium.Cartesian3(worldCoordinate.x, worldCoordinate.y, worldCoordinate.z),
-					point : pointGraphic
-				});
-
-				store.beforeEntity = addedEntity.id;
+				civilVoice.drawMarker(geographicCoord.longitude, geographicCoord.latitude);
 				$('#civilVoiceContent [name=longitude]:visible').val(geographicCoord.longitude);
 				$('#civilVoiceContent [name=latitude]:visible').val(geographicCoord.latitude);
 			});
