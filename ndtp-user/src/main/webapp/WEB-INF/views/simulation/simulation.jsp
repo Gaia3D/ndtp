@@ -303,13 +303,14 @@
 		var position = Cesium.Cartesian3.fromDegrees(lon, lat, 0);
 		var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
 		// fromGltf 함수를 사용하여 key : value 값으로 요소를 지정
-		var name = '슬퍼하지마NONONO';
+		var name = 'testObject';
 		var model = whole_viewer.scene.primitives.add(Cesium.Model.fromGltf({
 			url : 'http://localhost/data/simulation-rest/cityPlanModelSelect',
 			modelMatrix : modelMatrix,
 			scale : scale,
 			shadows : 1,
-			name : name
+			id : name,
+			name: name
 		}));
 		model.type = "accept";
 		whole_viewer.scene.primitives.add(model);

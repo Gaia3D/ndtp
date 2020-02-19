@@ -767,7 +767,14 @@ var Simulation = function(magoInstance, viewer, $) {
                     }
 //                    ;
 //                    _viewer._selectedEntity = pickedFeature.id.polygon;
-                }
+                } else {
+                	debugger;
+					var pickedFeature = whole_viewer.scene.pick(event.position);
+					if(pickedFeature) {
+						getCommentList(pickedFeature.id);
+
+					}
+				}
             }
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
@@ -1081,4 +1088,31 @@ var Simulation = function(magoInstance, viewer, $) {
 	}
 
     startDrawPolyLine();
+
+	function getCommentList(objectName) {
+		let commentData = {
+			objectName: objectName
+		};
+		$.ajax({
+			url: "/data/simulation-rest/commentList",
+			type: "POST",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			data: commentData,
+			dataType: "json",
+			success: function(commentList){
+				const commentListViewer = document.getElementById("commentListViewer");
+				commentListViewer.setAttribute("objectName", commentData.objectName);
+				const abc = document.getElementById("commentViewDialog");
+				abc.setAttribute("title", "의견 교환창" + commentData.objectName);
+
+				commentViewFunc(commentList);
+
+				$("#commentContent").val("");
+				commentViewDialog.dialog("open");
+			},
+			error:function(request,status,error) {
+				console.log("err=", request, status, error);
+			}
+		});
+	}
 }
