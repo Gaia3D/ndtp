@@ -41,13 +41,16 @@ public class CivilVoiceServiceImpl implements CivilVoiceService {
 	}
 
 	@Transactional
-	public int insertCivilVoice(CivilVoice civilVoice) {
-		return civilVoiceMapper.insertCivilVoice(civilVoice);
+	public CivilVoice insertCivilVoice(CivilVoice civilVoice) {
+		civilVoiceMapper.insertCivilVoice(civilVoice);
+		
+		return civilVoice;
 	}
 
 	@Transactional
-	public int updateCivilVoice(CivilVoice civilVoice) {
-		return civilVoiceMapper.updateCivilVoice(civilVoice);
+	public CivilVoice updateCivilVoice(CivilVoice civilVoice) {
+		civilVoiceMapper.updateCivilVoice(civilVoice);
+		return civilVoice;
 	}
 
 	@Transactional

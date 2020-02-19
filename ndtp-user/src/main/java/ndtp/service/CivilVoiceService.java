@@ -38,14 +38,14 @@ public interface CivilVoiceService {
 	 * @param civilvoice
 	 * @return
 	 */
-	int insertCivilVoice(CivilVoice civilVoice);
+	CivilVoice insertCivilVoice(CivilVoice civilVoice);
 
 	/**
 	 * 수정
 	 * @param civilvoice
 	 * @return
 	 */
-	int updateCivilVoice(CivilVoice civilVoice);
+	CivilVoice updateCivilVoice(CivilVoice civilVoice);
 
 	/**
 	 * 조회 수 수정

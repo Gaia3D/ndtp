@@ -172,7 +172,7 @@
 								</button>	
 							</c:if>
 						</c:if>
-						<button type="button" id="dcShowAttr" class="btnTextF">속성조회</button>
+						<button type="button" id="dcShowAttr" class="btnTextF">데이터 정보 조회</button>
 					</div>
 				</form>
 			</div>
@@ -384,7 +384,7 @@
 
 		var groupId = dataInfo.dataGroupId;
 		if (groupId) {
-			var title = groupId + ' / ' + (dataInfo.dataName || dataInfo.dataKey);
+			var title = dataInfo.dataGroupName + ' / ' + (dataInfo.dataName || dataInfo.dataKey);
 			$header.text(title);
 			$header.attr('title', title);
 		}
