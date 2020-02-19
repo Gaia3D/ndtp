@@ -42,8 +42,42 @@ function CivilVoiceControll(magoInstance, viewer) {
 			store.beforeEntity = null;
 		}
 	}
-
-
+	
+	function clusterRender(){
+		var voices = this.list;
+		if(voices && Array.isArray(voices) && voices.length > 0) {
+			var p2dList = _voicesToPointList(voices)
+			var br = p2dList.getBoundingRectangle();
+			
+			/*var centerx = (br.minX + br.maxX) / 2;
+			var centery = (br.minY + br.maxY) / 2;
+			var xLength = br.maxX - br.minX;
+			var yLength = br.maxY - br.minY;
+			
+			var treeOpt = {
+				halfWidth : xLength/2,
+				halfHeight : yLength/2,
+				center : new Mago3D.Point2D(centerx,centery)
+			};
+			var tree = new Mago3D.QuatTree(treeOpt);
+			tree.data = p2dArray;
+			
+			tree.makeTreeByDepth(8);
+			magoManager.qtree = tree;*/
+		}
+	}
+	
+	function _voicesToPointList(voices) {
+		var p2dList = new Mago3D.Point2DList();
+		for(var i in voices) {
+			var voice = voices[i];
+			var lon = parseFloat(voice.longitude);
+			var lat = parseFloat(voice.latitude);
+			p2dList.newPoint(lon,lat);
+		}
+		
+		return p2dList;
+	}
 	// public
 	return {
 		/************************** Map ***************************/
@@ -52,6 +86,7 @@ function CivilVoiceControll(magoInstance, viewer) {
 			refresh: function() {
 				getCivilVoiceListAll();
 			},
+			render : clusterRender
 		},
 		clear: function() {
 			removeStoredEntity();
