@@ -204,7 +204,10 @@ var MapDataControll = function(magoInstance) {
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						alert(JS_MESSAGE["update"]);
-					} else if (msg.statusCode == 428) {
+					} else if(msg.statusCode === 403) {
+						//data.smart.tiling
+						alert("변경 권한(Smart Tiling)이 존재하지 않습니다.");
+					} else if (msg.statusCode === 428) {
 						if(confirm(JS_MESSAGE[msg.errorCode])) {
 							$('input[name="dataId"]').val(dataId);
 							var formData = $('#dcRotLocForm').serialize();
