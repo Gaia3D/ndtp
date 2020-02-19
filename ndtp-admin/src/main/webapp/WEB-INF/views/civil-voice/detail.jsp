@@ -77,7 +77,7 @@
 							<!-- <textarea name="" id="" class="reply"></textarea>
 							<span class="textCount">0/256</span> -->
 							<input type="text" name="title" placeholder="동의합니다" value="">
-							<button type="button" id="civilVoiceAgree" class="regist" title="등록">등록</button>
+							<button type="button" id="civilVoiceAgree" class="regist" title="동의">동의</button>
 						</div>
 						</form:form>
 						<ul id="civilVoiceComment" class="reply"></ul>
