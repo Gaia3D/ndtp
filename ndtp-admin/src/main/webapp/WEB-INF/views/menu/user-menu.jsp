@@ -103,12 +103,14 @@
 											<tr>
 												<th class="col-label" scope="row">
 													<label for="htmlId">HTML ID</label>
+													<span class="icon-glyph glyph-emark-dot color-warning"></span>
 												</th>
 												<td><input type="text" id="htmlId" name="htmlId"/></td>
 											</tr>
 											<tr>
 												<th class="col-label" scope="row">
 													<label for="htmlContentId">HTML Content ID</label>
+													<span class="icon-glyph glyph-emark-dot color-warning"></span>
 												</th>
 												<td><input type="text" id="htmlContentId" name="htmlContentId"/></td>
 											</tr>
@@ -267,6 +269,11 @@
 			$("#htmlId").focus();
 			return false;
 		}
+		else if( $("#htmlContentId").val().trim() === "" ) {
+			alert("HTML Content ID를 입력해 주세요..");
+			$("#htmlContentId").focus();
+			return false;
+		}
 		else if( $("[name=defaultYn]:checked").val() === "" || $("[name=defaultYn]:checked").val() === undefined ) {
 			alert("기본 사용 유무를 선택해 주세요");
 			return false;
@@ -286,14 +293,14 @@
 		if( check() === false ) return false;
 
 		// 관리자 사이트
-		if( $("#ancestor").val() === "0" ) {
+		if( $("#menuType").val() === "0" ) {
 			if( $("#menuTarget").val() === "0" ) {
 				alert("관리자 사이트의 경우 메뉴 Target은 관리자 사이트만 가능합니다.");
 				return;
 			}
 		}
 		// 일반 사용자 사이트
-		if( $("#ancestor").val() !== "0" ) {
+		if( $("#menuType").val() !== "0" ) {
 			if( $("#menuTarget").val() === "1" ) {
 				alert("일반 사용자 사이트의 경우 메뉴 Target은 일반 사용자 사이트만 가능합니다.");
 				return;
@@ -323,7 +330,7 @@
 		if( check() === false ) return false;
 
 		// 관리자 사이트
-		if( $("#ancestor").val() === "0" ) {
+		if( $("#menuType").val() === "0" ) {
 			if( $("#menuTarget").val() === "0" ) {
 				alert("관리자 사이트의 경우 메뉴 Target은 관리자 사이트만 가능합니다.");
 				return;
@@ -335,7 +342,7 @@
 			}
 		}
 		// 일반 사용자 사이트
-		if( $("#ancestor").val() !== "0" ) {
+		if( $("#menuType").val() !== "0" ) {
 			if( $("#menuTarget").val() === "1" ) {
 				alert("일반 사용자 사이트의 경우 메뉴 Target은 일반 사용자 사이트만 가능합니다.");
 				return;
