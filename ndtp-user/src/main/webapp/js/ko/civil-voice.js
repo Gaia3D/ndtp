@@ -49,21 +49,12 @@ function CivilVoiceControll(magoInstance, viewer) {
 			var p2dList = _voicesToPointList(voices)
 			var br = p2dList.getBoundingRectangle();
 			
-			/*var centerx = (br.minX + br.maxX) / 2;
-			var centery = (br.minY + br.maxY) / 2;
-			var xLength = br.maxX - br.minX;
-			var yLength = br.maxY - br.minY;
+			var treeOption = _getTreeOption(br);
 			
-			var treeOpt = {
-				halfWidth : xLength/2,
-				halfHeight : yLength/2,
-				center : new Mago3D.Point2D(centerx,centery)
-			};
-			var tree = new Mago3D.QuatTree(treeOpt);
-			tree.data = p2dArray;
+			var tree = new Mago3D.QuatTree(treeOption);
+			tree.data = p2dList.pointsArray;
 			
-			tree.makeTreeByDepth(8);
-			magoManager.qtree = tree;*/
+			magoManager.addQuatTree(tree, 8);
 		}
 	}
 	
@@ -78,6 +69,19 @@ function CivilVoiceControll(magoInstance, viewer) {
 		
 		return p2dList;
 	}
+	
+	function _getTreeOption(boundingRectangle) {
+		var xLength = boundingRectangle.getXLength();
+		var yLength = boundingRectangle.getYLength();
+		var center = boundingRectangle.getCenterPoint();
+		
+		return {
+			halfWidth : xLength/2,
+			halfHeight : yLength/2,
+			center : center
+		};
+	}
+	
 	// public
 	return {
 		/************************** Map ***************************/

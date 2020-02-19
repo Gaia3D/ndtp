@@ -153,12 +153,13 @@ public class IssueRestController {
 	//	civilVoice.setUserId(userSession.getUserId());
 	//	civilVoice.setClientIp(WebUtils.getClientIp(request));
 		try {
+			long rows = issue.getLimit() != null ? issue.getLimit() : PAGE_ROWS; 
 			long totalCount = issueService.getIssueTotalCount(issue);
 			Pagination pagination = new Pagination(	request.getRequestURI(),
 													getSearchParameters(PageType.LIST, issue),
 													totalCount,
 													Long.valueOf(pageNo).longValue(),
-													PAGE_ROWS,
+													rows,
 													PAGE_LIST_COUNT);
 			log.info("@@ pagination = {}", pagination);
 

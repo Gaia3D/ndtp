@@ -36,7 +36,7 @@ var IssueController = function(magoInstance) {
 				url: "/issues",
 				type: "GET",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
-				data : {location : location},
+				data : {location : location, limit:100},
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						var issueList = msg.issueList;

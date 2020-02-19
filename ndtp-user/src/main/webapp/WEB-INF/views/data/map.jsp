@@ -741,22 +741,30 @@
 		}
 		if(insertIssueFlag) {
 			insertIssueFlag = false;
+			var lon = $("#issueLongitude").val();
+			var lat = $("#issueLatitude").val();
+			var alt = $("#issueAltitude").val();
 			$.ajax({
 				url: "/issues",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				data: { "dataId" : $("#issueDataId").val(), "dataGroupId" : $("#issueDataGroupId").val(),
 					"dataKey" : $("#issueDataKey").val(), "dataGroupName" : $("#issueDataGroupName").val(), "objectKey" : $("#issueObjectKey").val(),
-					"longitude" : $("#issueLongitude").val(), "latitude" : $("#issueLatitude").val(), "altitude" : $("#issueAltitude").val(),
+					"longitude" : lon, "latitude" : lat, "altitude" : alt,
 					"title" : $("#issueTitle").val(), "contents" : $("#issueContents").val()
 				},
 				success: function(msg){
 					if(msg.statusCode <= 200) {
-						console.log("issueId = " + msg.issueId);
 						alert(JS_MESSAGE["insert"]);
 						insertIssueFlag = true;
 						issueDialog.dialog('close'); 
-						console.info(msg);
+
+						NDTP.issueController.addIssue({
+							longitude : parseFloat(lon),
+							latitude : parseFloat(lat),
+							altitude : parseFloat(alt),
+							issueId : msg.issueId
+						});
 						/* var magoManager = this.magoInstance.getMagoManager();
 						if(Array.isArray(issue)) {
 							for(var i in issue) {
