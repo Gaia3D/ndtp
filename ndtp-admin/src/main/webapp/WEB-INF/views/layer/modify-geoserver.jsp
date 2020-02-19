@@ -194,13 +194,22 @@
 			                </tr>
 			                <tr>
 			                	<th class="col-label" scope="row">
+			                        <label for="viewOrder">레이어 표시 순서</label>
+			                    </th>
+			                    <td class="col-input">
+			                        <form:input path="viewOrder" cssClass="s"/>
+			                        <form:errors path="viewOrder" cssClass="error" />
+			                    </td>
+			                	<th class="col-label" scope="row">
 			                        <label for="zIndex">표시 순서(Z-Index)</label>
 			                    </th>
 			                    <td class="col-input">
 			                        <form:input path="zIndex" cssClass="s" />
 			                        <form:errors path="zIndex" cssClass="error" />
 			                    </td>
-			                    <th class="col-label" scope="row">
+			                </tr>
+			                <tr>
+			                	<th class="col-label" scope="row">
 			                        <label for="defaultDisplayTrue">기본 표시</label>
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
@@ -208,8 +217,6 @@
 			                        <form:radiobutton id="defaultDisplayTrue"  path="defaultDisplay" value="true" label="사용" />
 									<form:radiobutton id="defaultDisplayFlase" path="defaultDisplay" value="false" label="미사용" />
 			                    </td>
-			                </tr>
-			                <tr>
 			                	<th class="col-label" scope="row">
 			                        <label for="useY">사용유무</label>
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
@@ -218,20 +225,20 @@
 			                        <form:radiobutton id="availableTrue"  path="available" value="true" label="사용" />
 									<form:radiobutton id="availableFalse" path="available" value="false" label="미사용" />
 			                    </td>
-			                    <th class="col-label" scope="row">
+			                </tr>
+			                <tr>
+			                	<th class="col-label" scope="row">
 			                        <label for="labelDisplayTrue">Label 표시 유무</label>
 			                    </th>
 			                    <td class="col-input radio-set">
 			                        <form:radiobutton id="labelDisplayTrue"  path="labelDisplay" value="true" label="표시" />
 									<form:radiobutton id="labelDisplayFalse" path="labelDisplay" value="false" label="비표시" />
 			                    </td>
-			                </tr>
-			                <tr>
 			                    <th class="col-label" scope="row">
 			                        <form:label path="description">설명</form:label>
 			                    </th>
-			                    <td class="col-input" colspan="3">
-			                        <form:input path="description" cssClass="l" style="width:100%;"/>
+			                    <td class="col-input">
+			                        <form:input path="description" cssClass="l"/>
 			                        <form:errors path="description" cssClass="error" />
 			                    </td>
 			                </tr>

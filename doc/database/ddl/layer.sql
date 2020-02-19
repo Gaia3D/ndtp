@@ -51,6 +51,7 @@ create table layer (
 	layer_line_style			numeric,	
 	layer_alpha_style			numeric,
 	
+	view_order					integer							default 1,
 	z_index						integer,
 	default_display				boolean							default false,
 	available					boolean							default true,
@@ -79,6 +80,7 @@ comment on column layer.layer_fill_color is '외곽선 색상';
 comment on column layer.layer_line_color is '외곽선 두께';
 comment on column layer.layer_line_style is '채우기 색상';
 comment on column layer.layer_alpha_style is '투명도';
+comment on column layer.view_order is '나열 순서';
 comment on column layer.z_index is '지도위에 노출 순위(css z-index와 동일)';
 comment on column layer.default_display is '기본 표시';
 comment on column layer.available is '사용유무.';

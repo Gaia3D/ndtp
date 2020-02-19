@@ -319,6 +319,7 @@ public class LayerController implements AuthorizationController {
 							.description(request.getParameter("description"))
 							.zIndex(Integer.valueOf(request.getParameter("zIndex")))
 							.cacheAvailable(Boolean.valueOf(request.getParameter("cacheAvailable")))
+							.viewOrder(Integer.valueOf(request.getParameter("viewOrder")))
 							.userId(userId)
 							.build();
 			log.info("@@ layer = {}", layer);
@@ -654,6 +655,7 @@ public class LayerController implements AuthorizationController {
 			layer.setDescription(request.getParameter("description"));
 			layer.setZIndex(Integer.valueOf(request.getParameter("zIndex")));
 			layer.setCacheAvailable(Boolean.valueOf(request.getParameter("cacheAvailable")));
+			layer.setViewOrder(Integer.valueOf(request.getParameter("viewOrder")));
 			layer.setUserId(userId);
 
             // TODO geoserver 에서 postgresql 로 hang 걸리는게 있어서 우선 이럻게 처리 함. 추후 개선 예정
