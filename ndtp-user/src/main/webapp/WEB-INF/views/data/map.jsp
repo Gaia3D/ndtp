@@ -752,9 +752,10 @@
 				},
 				success: function(msg){
 					if(msg.statusCode <= 200) {
+						console.log("issueId = " + msg.issueId);
 						alert(JS_MESSAGE["insert"]);
 						insertIssueFlag = true;
-						issueDialog.close();
+						issueDialog.dialog('close'); 
 						console.info(msg);
 						/* var magoManager = this.magoInstance.getMagoManager();
 						if(Array.isArray(issue)) {
