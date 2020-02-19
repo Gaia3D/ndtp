@@ -21,6 +21,7 @@ import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
 import ndtp.domain.GeoPolicy;
 import ndtp.domain.Key;
+import ndtp.domain.LayerGroup;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
 import ndtp.domain.RoleKey;
@@ -30,7 +31,9 @@ import ndtp.domain.UserSession;
 import ndtp.service.DataGroupService;
 import ndtp.service.DataService;
 import ndtp.service.GeoPolicyService;
+import ndtp.service.LayerGroupService;
 import ndtp.service.UserPolicyService;
+import ndtp.support.LayerDisplaySupport;
 import ndtp.support.RoleSupport;
 import ndtp.utils.DateUtils;
 
@@ -55,6 +58,9 @@ public class DataController {
 	
 	@Autowired
 	private UserPolicyService userPolicyService;
+	
+	@Autowired
+	private LayerGroupService layerGroupService;
 
 	/**
 	 * 데이터 목록
@@ -136,8 +142,11 @@ public class DataController {
 		}
 
 		String geoPolicyJson = "";
+		String baseLayerJson = "";
 		try {
 			geoPolicyJson = objectMapper.writeValueAsString(geoPolicy);
+			List<LayerGroup> layerGroupList = LayerDisplaySupport.getListDisplayLayer(layerGroupService.getListLayerGroupAndLayer(), userPolicy.getBaseLayers());
+			baseLayerJson = objectMapper.writeValueAsString(layerGroupList);
 		} catch(Exception e) {
 			log.info("@@ objectMapper exception");
 			e.printStackTrace();
@@ -205,7 +214,7 @@ public class DataController {
 		model.addAttribute("dataGroupList", dataGroupList);
 		model.addAttribute("userPolicy", userPolicy);
 		model.addAttribute("geoPolicyJson", geoPolicyJson);
-		model.addAttribute("baseLayers", userPolicy.getBaseLayers());
+		model.addAttribute("baseLayerJson", baseLayerJson);
 		model.addAttribute("owner", userSession.getUserId());
 
 		return "/data/map";

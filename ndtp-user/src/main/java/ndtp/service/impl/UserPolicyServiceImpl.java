@@ -28,10 +28,10 @@ public class UserPolicyServiceImpl implements UserPolicyService {
 	private UserPolicyMapper userPolicyMapper;
 	@Autowired
 	private GeoPolicyService geoPolicyService;
-	@Autowired
-	private LayerService layerService;
-	@Autowired
-	private LayerGroupMapper layerGroupMapper;
+//	@Autowired
+//	private LayerService layerService;
+//	@Autowired
+//	private LayerGroupMapper layerGroupMapper;
 
     @Transactional(readOnly = true)
     public UserPolicy getUserPolicy(String userId) {
@@ -51,7 +51,7 @@ public class UserPolicyServiceImpl implements UserPolicyService {
         				.lod4(geoPolicy.getLod4())
         				.lod5(geoPolicy.getLod5())
         				.ssaoRadius(geoPolicy.getSsaoRadius())
-        				.baseLayers(defaultLayers())
+//        				.baseLayers(defaultLayers())
         				.build();
         } else {
         	if(userPolicy.getInitLongitude() == null) userPolicy.setInitLongitude(geoPolicy.getInitLongitude());
@@ -66,7 +66,7 @@ public class UserPolicyServiceImpl implements UserPolicyService {
         	if(userPolicy.getLod4() == null) userPolicy.setLod4(geoPolicy.getLod4());
         	if(userPolicy.getLod5() == null) userPolicy.setLod5(geoPolicy.getLod5());
         	if(userPolicy.getSsaoRadius() == null) userPolicy.setSsaoRadius(geoPolicy.getSsaoRadius());
-        	if(userPolicy.getBaseLayers() == null) userPolicy.setBaseLayers(defaultLayers());
+//        	if(userPolicy.getBaseLayers() == null) userPolicy.setBaseLayers(defaultLayers());
         }
 
         return userPolicy;
@@ -99,22 +99,22 @@ public class UserPolicyServiceImpl implements UserPolicyService {
 		}
 	}
     
-    private String defaultLayers() {
-    	List<LayerGroup> layerGroupList = layerGroupMapper.getListLayerGroup();
-    	List<String> baseLayerList = new ArrayList<>();
-    	String dataStore = geoPolicyService.getGeoPolicy().getGeoserverDataStore();
-		layerGroupList.stream()
-						.forEach(group -> {
-							Layer layer = Layer.builder()
-											.layerGroupId(group.getLayerGroupId())
-											.build();
-							baseLayerList.addAll(layerService.getListDefaultDisplayLayer(layer));
-						});
-		
-		String baseLayers = baseLayerList.stream()
-				.map(layerKey -> String.valueOf(dataStore + ":" + layerKey))
-				.collect(Collectors.joining(","));
-		
-    	return baseLayers;
-    }
+//    private String defaultLayers() {
+//    	List<LayerGroup> layerGroupList = layerGroupMapper.getListLayerGroup();
+//    	List<String> baseLayerList = new ArrayList<>();
+//    	String dataStore = geoPolicyService.getGeoPolicy().getGeoserverDataStore();
+//		layerGroupList.stream()
+//						.forEach(group -> {
+//							Layer layer = Layer.builder()
+//											.layerGroupId(group.getLayerGroupId())
+//											.build();
+//							baseLayerList.addAll(layerService.getListDefaultDisplayLayer(layer));
+//						});
+//		
+//		String baseLayers = baseLayerList.stream()
+//				.map(layerKey -> String.valueOf(dataStore + ":" + layerKey))
+//				.collect(Collectors.joining(","));
+//		
+//    	return baseLayers;
+//    }
 }

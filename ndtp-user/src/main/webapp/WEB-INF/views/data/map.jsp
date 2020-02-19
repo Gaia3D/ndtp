@@ -170,6 +170,7 @@
 <script type="text/javascript" src="/js/${lang}/layer.js"></script>
 <script type="text/javascript" src="/js/${lang}/map-data-controll.js"></script>
 <script type="text/javascript" src="/js/${lang}/civil-voice.js"></script>
+<script type="text/javascript" src="/js/${lang}/map-init.js"></script>
 <script type="text/javascript" src="/js/${lang}/issue-controller.js"></script>
 <script type="text/javascript">
 	// 임시로...
@@ -184,9 +185,7 @@
 	// ndtp 전역 네임스페이스
 	var NDTP = NDTP ||{
 		policy : ${geoPolicyJson},
-		baseLayers : "${baseLayers}",
-		wmsProvider : {},
-		districtProvider : {}
+		baseLayers : ${baseLayerJson}
 	};
 	magoInit();
 
@@ -247,7 +246,8 @@
         CivilVoice(magoInstance);
         // 기본 레이어 랜더링
         setTimeout(function(){
-        	//initLayer(magoInstance, NDTP.baseLayers);
+        	NDTP.map = new mapInit(magoInstance, ${baseLayerJson}, ${geoPolicyJson});
+        	NDTP.map.initLayer();
         }, geoPolicyJson.initDuration * 1000);
 
 		//지도상에 데이터 다루는거
@@ -301,39 +301,40 @@
 		var dataGroupArrayLength = dataGroupArray.length;
 		for(var i=0; i<dataGroupArrayLength; i++) {
 			var dataGroup = dataGroupArray[i];
-			var f4dController = MAGO3D_INSTANCE.getF4dController();
-			$.ajax({
-				url: "/datas/" + dataGroup.dataGroupId + "/list",
-				type: "GET",
-				headers: {"X-Requested-With": "XMLHttpRequest"},
-				dataType: "json",
-				success: function(msg){
-					if(msg.statusCode <= 200) {
-						var dataInfoList = msg.dataInfoList;
-						if(dataInfoList != null && dataInfoList.length > 0) {
-							var dataInfoFirst = dataInfoList[0];
-							var dataInfoGroupId = dataInfoFirst.dataGroupId;
-							var group;
-							for(var j in dataGroupArray) {
-								if(dataGroupArray[j].dataGroupId === dataInfoGroupId) {
-									group = dataGroupArray[j];
-									break;
+			if(!dataGroup.tiling) {
+				var f4dController = MAGO3D_INSTANCE.getF4dController();
+				$.ajax({
+					url: "/datas/" + dataGroup.dataGroupId + "/list",
+					type: "GET",
+					headers: {"X-Requested-With": "XMLHttpRequest"},
+					dataType: "json",
+					success: function(msg){
+						if(msg.statusCode <= 200) {
+							var dataInfoList = msg.dataInfoList;
+							if(dataInfoList != null && dataInfoList.length > 0) {
+								var dataInfoFirst = dataInfoList[0];
+								var dataInfoGroupId = dataInfoFirst.dataGroupId;
+								var group;
+								for(var j in dataGroupArray) {
+									if(dataGroupArray[j].dataGroupId === dataInfoGroupId) {
+										group = dataGroupArray[j];
+										break;
+									}
 								}
+	
+								group.datas = dataInfoList;
+								f4dController.addF4dGroup(group);
 							}
-
-							group.datas = dataInfoList;
-							f4dController.addF4dGroup(group);
+						} else {
+							alert(JS_MESSAGE[msg.errorCode]);
 						}
-					} else {
-						alert(JS_MESSAGE[msg.errorCode]);
+					},
+					error:function(request,status,error){
+						alert(JS_MESSAGE["ajax.error.message"]);
 					}
-				},
-				error:function(request,status,error){
-					alert(JS_MESSAGE["ajax.error.message"]);
-				}
-			});
+				});
+			}
 		}
-
 	}
 
 	function flyTo(dataGroupId, dataKey) {

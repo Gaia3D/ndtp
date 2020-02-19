@@ -501,7 +501,7 @@ $(".layerClose").click(function(){
 
 //지도에서 찾기
 $( "#magoHelp" ).on( "click", function() {
-	var url = "/map/help";
+	var url = "/guide/help";
 	var width = 800;
 	var height = 700;
 	var popupX = (window.screen.width / 2) - (width / 2);

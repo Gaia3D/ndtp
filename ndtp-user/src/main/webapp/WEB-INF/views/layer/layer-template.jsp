@@ -17,10 +17,9 @@
 	{{/ifMatch}}
 		{{#if layerList}}
 				{{#each layerList}}
-					<li class="nodepth {{serviceType}}Layer"
-						data-target-layer="{{#getPrefix serviceType layerKey}}{{/getPrefix}}"
+					<li class="nodepth {{serviceType}}Layer {{#replace defaultDisplay true 'on'}}{{/replace}}"
 						data-z-index="{{zindex}}"
-						data-view-type="{{serviceType}}"
+						data-tiling="{{cacheAvailable}}"
 						data-label="{{labelDisplay}}"
 						data-depth="{{layerId}}"
 						data-parent="{{layerGroupId}}"
