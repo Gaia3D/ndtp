@@ -267,7 +267,23 @@
 				if(msg.statusCode <= 200) {
 					var dataGroupList = msg.dataGroupList;
 					if(dataGroupList !== null && dataGroupList !== undefined) {
-						dataList(dataGroupList);
+
+						var noneTilingDataGroupList = dataGroupList.filter(function(dataGroup){
+							return !dataGroup.tiling;
+						});
+						
+						dataList(noneTilingDataGroupList);
+
+						var tilingDataGroupList = dataGroupList.filter(function(dataGroup){
+							return dataGroup.tiling;
+						});
+
+						var f4dController = MAGO3D_INSTANCE.getF4dController();
+						for(var i in tilingDataGroupList)
+						{
+							var tilingDataGroup = tilingDataGroupList[i];
+							f4dController.addSmartTileGroup(tilingDataGroup)
+						}
 					}
 				} else {
 					alert(JS_MESSAGE[msg.errorCode]);
