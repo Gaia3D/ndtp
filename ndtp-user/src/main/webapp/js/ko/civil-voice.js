@@ -31,44 +31,59 @@ function CivilVoiceControll(magoInstance, viewer) {
 		targetContent.show();
 	}
 
-	function remove(storedEntity) {
-		viewer.entities.removeById(storedEntity);
+	function removeStoredEntity() {
+		if(store.beforeEntity) {
+			viewer.entities.removeById(store.beforeEntity);
+			store.beforeEntity = null;
+		}
 	}
 
 
 	// public
 	return {
-		/*********************** cluster ************************/
+		/************************** Map ***************************/
 		cluster: {
 			list: null,
 			refresh: function() {
 				getCivilVoiceListAll();
-			}
-		},
-		/********************************************************/
-		currentPage: null,
-		currentCivilVoiceId: null,
-		show: showContent,
-		initFormContent: function(formId) {
-			$('#' + formId + ' input').val("");
-			$('#' + formId + ' textarea').val("");
-		},
-		drawHandlebarsHtml: function(data, templateId, targetId) {
-			var source = $('#' + templateId).html();
-			var template = Handlebars.compile(source);
-			var html = template(data);
-			$('#' + targetId).empty().append(html);
+			},
 		},
 		flyTo: function(longitude, latitude) {
 			var altitude = 100;
 			var duration = 5;
 			magoManager.flyTo(longitude, latitude, altitude, duration);
 		},
+		clear: function() {
+			removeStoredEntity();
+
+		},
+		drawMarker: function(longitude, latitude, text) {
+			removeStoredEntity();
+
+			var x = Number(longitude);
+	   		var y = Number(latitude);
+
+	   		var pinBuilder = new Cesium.PinBuilder();
+	   		var addedEntity = viewer.entities.add({
+	   		    name : 'Location',
+	   		    position : Cesium.Cartesian3.fromDegrees(x, y),
+	   		    billboard : {
+	   	        	disableDepthTestDistance : Number.POSITIVE_INFINITY,
+	   				heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+	   		        //image: '/images/ko/marker.png',
+	   				// 마커 색상 - https://cesium.com/docs/cesiumjs-ref-doc/Color.html
+	   		        image : pinBuilder.fromText(text, Cesium.Color.DARKORANGE, 52).toDataURL(),
+	   	            horizontalOrigin : Cesium.HorizontalOrigin.CENTER, // default
+	   	            verticalOrigin : Cesium.VerticalOrigin.BOTTOM // default: CENTER
+	   	            //scale: 0.2
+	   		    }
+	   		});
+
+			store.beforeEntity = addedEntity.id;
+		},
 		getGeographicCoord: function() {
 			magoManager.once(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
-				if(store.beforeEntity) {
-					remove(store.beforeEntity);
-				}
+				removeStoredEntity();
 
 				var geographicCoord = result.clickCoordinate.geographicCoordinate;
 				var worldCoordinate = result.clickCoordinate.worldCoordinate;
@@ -90,6 +105,20 @@ function CivilVoiceControll(magoInstance, viewer) {
 				$('#civilVoiceContent [name=longitude]:visible').val(geographicCoord.longitude);
 				$('#civilVoiceContent [name=latitude]:visible').val(geographicCoord.latitude);
 			});
+		},
+		/********************************************************/
+		currentPage: null,
+		currentCivilVoiceId: null,
+		show: showContent,
+		initFormContent: function(formId) {
+			$('#' + formId + ' input').val("");
+			$('#' + formId + ' textarea').val("");
+		},
+		drawHandlebarsHtml: function(data, templateId, targetId) {
+			var source = $('#' + templateId).html();
+			var template = Handlebars.compile(source);
+			var html = template(data);
+			$('#' + targetId).empty().append(html);
 		}
 	}
 }
@@ -113,7 +142,9 @@ $('#civilVoiceList').on('click', '.goto', function(e) {
 	e.stopPropagation();
 	var longitude = $(this).data('longitude');
 	var latitude = $(this).data('latitude');
+	var commentCount = $(this).data('count');
 	civilVoice.flyTo(longitude, latitude);
+	civilVoice.drawMarker(longitude, latitude, commentCount);
 });
 
 // 시민참여 상세보기
@@ -130,6 +161,7 @@ $('#civilVoiceContent').on('click', 'li.comment', function() {
 // 시민참여 등록 화면 이동
 $("#civilVoiceInputButton").on('click', function(){
 	civilVoice.show('input');
+	civilVoice.clear();
 });
 
 // 시민참여 수정 화면 이동
@@ -154,6 +186,7 @@ function getCivilVoiceList(page) {
 	if(!page) page = 1;
 	civilVoice.currentPage = page;
 	civilVoice.currentCivilVoiceId = null;
+	civilVoice.clear();
 
 	var formId = 'civilVoiceSearchForm';
 	var formData = $('#' + formId).serialize();
@@ -216,6 +249,8 @@ function getCivilVoiceDetail() {
 		success: function(res){
 			if(res.statusCode <= 200) {
 				civilVoice.drawHandlebarsHtml(res, 'templateCivilVoiceView', 'civilVoiceView');
+				civilVoice.flyTo(res.civilVoice.longitude, res.civilVoice.latitude);
+				civilVoice.drawMarker(res.civilVoice.longitude, res.civilVoice.latitude, res.civilVoice.commentCount);
 			} else {
 				alert(JS_MESSAGE[res.errorCode]);
 				console.log("---- " + res.message);
@@ -302,6 +337,7 @@ function saveCivilVoice() {
 					alert("저장 되었습니다.");
 					civilVoice.initFormContent(formId);
 					civilVoice.show('list');
+					civilVoice.clear();
 					getCivilVoiceList();
 				} else {
 					alert(msg.message);
@@ -342,6 +378,7 @@ function updateCivilVoice() {
 				if(msg.statusCode <= 200) {
 					alert("저장 되었습니다.");
 					civilVoice.initFormContent(formId);
+					civilVoice.clear();
 					civilVoice.show('detail');
 					getCivilVoiceDetail(id);
 				} else {

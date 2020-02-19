@@ -36,7 +36,7 @@
 					<span class="title">{{title}}</span>
 					<span class="id">{{userId}}</span>
 				</p>
-				<button type="button" class="goto" data-longitude={{longitude}} data-latitude={{latitude}} style="width:30px; position: relative; left: 7px;" title="위치보기">위치보기</button>
+				<button type="button" class="goto" data-longitude={{longitude}} data-latitude={{latitude}} data-count={{commentCount}} style="width:30px; position: relative; left: 7px;" title="위치보기">위치보기</button>
 			</li>
 		{{/each}}
 	{{else}}
