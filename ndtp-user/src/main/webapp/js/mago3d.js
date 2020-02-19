@@ -33953,13 +33953,6 @@ SmartTile.prototype.parseSmartTileF4d = function(dataArrayBuffer, magoManager)
 		bytesReaded = eulerAngDeg.readDataFromBuffer(dataArrayBuffer, bytesReaded);
 		data.rotationsDegree = eulerAngDeg; 
 		
-		// New 20200218.***
-		var dataId = (new Int32Array(dataArrayBuffer.slice(bytesReaded, bytesReaded+4)))[0]; bytesReaded += 4;
-		var dataGroupId = (new Int32Array(dataArrayBuffer.slice(bytesReaded, bytesReaded+4)))[0]; bytesReaded += 4;
-		var endMark = (new Int8Array(dataArrayBuffer.slice(bytesReaded, bytesReaded+1)))[0]; bytesReaded += 1;
-		node.data.dataId = dataId;
-		node.data.dataGroupId = dataGroupId;
-		
 		// finally put the node into smartTile.
 		//this.putNode(this.depth, node, magoManager);
 
@@ -56915,147 +56908,6 @@ TinTerrainManager.prototype.render = function(magoManager, bDepth, renderType, s
 'use strict';
 
 /**
- * 메세지
- * 
- * @class
- */
-var Message = function(i18next, message) 
-{
-	this.handle  = i18next;
-	this.message = message || MessageSource;
-};
-
-/**
- * 메세지 클래스 초기화
- *
- * @param {Function} callback
- */
-Message.prototype.init = function (callback)
-{
-	var h = this.handle;
-	this.handle.use(i18nextXHRBackend)
-		.use(i18nextBrowserLanguageDetector)
-		.init({
-			// Useful for debuging, displays which key is missing
-			debug: false,
-
-			detection: {
-				// keys or params to lookup language from
-				lookupQuerystring  : 'lang',
-				lookupCookie       : 'i18nextLang',
-				lookupLocalStorage : 'i18nextLang',
-			},
-    
-			// If translation key is missing, which lang use instead
-			fallbackLng: 'en',
-
-			resources: this.message,
-
-			// all, languageOnly
-			load: "languageOnly",
-
-			ns        : ['common'],
-			// Namespace to use by default, when not indicated
-			defaultNS : 'common',
-    
-			keySeparator     : ".",
-			nsSeparator      : ":",
-			pluralSeparator  : "_",
-			contextSeparator : "_"
-
-		}, function(err, t)
-		{
-			console.log("detected user language: " + h.language);
-			console.log("loaded languages: " + h.languages.join(', '));
-			h.changeLanguage(h.languages[0]);
-			callback(err, t);
-		});
-};
-
-/**
- * 메세지 핸들러를 가져온다.
- *
- * @returns {i18next} message handler
- */
-Message.prototype.getHandle = function ()
-{
-	return this.handle;
-};
-
-/**
- * 메세지를 가져온다.
- *
- * @returns {Object} message
- */
-Message.prototype.getMessage = function ()
-{
-	return this.message;
-};
-
-'use strict';
-var MessageSource = {};
-MessageSource.en = {
-  "common": {
-    "welcome" : "Welcome",
-    "error": {
-        "title" : "Error",
-        "construct" : {
-            "create" : "This object should be created using new."
-        }
-    }
-  }
-};
-MessageSource.ko = {
-    "common": {
-      "welcome" : "환영합니다.",
-      "error": {
-          "title" : "오류",
-          "construct" : {
-              "create" : "이 객체는 new 를 사용하여 생성해야 합니다."
-          }
-      }
-    }
-  };
-
-'use strict';
-
-/**
- * Geoserver for mago3Djs object.
- * @class Geoserver
- */
-var GeoServer = function() 
-{
-
-	this.serverInfo = {};
-}; 
-
-GeoServer.prototype.setServerInfo = function(info) 
-{
-	this.serverInfo = info;
-};
-
-GeoServer.prototype.getDataUrl = function() 
-{
-	return this.serverInfo.dataUrl;
-};
-
-GeoServer.prototype.getDataWorkspace = function() 
-{
-	return this.serverInfo.dataWorkspace;
-};
-
-GeoServer.prototype.getDataRequestUrl = function() 
-{
-	return this.getDataUrl() + '/' + this.getDataWorkspace();
-};
-
-GeoServer.prototype.getWmsVersion = function() 
-{
-	return this.serverInfo.wmsVersion;
-};
-'use strict';
-
-/**
  * This represent Arc feature in 2D
  * @class Arc2D
  */
@@ -76516,6 +76368,147 @@ VtxSegment.prototype.intersectionWithPoint = function(point, error)
 'use strict';
 
 /**
+ * 메세지
+ * 
+ * @class
+ */
+var Message = function(i18next, message) 
+{
+	this.handle  = i18next;
+	this.message = message || MessageSource;
+};
+
+/**
+ * 메세지 클래스 초기화
+ *
+ * @param {Function} callback
+ */
+Message.prototype.init = function (callback)
+{
+	var h = this.handle;
+	this.handle.use(i18nextXHRBackend)
+		.use(i18nextBrowserLanguageDetector)
+		.init({
+			// Useful for debuging, displays which key is missing
+			debug: false,
+
+			detection: {
+				// keys or params to lookup language from
+				lookupQuerystring  : 'lang',
+				lookupCookie       : 'i18nextLang',
+				lookupLocalStorage : 'i18nextLang',
+			},
+    
+			// If translation key is missing, which lang use instead
+			fallbackLng: 'en',
+
+			resources: this.message,
+
+			// all, languageOnly
+			load: "languageOnly",
+
+			ns        : ['common'],
+			// Namespace to use by default, when not indicated
+			defaultNS : 'common',
+    
+			keySeparator     : ".",
+			nsSeparator      : ":",
+			pluralSeparator  : "_",
+			contextSeparator : "_"
+
+		}, function(err, t)
+		{
+			console.log("detected user language: " + h.language);
+			console.log("loaded languages: " + h.languages.join(', '));
+			h.changeLanguage(h.languages[0]);
+			callback(err, t);
+		});
+};
+
+/**
+ * 메세지 핸들러를 가져온다.
+ *
+ * @returns {i18next} message handler
+ */
+Message.prototype.getHandle = function ()
+{
+	return this.handle;
+};
+
+/**
+ * 메세지를 가져온다.
+ *
+ * @returns {Object} message
+ */
+Message.prototype.getMessage = function ()
+{
+	return this.message;
+};
+
+'use strict';
+var MessageSource = {};
+MessageSource.en = {
+  "common": {
+    "welcome" : "Welcome",
+    "error": {
+        "title" : "Error",
+        "construct" : {
+            "create" : "This object should be created using new."
+        }
+    }
+  }
+};
+MessageSource.ko = {
+    "common": {
+      "welcome" : "환영합니다.",
+      "error": {
+          "title" : "오류",
+          "construct" : {
+              "create" : "이 객체는 new 를 사용하여 생성해야 합니다."
+          }
+      }
+    }
+  };
+
+'use strict';
+
+/**
+ * Geoserver for mago3Djs object.
+ * @class Geoserver
+ */
+var GeoServer = function() 
+{
+
+	this.serverInfo = {};
+}; 
+
+GeoServer.prototype.setServerInfo = function(info) 
+{
+	this.serverInfo = info;
+};
+
+GeoServer.prototype.getDataUrl = function() 
+{
+	return this.serverInfo.dataUrl;
+};
+
+GeoServer.prototype.getDataWorkspace = function() 
+{
+	return this.serverInfo.dataWorkspace;
+};
+
+GeoServer.prototype.getDataRequestUrl = function() 
+{
+	return this.getDataUrl() + '/' + this.getDataWorkspace();
+};
+
+GeoServer.prototype.getWmsVersion = function() 
+{
+	return this.serverInfo.wmsVersion;
+};
+'use strict';
+
+/**
  * AnimatedPerson is a class object.
  * 
  * @class AnimatedPerson
@@ -81197,53 +81190,56 @@ Renderer.prototype.renderGeometryDepth = function(gl, renderType, visibleObjCont
 	// Check if there are a object selected.**********************************************************************
 	if (magoManager.magoPolicy.getObjectMoveMode() === CODE.moveMode.OBJECT && magoManager.objectSelected)
 	{
-		var node = magoManager.nodeSelected;
-		var geoLocDataManager = node.getNodeGeoLocDataManager();
-		var neoBuilding = magoManager.buildingSelected;
-		var buildingGeoLocation = geoLocDataManager.getCurrentGeoLocationData();
-		var neoReferencesMotherAndIndices = magoManager.octreeSelected.neoReferencesMotherAndIndices;
-		var glPrimitive = gl.POINTS;
-		glPrimitive = gl.TRIANGLES;
-		var maxSizeToRender = 0.0;
-		var refMatrixIdxKey = 0;
-		
-		magoManager.currentProcess = CODE.magoCurrentProcess.StencilSilhouetteRendering;
-		
-		// do as the "getSelectedObjectPicking".**********************************************************
-		var silhouetteDepthFbo = magoManager.getSilhouetteDepthFbo();
-		silhouetteDepthFbo.bind(); 
-			
-		if (magoManager.isFarestFrustum())
+		if (magoManager.objectSelected instanceof NeoReference) 
 		{
-			gl.clearColor(0, 0, 0, 1);
-			gl.clearDepth(1);
-			gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-		}
+			var node = magoManager.nodeSelected;
+			var geoLocDataManager = node.getNodeGeoLocDataManager();
+			var neoBuilding = magoManager.buildingSelected;
+			var buildingGeoLocation = geoLocDataManager.getCurrentGeoLocationData();
+			var neoReferencesMotherAndIndices = magoManager.octreeSelected.neoReferencesMotherAndIndices;
+			var glPrimitive = gl.POINTS;
+			glPrimitive = gl.TRIANGLES;
+			var maxSizeToRender = 0.0;
+			var refMatrixIdxKey = 0;
 			
-		var currentShader;
-		currentShader = magoManager.postFxShadersManager.getShader("modelRefDepth"); 
-		currentShader.resetLastBuffersBinded();
+			magoManager.currentProcess = CODE.magoCurrentProcess.StencilSilhouetteRendering;
+			
+			// do as the "getSelectedObjectPicking".**********************************************************
+			var silhouetteDepthFbo = magoManager.getSilhouetteDepthFbo();
+			silhouetteDepthFbo.bind(); 
+				
+			if (magoManager.isFarestFrustum())
+			{
+				gl.clearColor(0, 0, 0, 1);
+				gl.clearDepth(1);
+				gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+			}
+				
+			var currentShader;
+			currentShader = magoManager.postFxShadersManager.getShader("modelRefDepth"); 
+			currentShader.resetLastBuffersBinded();
 
-		currentShader.useProgram();
-		currentShader.disableVertexAttribArrayAll();
-		currentShader.enableVertexAttribArray(currentShader.position3_loc);
+			currentShader.useProgram();
+			currentShader.disableVertexAttribArrayAll();
+			currentShader.enableVertexAttribArray(currentShader.position3_loc);
 
-		currentShader.bindUniformGenerals();
-		gl.uniform3fv(currentShader.scaleLC_loc, [1.0, 1.0, 1.0]); // init referencesMatrix.
-		
-		buildingGeoLocation.bindGeoLocationUniforms(gl, currentShader);
+			currentShader.bindUniformGenerals();
+			gl.uniform3fv(currentShader.scaleLC_loc, [1.0, 1.0, 1.0]); // init referencesMatrix.
+			
+			buildingGeoLocation.bindGeoLocationUniforms(gl, currentShader);
 
-		glPrimitive = gl.TRIANGLES;
-		var localRenderType = 0; // only need positions.***
-		var minSizeToRender = 0.0;
-		var offsetSize = 3/1000;
-		
-		gl.disable(gl.CULL_FACE);
-		
-		magoManager.objectSelected.render(magoManager, neoBuilding, localRenderType, renderTexture, currentShader, refMatrixIdxKey, minSizeToRender);
-		silhouetteDepthFbo.unbind(); 
-		
-		gl.enable(gl.CULL_FACE);
+			glPrimitive = gl.TRIANGLES;
+			var localRenderType = 0; // only need positions.***
+			var minSizeToRender = 0.0;
+			var offsetSize = 3/1000;
+			
+			gl.disable(gl.CULL_FACE);
+			
+			magoManager.objectSelected.render(magoManager, neoBuilding, localRenderType, renderTexture, currentShader, refMatrixIdxKey, minSizeToRender);
+			silhouetteDepthFbo.unbind(); 
+			
+			gl.enable(gl.CULL_FACE);	
+		}
 	}
 };
 

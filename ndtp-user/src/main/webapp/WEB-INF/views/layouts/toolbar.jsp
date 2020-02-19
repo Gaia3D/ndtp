@@ -164,7 +164,7 @@
 						<spring:message code='data.transform.save'/>
 					</button>
 					<button type="button" id="issueButton" class="btnTextF">이슈 등록</button>
-					<button type="button" id="dcShowAttr" class="btnTextF">속성조회</button>
+					<button type="button" id="dcShowAttr" class="btnTextF">데이터 정보 조회</button>
 				</div>
 			</form>
 		</div>
