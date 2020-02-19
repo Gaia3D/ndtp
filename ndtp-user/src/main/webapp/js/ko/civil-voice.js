@@ -24,7 +24,7 @@ function CivilVoiceControll(magoInstance, viewer) {
 		beforeEntity: null
 	}
 
-	function showContent(target) {
+	function toggleContent(target) {
 		var viewList = store.contents;
 		// hide all
 		for(var property in viewList) {
@@ -109,7 +109,7 @@ function CivilVoiceControll(magoInstance, viewer) {
 		/********************************************************/
 		currentPage: null,
 		currentCivilVoiceId: null,
-		show: showContent,
+		showContent: toggleContent,
 		initFormContent: function(formId) {
 			$('#' + formId + ' input').val("");
 			$('#' + formId + ' textarea').val("");
@@ -148,7 +148,7 @@ $('#civilVoiceList').on('click', '.goto', function(e) {
 
 // 시민참여 상세보기
 $('#civilVoiceContent').on('click', 'li.comment', function() {
-	civilVoice.show('detail');
+	civilVoice.showContent('detail');
 	// set current id
 	var id = $(this).data('id');
 	civilVoice.currentCivilVoiceId = id;
@@ -159,25 +159,25 @@ $('#civilVoiceContent').on('click', 'li.comment', function() {
 
 // 시민참여 등록 화면 이동
 $("#civilVoiceInputButton").on('click', function(){
-	civilVoice.show('input');
+	civilVoice.showContent('input');
 	civilVoice.clear();
 });
 
 // 시민참여 수정 화면 이동
 $('#civilVoiceContent').on('click', '#civilVoiceModifyButton', function(){
-	civilVoice.show('modify');
+	civilVoice.showContent('modify');
 	getCivilVoiceModify();
 });
 
 // 시민참여 취소 / 목록 보기
 $('#civilVoiceContent').on('click', '[data-goto=list]', function(){
-	civilVoice.show('list');
+	civilVoice.showContent('list');
 	getCivilVoiceList(civilVoice.currentPage);
 });
 
 // 시민참여 취소 / 상세 보기
 $('#civilVoiceContent').on('click', '[data-goto=detail]', function(){
-	civilVoice.show('detail');
+	civilVoice.showContent('detail');
 });
 
 // 시민참여 목록 조회
@@ -336,7 +336,7 @@ function saveCivilVoice() {
 				if(msg.statusCode <= 200) {
 					alert("저장 되었습니다.");
 					civilVoice.initFormContent(formId);
-					civilVoice.show('list');
+					civilVoice.showContent('list');
 					civilVoice.clear();
 					getCivilVoiceList();
 				} else {
@@ -378,8 +378,8 @@ function updateCivilVoice() {
 				if(msg.statusCode <= 200) {
 					alert("저장 되었습니다.");
 					civilVoice.initFormContent(formId);
+					civilVoice.showContent('detail');
 					civilVoice.clear();
-					civilVoice.show('detail');
 					getCivilVoiceDetail(id);
 				} else {
 					alert(msg.message);
@@ -415,7 +415,7 @@ function deleteCivilVoice(id) {
 			success: function(msg) {
 				if(msg.statusCode <= 200) {
 					alert("삭제 되었습니다.");
-					civilVoice.show('list');
+					civilVoice.showContent('list');
 					getCivilVoiceList();
 				} else {
 					alert(msg.message);
@@ -473,6 +473,7 @@ function saveCivilVoiceComment() {
 	}
 }
 
+// validation
 function civilVoiceValidation(form) {
 	if(!form.find('[name=title]').val()) {
 		alert("제목을 입력하여 주십시오.");
