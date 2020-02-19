@@ -336,6 +336,16 @@
 			}
 		}
 	}
+	
+	// smart tiling data flyTo
+	function gotoFly(longitude, latitude, altitude) {
+		if(longitude === null || longitude === '' || latitude === null || latitude === '' || altitude === null || altitude === '') {
+			alert("위치 정보가 올바르지 않습니다. 확인하여 주십시오.");
+			return;
+		}
+
+		gotoFlyAPI(MAGO3D_INSTANCE, longitude, latitude, 500, 3);
+	}
 
 	function flyTo(dataGroupId, dataKey) {
 		if(dataGroupId === null || dataGroupId === '' || dataKey === null || dataKey === '') {
