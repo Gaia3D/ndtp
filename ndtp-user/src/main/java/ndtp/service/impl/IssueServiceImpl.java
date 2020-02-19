@@ -78,10 +78,11 @@ public class IssueServiceImpl implements IssueService {
 	 * @return
 	 */
 	@Transactional
-	public int insertIssue(Issue issue) {
+	public Issue insertIssue(Issue issue) {
 		issueMapper.insertIssue(issue);
-		return issueMapper.insertIssueDetail(issue);
-			
+		issueMapper.insertIssueDetail(issue);
+		
+		return issue;
 //		// TODO 리팩토링이 필요함
 //		String assigneValue = issue.getAssignee();
 //		if(assigneValue != null && !"".equals(assigneValue)) {

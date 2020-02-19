@@ -51,7 +51,7 @@ public interface IssueService {
 	 * @param issue
 	 * @return
 	 */
-	int insertIssue(Issue issue);
+	Issue insertIssue(Issue issue);
 	
 	/**
 	 * 이슈 수정

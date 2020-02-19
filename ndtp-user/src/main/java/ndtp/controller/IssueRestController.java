@@ -114,8 +114,9 @@ public class IssueRestController {
 			issue.setLocation("POINT(" + issue.getLongitude() + " " + issue.getLatitude() + ")");
 			issue.setUserId(userSession.getUserId());
 			issue.setClientIp(WebUtils.getClientIp(request));
-			issueService.insertIssue(issue);
+			issue = issueService.insertIssue(issue);
 			
+			result.put("issueId", issue.getIssueId());
 			// TODO cache 갱신 되어야 함
 		} catch(Exception e) {
 			e.printStackTrace();
