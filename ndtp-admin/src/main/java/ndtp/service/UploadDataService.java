@@ -71,4 +71,11 @@ public interface UploadDataService {
 	 */
 	int deleteUploadData(UploadData uploadData);
 
+	/**
+	 * 사용자 파일 정보 수정 및 업로드 파일 정보 수정
+	 * @param uploadData
+	 * @return
+	 */
+	int updateUploadDataAndFile(UploadData uploadData);
+
 }

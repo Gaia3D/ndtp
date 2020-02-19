@@ -126,8 +126,18 @@ var MapDataControll = function(magoInstance) {
 	});
 	
 	//회전 변경 버튼 조절
-	var rotBtnHoldInterval
-	$('.dcRangeBtn').on('mousedown',function() {
+	var rotBtnHoldInterval;
+	$('.dcRangeBtn').on('click', function(e) {
+		if (rotBtnHoldInterval) clearInterval(rotBtnHoldInterval);
+		var $this = $(this);
+		var type = $this.data('type');
+		var range = (type ==='prev') ?  $this.next() : $this.prev();
+		var offset = (type ==='prev') ? -1 : 1;
+		var curVal = parseFloat(range.val()); 
+		range.val(curVal + offset).change();
+	});
+	$('.dcRangeBtn').on('mousedown', function(e) {
+		if (rotBtnHoldInterval) clearInterval(rotBtnHoldInterval);
 		var $this = $(this);
 		rotBtnHoldInterval = setInterval(function(){
 			var type = $this.data('type');
@@ -135,7 +145,7 @@ var MapDataControll = function(magoInstance) {
 			var offset = (type ==='prev') ? -1 : 1;
 			var curVal = parseFloat(range.val()); 
 			range.val(curVal + offset).change();
-		},50);
+		}, 150);
 	});
 	$('.dcRangeBtn').on('mouseup mouseleave',function() {
 		clearInterval(rotBtnHoldInterval);
@@ -143,7 +153,20 @@ var MapDataControll = function(magoInstance) {
 	
 	//데이터 높이 이벤트
 	var locAltholdInterval;
-	$('#dcAltUp,#dcAltDown').on('mousedown',function() {
+	$('#dcAltUp,#dcAltDown').on('click', function(e) {
+		if (locAltholdInterval) clearInterval(locAltholdInterval);
+		var $this = $(this);
+		var type = $this.data('type');
+		var offset = parseFloat($('#dcAltitudeOffset').val());
+		offset = (type==='up') ? offset : -offset;
+		
+		var alt = parseFloat($('#dcAltitude').val());
+		$('#dcAltitude').val(alt + offset);
+		
+		changeF4d();
+	});
+	$('#dcAltUp,#dcAltDown').on('mousedown', function(e) {
+		if (locAltholdInterval) clearInterval(locAltholdInterval);
 		var $this = $(this);
 		locAltholdInterval = setInterval(function(){
 			var type = $this.data('type');
@@ -154,11 +177,12 @@ var MapDataControll = function(magoInstance) {
 			$('#dcAltitude').val(alt + offset);
 			
 			changeF4d();
-		},50);
+		}, 150);
 	});
 	$('#dcAltUp,#dcAltDown').on('mouseup mouseleave',function() {
 		clearInterval(locAltholdInterval);
 	});
+	
 	//속성조회
 	$('#dcShowAttr').click(function(){
 		detailDataInfo(dataId);

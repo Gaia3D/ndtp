@@ -30,7 +30,7 @@
 			</if>
 			<if test="location != null and location != ''">
 			<![CDATA[
-			AND ST_CONTAINS(ST_BUFFER(ST_GeomFromText(#{location}, 4326),0.2), location)
+			AND ST_CONTAINS(ST_BUFFER(ST_GeomFromText(#{location}, 4326), 300), location)
 			]]>
 			</if>
 		</trim>
@@ -66,7 +66,7 @@
 				</if>
 				<if test="location != null and location != ''">
 				<![CDATA[
-				AND ST_CONTAINS(ST_BUFFER(ST_GeomFromText(#{location}, 4326),0.2), location)
+				AND ST_CONTAINS(ST_BUFFER(ST_GeomFromText(#{location}, 4326), 300), location)
 				]]>
 				</if>
 			</trim>

@@ -29,6 +29,6 @@
 		<textarea id="contents" name="contents" cols="47" rows="10">{{civilVoice.contents}}</textarea>
 	</li>
 	<li class="form-group button-group-center">
-		<button id="civilVoiceUpdateButton" onClick="updateCivilVoice();asfdsa" class="btnTextF" title="등록" style="width: 200px;">수정</button>
+		<button id="civilVoiceUpdateButton" onClick="updateCivilVoice();" class="btnTextF" title="등록" style="width: 200px;">수정</button>
 	</li>
 </script>

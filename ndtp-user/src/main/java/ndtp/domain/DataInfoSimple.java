@@ -17,7 +17,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Data 정보
+ * Data 정보(간략)
  * @author Cheon JeongDae
  *
  */
@@ -27,19 +27,12 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DataInfo extends Search implements Serializable {
+public class DataInfoSimple implements Serializable {
 	
-	private static final long serialVersionUID = 6267402319518438249L;
-	
-	/******** 화면 오류 표시용 ********/
-	private String messageCode;
-	private String errorCode;
-	// 아이디 중복 확인 hidden 값
-	private String duplicationValue;
-	// 그룹 통계용
-	private Long dataCount;
-	// 3D 지도 표시 시 목록에서 온건지, 수정에서 온건지를 구분하기 위해.
-	private String referrer;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7463973515357920931L;
 	
 	// 위도
 	private BigDecimal latitude;
@@ -69,11 +62,8 @@ public class DataInfo extends Search implements Serializable {
 	private String dataGroupKey;
 	// smart
 	private Boolean tiling;
-	
 	// data 고유 식별번호
 	private String dataKey;
-	// data 고유 식별번호
-	private String oldDataKey;
 	// data 이름
 	private String dataName;
 	// 데이터 타입(중복). 3ds,obj,dae,collada,ifc,las,citygml,indoorgml,etc
@@ -142,11 +132,4 @@ public class DataInfo extends Search implements Serializable {
 	// 등록일
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Timestamp insertDate;
-	
-	public String getViewMetainfo() {
-		if(this.metainfo == null || "".equals( metainfo) || metainfo.length() < 20) {
-			return metainfo;
-		}
-		return metainfo.substring(0, 20) + "...";
-	}
 }
