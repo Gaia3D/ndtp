@@ -9,67 +9,45 @@ $(document).ready(function (){
     	e.stopPropagation();
     	var target = $(this).parent('li');
     	target.toggleClass('on');
-//    	var parent = target.attr("data-depth");
-//    	$('.nodepth').each(function(e){
-//    	    if($(this).attr("data-parent") === parent) {
-//    	    	var serviceType = $(this).attr("data-service-type");
-//    	    	var layerKey = $(this).attr("data-layer-name");
-//    	    	var cacheAvailable = $(this).attr("data-tiling");
-//    	    	var layerList = [];
-//    	    	if(target.hasClass("on")) {
-//    	    		if(serviceType ==='wms' && cacheAvailable ==='true') {
-//						this.addTileLayer(layerKey);
-//					} else if (serviceType ==='wms' && cacheAvailable ==='false') {
-//						layerList.push(layerKey);
-//					} else if(serviceType ==='wfs') {
-//						this.addWFSLayer(layerKey);
-//					} else {
-//						alert(serviceType+" 타입은  지원하지 않습니다.");
-//					}
-//    	    	} else {
-//    	    		if(serviceType ==='wms' && cacheAvailable ==='true') {
-//						this.addTileLayer(layerKey);
-//					} else if (serviceType ==='wms' && cacheAvailable ==='false') {
-//						wmsLayerList.push(layerKey);
-//					} else if(serviceType ==='wfs') {
-//						this.addWFSLayer(layerKey);
-//					} else {
-//						alert(serviceType+" 타입은  지원하지 않습니다.");
-//					}
-//    	    	}
-//    	    }
-//    	})
     });
     
-    // wms layer on/off
-    $('#layerContent').on('click', '.wmsLayer p', function(e) {
-    	var target = $(this).parent('li');
-    	var layerKey = target.attr("data-layer-name");
-    	// 캐시  사용할 경우  
-    	if(target.attr("data-tiling") === 'true') {
-    		if(target.hasClass("on")) {
-    			NDTP.map.addTileLayer(layerKey);
-    		} else {
-    			NDTP.map.removeTileLayer(layerKey);
-    		}
-    	} else {
-    		var layerList = [];
-    		$("ul.layerList li ul li.wmsLayer.on").each(function() {
-    			var layerKey = $(this).attr("data-layer-name");
-    			var tiling = $(this).attr("data-tiling");
-    			if(tiling === 'false') {
-    				layerList.push(layerKey);
-    			}
-    		});
-    		NDTP.map.initWMSLayer(layerList);
-    	}
+    // layer on/off
+    $('#layerContent').on('click', '.nodepth p', function(e) {
+    	layerOnOff($(this).parent("li"));
     });
     
-    // wfs layer on/off
-    $('#layerContent').on('click', '.wfsLayer p', function(e) {
-    });
 });
 
+
+function layerOnOff(obj) {
+	var layerKey = $(obj).attr("data-layer-name");
+	var flag = $(obj).hasClass("on");
+	var serviceType = $(obj).attr("data-service-type");
+	var cacheAvailable = $(obj).attr("data-tiling");
+	if(serviceType === 'wms' && cacheAvailable ==='true') {
+		if(flag) {
+			NDTP.map.addTileLayer(layerKey);
+		} else {
+			NDTP.map.removeTileLayer(layerKey);
+		}
+	} else {
+		if(serviceType === 'wms') {
+			if(flag) {
+				NDTP.map.addWMSLayer(layerKey);
+			} else {
+				NDTP.map.removeWMSLayer(layerKey);
+			}
+		} else if(serviceType ==='wfs') {
+			if(flag) {
+				NDTP.map.addWFSLayer(layerKey);
+			} else {
+				NDTP.map.removeWFSLayer(layerKey);
+			}
+		} else {
+			alert(serviceType+" 타입은 지원하지 않는 서비스 타입입니다.");
+		}
+	}
+}
 //레이어 메뉴 목록 조회
 function getLayerList() {
     $.ajax({
@@ -118,9 +96,10 @@ function createLayerHtml(res) {
 function saveUserLayers() {
 	var layerList = [];
 	var dataInfo = {};
-	$("ul.layerList li ul li.wmsLayer.on").each(function(){
-	    var layerKey = $(this).attr("data-layer-name");
-	    layerList.push(layerKey);
+	$('.nodepth').each(function(e){
+		if($(this).hasClass("on")) {
+			layerList.push($(this).attr("data-layer-name"));
+		}
 	});
 	dataInfo.baseLayers = layerList.join(",");
 	
