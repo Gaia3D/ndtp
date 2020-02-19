@@ -16,10 +16,15 @@ function CivilVoiceControll(magoInstance, viewer) {
 			modify: $("#civilVoiceModifyContent"),
 			detail: $("#civilVoiceDetailContent")
 		},
+		marker: {
+			// 마커 색상 - https://cesium.com/docs/cesiumjs-ref-doc/Color.html
+			color: Cesium.Color.DARKORANGE,
+			size: 52
+		},
 		beforeEntity: null
 	}
 
-	function showContent(target) {
+	function toggleContent(target) {
 		var viewList = store.contents;
 		// hide all
 		for(var property in viewList) {
@@ -31,24 +36,119 @@ function CivilVoiceControll(magoInstance, viewer) {
 		targetContent.show();
 	}
 
-	function remove(storedEntity) {
-		viewer.entities.removeById(storedEntity);
+	function removeStoredEntity() {
+		if(store.beforeEntity) {
+			viewer.entities.removeById(store.beforeEntity);
+			store.beforeEntity = null;
+		}
 	}
-
-
+	
+	function clusterRender(){
+		var voices = this.list;
+		if(voices && Array.isArray(voices) && voices.length > 0) {
+			var p2dList = _voicesToPointList(voices)
+			var br = p2dList.getBoundingRectangle();
+			
+			var treeOption = _getTreeOption(br);
+			
+			var tree = new Mago3D.QuatTree(treeOption);
+			tree.data = p2dList.pointsArray;
+			
+			magoManager.addQuatTree(tree, 8);
+		}
+	}
+	
+	function _voicesToPointList(voices) {
+		var p2dList = new Mago3D.Point2DList();
+		for(var i in voices) {
+			var voice = voices[i];
+			var lon = parseFloat(voice.longitude);
+			var lat = parseFloat(voice.latitude);
+			p2dList.newPoint(lon,lat);
+		}
+		
+		return p2dList;
+	}
+	
+	function _getTreeOption(boundingRectangle) {
+		var xLength = boundingRectangle.getXLength();
+		var yLength = boundingRectangle.getYLength();
+		var center = boundingRectangle.getCenterPoint();
+		
+		return {
+			halfWidth : xLength/2,
+			halfHeight : yLength/2,
+			center : center
+		};
+	}
+	
 	// public
 	return {
-		/*********************** cluster ************************/
+		/************************** Map ***************************/
 		cluster: {
 			list: null,
 			refresh: function() {
 				getCivilVoiceListAll();
+			},
+			render : clusterRender
+		},
+		clear: function() {
+			removeStoredEntity();
+
+		},
+		flyToLocation: function(longitude, latitude, commentCount) {
+			this.flyTo(longitude, latitude);
+			this.drawMarker(longitude, latitude);
+			this.updateMarker(commentCount);
+		},
+		flyTo: function(longitude, latitude) {
+			var altitude = 100;
+			var duration = 5;
+			magoManager.flyTo(longitude, latitude, altitude, duration);
+		},
+		drawMarker: function(longitude, latitude) {
+			removeStoredEntity();
+
+			var x = Number(longitude);
+	   		var y = Number(latitude);
+
+	   		var pinBuilder = new Cesium.PinBuilder();
+	   		var addedEntity = viewer.entities.add({
+	   		    name : 'Location',
+	   		    position : Cesium.Cartesian3.fromDegrees(x, y),
+	   		    billboard : {
+	   	        	disableDepthTestDistance : Number.POSITIVE_INFINITY,
+	   				heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+	   		        image : pinBuilder.fromColor(store.marker.color, store.marker.size).toDataURL(),
+	   	            horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
+	   	            verticalOrigin : Cesium.VerticalOrigin.BOTTOM
+	   		    }
+	   		});
+
+			store.beforeEntity = addedEntity.id;
+		},
+		updateMarker: function(count) {
+			if(store.beforeEntity) {
+				var entity = viewer.entities.getById(store.beforeEntity);
+				if(entity) {
+					var pinBuilder = new Cesium.PinBuilder();
+					var markerImage = pinBuilder.fromText(count, store.marker.color, store.marker.size).toDataURL();
+					entity.billboard.image.setValue(markerImage);
+				}
 			}
+		},
+		getGeographicCoord: function() {
+			magoManager.once(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
+				var geographicCoord = result.clickCoordinate.geographicCoordinate;
+				civilVoice.drawMarker(geographicCoord.longitude, geographicCoord.latitude);
+				$('#civilVoiceContent [name=longitude]:visible').val(geographicCoord.longitude);
+				$('#civilVoiceContent [name=latitude]:visible').val(geographicCoord.latitude);
+			});
 		},
 		/********************************************************/
 		currentPage: null,
 		currentCivilVoiceId: null,
-		show: showContent,
+		showContent: toggleContent,
 		initFormContent: function(formId) {
 			$('#' + formId + ' input').val("");
 			$('#' + formId + ' textarea').val("");
@@ -58,38 +158,6 @@ function CivilVoiceControll(magoInstance, viewer) {
 			var template = Handlebars.compile(source);
 			var html = template(data);
 			$('#' + targetId).empty().append(html);
-		},
-		flyTo: function(longitude, latitude) {
-			var altitude = 100;
-			var duration = 5;
-			magoManager.flyTo(longitude, latitude, altitude, duration);
-		},
-		getGeographicCoord: function() {
-			magoManager.once(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
-				if(store.beforeEntity) {
-					remove(store.beforeEntity);
-				}
-
-				var geographicCoord = result.clickCoordinate.geographicCoordinate;
-				var worldCoordinate = result.clickCoordinate.worldCoordinate;
-
-				var pointGraphic = new Cesium.PointGraphics({
-					pixelSize : 10,
-					heightReference : Cesium.HeightReference.CLAMP_TO_GROUND,
-					color : Cesium.Color.AQUAMARINE,
-					outlineColor : Cesium.Color.WHITE,
-					outlineWidth : 2
-				});
-
-				var addedEntity = viewer.entities.add({
-					position : new Cesium.Cartesian3(worldCoordinate.x, worldCoordinate.y, worldCoordinate.z),
-					point : pointGraphic
-				});
-
-				store.beforeEntity = addedEntity.id;
-				$('#civilVoiceContent [name=longitude]:visible').val(geographicCoord.longitude);
-				$('#civilVoiceContent [name=latitude]:visible').val(geographicCoord.latitude);
-			});
 		}
 	}
 }
@@ -113,12 +181,13 @@ $('#civilVoiceList').on('click', '.goto', function(e) {
 	e.stopPropagation();
 	var longitude = $(this).data('longitude');
 	var latitude = $(this).data('latitude');
-	civilVoice.flyTo(longitude, latitude);
+	var commentCount = $(this).data('count');
+	civilVoice.flyToLocation(longitude, latitude, commentCount);
 });
 
 // 시민참여 상세보기
 $('#civilVoiceContent').on('click', 'li.comment', function() {
-	civilVoice.show('detail');
+	civilVoice.showContent('detail');
 	// set current id
 	var id = $(this).data('id');
 	civilVoice.currentCivilVoiceId = id;
@@ -129,24 +198,25 @@ $('#civilVoiceContent').on('click', 'li.comment', function() {
 
 // 시민참여 등록 화면 이동
 $("#civilVoiceInputButton").on('click', function(){
-	civilVoice.show('input');
+	civilVoice.showContent('input');
+	civilVoice.clear();
 });
 
 // 시민참여 수정 화면 이동
 $('#civilVoiceContent').on('click', '#civilVoiceModifyButton', function(){
-	civilVoice.show('modify');
+	civilVoice.showContent('modify');
 	getCivilVoiceModify();
 });
 
 // 시민참여 취소 / 목록 보기
 $('#civilVoiceContent').on('click', '[data-goto=list]', function(){
-	civilVoice.show('list');
+	civilVoice.showContent('list');
 	getCivilVoiceList(civilVoice.currentPage);
 });
 
 // 시민참여 취소 / 상세 보기
 $('#civilVoiceContent').on('click', '[data-goto=detail]', function(){
-	civilVoice.show('detail');
+	civilVoice.showContent('detail');
 });
 
 // 시민참여 목록 조회
@@ -154,6 +224,7 @@ function getCivilVoiceList(page) {
 	if(!page) page = 1;
 	civilVoice.currentPage = page;
 	civilVoice.currentCivilVoiceId = null;
+	civilVoice.clear();
 
 	var formId = 'civilVoiceSearchForm';
 	var formData = $('#' + formId).serialize();
@@ -216,6 +287,7 @@ function getCivilVoiceDetail() {
 		success: function(res){
 			if(res.statusCode <= 200) {
 				civilVoice.drawHandlebarsHtml(res, 'templateCivilVoiceView', 'civilVoiceView');
+				civilVoice.flyToLocation(res.civilVoice.longitude, res.civilVoice.latitude, res.civilVoice.commentCount);
 			} else {
 				alert(JS_MESSAGE[res.errorCode]);
 				console.log("---- " + res.message);
@@ -269,6 +341,8 @@ function getCivilVoiceCommentList(page) {
 				$('#civilVoiceCommentTotalCount').text(res.totalCount);
 				civilVoice.drawHandlebarsHtml(res, 'templateCivilVoiceComment', 'civilVoiceComment');
 				civilVoice.drawHandlebarsHtml(res, 'templateCivilVoiceCommentPagination', 'civilVoiceCommentPagination');
+
+				civilVoice.updateMarker(res.totalCount);
 			} else {
 				alert(JS_MESSAGE[res.errorCode]);
 				console.log("---- " + res.message);
@@ -301,7 +375,8 @@ function saveCivilVoice() {
 				if(msg.statusCode <= 200) {
 					alert("저장 되었습니다.");
 					civilVoice.initFormContent(formId);
-					civilVoice.show('list');
+					civilVoice.showContent('list');
+					civilVoice.clear();
 					getCivilVoiceList();
 				} else {
 					alert(msg.message);
@@ -342,7 +417,8 @@ function updateCivilVoice() {
 				if(msg.statusCode <= 200) {
 					alert("저장 되었습니다.");
 					civilVoice.initFormContent(formId);
-					civilVoice.show('detail');
+					civilVoice.showContent('detail');
+					civilVoice.clear();
 					getCivilVoiceDetail(id);
 				} else {
 					alert(msg.message);
@@ -378,7 +454,7 @@ function deleteCivilVoice(id) {
 			success: function(msg) {
 				if(msg.statusCode <= 200) {
 					alert("삭제 되었습니다.");
-					civilVoice.show('list');
+					civilVoice.showContent('list');
 					getCivilVoiceList();
 				} else {
 					alert(msg.message);
@@ -436,6 +512,7 @@ function saveCivilVoiceComment() {
 	}
 }
 
+// validation
 function civilVoiceValidation(form) {
 	if(!form.find('[name=title]').val()) {
 		alert("제목을 입력하여 주십시오.");

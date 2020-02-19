@@ -60,6 +60,9 @@
 			<if test="available != null">
 				AND A.available = #{available}
 			</if>
+			<if test="tiling != null">
+				AND A.tiling = #{tiling}
+			</if>
 			UNION ALL
 	        SELECT A.data_group_id, A.data_group_name, A.data_group_key, A.data_group_path, A.sharing, A.user_id, A.ancestor, A.parent, A.depth, A.view_order,
 	        	A.children, A.basic, A.available, A.tiling, A.data_count, A.location, A.altitude, A.duration, A.location_update_type, A.metainfo, A.description, A.update_date, A.insert_date,
@@ -68,6 +71,9 @@
 	        WHERE A.parent = B.data_group_id
 	        <if test="userId != null and userId != ''">
 				AND A.user_id = #{userId}
+			</if>
+			<if test="tiling != null">
+				AND A.tiling = #{tiling}
 			</if>
 	        	AND not cycle
 		)

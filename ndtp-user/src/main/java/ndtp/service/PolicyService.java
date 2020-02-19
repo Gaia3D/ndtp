@@ -14,4 +14,11 @@ public interface PolicyService {
 	 * @return
 	 */
 	Policy getPolicy();
+	
+	/**
+	 * 업로딩 가능 확장자 조회
+	 * @return 업로딩 가능 확장자
+	 */
+	String getUserUploadType();
+	
 }
