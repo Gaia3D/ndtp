@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
 import ndtp.domain.DataInfoLog;
+import ndtp.domain.DataInfoSimple;
 import ndtp.domain.MethodType;
 import ndtp.persistence.DataMapper;
 import ndtp.service.DataGroupService;
@@ -80,6 +81,16 @@ public class DataServiceImpl implements DataService {
 	@Transactional(readOnly=true)
 	public List<DataInfo> getListData(DataInfo dataInfo) {
 		return dataMapper.getListData(dataInfo);
+	}
+	
+	/**
+	 * 데이터 그룹에 포함되는 모든 데이터를 취득
+	 * @param dataGroupId
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public List<DataInfoSimple> getListAllDataByDataGroupId(Integer dataGroupId) {
+		return dataMapper.getListAllDataByDataGroupId(dataGroupId);
 	}
 	
 	/**

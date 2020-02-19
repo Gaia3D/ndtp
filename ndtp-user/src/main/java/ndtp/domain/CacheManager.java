@@ -22,7 +22,14 @@ public class CacheManager {
  	private Map<Integer, Menu> menuMap = null;
  	// url과 menu_id를 매핑
  	private Map<String, Integer> menuUrlMap = null;
+ 	// 사용자 그룹별 메뉴 목록
+    private Map<Integer, List<UserGroupMenu>> userGroupMenuMap = null;
+    // 사용자 그룹별 Role 목록
+    private Map<Integer, List<String>> userGroupRoleMap = null;
  	
+    // Smart Tiling 데이터 정보
+  	private Map<Integer, List<DataInfoSimple>> smartTilingDataMap = null;
+    
 	/**
 	 * 대메뉴(1 Depth) Map, 화면 왼쪽 메뉴 표시용
 	 * @param userGroupId
@@ -55,11 +62,6 @@ public class CacheManager {
 		cacheManager.menuUrlMap = menuUrlMap;
 	}
     
-    // 사용자 그룹별 메뉴 목록
-    private Map<Integer, List<UserGroupMenu>> userGroupMenuMap = null;
-    // 사용자 그룹별 Role 목록
-    private Map<Integer, List<String>> userGroupRoleMap = null;
-
     public static Map<Integer, List<UserGroupMenu>> getUserGroupMenuMap() {
         return cacheManager.userGroupMenuMap;
     }
@@ -78,4 +80,16 @@ public class CacheManager {
     public static void setUserGroupRoleMap(Map<Integer, List<String>> userGroupRoleMap) {
         cacheManager.userGroupRoleMap = userGroupRoleMap;
     }
+
+	public static Map<Integer, List<DataInfoSimple>> getSmartTilingDataMap() {
+		return cacheManager.smartTilingDataMap;
+	}
+	
+	public static List<DataInfoSimple> getSmartTilingDataGroupList(Integer dataGroupid) {
+		return cacheManager.smartTilingDataMap.get(dataGroupid);
+	}
+
+	public static void setSmartTilingDataMap(Map<Integer, List<DataInfoSimple>> smartTilingDataMap) {
+		cacheManager.smartTilingDataMap = smartTilingDataMap;
+	}
 }

@@ -3,6 +3,7 @@ package ndtp.service;
 import java.util.List;
 
 import ndtp.domain.DataInfo;
+import ndtp.domain.DataInfoSimple;
 
 /**
  * Data 관리
@@ -45,6 +46,13 @@ public interface DataService {
 	 * @return
 	 */
 	List<DataInfo> getListData(DataInfo dataInfo);
+	
+	/**
+	 * 데이터 그룹에 포함되는 모든 데이터를 취득
+	 * @param dataGroupId
+	 * @return
+	 */
+	List<DataInfoSimple> getListAllDataByDataGroupId(Integer dataGroupId);
 	
 	/**
 	 * 공유 유형별 데이터 통계

@@ -59,52 +59,58 @@
 					</tr>
 				</thead>
 				<tbody>
-		<c:if test="${empty dataList }">
+<c:if test="${empty dataList }">
 					<tr>
 						<td colspan="4" class="center">데이터가 존재하지 않습니다.</td>
 					</tr>
 		</c:if>
-		<c:if test="${!empty dataList }">
-			<c:forEach var="dataInfo" items="${dataList}" varStatus="status">
+<c:if test="${!empty dataList }">
+	<c:forEach var="dataInfo" items="${dataList}" varStatus="status">
 					<tr>
 						<td rowspan="2">${pagination.rowNumber - status.index }</td>
 						<td colspan="3" class="ellipsis" style="max-width:260px;">
-							<c:if test="${dataInfo.dataGroupTarget eq 'admin'}">
+		<c:if test="${dataInfo.dataGroupTarget eq 'admin'}">
 								[관리자]
-							</c:if>
-							<c:if test="${dataInfo.dataGroupTarget eq 'user'}">
-								<c:if test="${dataInfo.userId eq owner}">
+		</c:if>
+		<c:if test="${dataInfo.dataGroupTarget eq 'user'}">
+			<c:if test="${dataInfo.userId eq owner}">
 									[본인]
-								</c:if>
-								<c:if test="${dataInfo.userId ne owner}">
+			</c:if>
+			<c:if test="${dataInfo.userId ne owner}">
 									[다른 사용자]
-								</c:if>
-							</c:if>
+			</c:if>
+		</c:if>
 							<a href="#" onclick="detailDataInfo('${dataInfo.dataId}'); return false;">${dataInfo.dataName }</a> [${dataInfo.dataType }]
 						</td>
 					</tr>
 					<tr>
 						<td class="ellipsis" style="max-width:100px;">${dataInfo.dataGroupName }</td>
 						<td>
-				<c:if test="${dataInfo.status eq 'processing' }">
+		<c:if test="${dataInfo.status eq 'processing' }">
 							변환중
-				</c:if>
-				<c:if test="${dataInfo.status eq 'use' }">
+		</c:if>
+		<c:if test="${dataInfo.status eq 'use' }">
 							사용중
-				</c:if>
-				<c:if test="${dataInfo.status eq 'unused' }">
+		</c:if>
+		<c:if test="${dataInfo.status eq 'unused' }">
 							사용중지
-				</c:if>
-				<c:if test="${dataInfo.status eq 'delete' }">
+		</c:if>
+		<c:if test="${dataInfo.status eq 'delete' }">
 							삭제
-				</c:if>
+		</c:if>
 						</td>
 						<td>
+		<c:if test="${dataInfo.tiling eq 'true' }">				
+							<button type="button" title="바로가기" class="goto" 
+								onclick="gotoFly('${dataInfo.longitude}', '${dataInfo.latitude}', '${dataInfo.altitude}');">바로가기</button>
+		</c:if>
+		<c:if test="${dataInfo.tiling ne 'true' }">				
 							<button type="button" title="바로가기" class="goto" onclick="flyTo('${dataInfo.dataGroupId}', '${dataInfo.dataKey}');">바로가기</button>
+		</c:if>
 						</td>
 					</tr>
-			</c:forEach>
-		</c:if>
+	</c:forEach>
+</c:if>
 				</tbody>
 			</table>
 		</div>

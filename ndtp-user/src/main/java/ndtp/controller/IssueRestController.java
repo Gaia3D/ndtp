@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
-import ndtp.domain.CivilVoice;
-import ndtp.domain.DataInfo;
 import ndtp.domain.Issue;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
@@ -142,11 +140,14 @@ public class IssueRestController {
 	 */
 	@GetMapping
 	public Map<String, Object> list(HttpServletRequest request, Issue issue, @RequestParam(defaultValue="1") String pageNo) {
+		
+		log.info("@@@@@@@@ issue = {}", issue);
+		
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String errorCode = null;
 		String message = null;
-
+		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 	//	civilVoice.setUserId(userSession.getUserId());
 	//	civilVoice.setClientIp(WebUtils.getClientIp(request));
