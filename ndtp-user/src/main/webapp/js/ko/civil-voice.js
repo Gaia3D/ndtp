@@ -16,6 +16,11 @@ function CivilVoiceControll(magoInstance, viewer) {
 			modify: $("#civilVoiceModifyContent"),
 			detail: $("#civilVoiceDetailContent")
 		},
+		marker: {
+			// 마커 색상 - https://cesium.com/docs/cesiumjs-ref-doc/Color.html
+			color: Cesium.Color.DARKORANGE,
+			size: 52
+		},
 		beforeEntity: null
 	}
 
@@ -48,16 +53,21 @@ function CivilVoiceControll(magoInstance, viewer) {
 				getCivilVoiceListAll();
 			},
 		},
+		clear: function() {
+			removeStoredEntity();
+
+		},
+		flyToLocation: function(longitude, latitude, commentCount) {
+			this.flyTo(longitude, latitude);
+			this.drawMarker(longitude, latitude);
+			this.updateMarker(commentCount);
+		},
 		flyTo: function(longitude, latitude) {
 			var altitude = 100;
 			var duration = 5;
 			magoManager.flyTo(longitude, latitude, altitude, duration);
 		},
-		clear: function() {
-			removeStoredEntity();
-
-		},
-		drawMarker: function(longitude, latitude, text) {
+		drawMarker: function(longitude, latitude) {
 			removeStoredEntity();
 
 			var x = Number(longitude);
@@ -70,16 +80,23 @@ function CivilVoiceControll(magoInstance, viewer) {
 	   		    billboard : {
 	   	        	disableDepthTestDistance : Number.POSITIVE_INFINITY,
 	   				heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
-	   		        //image: '/images/ko/marker.png',
-	   				// 마커 색상 - https://cesium.com/docs/cesiumjs-ref-doc/Color.html
-	   		        image : pinBuilder.fromText(text, Cesium.Color.DARKORANGE, 52).toDataURL(),
-	   	            horizontalOrigin : Cesium.HorizontalOrigin.CENTER, // default
-	   	            verticalOrigin : Cesium.VerticalOrigin.BOTTOM // default: CENTER
-	   	            //scale: 0.2
+	   		        image : pinBuilder.fromColor(store.marker.color, store.marker.size).toDataURL(),
+	   	            horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
+	   	            verticalOrigin : Cesium.VerticalOrigin.BOTTOM
 	   		    }
 	   		});
 
 			store.beforeEntity = addedEntity.id;
+		},
+		updateMarker: function(count) {
+			if(store.beforeEntity) {
+				var entity = viewer.entities.getById(store.beforeEntity);
+				if(entity) {
+					var pinBuilder = new Cesium.PinBuilder();
+					var markerImage = pinBuilder.fromText(count, store.marker.color, store.marker.size).toDataURL();
+					entity.billboard.image.setValue(markerImage);
+				}
+			}
 		},
 		getGeographicCoord: function() {
 			magoManager.once(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
@@ -143,8 +160,7 @@ $('#civilVoiceList').on('click', '.goto', function(e) {
 	var longitude = $(this).data('longitude');
 	var latitude = $(this).data('latitude');
 	var commentCount = $(this).data('count');
-	civilVoice.flyTo(longitude, latitude);
-	civilVoice.drawMarker(longitude, latitude, commentCount);
+	civilVoice.flyToLocation(longitude, latitude, commentCount);
 });
 
 // 시민참여 상세보기
@@ -249,8 +265,7 @@ function getCivilVoiceDetail() {
 		success: function(res){
 			if(res.statusCode <= 200) {
 				civilVoice.drawHandlebarsHtml(res, 'templateCivilVoiceView', 'civilVoiceView');
-				civilVoice.flyTo(res.civilVoice.longitude, res.civilVoice.latitude);
-				civilVoice.drawMarker(res.civilVoice.longitude, res.civilVoice.latitude, res.civilVoice.commentCount);
+				civilVoice.flyToLocation(res.civilVoice.longitude, res.civilVoice.latitude, res.civilVoice.commentCount);
 			} else {
 				alert(JS_MESSAGE[res.errorCode]);
 				console.log("---- " + res.message);
@@ -304,6 +319,8 @@ function getCivilVoiceCommentList(page) {
 				$('#civilVoiceCommentTotalCount').text(res.totalCount);
 				civilVoice.drawHandlebarsHtml(res, 'templateCivilVoiceComment', 'civilVoiceComment');
 				civilVoice.drawHandlebarsHtml(res, 'templateCivilVoiceCommentPagination', 'civilVoiceCommentPagination');
+
+				civilVoice.updateMarker(res.totalCount);
 			} else {
 				alert(JS_MESSAGE[res.errorCode]);
 				console.log("---- " + res.message);
