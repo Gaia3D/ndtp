@@ -92,13 +92,17 @@ Mago3D.Node.prototype.getCurrentGeoLocationData = function() {
 	return this.data.geoLocDataManager.getCurrentGeoLocationData()
 }
 
-Mago3D.MagoManager.prototype.addQuatTree = function(qtree, depth) {
-	if(!qtree || !qtree instanceof Mago3D.QuatTree) {
-		throw new Error('QuatTree is required.');
+Mago3D.MagoManager.prototype.addCluster = function(cluster) {
+	if(!cluster || !cluster instanceof Mago3D.Cluster) {
+		throw new Error('cluster is required.');
 	}
 	
-	qtree.makeTreeByDepth(depth);
-	this.qtree = qtree;
+	this.cluster = cluster;
+}
+
+Mago3D.MagoManager.prototype.clearCluster = function() {
+	this.objMarkerManager.objectMarkerArray = [];
+	this.cluster = undefined;
 }
 
 Mago3D.tempCredit = function(viewer) {

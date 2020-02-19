@@ -43,54 +43,68 @@ function CivilVoiceControll(magoInstance, viewer) {
 		}
 	}
 	
-	function clusterRender(){
+	function _startRender(){
 		var voices = this.list;
 		if(voices && Array.isArray(voices) && voices.length > 0) {
-			var p2dList = _voicesToPointList(voices)
-			var br = p2dList.getBoundingRectangle();
+			//temp
+			magoManager.magoPolicy.imagePath = '/images/ko';
+			var cluster = new Mago3D.Cluster(_voicesToPointList(voices), 5);
+			magoManager.addCluster(cluster);
 			
-			var treeOption = _getTreeOption(br);
-			
-			var tree = new Mago3D.QuatTree(treeOption);
-			tree.data = p2dList.pointsArray;
-			
-			magoManager.addQuatTree(tree, 8);
+			this.magoCluster = cluster;
 		}
+	}
+	
+	function _stopRender() {
+		this.magoCluster = undefined;
+		magoManager.clearCluster();
+	}
+	
+	function _addVoice(voice) {
+		var p2 = _voiceToPoint(voice);
+		this.magoCluster.addPoint(p2);
+	}
+	
+	function _deleteVoice(civilVoiceId) {
+		this.magoCluster.deletePointByCondition(function(point){return point.civilVoiceId !== civilVoiceId});
+	}
+	
+	function _updateVoice(voice) {
+		var p2 = _voiceToPoint(voice);
+		this.magoCluster.updatePoint(p2, function(point){return point.civilVoiceId === voice.civilVoiceId});
 	}
 	
 	function _voicesToPointList(voices) {
 		var p2dList = new Mago3D.Point2DList();
 		for(var i in voices) {
 			var voice = voices[i];
-			var lon = parseFloat(voice.longitude);
-			var lat = parseFloat(voice.latitude);
-			p2dList.newPoint(lon,lat);
+			p2dList.addPoint(_voiceToPoint(voice));
 		}
 		
 		return p2dList;
 	}
-	
-	function _getTreeOption(boundingRectangle) {
-		var xLength = boundingRectangle.getXLength();
-		var yLength = boundingRectangle.getYLength();
-		var center = boundingRectangle.getCenterPoint();
+	function _voiceToPoint(voice){
+		var lon = parseFloat(voice.longitude);
+		var lat = parseFloat(voice.latitude);
 		
-		return {
-			halfWidth : xLength/2,
-			halfHeight : yLength/2,
-			center : center
-		};
+		var p2 = new Mago3D.Point2D(lon, lat);
+		p2.civilVoiceId = voice.civilVoiceId;
+		return p2;
 	}
-	
 	// public
 	return {
 		/************************** Map ***************************/
 		cluster: {
 			list: null,
+			magoCluster : null,
 			refresh: function() {
 				getCivilVoiceListAll();
 			},
-			render : clusterRender
+			startRender : _startRender,
+			stopRender : _stopRender,
+			addVoice : _addVoice,
+			deleteVoice : _deleteVoice,
+			updateVoice : _updateVoice
 		},
 		clear: function() {
 			removeStoredEntity();
@@ -103,7 +117,7 @@ function CivilVoiceControll(magoInstance, viewer) {
 		},
 		flyTo: function(longitude, latitude) {
 			var altitude = 100;
-			var duration = 5;
+			var duration = 1;
 			magoManager.flyTo(longitude, latitude, altitude, duration);
 		},
 		drawMarker: function(longitude, latitude) {
@@ -170,9 +184,9 @@ $(document).ready(function() {
 
 // 시민참여 탭 클릭시 조회
 $('#civilVoiceMenu').on('click', function() {
-	if($(this).hasClass('on')){
+	if(!$(this).hasClass('on')){
 		getCivilVoiceList();
-		getCivilVoiceListAll();
+		getCivilVoiceListAll(true);
 	}
 });
 
@@ -254,7 +268,7 @@ function getCivilVoiceList(page) {
 }
 
 // 시민참여 전체 목록 조회
-function getCivilVoiceListAll() {
+function getCivilVoiceListAll(render) {
 	$.ajax({
 		url: '/civil-voices/all',
 		type: 'GET',
@@ -263,6 +277,10 @@ function getCivilVoiceListAll() {
 		success: function(res){
 			if(res.statusCode <= 200) {
 				civilVoice.cluster.list = res.civilVoiceList;
+				
+				if(render) {
+					civilVoice.cluster.startRender();
+				}
 			} else {
 				alert(JS_MESSAGE[res.errorCode]);
 				console.log("---- " + res.message);
@@ -363,8 +381,9 @@ function saveCivilVoice() {
 		insertCivilVoiceFlag = false;
 		var url = "/civil-voices";
 		var formId = 'civilVoiceForm';
-		var formData = $('#' + formId).serialize();
-
+		var $form = $('#' + formId);
+		var formData = $form.serialize();
+		
 		$.ajax({
 			url: url,
 			type: "POST",
@@ -374,6 +393,14 @@ function saveCivilVoice() {
 			success: function(msg) {
 				if(msg.statusCode <= 200) {
 					alert("저장 되었습니다.");
+					
+					//클러스터 데이터 추가 시 갱신
+					civilVoice.cluster.addVoice.call(civilVoice.cluster, {
+						longitude : $form.find('input[name="longitude"]').val(),
+						latitude : $form.find('input[name="latitude"]').val(),
+						civilVoiceId : msg.civilVoiceId
+					});
+					
 					civilVoice.initFormContent(formId);
 					civilVoice.showContent('list');
 					civilVoice.clear();
@@ -405,7 +432,8 @@ function updateCivilVoice() {
 		updateCivilVoiceFlag = false;
 		var url = "/civil-voices/" + id;
 		var formId = 'civilVoiceModifyForm';
-		var formData = $('#' + formId).serialize();
+		var $form = $('#' + formId);
+		var formData = $form.serialize();
 
 		$.ajax({
 			url: url,
@@ -416,6 +444,14 @@ function updateCivilVoice() {
 			success: function(msg) {
 				if(msg.statusCode <= 200) {
 					alert("저장 되었습니다.");
+					
+					//클러스터 데이터 수정 시 갱신
+					civilVoice.cluster.updateVoice.call(civilVoice.cluster, {
+						longitude : $form.find('input[name="longitude"]').val(),
+						latitude : $form.find('input[name="latitude"]').val(),
+						civilVoiceId : msg.civilVoiceId
+					});
+					
 					civilVoice.initFormContent(formId);
 					civilVoice.showContent('detail');
 					civilVoice.clear();
@@ -454,6 +490,10 @@ function deleteCivilVoice(id) {
 			success: function(msg) {
 				if(msg.statusCode <= 200) {
 					alert("삭제 되었습니다.");
+					
+					//클러스터 데이터 삭제 시 갱신
+					civilVoice.cluster.deleteVoice.call(civilVoice.cluster, id);
+					
 					civilVoice.showContent('list');
 					getCivilVoiceList();
 				} else {
