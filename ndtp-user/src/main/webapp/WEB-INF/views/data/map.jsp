@@ -184,8 +184,9 @@
 	//var viewer = new Cesium.Viewer('magoContainer');
 	var MAGO3D_INSTANCE;
 	// ndtp 전역 네임스페이스
-	var NDTP = NDTP ||{
+	var NDTP = NDTP || {
 		policy : ${geoPolicyJson},
+		dataGroup : {},
 		baseLayers : ${baseLayerJson}
 	};
 	magoInit();
@@ -259,6 +260,7 @@
 
 	// 데이터 그룹 목록
 	function dataGroupList() {
+		let dataGroupMap = new Map();
 		$.ajax({
 			url: "/data-groups/all",
 			type: "GET",
@@ -268,10 +270,12 @@
 				if(msg.statusCode <= 200) {
 					var dataGroupList = msg.dataGroupList;
 					if(dataGroupList !== null && dataGroupList !== undefined) {
-
 						var noneTilingDataGroupList = dataGroupList.filter(function(dataGroup){
+							dataGroupMap.set(dataGroup.dataGroupId, dataGroup.dataGroupName);
 							return !dataGroup.tiling;
 						});
+						
+						NDTP.dataGroup = dataGroupMap;
 						
 						dataList(noneTilingDataGroupList);
 
