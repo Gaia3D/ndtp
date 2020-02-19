@@ -33,11 +33,6 @@
         modelMatrix : modelMatrix,
         scale : 5000.0
     }));
-
-
-    출처: https://progworks.tistory.com/64?category=815215 [프로그웍스]
-
-
 </script>
 
 <style>
