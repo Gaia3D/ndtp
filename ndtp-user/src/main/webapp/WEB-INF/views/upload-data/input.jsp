@@ -381,6 +381,8 @@
 				alert("파일 확장자가 유효하지 않습니다.");
 	        } else if(response.errorCode === "file.size.invalid") {
 	            alert("파일 용량이 너무 커서 업로딩 할 수 없습니다.");
+	        } else if(response.errorCode === "upload.file.type.invalid") {
+	            alert("업로딩 데이터의 데이터 타입이 올바르지 않습니다.");
 	        } else if(response.errorCode === "db.exception") {
 	            alert("죄송 합니다. 서버 실행중에 오류가 발생 하였습니다. \n 로그를 확인하여 주십시오.");
 	        } else {
