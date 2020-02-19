@@ -92,6 +92,15 @@ Mago3D.Node.prototype.getCurrentGeoLocationData = function() {
 	return this.data.geoLocDataManager.getCurrentGeoLocationData()
 }
 
+Mago3D.MagoManager.prototype.addQuatTree = function(qtree, depth) {
+	if(!qtree || !qtree instanceof Mago3D.QuatTree) {
+		throw new Error('QuatTree is required.');
+	}
+	
+	qtree.makeTreeByDepth(depth);
+	this.qtree = qtree;
+}
+
 Mago3D.tempCredit = function(viewer) {
 	var creditDisplay = viewer.scene.frameState.creditDisplay;
 	var mago3d_credit = new Cesium.Credit('<a href="http://www.mago3d.com/" target="_blank"><img class="mago3d_logo" src="/images/logo_mago3d.png" title="Mago3D"/></a>', true);

@@ -9,4 +9,9 @@
 		SELECT * FROM policy ORDER BY policy_id DESC LIMIT 1
 	</select>
 	
+	<!-- 업로딩 가능 확장자 조회 -->
+	<select id="getUserUploadType" resultType="String">
+		/* getUserUploadType */
+		SELECT user_upload_type FROM policy ORDER BY policy_id DESC LIMIT 1
+	</select>
 </mapper>

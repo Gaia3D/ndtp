@@ -114,8 +114,9 @@ public class IssueRestController {
 			issue.setLocation("POINT(" + issue.getLongitude() + " " + issue.getLatitude() + ")");
 			issue.setUserId(userSession.getUserId());
 			issue.setClientIp(WebUtils.getClientIp(request));
-			issueService.insertIssue(issue);
+			issue = issueService.insertIssue(issue);
 			
+			result.put("issueId", issue.getIssueId());
 			// TODO cache 갱신 되어야 함
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -152,12 +153,13 @@ public class IssueRestController {
 	//	civilVoice.setUserId(userSession.getUserId());
 	//	civilVoice.setClientIp(WebUtils.getClientIp(request));
 		try {
+			long rows = issue.getLimit() != null ? issue.getLimit() : PAGE_ROWS; 
 			long totalCount = issueService.getIssueTotalCount(issue);
 			Pagination pagination = new Pagination(	request.getRequestURI(),
 													getSearchParameters(PageType.LIST, issue),
 													totalCount,
 													Long.valueOf(pageNo).longValue(),
-													PAGE_ROWS,
+													rows,
 													PAGE_LIST_COUNT);
 			log.info("@@ pagination = {}", pagination);
 
