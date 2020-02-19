@@ -16,9 +16,24 @@ function mapInit(magoInstance, baseLayers, policy) {
 	var dataSources = viewer.dataSources;
 	var geoserverDataUrl = policy.geoserverDataUrl;
 	var geoserverDataWorkspace = policy.geoserverDataWorkspace;
-	// 레이어 목록을 맵 형태로 저장 
+	// 레이어 리스트를 맵 형태로 저장 
 	var layerMap = [];
+	// 레이어 리스트
+	var sortedLayer = [];
+	for(var i=0; i < baseLayers.length; i++) {
+		var layerList = baseLayers[i].layerList;
+		var layerLength = layerList.length;
+		for(var j=0; j < layerLength; j++) {
+			sortedLayer.push(layerList[j]);
+		}
+	}
 	
+	// 레이어 리스트를 zindex 기준으로 오름 차순 정렬 
+	sortedLayer.sort(function(a, b) { 
+	    return a.zindex- b.zindex
+	});
+	
+		
 	return {
 		/**
 		 * 지도 객체에 baseLaye list를 추가
@@ -26,30 +41,45 @@ function mapInit(magoInstance, baseLayers, policy) {
 		 * @returns
 		 */
 		initLayer : function(displayFlag) {
-			// 이미 모든 레이어가 활성화된 경우에는 return
 			var wmsLayerList = [];
-			var groupLength = baseLayers.length;
-			for(var i=0; i < groupLength; i++) {
-				var layerList = baseLayers[i].layerList;
-				var layerLength = layerList.length;
-				for(var j=0; j < layerLength; j++) {
-					var serviceType = layerList[j].serviceType;
-					var cacheAvailable = layerList[j].cacheAvailable;
-					var layerKey = layerList[j].layerKey;
-					layerMap[layerKey] = layerList[j];
-					// 기본 표시 true일 경우에만 레이어 추가 
-					if(!displayFlag && !layerList[j].defaultDisplay) continue;
-					if(serviceType ==='wms' && cacheAvailable) {
-						this.addTileLayer(layerKey);
-					} else if (serviceType ==='wms' && !cacheAvailable) {
-						wmsLayerList.push(layerKey);
-					} else if(serviceType ==='wfs') {
-						this.addWFSLayer(layerKey);
-					} else {
-						alert(serviceType+" 타입은  지원하지 않습니다.");
-					}
+			for(var i=0; i < sortedLayer.length; i++) {
+				var serviceType = sortedLayer[i].serviceType;
+				var cacheAvailable = sortedLayer[i].cacheAvailable;
+				var layerKey = sortedLayer[i].layerKey;
+				layerMap[layerKey] = sortedLayer[i];
+				// 기본 표시 true일 경우에만 레이어 추가 
+				if(!displayFlag && !sortedLayer[i].defaultDisplay) continue;
+				if(serviceType ==='wms' && cacheAvailable) {
+					this.addTileLayer(layerKey);
+				} else if (serviceType ==='wms' && !cacheAvailable) {
+					wmsLayerList.push(layerKey);
+				} else if(serviceType ==='wfs') {
+					this.addWFSLayer(layerKey);
+				} else {
+					alert(serviceType+" 타입은  지원하지 않습니다.");
 				}
 			}
+//			for(var i=0; i < groupLength; i++) {
+//				var layerList = baseLayers[i].layerList;
+//				var layerLength = layerList.length;
+//				for(var j=0; j < layerLength; j++) {
+//					var serviceType = layerList[j].serviceType;
+//					var cacheAvailable = layerList[j].cacheAvailable;
+//					var layerKey = layerList[j].layerKey;
+//					layerMap[layerKey] = layerList[j];
+//					// 기본 표시 true일 경우에만 레이어 추가 
+//					if(!displayFlag && !layerList[j].defaultDisplay) continue;
+//					if(serviceType ==='wms' && cacheAvailable) {
+//						this.addTileLayer(layerKey);
+//					} else if (serviceType ==='wms' && !cacheAvailable) {
+//						wmsLayerList.push(layerKey);
+//					} else if(serviceType ==='wfs') {
+//						this.addWFSLayer(layerKey);
+//					} else {
+//						alert(serviceType+" 타입은  지원하지 않습니다.");
+//					}
+//				}
+//			}
 			
 			if(wmsLayerList.length > 0) {
 				this.initWMSLayer(wmsLayerList);
@@ -190,6 +220,10 @@ function mapInit(magoInstance, baseLayers, policy) {
 			}
 			// wfs 삭제 
 			dataSources.removeAll();
+		},
+		
+		getSortedLayer : function() {
+			return sortedLayer;
 		},
 		
 		/*
