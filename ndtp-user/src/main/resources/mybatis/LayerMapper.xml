@@ -12,6 +12,6 @@
         ON a.layer_group_id = b.layer_group_id
         WHERE a.layer_group_id = #{layerGroupId}
         AND a.available = TRUE
-        ORDER BY z_index
+        ORDER BY view_order
     </select>
 </mapper>
