@@ -4,6 +4,7 @@ var Simulation = function(magoInstance) {
 	
 	var magoManager = magoInstance.getMagoManager();
 	
+	magoManager.on(Mago3D.MagoManager.EVENT_TYPE.SMARTTILELOADEND, smartTileLoaEndCallbak);
 	var observer;
 	var observerTarget = document.getElementById('simulationContent');
 	var observerConfig = { attributes: true};
@@ -89,7 +90,7 @@ var Simulation = function(magoInstance) {
 	}
 	
 	var cache = {};
-	var SEJONG_TILE_NAME = 'sejong_time_series_tiles';
+	var SEJONG_TILE_NAME = 'SEJONG_TILE';
 	var SEJONG_POSITION = new Cesium.Cartesian3(-3108649.1049808883, 4086368.566202183, 3773910.6726226895);
 	var slider;
 	var simulating = false;
@@ -118,10 +119,7 @@ var Simulation = function(magoInstance) {
 		simulating = true;
 		
 		if(!cache[dataName]) {
-			if(dataName.indexOf('tiles') > 0) {
-				magoManager.getObjectIndexFileSmartTileF4d(dataName);
-				magoManager.on(Mago3D.MagoManager.EVENT_TYPE.SMARTTILELOADEND, smartTileLoaEndCallbak);
-				
+			if(dataName.indexOf('_TILE') > 0) {
 				var html = '';
 				html += '<span>1단계</span>';
 				html += '<span>2단계</span>';
@@ -157,7 +155,7 @@ var Simulation = function(magoInstance) {
 		notyetAlram();
 	});
 	
-	var smartTileLoaEndCallbak = function(evt){
+	function smartTileLoaEndCallbak(evt){
 		var nodes = evt.tile.nodesArray;
 		for(var i in nodes){
 			var node = nodes[i];
@@ -175,7 +173,7 @@ var Simulation = function(magoInstance) {
 			 * 해결 : 일단 억지로 끼워 넣음.
 			 * 추후 목표 : 강제로 데이터 로드시 해당 부분을 미리 생성하는 옵션을 추가, 원래는 데이터가 표출될 때 처리되는 부분.
 			 */
-			var metaData = data.neoBuilding.metaData;
+			/*var metaData = data.neoBuilding.metaData;
 			if (metaData.fileLoadState === Mago3D.CODE.fileLoadState.LOADING_FINISHED) 
 			{
 				var auxBytesReaded = 0;
@@ -205,10 +203,11 @@ var Simulation = function(magoInstance) {
 			}
 			var newHeight = offset + geo.altitude;
 			
-			node.changeLocationAndRotation(geo.latitude, geo.longitude, newHeight, heading, pitch, roll,magoManager);
+			node.changeLocationAndRotation(geo.latitude, geo.longitude, newHeight, heading, pitch, roll,magoManager);*/
 			
 			magoManager.effectsManager.addEffect(data.nodeId, new Mago3D.Effect({
-				effectType      : pitch > 0 ? "zBounceLinear":"zBounceSpring",
+				//effectType      : pitch > 0 ? "zBounceLinear":"zBounceSpring",
+				effectType      : "zBounceSpring",
 				durationSeconds : 0.4
 			}));
 			magoManager.effectsManager.addEffect(data.nodeId, new Mago3D.Effect({
@@ -219,46 +218,48 @@ var Simulation = function(magoInstance) {
 			node.setRenderCondition(function(data){
 				var attributes = data.attributes; 
 				if(!simulating) {
-					attributes.isVisible = false;
-					return;
-				} 
-				var sliderValue = slider.getValue();
-				
-				var dataId =data.nodeId;
-				var refNum = parseInt(dataId.split('_')[2]);
-				var specify = refNum % 6;
-				
-				if(sliderValue >= specify) {
 					attributes.isVisible = true;
+					data.isColorChanged = false;
+				} else {
+					var sliderValue = slider.getValue();
 					
-					if(data.currentLod < 4) {
-						data.isColorChanged = false;
-					} else {
-						data.isColorChanged = true;
-						if(!data.aditionalColor) {
-							data.aditionalColor = new Mago3D.Color();
-							
-							switch(specify) {
-								case 0 : data.aditionalColor.setRGB(230/255,8/255,0);break; 
-								case 1 : data.aditionalColor.setRGB(255/255,100/255,28/255);break;
-								case 2 : data.aditionalColor.setRGB(141/255,30/255,77/255);break;
-								case 3 : data.aditionalColor.setRGB(125/255,44/255,121/255);break;
-								case 4 : data.aditionalColor.setRGB(255/255,208/255,9/255);break;
-								case 5 : data.aditionalColor.setRGB(0,169/255,182/255);break;
+					var dataId =data.nodeId;
+					var refNum = parseInt(dataId.split('_')[2]);
+					var specify = refNum % 6;
+					
+					if(sliderValue >= specify) {
+						attributes.isVisible = true;
+						
+						if(data.currentLod < 4) {
+							data.isColorChanged = false;
+						} else {
+							data.isColorChanged = true;
+							if(!data.aditionalColor) {
+								data.aditionalColor = new Mago3D.Color();
+								
+								switch(specify) {
+									case 0 : data.aditionalColor.setRGB(230/255,8/255,0);break; 
+									case 1 : data.aditionalColor.setRGB(255/255,100/255,28/255);break;
+									case 2 : data.aditionalColor.setRGB(141/255,30/255,77/255);break;
+									case 3 : data.aditionalColor.setRGB(125/255,44/255,121/255);break;
+									case 4 : data.aditionalColor.setRGB(255/255,208/255,9/255);break;
+									case 5 : data.aditionalColor.setRGB(0,169/255,182/255);break;
+								}
 							}
 						}
-					}
-				} else {
-					attributes.isVisible = false;
-					if(!magoManager.effectsManager.hasEffects(dataId)) {
-						magoManager.effectsManager.addEffect(dataId, new Mago3D.Effect({
-							effectType      : pitch > 0 ? "zBounceLinear":"zBounceSpring",
-							durationSeconds : 0.4
-						}));
-						magoManager.effectsManager.addEffect(dataId, new Mago3D.Effect({
-							effectType      : 'borningLight',
-							durationSeconds : 0.6
-						}));
+					} else {
+						attributes.isVisible = false;
+						if(!magoManager.effectsManager.hasEffects(dataId)) {
+							magoManager.effectsManager.addEffect(dataId, new Mago3D.Effect({
+								//effectType      : pitch > 0 ? "zBounceLinear":"zBounceSpring",
+								effectType      : "zBounceSpring",
+								durationSeconds : 0.4
+							}));
+							magoManager.effectsManager.addEffect(dataId, new Mago3D.Effect({
+								effectType      : 'borningLight',
+								durationSeconds : 0.6
+							}));
+						}
 					}
 				}
 			})
