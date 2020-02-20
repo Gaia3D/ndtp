@@ -10,7 +10,8 @@ var Simulation = function(magoInstance, viewer, $) {
     var _labels = [];   
     var _polygons = [];
     var _camera_scene = [];
-    var _models = [];
+    var _cityPlanModels = [];
+    var _bsConstructProcessModels = [];
     var mesurPolyList = [];
     var handler = null;
     var drawingMode = 'line';
@@ -156,7 +157,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	//건설공정 조회
 	$('#constructionProcess .execute').click(function(){
 		var targetArea = $('input[name="cpProtoArea"]:checked').val();
-		
+
 		var dataName;
 		var initPosition;
 		if(targetArea === 's') {
@@ -167,13 +168,13 @@ var Simulation = function(magoInstance, viewer, $) {
 			if(!slider) {
 				slider = new KotSlider('rangeInput');
 			}
+			
 			//레인지, 레전드 보이기
 			$('#csRange, #constructionProcess .profileInfo').show();
 			$('#saRange').hide();
 			
 			//slider.setValue(0);
 			simulating = true;
-			debugger;
 			if(!cache[dataName]) {
 				if(dataName.indexOf('tiles') > 0) {
 					magoManager.getObjectIndexFileSmartTileF4d(dataName);
@@ -203,6 +204,7 @@ var Simulation = function(magoInstance, viewer, $) {
 			}
 			setObserver();
 		} else {
+			initConsturctProcessModel(); 
 			dataName = BUSAN_TILE_NAME;
 			initPosition = BUSAN_POSITION;
 
@@ -233,17 +235,21 @@ var Simulation = function(magoInstance, viewer, $) {
 					});
 					$('#rangeInput').on('change', function(data) {
 						var index = $('#rangeInput').val();
-						genConsProcBuild(126.90497956470877, 37.521051475771344, 0, 0.0025, "NewFeatureType"+index+".gltf", 0)
+						dispConstructProcessModel(parseInt(index));
 					})
 				}
 			}
+			dispConstructProcessModel(0);
 			
-			genConsProcBuild(126.90497956470877,  37.521051475771344, 0, 0.0025, "NewFeatureType0.gltf", 0);
+
+//			genBillboard(126.90497956470877, 37.521051475771344);
 			_viewer.camera.flyTo({
 			    destination : Cesium.Cartesian3.fromDegrees(126.90497956470877,  37.521051475771344, 1000)
 			});
 		}
 	});
+	
+	
 	
 	//건설공정 취소
 	$('#constructionProcess .reset').click(function(){
@@ -316,11 +322,11 @@ var Simulation = function(magoInstance, viewer, $) {
 			floorCoverSum += areaVal;
 		}
 		
-		for(var i = 0; i < _models.length; i++) {
-			if(_models[i].floorNum === undefined) {
+		for(var i = 0; i < _cityPlanModels.length; i++) {
+			if(_cityPlanModels[i].floorNum === undefined) {
 				continue;
 			}
-			var areaVal = _models[i].areaVal * _models[i].floorNum;
+			var areaVal = _cityPlanModels[i].areaVal * _cityPlanModels[i].floorNum;
 			floorCoverSum += areaVal;
 		}
 		
@@ -691,8 +697,8 @@ var Simulation = function(magoInstance, viewer, $) {
     	for(var i = 0; i < _polygons.length; i++) {
     		sumArea += _polygons[i].areaVal;
     	}
-    	for(var i = 0; i < _models.length; i++) {
-    		sumArea += _models[i].areaVal;
+    	for(var i = 0; i < _cityPlanModels.length; i++) {
+    		sumArea += _cityPlanModels[i].areaVal;
     	}
     	buildCoverateRatio = parseInt(sumArea/cityPlanTargetArea * 100);
     	$('#buildCoverateRatio').text('건폐율 : ' + buildCoverateRatio + '%');
@@ -913,14 +919,14 @@ var Simulation = function(magoInstance, viewer, $) {
 	        url : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName,
 	        modelMatrix : modelMatrix,
 	        scale : scale,
-	        debugWireframe: true,
+//	        debugWireframe: true,
 	        shadows : 1,
 	        name : name,
 	        show: false
 	    });
 	    _model.areaVal = 714;
 	    _model.floorNum = 6;
-	    _models.push(_model);
+	    _cityPlanModels.push(_model);
 	    var primiti_model = _viewer.scene.primitives.add(_model);
 	    viewer.scene.primitives.add(primiti_model);
 	    Cesium.when(primiti_model.readyPromise).then(function(model) {
@@ -932,7 +938,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	  		model.show = true;
 	  		
 	  		for(var i = 0; i < model._nodeCommands.length; i++) {
-	  			var timedata = 10 * i;
+	  			var timedata = 100 * i;
 	  			function showAnimationModel(i) {
 		  			setTimeout(function() {
 			  			model._nodeCommands[i].show = true;		
@@ -949,67 +955,59 @@ var Simulation = function(magoInstance, viewer, $) {
     function genConsProcBuild(lon, lat, alt, scale, fileName, fairRate) {
     	var position = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
 //	    var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
-	    // fromGltf 함수를 사용하여 key : value 값으로 요소를 지정
-	    
-
+    	var defaultModel = null;
     	var pinBuilder = new Cesium.PinBuilder();
     	if(stdFairRate < fairRate) {
-    	    var entity = viewer.entities.add({
-    	        position : position,
-        	    billboard : {
-        	        image : pinBuilder.fromText('?', Cesium.Color.BLACK, 48).toDataURL(),
-        	        verticalOrigin : Cesium.VerticalOrigin.BOTTOM
-        	    },
-    	        model : {
-    	            uri : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName,
-    	            scale : scale,
-    	            name : name
-    	        }
-    	    });	
+        	defaultModel = new Cesium.ModelGraphics({
+                uri : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName,
+                scale : scale,
+                minimumPixelSize : 128,
+                maximumScale : 20000
+        	})
     	} else {
-    	    var entity = viewer.entities.add({
-    	        position : position,
-        	    billboard : {
-        	        image : pinBuilder.fromText('?', Cesium.Color.BLACK, 48).toDataURL(),
-        	        verticalOrigin : Cesium.VerticalOrigin.BOTTOM
-        	    },
-    	        model : {
-    	            uri : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName,
-    	            scale : scale,
-    	            name : name
-    	        }
-    	    });
+    		var color = Cesium.Color['RED'];
+    		var colorAlpha = Cesium.Color.fromAlpha(color, parseFloat(0.3));
+    		var blend = Cesium.ColorBlendMode['MIX'];
+        	defaultModel = new Cesium.ModelGraphics({
+                uri : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName,
+                scale : scale,
+                minimumPixelSize : 128,
+                color : colorAlpha,
+                colorBlendMode : blend,
+                colorBlendAmount : parseFloat(0.7),
+        	})
+    	    
     	}
-//    	var questionPin = viewer.entities.add({
-//    	    name : 'Question mark',
-//    	    position : Cesium.Cartesian3.fromDegrees(-75.1698529, 39.9220071),
-//    	    billboard : {
-//    	        image : pinBuilder.fromText('?', Cesium.Color.BLACK, 48).toDataURL(),
-//    	        verticalOrigin : Cesium.VerticalOrigin.BOTTOM
-//    	    }
-//    	});
 
+    	var entitiyObj = new Cesium.Entity({
+	    	position: position,
+	        billboard : {
+	            image : pinBuilder.fromText('?', Cesium.Color.BLACK, 48).toDataURL(),
+	            verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+	            eyeOffset: new Cesium.Cartesian3(0, 3.0504106, 0)
+	        },
+	        model : defaultModel,
+	        show : false
+	    });
+
+    	entitiyObj.type = "constructionProcess"
+    	_bsConstructProcessModels.push(entitiyObj);
     	
-    	
-    	
-//	    var name = '슬퍼하지마NONONO'; 
-//	    // GLTF 모델 데이터 삽입
-//	    var _model = Cesium.Model.fromGltf({
-//	        url : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName,
-//	        modelMatrix : modelMatrix,
-//	        scale : scale,
-//	        shadows : 1,
-//	        name : name
-//	    });
-//	    var primiti_model = _viewer.scene.primitives.add(_model);
-//	    viewer.scene.primitives.add(primiti_model);
-//	    viwer.scene
-//	    Cesium.when(primiti_model.readyPromise).then(function(model) {
-//	    	}).otherwise(function(error){
-//	    	  window.alert(error);
-//    	});
+	    var entity = viewer.entities.add(_bsConstructProcessModels[_bsConstructProcessModels.length-1]);
+	    
     }
 
+	function genBillboard(lon, lat, alt) {
+    	var pinBuilder = new Cesium.PinBuilder();
+    	var questionPin = viewer.entities.add({
+	    name : 'Question mark',
+	    position : Cesium.Cartesian3.fromDegrees(lon, lat),
+	    billboard : {
+	        image : pinBuilder.fromText('?', Cesium.Color.BLACK, 48).toDataURL(),
+	        verticalOrigin : Cesium.VerticalOrigin.BOTTOM
+	    }
+    	});
+	}
     
     var selectBuildDialog = $( "#selectBuildDialog" ).dialog({
 		autoOpen: false,
@@ -1172,5 +1170,23 @@ var Simulation = function(magoInstance, viewer, $) {
 				console.log("err=", request, status, error);
 			}
 		});
+	}
+	
+	function initConsturctProcessModel() {
+		for(var index = 0; index < 6; index++) {
+			genConsProcBuild(126.90497956470877, 37.521051475771344, 0, 0.0025, "NewFeatureType"+index+".gltf", 80);
+		}
+	}
+	
+	function dispConstructProcessModel(index) {
+		debugger;
+		
+		for(var i = 0; i < 6; i++) {
+			_viewer.entities.getById(_bsConstructProcessModels[i].id).show = false
+		}
+		for(var i = 0; i < index+1; i++) {
+			_viewer.entities.getById(_bsConstructProcessModels[i].id).show = true
+		}
+		
 	}
 }
