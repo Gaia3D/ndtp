@@ -62,9 +62,10 @@
 		<div class="listContents" id="constructionProcess">
 			<ul class="analysisGroup">
 				<li>
+					<button type="button" id="constUploadBtn" class="btnTextF">건설 공정 파일 업로드</button>
+				</li>
+				<li>
 					<span style="display: inline-block;padding: 3px 0;margin-right: 20px;">위치</span>
-					<!-- <input class="" type="text" placeholder="" value=""/>
-					<button type="button" class="btnText drawObserverPoint">찾기</button> -->
 					<label style="width:26px;" for="cpSejong">세종</label>
 					<input style="width:20px;" type="radio" id="cpSejong" name="cpProtoArea" value="s" checked/>
 					<label style="width:26px;" for="cpBusan">부산</label>
@@ -177,7 +178,39 @@
 	<input id="height_building_input" class="" type="number" placeholder="" value="0"/>
 	<button id="set_height_building" type="button" class="btnText drawObserverPoint">설정</button>
 </div>
-
+<div id="constructionProcessUploadDialog" title="건설 공정 파일 업로드">
+	<div class="listContents">
+		<ul class="analysisGroup">
+			<li>
+				<form id="construc_proc_file_upload" name="file_upload"method="post" enctype="multipart/form-data" action="simulation-rest/upload" style="width:100%" target="dummyConsProcessFrame">
+					<div>
+						<span style="display: inline-block;padding: 3px 0;margin-right: 20px;">위치</span>
+						<label style="width:26px;" for="cpSejong">세종</label>
+						<input style="width:20px;" type="radio" id="cpSejong" name="cpProtoArea" value="s" checked/>
+						<label style="width:26px;" for="cpBusan">부산</label>
+						<input style="width:20px;" type="radio" id="cpBusan"  name="cpProtoArea" value="p"/>
+					</div>
+					<div>
+						<label for="">업로드 시점 선택</label>
+						<select id="consProcessType" name="consProcessType">
+							<option value="">선택안함</option>
+							<option value="0">1단계</option>
+							<option value="1">2단계</option>
+							<option value="2">3단계</option>
+							<option value="3">4단계</option>
+							<option value="4">5단계</option>
+							<option value="5">6단계</option>
+						</select>
+					</div>
+					<div style="display:flex">
+						<input type="file" name="files" style="width:80%" multiple>
+						<button id="upload_constructionProcess" type="submit" class="btnTextF" style="margin-left:5px" title="업로드">업로드</button>
+					</div>
+				</form>
+			</li>
+		</ul>
+	</div>
+</div>
 <script>
 
 	$("#comment").on('click', function() {

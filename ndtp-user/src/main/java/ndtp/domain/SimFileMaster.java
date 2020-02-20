@@ -17,5 +17,9 @@ public class SimFileMaster {
 	private String saveFilePath;
 	private Date createDt;
 	private FileType saveFileType;
-
+	private Float lon;
+	private Float lat;
+	private Float alt;
+	private String consType;
+	private String cityType;
 }
