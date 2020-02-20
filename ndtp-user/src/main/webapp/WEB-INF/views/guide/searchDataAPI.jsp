@@ -36,9 +36,9 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>projectId :</p>
+			<label>projectId :</label>
 			<input type="text" id="api26-p1" value="sample"><br>
-			<p>dataKey :</p>
+			<label>dataKey :</label>
 			<input type="text" id="api26-p2" value="SOCIALROOM">
 		</div>
 		<br> 

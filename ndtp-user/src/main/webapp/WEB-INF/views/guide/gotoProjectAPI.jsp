@@ -60,19 +60,19 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>projectId :</p>
+			<label>projectId :</label>
 			<input type="text" id="api24-p1" value="sample2"><br>
-			<p>projectData :</p>
+			<label>projectData :</label>
 			<input type="text" id="api24-p2" value="sample_f4d"><br>
-			<p>projectDataFolder :</p>
+			<label>projectDataFolder :</label>
 			<input type="text" id="api24-p3" value="sample"><br>
-			<p>longitude :</p>
+			<label>longitude :</label>
 			<input type="text" id="api24-p4" value="126.60890424717905"><br>
-			<p>latitude :</p>
+			<label>latitude :</label>
 			<input type="text" id="api24-p5" value="37.58358288958673"><br>
-			<p>height :</p>
+			<label>height :</label>
 			<input type="text" id="api24-p6" value="550"><br>
-			<p>duration :</p>
+			<label>duration :</label>
 			<input type="text" id="api24-p7" value="1">
 		</div>
 		<br> 

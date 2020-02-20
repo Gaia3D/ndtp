@@ -40,11 +40,11 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>projectId :</p>
+			<label>projectId :</label>
 			<input type="text" id="api43-p1" value="sample"><br>
-			<p>dataKey :</p>
+			<label>dataKey :</label>
 			<input type="text" id="api43-p2" value="SOCIALROOM"><br>
-			<p>isVisible :</p>
+			<label>isVisible :</label>
 			<input type="text" id="api43-p3" value="true">
 		</div>
 		<br> <input type="button" value="Run" class="popupBtn"

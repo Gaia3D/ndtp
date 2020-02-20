@@ -30,7 +30,7 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>ssaoRadius :</p>
+			<label>ssaoRadius :</label>
 			<input type="text" id="api21-p1" value="0.15">
 		</div>
 		<br> 

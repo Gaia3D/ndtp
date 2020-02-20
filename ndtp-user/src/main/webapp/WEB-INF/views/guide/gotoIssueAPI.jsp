@@ -70,23 +70,23 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>projectId :</p>
+			<label>projectId :</label>
 			<input type="text" id="api25-p1" value="ifc"><br>
-			<p>projectData :</p>
+			<label>projectData :</label>
 			<input type="text" id="api25-p2" value="ProjectDataObject"><br>
-			<p>projectDataFolder :</p>
+			<label>projectDataFolder :</label>
 			<input type="text" id="api25-p3" value="factory"><br>
-			<p>issueId :</p>
+			<label>issueId :</label>
 			<input type="text" id="api25-p4" value="128"><br>
-			<p>issueType :</p>
+			<label>issueType :</label>
 			<input type="text" id="api25-p5" value="ISSUE_TYPE_BUGGER"><br>
-			<p>longitude :</p>
+			<label>longitude :</label>
 			<input type="text" id="api25-p6" value="127.000"><br>
-			<p>latitude :</p>
+			<label>latitude :</label>
 			<input type="text" id="api25-p7" value="37.000"><br>
-			<p>height :</p>
+			<label>height :</label>
 			<input type="text" id="api25-p8" value="550"><br>
-			<p>duration :</p>
+			<label>duration :</label>
 			<input type="text" id="api25-p9" value="10">
 		</div>
 		<br> 

@@ -50,15 +50,15 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>ambientReflectionCoef :</p>
+			<label>ambientReflectionCoef :</label>
 			<input type="text" id="api20-p1" value="0.5"><br/>
-			<p>diffuseReflectionCoef :</p>
+			<label>diffuseReflectionCoef :</label>
 			<input type="text" id="api20-p2" value="1"><br/>
-			<p>specularReflectionCoef :</p>
+			<label>specularReflectionCoef :</label>
 			<input type="text" id="api20-p3" value="1"><br/>
-			<p>ambientColor :</p>
+			<label>ambientColor :</label>
 			<input type="text" id="api20-p4" value="255, 0, 0"><br/>
-			<p>specularColor :</p>
+			<label>specularColor :</label>
 			<input type="text" id="api20-p5" value="0, 255, 0">
 		</div>
 		<br/> 

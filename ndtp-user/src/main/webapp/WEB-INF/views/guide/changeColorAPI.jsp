@@ -51,15 +51,15 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>projectId :</p>
+			<label>projectId :</label>
 			<input type="text" id="api7-p1" value="sample"><br/>
-			<p>dataKey :</p>
+			<label>dataKey :</label>
 			<input type="text" id="api7-p2" value="STUDENTROOM"><br/>
-			<p>objectIds :</p>
+			<label>objectIds :</label>
 			<input type="text" id="api7-p3" value="2Dzz1wTo51BAnDnXy3jXLd"><br/>
-			<p>property :</p>
+			<label>property :</label>
 			<input type="text" id="api7-p4" value="isMain=true"><br/>
-			<p>color :</p>
+			<label>color :</label>
 			<input type="text" id="api7-p5" value="255, 0, 255">
 		</div>
 		<br/>

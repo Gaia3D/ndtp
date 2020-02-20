@@ -31,7 +31,7 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>insertIssueState :</p>
+			<label>insertIssueState :</label>
 			<input type="text" id="api18-p1" value="0">
 		</div>
 		<br/> 

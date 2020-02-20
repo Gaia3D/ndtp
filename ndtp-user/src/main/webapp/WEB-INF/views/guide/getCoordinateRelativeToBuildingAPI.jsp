@@ -57,15 +57,15 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>projectId :</p>
+			<label>projectId :</label>
 			<input type="text" id="api32-p1" value="sample"><br>
-			<p>dataKey :</p>
+			<label>dataKey :</label>
 			<input type="text" id="api32-p2" value="SOCIALROOM"><br>
-			<p>inputPoint_x :</p>
+			<label>inputPoint_x :</label>
 			<input type="text" id="api32-p3" value="-3158185.8634899906"><br>
-			<p>inputPoint_y :</p>
+			<label>inputPoint_y :</label>
 			<input type="text" id="api32-p4" value="4713784.056940694"><br>
-			<p>inputPoint_z :</p>
+			<label>inputPoint_z :</label>
 			<input type="text" id="api32-p5" value="4516771.367915208">
 		</div>
 		<br> 

@@ -41,11 +41,11 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>projectIdArray :</p>
+			<label>projectIdArray :</label>
 			<input type="text" id="api30-p1" value='["ifc, ifc1, ifc2"]'><br>
-			<p>projectDataArray :</p>
+			<label>projectDataArray :</label>
 			<input type="text" id="api30-p2" value='["factory, factory1, factory2"]'><br>
-			<p>projectDataFolderArray :</p>
+			<label>projectDataFolderArray :</label>
 			<input type="text" id="api30-p3" value='["D:\reposit, D:\reposit1, D:\reposit2"]'>
 		</div>
 		<br> 
