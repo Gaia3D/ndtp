@@ -227,7 +227,7 @@ public class DataRestController {
 			
 			DataInfo preDataInfo = new DataInfo();
 			//dataInfo.setUserId(userSession.getUserId());
-			preDataInfo.setDataId(dataId);
+			dataInfo.setDataId(dataId);
 			preDataInfo = dataService.getData(dataInfo);
 			String groupTarget = preDataInfo.getDataGroupTarget();
 			
@@ -244,7 +244,7 @@ public class DataRestController {
 				}
 			} else if (ServerTarget.USER == ServerTarget.valueOf(groupTarget.toUpperCase())) {
 				// 로그인한 아이디와 요청한 아이디가 같을 경우
-				if (userSession.getUserId().equals(dataInfo.getUserId())) {
+				if (userSession.getUserId().equals(preDataInfo.getUserId())) {
 					BigDecimal longitude = dataInfo.getLongitude();
 					BigDecimal latitude = dataInfo.getLatitude();
 					if(longitude != null && latitude != null) {
