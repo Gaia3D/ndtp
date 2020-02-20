@@ -204,6 +204,7 @@ var Simulation = function(magoInstance, viewer, $) {
 			}
 			setObserver();
 		} else {
+			initConsturctProcessModel(); 
 			dataName = BUSAN_TILE_NAME;
 			initPosition = BUSAN_POSITION;
 
@@ -234,10 +235,11 @@ var Simulation = function(magoInstance, viewer, $) {
 					});
 					$('#rangeInput').on('change', function(data) {
 						var index = $('#rangeInput').val();
+						dispConstructProcessModel(parseInt(index));
 					})
 				}
 			}
-			genConsProcBuild(126.90497956470877,  37.521051475771344, 0, 0.0025, "NewFeatureType0.gltf", 70);
+			dispConstructProcessModel(0);
 			
 
 //			genBillboard(126.90497956470877, 37.521051475771344);
@@ -917,7 +919,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	        url : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName,
 	        modelMatrix : modelMatrix,
 	        scale : scale,
-	        debugWireframe: true,
+//	        debugWireframe: true,
 	        shadows : 1,
 	        name : name,
 	        show: false
@@ -936,7 +938,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	  		model.show = true;
 	  		
 	  		for(var i = 0; i < model._nodeCommands.length; i++) {
-	  			var timedata = 10 * i;
+	  			var timedata = 100 * i;
 	  			function showAnimationModel(i) {
 		  			setTimeout(function() {
 			  			model._nodeCommands[i].show = true;		
@@ -984,13 +986,14 @@ var Simulation = function(magoInstance, viewer, $) {
 	            verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
 	            eyeOffset: new Cesium.Cartesian3(0, 3.0504106, 0)
 	        },
-	        model : defaultModel
+	        model : defaultModel,
+	        show : false
 	    });
 
     	entitiyObj.type = "constructionProcess"
     	_bsConstructProcessModels.push(entitiyObj);
     	
-	    var entity = viewer.entities.add(entitiyObj);
+	    var entity = viewer.entities.add(_bsConstructProcessModels[_bsConstructProcessModels.length-1]);
 	    
     }
 
@@ -1169,17 +1172,20 @@ var Simulation = function(magoInstance, viewer, $) {
 		});
 	}
 	
-
 	function initConsturctProcessModel() {
-		for(var i = 0; i < 6; i++) {
-			genConsProcBuild(126.90497956470877, 37.521051475771344, 0, 0.0025, "NewFeatureType"+index+".gltf", 0);
+		for(var index = 0; index < 6; index++) {
+			genConsProcBuild(126.90497956470877, 37.521051475771344, 0, 0.0025, "NewFeatureType"+index+".gltf", 80);
 		}
 	}
 	
 	function dispConstructProcessModel(index) {
-		for(var i = 0; i < index; i++) {
-			debugger;
-			_bsConstructProcessModels[i]
+		debugger;
+		
+		for(var i = 0; i < 6; i++) {
+			_viewer.entities.getById(_bsConstructProcessModels[i].id).show = false
+		}
+		for(var i = 0; i < index+1; i++) {
+			_viewer.entities.getById(_bsConstructProcessModels[i].id).show = true
 		}
 		
 	}
