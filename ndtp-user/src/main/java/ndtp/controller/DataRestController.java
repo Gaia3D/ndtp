@@ -225,14 +225,15 @@ public class DataRestController {
 				return result;
 			}
 			
+			DataInfo preDataInfo = new DataInfo();
 			//dataInfo.setUserId(userSession.getUserId());
-			dataInfo.setDataId(dataId);
-			dataInfo = dataService.getData(dataInfo);
-			String groupTarget = dataInfo.getDataGroupTarget();
+			preDataInfo.setDataId(dataId);
+			preDataInfo = dataService.getData(dataInfo);
+			String groupTarget = preDataInfo.getDataGroupTarget();
 			
 			// 관리자가 업로드 한 경우
 			if (ServerTarget.ADMIN == ServerTarget.valueOf(groupTarget.toUpperCase())) {
-				if(dataInfo.getTiling()) {
+				if(preDataInfo.getTiling()) {
 					result.put("statusCode", HttpStatus.FORBIDDEN.value());
 					result.put("errorCode", "data.smart.tiling");
 					result.put("message", null);

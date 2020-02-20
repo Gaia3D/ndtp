@@ -190,12 +190,15 @@
 	//var viewer = new Cesium.Viewer('magoContainer');
 	var MAGO3D_INSTANCE;
 	// ndtp 전역 네임스페이스
-	/* var NDTP = NDTP ||{
+	let dataGroupMap = new Map();
+	dataGroupMap.set(parseInt('${dataInfo.dataGroupId}'), '${dataInfo.dataGroupName}');
+	var NDTP = NDTP ||{
 		policy : ${geoPolicyJson},
-		baseLayers : "${baseLayers}",
-		wmsProvider : {},
-		districtProvider : {}
-	}; */
+		dataGroup : dataGroupMap
+		//baseLayers : ${baseLayerJson},
+		//wmsProvider : {},
+		//districtProvider : {}
+	};
 	
 	var geoPolicyJson = null;
 	var viewer = null;
