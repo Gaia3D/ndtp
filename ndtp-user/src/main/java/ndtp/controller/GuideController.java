@@ -38,6 +38,6 @@ public class GuideController {
 			e.printStackTrace();
 		}
 
-		return "/guide/help";
+		return "/guide/layout";
 	}
 }
