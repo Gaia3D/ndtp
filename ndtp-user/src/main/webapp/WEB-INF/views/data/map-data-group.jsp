@@ -41,5 +41,5 @@
 		<li><span class="legend pr">P</span>비공개</li>
 		<li><span class="legend gr">G</span>그룹</li>
 	</ul>
-	<div id="dataGroupListArea" style="height:calc(100% - 333px)"></div>
+	<div id="dataGroupListArea" style="height:calc(100% - 343px)"></div>
 </div>

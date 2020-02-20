@@ -6,13 +6,13 @@
 	</div>
 	<div class="dataBtns"></div>
 
-		<div class="marT10 yScroll" style="height: calc(100% - 49px)">
+		<div class="marT10 yScroll" style="height: calc(100% - 59px)">
 		
 {{#greaterThan dataList.length 0}}
 	{{#each dataList}}
 		<ul class="dataList">
 			<li class="group">
-				<span class="no">No. {{subtract ../pagination.rowNumber @index}}</span>
+				<span class="no">{{subtract ../pagination.rowNumber @index}}</span>
 		{{#ifMatch sharing 'common'}}
 				<span class="legend co">C</span>	
 		{{/ifMatch}}

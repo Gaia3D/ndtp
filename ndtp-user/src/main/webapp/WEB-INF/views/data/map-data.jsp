@@ -45,7 +45,7 @@
 			<span class="float-right"><fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/></span>
 		</div>
 		<div class="dataBtns"></div>
-		<div class="marT10 yScroll" style="height: calc(100% - 49px)">
+		<div class="marT10 yScroll" style="height: calc(100% - 59px)">
 		
 <c:if test="${empty dataList }">
 			데이터가 존재하지 않습니다.
@@ -54,7 +54,7 @@
 	<c:forEach var="dataInfo" items="${dataList}" varStatus="status">
 		<ul class="dataList">
 			<li class="group">
-				<span class="no">No. ${pagination.rowNumber - status.index}</span>
+				<span class="no">${pagination.rowNumber - status.index}</span>
 		<c:if test="${dataInfo.sharing eq 'common'}">
 							<span class="legend co">C</span>	
 		</c:if>
