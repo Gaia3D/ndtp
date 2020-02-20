@@ -37,7 +37,7 @@
 		<div class="paramContainer">
 			<label><input type="radio" name="api15-p1" value="true" />활성</label>
 			<label><input type="radio" name="api15-p1" value="false" checked />비활성</label><br>
-			<p>dataKey :</p>
+			<label>dataKey :</label>
 			<input type="text" id="api15-p2" value="SOCIALROOM">
 		</div>
 		<br> 

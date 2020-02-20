@@ -65,21 +65,21 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>projectId :</p>
+			<label>projectId :</label>
 			<input type="text" id="api8-p1" value="sample"><br>
-			<p>dataKey :</p>
+			<label>dataKey :</label>
 			<input type="text" id="api8-p2" value="SOCIALROOM"><br>
-			<p>longitude :</p>
+			<label>longitude :</label>
 			<input type="text" id="api8-p3" value="127.0000"><br>
-			<p>latitude :</p>
+			<label>latitude :</label>
 			<input type="text" id="api8-p4" value="37.000"><br>
-			<p>height :</p>
+			<label>height :</label>
 			<input type="text" id="api8-p5" value="550"><br>
-			<p>heading :</p>
+			<label>heading :</label>
 			<input type="text" id="api8-p6" value="0"><br>
-			<p>pitch :</p>
+			<label>pitch :</label>
 			<input type="text" id="api8-p7" value="0"><br>
-			<p>roll :</p>
+			<label>roll :</label>
 			<input type="text" id="api8-p8" value="0">
 		</div>
 		<br> 

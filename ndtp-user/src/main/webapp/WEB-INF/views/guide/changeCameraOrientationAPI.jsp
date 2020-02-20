@@ -45,13 +45,13 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>heading :</p>
+			<label>heading :</label>
 			<input type="text" id="api36-p1" value="89.2471"><br/>
-			<p>pitch :</p>
+			<label>pitch :</label>
 			<input type="text" id="api36-p2" value="43.1837"><br/>
-			<p>roll :</p>
+			<label>roll :</label>
 			<input type="text" id="api36-p3" value="30.9415"><br/>
-			<p>duration :</p>
+			<label>duration :</label>
 			<input type="text" id="api36-p4" value="0">
 		</div>
 		<br/> 

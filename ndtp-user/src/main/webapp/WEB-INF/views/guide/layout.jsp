@@ -122,7 +122,9 @@
 		"setNodeAttributeAPI", "togglePointCloudColorAPI"];
 
 		for(var i = 1; i<apiList.length+1; i++){
-			//console.log(i);
+			
+			if($('.paramContainer').get(i-1).innerHTML){
+				
 			$(".popupSub").children('ul').append("<li class=\"item\"><a class=\"name\" href=\"#\" onclick=\"changeToggleTab(api"+i+");\">"+apiList[i]+"</a></li>");
 			var parmScript = document.createTextNode(($('.paramContainer').get(i-1).innerHTML).replace(/\s{2,}/gi, ' '));
 			var script = document.createTextNode($('.api-help-toggle').next()[i-1].text);
@@ -142,10 +144,13 @@
 			$('.menu_tab01')[i-1].appendChild(preTagBr);
 			$('.menu_tab01')[i-1].appendChild(preTagBr);
 			$('.menu_tab01')[i-1].appendChild(preTagBr);
-			$('.menu_tab01')[i-1].appendChild(preTagScript);	
+			$('.menu_tab01')[i-1].appendChild(preTagScript);
+			
+			}
 		}
 		
 		$( document ).ready(function() {
+			
 			for (var i =0; i< $("code").children('.hljs-tag').length; i++) {
 				if($("code").children('.hljs-tag')[i].childNodes[0].nodeValue=="</"){
 					$("code").children('.hljs-tag')[i].childNodes[2].nodeValue = $("code").children('.hljs-tag')[i].childNodes[2].nodeValue+"\n";
@@ -215,6 +220,10 @@ function magoLoadEnd2(e) {
 	});
 }
 
+$('.item').on("click", function(){
+	$('.item').removeClass('on');
+	$(this).addClass('on');
+})
 
 function changeToggleTab(apiId){
 	$('.api-help-toggle').css('display','none');
@@ -222,6 +231,7 @@ function changeToggleTab(apiId){
 }
 
 function tabMenu(num){
+ 
  var f = $('.api-help-toggle');
  for ( var i = 0; i < f.length; i++ ) {
   if ( num == 0) {
@@ -252,6 +262,8 @@ $("#searchApi").on("propertychange change keyup paste input",function(){
       }
     }
 })
+
+
 
 </script>
 </body>

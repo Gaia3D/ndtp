@@ -60,19 +60,19 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>drawType :</p>
+			<label>drawType :</label>
 			<input type="text" id="api23-p1" value="1"><br>
-			<p>issue_id :</p>
+			<label>issue_id :</label>
 			<input type="text" id="api23-p2" value="128"><br>
-			<p>issue_type :</p>
+			<label>issue_type :</label>
 			<input type="text" id="api23-p3" value="ISSUE_TYPE_BUGGER"><br>
-			<p>data_key :</p>
+			<label>data_key :</label>
 			<input type="text" id="api23-p4" value="factory"><br>
-			<p>longitude :</p>
+			<label>longitude :</label>
 			<input type="text" id="api23-p5" value="127.000"><br>
-			<p>latitude :</p>
+			<label>latitude :</label>
 			<input type="text" id="api23-p6" value="37.000"><br>
-			<p>height :</p>
+			<label>height :</label>
 			<input type="text" id="api23-p7" value="550">
 		</div>
 		<br> 

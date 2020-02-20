@@ -30,21 +30,21 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>projectId :</p>
+			<label>projectId :</label>
 			<input type="text" id="api37-p1" value="static_sample"><br>
-			<p>instanceId :</p>
+			<label>instanceId :</label>
 			<input type="text" id="api37-p2" value="building"><br>
-			<p>longitude :</p>
+			<label>longitude :</label>
 			<input type="text" id="api37-p3" value="127.000"><br>
-			<p>latitude :</p>
+			<label>latitude :</label>
 			<input type="text" id="api37-p4" value="37.000"><br>
-			<p>height :</p>
+			<label>height :</label>
 			<input type="text" id="api37-p5" value="100"><br>
-			<p>heading :</p>
+			<label>heading :</label>
 			<input type="text" id="api37-p6" value="93.03254"><br>
-			<p>pitch :</p>
+			<label>pitch :</label>
 			<input type="text" id="api37-p7" value="223.84163"><br>
-			<p>roll :</p>
+			<label>roll :</label>
 			<input type="text" id="api37-p8" value="123.74897">
 		</div>
 		<br> 

@@ -40,13 +40,13 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>projectId :</p>
+			<label>projectId :</label>
 			<input type="text" id="api39-p1" value="sample"><br>
-			<p>dataKey :</p>
+			<label>dataKey :</label>
 			<input type="text" id="api39-p2" value="SOCIALROOM"><br>
-			<p>option_y :</p>
+			<label>option_y :</label>
 			<input type="text" id="api39-p3" value="-1"><br>
-			<p>option_z :</p>
+			<label>option_z :</label>
 			<input type="text" id="api39-p4" value="12">
 		</div>
 		<br> 

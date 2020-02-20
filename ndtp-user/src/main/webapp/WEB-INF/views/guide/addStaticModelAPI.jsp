@@ -30,11 +30,11 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>projectId :</p>
+			<label>projectId :</label>
 			<input type="text" id="api38-p1" value="static_sample"><br/>
-			<p>projectFolderName :</p>
+			<label>projectFolderName :</label>
 			<input type="text" id="api38-p2" value="sample"><br/>
-			<p>buildingFolderName :</p>
+			<label>buildingFolderName :</label>
 			<input type="text" id="api38-p3" value="F4D_SOCIALROOM">
 		</div>
 		<br/> 

@@ -37,7 +37,7 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>dataKey :</p>
+			<label>dataKey :</label>
 			<input type="text" id="api27-p1" value="sample">
 		</div>
 		<br> <input type="button" value="Run" class="popupBtn" onclick="isDataExist()">
