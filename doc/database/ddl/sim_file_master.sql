@@ -12,5 +12,7 @@ CREATE TABLE public.sim_file_master (
 	alt float4 NULL,
 	cons_type varchar NULL,
 	city_type varchar NULL,
+	cons_ratio int4 NULL,
+	objectid varchar NULL,
 	CONSTRAINT sim_file_master_pk PRIMARY KEY (sim_file_seq)
 );

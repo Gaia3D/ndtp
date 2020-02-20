@@ -22,4 +22,6 @@ public class SimFileMaster {
 	private Float alt;
 	private String consType;
 	private String cityType;
+	private Integer cons_ratio;
+	private String objectid;
 }
