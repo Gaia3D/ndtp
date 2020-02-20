@@ -10,25 +10,34 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ndtp.domain.GeoPolicy;
 import ndtp.service.GeoPolicyService;
 
+/**
+ * @author hansangkim
+ *
+ */
 @Controller
 @RequestMapping("/guide")
 public class GuideController {
-	
+
 	@Autowired
 	private GeoPolicyService geoPolicyService;
 	@Autowired
 	private ObjectMapper objectMapper;
-	
-    @GetMapping(value = "/help")
-    public String gotoApiHelp(HttpServletRequest request, Model model) {
 
-        GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
-        try {
-            model.addAttribute("geoPolicyJson", objectMapper.writeValueAsString(geoPolicy));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-        return "/guide/help";
-    }
+	/**
+	 * @param request
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "/help")
+	public String gotoApiHelp(HttpServletRequest request, Model model) {
+
+		GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
+		try {
+			model.addAttribute("geoPolicyJson", objectMapper.writeValueAsString(geoPolicy));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return "/guide/help";
+	}
 }
