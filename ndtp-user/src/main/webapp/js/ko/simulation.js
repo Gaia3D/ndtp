@@ -1122,7 +1122,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	    var verticalDegrees = 10.0;
 	    var viewRect = _viewer.camera.computeViewRectangle();
 	    var viewDirection = _viewer.camera.direction;
-	    debugger;
+	    // debugger;
 	    if (Cesium.defined(viewRect)) {
 	        horizontalDegrees *= Cesium.Math.toDegrees(viewRect.east - viewRect.west) / 360.0;
 	        verticalDegrees *= Cesium.Math.toDegrees(viewRect.north - viewRect.south) / 180.0;
