@@ -56,7 +56,7 @@ padding-top: 5px;
 margin-left: 10px;
 }
 .user > span {
-border-bottom: 1px solid #fff;
+/* border-bottom: 1px solid #fff; */
 }
 .gnb li > span * {
 vertical-align: middle;

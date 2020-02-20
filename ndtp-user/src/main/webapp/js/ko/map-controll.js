@@ -498,21 +498,19 @@ $(".layerClose").click(function(){
 
 });
 
-
 //지도에서 찾기
-$( "#magoHelp" ).on( "click", function() {
+function goMagoAPIGuide() {
 	var url = "/guide/help";
-	console.log("test");
-	var width = 800;
-	var height = 700;
-	var popupX = (window.screen.width / 2) - (width / 2);
+	//console.log("test");
+	var width = 1200;
+	var height = 800;
+
 	// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
-	var popupY= (window.screen.height / 2) - (height / 2);
-
-	var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height + ", top=" + popupY + ", left="+popupX
-			+ ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
-	//popWin.document.title = layerName;
-
-
-});
+	var popupX = (window.screen.width / 2) - (width / 2);
+	var popupY = (window.screen.height / 2) - (height / 2);
+	
+	var popWin = window.open(url, "", "toolbar=no, width=" + width + " ,height=" + height + ", top=" + popupY + ", left=" + popupX + 
+			", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
+	return false;
+}
 

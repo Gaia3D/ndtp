@@ -11,11 +11,8 @@
 <link rel="shortcut icon" href="/images/favicon.ico">
 <link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
 <link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-<link rel="stylesheet" href="/externlib/geostats/geostats.css" />
-<link rel="stylesheet" href="/externlib/kotSlider/range.css" />
-<link rel="stylesheet" href="/css/ko/layout.css" />
-<link rel="stylesheet" href="/css/ko/apihelp-style.css" />
 <link rel="stylesheet" href="/externlib/highlightjs/styles/dark.css">
+<link rel="stylesheet" href="/css/ko/apihelp-style.css" />
 <script src="/externlib/highlightjs/highlight.pack.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
 
@@ -125,7 +122,7 @@
 		"setNodeAttributeAPI", "togglePointCloudColorAPI"];
 
 		for(var i = 1; i<apiList.length+1; i++){
-			console.log(i);
+			//console.log(i);
 			$(".popupSub").children('ul').append("<li class=\"item\"><a class=\"name\" href=\"#\" onclick=\"changeToggleTab(api"+i+");\">"+apiList[i]+"</a></li>");
 			var parmScript = document.createTextNode(($('.paramContainer').get(i-1).innerHTML).replace(/\s{2,}/gi, ' '));
 			var script = document.createTextNode($('.api-help-toggle').next()[i-1].text);
