@@ -27,7 +27,7 @@
 				<td>true: 활성화, false: 비활성화</td>
 			</tr>
 		</table>
-		<br>
+		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<select id="api6-p1">
@@ -35,7 +35,7 @@
 				<option value="false">비활성</option>
 			</select>
 		</div>
-		<br> 
+		<br/> 
 		<input type="button" value="Run" class="popupBtn" onclick="changeShadow()">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>

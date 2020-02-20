@@ -889,7 +889,9 @@ background-color: #fff;
 color: #287be4;
 }
 .descript {
-height: calc(100% - 50px)
+height: calc(100% - 50px);
+width: 880px;
+
 }
 .descript > ul {
 margin-bottom: 20px;	

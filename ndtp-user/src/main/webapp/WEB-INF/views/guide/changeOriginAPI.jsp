@@ -27,13 +27,13 @@
 				<td>true: 활성화, false: 비활성화</td>
 			</tr>
 		</table>
-		<br>
+		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label><input type="radio" name="api3-p1" value="true" />활성</label>
 			<label><input type="radio" name="api3-p1" value="false" checked />비활성</label>
 		</div>
-		<br> 
+		<br/> 
 		<input type="button" value="Run" class="popupBtn" onclick="changeOrigin()">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>

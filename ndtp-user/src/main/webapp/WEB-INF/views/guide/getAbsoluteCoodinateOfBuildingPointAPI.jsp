@@ -42,7 +42,7 @@
 				<td>절대 좌표 x, y, z</td>
 			</tr>
 		</table>
-		<br>
+		<br/>
 		<h4>리턴</h4>
 		<table>
 			<tr>
@@ -54,16 +54,16 @@
 				<td>절대 좌표 x, y, z</td>
 			</tr>
 		</table>
-		<br>
+		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			projectId : <input type="text" id="api33-p1" value="sample"><br>
-			dataKey : <input type="text" id="api33-p2" value="SOCIALROOM"><br>
-			inputPoint_x : <input type="text" id="api33-p3" value="-3158185.8634899906"><br> 
-			inputPoint_y : <input type="text" id="api33-p4" value="4713784.056940694"><br>
+			projectId : <input type="text" id="api33-p1" value="sample"><br/>
+			dataKey : <input type="text" id="api33-p2" value="SOCIALROOM"><br/>
+			inputPoint_x : <input type="text" id="api33-p3" value="-3158185.8634899906"><br/> 
+			inputPoint_y : <input type="text" id="api33-p4" value="4713784.056940694"><br/>
 			inputPoint_z : <input type="text" id="api33-p5" value="4516771.367915208">
 		</div>
-		<br> <input type="button" value="Run" class="popupBtn"
+		<br/> <input type="button" value="Run" class="popupBtn"
 			onclick="getAbsoluteCoodinateOfBuildingPoint()">
 		결과<table id="api33-result"></table>
 	</div>

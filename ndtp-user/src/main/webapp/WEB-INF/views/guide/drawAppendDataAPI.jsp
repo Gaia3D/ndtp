@@ -38,17 +38,17 @@
 				<td>프로젝트 f4d 파일 경로</td>
 			</tr>
 		</table>
-		<br>
+		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label>projectIdArray :</label>
-			<input type="text" id="api30-p1" value='["ifc, ifc1, ifc2"]'><br>
+			<input type="text" id="api30-p1" value='["ifc, ifc1, ifc2"]'><br/>
 			<label>projectDataArray :</label>
-			<input type="text" id="api30-p2" value='["factory, factory1, factory2"]'><br>
+			<input type="text" id="api30-p2" value='["factory, factory1, factory2"]'><br/>
 			<label>projectDataFolderArray :</label>
 			<input type="text" id="api30-p3" value='["D:\reposit, D:\reposit1, D:\reposit2"]'>
 		</div>
-		<br> 
+		<br/> 
 		<input type="button" value="Run" class="popupBtn" onclick="drawAppendData()">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>

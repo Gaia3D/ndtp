@@ -28,7 +28,7 @@
 				<td>위치 단위 (기본값 : 1) 0 : 미터, 1 : 도(degree), 2 : 라디안(radian)</td>
 			</tr>
 		</table>
-		<br>
+		<br/>
 		<h4>리턴</h4>
 		<table>
 			<tr>
@@ -40,7 +40,7 @@
 				<td>현재 카메라의 위치</td>
 			</tr>
 		</table>
-		<br>
+		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<p>unit :</p>
@@ -48,7 +48,7 @@
 			<label><input type="radio" name="api34-p1" value="1" />도</label> 
 			<label><input type="radio" name="api34-p1" value="2" checked />라디안</label>
 		</div>
-		<br> 
+		<br/> 
 		<input type="button" value="Run" class="popupBtn" onclick="getCameraCurrentPosition()">
 		결과 :<table id="api34-result"></table>
 	</div>

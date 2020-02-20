@@ -62,27 +62,27 @@
 				<td>좌, 우 기울기</td>
 			</tr>
 		</table>
-		<br>
+		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label>projectId :</label>
-			<input type="text" id="api8-p1" value="sample"><br>
+			<input type="text" id="api8-p1" value="sample"><br/>
 			<label>dataKey :</label>
-			<input type="text" id="api8-p2" value="SOCIALROOM"><br>
+			<input type="text" id="api8-p2" value="SOCIALROOM"><br/>
 			<label>longitude :</label>
-			<input type="text" id="api8-p3" value="127.0000"><br>
+			<input type="text" id="api8-p3" value="127.0000"><br/>
 			<label>latitude :</label>
-			<input type="text" id="api8-p4" value="37.000"><br>
+			<input type="text" id="api8-p4" value="37.000"><br/>
 			<label>height :</label>
-			<input type="text" id="api8-p5" value="550"><br>
+			<input type="text" id="api8-p5" value="550"><br/>
 			<label>heading :</label>
-			<input type="text" id="api8-p6" value="0"><br>
+			<input type="text" id="api8-p6" value="0"><br/>
 			<label>pitch :</label>
-			<input type="text" id="api8-p7" value="0"><br>
+			<input type="text" id="api8-p7" value="0"><br/>
 			<label>roll :</label>
 			<input type="text" id="api8-p8" value="0">
 		</div>
-		<br> 
+		<br/> 
 		<input type="button" value="Run" class="popupBtn" onclick="changeLocationAndRotation()">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>

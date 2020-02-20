@@ -32,15 +32,15 @@
 				<td>데이터 고유키</td>
 			</tr>
 		</table>
-		<br>
+		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label><input type="radio" name="api15-p1" value="true" />활성</label>
-			<label><input type="radio" name="api15-p1" value="false" checked />비활성</label><br>
+			<label><input type="radio" name="api15-p1" value="false" checked />비활성</label><br/>
 			<label>dataKey :</label>
 			<input type="text" id="api15-p2" value="SOCIALROOM">
 		</div>
-		<br> 
+		<br/> 
 		<input type="button" value="Run" class="popupBtn" onclick="changeOcclusionCulling()">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>

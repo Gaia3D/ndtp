@@ -52,23 +52,23 @@
 				<td>lod5이 적용될 최소거리</td>
 			</tr>
 		</table>
-		<br>
+		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label>lod0DistInMeters :</label>
-			<input type="text" id="api19-p1" value="15"><br>
+			<input type="text" id="api19-p1" value="15"><br/>
 			<label>lod1DistInMeters :</label>
-			<input type="text" id="api19-p2" value="60"><br>
+			<input type="text" id="api19-p2" value="60"><br/>
 			<label>lod2DistInMeters :</label>
-			<input type="text" id="api19-p3" value="90"><br>
+			<input type="text" id="api19-p3" value="90"><br/>
 			<label>lod3DistInMeters :</label>
-			<input type="text" id="api19-p4" value="200"><br>
+			<input type="text" id="api19-p4" value="200"><br/>
 			<label>lod4DistInMeters :</label>
-			<input type="text" id="api19-p5" value="1000"><br>
+			<input type="text" id="api19-p5" value="1000"><br/>
 			<label>lod5DistInMeters :</label>
 			<input type="text" id="api19-p6" value="500000">
 		</div>
-		<br> <input type="button" value="Run" class="popupBtn" onclick="changeLod()">
+		<br/> <input type="button" value="Run" class="popupBtn" onclick="changeLod()">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

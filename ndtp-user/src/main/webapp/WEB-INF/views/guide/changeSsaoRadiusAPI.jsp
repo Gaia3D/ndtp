@@ -27,13 +27,13 @@
 				<td>그림자 반경</td>
 			</tr>
 		</table>
-		<br>
+		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label>ssaoRadius :</label>
 			<input type="text" id="api21-p1" value="0.15">
 		</div>
-		<br> 
+		<br/> 
 		<input type="button" value="Run" class="popupBtn" onclick="changeSsaoRadius()">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>

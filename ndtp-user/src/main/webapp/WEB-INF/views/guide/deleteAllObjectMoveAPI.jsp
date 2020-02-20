@@ -27,7 +27,7 @@
 				<td>0 = All, 1 = Object, 2 = None</td>
 			</tr>
 		</table>
-		<br>
+		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<p>objectMoveMode :</p>
@@ -35,7 +35,7 @@
 			<label><input type="radio" name="api11-p1" value="1" />object</label> 
 			<label><input type="radio" name="api11-p1" value="2" checked />non</label>
 		</div>
-		<br> 
+		<br/> 
 		<input type="button" value="Run" class="popupBtn" onclick="deleteAllObjectMove()">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>

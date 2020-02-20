@@ -57,25 +57,25 @@
 				<td>높이</td>
 			</tr>
 		</table>
-		<br>
+		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label>drawType :</label>
-			<input type="text" id="api23-p1" value="1"><br>
+			<input type="text" id="api23-p1" value="1"><br/>
 			<label>issue_id :</label>
-			<input type="text" id="api23-p2" value="128"><br>
+			<input type="text" id="api23-p2" value="128"><br/>
 			<label>issue_type :</label>
-			<input type="text" id="api23-p3" value="ISSUE_TYPE_BUGGER"><br>
+			<input type="text" id="api23-p3" value="ISSUE_TYPE_BUGGER"><br/>
 			<label>data_key :</label>
-			<input type="text" id="api23-p4" value="factory"><br>
+			<input type="text" id="api23-p4" value="factory"><br/>
 			<label>longitude :</label>
-			<input type="text" id="api23-p5" value="127.000"><br>
+			<input type="text" id="api23-p5" value="127.000"><br/>
 			<label>latitude :</label>
-			<input type="text" id="api23-p6" value="37.000"><br>
+			<input type="text" id="api23-p6" value="37.000"><br/>
 			<label>height :</label>
 			<input type="text" id="api23-p7" value="550">
 		</div>
-		<br> 
+		<br/> 
 		<input type="button" value="Run" class="popupBtn" onclick="drawInsertIssueImage()">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
