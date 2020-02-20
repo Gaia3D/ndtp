@@ -1,6 +1,8 @@
 var IssueController = function(magoInstance) {
 	var option = {
-			imageFilePath         : "/images/ko/exclam_16.png"
+		imageFilePath         : "/images/ko/exclam_32.png",
+		sizeX 				  : 32,
+		sizeY 				  : 32
 	};
 	this.magoInstance = magoInstance;
 	
