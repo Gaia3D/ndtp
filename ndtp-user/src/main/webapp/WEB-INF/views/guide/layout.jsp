@@ -170,6 +170,8 @@ magoInit2();
 
 function magoInit2() {
 	var geoPolicyJson = ${geoPolicyJson};
+	geoPolicyJson.initAltitude = 250.0;
+	console.log(geoPolicyJson);
 	var cesiumViewerOption = {};
 	cesiumViewerOption.infoBox = false;
 	cesiumViewerOption.navigationHelpButton = false;
@@ -200,7 +202,6 @@ function magoLoadEnd2(e) {
 		success: function(res){
 			if(res) {
 				var policy = Mago3D.MagoConfig.getPolicy();
-				console.log(res);
 				var initLat = parseFloat(policy.initLatitude);
 				var initLon = parseFloat(policy.initLongitude);
 				var childs = res.children;
