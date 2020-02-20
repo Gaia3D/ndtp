@@ -123,7 +123,7 @@
 
 		for(var i = 1; i<apiList.length+1; i++){
 			
-			if($('.paramContainer').get(i-1).innerHTML){
+			if($('.paramContainer').get(i)){
 				
 			$(".popupSub").children('ul').append("<li class=\"item\"><a class=\"name\" href=\"#\" onclick=\"changeToggleTab(api"+i+");\">"+apiList[i]+"</a></li>");
 			var parmScript = document.createTextNode(($('.paramContainer').get(i-1).innerHTML).replace(/\s{2,}/gi, ' '));
