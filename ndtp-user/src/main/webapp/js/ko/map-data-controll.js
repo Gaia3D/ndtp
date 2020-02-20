@@ -16,7 +16,10 @@ var MapDataControll = function(magoInstance) {
 			dataId = data.dataId;
 			dataKey = data.nodeId;
 			projectId = data.projectId;
-			var title = projectId + ' / ' + (data.data_name || data.nodeId);
+			
+			var dataGroupName = NDTP.dataGroup.get(projectId);
+			
+			var title = dataGroupName + ' / ' + (data.data_name || data.nodeId);
 			$header.text(title);
 			
 			var currentGeoLocData = f4d.getCurrentGeoLocationData();
@@ -204,7 +207,10 @@ var MapDataControll = function(magoInstance) {
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						alert(JS_MESSAGE["update"]);
-					} else if (msg.statusCode == 428) {
+					} else if(msg.statusCode === 403) {
+						//data.smart.tiling
+						alert("변경 권한(Smart Tiling)이 존재하지 않습니다.");
+					} else if (msg.statusCode === 428) {
 						if(confirm(JS_MESSAGE[msg.errorCode])) {
 							$('input[name="dataId"]').val(dataId);
 							var formData = $('#dcRotLocForm').serialize();
@@ -276,8 +282,8 @@ var MapDataControll = function(magoInstance) {
 	function setIssueFormValue(f4d, objectId, coord) {
 		if(f4d) {
 			var data = f4d.data;
-			var tempDataGroupName = data.projectFolderName;
-			var dataGroupName = tempDataGroupName.split("/").reverse()[0];
+			projectId = data.projectId;
+			var dataGroupName = NDTP.dataGroup.get(projectId);
 			
 			$("#issueDataId").val(data.dataId);
 			$("#issueDataKey").val(data.nodeId);

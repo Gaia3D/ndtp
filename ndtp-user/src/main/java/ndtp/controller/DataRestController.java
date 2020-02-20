@@ -197,13 +197,6 @@ public class DataRestController {
 		return result;
 	}
 	
-	private Map<String, Object> createUpdateRequestResult(Map<String, Object> result) {
-		result.put("statusCode", HttpStatus.PRECONDITION_REQUIRED.value());
-		result.put("errorCode", "data.update.request.check");
-		result.put("message", null);
-		return result;
-	}
-	
 	/**
 	 * 사용자 데이터 수정
 	 * @param request
@@ -212,8 +205,7 @@ public class DataRestController {
 	 * @return
 	 */
 	@PostMapping("/{dataId}")
-	public Map<String, Object> update(HttpServletRequest request, @PathVariable Long dataId, 
-										@ModelAttribute DataInfo dataInfo) {
+	public Map<String, Object> update(HttpServletRequest request, @PathVariable Long dataId, @ModelAttribute DataInfo dataInfo) {
 		
 		log.info("@@@@@ update dataInfo = {}, dataId = {}", dataInfo, dataId);
 		
@@ -233,19 +225,25 @@ public class DataRestController {
 				return result;
 			}
 			
-			DataInfo preDataInfo = new DataInfo();
 			//dataInfo.setUserId(userSession.getUserId());
 			dataInfo.setDataId(dataId);
-			preDataInfo = dataService.getData(dataInfo);
-			String groupTarget = preDataInfo.getDataGroupTarget();
+			dataInfo = dataService.getData(dataInfo);
+			String groupTarget = dataInfo.getDataGroupTarget();
 			
 			// 관리자가 업로드 한 경우
 			if (ServerTarget.ADMIN == ServerTarget.valueOf(groupTarget.toUpperCase())) {
-				// 변경요청
-				return createUpdateRequestResult(result);
+				if(dataInfo.getTiling()) {
+					result.put("statusCode", HttpStatus.FORBIDDEN.value());
+					result.put("errorCode", "data.smart.tiling");
+					result.put("message", null);
+					return result;
+				} else {
+					// 변경요청
+					return createUpdateRequestResult(result);
+				}
 			} else if (ServerTarget.USER == ServerTarget.valueOf(groupTarget.toUpperCase())) {
 				// 로그인한 아이디와 요청한 아이디가 같을 경우
-				if (userSession.getUserId().equals(preDataInfo.getUserId())) {
+				if (userSession.getUserId().equals(dataInfo.getUserId())) {
 					BigDecimal longitude = dataInfo.getLongitude();
 					BigDecimal latitude = dataInfo.getLatitude();
 					if(longitude != null && latitude != null) {
@@ -268,6 +266,13 @@ public class DataRestController {
 		result.put("statusCode", statusCode);
 		result.put("errorCode", errorCode);
 		result.put("message", message);
+		return result;
+	}
+	
+	private Map<String, Object> createUpdateRequestResult(Map<String, Object> result) {
+		result.put("statusCode", HttpStatus.PRECONDITION_REQUIRED.value());
+		result.put("errorCode", "data.update.request.check");
+		result.put("message", null);
 		return result;
 	}
 	

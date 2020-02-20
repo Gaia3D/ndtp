@@ -213,7 +213,9 @@ public class CivilVoiceRestController {
 			if(civilVoice.getLongitude() != null && civilVoice.getLatitude() != null) {
 				civilVoice.setLocation("POINT(" + civilVoice.getLongitude() + " " + civilVoice.getLatitude() + ")");
 			}
-			civilVoiceService.insertCivilVoice(civilVoice);
+			civilVoice = civilVoiceService.insertCivilVoice(civilVoice);
+			
+			result.put("civilVoiceId", civilVoice.getCivilVoiceId());
 		} catch (Exception e) {
 			e.printStackTrace();
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
@@ -259,7 +261,9 @@ public class CivilVoiceRestController {
 			if(civilVoice.getLongitude() != null && civilVoice.getLatitude() != null) {
 				civilVoice.setLocation("POINT(" + civilVoice.getLongitude() + " " + civilVoice.getLatitude() + ")");
 			}
-			civilVoiceService.updateCivilVoice(civilVoice);
+			civilVoice = civilVoiceService.updateCivilVoice(civilVoice);
+			
+			result.put("civilVoiceId", civilVoice.getCivilVoiceId());
 		} catch (Exception e) {
 			e.printStackTrace();
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();

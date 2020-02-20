@@ -155,10 +155,16 @@
             layer_id, layer_group_id, sharing, layer_name, layer_key, service_type, layer_type, geometry_type,
             layer_line_color, layer_line_style, layer_fill_color, layer_alpha_style, default_display, available,
             label_display, coordinate, description, z_index, user_id, layer_insert_type, cache_available
+            <if test="viewOrder != null and viewOrder gt 0">
+				, view_order
+			</if>
         ) VALUES (
          #{layerId}, #{layerGroupId}, #{sharing}, #{layerName}, #{layerKey}, #{serviceType}, #{layerType}, #{geometryType},
          #{layerLineColor}, #{layerLineStyle}, #{layerFillColor}, #{layerAlphaStyle}, #{defaultDisplay}, #{available},
          #{labelDisplay}, #{coordinate}, #{description}, #{zIndex}, #{userId}, #{layerInsertType}, #{cacheAvailable}
+         <if test="viewOrder != null and viewOrder gt 0">
+			, #{viewOrder}
+		 </if>
         )
     </insert>
 
@@ -208,6 +214,9 @@
 	        z_index = #{zIndex},
 	        user_id = #{userId},
 	        cache_available = #{cacheAvailable},
+	        <if test="viewOrder != null and viewOrder gt 0">
+			view_order = #{viewOrder},
+			</if>
 	        update_date = NOW()
         WHERE layer_id = #{layerId}
     </update>
