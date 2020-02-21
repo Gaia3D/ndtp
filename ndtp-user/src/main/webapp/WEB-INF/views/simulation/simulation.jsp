@@ -165,7 +165,7 @@
 <%--					<button type="button" id="testFly" class="btnTextF" style="margin-top:10px;">Fly Test</button>--%>
 <%--					<button type="button" id="testingPicking" class="btnTextF" style="margin-top:10px;">testingPicking</button>--%>
 
-					<button type="button" id="testBuilding" class="btnTextF" style="margin-top:10px;">testBuilding</button>
+					<button type="button" id="testBuilding" class="btnTextF" style="margin-top:10px; display:none;">testBuilding</button>
 					<button type="button" id="comment" class="btnTextF" style="margin-top:10px;">comment</button>
 				</li>
 
@@ -288,7 +288,6 @@
 
 	$("#permView").on('click', function() {
 		// todo: change data
-		debugger;
 		let data = {
 			isComplete: "N",
 			constructor: "건축주1",
@@ -313,6 +312,7 @@
 				permViewDialog.dialog("open");
 			},
 			error:function(request,status,error) {
+				alert('error');
 				console.log("err=", request, status, error);
 			}
 		});

@@ -70,6 +70,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				"data_name": "conversionResult",
 			    "mapping_type": "origin"
 			}
+		
 		for(var i = 0; i < SampleJsonSejon.length; i++) {
 			var obj = SampleJsonSejon[i];
 			var dataKey = obj.data_key;
@@ -300,7 +301,6 @@ var Simulation = function(magoInstance, viewer, $) {
 			$('#saRange').hide();
 			
 			if(!cache[dataName]) {
-				debugger;
 				if(dataName.indexOf('tiles') > 0) {
 //					magoManager.getObjectIndexFileSmartTileF4d(dataName);
 //					magoManager.on(Mago3D.MagoManager.EVENT_TYPE.SMARTTILELOADEND, smartTileLoaEndCallbak);
@@ -360,7 +360,10 @@ var Simulation = function(magoInstance, viewer, $) {
             cache: false,
             timeout: 600000,
             success: function (data) {
-            	alert("complete");
+            	$.growl.notice({
+            		message: "파일업로드가 완료되었습니다",
+            		duration: 1000
+            	});
             	stopLoading();
             },
             error: function (e) {
@@ -851,7 +854,7 @@ var Simulation = function(magoInstance, viewer, $) {
                     }
                     this._polylines.push(createPoint(tempPosition));	
                 } else if (runAllocBuildStat === "autoBuild") {
-                	genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 100, "sample.gltf")
+                	genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.02, "Apartment_Building_26_obj.gltf")
                 } else if(runAllocBuildStat === "imsiBuildSelect") {
                 	// 새로운 모델 선택
                 	
@@ -1023,11 +1026,11 @@ var Simulation = function(magoInstance, viewer, $) {
 	  		model.show = true;
 	  		
 	  		for(var i = 0; i < model._nodeCommands.length; i++) {
-	  			var timedata = 1 * i;
+	  			var timedata = 100 * i;
 	  			function showAnimationModel(i) {
 		  			setTimeout(function() {
 			  			model._nodeCommands[i].show = true;		
-			    	}, 10);
+			    	}, timedata);
 	  			}
 	  			showAnimationModel(i);
 	    	}
@@ -1064,17 +1067,23 @@ var Simulation = function(magoInstance, viewer, $) {
     	    
     	}
 
+//    	var entitiyObj = new Cesium.Entity({
+//	    	position: position,
+//	        billboard : {
+//	            image : pinBuilder.fromText('?', Cesium.Color.BLACK, 48).toDataURL(),
+//	            verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+//	            eyeOffset: new Cesium.Cartesian3(0, 3.0504106, 0)
+//	        },
+//	        model : defaultModel,
+//	        show : false
+//	    });
+
     	var entitiyObj = new Cesium.Entity({
 	    	position: position,
-	        billboard : {
-	            image : pinBuilder.fromText('?', Cesium.Color.BLACK, 48).toDataURL(),
-	            verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-	            eyeOffset: new Cesium.Cartesian3(0, 3.0504106, 0)
-	        },
 	        model : defaultModel,
 	        show : false
 	    });
-
+    	
     	entitiyObj.type = "constructionProcess"
     	_bsConstructProcessModels.push(entitiyObj);
     	
@@ -1302,7 +1311,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	
 	function initConsturctProcessModel() {
 		for(var index = 0; index < 6; index++) {
-			genConsProcBuild(126.90497956470877, 37.521051475771344, 0, 0.0025, "NewFeatureType"+index+".gltf", 80);
+			genConsProcBuild(126.90497956470877, 37.521051475771344, -5, 0.0025, "NewFeatureType"+index+".gltf", 80);
 		}
 	}
 	
