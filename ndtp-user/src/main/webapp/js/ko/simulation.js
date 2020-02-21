@@ -26,11 +26,13 @@ var Simulation = function(magoInstance) {
 	var simulSolarDialog = $( "#simulSolarDialog" ).dialog({
 		autoOpen: false,
 		width: 500,
-		height: 205,
+		height: 240,
 		modal: true,
 		overflow : "auto",
 		resizable: false
 	});
+	
+	var solarDefaultTime = [12,15,12,9];
 
 	var timeSlider;
 	var solarMode = false;
@@ -50,7 +52,6 @@ var Simulation = function(magoInstance) {
 				} else {
 					html += '<span style="margin-left:19px;">' + i + '</span>';
 				}
-				
 			}
 			
 			$('#saRange .rangeWrapChild.legend').html(html);
@@ -66,8 +67,10 @@ var Simulation = function(magoInstance) {
 		//레인지 보이기
 		$('#saRange').show();
 		$('#csRange').hide();
+		
 		magoInstance.getViewer().scene.globe.enableLighting = true;
 		magoManager.sceneState.setApplySunShadows(true);
+		
 		$('#shadowDisplayY').prop('checked',true);
 		$reportBtn.show();
 		solarMode = true;
@@ -80,28 +83,46 @@ var Simulation = function(magoInstance) {
 		var $this = $(this);
 		magoManager.once(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(e){
 			deleteSolarMark();
-			var geoCoord = e.clickCoordinate.geographicCoordinate;
-			$this.siblings('input').val(geoCoord.longitude.toFixed(4) + ' , ' + geoCoord.latitude.toFixed(4));
-			var sb = magoManager.speechBubble;
-			
-			var options = {
-				positionWC    : e.clickCoordinate.worldCoordinate,
-				imageFilePath : sb.getPng([64,40],'#D9E364', {
-					text : '일조 분석',
-					pixel : 12,
-					color : 'black',
-					borderColor : 'white'
-				})
-			};
-			var om = magoManager.objMarkerManager.newObjectMarker(options, magoManager);
-			om.solarAnalysis = true;
+			if(solarMode) {
+				var geoCoord = e.clickCoordinate.geographicCoordinate;
+				$this.siblings('input').val(geoCoord.longitude.toFixed(4) + ' , ' + geoCoord.latitude.toFixed(4));
+				var sb = magoManager.speechBubble;
+				
+				var options = {
+					positionWC    : e.clickCoordinate.worldCoordinate,
+					imageFilePath : sb.getPng([64,40],'#D9E364', {
+						text : '일조 분석',
+						pixel : 12,
+						color : 'black',
+						borderColor : 'white'
+					})
+				};
+				var om = magoManager.objMarkerManager.newObjectMarker(options, magoManager);
+				om.solarAnalysis = true;
+			}
 		});
 	});
 	
 	$reportBtn.click(function() {
+		var filtered = magoManager.objMarkerManager.objectMarkerArray.filter(function(om){
+			return om.solarAnalysis;
+		});
+		
+		if(filtered.length !== 1) {
+			alert('위치를 지정해주시기 바랍니다.');
+			return;
+		}
+		var om = filtered[0];
 		simulSolarDialog.dialog('open');
+		var geoCoord = om.geoLocationData.geographicCoord;
+		var ratio = geoCoord.altitude / 100;
+		
+		$('#simulSolarDialog tbody td').each(function(idx,elem){
+			var dTime = solarDefaultTime[idx] * ratio / 2;
+			dTime = dTime.toFixed(2);
+			$(elem).text(dTime);
+		});
 	})
-	
 	
 	//경관 분석 취소
 	$('#solarAnalysis .reset').click(function(){
