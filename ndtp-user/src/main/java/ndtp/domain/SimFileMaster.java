@@ -2,6 +2,8 @@ package ndtp.domain;
 
 import java.util.Date;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.*;
 
 @Data
@@ -17,5 +19,12 @@ public class SimFileMaster {
 	private String saveFilePath;
 	private Date createDt;
 	private FileType saveFileType;
-
+	private Float lon;
+	private Float lat;
+	private Float alt;
+	private String consType;
+	private String cityType;
+	private Integer cons_ratio;
+	private String objectid;
+	private MultipartFile[] files;
 }

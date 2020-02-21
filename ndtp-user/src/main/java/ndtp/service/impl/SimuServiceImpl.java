@@ -44,15 +44,12 @@ public class SimuServiceImpl {
 	}
 
 	@Transactional
-	public List<String> procStroeShp(MultipartFile[] files) {
+	public List<String> procStroeShp(MultipartFile[] files, FileType ft) {
 		String Path = "";
 		List<String> result = new ArrayList<String>();
 		for(MultipartFile mtf : files) {
 			String Name = mtf.getOriginalFilename();
-			if(!Name.contains(".geojson")) {
-				throw new IllegalArgumentException("target must be specified");
-			}
-			result.add(this.restore(mtf, FileType.ECHODELTASHP));
+			result.add(this.restore(mtf, ft));
 		}
 		return result;
 	}
@@ -106,6 +103,15 @@ public class SimuServiceImpl {
 			System.out.println("saveFileName : " + saveFileName);
 
 			if(ft == FileType.ECHODELTASHP) {
+				this.writeFile(multipartFile, saveFileName, SAVE_PATH);
+				SimFileMaster sfm = SimFileMaster.builder()
+						.originFileName(originFilename)
+						.saveFileName(saveFileName)
+						.saveFilePath(SAVE_PATH)
+						.saveFileType(ft)
+						.build();
+				int result = simuMapper.insertSimCityPlanFile(sfm);
+			} else if(ft == FileType.ACCEPTBUILD) {
 				this.writeFile(multipartFile, saveFileName, SAVE_PATH);
 				SimFileMaster sfm = SimFileMaster.builder()
 						.originFileName(originFilename)

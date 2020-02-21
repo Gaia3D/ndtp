@@ -25,8 +25,20 @@ var Simulation = function(magoInstance, viewer, $) {
     var selectEntity;
     var locaMonitor = false;
 	var magoManager = magoInstance.getMagoManager();
+	var f4dController = magoInstance.getF4dController();
 	
-
+	var L00  = new Cesium.Cartesian3( 0.170455150831422,  0.163151083190219,  0.196966760289763);
+	var L1_1 = new Cesium.Cartesian3(-0.066550267689383, -0.022088055746048,  0.078835009246127);
+	var L10  = new Cesium.Cartesian3( 0.038364097478591,  0.045714300098753,  0.063498904606215);
+	var L11  = new Cesium.Cartesian3(-0.014365363312810, -0.026490613715151, -0.050189404066020);
+	var L2_2 = new Cesium.Cartesian3(-0.051532786917890, -0.050777795729986, -0.056449044453032);
+	var L2_1 = new Cesium.Cartesian3( 0.043454596136534,  0.046672590104157,  0.057530107646610);
+	var L20  = new Cesium.Cartesian3(-0.001640466274110,  0.001286638231156,  0.007228908989616);
+	var L21  = new Cesium.Cartesian3(-0.042260855700641, -0.046394335094707, -0.057562936365585);
+	var L22  = new Cesium.Cartesian3(-0.004953478914091, -0.000479681664876,  0.008508150106928);
+	var coefficients = [L00, L1_1, L10, L11, L2_2, L2_1, L20, L21, L22];
+	var environmentMapURL = 'https://cesium.com/assets/kiara_6_afternoon_2k_ibl.ktx';
+	
     var runAllocBuildStat = "";
 
     var cityPlanTargetArea = 0; // 기준 면적
@@ -40,6 +52,56 @@ var Simulation = function(magoInstance, viewer, $) {
 	var observer;
 	var observerTarget = document.getElementById('simulationContent');
 	var observerConfig = { attributes: true};
+	
+	
+	function makeSampleJson() {
+		var object = {
+				"attributes": {
+					"isPhysical": false,
+					"nodeType": " root ",
+					"projectType": "collada",
+					"specularLighting": true
+				},
+				"children": [],
+				"parent": 0,
+				"depth": 1,
+				"view_order": 2,  	
+				"data_key": "conversionResult",
+				"data_name": "conversionResult",
+			    "mapping_type": "origin"
+			}
+		for(var i = 0; i < SampleJsonSejon.length; i++) {
+			var obj = SampleJsonSejon[i];
+			var dataKey = obj.data_key;
+			var lat = obj.latitude;
+			var lon = obj.longitude;
+			
+			var imsiObj = {
+				    "attributes": {
+				        "isPhysical": true,
+				        "nodeType": "daejeon",
+				        "flipYTexCoords": true
+				    },
+				    "children": [],
+				    "data_key": "7D6_1",
+				    "data_name": "7D6_1",
+				    "mapping_type":"origin",
+				    "longitude": 127.284010,
+				    "latitude": 36.473449,
+				    "height": 29.067726,
+				    "heading": 0.000000,
+				    "pitch": 0.000000,
+				    "roll": 0.000000
+				};
+			
+			imsiObj.data_key = dataKey;
+			imsiObj.data_name = dataKey;
+			imsiObj.latitude = lat;
+			imsiObj.longitude = lon;
+			object.children.push(imsiObj);
+		}
+		return object; 
+	}
 	
 	
 	var datepicker = new tui.DatePicker('#solayDatePicker', {
@@ -146,6 +208,13 @@ var Simulation = function(magoInstance, viewer, $) {
 		magoManager.sceneState.sunSystem.setDate(date);
 	}
 	
+	$('#constUploadBtn').click(function() {
+		constProcUploadDialog.dialog("open");
+		$('#cons_proc_lon').text($('#monitorLon').val());
+		$('cons_proc_lat').text($('#monitorLon').val());
+		$('cons_proc_alt').text($('#monitorLon').val());
+	});
+	
 	var cache = {};
 	var SEJONG_TILE_NAME = 'sejong_time_series_tiles';
 	var BUSAN_TILE_NAME = 'busan_time_series_tiles';
@@ -162,47 +231,61 @@ var Simulation = function(magoInstance, viewer, $) {
 		var initPosition;
 		if(targetArea === 's') {
 			
-			dataName = SEJONG_TILE_NAME;
-			initPosition = SEJONG_POSITION;
+			var msj = makeSampleJson();
+			debugger;
+			var policy = Mago3D.MagoConfig.getPolicy();
+			var initLat = parseFloat(policy.initLatitude);
+			var initLon = parseFloat(policy.initLongitude);
+			var childs = msj.children;
+			f4dController.addF4dGroup(msj);
+			_viewer.camera.flyTo({
+			    destination : Cesium.Cartesian3.fromDegrees(126.9785978787040,  37.56690158584144, 1000)
+			});
+			
+			debugger;
+			
+//			dataName = SEJONG_TILE_NAME;
+//			initPosition = SEJONG_POSITION;
 
-			if(!slider) {
-				slider = new KotSlider('rangeInput');
-			}
+//			if(!slider) {
+//				slider = new KotSlider('rangeInput');
+//			}
 			
-			//레인지, 레전드 보이기
-			$('#csRange, #constructionProcess .profileInfo').show();
-			$('#saRange').hide();
+//			//레인지, 레전드 보이기
+//			$('#csRange, #constructionProcess .profileInfo').show();
+//			$('#saRange').hide();
+//			
+//			//slider.setValue(0);
+//			simulating = true;
+//			if(!cache[dataName]) {
+//				if(dataName.indexOf('tiles') > 0) {
+//					magoManager.getObjectIndexFileSmartTileF4d(dataName);
+//					magoManager.on(Mago3D.MagoManager.EVENT_TYPE.SMARTTILELOADEND, smartTileLoaEndCallbak);
+//					
+//					var html = '';
+//					html += '<span>1단계</span>';
+//					html += '<span>2단계</span>';
+//					html += '<span>3단계</span>';
+//					html += '<span>4단계</span>';
+//					html += '<span>5단계</span>';
+//					html += '<span>6단계</span>';
+//					
+//					$('#csRange .rangeWrapChild.legend').html(html);
+//					$('#csRange .rangeWrapChild.legend').on('click','span',function(){
+//						slider.setValue($(this).index());
+//					});
+//				}
+//			}
+//			
+//			var dis = Math.abs(Cesium.Cartesian3.distance(initPosition, MAGO3D_INSTANCE.getViewer().camera.position));
+//			if(dis > CAMERA_MOVE_NEED_DISTANCE) {
+//				magoInstance.getViewer().camera.flyTo({
+//					destination:initPosition,
+//					duration : 1
+//				});
+//			}
+//			setObserver();
 			
-			//slider.setValue(0);
-			simulating = true;
-			if(!cache[dataName]) {
-				if(dataName.indexOf('tiles') > 0) {
-					magoManager.getObjectIndexFileSmartTileF4d(dataName);
-					magoManager.on(Mago3D.MagoManager.EVENT_TYPE.SMARTTILELOADEND, smartTileLoaEndCallbak);
-					
-					var html = '';
-					html += '<span>1단계</span>';
-					html += '<span>2단계</span>';
-					html += '<span>3단계</span>';
-					html += '<span>4단계</span>';
-					html += '<span>5단계</span>';
-					html += '<span>6단계</span>';
-					
-					$('#csRange .rangeWrapChild.legend').html(html);
-					$('#csRange .rangeWrapChild.legend').on('click','span',function(){
-						slider.setValue($(this).index());
-					});
-				}
-			}
-			
-			var dis = Math.abs(Cesium.Cartesian3.distance(initPosition, MAGO3D_INSTANCE.getViewer().camera.position));
-			if(dis > CAMERA_MOVE_NEED_DISTANCE) {
-				magoInstance.getViewer().camera.flyTo({
-					destination:initPosition,
-					duration : 1
-				});
-			}
-			setObserver();
 		} else {
 			initConsturctProcessModel(); 
 			dataName = BUSAN_TILE_NAME;
@@ -241,7 +324,6 @@ var Simulation = function(magoInstance, viewer, $) {
 			}
 			dispConstructProcessModel(0);
 			
-
 //			genBillboard(126.90497956470877, 37.521051475771344);
 			_viewer.camera.flyTo({
 			    destination : Cesium.Cartesian3.fromDegrees(126.90497956470877,  37.521051475771344, 1000)
@@ -769,7 +851,7 @@ var Simulation = function(magoInstance, viewer, $) {
                     }
                     this._polylines.push(createPoint(tempPosition));	
                 } else if (runAllocBuildStat === "autoBuild") {
-                	genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.025, "Apartment_Building_26_obj.gltf")
+                	genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 100, "sample.gltf")
                 } else if(runAllocBuildStat === "imsiBuildSelect") {
                 	// 새로운 모델 선택
                 	
@@ -915,6 +997,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	    // fromGltf 함수를 사용하여 key : value 값으로 요소를 지정
 	    var name = '슬퍼하지마NONONO'; 
 	    // GLTF 모델 데이터 삽입
+	    debugger;
 	    var _model = Cesium.Model.fromGltf({
 	        url : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName,
 	        modelMatrix : modelMatrix,
@@ -927,7 +1010,9 @@ var Simulation = function(magoInstance, viewer, $) {
 	    _model.areaVal = 714;
 	    _model.floorNum = 6;
 	    _cityPlanModels.push(_model);
+	    
 	    var primiti_model = _viewer.scene.primitives.add(_model);
+	    
 	    viewer.scene.primitives.add(primiti_model);
 	    Cesium.when(primiti_model.readyPromise).then(function(model) {
 	    	  clacArea();
@@ -938,11 +1023,11 @@ var Simulation = function(magoInstance, viewer, $) {
 	  		model.show = true;
 	  		
 	  		for(var i = 0; i < model._nodeCommands.length; i++) {
-	  			var timedata = 100 * i;
+	  			var timedata = 1 * i;
 	  			function showAnimationModel(i) {
 		  			setTimeout(function() {
 			  			model._nodeCommands[i].show = true;		
-			    	}, timedata);	
+			    	}, 10);
 	  			}
 	  			showAnimationModel(i);
 	    	}
@@ -997,7 +1082,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	    
     }
 
-	function genBillboard(lon, lat, alt) {
+	function genAcceptBuild(lon, lat, alt) {
     	var pinBuilder = new Cesium.PinBuilder();
     	var questionPin = viewer.entities.add({
 	    name : 'Question mark',
@@ -1009,9 +1094,20 @@ var Simulation = function(magoInstance, viewer, $) {
     	});
 	}
     
+	
+	// 다이얼로그 객체
     var selectBuildDialog = $( "#selectBuildDialog" ).dialog({
 		autoOpen: false,
 		width: 200,
+		height: 200,
+		modal: true,
+		overflow : "auto",
+		resizable: false
+	});
+    
+    var constProcUploadDialog = $('#constructionProcessUploadDialog').dialog({
+		autoOpen: false,
+		width: 370,
 		height: 200,
 		modal: true,
 		overflow : "auto",
@@ -1098,10 +1194,12 @@ var Simulation = function(magoInstance, viewer, $) {
 			}
 		});
 	})
+	
 	$("#resultCityPlanDlgCle").click(function() {
 		
 		
 	})
+	
 	$("#locaMonitorChk").change(function(data) {
 		if(this.checked) {
 			locaMonitor = true;
@@ -1109,6 +1207,37 @@ var Simulation = function(magoInstance, viewer, $) {
 			locaMonitor = false;
 		}
 //		if($("input:checkbox[id='locaMonitorChk']").is(":checked") === true)
+	})
+	
+	$('#upload_constructionProcess').click(function() {
+        var form = $('#construc_proc_file_upload')[0];
+        startLoading();
+	    // Create an FormData object 
+        var data = new FormData(form);
+        $.ajax({
+            type: "POST",
+            enctype: 'multipart/form-data',
+            url: "http://localhost/data/simulation-rest/cityConstProcUpload",
+            data: data,
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+                $.growl.notice({
+                    message: "파일업로드가 완료되었습니다",
+                    duration: 1000
+                });
+            	stopLoading();
+            },
+            error: function (e) {
+                $.growl.notice({
+                    message: "오류가 발생했습니다." + e,
+                    duration: 1000
+                });
+            	stopLoading();
+            }
+        });
 	})
 	
 	document.addEventListener('keydown', function(e) {
@@ -1120,7 +1249,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	    var verticalDegrees = 10.0;
 	    var viewRect = _viewer.camera.computeViewRectangle();
 	    var viewDirection = _viewer.camera.direction;
-	    // debugger;
+
 	    if (Cesium.defined(viewRect)) {
 	        horizontalDegrees *= Cesium.Math.toDegrees(viewRect.east - viewRect.west) / 360.0;
 	        verticalDegrees *= Cesium.Math.toDegrees(viewRect.north - viewRect.south) / 180.0;
@@ -1190,3 +1319,88 @@ var Simulation = function(magoInstance, viewer, $) {
 		
 	}
 }
+
+
+var SampleJsonSejon = [
+	   {
+		      "data_key" : "KSJ_100_0_0",
+		      "latitude" : 37.56690158584144,
+		      "longitude" : 126.9785978787040
+		   },
+		   {
+		      "data_key" : "KSJ_100_0_1",
+		      "latitude" : 37.56690158584144,
+		      "longitude" : 126.9785978787040
+		   },
+		   {
+		      "data_key" : "KSJ_100_0_2",
+		      "latitude" : 37.56690158584144,
+		      "longitude" : 126.9785978787040
+		   },
+		   {
+		      "data_key" : "KSJ_100_0_3",
+		      "latitude" : 37.56690158584144,
+		      "longitude" : 126.9785978787040
+		   },
+		   {
+		      "data_key" : "KSJ_100_1_0",
+		      "latitude" : 37.56690158584144,
+		      "longitude" : 126.9785978787040
+		   },
+		   {
+		      "data_key" : "KSJ_100_1_1",
+		      "latitude" : 37.56690158584144,
+		      "longitude" : 126.9785978787040
+		   },
+		   {
+		      "data_key" : "KSJ_100_1_2",
+		      "latitude" : 37.56690158584144,
+		      "longitude" : 126.9785978787040
+		   },
+		   {
+		      "data_key" : "KSJ_100_1_3",
+		      "latitude" : 37.56690158584144,
+		      "longitude" : 126.9785978787040
+		   },
+		   {
+		      "data_key" : "KSJ_100_1_4",
+		      "latitude" : 37.56690158584144,
+		      "longitude" : 126.9785978787040
+		   },
+		   {
+		      "data_key" : "KSJ_100_2_0",
+		      "latitude" : 37.56690158584144,
+		      "longitude" : 126.9785978787040
+		   },
+		   {
+		      "data_key" : "KSJ_100_2_1",
+		      "latitude" : 37.56690158584144,
+		      "longitude" : 126.9785978787040
+		   },
+		   {
+		      "data_key" : "KSJ_100_2_2",
+		      "latitude" : 37.56690158584144,
+		      "longitude" : 126.9785978787040
+		   },
+		   {
+		      "data_key" : "KSJ_100_2_3",
+		      "latitude" : 37.56690158584144,
+		      "longitude" : 126.9785978787040
+		   },
+		   {
+		      "data_key" : "KSJ_100_2_4",
+		      "latitude" : 37.56690158584144,
+		      "longitude" : 126.9785978787040
+		   },
+		   {
+		      "data_key" : "KSJ_100_3_0",
+		      "latitude" : 37.56690158584144,
+		      "longitude" : 126.9785978787040
+		   },
+		   {
+		      "data_key" : "KSJ_100_3_1",
+		      "latitude" : 37.56690158584144,
+		      "longitude" : 126.9785978787040
+		   }
+		]
+
