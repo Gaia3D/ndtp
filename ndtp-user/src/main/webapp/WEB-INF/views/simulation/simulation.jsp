@@ -184,6 +184,14 @@
 			<li>
 				<form id="construc_proc_file_upload" name="file_upload"method="post" enctype="multipart/form-data" action="simulation-rest/upload" style="width:100%" target="dummyConsProcessFrame">
 					<div>
+						<label for="">위도</label>
+						<input id="cons_proc_lon" class="" type="number" placeholder="" value="0">
+						<label for="">경도</label>
+						<input id="cons_proc_lat" class="" type="number" placeholder="" value="0">
+						<label for="">고도</label>
+						<input id="cons_proc_alt" class="" type="number" placeholder="" value="0">
+					</div>
+					<div>
 						<span style="display: inline-block;padding: 3px 0;margin-right: 20px;">위치</span>
 						<label style="width:26px;" for="cpSejong">세종</label>
 						<input style="width:20px;" type="radio" id="cpSejong" name="cpProtoArea" value="s" checked/>
@@ -248,7 +256,7 @@
 	$("#testBuilding").click(()=> {
 		console.log("testBuilding");
 		// genBuild(127.786754, 36.643957, 5);
-		genBuild(126.92377563766438, 37.5241752651257 , 0.3);
+		genAcceptBuild(126.92377563766438, 37.5241752651257 , 0.3);
 	});
 	var testingPickingDialog = $( "#testingPickingDialog" ).dialog({
 		autoOpen: false,
@@ -280,6 +288,7 @@
 
 	$("#permView").on('click', function() {
 		// todo: change data
+		debugger;
 		let data = {
 			isComplete: "N",
 			constructor: "건축주1",
@@ -332,13 +341,14 @@
 		});
 	}
 
-	function genBuild(lon, lat, scale) {
+	function genAcceptBuild(lon, lat, scale) {
 		var position = Cesium.Cartesian3.fromDegrees(lon, lat, 0);
 		var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
 		// fromGltf 함수를 사용하여 key : value 값으로 요소를 지정
-		var name = 'testObject';
+		var name = 'testObject.gltf';
+		debugger;
 		var model = whole_viewer.scene.primitives.add(Cesium.Model.fromGltf({
-			url : 'http://localhost/data/simulation-rest/cityPlanModelSelect',
+			url : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+name,
 			modelMatrix : modelMatrix,
 			scale : scale,
 			shadows : 1,
@@ -348,8 +358,12 @@
 		model.type = "accept";
 		whole_viewer.scene.primitives.add(model);
 		Cesium.when(model.readyPromise).then(function(model) {
+	        $.growl.notice({
+	            message: "파일등록이 완료되었습니다",
+	            duration: 1000
+	        });
 		}).otherwise(function(error){
-			window.alert(error);
+// 			window.alert(error);
 		});
 	}
 

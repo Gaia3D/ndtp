@@ -67,9 +67,23 @@ public class SimulationRestController {
 		// PROCESS...
 	}
 
+    @RequestMapping(value = "/cityConstProcUpload", method = RequestMethod.POST)
+    public List<String> upload(SimFileMaster sfm) {
+//    	List<String> result = this.simServiceImpl.procStroeShp(files);
+		return null;
+        // PROCESS...
+    }
+	
     @RequestMapping(value = "/cityPlanUpload", method = RequestMethod.POST)
-    public List<String> upload(MultipartFile[] files) {
-    	List<String> result = this.simServiceImpl.procStroeShp(files);
+    public List<String> cityPlanUpload(MultipartFile[] files) {
+    	List<String> result = this.simServiceImpl.procStroeShp(files, FileType.ECHODELTASHP);
+		return result;
+        // PROCESS...
+    }
+	
+    @RequestMapping(value = "/buildAcceptUpload", method = RequestMethod.POST)
+    public List<String> buildAcceptUpload(MultipartFile[] files) {
+    	List<String> result = this.simServiceImpl.procStroeShp(files, FileType.ACCEPTBUILD);
 		return result;
         // PROCESS...
     }
@@ -150,7 +164,6 @@ public class SimulationRestController {
 		String constructor_type = mReq.getParameter("constructor_type");
 		String birthday = mReq.getParameter("birthday");
 		String license_num = mReq.getParameter("license_num");
-		String phone_number = mReq.getParameter("phone_number");
 
 		//todo: change
 		StructPermission spObj = StructPermission.builder()
@@ -159,7 +172,6 @@ public class SimulationRestController {
 				.permOfficer("ndtp")
 				.birthday(birthday)
 				.licenseNum(license_num)
-				.phoneNumber(phone_number)
 				.isComplete("N")
 				.latitude("126.92377563766438")
 				.longitude("37.5241752651257")
@@ -170,7 +182,7 @@ public class SimulationRestController {
 
 		structPermissionMapper.insertStructPermission(spObj);
 
-		List<String> result = this.simServiceImpl.procStroeShp(files);
+		List<String> result = this.simServiceImpl.procStroeShp(files, FileType.ACCEPTBUILD);
 		return result;
 	}
 

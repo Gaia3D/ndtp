@@ -99,7 +99,8 @@
     });
     $('#permReqRegister').click(function() {
         setTimeout(() => {
-            genBuild(126.92377563766438, 37.5241752651257 , 0.3);
+        	debugger;
+        	genAcceptBuild(126.92377563766438, 37.5241752651257 , 0.3);
             $("#permRequestDialog").dialog("close");
         }, 300);
     });
