@@ -6,20 +6,20 @@
 			<ul class="analysisGroup">
 				<li>
 					<label for="">관찰자 위치</label>
-					<input class="" type="text" placeholder="" value=""/>
+					<input class="" type="text" placeholder="" value="" readonly/>
 					<button type="button" class="btnText drawObserverPoint">위치지정</button>
 				</li>
 				<li>
 					<label for="">날짜</label>
 					<!-- <input class="" type="text" id="solayDatePicker" placeholder="" value=""/> -->
-					 <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+					<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
 			            <input type="text" id="datepicker-input" aria-label="Date-Time">
 			            <span class="tui-ico-date"></span>
 			        </div>
 			        <div id="solayDatePicker" style="margin-top: -1px;"></div>
-
 				</li>
 				<li class="btns">
+					<button type="button" class="btnTextF report" title="일조분석 리포트" style="display:none;">리포트</button>
 					<button type="button" class="btnTextF execute" title="분석">분석</button>
 					<button type="button" class="btnText reset" title="취소">취소</button>
 				</li>

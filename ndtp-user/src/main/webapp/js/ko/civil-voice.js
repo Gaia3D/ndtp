@@ -9,7 +9,10 @@ function CivilVoiceControll(magoInstance, viewer) {
 	var that = this;
 	var magoManager = magoInstance.getMagoManager();
 	
-	var sb = new Mago3D.SpeechBubble();
+	if(!magoManager.speechBubble) {
+		magoManager.speechBubble = new Mago3D.SpeechBubble();
+	}
+	var sb = magoManager.speechBubble;
 	var bubbleColor = new Mago3D.Color(1,1,1);
 	var groupOption = {
 		imageFilePath : "defaultRed",
@@ -140,7 +143,7 @@ function CivilVoiceControll(magoInstance, viewer) {
 						
 						commentTextOption.text = commentCnt;
 						
-						var img = sb.getPng([32,32],bubbleColor, commentTextOption)
+						var img = sb.getPng([32,32],bubbleColor, commentTextOption);
 						
 						var options = {
 							positionWC    : Mago3D.ManagerUtils.geographicCoordToWorldPoint(point.x, point.y, 0),
