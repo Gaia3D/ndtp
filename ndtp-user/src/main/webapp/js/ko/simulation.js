@@ -2,7 +2,11 @@ var Simulation = function(magoInstance) {
 	var that = this;
 	var CAMERA_MOVE_NEED_DISTANCE = 5000;
 	
+	var $reportBtn = $('#solarAnalysis .report');
 	var magoManager = magoInstance.getMagoManager();
+	if(!magoManager.speechBubble) {
+		magoManager.speechBubble = new Mago3D.SpeechBubble();
+	}
 	
 	magoManager.on(Mago3D.MagoManager.EVENT_TYPE.SMARTTILELOADEND, smartTileLoaEndCallbak);
 	var observer;
@@ -17,6 +21,16 @@ var Simulation = function(magoInstance) {
             format: 'yyyy-MM-dd'
         }
     });
+	
+	// 일조분석 리포트 다이얼 로그
+	var simulSolarDialog = $( "#simulSolarDialog" ).dialog({
+		autoOpen: false,
+		width: 500,
+		height: 205,
+		modal: true,
+		overflow : "auto",
+		resizable: false
+	});
 
 	var timeSlider;
 	var solarMode = false;
@@ -55,15 +69,47 @@ var Simulation = function(magoInstance) {
 		magoInstance.getViewer().scene.globe.enableLighting = true;
 		magoManager.sceneState.setApplySunShadows(true);
 		$('#shadowDisplayY').prop('checked',true);
+		$reportBtn.show();
 		solarMode = true;
 		
 		changeDateTime();
 	});
 	
+	//경관 분석 위치지정
+	$('#solarAnalysis .drawObserverPoint').click(function(){
+		var $this = $(this);
+		magoManager.once(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(e){
+			deleteSolarMark();
+			var geoCoord = e.clickCoordinate.geographicCoordinate;
+			$this.siblings('input').val(geoCoord.longitude.toFixed(4) + ' , ' + geoCoord.latitude.toFixed(4));
+			var sb = magoManager.speechBubble;
+			
+			var options = {
+				positionWC    : e.clickCoordinate.worldCoordinate,
+				imageFilePath : sb.getPng([64,40],'#D9E364', {
+					text : '일조 분석',
+					pixel : 12,
+					color : 'black',
+					borderColor : 'white'
+				})
+			};
+			var om = magoManager.objMarkerManager.newObjectMarker(options, magoManager);
+			om.solarAnalysis = true;
+		});
+	});
+	
+	$reportBtn.click(function() {
+		simulSolarDialog.dialog('open');
+	})
+	
+	
 	//경관 분석 취소
 	$('#solarAnalysis .reset').click(function(){
 		setDate(new Date());
 		$('#saRange').hide();
+		$reportBtn.hide();
+		deleteSolarMark();
+		$('#solarAnalysis .drawObserverPoint').siblings('input').val('');
 		magoInstance.getViewer().scene.globe.enableLighting = false;
 	});
 
@@ -87,6 +133,12 @@ var Simulation = function(magoInstance) {
 		var jd = Cesium.JulianDate.fromDate(date, jd);
 		magoInstance.getViewer().clock.currentTime = jd;
 		magoManager.sceneState.sunSystem.setDate(date);
+	}
+	var deleteSolarMark = function(){
+		var filtered = magoManager.objMarkerManager.objectMarkerArray.filter(function(om){
+			return !om.solarAnalysis;
+		});
+		magoManager.objMarkerManager.objectMarkerArray = filtered;
 	}
 	
 	var cache = {};
@@ -149,12 +201,6 @@ var Simulation = function(magoInstance) {
 	$('#constructionProcess .reset').click(function(){
 		constructionProcessReset();
 	});
-	
-	//경관 분석 위치지정
-	$('#solarAnalysis .drawObserverPoint').click(function(){
-		notyetAlram();
-	});
-	
 	function smartTileLoaEndCallbak(evt){
 		var nodes = evt.tile.nodesArray;
 		for(var i in nodes){

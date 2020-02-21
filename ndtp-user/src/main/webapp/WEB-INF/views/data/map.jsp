@@ -140,6 +140,7 @@
 <%@ include file="/WEB-INF/views/data/data-attribute-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/data-object-attribute-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/issue/issue-dialog.jsp" %>
+<%@ include file="/WEB-INF/views/simulation/simul-solar-dialog.jsp" %>
 
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
