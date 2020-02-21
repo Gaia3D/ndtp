@@ -377,7 +377,12 @@ background-position: -85px -52px;
 background-position: -85px -102px;
 background-color: #fff600;
 }
-
+.ctrlWrap div > button.cameraLeft {
+background-position: -195px -100px;
+}
+.ctrlWrap div > button.cameraRight {
+background-position: -240px -100px;
+}
 .ctrlWrap div > input {
 width: 30px;
 /* margin-top: 3px; */

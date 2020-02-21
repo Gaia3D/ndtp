@@ -424,6 +424,60 @@ function MapControll(viewer, option) {
         that.clearMap();
         $('#mapCtrlArea').trigger('afterClick');
     });
+    
+    
+    //카메라 좌우회전
+    //deprecated.
+    $('#mapCtrlCamRightRot, #mapCtrlCamLeftRot').click(function(e) {
+    	var id = e.target.id;
+    	var degree = (id === 'mapCtrlCamLeftRot') ? -180 : 180;
+    	var camera = that._viewer.camera;
+    	camera.cancelFlight();
+    	var curCamPos = camera.position;
+    	var curCartoPos = Cesium.Cartographic.fromCartesian(curCamPos);
+    	var maximumHeight = 300;
+    	if(curCartoPos.height > maximumHeight) curCartoPos.height = maximumHeight;
+    	
+    	var moveToPos = Cesium.Cartesian3.fromRadians(curCartoPos.longitude, curCartoPos.latitude, curCartoPos.height);
+    	
+    	camera.flyTo({
+    		destination: moveToPos,
+    		maximumHeight : maximumHeight,
+    		orientation: {
+    			heading: 0,
+    			pitch: 0,
+    			roll: 0
+    		},
+    		duration:1,
+    		easingFunction : Cesium.EasingFunction.LINEAR_NONE,
+    		complete : function() {
+    			camera.flyTo({
+    				destination: moveToPos,
+    				maximumHeight : maximumHeight,
+    				orientation: {
+    					heading: Cesium.Math.toRadians(degree),
+    					pitch: 0,
+    					roll: 0
+    				},
+    				duration:5,
+    				easingFunction : Cesium.EasingFunction.LINEAR_NONE,
+    				complete : function(){
+    					camera.flyTo({
+    						destination: moveToPos,
+    						maximumHeight : maximumHeight,
+    						orientation: {
+    							heading: Cesium.Math.toRadians(degree*2),
+    							pitch: 0,
+    							roll: 0
+    						},
+    						duration:5,
+    						easingFunction : Cesium.EasingFunction.LINEAR_NONE,
+    					})
+    				}
+    			});
+    		}
+    	});
+    });
 
     function startDrawPolyLine() {
         handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
@@ -489,13 +543,12 @@ var formatArea = function (_area) {
 };
 
 $("#mapPolicy").click(function(){
-	$("#mapPolicy").addClass("on");
-	$(".labelLayer").show();
+	$("#mapPolicy").toggleClass("on");
+	$(".labelLayer").toggle();
 });
 $(".layerClose").click(function(){
 	$("#mapPolicy").removeClass("on");
 	$(".labelLayer").hide();
-
 });
 
 // 가이드 팝업 띄우기
