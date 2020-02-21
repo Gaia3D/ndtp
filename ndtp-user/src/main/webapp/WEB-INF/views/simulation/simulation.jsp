@@ -162,8 +162,8 @@
 				<li>
 					<button type="button" id="permRequest" title="건축인 허가 신청" class="btnTextF" style="margin-top:10px;">건축인 허가 신청</button>
 					<button type="button" id="permView" title="인허가 시뮬레이션" class="btnTextF" style="margin-top:10px;">인허가 시뮬레이션</button>
-<%--					<button type="button" id="testFly" class="btnTextF" style="margin-top:10px;">Fly Test</button>--%>
-<%--					<button type="button" id="testingPicking" class="btnTextF" style="margin-top:10px;">testingPicking</button>--%>
+					<button type="button" id="testFly" class="btnTextF" style="margin-top:10px;">Fly Test</button>
+					<button type="button" id="testingPicking" class="btnTextF" style="margin-top:10px;">testingPicking</button>
 
 					<button type="button" id="testBuilding" class="btnTextF" style="margin-top:10px; display:none;">testBuilding</button>
 					<button type="button" id="comment" class="btnTextF" style="margin-top:10px;">comment</button>
@@ -255,8 +255,11 @@
 
 	$("#testBuilding").click(()=> {
 		console.log("testBuilding");
-		// genBuild(127.786754, 36.643957, 5);
-		genAcceptBuild(126.92377563766438, 37.5241752651257 , 0.3);
+		let urlParam = "http://localhost/data/simulation-rest/cityPlanModelSelect";
+		let lon = 126.92377563766438;
+		let lat = 37.5241752651257;
+		let height = 0.3;
+		genBuild(urlParam, lon, lat, height);
 	});
 	var testingPickingDialog = $( "#testingPickingDialog" ).dialog({
 		autoOpen: false,
@@ -341,14 +344,15 @@
 		});
 	}
 
-	function genAcceptBuild(lon, lat, scale) {
-		var position = Cesium.Cartesian3.fromDegrees(lon, lat, 0);
-		var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
-		// fromGltf 함수를 사용하여 key : value 값으로 요소를 지정
-		var name = 'testObject.gltf';
-		debugger;
-		var model = whole_viewer.scene.primitives.add(Cesium.Model.fromGltf({
-			url : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+name,
+	function genBuild(urlParam, lon, lat, scale) {
+		let position = Cesium.Cartesian3.fromDegrees(lon, lat, 0);
+		let pinBuilder = new Cesium.PinBuilder();
+		let modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
+		console.log("url=", urlParam);
+
+		let name = 'testObject';
+		let model = whole_viewer.scene.primitives.add(Cesium.Model.fromGltf({
+			url : urlParam,
 			modelMatrix : modelMatrix,
 			scale : scale,
 			shadows : 1,
@@ -357,6 +361,42 @@
 		}));
 		model.type = "accept";
 		whole_viewer.scene.primitives.add(model);
+
+		let cartesian3 = whole_viewer.scene.clampToHeight(position);
+		let carto  = Cesium.Ellipsoid.WGS84.cartesianToCartographic(cartesian3);
+		let entity = whole_viewer.entities.add({
+			name : urlParam,
+			billboard : {
+				image : pinBuilder.fromText('!', Cesium.Color.BLACK, 48).toDataURL(),
+				verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+				eyeOffset: new Cesium.Cartesian3(0, carto.height + 20, 0)
+			},
+			position : cartesian3,
+			// orientation : orientation,
+			// model : {
+			// 	uri : urlParam,
+			// 	minimumPixelSize : 128,
+			// 	maximumScale : 20000
+			// }
+		});
+		// whole_viewer.trackedEntity = entity;
+
+		let lon2 = Cesium.Math.toDegrees(carto.longitude);
+		let lat2 = Cesium.Math.toDegrees(carto.latitude);
+		console.log(lon2, lat2, carto.height);
+
+		// whole_viewer.entities.add({
+		// 	position: cartesian3,
+		// 	ellipsoid : {
+		// 		radii : new Cesium.Cartesian3(2, 2, 2),
+		// 		material : Cesium.Color.RED
+		// 	}
+		// });
+		//
+		// whole_viewer.scene.camera.flyTo({
+		// 	destination : Cesium.Cartesian3.fromDegrees(lon2, lat2, carto.height)
+		// });
+
 		Cesium.when(model.readyPromise).then(function(model) {
 	        $.growl.notice({
 	            message: "파일등록이 완료되었습니다",

@@ -16,7 +16,10 @@ var MapDataControll = function(magoInstance) {
 			dataId = data.dataId;
 			dataKey = data.nodeId;
 			projectId = data.projectId;
-			var title = projectId + ' / ' + (data.data_name || data.nodeId);
+			
+			var dataGroupName = NDTP.dataGroup.get(projectId);
+			
+			var title = dataGroupName + ' / ' + (data.data_name || data.nodeId);
 			$header.text(title);
 			
 			var currentGeoLocData = f4d.getCurrentGeoLocationData();
@@ -126,8 +129,18 @@ var MapDataControll = function(magoInstance) {
 	});
 	
 	//회전 변경 버튼 조절
-	var rotBtnHoldInterval
-	$('.dcRangeBtn').on('mousedown',function() {
+	var rotBtnHoldInterval;
+	$('.dcRangeBtn').on('click', function(e) {
+		if (rotBtnHoldInterval) clearInterval(rotBtnHoldInterval);
+		var $this = $(this);
+		var type = $this.data('type');
+		var range = (type ==='prev') ?  $this.next() : $this.prev();
+		var offset = (type ==='prev') ? -1 : 1;
+		var curVal = parseFloat(range.val()); 
+		range.val(curVal + offset).change();
+	});
+	$('.dcRangeBtn').on('mousedown', function(e) {
+		if (rotBtnHoldInterval) clearInterval(rotBtnHoldInterval);
 		var $this = $(this);
 		rotBtnHoldInterval = setInterval(function(){
 			var type = $this.data('type');
@@ -135,7 +148,7 @@ var MapDataControll = function(magoInstance) {
 			var offset = (type ==='prev') ? -1 : 1;
 			var curVal = parseFloat(range.val()); 
 			range.val(curVal + offset).change();
-		},50);
+		}, 150);
 	});
 	$('.dcRangeBtn').on('mouseup mouseleave',function() {
 		clearInterval(rotBtnHoldInterval);
@@ -143,7 +156,20 @@ var MapDataControll = function(magoInstance) {
 	
 	//데이터 높이 이벤트
 	var locAltholdInterval;
-	$('#dcAltUp,#dcAltDown').on('mousedown',function() {
+	$('#dcAltUp,#dcAltDown').on('click', function(e) {
+		if (locAltholdInterval) clearInterval(locAltholdInterval);
+		var $this = $(this);
+		var type = $this.data('type');
+		var offset = parseFloat($('#dcAltitudeOffset').val());
+		offset = (type==='up') ? offset : -offset;
+		
+		var alt = parseFloat($('#dcAltitude').val());
+		$('#dcAltitude').val(alt + offset);
+		
+		changeF4d();
+	});
+	$('#dcAltUp,#dcAltDown').on('mousedown', function(e) {
+		if (locAltholdInterval) clearInterval(locAltholdInterval);
 		var $this = $(this);
 		locAltholdInterval = setInterval(function(){
 			var type = $this.data('type');
@@ -154,11 +180,12 @@ var MapDataControll = function(magoInstance) {
 			$('#dcAltitude').val(alt + offset);
 			
 			changeF4d();
-		},50);
+		}, 150);
 	});
 	$('#dcAltUp,#dcAltDown').on('mouseup mouseleave',function() {
 		clearInterval(locAltholdInterval);
 	});
+	
 	//속성조회
 	$('#dcShowAttr').click(function(){
 		detailDataInfo(dataId);
@@ -180,7 +207,10 @@ var MapDataControll = function(magoInstance) {
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						alert(JS_MESSAGE["update"]);
-					} else if (msg.statusCode == 428) {
+					} else if(msg.statusCode === 403) {
+						//data.smart.tiling
+						alert("변경 권한(Smart Tiling)이 존재하지 않습니다.");
+					} else if (msg.statusCode === 428) {
 						if(confirm(JS_MESSAGE[msg.errorCode])) {
 							$('input[name="dataId"]').val(dataId);
 							var formData = $('#dcRotLocForm').serialize();
@@ -252,8 +282,8 @@ var MapDataControll = function(magoInstance) {
 	function setIssueFormValue(f4d, objectId, coord) {
 		if(f4d) {
 			var data = f4d.data;
-			var tempDataGroupName = data.projectFolderName;
-			var dataGroupName = tempDataGroupName.split("/").reverse()[0];
+			projectId = data.projectId;
+			var dataGroupName = NDTP.dataGroup.get(projectId);
 			
 			$("#issueDataId").val(data.dataId);
 			$("#issueDataKey").val(data.nodeId);

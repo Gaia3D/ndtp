@@ -198,6 +198,24 @@
 		</if>
 	</update>
 	
+	<!-- 사용자 3차원 파일 업로딩 수정 -->
+	<update id="updateUploadDataFile" parameterType="uploadDataFile" >
+		/* updateUploadDataFile */
+		UPDATE upload_data_file
+		<set>
+			<if test="fileExt != null and fileExt != ''">
+			file_ext = #{fileExt},
+			</if>
+			<if test="fileRealName != null and fileRealName != ''">
+			file_real_name = #{fileRealName},
+			</if>
+		</set>
+		WHERE upload_data_file_id = #{uploadDataFileId}
+		<if test="userId != null and userId != ''">
+			AND user_id = #{userId}
+		</if>
+	</update>
+	
 	<!-- 업로딩 데이터 정보 삭제 -->
 	<delete id="deleteUploadData" parameterType="uploadData">
 		/* deleteUploadData */

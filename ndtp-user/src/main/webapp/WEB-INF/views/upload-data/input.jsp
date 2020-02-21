@@ -8,6 +8,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<title>업로딩 데이터 | NDTP</title>
+	<link rel="shortcut icon" href="/images/favicon.ico">
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
 	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
 	<link rel="stylesheet" href="/css/${lang}/user-style.css" />
@@ -254,7 +255,7 @@
 			"x-csrf-token": document.querySelectorAll("meta[name=csrf-token]")[0].getAttributeNode("content").value,
 		}, */
 		// 허용 확장자
-		acceptedFiles: ".3ds, .obj, .dae, .collada, .ifc, .las, .citygml, .indoorgml, .jpg, .jpeg, .gif, .png, .bmp, .dds, .zip, .mtl",
+		acceptedFiles: "${acceptedFiles}",
 		// 업로드 취소 및 추가 삭제 미리 보기 그림 링크 를 기본 추가 하지 않음
 		// 기본 true false 로 주면 아무 동작 못함
 		//clickable: true,
@@ -381,6 +382,8 @@
 				alert("파일 확장자가 유효하지 않습니다.");
 	        } else if(response.errorCode === "file.size.invalid") {
 	            alert("파일 용량이 너무 커서 업로딩 할 수 없습니다.");
+	        } else if(response.errorCode === "upload.file.type.invalid") {
+	            alert("업로딩 데이터의 데이터 타입이 올바르지 않습니다.");
 	        } else if(response.errorCode === "db.exception") {
 	            alert("죄송 합니다. 서버 실행중에 오류가 발생 하였습니다. \n 로그를 확인하여 주십시오.");
 	        } else {

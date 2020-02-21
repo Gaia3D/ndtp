@@ -33,6 +33,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
+import ndtp.domain.DataType;
 import ndtp.domain.FileType;
 import ndtp.domain.Key;
 import ndtp.domain.Policy;
@@ -83,6 +84,7 @@ public class UploadDataRestController {
 		int statusCode = 0;
 		String errorCode = null;
 		String message = null;
+		String dataType = request.getParameter("dataType");
 		
 		// converter 변환 대상 파일 수
 		int converterTargetCount = 0;
@@ -128,7 +130,7 @@ public class UploadDataRestController {
 					if(UploadData.ZIP_EXTENSION.equals(fileExtension.toLowerCase())) {
 						isZipFile = true;
 						// zip 파일
-						uploadMap = unzip(policy, uploadTypeList, converterTypeList, today, userId, multipartFile, makedDirectory);
+						uploadMap = unzip(policy, uploadTypeList, converterTypeList, today, userId, multipartFile, makedDirectory, dataType);
 						log.info("@@@@@@@ uploadMap = {}", uploadMap);
 						
 						// validation 체크
@@ -203,6 +205,29 @@ public class UploadDataRestController {
     				}
     				
     				if(converterTypeList.contains(extension.toLowerCase())) {
+    					if(!dataType.equalsIgnoreCase(extension)) {
+    						// 데이터 타입과 업로딩 파일 확장자가 같지 않고
+    						if(	DataType.CITYGML == DataType.findBy(dataType)
+    								&& DataType.GML.getValue().equalsIgnoreCase(extension)){
+    							// 데이터 타입은 citygml 인데 확장자는 gml 인 경우 통과
+    						} else if(DataType.INDOORGML == DataType.findBy(dataType)
+    								&& DataType.GML.getValue().equalsIgnoreCase(extension)) {
+    							// 데이터 타입은 indoorgml 인데 확장자는 gml 인 경우 통과
+    						} else {
+    							// 전부 예외
+    							log.info("@@@@@@@@@@@@ datatype = {}, extension = {}", dataType, extension);
+    	    					result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+    	    					result.put("errorCode", "upload.file.type.invalid");
+    	    					result.put("message", message);
+    	    					return result;
+    						}
+    					}
+    					
+    					if (DataType.CITYGML.getValue().equalsIgnoreCase(dataType) && DataType.GML.getValue().equalsIgnoreCase(extension)) {
+    						extension = DataType.CITYGML.getValue();
+    					} else if (DataType.INDOORGML.getValue().equalsIgnoreCase(dataType) && DataType.GML.getValue().equalsIgnoreCase(extension)) {
+    						extension = DataType.INDOORGML.getValue();
+    					}
 						// 변환 대상 파일만 이름을 변경하고 나머지 파일은 그대로 이름 유지
 						saveFileName = userId + "_" + today + "_" + System.nanoTime() + "." + extension;
 						converterTarget = true;
@@ -254,7 +279,7 @@ public class UploadDataRestController {
 			uploadData.setDataName(request.getParameter("dataName"));
 			uploadData.setDataGroupId(Integer.valueOf(request.getParameter("dataGroupId")));
 			uploadData.setSharing(request.getParameter("sharing"));
-			uploadData.setDataType(request.getParameter("dataType"));
+			uploadData.setDataType(dataType);
 			uploadData.setUserId(userId);
 //			if(request.getParameter("latitude") != null && !"".equals(request.getParameter("latitude"))
 //					&& request.getParameter("longitude") != null && !"".equals(request.getParameter("longitude"))) {
@@ -305,7 +330,8 @@ public class UploadDataRestController {
 										String today, 
 										String userId, 
 										MultipartFile multipartFile, 
-										String targetDirectory) throws Exception {
+										String targetDirectory,
+										String dataType) throws Exception {
 		
 		Map<String, Object> result = new HashMap<>();
 		// converter 변환 대상 파일 수
@@ -380,6 +406,27 @@ public class UploadDataRestController {
             				extension = divideFileName[divideFileName.length - 1];
             				if(uploadTypeList.contains(extension.toLowerCase())) {
             					if(converterTypeList.contains(extension.toLowerCase())) {
+            						if(!dataType.equalsIgnoreCase(extension)) {
+                						// 데이터 타입과 업로딩 파일 확장자가 같지 않고
+                						if(	DataType.CITYGML == DataType.findBy(dataType)
+                								&& DataType.GML.getValue().equalsIgnoreCase(extension)){
+                							// 데이터 타입은 citygml 인데 확장자는 gml 인 경우 통과
+                						} else if(DataType.INDOORGML == DataType.findBy(dataType)
+                								&& DataType.GML.getValue().equalsIgnoreCase(extension)) {
+                							// 데이터 타입은 indoorgml 인데 확장자는 gml 인 경우 통과
+                						} else {
+                							// 전부 예외
+                							log.info("@@@@@@@@@@@@ datatype = {}, extension = {}", dataType, extension);
+                							result.put("errorCode", "file.ext.invalid");
+                							return result;
+                						}
+                					}
+            						
+            						if (DataType.CITYGML.getValue().equalsIgnoreCase(dataType) && DataType.GML.getValue().equalsIgnoreCase(extension)) {
+                						extension = DataType.CITYGML.getValue();
+                					} else if (DataType.INDOORGML.getValue().equalsIgnoreCase(dataType) && DataType.GML.getValue().equalsIgnoreCase(extension)) {
+                						extension = DataType.INDOORGML.getValue();
+                					}
             						// 변환 대상 파일만 이름을 변경하고 나머지 파일은 그대로 이름 유지
             						saveFileName = userId + "_" + today + "_" + System.nanoTime() + "." + extension;
             						converterTarget = true;
@@ -395,6 +442,27 @@ public class UploadDataRestController {
             				extension = divideFileName[divideFileName.length - 1];
             				if(uploadTypeList.contains(extension.toLowerCase())) {
             					if(converterTypeList.contains(extension.toLowerCase())) {
+            						if(!dataType.equalsIgnoreCase(extension)) {
+                						// 데이터 타입과 업로딩 파일 확장자가 같지 않고
+                						if(	DataType.CITYGML == DataType.findBy(dataType)
+                								&& DataType.GML.getValue().equalsIgnoreCase(extension)){
+                							// 데이터 타입은 citygml 인데 확장자는 gml 인 경우 통과
+                						} else if(DataType.INDOORGML == DataType.findBy(dataType)
+                								&& DataType.GML.getValue().equalsIgnoreCase(extension)) {
+                							// 데이터 타입은 indoorgml 인데 확장자는 gml 인 경우 통과
+                						} else {
+                							// 전부 예외
+                							log.info("@@@@@@@@@@@@ datatype = {}, extension = {}", dataType, extension);
+                							result.put("errorCode", "file.ext.invalid");
+                							return result;
+                						}
+                					}
+            						
+            						if (DataType.CITYGML.getValue().equalsIgnoreCase(dataType) && DataType.GML.getValue().equalsIgnoreCase(extension)) {
+                						extension = DataType.CITYGML.getValue();
+                					} else if (DataType.INDOORGML.getValue().equalsIgnoreCase(dataType) && DataType.GML.getValue().equalsIgnoreCase(extension)) {
+                						extension = DataType.INDOORGML.getValue();
+                					}
             						// 변환 대상 파일만 이름을 변경하고 나머지 파일은 그대로 이름 유지
             						saveFileName = userId + "_" + today + "_" + System.nanoTime() + "." + extension;
                 					converterTarget = true;
@@ -560,8 +628,12 @@ public class UploadDataRestController {
 			}
 		
 			uploadData.setLocation("POINT(" + uploadData.getLongitude() + " " + uploadData.getLatitude() + ")");
+			//uploadDataService.updateUploadData(uploadData);
 			
-			uploadDataService.updateUploadData(uploadData);
+			// 원본이 gml 파일일 경우, 데이터 타입을 citygml/indoorgml로 변경할 경우에 DB를 갱신하고 업로드 된 경로의 파일 확장자를 변경.
+			// DB 갱신과 파일 확장자 변경
+			uploadDataService.updateUploadDataAndFile(uploadData);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();

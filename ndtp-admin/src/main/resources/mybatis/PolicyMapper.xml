@@ -8,6 +8,12 @@
 		/* getPolicy */
 		SELECT * FROM policy ORDER BY policy_id DESC LIMIT 1
 	</select>
+	
+	<!-- 업로딩 가능 확장자 조회 -->
+	<select id="getUserUploadType" resultType="String">
+		/* getUserUploadType */
+		SELECT user_upload_type FROM policy ORDER BY policy_id DESC LIMIT 1
+	</select>
 
 	<!-- 운영 정책 사용자 수정 -->	
 	<update id="updatePolicyUser" parameterType="policy">

@@ -1,4 +1,8 @@
 2월 18일
+update policy 
+set user_upload_type = '3ds,obj,dae,collada,ifc,las,gml,citygml,indoorgml,jpg,jpeg,gif,png,bmp,dds,zip,mtl', 
+	user_converter_type = '3ds,obj,dae,collada,ifc,las,gml,citygml,indoorgml';
+
 ALTER TABLE converter_job DROP COLUMN is_y_axis_up;
 
 ALTER TABLE converter_job ADD COLUMN y_axis_up char(1) default 'N';

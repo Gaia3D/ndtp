@@ -67,6 +67,9 @@ public class DataInfo extends Search implements Serializable {
 	private String dataGroupTarget;
 	// data group key
 	private String dataGroupKey;
+	// smart
+	private Boolean tiling;
+	
 	// data 고유 식별번호
 	private String dataKey;
 	// data 고유 식별번호

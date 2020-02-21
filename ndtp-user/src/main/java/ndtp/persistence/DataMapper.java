@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
+import ndtp.domain.DataInfoSimple;
 
 /**
  * Data
@@ -49,6 +50,13 @@ public interface DataMapper {
 	 * @return
 	 */
 	List<DataInfo> getListData(DataInfo dataInfo);
+	
+	/**
+	 * 데이터 그룹에 포함되는 모든 데이터를 취득
+	 * @param dataGroupId
+	 * @return
+	 */
+	List<DataInfoSimple> getListAllDataByDataGroupId(Integer dataGroupId);
 	
 	/**
 	 * 공유 유형별 데이터 통계

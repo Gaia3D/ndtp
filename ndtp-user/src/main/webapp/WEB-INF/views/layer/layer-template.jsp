@@ -20,6 +20,7 @@
 					<li class="nodepth {{serviceType}}Layer {{#replace defaultDisplay true 'on'}}{{/replace}}"
 						data-z-index="{{zindex}}"
 						data-tiling="{{cacheAvailable}}"
+						data-service-type="{{serviceType}}"
 						data-label="{{labelDisplay}}"
 						data-depth="{{layerId}}"
 						data-parent="{{layerGroupId}}"
