@@ -167,6 +167,7 @@
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/externlib/handlebars-4.1.2/handlebars.js"></script>
 <script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>
+<script type="text/javascript" src="/externlib/cesium-geoserver-terrain-provider/GeoserverTerrainProvider.js"></script>
 <script type="text/javascript" src="/externlib/decodeTextAlternative/encoding-indexes.js"></script>
 <script type="text/javascript" src="/externlib/decodeTextAlternative/encoding.js"></script>
 <script type="text/javascript" src="/externlib/moment-2.22.2/moment-with-locales.min.js"></script>
@@ -190,12 +191,15 @@
 	//var viewer = new Cesium.Viewer('magoContainer');
 	var MAGO3D_INSTANCE;
 	// ndtp 전역 네임스페이스
-	/* var NDTP = NDTP ||{
+	let dataGroupMap = new Map();
+	dataGroupMap.set(parseInt('${dataInfo.dataGroupId}'), '${dataInfo.dataGroupName}');
+	var NDTP = NDTP ||{
 		policy : ${geoPolicyJson},
-		baseLayers : "${baseLayers}",
-		wmsProvider : {},
-		districtProvider : {}
-	}; */
+		dataGroup : dataGroupMap
+		//baseLayers : ${baseLayerJson},
+		//wmsProvider : {},
+		//districtProvider : {}
+	};
 	
 	var geoPolicyJson = null;
 	var viewer = null;
@@ -389,7 +393,7 @@
 
 		var groupId = dataInfo.dataGroupId;
 		if (groupId) {
-			var title = groupId + ' / ' + (dataInfo.dataName || dataInfo.dataKey);
+			var title = dataInfo.dataGroupName + ' / ' + (dataInfo.dataName || dataInfo.dataKey);
 			$header.text(title);
 			$header.attr('title', title);
 		}

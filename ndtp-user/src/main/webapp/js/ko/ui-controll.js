@@ -117,6 +117,15 @@ $(function() {
         	window.location="../upload-data/list";
         }
         
+        //시민참여 벗어날 시 지도 클리어.
+        if(active !== 'civilVoiceContent') {
+        	civilVoice.clear();
+        	var cluster = civilVoice.cluster
+        	if(cluster && cluster.magoCluster) {
+        		civilVoice.cluster.stopRender();
+        	}
+        }
+        
         $("ul.nav li[data-nav]:not(:empty)").not($(this)).each(function() {
             $(this).removeClass('on');
             $('#' + $(this).attr('data-nav')).hide();

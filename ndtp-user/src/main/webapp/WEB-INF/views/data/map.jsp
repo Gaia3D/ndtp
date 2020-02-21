@@ -44,7 +44,7 @@
 		    position: absolute;
 		    left: 0px;
 		    top: 0px;
-		    z-index: 10;
+		    /* z-index: 10; */
 		    pointer-events: none;
 	   	}
 		/* 
@@ -71,7 +71,7 @@
 		<!-- E: NAVWRAP -->
 
 		<div id="contentsWrap" class="contentsWrap" style="display: none;">
-			<div id="searchContent" class="contents yScroll fullHeight" style="display:none;">
+			<div id="searchContent" class="contents fullHeight" style="display:none;">
 				<%@ include file="/WEB-INF/views/search/district.jsp" %>
 			</div>
 			<div id="dataContent" class="contents-margin-default fullHeight">
@@ -157,6 +157,7 @@
 <script type="text/javascript" src="/externlib/handlebars-4.1.2/handlebars.js"></script>
 <script type="text/javascript" src="/js/${lang}/handlebarsHelper.js"></script>
 <script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>
+<script type="text/javascript" src="/externlib/cesium-geoserver-terrain-provider/GeoserverTerrainProvider.js"></script>
 <script type="text/javascript" src="/externlib/geostats/geostats.js"></script>
 <script type="text/javascript" src="/externlib/chartjs/Chart.min.js"></script>
 <script type="text/javascript" src="/externlib/kotSlider/range.js"></script>
@@ -260,8 +261,9 @@
 	//var viewer = new Cesium.Viewer('magoContainer');
 	var MAGO3D_INSTANCE;
 	// ndtp 전역 네임스페이스
-	var NDTP = NDTP ||{
+	var NDTP = NDTP || {
 		policy : ${geoPolicyJson},
+		dataGroup : {},
 		baseLayers : ${baseLayerJson}
 	};
 	magoInit();
@@ -336,6 +338,7 @@
 
 	// 데이터 그룹 목록
 	function dataGroupList() {
+		let dataGroupMap = new Map();
 		$.ajax({
 			url: "/data-groups/all",
 			type: "GET",
@@ -345,7 +348,25 @@
 				if(msg.statusCode <= 200) {
 					var dataGroupList = msg.dataGroupList;
 					if(dataGroupList !== null && dataGroupList !== undefined) {
-						dataList(dataGroupList);
+						var noneTilingDataGroupList = dataGroupList.filter(function(dataGroup){
+							dataGroupMap.set(dataGroup.dataGroupId, dataGroup.dataGroupName);
+							return !dataGroup.tiling;
+						});
+						
+						NDTP.dataGroup = dataGroupMap;
+						
+						dataList(noneTilingDataGroupList);
+
+						var tilingDataGroupList = dataGroupList.filter(function(dataGroup){
+							return dataGroup.tiling;
+						});
+
+						var f4dController = MAGO3D_INSTANCE.getF4dController();
+						for(var i in tilingDataGroupList)
+						{
+							var tilingDataGroup = tilingDataGroupList[i];
+							f4dController.addSmartTileGroup(tilingDataGroup)
+						}
 					}
 				} else {
 					alert(JS_MESSAGE[msg.errorCode]);
@@ -398,6 +419,16 @@
 			}
 		}
 	}
+	
+	// smart tiling data flyTo
+	function gotoFly(longitude, latitude, altitude) {
+		if(longitude === null || longitude === '' || latitude === null || latitude === '' || altitude === null || altitude === '') {
+			alert("위치 정보가 올바르지 않습니다. 확인하여 주십시오.");
+			return;
+		}
+
+		gotoFlyAPI(MAGO3D_INSTANCE, longitude, latitude, 500, 3);
+	}
 
 	function flyTo(dataGroupId, dataKey) {
 		if(dataGroupId === null || dataGroupId === '' || dataKey === null || dataKey === '') {
@@ -418,24 +449,54 @@
 	}
 	
 	//데이터 3D Instance show/hide
+	$('#dataInfoListArea').on('click', '.showHideButton', function() {
+		var dataGroupId = $(this).data('group-id');
+		var dataKey = $(this).data('key');
+		
+		if(dataGroupId === null || dataGroupId === '' || dataKey === null || dataKey === '') {
+			alert("객체 정보가 올바르지 않습니다. 확인하여 주십시오.");
+			return;
+		}
+		
+		var option = true;
+		if ($(this).hasClass("show")) {
+			$(this).removeClass("show");
+			$(this).addClass("hide");
+			option = false;
+		} else {
+			$(this).removeClass("hide");
+			$(this).addClass("show");
+		}
+		
+		var optionObject = { isVisible : option };
+		setNodeAttributeAPI(MAGO3D_INSTANCE, dataGroupId, dataKey, optionObject);
+		
+	});
+	
+	/*
 	function showHideData(dataGroupId, dataKey) {
+		
 		if(dataGroupId === null || dataGroupId === '' || dataKey === null || dataKey === '') {
 			alert("객체 정보가 올바르지 않습니다. 확인하여 주십시오.");
 			return;
 		}
 		
 		//버튼에 id와 class(= "on")가 부여되어있어야 함 (또는, isVisible : !option)
-		$('#showHideButton').toggleClass("on");
+		var option = true;
+		if ($('#showHideButton').hasClass("show")) {
+			$('#showHideButton').removeClass("show");
+			$('#showHideButton').addClass("hide");
+			option = false;
+		} else {
+			$('#showHideButton').removeClass("hide");
+			$('#showHideButton').addClass("show");
+		}
 		
-		var option = $('#showHideButton').hasClass("on");
-		
-		var optionObject = {
-				isVisible : option
-			}
-		
+		var optionObject = { isVisible : option };
 		setNodeAttributeAPI(MAGO3D_INSTANCE, dataGroupId, dataKey, optionObject);
 	}
-
+	*/
+	
 	var dataInfoDialog = $( "#dataInfoDialog" ).dialog({
 		autoOpen: false,
 		width: 500,
@@ -792,20 +853,42 @@
 		}
 		if(insertIssueFlag) {
 			insertIssueFlag = false;
+			var lon = $("#issueLongitude").val();
+			var lat = $("#issueLatitude").val();
+			var alt = $("#issueAltitude").val();
 			$.ajax({
 				url: "/issues",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				data: { "dataId" : $("#issueDataId").val(), "dataGroupId" : $("#issueDataGroupId").val(),
 					"dataKey" : $("#issueDataKey").val(), "dataGroupName" : $("#issueDataGroupName").val(), "objectKey" : $("#issueObjectKey").val(),
-					"longitude" : $("#issueLongitude").val(), "latitude" : $("#issueLatitude").val(), "altitude" : $("#issueAltitude").val(),
+					"longitude" : lon, "latitude" : lat, "altitude" : alt,
 					"title" : $("#issueTitle").val(), "contents" : $("#issueContents").val()
 				},
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						alert(JS_MESSAGE["insert"]);
 						insertIssueFlag = true;
-						issueDialog.close();
+						issueDialog.dialog('close'); 
+
+						NDTP.issueController.addIssue({
+							longitude : parseFloat(lon),
+							latitude : parseFloat(lat),
+							altitude : parseFloat(alt),
+							issueId : msg.issueId
+						});
+						/* var magoManager = this.magoInstance.getMagoManager();
+						if(Array.isArray(issue)) {
+							for(var i in issue) {
+								this.addIssue(issue[i]);
+							}
+						} else {
+							var point = Mago3D.ManagerUtils.geographicCoordToWorldPoint(issue.longitude,issue.latitude,issue.altitude);
+							option.positionWC = point;
+							
+							var objMarker = magoManager.objMarkerManager.newObjectMarker(option, magoManager);
+							objMarker.issueId = issue.issueId;
+						} */
 					} else {
 						alert(JS_MESSAGE[msg.errorCode]);
 						console.log("---- " + msg.message);

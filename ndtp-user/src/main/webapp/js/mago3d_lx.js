@@ -92,6 +92,19 @@ Mago3D.Node.prototype.getCurrentGeoLocationData = function() {
 	return this.data.geoLocDataManager.getCurrentGeoLocationData()
 }
 
+Mago3D.MagoManager.prototype.addCluster = function(cluster) {
+	if(!cluster || !cluster instanceof Mago3D.Cluster) {
+		throw new Error('cluster is required.');
+	}
+	
+	this.cluster = cluster;
+}
+
+Mago3D.MagoManager.prototype.clearCluster = function() {
+	this.objMarkerManager.objectMarkerArray = [];
+	this.cluster = undefined;
+}
+
 Mago3D.tempCredit = function(viewer) {
 	var creditDisplay = viewer.scene.frameState.creditDisplay;
 	var mago3d_credit = new Cesium.Credit('<a href="http://www.mago3d.com/" target="_blank"><img class="mago3d_logo" src="/images/logo_mago3d.png" title="Mago3D"/></a>', true);

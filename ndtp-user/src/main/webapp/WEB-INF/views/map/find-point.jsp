@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="robots" content="index,nofollow"/>
     <title>지도에서 찾기 | NDPT</title>
+    <link rel="shortcut icon" href="/images/favicon.ico">
     <link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
     <link rel="stylesheet" href="/css/${lang}/user-style.css" />
@@ -48,6 +49,7 @@
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>
+<script type="text/javascript" src="/externlib/cesium-geoserver-terrain-provider/GeoserverTerrainProvider.js"></script>
 <script type="text/javascript" src="/externlib/decodeTextAlternative/encoding-indexes.js"></script>
 <script type="text/javascript" src="/externlib/decodeTextAlternative/encoding.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>

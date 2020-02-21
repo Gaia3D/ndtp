@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<div id="dataGroupInfoContent" class="contents contents-margin-none yScroll fullHeight" style="display:none;">
+<div id="dataGroupInfoContent" class="contents contents-margin-none fullHeight" style="display:none;">
 	<h3>데이터 공유 유형별 현황</h3>
 	<form:form id="searchDataGroupForm" modelAttribute="searchDataGroupForm" method="post" onsubmit="return false;">
 	<div class="dataGroupSummary table-data-group-summary">
@@ -35,7 +35,11 @@
 		<input type="text" id="searchDataGroupName" name="searchDataGroupName" placeholder="그룹명을 입력하세요">
 		<button type="button" id="mapDataGroupSearch" class="btnTextF" title="검색">검색</button>
 	</div>
-
-	<div id="dataGroupListArea">
-	</div>
+	<ul class="legendWrap">
+		<li><span class="legend co">C</span>공통</li>
+		<li><span class="legend pu">O</span>공개</li>
+		<li><span class="legend pr">P</span>비공개</li>
+		<li><span class="legend gr">G</span>그룹</li>
+	</ul>
+	<div id="dataGroupListArea" style="height:calc(100% - 343px)"></div>
 </div>

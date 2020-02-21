@@ -97,6 +97,11 @@
 			$("#title").focus();
 			return false;
 		}
+		if(!$('[name=longitude]').val() || !$('[name=latitude]').val()) {
+			alert("위치를 지정하여 주십시오.");
+			$('[name=longitude]').focus();
+			return false;
+		}
 		if(!$("#contents").val()) {
 			alert("내용을 입력해 주세요.");
 			$("#contents").focus();

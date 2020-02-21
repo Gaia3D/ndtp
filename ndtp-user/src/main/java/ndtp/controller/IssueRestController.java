@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
-import ndtp.domain.CivilVoice;
-import ndtp.domain.DataInfo;
 import ndtp.domain.Issue;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
@@ -116,8 +114,9 @@ public class IssueRestController {
 			issue.setLocation("POINT(" + issue.getLongitude() + " " + issue.getLatitude() + ")");
 			issue.setUserId(userSession.getUserId());
 			issue.setClientIp(WebUtils.getClientIp(request));
-			issueService.insertIssue(issue);
+			issue = issueService.insertIssue(issue);
 			
+			result.put("issueId", issue.getIssueId());
 			// TODO cache 갱신 되어야 함
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -142,21 +141,25 @@ public class IssueRestController {
 	 */
 	@GetMapping
 	public Map<String, Object> list(HttpServletRequest request, Issue issue, @RequestParam(defaultValue="1") String pageNo) {
+		
+		log.info("@@@@@@@@ issue = {}", issue);
+		
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String errorCode = null;
 		String message = null;
-
+		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 	//	civilVoice.setUserId(userSession.getUserId());
 	//	civilVoice.setClientIp(WebUtils.getClientIp(request));
 		try {
+			long rows = issue.getLimit() != null ? issue.getLimit() : PAGE_ROWS; 
 			long totalCount = issueService.getIssueTotalCount(issue);
 			Pagination pagination = new Pagination(	request.getRequestURI(),
 													getSearchParameters(PageType.LIST, issue),
 													totalCount,
 													Long.valueOf(pageNo).longValue(),
-													PAGE_ROWS,
+													rows,
 													PAGE_LIST_COUNT);
 			log.info("@@ pagination = {}", pagination);
 
