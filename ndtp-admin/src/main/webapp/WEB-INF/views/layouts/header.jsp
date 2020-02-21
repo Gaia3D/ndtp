@@ -13,7 +13,8 @@
 					<li>
 						<a href="#">
 							<span class="icon-glyph glyph-qmark-circle"></span>
-							<span class="icon-text"><spring:message code='help'/></span>
+							<a href="#" title="API도움말" onclick="goMagoAPIGuide();return false;">API도움말</a>
+							
 						</a>
 					</li>
 					<li>
