@@ -7,7 +7,7 @@
 		<thead>
 			<tr style="height: 30px;">
 				<th class="col-label" scope="col">절기</th>
-				<th class="col-label" scope="col">일조시간</th>
+				<th class="col-label" scope="col">일조시간(시간)</th>
 			</tr>
 		</thead>
 		<tbody>
