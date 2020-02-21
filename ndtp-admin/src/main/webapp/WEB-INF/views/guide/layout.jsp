@@ -138,12 +138,15 @@
 				codeScriptTag.appendChild(script);		
 				var preTagScript = document.createElement("pre");
 				preTagScript.appendChild(codeScriptTag);
+				var codeTabContainer = document.createElement("div");
+				codeTabContainer.appendChild(preTagParm);
+				codeTabContainer.appendChild(preTagBr);
+				codeTabContainer.appendChild(preTagBr);
+				codeTabContainer.appendChild(preTagBr);
+				codeTabContainer.appendChild(preTagScript);
 					
-				$('.menu_tab01')[i-1].appendChild(preTagParm);
-				$('.menu_tab01')[i-1].appendChild(preTagBr);
-				$('.menu_tab01')[i-1].appendChild(preTagBr);
-				$('.menu_tab01')[i-1].appendChild(preTagBr);
-				$('.menu_tab01')[i-1].appendChild(preTagScript);
+				$('.menu_tab01')[i-1].appendChild(codeTabContainer);
+				
 			
 			}
 		}
@@ -159,10 +162,20 @@
 			cesiumCreditAlt();
 			
 			$('.paramContainer').children('input[type=text]').focusout(function (){
-				if($(this).val()==""){
-					consol
+				if($(this)[0].nextSibling.nodeValue){
+					console.log("Ss")
+					$(this)[0].nextSibling.nodeValue="";
 				}
-				console.log($(this).val());
+				
+				
+				if($(this).val()==""){
+					
+					var txt = document.createTextNode("필수로 입력해 주세요.");
+					$(this).after(txt);
+				}/* else{
+					var txt = document.createTextNode("만족!");
+					$(this).after(txt);
+				} */
 			})
 		});
 		
@@ -270,18 +283,6 @@ $("#searchApi").on("propertychange change keyup paste input",function(){
       }
     }
 })
-
-/* function validateCheckGuide() {
-	
-	for(var i = 0; i = ){
-		if ($("#issueTitle").val() === "") {
-			alert("제목을 입력하여 주십시오.");
-			$("#issueTitle").focus();
-			return false;
-		}
-	}
-} */
-
 
 
 </script>
