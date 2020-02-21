@@ -9,12 +9,13 @@
 	<div class="menu_tab00 mTs" id="panels">
 		<h2>addStaticModelAPI</h2>
 		<p>정적 모델을 추가하는 API입니다.</p>
-		<h4>파라미터</h4>
+		
 		<table>
+			<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -30,11 +31,11 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>projectId :</p>
+			<label for="api38-p1">projectId :</label>
 			<input type="text" id="api38-p1" value="static_sample"><br/>
-			<p>projectFolderName :</p>
+			<label for="api38-p2">projectFolderName :</label>
 			<input type="text" id="api38-p2" value="sample"><br/>
-			<p>buildingFolderName :</p>
+			<label for="api38-p3">buildingFolderName :</label>
 			<input type="text" id="api38-p3" value="F4D_SOCIALROOM">
 		</div>
 		<br/> 

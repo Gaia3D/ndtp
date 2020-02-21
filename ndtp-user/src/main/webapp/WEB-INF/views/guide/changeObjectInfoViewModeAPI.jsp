@@ -13,12 +13,12 @@
 			방식입니다. 활성화되어있는 상태에서 정보를 알고 싶은 Object를 클릭하면 callback함수를 관리해주는 데이터베이스
 			운영정책에 따라서 정보표시 callback함수가 호출되고 Jquery Plugin Toast통하여 Object정보가
 			나옵니다. 또한, 정보표시 callback함수는 사용자가 Customizing이 가능합니다.</p>
-		<h4>파라미터</h4>
 		<table>
+		<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -31,13 +31,15 @@
 				<td>true: 활성화, false: 비활성화</td>
 			</tr>
 		</table>
-		<br>
+		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label><input type="radio" name="api14-p1" value="true" />활성</label>
-			<label><input type="radio" name="api14-p1" value="false" checked />비활성</label>
+			<label for="api14-opt1">활성</label>
+			<input type="radio" id="api14-opt1" name="api14-p1" value="true" />
+			<label for="api14-opt2">비활성</label>
+			<input type="radio" id="api14-opt2" name="api14-p1" value="false" checked />
 		</div>
-		<br> <input type="button" value="Run" class="popupBtn" onclick="changeObjectInfoViewMode()">
+		<br/> <input type="button" value="Run" class="popupBtn" onclick="changeObjectInfoViewMode()">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

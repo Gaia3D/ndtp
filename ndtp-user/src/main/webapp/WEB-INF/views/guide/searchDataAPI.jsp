@@ -10,12 +10,12 @@
 		<h2>searchDataAPI</h2>
 		<p>프로젝트 아이디(projectId)와 데이터 고유키(dataKey)에 해당하는 지도 상의 데이터를 찾아 이동하는
 			API입니다.</p>
-		<h4>파라미터</h4>
 		<table>
+		<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -36,9 +36,9 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>projectId :</p>
+			<label for="api26-p1">projectId :</label>
 			<input type="text" id="api26-p1" value="sample"><br>
-			<p>dataKey :</p>
+			<label for="api26-p2">dataKey :</label>
 			<input type="text" id="api26-p2" value="SOCIALROOM">
 		</div>
 		<br> 

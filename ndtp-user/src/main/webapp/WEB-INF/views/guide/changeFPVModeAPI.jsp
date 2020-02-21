@@ -9,12 +9,12 @@
 	<div class="menu_tab00 mTs" id="panels">
 		<h2>changeFPVModeAPI</h2>
 		<p>카메라를 1인칭, 3인칭 모드로 변경해주는 API입니다.</p>
-		<h4>파라미터</h4>
 		<table>
+		<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -30,8 +30,10 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label><input type="radio" name="api16-p1" value="true" />활성</label>
-			<label><input type="radio" name="api16-p1" value="false" checked />비활성</label>
+			<label for="api16-opt1">활성</label>
+			<input type="radio" id="api16-opt1" name="api16-p1" value="true" />
+			<label for="api16-opt2">비활성</label>
+			<input type="radio" id="api16-opt2" name="api16-p1" value="false" checked />
 		</div>
 		<br/> 
 		<input type="button" value="Run" class="popupBtn" onclick="changeFPVMode()">

@@ -9,12 +9,12 @@
 	<div class="menu_tab00 mTs" id="panels">
 		<h2>instantiateStaticModelAPI</h2>
 		<p>정적 모델 인스턴스를 생성하는 API입니다.</p>
-		<h4>파라미터</h4>
 		<table>
+		<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -30,21 +30,21 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>projectId :</p>
+			<label for="api37-p1">projectId :</label>
 			<input type="text" id="api37-p1" value="static_sample"><br>
-			<p>instanceId :</p>
+			<label for="api37-p2">instanceId :</label>
 			<input type="text" id="api37-p2" value="building"><br>
-			<p>longitude :</p>
+			<label for="api37-p3">longitude :</label>
 			<input type="text" id="api37-p3" value="127.000"><br>
-			<p>latitude :</p>
+			<label for="api37-p4">latitude :</label>
 			<input type="text" id="api37-p4" value="37.000"><br>
-			<p>height :</p>
+			<label for="api37-p5">height :</label>
 			<input type="text" id="api37-p5" value="100"><br>
-			<p>heading :</p>
+			<label for="api37-p6">heading :</label>
 			<input type="text" id="api37-p6" value="93.03254"><br>
-			<p>pitch :</p>
+			<label for="api37-p7">pitch :</label>
 			<input type="text" id="api37-p7" value="223.84163"><br>
-			<p>roll :</p>
+			<label for="api37-p8">roll :</label>
 			<input type="text" id="api37-p8" value="123.74897">
 		</div>
 		<br> 

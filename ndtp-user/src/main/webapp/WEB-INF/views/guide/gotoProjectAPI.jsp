@@ -9,12 +9,12 @@
 	<div class="menu_tab00 mTs" id="panels">
 		<h2>gotoProjectAPI</h2>
 		<p>해당 프로젝트를 로딩하고 그 프로젝트로 이동하는 API입니다.</p>
-		<h4>파라미터</h4>
 		<table>
+		<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -60,19 +60,19 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>projectId :</p>
+			<label for="api24-p1">projectId :</label>
 			<input type="text" id="api24-p1" value="sample2"><br>
-			<p>projectData :</p>
+			<label for="api24-p2">projectData :</label>
 			<input type="text" id="api24-p2" value="sample_f4d"><br>
-			<p>projectDataFolder :</p>
+			<label for="api24-p3">projectDataFolder :</label>
 			<input type="text" id="api24-p3" value="sample"><br>
-			<p>longitude :</p>
+			<label for="api24-p4">longitude :</label>
 			<input type="text" id="api24-p4" value="126.60890424717905"><br>
-			<p>latitude :</p>
+			<label for="api24-p5">latitude :</label>
 			<input type="text" id="api24-p5" value="37.58358288958673"><br>
-			<p>height :</p>
+			<label for="api24-p6">height :</label>
 			<input type="text" id="api24-p6" value="550"><br>
-			<p>duration :</p>
+			<label for="api24-p7">duration :</label>
 			<input type="text" id="api24-p7" value="1">
 		</div>
 		<br> 

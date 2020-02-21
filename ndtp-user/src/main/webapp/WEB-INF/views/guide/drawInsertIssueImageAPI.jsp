@@ -9,12 +9,12 @@
 	<div class="menu_tab00 mTs" id="panels">
 		<h2>drawInsertIssueImageAPI</h2>
 		<p>이슈 등록시 화면에 표출되는 고정핀 이미지를 그려주는 API입니다.</p>
-		<h4>파라미터</h4>
 		<table>
+		<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -57,25 +57,25 @@
 				<td>높이</td>
 			</tr>
 		</table>
-		<br>
+		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>drawType :</p>
-			<input type="text" id="api23-p1" value="1"><br>
-			<p>issue_id :</p>
-			<input type="text" id="api23-p2" value="128"><br>
-			<p>issue_type :</p>
-			<input type="text" id="api23-p3" value="ISSUE_TYPE_BUGGER"><br>
-			<p>data_key :</p>
-			<input type="text" id="api23-p4" value="factory"><br>
-			<p>longitude :</p>
-			<input type="text" id="api23-p5" value="127.000"><br>
-			<p>latitude :</p>
-			<input type="text" id="api23-p6" value="37.000"><br>
-			<p>height :</p>
+			<label for="api23-p1">drawType :</label>
+			<input type="text" id="api23-p1" value="1"><br/>
+			<label for="api23-p2">issue_id :</label>
+			<input type="text" id="api23-p2" value="128"><br/>
+			<label for="api23-p3">issue_type :</label>
+			<input type="text" id="api23-p3" value="ISSUE_TYPE_BUGGER"><br/>
+			<label for="api23-p4">data_key :</label>
+			<input type="text" id="api23-p4" value="factory"><br/>
+			<label for="api23-p5">longitude :</label>
+			<input type="text" id="api23-p5" value="127.000"><br/>
+			<label for="api23-p6">latitude :</label>
+			<input type="text" id="api23-p6" value="37.000"><br/>
+			<label for="api23-p7">height :</label>
 			<input type="text" id="api23-p7" value="550">
 		</div>
-		<br> 
+		<br/> 
 		<input type="button" value="Run" class="popupBtn" onclick="drawInsertIssueImage()">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>

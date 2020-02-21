@@ -9,12 +9,12 @@
 	<div class="menu_tab00 mTs" id="panels">
 		<h2>changeShadowAPI</h2>
 		<p>그림자 표시 유무를 설정하는 API입니다.</p>
-		<h4>파라미터</h4>
 		<table>
+		<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -27,15 +27,15 @@
 				<td>true: 활성화, false: 비활성화</td>
 			</tr>
 		</table>
-		<br>
+		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<select id="api6-p1">
-				<option value="true" selected>활성</option>
-				<option value="false">비활성</option>
-			</select>
+			<label for="api6-opt1">활성</label>
+			<input type="radio" id="api6-opt1" name="api6-p1" value="true" />
+			<label for="api6-opt2">비활성</label>
+			<input type="radio" id="api6-opt2" name="api6-p1" value="false" checked />
 		</div>
-		<br> 
+		<br/> 
 		<input type="button" value="Run" class="popupBtn" onclick="changeShadow()">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
@@ -43,7 +43,7 @@
 <script>
 	var changeShadow = function() {
 
-		var flag = $('#api6-p1').val();
+		var flag = $("input[name=api6-p1]:checked").val();
 		var isFalseBoolean = (flag === 'true');
 
 		changeShadowAPI(MAGO3D_INSTANCE2, isFalseBoolean);

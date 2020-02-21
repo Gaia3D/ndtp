@@ -9,12 +9,12 @@
 	<div class="menu_tab00 mTs" id="panels">
 		<h2>deleteAllChangeColorAPI</h2>
 		<p>변경한 색상 이력을 전체 삭제합니다.</p>
-		<h4>파라미터</h4>
 		<table>
+		<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -22,8 +22,7 @@
 				<td>mago3D 시작 부분</td>
 			</tr>
 		</table>
-		<br>
-		<h4>실행</h4>
+		<br/>
 		<div class="paramContainer"></div>
 		<input type="button" value="Run" class="popupBtn" onclick="deleteAllChangeColor()">
 	</div>

@@ -9,12 +9,12 @@
 	<div class="menu_tab00 mTs" id="panels">
 		<h2>changeLightingAPI</h2>
 		<p>선택한 객체에 밝기를 조절하는 API입니다.</p>
-		<h4>파라미터</h4>
 		<table>
+		<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -50,15 +50,15 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>ambientReflectionCoef :</p>
+			<label for="api20-p1">ambientReflectionCoef :</label>
 			<input type="text" id="api20-p1" value="0.5"><br/>
-			<p>diffuseReflectionCoef :</p>
+			<label for="api20-p2">diffuseReflectionCoef :</label>
 			<input type="text" id="api20-p2" value="1"><br/>
-			<p>specularReflectionCoef :</p>
+			<label for="api20-p3">specularReflectionCoef :</label>
 			<input type="text" id="api20-p3" value="1"><br/>
-			<p>ambientColor :</p>
+			<label for="api20-p4">ambientColor :</label>
 			<input type="text" id="api20-p4" value="255, 0, 0"><br/>
-			<p>specularColor :</p>
+			<label for="api20-p5">specularColor :</label>
 			<input type="text" id="api20-p5" value="0, 255, 0">
 		</div>
 		<br/> 

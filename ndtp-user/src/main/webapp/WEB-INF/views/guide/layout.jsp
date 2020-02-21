@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <!DOCTYPE html>
-<html lang="${accessibility}">
+<html lang="ko">
 <head>
 <meta charset="utf-8">
 <meta name="referrer" content="origin">
@@ -11,11 +11,8 @@
 <link rel="shortcut icon" href="/images/favicon.ico">
 <link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
 <link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-<link rel="stylesheet" href="/externlib/geostats/geostats.css" />
-<link rel="stylesheet" href="/externlib/kotSlider/range.css" />
-<link rel="stylesheet" href="/css/ko/layout.css" />
-<link rel="stylesheet" href="/css/ko/apihelp-style.css" />
 <link rel="stylesheet" href="/externlib/highlightjs/styles/dark.css">
+<link rel="stylesheet" href="/css/ko/apihelp-style.css" />
 <script src="/externlib/highlightjs/highlight.pack.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
 
@@ -27,6 +24,7 @@
 				<a onclick="changeToggleTab(api0)">mago3D.JS API</a>
 			</h3>
 			<div class="searchWrap">
+			<label for="searchApi"></label>
 				<input id="searchApi" type="text" placeholder="검색어를 입력하세요">
 				<button type="button">검색</button>
 			</div>
@@ -95,16 +93,14 @@
 
 	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="/externlib/handlebars-4.1.2/handlebars.js"></script>
 	<script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>
-	<script type="text/javascript" src="/externlib/geostats/geostats.js"></script>
-	<script type="text/javascript" src="/externlib/chartjs/Chart.min.js"></script>
-	<script type="text/javascript" src="/externlib/kotSlider/range.js"></script>
+	<script type="text/javascript" src="/externlib/cesium-geoserver-terrain-provider/GeoserverTerrainProvider.js"></script>
 	<script type="text/javascript" src="/externlib/decodeTextAlternative/encoding-indexes.js"></script>
 	<script type="text/javascript" src="/externlib/decodeTextAlternative/encoding.js"></script>
 	<script type="text/javascript" src="/externlib/moment-2.22.2/moment-with-locales.min.js"></script>
 	<script type="text/javascript" src="/js/mago3d.js"></script>
 	<script type="text/javascript" src="/js/mago3d_lx.js"></script>
+	<script type="text/javascript" src="/js/ko/common.js"></script>
 
 
 	<script type="text/javascript">
@@ -125,35 +121,42 @@
 		"setNodeAttributeAPI", "togglePointCloudColorAPI"];
 
 		for(var i = 1; i<apiList.length+1; i++){
-			console.log(i);
-			$(".popupSub").children('ul').append("<li class=\"item\"><a class=\"name\" href=\"#\" onclick=\"changeToggleTab(api"+i+");\">"+apiList[i]+"</a></li>");
-			var parmScript = document.createTextNode(($('.paramContainer').get(i-1).innerHTML).replace(/\s{2,}/gi, ' '));
-			var script = document.createTextNode($('.api-help-toggle').next()[i-1].text);
-			var preTagBr = document.createElement("br");
-			var codeParmTag = document.createElement("code");
-			codeParmTag.setAttribute("class","html");
-			codeParmTag.appendChild(parmScript);
-			var preTagParm = document.createElement("pre");
-			preTagParm.appendChild(codeParmTag);
-			var codeScriptTag = document.createElement("code");
-			codeScriptTag.setAttribute("class","javascript");
-			codeScriptTag.appendChild(script);		
-			var preTagScript = document.createElement("pre");
-			preTagScript.appendChild(codeScriptTag);
+			
+			if($('.paramContainer').get(i)){
 				
-			$('.menu_tab01')[i-1].appendChild(preTagParm);
-			$('.menu_tab01')[i-1].appendChild(preTagBr);
-			$('.menu_tab01')[i-1].appendChild(preTagBr);
-			$('.menu_tab01')[i-1].appendChild(preTagBr);
-			$('.menu_tab01')[i-1].appendChild(preTagScript);	
+				$(".popupSub").children('ul').append("<li class=\"item\"><a class=\"name\" href=\"#api1\" onclick=\"changeToggleTab(api"+i+"); return false;\">"+apiList[i]+"</a></li>");
+				var parmScript = document.createTextNode(($('.paramContainer').get(i-1).innerHTML).replace(/\s{2,}/gi, ' '));
+				var script = document.createTextNode($('.api-help-toggle').next()[i-1].text);
+				var preTagBr = document.createElement("br");
+				var codeParmTag = document.createElement("code");
+				codeParmTag.setAttribute("class","html");
+				codeParmTag.appendChild(parmScript);
+				var preTagParm = document.createElement("pre");
+				preTagParm.appendChild(codeParmTag);
+				var codeScriptTag = document.createElement("code");
+				codeScriptTag.setAttribute("class","javascript");
+				codeScriptTag.appendChild(script);		
+				var preTagScript = document.createElement("pre");
+				preTagScript.appendChild(codeScriptTag);
+					
+				$('.menu_tab01')[i-1].appendChild(preTagParm);
+				$('.menu_tab01')[i-1].appendChild(preTagBr);
+				$('.menu_tab01')[i-1].appendChild(preTagBr);
+				$('.menu_tab01')[i-1].appendChild(preTagBr);
+				$('.menu_tab01')[i-1].appendChild(preTagScript);
+			
+			}
 		}
 		
 		$( document ).ready(function() {
+			
 			for (var i =0; i< $("code").children('.hljs-tag').length; i++) {
 				if($("code").children('.hljs-tag')[i].childNodes[0].nodeValue=="</"){
 					$("code").children('.hljs-tag')[i].childNodes[2].nodeValue = $("code").children('.hljs-tag')[i].childNodes[2].nodeValue+"\n";
 				}
 			};
+			
+			cesiumCreditAlt();
 		});
 		
 var MAGO3D_INSTANCE2;
@@ -168,6 +171,7 @@ magoInit2();
 
 function magoInit2() {
 	var geoPolicyJson = ${geoPolicyJson};
+	geoPolicyJson.initAltitude = 250.0;
 	var cesiumViewerOption = {};
 	cesiumViewerOption.infoBox = false;
 	cesiumViewerOption.navigationHelpButton = false;
@@ -198,7 +202,6 @@ function magoLoadEnd2(e) {
 		success: function(res){
 			if(res) {
 				var policy = Mago3D.MagoConfig.getPolicy();
-				console.log(res);
 				var initLat = parseFloat(policy.initLatitude);
 				var initLon = parseFloat(policy.initLongitude);
 				var childs = res.children;
@@ -218,6 +221,10 @@ function magoLoadEnd2(e) {
 	});
 }
 
+$('.item').on("click", function(){
+	$('.item').removeClass('on');
+	$(this).addClass('on');
+})
 
 function changeToggleTab(apiId){
 	$('.api-help-toggle').css('display','none');
@@ -225,6 +232,7 @@ function changeToggleTab(apiId){
 }
 
 function tabMenu(num){
+ 
  var f = $('.api-help-toggle');
  for ( var i = 0; i < f.length; i++ ) {
   if ( num == 0) {
@@ -255,6 +263,8 @@ $("#searchApi").on("propertychange change keyup paste input",function(){
       }
     }
 })
+
+
 
 </script>
 </body>

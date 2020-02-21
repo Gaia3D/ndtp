@@ -10,12 +10,12 @@
 		<h2>drawAppendDataAPI</h2>
 
 		<p>프로젝트 단위 데이터를 추가하고 렌더링 하는 API입니다.</p>
-		<h4>파라미터</h4>
 		<table>
+		<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -38,17 +38,17 @@
 				<td>프로젝트 f4d 파일 경로</td>
 			</tr>
 		</table>
-		<br>
+		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>projectIdArray :</p>
-			<input type="text" id="api30-p1" value='["ifc, ifc1, ifc2"]'><br>
-			<p>projectDataArray :</p>
-			<input type="text" id="api30-p2" value='["factory, factory1, factory2"]'><br>
-			<p>projectDataFolderArray :</p>
+			<label for="api30-p1">projectIdArray :</label>
+			<input type="text" id="api30-p1" value='["ifc, ifc1, ifc2"]'><br/>
+			<label for="api30-p2">projectDataArray :</label>
+			<input type="text" id="api30-p2" value='["factory, factory1, factory2"]'><br/>
+			<label for="api30-p3">projectDataFolderArray :</label>
 			<input type="text" id="api30-p3" value='["D:\reposit, D:\reposit1, D:\reposit2"]'>
 		</div>
-		<br> 
+		<br/> 
 		<input type="button" value="Run" class="popupBtn" onclick="drawAppendData()">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>

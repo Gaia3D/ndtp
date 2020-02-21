@@ -9,12 +9,12 @@
 	<div class="menu_tab00 mTs" id="panels">
 		<h2>setTrackNodeAPI</h2>
 		<p>트래킹 할 노드를 설정하는 API입니다. 설정한 데이터를 카메라가 계속 바라보게 됩니다.</p>
-		<h4>파라미터</h4>
 		<table>
+		<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -40,13 +40,13 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>projectId :</p>
+			<label for="api39-p1">projectId :</label>
 			<input type="text" id="api39-p1" value="sample"><br>
-			<p>dataKey :</p>
+			<label for="api39-p2">dataKey :</label>
 			<input type="text" id="api39-p2" value="SOCIALROOM"><br>
-			<p>option_y :</p>
+			<label for="api39-p3">option_y :</label>
 			<input type="text" id="api39-p3" value="-1"><br>
-			<p>option_z :</p>
+			<label for="api39-p4">option_z :</label>
 			<input type="text" id="api39-p4" value="12">
 		</div>
 		<br> 

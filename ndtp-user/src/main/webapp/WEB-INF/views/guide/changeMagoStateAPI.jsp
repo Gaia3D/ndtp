@@ -9,12 +9,12 @@
 	<div class="menu_tab00 mTs" id="panels">
 		<h2>changeMagoStateAPI</h2>
 		<p>mago3D 활성화 상태 값을 변경함으로써 화면에 mago3D Object가 표시, 비표시 됩니다.</p>
-		<h4>파라미터</h4>
 		<table>
+		<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -27,14 +27,15 @@
 				<td>true: 활성화, false: 비활성화</td>
 			</tr>
 		</table>
-		<br>
+		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label><input type="radio" name="api1-p1" value="true" />활성</label>
-			<label><input type="radio" name="api1-p1" value="false"
-				checked />비활성</label>
+			<label for="api1-opt1">활성</label>
+			<input type="radio" id="api1-opt1" name="api1-p1" value="true" />
+			<label for="api1-opt2">비활성</label>
+			<input type="radio" id="api1-opt2" name="api1-p1" value="false" checked />
 		</div>
-		<br> 
+		<br/> 
 		<input type="button" value="Run" class="popupBtn" onclick="changeMagoState()">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none; float: left"></div>

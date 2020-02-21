@@ -9,12 +9,12 @@
 	<div class="menu_tab00 mTs" id="panels">
 		<h2>isExistDataAPI</h2>
 		<p>데이터가 존재하는지 판단하는 API입니다.</p>
-		<h4>파라미터</h4>
 		<table>
+		<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -33,11 +33,11 @@
 			</tr>
 		</table>
 		<br>
-		<h4>리턴</h4>
 		<table>
+		<caption>리턴</caption>
 			<tr>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>Boolean</td>
@@ -47,12 +47,13 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>projectId :</p>
+			<label for="api41-p1">projectId :</label>
 			<input type="text" id="api41-p1" value="sample"><br>
-			<p>dataKey :</p>
+			<label for="api41-p2">dataKey :</label>
 			<input type="text" id="api41-p2" value="SOCIALROOM">
 		</div>
-		<br> <input type="button" value="Run" class="popupBtn" onclick="isExistData()">
+		<br> 
+		<input type="button" value="Run" class="popupBtn" onclick="isExistData()">
 		<div id="api41-result">결과 :</div>
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>

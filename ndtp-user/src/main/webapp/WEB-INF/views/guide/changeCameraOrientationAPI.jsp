@@ -9,12 +9,12 @@
 	<div class="menu_tab00 mTs" id="panels">
 		<h2>changeCameraOrientationAPI</h2>
 		<p>카메라의 회전정보를 변경하는 API입니다.</p>
-		<h4>파라미터</h4>
 		<table>
+			<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -45,13 +45,13 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>heading :</p>
+			<label for="api36-p1">heading :</label>
 			<input type="text" id="api36-p1" value="89.2471"><br/>
-			<p>pitch :</p>
+			<label for="api36-p2">pitch :</label>
 			<input type="text" id="api36-p2" value="43.1837"><br/>
-			<p>roll :</p>
+			<label for="api36-p3">roll :</label>
 			<input type="text" id="api36-p3" value="30.9415"><br/>
-			<p>duration :</p>
+			<label for="api36-p4">duration :</label>
 			<input type="text" id="api36-p4" value="0">
 		</div>
 		<br/> 
