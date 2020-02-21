@@ -2,6 +2,8 @@
 <div class="ctrlWrap">
 	<div class="zoom">
 		<button type="button" id="mapCtrlReset" class="reset" title="초기화">초기화</button>
+		<!-- <button type="button" id="mapCtrlCamLeftRot"class="cameraLeft" title="카메라왼쪽회전">카메라왼쪽회전</button>
+		<button type="button" id="mapCtrlCamRightRot" class="cameraRight" title="카메라오른쪽회전">카메라오른쪽회전</button> -->
 		<button type="button" id="mapCtrlAll" class="zoomall" title="전체보기">전체보기</button>
 		<button type="button" id="mapCtrlZoomIn" class="zoomin" title="확대">확대</button>
 		<button type="button" id="mapCtrlZoomOut" class="zoomout" title="축소">축소</button>

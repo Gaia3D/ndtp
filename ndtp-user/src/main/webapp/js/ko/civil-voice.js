@@ -56,8 +56,10 @@ function CivilVoiceControll(magoInstance, viewer) {
 	}
 	
 	function _clusterRenderFunc(trees, magoManager){
-		magoManager.objMarkerManager.objectMarkerArray = [];
-		
+		var filtered = magoManager.objMarkerManager.objectMarkerArray.filter(function(om){
+			return !om.tree;
+		});
+		magoManager.objMarkerManager.objectMarkerArray = filtered;
 		var treeLength = trees.length;
 		
 		for (var i=0;i<treeLength;i++) 
@@ -96,6 +98,7 @@ function CivilVoiceControll(magoInstance, viewer) {
 					}
 					groupOption.imageFilePath = sb.getPng(imgSize,'#287be4',{text:'...', pixel:pixel});
 					var om = magoManager.objMarkerManager.newObjectMarker(groupOption, magoManager);
+					om.tree = tree;
 				}
 			}
 			else 
