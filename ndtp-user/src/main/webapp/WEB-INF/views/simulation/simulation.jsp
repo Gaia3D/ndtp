@@ -220,6 +220,11 @@
 	</div>
 </div>
 <script>
+	// setTimeout(()=> {
+	// 	_viewer.camera.flyTo({
+	// 		destination : Cesium.Cartesian3.fromDegrees(126.9785978787040,  37.56690158584144, 100)
+	// 	});
+	// }, 1000);
 
 	$("#comment").on('click', function() {
 		let commentData = {
@@ -345,10 +350,12 @@
 	}
 
 	function genBuild(urlParam, lon, lat, scale) {
+		debugger;
 		let position = Cesium.Cartesian3.fromDegrees(lon, lat, 0);
 		let pinBuilder = new Cesium.PinBuilder();
 		let modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
-		console.log("url=", urlParam);
+		let carto_loc  = Cesium.Ellipsoid.WGS84.cartesianToCartographic(position);
+		console.log("lon=", Cesium.Math.toDegrees(carto_loc.longitude), " lat=", Cesium.Math.toDegrees(carto_loc.latitude), " h=", carto_loc.height);
 
 		let name = 'testObject';
 		let model = whole_viewer.scene.primitives.add(Cesium.Model.fromGltf({
@@ -364,6 +371,7 @@
 
 		let cartesian3 = whole_viewer.scene.clampToHeight(position);
 		let carto  = Cesium.Ellipsoid.WGS84.cartesianToCartographic(cartesian3);
+		console.log("lon=", Cesium.Math.toDegrees(carto.longitude), " lat=", Cesium.Math.toDegrees(carto.latitude), " h=", carto.height);
 		let entity = whole_viewer.entities.add({
 			name : urlParam,
 			billboard : {
@@ -372,30 +380,13 @@
 				eyeOffset: new Cesium.Cartesian3(0, carto.height + 20, 0)
 			},
 			position : cartesian3,
-			// orientation : orientation,
-			// model : {
-			// 	uri : urlParam,
-			// 	minimumPixelSize : 128,
-			// 	maximumScale : 20000
-			// }
 		});
-		// whole_viewer.trackedEntity = entity;
+
+		whole_viewer.trackedEntity = entity;
 
 		let lon2 = Cesium.Math.toDegrees(carto.longitude);
 		let lat2 = Cesium.Math.toDegrees(carto.latitude);
 		console.log(lon2, lat2, carto.height);
-
-		// whole_viewer.entities.add({
-		// 	position: cartesian3,
-		// 	ellipsoid : {
-		// 		radii : new Cesium.Cartesian3(2, 2, 2),
-		// 		material : Cesium.Color.RED
-		// 	}
-		// });
-		//
-		// whole_viewer.scene.camera.flyTo({
-		// 	destination : Cesium.Cartesian3.fromDegrees(lon2, lat2, carto.height)
-		// });
 
 		Cesium.when(model.readyPromise).then(function(model) {
 	        $.growl.notice({
