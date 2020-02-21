@@ -8,7 +8,19 @@ function CivilVoice(magoInstance) {
 function CivilVoiceControll(magoInstance, viewer) {
 	var that = this;
 	var magoManager = magoInstance.getMagoManager();
-
+	
+	var sb = new Mago3D.SpeechBubble();
+	var bubbleColor = new Mago3D.Color(1,1,1);
+	var groupOption = {
+		imageFilePath : "defaultRed",
+	};
+		
+	var commentTextOption = {
+		pixel:12,
+		color:'black',
+		borderColor:'white',
+	}
+		
 	var store = {
 		contents: {
 			list: $("#civilVoiceListContent"),
@@ -43,21 +55,125 @@ function CivilVoiceControll(magoInstance, viewer) {
 		}
 	}
 	
+	function _clusterRenderFunc(trees, magoManager){
+		magoManager.objMarkerManager.objectMarkerArray = [];
+		
+		var treeLength = trees.length;
+		
+		for (var i=0;i<treeLength;i++) 
+		{
+			var tree = trees[i];
+			
+			if (tree.hasChildren()) 
+			{
+				var points = tree.displayPointsArray;
+
+				var pointLength = points.length;
+				
+				for (var j=0;j<pointLength;j++) 
+				{
+					var point = points[j];
+					var mass = point.mass;
+					groupOption.positionWC = point;
+					
+					var imgSize;
+					var pixel;
+					if(mass > 10) {
+						imgSize = [96,96];
+						pixel = 50;
+					} else if(mass > 6 && mass <= 10) {
+						imgSize = [80,80];
+						pixel = 48;
+					} else if(mass > 4 && mass <= 6) {
+						imgSize = [64,64];
+						pixel = 46;
+					} else if(mass > 2 && mass <= 4) {
+						imgSize = [48,48];
+						pixel = 44;
+					} else {
+						imgSize = [32,32];
+						pixel = 30;
+					}
+					groupOption.imageFilePath = sb.getPng(imgSize,'#287be4',{text:'...', pixel:pixel});
+					var om = magoManager.objMarkerManager.newObjectMarker(groupOption, magoManager);
+				}
+			}
+			else 
+			{
+				var points = tree.data;
+				if (points) 
+				{
+					var pointLength = points.length;
+					var bubbleColor;
+					for (var j=0;j<pointLength;j++) 
+					{
+						var point = points[j];
+						var commentCnt = point.commentCount;
+						
+						if(commentCnt <= 10) {
+							bubbleColor = '#bdd4df';
+						} else if(commentCnt > 10 && commentCnt <= 20) {
+							bubbleColor = '#a3c8d8';
+						} else if(commentCnt > 20 && commentCnt <= 30) {
+							bubbleColor = '#87b9ce';
+						} else if(commentCnt > 30 && commentCnt <= 40) {
+							bubbleColor = '#ffe200';
+						} else if(commentCnt > 40 && commentCnt <= 50) {
+							bubbleColor = '#fabf00';
+						} else if(commentCnt > 50 && commentCnt <= 60) {
+							bubbleColor = '#f7ac00';
+						} else if(commentCnt > 60 && commentCnt <= 70) {
+							bubbleColor = '#f49800';
+						} else if(commentCnt > 70 && commentCnt <= 80) {
+							bubbleColor = '#ed6d46';
+						} else if(commentCnt > 80 && commentCnt <= 90) {
+							bubbleColor = '#eb5532';
+						} else if(commentCnt > 90 && commentCnt <= 100) {
+							bubbleColor = '#e83820';
+						} else {
+							bubbleColor = '#e83820';
+							commentCnt = '100+';
+						}
+						
+						commentTextOption.text = commentCnt;
+						
+						var img = sb.getPng([32,32],bubbleColor, commentTextOption)
+						
+						var options = {
+							positionWC    : Mago3D.ManagerUtils.geographicCoordToWorldPoint(point.x, point.y, 0),
+							imageFilePath : img
+						};
+						var om = magoManager.objMarkerManager.newObjectMarker(options, magoManager);
+						om.tree = tree;
+						om.civilVoice = point;
+					}
+				}
+			}
+		}
+	}
+	
+	function _clusterSelected(e) {
+		var generalObject = e.generalObject;
+		if(generalObject instanceof Mago3D.ObjectMarker && generalObject.hasOwnProperty('civilVoice') ) {
+			//console.info(generalObject);
+		}
+	}
+	
 	function _startRender(){
 		var voices = this.list;
 		if(voices && Array.isArray(voices) && voices.length > 0) {
-			//temp
-			magoManager.magoPolicy.imagePath = '/images/ko';
-			var cluster = new Mago3D.Cluster(_voicesToPointList(voices), 5);
-			magoManager.addCluster(cluster);
+			var cluster = new Mago3D.Cluster(_voicesToPointList(voices), 6, _clusterRenderFunc);
 			
+			magoManager.addCluster(cluster);
 			this.magoCluster = cluster;
+			magoManager.on(Mago3D.MagoManager.EVENT_TYPE.SELECTEDGENERALOBJECT, _clusterSelected);
 		}
 	}
 	
 	function _stopRender() {
 		this.magoCluster = undefined;
 		magoManager.clearCluster();
+		magoManager.off(Mago3D.MagoManager.EVENT_TYPE.SELECTEDGENERALOBJECT, _clusterSelected);
 	}
 	
 	function _addVoice(voice) {
@@ -72,6 +188,15 @@ function CivilVoiceControll(magoInstance, viewer) {
 	function _updateVoice(voice) {
 		var p2 = _voiceToPoint(voice);
 		this.magoCluster.updatePoint(p2, function(point){return point.civilVoiceId === voice.civilVoiceId});
+	}
+	
+	function _updateVoiceCommentCnt(civilVoiceId) {
+		var updatedVoice = this.list.filter(function(voice){
+			return voice.civilVoiceId == civilVoiceId;
+		})[0];
+		updatedVoice.commentCount += 1; 
+		var p2 = _voiceToPoint(updatedVoice);
+		this.magoCluster.updatePoint(p2, function(point){return point.civilVoiceId === updatedVoice.civilVoiceId});
 	}
 	
 	function _voicesToPointList(voices) {
@@ -89,6 +214,7 @@ function CivilVoiceControll(magoInstance, viewer) {
 		
 		var p2 = new Mago3D.Point2D(lon, lat);
 		p2.civilVoiceId = voice.civilVoiceId;
+		p2.commentCount = voice.commentCount;
 		return p2;
 	}
 	// public
@@ -104,7 +230,8 @@ function CivilVoiceControll(magoInstance, viewer) {
 			stopRender : _stopRender,
 			addVoice : _addVoice,
 			deleteVoice : _deleteVoice,
-			updateVoice : _updateVoice
+			updateVoice : _updateVoice,
+			updateVoiceCommentCnt : _updateVoiceCommentCnt
 		},
 		clear: function() {
 			removeStoredEntity();
@@ -398,7 +525,8 @@ function saveCivilVoice() {
 					civilVoice.cluster.addVoice.call(civilVoice.cluster, {
 						longitude : $form.find('input[name="longitude"]').val(),
 						latitude : $form.find('input[name="latitude"]').val(),
-						civilVoiceId : msg.civilVoiceId
+						civilVoiceId : msg.civilVoiceId,
+						commentCount : 0
 					});
 					
 					civilVoice.initFormContent(formId);
@@ -532,6 +660,9 @@ function saveCivilVoiceComment() {
 			success: function(msg) {
 				if(msg.statusCode <= 200) {
 					alert("등록 되었습니다.");
+					
+					//클러스터 데이터 삭제 시 갱신
+					civilVoice.cluster.updateVoiceCommentCnt.call(civilVoice.cluster, id);
 					civilVoice.initFormContent(formId);
 
 					getCivilVoiceCommentList();

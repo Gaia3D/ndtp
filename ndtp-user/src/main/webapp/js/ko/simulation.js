@@ -54,6 +54,7 @@ var Simulation = function(magoInstance) {
 		$('#csRange').hide();
 		magoInstance.getViewer().scene.globe.enableLighting = true;
 		magoManager.sceneState.setApplySunShadows(true);
+		$('#shadowDisplayY').prop('checked',true);
 		solarMode = true;
 		
 		changeDateTime();
@@ -64,7 +65,6 @@ var Simulation = function(magoInstance) {
 		setDate(new Date());
 		$('#saRange').hide();
 		magoInstance.getViewer().scene.globe.enableLighting = false;
-		magoManager.sceneState.setApplySunShadows(false);
 	});
 
 	datepicker.on('change', function() {
