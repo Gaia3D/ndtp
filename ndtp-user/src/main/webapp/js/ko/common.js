@@ -300,3 +300,10 @@ function openFindDataPoint(dataId, referrer) {
     		+ ", left=" + popupX + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
     //popWin.document.title = layerName;
 };
+
+// 세슘 크레딧 이미지 alt추가(웹 접근성)
+function cesiumCreditAlt(){
+	var magoContiner = document.getElementsByClassName("cesium-credit-logoContainer")[0];
+	var creditImgTag = magoContiner.getElementsByTagName("img")[0];
+	creditImgTag.setAttribute( 'alt', 'cesium credit' );
+};

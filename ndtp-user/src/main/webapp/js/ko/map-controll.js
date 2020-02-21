@@ -551,7 +551,7 @@ $(".layerClose").click(function(){
 	$(".labelLayer").hide();
 });
 
-//지도에서 찾기
+// 가이드 팝업 띄우기
 function goMagoAPIGuide() {
 	var url = "/guide/help";
 	//console.log("test");

@@ -59,13 +59,13 @@ public class ServletConfig implements WebMvcConfigurer {
 		
 		registry.addInterceptor(securityInterceptor)
 				.addPathPatterns("/**")
-				.excludePathPatterns("/f4d/**",	"/sign/**", "/css/**", "/externlib/**", "favicon*", "/images/**", "/js/**");
+				.excludePathPatterns("/f4d/**",	"/sign/**", "/guide/**", "/css/**", "/externlib/**", "favicon*", "/images/**", "/js/**");
 		registry.addInterceptor(logInterceptor)
 				.addPathPatterns("/**")
-				.excludePathPatterns("/f4d/**",	"/sign/**", "/css/**", "/externlib/**", "favicon*", "/images/**", "/js/**");
+				.excludePathPatterns("/f4d/**",	"/sign/**", "/guide/**", "/css/**", "/externlib/**", "favicon*", "/images/**", "/js/**");
 		registry.addInterceptor(configInterceptor)
 				.addPathPatterns("/**")
-				.excludePathPatterns("/f4d/**",	"/sign/**", "/css/**", "/externlib/**", "favicon*", "/images/**", "/js/**");
+				.excludePathPatterns("/f4d/**",	"/sign/**", "/guide/**", "/css/**", "/externlib/**", "favicon*", "/images/**", "/js/**");
     }
 	
 	@Bean
@@ -122,7 +122,7 @@ public class ServletConfig implements WebMvcConfigurer {
 		
 		// F4D converter file 경로
 		registry.addResourceHandler("/f4d/**").addResourceLocations("file:" + propertiesConfig.getDataServiceDir());
-		
+		registry.addResourceHandler("/f4d/sample/**").addResourceLocations("/sample/f4d/");
 		registry.addResourceHandler("/css/**").addResourceLocations("/css/");
 		registry.addResourceHandler("/externlib/**").addResourceLocations("/externlib/");
 		registry.addResourceHandler("/images/**").addResourceLocations("/images/");
