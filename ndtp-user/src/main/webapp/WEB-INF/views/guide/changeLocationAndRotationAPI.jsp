@@ -9,12 +9,12 @@
 	<div class="menu_tab00 mTs" id="panels">
 		<h2>changeLocationAndRotationAPI</h2>
 		<p>입력 받은 위치정보와 회전 정보로 블록을 변환 시킵니다.</p>
-		<h4>파라미터</h4>
 		<table>
+		<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -65,21 +65,21 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label>projectId :</label>
+			<label for="api8-p1">projectId :</label>
 			<input type="text" id="api8-p1" value="sample"><br/>
-			<label>dataKey :</label>
+			<label for="api8-p2">dataKey :</label>
 			<input type="text" id="api8-p2" value="SOCIALROOM"><br/>
-			<label>longitude :</label>
+			<label for="api8-p3">longitude :</label>
 			<input type="text" id="api8-p3" value="127.0000"><br/>
-			<label>latitude :</label>
+			<label for="api8-p4">latitude :</label>
 			<input type="text" id="api8-p4" value="37.000"><br/>
-			<label>height :</label>
+			<label for="api8-p5">height :</label>
 			<input type="text" id="api8-p5" value="550"><br/>
-			<label>heading :</label>
+			<label for="api8-p6">heading :</label>
 			<input type="text" id="api8-p6" value="0"><br/>
-			<label>pitch :</label>
+			<label for="api8-p7">pitch :</label>
 			<input type="text" id="api8-p7" value="0"><br/>
-			<label>roll :</label>
+			<label for="api8-p8">roll :</label>
 			<input type="text" id="api8-p8" value="0">
 		</div>
 		<br/> 

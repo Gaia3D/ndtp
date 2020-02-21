@@ -9,12 +9,12 @@
 	<div class="menu_tab00 mTs" id="panels">
 		<h2>getCameraCurrentOrientaionAPI</h2>
 		<p>현재 카메라의 회전정보를 구하는 API입니다.</p>
-		<h4>파라미터</h4>
 		<table>
+		<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -22,23 +22,23 @@
 				<td>mago3D 시작 부분</td>
 			</tr>
 		</table>
-		<br>
-		<h4>리턴</h4>
+		<br/>
 		<table>
+		<caption>리턴</caption>
 			<tr>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>object</td>
 				<td>현재 카메라의 회전정보</td>
 			</tr>
 		</table>
-		<br>
-		<h4>실행</h4>
+		<br/>
 		<div class="paramContainer"></div>
 		<input type="button" value="Run" class="popupBtn" onclick="getCameraCurrentOrientaion()">
-		결과 :<table id="api35-result"></table>
+		<h4>결과</h4>
+		<table id="api35-result"></table>
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

@@ -9,12 +9,12 @@
 	<div class="menu_tab00 mTs" id="panels">
 		<h2>gotoFlyAPI</h2>
 		<p>해당 지점으로 카메라가 이동합니다.</p>
-		<h4>파라미터</h4>
 		<table>
+		<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -45,13 +45,13 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label>longitude :</label>
+			<label for="api31-p1">longitude :</label>
 			<input type="text" id="api31-p1" value="127.0000"><br>
-			<label>latitude :</label>
+			<label for="api31-p2">latitude :</label>
 			<input type="text" id="api31-p2" value="37.000"><br>
-			<label>height :</label>
+			<label for="api31-p3">height :</label>
 			<input type="text" id="api31-p3" value="100"><br>
-			<label>duration :</label>
+			<label for="api31-p4">duration :</label>
 			<input type="text" id="api31-p4" value="10">
 		</div>
 		<br>

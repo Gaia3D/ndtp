@@ -9,13 +9,13 @@
 	<div class="menu_tab00 mTs" id="panels">
 		<h2>getAbsoluteCoodinateOfBuildingPointAPI</h2>
 		<p>건물의 절대 좌표를 구하는 API입니다.</p>
-		<h4>파라미터</h4>
 		<table>
+			<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
-			</tr>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
+		<th scope="col">r>
 			<tr>
 				<td>managerFactoryInstance</td>
 				<td>ManagerFactory</td>
@@ -43,11 +43,11 @@
 			</tr>
 		</table>
 		<br/>
-		<h4>리턴</h4>
 		<table>
+		<caption>리턴</caption>
 			<tr>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>object</td>
@@ -57,15 +57,21 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			projectId : <input type="text" id="api33-p1" value="sample"><br/>
-			dataKey : <input type="text" id="api33-p2" value="SOCIALROOM"><br/>
-			inputPoint_x : <input type="text" id="api33-p3" value="-3158185.8634899906"><br/> 
-			inputPoint_y : <input type="text" id="api33-p4" value="4713784.056940694"><br/>
-			inputPoint_z : <input type="text" id="api33-p5" value="4516771.367915208">
+			<label for="api33-p1">projectId</label>
+			<input type="text" id="api33-p1" value="sample"><br/>
+			<label for="api33-p2">dataKey</label>
+			<input type="text" id="api33-p2" value="SOCIALROOM"><br/>
+			<label for="api33-p3">inputPoint_x</label>
+			<input type="text" id="api33-p3" value="-3158185.8634899906"><br/>
+			<label for="api33-p4">inputPoint_y</label> 
+			<input type="text" id="api33-p4" value="4713784.056940694"><br/>
+			<label for="api33-p5">inputPoint_z</label>
+			<input type="text" id="api33-p5" value="4516771.367915208">
 		</div>
-		<br/> <input type="button" value="Run" class="popupBtn"
-			onclick="getAbsoluteCoodinateOfBuildingPoint()">
-		결과<table id="api33-result"></table>
+		<br/> 
+		<input type="button" value="Run" class="popupBtn" onclick="getAbsoluteCoodinateOfBuildingPoint()">
+		<h4>결과</h4>
+		<table id="api33-result"></table>
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

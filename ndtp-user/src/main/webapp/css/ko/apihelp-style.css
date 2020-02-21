@@ -910,11 +910,19 @@ color: #fff;
 border: 1px solid #284ba4;
 background-color: #287be4;
 }
-.descript div > h4 {
+.descript div > h4  {
 margin: 10px 0;
 padding: 0 0 15px 0;
 font-size: 22px;
 font-weight: normal;
+border-bottom: 1px solid #ccc;
+}
+caption {
+margin: 10px 0;
+padding: 0 0 8px 0;
+font-size: 15px;
+font-weight: normal;
+text-align:left;
 border-bottom: 1px solid #ccc;
 }
 

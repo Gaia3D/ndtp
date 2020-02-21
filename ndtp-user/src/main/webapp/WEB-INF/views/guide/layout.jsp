@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <!DOCTYPE html>
-<html lang="${accessibility}">
+<html lang="ko">
 <head>
 <meta charset="utf-8">
 <meta name="referrer" content="origin">
@@ -24,6 +24,7 @@
 				<a onclick="changeToggleTab(api0)">mago3D.JS API</a>
 			</h3>
 			<div class="searchWrap">
+			<label for="searchApi"></label>
 				<input id="searchApi" type="text" placeholder="검색어를 입력하세요">
 				<button type="button">검색</button>
 			</div>
@@ -99,6 +100,7 @@
 	<script type="text/javascript" src="/externlib/moment-2.22.2/moment-with-locales.min.js"></script>
 	<script type="text/javascript" src="/js/mago3d.js"></script>
 	<script type="text/javascript" src="/js/mago3d_lx.js"></script>
+	<script type="text/javascript" src="/js/ko/common.js"></script>
 
 
 	<script type="text/javascript">
@@ -122,26 +124,26 @@
 			
 			if($('.paramContainer').get(i)){
 				
-			$(".popupSub").children('ul').append("<li class=\"item\"><a class=\"name\" href=\"#\" onclick=\"changeToggleTab(api"+i+");\">"+apiList[i]+"</a></li>");
-			var parmScript = document.createTextNode(($('.paramContainer').get(i-1).innerHTML).replace(/\s{2,}/gi, ' '));
-			var script = document.createTextNode($('.api-help-toggle').next()[i-1].text);
-			var preTagBr = document.createElement("br");
-			var codeParmTag = document.createElement("code");
-			codeParmTag.setAttribute("class","html");
-			codeParmTag.appendChild(parmScript);
-			var preTagParm = document.createElement("pre");
-			preTagParm.appendChild(codeParmTag);
-			var codeScriptTag = document.createElement("code");
-			codeScriptTag.setAttribute("class","javascript");
-			codeScriptTag.appendChild(script);		
-			var preTagScript = document.createElement("pre");
-			preTagScript.appendChild(codeScriptTag);
-				
-			$('.menu_tab01')[i-1].appendChild(preTagParm);
-			$('.menu_tab01')[i-1].appendChild(preTagBr);
-			$('.menu_tab01')[i-1].appendChild(preTagBr);
-			$('.menu_tab01')[i-1].appendChild(preTagBr);
-			$('.menu_tab01')[i-1].appendChild(preTagScript);
+				$(".popupSub").children('ul').append("<li class=\"item\"><a class=\"name\" href=\"#api1\" onclick=\"changeToggleTab(api"+i+"); return false;\">"+apiList[i]+"</a></li>");
+				var parmScript = document.createTextNode(($('.paramContainer').get(i-1).innerHTML).replace(/\s{2,}/gi, ' '));
+				var script = document.createTextNode($('.api-help-toggle').next()[i-1].text);
+				var preTagBr = document.createElement("br");
+				var codeParmTag = document.createElement("code");
+				codeParmTag.setAttribute("class","html");
+				codeParmTag.appendChild(parmScript);
+				var preTagParm = document.createElement("pre");
+				preTagParm.appendChild(codeParmTag);
+				var codeScriptTag = document.createElement("code");
+				codeScriptTag.setAttribute("class","javascript");
+				codeScriptTag.appendChild(script);		
+				var preTagScript = document.createElement("pre");
+				preTagScript.appendChild(codeScriptTag);
+					
+				$('.menu_tab01')[i-1].appendChild(preTagParm);
+				$('.menu_tab01')[i-1].appendChild(preTagBr);
+				$('.menu_tab01')[i-1].appendChild(preTagBr);
+				$('.menu_tab01')[i-1].appendChild(preTagBr);
+				$('.menu_tab01')[i-1].appendChild(preTagScript);
 			
 			}
 		}
@@ -153,6 +155,8 @@
 					$("code").children('.hljs-tag')[i].childNodes[2].nodeValue = $("code").children('.hljs-tag')[i].childNodes[2].nodeValue+"\n";
 				}
 			};
+			
+			cesiumCreditAlt();
 		});
 		
 var MAGO3D_INSTANCE2;
@@ -168,7 +172,6 @@ magoInit2();
 function magoInit2() {
 	var geoPolicyJson = ${geoPolicyJson};
 	geoPolicyJson.initAltitude = 250.0;
-	console.log(geoPolicyJson);
 	var cesiumViewerOption = {};
 	cesiumViewerOption.infoBox = false;
 	cesiumViewerOption.navigationHelpButton = false;

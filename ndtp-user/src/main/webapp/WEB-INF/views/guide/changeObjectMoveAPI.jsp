@@ -11,12 +11,12 @@
 		<p>객체의 이동 모드를 변경하는 API입니다. 이동 모드(objectMoveMode) 값이 0(All)일 경우 건물
 			전체가 선택 및 이동되며, 1(Object)일 경우 창문과 같이 객체 단위로 선택 및 이동이 가능하며, 2(None)일 경우
 			객체가 선택되지 않고 화면이 이동됩니다.</p>
-		<h4>파라미터</h4>
 		<table>
+		<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -29,15 +29,18 @@
 				<td>0 = All, 1 = Object, 2 = None</td>
 			</tr>
 		</table>
-		<br>
+		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<p>objectMoveMode :</p>
-			<label><input type="radio" name="api9-p1" value="0" />all</label> <label><input
-				type="radio" name="api9-p1" value="1" />object</label> <label><input
-				type="radio" name="api9-p1" value="2" checked />non</label>
+			<label for="api9-opt1">all</label> 
+			<input type="radio" id="api9-opt1" name="api9-p1" value="0" />
+			<label for="api9-opt2">object</label> 
+			<input type="radio" id="api9-opt2" name="api9-p1" value="1" />
+			<label for="api9-opt3">non</label>
+			<input type="radio" id="api9-opt3" name="api9-p1" value="2" checked />
 		</div>
-		<br> 
+		<br/> 
 		<input type="button" value="Run" class="popupBtn" onclick="changeObjectMove()">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>

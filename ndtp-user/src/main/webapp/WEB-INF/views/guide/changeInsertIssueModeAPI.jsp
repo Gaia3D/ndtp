@@ -13,12 +13,12 @@
 			상태에서 이슈를 등록하고 싶은 Object를 클릭하면 callback함수를 관리해주는 데이터베이스 운영정책에 따라서 이슈등록
 			callback함수가 호출이되어 이슈등록 창이 나옵니다. 이슈등록 창에 내용을 적고 저장하면 데이터베이스에 등록이됩니다.
 			또한, 이슈등록 callback함수는 사용자가 Customizing이 가능합니다.</p>
-		<h4>파라미터</h4>
 		<table>
+		<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -34,8 +34,10 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label><input type="radio" name="api13-p1" value="true" />활성</label>
-			<label><input type="radio" name="api13-p1" value="false" checked />비활성</label>
+			<label for="api13-opt1">활성</label>
+			<input type="radio" id="api13-opt1" name="api13-p1" value="true" />
+			<label for="api13-opt2">비활성</label>
+			<input type="radio" id="api13-opt2" name="api13-p1" value="false" checked />
 		</div>
 		<br/> 
 		<input type="button" value="Run" class="popupBtn" onclick="changeInsertIssueMode()">

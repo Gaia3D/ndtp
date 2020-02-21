@@ -10,12 +10,12 @@
 		<h2>getCameraCurrentPositionAPI</h2>
 
 		<p>현재 카메라의 위치를 구하는 API입니다.</p>
-		<h4>파라미터</h4>
 		<table>
+		<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -29,11 +29,11 @@
 			</tr>
 		</table>
 		<br/>
-		<h4>리턴</h4>
 		<table>
+		<caption>리턴</caption>
 			<tr>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>object</td>
@@ -44,13 +44,17 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<p>unit :</p>
-			<label><input type="radio" name="api34-p1" value="0" />미터</label> 
-			<label><input type="radio" name="api34-p1" value="1" />도</label> 
-			<label><input type="radio" name="api34-p1" value="2" checked />라디안</label>
+			<label for="api34-opt1">미터</label> 
+			<input type="radio" id="api34-opt1" name="api34-p1" value="0" />
+			<label for="api34-opt2">도</label> 
+			<input type="radio" id="api34-opt2" name="api34-p1" value="1" />
+			<label for="api34-opt3">라디안</label>
+			<input type="radio" id="api34-opt3" name="api34-p1" value="2" checked />
 		</div>
 		<br/> 
 		<input type="button" value="Run" class="popupBtn" onclick="getCameraCurrentPosition()">
-		결과 :<table id="api34-result"></table>
+		<h4>결과</h4>
+		<table id="api34-result"></table>
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

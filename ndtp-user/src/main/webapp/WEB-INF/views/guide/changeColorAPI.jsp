@@ -10,12 +10,12 @@
 		<h2>changeColorAPI</h2>
 
 		<p>프로젝트 단위로 원하는 데이터나 데이터의 객체에 색상을 변경해주는 API입니다.</p>
-		<h4>파라미터</h4>
 		<table>
+		<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -51,15 +51,15 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label>projectId :</label>
+			<label for="api7-p1">projectId :</label>
 			<input type="text" id="api7-p1" value="sample"><br/>
-			<label>dataKey :</label>
+			<label for="api7-p2">dataKey :</label>
 			<input type="text" id="api7-p2" value="STUDENTROOM"><br/>
-			<label>objectIds :</label>
+			<label for="api7-p3">objectIds :</label>
 			<input type="text" id="api7-p3" value="2Dzz1wTo51BAnDnXy3jXLd"><br/>
-			<label>property :</label>
+			<label for="api7-p4">property :</label>
 			<input type="text" id="api7-p4" value="isMain=true"><br/>
-			<label>color :</label>
+			<label for="api7-p5">color :</label>
 			<input type="text" id="api7-p5" value="255, 0, 255">
 		</div>
 		<br/>

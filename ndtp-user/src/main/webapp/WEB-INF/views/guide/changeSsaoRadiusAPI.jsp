@@ -9,12 +9,12 @@
 	<div class="menu_tab00 mTs" id="panels">
 		<h2>changeSsaoRadiusAPI</h2>
 		<p>선택한 객체의 그림자 반경를 설정해주는 API입니다.</p>
-		<h4>파라미터</h4>
 		<table>
+		<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -30,7 +30,7 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label>ssaoRadius :</label>
+			<label for="api21-p1">ssaoRadius :</label>
 			<input type="text" id="api21-p1" value="0.15">
 		</div>
 		<br/> 

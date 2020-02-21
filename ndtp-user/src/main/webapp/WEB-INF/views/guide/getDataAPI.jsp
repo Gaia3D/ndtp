@@ -8,14 +8,13 @@
 	</div>
 	<div class="menu_tab00 mTs" id="panels">
 		<h2>getDataAPI</h2>
-
 		<p>data map에 담겨있는 데이터정보(json)를 불러오는 API입니다.</p>
-		<h4>파라미터</h4>
 		<table>
+		<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>dataKey</td>
@@ -24,11 +23,11 @@
 			</tr>
 		</table>
 		<br>
-		<h4>리턴</h4>
 		<table>
+		<caption>리턴</caption>
 			<tr>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>Object</td>
@@ -38,11 +37,12 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label>projectId :</label>
+			<label for="api28-p1">projectId :</label>
 			<input type="text" id="api28-p1" value="sample">
 		</div>
 		<br> <input type="button" value="Run" class="popupBtn" onclick="getData()">
-		결과 :<table id="api28-result"></table>
+		<h4>결과</h4>
+		<table id="api28-result"></table>
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

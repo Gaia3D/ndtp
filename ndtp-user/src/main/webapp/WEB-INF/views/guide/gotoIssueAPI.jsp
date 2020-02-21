@@ -9,12 +9,12 @@
 	<div class="menu_tab00 mTs" id="panels">
 		<h2>gotoIssueAPI</h2>
 		<p>해당 프로젝트를 로딩하고 그 이슈로 이동하는 API입니다.</p>
-		<h4>파라미터</h4>
 		<table>
+		<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -70,23 +70,23 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label>projectId :</label>
+			<label for="api25-p1">projectId :</label>
 			<input type="text" id="api25-p1" value="ifc"><br>
-			<label>projectData :</label>
+			<label for="api25-p2">projectData :</label>
 			<input type="text" id="api25-p2" value="ProjectDataObject"><br>
-			<label>projectDataFolder :</label>
+			<label for="api25-p3">projectDataFolder :</label>
 			<input type="text" id="api25-p3" value="factory"><br>
-			<label>issueId :</label>
+			<label for="api25-p4">issueId :</label>
 			<input type="text" id="api25-p4" value="128"><br>
-			<label>issueType :</label>
+			<label for="api25-p5">issueType :</label>
 			<input type="text" id="api25-p5" value="ISSUE_TYPE_BUGGER"><br>
-			<label>longitude :</label>
+			<label for="api25-p6">longitude :</label>
 			<input type="text" id="api25-p6" value="127.000"><br>
-			<label>latitude :</label>
+			<label for="api25-p7">latitude :</label>
 			<input type="text" id="api25-p7" value="37.000"><br>
-			<label>height :</label>
+			<label for="api25-p8">height :</label>
 			<input type="text" id="api25-p8" value="550"><br>
-			<label>duration :</label>
+			<label for="api25-p9">duration :</label>
 			<input type="text" id="api25-p9" value="10">
 		</div>
 		<br> 

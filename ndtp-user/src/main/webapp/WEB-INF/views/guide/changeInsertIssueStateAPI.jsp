@@ -10,12 +10,12 @@
 		<h2>changeInsertIssueStateAPI</h2>
 		<p>mago3DJS 엔진이 이슈 등록을 위해서 좌표를 기억하고 있었는데
 		changeInsertIssueStateAPI에 파라미터에 0을 넘겨 주면 좌표를 초기화합니다.</p>
-		<h4>파라미터</h4>
 		<table>
+		<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -31,7 +31,7 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label>insertIssueState :</label>
+			<label for="api18-p1">insertIssueState :</label>
 			<input type="text" id="api18-p1" value="0">
 		</div>
 		<br/> 

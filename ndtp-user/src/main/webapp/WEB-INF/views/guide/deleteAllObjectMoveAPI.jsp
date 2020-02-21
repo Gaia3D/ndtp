@@ -9,12 +9,12 @@
 	<div class="menu_tab00 mTs" id="panels">
 		<h2>deleteAllObjectMoveAPI</h2>
 		<p>모든 객체 마우스 이동 이력을 Cache로 삭제합니다.</p>
-		<h4>파라미터</h4>
 		<table>
+		<caption>파라미터</caption>
 			<tr>
-				<th>name</th>
-				<th>type</th>
-				<th>description</th>
+				<th scope="col">name</th>
+				<th scope="col">type</th>
+				<th scope="col">description</th>
 			</tr>
 			<tr>
 				<td>managerFactoryInstance</td>
@@ -31,9 +31,12 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<p>objectMoveMode :</p>
-			<label><input type="radio" name="api11-p1" value="0" />all</label> 
-			<label><input type="radio" name="api11-p1" value="1" />object</label> 
-			<label><input type="radio" name="api11-p1" value="2" checked />non</label>
+			<label for="api11-opt1">all</label> 
+			<input type="radio" id="api11-opt1" name="api11-p1" value="0" />
+			<label for="api11-opt2">object</label> 
+			<input type="radio" id="api11-opt2" name="api11-p1" value="1" />
+			<label for="api11-opt3">non</label>
+			<input type="radio" id="api11-opt3" name="api11-p1" value="2" checked />
 		</div>
 		<br/> 
 		<input type="button" value="Run" class="popupBtn" onclick="deleteAllObjectMove()">
