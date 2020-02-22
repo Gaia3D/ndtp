@@ -185,6 +185,7 @@
 						return;
 					}
 				}
+				window[id]();
 				//eval(id+"()");
 			})
 			
