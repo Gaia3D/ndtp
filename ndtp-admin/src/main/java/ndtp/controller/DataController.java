@@ -25,6 +25,7 @@ import ndtp.domain.UserSession;
 import ndtp.service.DataGroupService;
 import ndtp.service.DataService;
 import ndtp.service.PolicyService;
+import ndtp.support.SQLInjectSupport;
 import ndtp.utils.DateUtils;
 
 @Slf4j
@@ -51,6 +52,9 @@ public class DataController {
 	 */
 	@GetMapping(value = "/list")
 	public String list(HttpServletRequest request, DataInfo dataInfo, @RequestParam(defaultValue="1") String pageNo, Model model) {
+		
+		dataInfo.setSearchWord(SQLInjectSupport.replaceSqlInection(dataInfo.getSearchWord()));
+		dataInfo.setOrderWord(SQLInjectSupport.replaceSqlInection(dataInfo.getOrderWord()));
 		
 		log.info("@@ dataInfo = {}, pageNo = {}", dataInfo, pageNo);
 

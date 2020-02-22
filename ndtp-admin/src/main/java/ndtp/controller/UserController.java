@@ -31,6 +31,7 @@ import ndtp.service.PolicyService;
 import ndtp.service.UserGroupService;
 import ndtp.service.UserService;
 import ndtp.support.PasswordSupport;
+import ndtp.support.SQLInjectSupport;
 import ndtp.utils.DateUtils;
 import ndtp.utils.FormatUtils;
 
@@ -63,6 +64,9 @@ public class UserController implements AuthorizationController {
 	 */
 	@GetMapping(value = "/list")
 	public String list(HttpServletRequest request, @RequestParam(defaultValue="1") String pageNo, UserInfo userInfo, Model model) {
+		userInfo.setSearchWord(SQLInjectSupport.replaceSqlInection(userInfo.getSearchWord()));
+		userInfo.setOrderWord(SQLInjectSupport.replaceSqlInection(userInfo.getOrderWord()));
+		
 		String roleCheckResult = roleValidate(request);
     	if(roleValidate(request) != null) return roleCheckResult;
 

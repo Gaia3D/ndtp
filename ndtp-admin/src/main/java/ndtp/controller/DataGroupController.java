@@ -25,6 +25,7 @@ import ndtp.domain.SharingType;
 import ndtp.domain.UserSession;
 import ndtp.service.DataGroupService;
 import ndtp.service.PolicyService;
+import ndtp.support.SQLInjectSupport;
 import ndtp.utils.FileUtils;
 
 @Slf4j
@@ -50,6 +51,9 @@ public class DataGroupController {
 	 */
 	@GetMapping(value = "/list")
 	public String list(HttpServletRequest request, @ModelAttribute DataGroup dataGroup, Model model) {
+		dataGroup.setSearchWord(SQLInjectSupport.replaceSqlInection(dataGroup.getSearchWord()));
+		dataGroup.setOrderWord(SQLInjectSupport.replaceSqlInection(dataGroup.getOrderWord()));
+		
 		log.info("@@ dataGroup = {}", dataGroup);
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
