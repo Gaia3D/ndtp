@@ -339,7 +339,6 @@ function MapControll(viewer, option) {
 		}
 	});
 
-
 	// 	면적 측정 버튼
 	$('#mapCtrlArea').click(function() {
 		$(this).toggleClass('on'); // 버튼 색 변경

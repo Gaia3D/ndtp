@@ -23,10 +23,9 @@ var IssueController = function(magoInstance) {
 	
 	this.clearIssue = function(){
 		var mm = this.magoInstance.getMagoManager();
-		var filtered = mm.objMarkerManager.objectMarkerArray.filter(function(om){
+		mm.objMarkerManager.setMarkerByCondition(function(om){
 			return !om.issueId;
 		});
-		mm.objMarkerManager.objectMarkerArray = filtered;
 	}
 	
 	this.getCenterRadiusIssue = function() {

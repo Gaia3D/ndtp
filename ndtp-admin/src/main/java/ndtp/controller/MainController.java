@@ -23,9 +23,10 @@ import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.AccessLog;
 import ndtp.domain.CivilVoice;
+import ndtp.domain.ConverterJob;
+import ndtp.domain.DataAdjustLog;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
-import ndtp.domain.DataAdjustLog;
 import ndtp.domain.DataStatus;
 import ndtp.domain.Key;
 import ndtp.domain.Policy;
@@ -35,6 +36,7 @@ import ndtp.domain.UserStatus;
 import ndtp.domain.Widget;
 import ndtp.service.AccessLogService;
 import ndtp.service.CivilVoiceService;
+import ndtp.service.ConverterService;
 import ndtp.service.DataAdjustLogService;
 import ndtp.service.DataGroupService;
 import ndtp.service.DataService;
@@ -70,8 +72,8 @@ public class MainController {
 	@Autowired
 	private DataAdjustLogService dataAdjustLogService;
 
-//	@Autowired
-//	private IssueService issueService;
+	@Autowired
+	private ConverterService converterService;
 
 	@Autowired
 	private AccessLogService logService;
@@ -132,7 +134,7 @@ public class MainController {
 		boolean isDataGroupDraw = false;
 		boolean isDataInfoDraw = false;
 		boolean isDataInfoLogListDraw = false;
-		boolean isIssueDraw = false;
+		boolean isConverterDraw = false;
 		boolean isUserDraw = false;
 		boolean isCivilVoiceDraw = false;
 		boolean isAccessLogDraw = false;
@@ -148,9 +150,9 @@ public class MainController {
 			} else if("dataInfoLogListWidget".equals(dbWidget.getName())) {
 				isDataInfoLogListDraw = true;
 				dataInfoLogListWidget(startDate, endDate, model);
-			} else if("issueWidget".equals(dbWidget.getName())) {
-				isIssueDraw = true;
-				issueWidget(startDate, endDate, model);
+			} else if("converterWidget".equals(dbWidget.getName())) {
+				isConverterDraw = true;
+				converterWidget(startDate, endDate, model);
 			} else if("userWidget".equals(dbWidget.getName())) {
 				isUserDraw = true;
 				userWidget(startDate, endDate, model);
@@ -183,7 +185,7 @@ public class MainController {
 		model.addAttribute("isDataGroupDraw", isDataGroupDraw);
 		model.addAttribute("isDataInfoDraw", isDataInfoDraw);
 		model.addAttribute("isDataInfoLogListDraw", isDataInfoLogListDraw);
-		model.addAttribute("isIssueDraw", isIssueDraw);
+		model.addAttribute("isConverterDraw", isConverterDraw);
 		model.addAttribute("isUserDraw", isUserDraw);
 		model.addAttribute("isCivilVoiceDraw", isCivilVoiceDraw);
 		model.addAttribute("isAccessLogDraw", isAccessLogDraw);
@@ -224,18 +226,26 @@ public class MainController {
 	}
 
 	/**
-	 * CPU 모니터링, 메모리 모니터링, 디스크 사용현황
+	 * converter 현황
 	 * @param startDate
 	 * @param endDate
 	 * @param model
 	 */
-	private void issueWidget(String startDate, String endDate, Model model) {
-		DataGroup issue = new DataGroup();
-		issue.setStartDate(startDate);
-		issue.setEndDate(endDate);
-		Long issueTotalCount = dataGroupService.getDataGroupTotalCount(issue);
+	private void converterWidget(String startDate, String endDate, Model model) {
+		ConverterJob converterJob = new ConverterJob();
+		converterJob.setStartDate(startDate);
+		converterJob.setEndDate(endDate);
+		Long converterTotalCount = converterService.getConverterJobTotalCount(converterJob);
 
-		model.addAttribute("issueTotalCount", issueTotalCount);
+		converterJob.setStatus("success");
+		Long converterSuccessCount = converterService.getConverterJobTotalCount(converterJob);
+
+		converterJob.setStatus("fail");
+		Long converterFailCount = converterService.getConverterJobTotalCount(converterJob);
+
+		model.addAttribute("converterTotalCount", converterTotalCount);
+		model.addAttribute("converterSuccessCount", converterSuccessCount);
+		model.addAttribute("converterFailCount", converterFailCount);
 	}
 
 	/**
@@ -542,6 +552,8 @@ public class MainController {
 			civilVoice.setEndDate(endDate);
 			civilVoice.setOffset(0l);
 			civilVoice.setLimit(WIDGET_LIST_VIEW_COUNT);
+			civilVoice.setOrderWord("comment_count");
+			civilVoice.setOrderValue("desc");
 			List<CivilVoice> civilVoiceList = civilVoiceService.getListCivilVoice(civilVoice);
 
 //			map.put("civilVoiceList", new JSONArray.fromObject(civilVoiceList));

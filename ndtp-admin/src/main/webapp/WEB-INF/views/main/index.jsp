@@ -38,7 +38,7 @@
 					<div class="widget widget-low widget-otp-usage full column">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
-								<h3 class="widget-title"><spring:message code='main.data.status'/><span class="widget-desc">${yearMonthDay } (<spring:message code='main.today'/>)</span></h3>
+								<h3 class="widget-title"><spring:message code='main.converter.status'/><span class="widget-desc">${yearMonthDay } (<spring:message code='main.today'/>)</span></h3>
 							</div>
 						</div><!-- .widget-header -->
 						<div class="widget-content row">
@@ -51,9 +51,9 @@
 										</div>
 									</div>
 									<div>
-										<span class="banner-title"><spring:message code='main.data.new'/></span>
+										<span class="banner-title"><spring:message code='main.converter.new'/></span>
 										<span id="firstCountSpinner" class="banner-number"></span>
-										<span class="banner-unit"> ${issueTotalCount} <spring:message code='main.count'/> </span>
+										<span class="banner-unit"> ${converterTotalCount} <spring:message code='main.count'/> </span>
 									</div>
 								</div>
 							</div>
@@ -67,9 +67,9 @@
 										</div>
 									</div>
 									<div>
-										<span class="banner-title"><spring:message code='main.data.success'/></span>
+										<span class="banner-title"><spring:message code='main.converter.success'/></span>
 										<span id="secondeCountSpinner" class="banner-number"></span>
-										<span class="banner-unit"> 5 <spring:message code='main.count'/></span>
+										<span class="banner-unit"> ${converterSuccessCount} <spring:message code='main.count'/></span>
 									</div>
 								</div>
 							</div>
@@ -83,9 +83,9 @@
 										</div>
 									</div>
 									<div>
-										<span class="banner-title"><spring:message code='main.data.fail'/></span>
+										<span class="banner-title"><spring:message code='main.converter.fail'/></span>
 										<span id="thirdCountSpinner" class="banner-number"></span>
-										<span class="banner-unit"> 0 <spring:message code='main.count'/></span>
+										<span class="banner-unit"> ${converterFailCount} <spring:message code='main.count'/></span>
 									</div>
 								</div>
 							</div>
@@ -168,7 +168,7 @@
 							</div>
 							<div class="widget-functions u-pull-right">
 								<spring:message code='main.status.civilvoice.moreexecution' var="moreExectuion"/>
-								<a href="/civil-voice/list" title="${moreExectuion}"><span class="icon-glyph glyph-plus"></span></a>
+								<a href="/civil-voice/list?orderWord=comment_count&orderValue=DESC" title="${moreExectuion}"><span class="icon-glyph glyph-plus"></span></a>
 							</div>
 						</div>
 						<div id="${dbWidget.name}" class="widget-content row">
@@ -841,8 +841,8 @@
 					var content = "";
 					content 	= "<table class=\"widget-table\">"
 								+	"<col class=\"col-left\" />"
-								+	"<col class=\"col-center\" style=\"min-width:50px;\"/>"
-								+	"<col class=\"col-center\" style=\"width:140px;\"/>";
+								+	"<col class=\"col-center\" style=\"min-width:80px;\"/>"
+								+	"<col class=\"col-center\" style=\"width:100px;\"/>";
 					if(civilVoiceList == null || civilVoiceList.length == 0) {
 						content += 	"<tr>"
 								+	"	<td colspan=\"3\" class=\"col-none\"><spring:message code='main.status.no.civilvoice'/></td>"
@@ -853,12 +853,15 @@
 							civilVoice = civilVoiceList[i];
 
 							var date = new Date(civilVoice.insertDate);
-							var insertDate = date.toLocaleString();
+							var insertDate = date.toLocaleDateString();
 
 							content = content
 								+ 	"<tr>"
-								+ 	"	<td class=\"col-left\">"  + civilVoice.title + "</td>"
-								+ 	"	<td class=\"col-center\">" + civilVoice.userId + "</td>"
+								+ 	"	<td class=\"col-left ellipsis\" style='max-width:160px;'>"  + civilVoice.title + "</td>"
+								+ 	"	<td class=\"col-center\">"
+								+	"		<span class='likes-icon' style='float: left;'>icon</span>"
+								+	"		<span style='font-weight:bold;'>" + civilVoice.commentCount + "</span>"
+								+	"	</td>"
 								+ 	"	<td class=\"col-center\">" + insertDate + "</td>"
 								+ 	"</tr>";
 						}
@@ -962,8 +965,8 @@
 		// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
 		var popupX = (window.screen.width / 2) - (width / 2);
 		var popupY = (window.screen.height / 2) - (height / 2);
-		
-		var popWin = window.open(url, "", "toolbar=no, width=" + width + " ,height=" + height + ", top=" + popupY + ", left=" + popupX + 
+
+		var popWin = window.open(url, "", "toolbar=no, width=" + width + " ,height=" + height + ", top=" + popupY + ", left=" + popupX +
 				", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
 		return false;
 	}

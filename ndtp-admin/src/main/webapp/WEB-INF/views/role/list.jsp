@@ -78,8 +78,8 @@
 									<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> 페이지
 								</div>
 								<div class="list-functions u-pull-right">
-									<div class="button-group">
-										<a href="/role/input" class="image-button button-area button-new" title="Role 등록">Role 등록</a>
+									<div style="padding-bottom: 3px;" class="button-group">
+										<a href="/role/input" class="button" title="권한 등록">권한 등록</a>
 									</div>
 								</div>
 							</div>
@@ -145,7 +145,7 @@
 		<c:if test="${role.defaultYn eq 'Y' }">
 										삭제불가(기본)
 		</c:if>
-		<c:if test="${role.defaultYn eq 'N' }">							
+		<c:if test="${role.defaultYn eq 'N' }">
 										<a href="#" onclick="deleteRole('${role.roleId}'); return false;" class="linkButton">삭제</a>
 		</c:if>
 									</td>
