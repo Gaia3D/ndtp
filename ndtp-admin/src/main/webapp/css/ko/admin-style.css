@@ -2664,3 +2664,28 @@ background-color: #fff;
 .commentWrite * {
 	vertical-align: middle;
 }
+
+/* Dashboard */
+.pie-chart {
+  position: relative;
+  display: inline-block;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  transition: 0.3s;
+  margin: 10px;
+}
+.pie-chart span.center{
+  background: #fff;
+  display : block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  text-align:center;
+  line-height: 80px;
+  font-size: 15px;
+  transform: translate(-50%, -50%);
+}

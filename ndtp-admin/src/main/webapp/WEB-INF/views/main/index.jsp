@@ -178,7 +178,8 @@
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'accessLogWidget'}">
+		<!-- TODO: 수정 필요함. 여기가 원래 사용자 추적 -->
+		<c:when test="${dbWidget.name == 'accessLogWidget@@'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
@@ -187,6 +188,21 @@
 							<div class="widget-functions u-pull-right">
 								<spring:message code='main.status.user.moretracking' var='moreTracking'/>
 								<a href="/access/list" title="${moreTracking}"><span class="icon-glyph glyph-plus"></span></a>
+							</div>
+						</div>
+
+						<div id="${dbWidget.name}" class="widget-content row">
+							<div style="text-align: center; padding-top: 60px; padding-left: 150px;">
+			            		<div id="accessLogSpinner" style="width: 150px; height: 70px;"></div>
+			            	</div>
+						</div>
+					</div>
+		</c:when>
+		<c:when test="${dbWidget.name == 'accessLogWidget'}">
+					<div id="${dbWidget.widgetId }" class="widget one-third column">
+						<div class="widget-header row">
+							<div class="widget-heading u-pull-left">
+								<h3 class="widget-title"><spring:message code='main.status.system.usage'/><span class="widget-desc">${today } <spring:message code='main.standard'/></span></h3>
 							</div>
 						</div>
 
@@ -450,7 +466,9 @@
 		}
 		if(isAccessLogDraw == "true") {
 			startSpinner("accessLogSpinner");
-		    setTimeout(callAccessLogWidget, 1000);
+		    //setTimeout(callAccessLogWidget, 1000);
+		    // TODO: @@
+		    setTimeout(callSystemUsageWidget, 1000);
 		}
 		if(isDbcpDraw == "true") {
 			setTimeout(callDbcpWidget, 2000);
@@ -496,6 +514,12 @@
 	function callAccessLogWidget() {
 		accessLogWidget();
 		setInterval(accessLogWidget, refreshTime);
+	}
+
+	// 시스템 사용량
+	function callSystemUsageWidget() {
+		systemUsageWidget();
+		setInterval(systemUsageWidget, refreshTime);
 	}
 
 	function dataGroupWidget() {
@@ -956,6 +980,63 @@
 			}
 		});
 	}
+
+	// 시스템 사용량
+	function systemUsageWidget() {
+		$.ajax({
+			url : "/main/ajax-access-log-widget",
+			type : "GET",
+			cache : false,
+			dataType : "json",
+			success : function(msg) {
+				if (msg.result == "user.session.empty") {
+					//alert("로그인 후 사용 가능한 서비스 입니다.");
+				} else if (msg.result == "db.exception") {
+					//alert("데이터 베이스 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
+				} else if (msg.result == "success") {
+					var content = "";
+					content  = "<div class='pie-chart pie-chart1'><span class='center'>80%<br/>Disk</span></div>";
+					content += "<div class='pie-chart pie-chart2'><span class='center'>100%<br/>Memory</span></div>";
+					content += "<div class='pie-chart pie-chart3'><span class='center'>90%<br/>CPU</span></div>";
+
+					var res = {
+						disk: {
+							value: 80,
+							classname: '.pie-chart1',
+							color: 'tomato'
+						},
+						memory: {
+							value: 100,
+								classname: '.pie-chart2',
+								color: '#8b22ff'
+						},
+						cpu: {
+							value: 90,
+							classname: '.pie-chart3',
+							color: '#1cabf1'
+						}
+					}
+
+					for(var property in res) {
+						var value = res[property].value;
+						var classname = res[property].classname;
+						var color = res[property].color;
+						drawGauge(value, classname, color);
+					}
+
+					// TODO: @@
+					$("#accessLogWidget").empty();
+					$("#accessLogWidget").html(content);
+				}
+			},
+			error : function(request, status, error) {
+				//alert("잠시 후 이용해 주시기 바랍니다. 장시간 같은 현상이(DBCP) 반복될 경우 관리자에게 문의하여 주십시오.");
+				$("#accessLogWidget").empty();
+				$("#accessLogWidget").html(content);
+			}
+		});
+	}
+
 	function goMagoAPIGuide() {
 		var url = "/guide/help";
 		//console.log("test");
@@ -969,6 +1050,24 @@
 		var popWin = window.open(url, "", "toolbar=no, width=" + width + " ,height=" + height + ", top=" + popupY + ", left=" + popupX +
 				", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
 		return false;
+	}
+
+	function drawGauge(value, classname, colorname) {
+	   	var i=1;
+	    var drawFunction = setInterval(function(){
+	      	if(i<=value){
+	          	setGaugeColor(i, classname, colorname);
+	         	i++;
+	      	} else{
+	        	clearInterval(drawFunction);
+	      	}
+	    }, 10);
+	}
+
+	function setGaugeColor(i, classname, colorname) {
+	   	$(classname).css({
+	        "background": "conic-gradient("+colorname+" 0% "+i+"%, #e0e0e0 "+i+"% 100%)"
+	   	});
 	}
 </script>
 </body>
