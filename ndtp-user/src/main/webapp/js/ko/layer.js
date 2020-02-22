@@ -6,6 +6,7 @@ $(document).ready(function (){
 
     // 하위 영역 on/off
     $('#layerContent').on('click', '.mapLayer p', function(e) {
+    	if(!initLayerCheck()) return;
     	e.stopPropagation();
     	var target = $(this).parent('li');
     	target.toggleClass('on');
@@ -15,7 +16,6 @@ $(document).ready(function (){
     $('#layerContent').on('click', '.nodepth p', function(e) {
     	layerOnOff($(this).parent("li"));
     });
-    
 });
 
 
@@ -124,22 +124,35 @@ function saveUserLayers() {
 }
 // 레이어 전체 켜기 
 function turnOnAllLayer() {
+	if(!initLayerCheck()) return;
 	$('.nodepth').addClass("on");
-	NDTP.map.removeAllLayer();
+	NDTP.map.removeAllLayers();
 	NDTP.map.initLayer(true);
 }
 //레이어 전체 끄기
 function turnOffAllLayer() {
+	if(!initLayerCheck()) return;
 	$('.nodepth').removeClass("on");
-	NDTP.map.removeAllLayer();
+	NDTP.map.removeAllLayers();
 }
 
 // 레이어 트리 전체 펼치기 
 function openAllLayerTree() {
+	if(!initLayerCheck()) return;
 	$(".mapLayer").addClass("on");
 }
 
 // 레이어 트리 전체 접기
 function closeAllLayerTree() {
+	if(!initLayerCheck()) return;
 	$(".mapLayer").removeClass("on");
+}
+
+function initLayerCheck() {
+	if(!NDTP.map) {
+		alert("로딩중입니다."); 
+		return false;
+	} else {
+		return true;
+	}
 }

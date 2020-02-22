@@ -59,27 +59,6 @@ function mapInit(magoInstance, baseLayers, policy) {
 					alert(serviceType+" 타입은  지원하지 않습니다.");
 				}
 			}
-//			for(var i=0; i < groupLength; i++) {
-//				var layerList = baseLayers[i].layerList;
-//				var layerLength = layerList.length;
-//				for(var j=0; j < layerLength; j++) {
-//					var serviceType = layerList[j].serviceType;
-//					var cacheAvailable = layerList[j].cacheAvailable;
-//					var layerKey = layerList[j].layerKey;
-//					layerMap[layerKey] = layerList[j];
-//					// 기본 표시 true일 경우에만 레이어 추가 
-//					if(!displayFlag && !layerList[j].defaultDisplay) continue;
-//					if(serviceType ==='wms' && cacheAvailable) {
-//						this.addTileLayer(layerKey);
-//					} else if (serviceType ==='wms' && !cacheAvailable) {
-//						wmsLayerList.push(layerKey);
-//					} else if(serviceType ==='wfs') {
-//						this.addWFSLayer(layerKey);
-//					} else {
-//						alert(serviceType+" 타입은  지원하지 않습니다.");
-//					}
-//				}
-//			}
 			
 			if(wmsLayerList.length > 0) {
 				this.initWMSLayer(wmsLayerList);
@@ -118,16 +97,24 @@ function mapInit(magoInstance, baseLayers, policy) {
 		},
 		
 		/**
-		 * wms 레이어 추가 TODO 인덱스 확인해서 정렬 필요 
+		 * wms 레이어 추가  
 		 */
 		addWMSLayer : function(layerKey) {
 			var layerList = null;
 			if(this.getWMSLayers()) {
 				layerList = this.getWMSLayers().split(",");
+				var targetIndex = 0;
+				// zindex에 따라 정렬 
+				for(var i=0; i < layerList.length; i++) {
+					var currnetLayerIndex = layerMap[layerList[i]].zindex;
+					if(currnetLayerIndex <= layerMap[layerKey].zindex) {
+						targetIndex = i+1;
+					}
+				}
+				layerList.splice(targetIndex, 0, layerKey);
 			} else {
-				layerList = [];
+				layerList = [layerKey];
 			}
-			layerList.push(layerKey);
 			
 			this.initWMSLayer(layerList);
 		},
@@ -137,9 +124,10 @@ function mapInit(magoInstance, baseLayers, policy) {
 		 */
 		addWFSLayer : function(layerKey) {
 			var geoJson = geoserverDataUrl+ "/" + geoserverDataWorkspace + "/" + "/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=" +
-					geoserverDataWorkspace + ":" + layerKey + "&maxFeatures=200&outputFormat=application/json";
+//					geoserverDataWorkspace + ":" + layerKey + "&maxFeatures=200&outputFormat=application/json";
+					geoserverDataWorkspace + ":" + layerKey + "&outputFormat=application/json";
 			var promise = Cesium.GeoJsonDataSource.load(geoJson, {
-				//TODO terrain 사용시 외곽선 disable 되는거 처리 해야함 
+				//TODO terrain 사용시 외곽선 disable 되는거 처리 해야함. wfs도 zindex를 적용해야 하는데 add 메서드에 index주는게 없음.
 				stroke: Cesium.Color.fromCssColorString(layerMap[layerKey].layerLineColor),
 		        fill: Cesium.Color.fromCssColorString(layerMap[layerKey].layerFillColor).withAlpha(layerMap[layerKey].layerAlphaStyle),
 		        strokeWidth: layerMap[layerKey].layerLineStyle,
@@ -173,9 +161,21 @@ function mapInit(magoInstance, baseLayers, policy) {
 		            tiled : true
 		        }
 		    });
-		    
-			var layer = viewer.imageryLayers.addImageryProvider(provider);
-			layer.id = layerKey;
+			
+			var targetIndex = 1;
+			for(var i=0; i < imageryLayers.length; i++) {
+				var layer = imageryLayers.get(i);
+				var currnetLayerId = layer.id;
+				// zindex에 따라 정렬 . wmsLayer는 provider 하나로 관리하므로 인덱스 정렬 대상에서 제외.   
+				if(currnetLayerId && currnetLayerId !== WMS_LAYER) {
+					if(layerMap[currnetLayerId].zindex <= layerMap[layerKey].zindex) {
+						targetIndex = i+1;
+					}
+				}
+			}
+			
+			var addedLyer = viewer.imageryLayers.addImageryProvider(provider, targetIndex);
+			addedLyer.id = layerKey;
 		},
 		
 		/**
@@ -211,7 +211,7 @@ function mapInit(magoInstance, baseLayers, policy) {
 		/**
 		 * 전체 레이어 삭제
 		 */
-		removeAllLayer : function() {
+		removeAllLayers : function() {
 			if(imageryLayers.length > 0) {
 				// 기본 provider를 제외하고 모두 삭제
 				while(imageryLayers.length > 1) {
@@ -220,10 +220,6 @@ function mapInit(magoInstance, baseLayers, policy) {
 			}
 			// wfs 삭제 
 			dataSources.removeAll();
-		},
-		
-		getSortedLayer : function() {
-			return sortedLayer;
 		},
 		
 		/*
