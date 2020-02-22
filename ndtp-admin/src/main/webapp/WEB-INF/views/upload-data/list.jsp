@@ -79,7 +79,7 @@
 								</div>
 								<div class="list-functions u-pull-right">
 									<div style="padding-bottom: 3px;" class="button-group">
-										<a href="#" onclick="converterFiles(); return false;" class="button">F4D 일괄 변환</a>
+										<a href="#" onclick="converterFiles(); return false;" class="button" title="F4D 일괄 변환">F4D 일괄 변환</a>
 									</div>
 								</div>
 							</div>
@@ -346,7 +346,7 @@
 			}
 		}
 	}
-	
+
 	$('#yAxisUp').change(function() {
 		var desc = $(this).siblings('span');
 		var value = $(this).val();
