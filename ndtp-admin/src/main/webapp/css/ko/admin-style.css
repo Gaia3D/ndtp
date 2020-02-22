@@ -1274,7 +1274,16 @@ dl {
 	background-color: #573592;
 	border-color: #573592;
 	color: #fff; }
-
+	
+.pagination .hidden {
+display:inline-block;
+overflow:hidden;
+border:0;
+width:1px;
+height:1px;
+clip: rect(1px, 1px, 1px, 1px);
+clip-path:inset(50%);
+}
 .pagination .prev {
 	margin-right: 10px; }
 
