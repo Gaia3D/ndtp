@@ -25,6 +25,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import lombok.extern.slf4j.Slf4j;
+import ndtp.interceptor.CSRFHandlerInterceptor;
 import ndtp.interceptor.ConfigInterceptor;
 import ndtp.interceptor.SecurityInterceptor;
 
@@ -40,6 +41,8 @@ public class ServletConfig implements WebMvcConfigurer {
 	@Autowired
 	private PropertiesConfig propertiesConfig;
 	
+	@Autowired
+	private CSRFHandlerInterceptor cSRFHandlerInterceptor;
 	@Autowired
 	private ConfigInterceptor configInterceptor;
 	@Autowired
@@ -57,6 +60,9 @@ public class ServletConfig implements WebMvcConfigurer {
 		registry.addInterceptor(securityInterceptor)
 				.addPathPatterns("/**")
 				.excludePathPatterns("/f4d/**", "/sign/**", "/guide/**", "/sample/**", "/css/**", "/externlib/**", "favicon*", "/images/**", "/js/**");
+		registry.addInterceptor(cSRFHandlerInterceptor)
+				.addPathPatterns("/**")
+				.excludePathPatterns("/f4d/**",	"/sign/**", "/upload-datas", "/guide/**", "/css/**", "/externlib/**", "favicon*", "/images/**", "/js/**");
 		registry.addInterceptor(configInterceptor)
 				.addPathPatterns("/**")
 				.excludePathPatterns("/f4d/**", "/sign/**", "/guide/**", "/sample/**", "/css/**", "/externlib/**", "favicon*", "/images/**", "/js/**");
@@ -125,44 +131,4 @@ public class ServletConfig implements WebMvcConfigurer {
 //		registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
 	}
 	
-	
-//	/**
-//	 * TODO rest-template-mode 값으로 결정 하는게 아니라 request.isSecure 로 http, https 를 판별해서 결정 해야 하는데....
-//	 *      그럴경우 bean 설정이 아니라.... 개별 코드에서 판별을 해야 함 ㅠ.ㅠ
-//	 * @return
-//	 * @throws KeyStoreException
-//	 * @throws NoSuchAlgorithmException
-//	 * @throws KeyManagementException
-//	 */
-//	@Bean
-//    public RestTemplate restTempate() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
-//    	// https://github.com/jonashackt/spring-boot-rest-clientcertificate/blob/master/src/test/java/de/jonashackt/RestClientCertTestConfiguration.java
-//    	
-//    	String restTemplateMode = propertiesConfig.getRestTemplateMode();
-//    	RestTemplate restTemplate = null;
-//    	RestTemplateBuilder builder = new RestTemplateBuilder(new CustomRestTemplateCustomizer());
-//    	if("http".equals(restTemplateMode)) {
-//    		restTemplate = builder.errorHandler(new RestTemplateResponseErrorHandler())
-//						.setConnectTimeout(Duration.ofMillis(10000))
-//	            		.setReadTimeout(Duration.ofMillis(10000))
-//	            		.build();
-//    	} else {
-//    		TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
-//	    	SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy).build();
-//	 
-//	    	SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
-//	    	CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
-//	 
-//	    	HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-//	        requestFactory.setHttpClient(httpClient);
-//	        
-//	    	restTemplate = builder.errorHandler(new RestTemplateResponseErrorHandler())
-//						.setConnectTimeout(Duration.ofMillis(10000))
-//	            		.setReadTimeout(Duration.ofMillis(10000))
-//	            		.build();
-//			restTemplate.setRequestFactory(requestFactory);
-//    	}
-//    	
-//		return restTemplate;
-//    }
 }

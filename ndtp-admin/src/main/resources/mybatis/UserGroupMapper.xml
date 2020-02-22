@@ -280,6 +280,9 @@
 			<if test="available != null">
             available = #{available},
             </if>
+            <if test="description != null">
+            description = #{description},
+            </if>
             user_group_name = #{userGroupName}
         WHERE user_group_id = #{userGroupId}
     </update>

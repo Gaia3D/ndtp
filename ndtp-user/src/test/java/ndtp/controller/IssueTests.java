@@ -8,12 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -21,7 +20,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.common.BaseControllerTest;
-import ndtp.domain.CivilVoice;
 import ndtp.domain.Issue;
 import ndtp.domain.Key;
 import ndtp.domain.UserSession;
@@ -96,6 +94,6 @@ public class IssueTests extends BaseControllerTest {
 		log.info("map ========================== {} " , map);
 		Issue issue = objectMapper.convertValue(map.get("issue"),  new TypeReference<Issue>(){});
 
-		assertTrue(testIssueId == issue.getIssueId());
+		assertTrue(testIssueId.longValue() == issue.getIssueId().longValue());
 	}
 }

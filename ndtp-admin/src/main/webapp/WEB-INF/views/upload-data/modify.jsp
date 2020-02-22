@@ -12,62 +12,9 @@
 	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
 	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
 	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-    <link rel="stylesheet" href="/externlib/dropzone/dropzone.min.css">
     <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
-    <script type="text/javascript" src="/externlib/dropzone/dropzone.min.js"></script>
-
     <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-    <style type="text/css">
-        .dropzone .dz-preview.lp-preview {
-            width: 150px;
-        }
-        .dropzone.hzScroll {
-            min-width: 700px;
-            /*min-width: 1153px;*/
-			max-width: 1920px;
-            overflow: auto;
-            white-space: nowrap;
-            border: 1px solid #e5e5e5;
-        }
-
-        .loader-txt p {
-            font-size: 13px;
-            color: #666;
-        }
-
-        .loader-txt p small {
-            font-size: 11.5px;
-            color: #999;
-        }
-
-        .loader {
-            position: relative;
-            text-align: center;
-            margin: 15px auto 35px auto;
-            z-index: 9999;
-            display: block;
-            width: 80px;
-            height: 80px;
-            border: 10px solid rgba(0, 0, 0, 0.3);
-            border-radius: 50%;
-            border-top-color: #000;
-            animation: spin 1s ease-in-out infinite;
-            -webkit-animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to {
-                -webkit-transform: rotate(360deg);
-            }
-        }
-
-        @-webkit-keyframes spin {
-            to {
-                -webkit-transform: rotate(360deg);
-            }
-        }
-    </style>
 </head>
 
 <body>

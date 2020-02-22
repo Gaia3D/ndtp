@@ -23,6 +23,8 @@ JS_MESSAGE["account"] = "계정";
 JS_MESSAGE["use"] = "사용";
 JS_MESSAGE["not.use"] = "미사용";
 
+JS_MESSAGE["csrf.token.invalid"] = "보안(CSRF) 토큰이 유효하지 않습니다.";
+
 JS_MESSAGE["file.name.empty"] = "파일명을 입력하여 주십시오.";
 JS_MESSAGE["file.name.invalid"] = "파일명이 유효하지 않습니다.";
 JS_MESSAGE["file.ext.invalid"] = "파일 확장자가 유효하지 않습니다.";

@@ -19,14 +19,14 @@ import ndtp.domain.UserPolicy;
 import ndtp.domain.UserSession;
 import ndtp.service.UserPolicyService;
 
-@RequestMapping("/user-policy/")
+@RequestMapping("/user-policy")
 @RestController
 public class UserPolicyController {
 
     @Autowired
     UserPolicyService userPolicyService;
 
-    @PostMapping("update")
+    @PostMapping("/update")
     public Map<String, Object> updateUserPolicy(HttpServletRequest request, @Valid UserPolicy userPolicy, BindingResult bindingResult) {
     	
     	Map<String, Object> result = new HashMap<>();
@@ -61,7 +61,7 @@ public class UserPolicyController {
 		return result;
     }
     
-    @PostMapping("update-layers")
+    @PostMapping("/update-layers")
     public Map<String, Object> updateBaseLayers(HttpServletRequest request, @RequestParam String baseLayers) {
     	Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
