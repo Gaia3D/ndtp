@@ -178,8 +178,8 @@
 						</div>
 					</div>
 		</c:when>
-		<!-- TODO: 수정 필요함. 여기가 원래 사용자 추적 -->
 		<c:when test="${dbWidget.name == 'accessLogWidget@@'}">
+		<!-- TODO: 수정 필요함. 여기가 원래 사용자 추적 -->
 					<div id="${dbWidget.widgetId }" class="widget one-third column">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
