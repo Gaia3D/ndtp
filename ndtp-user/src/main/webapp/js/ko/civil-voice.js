@@ -53,16 +53,17 @@ function CivilVoiceControll(magoInstance, viewer) {
 
 	function removeStoredEntity() {
 		if(store.beforeEntity) {
-			viewer.entities.removeById(store.beforeEntity);
+			//viewer.entities.removeById(store.beforeEntity);
+			
+			magoManager.objMarkerManager.setMarkerByCondition(function(om){return !om.civilDrawMarker});
 			store.beforeEntity = null;
 		}
 	}
 	
 	function _clusterRenderFunc(trees, magoManager){
-		var filtered = magoManager.objMarkerManager.objectMarkerArray.filter(function(om){
+		magoManager.objMarkerManager.setMarkerByCondition(function(om){
 			return !om.tree;
 		});
-		magoManager.objMarkerManager.objectMarkerArray = filtered;
 		var treeLength = trees.length;
 		
 		for (var i=0;i<treeLength;i++) 
@@ -255,8 +256,18 @@ function CivilVoiceControll(magoInstance, viewer) {
 		},
 		drawMarker: function(longitude, latitude) {
 			removeStoredEntity();
+			
+			var markerSize = store.marker.size;
+			var img = sb.getPng([markerSize,markerSize],store.marker.color.toCssColorString());
+			
+			var options = {
+				positionWC    : Mago3D.ManagerUtils.geographicCoordToWorldPoint(longitude, latitude, 0),
+				imageFilePath : img
+			};
+			var om = magoManager.objMarkerManager.newObjectMarker(options, magoManager);
+			om.civilDrawMarker = true;
 
-			var x = Number(longitude);
+			/*var x = Number(longitude);
 	   		var y = Number(latitude);
 
 	   		var pinBuilder = new Cesium.PinBuilder();
@@ -270,9 +281,9 @@ function CivilVoiceControll(magoInstance, viewer) {
 	   	            horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
 	   	            verticalOrigin : Cesium.VerticalOrigin.BOTTOM
 	   		    }
-	   		});
+	   		});*/
 
-			store.beforeEntity = addedEntity.id;
+			store.beforeEntity = om;
 		},
 		updateMarker: function(count) {
 			if(store.beforeEntity) {

@@ -101,10 +101,9 @@ Mago3D.MagoManager.prototype.addCluster = function(cluster) {
 }
 
 Mago3D.MagoManager.prototype.clearCluster = function() {
-	var filtered = this.objMarkerManager.objectMarkerArray.filter(function(om){
+	this.objMarkerManager.setMarkerByCondition(function(om){
 		return !om.tree;
 	});
-	this.objMarkerManager.objectMarkerArray = filtered;
 	this.cluster = undefined;
 }
 
