@@ -24,6 +24,7 @@ import ndtp.domain.UserSession;
 import ndtp.service.DataAdjustLogService;
 import ndtp.service.DataGroupService;
 import ndtp.service.DataService;
+import ndtp.support.SQLInjectSupport;
 import ndtp.utils.DateUtils;
 
 /**
@@ -54,6 +55,9 @@ public class DataAdjustLogController {
 	 */
 	@GetMapping(value = "/list")
 	public String list(Locale locale, HttpServletRequest request, DataAdjustLog dataAdjustLog, @RequestParam(defaultValue="1") String pageNo, Model model) {
+		
+		dataAdjustLog.setSearchWord(SQLInjectSupport.replaceSqlInection(dataAdjustLog.getSearchWord()));
+		dataAdjustLog.setOrderWord(SQLInjectSupport.replaceSqlInection(dataAdjustLog.getOrderWord()));
 		
 		log.info("@@ dataInfoAdjustLog = {}", dataAdjustLog);
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());

@@ -23,6 +23,7 @@ import ndtp.domain.RoleKey;
 import ndtp.domain.UserSession;
 import ndtp.service.CivilVoiceService;
 import ndtp.service.PolicyService;
+import ndtp.support.SQLInjectSupport;
 import ndtp.utils.DateUtils;
 import ndtp.utils.FormatUtils;
 
@@ -46,7 +47,10 @@ public class CivilVoiceController implements AuthorizationController {
 	 */
     @GetMapping(value = "list")
 	public String list(HttpServletRequest request, @RequestParam(defaultValue="1") String pageNo, CivilVoice civilVoice, Model model) {
-		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+    	civilVoice.setSearchWord(SQLInjectSupport.replaceSqlInection(civilVoice.getSearchWord()));
+    	civilVoice.setOrderWord(SQLInjectSupport.replaceSqlInection(civilVoice.getOrderWord()));
+    	
+    	UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 
 		String roleCheckResult = roleValidate(request);
     	if(roleValidate(request) != null) return roleCheckResult;

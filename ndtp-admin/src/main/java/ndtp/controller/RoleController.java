@@ -25,6 +25,7 @@ import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
 import ndtp.domain.Role;
 import ndtp.service.RoleService;
+import ndtp.support.SQLInjectSupport;
 import ndtp.utils.DateUtils;
 
 @Slf4j
@@ -49,6 +50,9 @@ public class RoleController {
 	@GetMapping(value = "list")
 	public String list(HttpServletRequest request, @RequestParam(defaultValue="1") String pageNo, Role role, Model model) {
 
+		role.setSearchWord(SQLInjectSupport.replaceSqlInection(role.getSearchWord()));
+		role.setOrderWord(SQLInjectSupport.replaceSqlInection(role.getOrderWord()));
+		
 		if(!StringUtils.isEmpty(role.getStartDate())) {
 			role.setStartDate(role.getStartDate().substring(0, 8) + DateUtils.START_TIME);
 		}

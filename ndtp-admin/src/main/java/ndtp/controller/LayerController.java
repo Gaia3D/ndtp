@@ -63,6 +63,7 @@ import ndtp.service.LayerFileInfoService;
 import ndtp.service.LayerGroupService;
 import ndtp.service.LayerService;
 import ndtp.service.PolicyService;
+import ndtp.support.SQLInjectSupport;
 import ndtp.support.ZipSupport;
 import ndtp.utils.DateUtils;
 import ndtp.utils.FormatUtils;
@@ -96,6 +97,9 @@ public class LayerController implements AuthorizationController {
 	 */
 	@GetMapping(value = "/list")
 	public String list(HttpServletRequest request, @RequestParam(defaultValue="1") String pageNo, Layer layer, Model model) {
+		layer.setSearchWord(SQLInjectSupport.replaceSqlInection(layer.getSearchWord()));
+		layer.setOrderWord(SQLInjectSupport.replaceSqlInection(layer.getOrderWord()));
+		
 		log.info("@@ layer = {}", layer);
 
 		String roleCheckResult = roleValidate(request);
