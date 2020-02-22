@@ -245,8 +245,8 @@ function CivilVoiceControll(magoInstance, viewer) {
 		},
 		flyToLocation: function(longitude, latitude, commentCount) {
 			this.flyTo(longitude, latitude);
-			this.drawMarker(longitude, latitude);
-			this.updateMarker(commentCount);
+			//this.drawMarker(longitude, latitude);
+			//this.updateMarker(commentCount);
 		},
 		flyTo: function(longitude, latitude) {
 			var altitude = 100;
