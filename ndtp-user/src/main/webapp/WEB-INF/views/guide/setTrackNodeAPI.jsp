@@ -10,7 +10,7 @@
 		<h2>setTrackNodeAPI</h2>
 		<p>트래킹 할 노드를 설정하는 API입니다. 설정한 데이터를 카메라가 계속 바라보게 됩니다.</p>
 		<table>
-		<caption>파라미터</caption>
+		<caption>Parameter</caption>
 			<tr>
 				<th scope="col">name</th>
 				<th scope="col">type</th>
@@ -40,17 +40,17 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label for="api39-p1">projectId :</label>
+			<label for="api39-p1">projectId</label>
 			<input type="text" id="api39-p1" value="sample"><br>
-			<label for="api39-p2">dataKey :</label>
+			<label for="api39-p2">dataKey</label>
 			<input type="text" id="api39-p2" value="SOCIALROOM"><br>
-			<label for="api39-p3">option_y :</label>
+			<label for="api39-p3">option_y</label>
 			<input type="text" id="api39-p3" value="-1"><br>
-			<label for="api39-p4">option_z :</label>
+			<label for="api39-p4">option_z</label>
 			<input type="text" id="api39-p4" value="12">
 		</div>
 		<br> 
-		<input type="button" value="Run" class="popupBtn" onclick="setTrackNode()">
+		<input type="button" id="setTrackNode" value="Run" class="popupBtn" >
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

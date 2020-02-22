@@ -10,7 +10,7 @@
 		<h2>isDataReadyToRenderAPI</h2>
 		<p>데이터를 렌더링 할 준비가 되어있는지 확인하는 API입니다.</p>
 		<table>
-		<caption>파라미터</caption>
+		<caption>Parameter</caption>
 			<tr>
 				<th scope="col">name</th>
 				<th scope="col">type</th>
@@ -34,7 +34,7 @@
 		</table>
 		<br>
 		<table>
-		<caption>리턴</caption>
+		<caption>Return</caption>
 			<tr>
 				<th scope="col">type</th>
 				<th scope="col">description</th>
@@ -47,14 +47,14 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label for="api42-p1">projectId :</label>
+			<label for="api42-p1">projectId</label>
 			<input type="text" id="api42-p1" value="sample"><br>
-			<label for="api42-p2">dataKey :</label>
+			<label for="api42-p2">dataKey</label>
 			<input type="text" id="api42-p2" value="SOCIALROOM">
 		</div>
 		<br> 
-		<input type="button" value="Run" class="popupBtn" onclick="isDataReadyToRender()">
-		<div id="api42-result">결과 :</div>
+		<input type="button" id="isDataReadyToRender" value="Run" class="popupBtn">
+		<div id="api42-result">결과</div>
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

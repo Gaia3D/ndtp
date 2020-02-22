@@ -11,7 +11,7 @@
 		<p>프로젝트 아이디(projectId)와 데이터 고유키(dataKey)에 해당하는 지도 상의 데이터를 찾아 이동하는
 			API입니다.</p>
 		<table>
-		<caption>파라미터</caption>
+		<caption>Parameter</caption>
 			<tr>
 				<th scope="col">name</th>
 				<th scope="col">type</th>
@@ -36,13 +36,13 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label for="api26-p1">projectId :</label>
+			<label for="api26-p1">projectId</label>
 			<input type="text" id="api26-p1" value="sample"><br>
-			<label for="api26-p2">dataKey :</label>
+			<label for="api26-p2">dataKey</label>
 			<input type="text" id="api26-p2" value="SOCIALROOM">
 		</div>
 		<br> 
-		<input type="button" value="Run" class="popupBtn" onclick="searchData()">
+		<input type="button" id="searchData" value="Run" class="popupBtn">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

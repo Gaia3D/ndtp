@@ -11,7 +11,7 @@
 		<p>정적 모델을 추가하는 API입니다.</p>
 		
 		<table>
-			<caption>파라미터</caption>
+			<caption>Parameter</caption>
 			<tr>
 				<th scope="col">name</th>
 				<th scope="col">type</th>
@@ -31,21 +31,21 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label for="api38-p1">projectId :</label>
+			<label for="api38-p1">projectId</label>
 			<input type="text" id="api38-p1" value="static_sample"><br/>
-			<label for="api38-p2">projectFolderName :</label>
+			<label for="api38-p2">projectFolderName</label>
 			<input type="text" id="api38-p2" value="sample"><br/>
-			<label for="api38-p3">buildingFolderName :</label>
+			<label for="api38-p3">buildingFolderName</label>
 			<input type="text" id="api38-p3" value="F4D_SOCIALROOM">
 		</div>
 		<br/> 
-		<input type="button" value="Run" class="popupBtn" onclick="addStaticModel()">
+		<input type="button" id="addStaticModel" value="Run" class="popupBtn">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>
 <script>
 	var addStaticModel = function() {
-		if(validateCheckGuide()){
+		
 			var projId = $('#api38-p1').val();
 			var projFdNm = $('#api38-p2').val();
 			var buildingFdNm = $('#api38-p3').val();
@@ -55,9 +55,7 @@
 				projectFolderName : projFdNm,
 				buildingFolderName : buildingFdNm
 			}
-
+			console.log("asdas");
 			addStaticModelAPI(MAGO3D_INSTANCE2, attrObject);
-		}
-		
 	}
 </script>

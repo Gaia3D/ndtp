@@ -10,7 +10,7 @@
 		<h2>changeOcclusionCullingAPI</h2>
 		<p>객체 Occlusion Culling 기능을 활성화, 비활성화 하는 기능입니다.</p>
 		<table>
-		<caption>파라미터</caption>
+		<caption>Parameter</caption>
 			<tr>
 				<th scope="col">name</th>
 				<th scope="col">type</th>
@@ -35,15 +35,15 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label for="api15-opt1">활성</label>
 			<input type="radio" id="api15-opt1" name="api15-p1" value="true" />
-			<label for="api15-opt2">비활성</label><br/>
+			<label for="api15-opt1">활성</label>
 			<input type="radio" id="api15-opt2" name="api15-p1" value="false" checked />
-			<label for="api15-p2">dataKey :</label>
+			<label for="api15-opt2">비활성</label><br/>
 			<input type="text" id="api15-p2" value="SOCIALROOM">
+			<label for="api15-p2">dataKey :</label>
 		</div>
 		<br/> 
-		<input type="button" value="Run" class="popupBtn" onclick="changeOcclusionCulling()">
+		<input type="button" id="changeOcclusionCulling" value="Run" class="popupBtn">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

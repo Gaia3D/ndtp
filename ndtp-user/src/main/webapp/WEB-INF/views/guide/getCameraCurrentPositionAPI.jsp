@@ -11,7 +11,7 @@
 
 		<p>현재 카메라의 위치를 구하는 API입니다.</p>
 		<table>
-		<caption>파라미터</caption>
+		<caption>Parameter</caption>
 			<tr>
 				<th scope="col">name</th>
 				<th scope="col">type</th>
@@ -30,7 +30,7 @@
 		</table>
 		<br/>
 		<table>
-		<caption>리턴</caption>
+		<caption>Return</caption>
 			<tr>
 				<th scope="col">type</th>
 				<th scope="col">description</th>
@@ -44,15 +44,15 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<p>unit :</p>
-			<label for="api34-opt1">미터</label> 
 			<input type="radio" id="api34-opt1" name="api34-p1" value="0" />
-			<label for="api34-opt2">도</label> 
+			<label for="api34-opt1">미터</label> 
 			<input type="radio" id="api34-opt2" name="api34-p1" value="1" />
-			<label for="api34-opt3">라디안</label>
+			<label for="api34-opt2">도</label> 
 			<input type="radio" id="api34-opt3" name="api34-p1" value="2" checked />
+			<label for="api34-opt3">라디안</label>
 		</div>
 		<br/> 
-		<input type="button" value="Run" class="popupBtn" onclick="getCameraCurrentPosition()">
+		<input type="button" id="getCameraCurrentPosition" value="Run" class="popupBtn">
 		<h4>결과</h4>
 		<table id="api34-result"></table>
 	</div>

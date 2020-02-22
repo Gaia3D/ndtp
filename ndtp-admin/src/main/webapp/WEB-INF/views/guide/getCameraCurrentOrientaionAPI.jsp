@@ -10,7 +10,7 @@
 		<h2>getCameraCurrentOrientaionAPI</h2>
 		<p>현재 카메라의 회전정보를 구하는 API입니다.</p>
 		<table>
-		<caption>파라미터</caption>
+		<caption>Parameter</caption>
 			<tr>
 				<th scope="col">name</th>
 				<th scope="col">type</th>
@@ -24,7 +24,7 @@
 		</table>
 		<br/>
 		<table>
-		<caption>리턴</caption>
+		<caption>Return</caption>
 			<tr>
 				<th scope="col">type</th>
 				<th scope="col">description</th>
@@ -36,7 +36,7 @@
 		</table>
 		<br/>
 		<div class="paramContainer"></div>
-		<input type="button" value="Run" class="popupBtn" onclick="getCameraCurrentOrientaion()">
+		<input type="button" id="getCameraCurrentOrientaion" value="Run" class="popupBtn">
 		<h4>결과</h4>
 		<table id="api35-result"></table>
 	</div>

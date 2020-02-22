@@ -11,7 +11,7 @@
 
 		<p>프로젝트 단위 데이터를 추가하고 렌더링 하는 API입니다.</p>
 		<table>
-		<caption>파라미터</caption>
+		<caption>Parameter</caption>
 			<tr>
 				<th scope="col">name</th>
 				<th scope="col">type</th>
@@ -41,15 +41,15 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label for="api30-p1">projectIdArray :</label>
+			<label for="api30-p1">projectIdArray</label>
 			<input type="text" id="api30-p1" value='["ifc, ifc1, ifc2"]'><br/>
-			<label for="api30-p2">projectDataArray :</label>
+			<label for="api30-p2">projectDataArray</label>
 			<input type="text" id="api30-p2" value='["factory, factory1, factory2"]'><br/>
-			<label for="api30-p3">projectDataFolderArray :</label>
+			<label for="api30-p3">projectDataFolderArray</label>
 			<input type="text" id="api30-p3" value='["D:\reposit, D:\reposit1, D:\reposit2"]'>
 		</div>
 		<br/> 
-		<input type="button" value="Run" class="popupBtn" onclick="drawAppendData()">
+		<input type="button" id="drawAppendData" value="Run" class="popupBtn">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

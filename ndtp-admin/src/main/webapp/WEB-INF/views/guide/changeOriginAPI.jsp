@@ -10,7 +10,7 @@
 		<h2>changeOriginAPI</h2>
 		<p>changeOriginAPI 활성화 상태 값을 변경함으로써 Origin이 표시, 비표시 됩니다.</p>
 		<table>
-		<caption>파라미터</caption>
+		<caption>Parameter</caption>
 			<tr>
 				<th scope="col">name</th>
 				<th scope="col">type</th>
@@ -30,13 +30,13 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label for="api3-opt1">활성</label>
 			<input type="radio" id="api3-opt1" name="api3-p1" value="true" />
-			<label for="api3-opt2">비활성</label>
+			<label for="api3-opt1">활성</label>
 			<input type="radio" id="api3-opt2" name="api3-p1" value="false" checked />
+			<label for="api3-opt2">비활성</label>
 		</div>
 		<br/> 
-		<input type="button" value="Run" class="popupBtn" onclick="changeOrigin()">
+		<input type="button" id="changeOrigin" value="Run" class="popupBtn">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

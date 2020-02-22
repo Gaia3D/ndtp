@@ -12,7 +12,7 @@
 			전체가 선택 및 이동되며, 1(Object)일 경우 창문과 같이 객체 단위로 선택 및 이동이 가능하며, 2(None)일 경우
 			객체가 선택되지 않고 화면이 이동됩니다.</p>
 		<table>
-		<caption>파라미터</caption>
+		<caption>Parameter</caption>
 			<tr>
 				<th scope="col">name</th>
 				<th scope="col">type</th>
@@ -32,16 +32,15 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<p>objectMoveMode :</p>
-			<label for="api9-opt1">all</label> 
 			<input type="radio" id="api9-opt1" name="api9-p1" value="0" />
-			<label for="api9-opt2">object</label> 
+			<label for="api9-opt1">all</label> 
 			<input type="radio" id="api9-opt2" name="api9-p1" value="1" />
-			<label for="api9-opt3">non</label>
+			<label for="api9-opt2">object</label> 
 			<input type="radio" id="api9-opt3" name="api9-p1" value="2" checked />
+			<label for="api9-opt3">non</label>
 		</div>
 		<br/> 
-		<input type="button" value="Run" class="popupBtn" onclick="changeObjectMove()">
+		<input type="button" id="changeObjectMove" value="Run" class="popupBtn">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

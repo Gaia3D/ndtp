@@ -14,7 +14,7 @@
 			callback함수가 호출이되어 이슈등록 창이 나옵니다. 이슈등록 창에 내용을 적고 저장하면 데이터베이스에 등록이됩니다.
 			또한, 이슈등록 callback함수는 사용자가 Customizing이 가능합니다.</p>
 		<table>
-		<caption>파라미터</caption>
+		<caption>Parameter</caption>
 			<tr>
 				<th scope="col">name</th>
 				<th scope="col">type</th>
@@ -34,13 +34,13 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label for="api13-opt1">활성</label>
 			<input type="radio" id="api13-opt1" name="api13-p1" value="true" />
-			<label for="api13-opt2">비활성</label>
+			<label for="api13-opt1">활성</label>
 			<input type="radio" id="api13-opt2" name="api13-p1" value="false" checked />
+			<label for="api13-opt2">비활성</label>
 		</div>
 		<br/> 
-		<input type="button" value="Run" class="popupBtn" onclick="changeInsertIssueMode()">
+		<input type="button" id="changeInsertIssueMode" value="Run" class="popupBtn">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

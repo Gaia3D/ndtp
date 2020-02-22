@@ -10,7 +10,7 @@
 		<h2>getCoordinateRelativeToBuildingAPI</h2>
 		<p>입력받은 지점 좌표를 해당 건물 기준의 상대좌표로 변환합니다.</p>
 		<table>
-		<caption>파라미터</caption>
+		<caption>Parameter</caption>
 			<tr>
 				<th scope="col">name</th>
 				<th scope="col">type</th>
@@ -44,7 +44,7 @@
 		</table>
 		<br>
 		<table>
-		<caption>리턴</caption>
+		<caption>Return</caption>
 			<tr>
 				<th scope="col">type</th>
 				<th scope="col">description</th>
@@ -57,19 +57,19 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label for="api32-p1">projectId :</label>
+			<label for="api32-p1">projectId</label>
 			<input type="text" id="api32-p1" value="sample"><br>
-			<label for="api32-p2">dataKey :</label>
+			<label for="api32-p2">dataKey</label>
 			<input type="text" id="api32-p2" value="SOCIALROOM"><br>
-			<label for="api32-p3">inputPoint_x :</label>
+			<label for="api32-p3">inputPoint_x</label>
 			<input type="text" id="api32-p3" value="-3158185.8634899906"><br>
-			<label for="api32-p4">inputPoint_y :</label>
+			<label for="api32-p4">inputPoint_y</label>
 			<input type="text" id="api32-p4" value="4713784.056940694"><br>
-			<label for="api32-p5">inputPoint_z :</label>
+			<label for="api32-p5">inputPoint_z</label>
 			<input type="text" id="api32-p5" value="4516771.367915208">
 		</div>
 		<br> 
-		<input type="button" value="Run" class="popupBtn" onclick="getCoordinateRelativeToBuilding()">
+		<input type="button" id="getCoordinateRelativeToBuilding" value="Run" class="popupBtn">
 		<h4>결과</h4>
 		<table id="api32-result"></table>
 	</div>

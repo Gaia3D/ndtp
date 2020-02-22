@@ -89,8 +89,6 @@
 		</div>
 	</div>
 
-
-
 	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>
@@ -101,7 +99,6 @@
 	<script type="text/javascript" src="/js/mago3d.js"></script>
 	<script type="text/javascript" src="/js/mago3d_lx.js"></script>
 	<script type="text/javascript" src="/js/ko/common.js"></script>
-
 
 	<script type="text/javascript">
 	var apiList = ["main","changeMagoStateAPI", "changeLabelAPI", "changeOriginAPI",
@@ -153,29 +150,51 @@
 		
 		$( document ).ready(function() {
 			
+			// code toggle align
 			for (var i =0; i< $("code").children('.hljs-tag').length; i++) {
 				if($("code").children('.hljs-tag')[i].childNodes[0].nodeValue=="</"){
 					$("code").children('.hljs-tag')[i].childNodes[2].nodeValue = $("code").children('.hljs-tag')[i].childNodes[2].nodeValue+"\n";
 				}
 			};
 			
+			// cesium credit img alt
 			cesiumCreditAlt();
 			
+			// blank check 
 			$('.paramContainer').children('input[type=text]').focusout(function (){
 				if($(this)[0].nextSibling.nodeValue){
-					console.log("Ss")
 					$(this)[0].nextSibling.nodeValue="";
 				}
-				
-				
 				if($(this).val()==""){
-					
 					var txt = document.createTextNode("필수로 입력해 주세요.");
 					$(this).after(txt);
 				}/* else{
 					var txt = document.createTextNode("만족!");
 					$(this).after(txt);
 				} */
+			})
+			
+			// null check and start function
+			$('.popupBtn').on("click", function(){
+				
+				var id = $(this).attr('id');
+				var inputTags = $("#"+id).siblings('.paramContainer').children('input[type=text]');
+				for(var i = 0; i<inputTags.length; i++){
+					if(inputTags[i].value=="" || null || undefined ){
+						alert("필수!");
+						return;
+					}
+				}
+				eval(id+"()");
+			})
+			
+			//color picker
+			$('#api7-p5').on("change", function(){
+				if($(this)[0].nextSibling.nodeValue){
+					$(this)[0].nextSibling.nodeValue="";
+				}
+				var txt = document.createTextNode(convertColor($(this).val()));
+				$(this).after(txt);
 			})
 		});
 		
@@ -248,25 +267,26 @@ $('.item').on("click", function(){
 
 function changeToggleTab(apiId){
 	$('.api-help-toggle').css('display','none');
+	$(apiId).scrollTop(0);
 	$(apiId).show();
 }
 
 function tabMenu(num){
  
- var f = $('.api-help-toggle');
- for ( var i = 0; i < f.length; i++ ) {
-  if ( num == 0) {
-   f.eq(i).children('.menu_tab').children('ul').children('li').eq(0).addClass('active');
-   f.eq(i).children('.menu_tab').children('ul').children('li').eq(1).removeClass('active');
-   f.eq(i).children('.menu_tab00').show();
-   f.eq(i).children('.menu_tab01').hide();
-  } else {
-	  f.eq(i).children('.menu_tab').children('ul').children('li').eq(1).addClass('active');
-   f.eq(i).children('.menu_tab').children('ul').children('li').eq(0).removeClass('active');
-   f.eq(i).children('.menu_tab01').show();
-   f.eq(i).children('.menu_tab00').hide();	
-  }
- }
+	var f = $('.api-help-toggle');
+	for ( var i = 0; i < f.length; i++ ) {
+		if ( num == 0) {
+			f.eq(i).children('.menu_tab').children('ul').children('li').eq(0).addClass('active');
+   			f.eq(i).children('.menu_tab').children('ul').children('li').eq(1).removeClass('active');
+   			f.eq(i).children('.menu_tab00').show();
+   			f.eq(i).children('.menu_tab01').hide();
+  		} else {
+	  		f.eq(i).children('.menu_tab').children('ul').children('li').eq(1).addClass('active');
+   			f.eq(i).children('.menu_tab').children('ul').children('li').eq(0).removeClass('active');
+   			f.eq(i).children('.menu_tab01').show();
+   			f.eq(i).children('.menu_tab00').hide();	
+  		}
+ 	}
 }
 
 $("#searchApi").on("propertychange change keyup paste input",function(){
@@ -284,7 +304,25 @@ $("#searchApi").on("propertychange change keyup paste input",function(){
     }
 })
 
+// rgb to hex
+function convertColor(color) {
+  if(color.substring(0,1) == '#') {
+     color = color.substring(1);
+   }
+  var rgbColor = [parseInt(color.substring(0,2),16),parseInt(color.substring(2,4),16),parseInt(color.substring(4),16)];
 
+  return rgbColor;
+ }
+
+function validateCheckGuide() {
+	/* for(var i = 0; i = ){
+		if ($("#issueTitle").val() === "") {
+			alert("제목을 입력하여 주십시오.");
+			$("#issueTitle").focus();
+			return false;
+		}
+	} */
+}
 </script>
 </body>
 </html>

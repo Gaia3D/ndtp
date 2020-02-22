@@ -10,7 +10,7 @@
 		<h2>gotoProjectAPI</h2>
 		<p>해당 프로젝트를 로딩하고 그 프로젝트로 이동하는 API입니다.</p>
 		<table>
-		<caption>파라미터</caption>
+		<caption>Parameter</caption>
 			<tr>
 				<th scope="col">name</th>
 				<th scope="col">type</th>
@@ -60,23 +60,23 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label for="api24-p1">projectId :</label>
+			<label for="api24-p1">projectId</label>
 			<input type="text" id="api24-p1" value="sample2"><br>
-			<label for="api24-p2">projectData :</label>
+			<label for="api24-p2">projectData</label>
 			<input type="text" id="api24-p2" value="sample_f4d"><br>
-			<label for="api24-p3">projectDataFolder :</label>
+			<label for="api24-p3">projectDataFolder</label>
 			<input type="text" id="api24-p3" value="sample"><br>
-			<label for="api24-p4">longitude :</label>
+			<label for="api24-p4">longitude</label>
 			<input type="text" id="api24-p4" value="126.60890424717905"><br>
-			<label for="api24-p5">latitude :</label>
+			<label for="api24-p5">latitude</label>
 			<input type="text" id="api24-p5" value="37.58358288958673"><br>
-			<label for="api24-p6">height :</label>
+			<label for="api24-p6">height</label>
 			<input type="text" id="api24-p6" value="550"><br>
-			<label for="api24-p7">duration :</label>
+			<label for="api24-p7">duration</label>
 			<input type="text" id="api24-p7" value="1">
 		</div>
 		<br> 
-		<input type="button" value="Run" class="popupBtn" onclick="gotoProject()">
+		<input type="button" id="gotoProject" value="Run" class="popupBtn">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

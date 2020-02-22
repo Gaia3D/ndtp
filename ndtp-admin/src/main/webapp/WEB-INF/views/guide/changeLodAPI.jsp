@@ -10,7 +10,7 @@
 		<h2>changeLodAPI</h2>
 		<p>LOD(Level Of Detail)설정을 변경해주는 API입니다.</p>
 		<table>
-		<caption>파라미터</caption>
+		<caption>Parameter</caption>
 			<tr>
 				<th scope="col">name</th>
 				<th scope="col">type</th>
@@ -55,20 +55,20 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label for="api19-p1">lod0DistInMeters :</label>
+			<label for="api19-p1">lod0DistInMeters</label>
 			<input type="text" id="api19-p1" value="15"><br/>
-			<label for="api19-p2">lod1DistInMeters :</label>
+			<label for="api19-p2">lod1DistInMeters</label>
 			<input type="text" id="api19-p2" value="60"><br/>
-			<label for="api19-p3">lod2DistInMeters :</label>
+			<label for="api19-p3">lod2DistInMeters</label>
 			<input type="text" id="api19-p3" value="90"><br/>
-			<label for="api19-p4">lod3DistInMeters :</label>
+			<label for="api19-p4">lod3DistInMeters</label>
 			<input type="text" id="api19-p4" value="200"><br/>
-			<label for="api19-p5">lod4DistInMeters :</label>
+			<label for="api19-p5">lod4DistInMeters</label>
 			<input type="text" id="api19-p5" value="1000"><br/>
-			<label for="api19-p6">lod5DistInMeters :</label>
+			<label for="api19-p6">lod5DistInMeters</label>
 			<input type="text" id="api19-p6" value="500000">
 		</div>
-		<br/> <input type="button" value="Run" class="popupBtn" onclick="changeLod()">
+		<br/> <input type="button" id="changeLod" value="Run" class="popupBtn">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

@@ -10,7 +10,7 @@
 		<h2>changeCameraOrientationAPI</h2>
 		<p>카메라의 회전정보를 변경하는 API입니다.</p>
 		<table>
-			<caption>파라미터</caption>
+			<caption>Parameter</caption>
 			<tr>
 				<th scope="col">name</th>
 				<th scope="col">type</th>
@@ -45,17 +45,17 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label for="api36-p1">heading :</label>
+			<label for="api36-p1">heading</label>
 			<input type="text" id="api36-p1" value="89.2471"><br/>
-			<label for="api36-p2">pitch :</label>
+			<label for="api36-p2">pitch</label>
 			<input type="text" id="api36-p2" value="43.1837"><br/>
-			<label for="api36-p3">roll :</label>
+			<label for="api36-p3">roll</label>
 			<input type="text" id="api36-p3" value="30.9415"><br/>
-			<label for="api36-p4">duration :</label>
+			<label for="api36-p4">duration</label>
 			<input type="text" id="api36-p4" value="0">
 		</div>
 		<br/> 
-		<input type="button" value="Run" class="popupBtn" onclick="changeCameraOrientation()">
+		<input type="button" id="changeCameraOrientation" value="Run" class="popupBtn">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

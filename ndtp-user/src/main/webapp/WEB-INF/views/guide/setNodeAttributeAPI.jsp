@@ -10,7 +10,7 @@
 		<h2>setNodeAttributeAPI</h2>
 		<p>데이터의 속성을 설정하는 API입니다.</p>
 		<table>
-		<caption>파라미터</caption>
+		<caption>Parameter</caption>
 			<tr>
 				<th scope="col">name</th>
 				<th scope="col">type</th>
@@ -40,14 +40,14 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label for="api43-p1">projectId :</label>
+			<label for="api43-p1">projectId</label>
 			<input type="text" id="api43-p1" value="sample"><br>
-			<label for="api43-p2">dataKey :</label>
+			<label for="api43-p2">dataKey</label>
 			<input type="text" id="api43-p2" value="SOCIALROOM"><br>
-			<label for="api43-p3">isVisible :</label>
+			<label for="api43-p3">isVisible</label>
 			<input type="text" id="api43-p3" value="true">
 		</div>
-		<br> <input type="button" value="Run" class="popupBtn" onclick="setNodeAttribute()">
+		<br> <input type="button" id="setNodeAttribute" value="Run" class="popupBtn">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

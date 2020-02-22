@@ -10,7 +10,7 @@
 		<h2>getDataAPI</h2>
 		<p>data map에 담겨있는 데이터정보(json)를 불러오는 API입니다.</p>
 		<table>
-		<caption>파라미터</caption>
+		<caption>Parameter</caption>
 			<tr>
 				<th scope="col">name</th>
 				<th scope="col">type</th>
@@ -24,7 +24,7 @@
 		</table>
 		<br>
 		<table>
-		<caption>리턴</caption>
+		<caption>Return</caption>
 			<tr>
 				<th scope="col">type</th>
 				<th scope="col">description</th>
@@ -37,10 +37,11 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label for="api28-p1">projectId :</label>
+			<label for="api28-p1">projectId</label>
 			<input type="text" id="api28-p1" value="sample">
 		</div>
-		<br> <input type="button" value="Run" class="popupBtn" onclick="getData()">
+		<br> 
+		<input type="button" id="getData" value="Run" class="popupBtn">
 		<h4>결과</h4>
 		<table id="api28-result"></table>
 	</div>

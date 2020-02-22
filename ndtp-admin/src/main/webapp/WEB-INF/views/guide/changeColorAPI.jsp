@@ -11,7 +11,7 @@
 
 		<p>프로젝트 단위로 원하는 데이터나 데이터의 객체에 색상을 변경해주는 API입니다.</p>
 		<table>
-		<caption>파라미터</caption>
+		<caption>Parameter</caption>
 			<tr>
 				<th scope="col">name</th>
 				<th scope="col">type</th>
@@ -51,32 +51,33 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label for="api7-p1">projectId :</label>
+			<label for="api7-p1">projectId</label>
 			<input type="text" id="api7-p1" value="sample"><br/>
-			<label for="api7-p2">dataKey :</label>
+			<label for="api7-p2">dataKey</label>
 			<input type="text" id="api7-p2" value="STUDENTROOM"><br/>
-			<label for="api7-p3">objectIds :</label>
+			<label for="api7-p3">objectIds</label>
 			<input type="text" id="api7-p3" value="2Dzz1wTo51BAnDnXy3jXLd"><br/>
-			<label for="api7-p4">property :</label>
+			<label for="api7-p4">property</label>
 			<input type="text" id="api7-p4" value="isMain=true"><br/>
-			<label for="api7-p5">color :</label>
-			<input type="text" id="api7-p5" value="255, 0, 255">
+			<label for="api7-p5">color</label>
+			<input type="color" id="api7-p5">0,0,0
 		</div>
 		<br/>
-		<input type="button" value="Run" class="popupBtn" onclick="changeColor()">
+		<input type="button" id="changeColor" value="Run" class="popupBtn">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>
 <script>
+
 	var changeColor = function() {
-
+		//console.log($(this).val());
 		var arr1 = [];
-
 		var projectId = $('#api7-p1').val();
 		var dataKey = $('#api7-p2').val();
 		var objectIds = $('#api7-p3').val();
 		var property = $('#api7-p4').val();
-		var color = $('#api7-p5').val();
+		var color = $('#api7-p5')[0].nextSibling.nodeValue;
+		console.log(color);
 		arr1[0] = objectIds;
 
 		changeColorAPI(MAGO3D_INSTANCE2, projectId, dataKey, arr1, property, color);

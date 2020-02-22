@@ -11,7 +11,7 @@
 		<p>포인트 클라우드 색상 모드를 토글하는 API입니다. 이 API를 호출하면 색상 모드가 on 되어 있다면 off가
 			되고, off가 되어 있다면 on이 됩니다.</p>
 		<table>
-		<caption>파라미터</caption>
+		<caption>Parameter</caption>
 			<tr>
 				<th scope="col">name</th>
 				<th scope="col">type</th>
@@ -25,7 +25,7 @@
 		</table>
 		<br>
 		<div class="paramContainer"></div>
-		<input type="button" value="Run" class="popupBtn" onclick="togglePointCloudColor()">
+		<input type="button" id="togglePointCloudColor" value="Run" class="popupBtn">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

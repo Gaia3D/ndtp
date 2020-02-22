@@ -14,7 +14,7 @@
 			운영정책에 따라서 정보표시 callback함수가 호출되고 Jquery Plugin Toast통하여 Object정보가
 			나옵니다. 또한, 정보표시 callback함수는 사용자가 Customizing이 가능합니다.</p>
 		<table>
-		<caption>파라미터</caption>
+		<caption>Parameter</caption>
 			<tr>
 				<th scope="col">name</th>
 				<th scope="col">type</th>
@@ -34,12 +34,12 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label for="api14-opt1">활성</label>
 			<input type="radio" id="api14-opt1" name="api14-p1" value="true" />
-			<label for="api14-opt2">비활성</label>
+			<label for="api14-opt1">활성</label>
 			<input type="radio" id="api14-opt2" name="api14-p1" value="false" checked />
+			<label for="api14-opt2">비활성</label>
 		</div>
-		<br/> <input type="button" value="Run" class="popupBtn" onclick="changeObjectInfoViewMode()">
+		<br/> <input type="button" id="changeObjectInfoViewMode" value="Run" class="popupBtn">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

@@ -10,7 +10,7 @@
 		<h2>clearAllDataAPI</h2>
 		<p>화면에 있는 모든 데이터를 삭제, 비표시하는 API입니다.</p>
 		<table>
-		<caption>파라미터</caption>
+		<caption>Parameter</caption>
 			<tr>
 				<th scope="col">name</th>
 				<th scope="col">type</th>
@@ -24,7 +24,7 @@
 		</table>
 		<br/>
 		<div class="paramContainer"></div>
-		<input type="button" value="Run" class="popupBtn" onclick="clearAllData()">
+		<input type="button" id="clearAllData" value="Run" class="popupBtn">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ndtp.domain.GeoPolicy;
 import ndtp.service.GeoPolicyService;
@@ -30,14 +32,18 @@ public class GuideController {
 	 */
 	@GetMapping(value = "/help")
 	public String gotoApiHelp(HttpServletRequest request, Model model) {
-
 		GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
 		try {
 			model.addAttribute("geoPolicyJson", objectMapper.writeValueAsString(geoPolicy));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		return "/guide/layout";
+	}
+	
+	@GetMapping(value = "/loadPage")
+	public String gotoApiToggle(HttpServletRequest request, @RequestParam(value = "str")String str) {
+		System.out.println("Ssssssssss");
+		return "/guide/"+str+"API";
 	}
 }

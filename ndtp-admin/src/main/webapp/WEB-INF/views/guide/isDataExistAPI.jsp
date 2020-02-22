@@ -10,7 +10,7 @@
 		<h2>isDataExistAPI</h2>
 		<p>환경 설정 data map에 key 값의 존재 유무를 판별하는 API입니다.</p>
 		<table>
-		<caption>파라미터</caption>
+		<caption>Parameter</caption>
 			<tr>
 				<th scope="col">name</th>
 				<th scope="col">type</th>
@@ -24,7 +24,7 @@
 		</table>
 		<br>
 		<table>
-		<caption>리턴</caption>
+		<caption>Return</caption>
 			<tr>
 				<th scope="col">type</th>
 				<th scope="col">description</th>
@@ -37,11 +37,11 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label for="api27-p1">dataKey :</label>
+			<label for="api27-p1">dataKey</label>
 			<input type="text" id="api27-p1" value="sample">
 		</div>
-		<br> <input type="button" value="Run" class="popupBtn" onclick="isDataExist()">
-		<div id="api27-result">결과 :</div>
+		<br> <input type="button" id="isDataExist" value="Run" class="popupBtn">
+		<div id="api27-result">결과</div>
 	</div>
 
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>

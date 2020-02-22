@@ -10,7 +10,7 @@
 		<h2>deleteAllChangeColorAPI</h2>
 		<p>변경한 색상 이력을 전체 삭제합니다.</p>
 		<table>
-		<caption>파라미터</caption>
+		<caption>Parameter</caption>
 			<tr>
 				<th scope="col">name</th>
 				<th scope="col">type</th>
@@ -24,7 +24,7 @@
 		</table>
 		<br/>
 		<div class="paramContainer"></div>
-		<input type="button" value="Run" class="popupBtn" onclick="deleteAllChangeColor()">
+		<input type="button" id="deleteAllChangeColor" value="Run" class="popupBtn">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

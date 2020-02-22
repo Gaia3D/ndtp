@@ -10,7 +10,7 @@
 		<h2>getDataInfoByDataKeyAPI</h2>
 		<p>데이터 고유키를 이용하여 데이터의 위치정보, 회전정보를 취득하는 API입니다.</p>
 		<table>
-		<caption>파라미터</caption>
+		<caption>Parameter</caption>
 			<tr>
 				<th scope="col">name</th>
 				<th scope="col">type</th>
@@ -35,13 +35,13 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label for="api29-p1">projectId :</label>
+			<label for="api29-p1">projectId</label>
 			<input type="text" id="api29-p1" value="sample"><br>
-			<label for="api29-p2">dataKey :</label>
+			<label for="api29-p2">dataKey</label>
 			<input type="text" id="api29-p2" value="SOCIALROOM">
 		</div>
 		<br>
-		<input type="button" value="Run" class="popupBtn" onclick="getDataInfoByDataKey()">
+		<input type="button" id="getDataInfoByDataKey" value="Run" class="popupBtn">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>
