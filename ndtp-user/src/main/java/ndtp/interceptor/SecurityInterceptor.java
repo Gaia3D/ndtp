@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -72,8 +73,10 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
 			if(isAjax(request)) {
 				log.info("## ajax call session null. uri = {}", uri);
 				
-				Map<String, String> unauthorizedResult = new HashMap<>();
-				unauthorizedResult.put("result", "user.session.empty");
+				Map<String, Object> unauthorizedResult = new HashMap<>();
+				unauthorizedResult.put("statusCode", HttpStatus.UNAUTHORIZED.value());
+				unauthorizedResult.put("errorCode", "user.session.empty");
+				unauthorizedResult.put("message", null);
 				
 				response.setContentType("application/json");       
 				response.setCharacterEncoding("UTF-8");
