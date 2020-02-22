@@ -2673,7 +2673,7 @@ background-color: #fff;
   height: 120px;
   border-radius: 50%;
   transition: 0.3s;
-  margin: 10px;
+  margin: 15px 8px;
 }
 .pie-chart span.center{
   background: #fff;

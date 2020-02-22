@@ -995,9 +995,11 @@
 					//alert("데이터 베이스 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
 				} else if (msg.result == "success") {
 					var content = "";
-					content  = "<div class='pie-chart pie-chart1'><span class='center'>80%<br/>Disk</span></div>";
-					content += "<div class='pie-chart pie-chart2'><span class='center'>100%<br/>Memory</span></div>";
-					content += "<div class='pie-chart pie-chart3'><span class='center'>90%<br/>CPU</span></div>";
+					content += "<div style='text-align: center;'>";
+					content += "	<div class='pie-chart pie-chart1'><span class='center'>80%<br/>Disk</span></div>";
+					content += "	<div class='pie-chart pie-chart2'><span class='center'>100%<br/>Memory</span></div>";
+					content += "	<div class='pie-chart pie-chart3'><span class='center'>90%<br/>CPU</span></div>";
+					content += "</div>";
 
 					var res = {
 						disk: {
