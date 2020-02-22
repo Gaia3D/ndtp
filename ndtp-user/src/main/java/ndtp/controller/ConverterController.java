@@ -22,6 +22,7 @@ import ndtp.domain.Pagination;
 import ndtp.domain.UserSession;
 import ndtp.service.ConverterService;
 import ndtp.support.RoleSupport;
+import ndtp.support.SQLInjectSupport;
 import ndtp.utils.DateUtils;
 
 /**
@@ -50,6 +51,8 @@ public class ConverterController {
 	 */
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest request, ConverterJob converterJob, @RequestParam(defaultValue="1") String pageNo, Model model) {
+		converterJob.setSearchWord(SQLInjectSupport.replaceSqlInection(converterJob.getSearchWord()));
+		converterJob.setOrderWord(SQLInjectSupport.replaceSqlInection(converterJob.getOrderWord()));
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		converterJob.setUserId(userSession.getUserId());		

@@ -25,6 +25,7 @@ import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
 import ndtp.domain.UserSession;
 import ndtp.service.IssueService;
+import ndtp.support.SQLInjectSupport;
 import ndtp.utils.WebUtils;
 
 /**
@@ -142,6 +143,8 @@ public class IssueRestController {
 	@GetMapping
 	public Map<String, Object> list(HttpServletRequest request, Issue issue, @RequestParam(defaultValue="1") String pageNo) {
 		
+		issue.setSearchWord(SQLInjectSupport.replaceSqlInection(issue.getSearchWord()));
+		issue.setOrderWord(SQLInjectSupport.replaceSqlInection(issue.getOrderWord()));
 		log.info("@@@@@@@@ issue = {}", issue);
 		
 		Map<String, Object> result = new HashMap<>();

@@ -31,6 +31,7 @@ import ndtp.domain.UserSession;
 import ndtp.service.DataAttributeService;
 import ndtp.service.DataObjectAttributeService;
 import ndtp.service.DataService;
+import ndtp.support.SQLInjectSupport;
 import ndtp.utils.DateUtils;
 
 @Slf4j
@@ -57,7 +58,6 @@ public class DataRestController {
 	 */
 	@GetMapping(value = "/{dataGroupId}/list")
 	public Map<String, Object> allList(HttpServletRequest request, @PathVariable Integer dataGroupId) {
-		
 		log.info("@@@@@ list dataGroupId = {}", dataGroupId);
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
@@ -100,6 +100,8 @@ public class DataRestController {
 	 */
 	@GetMapping
 	public Map<String, Object> list(HttpServletRequest request, DataInfo dataInfo, @RequestParam(defaultValue="1") String pageNo) {
+		dataInfo.setSearchWord(SQLInjectSupport.replaceSqlInection(dataInfo.getSearchWord()));
+		dataInfo.setOrderWord(SQLInjectSupport.replaceSqlInection(dataInfo.getOrderWord()));
 		
 		log.info("@@@@@ list dataInfo = {}, pageNo = {}", dataInfo, pageNo);
 		

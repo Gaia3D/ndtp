@@ -25,6 +25,7 @@ import ndtp.domain.UserSession;
 import ndtp.service.DataGroupService;
 import ndtp.service.DataLogService;
 import ndtp.service.DataService;
+import ndtp.support.SQLInjectSupport;
 import ndtp.utils.DateUtils;
 
 /**
@@ -78,6 +79,8 @@ public class DataLogController {
 	 */
 	@GetMapping(value = "/list")
 	public String list(Locale locale, HttpServletRequest request, DataInfoLog dataInfoLog, @RequestParam(defaultValue="1") String pageNo, Model model) {
+		dataInfoLog.setSearchWord(SQLInjectSupport.replaceSqlInection(dataInfoLog.getSearchWord()));
+		dataInfoLog.setOrderWord(SQLInjectSupport.replaceSqlInection(dataInfoLog.getOrderWord()));
 		
 		log.info("@@ dataInfoLog = {}", dataInfoLog);
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
