@@ -165,7 +165,7 @@
 				if($(this)[0].nextSibling.nodeValue){
 					$(this)[0].nextSibling.nodeValue="";
 				}
-				if($(this).val()==""){
+				if($(this).val()=="" && $(this).data('require') === 'true'){
 					var txt = document.createTextNode("필수로 입력해 주세요.");
 					$(this).after(txt);
 				}/* else{
@@ -180,7 +180,7 @@
 				var id = $(this).attr('id');
 				var inputTags = $("#"+id).siblings('.paramContainer').children('input[type=text]');
 				for(var i = 0; i<inputTags.length; i++){
-					if(inputTags[i].value=="" || null || undefined ){
+					if(inputTags[i].dataset.require === 'true' &&  (inputTags[i].value=="" || null || undefined) ){
 						alert("필수!");
 						return;
 					}

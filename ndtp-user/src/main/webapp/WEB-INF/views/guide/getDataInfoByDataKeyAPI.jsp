@@ -51,6 +51,7 @@
 		var projectId = $('#api29-p1').val();
 		var dataKey = $('#api29-p2').val();
 
-		getDataInfoByDataKeyAPI(MAGO3D_INSTANCE2, projectId, dataKey);
+		var dataInfo = getDataInfoByDataKeyAPI(MAGO3D_INSTANCE2, projectId, dataKey);
+		console.info(dataInfo);
 	}
 </script>
