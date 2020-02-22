@@ -28,6 +28,7 @@ import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
 import ndtp.domain.UserSession;
 import ndtp.service.DataGroupService;
+import ndtp.support.SQLInjectSupport;
 import ndtp.utils.DateUtils;
 
 /**
@@ -59,6 +60,9 @@ public class DataGroupRestController {
 	 */
 	@GetMapping(value = "/all")
 	public Map<String, Object> allList(HttpServletRequest request, DataGroup dataGroup) {
+		
+		dataGroup.setSearchWord(SQLInjectSupport.replaceSqlInection(dataGroup.getSearchWord()));
+		dataGroup.setOrderWord(SQLInjectSupport.replaceSqlInection(dataGroup.getOrderWord()));
 		
 		log.info("@@@@@ list dataGroup = {}", dataGroup);
 		

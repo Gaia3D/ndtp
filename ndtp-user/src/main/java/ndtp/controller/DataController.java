@@ -35,6 +35,7 @@ import ndtp.service.LayerGroupService;
 import ndtp.service.UserPolicyService;
 import ndtp.support.LayerDisplaySupport;
 import ndtp.support.RoleSupport;
+import ndtp.support.SQLInjectSupport;
 import ndtp.utils.DateUtils;
 
 @Slf4j
@@ -72,7 +73,9 @@ public class DataController {
 	 */
 	@GetMapping(value = "/list")
 	public String list(HttpServletRequest request, DataInfo dataInfo, @RequestParam(defaultValue="1") String pageNo, Model model) {
-
+		dataInfo.setSearchWord(SQLInjectSupport.replaceSqlInection(dataInfo.getSearchWord()));
+		dataInfo.setOrderWord(SQLInjectSupport.replaceSqlInection(dataInfo.getOrderWord()));
+		
 		log.info("@@ dataInfo = {}, pageNo = {}", dataInfo, pageNo);
 
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());

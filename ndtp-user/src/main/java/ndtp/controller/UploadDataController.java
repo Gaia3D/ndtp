@@ -30,6 +30,7 @@ import ndtp.service.DataGroupService;
 import ndtp.service.PolicyService;
 import ndtp.service.UploadDataService;
 import ndtp.support.RoleSupport;
+import ndtp.support.SQLInjectSupport;
 import ndtp.utils.DateUtils;
 import ndtp.utils.FileUtils;
 
@@ -69,6 +70,9 @@ public class UploadDataController {
 	 */
 	@GetMapping(value = "/list")
 	public String list(HttpServletRequest request, UploadData uploadData, @RequestParam(defaultValue="1") String pageNo, Model model) {
+		uploadData.setSearchWord(SQLInjectSupport.replaceSqlInection(uploadData.getSearchWord()));
+		uploadData.setOrderWord(SQLInjectSupport.replaceSqlInection(uploadData.getOrderWord()));
+		
 		log.info("@@ uploadData = {}", uploadData);
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());

@@ -27,6 +27,7 @@ import ndtp.domain.Pagination;
 import ndtp.domain.UserSession;
 import ndtp.service.CivilVoiceCommentService;
 import ndtp.service.CivilVoiceService;
+import ndtp.support.SQLInjectSupport;
 import ndtp.utils.WebUtils;
 
 @Slf4j
@@ -53,6 +54,9 @@ public class CivilVoiceRestController {
 	 */
 	@GetMapping
 	public Map<String, Object> list(HttpServletRequest request, CivilVoice civilVoice, @RequestParam(defaultValue="1") String pageNo) {
+		civilVoice.setSearchWord(SQLInjectSupport.replaceSqlInection(civilVoice.getSearchWord()));
+		civilVoice.setOrderWord(SQLInjectSupport.replaceSqlInection(civilVoice.getOrderWord()));
+		
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String errorCode = null;
