@@ -1,4 +1,4 @@
-function requestBodyRadialLineOfSight(inputCoverage, observerPoint, observerOffset, radius, sides, extent) {
+function requestBodyRadialLineOfSight(inputCoverage, observerPoint, observerOffset, radius, sides) {
 	var xml = '';
 	// xml += '<wps:Execute version="1.0.0" service="WPS">';
 	xml += requestWPSPostHeader();

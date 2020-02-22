@@ -118,13 +118,16 @@
 					<label for="">면적 타입</label>
 					<select class="areaType">
 						<option value="useArea">사용자 영역</option>
-						<!-- <option value="extent">현재 지도 영역</option> -->
+						<option value="extent">현재 지도 영역</option>
 					</select>
 				</li>
 				<li class="wrapCropShape">
 					<label for=""></label>
 					<input type="hidden" class="cropShape">
 					<button type="button" class="btnText drawCropShape" data-draw-type="POLYGON">영역 그리기</button>
+				</li>
+				<li class="extentInfo" style="display:none;">
+					<span style="color:red;"> - 지도 영역 선택 시, 지도가 2D모드로 전환됩니다.</span>
 				</li>
 				<li>
 					<label for="">최고/최저</label>

@@ -58,15 +58,44 @@ var SpatialAnalysis = function(magoInstance) {
 	// 좀 더 생각해봐야함.
 	$('#analysisRasterHighLowPoints .areaType').change(function() {
 		var changeVal = $(this).val();
-		var wrapCropShape = $('#analysisRasterHighLowPoints li.wrapCropShape');
-		
 		if(changeVal === 'useArea') {
-			wrapCropShape.show();
+			off2d();
 		} else {
-			wrapCropShape.find('input.cropShape').val('');
-			wrapCropShape.hide();
+			on2d();
+			
+			if(!minMaxObserver) {
+				minMaxObserver = new MutationObserver(function(mutations) {
+					var mutation = mutations[0];
+					var isOn = true;
+					if(!$('#spatialMenu').hasClass('on')) {
+						isOn = false;
+					} else {
+						var areaType = $('#analysisRasterHighLowPoints .areaType');
+						if(areaType === 'useArea' || !$('#analysisRasterHighLowPointsList').hasClass('on')) {
+							isOn = false;
+						}
+					}
+					
+					if(isOn) {
+						on2d();
+					} else {
+						off2d();
+					}
+				});
+			}
+			minMaxObserver.observe(minMaxObserverTarget, minMaxObserverConfig);
+			minMaxObserver.observe(document.getElementById('spatialMenu'), minMaxObserverConfig);
 		}
 	});
+	
+	//지형 최고/최저점 열고닫힐때 지도 모드 변경
+	/*$('#analysisRasterHighLowPointsList p').click(function(){
+		if($('#analysisRasterHighLowPointsList').hasClass('on')) {
+			mapToggleLike2D(false);
+		} else {
+			$('#analysisRasterHighLowPoints .areaType').val('useArea').trigger('change');
+		}
+	});*/
 	
 	// TODO: mago3djs draw interaction 으로 devlope 예정, CallBackProperty 도입
 	magoManager.on(Mago3D.MagoManager.EVENT_TYPE.MOUSEMOVE, function(result) {
@@ -165,7 +194,7 @@ var SpatialAnalysis = function(magoInstance) {
 							hierarchy: polygonHierarchy,
 							material: Cesium.Color.AQUAMARINE.withAlpha(0.5),
 							clampToGround: true
-						})
+						});
 						addedEntity = viewer.entities.add({
 							polygon : polygonGraphic
 						});
@@ -288,9 +317,8 @@ var SpatialAnalysis = function(magoInstance) {
 	        return;
 	    }
 	    startLoading();
-		var extent = getViewExtentLonLat();
 		
-		var xml = requestBodyRadialLineOfSight(layerDEM, observerPoint, observerOffset, radius, sides, extent);
+		var xml = requestBodyRadialLineOfSight(layerDEM, observerPoint, observerOffset, radius, sides);
 		
 		var resource = requestPostResource(xml);
 	    resource.then(function (res) {
@@ -347,9 +375,7 @@ var SpatialAnalysis = function(magoInstance) {
 			return;
 		}
 		startLoading();
-		var extent = getViewExtentLonLat();
-
-		var xml = requestBodyLinearLineOfSight(layerDEM, observerOffset, observerPoint, targetPoint, extent);
+		var xml = requestBodyLinearLineOfSight(layerDEM, observerOffset, observerPoint, targetPoint);
 
 		var resource = requestPostResource(xml);
 		resource.then(function (res) {
@@ -397,10 +423,8 @@ var SpatialAnalysis = function(magoInstance) {
 			return;
 		}
 		startLoading();
-		var extent = getViewExtentLonLat();
 
-		var xml = requestBodyRasterProfile(inputCoverage, interval, userLine, extent);
-
+		var xml = requestBodyRasterProfile(inputCoverage, interval, userLine);
 		var resource = requestPostResource(xml);
 		resource.then(function (res) {
 	        var promise = Cesium.GeoJsonDataSource.load(JSON.parse(res));
@@ -462,27 +486,54 @@ var SpatialAnalysis = function(magoInstance) {
 			return;
 		}
 		var inputCoverage = layerDEM;
-		var cropShape = $('#analysisRasterHighLowPoints .cropShape').val();
+		
+		var areaType = $('#analysisRasterHighLowPoints .areaType').val();
+		var cropShape;
+		var positions;
+		if(areaType === 'extent'){
+			var campos = getCameraCurrentPositionAPI(magoInstance);
+			if(campos.alt > 3000) {
+				alert('카메라를 지표면에 더 가까이 이동해주세요.');
+				return;
+			}
+			var extent = getViewExtentLonLat();
+			
+			var polygon = [];
+			polygon.push({longitude:extent[0], latitude:extent[1]});
+			polygon.push({longitude:extent[2], latitude:extent[1]});
+			polygon.push({longitude:extent[2], latitude:extent[3]});
+			polygon.push({longitude:extent[0], latitude:extent[3]});
+			
+			var degreesArray = [];
+			for(var i in polygon){
+				var poly = polygon[i];
+				degreesArray.push(poly.longitude);
+				degreesArray.push(poly.latitude);
+			}
+			
+			positions = Cesium.Cartesian3.fromDegreesArray(degreesArray);
+			cropShape = Mago3D.ManagerUtils.geographicToWkt(polygon ,'POLYGON');
+		} else {
+			cropShape = $('#analysisRasterHighLowPoints .cropShape').val();
+			var entity = entities.getById(entityObject['analysisRasterHighLowPoints']['line']);
+			positions = entity.polygon.hierarchy.getValue().positions;
+		}
+		
 		var valueType = $('#analysisRasterHighLowPoints .valueType').val();
 
 		var typeKorName = $('#analysisRasterHighLowPoints .valueType option:selected').text();
-		if ($('#analysisRasterHighLowPoints .cropShape').val() == "") {
+		if (!cropShape) {
 			alert("영역 그리기로 분석할 영역을 선택해주세요.");
 			return;
 		}
 		startLoading();
-		// 임시로 사용 현재 위치 extent
-		var extent = getViewExtentLonLat();
 
-		var xml = requestBodyRasterHighLowPoints(inputCoverage, cropShape, valueType, extent);
+		var xml = requestBodyRasterHighLowPoints(inputCoverage, cropShape, valueType);
 
 		var resource = requestPostResource(xml);
 		resource.then(function (res) {
 	        var promise = Cesium.GeoJsonDataSource.load(JSON.parse(res));
 	        promise.then(function (ds) {
-
-				//removeAnalysisDataSource(layerRasterHighLowPointsId);
-
 				ds.id = 'analysisRasterHighLowPoints';
 				ds.name = 'analysisRasterHighLowPoints';
 				ds.type = 'analysis';
@@ -509,9 +560,23 @@ var SpatialAnalysis = function(magoInstance) {
 	 	                	heightReference: Cesium.HeightReference.RELATIVE_TO_GROUND
 	 	                });
 	                }
-	               
 	            }
-	            // viewer.flyTo(ds.entities);
+	            if(areaType === 'extent'){
+	            	var polygonHierarchy = new Cesium.PolygonHierarchy(positions);
+	            	var polygonGraphic = new Cesium.PolygonGraphics({
+	            		hierarchy: polygonHierarchy,
+	            		material: Cesium.Color.AQUAMARINE.withAlpha(0.5),
+	            		clampToGround: true
+	            	})
+	            	var addedEntity = viewer.entities.add({
+	            		polygon : polygonGraphic
+	            	});
+	            	if(!entityObject['analysisRasterHighLowPoints']){
+	            		entityObject['analysisRasterHighLowPoints'] = {};
+	            	}
+	            	
+	            	entityObject['analysisRasterHighLowPoints']['line'] = addedEntity.id;
+	            }
 	        });
 	    }).otherwise(function (error) {
 			window.alert('Invalid selection');
@@ -873,5 +938,33 @@ var SpatialAnalysis = function(magoInstance) {
 
 		return d;	//km
 	    // return d * 1000; // meters
+	}
+	function mapToggleLike2D(twoDimension) {
+		Mago3D.MagoConfig.setTwoDimension(twoDimension);
+		if(twoDimension){
+			changeCameraOrientationAPI(magoInstance, 0, -90, 0 ,1);
+			viewer.scene.screenSpaceCameraController.enableTilt = false;
+            viewer.scene.screenSpaceCameraController.enableLook = false;
+		} else {
+			viewer.scene.screenSpaceCameraController.enableTilt = true;
+            viewer.scene.screenSpaceCameraController.enableLook = true;
+		}
+	}
+	
+	function on2d() {
+		$('#analysisRasterHighLowPoints li.wrapCropShape').hide();
+		$('#analysisRasterHighLowPoints li.extentInfo').show();
+		mapToggleLike2D(true);
+	}
+	
+	function off2d() {
+		if($('#analysisRasterHighLowPoints .areaType').val() !== 'useArea') {
+			$('#analysisRasterHighLowPoints .areaType').val('useArea');
+		}
+		
+		$('#analysisRasterHighLowPoints li.wrapCropShape').show();
+		$('#analysisRasterHighLowPoints li.extentInfo').hide();
+		mapToggleLike2D(false);
+		minMaxObserver.disconnect();
 	}
 }
