@@ -52,9 +52,9 @@ create sequence data_object_attribute_file_info_seq increment 1 minvalue 1 maxva
 create sequence geopolicy_seq increment 1 minvalue 1 maxvalue 999999999999 start 2 cache 1;
 create sequence issue_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
 create sequence issue_detail_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
-create sequence issue_comment_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
-create sequence issue_file_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
-create sequence issue_people_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
+-- create sequence issue_comment_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
+-- create sequence issue_file_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
+-- create sequence issue_people_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 1 cache 1;
 create sequence layer_seq increment 1 minvalue 1 maxvalue 999999999999 start 10000 cache 1;
 create sequence layer_group_seq increment 1 minvalue 1 maxvalue 999999999999 start 10000 cache 1;
 create sequence layer_file_info_seq increment 1 minvalue 1 maxvalue 999999999999 start 1000 cache 1;

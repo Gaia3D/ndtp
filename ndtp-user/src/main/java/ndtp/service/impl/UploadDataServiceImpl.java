@@ -162,8 +162,7 @@ public class UploadDataServiceImpl implements UploadDataService {
 					String extension = fileNameValues[fileNameValues.length - 1];
 					
 					// 원본이 gml 파일이고 데이터 타입을 citygml 혹은 indoorgml로 처음 등록과 다르게 변경하는 경우 
-					if (DataType.GML.getValue().equalsIgnoreCase(extension) && uploadData.getDataType() != uploadExt) {
-						
+					if (DataType.GML.getValue().equalsIgnoreCase(extension) && !uploadData.getDataType().equalsIgnoreCase(uploadExt)) {
 						String originalFileName = uploadDataFile.getFileRealName();
 						String updateFileName = originalFileName.replace(uploadExt, uploadData.getDataType());
 						
@@ -178,9 +177,7 @@ public class UploadDataServiceImpl implements UploadDataService {
 							// 파일 확장자를 변경.
 							uploadFile.renameTo(Paths.get(uploadDataFile.getFilePath(), updateFileName).toFile());
 						}
-						
 					}
-	
 				}
 			}
 		} catch (Exception e) {

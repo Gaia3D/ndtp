@@ -70,7 +70,7 @@ import ndtp.utils.WebUtils;
 
 @Slf4j
 @Controller
-@RequestMapping("/layer/")
+@RequestMapping("/layer")
 public class LayerController implements AuthorizationController {
 
 	@Autowired
@@ -94,7 +94,7 @@ public class LayerController implements AuthorizationController {
     /**
 	 * layer 목록
 	 */
-	@GetMapping(value = "list")
+	@GetMapping(value = "/list")
 	public String list(HttpServletRequest request, @RequestParam(defaultValue="1") String pageNo, Layer layer, Model model) {
 		log.info("@@ layer = {}", layer);
 
@@ -132,7 +132,7 @@ public class LayerController implements AuthorizationController {
 		return "/layer/list";
 	}
 
-	@GetMapping(value = "list-geoserver")
+	@GetMapping(value = "/list-geoserver")
 	@ResponseBody
 	public Map<String, Object> geoserverLayerList(HttpServletRequest request) {
 		Map<String, Object> result = new HashMap<>();
@@ -161,7 +161,7 @@ public class LayerController implements AuthorizationController {
      * @param model
      * @return
      */
-    @GetMapping(value = "input")
+    @GetMapping(value = "/input")
     public String input(HttpServletRequest request, Model model) {
     	String roleCheckResult = roleValidate(request);
     	if(roleValidate(request) != null) return roleCheckResult;
@@ -181,7 +181,7 @@ public class LayerController implements AuthorizationController {
     * @param model
     * @return
     */
-    @GetMapping(value = "modify")
+    @GetMapping(value = "/modify")
     public String modify(HttpServletRequest request, @RequestParam Integer layerId, Model model) {
     	String roleCheckResult = roleValidate(request);
     	if(roleValidate(request) != null) return roleCheckResult;
@@ -219,7 +219,7 @@ public class LayerController implements AuthorizationController {
      * @param layer
      * @return
      */
-    @PostMapping(value ="insert-geoserver")
+    @PostMapping(value ="/insert-geoserver")
     @ResponseBody
     public Map<String, Object> insertGeoserverLayer(HttpServletRequest request, Layer layer) {
     	Map<String, Object> result = new HashMap<>();
@@ -264,7 +264,7 @@ public class LayerController implements AuthorizationController {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	@PostMapping(value = "insert")
+	@PostMapping(value = "/insert")
 	@ResponseBody
 	public Map<String, Object> insert(MultipartHttpServletRequest request) {
 		Map<String, Object> result = new HashMap<>();
@@ -463,7 +463,7 @@ public class LayerController implements AuthorizationController {
 		return result;
 	}
 	
-	@PostMapping(value = "update-geoserver")
+	@PostMapping(value = "/update-geoserver")
 	@ResponseBody
 	public Map<String, Object> updateGeoserverLayer(HttpServletRequest request, Layer layer) {
 		Map<String, Object> result = new HashMap<>();
@@ -501,7 +501,7 @@ public class LayerController implements AuthorizationController {
     * @return
     */
     @SuppressWarnings("unchecked")
-	@PostMapping(value = "update/{layerId}")
+	@PostMapping(value = "/update/{layerId}")
     @ResponseBody
     public Map<String, Object> update(MultipartHttpServletRequest request, @PathVariable("layerId") Integer layerId) {
 
@@ -716,7 +716,7 @@ public class LayerController implements AuthorizationController {
 	 * @param roleId
 	 * @return
 	 */
-	@DeleteMapping(value = "delete/{layerId}")
+	@DeleteMapping(value = "/delete/{layerId}")
 	@ResponseBody
 	public Map<String, Object> delete(@PathVariable Integer layerId) {
 		Map<String, Object> result = new HashMap<>();
@@ -743,7 +743,7 @@ public class LayerController implements AuthorizationController {
     * @param model
     * @return
     */
-    @GetMapping(value = "{layerId}/layer-fileinfos")
+    @GetMapping(value = "/{layerId}/layer-fileinfos")
     @ResponseBody
     public Map<String, Object> listLayerFileInfo(HttpServletRequest request, @PathVariable Integer layerId) {
 
@@ -775,7 +775,7 @@ public class LayerController implements AuthorizationController {
     * @param model
     * @return
     */
-    @GetMapping(value = "{layerId}/layer-file-info/{layerFileInfoGroupId}/download")
+    @GetMapping(value = "/{layerId}/layer-file-info/{layerFileInfoGroupId}/download")
     public void download(HttpServletRequest request, HttpServletResponse response,
             @PathVariable Integer layerId, @PathVariable Integer layerFileInfoGroupId) {
 
@@ -830,7 +830,7 @@ public class LayerController implements AuthorizationController {
     * @param model
     * @return
     */
-    @PostMapping(value = "{layerId}/layer-file-infos/{layerFileInfoId}")
+    @PostMapping(value = "/{layerId}/layer-file-infos/{layerFileInfoId}")
     @ResponseBody
     public Map<String, Object> updateByLayerFileInfoId(HttpServletRequest request,
                                                             @PathVariable Integer layerId,
@@ -895,7 +895,7 @@ public class LayerController implements AuthorizationController {
     * @param model
     * @return
     */
-    @GetMapping(value = "{layerId}/map")
+    @GetMapping(value = "/{layerId}/map")
     public String viewLayerMap(HttpServletRequest request, @PathVariable Integer layerId, Integer layerFileInfoId, Model model) {
 
         log.info("@@ layerId = {}, layerFileInfoId = {}", layerId, layerFileInfoId);

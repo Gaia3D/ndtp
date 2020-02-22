@@ -25,7 +25,7 @@ import ndtp.domain.SkSgg;
 import ndtp.service.SearchMapService;
 
 @Slf4j
-@RequestMapping("/searchmap/")
+@RequestMapping("/searchmap")
 @CrossOrigin(origins = "*")
 @RestController
 public class SearchMapController {
@@ -37,7 +37,7 @@ public class SearchMapController {
 	 * 시도 목록
 	 * @return
 	 */
-	@GetMapping("sdos")
+	@GetMapping("/sdos")
 	public Map<String, Object> getListSdo() {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
@@ -57,7 +57,7 @@ public class SearchMapController {
 	 * @param sdoCode
 	 * @return
 	 */
-	@GetMapping("sdos/{sdoCode:[0-9]+}/sggs")
+	@GetMapping("/sdos/{sdoCode:[0-9]+}/sggs")
 	public Map<String, Object> getListSggBySdo(@PathVariable String sdoCode) {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
@@ -86,7 +86,7 @@ public class SearchMapController {
 	 * @param sggCode
 	 * @return
 	 */
-	@GetMapping("sdos/{sdoCode:[0-9]+}/sggs/{sggCode:[0-9]+}/emds")
+	@GetMapping("/sdos/{sdoCode:[0-9]+}/sggs/{sggCode:[0-9]+}/emds")
 	public Map<String, Object> getListEmdBySdoAndSgg(@PathVariable String sdoCode, @PathVariable String sggCode) {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
@@ -124,7 +124,7 @@ public class SearchMapController {
 	 * @param skEmd
 	 * @return
 	 */
-	@GetMapping("centroids")
+	@GetMapping("/centroids")
 	public Map<String, Object> getCentroid(SkEmd skEmd) {
 		log.info("@@@@ skEmd = {}", skEmd);
 
@@ -170,7 +170,7 @@ public class SearchMapController {
 	 * @param district
 	 * @return
 	 */
-	@GetMapping("district")
+	@GetMapping("/district")
 	public Map<String, Object> districts(HttpServletRequest request, District district, @RequestParam(defaultValue = "1") String pageNo) {
 
 		// TODO 아직 정리가 안되서.... fullTextSearch라는 변수를 임시로 추가해 두었음. 다음에 고쳐야 함

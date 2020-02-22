@@ -383,7 +383,8 @@
 	        } else if(response.errorCode === "db.exception") {
 	            alert("죄송 합니다. 서버 실행중에 오류가 발생 하였습니다. \n 로그를 확인하여 주십시오.");
 	        } else {
-	        	alert(response.errorCode);
+	        	//alert(response.errorCode);
+	        	alert(JS_MESSAGE[response.errorCode]);
 	        }
 	        uploadFileResultCount++;
 		}

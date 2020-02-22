@@ -1,5 +1,7 @@
 package ndtp.listener;
 
+import java.io.Serializable;
+
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 
@@ -12,7 +14,12 @@ import ndtp.support.SessionUserSupport;
  *
  */
 @Slf4j
-public class Gaia3dHttpSessionBindingListener implements HttpSessionBindingListener {
+public class Gaia3dHttpSessionBindingListener implements Serializable, HttpSessionBindingListener {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3968302288156260379L;
 
 	/**
 	 * 사용자의 사인인 세션에 Gaia3dHttpSessionBindingListener가 바인딩될 때 자동 호출되는 메소드로,
