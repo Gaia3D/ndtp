@@ -185,7 +185,7 @@
 						return;
 					}
 				}
-				eval(id+"()");
+				//eval(id+"()");
 			})
 			
 			//color picker
