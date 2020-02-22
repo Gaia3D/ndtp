@@ -34,7 +34,12 @@
 			AND title LIKE #{title} || '%'
 			</if>
 		</trim>
+		<if test="orderWord != null and orderWord != '' and orderValue != null and orderValue != ''">
+		ORDER BY ${orderWord} ${orderValue}, civil_voice_id DESC
+		</if>
+		<if test="orderWord == null or orderWord == ''">
 		ORDER BY civil_voice_id DESC
+		</if>
 		OFFSET #{offset} LIMIT #{limit}
 	</select>
 

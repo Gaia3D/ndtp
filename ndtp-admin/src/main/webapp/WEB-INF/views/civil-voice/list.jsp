@@ -51,6 +51,7 @@
 										<select id="orderWord" name="orderWord" class="select" style="height: 30px;">
 											<option value=""> <spring:message code='search.basic'/> </option>
 											<option value="title">제목명</option>
+						          			<option value="comment_count">동의 수</option>
 						          			<option value="user_id">작성자</option>
 											<option value="insert_date"> <spring:message code='search.insert.date'/> </option>
 										</select>
