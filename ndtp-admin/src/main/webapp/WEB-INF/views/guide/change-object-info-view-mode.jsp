@@ -51,4 +51,8 @@
 
 		changeObjectInfoViewModeAPI(MAGO3D_INSTANCE2, isFalseBoolean);
 	}
+
+	function selectedObjectCallBack(projectId, dataKey, objectId, latitude, longitude, altitude, heading, pitch, roll){
+        console.info('geo_callback_selectedobject');
+    }
 </script>

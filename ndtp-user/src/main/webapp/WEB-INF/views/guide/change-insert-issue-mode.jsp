@@ -53,4 +53,8 @@
 
 		changeInsertIssueModeAPI(MAGO3D_INSTANCE2, isFalseBoolean);
 	}
+
+	function insertIssueCallBack(projectId, dataKey, objectId, latitude, longitude, altitude){
+        console.info('geo_callback_insertissue');
+    }
 </script>

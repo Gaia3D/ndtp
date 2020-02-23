@@ -282,6 +282,11 @@ function magoLoadEnd2(e) {
 	
 	magoManager.init(viewer.scene._context._gl);
 	magoManager.objMarkerManager.loadDefaultImages(magoManager);
+
+	Mago3D.MagoConfig.serverPolicy.geo_callback_enable = 'true';
+    Mago3D.MagoConfig.serverPolicy.geo_callback_selectedobject = 'selectedObjectCallBack';
+    Mago3D.MagoConfig.serverPolicy.geo_callback_insertissue = 'insertIssueCallBack';
+    
 	$.ajax({
 		url: "/sample/json/sample_f4d.json",
 		type: "GET",
