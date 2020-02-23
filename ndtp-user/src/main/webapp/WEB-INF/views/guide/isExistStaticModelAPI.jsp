@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<div id="api40" class="api-help-toggle" style="display: none;">
+<div id="api41" class="api-help-toggle" style="display: none;">
 	<div class="menu_tab">
 		<ul>
 			<li class="fst active"><a href="#" onclick="tabMenu(0);">Run</a></li>
@@ -42,21 +42,21 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label for="api40-p1">projectId</label>
-			<input type="text" id="api40-p1" value="static_sample">
+			<label for="api41-p1">projectId</label>
+			<input type="text" id="api41-p1" value="static_sample">
 		</div>
 		<br> 
 		<input type="button" id="isExistStaticModel" value="Run" class="popupBtn">
-		<div id="api40-result">결과</div>
+		<div id="api41-result">결과</div>
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>
 <script>
 	var isExistStaticModel = function() {
 
-		var projectId = $('#api40-p1').val();
+		var projectId = $('#api41-p1').val();
 		var result = isExistStaticModelAPI(MAGO3D_INSTANCE2, projectId);
 		
-		document.getElementById("api40-result").innerText = result.toString();
+		document.getElementById("api41-result").innerText = result.toString();
 	}
 </script>

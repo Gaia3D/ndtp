@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<div id="api41" class="api-help-toggle" style="display: none;">
+<div id="api42" class="api-help-toggle" style="display: none;">
 	<div class="menu_tab">
 		<ul>
 			<li class="fst active"><a href="#" onclick="tabMenu(0);">Run</a></li>
@@ -47,24 +47,24 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label for="api41-p1">projectId</label>
-			<input type="text" id="api41-p1" value="sample"><br>
-			<label for="api41-p2">dataKey</label>
-			<input type="text" id="api41-p2" value="SOCIALROOM">
+			<label for="api42-p1">projectId</label>
+			<input type="text" id="api42-p1" value="sample"><br>
+			<label for="api42-p2">dataKey</label>
+			<input type="text" id="api42-p2" value="SOCIALROOM">
 		</div>
 		<br> 
 		<input type="button" id="isExistData" value="Run" class="popupBtn">
-		<div id="api41-result">결과</div>
+		<div id="api42-result">결과</div>
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>
 <script>
 	var isExistData = function() {
 
-		var projectId = $('#api41-p1').val();
-		var dataKey = $('#api41-p2').val();
+		var projectId = $('#api42-p1').val();
+		var dataKey = $('#api42-p2').val();
 
 		var result = isExistDataAPI(MAGO3D_INSTANCE2, projectId, dataKey);
-		document.getElementById("api41-result").innerText = result.toString();
+		document.getElementById("api42-result").innerText = result.toString();
 	}
 </script>

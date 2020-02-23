@@ -55,14 +55,14 @@
 			<input type="text" id="api7-p1" value="sample"><br/>
 			<label for="api7-p2">dataKey</label>
 			<input type="text" id="api7-p2" value="STUDENTROOM"><br/>
-			<P>objectId</P>
+			<label for="api7-p3">objectId</label>
 			<select id="api7-p3">
 				<option value="10U2f_fnrEI86flB9mNA6u" selected>1번</option>
 				<option value="1lON22SpbBewAa8e4j3Xwn">2번</option>
 				<option value="3TA9k5WwX1g9BsSnrHgoxS">3번</option>
 				<option value="2Dzz1wTo51BAnDnXy3jXGu">4번</option>
 				<option value="2Dzz1wTo51BAnDnXy3jXKd">5번</option>
-			</select>
+			</select><br/>
 			<label for="api7-p4">property</label>
 			<input type="text" id="api7-p4" value="isMain=true"><br/>
 			<label for="api7-p5">color</label>

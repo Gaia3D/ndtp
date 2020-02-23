@@ -13,3 +13,8 @@
 	<h2>changeBoundingBoxAPI</h2>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>
+
+<script>
+changePropertyRenderingAPI(MAGO3D_INSTANCE2, true, 'sample', 'propertyFilter=true')
+
+</script>
