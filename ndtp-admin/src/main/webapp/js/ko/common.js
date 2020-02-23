@@ -281,9 +281,7 @@ function cesiumCreditAlt(){
 };
 
 // magoguide 팝업
-function goMagoAPIGuide() {
-	var url = "/guide/help";
-	//console.log("test");
+function goMagoAPIGuide(url) {
 	var width = 1200;
 	var height = 800;
 

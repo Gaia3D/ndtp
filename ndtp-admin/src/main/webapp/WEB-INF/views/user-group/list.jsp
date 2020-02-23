@@ -37,7 +37,8 @@
 									</div>
 								</div>
 							</div>
-							<table class="list-table scope-col">
+							<table class="list-table scope-col" summary="사용자 그룹 리스트를 트리 형태로 조회 ">
+							<caption class="hiddenTag">사용자 그룹</caption>
 								<col class="col-name" />
 								<col class="col-id" />
 								<col class="col-toggle" />

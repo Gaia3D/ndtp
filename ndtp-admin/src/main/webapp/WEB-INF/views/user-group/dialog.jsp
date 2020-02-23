@@ -2,7 +2,8 @@
 
 	<!-- Dialog 그룹 정보 보기 -->
 	<div id="userGroupInfoDialog" title="사용자 그룹 정보" class="dialog">
-		<table class="inner-table scope-row">
+		<table class="inner-table scope-row" summary="사용자 그룹 정보 보기">
+		<caption class="hiddenTag">그룹 정보</caption>
 			<col class="col-label" />
 			<col class="col-data" />
 			<tr>
@@ -30,7 +31,8 @@
 
 	<!-- Dialog 그룹 목록 보기 -->
 	<div id="userGroupListDialog" title="사용자 그룹 선택" class="dialog">
-		<table class="list-table scope-col">
+		<table class="list-table scope-col" summary="사용자 그룹 선택">
+		<caption class="hiddenTag">그룹 선택</caption>
 			<col class="col-name" />
 			<col class="col-toggle" />
 			<col class="col-id" />
