@@ -135,7 +135,7 @@
 								<h3 class="widget-title"><spring:message code='main.status.data.log'/><span class="widget-desc">${today } <spring:message code='config.widget.basic'/></span></h3>
 							</div>
 							<div class="widget-functions u-pull-right">
-								<a href="/data/list-data-log" title="<spring:message code='config.widget.data.info.log.more'/>"><span class="icon-glyph glyph-plus"></span></a>
+								<a href="/data-adjust-log/list" title="<spring:message code='config.widget.data.info.log.more'/>"><span class="icon-glyph glyph-plus"></span></a>
 							</div>
 						</div>
 						<div id="${dbWidget.name}" class="widget-content row">
@@ -997,7 +997,9 @@
 					//alert("데이터 베이스 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
 				} else if (msg.result == "success") {
 					// disk
-					var diskValue = (msg.diskSpaceTotal - msg.diskSpaceFree) / msg.diskSpaceTotal * 100;
+					var diskMax = msg.diskSpaceTotal;
+					var diskUsed = (diskMax - msg.diskSpaceFree);
+					var diskValue = diskUsed / diskMax * 100;
 
 					// memory
 					var memoryMax = msg.jvmMemoryMax[0]["value"];
@@ -1008,6 +1010,9 @@
 					var cpuMax = msg.systemCpuUsage[0]["value"];
 					var cpuUsed = msg.processCpuUsage[0]["value"];
 					var cpuValue = cpuUsed / cpuMax * 100;
+					console.log("cpuMax >>> " + cpuMax);
+					console.log("cpuUsed >>> " + cpuUsed);
+					console.log("cpuValue >>> " + cpuValue);
 
 					var res = {
 						disk: {
@@ -1030,7 +1035,7 @@
 					var content = "";
 					content += "<div style='text-align: center;'>";
 					content += "	<div class='pie-chart pie-chart1'><span class='center'>" + res.disk.value + "%<br/>Disk</span></div>";
-					content += "	<div class='pie-chart pie-chart2'><span class='center'>" + res.memory.value + "%<br/>Memory</span></div>";
+					content += "	<div class='pie-chart pie-chart2'><span class='center'>" + res.memory.value + "%<br/>JVM Memory</span></div>";
 					content += "	<div class='pie-chart pie-chart3'><span class='center'>" + res.cpu.value + "%<br/>CPU</span></div>";
 					content += "</div>";
 

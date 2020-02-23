@@ -1,7 +1,6 @@
 package ndtp.controller;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -597,15 +596,12 @@ public class MainController {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
 		try {
-
 			RestTemplate restTemplate = new RestTemplate();
 			String serverHost = "http://localhost:9090";
 
 			URI diskSpaceURI = new URI(serverHost + "/actuator/health/diskSpace");
 			ResponseEntity<Map> response1 = restTemplate.getForEntity(diskSpaceURI, Map.class);
 			Map<String, Long> diskSpace = (Map<String, Long>) response1.getBody().get("details");
-			Long diskSpaceTotal = diskSpace.get("total");
-			Long diskSpaceFree = diskSpace.get("free");
 
 			URI memoryMax = new URI(serverHost + "/actuator/metrics/jvm.memory.max");
 			ResponseEntity<Map> response2 = restTemplate.getForEntity(memoryMax, Map.class);
@@ -623,9 +619,8 @@ public class MainController {
 			ResponseEntity<Map> response5 = restTemplate.getForEntity(cpuUsed, Map.class);
 			List<Map<String, Object>> processCpuUsage = (List<Map<String, Object>>) response5.getBody().get("measurements");
 
-
-			map.put("diskSpaceTotal", diskSpaceTotal);
-			map.put("diskSpaceFree", diskSpaceFree);
+			map.put("diskSpaceTotal", diskSpace.get("total"));
+			map.put("diskSpaceFree", diskSpace.get("free"));
 			map.put("jvmMemoryMax", jvmMemoryMax);
 			map.put("jvmMemoryUsed", jvmMemoryUsed);
 			map.put("systemCpuUsage", systemCpuUsage);
