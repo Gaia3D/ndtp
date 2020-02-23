@@ -5,13 +5,11 @@
 		<span class="float-right">{{formatNumber pagination.pageNo}} / {{formatNumber pagination.lastPage}} <spring:message code='search.page'/></span>
 	</div>
 	<div class="dataBtns"></div>
-
-		<div class="marT10 yScroll" style="height: calc(100% - 59px)">
-		
+		<div class="marT10 yScroll" style="height: calc(100% - 42px)">
 {{#greaterThan dataList.length 0}}
 	{{#each dataList}}
 		<ul class="dataList">
-			<li class="group">
+			<li class="dataName">
 				<span class="no">{{subtract ../pagination.rowNumber @index}}</span>
 		{{#ifMatch sharing 'common'}}
 				<span class="legend co">C</span>	
@@ -25,13 +23,19 @@
 		{{#ifMatch sharing 'group'}}
 				<span class="legend gr">G</span>
 		{{/ifMatch}}
-				<span class="tag">그룹명</span>{{dataGroupName}}
-			</li>
-			<li class="dataName">
 				<a href="#" onclick="detailDataInfo('{{dataId}}'); return false;">{{dataName}}</a>
 			</li>
+			<li class="btn">
+				<button type="button" title="표시" class="showHideButton show" data-group-id="{{dataGroupId}}" data-key="{{dataKey}}">표시</button>
+		{{#if tiling}}
+						<button type="button" title="바로가기" class="goto" style="margin: 0px; padding: 0px;"
+							onclick="gotoFly('{{longitude}}', '{{latitude}}', '{{altitude}}');">바로가기</button>
+		{{else}}
+						<button type="button" title="바로가기" class="goto" style="margin: 0px; padding: 0px;" 	onclick="flyTo('{{dataGroupId}}', '{{dataKey}}');">바로가기</button>
+		{{/if}}
+			</li>
 			<li class="dataInfo">
-
+				<span class="infoTag"><span>그룹명: </span>{{dataGroupName}}</span>
 			{{#ifMatch dataGroupTarget 'admin'}}
 				<span class="infoTag" style="color:blue">관리자</span>
 			{{else}}
@@ -41,7 +45,7 @@
 				<span class="infoTag" style="color:blue">{{userId}}</span>
 				{{/ifMatch}}
 			{{/ifMatch}}
-				<span class="infoTag marR5"><span>상태:</span>
+				<span class="infoTag"><span>상태:</span>
 		{{#ifMatch status 'processing'}}
 						변환중
 		{{/ifMatch}}
@@ -55,20 +59,9 @@
 						삭제
 		{{/ifMatch}}
 				</span>
-
 		{{#greaterThan dataType.length 0}}
-				<span class="infoTag marR5"><span>타입:</span>{{dataType}}</span>
+				<span class="infoTag"><span>타입:</span>{{dataType}}</span>
 		{{/greaterThan}}
-
-			</li>
-			<li class="btn">
-				<button type="button" title="표시" class="showHideButton show" data-group-id="{{dataGroupId}}" data-key="{{dataKey}}">표시</button>
-		{{#if tiling}}
-						<button type="button" title="바로가기" class="goto" style="margin: 0px; padding: 0px;"
-							onclick="gotoFly('{{longitude}}', '{{latitude}}', '{{altitude}}');">바로가기</button>
-		{{else}}
-						<button type="button" title="바로가기" class="goto" style="margin: 0px; padding: 0px;" 	onclick="flyTo('{{dataGroupId}}', '{{dataKey}}');">바로가기</button>
-		{{/if}}
 			</li>
 		</ul>
 	{{/each}}

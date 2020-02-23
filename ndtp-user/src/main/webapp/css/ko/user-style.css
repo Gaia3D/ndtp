@@ -1782,7 +1782,7 @@ ul.listDrop li.list-drop-button-none > p {
 
 .button-group-center {
 	background: #fff;
-	margin-bottom: 20px;
+	margin-bottom: 15px;
 	text-align: center;
 }
 .button-group-top-center {
@@ -2028,13 +2028,13 @@ text-align: center;
 border: 1px solid #ddd;
 padding: 10px;
 }
+.legendWrap legend {
+padding: 0 10px;
+}
 .legendWrap li {
 display: inline-flex;
-margin-right: 10px;
+margin-right: 5px;
 align-items: center;
-}
-.legendWrap li > * {
-vertical-align: middle;
 }
 span.legend {
 display: inline-block;
@@ -2066,31 +2066,39 @@ background-color: darkturquoise
 .dataList {
 position: relative;
 margin-bottom: 5px;
-padding: 8px 10px;
+padding: 5px 0 0 0;
 border-radius: 5px;
-border-right: 2px solid #c7e0f2;
-border-bottom: 2px solid #c7e0f2;
-background-color: #ecf7ff;
-}
-.dataList > li.group {
-margin-bottom: 3px;
-color: #777;
-overflow:hidden;
-text-overflow:ellipsis;
-white-space:nowrap;
+/* border-right: 2px solid #c7e0f2; */
+/* border-bottom: 2px solid #c7e0f2; */
+/* background-color: #ecf7ff; */
+background-color: #c7e0f2;
 }
 .dataList > li.dataName {
-margin-bottom: 7px;
+padding-bottom: 5px;
 font-size: 15px;
-cursor: pointer;
+/* cursor: pointer; */
 overflow:hidden;
 text-overflow:ellipsis;
 white-space:nowrap;	
 font-weight: bold;
+width: 75%;
+padding-left: 8px;
+}
+.dataList > li.dataName > .no {
+min-width: 30px;
+margin-right: 10px;
+/* font-weight: bold; */
+font-size: 13px;
+color: #000;
+vertical-align: middle;
+}
+.dataList > li.dataName > a {
+text-decoration: underline;	
+vertical-align: middle;
 }
 .dataList > li.btn {
 position: absolute;
-bottom: 3px;
+top: 3px;
 right: 3px;
 }
 .dataList > li.btn > button {
@@ -2108,6 +2116,18 @@ background-position: -97px -345px;
 .dataList > li.btn > button.hide {
 background-position: -147px -345px;
 }
+.dataList > .dataInfo {
+background-color: #ecf7ff;
+padding: 5px 5px 0 5px;
+min-height: 56px;
+}
+.dataList > li.group {
+margin-bottom: 3px;
+color: #777;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
+}
 .dataList > li.group > .no {
 min-width: 30px;
 margin-right: 10px;
@@ -2123,7 +2143,7 @@ display: inline-flex;
 align-items: center;
 width: 100%;
 padding-bottom: 5px;
-border-bottom: 1px dotted #999;
+/* border-bottom: 1px dotted #999; */
 }
 .dataList li.group > span.tag {
 margin-right: 7px;
@@ -2138,6 +2158,8 @@ padding: 2px 6px;
 font-size: 11px;
 border: 1px solid #c7e0f2;
 background-color: #fff;
+margin-bottom: 3px;
+display: inline-block;
 }
 .dataList > .dataInfo > span.infoTag > span {
 display: inline-block;

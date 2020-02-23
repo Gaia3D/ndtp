@@ -35,11 +35,14 @@
 		<input type="text" id="searchDataGroupName" name="searchDataGroupName" placeholder="그룹명을 입력하세요">
 		<button type="button" id="mapDataGroupSearch" class="btnTextF" title="검색">검색</button>
 	</div>
-	<ul class="legendWrap">
-		<li><span class="legend co">C</span>공통</li>
-		<li><span class="legend pu">O</span>공개</li>
-		<li><span class="legend pr">P</span>비공개</li>
-		<li><span class="legend gr">G</span>그룹</li>
-	</ul>
-	<div id="dataGroupListArea" style="height:calc(100% - 343px)"></div>
+	<fieldset class="legendWrap">
+		<legend>공유 유형</legend>
+		<ul>
+			<li><span class="legend co">C</span>공통</li>
+			<li><span class="legend pu">O</span>공개</li>
+			<li><span class="legend pr">P</span>비공개</li>
+			<li><span class="legend gr">G</span>그룹공개</li>
+		</ul>
+	</fieldset>
+	<div id="dataGroupListArea" style="height:calc(100% - 360px)"></div>
 </div>
