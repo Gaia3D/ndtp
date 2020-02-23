@@ -1,5 +1,7 @@
 package ndtp.controller;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -12,11 +14,13 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -134,12 +138,17 @@ public class MainController {
 		boolean isDataGroupDraw = false;
 		boolean isDataInfoDraw = false;
 		boolean isDataInfoLogListDraw = false;
-		boolean isConverterDraw = false;
 		boolean isUserDraw = false;
 		boolean isCivilVoiceDraw = false;
 		boolean isAccessLogDraw = false;
 		boolean isDbcpDraw = false;
 		boolean isDbSessionDraw = false;
+		boolean isSystemUsageDraw = false;
+
+		// widget-header
+		converterWidget(startDate, endDate, model);
+
+		// widget-contents
 		for(Widget dbWidget : widgetList) {
 			if("dataGroupWidget".equals(dbWidget.getName())) {
 				isDataGroupDraw = true;
@@ -150,9 +159,6 @@ public class MainController {
 			} else if("dataInfoLogListWidget".equals(dbWidget.getName())) {
 				isDataInfoLogListDraw = true;
 				dataInfoLogListWidget(startDate, endDate, model);
-			} else if("converterWidget".equals(dbWidget.getName())) {
-				isConverterDraw = true;
-				converterWidget(startDate, endDate, model);
 			} else if("userWidget".equals(dbWidget.getName())) {
 				isUserDraw = true;
 				userWidget(startDate, endDate, model);
@@ -168,6 +174,9 @@ public class MainController {
 			} else if("dbSessionWidget".equals(dbWidget.getName())) {
 //				isDbSessionDraw = true;
 //				dbSessionWidget(model);
+			} else if("systemUsageWidget".equals(dbWidget.getName())) {
+				isSystemUsageDraw = true;
+				systemUsageWidget(model);
 			}
 		}
 
@@ -185,12 +194,12 @@ public class MainController {
 		model.addAttribute("isDataGroupDraw", isDataGroupDraw);
 		model.addAttribute("isDataInfoDraw", isDataInfoDraw);
 		model.addAttribute("isDataInfoLogListDraw", isDataInfoLogListDraw);
-		model.addAttribute("isConverterDraw", isConverterDraw);
 		model.addAttribute("isUserDraw", isUserDraw);
 		model.addAttribute("isCivilVoiceDraw", isCivilVoiceDraw);
 		model.addAttribute("isAccessLogDraw", isAccessLogDraw);
 		model.addAttribute("isDbcpDraw", isDbcpDraw);
 		model.addAttribute("isDbSessionDraw", isDbSessionDraw);
+		model.addAttribute("isSystemUsageDraw", isSystemUsageDraw);
 
 		return "/main/index";
 	}
@@ -285,6 +294,14 @@ public class MainController {
 	 * @param model
 	 */
 	private void civilVoiceWidget(String startDate, String endDate, Model model) {
+		// ajax 에서 처리 하기 위해서 여기는 공백
+	}
+
+	/**
+	 * 시스템 사용량
+	 * @param model
+	 */
+	private void systemUsageWidget(Model model) {
 		// ajax 에서 처리 하기 위해서 여기는 공백
 	}
 
@@ -558,6 +575,62 @@ public class MainController {
 
 //			map.put("civilVoiceList", new JSONArray.fromObject(civilVoiceList));
 			map.put("civilVoiceList", civilVoiceList);
+		} catch(Exception e) {
+			e.printStackTrace();
+			result = "db.exception";
+		}
+
+		map.put("result", result);
+
+		return map;
+	}
+
+	/**
+	 * 시스템 사용량 갱신
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "ajax-system-usage-widget")
+	@ResponseBody
+	public Map<String, Object> ajaxSystemUsageDraw(HttpServletRequest request) {
+
+		Map<String, Object> map = new HashMap<>();
+		String result = "success";
+		try {
+
+			RestTemplate restTemplate = new RestTemplate();
+			String serverHost = "http://localhost:9090";
+
+			URI diskSpaceURI = new URI(serverHost + "/actuator/health/diskSpace");
+			ResponseEntity<Map> response1 = restTemplate.getForEntity(diskSpaceURI, Map.class);
+			Map<String, Long> diskSpace = (Map<String, Long>) response1.getBody().get("details");
+			Long diskSpaceTotal = diskSpace.get("total");
+			Long diskSpaceFree = diskSpace.get("free");
+
+			URI memoryMax = new URI(serverHost + "/actuator/metrics/jvm.memory.max");
+			ResponseEntity<Map> response2 = restTemplate.getForEntity(memoryMax, Map.class);
+			List<Map<String, Object>> jvmMemoryMax = (List<Map<String, Object>>) response2.getBody().get("measurements");
+
+			URI memoryUsed = new URI(serverHost + "/actuator/metrics/jvm.memory.used");
+			ResponseEntity<Map> response3 = restTemplate.getForEntity(memoryUsed, Map.class);
+			List<Map<String, Object>> jvmMemoryUsed = (List<Map<String, Object>>) response3.getBody().get("measurements");
+
+			URI cpuMax = new URI(serverHost + "/actuator/metrics/system.cpu.usage");
+			ResponseEntity<Map> response4 = restTemplate.getForEntity(cpuMax, Map.class);
+			List<Map<String, Object>> systemCpuUsage = (List<Map<String, Object>>) response4.getBody().get("measurements");
+
+			URI cpuUsed = new URI(serverHost + "/actuator/metrics/process.cpu.usage");
+			ResponseEntity<Map> response5 = restTemplate.getForEntity(cpuUsed, Map.class);
+			List<Map<String, Object>> processCpuUsage = (List<Map<String, Object>>) response5.getBody().get("measurements");
+
+
+			map.put("diskSpaceTotal", diskSpaceTotal);
+			map.put("diskSpaceFree", diskSpaceFree);
+			map.put("jvmMemoryMax", jvmMemoryMax);
+			map.put("jvmMemoryUsed", jvmMemoryUsed);
+			map.put("systemCpuUsage", systemCpuUsage);
+			map.put("processCpuUsage", processCpuUsage);
+
 		} catch(Exception e) {
 			e.printStackTrace();
 			result = "db.exception";

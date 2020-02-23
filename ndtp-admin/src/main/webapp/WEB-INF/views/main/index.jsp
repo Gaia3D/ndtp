@@ -197,6 +197,21 @@
 						</div>
 					</div>
 		</c:when>
+		<c:when test="${dbWidget.name == 'systemUsageWidget'}">
+					<div id="${dbWidget.widgetId }" class="widget one-third column">
+						<div class="widget-header row">
+							<div class="widget-heading u-pull-left">
+								<h3 class="widget-title"><spring:message code='main.status.system.usage'/><span class="widget-desc">${today } <spring:message code='main.standard'/></span></h3>
+							</div>
+						</div>
+
+						<div id="${dbWidget.name}" class="widget-content row">
+							<div style="text-align: center; padding-top: 60px; padding-left: 150px;">
+			            		<div id="systemUsageSpinner" style="width: 150px; height: 70px;"></div>
+			            	</div>
+						</div>
+					</div>
+		</c:when>
 		<c:when test="${dbWidget.name == 'dbcpWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column">
 						<div class="widget-header row">
@@ -423,6 +438,7 @@
 	var isAccessLogDraw = "${isAccessLogDraw}";
 	var isDbcpDraw = "${isDbcpDraw}";
 	var isDbSessionDraw = "${isDbSessionDraw}";
+	var isSystemUsageDraw = "${isSystemUsageDraw}";
 
 	$(document).ready(function() {
 		if(isDataGroupDraw == "true") {
@@ -458,6 +474,10 @@
 		if(isDbSessionDraw == "true") {
 			//startSpinner("dbSessionSpinner");
 		    setTimeout(dbSessionWidget, 3000);
+		}
+		if(isSystemUsageDraw == "true") {
+			startSpinner("systemUsageSpinner");
+		    setTimeout(callSystemUsageWidget, 1000);
 		}
 
 		var isActive = "${isActive}";
@@ -496,6 +516,12 @@
 	function callAccessLogWidget() {
 		accessLogWidget();
 		setInterval(accessLogWidget, refreshTime);
+	}
+
+	// 시스템 사용량
+	function callSystemUsageWidget() {
+		systemUsageWidget();
+		setInterval(systemUsageWidget, refreshTime);
 	}
 
 	function dataGroupWidget() {
@@ -957,6 +983,107 @@
 		});
 	}
 
+	// 시스템 사용량
+	function systemUsageWidget() {
+		$.ajax({
+			url : "/main/ajax-system-usage-widget",
+			type : "GET",
+			cache : false,
+			dataType : "json",
+			success : function(msg) {
+				if (msg.result == "user.session.empty") {
+					//alert("로그인 후 사용 가능한 서비스 입니다.");
+				} else if (msg.result == "db.exception") {
+					//alert("데이터 베이스 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
+				} else if (msg.result == "success") {
+					// disk
+					var diskValue = (msg.diskSpaceTotal - msg.diskSpaceFree) / msg.diskSpaceTotal * 100;
+
+					// memory
+					var memoryMax = msg.jvmMemoryMax[0]["value"];
+					var memoryUsed = msg.jvmMemoryUsed[0]["value"];
+					var memoryValue = memoryUsed / memoryMax * 100;
+
+					// cpu
+					var cpuMax = msg.systemCpuUsage[0]["value"];
+					var cpuUsed = msg.processCpuUsage[0]["value"];
+					var cpuValue = cpuUsed / cpuMax * 100;
+
+					var res = {
+						disk: {
+							value: Math.round(diskValue),
+							classname: '.pie-chart1',
+							color: 'tomato'
+						},
+						memory: {
+							value: Math.round(memoryValue),
+							classname: '.pie-chart2',
+							color: '#8b22ff'
+						},
+						cpu: {
+							value: Math.round(cpuValue),
+							classname: '.pie-chart3',
+							color: '#1cabf1'
+						}
+					}
+
+					var content = "";
+					content += "<div style='text-align: center;'>";
+					content += "	<div class='pie-chart pie-chart1'><span class='center'>" + res.disk.value + "%<br/>Disk</span></div>";
+					content += "	<div class='pie-chart pie-chart2'><span class='center'>" + res.memory.value + "%<br/>Memory</span></div>";
+					content += "	<div class='pie-chart pie-chart3'><span class='center'>" + res.cpu.value + "%<br/>CPU</span></div>";
+					content += "</div>";
+
+					for(var property in res) {
+						var value = res[property].value;
+						var classname = res[property].classname;
+						var color = res[property].color;
+						drawGauge(value, classname, color);
+					}
+
+					$("#systemUsageWidget").empty();
+					$("#systemUsageWidget").html(content);
+				}
+			},
+			error : function(request, status, error) {
+				$("#systemUsageWidget").empty();
+				$("#systemUsageWidget").html(content);
+			}
+		});
+	}
+
+	function goMagoAPIGuide() {
+		var url = "/guide/help";
+		//console.log("test");
+		var width = 1200;
+		var height = 800;
+
+		// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+		var popupX = (window.screen.width / 2) - (width / 2);
+		var popupY = (window.screen.height / 2) - (height / 2);
+
+		var popWin = window.open(url, "", "toolbar=no, width=" + width + " ,height=" + height + ", top=" + popupY + ", left=" + popupX +
+				", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
+		return false;
+	}
+
+	function drawGauge(value, classname, colorname) {
+	   	var i=1;
+	    var drawFunction = setInterval(function(){
+	      	if(i<=value){
+	          	setGaugeColor(i, classname, colorname);
+	         	i++;
+	      	} else{
+	        	clearInterval(drawFunction);
+	      	}
+	    }, 10);
+	}
+
+	function setGaugeColor(i, classname, colorname) {
+	   	$(classname).css({
+	        "background": "conic-gradient("+colorname+" 0% "+i+"%, #e0e0e0 "+i+"% 100%)"
+	   	});
+	}
 </script>
 </body>
 </html>
