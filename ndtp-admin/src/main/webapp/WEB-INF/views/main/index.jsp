@@ -178,8 +178,7 @@
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'accessLogWidget@@'}">
-		<!-- TODO: 수정 필요함. 여기가 원래 사용자 추적 -->
+		<c:when test="${dbWidget.name == 'accessLogWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
@@ -198,7 +197,7 @@
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'accessLogWidget'}">
+		<c:when test="${dbWidget.name == 'systemUsageWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
@@ -208,7 +207,7 @@
 
 						<div id="${dbWidget.name}" class="widget-content row">
 							<div style="text-align: center; padding-top: 60px; padding-left: 150px;">
-			            		<div id="accessLogSpinner" style="width: 150px; height: 70px;"></div>
+			            		<div id="systemUsageSpinner" style="width: 150px; height: 70px;"></div>
 			            	</div>
 						</div>
 					</div>
@@ -439,6 +438,7 @@
 	var isAccessLogDraw = "${isAccessLogDraw}";
 	var isDbcpDraw = "${isDbcpDraw}";
 	var isDbSessionDraw = "${isDbSessionDraw}";
+	var isSystemUsageDraw = "${isSystemUsageDraw}";
 
 	$(document).ready(function() {
 		if(isDataGroupDraw == "true") {
@@ -466,9 +466,7 @@
 		}
 		if(isAccessLogDraw == "true") {
 			startSpinner("accessLogSpinner");
-		    //setTimeout(callAccessLogWidget, 1000);
-		    // TODO: @@
-		    setTimeout(callSystemUsageWidget, 1000);
+		    setTimeout(callAccessLogWidget, 1000);
 		}
 		if(isDbcpDraw == "true") {
 			setTimeout(callDbcpWidget, 2000);
@@ -476,6 +474,10 @@
 		if(isDbSessionDraw == "true") {
 			//startSpinner("dbSessionSpinner");
 		    setTimeout(dbSessionWidget, 3000);
+		}
+		if(isSystemUsageDraw == "true") {
+			startSpinner("systemUsageSpinner");
+		    setTimeout(callSystemUsageWidget, 1000);
 		}
 
 		var isActive = "${isActive}";
@@ -1026,15 +1028,13 @@
 						drawGauge(value, classname, color);
 					}
 
-					// TODO: @@
-					$("#accessLogWidget").empty();
-					$("#accessLogWidget").html(content);
+					$("#systemUsageWidget").empty();
+					$("#systemUsageWidget").html(content);
 				}
 			},
 			error : function(request, status, error) {
-				//alert("잠시 후 이용해 주시기 바랍니다. 장시간 같은 현상이(DBCP) 반복될 경우 관리자에게 문의하여 주십시오.");
-				$("#accessLogWidget").empty();
-				$("#accessLogWidget").html(content);
+				$("#systemUsageWidget").empty();
+				$("#systemUsageWidget").html(content);
 			}
 		});
 	}

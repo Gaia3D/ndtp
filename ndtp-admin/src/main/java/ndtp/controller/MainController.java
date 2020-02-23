@@ -140,6 +140,8 @@ public class MainController {
 		boolean isAccessLogDraw = false;
 		boolean isDbcpDraw = false;
 		boolean isDbSessionDraw = false;
+		boolean isSystemUsageDraw = false;
+
 		for(Widget dbWidget : widgetList) {
 			if("dataGroupWidget".equals(dbWidget.getName())) {
 				isDataGroupDraw = true;
@@ -168,6 +170,9 @@ public class MainController {
 			} else if("dbSessionWidget".equals(dbWidget.getName())) {
 //				isDbSessionDraw = true;
 //				dbSessionWidget(model);
+			} else if("systemUsageWidget".equals(dbWidget.getName())) {
+				isSystemUsageDraw = true;
+				systemUsageWidget(model);
 			}
 		}
 
@@ -191,6 +196,7 @@ public class MainController {
 		model.addAttribute("isAccessLogDraw", isAccessLogDraw);
 		model.addAttribute("isDbcpDraw", isDbcpDraw);
 		model.addAttribute("isDbSessionDraw", isDbSessionDraw);
+		model.addAttribute("isSystemUsageDraw", isSystemUsageDraw);
 
 		return "/main/index";
 	}
@@ -285,6 +291,14 @@ public class MainController {
 	 * @param model
 	 */
 	private void civilVoiceWidget(String startDate, String endDate, Model model) {
+		// ajax 에서 처리 하기 위해서 여기는 공백
+	}
+
+	/**
+	 * 시스템 사용량
+	 * @param model
+	 */
+	private void systemUsageWidget(Model model) {
 		// ajax 에서 처리 하기 위해서 여기는 공백
 	}
 
@@ -535,6 +549,47 @@ public class MainController {
 	@GetMapping(value = "ajax-civil-voice-widget")
 	@ResponseBody
 	public Map<String, Object> ajaxCivilVoiceWidget(HttpServletRequest request) {
+
+		Map<String, Object> map = new HashMap<>();
+		String result = "success";
+		try {
+			String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.DATE, -7);
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+			String searchDay = simpleDateFormat.format(calendar.getTime());
+			String startDate = searchDay + DateUtils.START_TIME;
+			String endDate = today + DateUtils.END_TIME;
+
+			CivilVoice civilVoice = new CivilVoice();
+			civilVoice.setStartDate(startDate);
+			civilVoice.setEndDate(endDate);
+			civilVoice.setOffset(0l);
+			civilVoice.setLimit(WIDGET_LIST_VIEW_COUNT);
+			civilVoice.setOrderWord("comment_count");
+			civilVoice.setOrderValue("desc");
+			List<CivilVoice> civilVoiceList = civilVoiceService.getListCivilVoice(civilVoice);
+
+//			map.put("civilVoiceList", new JSONArray.fromObject(civilVoiceList));
+			map.put("civilVoiceList", civilVoiceList);
+		} catch(Exception e) {
+			e.printStackTrace();
+			result = "db.exception";
+		}
+
+		map.put("result", result);
+
+		return map;
+	}
+
+	/**
+	 * 시스템 사용량 갱신
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "ajax-system-usage-widget")
+	@ResponseBody
+	public Map<String, Object> ajaxSystemUsageDraw(HttpServletRequest request) {
 
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
