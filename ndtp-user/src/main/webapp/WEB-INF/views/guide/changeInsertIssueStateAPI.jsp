@@ -32,7 +32,7 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api18-p1">insertIssueState</label>
-			<input type="text" id="api18-p1" value="0">
+			<input type="text" data-require="true" id="api18-p1" value="0">
 		</div>
 		<br/> 
 		<input type="button" id="changeInsertIssueState" value="Run" class="popupBtn">

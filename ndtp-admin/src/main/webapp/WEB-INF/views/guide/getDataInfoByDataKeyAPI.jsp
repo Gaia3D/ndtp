@@ -36,21 +36,37 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api29-p1">projectId</label>
-			<input type="text" id="api29-p1" value="sample"><br>
+			<input type="text" data-require="true" id="api29-p1" value="sample"><br>
 			<label for="api29-p2">dataKey</label>
-			<input type="text" id="api29-p2" value="SOCIALROOM">
+			<input type="text" data-require="true" id="api29-p2" value="SOCIALROOM">
 		</div>
 		<br>
 		<input type="button" id="getDataInfoByDataKey" value="Run" class="popupBtn">
+		<h4>결과</h4>
+		<table id="api29-result"></table>
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>
 <script>
 	var getDataInfoByDataKey = function() {
-
+		
 		var projectId = $('#api29-p1').val();
 		var dataKey = $('#api29-p2').val();
-
-		getDataInfoByDataKeyAPI(MAGO3D_INSTANCE2, projectId, dataKey);
+		var result = getDataInfoByDataKeyAPI(MAGO3D_INSTANCE2, projectId, dataKey);
+		var table = document.getElementById("api29-result");
+		table.innerHTML = '';
+		
+		for ( var i in Object.keys(result)) {
+			var row = table.insertRow();
+			var th = document.createElement("th");
+			var td = document.createElement("td");
+			var key = document.createTextNode(Object.keys(result)[i]);
+			var value = document.createTextNode(Object.values(result)[i]);
+			th.appendChild(key);
+			td.appendChild(value);
+			row.appendChild(th);
+			row.appendChild(td);
+		}
+		
 	}
 </script>

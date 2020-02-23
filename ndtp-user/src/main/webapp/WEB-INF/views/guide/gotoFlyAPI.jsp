@@ -46,13 +46,13 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api31-p1">longitude</label>
-			<input type="text" id="api31-p1" value="127.0000"><br>
+			<input type="text" data-require="true" id="api31-p1" value="127.0000"><br>
 			<label for="api31-p2">latitude</label>
-			<input type="text" id="api31-p2" value="37.000"><br>
+			<input type="text" data-require="true" id="api31-p2" value="37.000"><br>
 			<label for="api31-p3">height</label>
-			<input type="text" id="api31-p3" value="100"><br>
+			<input type="text" data-require="true" id="api31-p3" value="100"><br>
 			<label for="api31-p4">duration</label>
-			<input type="text" id="api31-p4" value="10">
+			<input type="text" data-require="true" id="api31-p4" value="10">
 		</div>
 		<br>
 		<input type="button" id="gotofly" value="Run" class="popupBtn">

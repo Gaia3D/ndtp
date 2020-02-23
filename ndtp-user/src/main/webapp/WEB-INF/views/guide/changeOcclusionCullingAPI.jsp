@@ -40,7 +40,7 @@
 			<input type="radio" id="api15-opt2" name="api15-p1" value="false" checked />
 			<label for="api15-opt2">비활성</label><br/>
 			<label for="api15-p2">dataKey</label>
-			<input type="text" id="api15-p2" value="SOCIALROOM">
+			<input type="text" data-require="true" id="api15-p2" value="SOCIALROOM" disabled>
 			
 		</div>
 		<br/> 

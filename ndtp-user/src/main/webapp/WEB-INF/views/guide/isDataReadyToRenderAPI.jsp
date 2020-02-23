@@ -48,9 +48,9 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api43-p1">projectId</label>
-			<input type="text" id="api43-p1" value="sample"><br>
+			<input type="text" data-require="true" id="api43-p1" value="sample"><br>
 			<label for="api43-p2">dataKey</label>
-			<input type="text" id="api43-p2" value="SOCIALROOM">
+			<input type="text" data-require="true" id="api43-p2" value="SOCIALROOM">
 		</div>
 		<br> 
 		<input type="button" id="isDataReadyToRender" value="Run" class="popupBtn">

@@ -31,7 +31,7 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api21-p1">ssaoRadius</label>
-			<input type="text" id="api21-p1" value="0.15">
+			<input type="text" data-require="true" id="api21-p1" value="0.15">
 		</div>
 		<br/> 
 		<input type="button" id="changeSsaoRadius" value="Run" class="popupBtn">

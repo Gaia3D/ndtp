@@ -32,11 +32,11 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api38-p1">projectId</label>
-			<input type="text" id="api38-p1" value="static_sample"><br/>
+			<input type="text" id="api38-p1" data-require="true" value="static_sample"><br/>
 			<label for="api38-p2">projectFolderName</label>
-			<input type="text" id="api38-p2" value="sample"><br/>
+			<input type="text" id="api38-p2" data-require="true" value="sample" disabled><br/>
 			<label for="api38-p3">buildingFolderName</label>
-			<input type="text" id="api38-p3" value="F4D_SOCIALROOM">
+			<input type="text" id="api38-p3" data-require="true" value="F4D_SOCIALROOM" disabled>
 		</div>
 		<br/> 
 		<input type="button" id="addStaticModel" value="Run" class="popupBtn">

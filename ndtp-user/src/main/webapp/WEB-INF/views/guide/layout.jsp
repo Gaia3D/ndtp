@@ -156,6 +156,9 @@
 				if($("code").children('.hljs-tag')[i].childNodes[0].nodeValue=="</"){
 					$("code").children('.hljs-tag')[i].childNodes[2].nodeValue = $("code").children('.hljs-tag')[i].childNodes[2].nodeValue+"\n";
 				}
+				if($("code").children('.hljs-tag')[i].childNodes[1].childNodes[0]=="br"){
+					$("code").children('.hljs-tag')[i].childNodes[2].nodeValue = $("code").children('.hljs-tag')[i].childNodes[2].nodeValue+"\n";
+				}
 			};
 			
 			// cesium credit img alt
@@ -166,28 +169,64 @@
 				if($(this)[0].nextSibling.nodeValue){
 					$(this)[0].nextSibling.nodeValue="";
 				}
-				if($(this).val()=="" && $(this).data('require') === 'true'){
+				if($(this).val()=="" && $(this).attr('data-require') === 'true'){
 					var txt = document.createTextNode("필수로 입력해 주세요.");
 					$(this).after(txt);
 				}/* else{
 					var txt = document.createTextNode("만족!");
 					$(this).after(txt);
-				} */
+				}  */
 			})
 			
 			// null check and start function
 			$('.popupBtn').on("click", function(){
-				
 				var id = $(this).attr('id');
 				var inputTags = $("#"+id).siblings('.paramContainer').children('input[type=text]');
-				for(var i = 0; i<inputTags.length; i++){
-					if(inputTags[i].dataset.require === 'true' &&  (inputTags[i].value=="" || null || undefined) ){
+				var count=0;
+				if(id=="changeLod"){
+					for(var i = 0; i<inputTags.length; i++){
+						if(inputTags[i].dataset.require === 'false' &&  (inputTags[i].value!="") ){
+							count=count+1;
+						}
+					}
+					if(count==0){
 						alert("필수!");
 						return;
 					}
+					window[id]();
+				}else if(id=="changeLighting"){
+					for(var i = 0; i<inputTags.length; i++){
+						if(inputTags[i].dataset.require === 'false' &&  (inputTags[i].value!="") ){
+							count=count+1;
+						}
+					}
+					if(count==0){
+						alert("필수!");
+						return;
+					}
+					window[id]();
+				}else if(id=="changeCameraOrientation"){
+					for(var i = 0; i<inputTags.length; i++){
+						if(inputTags[i].dataset.require === 'false' &&  (inputTags[i].value!="") ){
+							if(inputTags[i].id!="api36-p4"){
+								count=count+1;
+							}
+						}
+					}
+					if(count==0){
+						alert("필수!");
+						return;
+					}
+					window[id]();
+				}else{
+					for(var i = 0; i<inputTags.length; i++){
+						if(inputTags[i].dataset.require === 'true' &&  (inputTags[i].value=="" || null || undefined) ){
+							alert("필수!");
+							return;
+						}
+					} 
+					window[id]();
 				}
-				window[id]();
-				//eval(id+"()");
 			})
 			
 			//color picker
