@@ -73,7 +73,7 @@ public class NdtpAdminApplication extends SpringBootServletInitializer {
 		urls.add("/civil-voices/*");
 		urls.add("/policy/*");
 		urls.add("/geopolicy/*");
-		urls.add("/menu/*");
+		urls.add("/menus/*");
 		urls.add("/widget/*");
 		urls.add("/role/*");
 		

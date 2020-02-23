@@ -41,7 +41,7 @@ public interface MenuMapper {
 	 * @param parent
 	 * @return
 	 */
-	Menu getMaxViewOrderChildMenu(Integer parent);
+	Menu getMaxViewOrderChildMenu(Menu menu);
 	
 /**
 	 * 자식 메뉴 목록

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<form id="issueForm" name="issueForm" method="post" onsubmit="return false;">
+<form:form id="issueForm" name="issueForm" method="post" onsubmit="return false;">
 	<input type="hidden" id="issueDataId" name="issueDataId" value="" />
 	<input type="hidden" id="issueDataKey" name="issueDataKey" value="" />
 	<input type="hidden" id="issueObjectKey" name="issueObjectKey" value="" />
@@ -55,4 +55,4 @@
 		<button type="button" id="issueSaveButton" onclick="insertIssue(); return false;" class="focusA btn-full"><spring:message code='save'/></button>
 	</div>
 </div>
-</form>
+</form:form>

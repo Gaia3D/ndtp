@@ -25,7 +25,7 @@
 				<div class="page-area">
 					<%@ include file="/WEB-INF/views/layouts/page_header.jsp" %>
 					<div class="page-content">
-						<div class="content-desc u-pull-right"><span class="icon-glyph glyph-emark-dot color-warning"></span><spring:message code='check'/></div>
+						<div class="content-desc u-pull-right"><span class="icon-glyph glyph-emark-dot color-warning"></span><spring:message code='check' />&nbsp;&nbsp;</div>
 						<div class="tabs">
 							<ul>
 								<li><a href="#userTab">사용자</a></li>

@@ -52,12 +52,12 @@ public class MenuServiceImpl implements MenuService {
 	
 	/**
 	 * 자식 메뉴 중에 순서가 최대인 메뉴를 검색
-	 * @param parent
+	 * @param menu
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public Menu getMaxViewOrderChildMenu(Integer parent) {
-		return menuMapper.getMaxViewOrderChildMenu(parent);
+	public Menu getMaxViewOrderChildMenu(Menu menu) {
+		return menuMapper.getMaxViewOrderChildMenu(menu);
 	}
 	
 /**
@@ -93,8 +93,10 @@ public class MenuServiceImpl implements MenuService {
 	public int updateMoveMenu(Menu menu) {
 		Integer modifyViewOrder = menu.getViewOrder();
 		Menu searchMenu = new Menu();
+		searchMenu.setMenuTarget(menu.getMenuTarget());
 		searchMenu.setUpdateType(menu.getUpdateType());
 		searchMenu.setParent(menu.getParent());
+		
 		if("up".equals(menu.getUpdateType())) {
 			// 바로 위 메뉴의 view_order 를 +1
 			searchMenu.setViewOrder(menu.getViewOrder());

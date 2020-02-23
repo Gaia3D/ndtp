@@ -46,7 +46,7 @@
 							<div class="two-third column">
 								<div class="node">
 									<div id="tree_content_area" class="info">
-										<form id="menuForm" name="menuForm" method="post" onsubmit="return false;">
+										<form:form id="menuForm" name="menuForm" method="post" onsubmit="return false;">
 							    			<input type="hidden" id="writeMode" name="writeMode" value="" />
 											<input type="hidden" id="menuId" name="menuId" value="" />
 											<input type="hidden" id="ancestor" name="ancestor" value="" />
@@ -136,9 +136,9 @@
 													<span class="icon-glyph glyph-emark-dot color-warning"></span>
 												</th>
 												<td>
-													<input type="radio" id="defaultY" name="defaultYn" value="Y" />
+													<input type="radio" id="defaultY" name="defaultYn" value="Y" class="marT10" />
 													<label for="defaultY">기본</label>
-													<input type="radio" id="defaultN" name="defaultYn" value="N" />
+													<input type="radio" id="defaultN" name="defaultYn" value="N" class="marT10" />
 													<label for="defaultN">선택</label>
 												</td>
 											</tr>
@@ -148,9 +148,9 @@
 													<span class="icon-glyph glyph-emark-dot color-warning"></span>
 												</th>
 												<td>
-													<input type="radio" id="useY" name="useYn" value="Y" />
+													<input type="radio" id="useY" name="useYn" value="Y" class="marT10" />
 													<label for="useY">사용</label>
-													<input type="radio" id="useN" name="useYn" value="N" />
+													<input type="radio" id="useN" name="useYn" value="N" class="marT10" />
 													<label for="useN">미사용</label>
 												</td>
 											</tr>
@@ -160,9 +160,9 @@
 													<span class="icon-glyph glyph-emark-dot color-warning"></span>
 												</th>
 												<td>
-													<input type="radio" id="displayY" name="displayYn" value="Y" />
+													<input type="radio" id="displayY" name="displayYn" value="Y" class="marT10" />
 													<label for="displayY">표시</label>
-													<input type="radio" id="displayN" name="displayYn" value="N" />
+													<input type="radio" id="displayN" name="displayYn" value="N" class="marT10" />
 													<label for="displayN">비표시</label>
 												</td>
 											</tr>
@@ -170,7 +170,7 @@
 												<th class="col-label" scope="row">
 													<label for="description">설명</label>
 												</th>
-												<td><input type="text" id="description" name="description"/></td>
+												<td><input type="text" id="description" name="description" size="80" /></td>
 											</tr>
 											<tr>
 												<td colspan="2">
@@ -183,7 +183,7 @@
 												</td>
 											</tr>
 										</table>
-										</form>
+										</form:form>
 									</div>
 
 								</div>
@@ -217,18 +217,22 @@
 	// 메뉴 목록
 	function getMenuList() {
 		$.ajax({
-			url: "/menu/admin-tree",
+			url: "/menus/admin-tree",
 			type: "GET",
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 			dataType: "json",
 			success: function(msg){
-				MENU_TREE_DATA = msg;
-				TREE_OBJECT.pageStart.delay(0.1);
+				if(msg.statusCode <= 200) {
+					MENU_TREE_DATA = JSON.parse(msg.menuTree);
+					TREE_OBJECT.pageStart.delay(0.1);
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+					console.log("---- " + msg.message);
+				}
 			},
-	        error: function(request, status, error) {
-	        	// alert message, 세션이 없는 경우 로그인 페이지로 이동 - common.js
-	        	ajaxErrorHandler(request);
-	        }
+			error:function(request, status, error){
+		        alert(JS_MESSAGE["ajax.error.message"]);
+			}
 		});
 	}
 
@@ -297,19 +301,23 @@
 
 		var info = $("#menuForm").serialize();
 		$.ajax({
-			url: "/menu/",
+			url: "/menus",
 			type: "POST",
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 			data: info,
 			dataType: "json",
 			success: function(msg){
-				MENU_TREE.setTree(msg);
-				alert(JS_MESSAGE["insert"]);
+				if(msg.statusCode <= 200) {
+					MENU_TREE.setTree(JSON.parse(msg.menuTree));
+					alert(JS_MESSAGE["insert"]);
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+					console.log("---- " + msg.message);
+				}
 			},
-	        error: function(request, status, error) {
-	        	// alert message, 세션이 없는 경우 로그인 페이지로 이동 - common.js
-	        	ajaxErrorHandler(request);
-	        }
+			error:function(request, status, error){
+		        alert(JS_MESSAGE["ajax.error.message"]);
+			}
 		});
 	}
 
@@ -344,19 +352,23 @@
 
 		var info = $("#menuForm").serialize();
 		$.ajax({
-			url: "/menu/" + $("#menuId").val(),
+			url: "/menus/" + $("#menuId").val(),
 			type: "POST",
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 			data: info,
 			dataType: "json",
-			success: function(msg) {
-				MENU_TREE.setTree(msg);
-				alert(JS_MESSAGE["update"]);
+			success: function(msg){
+				if(msg.statusCode <= 200) {
+					MENU_TREE.setTree(JSON.parse(msg.menuTree));
+					alert(JS_MESSAGE["update"]);
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+					console.log("---- " + msg.message);
+				}
 			},
-	        error: function(request, status, error) {
-	        	// alert message, 세션이 없는 경우 로그인 페이지로 이동 - common.js
-	        	ajaxErrorHandler(request);
-	        }
+			error:function(request, status, error){
+		        alert(JS_MESSAGE["ajax.error.message"]);
+			}
 		});
 	}
 
@@ -364,19 +376,23 @@
 	function deleteMenu() {
 		if(confirm("삭제하시겠습니까?")) {
 			$.ajax({
-				url: "/menu/admin/" + $("#menuId").val(),
+				url: "/menus/admin/" + $("#menuId").val(),
 				type: "DELETE",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				dataType: "json",
 				success: function(msg){
-					alert("삭제되었습니다.");
-					MENU_TREE.setTree(msg);
-					MENU_TREE.collapseAll();
+					if(msg.statusCode <= 200) {
+						alert("삭제되었습니다.");
+						MENU_TREE.setTree(JSON.parse(msg.menuTree));
+						MENU_TREE.collapseAll();
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
 				},
-		        error: function(request, status, error) {
-		        	// alert message, 세션이 없는 경우 로그인 페이지로 이동 - common.js
-		        	ajaxErrorHandler(request);
-		        }
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+				}
 			});
 		}
 	}
@@ -386,19 +402,23 @@
 		if(confirm("이동하시겠습니까?")) {
 			var info = $("#menuForm").serialize();
 			$.ajax({
-				url: "/menu/" + $("#menuId").val() + "/move",
+				url: "/menus/" + $("#menuId").val() + "/move",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				data: info,
 				dataType: "json",
 				success: function(msg){
-					MENU_TREE.setTree(msg);
-					//MENU_TREE.collapseAll();
+					if(msg.statusCode <= 200) {
+						MENU_TREE.setTree(JSON.parse(msg.menuTree));
+						//MENU_TREE.collapseAll();
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
 				},
-		        error: function(request, status, error) {
-		        	// alert message, 세션이 없는 경우 로그인 페이지로 이동 - common.js
-		        	ajaxErrorHandler(request);
-		        }
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+				}
 			});
 		}
 	}

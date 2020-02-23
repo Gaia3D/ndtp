@@ -7,11 +7,13 @@
 	<select id="getListMenu" parameterType="menu" resultType="menu">
 		/* getListMenu */
 		WITH RECURSIVE menu_tree (
-			menu_id, menu_type, menu_target, name, name_en, ancestor, parent, depth, view_order, url, url_alias, html_id, html_content_id,
-			image, image_alt, css_class, default_yn, use_yn, display_yn, description, insert_date, path, cycle
+			menu_id, menu_type, menu_target, name, name_en, ancestor, parent, depth, view_order, url, url_alias, alias_menu_id,
+			html_id, html_content_id, image, image_alt, css_class, default_yn, use_yn, display_yn, description, insert_date,
+			path, cycle
 		) AS (
-			SELECT A.menu_id, A.menu_type, A.menu_target, A.name, A.name_en, A.ancestor, A.parent, A.depth, A.view_order, A.url, A.url_alias, A.html_id, A.html_content_id,
-				A.image, A.image_alt, A.css_class, A.default_yn, A.use_yn, A.display_yn,  A.description, A.insert_date, ARRAY[A.view_order], false
+			SELECT A.menu_id, A.menu_type, A.menu_target, A.name, A.name_en, A.ancestor, A.parent, A.depth, A.view_order, A.url, A.url_alias, A.alias_menu_id,
+				A.html_id, A.html_content_id, A.image, A.image_alt, A.css_class, A.default_yn, A.use_yn, A.display_yn,  A.description, A.insert_date,
+				ARRAY[A.view_order], false
 			FROM menu A
 			WHERE A.menu_target = #{menuTarget}
 			<if test="menuType != null and menuType != ''">
@@ -22,8 +24,9 @@
 				AND default_yn = #{defaultYn}
 			</if>
 	        UNION ALL
-	        SELECT A.menu_id, A.menu_type, A.menu_target, A.name, A.name_en, A.ancestor, A.parent, A.depth, A.view_order, A.url, A.url_alias, A.html_id, A.html_content_id,
-				A.image, A.image_alt, A.css_class, A.default_yn, A.use_yn, A.display_yn, A.description, A.insert_date, path || A.view_order, A.menu_id = ANY(path)
+	        SELECT A.menu_id, A.menu_type, A.menu_target, A.name, A.name_en, A.ancestor, A.parent, A.depth, A.view_order, A.url, A.url_alias, A.alias_menu_id,
+	        	A.html_id, A.html_content_id, A.image, A.image_alt, A.css_class, A.default_yn, A.use_yn, A.display_yn, A.description, A.insert_date,
+	        	path || A.view_order, A.menu_id = ANY(path)
 	        FROM menu A, menu_tree B
 			WHERE A.menu_target = #{menuTarget}
 			<if test="menuType != null and menuType != ''">
@@ -32,8 +35,9 @@
 				AND A.parent = B.menu_id 
 				AND not cycle
 		)
-		SELECT menu_id, menu_type, menu_target, name, name_en, ancestor, parent, depth, view_order, url, url_alias, html_id, html_content_id,
-			image, image_alt, css_class, default_yn, use_yn, display_yn, description, insert_date, path
+		SELECT menu_id, menu_type, menu_target, name, name_en, ancestor, parent, depth, view_order, url, url_alias, alias_menu_id,
+			html_id, html_content_id, image, image_alt, css_class, default_yn, use_yn, display_yn, description, insert_date,
+			path
 		FROM menu_tree
 		ORDER BY path
 	</select>
@@ -49,26 +53,33 @@
 		/* getMenuByParentAndViewOrder */
 		SELECT * 
 		FROM menu 
-		WHERE parent = #{parent} 
+		WHERE menu_target = #{menuTarget}
+			AND parent = #{parent} 
 		<if test="updateType == 'up'.toString()">
 			<![CDATA[
+			AND view_order >= #{viewOrder} - 1
 			AND view_order < #{viewOrder}
 			]]>
-		ORDER BY view_order DESC 
 		</if>
 		<if test="updateType == 'down'.toString()">
 			<![CDATA[
 			AND view_order > #{viewOrder}
+			AND view_order <= #{viewOrder} + 1
 			]]>
-		ORDER BY view_order 
 		</if>
-		LIMIT 1 
+		ORDER BY view_order
+		LIMIT 1
 	</select>
 	
 	<!-- 자식 메뉴중 맨 마지막 순서의 메뉴 정보를 취득 -->
-	<select id="getMaxViewOrderChildMenu" parameterType="int" resultType="menu">
+	<select id="getMaxViewOrderChildMenu" parameterType="menu" resultType="menu">
 		/* getMaxViewOrderChildMenu */
-		SELECT * FROM menu WHERE parent = #{parent} ORDER BY view_order DESC LIMIT 1 
+		SELECT * 
+		FROM menu 
+		WHERE menu_target = #{menuTarget}
+			AND parent = #{parent} 
+		ORDER BY view_order DESC 
+		LIMIT 1 
 	</select>
 	
 	<!-- 자식 메뉴 목록 -->
@@ -84,11 +95,11 @@
             SELECT NEXTVAL('menu_seq')
         </selectKey>
 		INSERT INTO menu(
-			menu_id, menu_type, menu_target, name, name_en, ancestor, parent, depth, view_order, url, url_alias, html_id, html_content_id,
-			image, image_alt, css_class, default_yn, use_yn, display_yn, description
+			menu_id, menu_type, menu_target, name, name_en, ancestor, parent, depth, view_order, url, url_alias, alias_menu_id,
+			html_id, html_content_id, image, image_alt, css_class, default_yn, use_yn, display_yn, description
 		) VALUES (
-			#{menuId}, #{menuType}, #{menuTarget}, #{name}, #{nameEn}, #{ancestor}, #{parent}, #{depth}, #{viewOrder}, #{url}, #{urlAlias}, #{htmlId}, #{htmlContentId},
-			#{image}, #{imageAlt}, #{cssClass}, #{defaultYn}, #{useYn}, #{displayYn}, #{description} 
+			#{menuId}, #{menuType}, #{menuTarget}, #{name}, #{nameEn}, #{ancestor}, #{parent}, #{depth}, #{viewOrder}, #{url}, #{urlAlias}, #{aliasMenuId},
+			#{htmlId}, #{htmlContentId}, #{image}, #{imageAlt}, #{cssClass}, #{defaultYn}, #{useYn}, #{displayYn}, #{description} 
 		)
 	</insert>
 	
@@ -113,6 +124,9 @@
 			</if>
 			<if test="urlAlias != null and urlAlias != ''">
 			url_alias = #{urlAlias},
+			</if>
+			<if test="aliasMenuId != null and aliasMenuId != ''">
+			alias_menu_id = #{aliasMenuId},
 			</if>
 			<if test="htmlId != null and htmlId != ''">
 			html_id = #{htmlId},

@@ -49,7 +49,8 @@
 		/* getMenuByParentAndViewOrder */
 		SELECT * 
 		FROM menu 
-		WHERE parent = #{parent} 
+		WHERE menu_target = #{menuTarget}
+			AND parent = #{parent}
 		<if test="updateType == 'up'.toString()">
 			<![CDATA[
 			AND view_order < #{viewOrder}
@@ -66,9 +67,14 @@
 	</select>
 	
 	<!-- 자식 메뉴중 맨 마지막 순서의 메뉴 정보를 취득 -->
-	<select id="getMaxViewOrderChildMenu" parameterType="int" resultType="menu">
+	<select id="getMaxViewOrderChildMenu" parameterType="menu" resultType="menu">
 		/* getMaxViewOrderChildMenu */
-		SELECT * FROM menu WHERE parent = #{parent} ORDER BY view_order DESC LIMIT 1 
+		SELECT * 
+		FROM menu 
+		WHERE menu_target = #{menuTarget}
+			AND parent = #{parent} 
+		ORDER BY view_order DESC 
+		LIMIT 1 
 	</select>
 	
 	<!-- 자식 메뉴 목록 -->
