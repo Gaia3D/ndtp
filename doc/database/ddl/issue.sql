@@ -47,7 +47,7 @@ comment on column issue.title is '이슈명';
 comment on column issue.priority is '우선순위. common_code 동적 생성';
 comment on column issue.due_date is '예정일. 마감일';
 comment on column issue.issue_type is '이슈 유형. common_code 동적 생성';
-comment on column issue.status is '상태.';
+comment on column issue.status is '상태. 등록 : insert, 진행중 : process, 완료 : complete, reject : 반려';
 comment on column issue.location is 'location(위도, 경도)';
 comment on column issue.altitude is '높이';
 
