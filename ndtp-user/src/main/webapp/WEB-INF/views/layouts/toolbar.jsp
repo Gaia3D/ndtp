@@ -112,7 +112,7 @@
 					</li>
 				</ul>
 			</div>
-			<form id="dcRotLocForm" class="layerDiv marB0">
+			<form:form id="dcRotLocForm" class="layerDiv marB0">
 				<input type="hidden" name="dataId" value="" />
 				<h4 class="category">위치 변경</h4>
 				<ul class="layerDiv">
@@ -168,7 +168,7 @@
 					<button type="button" id="issueButton" class="btnTextF">이슈 등록</button>
 					<button type="button" id="dcShowAttr" class="btnTextF">데이터 정보 조회</button>
 				</div>
-			</form>
+			</form:form>
 		</div>
 	</div>
 </div>

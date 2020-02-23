@@ -27,10 +27,10 @@ public interface MenuService {
 	
 	/**
 	 * 자식 메뉴 중에 순서가 최대인 메뉴를 검색
-	 * @param parent
+	 * @param menu
 	 * @return
 	 */
-	Menu getMaxViewOrderChildMenu(Integer parent);
+	Menu getMaxViewOrderChildMenu(Menu menu);
 	
 	/**
 	 * 메뉴 등록

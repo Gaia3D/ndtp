@@ -52,11 +52,11 @@ public class MenuServiceImpl implements MenuService {
 	
 	/**
 	 * 자식 메뉴 중에 순서가 최대인 메뉴를 검색
-	 * @param parent
+	 * @param menu
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public Menu getMaxViewOrderChildMenu(Integer parent) {
-		return menuMapper.getMaxViewOrderChildMenu(parent);
+	public Menu getMaxViewOrderChildMenu(Menu menu) {
+		return menuMapper.getMaxViewOrderChildMenu(menu);
 	}
 }

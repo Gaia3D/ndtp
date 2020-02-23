@@ -92,7 +92,7 @@ public class XSSRequestWrapper extends HttpServletRequestWrapper {
             	value = scriptPattern.matcher(value).replaceAll("");
             	int afterLength = value.length();
             	if(beforeLength != afterLength) {
-            		value = "[NOTICE] This variable XSS attacks Suspected.";
+            		value = "[NOTICE] This variable is suspected of an XSS attacks.";
             		break;
             	}
             }
