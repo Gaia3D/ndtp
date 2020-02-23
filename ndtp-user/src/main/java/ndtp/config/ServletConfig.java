@@ -22,6 +22,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
+import org.springframework.web.servlet.support.RequestDataValueProcessor;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import lombok.extern.slf4j.Slf4j;
@@ -129,6 +130,12 @@ public class ServletConfig implements WebMvcConfigurer {
 		registry.addResourceHandler("/js/**").addResourceLocations("/js/");
 		
 //		registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+	}
+	
+	@Bean
+	public RequestDataValueProcessor requestDataValueProcessor() {
+		log.info(" @@@ ServletConfig requestDataValueProcessor @@@ ");
+		return new CSRFRequestDataValueProcessor();
 	}
 	
 }
