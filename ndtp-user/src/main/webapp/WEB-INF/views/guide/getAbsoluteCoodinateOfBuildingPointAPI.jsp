@@ -8,7 +8,7 @@
 	</div>
 	<div class="menu_tab00 mTs" id="panels">
 		<h2>getAbsoluteCoodinateOfBuildingPointAPI</h2>
-		<p>건물의 절대 좌표를 구하는 API입니다.</p>
+		<p>특정 건물의 원점을 기준으로 한 좌표를 세계좌표로 변환</p>
 		<table>
 			<caption>Parameter</caption>
 			<tr>
@@ -62,9 +62,9 @@
 			<label for="api33-p2">dataKey</label>
 			<input type="text" id="api33-p2" value="SOCIALROOM"><br/>
 			<label for="api33-p3">inputPoint_x</label>
-			<input type="text" id="api33-p3" value="-3158185.8634899906"><br/>
+			<input type="text" id="api33-p3" value="4713784.056940694"><br/>
 			<label for="api33-p4">inputPoint_y</label> 
-			<input type="text" id="api33-p4" value="4713784.056940694"><br/>
+			<input type="text" id="api33-p4" value="-3158185.8634899906"><br/>
 			<label for="api33-p5">inputPoint_z</label>
 			<input type="text" id="api33-p5" value="4516771.367915208">
 		</div>

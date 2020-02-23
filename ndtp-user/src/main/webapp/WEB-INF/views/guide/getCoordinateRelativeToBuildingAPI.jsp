@@ -62,11 +62,11 @@
 			<label for="api32-p2">dataKey</label>
 			<input type="text" id="api32-p2" value="SOCIALROOM"><br>
 			<label for="api32-p3">inputPoint_x</label>
-			<input type="text" id="api32-p3" value="-3158185.8634899906"><br>
+			<input type="text" id="api32-p3" value="-3042900.885750481"><br>
 			<label for="api32-p4">inputPoint_y</label>
-			<input type="text" id="api32-p4" value="4713784.056940694"><br>
+			<input type="text" id="api32-p4" value="4049125.0454490855"><br>
 			<label for="api32-p5">inputPoint_z</label>
-			<input type="text" id="api32-p5" value="4516771.367915208">
+			<input type="text" id="api32-p5" value="3863515.8373681">
 		</div>
 		<br> 
 		<input type="button" id="getCoordinateRelativeToBuilding" value="Run" class="popupBtn">

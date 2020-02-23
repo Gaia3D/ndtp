@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<div id="api43" class="api-help-toggle" style="display: none;">
+<div id="api44" class="api-help-toggle" style="display: none;">
 	<div class="menu_tab">
 		<ul>
 			<li class="fst active"><a href="#" onclick="tabMenu(0);">Run</a></li>
@@ -40,12 +40,12 @@
 		<br>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<label for="api43-p1">projectId</label>
-			<input type="text" id="api43-p1" value="sample"><br>
-			<label for="api43-p2">dataKey</label>
-			<input type="text" id="api43-p2" value="SOCIALROOM"><br>
-			<label for="api43-p3">isVisible</label>
-			<input type="text" id="api43-p3" value="true">
+			<label for="api44-p1">projectId</label>
+			<input type="text" id="api44-p1" value="sample"><br>
+			<label for="api44-p2">dataKey</label>
+			<input type="text" id="api44-p2" value="SOCIALROOM"><br>
+			<label for="api44-p3">isVisible</label>
+			<input type="text" id="api44-p3" value="true">
 		</div>
 		<br> <input type="button" id="setNodeAttribute" value="Run" class="popupBtn">
 	</div>
@@ -54,9 +54,9 @@
 <script>
 	var setNodeAttribute = function() {
 
-		var projectId = $('#api43-p1').val();
-		var dataKey = $('#api43-p2').val();
-		var isVisible = $('#api43-p3').val();
+		var projectId = $('#api44-p1').val();
+		var dataKey = $('#api44-p2').val();
+		var isVisible = $('#api44-p3').val();
 		var isFalseBoolean = (isVisible === 'true');
 		var optionObject = {
 			isVisible : isFalseBoolean

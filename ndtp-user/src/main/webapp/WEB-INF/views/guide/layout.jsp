@@ -78,6 +78,7 @@
 						<%@ include file="/WEB-INF/views/guide/instantiateStaticModelAPI.jsp"%>
 						<%@ include file="/WEB-INF/views/guide/addStaticModelAPI.jsp"%>
 						<%@ include file="/WEB-INF/views/guide/setTrackNodeAPI.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/stopTrackAPI.jsp"%>
 						<%@ include file="/WEB-INF/views/guide/isExistStaticModelAPI.jsp"%>
 						<%@ include file="/WEB-INF/views/guide/isExistDataAPI.jsp"%>
 						<%@ include file="/WEB-INF/views/guide/isDataReadyToRenderAPI.jsp"%>
@@ -113,7 +114,7 @@
 		"getDataAPI", "getDataInfoByDataKeyAPI", "drawAppendDataAPI",
 		"gotoFlyAPI", "getCoordinateRelativeToBuildingAPI", "getAbsoluteCoodinateOfBuildingPointAPI",
 		"getCameraCurrentPositionAPI", "getCameraCurrentOrientaionAPI", "changeCameraOrientationAPI",
-		"instantiateStaticModelAPI", "addStaticModelAPI", "setTrackNodeAPI",
+		"instantiateStaticModelAPI", "addStaticModelAPI", "setTrackNodeAPI", "stopTrackAPI",
 		"isExistStaticModelAPI", "isExistDataAPI", "isDataReadyToRenderAPI",
 		"setNodeAttributeAPI", "togglePointCloudColorAPI"];
 
