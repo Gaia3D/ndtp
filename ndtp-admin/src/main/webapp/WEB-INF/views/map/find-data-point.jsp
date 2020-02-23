@@ -101,7 +101,7 @@
 						</li>
 					</ul>
 				</div>
-				<form id="dcRotLocForm" class="layerDiv marB0">
+				<form:form id="dcRotLocForm" class="layerDiv marB0">
 					<input type="hidden" name="dataId" value="${dataInfo.dataId}" />
 					<h4 class="category">위치 변경</h4>
 					<ul class="layerDiv">
@@ -149,14 +149,14 @@
 							<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcHeadingNext"></button>
 						</li>
 					</ul>
-	
+
 					<div>
-						<button type="button" id="dcSavePosRotPop" class="btnTextF" 
+						<button type="button" id="dcSavePosRotPop" class="btnTextF"
 								title="<spring:message code='data.transform.save'/>">
 							<spring:message code='data.transform.save'/>
 						</button>
 					</div>
-				</form>
+				</form:form>
 			</div>
 		</div>
 	</div>

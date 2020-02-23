@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <div class="uploadDataSmartTilingDialog" title="SmartTiling 데이터 등록">
-	<form id="dataSmartTilingFileInfo" name="dataSmartTilingFileInfo" action="/datas/smart-tiling" method="post" enctype="multipart/form-data">
+	<form:form id="dataSmartTilingFileInfo" name="dataSmartTilingFileInfo" action="/datas/smart-tiling" method="post" enctype="multipart/form-data">
 		<input type="hidden" id="smartTilingFileDataGroupId" name="smartTilingFileDataGroupId" value="" />
 		<table class="inner-table scope-row" style="width: 95%;" summary="SmatTiling 데이터 등록">
 		<caption class="hiddenTag">데이터 등록</caption>
@@ -26,14 +26,14 @@
 		<div class="button-group">
 			<input type="button" onclick="dataSmartTilingFileUpload();" class="button" value="<spring:message code='data.file.save'/>"/>
 		</div>
-		
+
 		<table class="inner-table scope-row" style="width: 95%;">
 			<col class="col-sub-label xl" />
 			<col class="col-data" />
 			<tbody id="dataSmartTilingUploadLog">
 			</tbody>
 		</table>
-	</form>
+	</form:form>
 </div>
 
 <script id="templateDataSmartTilingUploadLog" type="text/x-handlebars-template">
