@@ -167,10 +167,9 @@ values
 	(NEXTVAL('widget_seq'), 'userWidget', 4, 'admin' ),
 	(NEXTVAL('widget_seq'), 'systemUsageWidget', 5, 'admin' ),
 	(NEXTVAL('widget_seq'), 'civilVoiceWidget', 6, 'admin' ),
-	(NEXTVAL('widget_seq'), 'converterWidget', 7, 'admin' ),
-	(NEXTVAL('widget_seq'), 'accessLogWidget', 8, 'admin' ),
-	(NEXTVAL('widget_seq'), 'dbcpWidget', 9, 'admin' ),
-	(NEXTVAL('widget_seq'), 'dbSessionWidget', 10, 'admin' );
+	(NEXTVAL('widget_seq'), 'accessLogWidget', 7, 'admin' ),
+	(NEXTVAL('widget_seq'), 'dbcpWidget', 8, 'admin' ),
+	(NEXTVAL('widget_seq'), 'dbSessionWidget', 9, 'admin' );
 
 -- 운영 정책
 insert into policy(	policy_id, password_exception_char)

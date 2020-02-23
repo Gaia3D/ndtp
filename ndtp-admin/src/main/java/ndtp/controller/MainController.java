@@ -134,7 +134,6 @@ public class MainController {
 		boolean isDataGroupDraw = false;
 		boolean isDataInfoDraw = false;
 		boolean isDataInfoLogListDraw = false;
-		boolean isConverterDraw = false;
 		boolean isUserDraw = false;
 		boolean isCivilVoiceDraw = false;
 		boolean isAccessLogDraw = false;
@@ -142,6 +141,10 @@ public class MainController {
 		boolean isDbSessionDraw = false;
 		boolean isSystemUsageDraw = false;
 
+		// widget-header
+		converterWidget(startDate, endDate, model);
+
+		// widget-contents
 		for(Widget dbWidget : widgetList) {
 			if("dataGroupWidget".equals(dbWidget.getName())) {
 				isDataGroupDraw = true;
@@ -152,9 +155,6 @@ public class MainController {
 			} else if("dataInfoLogListWidget".equals(dbWidget.getName())) {
 				isDataInfoLogListDraw = true;
 				dataInfoLogListWidget(startDate, endDate, model);
-			} else if("converterWidget".equals(dbWidget.getName())) {
-				isConverterDraw = true;
-				converterWidget(startDate, endDate, model);
 			} else if("userWidget".equals(dbWidget.getName())) {
 				isUserDraw = true;
 				userWidget(startDate, endDate, model);
@@ -190,7 +190,6 @@ public class MainController {
 		model.addAttribute("isDataGroupDraw", isDataGroupDraw);
 		model.addAttribute("isDataInfoDraw", isDataInfoDraw);
 		model.addAttribute("isDataInfoLogListDraw", isDataInfoLogListDraw);
-		model.addAttribute("isConverterDraw", isConverterDraw);
 		model.addAttribute("isUserDraw", isUserDraw);
 		model.addAttribute("isCivilVoiceDraw", isCivilVoiceDraw);
 		model.addAttribute("isAccessLogDraw", isAccessLogDraw);
