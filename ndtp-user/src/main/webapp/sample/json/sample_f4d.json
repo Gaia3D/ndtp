@@ -9,7 +9,8 @@
 		{
 			"attributes": {
 				"isPhysical": true,
-				"nodeType": "workshop"
+				"nodeType": "workshop",
+				"propertyFilter" : true
 			},
 			"children": [],
 			"data_key": "SOCIALROOM",
@@ -25,7 +26,8 @@
 		{
 			"attributes": {
 				"isPhysical": true,
-				"nodeType": "workshop"
+				"nodeType": "workshop",
+				"propertyFilter" :false
 			},
 			"children": [],
 			"data_key": "STUDENTROOM",
