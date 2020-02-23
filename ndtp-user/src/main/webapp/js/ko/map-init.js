@@ -11,6 +11,7 @@ function mapInit(magoInstance, baseLayers, policy) {
     }
 	
 	var WMS_LAYER = 'wmsLayer';
+	var DISTRICT_LAYER = 'district';
 	var viewer = magoInstance.getViewer();
 	var imageryLayers = viewer.imageryLayers;
 	var dataSources = viewer.dataSources;
@@ -166,8 +167,8 @@ function mapInit(magoInstance, baseLayers, policy) {
 			for(var i=0; i < imageryLayers.length; i++) {
 				var layer = imageryLayers.get(i);
 				var currnetLayerId = layer.id;
-				// zindex에 따라 정렬 . wmsLayer는 provider 하나로 관리하므로 인덱스 정렬 대상에서 제외.   
-				if(currnetLayerId && currnetLayerId !== WMS_LAYER) {
+				// zindex에 따라 정렬 . wmsLayer, district(행정구역이동 provider)는 provider 하나씩 생성하므로 인덱스 정렬 대상에서 제외.   
+				if(currnetLayerId && currnetLayerId !== WMS_LAYER && currnetLayerId !== DISTRICT_LAYER) {
 					if(layerMap[currnetLayerId].zindex <= layerMap[layerKey].zindex) {
 						targetIndex = i+1;
 					}
