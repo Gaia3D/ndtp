@@ -14,12 +14,12 @@
 					</ul>
 				</li>
 		</c:if>
-			<c:if test="${userGroupMenu.menuId eq parentMenu.menuId}">
+		<c:if test="${userGroupMenu.menuId eq parentMenu.menuId}">
 				<li id="main-menu-${userGroupMenu.menuId }" class="current-page">
-			</c:if>
-			<c:if test="${userGroupMenu.menuId ne parentMenu.menuId}">
+		</c:if>
+		<c:if test="${userGroupMenu.menuId ne parentMenu.menuId}">
 				<li id="main-menu-${userGroupMenu.menuId }">
-			</c:if>	
+		</c:if>	
 					<a href="${userGroupMenu.url }">
 						<span class="icon-glyph ${userGroupMenu.cssClass }"></span>
 						<span class="icon-text">${userGroupMenu.name }</span>
@@ -32,13 +32,14 @@
 						<li><a href="${userGroupMenu.url }">${userGroupMenu.name }</a></li>
 	</c:if>	
 	
-	<c:if test="${menuDepthValue eq '1' and userGroupMenu.displayYn eq 'Y' and status.last }">
+	<c:if test="${menuDepthValue eq '1' and status.last }">
 				</li>
 	</c:if>
-	<c:if test="${menuDepthValue eq '2' and userGroupMenu.displayYn eq 'Y' and status.last }">
+	<c:if test="${menuDepthValue eq '2' and status.last }">
 					</ul>
 				</li>
 	</c:if>
+	
 	<c:set var="menuDepthValue" value="${userGroupMenu.depth }" />
 </c:forEach>
 			</ul>
