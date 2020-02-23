@@ -91,6 +91,6 @@
 		var latitude = $('#api23-p6').val();
 		var height = $('#api23-p7').val();
 
-		drawInsertIssueImageAPI(MAGO3D_INSTANCE2, parseFloat(drawType), issue_id, issue_type, data_key, parseFloat(longitude), parseFloat(latitude), parseFloat(height));
+		drawInsertIssueImageAPI(MAGO3D_INSTANCE2, parseFloat(drawType), issue_id, issue_type, data_key, parseFloat(latitude), parseFloat(longitude), parseFloat(height));
 	}
 </script>

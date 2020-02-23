@@ -273,7 +273,11 @@ function magoLoadEnd2(e) {
 	var f4dController = magoInstance.getF4dController();
 	viewer.baseLayerPicker.destroy();
 	viewer.scene.globe.depthTestAgainstTerrain = true;
+
+	magoManager.magoPolicy.imagePath = '/sample/images';
 	
+	magoManager.init(viewer.scene._context._gl);
+	magoManager.objMarkerManager.loadDefaultImages(magoManager);
 	$.ajax({
 		url: "/sample/json/sample_f4d.json",
 		type: "GET",

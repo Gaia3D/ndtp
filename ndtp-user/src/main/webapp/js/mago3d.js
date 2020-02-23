@@ -15021,7 +15021,11 @@ DrawAPI.drawInsertIssueImage = function(api, magoManager)
 			undefined, undefined, undefined, magoManager.objMarkerSC.geoLocationData, magoManager);
 	}
 	
-	var objMarker = magoManager.objMarkerManager.newObjectMarker();
+	var objMarker = magoManager.objMarkerManager.newObjectMarker({
+		imageFilePath : 'defaultRed',
+		sizeX         : 64,
+		sizeY         : 64
+	});
 	
 	magoManager.objMarkerSC.issue_id = api.getIssueId();
 	magoManager.objMarkerSC.issue_type = api.getIssueType();
@@ -24817,7 +24821,7 @@ MagoManager.prototype.startRender = function(isLastFrustum, frustumIdx, numFrust
 			var objMarker = this.objMarkerManager.newObjectMarker(options, this);
 		}
 
-		if (this.magoPolicy.objectInfoViewEnable === true)
+		/*if (this.magoPolicy.objectInfoViewEnable === true)
 		{
 			if (this.objMarkerSC === undefined)
 			{ 
@@ -24837,7 +24841,7 @@ MagoManager.prototype.startRender = function(isLastFrustum, frustumIdx, numFrust
 				this.objMarkerSC = this.objMarkerManager.newObjectMarker(options, this);
 				this.objMarkerManager.objectMarkerArray.pop();
 			}
-		}
+		}*/
 	}
 
 	// Render process.***
@@ -42167,11 +42171,11 @@ HierarchyManager.prototype.deleteNodes = function(gl, vboMemoryManager)
 					}
 				}
 			}
-			nodesMap.clear();
+			//nodesMap.clear();
 			delete this.projectsMap[key];
 		}
 	}
-	this.projectsMap.clear();
+	//this.projectsMap.clear();
 	this.projectsMap = {};
 };
 
@@ -76441,42 +76445,6 @@ VtxSegment.prototype.intersectionWithPoint = function(point, error)
 'use strict';
 
 /**
- * Geoserver for mago3Djs object.
- * @class Geoserver
- */
-var GeoServer = function() 
-{
-
-	this.serverInfo = {};
-}; 
-
-GeoServer.prototype.setServerInfo = function(info) 
-{
-	this.serverInfo = info;
-};
-
-GeoServer.prototype.getDataUrl = function() 
-{
-	return this.serverInfo.dataUrl;
-};
-
-GeoServer.prototype.getDataWorkspace = function() 
-{
-	return this.serverInfo.dataWorkspace;
-};
-
-GeoServer.prototype.getDataRequestUrl = function() 
-{
-	return this.getDataUrl() + '/' + this.getDataWorkspace();
-};
-
-GeoServer.prototype.getWmsVersion = function() 
-{
-	return this.serverInfo.wmsVersion;
-};
-'use strict';
-
-/**
  * 메세지
  * 
  * @class
@@ -76579,6 +76547,42 @@ MessageSource.ko = {
     }
   };
 
+'use strict';
+
+/**
+ * Geoserver for mago3Djs object.
+ * @class Geoserver
+ */
+var GeoServer = function() 
+{
+
+	this.serverInfo = {};
+}; 
+
+GeoServer.prototype.setServerInfo = function(info) 
+{
+	this.serverInfo = info;
+};
+
+GeoServer.prototype.getDataUrl = function() 
+{
+	return this.serverInfo.dataUrl;
+};
+
+GeoServer.prototype.getDataWorkspace = function() 
+{
+	return this.serverInfo.dataWorkspace;
+};
+
+GeoServer.prototype.getDataRequestUrl = function() 
+{
+	return this.getDataUrl() + '/' + this.getDataWorkspace();
+};
+
+GeoServer.prototype.getWmsVersion = function() 
+{
+	return this.serverInfo.wmsVersion;
+};
 'use strict';
 
 /**
