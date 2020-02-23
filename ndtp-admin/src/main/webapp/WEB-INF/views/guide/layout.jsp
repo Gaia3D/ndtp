@@ -39,51 +39,53 @@
 				<div class="popupGroup">
 					<div id="testtoggle">
 						<%@ include file="/WEB-INF/views/guide/main.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/changeMagoStateAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/changeLabelAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/changeOriginAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/changeBoundingBoxAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/changePropertyRenderingAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/changeShadowAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/changeColorAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/changeLocationAndRotationAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/changeObjectMoveAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/saveObjectMoveAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/deleteAllObjectMoveAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/deleteAllChangeColorAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/changeInsertIssueModeAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/changeObjectInfoViewModeAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/changeOcclusionCullingAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/changeFPVModeAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/changeNearGeoIssueListViewModeAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/changeInsertIssueStateAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/changeLodAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/changeLightingAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/changeSsaoRadiusAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/clearAllDataAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/drawInsertIssueImageAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/gotoProjectAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/gotoIssueAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/searchDataAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/isDataExistAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/getDataAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/getDataInfoByDataKeyAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/drawAppendDataAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/gotoFlyAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/getCoordinateRelativeToBuildingAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/getAbsoluteCoodinateOfBuildingPointAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/getCameraCurrentPositionAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/getCameraCurrentOrientaionAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/changeCameraOrientationAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/instantiateStaticModelAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/addStaticModelAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/setTrackNodeAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/stopTrackAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/isExistStaticModelAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/isExistDataAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/isDataReadyToRenderAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/setNodeAttributeAPI.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/togglePointCloudColorAPI.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/change-mago-state.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/change-label.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/change-origin.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/change-bounding-box.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/change-property-rendering.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/change-shadow.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/change-color.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/change-location-and-rotation.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/change-object-move.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/save-object-move.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/delete-all-object-move.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/delete-all-change-color.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/change-insert-issue-mode.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/change-object-info-view-mode.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/change-occlusion-culling.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/change-FPV-mode.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/change-near-geo-issue-list-view-mode.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/change-insert-issue-state.jsp"%>						
+						<%@ include file="/WEB-INF/views/guide/change-lod.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/change-lighting.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/change-ssao-radius.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/clear-all-data.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/draw-insert-issue-image.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/goto-project.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/goto-issue.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/search-data.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/is-data-exist.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/get-data.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/get-data-info-by-data-key.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/draw-append-data.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/goto-fly.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/get-coordinate-relative-to-building.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/get-absolute-coodinate-of-building-point.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/get-camera-current-position.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/get-camera-current-orientaion.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/change-camera-orientation.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/instantiate-static-model.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/add-static-model.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/set-track-node.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/stop-track.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/is-exist-static-model.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/is-exist-data.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/is-data-ready-to-render.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/set-node-attribute.jsp"%>
+						<%@ include file="/WEB-INF/views/guide/toggle-point-cloud-color.jsp"%>
+
+
 					</div>
 				</div>
 			</div>
@@ -102,6 +104,8 @@
 	<script type="text/javascript" src="/js/ko/common.js"></script>
 
 	<script type="text/javascript">
+	
+		
 	var apiList = ["main","changeMagoStateAPI", "changeLabelAPI", "changeOriginAPI",
 		"changeBoundingBoxAPI", "changePropertyRenderingAPI", "changeShadowAPI", 
 		"changeColorAPI", "changeLocationAndRotationAPI", "changeObjectMoveAPI",

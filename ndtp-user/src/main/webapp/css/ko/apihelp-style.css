@@ -1112,6 +1112,7 @@ margin-left: 10px;
 display: inline-block;
 font-weight: bold;
 padding: 5px 10px;
+width: 160px;
 }
 .paramContainer label > input {
 padding: 5px;
