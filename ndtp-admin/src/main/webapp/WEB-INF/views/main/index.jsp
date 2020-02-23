@@ -986,7 +986,7 @@
 	// 시스템 사용량
 	function systemUsageWidget() {
 		$.ajax({
-			url : "/main/ajax-access-log-widget",
+			url : "/main/ajax-system-usage-widget",
 			type : "GET",
 			cache : false,
 			dataType : "json",
@@ -996,30 +996,43 @@
 				} else if (msg.result == "db.exception") {
 					//alert("데이터 베이스 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
 				} else if (msg.result == "success") {
-					var content = "";
-					content += "<div style='text-align: center;'>";
-					content += "	<div class='pie-chart pie-chart1'><span class='center'>80%<br/>Disk</span></div>";
-					content += "	<div class='pie-chart pie-chart2'><span class='center'>100%<br/>Memory</span></div>";
-					content += "	<div class='pie-chart pie-chart3'><span class='center'>90%<br/>CPU</span></div>";
-					content += "</div>";
+					// disk
+					var diskValue = (msg.diskSpaceTotal - msg.diskSpaceFree) / msg.diskSpaceTotal * 100;
+
+					// memory
+					var memoryMax = msg.jvmMemoryMax[0]["value"];
+					var memoryUsed = msg.jvmMemoryUsed[0]["value"];
+					var memoryValue = memoryUsed / memoryMax * 100;
+
+					// cpu
+					var cpuMax = msg.systemCpuUsage[0]["value"];
+					var cpuUsed = msg.processCpuUsage[0]["value"];
+					var cpuValue = cpuUsed / cpuMax * 100;
 
 					var res = {
 						disk: {
-							value: 80,
+							value: Math.round(diskValue),
 							classname: '.pie-chart1',
 							color: 'tomato'
 						},
 						memory: {
-							value: 100,
-								classname: '.pie-chart2',
-								color: '#8b22ff'
+							value: Math.round(memoryValue),
+							classname: '.pie-chart2',
+							color: '#8b22ff'
 						},
 						cpu: {
-							value: 90,
+							value: Math.round(cpuValue),
 							classname: '.pie-chart3',
 							color: '#1cabf1'
 						}
 					}
+
+					var content = "";
+					content += "<div style='text-align: center;'>";
+					content += "	<div class='pie-chart pie-chart1'><span class='center'>" + res.disk.value + "%<br/>Disk</span></div>";
+					content += "	<div class='pie-chart pie-chart2'><span class='center'>" + res.memory.value + "%<br/>Memory</span></div>";
+					content += "	<div class='pie-chart pie-chart3'><span class='center'>" + res.cpu.value + "%<br/>CPU</span></div>";
+					content += "</div>";
 
 					for(var property in res) {
 						var value = res[property].value;

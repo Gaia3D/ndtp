@@ -1,5 +1,7 @@
 package ndtp.controller;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -12,11 +14,13 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -593,25 +597,40 @@ public class MainController {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
 		try {
-			String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
-			Calendar calendar = Calendar.getInstance();
-			calendar.add(Calendar.DATE, -7);
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
-			String searchDay = simpleDateFormat.format(calendar.getTime());
-			String startDate = searchDay + DateUtils.START_TIME;
-			String endDate = today + DateUtils.END_TIME;
 
-			CivilVoice civilVoice = new CivilVoice();
-			civilVoice.setStartDate(startDate);
-			civilVoice.setEndDate(endDate);
-			civilVoice.setOffset(0l);
-			civilVoice.setLimit(WIDGET_LIST_VIEW_COUNT);
-			civilVoice.setOrderWord("comment_count");
-			civilVoice.setOrderValue("desc");
-			List<CivilVoice> civilVoiceList = civilVoiceService.getListCivilVoice(civilVoice);
+			RestTemplate restTemplate = new RestTemplate();
+			String serverHost = "http://localhost:9090";
 
-//			map.put("civilVoiceList", new JSONArray.fromObject(civilVoiceList));
-			map.put("civilVoiceList", civilVoiceList);
+			URI diskSpaceURI = new URI(serverHost + "/actuator/health/diskSpace");
+			ResponseEntity<Map> response1 = restTemplate.getForEntity(diskSpaceURI, Map.class);
+			Map<String, Long> diskSpace = (Map<String, Long>) response1.getBody().get("details");
+			Long diskSpaceTotal = diskSpace.get("total");
+			Long diskSpaceFree = diskSpace.get("free");
+
+			URI memoryMax = new URI(serverHost + "/actuator/metrics/jvm.memory.max");
+			ResponseEntity<Map> response2 = restTemplate.getForEntity(memoryMax, Map.class);
+			List<Map<String, Object>> jvmMemoryMax = (List<Map<String, Object>>) response2.getBody().get("measurements");
+
+			URI memoryUsed = new URI(serverHost + "/actuator/metrics/jvm.memory.used");
+			ResponseEntity<Map> response3 = restTemplate.getForEntity(memoryUsed, Map.class);
+			List<Map<String, Object>> jvmMemoryUsed = (List<Map<String, Object>>) response3.getBody().get("measurements");
+
+			URI cpuMax = new URI(serverHost + "/actuator/metrics/system.cpu.usage");
+			ResponseEntity<Map> response4 = restTemplate.getForEntity(cpuMax, Map.class);
+			List<Map<String, Object>> systemCpuUsage = (List<Map<String, Object>>) response4.getBody().get("measurements");
+
+			URI cpuUsed = new URI(serverHost + "/actuator/metrics/process.cpu.usage");
+			ResponseEntity<Map> response5 = restTemplate.getForEntity(cpuUsed, Map.class);
+			List<Map<String, Object>> processCpuUsage = (List<Map<String, Object>>) response5.getBody().get("measurements");
+
+
+			map.put("diskSpaceTotal", diskSpaceTotal);
+			map.put("diskSpaceFree", diskSpaceFree);
+			map.put("jvmMemoryMax", jvmMemoryMax);
+			map.put("jvmMemoryUsed", jvmMemoryUsed);
+			map.put("systemCpuUsage", systemCpuUsage);
+			map.put("processCpuUsage", processCpuUsage);
+
 		} catch(Exception e) {
 			e.printStackTrace();
 			result = "db.exception";
