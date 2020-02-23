@@ -12,7 +12,7 @@
 				<ul>
 					<li>
 							<span class="icon-glyph glyph-qmark-circle"></span>
-							<a href="#" title="API도움말" onclick="goMagoAPIGuide();return false;">API도움말</a>
+							<a href="/guide/help" title="API도움말" onclick="goMagoAPIGuide(this.href);return false;">API도움말</a>
 					</li>
 					<li>
 <%

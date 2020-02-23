@@ -28,29 +28,33 @@
 							<form:form id="searchForm" modelAttribute="userInfo" method="get" action="/user/list" onsubmit="return searchCheck();">
 								<div class="input-group row">
 									<div class="input-set">
-										<label for="searchWord"><spring:message code='search.word'/></label>
-										<select id="searchWord" name="searchWord" class="select" style="height: 30px;">
-											<option value=""><spring:message code='select'/></option>
-						          			<option value="user_id">아이디</option>
-						          			<option value="user_name">사용자명</option>
-						          			<option value="user_group_name">그룹명</option>
-						          			<option value="status">상태</option>
-										</select>
-										<form:select path="searchOption" class="select" style="height: 30px;">
-											<form:option value="0"><spring:message code='search.same'/></form:option>
-											<form:option value="1"><spring:message code='search.include'/></form:option>
-										</form:select>
-										<form:input path="searchValue" type="search" cssClass="m" cssStyle="float: right;" />
+											<label for="searchWord" class="hiddenTag">검색유형</label>
+											<select id="searchWord" name="searchWord" title="검색유형" class="select" style="height: 30px;">
+												<option value=""><spring:message code='select'/></option>
+							          			<option value="user_id">아이디</option>
+							          			<option value="user_name">사용자명</option>
+							          			<option value="user_group_name">그룹명</option>
+							          			<option value="status">상태</option>
+											</select>
+											<label for="searchOption" class="hiddenTag">검색옵션</label>
+											<form:select path="searchOption" title="검색옵션" class="select" style="height: 30px;">
+												<form:option value="0"><spring:message code='search.same'/></form:option>
+												<form:option value="1"><spring:message code='search.include'/></form:option>
+											</form:select>
+											<label for="searchValue"><spring:message code='search.word'/></label>
+											<form:input path="searchValue" type="search" cssClass="m" cssStyle="float: right;" />
+										
 									</div>
 									<div class="input-set">
 										<label for="startDate"><spring:message code='search.date'/></label>
-										<input type="text" class="s date" id="startDate" name="startDate" autocomplete="off" />
+										<input type="text" class="s date" id="startDate" name="startDate" title="시작일" autocomplete="off" />
 										<span class="delimeter tilde">~</span>
-										<input type="text" class="s date" id="endDate" name="endDate" autocomplete="off" />
+										<label for="endDate" class="hiddenTag">종료일</label>
+										<input type="text" class="s date" id="endDate" name="endDate" title="종료일" autocomplete="off" />
 									</div>
 									<div class="input-set">
 										<label for="orderWord"><spring:message code='search.order'/></label>
-										<select id="orderWord" name="orderWord" class="select" style="height: 30px;">
+										<select id="orderWord" name="orderWord" title="정렬유형" class="select" style="height: 30px;">
 											<option value=""><spring:message code='search.basic'/></option>
 						          			<option value="user_id">아이디</option>
 											<option value="user_name">사용자명</option>
@@ -59,12 +63,14 @@
 						          			<option value="last_signin_date">마지막 로그인</option>
 											<option value="insert_date"><spring:message code='search.insert.date'/></option>
 										</select>
-										<select id="orderValue" name="orderValue" class="select" style="height: 30px;">
+										<label for="orderValue" class="hiddenTag">정렬기준</label>
+										<select id="orderValue" name="orderValue" title="정렬기준" class="select" style="height: 30px;">
 					                		<option value=""><spring:message code='search.basic'/></option>
 						                	<option value="ASC"><spring:message code='search.ascending'/></option>
 											<option value="DESC"><spring:message code='search.descending.order'/></option>
 										</select>
-										<form:select path="listCounter" class="select" style="height: 30px;">
+										<label for="listCounter" class="hiddenTag">결과건수</label>
+										<form:select path="listCounter" class="select" title="결과건수" style="height: 30px;">
 					                		<form:option value="10"><spring:message code='search.ten.count'/></form:option>
 						                	<form:option value="50"><spring:message code='search.fifty.count'/></form:option>
 											<form:option value="100"><spring:message code='search.hundred.count'/></form:option>
@@ -95,7 +101,8 @@
 									</div> -->
 								</div>
 							</div>
-							<table class="list-table scope-col">
+							<table class="list-table scope-col" summary="사용자 목록 조회 ">
+							<caption class="hiddenTag">사용자 목록</caption>
 								<col class="col-checkbox" />
 								<col class="col-number" />
 								<col class="col-name" />
@@ -108,7 +115,7 @@
 								<col class="col-functions" />
 								<thead>
 									<tr>
-										<th scope="col" class="col-checkbox"><input type="checkbox" id="chkAll" name="chkAll" /></th>
+										<th scope="col" class="col-checkbox"><label for="chkAll" class="hiddenTag"></label><input type="checkbox" id="chkAll" name="chkAll" /></th>
 										<th scope="col" class="col-number"><spring:message code='number'/></th>
 										<th scope="col">그룹명</th>
 					                    <th scope="col">아이디</th>
@@ -131,6 +138,7 @@
 
 									<tr>
 										<td class="col-checkbox">
+											<label for="userId_${user.userId}" class="hiddenTag"></label>
 											<input type="checkbox" id="userId_${user.userId}" name="userId" value="${user.userId}" />
 										</td>
 										<td class="col-number">${pagination.rowNumber - status.index}</td>
@@ -203,7 +211,7 @@
 
 	//전체 선택
 	$("#chkAll").click(function() {
-		$(":checkbox[name=uploadDataId]").prop("checked", this.checked);
+		$(":checkbox[name=userId]").prop("checked", this.checked);
 	});
 
 	// 사용자 그룹 정보
