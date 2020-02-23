@@ -28,22 +28,25 @@
 							<form:form id="searchForm" modelAttribute="uploadData" method="get" action="/upload-data/list" onsubmit="return searchCheck();">
 								<div class="input-group row">
 									<div class="input-set">
-										<label for="searchWord"><spring:message code='search.word'/></label>
-										<select id="searchWord" name="searchWord" class="selectBoxClass">
+										<label for="searchWord" class="hiddenTag">검색조건</label>
+										<select id="searchWord" name="searchWord" title="검색조건" class="selectBoxClass">
 											<option value=""><spring:message code='select'/></option>
 		          							<option value="data_name">데이터명</option>
 										</select>
-										<form:select path="searchOption" class="select" style="height: 30px;">
+										<label for="searchOption" class="hiddenTag">검색옵션</label>
+										<form:select path="searchOption" title="검색옵션" class="select" style="height: 30px;">
 											<form:option value="0"><spring:message code='search.same'/></form:option>
 											<form:option value="1"><spring:message code='search.include'/></form:option>
 										</form:select>
+										<label for="searchValue"><spring:message code='search.word'/></label>
 										<form:input path="searchValue" type="search" cssClass="m" cssStyle="float: right;" />
 									</div>
 									<div class="input-set">
 										<label for="startDate"><spring:message code='search.date'/></label>
-										<input type="text" id="startDate" name="startDate" class="s date" autocomplete="off" />
+										<input type="text" id="startDate" name="startDate" class="s date" title="시작일" autocomplete="off" />
 										<span class="delimeter tilde">~</span>
-										<input type="text" id="endDate" name="endDate" class="s date" autocomplete="off" />
+										<label for="endDate" class="hiddenTag">종료일</label>
+										<input type="text" id="endDate" name="endDate" class="s date" title="종료일" autocomplete="off" />
 									</div>
 									<div class="input-set">
 										<label for="orderWord"><spring:message code='search.order'/></label>
@@ -52,12 +55,14 @@
 											<option value="data_name">데이터명</option>
 											<option value="insert_date"> <spring:message code='search.insert.date'/> </option>
 										</select>
-										<select id="orderValue" name="orderValue" class="selectBoxClass">
+										<label for="orderValue" class="hiddenTag">정렬기준</label>
+										<select id="orderValue" name="orderValue" title="정렬기준" class="selectBoxClass">
 					                		<option value=""> <spring:message code='search.basic'/> </option>
 						                	<option value="ASC"> <spring:message code='search.ascending'/> </option>
 											<option value="DESC"> <spring:message code='search.descending.order'/> </option>
 										</select>
-										<form:select path="listCounter" class="select" style="height: 30px;">
+										<label for="listCounter" class="hiddenTag">리스트 건수</label>
+										<form:select path="listCounter" class="select" title="리스트건수" style="height: 30px;">
 					                		<form:option value="10"><spring:message code='search.ten.count'/></form:option>
 						                	<form:option value="50"><spring:message code='search.fifty.count'/></form:option>
 											<form:option value="100"><spring:message code='search.hundred.count'/></form:option>
@@ -83,7 +88,8 @@
 									</div>
 								</div>
 							</div>
-							<table class="list-table scope-col">
+							<table class="list-table scope-col" summary="업로드 목록 테이블">
+							<caption class="hiddenTag">업로드 목록</caption>
 								<col class="col-checkbox" />
 								<col class="col-number" />
 								<col class="col-name" />
@@ -97,7 +103,7 @@
 								<col class="col-functions" />
 								<thead>
 									<tr>
-										<th scope="col" class="col-checkbox"><input type="checkbox" id="chkAll" name="chkAll" /></th>
+										<th scope="col" class="col-checkbox"><label for="chkAll" class="hiddenTag">전체선택 체크박스</label><input type="checkbox" id="chkAll" name="chkAll" /></th>
 										<th scope="col" class="col-number"><spring:message code='number'/></th>
 										<th scope="col" class="col-name">그룹명</th>
 										<th scope="col" class="col-name">공유 유형</th>
@@ -121,6 +127,7 @@
 
 									<tr>
 										<td class="col-checkbox">
+											<label for="uploadDataId_${uploadData.uploadDataId}" class="hiddenTag">선택 체크박스</label>
 											<input type="checkbox" id="uploadDataId_${uploadData.uploadDataId}" name="uploadDataId" value="${uploadData.uploadDataId}" />
 										</td>
 										<td class="col-number">${pagination.rowNumber - status.index }</td>

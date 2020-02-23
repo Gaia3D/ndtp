@@ -3,7 +3,8 @@
 <div class="uploadDataSmartTilingDialog" title="SmartTiling 데이터 등록">
 	<form id="dataSmartTilingFileInfo" name="dataSmartTilingFileInfo" action="/datas/smart-tiling" method="post" enctype="multipart/form-data">
 		<input type="hidden" id="smartTilingFileDataGroupId" name="smartTilingFileDataGroupId" value="" />
-		<table class="inner-table scope-row" style="width: 95%;">
+		<table class="inner-table scope-row" style="width: 95%;" summary="SmatTiling 데이터 등록">
+		<caption class="hiddenTag">데이터 등록</caption>
 			<col class="col-sub-label xl" />
 			<col class="col-data" />
 			<tbody>
@@ -15,6 +16,7 @@
 					<th class="col-sub-label">업로딩 파일</th>
 					<td>
 						<div class="inner-data">
+							<label for="smartTilingFileName" class="hiddenTag">smartTiling 파일이름</label>
 							<input type="file" id="smartTilingFileName" name="smartTilingFileName" class="col-data" />
 						</div>
 					</td>

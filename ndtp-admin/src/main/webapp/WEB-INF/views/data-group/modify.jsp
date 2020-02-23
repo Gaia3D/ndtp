@@ -29,7 +29,8 @@
 						</div>
 						<form:form id="dataGroup" modelAttribute="dataGroup" method="post" onsubmit="return false;">
 							<form:hidden path="dataGroupId"/>
-							<table class="input-table scope-row">
+							<table class="input-table scope-row" summary="데이터 그룹 수정 테이블">
+							<caption class="hiddenTag">데이터 그룹 수정</caption>
 								<col class="col-label" />
 								<col class="col-input" />
 								<tr>

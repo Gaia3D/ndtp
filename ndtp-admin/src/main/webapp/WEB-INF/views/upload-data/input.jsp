@@ -85,7 +85,8 @@
 							<div class="content-desc u-pull-right"><span class="icon-glyph glyph-emark-dot color-warning"></span><spring:message code='check'/></div>
 						</div>
 						<form:form id="uploadData" modelAttribute="uploadData" method="post" onsubmit="return false;">
-						<table class="input-table scope-row">
+						<table class="input-table scope-row" summary="업로드 데이터 등록">
+						<caption class="hiddenTag">업로드 데이터 </caption>
 							<colgroup>
 			                    <col class="col-label l" style="width: 13%" >
 								<col class="col-input" style="width: 37%" >
@@ -147,7 +148,9 @@
 								</th>
 								<td colspan="3"  class="col-input">
 									<form:input path="longitude" cssClass="m" placeholder="longitude" />
+									<form:label path="latitude" class="hiddenTag">대표 위치 (위도) </form:label>
 									<form:input path="latitude" cssClass="m" placeholder="latitude" />
+									<form:label path="altitude" class="hiddenTag">대표 위치 (높이) </form:label>
 									<form:input path="altitude" cssClass="m" placeholder="altitude" />
 									<input type="button" id="mapButtion" value="지도" />
 									<form:errors path="longitude" cssClass="error" />

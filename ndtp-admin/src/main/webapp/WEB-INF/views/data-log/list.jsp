@@ -28,21 +28,24 @@
 							<form:form id="searchForm" modelAttribute="dataInfoLog" method="get" action="/data-log/list" onsubmit="return searchCheck();">
 								<div class="input-group row">
 									<div class="input-set">
-										<label for="searchWord"><spring:message code='search.word'/></label>
-										<select id="searchWord" name="searchWord" class="select" style="height: 30px;">
+										<label for="searchWord" class="hiddenTag">검색유형</label>
+										<select id="searchWord" name="searchWord" class="select" title="검색유형" style="height: 30px;">
 											<option value=""><spring:message code='select'/></option>
 						          			<option value="data_name">데이터명</option>
 										</select>
-										<form:select path="searchOption" class="select" style="height: 30px;">
+										<label for="searchOption" class="hiddenTag">검색옵션</label>
+										<form:select path="searchOption" class="select" title="검색옵션" style="height: 30px;">
 											<form:option value="0"><spring:message code='search.same'/></form:option>
 											<form:option value="1"><spring:message code='search.include'/></form:option>
 										</form:select>
+										<label for="searchValue"><spring:message code='search.word'/></label>
 										<form:input path="searchValue" type="search" cssClass="m" cssStyle="float: right;" />
 									</div>
 									<div class="input-set">
 										<label for="startDate"><spring:message code='search.date'/></label>
 										<input type="text" class="s date" id="startDate" name="startDate" autocomplete="off" />
 										<span class="delimeter tilde">~</span>
+										<label for="endDate">종료일</label>
 										<input type="text" class="s date" id="endDate" name="endDate" autocomplete="off" />
 									</div>
 									<div class="input-set">
@@ -52,12 +55,14 @@
 											<option value="data_name">데이터명</option>
 											<option value="insert_date"> <spring:message code='search.insert.date'/> </option>
 										</select>
-										<select id="orderValue" name="orderValue" class="select" style="height: 30px;">
+										<label for="orderValue">정렬기준</label>
+										<select id="orderValue" name="orderValue" class="select" title="정렬기준" style="height: 30px;">
 					                		<option value=""> <spring:message code='search.basic'/> </option>
 						                	<option value="ASC"> <spring:message code='search.ascending'/> </option>
 											<option value="DESC"> <spring:message code='search.descending.order'/> </option>
 										</select>
-										<form:select path="listCounter" class="select" style="height: 30px;">
+										<label for="listCounter">리스트건수</label>
+										<form:select path="listCounter" class="select" title="리스트건수" style="height: 30px;">
 					                		<form:option value="10"><spring:message code='search.ten.count'/></form:option>
 						                	<form:option value="50"><spring:message code='search.fifty.count'/></form:option>
 											<form:option value="100"><spring:message code='search.hundred.count'/></form:option>
@@ -80,7 +85,8 @@
 								<spring:message code='search.page'/>
 							</div>
 						</div>
-						<table class="list-table scope-col">
+						<table class="list-table scope-col" summary="데이터 변경 이력 리스트">
+						<caption class="hiddenTag">데이터 변경 이력</caption>
 							<col class="col-checkbox" />
 							<col class="col-number" />
 							<col class="col-name" />
@@ -93,7 +99,7 @@
 							<col class="col-date" />
 							<thead>
 								<tr>
-									<th scope="col" class="col-checkbox"><input type="checkbox" id="chkAll" name="chkAll" /></th>
+									<th scope="col" class="col-checkbox"><label for="chkAll" class="hiddenTag">전체선택 체크박스</label><input type="checkbox" id="chkAll" name="chkAll" /></th>
 									<th scope="col" class="col-number"><spring:message code='number'/></th>
 									<th scope="col" class="col-name">그룹명</th>
 									<th scope="col" class="col-name">데이터명</th>
@@ -115,6 +121,7 @@
 							<c:forEach var="dataInfoLog" items="${dataInfoLogList}" varStatus="status">
 								<tr>
 									<td class="col-checkbox">
+										<label for="dataInfoLogId_${dataInfoLog.dataLogId}" class="hiddenTag">선택 체크박스</label>
 										<input type="checkbox" id="dataInfoLogId_${dataInfoLog.dataLogId}" name="dataLogId" value="${dataInfoLog.dataLogId}" />
 									</td>
 									<td class="col-number">${pagination.rowNumber - status.index }</td>

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <div class="dataAttributeDialog" title="Data Attribute">
-	<table class="inner-table scope-row">
+	<table class="inner-table scope-row" summary="데이터 속성 목록 정보 ">
+	<caption class="hiddenTag">데이터 목록</caption>
 		<col class="col-label" />
 		<col class="col-data" />
 		<tr>

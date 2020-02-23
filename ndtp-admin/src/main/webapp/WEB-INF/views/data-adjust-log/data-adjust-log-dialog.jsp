@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <div class="dataInfoAdjustLogDialog" title="Data Info Change Log">
-	<table class="inner-table scope-row" style="width: 100%;">
+	<table class="inner-table scope-row" style="width: 100%;" summary="데이터 위치 변경 요청 이력">
+	<caption class="hiddenTag">데이터 위치 변경 요청 이력</caption>
 		<col class="col-label" />
 		<col class="col-data" />
 		<col class="col-data" />

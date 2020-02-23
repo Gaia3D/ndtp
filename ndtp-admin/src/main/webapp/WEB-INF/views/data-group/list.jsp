@@ -38,7 +38,8 @@
 									</div>
 								</div>
 							</div>
-							<table class="list-table scope-col">
+							<table class="list-table scope-col" summary="데이터 그룹 트리">
+							<caption class="hiddenTag">데이터 그룹</caption>
 								<col class="col-name" />
 								<col class="col-name" />
 								<col class="col-name" />

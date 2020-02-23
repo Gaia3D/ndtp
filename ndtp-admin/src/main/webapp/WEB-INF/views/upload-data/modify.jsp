@@ -33,7 +33,8 @@
 						</div>
 						<form:form id="uploadData" modelAttribute="uploadData" method="post" onsubmit="return false;">
 							<form:hidden path="uploadDataId" />
-							<table class="input-table scope-row">
+							<table class="input-table scope-row" summary="업로드 데이터 수정">
+							<caption class="hiddenTag">업로드 데이터 수정</caption>
 								<colgroup>
 									<col class="col-label l" style="width: 13%" >
 									<col class="col-input" style="width: 37%" >

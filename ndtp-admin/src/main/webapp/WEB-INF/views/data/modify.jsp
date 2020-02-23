@@ -33,7 +33,8 @@
 							<div class="content-desc u-pull-right"><span class="icon-glyph glyph-emark-dot color-warning"></span><spring:message code='check'/></div>
 						</div>
 						<form:form id="dataInfo" modelAttribute="dataInfo" method="post" onsubmit="return false;">
-							<table class="input-table scope-row">
+							<table class="input-table scope-row" summary="데이터 정보 수정 테이블">
+							<caption class="hiddenTag">데이터 정보 수정</caption>
 								<colgroup>
 				                    <col class="col-label l">
 				                    <col class="col-input">

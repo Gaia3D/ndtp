@@ -2,7 +2,8 @@
 <div class="uploadDataAttributeDialog" title="Data Attribute">
 	<form id="dataAttributeInfo" name="dataAttributeInfo" action="/datas/attributes" method="post" enctype="multipart/form-data">
 		<input type="hidden" id="attributeFileDataId" name="attributeFileDataId" value="" />
-		<table class="inner-table scope-row" style="width: 95%;">
+		<table class="inner-table scope-row" style="width: 95%;" summary="데이터 속성정보 ">
+		<caption class="hiddenTag">데이터 속성정보</caption>
 			<col class="col-sub-label xl" />
 			<col class="col-data" />
 			<tbody>
@@ -14,6 +15,7 @@
 					<th class="col-sub-label">업로딩 파일</th>
 					<td>
 						<div class="inner-data">
+							<label for="attributeFileName" class="hiddenTag">속성파일이름</label>
 							<input type="file" id="attributeFileName" name="attributeFileName" class="col-data" />
 						</div>
 					</td>

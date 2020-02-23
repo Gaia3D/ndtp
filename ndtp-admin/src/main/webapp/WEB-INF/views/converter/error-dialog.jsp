@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <div class="errorDialog" title="에러 정보">
-	<table class="inner-table scope-row">
+	<table class="inner-table scope-row" summary="에러 정보">
+	<caption class="hiddenTag">에러 정보</caption>
 		<col class="col-label" />
 		<col class="col-data" />
 		<tr>
