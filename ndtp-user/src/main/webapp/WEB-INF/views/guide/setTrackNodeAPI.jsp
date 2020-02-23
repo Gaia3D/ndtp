@@ -41,9 +41,9 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api39-p1">projectId</label>
-			<input type="text" id="api39-p1" data-require="true" value="sample"><br>
+			<input type="text" id="api39-p1" data-require="true" value="sample" disabled><br>
 			<label for="api39-p2">dataKey</label>
-			<input type="text" id="api39-p2" data-require="true" value="SOCIALROOM"><br>
+			<input type="text" id="api39-p2" data-require="true" value="SOCIALROOM" disabled><br>
 			<label for="api39-p3">option_y</label>
 			<input type="text" id="api39-p3" data-require="false" value="-1"><br>
 			<label for="api39-p4">option_z</label>

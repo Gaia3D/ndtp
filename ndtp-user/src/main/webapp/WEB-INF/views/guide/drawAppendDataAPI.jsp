@@ -42,11 +42,11 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api30-p1">projectIdArray</label>
-			<input type="text" id="api30-p1" value='["ifc, ifc1, ifc2"]'><br/>
+			<input type="text" data-require="true" id="api30-p1" value='["ifc, ifc1, ifc2"]'><br/>
 			<label for="api30-p2">projectDataArray</label>
-			<input type="text" id="api30-p2" value='["factory, factory1, factory2"]'><br/>
+			<input type="text" data-require="true" id="api30-p2" value='["factory, factory1, factory2"]'><br/>
 			<label for="api30-p3">projectDataFolderArray</label>
-			<input type="text" id="api30-p3" value='["D:\reposit, D:\reposit1, D:\reposit2"]'>
+			<input type="text" data-require="true" id="api30-p3" value='["D:\reposit, D:\reposit1, D:\reposit2"]'>
 		</div>
 		<br/> 
 		<input type="button" id="drawAppendData" value="Run" class="popupBtn">

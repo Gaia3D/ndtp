@@ -38,7 +38,7 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api28-p1">projectId</label>
-			<input type="text" id="api28-p1" value="sample">
+			<input type="text" data-require="true" id="api28-p1" value="sample">
 		</div>
 		<br> 
 		<input type="button" id="getData" value="Run" class="popupBtn">

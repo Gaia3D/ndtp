@@ -46,13 +46,13 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api36-p1">heading</label>
-			<input type="text" id="api36-p1" value="89.2471"><br/>
+			<input type="text" id="api36-p1" data-require="false" value="89.2471"><br/>
 			<label for="api36-p2">pitch</label>
-			<input type="text" id="api36-p2" value="43.1837"><br/>
+			<input type="text" id="api36-p2" data-require="false" value="43.1837"><br/>
 			<label for="api36-p3">roll</label>
-			<input type="text" id="api36-p3" value="30.9415"><br/>
+			<input type="text" id="api36-p3" data-require="false" value="30.9415"><br/>
 			<label for="api36-p4">duration</label>
-			<input type="text" id="api36-p4" value="0">
+			<input type="text" id="api36-p4" data-require="false" value="0">
 		</div>
 		<br/> 
 		<input type="button" id="changeCameraOrientation" value="Run" class="popupBtn">

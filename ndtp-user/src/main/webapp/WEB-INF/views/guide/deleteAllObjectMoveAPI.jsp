@@ -21,21 +21,10 @@
 				<td>ManagerFactory</td>
 				<td>mago3D 시작 부분</td>
 			</tr>
-			<tr>
-				<td>objectMoveMode</td>
-				<td>Number</td>
-				<td>0 = All, 1 = Object, 2 = None</td>
-			</tr>
 		</table>
 		<br/>
-		<h4>실행</h4>
 		<div class="paramContainer">
-			<input type="radio" id="api11-opt1" name="api11-p1" value="0" />
-			<label for="api11-opt1">all</label> 
-			<input type="radio" id="api11-opt2" name="api11-p1" value="1" />
-			<label for="api11-opt2">object</label> 
-			<input type="radio" id="api11-opt3" name="api11-p1" value="2" checked />
-			<label for="api11-opt3">non</label>
+			
 		</div>
 		<br/> 
 		<input type="button" id="deleteAllObjectMove" value="Run" class="popupBtn">
@@ -44,9 +33,7 @@
 </div>
 <script>
 	var deleteAllObjectMove = function() {
-
-		var objectMoveMode = $("input[name=api11-p1]:checked").val();
-
+		var objectMoveMode = "0";
 		deleteAllObjectMoveAPI(MAGO3D_INSTANCE2, objectMoveMode);
 	}
 </script>

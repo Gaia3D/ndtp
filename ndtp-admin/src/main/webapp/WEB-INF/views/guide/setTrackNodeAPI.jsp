@@ -41,13 +41,13 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api39-p1">projectId</label>
-			<input type="text" id="api39-p1" value="sample"><br>
+			<input type="text" id="api39-p1" data-require="true" value="sample" disabled><br>
 			<label for="api39-p2">dataKey</label>
-			<input type="text" id="api39-p2" value="SOCIALROOM"><br>
+			<input type="text" id="api39-p2" data-require="true" value="SOCIALROOM" disabled><br>
 			<label for="api39-p3">option_y</label>
-			<input type="text" id="api39-p3" value="-1"><br>
+			<input type="text" id="api39-p3" data-require="false" value="-1"><br>
 			<label for="api39-p4">option_z</label>
-			<input type="text" id="api39-p4" value="12">
+			<input type="text" id="api39-p4" data-require="false" value="12">
 		</div>
 		<br> 
 		<input type="button" id="setTrackNode" value="Run" class="popupBtn" >
@@ -61,10 +61,14 @@
 		var dataKey = $('#api39-p2').val();
 		var option_y = $('#api39-p3').val();
 		var option_z = $('#api39-p4').val();
-		var optionObject = {
-			y : parseFloat(option_y),
-			z : parseFloat(option_z)
-		};
+		
+		var optionObject;
+		if((option_y && option_y.length > 0) && (option_z && option_z.length > 0)) {
+			optionObject = {
+				y : parseFloat(option_y),
+				z : parseFloat(option_z)
+			};
+		}
 
 		setTrackNodeAPI(MAGO3D_INSTANCE2, projectId, dataKey, optionObject);
 	}

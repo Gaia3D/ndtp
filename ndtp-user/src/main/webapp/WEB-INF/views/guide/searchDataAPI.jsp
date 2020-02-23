@@ -37,9 +37,9 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api26-p1">projectId</label>
-			<input type="text" id="api26-p1" value="sample"><br>
+			<input type="text" data-require="true" id="api26-p1" value="sample" disabled><br>
 			<label for="api26-p2">dataKey</label>
-			<input type="text" id="api26-p2" value="SOCIALROOM">
+			<input type="text" data-require="true" id="api26-p2" value="SOCIALROOM" disabled>
 		</div>
 		<br> 
 		<input type="button" id="searchData" value="Run" class="popupBtn">

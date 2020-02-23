@@ -61,19 +61,19 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api23-p1">drawType</label>
-			<input type="text" id="api23-p1" value="1"><br/>
+			<input type="text" data-require="true" id="api23-p1" value="1"><br/>
 			<label for="api23-p2">issue_id</label>
-			<input type="text" id="api23-p2" value="128"><br/>
+			<input type="text" data-require="true" id="api23-p2" value="128"><br/>
 			<label for="api23-p3">issue_type</label>
-			<input type="text" id="api23-p3" value="ISSUE_TYPE_BUGGER"><br/>
+			<input type="text" data-require="true" id="api23-p3" value="ISSUE_TYPE_BUGGER"><br/>
 			<label for="api23-p4">data_key</label>
-			<input type="text" id="api23-p4" value="factory"><br/>
+			<input type="text" data-require="true" id="api23-p4" value="factory"><br/>
 			<label for="api23-p5">longitude</label>
-			<input type="text" id="api23-p5" value="127.000"><br/>
+			<input type="text" data-require="true" id="api23-p5" value="127.000"><br/>
 			<label for="api23-p6">latitude</label>
-			<input type="text" id="api23-p6" value="37.000"><br/>
+			<input type="text" data-require="true" id="api23-p6" value="37.000"><br/>
 			<label for="api23-p7">height</label>
-			<input type="text" id="api23-p7" value="550">
+			<input type="text" data-require="true" id="api23-p7" value="550">
 		</div>
 		<br/> 
 		<input type="button" id="drawInsertIssueImage" value="Run" class="popupBtn">

@@ -56,17 +56,17 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api19-p1">lod0DistInMeters</label>
-			<input type="text" id="api19-p1" value="15"><br/>
+			<input type="text" data-require="false" id="api19-p1" value="15"><br/>
 			<label for="api19-p2">lod1DistInMeters</label>
-			<input type="text" id="api19-p2" value="60"><br/>
+			<input type="text" data-require="false" id="api19-p2" value="60"><br/>
 			<label for="api19-p3">lod2DistInMeters</label>
-			<input type="text" id="api19-p3" value="90"><br/>
+			<input type="text" data-require="false" id="api19-p3" value="90"><br/>
 			<label for="api19-p4">lod3DistInMeters</label>
-			<input type="text" id="api19-p4" value="200"><br/>
+			<input type="text" data-require="false" id="api19-p4" value="200"><br/>
 			<label for="api19-p5">lod4DistInMeters</label>
-			<input type="text" id="api19-p5" value="1000"><br/>
+			<input type="text" data-require="false" id="api19-p5" value="1000"><br/>
 			<label for="api19-p6">lod5DistInMeters</label>
-			<input type="text" id="api19-p6" value="500000">
+			<input type="text" data-require="false" id="api19-p6" value="500000">
 		</div>
 		<br/> <input type="button" id="changeLod" value="Run" class="popupBtn">
 	</div>

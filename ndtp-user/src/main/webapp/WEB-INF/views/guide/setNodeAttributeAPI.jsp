@@ -41,11 +41,11 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api44-p1">projectId</label>
-			<input type="text" id="api44-p1" value="sample"><br>
+			<input type="text" data-require="true" id="api44-p1" value="sample" disabled><br>
 			<label for="api44-p2">dataKey</label>
-			<input type="text" id="api44-p2" value="SOCIALROOM"><br>
+			<input type="text" data-require="true" id="api44-p2" value="SOCIALROOM" disabled><br>
 			<label for="api44-p3">isVisible</label>
-			<input type="text" id="api44-p3" value="true">
+			<input type="text" data-require="true" id="api44-p3" value="true">
 		</div>
 		<br> <input type="button" id="setNodeAttribute" value="Run" class="popupBtn">
 	</div>

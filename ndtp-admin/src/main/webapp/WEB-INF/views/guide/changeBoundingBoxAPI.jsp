@@ -30,9 +30,9 @@
 		<br/>
 		<h4>실행</h4>
 		<div class="paramContainer">
-			<input type="radio" id="api4-opt1" name="api4-p1" value="true" />
+			<input type="radio" id="api4-opt1" data-require="true" name="api4-p1" value="true" />
 			<label for="api4-opt1">활성</label>
-			<input type="radio" id="api4-opt2" name="api4-p1" value="false"	checked />
+			<input type="radio" id="api4-opt2" data-require="true" name="api4-p1" value="false"	checked />
 			<label for="api4-opt2">비활성</label>
 		</div><br/>
 		 

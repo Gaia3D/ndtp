@@ -43,7 +43,7 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api41-p1">projectId</label>
-			<input type="text" id="api41-p1" value="static_sample">
+			<input type="text" data-require="true" id="api41-p1" value="static_sample">
 		</div>
 		<br> 
 		<input type="button" id="isExistStaticModel" value="Run" class="popupBtn">

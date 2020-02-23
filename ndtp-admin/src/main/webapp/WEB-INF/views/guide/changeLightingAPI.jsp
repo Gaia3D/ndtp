@@ -51,15 +51,15 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api20-p1">ambientReflectionCoef</label>
-			<input type="text" id="api20-p1" value="0.5"><br/>
+			<input type="text" data-require="false" id="api20-p1" value="0.5"><br/>
 			<label for="api20-p2">diffuseReflectionCoef</label>
-			<input type="text" id="api20-p2" value="1"><br/>
+			<input type="text" data-require="false" id="api20-p2" value="1"><br/>
 			<label for="api20-p3">specularReflectionCoef</label>
-			<input type="text" id="api20-p3" value="1"><br/>
+			<input type="text" data-require="false" id="api20-p3" value="1"><br/>
 			<label for="api20-p4">ambientColor</label>
-			<input type="text" id="api20-p4" value="255, 0, 0"><br/>
+			<input type="text" data-require="false" id="api20-p4" value="255, 0, 0"><br/>
 			<label for="api20-p5">specularColor</label>
-			<input type="text" id="api20-p5" value="0, 255, 0">
+			<input type="text" data-require="false" id="api20-p5" value="0, 255, 0">
 		</div>
 		<br/> 
 		<input type="button" id="changeLighting" value="Run" class="popupBtn">

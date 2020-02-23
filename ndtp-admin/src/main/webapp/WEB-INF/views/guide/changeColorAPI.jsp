@@ -52,13 +52,19 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api7-p1">projectId</label>
-			<input type="text" id="api7-p1" value="sample"><br/>
+			<input type="text" id="api7-p1" data-require="true" value="sample" disabled><br/>
 			<label for="api7-p2">dataKey</label>
-			<input type="text" id="api7-p2" value="STUDENTROOM"><br/>
-			<label for="api7-p3">objectIds</label>
-			<input type="text" id="api7-p3" value="2Dzz1wTo51BAnDnXy3jXLd"><br/>
+			<input type="text" id="api7-p2" data-require="true" value="STUDENTROOM" disabled><br/>
+			<label for="api7-p3">objectId</label>
+			<select id="api7-p3">
+				<option value="10U2f_fnrEI86flB9mNA6u" selected>1번</option>
+				<option value="1lON22SpbBewAa8e4j3Xwn">2번</option>
+				<option value="3TA9k5WwX1g9BsSnrHgoxS">3번</option>
+				<option value="2Dzz1wTo51BAnDnXy3jXGu">4번</option>
+				<option value="2Dzz1wTo51BAnDnXy3jXKd">5번</option>
+			</select><br/>
 			<label for="api7-p4">property</label>
-			<input type="text" id="api7-p4" value="isMain=true"><br/>
+			<input type="text" id="api7-p4" data-require="true" value="isMain=true"  disabled><br/>
 			<label for="api7-p5">color</label>
 			<input type="color" id="api7-p5">0,0,0
 		</div>

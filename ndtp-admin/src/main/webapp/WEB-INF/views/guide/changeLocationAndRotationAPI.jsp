@@ -66,21 +66,21 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api8-p1">projectId</label>
-			<input type="text" id="api8-p1" value="sample"><br/>
+			<input type="text" data-require="true" id="api8-p1" value="sample" disabled><br/>
 			<label for="api8-p2">dataKey</label>
-			<input type="text" id="api8-p2" value="SOCIALROOM"><br/>
+			<input type="text" data-require="true" id="api8-p2" value="SOCIALROOM" disabled><br/>
 			<label for="api8-p3">longitude</label>
-			<input type="text" id="api8-p3" value="127.0000"><br/>
+			<input type="text" data-require="true" id="api8-p3" value="127.0000"><br/>
 			<label for="api8-p4">latitude</label>
-			<input type="text" id="api8-p4" value="37.000"><br/>
+			<input type="text" data-require="true" id="api8-p4" value="37.000"><br/>
 			<label for="api8-p5">height</label>
-			<input type="text" id="api8-p5" value="550"><br/>
+			<input type="text" data-require="false" id="api8-p5" value="550"><br/>
 			<label for="api8-p6">heading</label>
-			<input type="text" id="api8-p6" value="0"><br/>
+			<input type="text" data-require="false" id="api8-p6" value="0"><br/>
 			<label for="api8-p7">pitch</label>
-			<input type="text" id="api8-p7" value="0"><br/>
+			<input type="text" data-require="false" id="api8-p7" value="0"><br/>
 			<label for="api8-p8">roll</label>
-			<input type="text" id="api8-p8" value="0">
+			<input type="text" data-require="false" id="api8-p8" value="0">
 		</div>
 		<br/> 
 		<input type="button" id="changeLocationAndRotation" value="Run" class="popupBtn">
