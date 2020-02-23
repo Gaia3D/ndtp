@@ -32,47 +32,58 @@
 	</div>
 	</form:form>
 
-	<ul class="legendWrap">
-		<li><span class="legend co">C</span>공통</li>
-		<li><span class="legend pu">O</span>공개</li>
-		<li><span class="legend pr">P</span>비공개</li>
-		<li><span class="legend gr">G</span>그룹</li>
-	</ul>
+	<fieldset class="legendWrap">
+		<legend>공유 유형</legend>
+		<ul>
+			<li><span class="legend co">C</span>공통</li>
+			<li><span class="legend pu">O</span>공개</li>
+			<li><span class="legend pr">P</span>비공개</li>
+			<li><span class="legend gr">G</span>그룹공개</li>
+		</ul>
+	</fieldset>
 
-	<div id="dataInfoListArea" style="height:calc(100% - 265px)">
+	<div id="dataInfoListArea" style="height:calc(100% - 293px)">
 		<div>
-			<span><spring:message code='all'/> <span><fmt:formatNumber value="${pagination.totalCount}" type="number"/></span> <spring:message code='search.what.count'/></span>
+			<span><spring:message code='all'/> : <span><fmt:formatNumber value="${pagination.totalCount}" type="number"/></span> <spring:message code='search.what.count'/></span>
 			<span class="float-right"><fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/></span>
 		</div>
 		<div class="dataBtns"></div>
-		<div class="marT10 yScroll" style="height: calc(100% - 59px)">
-		
+		<div class="marT10 yScroll" style="height: calc(100% - 42px)">
 <c:if test="${empty dataList }">
 			데이터가 존재하지 않습니다.
 </c:if>
 <c:if test="${!empty dataList }">
 	<c:forEach var="dataInfo" items="${dataList}" varStatus="status">
 		<ul class="dataList">
-			<li class="group">
+			<li class="dataName">
 				<span class="no">${pagination.rowNumber - status.index}</span>
 		<c:if test="${dataInfo.sharing eq 'common'}">
-							<span class="legend co">C</span>	
+				<span class="legend co">C</span>	
 		</c:if>
 		<c:if test="${dataInfo.sharing eq 'public'}">
-							<span class="legend pu">O</span>
+				<span class="legend pu">O</span>
 		</c:if>
 		<c:if test="${dataInfo.sharing eq 'private'}">
-							<span class="legend pr">P</span>
+				<span class="legend pr">P</span>
 		</c:if>
 		<c:if test="${dataInfo.sharing eq 'group'}">
-							<span class="legend gr">G</span>
+				<span class="legend gr">G</span>
 		</c:if>
-				<span class="tag">그룹명</span>${dataInfo.dataGroupName}
-			</li>
-			<li class="dataName">
 				<a href="#" onclick="detailDataInfo('${dataInfo.dataId}'); return false;">${dataInfo.dataName}</a>
 			</li>
+			<li class="btn">
+				<button type="button" title="표시" class="showHideButton show" data-group-id="${dataInfo.dataGroupId}" data-key="${dataInfo.dataKey}">표시</button>
+		<c:if test="${dataInfo.tiling eq 'true' }">				
+							<button type="button" title="바로가기" class="goto" 
+								onclick="gotoFly('${dataInfo.longitude}', '${dataInfo.latitude}', '${dataInfo.altitude}');">바로가기</button>
+		</c:if>
+		<c:if test="${dataInfo.tiling ne 'true' }">				
+							<button type="button" title="바로가기" class="goto" onclick="flyTo('${dataInfo.dataGroupId}', '${dataInfo.dataKey}');">바로가기</button>
+		</c:if>
+			</li>
 			<li class="dataInfo">
+				<%-- <span class="tag">그룹명</span>${dataInfo.dataGroupName} --%>
+				<span class="infoTag"><span>그룹명:</span>${dataInfo.dataGroupName}</span>
 		<c:if test="${dataInfo.dataGroupTarget eq 'admin'}">
 				<span class="infoTag" style="color:blue">관리자</span>
 		</c:if>
@@ -84,7 +95,7 @@
 				<span class="infoTag" style="color:blue">${dataInfo.userId}</span>
 			</c:if>
 		</c:if>
-				<span class="infoTag marR5"><span>상태:</span>
+				<span class="infoTag"><span>상태:</span>
 		<c:if test="${dataInfo.status eq 'processing' }">
 							변환중
 		</c:if>
@@ -98,20 +109,8 @@
 							삭제
 		</c:if>
 				</span>
-
 		<c:if test="${!empty dataInfo.dataType}">
-			<span class="infoTag marR5"><span>타입:</span>${dataInfo.dataType}</span>
-		</c:if>
-
-			</li>
-			<li class="btn">
-				<button type="button" title="표시" class="showHideButton show" data-group-id="${dataInfo.dataGroupId}" data-key="${dataInfo.dataKey}">표시</button>
-		<c:if test="${dataInfo.tiling eq 'true' }">				
-							<button type="button" title="바로가기" class="goto" 
-								onclick="gotoFly('${dataInfo.longitude}', '${dataInfo.latitude}', '${dataInfo.altitude}');">바로가기</button>
-		</c:if>
-		<c:if test="${dataInfo.tiling ne 'true' }">				
-							<button type="button" title="바로가기" class="goto" onclick="flyTo('${dataInfo.dataGroupId}', '${dataInfo.dataKey}');">바로가기</button>
+			<span class="infoTag"><span>타입:</span>${dataInfo.dataType}</span>
 		</c:if>
 			</li>
 		</ul>
