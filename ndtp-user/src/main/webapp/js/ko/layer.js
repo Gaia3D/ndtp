@@ -83,7 +83,7 @@ function createLayerHtml(res) {
         h += template(res[i]);
 
         if(res[i].depth === 1) {
-            selector = $('#layerContent > ul');
+            selector = $('#layerForm > ul');
             selector.append(h);
         } else {
         	selector = $('[data-depth=' + res[i].parent + '] > ul');
@@ -101,14 +101,14 @@ function saveUserLayers() {
 			layerList.push($(this).attr("data-layer-name"));
 		}
 	});
-	dataInfo.baseLayers = layerList.join(",");
+	$("#baseLayers").val(layerList.join(","));
 	
 	$.ajax({
-        url: '/user-policy/update-layers?baseLayers=' + layerList.join(","),
+        url: '/user-policy/update-layers',
         type: 'POST',
         headers: {'X-Requested-With': 'XMLHttpRequest'},
-        contentType: "application/json; charset=utf-8",
         dataType: 'json',
+        data : $("#layerForm").serialize(),
         success: function(res){
         	if(res.statusCode <= 200) {
         		alert(JS_MESSAGE["update"]);

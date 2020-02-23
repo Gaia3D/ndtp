@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ndtp.domain.Key;
@@ -62,7 +61,7 @@ public class UserPolicyController {
     }
     
     @PostMapping("/update-layers")
-    public Map<String, Object> updateBaseLayers(HttpServletRequest request, @RequestParam String baseLayers) {
+    public Map<String, Object> updateBaseLayers(HttpServletRequest request, UserPolicy userPolicy) {
     	Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String errorCode = null;
@@ -72,10 +71,7 @@ public class UserPolicyController {
     		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
             
     		String userId = userSession.getUserId();
-            UserPolicy userPolicy = UserPolicy.builder()
-            						.baseLayers(baseLayers)
-            						.userId(userId)
-            						.build();
+    		userPolicy.setUserId(userId);
             userPolicyService.updateBaseLayers(userPolicy);
 
         } catch(Exception e) {
