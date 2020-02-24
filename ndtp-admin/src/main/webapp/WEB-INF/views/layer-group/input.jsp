@@ -29,7 +29,8 @@
 							<div class="content-desc u-pull-right"><span class="icon-glyph glyph-emark-dot color-warning"></span><spring:message code='check'/></div>
 						</div>
 						<form:form id="layerGroup" modelAttribute="layerGroup" method="post" onsubmit="return false;">
-							<table class="input-table scope-row">
+							<table class="input-table scope-row" summary="2D 레이어 그룹 등록 테이블">
+							<caption class="hiddenTag">2D 레이어 그룹 등록</caption>
 								<col class="col-label l" />
 								<col class="col-input" />
 								<tr>

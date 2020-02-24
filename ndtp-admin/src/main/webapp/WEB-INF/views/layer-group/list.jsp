@@ -38,7 +38,8 @@
 									</div>
 								</div>
 							</div>
-							<table class="list-table scope-col">
+							<table class="list-table scope-col" summary="2D 레이어 그룹 리스트">
+							<caption class="hiddenTag">2D 레이어 그룹</caption>
 								<col class="col-name" />
 								<col class="col-toggle" />
 								<col class="col-name" />
