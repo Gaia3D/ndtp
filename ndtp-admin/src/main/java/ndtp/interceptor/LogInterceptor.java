@@ -147,7 +147,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 		
 		String requestParameters = buffer.toString();
 		// 1000자가 넘어가면 그건 검색조건이라고 보기 힘듬
-		if(requestParameters.length() > 1000) requestParameters = requestParameters.substring(0, 1000);
+		if(requestParameters.length() > 1000) requestParameters = requestParameters.substring(0, 998);
 		
 		return requestParameters;
 	}
@@ -172,7 +172,9 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
     	}
     	
 		String requestParameters = builder.toString();
-		
+		// 1000자가 넘어가면 그건 검색조건이라고 보기 힘듬
+		if(requestParameters.length() > 1000) requestParameters = requestParameters.substring(0, 998);
+				
 		return requestParameters;
 	}
 }
