@@ -709,19 +709,22 @@
 							var dataInfoAdjustLog = null;
 							dataInfoAdjustLog = dataAdjustLogList[i];
 							var viewStatus = "";
-							if(dataInfoAdjustLog.status === "0") viewStatus = "<spring:message code='request'/>";
-							else if(dataInfoAdjustLog.status === "1") viewStatus = "<spring:message code='complete'/>";
-							else if(dataInfoAdjustLog.status === "2") viewStatus = "<spring:message code='reject'/>";
-							else if(dataInfoAdjustLog.status === "3") viewStatus = "<spring:message code='reset'/>";
+							if(dataInfoAdjustLog.status === "request") viewStatus = "요청";
+							else if(dataInfoAdjustLog.status === "approval") viewStatus = "승인";
+							else if(dataInfoAdjustLog.status === "reject") viewStatus = "기각";
+							else if(dataInfoAdjustLog.status === "rollback") viewStatus = "원복";
+
+							var date = new Date(dataInfoAdjustLog.insertDate);
+							var insertDate = date.toLocaleDateString();
 
 							content = content
 								+ 	"<tr>"
-								+ 	"	<td class=\"col-left\">"
+								+ 	"	<td class=\"col-left ellipsis\" style='max-width:160px;'>"
 								+		"	<span class=\"index\"></span>"
 								+		"	<em>" + dataInfoAdjustLog.dataName + "</em>"
 								+		"</td>"
-								+ 		"<td class=\"col-left\">" + viewStatus + "</td>"
-								+ 		"<td class=\"col-left\">" + dataInfoAdjustLog.viewInsertDate + "</td>"
+								+ 		"<td class=\"col-center\" style='width:60px;'>" + viewStatus + "</td>"
+								+ 		"<td class=\"col-center\">" + insertDate + "</td>"
 								+ 	"</tr>";
 						}
 					}
