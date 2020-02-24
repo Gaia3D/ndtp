@@ -47,7 +47,8 @@
 		</div>
 		<br> 
 		<input type="button" id="isExistStaticModel" value="Run" class="popupBtn">
-		<div id="api41-result">결과</div>
+		<h4>결과</h4>
+		<div id="api41-result"></div>
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

@@ -105,7 +105,7 @@
 
 	<script type="text/javascript">
 	
-		
+	var apiNum;
 	var apiList = ["main","changeMagoStateAPI", "changeLabelAPI", "changeOriginAPI",
 		"changeBoundingBoxAPI", "changePropertyRenderingAPI", "changeShadowAPI", 
 		"changeColorAPI", "changeLocationAndRotationAPI", "changeObjectMoveAPI",
@@ -184,7 +184,8 @@
 			
 			// null check and start function
 			$('.popupBtn').on("click", function(){
-				var id = $(this).attr('id');
+				var id = $(this).attr('id');/* 
+				$('.menu_tab00').scrollTop($('.menu_tab00')[0].scrollHeight); */
 				var inputTags = $("#"+id).siblings('.paramContainer').children('input[type=text]');
 				var count=0;
 				if(id=="changeLod"){
@@ -228,7 +229,7 @@
 							alert("필수!");
 							return;
 						}
-					} 
+					}
 					window[id]();
 				}
 			})
@@ -277,7 +278,7 @@ function magoLoadEnd2(e) {
 	var f4dController = magoInstance.getF4dController();
 	viewer.baseLayerPicker.destroy();
 	viewer.scene.globe.depthTestAgainstTerrain = true;
-
+	
 	magoManager.magoPolicy.imagePath = '/sample/images';
 	
 	magoManager.init(viewer.scene._context._gl);
