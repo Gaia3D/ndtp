@@ -2,11 +2,11 @@
 <div id="dataInfoContent" class="contents contents-margin-none fullHeight" style="display:block;">
 	<form:form id="searchDataForm" modelAttribute="searchDataForm" method="post" onsubmit="return false;">
 	<div class="form-group form-group-data">
-		<label>데이터명</label>
+		<label for="searchDataName">데이터명</label>
 		<input type="text" id="searchDataName" name="searchDataName" placeholder=" 데이터명을 입력하여 주십시오. " size="30" />
 	</div>
 	<div class="form-group form-group-data">
-		<label>상태</label>
+		<label for="searchDataStatus">상태</label>
 		<select id="searchDataStatus" name="searchDataStatus">
 			<option value="">전체</option>
 			<option value="use">사용중</option>
@@ -14,7 +14,7 @@
 		</select>
 	</div>
 	<div class="form-group form-group-data">
-		<label>타입</label>
+		<label for="searchDataType">타입</label>
 		<select id="searchDataType" name="searchDataType">
 			<option value="">전체</option>
 			<option value="citygml">citygml</option>
