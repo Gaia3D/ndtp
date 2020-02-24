@@ -435,7 +435,16 @@ public class UploadDataRestController {
 	        				}
             			}
             		} else {
-            			fileName = entry.getName().substring(entry.getName().indexOf(directoryName) + directoryName.length());  
+            			if(entry.getName().indexOf(directoryName) >= 0) {
+            				// 디렉토리내 파일의 경우
+            				fileName = entry.getName().substring(entry.getName().indexOf(directoryName) + directoryName.length());  
+            			} else {
+            				fileName = entry.getName();
+            				if(directoryPath.indexOf(directoryName) >= 0) {
+            					directoryPath = directoryPath.replace(directoryName, "");
+            					directoryName = null;
+            				}
+            			}
             			divideFileName = fileName.split("\\.");
             			saveFileName = fileName;
             			if(divideFileName != null && divideFileName.length != 0) {
