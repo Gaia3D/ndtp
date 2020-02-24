@@ -85,7 +85,7 @@
 				<span class="legend gr">G</span>
 		</c:if>
 						</td>
-						<td class="alignLeft ellipsis" style="max-width:100px;"><a href="#" onclick="detailDataInfo('${dataInfo.dataId}'); return false;">${dataInfo.dataName}</a></td>
+						<td class="alignLeft ellipsis" style="max-width:100px;"><a href="/datas/${dataInfo.dataId}" onclick="detailDataInfo(this.href); return false;">${dataInfo.dataName}</a></td>
 						<td><button type="button" title="표시" class="showHideButton show" data-group-id="${dataInfo.dataGroupId}" data-key="${dataInfo.dataKey}">표시</button></td>
 						<td>
 		<c:if test="${dataInfo.tiling eq 'true' }">				
