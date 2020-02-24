@@ -97,6 +97,7 @@
 <script type="text/javascript" src="/js/${lang}/handlebarsHelper.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
+<script type="text/javascript" src="/js/navigation.js"></script>
 <script type="text/javascript">
 
 	$(document).ready(function() {
