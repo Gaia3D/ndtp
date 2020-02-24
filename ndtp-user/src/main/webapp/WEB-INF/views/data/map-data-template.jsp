@@ -43,7 +43,7 @@
 				<span class="legend gr">G</span>
 		{{/ifMatch}}
 						</td>
-						<td class="alignLeft ellipsis" style="max-width:100px;"><a href="#" onclick="detailDataInfo('{{dataId}}'); return false;">{{dataName}}</a></td>
+						<td class="alignLeft ellipsis" style="max-width:100px;"><a href="/datas/{{dataId}}" onclick="detailDataInfo(this.href); return false;">{{dataName}}</a></td>
 						<td><button type="button" title="표시" class="showHideButton show" data-group-id="{{dataGroupId}}" data-key="{{dataKey}}">표시</button></td>
 						<td>
 		{{#if tiling}}

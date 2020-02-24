@@ -443,10 +443,10 @@
 	});
 
 	// 데이터 상세 정보 조회
-	function detailDataInfo(dataId) {
+	function detailDataInfo(url) {
 		dataInfoDialog.dialog( "open" );
 		$.ajax({
-			url: "/datas/" + dataId,
+			url: url,
 			type: "GET",
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 			dataType: "json",
