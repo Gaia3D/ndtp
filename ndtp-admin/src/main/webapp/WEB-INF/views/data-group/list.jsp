@@ -174,14 +174,12 @@
 					                    	</div>
 					                    </td>
 					                    <td class="col-functions">
-	<c:if test="${dataGroup.tiling eq 'true' }">
 											<a href="#" onclick="uploadSmartTilingData('${dataGroup.dataGroupId }', '${dataGroup.dataGroupName }'); return false;">
 												수정</a>&nbsp;&nbsp;&nbsp;&nbsp;
 											<a href="/data-groups/download/${dataGroup.dataGroupId }">내보내기	</a>	
-	</c:if>
-	<c:if test="${dataGroup.tiling eq 'false' }">
+	<%-- <c:if test="${dataGroup.tiling eq 'false' }">
 											미사용
-	</c:if>											
+	</c:if> --%>											
 										</td>
 					                    <td class="col-type">
 											<a href="/data-group/modify?dataGroupId=${dataGroup.dataGroupId }" class="image-button button-edit">수정</a>
