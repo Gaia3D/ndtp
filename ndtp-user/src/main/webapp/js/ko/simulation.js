@@ -12,6 +12,7 @@ var Simulation = function(magoInstance, viewer, $) {
     var _camera_scene = [];
     var _cityPlanModels = [];
     var _bsConstructProcessModels = [];
+    var _geojsonSample = null;
     var mesurPolyList = [];
     var handler = null;
     var drawingMode = 'line';
@@ -426,11 +427,65 @@ var Simulation = function(magoInstance, viewer, $) {
 	// 가시화
 	$('#run_cityplan').click(function() {
         startLoading();
+        debugger;
+        sejeonjochiwonPoly();
+	});
+	
+	function sejeonjochiwonPoly() {
+		//_geojsonSample
+//		$.ajax({
+//			url: "http://localhost/data/simulation-rest/select",
+//			type: "GET",
+//			dataType: "json",
+//			success: function(msg){
+//				//_geojsonSample
+//				debugger;
+//				
+//				stopLoading();
+//		        _viewer.scene.camera.flyTo({
+//		            destination : Cesium.Cartesian3.fromDegrees(127.297938703110319, 36.601598278028625, 600.0)
+//		        });
+//			},
+//			error:function(request,status,error){
+//				alert(JS_MESSAGE["ajax.error.message"]);
+//			}
+//		});
+		
+		
 		Cesium.GeoJsonDataSource.load('http://localhost/data/simulation-rest/select', {
 			width : 5,
 			leadTime : 0,
 			trailTime : 100,
 			resolution : 5,
+			fill: Cesium.Color.PINK
+		}).then(function(dataSource) {
+			var entitis = dataSource.entities._entities._array;
+			
+			for(var index in entitis) {
+				var entitiyObj = entitis[index]; 
+//				entitiyObj.polygon.extrudedHeight = 10; 
+				var glowingLine = _viewer.entities.add(entitiyObj)
+			}
+			setTimeout(function() {
+				stopLoading();
+		        _viewer.scene.camera.flyTo({
+		            destination : Cesium.Cartesian3.fromDegrees(127.297938703110319, 36.601598278028625, 600.0) // 세종 조치원
+//		            destination : new Cesium.Cartesian3(226572.677000000141561, 344541.028999999165535, 6000000.0) // 세종 조치원
+		            
+		        });
+			},4000);
+		}, function(err) {
+			stopLoading();
+		});
+	}
+	
+	function echdeltaLinString() {
+		Cesium.GeoJsonDataSource.load('http://localhost/data/simulation-rest/select', {
+			width : 5,
+			leadTime : 0,
+			trailTime : 100,
+			resolution : 5,
+		  fill: Cesium.Color.PINK,
 	        material : new Cesium.PolylineGlowMaterialProperty({
 	            glowPower : 0.2,
 	            rgba : [23, 184, 190,255]
@@ -453,16 +508,17 @@ var Simulation = function(magoInstance, viewer, $) {
 				    }
 				})
 			}
+			debugger;
 			setTimeout(function() {
 				stopLoading();
 		        _viewer.scene.camera.flyTo({
-		            destination : Cesium.Cartesian3.fromDegrees(128.91143708415015, 35.120229675016795, 600.0)
+		            destination : Cesium.Cartesian3.fromDegrees(128.91143708415015, 35.120229675016795, 600.0) // 에코 델타
 		        });
 			},4000);
 		}, function(err) {
 			stopLoading();
 		});
-	});
+	}
 	
 	$('#move_cityplan').click(function() {
 	})
@@ -875,10 +931,80 @@ var Simulation = function(magoInstance, viewer, $) {
 //                    ;
 //                    _viewer._selectedEntity = pickedFeature.id.polygon;
                 } else {
-                	debugger;
 					var pickedFeature = whole_viewer.scene.pick(event.position);
 					if(pickedFeature) {
-						getCommentList(pickedFeature.id);
+//						const imsi = pickedFeature.id.polygon.hierarchy._value.positions.map(function(key,index){
+//							pickedFeature.id.polygon.hierarchy._value.positions[index].x = key.x * 0.1
+//							pickedFeature.id.polygon.hierarchy._value.positions[index].y = key.y * 0.1
+//							console.log(pickedFeature.id.polygon.hierarchy._value.positions[key]);
+//						})
+						_viewer.entities.remove(pickedFeature.id);
+						setTimeout(function() {
+							// 좌상단 찾기
+							var finish = false;
+							
+							// 1. 중심좌표를 찾는다.
+							var center = Cesium.BoundingSphere.fromPoints(pickedFeature.id.polygon.hierarchy.getValue().positions).center;
+
+							// 2. 횟수만큼 돈다
+							for(var i = 0; i < pickedFeature.id.polygon.hierarchy._value.positions.length; i++) {
+								// 3. 폴리곤 좌표정보를 찾는다.
+								const pro = pickedFeature.id.polygon.hierarchy._value.positions[i];
+								var d = Cesium.Cartesian3.distance(pro, center);
+								
+								resaclePoly(center.x, center.y, pro);
+							}
+							
+					        // Cesium.Cartesian3.fromDegrees(longitudeString, latitudeString)
+							// Cart2LonLat을 통한 크기 조절
+//							for(var i = 0; i < pickedFeature.id.polygon.hierarchy._value.positions.length; i++) {
+//								const pro = pickedFeature.id.polygon.hierarchy._value.positions[i];
+//								var d = Cesium.Cartesian3.distance(pro, center); 
+//								var cartePos = carteToLonLat(pro);
+//								debugger;
+//								if(cartePos.lon <= carteCen.lon && cartePos.lat >= carteCen.lat) {
+//									// 외쪽 상단 위도 + 경도 -
+//									cartePos.lon += 0.00001;
+//									cartePos.lat -= 0.00001;
+//								} else if(cartePos.lon >= carteCen.lon && cartePos.lat >= carteCen.lat) {
+//									// 우측 상단 위도 - 경도 -
+//									cartePos.lon -= 0.00001;
+//									cartePos.lat -= 0.00001;
+//								} else if(cartePos.lon <= carteCen.lon && cartePos.lat <= carteCen.lat) {
+//									// 좌측 하단  위도 + 경도 +
+//									cartePos.lon += 0.00001;
+//									cartePos.lat += 0.00001;
+//								}  else if(cartePos.lon >= carteCen.lon && cartePos.lat <= carteCen.lat) {
+//									// 우측 하단 위도 - 경도 +
+//									cartePos.lon -= 0.00001;
+//									cartePos.lat += 0.00001;
+//								}
+//								const resultPos = Cesium.Cartesian3.fromDegrees(cartePos.lon, cartePos.lat);
+//								pickedFeature.id.polygon.hierarchy._value.positions[i] = resultPos;
+//							}
+							debugger;
+							_viewer.entities.add(pickedFeature.id);
+
+							console.log(pickedFeature.id.polygon.hierarchy._value.positions[0]);
+							
+							var pinBuilder = new Cesium.PinBuilder();
+
+							var bluePin = viewer.entities.add({
+							    name : 'Blank blue pin',
+							    position : center,
+							    billboard : {
+							        image : pinBuilder.fromColor(Cesium.Color.ROYALBLUE, 48).toDataURL(),
+							        verticalOrigin : Cesium.VerticalOrigin.BOTTOM
+							    }
+							});
+							
+							},1000);
+						
+						/*
+						pickedFeature.id.polygon.hierarchy._value.positions.forEach(function(e) {
+							
+						});*/
+//						getCommentList(pickedFeature.id);
 
 					}
 				}
@@ -892,6 +1018,35 @@ var Simulation = function(magoInstance, viewer, $) {
             _polygons.push(nowPolygon);
             clacArea();
         }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
+    }
+
+	function resaclePoly(centerX, centerY, polyObj) {
+		// 해당 좌표들을 가중치만큼 재 조정한다.
+		if(polyObj.x <= centerX && polyObj.y >= centerY) {
+			// 외쪽 상단 위도 + 경도 -
+			polyObj.x += 1;
+			polyObj.y -= 1;
+		} else if(polyObj.x >= centerX && polyObj.y >= centerY) {
+			// 우측 상단 위도 - 경도 -
+			polyObj.x -= 1;
+			polyObj.y -= 1;
+		} else if(polyObj.x <= centerX && polyObj.y <= centerY) {
+			// 좌측 하단  위도 + 경도 +
+			polyObj.x += 1;
+			polyObj.y += 1;
+		}  else if(polyObj.x >= centerX && polyObj.y <= centerY) {
+			// 우측 하단 위도 - 경도 +
+			polyObj.x -= 1;
+			polyObj.y += 1;
+		}
+	}
+	
+    function carteToLonLat(carte) {
+        var ellipsoid = _viewer.scene.globe.ellipsoid;
+        var cartographic = ellipsoid.cartesianToCartographic(carte);
+        var longitudeString = Cesium.Math.toDegrees(cartographic.longitude);
+        var latitudeString = Cesium.Math.toDegrees(cartographic.latitude);
+        return {lon : longitudeString, lat : latitudeString};
     }
     
     $('#set_target_area').click(function() {

@@ -54,7 +54,8 @@ public class SimulationRestController {
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public Object select() {
 		SimFileMaster sfm =  this.simServiceImpl.getSimFileMaster();
-		String resultFullPath = sfm.getSaveFilePath() + sfm.getSaveFileName();
+//		String resultFullPath = sfm.getSaveFilePath() + sfm.getSaveFileName();
+		String resultFullPath = "C://data/Apartment_Building_26_obj/sejongbuilding.geojson";
 		File fi = new File(resultFullPath.trim());
 		try {
 			ObjectMapper mapper = new ObjectMapper();
