@@ -515,6 +515,8 @@ border-right: 1px solid #999;
 }
 .tableList > table td > a {
 text-decoration: underline;
+font-size: 14px;
+font-weight: bold;
 }
 .tableList > table tr td.alignLeft {
 text-align: left;
@@ -2034,7 +2036,7 @@ display: block;
 background-color: #fff;
 }
 ul.listDefault li.on > ul li {
-cursor: pointer;
+/* cursor: pointer; */
 padding: 10px;
 border-bottom: 1px dotted #999;
 }
@@ -2082,14 +2084,14 @@ vertical-align: middle;
 .legendWrap > dt {
 display: inline-block;
 width: 26px;
-margin-right: 3px;
-padding: 7px;
+padding: 4px 5px;
 background-color: #f3f3f3;
 font-weight: bold;
 border-right: 1px solid #ddd;
 }
 .legendWrap > dd {
 display: inline;
+margin-right: 5px;
 }
 span.legend {
 display: inline-block;
