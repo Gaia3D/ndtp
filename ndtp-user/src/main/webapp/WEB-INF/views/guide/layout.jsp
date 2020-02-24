@@ -20,7 +20,7 @@
 	<div id="popupWrap">
 		<div class="popupSub">
 			<h3>
-				<a onclick="changeToggleTab(api0)">mago3D.JS API</a>
+				<a onclick="changeToggleTab(0)">mago3D.JS API</a>
 			</h3>
 			<div class="searchWrap">
 			<label for="searchApi"></label>
@@ -36,7 +36,11 @@
 			</div>
 			<div class="descript">
 				<div class="popupGroup">
-					<div id="testtoggle"></div>
+					<div id="testtoggle">
+					<div id="api0" class="api-help-toggle">
+						<img src="/images/ko/common/main.png" alt="메인">
+					</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -142,6 +146,7 @@ function magoLoadEnd2(e) {
 		dataType: "json",
 		success: function(res){
 			if(res) {
+				console.log(res);
 				var policy = Mago3D.MagoConfig.getPolicy();
 				var initLat = parseFloat(policy.initLatitude);
 				var initLon = parseFloat(policy.initLongitude);
@@ -168,7 +173,9 @@ $('.item').on("click", function(){
 })
 
 function changeToggleTab(apiIndex){
-	
+
+    // Contents 영역 삭제
+    $('#testtoggle').children().remove();
 	var index = new Number(apiIndex);
         // ajax option
         var ajaxOption = {
@@ -184,38 +191,59 @@ function changeToggleTab(apiIndex){
         
         $.ajax(ajaxOption).done(function(data){
         	
-            // Contents 영역 삭제
-            $('#testtoggle').children().remove();
             // Contents 영역 교체
             $('#testtoggle').scrollTop(0);
             $('#testtoggle').html(data);
-            
-            if($('.paramContainer')){
+            var codeTabContainer1 = document.createElement("div");
+            codeTabContainer1.setAttribute("class", "codeTabContainer1");
+            var codeTabContainer2 = document.createElement("div");
+            codeTabContainer2.setAttribute("class", "codeTabContainer2");
+            if(document.getElementsByClassName("paramContainer").length!=0){
    			 
    				var parmScript = document.createTextNode(($('.paramContainer')[0].innerHTML).replace(/\s{2,}/gi, ' '));
-   				var script = document.createTextNode($('.api-help-toggle').next()[0].text);
+   				
    				var preTagBr = document.createElement("br");
    				var codeParmTag = document.createElement("code");
+   				
    				codeParmTag.setAttribute("class","html");
    				codeParmTag.appendChild(parmScript);
    				var preTagParm = document.createElement("pre");
    				preTagParm.appendChild(codeParmTag);
+   				codeTabContainer1.appendChild(preTagParm);
+   				codeTabContainer1.appendChild(preTagBr);
+   				
+   				var codeTitle1 = document.createElement("h4");
+   				var txt = document.createTextNode("HTML");
+   				codeTitle1.appendChild(txt);
+   				$('.menu_tab01')[0].appendChild(codeTitle1);
+   	            $('.menu_tab01')[0].appendChild(codeTabContainer1);
+   	            
+   				// hilight
+   				document.querySelector('.codeTabContainer1').querySelectorAll('pre code').forEach((block) => {
+   				    hljs.highlightBlock(block);
+   				  });
+   			}
+            if($('.api-help-toggle').next()[0]){
+      			
+   				var script = document.createTextNode($('.api-help-toggle').next()[0].text);
+   				var preTagBr = document.createElement("br");
+   				
    				var codeScriptTag = document.createElement("code");
    				codeScriptTag.setAttribute("class","javascript");
    				codeScriptTag.appendChild(script);		
    				var preTagScript = document.createElement("pre");
    				preTagScript.appendChild(codeScriptTag);
-   				var codeTabContainer = document.createElement("div");
-   				codeTabContainer.appendChild(preTagParm);
-   				codeTabContainer.appendChild(preTagBr);
-   				codeTabContainer.appendChild(preTagBr);
-   				codeTabContainer.appendChild(preTagBr);
-   				codeTabContainer.appendChild(preTagScript);
+   				codeTabContainer2.appendChild(preTagBr);
+   				codeTabContainer2.appendChild(preTagScript);
    				
-   				$('.menu_tab01')[0].appendChild(codeTabContainer);
+   				var codeTitle2 = document.createElement("h4");
+   				var txt = document.createTextNode("JAVASCRIPT");
+   				codeTitle2.appendChild(txt);
+   				$('.menu_tab01')[0].appendChild(codeTitle2);
+   				$('.menu_tab01')[0].appendChild(codeTabContainer2);
    				
    				// hilight
-   				document.querySelectorAll('pre code').forEach((block) => {
+   				document.querySelector('.codeTabContainer2').querySelectorAll('pre code').forEach((block) => {
    				    hljs.highlightBlock(block);
    				  });
    			}

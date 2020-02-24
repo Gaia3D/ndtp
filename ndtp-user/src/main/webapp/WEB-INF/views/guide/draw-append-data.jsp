@@ -42,11 +42,11 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api30-p1">projectIdArray</label>
-			<input type="text" data-require="true" id="api30-p1" value='["ifc, ifc1, ifc2"]'><br/>
+			<input type="text" data-require="true" id="api30-p1" value='appendSample' disabled><br/>
 			<label for="api30-p2">projectDataArray</label>
-			<input type="text" data-require="true" id="api30-p2" value='["factory, factory1, factory2"]'><br/>
+			<input type="text" data-require="true" id="api30-p2" value='sample_obj' disabled><br/>
 			<label for="api30-p3">projectDataFolderArray</label>
-			<input type="text" data-require="true" id="api30-p3" value='["D:\reposit, D:\reposit1, D:\reposit2"]'>
+			<input type="text" data-require="true" id="api30-p3" value='sample' disabled>
 		</div>
 		<br/> 
 		<input type="button" id="drawAppendData" value="Run" class="popupBtn">
@@ -55,10 +55,60 @@
 </div>
 <script>
 	var drawAppendData = function() {
+		
+		var obj1 = {
+				"attributes" : {
+					"isPhysical" : false,
+					"nodeType" : "root",
+					"projectType" : "workshop",
+					"specularLighting" : true
+				},
+				"children" : [ {
+					"attributes" : {
+						"isPhysical" : true,
+						"nodeType" : "workshop"
+					},
+					"children" : [],
+					"data_key" : "SOCIALROOM",
+					"data_name" : "SOCIALROOM",
+					"mapping_type" : "origin",
+					"latitude" : 37.58358288958673,
+					"longitude" : 126.60890424717905,
+					"height" : 100,
+					"heading" : 0,
+					"pitch" : 0,
+					"roll" : 0
+				}, {
+					"attributes" : {
+						"isPhysical" : true,
+						"nodeType" : "workshop"
+					},
+					"children" : [],
+					"data_key" : "STUDENTROOM",
+					"data_name" : "STUDENTROOM",
+					"mapping_type" : "origin",
+					"latitude" : 37.58358288958673,
+					"longitude" : 126.61055424717905,
+					"height" : 100,
+					"heading" : 0,
+					"pitch" : 0,
+					"roll" : 0
+				} ],
+				"parent" : 0,
+				"depth" : 1,
+				"view_order" : 2,
+				"data_key" : "sample",
+				"data_name" : "sample",
+				"mapping_type" : "origin"
+			};
 
-		var projectIdArray = $('#api30-p1').val();
-		var projectDataArray = $('#api30-p2').val();
-		var projectDataFolderArray = $('#api30-p3').val();
+		var projectIdArray = [];
+		projectIdArray.push($('#api30-p1').val());
+		
+		var projectDataArray = [obj1];
+		
+		var projectDataFolderArray = [];
+		projectDataFolderArray.push($('#api30-p3').val());
 
 		drawAppendDataAPI(MAGO3D_INSTANCE2, projectIdArray, projectDataArray, projectDataFolderArray);
 	}
