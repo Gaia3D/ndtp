@@ -42,7 +42,7 @@
 				<span class="legend gr">G</span>
 		{{/ifMatch}}
 						</td>
-						<td class="alignLeft"><a href="#" onclick="detailDataInfo('{{dataId}}'); return false;">{{dataName}}</a></td>
+						<td class="alignLeft ellipsis" style="max-width:100px;"><a href="#" onclick="detailDataInfo('{{dataId}}'); return false;">{{dataName}}</a></td>
 						<td><button type="button" title="표시" class="showHideButton show" data-group-id="{{dataGroupId}}" data-key="{{dataKey}}">표시</button></td>
 						<td>
 		{{#if tiling}}
@@ -55,7 +55,7 @@
 					</tr>
 					<tr>
 						<td class="alignLeft" colspan="4">
-							<span class="infoTag"><span>그룹명: </span>{{dataGroupName}}</span>
+							<span class="infoTag ellipsis"><span>그룹명: </span>{{dataGroupName}}</span>
 			{{#ifMatch dataGroupTarget 'admin'}}
 				<span class="infoTag" style="color:blue">관리자</span>
 			{{else}}

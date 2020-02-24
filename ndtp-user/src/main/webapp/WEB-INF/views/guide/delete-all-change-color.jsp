@@ -23,7 +23,6 @@
 			</tr>
 		</table>
 		<br/>
-		<div class="paramContainer"></div>
 		<input type="button" id="deleteAllChangeColor" value="Run" class="popupBtn">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>

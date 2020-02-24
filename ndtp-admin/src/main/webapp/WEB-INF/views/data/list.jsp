@@ -40,14 +40,14 @@
 											<form:option value="0"><spring:message code='search.same'/></form:option>
 											<form:option value="1"><spring:message code='search.include'/></form:option>
 										</form:select>
-										<label for="searchWord"><spring:message code='search.word'/></label>
-										<form:input path="searchWord" type="search" cssClass="m" cssStyle="float: right;" />
+										<label for="searchValue"><spring:message code='search.word'/></label>
+										<form:input path="searchValue" type="search" cssClass="m" cssStyle="float: right;" />
 									</div>
 									<div class="input-set">
 										<label for="startDate"><spring:message code='search.date'/></label>
 										<input type="text" class="s date" id="startDate" name="startDate" title="시작일" autocomplete="off" />
 										<span class="delimeter tilde">~</span>
-										<label for="endDate" class="hiddenTag">시작일</label>
+										<label for="endDate" class="hiddenTag">종료일</label>
 										<input type="text" class="s date" id="endDate" name="endDate" title="종료일" autocomplete="off" />
 									</div>
 									<div class="input-set">

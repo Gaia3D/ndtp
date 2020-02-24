@@ -27,7 +27,8 @@
 					<div class="page-content">
 						<form:form id="role" modelAttribute="role" method="post" onsubmit="return false;">
 						<form:hidden path="roleId"/>
-						<table class="input-table scope-row">
+						<table class="input-table scope-row" summary="권한 수정 테이블">
+						<caption class="hiddenTag">권한 수정</caption>
 							<col class="col-label l" />
 							<col class="col-input" />
 							<tr>

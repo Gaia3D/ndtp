@@ -45,7 +45,7 @@
 										<label for="startDate"><spring:message code='search.date'/></label>
 										<input type="text" class="s date" id="startDate" name="startDate" autocomplete="off" />
 										<span class="delimeter tilde">~</span>
-										<label for="endDate">종료일</label>
+										<label for="endDate" class="hiddenTag">종료일</label>
 										<input type="text" class="s date" id="endDate" name="endDate" autocomplete="off" />
 									</div>
 									<div class="input-set">
@@ -55,13 +55,13 @@
 											<option value="data_name">데이터명</option>
 											<option value="insert_date"> <spring:message code='search.insert.date'/> </option>
 										</select>
-										<label for="orderValue">정렬기준</label>
+										<label for="orderValue" class="hiddenTag">정렬기준</label>
 										<select id="orderValue" name="orderValue" class="select" title="정렬기준" style="height: 30px;">
 					                		<option value=""> <spring:message code='search.basic'/> </option>
 						                	<option value="ASC"> <spring:message code='search.ascending'/> </option>
 											<option value="DESC"> <spring:message code='search.descending.order'/> </option>
 										</select>
-										<label for="listCounter">리스트건수</label>
+										<label for="listCounter" class="hiddenTag">리스트건수</label>
 										<form:select path="listCounter" class="select" title="리스트건수" style="height: 30px;">
 					                		<form:option value="10"><spring:message code='search.ten.count'/></form:option>
 						                	<form:option value="50"><spring:message code='search.fifty.count'/></form:option>

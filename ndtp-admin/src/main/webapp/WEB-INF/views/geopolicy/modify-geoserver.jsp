@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 	<div id="geoserverTab">
 		<form:form id="geoPolicyGeoServer" modelAttribute="geoPolicy" method="post" onsubmit="return false;">
-			<table class="input-table scope-row">
+			<table class="input-table scope-row" summary="환경설정 GeoServer 테이블">
+			<caption class="hiddenTag">환경설정 GeoServer</caption>
 				<col class="col-label l" />
 				<col class="col-input" />
 				<tr>

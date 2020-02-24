@@ -29,36 +29,41 @@
 							<form:form id="searchForm" modelAttribute="role" method="get" action="/role/list" onsubmit="return searchCheck();">
 								<div class="input-group row">
 									<div class="input-set">
-										<label for="searchWord"><spring:message code='search.word'/></label>
-										<select id="searchWord" name="searchWord" class="select" style="height: 30px;">
+										<label for="searchWord" class="hiddenTag">검색유형</label>
+										<select id="searchWord" name="searchWord" class="select" title="검색유형" style="height: 30px;">
 											<option value=""><spring:message code='select'/></option>
 											<option value="role_name">Role명</option>
 										</select>
-										<form:select path="searchOption" class="select" style="height: 30px;">
+										<label for="searchOption" class="hiddenTag">검색옵션</label>
+										<form:select path="searchOption" class="select" title="검색옵션" style="height: 30px;">
 											<form:option value="0"><spring:message code='search.same'/></form:option>
 											<form:option value="1"><spring:message code='search.include'/></form:option>
 										</form:select>
+										<label for="searchValue"><spring:message code='search.word'/></label>
 										<form:input path="searchValue" type="search" cssClass="m" cssStyle="float: right;" />
 									</div>
 									<div class="input-set">
 										<label for="startDate"><spring:message code='search.date'/></label>
 										<input type="text" class="s date" id="startDate" name="startDate" autocomplete="off" />
 										<span class="delimeter tilde">~</span>
+										<label for="endDate" class="hiddenTag">종료일</label>
 										<input type="text" class="s date" id="endDate" name="endDate" autocomplete="off" />
 									</div>
 									<div class="input-set">
 										<label for="orderWord"><spring:message code='search.order'/></label>
-										<select id="orderWord" name="orderWord" class="select" style="height: 30px;">
+										<select id="orderWord" name="orderWord" class="select" title="표시기준" style="height: 30px;">
 											<option value=""><spring:message code='search.basic'/></option>
 											<option value="role_name">Role명</option>
 											<option value="insert_date"><spring:message code='search.insert.date'/></option>
 										</select>
-										<select id="orderValue" name="orderValue" class="select" style="height: 30px;">
+										<label for="orderValue" class="hiddenTag">정렬기준</label>
+										<select id="orderValue" name="orderValue" class="select" title="정렬기준" style="height: 30px;">
 					                		<option value=""><spring:message code='search.basic'/></option>
 						                	<option value="ASC"><spring:message code='search.ascending'/></option>
 											<option value="DESC"><spring:message code='search.descending.order'/></option>
 										</select>
-										<form:select path="listCounter" class="select" style="height: 30px;">
+										<label for="listCounter" class="hiddenTag">리스트건수</label>
+										<form:select path="listCounter" class="select" title="리스트건수" style="height: 30px;">
 					                		<form:option value="10"><spring:message code='search.ten.count'/></form:option>
 						                	<form:option value="50"><spring:message code='search.fifty.count'/></form:option>
 											<form:option value="100"><spring:message code='search.hundred.count'/></form:option>
@@ -83,7 +88,8 @@
 									</div>
 								</div>
 							</div>
-							<table class="list-table scope-col">
+							<table class="list-table scope-col" summary="권한 목록 테이블">
+							<caption class="hiddenTag">권한 목록</caption>
 								<thead>
 								<tr>
 									<th scope="col">번호</th>
