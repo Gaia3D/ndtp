@@ -149,7 +149,7 @@
 					<div id="${dbWidget.widgetId }" class="widget one-third column" style="font-size: 16px;">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
-								<h3 class="widget-title"><spring:message code='main.status.userstatus'/><span class="widget-desc">${today }<spring:message code='main.standard'/></span></h3>
+								<h3 class="widget-title"><spring:message code='main.status.userstatus'/><span class="widget-desc">${today } <spring:message code='main.standard'/></span></h3>
 							</div>
 							<div class="widget-functions u-pull-right">
 								<spring:message code='main.status.moreuserstatus' var="moreuserstatus"/>
@@ -216,7 +216,7 @@
 					<div id="${dbWidget.widgetId }" class="widget one-third column">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
-								<h3 class="widget-title"><spring:message code='main.status.db.connection.pool'/><span class="widget-desc">${today }<spring:message code='main.standard'/></span></h3>
+								<h3 class="widget-title"><spring:message code='main.status.db.connection.pool'/><span class="widget-desc">${today } <spring:message code='main.standard'/></span></h3>
 							</div>
 						</div>
 
