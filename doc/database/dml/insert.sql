@@ -3,8 +3,7 @@ insert into user_group(	user_group_id, user_group_key, user_group_name, ancestor
 values
 	(1, 'SUPER_ADMIN', '슈퍼 관리자', 1, 0, 1, 1, 'Y', 'Y', '기본값'),
 	(2, 'USER', '사용자', 1, 0, 1, 2, 'Y', 'Y', '기본값'),
-	(3, 'GUEST', 'GUEST', 1, 0, 1, 3, 'Y', 'Y', '기본값'),
-	;
+	(3, 'GUEST', 'GUEST', 1, 0, 1, 3, 'Y', 'Y', '기본값');
 
 -- 슈퍼 관리자 등록
 insert into user_info(
