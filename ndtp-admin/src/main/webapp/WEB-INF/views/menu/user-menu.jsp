@@ -56,7 +56,8 @@
 											<input type="hidden" id="updateType" name="updateType" value="" />
 											<input type="hidden" id="menuTarget" name="menuTarget" value=""/>
 											<input type="hidden" id="menuType" name="menuType" value=""/>
-										<table class="input-table scope-row">
+										<table class="input-table scope-row" summary="사용자 메뉴 테이블">
+										<caption class="hiddenTag">사용자 메뉴</caption>
 											<col class="col-label" />
 											<col class="col-input" />
 											<tr>
@@ -64,14 +65,14 @@
 													<label for="menuTarget">메뉴 Target</label>
 													<span class="icon-glyph glyph-emark-dot color-warning"></span>
 												</th>
-												<td><input type="text" value="사용자 사이트" readOnly/></td>
+												<td><input type="text" id="menuTarget" value="사용자 사이트" readOnly/></td>
 											</tr>
 											<tr>
 												<th class="col-label" scope="row">
 													<label for="menuType">메뉴 타입</label>
 													<span class="icon-glyph glyph-emark-dot color-warning"></span>
 												</th>
-												<td><input type="text" value="HTML ID" readOnly/></td>
+												<td><input type="text" id="menuType" value="HTML ID" readOnly/></td>
 											</tr>
 											<tr>
 												<th class="col-label" scope="row">
@@ -227,6 +228,11 @@
 				if(msg.statusCode <= 200) {
 					MENU_TREE_DATA = JSON.parse(msg.menuTree);
 					TREE_OBJECT.pageStart.delay(0.1);
+					// 웹접근성 때문에 a 태그에 value 값 넣어주고 hidden 처리
+					setTimeout(function(){
+						$("#AXTreeTarget > a").text("사용자 메뉴");
+						$("#AXTreeTarget > a").attr("class","hiddenTag");
+					},100);
 				} else {
 					alert(JS_MESSAGE[msg.errorCode]);
 					console.log("---- " + msg.message);

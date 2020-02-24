@@ -26,7 +26,8 @@
 					<%@ include file="/WEB-INF/views/layouts/page_header.jsp" %>
 					<div class="page-content">
 						<form:form id="role" modelAttribute="role" method="post" onsubmit="return false;">
-						<table class="input-table scope-row">
+						<table class="input-table scope-row" summary="권한 등록 테이블">
+						<caption class="hiddenTag">권한 등록</caption>
 							<col class="col-label l" />
 							<col class="col-input" />
 							<tr>
