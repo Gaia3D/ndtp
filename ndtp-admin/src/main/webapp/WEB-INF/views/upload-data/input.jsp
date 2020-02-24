@@ -176,7 +176,7 @@
 					    <div class="button-group" style="margin-top: 30px;">
 							<div class="center-buttons">
 								<button id="allFileUpload">업로드</button>
-								<button id="allFileClear">All Clear</button>
+								<button id="allFileClear">파일 초기화</button>
 								<a href="/upload-data/list" class="button">목록</a>
 							</div>
 						</div>
@@ -289,7 +289,7 @@
 			});
 
 			clearTask.addEventListener("click", function () {
-	            if (confirm("정말 전체 항목을 삭제하겠습니까?")) {
+	            if (confirm("[파일 업로딩]의 모든 파일을 삭제하겠습니까?")) {
 	            	// true 주면 업로드 중인 파일도 다 같이 삭제
 	            	myDropzone.removeAllFiles(true);
 	            }

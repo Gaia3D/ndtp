@@ -6,7 +6,7 @@
 		<col class="col-data" />
 		<tr>
 			<th class="col-label" scope="row">데이터 그룹명</th>
-			<td id="dataGroupNameInfo" class="col-data"></td>
+			<td id="dataGroupNameInfo" class="col-data ellipsis"></td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">데이터 그룹 Key</th>

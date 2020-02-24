@@ -96,7 +96,7 @@
 										<th scope="col">Layer 명</th>
 					                    <th scope="col">Layer Key</th>
 					                    <th scope="col">표시순서(Z-Index)</th>
-					                    <th scope="col">사용유무</th>
+					                    <th scope="col">사용 여부</th>
 					                    <th scope="col">지도</th>
 					                    <th scope="col">수정</th>
 					                    <th scope="col">최종 수정일</th>

@@ -521,7 +521,7 @@
 	// 데이터 그룹 정보
 	var dataGroupDialog = $( ".dataGroupDialog" ).dialog({
 		autoOpen: false,
-		width: 500,
+		width: 800,
 		height: 550,
 		modal: true,
 		resizable: false

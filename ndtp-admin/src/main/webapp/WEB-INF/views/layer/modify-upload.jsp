@@ -309,11 +309,11 @@
 				        <div class="button-group">
 							<div class="center-buttons">
 								<input type="submit" id="allFileUpload" value="<spring:message code='save'/>"/>
-								<input type="submit" id="allFileClear" value="초기화" />
+								<input type="submit" id="allFileClear" value="파일 초기화" />
 								<a href="/layer/list" class="button">목록</a>
 							</div>
 						</div>
-						
+
 						<h4 style="margin-top: 30px; margin-bottom: 5px;">레이어 변경 이력</h4>
 						<div class="list">
 							<table class="list-table scope-col">
@@ -689,7 +689,7 @@
 
             clearTask.addEventListener("click", function () {
                 // Using "_this" here, because "this" doesn't point to the dropzone anymore
-                if (confirm("정말 전체 항목을 삭제하겠습니까?")) {
+	            if (confirm("[파일 업로딩]의 모든 파일을 삭제하겠습니까?")) {
                     // true 주면 업로드 중인 파일도 다 같이 삭제
                     myDropzone.removeAllFiles(true);
                 }

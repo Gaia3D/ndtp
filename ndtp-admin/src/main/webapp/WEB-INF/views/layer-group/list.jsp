@@ -49,7 +49,7 @@
 								<thead>
 									<tr>
 										<th scope="col">그룹명</th>
-					                    <th scope="col">사용유무</th>
+					                    <th scope="col">사용 여부</th>
 					                    <th scope="col">등록자</th>
 					                    <th scope="col">레이어</th>
 					                    <th scope="col">순서</th>
@@ -136,7 +136,7 @@
                         					미사용
         </c:if>
 					                    </td>
-					                    <td class="col-key">${layerGroup.userId }</td>
+					                    <td class="col-type">${layerGroup.userId }</td>
 					                    <td class="col-type"><a href="/layer/list?searchOption=0&searchWord=layer_group_name&searchValue=${layerGroup.layerGroupName}" class="linkButton">보기</a>
 					                    </td>
 					                    <td class="col-type">

@@ -55,7 +55,7 @@
 								</tr>
 								<tr>
 									<th class="col-label l" scope="row">
-										<span>사용여부</span>
+										<span>사용 여부</span>
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input radio-set">
