@@ -48,13 +48,11 @@
 	var changeInsertIssueMode = function() {
 
 		var flag = $("input[name=api13-p1]:checked").val();
-
 		var isFalseBoolean = (flag === 'true');
 
 		changeInsertIssueModeAPI(MAGO3D_INSTANCE2, isFalseBoolean);
 	}
 
 	function insertIssueCallBack(projectId, dataKey, objectId, latitude, longitude, altitude){
-        console.info('geo_callback_insertissue');
     }
 </script>

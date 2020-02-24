@@ -1008,9 +1008,10 @@
 
 					// cpu
 					var cpuMax = msg.systemCpuUsage[0]["value"];
+					console.log("cpuMax >>> " + cpuMax);
+					if(!cpuMax) cpuMax = 1;
 					var cpuUsed = msg.processCpuUsage[0]["value"];
 					var cpuValue = cpuUsed / cpuMax * 100;
-					console.log("cpuMax >>> " + cpuMax);
 					console.log("cpuUsed >>> " + cpuUsed);
 					console.log("cpuValue >>> " + cpuValue);
 

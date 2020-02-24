@@ -464,32 +464,59 @@ color: #287be4;
 	text-align: center;
 }
 
-/* /// 데이터 게시판 목록 /// */
+/* /// 데이터 게시판 목록 - 정연화 수정 /// */
 .tableList {
 position: relative;
 }
 .tableList > table {
 width: 100%;
+border: 1px solid #999;
 }
-.tableList > table thead th {
-padding: 5px;
-border: 1px solid #43444c;
+.tableList > table th {
+padding: 3px 5px;
+vertical-align: middle;
+background-color: #c7e0f2;
+border: 1px solid #999;
 }
-.tableList > table tbody tr:hover {
-cursor: pointer;
-background-color: #f9f9f9;
+.tableList > table th:not(:first-child),
+.tableList > table th:not(:last-child){
+border-left: 1px dotted #999;
+border-right: 1px dotted #999;
 }
-.tableList > table tbody tr.selected {
-background-color: #d6dcf2;
+.tableList > table th:first-child {
+border-left: 1px solid #999;
 }
-.tableList > table tr td {
-padding: 7px 5px;
-border: 1px solid #bcbdc7;
-font-size: 14px;
+.tableList > table th:last-child {
+border-right: 1px solid #999;
+}
+.tableList > table td {
+padding: 2px 5px;
+/* border: 1px solid #bcbdc7; */
+/* font-size: 14px; */
 text-align: center;
+background-color: #ecf7ff;
+vertical-align: middle;
 }
-.tableList > table tr td a {
-border-bottom: 1px solid #000;
+.tableList > table tr:nth-child(odd) td:first-child {
+border-bottom: 1px solid #999;	
+}
+.tableList > table tr:nth-child(even) td:first-child {
+border-bottom: 1px solid #999;
+}
+.tableList > table tr:nth-child(odd) td:nth-child(2) {
+border: 1px dotted #999;
+}
+.tableList > table tr:nth-child(odd) td:nth-child(3) {
+border-right: 1px dotted #999;
+}
+.tableList > table tr:nth-child(odd) td:last-child {
+border-left: 1px dotted #999;
+border-right: 1px solid #999;
+}
+.tableList > table td > a {
+text-decoration: underline;
+font-size: 14px;
+font-weight: bold;
 }
 .tableList > table tr td.alignLeft {
 text-align: left;
@@ -1740,6 +1767,15 @@ ul.listDrop li.list-drop-button-none > p {
 	padding: 5px;
 	background-color: #f3f3f3;
 }
+.form-group-data {
+	margin: 0;
+	padding: 2px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+.form-group-data:first-of-type {
+	border-top: 1px solid #ccc;
+}
 .form-group > label {
     width: 20%;
 	padding: 7px;
@@ -2000,7 +2036,7 @@ display: block;
 background-color: #fff;
 }
 ul.listDefault li.on > ul li {
-cursor: pointer;
+/* cursor: pointer; */
 padding: 10px;
 border-bottom: 1px dotted #999;
 }
@@ -2022,6 +2058,7 @@ float: right;
 }
 
 /* 데이터 목록 / 범례 */
+/* 
 .legendWrap {
 margin-bottom: 10px;
 text-align: center;
@@ -2036,11 +2073,31 @@ display: inline-flex;
 margin-right: 5px;
 align-items: center;
 }
+*/
+.legendWrap {
+margin-bottom: 10px;
+border: 1px solid #ddd;
+}
+.legendWrap * {
+vertical-align: middle;
+}
+.legendWrap > dt {
+display: inline-block;
+width: 26px;
+padding: 4px 5px;
+background-color: #f3f3f3;
+font-weight: bold;
+border-right: 1px solid #ddd;
+}
+.legendWrap > dd {
+display: inline;
+margin-right: 5px;
+}
 span.legend {
 display: inline-block;
-width: 16px;
-height: 16px;
-line-height: 16px;
+width: 14px;
+height: 14px;
+line-height: 14px;
 padding: 4px;
 font-size: 13px;
 font-weight: bold;
@@ -2101,7 +2158,7 @@ position: absolute;
 top: 3px;
 right: 3px;
 }
-.dataList > li.btn > button {
+button.showHideButton {
 width: 30px;
 height: 30px;
 text-indent: -999em;
@@ -2110,10 +2167,10 @@ background-image: url(/images/ko/ico.png);
 background-repeat: no-repeat;
 background-color: transparent;
 }
-.dataList > li.btn > button.show {
+button.show {
 background-position: -97px -345px;
 }
-.dataList > li.btn > button.hide {
+button.hide {
 background-position: -147px -345px;
 }
 .dataList > .dataInfo {
@@ -2162,6 +2219,21 @@ margin-bottom: 3px;
 display: inline-block;
 }
 .dataList > .dataInfo > span.infoTag > span {
+display: inline-block;
+margin-right: 5px;
+color: #999;
+}
+
+
+span.infoTag {
+padding: 2px 6px;
+font-size: 11px;
+border: 1px solid #c7e0f2;
+background-color: #fff;
+margin-bottom: 3px;
+display: inline-block;
+}
+span.infoTag > span {
 display: inline-block;
 margin-right: 5px;
 color: #999;

@@ -23,7 +23,6 @@
 			</tr>
 		</table>
 		<br>
-		<h4>실행</h4>
 		<div class="paramContainer"></div>
 		<br> 
 		<input type="button" id="stopTrack" value="Run" class="popupBtn" >

@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<div id="api14" class="api-help-toggle" style="display: none;">
+<div id="api14" class="api-help-toggle">
 	<div class="menu_tab">
 		<ul>
 			<li class="fst active"><a href="#" onclick="tabMenu(0);">Run</a></li>
@@ -40,12 +40,16 @@
 			<label for="api14-opt2">비활성</label>
 		</div>
 		<br/> <input type="button" id="changeObjectInfoViewMode" value="Run" class="popupBtn">
+		<h4>결과</h4>
+		<table id="api14-result"></table>
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>
 <script>
 	var changeObjectInfoViewMode = function() {
 
+		var table = document.getElementById("api14-result");
+		table.innerHTML = '';
 		var flag = $("input[name=api14-p1]:checked").val();
 		var isFalseBoolean = (flag === 'true');
 
@@ -53,6 +57,30 @@
 	}
 
 	function selectedObjectCallBack(projectId, dataKey, objectId, latitude, longitude, altitude, heading, pitch, roll){
-        console.info('geo_callback_selectedobject');
+		var table = document.getElementById("api14-result");
+		table.innerHTML = '';
+		var result = {
+        		projectId: projectId,
+        		dataKey : dataKey,
+        		objectId : objectId,
+        		latitude : latitude,
+        		longitude : longitude,
+        		altitude : altitude,
+        		heading : heading,
+        		pitch : pitch, 
+        		roll : roll
+        }
+		
+		for ( var i in Object.keys(result)) {
+			var row = table.insertRow();
+			var th = document.createElement("th");
+			var td = document.createElement("td");
+			var key = document.createTextNode(Object.keys(result)[i]);
+			var value = document.createTextNode(Object.values(result)[i]);
+			th.appendChild(key);
+			td.appendChild(value);
+			row.appendChild(th);
+			row.appendChild(td);
+		}
     }
 </script>

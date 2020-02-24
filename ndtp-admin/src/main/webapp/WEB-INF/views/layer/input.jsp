@@ -151,7 +151,7 @@
 									</select>
 			                    </td>
 			                    <th class="col-label" scope="row">
-			                        <label for="cacheAvailableTrue">Cache 사용 유무</label>
+			                        <label for="cacheAvailableTrue">Cache 사용 여부</label>
 			                    </th>
 			                    <td class="col-input radio-set">
 			                        <form:radiobutton id="cacheAvailableTrue"  path="cacheAvailable" value="true" label="사용" />
@@ -182,7 +182,7 @@
 										<option value="Polygon">Polygon</option>
 									</select>
 								</td>
-			                    
+
 							</tr>
 							<tr>
 								<th class="col-label" scope="row">
@@ -221,7 +221,7 @@
 									<label for="sliderRange" class="hiddenTag">투명도 값</label>
 									<input type="range" id="sliderRange" min="0" max="100" value="100" alt="투명도">
 								</td>
-			                    
+
 			                </tr>
 			                <tr>
 			                	<th class="col-label" scope="row">
@@ -249,7 +249,7 @@
 									<form:radiobutton id="defaultDisplayFlase" path="defaultDisplay" value="false" label="미사용" />
 			                    </td>
 			                	<th class="col-label" scope="row">
-			                        <label for="useY">사용유무</label>
+			                        <label for="useY">사용 여부</label>
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 			                    <td class="col-input radio-set">
@@ -259,7 +259,7 @@
 			                </tr>
 			                <tr>
 			                	<th class="col-label" scope="row">
-			                        <label for="labelDisplayTrue">Label 표시 유무</label>
+			                        <label for="labelDisplayTrue">Label 표시 여부</label>
 			                    </th>
 			                    <td class="col-input radio-set">
 			                        <form:radiobutton id="labelDisplayTrue"  path="labelDisplay" value="true" label="표시" />
@@ -319,7 +319,7 @@
 			                </tr>
 						</table>
 						</form:form>
-						
+
 						<ul id="layerButtonArea">
 							<li id="uploadLayerButton" class="onArea">
 								<h4 style="margin-top: 30px; margin-bottom: 5px;">파일 업로딩</h4>
@@ -331,7 +331,7 @@
 						        <div class="button-group">
 									<div class="center-buttons">
 										<input type="submit" id="allFileUpload" value="<spring:message code='save'/>"/>
-										<input type="submit" id="allFileClear" value="초기화" />
+										<input type="submit" id="allFileClear" value="파일 초기화" />
 										<a href="/layer/list" class="button">목록</a>
 									</div>
 								</div>
@@ -368,13 +368,13 @@
 		showRange(100);
 		changeLayerType(null);
 		changeGeometryType(null);
-		
+
 		$("input[name='sharing']").filter("[value='public']").prop("checked", true);
 		$("input[name='defaultDisplay']").filter("[value='true']").prop("checked", true);
 		$("input[name='available']").filter("[value='true']").prop("checked", true);
         $("input[name='labelDisplay']").filter("[value='true']").prop("checked", true);
-        
-        // geoserver layerlist 가져올 동안 스피너 
+
+        // geoserver layerlist 가져올 동안 스피너
 		var layerLoadingDialog = $("#layerLoadingDialog").dialog({
 			autoOpen: false,
 			width: 250,
@@ -386,8 +386,8 @@
         getGeoserverLayerList(layerLoadingDialog);
         $("input[type='file']").attr("id", "dropzoneFile");
 	});
-	
-	// 레이어 탭 이벤트 
+
+	// 레이어 탭 이벤트
 	$("#layerTabControl ul li").click(function(){
 		var activeTab = $(this).find("a").attr("href");
 		$("#layerButtonArea li").removeClass("onArea");
@@ -413,7 +413,7 @@
 	$('[name=geometryType]').on('change', function() {
 		changeGeometryType($("[name=geometryType]").val());
 	});
-	
+
 	// wms일 경우에만 cache 설정 할 수 있도록 활성화
 	$("select[name=serviceType]").change(function(e){
 		var value = $(this).val();
@@ -534,7 +534,7 @@
 			alert("Layer key를 입력하여 주십시오.");
 			$("#layerKey").focus();
 			return false;
-		} 
+		}
 		if($("#layerInsertType").val() === 'geoserver' && !$("#layerKeySelect").val()) {
 			alert("Layer key를 선택하여 주십시오.");
 			$("#layerKeySelect").focus();
@@ -646,7 +646,7 @@
 
             clearTask.addEventListener("click", function () {
                 // Using "_this" here, because "this" doesn't point to the dropzone anymore
-                if (confirm("정말 전체 항목을 삭제하겠습니까?")) {
+	            if (confirm("[파일 업로딩]의 모든 파일을 삭제하겠습니까?")) {
                     // true 주면 업로드 중인 파일도 다 같이 삭제
                     myDropzone.removeAllFiles(true);
                 }
@@ -723,7 +723,7 @@
             }); */
         }
     };
-    
+
 	var insertGeoserverLayerFlag = true;
 	function geoserverLayerSave() {
 	    if(insertGeoserverLayerFlag) {
@@ -761,7 +761,7 @@
 	        return;
 		}
 	}
-	
+
 	function getGeoserverLayerList(layerLoadingDialog) {
         $.ajax({
 			url: "/layer/list-geoserver",
@@ -774,7 +774,7 @@
 						geoserverLayerList = geoserverLayerList.layer;
 						for(var i=0; i< geoserverLayerList.length; i++) {
 							var name = geoserverLayerList[i].name;
-							$("#layerKeySelect").append("<option value="+name+">"+name+"</option>");	
+							$("#layerKeySelect").append("<option value="+name+">"+name+"</option>");
 						}
 					}
 					layerLoadingDialog.dialog("close");

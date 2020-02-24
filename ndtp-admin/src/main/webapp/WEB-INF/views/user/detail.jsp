@@ -35,12 +35,12 @@
 									<col class="col-label" />
 									<col class="col-data" />
 									<tr>
-										<th class="col-label" scope="row"><spring:message code='user.id'/></th>
-										<td class="col-data">${userInfo.userId}</td>
+										<th class="col-label" scope="row"><spring:message code='user.group.name'/></th>
+										<td class="col-data">${userInfo.userGroupName}</td>
 									</tr>
 									<tr>
-										<th class="col-label" scope="row"><spring:message code='user.group.usergroup'/></th>
-										<td class="col-data">${userInfo.userGroupName}</td>
+										<th class="col-label" scope="row"><spring:message code='user.id'/></th>
+										<td class="col-data">${userInfo.userId}</td>
 									</tr>
 									<tr>
 										<th class="col-label" scope="row"><spring:message code='name'/></th>
@@ -48,7 +48,15 @@
 									</tr>
 									<tr>
 										<th class="col-label" scope="row"><spring:message code='status'/></th>
-										<td class="col-data">${userInfo.status}</td>
+										<td class="col-data">
+											<c:if test="${userInfo.status eq '0' }">사용중</c:if>
+											<c:if test="${userInfo.status eq '1' }">사용중지</c:if>
+											<c:if test="${userInfo.status eq '2' }">잠금</c:if>
+											<c:if test="${userInfo.status eq '3' }">휴면</c:if>
+											<c:if test="${userInfo.status eq '4' }">만료</c:if>
+											<c:if test="${userInfo.status eq '5' }">삭제</c:if>
+											<c:if test="${userInfo.status eq '6' }">임시비밀번호</c:if>
+										</td>
 									</tr>
 									<tr>
 										<th class="col-label" scope="row"><spring:message code='password'/></th>

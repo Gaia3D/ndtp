@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<div id="api13" class="api-help-toggle" style="display: none;">
+<div id="api13" class="api-help-toggle">
 	<div class="menu_tab">
 		<ul>
 			<li class="fst active"><a href="#" onclick="tabMenu(0);">Run</a></li>
@@ -48,13 +48,11 @@
 	var changeInsertIssueMode = function() {
 
 		var flag = $("input[name=api13-p1]:checked").val();
-
 		var isFalseBoolean = (flag === 'true');
 
 		changeInsertIssueModeAPI(MAGO3D_INSTANCE2, isFalseBoolean);
 	}
 
 	function insertIssueCallBack(projectId, dataKey, objectId, latitude, longitude, altitude){
-        console.info('geo_callback_insertissue');
     }
 </script>
