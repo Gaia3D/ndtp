@@ -330,7 +330,12 @@
 
 			// 로드되는 시점
 			magoInstance.getMagoManager().on(Mago3D.MagoManager.EVENT_TYPE.F4DLOADEND,function(e){
-				flyTo(magoInstance);
+				var tiling = "${dataInfo.tiling}";
+				if(tiling === "true") {
+					gotoFly(magoInstance);
+				} else {
+					flyTo(magoInstance);
+				}
 			});
 
 			// 화면에 표출할 준비가 된 시점
@@ -345,6 +350,11 @@
 		/* setTimeout(function() {
 			flyTo(magoInstance);
 		}, 500); */
+	}
+	
+	// smart tiling data flyTo
+	function gotoFly(magoInstance) {
+		gotoFlyAPI(magoInstance, "${dataInfo.longitude}", "${dataInfo.latitude}", "${dataInfo.altitude}", 3);
 	}
 	
 	function flyTo(magoInstance) {
