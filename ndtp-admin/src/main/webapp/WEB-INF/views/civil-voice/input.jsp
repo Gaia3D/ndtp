@@ -28,7 +28,8 @@
 							<div class="content-desc u-pull-right"><span class="icon-glyph glyph-emark-dot color-warning"></span><spring:message code='check'/></div>
 						</div>
 						<form:form id="civilVoice" modelAttribute="civilVoice" method="post" onsubmit="return false;">
-							<table class="input-table scope-row">
+							<table class="input-table scope-row" summary="시민 참여 등록 테이블">
+							<caption class="hiddenTag">시민  참여 등록</caption>
 								<col class="col-label l" />
 								<col class="col-input" />
 								<tr>
@@ -48,6 +49,7 @@
 									</th>
 									<td class="col-input">
 										<form:input path="longitude" cssClass="m" />
+										<form:label path="latitude" class="hiddenTag">위치(latitude)</form:label>
 										<form:input path="latitude" cssClass="m" />
 										<input type="button" id="mapButtion" value="위치 지정" />
 										<form:errors path="longitude" cssClass="error" />
