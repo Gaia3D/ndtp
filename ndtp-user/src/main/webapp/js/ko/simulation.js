@@ -236,19 +236,48 @@ var Simulation = function(magoInstance, viewer, $) {
 		var dataName;
 		var initPosition;
 		if(targetArea === 's') {
-			
+
 			var msj = makeSampleJson();
-			debugger;
+			// debugger;
 			var policy = Mago3D.MagoConfig.getPolicy();
 			var initLat = parseFloat(policy.initLatitude);
 			var initLon = parseFloat(policy.initLongitude);
 			var childs = msj.children;
 			f4dController.addF4dGroup(msj);
-			_viewer.camera.flyTo({
-			    destination : Cesium.Cartesian3.fromDegrees(126.9785978787040,  37.56690158584144, 1000)
+
+			let objPinBuilder = new Cesium.PinBuilder();
+			// let objLon = msj.children[0].longitude;
+			// let objLat = msj.children[0].latitude;
+			// let objHeight = msj.children[0].height;
+			let objLon = getAverage(msj.children, "longitude");
+			let objLat = getAverage(msj.children, "latitude");
+			let objHeight = getAverage(msj.children, "height");
+
+			let objPosition = Cesium.Cartesian3.fromDegrees(objLon, objLat, objHeight-2);
+			console.log("objPosition   >> lon=", objLon, " lat=", objLat, " h=", objHeight);
+
+			let clampPosition = whole_viewer.scene.clampToHeight(objPosition);
+			let clampCarto  = Cesium.Ellipsoid.WGS84.cartesianToCartographic(clampPosition);
+			let clampLon = Cesium.Math.toDegrees(clampCarto.longitude);
+			let clampLat = Cesium.Math.toDegrees(clampCarto.latitude);
+			let clampHeight = clampCarto.height;
+			console.log("clampPosition >> lon=", clampLon, " lat=", clampLat, " h=", clampHeight);
+
+			_viewer.entities.add({
+				billboard : {
+					image : objPinBuilder.fromText('!', Cesium.Color.BLACK, 48).toDataURL(),
+					verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+					eyeOffset: new Cesium.Cartesian3(0, objHeight, 0)
+				},
+				position : objPosition,
 			});
-			
-			debugger;
+
+
+
+
+			_viewer.camera.flyTo({
+			    destination : Cesium.Cartesian3.fromDegrees(126.9785978787040,  37.56690158584144, 100)
+			});
 			
 //			dataName = SEJONG_TILE_NAME;
 //			initPosition = SEJONG_POSITION;
@@ -331,7 +360,7 @@ var Simulation = function(magoInstance, viewer, $) {
 			
 //			genBillboard(126.90497956470877, 37.521051475771344);
 			_viewer.camera.flyTo({
-			    destination : Cesium.Cartesian3.fromDegrees(126.90497956470877,  37.521051475771344, 1000)
+			    destination : Cesium.Cartesian3.fromDegrees(126.90497956470877,  37.521051475771344, 100)
 			});
 		}
 	});
@@ -931,7 +960,8 @@ var Simulation = function(magoInstance, viewer, $) {
 //                    ;
 //                    _viewer._selectedEntity = pickedFeature.id.polygon;
                 } else {
-					var pickedFeature = whole_viewer.scene.pick(event.position);
+                	// debugger;
+					var pickedFeature = _viewer.scene.pick(event.position);
 					if(pickedFeature) {
 //						const imsi = pickedFeature.id.polygon.hierarchy._value.positions.map(function(key,index){
 //							pickedFeature.id.polygon.hierarchy._value.positions[index].x = key.x * 0.1
@@ -1488,6 +1518,23 @@ var Simulation = function(magoInstance, viewer, $) {
 			_viewer.entities.getById(_bsConstructProcessModels[i].id).show = true
 		}
 		
+	}
+
+	function getAverage(list, type) {
+		let sum = 0;
+		let length = list.length;
+		if (length === 0) {
+			console.log("msj list size is ", length);
+			return 0;
+		}
+		if (list[0][type] === undefined) {
+			console.log("msj list is not contained type:", type);
+			return 0;
+		}
+		for(let i=0; i<length; i++) {
+			sum += list[i][type];
+		}
+		return sum/length;
 	}
 }
 
