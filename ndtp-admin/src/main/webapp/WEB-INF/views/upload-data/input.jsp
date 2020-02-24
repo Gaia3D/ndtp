@@ -171,7 +171,9 @@
 						</form:form>
 						<div style="padding: 20px 20px 10px 10px; font-size: 18px;">파일 업로딩</div>
 						<div class="fileSection" style="font-size: 17px;">
-					    	<form id="my-dropzone" action="" class="dropzone hzScroll"></form>
+					    	<form id="my-dropzone" action="" class="dropzone hzScroll">
+					    		<label for="dropzoneFile" class="hiddenTag">dropzoneFile영역</label>
+					    	</form>
 					    </div>
 					    <div class="button-group" style="margin-top: 30px;">
 							<div class="center-buttons">
@@ -197,7 +199,7 @@
 <script type="text/javascript" src="/js/navigation.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-
+		$("input[type='file']").attr("id", "dropzoneFile");
 	});
 
 	var dataGroupDialog = $( ".dialog" ).dialog({

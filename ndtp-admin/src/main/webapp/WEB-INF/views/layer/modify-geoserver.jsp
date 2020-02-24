@@ -118,7 +118,7 @@
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 			                    <td class="col-input">
-			                        <select name="serviceType" class="selectBoxClass">
+			                        <select id="serviceType" name="serviceType" class="selectBoxClass">
 										<option value="">선택</option>
 										<option value="wms">WMS</option>
 										<option value="wfs">WFS</option>
@@ -140,7 +140,7 @@
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 			                    <td class="col-input">
-			                        <select name="layerType" class="selectBoxClass">
+			                        <select id="layerType" name="layerType" class="selectBoxClass">
 										<option value="">선택</option>
 										<option value="vector">Vector</option>
 										<option value="raster">Raster</option>
@@ -151,7 +151,7 @@
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 								<td class="col-input">
-									<select name="geometryType" class="forRaster selectBoxClass">
+									<select id="geometryType" name="geometryType" class="forRaster selectBoxClass">
 										<option value="">선택</option>
 										<option value="Point">Point</option>
 										<option value="Line">Line</option>
@@ -161,10 +161,11 @@
 							</tr>
 							<tr>	
 								<th class="col-label" scope="row">
-			                        <form:label path="geometryType">외곽선 색상</form:label>
+			                        <form:label path="layerLineColor">외곽선 색상</form:label>
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 								<td class="col-input">
+									<label for="lineColorValue" class="hiddenTag">외곽선 색상값</label>
 									<input id="lineColorValue" placeholder="RGB" class="forRaster forLineColor" />
 									<input type="color" id="layerLineColor" name="layerLineColor" class="picker forLineColor" alt="외곽선 색상" />
 								</td>
@@ -181,6 +182,7 @@
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 								<td class="col-input">
+									<label for="fillColorValue" class="hiddenTag">채우기 색상값</label>
 									<input id="fillColorValue" placeholder="RGB" class="forRaster forPolygon">
 									<input type="color" id="layerFillColor" name="layerFillColor" class="picker forPolygon" alt="채우기 색상">
 								</td>
@@ -190,6 +192,7 @@
 			                    </th>
 								<td class="col-input">
 									<form:input type="text" path="layerAlphaStyle" class="slider" alt="투명도"/>
+									<label for="sliderRange" class="hiddenTag">투명도 값</label>
 									<input type="range" id="sliderRange" min="0" max="100" value="100" alt="투명도">
 								</td>
 			                </tr>

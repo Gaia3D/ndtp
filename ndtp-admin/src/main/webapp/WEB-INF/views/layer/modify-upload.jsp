@@ -308,7 +308,9 @@
 						
 						<h4 style="margin-top: 30px; margin-bottom: 5px;">파일 업로딩</h4>
 				        <div class="fileSection" style="font-size: 17px;">
-				            <form id="my-dropzone" action="" class="dropzone hzScroll"></form>
+				            <form id="my-dropzone" action="" class="dropzone hzScroll">
+				            	<label for="dropzoneFile" class="hiddenTag">dropzoneFile영역</label>
+				            </form>
 				        </div>
 				        <div class="button-group">
 							<div class="center-buttons">
@@ -320,7 +322,8 @@
 						
 						<h4 style="margin-top: 30px; margin-bottom: 5px;">레이어 변경 이력</h4>
 						<div class="list">
-							<table class="list-table scope-col">
+							<table class="list-table scope-col" summary="레이어 변경 이력 테이블">
+							<caption class="hiddenTag">레이어 변경 이력</caption>
 								<thead>
 									<tr>
 										<th scope="col">번호</th>
@@ -447,6 +450,8 @@
         if('${layer.serviceType}' !== 'wms') {
         	$("input[name='cacheAvailable']").attr("disabled", true);
         }
+        
+        $("input[type='file']").attr("id", "dropzoneFile");
 	});
 	
 	$('[name=layerType]').on('change', function() {
