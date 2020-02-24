@@ -53,9 +53,9 @@
 							<input type="password" id="password" name="password" maxlength="32" title="비밀번호" placeholder="비밀번호" required="required" />
 							<input type="submit" value="Sign In" class="sign-submit" />
 						</form:form>					
-						<div class="sign-links" style="font-size: 16px;">
+						<!-- <div class="sign-links" style="font-size: 16px;">
 							Don't have an account? &nbsp;<a href="#" onclick="alert('관리자에게 문의하여 주십시오.'); return false;">Sign up</a>
-						</div>
+						</div> -->
 					</div>
 				</div>
 			</div>
