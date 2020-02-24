@@ -48,7 +48,7 @@
 <script>
 	var changeObjectInfoViewMode = function() {
 
-		var table = document.getElementById("api29-result");
+		var table = document.getElementById("api14-result");
 		table.innerHTML = '';
 		var flag = $("input[name=api14-p1]:checked").val();
 		var isFalseBoolean = (flag === 'true');
