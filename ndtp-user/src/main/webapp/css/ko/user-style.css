@@ -2238,3 +2238,13 @@ display: inline-block;
 margin-right: 5px;
 color: #999;
 }
+
+.hiddenTag {
+overflow: hidden;
+border: 0;
+position: absolute;
+width: 1px;
+height: 1px;
+clip: rect(1px, 1px, 1px, 1px);
+clip-path: inset(50%);
+}

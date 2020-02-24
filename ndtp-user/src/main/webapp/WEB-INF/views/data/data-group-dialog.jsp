@@ -2,7 +2,8 @@
 <div id="dataGroupDialog" class="basicTable" style="display: none;">
 </div>
 <script id="templateDataGroup" type="text/x-handlebars-template">
-	<table>
+	<table summary="데이터 그룹 다이얼로그">
+	<caption class="hiddenTag">데이터 그룹 다이얼로그</caption>
 		<col class="col-label" />
 		<col class="col-data" />
 		<tr>

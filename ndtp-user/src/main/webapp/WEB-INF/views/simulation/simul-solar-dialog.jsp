@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <div id="simulSolarDialog" class="basicTable" style="display: none;" title="일조분석 리포트" >
-	<table>
+	<table summary="일조분석 리포트 테이블">
+	<caption class="hiddenTag">일조분석 리포트</caption>
 		<col class="col-label" style="width: 100px;" />
 		<col class="col-data" />
 		<thead>

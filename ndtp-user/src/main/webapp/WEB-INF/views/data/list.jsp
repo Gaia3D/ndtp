@@ -98,7 +98,8 @@
 					<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/>
 				</div>
 			</div>
-			<table class="list-table scope-col">
+			<table class="list-table scope-col" summary="데이터 목록 테이블">
+			<caption class="hiddenTag">데이터 목록 테이블</caption>
 				<col class="col-number" />
 				<col class="col-name" />
 				<col class="col-name" />

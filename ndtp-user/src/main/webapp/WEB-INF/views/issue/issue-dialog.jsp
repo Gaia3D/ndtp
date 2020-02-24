@@ -6,7 +6,8 @@
 	<input type="hidden" id="issueObjectKey" name="issueObjectKey" value="" />
 	<input type="hidden" id="issueDataGroupId" name="issueDataGroupId" value="" />
 <div id="issueDialog" class="basicTable" style="display: none;" title="이슈 등록" >
-	<table>
+	<table summary="이슈 등록 테이블">
+	<caption class="hiddenTag">이슈 등록</caption>
 		<col class="col-label" style="width: 100px;" />
 		<col class="col-data" />
 		<tr style="height: 30px;">

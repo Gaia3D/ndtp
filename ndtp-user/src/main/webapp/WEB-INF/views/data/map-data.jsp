@@ -45,7 +45,8 @@
 		</div>
 		<div class="dataBtns"></div>
 		<div class="tableList marT10 yScroll" style="height: calc(100% - 43px)">
-			<table>
+			<table summary="데이터  정보 목록 테이블">
+			<caption class="hiddenTag">데이터 정보 목록</caption>
 				<colgroup>
 					<col class="col-width-12" />
 					<col class="col-width-12" />

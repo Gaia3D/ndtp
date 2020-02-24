@@ -3,7 +3,8 @@
 	<h3>데이터 공유 유형별 현황</h3>
 	<form:form id="searchDataGroupForm" modelAttribute="searchDataGroupForm" method="post" onsubmit="return false;">
 	<div class="dataGroupSummary table-data-group-summary">
-		<table class="table-word-break">
+		<table class="table-word-break" summary="데이터 공유 유형별 현황 테이블">
+		<caption class="hiddenTag">데이터 공유 유형별 현황</caption>
 			<colgroup>
 		        <col class="col-number" />
 				<col class="col-number" />

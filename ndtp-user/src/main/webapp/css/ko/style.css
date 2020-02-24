@@ -2604,3 +2604,12 @@ float: left;
 	height: 30px; margin-bottom: 7px; border-color: #d5d5d5;
 }
 
+.hiddenTag {
+overflow: hidden;
+border: 0;
+position: absolute;
+width: 1px;
+height: 1px;
+clip: rect(1px, 1px, 1px, 1px);
+clip-path: inset(50%);
+}

@@ -6,7 +6,8 @@
 		<span class="float-right">{{formatNumber pagination.pageNo}} / {{formatNumber pagination.lastPage}} <spring:message code='search.page'/></span>
 	</div>
 	<div class="dataGroupSummary table-data-group-summary table-font-small yScroll" style="height:100%">
-		<table class="table-word-break">
+		<table class="table-word-break" summary="데이터 그룹 목록 테이블">
+		<caption class="hiddenTag"></caption>
 			<colgroup>
 				<col class="col-width-12" />
 				<col class="col-width-12" />
