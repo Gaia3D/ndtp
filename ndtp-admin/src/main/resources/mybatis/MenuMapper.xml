@@ -98,7 +98,14 @@
 			menu_id, menu_type, menu_target, name, name_en, ancestor, parent, depth, view_order, url, url_alias, alias_menu_id,
 			html_id, html_content_id, image, image_alt, css_class, default_yn, use_yn, display_yn, description
 		) VALUES (
-			#{menuId}, #{menuType}, #{menuTarget}, #{name}, #{nameEn}, #{ancestor}, #{parent}, #{depth}, #{viewOrder}, #{url}, #{urlAlias}, #{aliasMenuId},
+			#{menuId}, #{menuType}, #{menuTarget}, #{name}, #{nameEn}, 
+			(
+				SELECT COALESCE(MAX(ancestor), #{menuId})
+				FROM menu
+				WHERE menu_id = #{parent}
+					AND menu_id != 0
+			),
+			#{parent}, #{depth}, #{viewOrder}, #{url}, #{urlAlias}, #{aliasMenuId},
 			#{htmlId}, #{htmlContentId}, #{image}, #{imageAlt}, #{cssClass}, #{defaultYn}, #{useYn}, #{displayYn}, #{description} 
 		)
 	</insert>
