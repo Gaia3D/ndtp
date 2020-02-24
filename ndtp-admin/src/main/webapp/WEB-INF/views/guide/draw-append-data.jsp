@@ -42,11 +42,11 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api30-p1">projectIdArray</label>
-			<input type="text" data-require="true" id="api30-p1" value='["ifc, ifc1, ifc2"]'><br/>
+			<input type="text" data-require="true" id="api30-p1" value='sample'><br/>
 			<label for="api30-p2">projectDataArray</label>
-			<input type="text" data-require="true" id="api30-p2" value='["factory, factory1, factory2"]'><br/>
+			<input type="text" data-require="true" id="api30-p2" value='sample_f4d'><br/>
 			<label for="api30-p3">projectDataFolderArray</label>
-			<input type="text" data-require="true" id="api30-p3" value='["D:\reposit, D:\reposit1, D:\reposit2"]'>
+			<input type="text" data-require="true" id="api30-p3" value='sample'>
 		</div>
 		<br/> 
 		<input type="button" id="drawAppendData" value="Run" class="popupBtn">
@@ -55,10 +55,14 @@
 </div>
 <script>
 	var drawAppendData = function() {
-
-		var projectIdArray = $('#api30-p1').val();
-		var projectDataArray = $('#api30-p2').val();
-		var projectDataFolderArray = $('#api30-p3').val();
+		var projectIdArray = [];
+		projectIdArray.push($('#api30-p1').val());
+		
+		var projectDataArray = [];
+		projectDataArray.push($('#api30-p2').val());
+		
+		var projectDataFolderArray = [];
+		projectDataFolderArray.push($('#api30-p3').val());
 
 		drawAppendDataAPI(MAGO3D_INSTANCE2, projectIdArray, projectDataArray, projectDataFolderArray);
 	}
