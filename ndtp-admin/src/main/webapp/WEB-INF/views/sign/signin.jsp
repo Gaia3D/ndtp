@@ -53,9 +53,9 @@
 							<input type="password" id="password" name="password" maxlength="32" title="비밀번호" placeholder="비밀번호" required="required" />
 							<input type="submit" value="Sign In" class="sign-submit" />
 						</form:form>
-						<div class="sign-links">
+						<!-- <div class="sign-links">
 							Don't have an account? &nbsp;<a href="#" onclick="alert('Please contact the administrator for sign up.'); return false;">Sign up</a>
-						</div>
+						</div> -->
 					</div>
 				</div>
 			</div>
