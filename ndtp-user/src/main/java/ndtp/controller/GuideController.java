@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -41,9 +42,8 @@ public class GuideController {
 		return "/guide/layout";
 	}
 	
-	@GetMapping(value = "/loadPage")
-	public String gotoApiToggle(HttpServletRequest request, @RequestParam(value = "str")String str) {
-		System.out.println("Ssssssssss");
-		return "/guide/"+str+"API";
+	@PostMapping(value = "/loadPage")
+	public String gotoApiToggle(HttpServletRequest request, @RequestParam(value="api") String api) {
+		return "/guide/"+api;
 	}
 }
