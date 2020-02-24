@@ -42,7 +42,7 @@ public class NdtpAdminApplication extends SpringBootServletInitializer {
 	
 	@Bean
 	public HttpSessionBindingListener httpSessionBindingListener() {
-		log.info(" $$$ DockyardAdminApplication registerListener $$$ ");
+		log.info(" $$$ NdtpAdminApplication registerListener $$$ ");
 		return new Gaia3dHttpSessionBindingListener();
 	}
 	

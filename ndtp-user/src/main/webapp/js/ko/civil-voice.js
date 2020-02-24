@@ -116,7 +116,7 @@ function CivilVoiceControll(magoInstance, viewer) {
 					{
 						var point = points[j];
 						var commentCnt = point.commentCount;
-
+						if(point.commentCount === undefined || point.commentCount === null) point.commentCount = 0;
 						if(commentCnt <= 10) {
 							bubbleColor = '#bdd4df';
 						} else if(commentCnt > 10 && commentCnt <= 20) {
@@ -169,7 +169,7 @@ function CivilVoiceControll(magoInstance, viewer) {
 	function _startRender(){
 		var voices = this.list;
 		if(voices && Array.isArray(voices) && voices.length > 0) {
-			var cluster = new Mago3D.Cluster(_voicesToPointList(voices), 6, _clusterRenderFunc);
+			var cluster = new Mago3D.Cluster(_voicesToPointList(voices), 6, magoManager,_clusterRenderFunc);
 
 			magoManager.addCluster(cluster);
 			this.magoCluster = cluster;
@@ -184,12 +184,25 @@ function CivilVoiceControll(magoInstance, viewer) {
 	}
 
 	function _addVoice(voice) {
-		var p2 = _voiceToPoint(voice);
-		this.magoCluster.addPoint(p2);
+		if(!this.magoCluster || this.list.length === 0) {
+			this.list.push(voice);
+			_startRender.call(this);
+		} else {
+			this.list.push(voice);
+			var p2 = _voiceToPoint(voice);
+			this.magoCluster.addPoint(p2);
+		}
 	}
 
 	function _deleteVoice(civilVoiceId) {
+		var deletedList = this.list.filter(function(item){
+			return item.civilVoiceId !== civilVoiceId;
+		}) 
+		this.list = deletedList;
 		this.magoCluster.deletePointByCondition(function(point){return point.civilVoiceId !== civilVoiceId});
+		if(this.list.length === 0) {
+			_stopRender.call(this);
+		}
 	}
 
 	function _updateVoice(voice) {
@@ -596,10 +609,16 @@ function updateCivilVoice() {
 					alert("저장 되었습니다.");
 
 					//클러스터 데이터 수정 시 갱신
+					var updatedVoice = civilVoice.cluster.list.filter(function(item){
+						return item.civilVoiceId === id;
+					})[0];
+					
+					
 					civilVoice.cluster.updateVoice.call(civilVoice.cluster, {
 						longitude : $form.find('input[name="longitude"]').val(),
 						latitude : $form.find('input[name="latitude"]').val(),
-						civilVoiceId : msg.civilVoiceId
+						civilVoiceId : msg.civilVoiceId,
+						commentCount : updatedVoice.commentCount
 					});
 
 					civilVoice.initFormContent(formId);

@@ -24802,7 +24802,7 @@ MagoManager.prototype.startRender = function(isLastFrustum, frustumIdx, numFrust
 	{
 		var posWC;
 	
-		if (this.magoPolicy.issueInsertEnable === true)
+		/*if (this.magoPolicy.issueInsertEnable === true)
 		{
 			if (this.objMarkerSC === undefined)
 			{ this.objMarkerSC = new ObjectMarker(); }
@@ -24821,7 +24821,7 @@ MagoManager.prototype.startRender = function(isLastFrustum, frustumIdx, numFrust
 			var objMarker = this.objMarkerManager.newObjectMarker(options, this);
 		}
 
-		/*if (this.magoPolicy.objectInfoViewEnable === true)
+		if (this.magoPolicy.objectInfoViewEnable === true)
 		{
 			if (this.objMarkerSC === undefined)
 			{ 
@@ -28254,7 +28254,7 @@ MagoManager.prototype.selectedObjectNotice = function(neoBuilding)
 		// 이슈 등록 창 오픈
 		if (this.magoPolicy.getIssueInsertEnable()) 
 		{
-			if (this.objMarkerSC === undefined) { return; }
+			//if (this.objMarkerSC === undefined) { return; }
 			
 			insertIssueCallback(	MagoConfig.getPolicy().geo_callback_insertissue,
 				projectId,
@@ -58536,9 +58536,10 @@ Circle2D.prototype.getPoints = function(resultPointsArray, pointsCountFor360Deg)
  *
  * @param {Point3DList} point2DList 
  * @param {number} depth
+ * @param {MagoManager} magoMangaer
  * @param {function} customRenderFunc optional
  */
-var Cluster = function(point2DList, depth, customRenderFunc) 
+var Cluster = function(point2DList, depth, magoMangaer, customRenderFunc) 
 {
     
 	if (!point2DList || !point2DList instanceof Point2DList) 
@@ -58549,6 +58550,7 @@ var Cluster = function(point2DList, depth, customRenderFunc)
 	this.depth = defaultValue(depth, 8);
 
 	this.quatTree;
+	this.magoMangaer = magoMangaer;
 
 	this.renderFunction = (customRenderFunc && typeof customRenderFunc === 'function') ? customRenderFunc : this.defaultRenderFunc;
 
@@ -58572,6 +58574,8 @@ Cluster.prototype.getTreeOption = function()
 	var yLength = br.getYLength();
 	var center = br.getCenterPoint();
 	
+	if (xLength < 0.03) { xLength = 0.03; }
+	if (yLength < 0.03) { yLength = 0.03; }
 	return {
 		halfWidth  : xLength/2,
 		halfHeight : yLength/2,
@@ -58588,7 +58592,21 @@ Cluster.prototype.addPoint = function(point)
 Cluster.prototype.deletePointByCondition = function(condition)
 {
 	this.point2DList.deletePointByCondition(condition);
-	this.initQuatTree();
+
+	if (this.point2DList.getPointsCount() > 0 ) 
+	{
+		this.initQuatTree();
+	}
+	else 
+	{
+		this.quatTree = undefined;
+
+		this.magoMangaer.objMarkerManager.setMarkerByCondition(function(om)
+		{
+			return !om.tree;
+		});
+	}
+	
 };
 
 Cluster.prototype.updatePoint = function(point, findOption)

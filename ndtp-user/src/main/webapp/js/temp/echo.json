@@ -1,0 +1,255 @@
+{
+	"attributes": {
+		"isPhysical": false,
+		"nodeType": " root ",
+		"specularLighting": true
+	},
+	"children": [
+		{
+			"attributes": {
+				"isPhysical": true,
+				"flipYTexCoords": true
+			},
+			"children": [],
+			"data_key": "KSJ_100_0_0_0",
+			"data_name": "KSJ_100_0_0_0",
+			"mapping_type":"origin",
+			"longitude": 128.91259688738492,
+			"latitude": 35.10666153646883,
+			"height": 31.34493891397369,
+			"heading": 0.000000,
+			"pitch": 0.000000,
+			"roll": 0.000000
+		},{
+			"attributes": {
+				"isPhysical": true,
+				"flipYTexCoords": true
+			},
+			"children": [],
+			"data_key": "KSJ_100_0_1_0",
+			"data_name": "KSJ_100_0_1_0",
+			"mapping_type":"origin",
+			"longitude": 128.91259688738492,
+			"latitude": 35.10666153646883,
+			"height": 31.34493891397369,
+			"heading": 0.000000,
+			"pitch": 0.000000,
+			"roll": 0.000000
+		},{
+			"attributes": {
+				"isPhysical": true,
+				"flipYTexCoords": true
+			},
+			"children": [],
+			"data_key": "KSJ_100_0_2_0",
+			"data_name": "KSJ_100_0_2_0",
+			"mapping_type":"origin",
+			"longitude": 128.91259688738492,
+			"latitude": 35.10666153646883,
+			"height": 31.34493891397369,
+			"heading": 0.000000,
+			"pitch": 0.000000,
+			"roll": 0.000000
+		},{
+			"attributes": {
+				"isPhysical": true,
+				"flipYTexCoords": true
+			},
+			"children": [],
+			"data_key": "KSJ_100_0_3_1",
+			"data_name": "KSJ_100_0_3_1",
+			"mapping_type":"origin",
+			"longitude": 128.91259688738492,
+			"latitude": 35.10666153646883,
+			"height": 31.34493891397369,
+			"heading": 0.000000,
+			"pitch": 0.000000,
+			"roll": 0.000000
+		},{
+			"attributes": {
+				"isPhysical": true,
+				"flipYTexCoords": true
+			},
+			"children": [],
+			"data_key": "KSJ_100_1_0_1",
+			"data_name": "KSJ_100_1_0_1",
+			"mapping_type":"origin",
+			"longitude": 128.91259688738492,
+			"latitude": 35.10666153646883,
+			"height": 31.34493891397369,
+			"heading": 0.000000,
+			"pitch": 0.000000,
+			"roll": 0.000000
+		},{
+			"attributes": {
+				"isPhysical": true,
+				"flipYTexCoords": true
+			},
+			"children": [],
+			"data_key": "KSJ_100_1_1_2",
+			"data_name": "KSJ_100_1_1_2",
+			"mapping_type":"origin",
+			"longitude": 128.91259688738492,
+			"latitude": 35.10666153646883,
+			"height": 31.34493891397369,
+			"heading": 0.000000,
+			"pitch": 0.000000,
+			"roll": 0.000000
+		},{
+			"attributes": {
+				"isPhysical": true,
+				"flipYTexCoords": true
+			},
+			"children": [],
+			"data_key": "KSJ_100_1_2_2",
+			"data_name": "KSJ_100_1_2_2",
+			"mapping_type":"origin",
+			"longitude": 128.91259688738492,
+			"latitude": 35.10666153646883,
+			"height": 31.34493891397369,
+			"heading": 0.000000,
+			"pitch": 0.000000,
+			"roll": 0.000000
+		},{
+			"attributes": {
+				"isPhysical": true,
+				"flipYTexCoords": true
+			},
+			"children": [],
+			"data_key": "KSJ_100_1_3_2",
+			"data_name": "KSJ_100_1_3_2",
+			"mapping_type":"origin",
+			"longitude": 128.91259688738492,
+			"latitude": 35.10666153646883,
+			"height": 31.34493891397369,
+			"heading": 0.000000,
+			"pitch": 0.000000,
+			"roll": 0.000000
+		},{
+			"attributes": {
+				"isPhysical": true,
+				"flipYTexCoords": true
+			},
+			"children": [],
+			"data_key": "KSJ_100_1_4_3",
+			"data_name": "KSJ_100_1_4_3",
+			"mapping_type":"origin",
+			"longitude": 128.91259688738492,
+			"latitude": 35.10666153646883,
+			"height": 31.34493891397369,
+			"heading": 0.000000,
+			"pitch": 0.000000,
+			"roll": 0.000000
+		},{
+			"attributes": {
+				"isPhysical": true,
+				"flipYTexCoords": true
+			},
+			"children": [],
+			"data_key": "KSJ_100_2_0_3",
+			"data_name": "KSJ_100_2_0_3",
+			"mapping_type":"origin",
+			"longitude": 128.91259688738492,
+			"latitude": 35.10666153646883,
+			"height": 31.34493891397369,
+			"heading": 0.000000,
+			"pitch": 0.000000,
+			"roll": 0.000000
+		},{
+			"attributes": {
+				"isPhysical": true,
+				"flipYTexCoords": true
+			},
+			"children": [],
+			"data_key": "KSJ_100_2_1_4",
+			"data_name": "KSJ_100_2_1_4",
+			"mapping_type":"origin",
+			"longitude": 128.91259688738492,
+			"latitude": 35.10666153646883,
+			"height": 31.34493891397369,
+			"heading": 0.000000,
+			"pitch": 0.000000,
+			"roll": 0.000000
+		},{
+			"attributes": {
+				"isPhysical": true,
+				"flipYTexCoords": true
+			},
+			"children": [],
+			"data_key": "KSJ_100_2_2_4",
+			"data_name": "KSJ_100_2_2_4",
+			"mapping_type":"origin",
+			"longitude": 128.91259688738492,
+			"latitude": 35.10666153646883,
+			"height": 31.34493891397369,
+			"heading": 0.000000,
+			"pitch": 0.000000,
+			"roll": 0.000000
+		},{
+			"attributes": {
+				"isPhysical": true,
+				"flipYTexCoords": true
+			},
+			"children": [],
+			"data_key": "KSJ_100_2_3_4",
+			"data_name": "KSJ_100_2_3_4",
+			"mapping_type":"origin",
+			"longitude": 128.91259688738492,
+			"latitude": 35.10666153646883,
+			"height": 31.34493891397369,
+			"heading": 0.000000,
+			"pitch": 0.000000,
+			"roll": 0.000000
+		},{
+			"attributes": {
+				"isPhysical": true,
+				"flipYTexCoords": true
+			},
+			"children": [],
+			"data_key": "KSJ_100_2_4_5",
+			"data_name": "KSJ_100_2_4_5",
+			"mapping_type":"origin",
+			"longitude": 128.91259688738492,
+			"latitude": 35.10666153646883,
+			"height": 31.34493891397369,
+			"heading": 0.000000,
+			"pitch": 0.000000,
+			"roll": 0.000000
+		},{
+			"attributes": {
+				"isPhysical": true,
+				"flipYTexCoords": true
+			},
+			"children": [],
+			"data_key": "KSJ_100_3_0_5",
+			"data_name": "KSJ_100_3_0_5",
+			"mapping_type":"origin",
+			"longitude": 128.91259688738492,
+			"latitude": 35.10666153646883,
+			"height": 31.34493891397369,
+			"heading": 0.000000,
+			"pitch": 0.000000,
+			"roll": 0.000000
+		},{
+			"attributes": {
+				"isPhysical": true,
+				"flipYTexCoords": true
+			},
+			"children": [],
+			"data_key": "KSJ_100_3_1_5",
+			"data_name": "KSJ_100_3_1_5",
+			"mapping_type":"origin",
+			"longitude": 128.91259688738492,
+			"latitude": 35.10666153646883,
+			"height": 31.34493891397369,
+			"heading": 0.000000,
+			"pitch": 0.000000,
+			"roll": 0.000000
+		}
+	],
+	"parent": 0,
+	"depth": 1,
+	"view_order": 2,  
+	"data_key": "echo",
+	"data_name": "echo"
+}

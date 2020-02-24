@@ -9,6 +9,7 @@ var Simulation = function(magoInstance) {
 	}
 	
 	magoManager.on(Mago3D.MagoManager.EVENT_TYPE.SMARTTILELOADEND, smartTileLoaEndCallbak);
+	magoManager.on(Mago3D.MagoManager.EVENT_TYPE.F4DLOADEND, echoLoadEndCallback);
 	var observer;
 	var observerTarget = document.getElementById('simulationContent');
 	var observerConfig = { attributes: true};
@@ -165,53 +166,77 @@ var Simulation = function(magoInstance) {
 	var cache = {};
 	var SEJONG_TILE_NAME = 'SEJONG_TILE';
 	var SEJONG_POSITION = new Cesium.Cartesian3(-3108649.1049808883, 4086368.566202183, 3773910.6726226895);
+	var SEJONG_ROTATION = {heading : 0, pitch : -90, roll:0};
+	var ECHO_DATA_NAME = 'echo';
+	var ECHO_POSITION = new Cesium.Cartesian3(-3281184.6256381427, 4064587.5919688237, 3647565.7181758513);
+	var ECHO_ROTATION = {heading : 0, pitch : -45, roll:0};
 	var slider;
-	var simulating = false;
+	var simulatingSejong = false;
+	var simulatingEcho = false;
 	//zBounceSpring zBounceLinear
 	//건설공정 조회
 	$('#constructionProcess .execute').click(function(){
 		var targetArea = $('input[name="cpProtoArea"]:checked').val();
 		
-		var dataName;
-		var initPosition;
-		if(targetArea === 's') {
-			dataName = SEJONG_TILE_NAME;
-			initPosition = SEJONG_POSITION;
-		} else {
-			notyetAlram();
-			return;
-		}
 		if(!slider) {
 			slider = new KotSlider('rangeInput');
 		}
-		//레인지, 레전드 보이기
-		$('#csRange, #constructionProcess .profileInfo').show();
+		
+		var dataName;
+		var initPosition;
+		var initRotation;
+		if(targetArea === 's') {
+			dataName = SEJONG_TILE_NAME;
+			initPosition = SEJONG_POSITION;
+			initRotation = SEJONG_ROTATION;
+			
+			simulatingSejong = true;
+			simulatingEcho = false;
+			
+			slider.setDuration(1000);
+			$('#constructionProcess .profileInfo').show();
+		} else {
+			dataName = ECHO_DATA_NAME;
+			initPosition = ECHO_POSITION;
+			initRotation = ECHO_ROTATION;
+			
+			simulatingSejong = false;
+			simulatingEcho = true;
+			
+			slider.setDuration(2500);
+			$('#constructionProcess .profileInfo').hide();
+		}
+		
+		//레인지,  보이기
+		$('#csRange').show();
 		$('#saRange').hide();
-		
-		//slider.setValue(0);
-		simulating = true;
-		
-		if(!cache[dataName]) {
-			if(dataName.indexOf('_TILE') > 0) {
-				var html = '';
-				html += '<span>1단계</span>';
-				html += '<span>2단계</span>';
-				html += '<span>3단계</span>';
-				html += '<span>4단계</span>';
-				html += '<span>5단계</span>';
-				html += '<span>6단계</span>';
-				
-				$('#csRange .rangeWrapChild.legend').html(html);
-				$('#csRange .rangeWrapChild.legend').on('click','span',function(){
-					slider.setValue($(this).index());
-				});
-			}
+		slider.setValue(0);
+		if(!cache['doSimul']) {
+			//if(dataName.indexOf('_TILE') > 0) {
+			var html = '';
+			html += '<span>1단계</span>';
+			html += '<span>2단계</span>';
+			html += '<span>3단계</span>';
+			html += '<span>4단계</span>';
+			html += '<span>5단계</span>';
+			html += '<span>6단계</span>';
+			
+			$('#csRange .rangeWrapChild.legend').html(html);
+			$('#csRange .rangeWrapChild.legend').on('click','span',function(){
+				slider.setValue($(this).index());
+			});
+			//}
 		}
 		
 		var dis = Math.abs(Cesium.Cartesian3.distance(initPosition, MAGO3D_INSTANCE.getViewer().camera.position));
 		if(dis > CAMERA_MOVE_NEED_DISTANCE) {
 			magoInstance.getViewer().camera.flyTo({
 				destination:initPosition,
+				orientation:{
+					heading : Cesium.Math.toRadians(initRotation.heading),
+					pitch   : Cesium.Math.toRadians(initRotation.pitch),
+					roll    : Cesium.Math.toRadians(initRotation.roll)
+				},
 				duration : 1
 			});
 		}
@@ -222,6 +247,60 @@ var Simulation = function(magoInstance) {
 	$('#constructionProcess .reset').click(function(){
 		constructionProcessReset();
 	});
+	function echoLoadEndCallback(evt){
+		var f4ds = evt.f4d;
+		for(var i in f4ds) {
+			var f4d = f4ds[i];
+			if(f4d.data.projectFolderName !== ECHO_DATA_NAME && f4d.data.projectId !== ECHO_DATA_NAME) {
+				continue;
+			}
+			
+			var node = magoManager.hierarchyManager.getNodeByDataKey(ECHO_DATA_NAME, f4d.data.nodeId);
+			var data = node.data;
+			magoManager.effectsManager.addEffect(data.nodeId, new Mago3D.Effect({
+				//effectType      : pitch > 0 ? "zBounceLinear":"zBounceSpring",
+				effectType      : "zBounceSpring",
+				durationSeconds : 1.8
+			}));
+			magoManager.effectsManager.addEffect(data.nodeId, new Mago3D.Effect({
+				effectType      : "borningLight",
+				durationSeconds : 2.4
+			}));
+			
+			node.setRenderCondition(function(data){
+				var attributes = data.attributes; 
+				if(!simulatingEcho) {
+					attributes.isVisible = true;
+					data.isColorChanged = false;
+				} else {
+					var sliderValue = slider.getValue();
+					
+					var dataId = data.nodeId;
+					var splitDataId = dataId.split('_');
+					var refNum = splitDataId[splitDataId.length-1]; 
+					var specify = refNum % 6;
+					
+					if(sliderValue >= specify) {
+						attributes.isVisible = true;
+					} else {
+						attributes.isVisible = false;
+						if(!magoManager.effectsManager.hasEffects(dataId)) {
+							magoManager.effectsManager.addEffect(dataId, new Mago3D.Effect({
+								//effectType      : pitch > 0 ? "zBounceLinear":"zBounceSpring",
+								effectType      : "zBounceSpring",
+								durationSeconds : 1.8
+							}));
+							magoManager.effectsManager.addEffect(dataId, new Mago3D.Effect({
+								effectType      : 'borningLight',
+								durationSeconds : 2.4
+							}));
+						}
+					}
+				}
+			});
+		}
+	}
+	
 	function smartTileLoaEndCallbak(evt){
 		var nodes = evt.tile.nodesArray;
 		for(var i in nodes){
@@ -284,7 +363,7 @@ var Simulation = function(magoInstance) {
 			
 			node.setRenderCondition(function(data){
 				var attributes = data.attributes; 
-				if(!simulating) {
+				if(!simulatingSejong) {
 					attributes.isVisible = true;
 					data.isColorChanged = false;
 				} else {
