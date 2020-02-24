@@ -197,7 +197,7 @@ function CivilVoiceControll(magoInstance, viewer) {
 	function _deleteVoice(civilVoiceId) {
 		var deletedList = this.list.filter(function(item){
 			return item.civilVoiceId !== civilVoiceId;
-		}) 
+		})
 		this.list = deletedList;
 		this.magoCluster.deletePointByCondition(function(point){return point.civilVoiceId !== civilVoiceId});
 		if(this.list.length === 0) {
@@ -468,6 +468,10 @@ function getCivilVoiceDetail() {
 			if(res.statusCode <= 200) {
 				civilVoice.drawHandlebarsHtml(res, 'templateCivilVoiceView', 'civilVoiceView');
 				civilVoice.flyToLocation(res.civilVoice.longitude, res.civilVoice.latitude, res.civilVoice.commentCount);
+
+				var contents = $('#civilVoiceContents').text();
+				contents = contents.replace(/(?:\r\n|\r|\n)/g, '<br />');
+				$("#civilVoiceContents").html(contents);
 			} else {
 				alert(JS_MESSAGE[res.errorCode]);
 				console.log("---- " + res.message);
@@ -545,7 +549,7 @@ function saveCivilVoice() {
 		var formId = 'civilVoiceForm';
 		var $form = $('#' + formId);
 		var formData = $form.serialize();
-		
+
 		$.ajax({
 			url: url,
 			type: "POST",
@@ -612,8 +616,8 @@ function updateCivilVoice() {
 					var updatedVoice = civilVoice.cluster.list.filter(function(item){
 						return item.civilVoiceId === id;
 					})[0];
-					
-					
+
+
 					civilVoice.cluster.updateVoice.call(civilVoice.cluster, {
 						longitude : $form.find('input[name="longitude"]').val(),
 						latitude : $form.find('input[name="latitude"]').val(),

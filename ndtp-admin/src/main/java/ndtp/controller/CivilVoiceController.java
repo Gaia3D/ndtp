@@ -49,7 +49,7 @@ public class CivilVoiceController implements AuthorizationController {
 	public String list(HttpServletRequest request, @RequestParam(defaultValue="1") String pageNo, CivilVoice civilVoice, Model model) {
     	civilVoice.setSearchWord(SQLInjectSupport.replaceSqlInection(civilVoice.getSearchWord()));
     	civilVoice.setOrderWord(SQLInjectSupport.replaceSqlInection(civilVoice.getOrderWord()));
-    	
+
     	UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 
 		String roleCheckResult = roleValidate(request);
@@ -97,6 +97,12 @@ public class CivilVoiceController implements AuthorizationController {
 
 		civilVoice =  civilVoiceService.getCivilVocieById(civilVoice);
 		Policy policy = policyService.getPolicy();
+
+		if(civilVoice != null) {
+			String contents = civilVoice.getContents();
+			contents = contents.replaceAll(System.getProperty("line.separator"), "<br />");
+			civilVoice.setContents(contents);
+		}
 
 		model.addAttribute("policy", policy);
 		model.addAttribute("civilVoice", civilVoice);
