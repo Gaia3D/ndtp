@@ -5,8 +5,8 @@
 		<div class="listContents" id="analysisRadialLineOfSight">
 			<ul class="analysisGroup">
 				<li>
-					<label for="">분석 자료</label>
-					<select class="dataType">
+					<label for="radialLineDataType">분석 자료</label>
+					<select id="radialLineDataType" class="dataType">
 						<option value="DEM" selected>DEM (DEM)</option>
 						<option value="DSM">DSM (DSM)</option>
 						<!-- <option value="DSM">DSM (DSM)</option> -->
@@ -25,8 +25,8 @@
 					<input id="rlosSidex" class="sides" type="text" placeholder="" value="90" title="방사형 가시선의 수">
 				</li>
 				<li>
-					<label for="">관찰자 위치</label>
-					<input type="text" placeholder="" class="withBtn observerPointMGRS" disabled>
+					<label for="radialLineObserverPoint">관찰자 위치</label>
+					<input type="text" id="radialLineObserverPoint" placeholder="" class="withBtn observerPointMGRS" disabled>
 					<input type="hidden" class="observerPoint">
 					<button type="button" class="btnText drawObserverPoint" data-draw-type="POINT">위치지정</button>
 				</li>
@@ -42,8 +42,8 @@
 		<div class="listContents" id="analysisLinearLineOfSight">
 			<ul class="analysisGroup">
 				<li>
-					<label for="">분석 자료</label>
-					<select class="dataType">
+					<label for="linearLineDataType">분석 자료</label>
+					<select id="linearLineDataType" class="dataType">
 						<option value="DEM" selected>DEM (DEM)</option>
 						<option value="DSM">DSM (DSM)</option>
 					</select>
@@ -53,14 +53,14 @@
 					<input id="llosOffsete" class="observerOffset" type="text" placeholder="" value="1.7" title="지표로부터 관측자 지점의 높이">
 				</li>
 				<li>
-					<label for="">관찰 위치</label>
-					<input type="text" placeholder="" class="withBtn observerPointMGRS" disabled>
+					<label for="linearLineObserverPoint">관찰 위치</label>
+					<input type="text" id="linearLineObserverPoint" placeholder="" class="withBtn observerPointMGRS" disabled>
 					<input type="hidden" class="observerPoint">
 					<button type="button" class="btnText drawObserverPoint" data-draw-type="POINT">위치지정</button>
 				</li>
 				<li>
-					<label for="">대상 위치</label>
-					<input type="text" placeholder="" class="withBtn targetPointMGRS" disabled>
+					<label for="linearLineTargetPoint">대상 위치</label>
+					<input type="text" id="linearLineTargetPoint" placeholder="" class="withBtn targetPointMGRS" disabled>
 					<input type="hidden" class="targetPoint">
 					<button type="button" class="btnText drawTargetPoint" data-draw-type="POINT">위치지정</button>
 				</li>
@@ -76,8 +76,8 @@
 		<div class="listContents" id="analysisRasterProfile">
 			<ul class="analysisGroup">
 				<li>
-					<label for="">분석 자료</label>
-					<select class="dataType">
+					<label for="RasterProfileDataType">분석 자료</label>
+					<select id="RasterProfileDataType" class="dataType">
 						<option value="DEM" selected>DEM (DEM)</option>
 						<option value="DSM">DSM (DSM)</option>
 					</select>

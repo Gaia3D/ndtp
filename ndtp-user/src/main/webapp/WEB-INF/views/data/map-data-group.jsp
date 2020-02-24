@@ -33,6 +33,7 @@
 	<div class="summary-group-divide"></div>
 	<h3>데이터 그룹 검색</h3>
 	<div class="listSearch search-text">
+		<label for="searchDataGroupName" class="hiddenTag">그룹명 입력</label>
 		<input type="text" id="searchDataGroupName" name="searchDataGroupName" placeholder="그룹명을 입력하세요">
 		<button type="button" id="mapDataGroupSearch" class="btnTextF" title="검색">검색</button>
 	</div>
