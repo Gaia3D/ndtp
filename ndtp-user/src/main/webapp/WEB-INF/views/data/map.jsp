@@ -257,6 +257,19 @@
 		MapDataControll(magoInstance);
 
 		NDTP.issueController = new IssueController(magoInstance);
+
+
+		// hard code : load f4d of echo delta city for simulation 
+		$.ajax({
+			url: '/js/temp/echo.json',
+			type: 'GET',
+			dataType: "json",
+			success: function(json){
+				if(json) {
+					f4dController.addF4dGroup(json);
+				}
+			}
+		});
 	}
 
 	// 데이터 그룹 목록
