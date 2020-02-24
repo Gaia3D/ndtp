@@ -104,7 +104,7 @@
 									<tbody>
 	<c:if test="${empty civilVoiceList}">
 										<tr>
-											<td colspan="6" class="col-none">시민참여 목록이 존재하지 않습니다.</td>
+											<td colspan="8" class="col-none">시민참여 목록이 존재하지 않습니다.</td>
 										</tr>
 	</c:if>
 	<c:if test="${!empty civilVoiceList}">
