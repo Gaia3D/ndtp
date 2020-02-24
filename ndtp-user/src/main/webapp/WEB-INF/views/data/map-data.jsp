@@ -84,7 +84,7 @@
 				<span class="legend gr">G</span>
 		</c:if>
 						</td>
-						<td class="alignLeft"><a href="#" onclick="detailDataInfo('${dataInfo.dataId}'); return false;">${dataInfo.dataName}</a></td>
+						<td class="alignLeft ellipsis" style="max-width:100px;"><a href="#" onclick="detailDataInfo('${dataInfo.dataId}'); return false;">${dataInfo.dataName}</a></td>
 						<td><button type="button" title="표시" class="showHideButton show" data-group-id="${dataInfo.dataGroupId}" data-key="${dataInfo.dataKey}">표시</button></td>
 						<td>
 		<c:if test="${dataInfo.tiling eq 'true' }">				
@@ -98,7 +98,7 @@
 					</tr>
 					<tr>
 						<td class="alignLeft" colspan="4">
-				<span class="infoTag"><span>그룹명:</span>${dataInfo.dataGroupName}</span>
+				<span class="infoTag ellipsis"><span>그룹명:</span>${dataInfo.dataGroupName}</span>
 		<c:if test="${dataInfo.dataGroupTarget eq 'admin'}">
 				<span class="infoTag" style="color:blue">관리자</span>
 		</c:if>
