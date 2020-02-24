@@ -32,10 +32,10 @@
 						<li><a href="${userGroupMenu.url }">${userGroupMenu.name }</a></li>
 	</c:if>	
 	
-	<c:if test="${menuDepthValue eq '1' and userGroupMenu.displayYn eq 'Y' and status.last }">
+	<c:if test="${menuDepthValue eq '1' and status.last }">
 				</li>
 	</c:if>
-	<c:if test="${menuDepthValue eq '2' and userGroupMenu.displayYn eq 'Y' and status.last }">
+	<c:if test="${menuDepthValue eq '2' and status.last }">
 					</ul>
 				</li>
 	</c:if>
