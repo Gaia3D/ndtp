@@ -236,9 +236,9 @@ var Simulation = function(magoInstance, viewer, $) {
 		var dataName;
 		var initPosition;
 		if(targetArea === 's') {
-
+debugger;
 			var msj = makeSampleJson();
-			// debugger;
+			//
 			var policy = Mago3D.MagoConfig.getPolicy();
 			var initLat = parseFloat(policy.initLatitude);
 			var initLon = parseFloat(policy.initLongitude);
@@ -256,12 +256,12 @@ var Simulation = function(magoInstance, viewer, $) {
 			let objPosition = Cesium.Cartesian3.fromDegrees(objLon, objLat, objHeight-2);
 			console.log("objPosition   >> lon=", objLon, " lat=", objLat, " h=", objHeight);
 
-			let clampPosition = whole_viewer.scene.clampToHeight(objPosition);
-			let clampCarto  = Cesium.Ellipsoid.WGS84.cartesianToCartographic(clampPosition);
-			let clampLon = Cesium.Math.toDegrees(clampCarto.longitude);
-			let clampLat = Cesium.Math.toDegrees(clampCarto.latitude);
-			let clampHeight = clampCarto.height;
-			console.log("clampPosition >> lon=", clampLon, " lat=", clampLat, " h=", clampHeight);
+			// let clampPosition = whole_viewer.scene.clampToHeight(objPosition);
+			// let clampCarto  = Cesium.Ellipsoid.WGS84.cartesianToCartographic(clampPosition);
+			// let clampLon = Cesium.Math.toDegrees(clampCarto.longitude);
+			// let clampLat = Cesium.Math.toDegrees(clampCarto.latitude);
+			// let clampHeight = clampCarto.height;
+			// console.log("clampPosition >> lon=", clampLon, " lat=", clampLat, " h=", clampHeight);
 
 			_viewer.entities.add({
 				billboard : {
@@ -321,7 +321,7 @@ var Simulation = function(magoInstance, viewer, $) {
 //			}
 //			setObserver();
 			
-		} else {
+		} else if (targetArea === "p") {
 			initConsturctProcessModel(); 
 			dataName = BUSAN_TILE_NAME;
 			initPosition = BUSAN_POSITION;
@@ -331,7 +331,7 @@ var Simulation = function(magoInstance, viewer, $) {
 			}
 			//레인지, 레전드 보이기
 			$('#csRange, #constructionProcess .profileInfo').show();
-			debugger;
+
 			$('#saRange').hide();
 			
 			if(!cache[dataName]) {
@@ -362,6 +362,50 @@ var Simulation = function(magoInstance, viewer, $) {
 			_viewer.camera.flyTo({
 			    destination : Cesium.Cartesian3.fromDegrees(126.90497956470877,  37.521051475771344, 100)
 			});
+		} else if (targetArea === "etc") {
+			console.log("etc");
+			debugger;
+			dataName = SEJONG_TILE_NAME;
+			initPosition = SEJONG_POSITION;
+
+			if(!slider) {
+				slider = new KotSlider('rangeInput');
+			}
+
+			//레인지, 레전드 보이기
+			$('#csRange, #constructionProcess .profileInfo').show();
+			$('#saRange').hide();
+
+			//slider.setValue(0);
+			simulating = true;
+			if(!cache[dataName]) {
+				if(dataName.indexOf('tiles') > 0) {
+					magoManager.getObjectIndexFileSmartTileF4d(dataName);
+					magoManager.on(Mago3D.MagoManager.EVENT_TYPE.SMARTTILELOADEND, smartTileLoaEndCallbak);
+
+					var html = '';
+					html += '<span>1단계</span>';
+					html += '<span>2단계</span>';
+					html += '<span>3단계</span>';
+					html += '<span>4단계</span>';
+					html += '<span>5단계</span>';
+					html += '<span>6단계</span>';
+
+					$('#csRange .rangeWrapChild.legend').html(html);
+					$('#csRange .rangeWrapChild.legend').on('click','span',function(){
+						slider.setValue($(this).index());
+					});
+				}
+			}
+
+			var dis = Math.abs(Cesium.Cartesian3.distance(initPosition, MAGO3D_INSTANCE.getViewer().camera.position));
+			if(dis > CAMERA_MOVE_NEED_DISTANCE) {
+				magoInstance.getViewer().camera.flyTo({
+					destination:initPosition,
+					duration : 1
+				});
+			}
+			setObserver();
 		}
 	});
 	
@@ -411,7 +455,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	//건물 높이에 대해서 확정을 하는 로직, 용적률과 연관
 	//고도에 대한 불확실성
 	$('#set_height_building').click(function(e) {
-		debugger;
+
 		floorNum = parseInt($('#height_building_input').val());
 		var floorSize = floorNum * 3;
 		selectEntity.id.polygon.extrudedHeight = floorSize;
@@ -456,7 +500,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	// 가시화
 	$('#run_cityplan').click(function() {
         startLoading();
-        debugger;
+
         sejeonjochiwonPoly();
 	});
 	
@@ -468,7 +512,7 @@ var Simulation = function(magoInstance, viewer, $) {
 //			dataType: "json",
 //			success: function(msg){
 //				//_geojsonSample
-//				debugger;
+//
 //				
 //				stopLoading();
 //		        _viewer.scene.camera.flyTo({
@@ -493,7 +537,7 @@ var Simulation = function(magoInstance, viewer, $) {
 			for(var index in entitis) {
 				var entitiyObj = entitis[index];
 
-				debugger;
+
 				let destrictPositions = entitiyObj.polygon._hierarchy._value.positions;
 				let destrictArea = getArea(destrictPositions);
 				console.log(destrictArea);
@@ -543,7 +587,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				    }
 				})
 			}
-			debugger;
+
 			setTimeout(function() {
 				stopLoading();
 		        _viewer.scene.camera.flyTo({
@@ -588,7 +632,7 @@ var Simulation = function(magoInstance, viewer, $) {
     });
     
 	var smartTileLoaEndCallbak = function(evt){
-		debugger;
+
 		var nodes = evt.tile.nodesArray;
 		for(var i in nodes){
 			var node = nodes[i];
@@ -744,7 +788,7 @@ var Simulation = function(magoInstance, viewer, $) {
     function drawShape(positionData) {
         var shape;
         if (drawingMode === 'line') {
-            debugger;
+
             shape = _viewer.entities.add({
                 corridor: {
                     // polyline: {
@@ -913,7 +957,7 @@ var Simulation = function(magoInstance, viewer, $) {
         
         handler.setInputAction(function (event) {
             var earthPosition = _viewer.scene.pickPosition(event.position);
-			debugger;
+
         	if(locaMonitor) {
                 var ellipsoid = _viewer.scene.globe.ellipsoid;
                 var cartographic = ellipsoid.cartesianToCartographic(earthPosition);
@@ -967,7 +1011,7 @@ var Simulation = function(magoInstance, viewer, $) {
 //                    ;
 //                    _viewer._selectedEntity = pickedFeature.id.polygon;
                 } else {
-                	// debugger;
+                	//
 					var pickedFeature = _viewer.scene.pick(event.position);
 					if(pickedFeature) {
 //						const imsi = pickedFeature.id.polygon.hierarchy._value.positions.map(function(key,index){
@@ -998,7 +1042,7 @@ var Simulation = function(magoInstance, viewer, $) {
 //								const pro = pickedFeature.id.polygon.hierarchy._value.positions[i];
 //								var d = Cesium.Cartesian3.distance(pro, center); 
 //								var cartePos = carteToLonLat(pro);
-//								debugger;
+//
 //								if(cartePos.lon <= carteCen.lon && cartePos.lat >= carteCen.lat) {
 //									// 외쪽 상단 위도 + 경도 -
 //									cartePos.lon += 0.00001;
@@ -1019,7 +1063,7 @@ var Simulation = function(magoInstance, viewer, $) {
 //								const resultPos = Cesium.Cartesian3.fromDegrees(cartePos.lon, cartePos.lat);
 //								pickedFeature.id.polygon.hierarchy._value.positions[i] = resultPos;
 //							}
-							debugger;
+
 							_viewer.entities.add(pickedFeature.id);
 
 							console.log(pickedFeature.id.polygon.hierarchy._value.positions[0]);
@@ -1096,7 +1140,7 @@ var Simulation = function(magoInstance, viewer, $) {
     
     // 결과 산출
     $('#result_build').click(function() {
-    	debugger;
+
     	// console.log("맵컨트롤 : 저장");
         var targetResolutionScale = 1.0;
         var timeout = 500; // in ms
@@ -1121,7 +1165,7 @@ var Simulation = function(magoInstance, viewer, $) {
         var takeScreenshot = function(){
             scene.postRender.removeEventListener(takeScreenshot);
             var canvas = scene.canvas;
-            debugger;
+
             $("#cityplanImg").attr("src", canvas.toDataURL());
             viewer.resolutionScale = 1.0;
             stopLoading();
@@ -1199,7 +1243,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	    // fromGltf 함수를 사용하여 key : value 값으로 요소를 지정
 	    var name = '슬퍼하지마NONONO'; 
 	    // GLTF 모델 데이터 삽입
-	    debugger;
+
 	    var _model = Cesium.Model.fromGltf({
 	        url : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName,
 	        modelMatrix : modelMatrix,
@@ -1516,7 +1560,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	}
 	
 	function dispConstructProcessModel(index) {
-		debugger;
+
 		
 		for(var i = 0; i < 6; i++) {
 			_viewer.entities.getById(_bsConstructProcessModels[i].id).show = false

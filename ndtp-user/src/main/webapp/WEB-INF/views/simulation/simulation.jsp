@@ -70,6 +70,8 @@
 					<input style="width:20px;" type="radio" id="cpSejong" name="cpProtoArea" value="s" checked/>
 					<label style="width:26px;" for="cpBusan">부산</label>
 					<input style="width:20px;" type="radio" id="cpBusan"  name="cpProtoArea" value="p"/>
+					<label style="width:26px;" for="cpEtc">기타</label>
+					<input style="width:20px;" type="radio" id="cpEtc"  name="cpProtoArea" value="etc"/>
 				</li>
 
 				<li class="btns">
