@@ -29,7 +29,8 @@
 						</div>
 						<form:form id="civilVoice" modelAttribute="civilVoice" method="post" onsubmit="return false;">
 							<form:hidden path="civilVoiceId"/>
-							<table class="input-table scope-row">
+							<table class="input-table scope-row" summary="시민참여 수정 테이블">
+							<caption class="hiddenTag">시민참여 수정</caption>
 								<col class="col-label" />
 								<col class="col-input" />
 								<tr>
@@ -49,6 +50,7 @@
 									</th>
 									<td class="col-input">
 										<form:input path="longitude" cssClass="m" />
+										<form:label path="latitude" class="hiddenTag">위치(latitude)</form:label>
 										<form:input path="latitude" cssClass="m" />
 										<input type="button" id="mapButtion" value="위치 지정" />
 										<form:errors path="longitude" cssClass="error" />
