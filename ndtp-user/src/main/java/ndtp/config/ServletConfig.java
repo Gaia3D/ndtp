@@ -28,6 +28,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import lombok.extern.slf4j.Slf4j;
 import ndtp.interceptor.CSRFHandlerInterceptor;
 import ndtp.interceptor.ConfigInterceptor;
+import ndtp.interceptor.LogInterceptor;
 import ndtp.interceptor.SecurityInterceptor;
 
 @Slf4j
@@ -46,6 +47,8 @@ public class ServletConfig implements WebMvcConfigurer {
 	private CSRFHandlerInterceptor cSRFHandlerInterceptor;
 	@Autowired
 	private ConfigInterceptor configInterceptor;
+	@Autowired
+	private LogInterceptor logInterceptor;
 	@Autowired
 	private SecurityInterceptor securityInterceptor;
 	
@@ -66,6 +69,9 @@ public class ServletConfig implements WebMvcConfigurer {
 				.excludePathPatterns("/f4d/**",
 						"/sign/**", "/data-groups/view-order/*", "/layer-groups/view-order/*", "/upload-datas", "//issues",
 						"/guide/**", "/css/**", "/externlib/**", "favicon*", "/images/**", "/js/**");
+		registry.addInterceptor(logInterceptor)
+				.addPathPatterns("/**")
+				.excludePathPatterns("/f4d/**",	"/sign/**", "/guide/**", "/css/**", "/externlib/**", "favicon*", "/images/**", "/js/**");
 		registry.addInterceptor(configInterceptor)
 				.addPathPatterns("/**")
 				.excludePathPatterns("/f4d/**", "/sign/**", "/guide/**", "/sample/**", "/css/**", "/externlib/**", "favicon*", "/images/**", "/js/**");
