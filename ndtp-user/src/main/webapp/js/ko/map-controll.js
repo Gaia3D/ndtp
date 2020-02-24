@@ -551,9 +551,7 @@ $(".layerClose").click(function(){
 });
 
 // 가이드 팝업 띄우기
-function goMagoAPIGuide() {
-	var url = "/guide/help";
-	//console.log("test");
+function goMagoAPIGuide(url) {
 	var width = 1200;
 	var height = 800;
 

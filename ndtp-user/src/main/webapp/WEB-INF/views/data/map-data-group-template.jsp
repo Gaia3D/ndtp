@@ -52,7 +52,7 @@
 								[<span style="color:blue">{{userId}}</span>]
 			{{/ifMatch}}
 		{{/ifMatch}}
-						<a href="#" onclick="detailDataGroup('{{dataGroupId}}'); return false;">
+						<a href="/data-groups/{{dataGroupId}}" onclick="detailDataGroup(this.href); return false;">
 							{{dataGroupName}}
 						</a>
 					</td>
