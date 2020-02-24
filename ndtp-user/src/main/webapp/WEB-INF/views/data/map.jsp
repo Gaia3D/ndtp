@@ -703,10 +703,10 @@
 	});
 
 	// 데이터 그룹 상세 정보 조회
-	function detailDataGroup(dataGroupId) {
+	function detailDataGroup(url) {
 		dataGroupDialog.dialog( "open" );
 		$.ajax({
-			url: "/data-groups/" + dataGroupId,
+			url: url,
 			type: "GET",
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 			dataType: "json",
