@@ -51,27 +51,27 @@ public class ServletConfig implements WebMvcConfigurer {
 	private LogInterceptor logInterceptor;
 	@Autowired
 	private SecurityInterceptor securityInterceptor;
-	
+
 	@Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
     }
-	
+
 	/**
 	 * 내부에 List로 저장하기 때문에 순서대로 저장
 	 */
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		log.info(" @@@ ServletConfig addInterceptors @@@@ ");
-		
+
 		registry.addInterceptor(securityInterceptor)
 				.addPathPatterns("/**")
 				.excludePathPatterns("/f4d/**",	"/sign/**", "/guide/**", "/css/**", "/externlib/**", "favicon*", "/images/**", "/js/**");
 		registry.addInterceptor(cSRFHandlerInterceptor)
 			.addPathPatterns("/**")
-			.excludePathPatterns("/f4d/**",	
-					"/sign/**", "/data-groups/view-order/*", "/layer-groups/view-order/*", "/layer/insert", "/layer/update/**", "/upload-datas", 
-					"/guide/**", "/css/**", "/externlib/**", "favicon*", "/images/**", "/js/**");
+			.excludePathPatterns("/f4d/**",
+					"/sign/**", "/data-groups/view-order/*", "/layer-groups/view-order/*", "/layer/insert", "/layer/update/**", "/upload-datas",
+					"/user-groups/role", "/guide/**", "/css/**", "/externlib/**", "favicon*", "/images/**", "/js/**");
 		registry.addInterceptor(logInterceptor)
 				.addPathPatterns("/**")
 				.excludePathPatterns("/f4d/**",	"/sign/**", "/guide/**", "/css/**", "/externlib/**", "favicon*", "/images/**", "/js/**");
