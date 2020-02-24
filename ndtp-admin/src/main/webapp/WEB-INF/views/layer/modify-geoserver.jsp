@@ -67,7 +67,8 @@
 						</div>
 						<form:form id="layer" modelAttribute="layer" method="post" onsubmit="return false;">
 						<form:hidden path="layerId"/>
-						<table class="input-table scope-row">
+						<table class="input-table scope-row" summary="geoserver 레이어 수정 테이블">
+						<caption class="hiddenTag">geoserver 레이어 수정</caption>
 							<colgroup>
 			                    <col class="col-label l" style="width: 15%" >
 			                    <col class="col-input" style="width: 35%" >

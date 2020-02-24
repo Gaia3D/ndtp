@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <div id="layerGroupDialog" class="dialog">
-	<table class="list-table scope-col">
+	<table class="list-table scope-col" summary="2D 레이어 그룹 다이얼로그">
+	<caption class="hiddenTag">2D 레이어 그룹 다이얼로그</caption>
 		<col class="col-number" />
 			<col class="col-name" />
 			<col class="col-toggle" />

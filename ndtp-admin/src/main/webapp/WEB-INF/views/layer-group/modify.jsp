@@ -30,7 +30,8 @@
 						</div>
 						<form:form id="layerGroup" modelAttribute="layerGroup" method="post" onsubmit="return false;">
 						<form:hidden path="layerGroupId"/>
-						<table class="input-table scope-row">
+						<table class="input-table scope-row" summary="2D 레이어 그룹 수정 테이블">
+						<caption class="hiddenTag">2D 레이어 그룹 수정</caption>
 							<col class="col-label l" />
 							<col class="col-input" />
 							<tr>
