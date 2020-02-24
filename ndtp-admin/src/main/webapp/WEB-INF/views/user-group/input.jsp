@@ -34,7 +34,7 @@
 								<col class="col-input" />
 								<tr>
 									<th class="col-label" scope="row">
-										<form:label path="userGroupName">사용자 그룹명</form:label>
+										<form:label path="userGroupName"><spring:message code='user.group.name'/></form:label>
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input">

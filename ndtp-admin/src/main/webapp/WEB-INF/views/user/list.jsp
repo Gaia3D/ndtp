@@ -43,7 +43,7 @@
 											</form:select>
 											<label for="searchValue"><spring:message code='search.word'/></label>
 											<form:input path="searchValue" type="search" cssClass="m" cssStyle="float: right;" />
-										
+
 									</div>
 									<div class="input-set">
 										<label for="startDate"><spring:message code='search.date'/></label>
@@ -109,7 +109,6 @@
 								<col class="col-name" />
 								<col class="col-name" />
 								<col class="col-type" />
-								<col class="col-type" />
 								<col class="col-functions" />
 								<col class="col-functions" />
 								<col class="col-functions" />
@@ -117,20 +116,19 @@
 									<tr>
 										<th scope="col" class="col-checkbox"><label for="chkAll" class="hiddenTag"></label><input type="checkbox" id="chkAll" name="chkAll" /></th>
 										<th scope="col" class="col-number"><spring:message code='number'/></th>
-										<th scope="col">그룹명</th>
+										<th scope="col"><spring:message code='user.group.name'/></th>
 					                    <th scope="col">아이디</th>
 					                    <th scope="col">이름</th>
 					                    <th scope="col">상태</th>
-					                    <th scope="col">등록유형</th>
 					                    <th scope="col">마지막 로그인</th>
+					                    <th scope="col">편집</th>
 					                    <th scope="col">등록일</th>
-					                    <th scope="col">수정/삭제</th>
 									</tr>
 								</thead>
 								<tbody>
 <c:if test="${empty userList}">
 									<tr>
-										<td colspan="10" class="col-none">사용자 목록이 존재하지 않습니다.</td>
+										<td colspan="9" class="col-none">사용자 목록이 존재하지 않습니다.</td>
 									</tr>
 </c:if>
 <c:if test="${!empty userList}">
@@ -142,7 +140,7 @@
 											<input type="checkbox" id="userId_${user.userId}" name="userId" value="${user.userId}" />
 										</td>
 										<td class="col-number">${pagination.rowNumber - status.index}</td>
-										<td class="col-name">
+										<td class="col-name ellipsis">
 											<a href="#" class="view-group-detail" onclick="detailUserGroup('${user.userGroupId}'); return false;">${user.userGroupName }</a>
 										</td>
 										<td class="col-name">${user.userId}</td>
@@ -158,22 +156,17 @@
 											<c:if test="${user.status eq '5' }">삭제</c:if>
 											<c:if test="${user.status eq '6' }">임시비밀번호</c:if>
 										</td>
-										<td class="col-type">${user.status}</td>
 										<td class="col-type">
 											<fmt:parseDate value="${user.lastSigninDate}" var="viewLastSigninDate" pattern="yyyy-MM-dd HH:mm:ss"/>
 											<fmt:formatDate value="${viewLastSigninDate}" pattern="yyyy-MM-dd HH:mm"/>
 										</td>
+					                    <td class="col-type">
+											<a href="/user/modify?userId=${user.userId}" class="linkButton"><spring:message code='modified'/></a>&nbsp;&nbsp;
+											<a href="/user/delete?userId=${user.userId}" onclick="return deleteWarning();" class="linkButton"><spring:message code='delete'/></a>
+					                    </td>
 										<td class="col-type">
 											<fmt:parseDate value="${user.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
 											<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
-										</td>
-										<td class="col-functions">
-											<span class="button-group">
-												<a href="/user/modify?userId=${user.userId}" class="image-button button-modify"><spring:message code='modified'/></a>
-											</span>
-											<span class="button-group">
-												<a href="/user/delete?userId=${user.userId}" onclick="return deleteWarning();" class="image-button button-delete"><spring:message code='delete'/></a>
-											</span>
 										</td>
 									</tr>
 	</c:forEach>
@@ -217,8 +210,8 @@
 	// 사용자 그룹 정보
 	var userGroupDialog = $("#userGroupInfoDialog").dialog({
 		autoOpen: false,
-		width: 400,
-		height: 300,
+		width: 700,
+		height: 400,
 		modal: true,
 		resizable: false
 	});

@@ -49,10 +49,10 @@
 								<col class="col-date" />
 								<thead>
 									<tr>
-										<th scope="col">그룹명</th>
+										<th scope="col"><spring:message code='user.group.name'/></th>
 					                    <th scope="col">그룹Key</th>
-					                    <th scope="col">기본유무</th>
-					                    <th scope="col">사용유무</th>
+					                    <th scope="col">기본 여부</th>
+					                    <th scope="col">사용 여부</th>
 					                    <th scope="col">사용자</th>
 					                    <th scope="col">메뉴</th>
 					                    <th scope="col">Role</th>
@@ -153,7 +153,7 @@
 					                        <a href="/user-group/role?userGroupId=${userGroup.userGroupId}" class="linkButton">수정</a>
 					                    </td>
 					                    <td class="col-type">
-											<a href="/user-group/modify?userGroupId=${userGroup.userGroupId}" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;
+											<a href="/user-group/modify?userGroupId=${userGroup.userGroupId}" onclick="" class="linkButton"><spring:message code='modified'/></a>&nbsp;&nbsp;
 											<a href="/user-group/delete?userGroupId=${userGroup.userGroupId}" onclick="return deleteWarning();" class="linkButton"><spring:message code='delete'/></a>
 					                    </td>
 					                    <td class="col-date">
