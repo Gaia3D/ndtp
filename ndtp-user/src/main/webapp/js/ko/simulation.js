@@ -491,7 +491,13 @@ var Simulation = function(magoInstance, viewer, $) {
 			var entitis = dataSource.entities._entities._array;
 			
 			for(var index in entitis) {
-				var entitiyObj = entitis[index]; 
+				var entitiyObj = entitis[index];
+
+				debugger;
+				let destrictPositions = entitiyObj.polygon._hierarchy._value.positions;
+				let destrictArea = getArea(destrictPositions);
+				console.log(destrictArea);
+
 //				entitiyObj.polygon.extrudedHeight = 10; 
 				var glowingLine = _viewer.entities.add(entitiyObj)
 			}
@@ -756,7 +762,6 @@ var Simulation = function(magoInstance, viewer, $) {
             var bs = Cesium.BoundingSphere.fromPoints(activeShapePoints);
             var position = Cesium.Ellipsoid.WGS84.scaleToGeodeticSurface(bs.center);
             var areaVal = parseInt(getArea(activeShapePoints));
-            debugger;
             shape = _viewer.entities.add({
                 name     : "Polygon for area measurement",
                 areaVal : areaVal,
@@ -908,7 +913,7 @@ var Simulation = function(magoInstance, viewer, $) {
         
         handler.setInputAction(function (event) {
             var earthPosition = _viewer.scene.pickPosition(event.position);
-        	console.log('폴리곤 : ', longitudeString, latitudeString);
+			debugger;
         	if(locaMonitor) {
                 var ellipsoid = _viewer.scene.globe.ellipsoid;
                 var cartographic = ellipsoid.cartesianToCartographic(earthPosition);
@@ -917,6 +922,8 @@ var Simulation = function(magoInstance, viewer, $) {
             	$('#monitorLon').text(longitudeString);
             	$('#monitorLat').text(latitudeString);	
         	}
+			console.log('1. 폴리곤 : ', longitudeString, latitudeString);
+
             if (Cesium.defined(earthPosition)) {
                 var cartographic = Cesium.Cartographic.fromCartesian(earthPosition);
                 var tempPosition = Cesium.Cartesian3.fromDegrees(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude));
@@ -1043,7 +1050,7 @@ var Simulation = function(magoInstance, viewer, $) {
 
         handler.setInputAction(function (event) {
             var earthPosition = _viewer.scene.pickPosition(event.position);
-        	console.log('폴리곤 : ', earthPosition);
+        	console.log('2. 폴리곤 : ', earthPosition);
             terminateShape();
             _polygons.push(nowPolygon);
             clacArea();
