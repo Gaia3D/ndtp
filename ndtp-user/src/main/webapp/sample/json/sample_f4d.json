@@ -39,6 +39,23 @@
             "heading": 0,
             "pitch": 0,
 			"roll": 0
+		},
+		{
+			"attributes": {
+				"isPhysical": true,
+				"nodeType": "workshop",
+				"propertyFilter" :false
+			},
+			"children": [],
+			"data_key": "Tile_1",
+			"data_name": "Tile_1",
+			"mapping_type": "origin",
+            "latitude": 37.58370288958673,
+            "longitude": 126.61055424717905,
+            "height": 100,
+            "heading": 0,
+            "pitch": 0,
+			"roll": 0
 		}
 	],
 	"parent": 0,

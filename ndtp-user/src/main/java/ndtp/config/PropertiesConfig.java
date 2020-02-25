@@ -55,4 +55,6 @@ public class PropertiesConfig {
     private String dataAttributeDir;
     private String dataAttributeUploadDir;
     private String dataObjectAttributeUploadDir;
+    
+    private String guideDataServiceDir;
 }

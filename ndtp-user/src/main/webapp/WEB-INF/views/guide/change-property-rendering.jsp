@@ -41,13 +41,13 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<input type="radio" id="api5-opt1" name="api5-p1" value="true" />
-			<label for="api5-opt1">표시</label>
+			<label for="api5-opt1">true</label>
 			<input type="radio" id="api5-opt2" name="api5-p1" value="false" checked />
-			<label for="api5-opt2">비표시</label><br/>
+			<label for="api5-opt2">false</label><br/>
 			<label for="api5-p2">projectId</label>
 			<input type="text" data-require="true" id="api5-p2" value="sample" disabled><br/>
 			<label for="api5-p3">property</label>
-			<input type="text" data-require="true" id="api5-p3" value="propertyFilter=true">
+			<input type="text" data-require="true" id="api5-p3" value="propertyFilter" disabled>
 		</div>
 		<br/> 
 		<input type="button" id="changePropertyRendering" value="Run" class="popupBtn">
@@ -61,7 +61,8 @@
 		var isFalseBoolean = (flag === 'true');
 		var projectId = $('#api5-p2').val();
 		var property = $('#api5-p3').val();
+		var propertyValue = property+"="+isFalseBoolean;
 
-		changePropertyRenderingAPI(MAGO3D_INSTANCE2, isFalseBoolean, projectId, property);
+		changePropertyRenderingAPI(MAGO3D_INSTANCE2, true, projectId, propertyValue);
 	}
 </script>
