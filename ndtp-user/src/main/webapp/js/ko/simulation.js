@@ -430,6 +430,19 @@ var Simulation = function(magoInstance, viewer, $) {
         debugger;
         sejeonjochiwonPoly();
 	});
+
+	$('#run_sample_raster').click(function() {
+		var layers = viewer.scene.imageryLayers;
+
+		layers.addImageryProvider(new Cesium.SingleTileImageryProvider({
+			url : '/images/mapgeoref.png',
+			rectangle : Cesium.Rectangle.fromDegrees(127.2603901, 36.5187878, 127.2875007, 36.5349324)
+		}));
+
+		_viewer.scene.camera.flyTo({
+			destination : Cesium.Cartesian3.fromDegrees(127.2739454, 36.5268601, 600.0)
+		});
+	});
 	
 	function sejeonjochiwonPoly() {
 		//_geojsonSample
@@ -508,7 +521,6 @@ var Simulation = function(magoInstance, viewer, $) {
 				    }
 				})
 			}
-			debugger;
 			setTimeout(function() {
 				stopLoading();
 		        _viewer.scene.camera.flyTo({
@@ -951,7 +963,7 @@ var Simulation = function(magoInstance, viewer, $) {
 								// 3. 폴리곤 좌표정보를 찾는다.
 								const pro = pickedFeature.id.polygon.hierarchy._value.positions[i];
 								var d = Cesium.Cartesian3.distance(pro, center);
-								
+								debugger;
 								resaclePoly(center.x, center.y, pro);
 							}
 							
@@ -1021,6 +1033,7 @@ var Simulation = function(magoInstance, viewer, $) {
     }
 
 	function resaclePoly(centerX, centerY, polyObj) {
+    	debugger;
 		// 해당 좌표들을 가중치만큼 재 조정한다.
 		if(polyObj.x <= centerX && polyObj.y >= centerY) {
 			// 외쪽 상단 위도 + 경도 -
@@ -1278,8 +1291,6 @@ var Simulation = function(magoInstance, viewer, $) {
     
     var constProcUploadDialog = $('#constructionProcessUploadDialog').dialog({
 		autoOpen: false,
-		width: 370,
-		height: 200,
 		modal: true,
 		overflow : "auto",
 		resizable: false
@@ -1381,6 +1392,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	})
 	
 	$('#upload_constructionProcess').click(function() {
+		debugger;
         var form = $('#construc_proc_file_upload')[0];
         startLoading();
 	    // Create an FormData object 
@@ -1479,18 +1491,14 @@ var Simulation = function(magoInstance, viewer, $) {
 	}
 	
 	function dispConstructProcessModel(index) {
-		debugger;
-		
 		for(var i = 0; i < 6; i++) {
 			_viewer.entities.getById(_bsConstructProcessModels[i].id).show = false
 		}
 		for(var i = 0; i < index+1; i++) {
 			_viewer.entities.getById(_bsConstructProcessModels[i].id).show = true
 		}
-		
 	}
 }
-
 
 var SampleJsonSejon = [
 	   {

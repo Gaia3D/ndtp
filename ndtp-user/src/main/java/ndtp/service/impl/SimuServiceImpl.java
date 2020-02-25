@@ -20,6 +20,7 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import ndtp.domain.ConsType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +50,37 @@ public class SimuServiceImpl {
 		List<String> result = new ArrayList<String>();
 		for(MultipartFile mtf : files) {
 			String Name = mtf.getOriginalFilename();
-			result.add(this.restore(mtf, ft));
+			result.add(this.restoreByStroeShp(mtf, ft));
+		}
+		return result;
+	}
+
+
+	@Transactional
+	public List<String> procConstProc(SimFileMaster sfm) {
+		String Path = "";
+		List<String> result = new ArrayList<String>();
+		for(MultipartFile mtf : sfm.getFiles()) {
+			String Name = mtf.getOriginalFilename();
+			if (sfm.getConsTypeString().equals("0")) {
+				sfm.setConsType(ConsType.StepOne);
+			} else if (sfm.getConsTypeString().equals("1")) {
+				sfm.setConsType(ConsType.StepTwo);
+			} else if  (sfm.getConsTypeString().equals("2")) {
+				sfm.setConsType(ConsType.StepThree);
+			} else if  (sfm.getConsTypeString().equals("3")) {
+				sfm.setConsType(ConsType.StepFour);
+			} else if  (sfm.getConsTypeString().equals("4")) {
+				sfm.setConsType(ConsType.StepFive);
+			} else if  (sfm.getConsTypeString().equals("5")) {
+				sfm.setConsType(ConsType.StepSix);
+			}
+
+			if(sfm.getCityTypeString().equals("s")) {
+				result.add(this.restoreByConstProc(mtf, FileType.CONSTPROCSEJON, sfm.getConsType(), sfm.getConsRatio()));
+			} else if(sfm.getSaveFileType().equals("p")) {
+				result.add(this.restoreByConstProc(mtf, FileType.CONSTPROCBUSAN, sfm.getConsType(), sfm.getConsRatio()));
+			}
 		}
 		return result;
 	}
@@ -59,7 +90,7 @@ public class SimuServiceImpl {
 		String Path = "";
 		List<String> result = new ArrayList<String>();
 
-		result.add(this.restore(cpr, FileType.IMGFILE));
+		result.add(this.restoreByImg(cpr, FileType.IMGFILE));
 		return result;
 	}
 	
@@ -80,7 +111,7 @@ public class SimuServiceImpl {
 		}
 	}
 
-	private String restore(MultipartFile multipartFile, FileType ft) {
+	private String restoreByStroeShp(MultipartFile multipartFile, FileType ft) {
 		String url = null;
 
 		String os = System.getProperty("os.name").toLowerCase();
@@ -132,7 +163,52 @@ public class SimuServiceImpl {
 		return url;
 	}
 
-	private String restore(CityPlanResult cpr, FileType ft) {
+	private String restoreByConstProc(MultipartFile multipartFile, FileType ft, ConsType cpy, Integer consRatio) {
+		String url = null;
+
+		String os = System.getProperty("os.name").toLowerCase();
+		if (os.contains("mac")) {
+			PREFIX_URL = "/Users/junho/data/mago3d/";
+			SAVE_PATH = "/Users/junho/data/mago3d/";
+		}
+
+		try {
+			// 파일 정보
+			String originFilename = multipartFile.getOriginalFilename();
+			String extName = originFilename.substring(originFilename.lastIndexOf("."), originFilename.length());
+			Long size = multipartFile.getSize();
+
+			// 서버에서 저장 할 파일 이름
+			String saveFileName = genSaveFileName(extName);
+
+			System.out.println("originFilename : " + originFilename);
+			System.out.println("extensionName : " + extName);
+			System.out.println("saveFileName : " + saveFileName);
+
+
+			this.writeFile(multipartFile, saveFileName, SAVE_PATH);
+			SimFileMaster sfm = SimFileMaster.builder()
+					.originFileName(originFilename)
+					.saveFileName(saveFileName)
+					.saveFilePath(SAVE_PATH)
+					.saveFileType(ft)
+					.consType(cpy)
+					.consRatio(consRatio)
+					.build();
+			int result = simuMapper.insertConsProcFile(sfm);
+
+			url = PREFIX_URL + saveFileName;
+		}
+		catch (IOException e) {
+			// 원래라면 RuntimeException 을 상속받은 예외가 처리되어야 하지만
+			// 편의상 RuntimeException을 던진다.
+			// throw new FileUploadException();
+			throw new RuntimeException(e);
+		}
+		return url;
+	}
+
+	private String restoreByImg(CityPlanResult cpr, FileType ft) {
 		String url = null;
 		MultipartFile multipartFile = cpr.getFiles();
 
@@ -183,7 +259,7 @@ public class SimuServiceImpl {
 		}
 		return url;
 	}
-	
+
 	// 현재 시간을 기준으로 파일 이름 생성
 	private String genSaveFileName(String extName) {
 		String fileName = "";

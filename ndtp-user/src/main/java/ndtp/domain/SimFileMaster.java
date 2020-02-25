@@ -19,12 +19,13 @@ public class SimFileMaster {
 	private String saveFilePath;
 	private Date createDt;
 	private FileType saveFileType;
+	private ConsType consType;
 	private Float lon;
 	private Float lat;
 	private Float alt;
-	private String consType;
-	private String cityType;
-	private Integer cons_ratio;
+	private String consTypeString;
+	private String cityTypeString;
+	private Integer consRatio;
 	private String objectid;
 	private MultipartFile[] files;
 }

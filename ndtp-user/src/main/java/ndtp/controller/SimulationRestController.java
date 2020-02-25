@@ -55,7 +55,7 @@ public class SimulationRestController {
 	public Object select() {
 		SimFileMaster sfm =  this.simServiceImpl.getSimFileMaster();
 //		String resultFullPath = sfm.getSaveFilePath() + sfm.getSaveFileName();
-		String resultFullPath = "C://data/Apartment_Building_26_obj/sejongbuilding.geojson";
+		String resultFullPath = "C://data/Apartment_Building_26_obj/schoolphill.geojson";
 		File fi = new File(resultFullPath.trim());
 		try {
 			ObjectMapper mapper = new ObjectMapper();
@@ -70,7 +70,8 @@ public class SimulationRestController {
 
     @RequestMapping(value = "/cityConstProcUpload", method = RequestMethod.POST)
     public List<String> upload(SimFileMaster sfm) {
-//    	List<String> result = this.simServiceImpl.procStroeShp(files);
+		System.out.println(sfm.toString());
+    	List<String> result = this.simServiceImpl.procConstProc(sfm);
 		return null;
         // PROCESS...
     }
