@@ -302,7 +302,7 @@ public class DataGroupRestController {
 	 * @return
 	 */
 	@PostMapping("/{dataGroupId}")
-	public Map<String, Object> update(HttpServletRequest request, @PathVariable Integer dataGroupId, @ModelAttribute DataGroup dataGroup) {
+	public Map<String, Object> update(HttpServletRequest request, @PathVariable Integer dataGroupId, @Valid @ModelAttribute DataGroup dataGroup, BindingResult bindingResult) {
 		
 		log.info("@@@@@ update dataGroup = {}", dataGroup);
 		
@@ -319,8 +319,16 @@ public class DataGroupRestController {
 				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
 				result.put("errorCode", "input.invalid");
 				result.put("message", message);
-				
 				return result;
+			}
+			
+			if(bindingResult.hasErrors()) {
+				message = bindingResult.getAllErrors().get(0).getDefaultMessage();
+				log.info("@@@@@ message = {}", message);
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", errorCode);
+				result.put("message", message);
+	            return result;
 			}
 			
 			dataGroup.setUserId(userSession.getUserId());

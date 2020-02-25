@@ -139,8 +139,8 @@
 
 					<tr>
 						<td class="col-number">${pagination.rowNumber - status.index }</td>
-						<td class="col-name ellipsis" style="max-width: 300px;">${dataInfo.dataGroupName }</td>
-						<td class="col-name">
+						<td class="col-name ellipsis" style="max-width: 200px;">${dataInfo.dataGroupName }</td>
+						<td class="col-name ellipsis" style="max-width: 400px;">
 		<c:if test="${dataInfo.dataGroupTarget eq 'admin'}">
 							<a href="/data-adjust-log/modify?dataId=${dataInfo.dataId}">${dataInfo.dataName }</a>
 		</c:if>

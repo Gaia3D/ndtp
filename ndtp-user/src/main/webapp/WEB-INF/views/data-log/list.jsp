@@ -138,7 +138,7 @@
 							<input type="checkbox" id="dataInfoLogId_${dataInfoLog.dataLogId}" name="dataLogId" value="${dataInfoLog.dataLogId}" />
 						</td>
 						<td class="col-number">${pagination.rowNumber - status.index }</td>
-						<td class="col-name">${dataInfoLog.dataGroupName}</td>
+						<td class="col-name ellipsis" style="max-width: 200px;">${dataInfoLog.dataGroupName}</td>
 						<td class="col-name">${dataInfoLog.dataName}</td>
 						<td class="col-name">${dataInfoLog.userId}</td>
 						<td class="col-name">${dataInfoLog.dataType}</td>

@@ -137,7 +137,7 @@
 <c:if test="${converterJob.converterTemplate eq 'single-realistic-mesh'}">단일 point cloud</c:if>
 <c:if test="${converterJob.converterTemplate eq 'splitted-realistic-mesh'}">분할 point cloud</c:if>
 						</td>
-						<td class="col-name">${converterJob.title }</td>
+						<td class="col-name ellipsis" style="max-width:400px;">${converterJob.title }</td>
 						<td class="col-count"><fmt:formatNumber value="${converterJob.usf}" type="number"/>
 <c:if test="${converterJob.usf ge 1 and converterJob.usf lt 10}"> m</c:if>
 <c:if test="${converterJob.usf ge 0.1 and converterJob.usf lt 1 }"> cm</c:if>

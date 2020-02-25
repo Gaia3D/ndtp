@@ -107,8 +107,8 @@
 					<span class="icon-glyph glyph-emark-dot color-warning"></span>
 				</th>
 				<td class="col-input">
-					<form:input path="dataName" class="l" />
- 						<form:errors path="dataName" cssClass="error" />
+					<form:input path="dataName" class="l" maxlength="255" />
+ 					<form:errors path="dataName" cssClass="error" />
 				</td>
 				<th class="col-label" scope="row">
 					<form:label path="dataGroupName">데이터 그룹</form:label>
@@ -116,7 +116,7 @@
 				</th>
 				<td class="col-input">
 					<form:hidden path="dataGroupId" />
-						<form:input path="dataGroupName" cssClass="ml" readonly="true" />
+					<form:input path="dataGroupName" cssClass="ml" readonly="true" />
 					<input type="button" id="dataGroupButtion" value="데이터 그룹 선택" />
 				</td>
 			</tr>
@@ -169,7 +169,7 @@
 					<form:label path="description"><spring:message code='description'/></form:label>
 				</th>
 				<td colspan="3" class="col-input">
-					<form:input path="description" class="xl" />
+					<form:input path="description" class="xl" maxlength="255" />
  					<form:errors path="description" cssClass="error" />
 				</td>
 			</tr>
@@ -318,15 +318,22 @@
 				if(file !== undefined && file.name !== undefined) {
 	                console.log("file name = " + file.name);
 	                fileUploadDialog.dialog( "close" );
-					if(response.errorCode === undefined || response.errorCode === null) {
-						uploadFileResultCount ++;
-						if(uploadFileCount === uploadFileResultCount) {
-						    alert("업로딩을 완료 하였습니다.");
-						    uploadFileCount = 0;
-						    uploadFileResultCount = 0;
-						}
+	                if(response.statusCode <= 200) {
+	                	if(response.errorCode === undefined || response.errorCode === null) {
+	                		uploadFileResultCount ++;
+							if(uploadFileCount === uploadFileResultCount) {
+							    alert("업로딩을 완료 하였습니다.");
+							    uploadFileCount = 0;
+							    uploadFileResultCount = 0;
+							}
+		                } else {
+		                	alertMessage(response);
+		                }
 	                } else {
-	                    alertMessage(response);
+                        alertMessage(response);
+	                	//alert(JS_MESSAGE[response.errorCode]);
+						//alert(response.message);
+						console.log("---- " + response.message);
 	                }
 	            } else {
 					console.log("------- success response = " + response);
@@ -356,6 +363,7 @@
 			$("#altitude").focus();
 			return false;
 		}
+		// TODO : 위치 위도, 경도, 높이 숫자 validation
 	}
 	
 	function alertMessage(response) {

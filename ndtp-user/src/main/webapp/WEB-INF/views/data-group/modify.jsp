@@ -51,7 +51,7 @@
 					<span class="icon-glyph glyph-emark-dot color-warning"></span>
 				</th>
 				<td class="col-input">
-					<form:input path="dataGroupName" cssClass="l" />
+					<form:input path="dataGroupName" cssClass="l" maxlength="100" />
 					<form:errors path="dataGroupName" cssClass="error" />
 				</td>
 			</tr>
@@ -231,7 +231,8 @@
 						alert(JS_MESSAGE["update"]);
 						window.location.reload();
 					} else {
-						alert(JS_MESSAGE[msg.errorCode]);
+						//alert(JS_MESSAGE[msg.errorCode]);
+						alert(msg.message);
 						console.log("---- " + msg.message);
 					}
 					updatedataGroupFlag = true;
