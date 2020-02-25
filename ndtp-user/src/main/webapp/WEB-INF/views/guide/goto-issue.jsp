@@ -71,11 +71,11 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api25-p1">projectId</label>
-			<input type="text" data-require="true" id="api25-p1" value="ifc"><br>
+			<input type="text" data-require="true" id="api25-p1" value="gotoIssueSample"><br>
 			<label for="api25-p2">projectData</label>
-			<input type="text" data-require="true" id="api25-p2" value="ProjectDataObject"><br>
+			<input type="text" data-require="true" id="api25-p2" value="ProjectDataObject" disabled><br>
 			<label for="api25-p3">projectDataFolder</label>
-			<input type="text" data-require="true" id="api25-p3" value="factory"><br>
+			<input type="text" data-require="true" id="api25-p3" value="sample" disabled><br>
 			<label for="api25-p4">issueId</label>
 			<input type="text" data-require="true" id="api25-p4" value="128"><br>
 			<label for="api25-p5">issueType</label>
@@ -98,7 +98,52 @@
 	var gotoIssue = function() {
 
 		var projectId = $('#api25-p1').val();
-		var projectData = $('#api25-p2').val();
+		var projectData  = {
+				"attributes" : {
+					"isPhysical" : false,
+					"nodeType" : "root",
+					"projectType" : "workshop",
+					"specularLighting" : true
+				},
+				"children" : [ {
+					"attributes" : {
+						"isPhysical" : true,
+						"nodeType" : "workshop"
+					},
+					"children" : [],
+					"data_key" : "SOCIALROOM",
+					"data_name" : "SOCIALROOM",
+					"mapping_type" : "origin",
+					"latitude" : 37.58358288958673,
+					"longitude" : 126.60890424717905,
+					"height" : 100,
+					"heading" : 0,
+					"pitch" : 0,
+					"roll" : 0
+				}, {
+					"attributes" : {
+						"isPhysical" : true,
+						"nodeType" : "workshop"
+					},
+					"children" : [],
+					"data_key" : "STUDENTROOM",
+					"data_name" : "STUDENTROOM",
+					"mapping_type" : "origin",
+					"latitude" : 37.58358288958673,
+					"longitude" : 126.61055424717905,
+					"height" : 100,
+					"heading" : 0,
+					"pitch" : 0,
+					"roll" : 0
+				} ],
+				"parent" : 0,
+				"depth" : 1,
+				"view_order" : 2,
+				"data_key" : "sample",
+				"data_name" : "sample",
+				"mapping_type" : "origin"
+			};
+
 		var projectDataFolder = $('#api25-p3').val();
 		var issueId = $('#api25-p4').val();
 		var issueType = $('#api25-p5').val();
