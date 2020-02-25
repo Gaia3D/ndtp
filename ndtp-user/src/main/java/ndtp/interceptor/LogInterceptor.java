@@ -87,7 +87,9 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
     	}
     	
     	if(isMultipartURI) {
-    		accessLog.setParameters(getMultipartRequestParameters(request));
+    		// TODO url 매핑이 귀찮아서 임시로
+    		//accessLog.setParameters(getMultipartRequestParameters(request));
+    		accessLog.setParameters(getRequestParameters(request));
     	} else {
     		accessLog.setParameters(getRequestParameters(request));
     	}
