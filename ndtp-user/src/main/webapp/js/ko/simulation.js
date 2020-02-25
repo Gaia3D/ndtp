@@ -82,6 +82,10 @@ var Simulation = function(magoInstance) {
 	//경관 분석 위치지정
 	$('#solarAnalysis .drawObserverPoint').click(function(){
 		var $this = $(this);
+		if(!solarMode) {
+			alert('분석 시작 후 위치를 선택해주세요.');
+			return;
+		}
 		magoManager.once(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(e){
 			deleteSolarMark();
 			if(solarMode) {
@@ -100,6 +104,8 @@ var Simulation = function(magoInstance) {
 				};
 				var om = magoManager.objMarkerManager.newObjectMarker(options, magoManager);
 				om.solarAnalysis = true;
+				
+				magoManager.flyTo(geoCoord.longitude, geoCoord.latitude, 300, 2);
 			}
 		});
 	});
@@ -167,7 +173,7 @@ var Simulation = function(magoInstance) {
 	var SEJONG_TILE_NAME = 'SEJONG_TILE';
 	var SEJONG_POSITION = new Cesium.Cartesian3(-3108649.1049808883, 4086368.566202183, 3773910.6726226895);
 	var SEJONG_ROTATION = {heading : 0, pitch : -90, roll:0};
-	var ECHO_DATA_NAME = 'echo';
+	var ECHO_DATA_NAME = 'busan';
 	var ECHO_POSITION = new Cesium.Cartesian3(-3281184.6256381427, 4064587.5919688237, 3647565.7181758513);
 	var ECHO_ROTATION = {heading : 0, pitch : -45, roll:0};
 	var slider;
@@ -251,11 +257,11 @@ var Simulation = function(magoInstance) {
 		var f4ds = evt.f4d;
 		for(var i in f4ds) {
 			var f4d = f4ds[i];
-			if(f4d.data.projectFolderName !== ECHO_DATA_NAME && f4d.data.projectId !== ECHO_DATA_NAME) {
+			if(!f4d.data.attributes.simulation) {
 				continue;
 			}
 			
-			var node = magoManager.hierarchyManager.getNodeByDataKey(ECHO_DATA_NAME, f4d.data.nodeId);
+			var node = magoManager.hierarchyManager.getNodeByDataKey(f4d.data.projectId, f4d.data.nodeId);
 			var data = node.data;
 			magoManager.effectsManager.addEffect(data.nodeId, new Mago3D.Effect({
 				//effectType      : pitch > 0 ? "zBounceLinear":"zBounceSpring",
@@ -425,7 +431,8 @@ var Simulation = function(magoInstance) {
 		observer.observe(observerTarget, observerConfig);
 	}
 	var constructionProcessReset = function() {
-		simulating = false;
+		simulatingSejong = false;
+		simulatingEcho = false;
 		//레인지, 레전드 끄기
 		$('#csRange, #constructionProcess .profileInfo').hide();
 	}

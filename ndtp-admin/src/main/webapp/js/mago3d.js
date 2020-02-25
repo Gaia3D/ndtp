@@ -17288,8 +17288,8 @@ Camera.prototype.setTrack = function(node, option)
 
 		if (option.trackCameraOffset)
 		{
-			this.trackCameraOffsetY = defaultValue(option.trackCameraOffset.y, this.trackCameraOffsetY);
-			this.trackCameraOffsetZ = defaultValue(option.trackCameraOffset.z, this.trackCameraOffsetZ);
+			this.trackCameraOffsetY = defaultValueCheckLength(option.trackCameraOffset.y, this.trackCameraOffsetY);
+			this.trackCameraOffsetZ = defaultValueCheckLength(option.trackCameraOffset.z, this.trackCameraOffsetZ);
 		}
 	}
 };
@@ -19014,15 +19014,15 @@ var DynamicColor = function(option)
     
 	if (option) 
 	{
-		this.redFactorSpeed = defaultValue(option.redFactorSpeed, 1.0);
-		this.greenFactorSpeed = defaultValue(option.greenFactorSpeed, 1.0);
-		this.blueFactorSpeed = defaultValue(option.blueFactorSpeed, 2.0);
-		this.alphaFactorSpeed = defaultValue(option.alphaFactorSpeed, 2.0);
+		this.redFactorSpeed = defaultValueCheckLength(option.redFactorSpeed, 1.0);
+		this.greenFactorSpeed = defaultValueCheckLength(option.greenFactorSpeed, 1.0);
+		this.blueFactorSpeed = defaultValueCheckLength(option.blueFactorSpeed, 2.0);
+		this.alphaFactorSpeed = defaultValueCheckLength(option.alphaFactorSpeed, 2.0);
         
-		this.redFactor = defaultValue(option.redFactor, 1.0);
-		this.greenFactor = defaultValue(option.greenFactor, 1.0);
-		this.blueFactor = defaultValue(option.blueFactor, 1.0);
-		this.alphaFactor = defaultValue(option.alphaFactor, 1.0);
+		this.redFactor = defaultValueCheckLength(option.redFactor, 1.0);
+		this.greenFactor = defaultValueCheckLength(option.greenFactor, 1.0);
+		this.blueFactor = defaultValueCheckLength(option.blueFactor, 1.0);
+		this.alphaFactor = defaultValueCheckLength(option.alphaFactor, 1.0);
 	}
 };
 
@@ -28976,10 +28976,10 @@ MagoManager.prototype.instantiateStaticModel = function(attributes)
 	
 	var longitude = attributes.longitude;
 	var latitude = attributes.latitude;
-	var altitude = parseFloat(defaultValue(attributes.height, 0));
-	var heading = parseFloat(defaultValue(attributes.heading, 0));
-	var pitch = parseFloat(defaultValue(attributes.pitch, 0));
-	var roll = parseFloat(defaultValue(attributes.roll, 0));
+	var altitude = parseFloat(defaultValueCheckLength(attributes.height, 0));
+	var heading = parseFloat(defaultValueCheckLength(attributes.heading, 0));
+	var pitch = parseFloat(defaultValueCheckLength(attributes.pitch, 0));
+	var roll = parseFloat(defaultValueCheckLength(attributes.roll, 0));
 	
 	var node = this.hierarchyManager.getNodeByDataKey(projectId, instanceId);
 	if (node === undefined)
@@ -29637,10 +29637,10 @@ MagoManager.prototype.callAPI = function(api)
 	{	
 		//수정필요, 카메라가 세슘카메라
 		var camera = this.scene.camera;
-		var heading = defaultValue(api.getHeading(), Cesium.Math.toDegrees(camera.heading));
-		var pitch = defaultValue(api.getPitch(), Cesium.Math.toDegrees(camera.pitch));
-		var roll = defaultValue(api.getRoll(), Cesium.Math.toDegrees(camera.roll));
-		var duration = defaultValue(api.getDuration(), 0);
+		var heading = defaultValueCheckLength(api.getHeading(), Cesium.Math.toDegrees(camera.heading));
+		var pitch = defaultValueCheckLength(api.getPitch(), Cesium.Math.toDegrees(camera.pitch));
+		var roll = defaultValueCheckLength(api.getRoll(), Cesium.Math.toDegrees(camera.roll));
+		var duration = defaultValueCheckLength(api.getDuration(), 0);
 
 		if (this.isCesiumGlobe())
 		{
@@ -40412,21 +40412,21 @@ var Policy = function()
 	this.pointsCloudSettings = {};
 	if (defined(policy)) 
 	{
-		this.pointsCloudSettings.maxPartitionsLod0 = defaultValue(policy.maxPartitionsLod0, 4);
-		this.pointsCloudSettings.maxPartitionsLod1 = defaultValue(policy.maxPartitionsLod1, 2);
-		this.pointsCloudSettings.maxPartitionsLod2orLess = defaultValue(policy.maxPartitionsLod2OrLess, 1);
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam0m = 1.0/defaultValue(policy.maxRatioPointsDist0m, 10.0);
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam100m = 1.0/defaultValue(policy.maxRatioPointsDist100m, 120.0);
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam200m = 1.0/defaultValue(policy.maxRatioPointsDist200m, 240.0);
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam400m = 1.0/defaultValue(policy.maxRatioPointsDist400m, 480.0);
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam800m = 1.0/defaultValue(policy.maxRatioPointsDist800m, 960.0);
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam1600m = 1.0/defaultValue(policy.maxRatioPointsDist1600m, 1920.0);
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCamMoreThan1600m = 1.0/defaultValue(policy.maxRatioPointsDistOver1600m, 3840.0);
-		this.pointsCloudSettings.maxPointSize = defaultValue(policy.maxPointSizeForPc, 40.0);
-		this.pointsCloudSettings.minPointSize = defaultValue(policy.minPointSizeForPc, 3.0);
-		this.pointsCloudSettings.pendentPointSize = defaultValue(policy.pendentPointSizeForPc, 60.0);
-		this.pointsCloudSettings.minHeightRainbow = defaultValue(policy.minHeight_rainbow_loc, 0.0);
-		this.pointsCloudSettings.maxHeightRainbow = defaultValue(policy.maxHeight_rainbow_loc, 100.0);
+		this.pointsCloudSettings.maxPartitionsLod0 = defaultValueCheckLength(policy.maxPartitionsLod0, 4);
+		this.pointsCloudSettings.maxPartitionsLod1 = defaultValueCheckLength(policy.maxPartitionsLod1, 2);
+		this.pointsCloudSettings.maxPartitionsLod2orLess = defaultValueCheckLength(policy.maxPartitionsLod2OrLess, 1);
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam0m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist0m, 10.0);
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam100m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist100m, 120.0);
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam200m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist200m, 240.0);
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam400m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist400m, 480.0);
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam800m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist800m, 960.0);
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam1600m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist1600m, 1920.0);
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCamMoreThan1600m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDistOver1600m, 3840.0);
+		this.pointsCloudSettings.maxPointSize = defaultValueCheckLength(policy.maxPointSizeForPc, 40.0);
+		this.pointsCloudSettings.minPointSize = defaultValueCheckLength(policy.minPointSizeForPc, 3.0);
+		this.pointsCloudSettings.pendentPointSize = defaultValueCheckLength(policy.pendentPointSizeForPc, 60.0);
+		this.pointsCloudSettings.minHeightRainbow = defaultValueCheckLength(policy.minHeight_rainbow_loc, 0.0);
+		this.pointsCloudSettings.maxHeightRainbow = defaultValueCheckLength(policy.maxHeight_rainbow_loc, 100.0);
 	}
 	else 
 	{
@@ -57254,6 +57254,111 @@ TinTerrainManager.prototype.render = function(magoManager, bDepth, renderType, s
 'use strict';
 
 /**
+ * 메세지
+ * 
+ * @class
+ */
+var Message = function(i18next, message) 
+{
+	this.handle  = i18next;
+	this.message = message || MessageSource;
+};
+
+/**
+ * 메세지 클래스 초기화
+ *
+ * @param {Function} callback
+ */
+Message.prototype.init = function (callback)
+{
+	var h = this.handle;
+	this.handle.use(i18nextXHRBackend)
+		.use(i18nextBrowserLanguageDetector)
+		.init({
+			// Useful for debuging, displays which key is missing
+			debug: false,
+
+			detection: {
+				// keys or params to lookup language from
+				lookupQuerystring  : 'lang',
+				lookupCookie       : 'i18nextLang',
+				lookupLocalStorage : 'i18nextLang',
+			},
+    
+			// If translation key is missing, which lang use instead
+			fallbackLng: 'en',
+
+			resources: this.message,
+
+			// all, languageOnly
+			load: "languageOnly",
+
+			ns        : ['common'],
+			// Namespace to use by default, when not indicated
+			defaultNS : 'common',
+    
+			keySeparator     : ".",
+			nsSeparator      : ":",
+			pluralSeparator  : "_",
+			contextSeparator : "_"
+
+		}, function(err, t)
+		{
+			console.log("detected user language: " + h.language);
+			console.log("loaded languages: " + h.languages.join(', '));
+			h.changeLanguage(h.languages[0]);
+			callback(err, t);
+		});
+};
+
+/**
+ * 메세지 핸들러를 가져온다.
+ *
+ * @returns {i18next} message handler
+ */
+Message.prototype.getHandle = function ()
+{
+	return this.handle;
+};
+
+/**
+ * 메세지를 가져온다.
+ *
+ * @returns {Object} message
+ */
+Message.prototype.getMessage = function ()
+{
+	return this.message;
+};
+
+'use strict';
+var MessageSource = {};
+MessageSource.en = {
+  "common": {
+    "welcome" : "Welcome",
+    "error": {
+        "title" : "Error",
+        "construct" : {
+            "create" : "This object should be created using new."
+        }
+    }
+  }
+};
+MessageSource.ko = {
+    "common": {
+      "welcome" : "환영합니다.",
+      "error": {
+          "title" : "오류",
+          "construct" : {
+              "create" : "이 객체는 new 를 사용하여 생성해야 합니다."
+          }
+      }
+    }
+  };
+
+'use strict';
+
+/**
  * This represent Arc feature in 2D
  * @class Arc2D
  */
@@ -58804,7 +58909,7 @@ var Cluster = function(point2DList, depth, magoMangaer, customRenderFunc)
 		throw new Error('point2DList is required');
 	}
 	this.point2DList = point2DList;
-	this.depth = defaultValue(depth, 8);
+	this.depth = defaultValueCheckLength(depth, 8);
 
 	this.quatTree;
 	this.magoMangaer = magoMangaer;
@@ -76720,111 +76825,6 @@ VtxSegment.prototype.intersectionWithPoint = function(point, error)
 'use strict';
 
 /**
- * 메세지
- * 
- * @class
- */
-var Message = function(i18next, message) 
-{
-	this.handle  = i18next;
-	this.message = message || MessageSource;
-};
-
-/**
- * 메세지 클래스 초기화
- *
- * @param {Function} callback
- */
-Message.prototype.init = function (callback)
-{
-	var h = this.handle;
-	this.handle.use(i18nextXHRBackend)
-		.use(i18nextBrowserLanguageDetector)
-		.init({
-			// Useful for debuging, displays which key is missing
-			debug: false,
-
-			detection: {
-				// keys or params to lookup language from
-				lookupQuerystring  : 'lang',
-				lookupCookie       : 'i18nextLang',
-				lookupLocalStorage : 'i18nextLang',
-			},
-    
-			// If translation key is missing, which lang use instead
-			fallbackLng: 'en',
-
-			resources: this.message,
-
-			// all, languageOnly
-			load: "languageOnly",
-
-			ns        : ['common'],
-			// Namespace to use by default, when not indicated
-			defaultNS : 'common',
-    
-			keySeparator     : ".",
-			nsSeparator      : ":",
-			pluralSeparator  : "_",
-			contextSeparator : "_"
-
-		}, function(err, t)
-		{
-			console.log("detected user language: " + h.language);
-			console.log("loaded languages: " + h.languages.join(', '));
-			h.changeLanguage(h.languages[0]);
-			callback(err, t);
-		});
-};
-
-/**
- * 메세지 핸들러를 가져온다.
- *
- * @returns {i18next} message handler
- */
-Message.prototype.getHandle = function ()
-{
-	return this.handle;
-};
-
-/**
- * 메세지를 가져온다.
- *
- * @returns {Object} message
- */
-Message.prototype.getMessage = function ()
-{
-	return this.message;
-};
-
-'use strict';
-var MessageSource = {};
-MessageSource.en = {
-  "common": {
-    "welcome" : "Welcome",
-    "error": {
-        "title" : "Error",
-        "construct" : {
-            "create" : "This object should be created using new."
-        }
-    }
-  }
-};
-MessageSource.ko = {
-    "common": {
-      "welcome" : "환영합니다.",
-      "error": {
-          "title" : "오류",
-          "construct" : {
-              "create" : "이 객체는 new 를 사용하여 생성해야 합니다."
-          }
-      }
-    }
-  };
-
-'use strict';
-
-/**
  * Geoserver for mago3Djs object.
  * @class Geoserver
  */
@@ -90834,6 +90834,24 @@ function defaultValue(a, b)
 'use strict';
 
 /**
+ * Returns the first parameter if not undefined, otherwise the second parameter.
+ * Useful for setting a default value for a parameter.
+ *
+ * @param {*} a
+ * @param {*} b
+ * @returns {*} Returns the first parameter if not undefined, otherwise the second parameter. 
+ */
+function defaultValueCheckLength(a, b) 
+{
+	if (a !== undefined && a !== null && a.toString().trim().length > 0) 
+	{
+		return a;
+	}
+	return b;
+}
+'use strict';
+
+/**
  *
  * @param {*} value The object.
  * @returns {Boolean} Returns true if the object is defined, returns false otherwise.
@@ -94124,6 +94142,7 @@ Promise.prototype.finally = Promise.prototype.finally || {
 	_mago3d['ByteColor'] = ByteColor;
 	_mago3d['CameraController'] = CameraController;
 	_mago3d['defaultValue'] = defaultValue;
+	_mago3d['defaultValueCheckLength'] = defaultValueCheckLength;
 	_mago3d['defined'] = defined;
 	_mago3d['GeometryUtils'] = GeometryUtils;
 	_mago3d['loadWithXhr'] = loadWithXhr;

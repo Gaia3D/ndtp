@@ -19,7 +19,7 @@
 			        <div id="solayDatePicker" style="margin-top: -1px;"></div>
 				</li>
 				<li class="btns">
-					<button type="button" class="btnTextF report" title="일조분석 리포트" style="display:none;">리포트</button>
+					<!-- <button type="button" class="btnTextF report" title="일조분석 리포트" style="display:none;">리포트</button> -->
 					<button type="button" class="btnTextF execute" title="분석">분석</button>
 					<button type="button" class="btnText reset" title="취소">취소</button>
 				</li>
