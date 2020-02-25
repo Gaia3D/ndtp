@@ -34035,7 +34035,7 @@ SmartTile.prototype.createGeometriesFromSeeds = function(magoManager)
 				// parse the dataArrayBuffer.***
 				var maxParses = 30;
 				if (i > 0)
-				{ maxParses = 1; }
+				{ maxParses = 5; }
 				var parseQueue = magoManager.parseQueue;
 				if (parseQueue.smartTileF4dParsesCount < maxParses)
 				{
@@ -39691,7 +39691,8 @@ CODE.magoCurrentProcess = {
 	"ColorRendering"             : 2,
 	"ColorCodeRendering"         : 3,
 	"DepthShadowRendering"       : 4,
-	"StencilSilhouetteRendering" : 5
+	"SilhouetteDepthRendering"   : 5,
+	"StencilSilhouetteRendering" : 6
 };
 
 CODE.modelerMode = {
@@ -48518,18 +48519,25 @@ NeoReferencesMotherAndIndices.prototype.render = function(magoManager, neoBuildi
 		if (neoReference === undefined)
 		{ continue; }
 		
-		// Check renderingFase.
-		if (neoReference.renderingFase === magoManager.renderingFase)
-		{ continue; }
-		
-		// Render the referenceObject.
-		if (!neoReference.render(magoManager, neoBuilding, renderType, renderTexture, shader, refMatrixIdxKey, maxSizeToRender))
+		if (magoManager.currentProcess === CODE.magoCurrentProcess.SilhouetteDepthRendering)
 		{
-			noRenderedsCount ++;
+			neoReference.render(magoManager, neoBuilding, renderType, renderTexture, shader, refMatrixIdxKey, maxSizeToRender);
 		}
+		else 
+		{
+			// Check renderingFase.
+			if (neoReference.renderingFase === magoManager.renderingFase)
+			{ continue; }
+			
+			// Render the referenceObject.
+			if (!neoReference.render(magoManager, neoBuilding, renderType, renderTexture, shader, refMatrixIdxKey, maxSizeToRender))
+			{
+				noRenderedsCount ++;
+			}
 
-		// Swap renderingFase.
-		neoReference.swapRenderingFase();
+			// Swap renderingFase.
+			neoReference.swapRenderingFase(); 
+		}
 	}
 	
 	if ((visibleIndices_count - noRenderedsCount)/visibleIndices_count < 0.4)
@@ -57254,108 +57262,39 @@ TinTerrainManager.prototype.render = function(magoManager, bDepth, renderType, s
 'use strict';
 
 /**
- * 메세지
- * 
- * @class
+ * Geoserver for mago3Djs object.
+ * @class Geoserver
  */
-var Message = function(i18next, message) 
+var GeoServer = function() 
 {
-	this.handle  = i18next;
-	this.message = message || MessageSource;
-};
 
-/**
- * 메세지 클래스 초기화
- *
- * @param {Function} callback
- */
-Message.prototype.init = function (callback)
+	this.serverInfo = {};
+}; 
+
+GeoServer.prototype.setServerInfo = function(info) 
 {
-	var h = this.handle;
-	this.handle.use(i18nextXHRBackend)
-		.use(i18nextBrowserLanguageDetector)
-		.init({
-			// Useful for debuging, displays which key is missing
-			debug: false,
-
-			detection: {
-				// keys or params to lookup language from
-				lookupQuerystring  : 'lang',
-				lookupCookie       : 'i18nextLang',
-				lookupLocalStorage : 'i18nextLang',
-			},
-    
-			// If translation key is missing, which lang use instead
-			fallbackLng: 'en',
-
-			resources: this.message,
-
-			// all, languageOnly
-			load: "languageOnly",
-
-			ns        : ['common'],
-			// Namespace to use by default, when not indicated
-			defaultNS : 'common',
-    
-			keySeparator     : ".",
-			nsSeparator      : ":",
-			pluralSeparator  : "_",
-			contextSeparator : "_"
-
-		}, function(err, t)
-		{
-			console.log("detected user language: " + h.language);
-			console.log("loaded languages: " + h.languages.join(', '));
-			h.changeLanguage(h.languages[0]);
-			callback(err, t);
-		});
+	this.serverInfo = info;
 };
 
-/**
- * 메세지 핸들러를 가져온다.
- *
- * @returns {i18next} message handler
- */
-Message.prototype.getHandle = function ()
+GeoServer.prototype.getDataUrl = function() 
 {
-	return this.handle;
+	return this.serverInfo.dataUrl;
 };
 
-/**
- * 메세지를 가져온다.
- *
- * @returns {Object} message
- */
-Message.prototype.getMessage = function ()
+GeoServer.prototype.getDataWorkspace = function() 
 {
-	return this.message;
+	return this.serverInfo.dataWorkspace;
 };
 
-'use strict';
-var MessageSource = {};
-MessageSource.en = {
-  "common": {
-    "welcome" : "Welcome",
-    "error": {
-        "title" : "Error",
-        "construct" : {
-            "create" : "This object should be created using new."
-        }
-    }
-  }
+GeoServer.prototype.getDataRequestUrl = function() 
+{
+	return this.getDataUrl() + '/' + this.getDataWorkspace();
 };
-MessageSource.ko = {
-    "common": {
-      "welcome" : "환영합니다.",
-      "error": {
-          "title" : "오류",
-          "construct" : {
-              "create" : "이 객체는 new 를 사용하여 생성해야 합니다."
-          }
-      }
-    }
-  };
 
+GeoServer.prototype.getWmsVersion = function() 
+{
+	return this.serverInfo.wmsVersion;
+};
 'use strict';
 
 /**
@@ -76825,39 +76764,108 @@ VtxSegment.prototype.intersectionWithPoint = function(point, error)
 'use strict';
 
 /**
- * Geoserver for mago3Djs object.
- * @class Geoserver
+ * 메세지
+ * 
+ * @class
  */
-var GeoServer = function() 
+var Message = function(i18next, message) 
 {
-
-	this.serverInfo = {};
-}; 
-
-GeoServer.prototype.setServerInfo = function(info) 
-{
-	this.serverInfo = info;
+	this.handle  = i18next;
+	this.message = message || MessageSource;
 };
 
-GeoServer.prototype.getDataUrl = function() 
+/**
+ * 메세지 클래스 초기화
+ *
+ * @param {Function} callback
+ */
+Message.prototype.init = function (callback)
 {
-	return this.serverInfo.dataUrl;
+	var h = this.handle;
+	this.handle.use(i18nextXHRBackend)
+		.use(i18nextBrowserLanguageDetector)
+		.init({
+			// Useful for debuging, displays which key is missing
+			debug: false,
+
+			detection: {
+				// keys or params to lookup language from
+				lookupQuerystring  : 'lang',
+				lookupCookie       : 'i18nextLang',
+				lookupLocalStorage : 'i18nextLang',
+			},
+    
+			// If translation key is missing, which lang use instead
+			fallbackLng: 'en',
+
+			resources: this.message,
+
+			// all, languageOnly
+			load: "languageOnly",
+
+			ns        : ['common'],
+			// Namespace to use by default, when not indicated
+			defaultNS : 'common',
+    
+			keySeparator     : ".",
+			nsSeparator      : ":",
+			pluralSeparator  : "_",
+			contextSeparator : "_"
+
+		}, function(err, t)
+		{
+			console.log("detected user language: " + h.language);
+			console.log("loaded languages: " + h.languages.join(', '));
+			h.changeLanguage(h.languages[0]);
+			callback(err, t);
+		});
 };
 
-GeoServer.prototype.getDataWorkspace = function() 
+/**
+ * 메세지 핸들러를 가져온다.
+ *
+ * @returns {i18next} message handler
+ */
+Message.prototype.getHandle = function ()
 {
-	return this.serverInfo.dataWorkspace;
+	return this.handle;
 };
 
-GeoServer.prototype.getDataRequestUrl = function() 
+/**
+ * 메세지를 가져온다.
+ *
+ * @returns {Object} message
+ */
+Message.prototype.getMessage = function ()
 {
-	return this.getDataUrl() + '/' + this.getDataWorkspace();
+	return this.message;
 };
 
-GeoServer.prototype.getWmsVersion = function() 
-{
-	return this.serverInfo.wmsVersion;
+'use strict';
+var MessageSource = {};
+MessageSource.en = {
+  "common": {
+    "welcome" : "Welcome",
+    "error": {
+        "title" : "Error",
+        "construct" : {
+            "create" : "This object should be created using new."
+        }
+    }
+  }
 };
+MessageSource.ko = {
+    "common": {
+      "welcome" : "환영합니다.",
+      "error": {
+          "title" : "오류",
+          "construct" : {
+              "create" : "이 객체는 new 를 사용하여 생성해야 합니다."
+          }
+      }
+    }
+  };
+
 'use strict';
 
 /**
@@ -81881,6 +81889,7 @@ Renderer.prototype.renderGeometryDepth = function(gl, renderType, visibleObjCont
 		var node = magoManager.nodeSelected;
 		if (node !== undefined) // test code.***
 		{
+			magoManager.currentProcess = CODE.magoCurrentProcess.SilhouetteDepthRendering;
 			var silhouetteDepthFbo = magoManager.getSilhouetteDepthFbo();
 			silhouetteDepthFbo.bind(); 
 			
@@ -81924,17 +81933,20 @@ Renderer.prototype.renderGeometryDepth = function(gl, renderType, visibleObjCont
 			node.renderContent(magoManager, currentShader, renderType, refMatrixIdxKey);
 
 			silhouetteDepthFbo.unbind(); 
+			magoManager.swapRenderingFase();
 		}
 	}
 	
 	// Check if there are a object selected.**********************************************************************
 	if (magoManager.magoPolicy.getObjectMoveMode() === CODE.moveMode.OBJECT && magoManager.objectSelected)
 	{
-		if (magoManager.objectSelected instanceof NeoReference) 
+		var node = magoManager.nodeSelected;
+		var neoBuilding = magoManager.buildingSelected;
+		if (magoManager.objectSelected instanceof NeoReference && node !== undefined && neoBuilding !== undefined) // test code.***
 		{
-			var node = magoManager.nodeSelected;
+			magoManager.currentProcess = CODE.magoCurrentProcess.SilhouetteDepthRendering;
 			var geoLocDataManager = node.getNodeGeoLocDataManager();
-			var neoBuilding = magoManager.buildingSelected;
+
 			var buildingGeoLocation = geoLocDataManager.getCurrentGeoLocationData();
 			var neoReferencesMotherAndIndices = magoManager.octreeSelected.neoReferencesMotherAndIndices;
 			var glPrimitive = gl.POINTS;
@@ -81978,7 +81990,7 @@ Renderer.prototype.renderGeometryDepth = function(gl, renderType, visibleObjCont
 			magoManager.objectSelected.render(magoManager, neoBuilding, localRenderType, renderTexture, currentShader, refMatrixIdxKey, minSizeToRender);
 			silhouetteDepthFbo.unbind(); 
 			
-			gl.enable(gl.CULL_FACE);	
+			gl.enable(gl.CULL_FACE);
 		}
 	}
 };
