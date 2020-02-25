@@ -10,9 +10,7 @@
 		<h2>changeInsertIssueModeAPI</h2>
 		<p>changeInsertIssueModeAPI란 이슈 기능을 활성화하는 API입니다. 이 API에 파라미터인
 			flag는 Boolean 타입이고 true이면 이슈 모드가 활성화되고 false이면 비활성화되는 방식입니다. 활성화되어있는
-			상태에서 이슈를 등록하고 싶은 Object를 클릭하면 callback함수를 관리해주는 데이터베이스 운영정책에 따라서 이슈등록
-			callback함수가 호출이되어 이슈등록 창이 나옵니다. 이슈등록 창에 내용을 적고 저장하면 데이터베이스에 등록이됩니다.
-			또한, 이슈등록 callback함수는 사용자가 Customizing이 가능합니다.</p>
+			상태에서 이슈를 등록하고 싶은 Object를 클릭하면 Object의 정보가 표시되며 이슈등록 callback함수는 사용자가 Customizing이 가능합니다.</p>
 		<table>
 		<caption>Parameter</caption>
 			<tr>
