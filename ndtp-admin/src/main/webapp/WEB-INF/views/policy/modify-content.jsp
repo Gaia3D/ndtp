@@ -11,7 +11,7 @@
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
 					<td class="col-input">
-						<form:input path="contentCacheVersion" maxlength="3" cssClass="s" />
+						<form:input path="contentCacheVersion" maxlength="3" cssClass="s" onKeyPress="return numkeyCheck(event);" />
 						<form:errors path="contentCacheVersion" cssClass="error" />
 					</td>
 				</tr>

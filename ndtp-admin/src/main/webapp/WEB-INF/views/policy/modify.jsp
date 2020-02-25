@@ -253,30 +253,162 @@
 		}
 	}
 
+	function numkeyCheck(event) {
+		var keyValue = event.keyCode;
+		if((keyValue >= 48) && (keyValue <= 57)) {
+			return true;
+		}
+		return false;
+	}
+
 	function userCheck() {
+		if(!$('#userIdMinLength').val()) {
+			alert('사용자 아이디 최소길이를 입력해주세요.');
+			$('#userIdMinLength').focus();
+			return false;
+		}
+		if(!$('#userFailSigninCount').val()) {
+			alert('로그인 실패 횟수를 입력해주세요.');
+			$('#userFailSigninCount').focus();
+			return false;
+		}
+		if(!$('#userFailLockRelease').val()) {
+			alert('로그인 실패 잠금 해제 기간을 입력해주세요.');
+			$('#userFailLockRelease').focus();
+			return false;
+		}
+		if(!$('#userLastSigninLock').val()) {
+			alert('마지막 로그인으로부터 잠금 기간을 입력해주세요.');
+			$('#userLastSigninLock').focus();
+			return false;
+		}
 		return true;
 	}
 
 	function passwordCheck() {
+		if(!$('#passwordChangeTerm').val()) {
+			alert('패스워드 변경 주기를 입력해주세요.');
+			$('#passwordChangeTerm').focus();
+			return false;
+		}
+		if(!$('#passwordMinLength').val()) {
+			alert('패스워드 최소 길이를 입력해주세요.');
+			$('#passwordMinLength').focus();
+			return false;
+		}
+		if(!$('#passwordMaxLength').val()) {
+			alert('패스워드 최대 길이를 입력해주세요.');
+			$('#passwordMaxLength').focus();
+			return false;
+		}
+		if(!$('#passwordEngUpperCount').val()) {
+			alert('패스워드 영문 대문자 개수를 입력해주세요.');
+			$('#passwordEngUpperCount').focus();
+			return false;
+		}
+		if(!$('#passwordEngLowerCount').val()) {
+			alert('패스워드 영문 소문자 개수를 입력해주세요.');
+			$('#passwordEngLowerCount').focus();
+			return false;
+		}
+		if(!$('#passwordNumberCount').val()) {
+			alert('패스워드 숫자 개수를 입력해주세요.');
+			$('#passwordNumberCount').focus();
+			return false;
+		}
+		if(!$('#passwordSpecialCharCount').val()) {
+			alert('패스워드 특수문자 개수를 입력해주세요.');
+			$('#passwordSpecialCharCount').focus();
+			return false;
+		}
+		if(!$('#passwordContinuousCharCount').val()) {
+			alert('패스워드 연속 문자 제한 개수를 입력해주세요.');
+			$('#passwordContinuousCharCount').focus();
+			return false;
+		}
+		if(!$('#passwordCreateChar').val()) {
+			alert('초기 패스워드 생성 문자열을 입력해주세요.');
+			$('#passwordCreateChar').focus();
+			return false;
+		}
+		if(!$('#passwordExceptionChar').val()) {
+			alert('초기 패스워드로 사용할수 없는 특수문자를 입력해주세요.');
+			$('#passwordExceptionChar').focus();
+			return false;
+		}
+		return true;
+	}
+
+	function securityCheck() {
+		if(!$('#securitySessionTimeout').val()) {
+			alert('보안 세션 타임아웃 시간을 입력해주세요.');
+			$('#securitySessionTimeout').focus();
+			return false;
+		}
+		return true;
+	}
+
+	function contentCheck() {
+		if(!$('#contentCacheVersion').val()) {
+			alert('css, js 갱신용 cache version을 입력해주세요.');
+			$('#contentCacheVersion').focus();
+			return false;
+		}
+		if(!$('#contentMenuGroupRoot').val()) {
+			alert('메뉴 그룹 최상위 그룹명을 입력해주세요.');
+			$('#contentMenuGroupRoot').focus();
+			return false;
+		}
+		if(!$('#contentUserGroupRoot').val()) {
+			alert('사용자 그룹 최상위 그룹명을 입력해주세요.');
+			$('#contentUserGroupRoot').focus();
+			return false;
+		}
+		if(!$('#contentLayerGroupRoot').val()) {
+			alert('레이어 그룹 최상위 그룹명을 입력해주세요.');
+			$('#contentLayerGroupRoot').focus();
+			return false;
+		}
+		if(!$('#contentDataGroupRoot').val()) {
+			alert('데이터 그룹 최상위 그룹명을 입력해주세요.');
+			$('#contentDataGroupRoot').focus();
+			return false;
+		}
+		return true;
+	}
+
+	function uploadCheck() {
+		if(!$('#userUploadType').val()) {
+			alert('업로딩 가능 확장자를 입력해주세요.');
+			$('#userUploadType').focus();
+			return false;
+		}
+		if(!$('#userConverterType').val()) {
+			alert('변환 가능 확장자를 입력해주세요.');
+			$('#userConverterType').focus();
+			return false;
+		}
+		if(!$('#shapeUploadType').val()) {
+			alert('shpae 업로딩 가능 확장자를 입력해주세요.');
+			$('#shapeUploadType').focus();
+			return false;
+		}
+		if(!$('#userUploadMaxFilesize').val()) {
+			alert('최대 업로딩 사이즈를 입력해주세요.');
+			$('#userUploadMaxFilesize').focus();
+			return false;
+		}
+		if(!$('#userUploadMaxCount').val()) {
+			alert('최대 업로딩 파일 수를 입력해주세요.');
+			$('#userUploadMaxCount').focus();
+			return false;
+		}
 		return true;
 	}
 
 	function noticeCheck() {
 		return true;
 	}
-
-	function securityCheck() {
-		return true;
-	}
-
-	function contentCheck() {
-		return true;
-	}
-
-	function uploadCheck() {
-		return true;
-	}
-
 
 
 </script>

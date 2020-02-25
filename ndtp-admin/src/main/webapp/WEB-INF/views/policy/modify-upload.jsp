@@ -41,7 +41,7 @@
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
 					<td class="col-input">
-						<form:input path="userUploadMaxFilesize" maxlength="10" cssClass="m" />
+						<form:input path="userUploadMaxFilesize" maxlength="10" cssClass="m" onKeyPress="return numkeyCheck(event);" />
 						<span class="table-desc">MB</span>
 						<form:errors path="userUploadMaxFilesize" cssClass="error" />
 					</td>
@@ -52,7 +52,7 @@
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
 					<td class="col-input">
-						<form:input path="userUploadMaxCount" maxlength="10" cssClass="m" />
+						<form:input path="userUploadMaxCount" maxlength="10" cssClass="m" onKeyPress="return numkeyCheck(event);" />
 						<span class="table-desc">개</span>
 						<form:errors path="userUploadMaxCount" cssClass="error" />
 					</td>

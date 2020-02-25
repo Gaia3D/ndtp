@@ -22,7 +22,7 @@
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
 					<td class="col-input">
-						<form:input path="securitySessionTimeout" maxlength="2" cssClass="s" />
+						<form:input path="securitySessionTimeout" maxlength="2" cssClass="s" onKeyPress="return numkeyCheck(event);" />
 						<span class="table-desc">분</span>
 						<form:errors path="securitySessionTimeout" cssClass="error" />
 					</td>
