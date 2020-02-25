@@ -172,11 +172,7 @@ var TREE_OBJECT = {
 		document.menuForm.reset();
 		document.menuForm.writeMode.value = "append";
 		console.log("--------------- add = " + obj.item.ancestor);
-		if(obj.item.ancestor === "0") {
-			$("#menuTarget").val("1");
-		} else {
-			$("#menuTarget").val("0");
-		}
+		$("#menuTarget").val(obj.item.menuTarget);
 		
 		document.menuForm.ancestor.value = obj.item.ancestor;
 		document.menuForm.parent.value = obj.item.parent;
@@ -205,11 +201,8 @@ var TREE_OBJECT = {
 		document.menuForm.reset();
 		document.menuForm.writeMode.value = "child";
 		console.log("--------------- add child = " + obj.item.ancestor);
-		if(obj.item  .ancestor === "0") {
-			$("#menuTarget").val("1");
-		} else {
-			$("#menuTarget").val("0");
-		}
+		$("#menuTarget").val(obj.item.menuTarget);
+		
 		document.menuForm.ancestor.value = obj.item.ancestor;
 		document.menuForm.parent.value = obj.item.menuId;		
 		document.menuForm.depth.value = parseInt(obj.item.depth) + parseInt(1);		
