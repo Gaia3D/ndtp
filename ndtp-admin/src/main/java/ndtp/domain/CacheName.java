@@ -6,8 +6,10 @@ package ndtp.domain;
  */
 public enum CacheName {
 	//LICENSE, 
-	POLICY, 
-	MENU, 
+	MENU,
+	POLICY,
+	ROLE,
+	SMART_TILING_DATA,
 	USER_GROUP;
 }
 
