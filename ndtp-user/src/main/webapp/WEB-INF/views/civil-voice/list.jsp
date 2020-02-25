@@ -8,6 +8,7 @@
 	<!-- 시민참여 검색 -->
 	<form:form id="civilVoiceSearchForm" modelAttribute="civilVoice" method="get" onsubmit="return false;">
 	<div class="listSearch search-margin flex-align-center">
+		<label for="getCivilVoiceListTitle" class="hiddenTag">검색어 입력</label>
 		<input type="text" id="getCivilVoiceListTitle" name="title" maxlength="256" placeholder="검색어를 입력하세요.">
 		<button type="button" id="civilVoiceSearch" onClick="getCivilVoiceList();" class="btnTotalSearch" title="검색">검색</button>
 	</div>

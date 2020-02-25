@@ -6,7 +6,8 @@
 	<p class="agreeCount">동의 <span id="civilVoiceCommentTotalCount">0</span> 건</p>
 	<form:form id="civilVoiceCommentForm" modelAttribute="civilVoiceComment" method="post" onsubmit="return false;">
 		<div class="agreeNew">
-			<input type="text" name="title" placeholder="동의합니다" value="">
+			<label for="civilVoiceAgreeInput" class="hiddenTag">동의합니다.</label>
+			<input type="text" id="civilVoiceAgreeInput" name="title" placeholder="동의합니다" value="">
 			<button id="civilVoiceAgree" onClick="saveCivilVoiceComment();" class="focusAgree" title="동의">동의</button>
 		</div>
 	</form:form>
