@@ -58,29 +58,31 @@
 
 	function selectedObjectCallBack(projectId, dataKey, objectId, latitude, longitude, altitude, heading, pitch, roll){
 		var table = document.getElementById("api14-result");
-		table.innerHTML = '';
-		var result = {
-        		projectId: projectId,
-        		dataKey : dataKey,
-        		objectId : objectId,
-        		latitude : latitude,
-        		longitude : longitude,
-        		altitude : altitude,
-        		heading : heading,
-        		pitch : pitch, 
-        		roll : roll
-        }
-		
-		for ( var i in Object.keys(result)) {
-			var row = table.insertRow();
-			var th = document.createElement("th");
-			var td = document.createElement("td");
-			var key = document.createTextNode(Object.keys(result)[i]);
-			var value = document.createTextNode(Object.values(result)[i]);
-			th.appendChild(key);
-			td.appendChild(value);
-			row.appendChild(th);
-			row.appendChild(td);
+		if(table) {
+			table.innerHTML = '';
+			var result = {
+	        		projectId: projectId,
+	        		dataKey : dataKey,
+	        		objectId : objectId,
+	        		latitude : latitude,
+	        		longitude : longitude,
+	        		altitude : altitude,
+	        		heading : heading,
+	        		pitch : pitch, 
+	        		roll : roll
+	        }
+			
+			for ( var i in Object.keys(result)) {
+				var row = table.insertRow();
+				var th = document.createElement("th");
+				var td = document.createElement("td");
+				var key = document.createTextNode(Object.keys(result)[i]);
+				var value = document.createTextNode(Object.values(result)[i]);
+				th.appendChild(key);
+				td.appendChild(value);
+				row.appendChild(th);
+				row.appendChild(td);
+			}
 		}
     }
 </script>

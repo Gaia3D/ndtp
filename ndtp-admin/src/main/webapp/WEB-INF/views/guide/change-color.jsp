@@ -76,6 +76,7 @@
 <script>
 
 	var changeColor = function() {
+		//console.log($(this).val());
 		var arr1 = [];
 		var projectId = $('#api7-p1').val();
 		var dataKey = $('#api7-p2').val();

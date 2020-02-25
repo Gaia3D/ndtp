@@ -41,12 +41,14 @@
 		</div>
 		<br/> 
 		<input type="button" id="changeInsertIssueMode" value="Run" class="popupBtn">
-	</div>
+		<h4>결과</h4>
+		<table id="api13-result"></table>	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>
 <script>
 	var changeInsertIssueMode = function() {
-
+		var table = document.getElementById("api13-result");
+		table.innerHTML = '';
 		var flag = $("input[name=api13-p1]:checked").val();
 		var isFalseBoolean = (flag === 'true');
 
@@ -54,5 +56,29 @@
 	}
 
 	function insertIssueCallBack(projectId, dataKey, objectId, latitude, longitude, altitude){
+		var table = document.getElementById("api13-result");
+		if(table) {
+			table.innerHTML = '';
+			var result = {
+	        		projectId: projectId,
+	        		dataKey : dataKey,
+	        		objectId : objectId,
+	        		latitude : latitude,
+	        		longitude : longitude,
+	        		altitude : altitude
+	        }
+			
+			for ( var i in Object.keys(result)) {
+				var row = table.insertRow();
+				var th = document.createElement("th");
+				var td = document.createElement("td");
+				var key = document.createTextNode(Object.keys(result)[i]);
+				var value = document.createTextNode(Object.values(result)[i]);
+				th.appendChild(key);
+				td.appendChild(value);
+				row.appendChild(th);
+				row.appendChild(td);
+			}
+		}
     }
 </script>
