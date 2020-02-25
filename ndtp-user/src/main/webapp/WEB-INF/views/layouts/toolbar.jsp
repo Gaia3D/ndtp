@@ -14,7 +14,9 @@
 	<div class="rotate">
 		<button type="button" class="rotateReset on" id="rotateReset" title="방향초기화"></button>
 		<!-- <input type="text" placeholder="0" id="rotateInput"/>&deg; -->
+		<label for="rotateInput" class="hiddenTag">rotate</label>
 		<input type="text" id="rotateInput" placeholder="0" readonly>&deg;
+		<label for="pitchInput" class="hiddenTag">pitch</label>
         <input type="text" id="pitchInput" placeholder="-90" readonly>&deg;
 		<button type="button" class="rotateLeft" id="rotateLeft" title="왼쪽으로 회전">왼쪽으로 회전</button>
 		<button type="button" class="rotateRight" id="rotateRight" title="오른쪽으로 회전">오른쪽으로 회전</button>
