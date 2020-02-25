@@ -711,7 +711,7 @@
 							var viewStatus = "";
 							if(dataInfoAdjustLog.status === "request") viewStatus = "요청";
 							else if(dataInfoAdjustLog.status === "approval") viewStatus = "승인";
-							else if(dataInfoAdjustLog.status === "reject") viewStatus = "기각";
+							else if(dataInfoAdjustLog.status === "reject") viewStatus = "반려";
 							else if(dataInfoAdjustLog.status === "rollback") viewStatus = "원복";
 
 							var date = new Date(dataInfoAdjustLog.insertDate);
