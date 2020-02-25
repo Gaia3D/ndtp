@@ -87,8 +87,8 @@
 			</div>
 			</form:form>
 		</div>
-		
-		
+
+
 		<div class="list">
 			<form:form id="listForm" modelAttribute="dataInfo" method="post">
 			<input type="hidden" id="checkIds" name="checkIds" value="" />
@@ -96,7 +96,7 @@
 				<div class="list-desc u-pull-left">
 					<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em>
 					<spring:message code='search.what.count'/>,
-					<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> 
+					<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/>
 					<spring:message code='search.page'/>
 				</div>
 			</div>
@@ -138,8 +138,8 @@
 							<input type="checkbox" id="dataInfoLogId_${dataInfoLog.dataLogId}" name="dataLogId" value="${dataInfoLog.dataLogId}" />
 						</td>
 						<td class="col-number">${pagination.rowNumber - status.index }</td>
-						<td class="col-name ellipsis" style="max-width: 200px;">${dataInfoLog.dataGroupName}</td>
-						<td class="col-name">${dataInfoLog.dataName}</td>
+						<td class="col-name ellipsis" style="max-width:120px;">${dataInfoLog.dataGroupName}</td>
+						<td class="col-name ellipsis" style="max-width:140px;">${dataInfoLog.dataName}</td>
 						<td class="col-name">${dataInfoLog.userId}</td>
 						<td class="col-name">${dataInfoLog.dataType}</td>
 						<td class="col-name">${dataInfoLog.sharing}</td>
@@ -172,13 +172,13 @@
 		var orderWord = "${dataInfoLog.orderWord}";
 		var orderValue = "${dataInfoLog.orderValue}";
 		var listCounter = "${dataInfoLog.listCounter}";
-	
+
 		if(searchWord != "") $("#searchWord").val("${dataInfoLog.searchWord}");
 		if(searchOption != "") $("#searchOption").val("${dataInfoLog.searchOption}");
 		if(orderWord != "") $("#orderWord").val("${dataInfoLog.orderWord}");
 		if(orderValue != "") $("#orderValue").val("${dataInfoLog.orderValue}");
 		if(listCounter != "") $("#listCounter").val("${dataInfoLog.listCounter}");
-	
+
 		initDatePicker();
 		initCalendar(new Array("startDate", "endDate"), new Array("${dataInfoLog.startDate}", "${dataInfoLog.endDate}"));
 	});
@@ -206,12 +206,12 @@
 				return false;
 			}
 		}
-		
+
 		var searchValue = $('#searchValue').val();
 		if (searchValue) {
 			$('#searchValue').val(searchValue.trim());
 		}
-		
+
 		return true;
 	}
 </script>
