@@ -77,6 +77,7 @@
 							<div class="list">
 								<form:form id="listForm" modelAttribute="dataInfo" method="post">
 									<input type="hidden" id="checkIds" name="checkIds" value="" />
+									<input type="hidden" id="status" name="status" value="" />
 								<div class="list-header row">
 									<div class="list-desc u-pull-left">
 										<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/>
@@ -126,45 +127,45 @@
 												<input type="checkbox" id="dataAdjustLogId_${dataAdjustLog.dataAdjustLogId}" name="dataAdjustLogId" value="${dataInfoAdjustLog.dataAdjustLogId}" />
 											</td>
 											<td class="col-number">${pagination.rowNumber - status.index }</td>
-											<td class="col-name">
+											<td class="col-name ellipsis" style="max-width:120px;">
 												<a href="#" class="view-group-detail" onclick="detailDataGroup('${dataAdjustLog.dataGroupId }'); return false;">${dataAdjustLog.dataGroupName }</a></td>
-											<td class="col-name">
+											<td class="col-name ellipsis" style="max-width:140px;">
 												<a href="#" class="view-group-detail" onclick="detailDataAdjustLog('${dataAdjustLog.dataName}'
 															, '${dataAdjustLog.beforeLatitude}', '${dataAdjustLog.latitude}', '${dataAdjustLog.beforeLongitude}', '${dataAdjustLog.longitude}'
 															, '${dataAdjustLog.beforeAltitude}', '${dataAdjustLog.altitude}', '${dataAdjustLog.beforeHeading}', '${dataAdjustLog.heading}'
-															, '${dataAdjustLog.beforePitch}', '${dataAdjustLog.pitch}', '${dataAdjustLog.beforeRoll}', '${dataAdjustLog.roll}'
-															); return false;">${dataAdjustLog.dataName }</a></td>
+															, '${dataAdjustLog.beforePitch}', '${dataAdjustLog.pitch}', '${dataAdjustLog.beforeRoll}', '${dataAdjustLog.roll}'); return false;">${dataAdjustLog.dataName }</a>
+												</td>
 											<td class="col-name">${dataAdjustLog.userId }</td>
 											<td class="col-toggle">${dataAdjustLog.longitude}</td>
 											<td class="col-toggle">${dataAdjustLog.latitude}</td>
 											<td class="col-toggle">${dataAdjustLog.altitude}</td>
 											<td class="col-toggle">
 												<span class="icon-glyph glyph-on on"></span>
-				<c:if test="${dataAdjustLog.status eq 'REQUEST'}">
+				<c:if test="${dataAdjustLog.status eq 'request'}">
 												<span class="icon-text">요청</span>
 				</c:if>
-				<c:if test="${dataAdjustLog.status eq 'APPROVAL'}">
+				<c:if test="${dataAdjustLog.status eq 'approval'}">
 												<span class="icon-text">승인</span>
 				</c:if>
-				<c:if test="${dataAdjustLog.status eq 'REJECT'}">
+				<c:if test="${dataAdjustLog.status eq 'reject'}">
 												<span class="icon-text">반려</span>
 				</c:if>
-				<c:if test="${dataAdjustLog.status eq 'ROLLBACK'}">
+				<c:if test="${dataAdjustLog.status eq 'rollback'}">
 												<span class="icon-text">원복</span>
 				</c:if>
 											</td>
 											<td class="col-functions">
 												<span class="button-group">
 				<c:if test="${dataAdjustLog.status eq 'request'}">
-												<a href="#" onclick="return warning('APPROVAL', '${dataAdjustLog.dataAdjustLogId}');" class="button" >
+												<a href="#" onclick="return warning('approval', '${dataAdjustLog.dataAdjustLogId}');" class="button" >
 													승인
 												</a>
-												<a href="#" onclick="return warning('REJECT', '${dataAdjustLog.dataAdjustLogId}');" class="button" >
+												<a href="#" onclick="return warning('reject', '${dataAdjustLog.dataAdjustLogId}');" class="button" >
 													반려
 												</a>
 				</c:if>
 				<c:if test="${dataAdjustLog.status eq 'complete'}">
-												<a href="#" onclick="return warning('ROLLBACK', '${dataAdjustLog.dataAdjustLogId}');" class="button" >
+												<a href="#" onclick="return warning('rollback', '${dataAdjustLog.dataAdjustLogId}');" class="button" >
 													원복
 												</a>
 				</c:if>
@@ -323,10 +324,12 @@
 		if(confirm("계속 진행 하시겠습니까?")) {
 			if(warningFlag) {
 				warningFlag = false;
+				$('#status').val(status);
+				var formData = $("#listForm").serialize();
 				$.ajax({
 					url: "/data-adjust-logs/status/" + dataAdjustLogId,
 					type: "POST",
-					data: { status : status},
+					data: formData,
 					dataType: "json",
 					headers: {"X-Requested-With": "XMLHttpRequest"},
 					success: function(msg){
