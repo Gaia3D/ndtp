@@ -90,7 +90,7 @@
 
 		for(var i = 1; i<apiList.length; i++){
 			
-			 $(".popupSub").children('ul').append("<li class=\"item\"><a class=\"name\" href=\"#\" onclick=\"changeToggleTab("+i+"); return false;\">"+apiList[i]+"</a></li>");
+			 $(".popupSub").children('ul').append("<li class=\"item\"><a class=\"name\" href=\"\" onclick=\"changeToggleTab("+i+"); return false;\">"+apiList[i]+"</a></li>");
 		}
 		
 var MAGO3D_INSTANCE2;
@@ -170,6 +170,11 @@ $('.item').on("click", function(){
 	$(this).addClass('on');
 })
 
+
+$( document ).ready(function() {
+	cesiumCreditAlt();
+
+});
 function changeToggleTab(apiIndex){
 
     // Contents 영역 삭제
@@ -256,7 +261,6 @@ function changeToggleTab(apiIndex){
 			};
 			
 			// cesium credit img alt
-			cesiumCreditAlt();
 			
 			// blank check 
 			$('.paramContainer').children('input[type=text]').focusout(function (){
