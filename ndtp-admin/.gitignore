@@ -4,7 +4,7 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**
 !**/src/test/**
-
+/src/main/webapp/sample/f4d/**
 ### STS ###
 .apt_generated
 .classpath
