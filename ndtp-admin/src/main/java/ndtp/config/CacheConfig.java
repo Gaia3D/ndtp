@@ -43,7 +43,9 @@ public class CacheConfig {
 		cacheParams.setCacheType(CacheType.SELF);
         
         // 사용자 그룹별 메뉴, Role
-        userGroupMenuAndRole(cacheParams);
+        menu(cacheParams);
+        // 사용자 그룹별 메뉴, Role
+        role(cacheParams);
         
         log.info("*************************************************");
         log.info("************* Admin Cache Init End **************");
@@ -55,7 +57,7 @@ public class CacheConfig {
 		
 		if(cacheName == CacheName.POLICY) policy(cacheParams);
 		else if(cacheName == CacheName.MENU) menu(cacheParams);
-		else if(cacheName == CacheName.USER_GROUP) userGroupMenuAndRole(cacheParams);
+		else if(cacheName == CacheName.ROLE) role(cacheParams);
 	}
     
     /**
@@ -63,6 +65,7 @@ public class CacheConfig {
      * @param cacheParams
      */
     private void policy(CacheParams cacheParams) {
+    	log.info("************ Cache Reload Policy ************");
     	CacheType cacheType = cacheParams.getCacheType();
     	if(cacheType == CacheType.BROADCAST) {
     		callRemoteCache(cacheParams);
@@ -74,16 +77,7 @@ public class CacheConfig {
      * @param cacheParams
      */
     private void menu(CacheParams cacheParams) {
-    	CacheType cacheType = cacheParams.getCacheType();
-    	if(cacheType == CacheType.BROADCAST) {
-    		callRemoteCache(cacheParams);
-    	}
-    }
-
-    /**
-     * 사용자 그룹, 메뉴, Role
-     */
-    private void userGroupMenuAndRole(CacheParams cacheParams) {
+    	log.info("************ Cache Reload menu ************");
     	Map<Integer, Menu> menuMap = new HashMap<>();
 		Map<String, Integer> menuUrlMap = new HashMap<>();
 		Menu adminMenu = new Menu();
@@ -101,13 +95,10 @@ public class CacheConfig {
     	List<UserGroup> userGroupList = userGroupService.getListUserGroup();
 
     	Map<Integer, List<UserGroupMenu>> userGroupMenuMap = new HashMap<>();
-    	Map<Integer, List<String>> userGroupRoleMap = new HashMap<>();
-
+    	
     	UserGroupMenu userGroupMenu = new UserGroupMenu();
     	userGroupMenu.setMenuTarget(MenuTarget.ADMIN.getValue());
 
-    	UserGroupRole userGroupRole = new UserGroupRole();
-    	userGroupRole.setRoleTarget(RoleTarget.ADMIN.getValue());
     	for(UserGroup userGroup : userGroupList) {
     		Integer userGroupId = userGroup.getUserGroupId();
 
@@ -115,15 +106,39 @@ public class CacheConfig {
     		userGroupMenu.setUseYn(YOrN.Y.toString());
     		List<UserGroupMenu> userGroupMenuList = userGroupService.getListUserGroupMenu(userGroupMenu);
     		userGroupMenuMap.put(userGroupId, userGroupMenuList);
+    	}
+
+    	CacheManager.setMenuMap(menuMap);
+		CacheManager.setMenuUrlMap(menuUrlMap);
+    	CacheManager.setUserGroupMenuMap(userGroupMenuMap);
+
+    	CacheType cacheType = cacheParams.getCacheType();
+		if(cacheType == CacheType.BROADCAST) {
+			callRemoteCache(cacheParams);
+		}
+    }
+    
+    /**
+     * 사용자 그룹, 메뉴, Role
+     */
+    private void role(CacheParams cacheParams) {
+    	log.info("************ Cache Reload role ************");
+    	UserGroup inputUserGroup = new UserGroup();
+    	inputUserGroup.setAvailable(true);
+    	List<UserGroup> userGroupList = userGroupService.getListUserGroup();
+
+    	Map<Integer, List<String>> userGroupRoleMap = new HashMap<>();
+
+    	UserGroupRole userGroupRole = new UserGroupRole();
+    	userGroupRole.setRoleTarget(RoleTarget.ADMIN.getValue());
+    	for(UserGroup userGroup : userGroupList) {
+    		Integer userGroupId = userGroup.getUserGroupId();
 
     		userGroupRole.setUserGroupId(userGroupId);
     		List<String> userGroupRoleKeyList = userGroupService.getListUserGroupRoleKey(userGroupRole);
     		userGroupRoleMap.put(userGroupId, userGroupRoleKeyList);
     	}
 
-    	CacheManager.setMenuMap(menuMap);
-		CacheManager.setMenuUrlMap(menuUrlMap);
-    	CacheManager.setUserGroupMenuMap(userGroupMenuMap);
     	CacheManager.setUserGroupRoleMap(userGroupRoleMap);
 
     	CacheType cacheType = cacheParams.getCacheType();

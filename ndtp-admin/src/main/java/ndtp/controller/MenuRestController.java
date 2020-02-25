@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
+import ndtp.config.CacheConfig;
+import ndtp.domain.CacheName;
+import ndtp.domain.CacheParams;
+import ndtp.domain.CacheType;
 import ndtp.domain.Menu;
 import ndtp.domain.MenuTarget;
 import ndtp.domain.MenuType;
@@ -33,11 +38,10 @@ import ndtp.utils.StringUtil;
 @RequestMapping("/menus")
 public class MenuRestController {
 	
-	private final MenuService menuService;
-	
-	public MenuRestController(MenuService menuService) {
-		this.menuService = menuService;
-	}
+	@Autowired
+	private CacheConfig cacheConfig;
+	@Autowired
+	private MenuService menuService;
 	
 	/**
 	 * 관리자 메뉴
@@ -151,7 +155,7 @@ public class MenuRestController {
 			menuTree = getMenuTree(getAllListMenu(menu.getMenuTarget()));
 			log.info("@@ menuTree = {} ", menuTree);
 			
-//			cacheRefreshManager.refresh(CacheType.SELF, CacheName.USER_GROUP);
+			reloadCache();
 			
 			result.put("menuTree", menuTree);
 		} catch (Exception e) {
@@ -214,7 +218,7 @@ public class MenuRestController {
 			menuTree = getMenuTree(getAllListMenu(menu.getMenuTarget()));
 			log.info("@@ menuTree = {} ", menuTree);
 			
-//			cacheRefreshManager.refresh(CacheType.SELF, CacheName.USER_GROUP);
+			reloadCache();
 			
 			result.put("menuTree", menuTree);
 		} catch (Exception e) {
@@ -263,7 +267,7 @@ public class MenuRestController {
 			menuTree = getMenuTree(getAllListMenu(menu.getMenuTarget()));
 			log.info("@@ menuTree = {} ", menuTree);
 			
-//			cacheRefreshManager.refresh(CacheType.SELF, CacheName.USER_GROUP);
+			reloadCache();
 			
 			result.put("menuTree", menuTree);
 		} catch (Exception e) {
@@ -299,7 +303,7 @@ public class MenuRestController {
 			menuTree = getMenuTree(getAllListMenu(MenuTarget.ADMIN.getValue()));
 			log.info("@@ menuTree = {} ", menuTree);
 			
-//			cacheRefreshManager.refresh(CacheType.SELF, CacheName.USER_GROUP);
+			reloadCache();
 			
 			result.put("menuTree", menuTree);
 		} catch (Exception e) {
@@ -335,7 +339,7 @@ public class MenuRestController {
 			menuTree = getMenuTree(getAllListMenu(MenuTarget.USER.getValue()));
 			log.info("@@ menuTree = {} ", menuTree);
 			
-//			cacheRefreshManager.refresh(CacheType.SELF, CacheName.USER_GROUP);
+			reloadCache();
 			
 			result.put("menuTree", menuTree);
 		} catch (Exception e) {
@@ -357,6 +361,7 @@ public class MenuRestController {
 		StringBuffer buffer = new StringBuffer();
 		
 		int count = menuList.size();
+		int lastDepth = 0;
 		Menu menu = menuList.get(0);
 		
 		buffer.append("[")
@@ -392,6 +397,7 @@ public class MenuRestController {
 			int bigParentheses = 0;
 			for(int i=1; i<count; i++) {
 				menu = menuList.get(i);
+				lastDepth = menu.getDepth();
 				
 				if(preParent == menu.getParent()) {
 					// 부모가 같은 경우
@@ -459,9 +465,13 @@ public class MenuRestController {
 			}
 		}
 		
-		buffer.append("}");
-		buffer.append("]");
-		
+		if(lastDepth == 1) {
+			buffer.append("]");
+		} else if(lastDepth == 2) {
+			buffer.append("}");
+			buffer.append("]");
+		}
+			
 		return buffer.toString();
 	}
 	
@@ -481,5 +491,12 @@ public class MenuRestController {
 		} 
 		
 		return menuList;
+	}
+	
+	private void reloadCache() {
+		CacheParams cacheParams = new CacheParams();
+		cacheParams.setCacheName(CacheName.MENU);
+		cacheParams.setCacheType(CacheType.BROADCAST);
+		cacheConfig.loadCache(cacheParams);
 	}
 }
