@@ -42,6 +42,11 @@ public class GuideController {
 		return "/guide/layout";
 	}
 	
+	/**
+	 * @param request
+	 * @param api
+	 * @return
+	 */
 	@PostMapping(value = "/loadPage")
 	public String gotoApiToggle(HttpServletRequest request, @RequestParam(value="api") String api) {
 		return "/guide/"+api;

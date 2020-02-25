@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<div id="api7" class="api-help-toggle" style="display: none;">
+<div id="api7" class="api-help-toggle">
 	<div class="menu_tab">
 		<ul>
 			<li class="fst active"><a href="#" onclick="tabMenu(0);">Run</a></li>
@@ -76,7 +76,6 @@
 <script>
 
 	var changeColor = function() {
-		//console.log($(this).val());
 		var arr1 = [];
 		var projectId = $('#api7-p1').val();
 		var dataKey = $('#api7-p2').val();

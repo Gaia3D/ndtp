@@ -45,9 +45,13 @@ public class GuideController {
 		return "/guide/layout";
 	}
 	
-	@GetMapping(value = "/loadPage")
-	public String gotoApiToggle(HttpServletRequest request, @RequestParam(value = "str")String str) {
-		System.out.println("Ssssssssss");
-		return "/guide/"+str;
+	/**
+	 * @param request
+	 * @param api
+	 * @return
+	 */
+	@PostMapping(value = "/loadPage")
+	public String gotoApiToggle(HttpServletRequest request, @RequestParam(value="api") String api) {
+		return "/guide/"+api;
 	}
 }

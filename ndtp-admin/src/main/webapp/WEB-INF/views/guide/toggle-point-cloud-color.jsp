@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<div id="api45" class="api-help-toggle" style="display: none;">
+<div id="api45" class="api-help-toggle">
 	<div class="menu_tab">
 		<ul>
 			<li class="fst active"><a href="#" onclick="tabMenu(0);">Run</a></li>
@@ -24,7 +24,6 @@
 			</tr>
 		</table>
 		<br>
-		<div class="paramContainer"></div>
 		<input type="button" id="togglePointCloudColor" value="Run" class="popupBtn">
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>

@@ -285,7 +285,7 @@ function changeToggleTab(apiIndex){
 						}
 					}
 					if(count==0){
-						alert("필수!");
+						alert("적어도 1개 이상의 값을 입력해 주세요!");
 						return;
 					}
 					window[id]();
@@ -296,7 +296,7 @@ function changeToggleTab(apiIndex){
 						}
 					}
 					if(count==0){
-						alert("필수!");
+						alert("적어도 1개 이상의 값을 입력해 주세요!");
 						return;
 					}
 					window[id]();
@@ -309,14 +309,14 @@ function changeToggleTab(apiIndex){
 						}
 					}
 					if(count==0){
-						alert("필수!");
+						alert("적어도 1개 이상의 값을 입력해 주세요!");
 						return;
 					}
 					window[id]();
 				}else{
 					for(var i = 0; i<inputTags.length; i++){
 						if(inputTags[i].dataset.require === 'true' &&  (inputTags[i].value=="" || null || undefined) ){
-							alert("필수!");
+							alert("필수값을 모두 입력해 주세요!");
 							return;
 						}
 					}

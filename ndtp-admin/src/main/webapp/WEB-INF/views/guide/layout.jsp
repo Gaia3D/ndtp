@@ -14,14 +14,13 @@
 <link rel="stylesheet" href="/externlib/highlightjs/styles/dark.css">
 <link rel="stylesheet" href="/css/ko/apihelp-style.css" />
 <script src="/externlib/highlightjs/highlight.pack.js"></script>
-<script>hljs.initHighlightingOnLoad();</script>
 
 </head>
 <body>
 	<div id="popupWrap">
 		<div class="popupSub">
 			<h3>
-				<a onclick="changeToggleTab(api0)">mago3D.JS API</a>
+				<a onclick="changeToggleTab(0)">mago3D.JS API</a>
 			</h3>
 			<div class="searchWrap">
 			<label for="searchApi"></label>
@@ -38,54 +37,9 @@
 			<div class="descript">
 				<div class="popupGroup">
 					<div id="testtoggle">
-						<%@ include file="/WEB-INF/views/guide/main.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/change-mago-state.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/change-label.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/change-origin.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/change-bounding-box.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/change-property-rendering.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/change-shadow.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/change-color.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/change-location-and-rotation.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/change-object-move.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/save-object-move.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/delete-all-object-move.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/delete-all-change-color.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/change-insert-issue-mode.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/change-object-info-view-mode.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/change-occlusion-culling.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/change-FPV-mode.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/change-near-geo-issue-list-view-mode.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/change-insert-issue-state.jsp"%>						
-						<%@ include file="/WEB-INF/views/guide/change-lod.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/change-lighting.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/change-ssao-radius.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/clear-all-data.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/draw-insert-issue-image.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/goto-project.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/goto-issue.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/search-data.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/is-data-exist.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/get-data.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/get-data-info-by-data-key.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/draw-append-data.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/goto-fly.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/get-coordinate-relative-to-building.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/get-absolute-coodinate-of-building-point.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/get-camera-current-position.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/get-camera-current-orientaion.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/change-camera-orientation.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/instantiate-static-model.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/add-static-model.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/set-track-node.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/stop-track.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/is-exist-static-model.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/is-exist-data.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/is-data-ready-to-render.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/set-node-attribute.jsp"%>
-						<%@ include file="/WEB-INF/views/guide/toggle-point-cloud-color.jsp"%>
-
-
+					<div id="api0" class="api-help-toggle">
+						<img src="/images/ko/common/main.png" alt="메인">
+					</div>
 					</div>
 				</div>
 			</div>
@@ -102,17 +56,29 @@
 	<script type="text/javascript" src="/js/mago3d.js"></script>
 	<script type="text/javascript" src="/js/mago3d_lx.js"></script>
 	<script type="text/javascript" src="/js/ko/common.js"></script>
+	
 
 	<script type="text/javascript">
-	
-	var apiNum;
+	var jspList = ["main","change-mago-state", "change-label", "change-origin",
+		"change-bounding-box", "change-property-rendering", "change-shadow", 
+		"change-color", "change-location-and-rotation", "change-object-move",
+		"delete-all-object-move", "delete-all-change-color",
+		"change-insert-issue-mode", "change-object-info-view-mode", "change-occlusion-culling",
+		"change-FPV-mode", "change-lod", "change-lighting", "change-ssao-radius",
+		"clear-all-data", "draw-insert-issue-image", "goto-project",
+		"goto-issue", "search-data", "is-data-exist",
+		"get-data", "get-data-info-by-data-key", "draw-append-data",
+		"goto-fly", "get-coordinate-relative-to-building", "get-absolute-coodinate-of-building-point",
+		"get-camera-current-position", "get-camera-current-orientaion", "change-camera-orientation",
+		"instantiate-static-model", "add-static-model", "set-track-node", "stop-track",
+		"is-exist-static-model", "is-exist-data", "is-data-ready-to-render",
+		"set-node-attribute", "toggle-point-cloud-color"];
 	var apiList = ["main","changeMagoStateAPI", "changeLabelAPI", "changeOriginAPI",
 		"changeBoundingBoxAPI", "changePropertyRenderingAPI", "changeShadowAPI", 
 		"changeColorAPI", "changeLocationAndRotationAPI", "changeObjectMoveAPI",
-		"saveObjectMoveAPI", "deleteAllObjectMoveAPI", "deleteAllChangeColorAPI",
+		"deleteAllObjectMoveAPI", "deleteAllChangeColorAPI",
 		"changeInsertIssueModeAPI", "changeObjectInfoViewModeAPI", "changeOcclusionCullingAPI",
-		"changeFPVModeAPI", "changeNearGeoIssueListViewModeAPI", "changeInsertIssueStateAPI",
-		"changeLodAPI", "changeLightingAPI", "changeSsaoRadiusAPI",
+		"changeFPVModeAPI", "changeLodAPI", "changeLightingAPI", "changeSsaoRadiusAPI",
 		"clearAllDataAPI", "drawInsertIssueImageAPI", "gotoProjectAPI",
 		"gotoIssueAPI", "searchDataAPI", "isDataExistAPI",
 		"getDataAPI", "getDataInfoByDataKeyAPI", "drawAppendDataAPI",
@@ -122,127 +88,10 @@
 		"isExistStaticModelAPI", "isExistDataAPI", "isDataReadyToRenderAPI",
 		"setNodeAttributeAPI", "togglePointCloudColorAPI"];
 
-		for(var i = 1; i<apiList.length+1; i++){
+		for(var i = 1; i<apiList.length; i++){
 			
-			if($('.paramContainer').get(i)){
-				
-				$(".popupSub").children('ul').append("<li class=\"item\"><a class=\"name\" href=\"#api"+i+"\" onclick=\"changeToggleTab(api"+i+"); return false;\">"+apiList[i]+"</a></li>");
-				var parmScript = document.createTextNode(($('.paramContainer').get(i-1).innerHTML).replace(/\s{2,}/gi, ' '));
-				var script = document.createTextNode($('.api-help-toggle').next()[i-1].text);
-				var preTagBr = document.createElement("br");
-				var codeParmTag = document.createElement("code");
-				codeParmTag.setAttribute("class","html");
-				codeParmTag.appendChild(parmScript);
-				var preTagParm = document.createElement("pre");
-				preTagParm.appendChild(codeParmTag);
-				var codeScriptTag = document.createElement("code");
-				codeScriptTag.setAttribute("class","javascript");
-				codeScriptTag.appendChild(script);		
-				var preTagScript = document.createElement("pre");
-				preTagScript.appendChild(codeScriptTag);
-				var codeTabContainer = document.createElement("div");
-				codeTabContainer.appendChild(preTagParm);
-				codeTabContainer.appendChild(preTagBr);
-				codeTabContainer.appendChild(preTagBr);
-				codeTabContainer.appendChild(preTagBr);
-				codeTabContainer.appendChild(preTagScript);
-					
-				$('.menu_tab01')[i-1].appendChild(codeTabContainer);
-				
-			
-			}
+			 $(".popupSub").children('ul').append("<li class=\"item\"><a class=\"name\" href=\"#\" onclick=\"changeToggleTab("+i+"); return false;\">"+apiList[i]+"</a></li>");
 		}
-		
-		$( document ).ready(function() {
-			
-			// code toggle align
-			for (var i =0; i< $("code").children('.hljs-tag').length; i++) {
-				if($("code").children('.hljs-tag')[i].childNodes[0].nodeValue=="</"){
-					$("code").children('.hljs-tag')[i].childNodes[2].nodeValue = $("code").children('.hljs-tag')[i].childNodes[2].nodeValue+"\n";
-				}
-				if($("code").children('.hljs-tag')[i].childNodes[1].childNodes[0]=="br"){
-					$("code").children('.hljs-tag')[i].childNodes[2].nodeValue = $("code").children('.hljs-tag')[i].childNodes[2].nodeValue+"\n";
-				}
-			};
-			
-			// cesium credit img alt
-			cesiumCreditAlt();
-			
-			// blank check 
-			$('.paramContainer').children('input[type=text]').focusout(function (){
-				if($(this)[0].nextSibling.nodeValue){
-					$(this)[0].nextSibling.nodeValue="";
-				}
-				if($(this).val()=="" && $(this).attr('data-require') === 'true'){
-					var txt = document.createTextNode("필수로 입력해 주세요.");
-					$(this).after(txt);
-				}/* else{
-					var txt = document.createTextNode("만족!");
-					$(this).after(txt);
-				}  */
-			})
-			
-			// null check and start function
-			$('.popupBtn').on("click", function(){
-				var id = $(this).attr('id');/* 
-				$('.menu_tab00').scrollTop($('.menu_tab00')[0].scrollHeight); */
-				var inputTags = $("#"+id).siblings('.paramContainer').children('input[type=text]');
-				var count=0;
-				if(id=="changeLod"){
-					for(var i = 0; i<inputTags.length; i++){
-						if(inputTags[i].dataset.require === 'false' &&  (inputTags[i].value!="") ){
-							count=count+1;
-						}
-					}
-					if(count==0){
-						alert("필수!");
-						return;
-					}
-					window[id]();
-				}else if(id=="changeLighting"){
-					for(var i = 0; i<inputTags.length; i++){
-						if(inputTags[i].dataset.require === 'false' &&  (inputTags[i].value!="") ){
-							count=count+1;
-						}
-					}
-					if(count==0){
-						alert("필수!");
-						return;
-					}
-					window[id]();
-				}else if(id=="changeCameraOrientation"){
-					for(var i = 0; i<inputTags.length; i++){
-						if(inputTags[i].dataset.require === 'false' &&  (inputTags[i].value!="") ){
-							if(inputTags[i].id!="api36-p4"){
-								count=count+1;
-							}
-						}
-					}
-					if(count==0){
-						alert("필수!");
-						return;
-					}
-					window[id]();
-				}else{
-					for(var i = 0; i<inputTags.length; i++){
-						if(inputTags[i].dataset.require === 'true' &&  (inputTags[i].value=="" || null || undefined) ){
-							alert("필수!");
-							return;
-						}
-					}
-					window[id]();
-				}
-			})
-			
-			//color picker
-			$('#api7-p5').on("change", function(){
-				if($(this)[0].nextSibling.nodeValue){
-					$(this)[0].nextSibling.nodeValue="";
-				}
-				var txt = document.createTextNode(convertColor($(this).val()));
-				$(this).after(txt);
-			})
-		});
 		
 var MAGO3D_INSTANCE2;
 var NDTP2 = {
@@ -295,6 +144,7 @@ function magoLoadEnd2(e) {
 		dataType: "json",
 		success: function(res){
 			if(res) {
+				console.log(res);
 				var policy = Mago3D.MagoConfig.getPolicy();
 				var initLat = parseFloat(policy.initLatitude);
 				var initLon = parseFloat(policy.initLongitude);
@@ -320,10 +170,169 @@ $('.item').on("click", function(){
 	$(this).addClass('on');
 })
 
-function changeToggleTab(apiId){
-	$('.api-help-toggle').css('display','none');
-	$(apiId).scrollTop(0);
-	$(apiId).show();
+function changeToggleTab(apiIndex){
+
+    // Contents 영역 삭제
+    $('#testtoggle').children().remove();
+	var index = new Number(apiIndex);
+        // ajax option
+        var ajaxOption = {
+                url : "/guide/loadPage",
+                async : true,
+                type : "POST",
+                data : {
+                	api : jspList[index]
+                },
+                dataType : "html",
+                cache : false
+        };
+        
+        $.ajax(ajaxOption).done(function(data){
+        	
+            // Contents 영역 교체
+            $('#testtoggle').scrollTop(0);
+            $('#testtoggle').html(data);
+            var codeTabContainer1 = document.createElement("div");
+            codeTabContainer1.setAttribute("class", "codeTabContainer1");
+            var codeTabContainer2 = document.createElement("div");
+            codeTabContainer2.setAttribute("class", "codeTabContainer2");
+            if(document.getElementsByClassName("paramContainer").length!=0){
+   			 
+   				var parmScript = document.createTextNode(($('.paramContainer')[0].innerHTML).replace(/\s{2,}/gi, ' '));
+   				
+   				var preTagBr = document.createElement("br");
+   				var codeParmTag = document.createElement("code");
+   				
+   				codeParmTag.setAttribute("class","html");
+   				codeParmTag.appendChild(parmScript);
+   				var preTagParm = document.createElement("pre");
+   				preTagParm.appendChild(codeParmTag);
+   				codeTabContainer1.appendChild(preTagParm);
+   				codeTabContainer1.appendChild(preTagBr);
+   				
+   				var codeTitle1 = document.createElement("h4");
+   				var txt = document.createTextNode("HTML");
+   				codeTitle1.appendChild(txt);
+   				$('.menu_tab01')[0].appendChild(codeTitle1);
+   	            $('.menu_tab01')[0].appendChild(codeTabContainer1);
+   	            
+   				// hilight
+   				document.querySelector('.codeTabContainer1').querySelectorAll('pre code').forEach((block) => {
+   				    hljs.highlightBlock(block);
+   				  });
+   			}
+            if($('.api-help-toggle').next()[0]){
+      			
+   				var script = document.createTextNode($('.api-help-toggle').next()[0].text);
+   				var preTagBr = document.createElement("br");
+   				
+   				var codeScriptTag = document.createElement("code");
+   				codeScriptTag.setAttribute("class","javascript");
+   				codeScriptTag.appendChild(script);		
+   				var preTagScript = document.createElement("pre");
+   				preTagScript.appendChild(codeScriptTag);
+   				codeTabContainer2.appendChild(preTagBr);
+   				codeTabContainer2.appendChild(preTagScript);
+   				
+   				var codeTitle2 = document.createElement("h4");
+   				var txt = document.createTextNode("JAVASCRIPT");
+   				codeTitle2.appendChild(txt);
+   				$('.menu_tab01')[0].appendChild(codeTitle2);
+   				$('.menu_tab01')[0].appendChild(codeTabContainer2);
+   				
+   				// hilight
+   				document.querySelector('.codeTabContainer2').querySelectorAll('pre code').forEach((block) => {
+   				    hljs.highlightBlock(block);
+   				  });
+   			}
+         // code toggle align
+			for (var i =0; i< $("code").children('.hljs-tag').length; i++) {
+				if($("code").children('.hljs-tag')[i].childNodes[0].nodeValue=="</"){
+					$("code").children('.hljs-tag')[i].childNodes[2].nodeValue = $("code").children('.hljs-tag')[i].childNodes[2].nodeValue+"\n";
+				}
+				if($("code").children('.hljs-tag')[i].childNodes[1].childNodes[0]=="br"){
+					$("code").children('.hljs-tag')[i].childNodes[2].nodeValue = $("code").children('.hljs-tag')[i].childNodes[2].nodeValue+"\n";
+				}
+			};
+			
+			// cesium credit img alt
+			cesiumCreditAlt();
+			
+			// blank check 
+			$('.paramContainer').children('input[type=text]').focusout(function (){
+				if($(this)[0].nextSibling.nodeValue){
+					$(this)[0].nextSibling.nodeValue="";
+				}
+				if($(this).val()=="" && $(this).attr('data-require') === 'true'){
+					var txt = document.createTextNode("필수로 입력해 주세요.");
+					$(this).after(txt);
+				}/* else{
+					var txt = document.createTextNode("만족!");
+					$(this).after(txt);
+				}  */
+			})
+			
+			// null check and start function
+			$('.popupBtn').on("click", function(){
+				var id = $(this).attr('id');/* 
+				$('.menu_tab00').scrollTop($('.menu_tab00')[0].scrollHeight); */
+				var inputTags = $("#"+id).siblings('.paramContainer').children('input[type=text]');
+				var count=0;
+				if(id=="changeLod"){
+					for(var i = 0; i<inputTags.length; i++){
+						if(inputTags[i].dataset.require === 'false' &&  (inputTags[i].value!="") ){
+							count=count+1;
+						}
+					}
+					if(count==0){
+						alert("적어도 1개 이상의 값을 입력해 주세요!");
+						return;
+					}
+					window[id]();
+				}else if(id=="changeLighting"){
+					for(var i = 0; i<inputTags.length; i++){
+						if(inputTags[i].dataset.require === 'false' &&  (inputTags[i].value!="") ){
+							count=count+1;
+						}
+					}
+					if(count==0){
+						alert("적어도 1개 이상의 값을 입력해 주세요!");
+						return;
+					}
+					window[id]();
+				}else if(id=="changeCameraOrientation"){
+					for(var i = 0; i<inputTags.length; i++){
+						if(inputTags[i].dataset.require === 'false' &&  (inputTags[i].value!="") ){
+							if(inputTags[i].id!="api36-p4"){
+								count=count+1;
+							}
+						}
+					}
+					if(count==0){
+						alert("적어도 1개 이상의 값을 입력해 주세요!");
+						return;
+					}
+					window[id]();
+				}else{
+					for(var i = 0; i<inputTags.length; i++){
+						if(inputTags[i].dataset.require === 'true' &&  (inputTags[i].value=="" || null || undefined) ){
+							alert("필수값을 모두 입력해 주세요!");
+							return;
+						}
+					}
+					window[id]();
+				}
+			})
+			
+			//color picker
+			$('#api7-p5').on("change", function(){
+				if($(this)[0].nextSibling.nodeValue){
+					$(this)[0].nextSibling.nodeValue="";
+				}
+				var txt = document.createTextNode(convertColor($(this).val()));
+				$(this).after(txt);
+			})
+        });
 }
 
 function tabMenu(num){
