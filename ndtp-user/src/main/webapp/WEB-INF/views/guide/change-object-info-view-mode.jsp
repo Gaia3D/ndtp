@@ -11,7 +11,7 @@
 		<p>changeObjectInfoViewModeAPI는 Object정보표시 기능을 활성화하는 API입니다. 이
 			API에 파라미터인 flag는 Boolean 타입이고 true이면 정보 표시 모드가 활성화되고 false이면 비활성화되는
 			방식입니다. 활성화되어있는 상태에서 정보를 알고 싶은 Object를 클릭하면 callback함수를 관리해주는 데이터베이스
-			운영정책에 따라서 정보표시 callback함수가 호출되고 Jquery Plugin Toast통하여 Object정보가
+			운영정책에 따라서 정보표시 callback함수가 호출되고 Object정보가
 			나옵니다. 또한, 정보표시 callback함수는 사용자가 Customizing이 가능합니다.</p>
 		<table>
 		<caption>Parameter</caption>
