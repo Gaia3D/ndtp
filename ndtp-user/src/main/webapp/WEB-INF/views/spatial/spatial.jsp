@@ -87,8 +87,8 @@
 					<input id="rpInterval" class="interval" type="text" placeholder="" value="20">
 				</li>
 				<li>
-					<label for="">사용자 입력 선분</label>
-					<button type="button" class="btnText drawUserLine" data-draw-type="LINE">위치지정</button>
+					<label for="RasterProfileDrawUserLine">사용자 입력 선분</label>
+					<button type="button" id="RasterProfileDrawUserLine" class="btnText drawUserLine" data-draw-type="LINE">위치지정</button>
 					<input type="hidden" class="userLine">
 					<div class="coordsText"></div>
 				</li>
@@ -108,30 +108,30 @@
 		<div class="listContents" id="analysisRasterHighLowPoints">
 			<ul class="analysisGroup">
 				<li>
-					<label for="">분석 자료</label>
-					<select class="dataType">
+					<label for="rasterHighLowPointsDataType">분석 자료</label>
+					<select id="rasterHighLowPointsDataType" class="dataType">
 						<option value="DEM" selected>DEM (DEM)</option>
 						<option value="DSM">DSM (DSM)</option>
 					</select>
 				</li>
 				<li>
-					<label for="">면적 타입</label>
-					<select class="areaType">
+					<label for="rasterHighLowPointsAreaType">면적 타입</label>
+					<select id="rasterHighLowPointsAreaType" class="areaType">
 						<option value="useArea">사용자 영역</option>
 						<option value="extent">현재 지도 영역</option>
 					</select>
 				</li>
 				<li class="wrapCropShape">
-					<label for=""></label>
+					<label for="rasterHighLowPointsDrawCropShape">영역 그리기</label>
 					<input type="hidden" class="cropShape">
-					<button type="button" class="btnText drawCropShape" data-draw-type="POLYGON">영역 그리기</button>
+					<button type="button" id="rasterHighLowPointsDrawCropShape" class="btnText drawCropShape" data-draw-type="POLYGON">위치지정</button>
 				</li>
 				<li class="extentInfo" style="display:none;">
 					<span style="color:red;"> - 지도 영역 선택 시, 지도가 2D모드로 전환됩니다.</span>
 				</li>
 				<li>
-					<label for="">최고/최저</label>
-					<select class="valueType">
+					<label for="rasterHighLowPointsValueType">최고/최저</label>
+					<select id="rasterHighLowPointsValueType" class="valueType">
 						<option value="High">최고</option>
 						<option value="Low">최저</option>
 					</select>
@@ -153,8 +153,8 @@
 					<input id="rdRadius" class="radius" type="text" placeholder="" value="1000">
 				</li>
 				<li>
-					<label for="">관찰 위치</label>
-					<input type="text" placeholder="" class="withBtn observerPointMGRS" disabled>
+					<label for="rangeDomeObserverPoint">관찰 위치</label>
+					<input type="text" id="rangeDomeObserverPoint" placeholder="" class="withBtn observerPointMGRS" disabled>
 					<input type="hidden" class="observerPoint">
 					<button type="button" class="btnText drawObserverPoint" data-draw-type="POINT">위치지정</button>
 				</li>

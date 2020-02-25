@@ -5,12 +5,12 @@
 		<div class="listContents" id="solarAnalysis">
 			<ul class="analysisGroup">
 				<li>
-					<label for="">관찰자 위치</label>
-					<input class="" type="text" placeholder="" value="" readonly/>
+					<label for="solarAnalysisObserverPoint">관찰자 위치</label>
+					<input class="" id="solarAnalysisObserverPoint" type="text" placeholder="" value="" readonly/>
 					<button type="button" class="btnText drawObserverPoint">위치지정</button>
 				</li>
 				<li>
-					<label for="">날짜</label>
+					<label for="datepicker-input">날짜</label>
 					<!-- <input class="" type="text" id="solayDatePicker" placeholder="" value=""/> -->
 					<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
 			            <input type="text" id="datepicker-input" aria-label="Date-Time">
