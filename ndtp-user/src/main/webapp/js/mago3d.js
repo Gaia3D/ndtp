@@ -30091,6 +30091,7 @@ var ManagerFactory = function(viewer, containerId, serverPolicy, projectIdArray,
 			// var options = {imageryProvider: imageryProvider, baseLayerPicker: false};
 			_options.imageryProvider = imageryProvider;
 			_options.baseLayerPicker = false;
+			_options.selectionIndicator = false;
 			if (viewer === null) { viewer = new Cesium.Viewer(containerId, _options); }
 		}
 		else 
@@ -30102,6 +30103,7 @@ var ManagerFactory = function(viewer, containerId, serverPolicy, projectIdArray,
 			}
 
 			_options.shouldAnimate = false;
+            _options.selectionIndicator = false;
 			if (viewer === null) { viewer = new Cesium.Viewer(containerId, _options); }
 			// 기본 지도 설정
 			setDefaultDataset();

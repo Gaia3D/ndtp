@@ -158,6 +158,56 @@
 			</ul>
 		</div>
 	</li>
+	<li >
+		<p>도시 계획2<span class="collapse-icon">icon</span></p>
+		<div class="listContents" id="">
+			<ul class="analysisGroup">
+				<li>
+					<button type="button" id="test000" class="btnTextF" style="margin-top:10px;">도시계획정보가시화</button>
+					<button type="button" id="test111" class="btnTextF" style="margin-top:10px;">test111</button>
+					<button type="button" id="test222" class="btnTextF" style="margin-top:10px;">test222</button>
+					<button type="button" id="test333" class="btnTextF" style="margin-top:10px;">test333</button>
+				</li>
+				<li >
+					<div id="smulationToolbar">
+						<label for="">지역</label>
+						<input id="objectName" type="text" placeholder="" />
+						<label for="">지역 타입</label>
+						<select id="districtType" name="districtType">
+							<option value="">선택안함</option>
+							<option value="dType1">제1종 일반주거지역</option>
+							<option value="dType2">중심 상업지역</option>
+							<option value="dType3">일반 공업지역</option>
+							<option value="dType4">공동 주거지역</option>
+						</select>
+						<label for="">지역 전시</label>
+						<select id="districtDisplay" name="districtDisplay">
+							<option value="disable">Disable</option>
+							<option value="enable">Enable</option>
+						</select>
+						<%--						<label for="">건물 전시</label>--%>
+						<%--						<select id="buildingDisplay" name="buildingDisplay">--%>
+						<%--							<option value="disable">Disable</option>--%>
+						<%--							<option value="enable">Enable</option>--%>
+						</select>
+
+						<label for="">기준 용적률</label>
+						<input id="standardFloorAreaRatio" type="number"   />
+						<label for="">기준 건폐율</label>
+						<input id="standardBuildingToLandRatio" type="number" data-bind="" value="0"  />
+						<label for="">기준 층수</label>
+						<input id="standardFloorCount" type="number" data-bind="value: standardFloorCount"  />
+
+						<label for="">건물 높이</label>
+						<input id="inputBuildingHeight" type="number" data-bind="value: buildingHeight" />
+						<label for="">높이 커스터마이징</label>
+						<input id="inputCustomizing" type="number" data-bind="value: buildingAdjust" />
+						<%--						<button id="dd" type="button" class="btnText drawObserverPoint">면적 설정</button>--%>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</li>
 	<li class="on">
 		<p>건축인 허가 신청<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="">
@@ -166,13 +216,9 @@
 					<button type="button" id="permRequest" title="건축인 허가 신청" class="btnTextF" style="margin-top:10px;">건축인 허가 신청</button>
 					<button type="button" id="permView" title="인허가 시뮬레이션" class="btnTextF" style="margin-top:10px;">인허가 시뮬레이션</button>
 					<button type="button" id="testFly" class="btnTextF" style="margin-top:10px;">Fly Test</button>
-					<button type="button" id="testingPicking" class="btnTextF" style="margin-top:10px;">testingPicking</button>
-
+<%--					<button type="button" id="testingPicking" class="btnTextF" style="margin-top:10px;">testingPicking</button>--%>
 					<button type="button" id="testBuilding" class="btnTextF" style="margin-top:10px; display:none;">testBuilding</button>
 					<button type="button" id="comment" class="btnTextF" style="margin-top:10px;">comment</button>
-					<button type="button" id="test111" class="btnTextF" style="margin-top:10px;">test111</button>
-					<button type="button" id="test222" class="btnTextF" style="margin-top:10px;">test222</button>
-					<button type="button" id="test333" class="btnTextF" style="margin-top:10px;">test333</button>
 				</li>
 
 			</ul>
@@ -353,7 +399,6 @@
 	}
 
 	function genBuild(urlParam, lon, lat, scale) {
-		debugger;
 		let position = Cesium.Cartesian3.fromDegrees(lon, lat, 0);
 		let pinBuilder = new Cesium.PinBuilder();
 		let modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
