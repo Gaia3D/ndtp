@@ -964,7 +964,7 @@ opacity: 0.7;
 }
 .popupGroup {
 overflow-y: auto;
-height: calc(100% - 80px)
+height: calc(100% - 5px)
 }
 .popupGroup > div {
 margin-bottom: 40px;
@@ -1079,7 +1079,7 @@ margin-left: 10px;
 	
 	float: left;
 	height:908px;
- 	width: 22%;
+  width: 22%;
 	background-color: red;
 }
 
@@ -1120,5 +1120,4 @@ margin-right: 10px;
 }
 .paramContainer  input {
 padding: 5px;
-margin-right: 10px;
 }

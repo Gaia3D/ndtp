@@ -54,8 +54,10 @@
 		</div>
 		<br> 
 		<input type="button" id="isExistData" value="Run" class="popupBtn">
-		<h4>결과</h4>
-		<div id="api42-result"></div>
+		<div id="resultContainer">
+			<h4>결과</h4>
+			<div id="api42-result"></div>
+		</div>
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

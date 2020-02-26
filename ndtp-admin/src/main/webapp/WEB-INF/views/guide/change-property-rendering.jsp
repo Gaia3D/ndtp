@@ -56,7 +56,7 @@
 </div>
 <script>
 	var changePropertyRendering = function() {
-		console.log("test");
+		
 		var flag = $("input[name=api5-p1]:checked").val();
 		var isFalseBoolean = (flag === 'true');
 		var projectId = $('#api5-p2').val();

@@ -39,9 +39,12 @@
 			<input type="radio" id="api14-opt2" name="api14-p1" value="false" checked />
 			<label for="api14-opt2">비활성</label>
 		</div>
-		<br/> <input type="button" id="changeObjectInfoViewMode" value="Run" class="popupBtn">
-		<h4>결과</h4>
-		<table id="api14-result"></table>
+		<br/> 
+		<input type="button" id="changeObjectInfoViewMode" value="Run" class="popupBtn">
+		<div id="resultContainer">
+			<h4>결과</h4>
+			<table id="api14-result"></table>
+		</div>
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

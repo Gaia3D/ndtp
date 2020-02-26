@@ -55,7 +55,6 @@
 				projectFolderName : projFdNm,
 				buildingFolderName : buildingFdNm
 			}
-			console.log("asdas");
 			addStaticModelAPI(MAGO3D_INSTANCE2, attrObject);
 	}
 </script>

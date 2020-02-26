@@ -39,8 +39,11 @@
 		</div>
 		<br/> 
 		<input type="button" id="changeInsertIssueMode" value="Run" class="popupBtn">
-		<h4>결과</h4>
-		<table id="api13-result"></table>	</div>
+		<div id="resultContainer">
+			<h4>결과</h4>
+			<table id="api13-result"></table>
+		</div>
+		</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>
 <script>

@@ -45,7 +45,6 @@
 
 		var flag = $("input[name=api1-p1]:checked").val();
 		var isFalseBoolean = (flag === 'true');
-		console.log("api1 함수호출됨")
 		changeMagoStateAPI(MAGO3D_INSTANCE2, isFalseBoolean);
 	}
 </script>

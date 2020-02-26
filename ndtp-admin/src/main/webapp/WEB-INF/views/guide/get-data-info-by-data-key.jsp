@@ -42,8 +42,10 @@
 		</div>
 		<br>
 		<input type="button" id="getDataInfoByDataKey" value="Run" class="popupBtn">
-		<h4>결과</h4>
-		<table id="api29-result"></table>
+		<div id="resultContainer">
+			<h4>결과</h4>
+			<table id="api29-result"></table>
+		</div>
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>
@@ -67,6 +69,7 @@
 			row.appendChild(th);
 			row.appendChild(td);
 		}
+		
 		
 	}
 </script>

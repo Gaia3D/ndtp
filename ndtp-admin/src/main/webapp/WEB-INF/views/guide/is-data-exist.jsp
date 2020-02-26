@@ -41,8 +41,10 @@
 			<input type="text" data-require="true" id="api27-p1" value="sample">
 		</div>
 		<br> <input type="button" id="isDataExist" value="Run" class="popupBtn">
-		<h4>결과</h4>
-		<div id="api27-result"></div>
+		<div id="resultContainer">
+			<h4>결과</h4>
+			<div id="api27-result"></div>
+		</div>
 	</div>
 
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>

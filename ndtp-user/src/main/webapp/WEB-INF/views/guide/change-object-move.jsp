@@ -33,11 +33,11 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<input type="radio" id="api9-opt1" name="api9-p1" value="0" />
-			<label for="api9-opt1">all</label> 
+			<label for="api9-opt1">All</label> 
 			<input type="radio" id="api9-opt2" name="api9-p1" value="1" />
-			<label for="api9-opt2">object</label> 
+			<label for="api9-opt2">Object</label> 
 			<input type="radio" id="api9-opt3" name="api9-p1" value="2" checked />
-			<label for="api9-opt3">non</label>
+			<label for="api9-opt3">None</label>
 		</div>
 		<br/> 
 		<input type="button" id="changeObjectMove" value="Run" class="popupBtn">
