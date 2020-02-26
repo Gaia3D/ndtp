@@ -340,8 +340,10 @@ function CivilVoiceControll(magoInstance, viewer) {
 
 
 $(document).ready(function() {
-	getCivilVoiceList();
-	getCivilVoiceListAll();
+	if(location.hash && location.hash === '#civilVoice') {
+		getCivilVoiceList();
+		getCivilVoiceListAll(true);
+	}
 });
 
 // 시민참여 탭 클릭시 조회
