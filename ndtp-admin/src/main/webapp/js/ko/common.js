@@ -34,6 +34,18 @@ function isNumber(control) {
 	return true;
 }
 
+// 경도 체크
+function isLongitude(value) {
+	var regexLongitude = /^[-+]?(180(\.0{0,6})?|((1[0-7]\d)|([1-9]?\d))(\.\d{0,8})?)$/;
+	return regexLongitude.test(value) ? true : false;
+}
+
+// 위도 체크
+function isLatitude(value) {
+	var regexLatitude = /^[-+]?([0-8]?\d(\.\d{0,6})?|90(\.0{0,8})?)$/;
+	return regexLatitude.test(value) ? true : false;
+}
+
 // IP 체크
 var ipRegularExpression = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/;
 function isIP(ipAddress) {
