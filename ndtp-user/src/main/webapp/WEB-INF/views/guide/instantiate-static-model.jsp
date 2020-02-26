@@ -79,7 +79,7 @@
 		}
 		catch(e){
 			alert(e);
-			//console.info(e);
+			console.error(e);
 		}
 	}
 </script>

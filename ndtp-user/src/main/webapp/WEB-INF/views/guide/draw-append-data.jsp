@@ -42,9 +42,9 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api30-p1">projectIdArray</label>
-			<input type="text" data-require="true" id="api30-p1" value='appendSample' disabled><br/>
+			<input type="text" data-require="true" id="api30-p1" value='appendId1, appendId2'><br/>
 			<label for="api30-p2">projectDataArray</label>
-			<input type="text" data-require="true" id="api30-p2" value='sample_obj' disabled><br/>
+			<input type="text" data-require="true" id="api30-p2" value='sample_obj1, sample_obj1' disabled><br/>
 			<label for="api30-p3">projectDataFolderArray</label>
 			<input type="text" data-require="true" id="api30-p3" value='sample' disabled>
 		</div>
@@ -72,8 +72,8 @@
 					"data_key" : "SOCIALROOM",
 					"data_name" : "SOCIALROOM",
 					"mapping_type" : "origin",
-					"latitude" : 37.58358288958673,
-					"longitude" : 126.60890424717905,
+					"latitude" : 37.521168,
+					"longitude" : 126.924785,
 					"height" : 100,
 					"heading" : 0,
 					"pitch" : 0,
@@ -87,8 +87,54 @@
 					"data_key" : "STUDENTROOM",
 					"data_name" : "STUDENTROOM",
 					"mapping_type" : "origin",
-					"latitude" : 37.58358288958673,
-					"longitude" : 126.61055424717905,
+					"latitude" : 37.521178000000006,
+					"longitude" : 126.924795,
+					"height" : 100,
+					"heading" : 0,
+					"pitch" : 0,
+					"roll" : 0
+				} ],
+				"parent" : 0,
+				"depth" : 1,
+				"view_order" : 2,
+				"data_key" : "sample",
+				"data_name" : "sample",
+				"mapping_type" : "origin"
+			};
+		
+		var obj2 = {
+				"attributes" : {
+					"isPhysical" : false,
+					"nodeType" : "root",
+					"projectType" : "workshop",
+					"specularLighting" : true
+				},
+				"children" : [ {
+					"attributes" : {
+						"isPhysical" : true,
+						"nodeType" : "workshop"
+					},
+					"children" : [],
+					"data_key" : "SOCIALROOM",
+					"data_name" : "SOCIALROOM",
+					"mapping_type" : "origin",
+					"latitude" : 37.521728,
+					"longitude" : 126.924785,
+					"height" : 100,
+					"heading" : 0,
+					"pitch" : 0,
+					"roll" : 0
+				}, {
+					"attributes" : {
+						"isPhysical" : true,
+						"nodeType" : "workshop"
+					},
+					"children" : [],
+					"data_key" : "STUDENTROOM",
+					"data_name" : "STUDENTROOM",
+					"mapping_type" : "origin",
+					"latitude" : 37.521738000000006,
+					"longitude" : 126.924795,
 					"height" : 100,
 					"heading" : 0,
 					"pitch" : 0,
@@ -103,11 +149,12 @@
 			};
 
 		var projectIdArray = [];
-		projectIdArray.push($('#api30-p1').val());
+		projectIdArray = $('#api30-p1').val().split(",");
 		
-		var projectDataArray = [obj1];
+		var projectDataArray = [obj1, obj2];
 		
 		var projectDataFolderArray = [];
+		projectDataFolderArray.push($('#api30-p3').val());
 		projectDataFolderArray.push($('#api30-p3').val());
 
 		drawAppendDataAPI(MAGO3D_INSTANCE2, projectIdArray, projectDataArray, projectDataFolderArray);
