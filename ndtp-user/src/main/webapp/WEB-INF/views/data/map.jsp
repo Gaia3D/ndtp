@@ -53,7 +53,7 @@
 		<span class="spinner"></span>
 	</div>
 </div>
-<div id="wrap">
+<div id="wrap" style="min-height: 560px;"> <!-- 왼쪽 메뉴 높이에 맞춰서 설정해 줘야함 -->
 	<!-- S: NAVWRAP -->
 	<div class="navWrap">
 	 	<%@ include file="/WEB-INF/views/layouts/menu.jsp" %>
