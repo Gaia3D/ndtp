@@ -120,7 +120,6 @@ function createLayerHtml(res) {
 // 사용자 레이어 설정 저장 
 function saveUserLayers() {
 	var layerList = [];
-	var dataInfo = {};
 	$('.nodepth').each(function(e){
 		if($(this).hasClass("on")) {
 			layerList.push($(this).attr("data-layer-key"));

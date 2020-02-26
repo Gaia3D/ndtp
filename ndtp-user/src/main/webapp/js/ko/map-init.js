@@ -34,6 +34,219 @@ function mapInit(magoInstance, baseLayers, policy) {
 	    return a.zindex- b.zindex
 	});
 	
+	/**
+	 * wms layer init
+	 */
+	var initWMSLayer = function(layerList) {
+		var preLayer = getImageryLayerById(WMS_LAYER);
+		if(preLayer) imageryLayers.remove(preLayer);
+		if(layerList.length ===0) return; 
+		
+		var queryString = "enable_yn='Y'";
+	    var queryStrings = layerList.map(function(){ return queryString; }).join(';');	// map: ie9부터 지원
+		var provider = new Cesium.WebMapServiceImageryProvider({
+	        url : geoserverDataUrl + "/wms",
+	        layers : layerList.map(function(e){return geoserverDataWorkspace + ':'+e}).join(','),
+	        parameters : {
+	            service : 'WMS'
+	            ,version : '1.1.1'
+	            ,request : 'GetMap'
+	            ,transparent : 'true'
+	            ,format : 'image/png'
+	            ,time : 'P2Y/PRESENT'
+//	            ,maxZoom : 25
+//	            ,maxNativeZoom : 23
+	            ,CQL_FILTER: queryStrings
+	        },
+	        enablePickFeatures : false
+	    });
+	    
+		var layer = viewer.imageryLayers.addImageryProvider(provider);
+		layer.id = WMS_LAYER;
+	};
+	
+	/**
+	 * wms 레이어 추가  
+	 */
+	var addWMSLayer = function(layerKey) {
+		if(getWMSLayerExists(layerKey)) return;
+		var layerList = null;
+		if(getWMSLayers()) {
+			layerList = getWMSLayers().split(",");
+			var targetIndex = 0;
+			// zindex에 따라 정렬 
+			for(var i=0; i < layerList.length; i++) {
+				var currnetLayerIndex = layerMap[layerList[i]].zindex;
+				if(currnetLayerIndex <= layerMap[layerKey].zindex) {
+					targetIndex = i+1;
+				}
+			}
+			layerList.splice(targetIndex, 0, layerKey);
+		} else {
+			layerList = [layerKey];
+		}
+		
+		initWMSLayer(layerList);
+	};
+	
+	/**
+	 * wfs 레이어 추가
+	 */
+	var addWFSLayer = function(layerKey) {
+		if(getDataSourceById(layerKey)) return;
+		
+		var geoJson = geoserverDataUrl+ "/" + geoserverDataWorkspace + "/" + "/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=" +
+//				geoserverDataWorkspace + ":" + layerKey + "&maxFeatures=200&outputFormat=application/json";
+				geoserverDataWorkspace + ":" + layerKey + "&outputFormat=application/json";
+		var promise = Cesium.GeoJsonDataSource.load(geoJson, {
+			//TODO terrain 사용시 외곽선 disable 되는거 처리 해야함. wfs도 zindex를 적용해야 하는데 add 메서드에 index주는게 없음.
+			stroke: Cesium.Color.fromCssColorString(layerMap[layerKey].layerLineColor),
+	        fill: Cesium.Color.fromCssColorString(layerMap[layerKey].layerFillColor).withAlpha(layerMap[layerKey].layerAlphaStyle),
+	        strokeWidth: layerMap[layerKey].layerLineStyle,
+	        clampToGround: true
+		});
+		promise.then(function(wfsLayer) {
+			wfsLayer.id = layerKey;
+	        dataSources.add(wfsLayer);
+	    }).otherwise(function(error){
+	        //Display any errrors encountered while loading.
+	        alert(error);
+	    });
+	};
+	
+	/**
+	 * tile 레이어 추가
+	 */
+	var addTileLayer = function(layerKey) {
+		if(getImageryLayerById(layerKey)) return;
+		
+		var provider = new Cesium.WebMapServiceImageryProvider({
+	        url : geoserverDataUrl + "/gwc/service/wms",
+	        layers : [geoserverDataWorkspace + ':'+layerKey],
+	        parameters : {
+	            service : 'WMS'
+	            ,version : '1.1.1'
+	            ,request : 'GetMap'
+	            ,transparent : 'true'
+	            ,format : 'image/png'
+	            ,time : 'P2Y/PRESENT',
+//	            ,maxZoom : 25
+//	            ,maxNativeZoom : 23,
+	            tiled : true
+	        }
+	    });
+		
+		var targetIndex = 1;
+		for(var i=0; i < imageryLayers.length; i++) {
+			var layer = imageryLayers.get(i);
+			var currnetLayerId = layer.id;
+			// zindex에 따라 정렬 . wmsLayer, district(행정구역이동 provider)는 provider 하나씩 생성하므로 인덱스 정렬 대상에서 제외.   
+			if(currnetLayerId && currnetLayerId !== WMS_LAYER && currnetLayerId !== DISTRICT_LAYER) {
+				if(layerMap[currnetLayerId].zindex <= layerMap[layerKey].zindex) {
+					targetIndex = i+1;
+				}
+			}
+		}
+		
+		var addedLyer = viewer.imageryLayers.addImageryProvider(provider, targetIndex);
+		addedLyer.id = layerKey;
+	};
+	
+	/**
+	 * wms 레이어 제거
+	 */
+	var removeWMSLayer = function(layerKey) {
+		var layerList = getWMSLayers().split(",");
+		for(var i=0; i < layerList.length;i++) {
+			if(layerKey === layerList[i]) {
+				layerList.splice(i,1);
+			}
+		}
+		
+		initWMSLayer(layerList);
+	};
+	
+	/**
+	 * wfs 레이어 제거 
+	 */
+	var removeWFSLayer = function(layerKey) {
+		var layer = getDataSourceById(layerKey);
+		dataSources.remove(layer);
+	};
+	
+	/**
+	 * tile 레이어 제거 
+	 */
+	var removeTileLayer = function(layerKey) {
+		var layer = getImageryLayerById(layerKey);
+		imageryLayers.remove(layer);
+	};
+	
+	/*
+	 * wms layer string 리턴 
+	 */
+	var getWMSLayers = function() {
+		var layer = getImageryLayerById(WMS_LAYER);
+		var layerList = "";
+		if(layer) {
+			layerList = layer._imageryProvider.layers;
+			return layerList.split(geoserverDataWorkspace+":").join(""); 
+		} else {
+			return layerList;
+		}
+	};
+	
+	/**
+	 * wms layer string이 있는지 확인 
+	 */
+	var getWMSLayerExists = function(layerKey) {
+		var layerList  = getWMSLayers().split(",");
+		var flag = false;
+		for(var i=0; i < layerList.length; i++) {
+			if(layerList[i] === layerKey) {
+				flag = true;
+			}
+		}
+		
+		return flag;
+	};
+	
+	/**
+	 * layerKey에 해당하는 imageryLayer 객체를 리턴 
+	 */
+	var getImageryLayerById = function(layerKey) {
+		var layer = null;
+		var length = imageryLayers.length;
+		for(var i=0; i < length; i++) {
+			var id = imageryLayers.get(i).id;
+			if(!id) continue;
+			if(imageryLayers.get(i).id === layerKey){
+	            layer = imageryLayers.get(i);
+	            break;
+	        }
+		}
+		
+		return layer;
+	};
+	
+	/**
+	 * layerKey에 해당하는 dataSources 객체를 리턴
+	 */
+	var getDataSourceById = function(layerKey) {
+		var layer = null;
+		var length = dataSources.length;
+		for(var i=0; i < length; i++) {
+			var id = dataSources.get(i).id;
+			if(!id) continue;
+			if(dataSources.get(i).id === layerKey){
+	            layer = dataSources.get(i);
+	            break;
+	        }
+		}
+		
+		return layer;
+	};
+	
 		
 	return {
 		/**
@@ -51,50 +264,19 @@ function mapInit(magoInstance, baseLayers, policy) {
 				// 기본 표시 true일 경우에만 레이어 추가 
 				if(!displayFlag && !sortedLayer[i].defaultDisplay) continue;
 				if(serviceType ==='wms' && cacheAvailable) {
-					this.addTileLayer(layerKey);
+					addTileLayer(layerKey);
 				} else if (serviceType ==='wms' && !cacheAvailable) {
 					wmsLayerList.push(layerKey);
 				} else if(serviceType ==='wfs') {
-					this.addWFSLayer(layerKey);
+					addWFSLayer(layerKey);
 				} else {
 					alert(serviceType+" 타입은  지원하지 않습니다.");
 				}
 			}
 			
 			if(wmsLayerList.length > 0) {
-				this.initWMSLayer(wmsLayerList);
+				initWMSLayer(wmsLayerList);
 			}
-		},
-		
-		/**
-		 * wms layer init
-		 */
-		initWMSLayer : function(layerList) {
-			var preLayer = this.getImageryLayerById(WMS_LAYER);
-			if(preLayer) imageryLayers.remove(preLayer);
-			if(layerList.length ===0) return; 
-			
-			var queryString = "enable_yn='Y'";
-		    var queryStrings = layerList.map(function(){ return queryString; }).join(';');	// map: ie9부터 지원
-			var provider = new Cesium.WebMapServiceImageryProvider({
-		        url : geoserverDataUrl + "/wms",
-		        layers : layerList.map(function(e){return geoserverDataWorkspace + ':'+e}).join(','),
-		        parameters : {
-		            service : 'WMS'
-		            ,version : '1.1.1'
-		            ,request : 'GetMap'
-		            ,transparent : 'true'
-		            ,format : 'image/png'
-		            ,time : 'P2Y/PRESENT'
-//		            ,maxZoom : 25
-//		            ,maxNativeZoom : 23
-		            ,CQL_FILTER: queryStrings
-		        },
-		        enablePickFeatures : false
-		    });
-		    
-			var layer = viewer.imageryLayers.addImageryProvider(provider);
-			layer.id = WMS_LAYER;
 		},
 		
 		/**
@@ -104,12 +286,12 @@ function mapInit(magoInstance, baseLayers, policy) {
 			var serviceType = layerMap[layerKey].serviceType;
 			var cacheAvailable = layerMap[layerKey].cacheAvailable;
 			if(serviceType === 'wms' && cacheAvailable) {
-				NDTP.map.addTileLayer(layerKey);
+				addTileLayer(layerKey);
 			} else {
 				if(serviceType === 'wms') {
-					NDTP.map.addWMSLayer(layerKey);
+					addWMSLayer(layerKey);
 				} else if(serviceType ==='wfs') {
-					NDTP.map.addWFSLayer(layerKey);
+					addWFSLayer(layerKey);
 				} else {
 					alert(serviceType+" 타입은 지원하지 않는 서비스 타입입니다.");
 				}
@@ -134,105 +316,18 @@ function mapInit(magoInstance, baseLayers, policy) {
 		},
 		
 		/**
-		 * wms 레이어 추가  
-		 */
-		addWMSLayer : function(layerKey) {
-			if(this.getWMSLayerExists(layerKey)) return;
-			var layerList = null;
-			if(this.getWMSLayers()) {
-				layerList = this.getWMSLayers().split(",");
-				var targetIndex = 0;
-				// zindex에 따라 정렬 
-				for(var i=0; i < layerList.length; i++) {
-					var currnetLayerIndex = layerMap[layerList[i]].zindex;
-					if(currnetLayerIndex <= layerMap[layerKey].zindex) {
-						targetIndex = i+1;
-					}
-				}
-				layerList.splice(targetIndex, 0, layerKey);
-			} else {
-				layerList = [layerKey];
-			}
-			
-			this.initWMSLayer(layerList);
-		},
-		
-		/**
-		 * wfs 레이어 추가
-		 */
-		addWFSLayer : function(layerKey) {
-			if(this.getDataSourceById(layerKey)) return;
-			
-			var geoJson = geoserverDataUrl+ "/" + geoserverDataWorkspace + "/" + "/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=" +
-//					geoserverDataWorkspace + ":" + layerKey + "&maxFeatures=200&outputFormat=application/json";
-					geoserverDataWorkspace + ":" + layerKey + "&outputFormat=application/json";
-			var promise = Cesium.GeoJsonDataSource.load(geoJson, {
-				//TODO terrain 사용시 외곽선 disable 되는거 처리 해야함. wfs도 zindex를 적용해야 하는데 add 메서드에 index주는게 없음.
-				stroke: Cesium.Color.fromCssColorString(layerMap[layerKey].layerLineColor),
-		        fill: Cesium.Color.fromCssColorString(layerMap[layerKey].layerFillColor).withAlpha(layerMap[layerKey].layerAlphaStyle),
-		        strokeWidth: layerMap[layerKey].layerLineStyle,
-		        clampToGround: true
-			});
-			promise.then(function(wfsLayer) {
-				wfsLayer.id = layerKey;
-		        dataSources.add(wfsLayer);
-		    }).otherwise(function(error){
-		        //Display any errrors encountered while loading.
-		        alert(error);
-		    });
-		},
-		
-		/**
-		 * tile 레이어 추가
-		 */
-		addTileLayer : function(layerKey) {
-			if(this.getImageryLayerById(layerKey)) return;
-			
-			var provider = new Cesium.WebMapServiceImageryProvider({
-		        url : geoserverDataUrl + "/gwc/service/wms",
-		        layers : [geoserverDataWorkspace + ':'+layerKey],
-		        parameters : {
-		            service : 'WMS'
-		            ,version : '1.1.1'
-		            ,request : 'GetMap'
-		            ,transparent : 'true'
-		            ,format : 'image/png'
-		            ,time : 'P2Y/PRESENT',
-//		            ,maxZoom : 25
-//		            ,maxNativeZoom : 23,
-		            tiled : true
-		        }
-		    });
-			
-			var targetIndex = 1;
-			for(var i=0; i < imageryLayers.length; i++) {
-				var layer = imageryLayers.get(i);
-				var currnetLayerId = layer.id;
-				// zindex에 따라 정렬 . wmsLayer, district(행정구역이동 provider)는 provider 하나씩 생성하므로 인덱스 정렬 대상에서 제외.   
-				if(currnetLayerId && currnetLayerId !== WMS_LAYER && currnetLayerId !== DISTRICT_LAYER) {
-					if(layerMap[currnetLayerId].zindex <= layerMap[layerKey].zindex) {
-						targetIndex = i+1;
-					}
-				}
-			}
-			
-			var addedLyer = viewer.imageryLayers.addImageryProvider(provider, targetIndex);
-			addedLyer.id = layerKey;
-		},
-		
-		/**
 		 * 레이어 삭제
 		 */
 		removeLayer : function(layerKey) {
 			var serviceType = layerMap[layerKey].serviceType;
 			var cacheAvailable = layerMap[layerKey].cacheAvailable;
 			if(serviceType === 'wms' && cacheAvailable) {
-				NDTP.map.removeTileLayer(layerKey);
+				removeTileLayer(layerKey);
 			} else {
 				if(serviceType === 'wms') {
-					NDTP.map.removeWMSLayer(layerKey);
+					removeWMSLayer(layerKey);
 				} else if(serviceType ==='wfs') {
-					NDTP.map.removeWFSLayer(layerKey);
+					removeWFSLayer(layerKey);
 				} else {
 					alert(serviceType+" 타입은 지원하지 않는 서비스 타입입니다.");
 				}
@@ -257,36 +352,6 @@ function mapInit(magoInstance, baseLayers, policy) {
 		},
 		
 		/**
-		 * wms 레이어 제거
-		 */
-		removeWMSLayer : function(layerKey) {
-			var layerList = this.getWMSLayers().split(",");
-			for(var i=0; i < layerList.length;i++) {
-				if(layerKey === layerList[i]) {
-					layerList.splice(i,1);
-				}
-			}
-			
-			this.initWMSLayer(layerList);
-		},
-		
-		/**
-		 * wfs 레이어 제거 
-		 */
-		removeWFSLayer : function(layerKey) {
-			var layer = this.getDataSourceById(layerKey);
-			dataSources.remove(layer);
-		},
-		
-		/**
-		 * tile 레이어 제거 
-		 */
-		removeTileLayer : function(layerKey) {
-			var layer = this.getImageryLayerById(layerKey);
-			imageryLayers.remove(layer);
-		},
-		
-		/**
 		 * 전체 레이어 삭제
 		 */
 		removeAllLayers : function() {
@@ -298,71 +363,6 @@ function mapInit(magoInstance, baseLayers, policy) {
 			}
 			// wfs 삭제 
 			dataSources.removeAll();
-		},
-		
-		/*
-		 * wms layer string 리턴 
-		 */
-		getWMSLayers : function() {
-			var layer = this.getImageryLayerById(WMS_LAYER);
-			var layerList = "";
-			if(layer) {
-				layerList = layer._imageryProvider.layers;
-				return layerList.split(geoserverDataWorkspace+":").join(""); 
-			} else {
-				return layerList;
-			}
-		},
-		
-		/**
-		 * wms layer string이 있는지 확인 
-		 */
-		getWMSLayerExists : function(layerKey) {
-			var layerList  = this.getWMSLayers().split(",");
-			var flag = false;
-			for(var i=0; i < layerList.length; i++) {
-				if(layerList[i] === layerKey) {
-					flag = true;
-				}
-			}
-			
-			return flag;
-		},
-		
-		/**
-		 * layerKey에 해당하는 imageryLayer 객체를 리턴 
-		 */
-		getImageryLayerById : function(layerKey) {
-			var layer = null;
-			var length = imageryLayers.length;
-			for(var i=0; i < length; i++) {
-				var id = imageryLayers.get(i).id;
-				if(!id) continue;
-				if(imageryLayers.get(i).id === layerKey){
-		            layer = imageryLayers.get(i);
-		            break;
-		        }
-			}
-			
-			return layer;
-		},
-		
-		/**
-		 * layerKey에 해당하는 dataSources 객체를 리턴
-		 */
-		getDataSourceById : function(layerKey) {
-			var layer = null;
-			var length = dataSources.length;
-			for(var i=0; i < length; i++) {
-				var id = dataSources.get(i).id;
-				if(!id) continue;
-				if(dataSources.get(i).id === layerKey){
-		            layer = dataSources.get(i);
-		            break;
-		        }
-			}
-			
-			return layer;
 		}
 	}
 }
