@@ -11,11 +11,9 @@ import ndtp.persistence.CommentManageMapper;
 import ndtp.persistence.StructPermissionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -93,11 +91,10 @@ public class SimulationRestController {
 	}
 
     @RequestMapping(value = "/cityConstProcUpload", method = RequestMethod.POST)
-    public List<String> upload(SimFileMaster sfm) {
+    public boolean upload(SimFileMaster sfm) {
 		System.out.println(sfm.toString());
-    	List<String> result = this.simServiceImpl.procConstProc(sfm);
-		return null;
-        // PROCESS...
+		this.simServiceImpl.procConstProc(sfm);
+		return true;
     }
 	
     @RequestMapping(value = "/cityPlanUpload", method = RequestMethod.POST)
@@ -176,60 +173,25 @@ public class SimulationRestController {
     	List<String> result = this.simServiceImpl.procCityPlanResult(cityPlanResult);
 		return result;
     }
-    
-	@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	public List<String> upload(MultipartHttpServletRequest mReq) {
-		String os = System.getProperty("os.name").toLowerCase();
-		if (os.contains("mac")) {
-			PREFIX_URL = "/Users/junho/data/mago3d/";
-			SAVE_PATH = "/Users/junho/data/mago3d/";
-		}
 
+	/**
+	 * 건축인허가 신청 등록 처리 로직
+	 * @param mReq
+	 * @return
+	 */
+	@RequestMapping(value = "/uploadBuildAccept", method = RequestMethod.POST)
+	public boolean upload(MultipartHttpServletRequest mReq) {
 		Map<String, MultipartFile> fileMap = mReq.getFileMap();
 		Collection<MultipartFile> mFileCollection = fileMap.values();
-
 		MultipartFile[] files = mFileCollection.toArray(MultipartFile[]::new);
-
-		String originFileName = "";
-		String saveFileName = "";
-		for(MultipartFile mtf : files) {
-			String fileName = mtf.getOriginalFilename();
-			String extName = fileName.substring(fileName.lastIndexOf("."), fileName.length());
-			if (extName.contains("pdf")) {
-				originFileName = fileName;
-				saveFileName = genSaveFileName(extName);
-				try{
-					writeFile(mtf, saveFileName, SAVE_PATH);
-				} catch(Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
 
 		String constructor = mReq.getParameter("constructor");
 		String constructor_type = mReq.getParameter("constructor_type");
 		String birthday = mReq.getParameter("birthday");
 		String license_num = mReq.getParameter("license_num");
 
-		//todo: change
-		StructPermission spObj = StructPermission.builder()
-				.constructor(constructor)
-				.constructorType(constructor_type)
-				.permOfficer("ndtp")
-				.birthday(birthday)
-				.licenseNum(license_num)
-				.isComplete("N")
-				.latitude("126.92377563766438")
-				.longitude("37.5241752651257")
-				.saveFilePath(SAVE_PATH)
-				.saveFileName(saveFileName)
-				.originFileName(originFileName)
-				.build();
-
-		structPermissionMapper.insertStructPermission(spObj);
-
-		List<String> result = this.simServiceImpl.procStroeShp(files, FileType.ACCEPTBUILD);
-		return result;
+		this.simServiceImpl.procAcceptBuild(files, constructor, constructor_type, birthday, license_num);
+		return true;
 	}
 
 	@RequestMapping(value = "/getPermRequest", method = RequestMethod.POST)
@@ -350,19 +312,6 @@ public class SimulationRestController {
 		return res;
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 	private String genSaveFileName(String extName) {
 		String fileName = "";
 
@@ -378,9 +327,7 @@ public class SimulationRestController {
 
 		return fileName;
 	}
-	private boolean writeFile(MultipartFile multipartFile, String saveFileName, String SAVE_PATH) throws IOException{
-		boolean result = false;
-
+	private void writeFile(MultipartFile multipartFile, String saveFileName, String SAVE_PATH) throws IOException{
 		this.genSaveFileName(SAVE_PATH);
 
 		byte[] data = multipartFile.getBytes();
@@ -388,6 +335,5 @@ public class SimulationRestController {
 		fos.write(data);
 		fos.close();
 
-		return result;
 	}
 }

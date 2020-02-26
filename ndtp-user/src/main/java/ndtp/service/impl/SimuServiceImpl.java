@@ -9,36 +9,36 @@ import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
-import ndtp.domain.ConsType;
+import ndtp.config.PropertiesConfig;
+import ndtp.domain.*;
+import ndtp.persistence.StructPermissionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import ndtp.domain.CityPlanResult;
-import ndtp.domain.FileType;
-import ndtp.domain.SimFileMaster;
 import ndtp.persistence.SimuMapper;
-
 
 @Service
 public class SimuServiceImpl {
-	String PREFIX_URL = "C:\\data\\mago3d\\normal-upload-data\\";
-	String SAVE_PATH = "C:\\data\\mago3d\\normal-upload-data\\";
-
 	@Autowired
 	private SimuMapper simuMapper;
+
+	@Autowired
+	private StructPermissionMapper structPermissionMapper;
+
+	@Autowired
+	private PropertiesConfig propertiesConfig;
 
 	public SimFileMaster getSimFileMaster() {
 		return this.simuMapper.getSimCityPlanFileList();
@@ -55,34 +55,64 @@ public class SimuServiceImpl {
 		return result;
 	}
 
-
+	/**
+	 * 건설 공정 관리 프로세스
+	 * @param sfm
+	 * @return
+	 */
 	@Transactional
-	public List<String> procConstProc(SimFileMaster sfm) {
+	public void procConstProc(SimFileMaster sfm) {
 		String Path = "";
-		List<String> result = new ArrayList<String>();
-		for(MultipartFile mtf : sfm.getFiles()) {
-			String Name = mtf.getOriginalFilename();
-			if (sfm.getConsTypeString().equals("0")) {
-				sfm.setConsType(ConsType.StepOne);
-			} else if (sfm.getConsTypeString().equals("1")) {
-				sfm.setConsType(ConsType.StepTwo);
-			} else if  (sfm.getConsTypeString().equals("2")) {
-				sfm.setConsType(ConsType.StepThree);
-			} else if  (sfm.getConsTypeString().equals("3")) {
-				sfm.setConsType(ConsType.StepFour);
-			} else if  (sfm.getConsTypeString().equals("4")) {
-				sfm.setConsType(ConsType.StepFive);
-			} else if  (sfm.getConsTypeString().equals("5")) {
-				sfm.setConsType(ConsType.StepSix);
-			}
 
-			if(sfm.getCityTypeString().equals("s")) {
-				result.add(this.restoreByConstProc(mtf, FileType.CONSTPROCSEJON, sfm.getConsType(), sfm.getConsRatio()));
+		Integer consRatio = sfm.getConsRatio();
+
+		// 파일 저장 로직 절차
+		//save file -> return array
+		saveMultiFile(sfm.getFiles());
+
+		// make f4d
+		movedFinishFolder mff = runFileConvertProcess();
+
+		List<SimFileMaster> fmeSimFileList = getFileListInFolder(mff.getMovedFinishOutputFolder());
+
+		// dumi object
+		// movedFinishFolder mff = new movedFinishFolder(propertiesConfig.getServiceF4dFinishRootDir(), propertiesConfig.getServiceF4dOutputDir(), propertiesConfig.getServiceF4dFailRootDir());
+		List<SimFileMaster>  fmeSFM = fmeSimFileList.stream().filter(obj -> obj.getSaveFileName().contains(".json")).collect(Collectors.toList());
+		for (SimFileMaster sfmObj : fmeSFM) {
+			sfmObj.setConsType(getConsTypeByConsTypeString(sfm));
+
+			SimFileMaster obj = SimFileMaster.builder()
+					.saveFilePath(sfmObj.getSaveFilePath())
+					.saveFileName(sfmObj.getSaveFileName())
+					.consRatio(consRatio)
+					.consType(sfmObj.getConsType())
+					.originFileName(sfmObj.getOriginFileName())
+					.build();
+			if (sfm.getCityTypeString().equals("s")) {
+				obj.setSaveFileType(FileType.CONSTPROCSEJON);
 			} else if(sfm.getSaveFileType().equals("p")) {
-				result.add(this.restoreByConstProc(mtf, FileType.CONSTPROCBUSAN, sfm.getConsType(), sfm.getConsRatio()));
+				obj.setSaveFileType(FileType.CONSTPROCBUSAN);
 			}
+			simuMapper.insertConsProcFile(obj);
 		}
-		return result;
+	}
+
+	private ConsType getConsTypeByConsTypeString(SimFileMaster sfm) {
+		ConsType ct = null;
+		if (sfm.getConsTypeString().equals("0")) {
+			ct = ConsType.StepOne;
+		} else if (sfm.getConsTypeString().equals("1")) {
+			ct = ConsType.StepTwo;
+		} else if  (sfm.getConsTypeString().equals("2")) {
+			ct = ConsType.StepThree;
+		} else if  (sfm.getConsTypeString().equals("3")) {
+			ct = ConsType.StepFour;
+		} else if  (sfm.getConsTypeString().equals("4")) {
+			ct = ConsType.StepFive;
+		} else if  (sfm.getConsTypeString().equals("5")) {
+			ct = ConsType.StepSix;
+		}
+		return ct;
 	}
 
 	@Transactional
@@ -93,31 +123,80 @@ public class SimuServiceImpl {
 		result.add(this.restoreByImg(cpr, FileType.IMGFILE));
 		return result;
 	}
-	
-	private void genFolder(String path) {
-		File Folder = new File(path);
 
-		// 해당 디렉토리가 없을경우 디렉토리를 생성합니다.
-		if (!Folder.exists()) {
+	public void procAcceptBuild(MultipartFile[] files, String constructor, String constructor_type, String birthday, String license_num) {
+		List<SimFileMaster> lsfm = saveMultiFile(files);
+
+		movedFinishFolder mff = runFileConvertProcess();
+		// dumi object
+		// movedFinishFolder mff = new movedFinishFolder(propertiesConfig.getServiceF4dFinishRootDir(), propertiesConfig.getServiceF4dOutputDir(), propertiesConfig.getServiceF4dFailRootDir());
+		List<SimFileMaster> simFileList = getFileListInFolder(mff.getMovedFinishOutputFolder());
+		SimFileMaster sfm = simFileList.stream().filter(obj -> obj.getSaveFileName().contains(".json")).findAny().get();
+		SimFileMaster sfmPDF = lsfm.stream().filter(obj -> obj.getSaveFileName().contains(".pdf")).findAny().get();
+
+		// savedBuildingInfo
+		StructPermission spObj = StructPermission.builder()
+				.constructor(constructor)
+				.constructorType(constructor_type)
+				.permOfficer("ndtp")
+				.birthday(birthday)
+				.licenseNum(license_num)
+				.isComplete("N")
+				.latitude("126.92377563766438")
+				.longitude("37.5241752651257")
+				.saveFilePath(sfmPDF.getSaveFilePath())
+				.saveFileName(sfmPDF.getSaveFileName())
+				.saveModelFilePath(sfm.getSaveFilePath())
+				.saveModelFileName(sfm.getSaveFileName())
+				.build();
+		structPermissionMapper.insertStructPermission(spObj);
+	}
+
+	private List<SimFileMaster> saveMultiFile(MultipartFile[] files) {
+		String originFileName = "";
+		String saveFileName = "";
+		String uploadDir = propertiesConfig.getServiceFileUploadDir();
+		String f4dInputDir = propertiesConfig.getServiceF4dInputDir();
+		cleanF4dInputFolder(f4dInputDir);
+
+		// write files in uploadDir
+		List<SimFileMaster> lsfm = new ArrayList<>();
+		for(MultipartFile mtf : files) {
+			String fileName = mtf.getOriginalFilename();
+			String extName = fileName.substring(fileName.lastIndexOf("."), fileName.length());
+			originFileName = fileName;
+			saveFileName = genSaveFileName(extName);
 			try{
-				Folder.mkdir(); //폴더 생성합니다.
-				System.out.println("폴더가 생성되었습니다.");
+				// Normal file saved uploadDir But IFC or Model Files is upload F4D InputFolder
+				// Normal file => saved
+				makeDir(uploadDir);
+				writeFile(mtf, saveFileName, uploadDir);
+
+				// if you are have model file moved process target Path
+				if(saveFileName.contains(".ifc") || saveFileName.contains(".gml") || saveFileName.contains(".jpg") || saveFileName.contains(".png") ) {
+					Files.copy(new File(uploadDir + saveFileName).toPath(), new File(f4dInputDir + originFileName).toPath());
+				}
+				lsfm.add(SimFileMaster.builder().originFileName(originFileName).saveFilePath(uploadDir).saveFileName(saveFileName).build());
+			} catch(Exception e) {
+				e.printStackTrace();
 			}
-			catch(Exception e){
-				e.getStackTrace();
-			}
-		}else {
-			System.out.println("이미 폴더가 생성되어 있습니다.");
+		}
+		return lsfm;
+	}
+
+	private void cleanF4dInputFolder(String f4dInputDir) {
+		for( SimFileMaster obj : getFileListInFolder(f4dInputDir) ) {
+			new File(obj.getSaveFilePath() + "/" + obj.getSaveFileName()).delete();
 		}
 	}
 
 	private String restoreByStroeShp(MultipartFile multipartFile, FileType ft) {
 		String url = null;
+		String uploadDir = propertiesConfig.getServiceFileUploadDir();
 
 		String os = System.getProperty("os.name").toLowerCase();
 		if (os.contains("mac")) {
-			PREFIX_URL = "/Users/junho/data/mago3d/";
-			SAVE_PATH = "/Users/junho/data/mago3d/";
+			uploadDir = "/Users/junho/data/mago3d/";
 		}
 
 		try {
@@ -134,70 +213,16 @@ public class SimuServiceImpl {
 			System.out.println("saveFileName : " + saveFileName);
 
 			if(ft == FileType.ECHODELTASHP) {
-				this.writeFile(multipartFile, saveFileName, SAVE_PATH);
+				this.writeFile(multipartFile, saveFileName, uploadDir);
 				SimFileMaster sfm = SimFileMaster.builder()
 						.originFileName(originFilename)
 						.saveFileName(saveFileName)
-						.saveFilePath(SAVE_PATH)
-						.saveFileType(ft)
-						.build();
-				int result = simuMapper.insertSimCityPlanFile(sfm);
-			} else if(ft == FileType.ACCEPTBUILD) {
-				this.writeFile(multipartFile, saveFileName, SAVE_PATH);
-				SimFileMaster sfm = SimFileMaster.builder()
-						.originFileName(originFilename)
-						.saveFileName(saveFileName)
-						.saveFilePath(SAVE_PATH)
+						.saveFilePath(uploadDir)
 						.saveFileType(ft)
 						.build();
 				int result = simuMapper.insertSimCityPlanFile(sfm);
 			}
-			url = PREFIX_URL + saveFileName;
-		}
-		catch (IOException e) {
-			// 원래라면 RuntimeException 을 상속받은 예외가 처리되어야 하지만
-			// 편의상 RuntimeException을 던진다.
-			// throw new FileUploadException();
-			throw new RuntimeException(e);
-		}
-		return url;
-	}
-
-	private String restoreByConstProc(MultipartFile multipartFile, FileType ft, ConsType cpy, Integer consRatio) {
-		String url = null;
-
-		String os = System.getProperty("os.name").toLowerCase();
-		if (os.contains("mac")) {
-			PREFIX_URL = "/Users/junho/data/mago3d/";
-			SAVE_PATH = "/Users/junho/data/mago3d/";
-		}
-
-		try {
-			// 파일 정보
-			String originFilename = multipartFile.getOriginalFilename();
-			String extName = originFilename.substring(originFilename.lastIndexOf("."), originFilename.length());
-			Long size = multipartFile.getSize();
-
-			// 서버에서 저장 할 파일 이름
-			String saveFileName = genSaveFileName(extName);
-
-			System.out.println("originFilename : " + originFilename);
-			System.out.println("extensionName : " + extName);
-			System.out.println("saveFileName : " + saveFileName);
-
-
-			this.writeFile(multipartFile, saveFileName, SAVE_PATH);
-			SimFileMaster sfm = SimFileMaster.builder()
-					.originFileName(originFilename)
-					.saveFileName(saveFileName)
-					.saveFilePath(SAVE_PATH)
-					.saveFileType(ft)
-					.consType(cpy)
-					.consRatio(consRatio)
-					.build();
-			int result = simuMapper.insertConsProcFile(sfm);
-
-			url = PREFIX_URL + saveFileName;
+			url = uploadDir + saveFileName;
 		}
 		catch (IOException e) {
 			// 원래라면 RuntimeException 을 상속받은 예외가 처리되어야 하지만
@@ -210,12 +235,12 @@ public class SimuServiceImpl {
 
 	private String restoreByImg(CityPlanResult cpr, FileType ft) {
 		String url = null;
+		String uploadDir = propertiesConfig.getServiceFileUploadDir();
 		MultipartFile multipartFile = cpr.getFiles();
 
 		String os = System.getProperty("os.name").toLowerCase();
 		if (os.contains("mac")) {
-			PREFIX_URL = "/Users/junho/data/mago3d/";
-			SAVE_PATH = "/Users/junho/data/mago3d/";
+			uploadDir = "/Users/junho/data/mago3d/";
 		}
 		String PREFIX_URL = "C:\\data\\mago3d\\normal-upload-data\\";
 		String SAVE_PATH = "C:\\data\\mago3d\\normal-upload-data\\";
@@ -309,5 +334,184 @@ public class SimuServiceImpl {
 
 		ImageIO.write(image, "png", outputFile);
 		return result;
+	}
+
+	/**
+	 * processing f4d converter using this method
+	 * Processe the data in input folder
+	 * send it to the output folder
+	 */
+	private movedFinishFolder runFileConvertProcess() {
+		String FirstFolder = new SimpleDateFormat("yyyyMMddHHmmSS").format(new Date());
+
+		String inputFolder = propertiesConfig.getServiceF4dInputDir();
+		String outputFolder = propertiesConfig.getServiceF4dOutputDir();
+		String movedFinsihInputFolder = propertiesConfig.getServiceF4dFinishRootDir() + FirstFolder + '\\' + "Input\\" ;
+		String movedFinishOutputFolder = propertiesConfig.getServiceF4dFinishRootDir() + FirstFolder + '\\' + "Output\\" ;
+		String movedFailFolder = propertiesConfig.getServiceF4dFailRootDir() + FirstFolder + '\\' ;
+		String f4dExeRunPath = propertiesConfig.getServiceF4dRunDir();
+		try {
+			makeDir(inputFolder);
+			makeDir(outputFolder);
+			makeDir(movedFinsihInputFolder);
+			makeDir(movedFinishOutputFolder);
+			makeDir(movedFailFolder);
+
+			if(procF4DProcess(inputFolder, outputFolder, f4dExeRunPath)) {
+				move(new File(inputFolder), new File(movedFinsihInputFolder));
+				move(new File(outputFolder), new File(movedFinishOutputFolder));
+			} else {
+				move(new File(inputFolder), new File(movedFailFolder));
+				move(new File(outputFolder), new File(movedFailFolder));
+			}
+		} catch(Exception e) {
+			move(new File(inputFolder), new File(movedFailFolder));
+			move(new File(outputFolder), new File(movedFailFolder));
+		}
+		return new movedFinishFolder(movedFinsihInputFolder, movedFinishOutputFolder, movedFailFolder);
+	}
+
+	/**
+	 * get FileList in Foler
+	 * return result this.
+	 * FileType => File, Directory
+	 * list File Path with FileName
+	 *
+	 * @param folderPath
+	 * @return retunr SimFileMaster FileData
+	 */
+	private List<SimFileMaster> getFileListInFolder(String folderPath) {
+		File path = new File(folderPath);
+		File[] fileList = path.listFiles();
+		ArrayList<SimFileMaster> resultList = new ArrayList<>();
+		for(File f: fileList){
+			String str = f.getName();
+			if(f.isDirectory()) { // is Directory
+				System.out.print(str+"\t");
+				System.out.print("DIR\n");
+				resultList.add(new SimFileMaster().builder().saveFileType(FileType.DIRECTORY).saveFilePath(folderPath).saveFileName(str).build());
+			}else { // is File
+				System.out.print(str+"\t");
+				System.out.print("Files\n");
+				resultList.add(new SimFileMaster().builder().saveFileType(FileType.FILE).saveFilePath(folderPath).saveFileName(str).build());
+			}
+		}
+		return resultList;
+	}
+
+	private boolean procF4DProcess(String inputFolder, String outputFolder, String F4DRunPath) throws  IOException, InterruptedException{
+		Process pc = null;
+		boolean result = false;
+		String LogFolder = "";
+		SimpleDateFormat sf = new SimpleDateFormat("yyyyMMddhhmmss");
+		String logFileName = sf.format(new Date()) + ".txt";
+		String logFullPath = outputFolder + logFileName;
+		String Option = "#meshType 0 #indexing y";
+
+		F4DRunPath = F4DRunPath + " #inputFolder " + inputFolder + " #outputFolder " + outputFolder + " #log " + logFullPath + " " + Option;
+		System.out.println(F4DRunPath);
+
+		String line = "";
+		try {
+			String cmdStr = F4DRunPath;
+			pc = Runtime.getRuntime().exec(cmdStr);
+
+			System.out.println("RunProcF4D");
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new Error("IFC 파일 처리에 실패했습니다");
+		} finally {
+			pc.waitFor();
+
+			BufferedReader error = new BufferedReader(new InputStreamReader(pc.getErrorStream()));
+			while((line = error.readLine()) != null){
+				System.out.println(line);
+			}
+			error.close();
+
+			BufferedReader input = new BufferedReader(new InputStreamReader(pc.getInputStream()));
+			while((line=input.readLine()) != null){
+				System.out.println(line);
+			}
+
+			input.close();
+			OutputStream outputStream = pc.getOutputStream();
+			PrintStream printStream = new PrintStream(outputStream);
+			printStream.println();
+			printStream.flush();
+			printStream.close();
+			pc.destroy();
+		}
+		return true;
+	}
+
+	private boolean makeDir(String source) throws IOException {
+		File dir = new File(source);
+		if(!(dir.isDirectory())){
+			dir.mkdirs();
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	public void move(File sourceF, File targetF) {
+		copy(sourceF, targetF);
+		delete(sourceF.getPath());
+	}
+
+	public void copy(File sourceF, File targetF){
+		File[] target_file = sourceF.listFiles();
+		for (File file : target_file) {
+			File temp = new File(targetF.getAbsolutePath() + File.separator + file.getName());
+			if(file.isDirectory()){
+				temp.mkdirs();
+				copy(file, temp);
+			} else {
+				FileInputStream fis = null;
+				FileOutputStream fos = null;
+				try {
+					fis = new FileInputStream(file);
+					fos = new FileOutputStream(temp) ;
+					byte[] b = new byte[4096];
+					int cnt = 0;
+					while((cnt=fis.read(b)) != -1){
+						fos.write(b, 0, cnt);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally{
+					try {
+						fis.close();
+						fos.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				}
+			}
+		}
+	}
+
+	public void delete(String path) {
+
+		File folder = new File(path);
+		try {
+			if(folder.exists()){
+				File[] folder_list = folder.listFiles();
+
+				for (int i = 0; i < folder_list.length; i++) {
+					if(folder_list[i].isFile()) {
+						folder_list[i].delete();
+					}else {
+						delete(folder_list[i].getPath());
+					}
+					folder_list[i].delete();
+				}
+			}
+		} catch (Exception e) {
+			e.getStackTrace();
+		}
 	}
 }

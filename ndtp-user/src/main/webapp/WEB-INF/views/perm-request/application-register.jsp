@@ -1,10 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-
+<!-- 건축인허가 신청 Modal -->
 <div id="permRequestDialog" title="건축인 허가 신청" class="basicTable" style="display: none;">
-    <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
-    <form id="file_upload" name="file_upload"method="post" enctype="multipart/form-data" action="simulation-rest/upload" style="width:100%" target="dummyframe">
+    <form id="acceptBuildUpload" name="acceptBuildUpload"style="width:100%" target="dummyframe">
         <ul class="listDrop">
             <li class="on">
                 <p>건축주<span class="collapse-icon">icon</span></p>
@@ -77,7 +76,7 @@
             </li>
         </ul>
         <div style="display: inline-block; position: absolute; bottom: 20px; right: 20px;">
-            <button id="permReqRegister" class="focusA" type="submit" title="등록" style="width: 200px;">등록</button>
+            <button id="permReqRegister" class="focusA" type="button" title="등록" style="width: 200px;">등록</button>
             <button id="permReqCancel" class="focusC" type="button" title="취소">취소</button>
         </div>
 
@@ -98,10 +97,40 @@
         $("#permRequestDialog").dialog("close");
     });
     $('#permReqRegister').click(function() {
-        setTimeout(() => {
-            $("#permRequestDialog").dialog("close");
-        }, 300);
+        buildAcceptReq();
     });
+
+    function buildAcceptReq() {
+        var form = $('#acceptBuildUpload')[0];
+        startLoading();
+        // Create an FormData object
+        var data = new FormData(form);
+        $.ajax({
+            type: "POST",
+            enctype: 'multipart/form-data',
+            url: "http://localhost/data/simulation-rest/uploadBuildAccept",
+            data: data,
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+                $.growl.notice({
+                    message: "파일업로드가 완료되었습니다",
+                    duration: 1000
+                });
+                $("#permRequestDialog").dialog("close");
+                stopLoading();
+            },
+            error: function (e) {
+                $.growl.notice({
+                    message: "오류가 발생했습니다." + e,
+                    duration: 1000
+                });
+                stopLoading();
+            }
+        });
+    }
 
 </script>
 
