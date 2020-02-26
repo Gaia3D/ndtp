@@ -54,6 +54,11 @@ public class SimulationRestController {
 		SimFileMaster sfm =  this.simServiceImpl.getSimFileMaster();
 //		String resultFullPath = sfm.getSaveFilePath() + sfm.getSaveFileName();
 		String resultFullPath = "C://data/Apartment_Building_26_obj/schoolphill.geojson";
+
+		String os = System.getProperty("os.name").toLowerCase();
+		if (os.contains("mac")) {
+			resultFullPath = "/Users/junho/data/mago3d/building_obj/sejongbuilding.geojson";
+		}
 		File fi = new File(resultFullPath.trim());
 		try {
 			ObjectMapper mapper = new ObjectMapper();

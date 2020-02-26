@@ -236,19 +236,48 @@ var Simulation = function(magoInstance, viewer, $) {
 		var dataName;
 		var initPosition;
 		if(targetArea === 's') {
-			
+
 			var msj = makeSampleJson();
-			debugger;
+			//
 			var policy = Mago3D.MagoConfig.getPolicy();
 			var initLat = parseFloat(policy.initLatitude);
 			var initLon = parseFloat(policy.initLongitude);
 			var childs = msj.children;
 			f4dController.addF4dGroup(msj);
-			_viewer.camera.flyTo({
-			    destination : Cesium.Cartesian3.fromDegrees(126.9785978787040,  37.56690158584144, 1000)
+
+			let objPinBuilder = new Cesium.PinBuilder();
+			// let objLon = msj.children[0].longitude;
+			// let objLat = msj.children[0].latitude;
+			// let objHeight = msj.children[0].height;
+			let objLon = getAverage(msj.children, "longitude");
+			let objLat = getAverage(msj.children, "latitude");
+			let objHeight = getAverage(msj.children, "height");
+
+			let objPosition = Cesium.Cartesian3.fromDegrees(objLon, objLat, objHeight-2);
+			console.log("objPosition   >> lon=", objLon, " lat=", objLat, " h=", objHeight);
+
+			// let clampPosition = whole_viewer.scene.clampToHeight(objPosition);
+			// let clampCarto  = Cesium.Ellipsoid.WGS84.cartesianToCartographic(clampPosition);
+			// let clampLon = Cesium.Math.toDegrees(clampCarto.longitude);
+			// let clampLat = Cesium.Math.toDegrees(clampCarto.latitude);
+			// let clampHeight = clampCarto.height;
+			// console.log("clampPosition >> lon=", clampLon, " lat=", clampLat, " h=", clampHeight);
+
+			_viewer.entities.add({
+				billboard : {
+					image : objPinBuilder.fromText('!', Cesium.Color.BLACK, 48).toDataURL(),
+					verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+					eyeOffset: new Cesium.Cartesian3(0, objHeight, 0)
+				},
+				position : objPosition,
 			});
-			
-			debugger;
+
+
+
+
+			_viewer.camera.flyTo({
+			    destination : Cesium.Cartesian3.fromDegrees(126.9785978787040,  37.56690158584144, 100)
+			});
 			
 //			dataName = SEJONG_TILE_NAME;
 //			initPosition = SEJONG_POSITION;
@@ -292,7 +321,7 @@ var Simulation = function(magoInstance, viewer, $) {
 //			}
 //			setObserver();
 			
-		} else {
+		} else if (targetArea === "p") {
 			initConsturctProcessModel(); 
 			dataName = BUSAN_TILE_NAME;
 			initPosition = BUSAN_POSITION;
@@ -302,7 +331,7 @@ var Simulation = function(magoInstance, viewer, $) {
 			}
 			//레인지, 레전드 보이기
 			$('#csRange, #constructionProcess .profileInfo').show();
-			debugger;
+
 			$('#saRange').hide();
 			
 			if(!cache[dataName]) {
@@ -331,8 +360,10 @@ var Simulation = function(magoInstance, viewer, $) {
 			
 //			genBillboard(126.90497956470877, 37.521051475771344);
 			_viewer.camera.flyTo({
-			    destination : Cesium.Cartesian3.fromDegrees(126.90497956470877,  37.521051475771344, 1000)
+			    destination : Cesium.Cartesian3.fromDegrees(126.90497956470877,  37.521051475771344, 100)
 			});
+		} else if (targetArea === "etc") {
+			console.log("etc");
 		}
 	});
 	
@@ -382,7 +413,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	//건물 높이에 대해서 확정을 하는 로직, 용적률과 연관
 	//고도에 대한 불확실성
 	$('#set_height_building').click(function(e) {
-		debugger;
+
 		floorNum = parseInt($('#height_building_input').val());
 		var floorSize = floorNum * 3;
 		selectEntity.id.polygon.extrudedHeight = floorSize;
@@ -427,7 +458,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	// 가시화
 	$('#run_cityplan').click(function() {
         startLoading();
-        debugger;
+
         sejeonjochiwonPoly();
 	});
 
@@ -452,7 +483,7 @@ var Simulation = function(magoInstance, viewer, $) {
 //			dataType: "json",
 //			success: function(msg){
 //				//_geojsonSample
-//				debugger;
+//
 //				
 //				stopLoading();
 //		        _viewer.scene.camera.flyTo({
@@ -475,7 +506,13 @@ var Simulation = function(magoInstance, viewer, $) {
 			var entitis = dataSource.entities._entities._array;
 			
 			for(var index in entitis) {
-				var entitiyObj = entitis[index]; 
+				var entitiyObj = entitis[index];
+debugger;
+
+				let destrictPositions = entitiyObj.polygon._hierarchy._value.positions;
+				let destrictArea = getArea(destrictPositions);
+				console.log(destrictArea);
+
 //				entitiyObj.polygon.extrudedHeight = 10; 
 				var glowingLine = _viewer.entities.add(entitiyObj)
 			}
@@ -565,7 +602,7 @@ var Simulation = function(magoInstance, viewer, $) {
     });
     
 	var smartTileLoaEndCallbak = function(evt){
-		debugger;
+
 		var nodes = evt.tile.nodesArray;
 		for(var i in nodes){
 			var node = nodes[i];
@@ -721,7 +758,7 @@ var Simulation = function(magoInstance, viewer, $) {
     function drawShape(positionData) {
         var shape;
         if (drawingMode === 'line') {
-            debugger;
+
             shape = _viewer.entities.add({
                 corridor: {
                     // polyline: {
@@ -739,7 +776,6 @@ var Simulation = function(magoInstance, viewer, $) {
             var bs = Cesium.BoundingSphere.fromPoints(activeShapePoints);
             var position = Cesium.Ellipsoid.WGS84.scaleToGeodeticSurface(bs.center);
             var areaVal = parseInt(getArea(activeShapePoints));
-            debugger;
             shape = _viewer.entities.add({
                 name     : "Polygon for area measurement",
                 areaVal : areaVal,
@@ -891,7 +927,7 @@ var Simulation = function(magoInstance, viewer, $) {
         
         handler.setInputAction(function (event) {
             var earthPosition = _viewer.scene.pickPosition(event.position);
-        	console.log('폴리곤 : ', longitudeString, latitudeString);
+
         	if(locaMonitor) {
                 var ellipsoid = _viewer.scene.globe.ellipsoid;
                 var cartographic = ellipsoid.cartesianToCartographic(earthPosition);
@@ -900,6 +936,8 @@ var Simulation = function(magoInstance, viewer, $) {
             	$('#monitorLon').text(longitudeString);
             	$('#monitorLat').text(latitudeString);	
         	}
+			console.log('1. 폴리곤 : ', longitudeString, latitudeString);
+
             if (Cesium.defined(earthPosition)) {
                 var cartographic = Cesium.Cartographic.fromCartesian(earthPosition);
                 var tempPosition = Cesium.Cartesian3.fromDegrees(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude));
@@ -943,7 +981,8 @@ var Simulation = function(magoInstance, viewer, $) {
 //                    ;
 //                    _viewer._selectedEntity = pickedFeature.id.polygon;
                 } else {
-					var pickedFeature = whole_viewer.scene.pick(event.position);
+                	//
+					var pickedFeature = _viewer.scene.pick(event.position);
 					if(pickedFeature) {
 //						const imsi = pickedFeature.id.polygon.hierarchy._value.positions.map(function(key,index){
 //							pickedFeature.id.polygon.hierarchy._value.positions[index].x = key.x * 0.1
@@ -973,7 +1012,7 @@ var Simulation = function(magoInstance, viewer, $) {
 //								const pro = pickedFeature.id.polygon.hierarchy._value.positions[i];
 //								var d = Cesium.Cartesian3.distance(pro, center); 
 //								var cartePos = carteToLonLat(pro);
-//								debugger;
+//
 //								if(cartePos.lon <= carteCen.lon && cartePos.lat >= carteCen.lat) {
 //									// 외쪽 상단 위도 + 경도 -
 //									cartePos.lon += 0.00001;
@@ -994,7 +1033,7 @@ var Simulation = function(magoInstance, viewer, $) {
 //								const resultPos = Cesium.Cartesian3.fromDegrees(cartePos.lon, cartePos.lat);
 //								pickedFeature.id.polygon.hierarchy._value.positions[i] = resultPos;
 //							}
-							debugger;
+
 							_viewer.entities.add(pickedFeature.id);
 
 							console.log(pickedFeature.id.polygon.hierarchy._value.positions[0]);
@@ -1025,7 +1064,7 @@ var Simulation = function(magoInstance, viewer, $) {
 
         handler.setInputAction(function (event) {
             var earthPosition = _viewer.scene.pickPosition(event.position);
-        	console.log('폴리곤 : ', earthPosition);
+        	console.log('2. 폴리곤 : ', earthPosition);
             terminateShape();
             _polygons.push(nowPolygon);
             clacArea();
@@ -1072,7 +1111,7 @@ var Simulation = function(magoInstance, viewer, $) {
     
     // 결과 산출
     $('#result_build').click(function() {
-    	debugger;
+
     	// console.log("맵컨트롤 : 저장");
         var targetResolutionScale = 1.0;
         var timeout = 500; // in ms
@@ -1097,7 +1136,7 @@ var Simulation = function(magoInstance, viewer, $) {
         var takeScreenshot = function(){
             scene.postRender.removeEventListener(takeScreenshot);
             var canvas = scene.canvas;
-            debugger;
+
             $("#cityplanImg").attr("src", canvas.toDataURL());
             viewer.resolutionScale = 1.0;
             stopLoading();
@@ -1175,7 +1214,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	    // fromGltf 함수를 사용하여 key : value 값으로 요소를 지정
 	    var name = '슬퍼하지마NONONO'; 
 	    // GLTF 모델 데이터 삽입
-	    debugger;
+
 	    var _model = Cesium.Model.fromGltf({
 	        url : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName,
 	        modelMatrix : modelMatrix,
@@ -1497,6 +1536,23 @@ var Simulation = function(magoInstance, viewer, $) {
 		for(var i = 0; i < index+1; i++) {
 			_viewer.entities.getById(_bsConstructProcessModels[i].id).show = true
 		}
+	}
+
+	function getAverage(list, type) {
+		let sum = 0;
+		let length = list.length;
+		if (length === 0) {
+			console.log("msj list size is ", length);
+			return 0;
+		}
+		if (list[0][type] === undefined) {
+			console.log("msj list is not contained type:", type);
+			return 0;
+		}
+		for(let i=0; i<length; i++) {
+			sum += list[i][type];
+		}
+		return sum/length;
 	}
 }
 
