@@ -42,7 +42,7 @@ public class CacheConfig {
         CacheParams cacheParams = new CacheParams();
 		cacheParams.setCacheType(CacheType.SELF);
         
-        // 사용자 그룹별 메뉴, Role
+        // 사용자 그룹별 메뉴, Menu
         menu(cacheParams);
         // 사용자 그룹별 메뉴, Role
         role(cacheParams);
