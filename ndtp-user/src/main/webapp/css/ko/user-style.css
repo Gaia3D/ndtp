@@ -2248,3 +2248,15 @@ height: 1px;
 clip: rect(1px, 1px, 1px, 1px);
 clip-path: inset(50%);
 }
+
+.layerGroup {
+margin-top: -4px;
+padding: 2px 7px 2px;
+color: #fff;
+border-radius: 15px;
+border: none;
+background-color: #262b3f;
+float: right;
+width: 30px!important;
+text-align:center;
+}

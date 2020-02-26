@@ -98,9 +98,46 @@ function mapInit(magoInstance, baseLayers, policy) {
 		},
 		
 		/**
+		 * 레이어 추가 
+		 */
+		addLayer : function(layerKey) {
+			var serviceType = layerMap[layerKey].serviceType;
+			var cacheAvailable = layerMap[layerKey].cacheAvailable;
+			if(serviceType === 'wms' && cacheAvailable) {
+				NDTP.map.addTileLayer(layerKey);
+			} else {
+				if(serviceType === 'wms') {
+					NDTP.map.addWMSLayer(layerKey);
+				} else if(serviceType ==='wfs') {
+					NDTP.map.addWFSLayer(layerKey);
+				} else {
+					alert(serviceType+" 타입은 지원하지 않는 서비스 타입입니다.");
+				}
+			}
+		},
+		
+		/**
+		 * 그룹 레이어 추가 
+		 */
+		addGroupLayer : function(layerGroupId) {
+			for(var i=0; i < baseLayers.length; i++) {
+				var ancestor = baseLayers[i].ancestor; 
+				var layerList = baseLayers[i].layerList;
+				var layerLength = layerList.length;
+				if(layerGroupId === ancestor && layerLength > 0) {
+					for(var j=0; j < layerLength; j++) {
+						this.addLayer(layerList[j].layerKey);
+					}
+					break;
+				}
+			}
+		},
+		
+		/**
 		 * wms 레이어 추가  
 		 */
 		addWMSLayer : function(layerKey) {
+			if(this.getWMSLayerExists(layerKey)) return;
 			var layerList = null;
 			if(this.getWMSLayers()) {
 				layerList = this.getWMSLayers().split(",");
@@ -124,6 +161,8 @@ function mapInit(magoInstance, baseLayers, policy) {
 		 * wfs 레이어 추가
 		 */
 		addWFSLayer : function(layerKey) {
+			if(this.getDataSourceById(layerKey)) return;
+			
 			var geoJson = geoserverDataUrl+ "/" + geoserverDataWorkspace + "/" + "/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=" +
 //					geoserverDataWorkspace + ":" + layerKey + "&maxFeatures=200&outputFormat=application/json";
 					geoserverDataWorkspace + ":" + layerKey + "&outputFormat=application/json";
@@ -147,6 +186,8 @@ function mapInit(magoInstance, baseLayers, policy) {
 		 * tile 레이어 추가
 		 */
 		addTileLayer : function(layerKey) {
+			if(this.getImageryLayerById(layerKey)) return;
+			
 			var provider = new Cesium.WebMapServiceImageryProvider({
 		        url : geoserverDataUrl + "/gwc/service/wms",
 		        layers : [geoserverDataWorkspace + ':'+layerKey],
@@ -177,6 +218,42 @@ function mapInit(magoInstance, baseLayers, policy) {
 			
 			var addedLyer = viewer.imageryLayers.addImageryProvider(provider, targetIndex);
 			addedLyer.id = layerKey;
+		},
+		
+		/**
+		 * 레이어 삭제
+		 */
+		removeLayer : function(layerKey) {
+			var serviceType = layerMap[layerKey].serviceType;
+			var cacheAvailable = layerMap[layerKey].cacheAvailable;
+			if(serviceType === 'wms' && cacheAvailable) {
+				NDTP.map.removeTileLayer(layerKey);
+			} else {
+				if(serviceType === 'wms') {
+					NDTP.map.removeWMSLayer(layerKey);
+				} else if(serviceType ==='wfs') {
+					NDTP.map.removeWFSLayer(layerKey);
+				} else {
+					alert(serviceType+" 타입은 지원하지 않는 서비스 타입입니다.");
+				}
+			}
+		},
+		
+		/**
+		 * 그룹 레이어 삭제
+		 */
+		removeGroupLayer : function(layerGroupId) {
+			for(var i=0; i < baseLayers.length; i++) {
+				var ancestor = baseLayers[i].ancestor; 
+				var layerList = baseLayers[i].layerList;
+				var layerLength = layerList.length;
+				if(layerGroupId === ancestor && layerLength > 0) {
+					for(var j=0; j < layerLength; j++) {
+						this.removeLayer(layerList[j].layerKey);
+					}
+					break;
+				}
+			}
 		},
 		
 		/**
@@ -235,6 +312,21 @@ function mapInit(magoInstance, baseLayers, policy) {
 			} else {
 				return layerList;
 			}
+		},
+		
+		/**
+		 * wms layer string이 있는지 확인 
+		 */
+		getWMSLayerExists : function(layerKey) {
+			var layerList  = this.getWMSLayers().split(",");
+			var flag = false;
+			for(var i=0; i < layerList.length; i++) {
+				if(layerList[i] === layerKey) {
+					flag = true;
+				}
+			}
+			
+			return flag;
 		},
 		
 		/**

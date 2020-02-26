@@ -3,8 +3,34 @@ $(document).ready(function (){
 	
 	// 초기 레이어 트리 그리기  
 	getLayerList();
-
-    // 하위 영역 on/off
+	
+	// 레이어 그룹 on/off
+	$("#layerContent").on("click", '.layerGroup', function(e){
+		if(!initLayerCheck()) return;
+		e.stopPropagation();
+		
+		var target = $(this).parent("p").parent("li");
+		var layerGroupId = $(target).attr("data-depth");
+		if($(this).text() === "OFF") {
+			$(this).text("ON");
+			$('.nodepth').each(function(e){
+				if(layerGroupId === $(this).attr("data-ancestor")) {
+					$(this).addClass("on");
+				}
+			});
+			NDTP.map.addGroupLayer(Number(layerGroupId));
+		} else {
+			$(this).text("OFF");
+			$('.nodepth').each(function(e){
+				if(layerGroupId === $(this).attr("data-ancestor")) {
+					$(this).removeClass("on");
+				}
+			});
+			NDTP.map.removeGroupLayer(Number(layerGroupId));
+		}
+	});
+	
+	// 하위 영역 on/off
     $('#layerContent').on('click', '.mapLayer p', function(e) {
     	if(!initLayerCheck()) return;
     	e.stopPropagation();
@@ -15,38 +41,35 @@ $(document).ready(function (){
     // layer on/off
     $('#layerContent').on('click', '.nodepth p', function(e) {
     	layerOnOff($(this).parent("li"));
+    	layerGroupOnOff();
     });
+    
 });
 
-
+// 선택한 레이어 on/off
 function layerOnOff(obj) {
-	var layerKey = $(obj).attr("data-layer-name");
-	var flag = $(obj).hasClass("on");
-	var serviceType = $(obj).attr("data-service-type");
-	var cacheAvailable = $(obj).attr("data-tiling");
-	if(serviceType === 'wms' && cacheAvailable ==='true') {
-		if(flag) {
-			NDTP.map.addTileLayer(layerKey);
-		} else {
-			NDTP.map.removeTileLayer(layerKey);
-		}
+	var layerKey = $(obj).attr("data-layer-key");
+    var flag = $(obj).hasClass("on");
+	if(flag) {
+		NDTP.map.addLayer(layerKey);
 	} else {
-		if(serviceType === 'wms') {
-			if(flag) {
-				NDTP.map.addWMSLayer(layerKey);
-			} else {
-				NDTP.map.removeWMSLayer(layerKey);
-			}
-		} else if(serviceType ==='wfs') {
-			if(flag) {
-				NDTP.map.addWFSLayer(layerKey);
-			} else {
-				NDTP.map.removeWFSLayer(layerKey);
-			}
-		} else {
-			alert(serviceType+" 타입은 지원하지 않는 서비스 타입입니다.");
-		}
+		NDTP.map.removeLayer(layerKey);
 	}
+}
+
+// 레이어 그룹 on/off
+function layerGroupOnOff() {
+	$('.layerGroup').each(function(e){
+    	var that = this;
+    	$(that).text("OFF");
+    	var target = $(that).parent("p").parent("li");
+		var layerGroupId = $(target).attr("data-depth");
+    	$('.nodepth').each(function(e){
+			if(layerGroupId === $(this).attr("data-ancestor") && $(this).hasClass("on")) {
+				$(that).text("ON");
+			}
+		});
+	});
 }
 //레이어 메뉴 목록 조회
 function getLayerList() {
@@ -90,6 +113,8 @@ function createLayerHtml(res) {
             selector.append(h);
         }
     }
+    
+    layerGroupOnOff();
 }
 
 // 사용자 레이어 설정 저장 
@@ -98,7 +123,7 @@ function saveUserLayers() {
 	var dataInfo = {};
 	$('.nodepth').each(function(e){
 		if($(this).hasClass("on")) {
-			layerList.push($(this).attr("data-layer-name"));
+			layerList.push($(this).attr("data-layer-key"));
 		}
 	});
 	$("#baseLayers").val(layerList.join(","));
@@ -126,6 +151,7 @@ function saveUserLayers() {
 function turnOnAllLayer() {
 	if(!initLayerCheck()) return;
 	$('.nodepth').addClass("on");
+	$('.layerGroup').text("ON");
 	NDTP.map.removeAllLayers();
 	NDTP.map.initLayer(true);
 }
@@ -133,6 +159,7 @@ function turnOnAllLayer() {
 function turnOffAllLayer() {
 	if(!initLayerCheck()) return;
 	$('.nodepth').removeClass("on");
+	$('.layerGroup').text("OFF");
 	NDTP.map.removeAllLayers();
 }
 
