@@ -70,7 +70,26 @@ public class SimulationRestController {
 			e.printStackTrace();
 		}
 		return null;
-		// PROCESS...
+	}
+
+	@RequestMapping(value = "/drawGeojson", method = RequestMethod.GET)
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	public Object drawGeojson(String fileName) {
+		String resultFullPath = "C://data/Apartment_Building_26_obj/" + fileName;
+
+		String os = System.getProperty("os.name").toLowerCase();
+		if (os.contains("mac")) {
+			resultFullPath = "/Users/junho/data/mago3d/building_obj/" + fileName;
+		}
+		File fi = new File(resultFullPath.trim());
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			InputStream targetStream = new FileInputStream(fi);
+			return mapper.readValue(targetStream, Object.class);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
     @RequestMapping(value = "/cityConstProcUpload", method = RequestMethod.POST)

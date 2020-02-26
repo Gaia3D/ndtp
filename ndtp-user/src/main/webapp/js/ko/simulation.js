@@ -458,8 +458,19 @@ var Simulation = function(magoInstance, viewer, $) {
 	// 가시화
 	$('#run_cityplan').click(function() {
         startLoading();
-
         sejeonjochiwonPoly();
+	});
+	$("#test111").click(()=> {
+		let fileName = "Parcel6-4.geojson";
+		parselBuilding(fileName);
+	});
+	$("#test222").click(()=> {
+		let fileName = "Parcel6-4-Buidling.geojson";
+		parselBuilding(fileName);
+	});
+	$("#test333").click(()=> {
+		let fileName = "schoolphill.geojson";
+		parselBuilding(fileName);
 	});
 
 	$('#run_sample_raster').click(function() {
@@ -474,28 +485,34 @@ var Simulation = function(magoInstance, viewer, $) {
 			destination : Cesium.Cartesian3.fromDegrees(127.2739454, 36.5268601, 600.0)
 		});
 	});
+
+	function parselBuilding(fileName) {
+		let url = "http://localhost/data/simulation-rest/drawGeojson?fileName=" + fileName;
+		Cesium.GeoJsonDataSource.load(url, {
+			width : 5,
+			leadTime : 0,
+			trailTime : 100,
+			resolution : 5,
+			fill: Cesium.Color.PINK
+		}).then(function(dataSource) {
+			let entitis = dataSource.entities._entities._array;
+
+			for(let index in entitis) {
+				let entitiyObj = entitis[index];
+				let glowingLine = _viewer.entities.add(entitiyObj)
+			}
+			setTimeout(function() {
+				// stopLoading();
+				_viewer.scene.camera.flyTo({
+					destination : Cesium.Cartesian3.fromDegrees(127.2739454, 36.5268601, 600.0)
+				});
+			},500);
+		}, function(err) {
+			// stopLoading();
+		});
+	}
 	
 	function sejeonjochiwonPoly() {
-		//_geojsonSample
-//		$.ajax({
-//			url: "http://localhost/data/simulation-rest/select",
-//			type: "GET",
-//			dataType: "json",
-//			success: function(msg){
-//				//_geojsonSample
-//
-//				
-//				stopLoading();
-//		        _viewer.scene.camera.flyTo({
-//		            destination : Cesium.Cartesian3.fromDegrees(127.297938703110319, 36.601598278028625, 600.0)
-//		        });
-//			},
-//			error:function(request,status,error){
-//				alert(JS_MESSAGE["ajax.error.message"]);
-//			}
-//		});
-		
-		
 		Cesium.GeoJsonDataSource.load('http://localhost/data/simulation-rest/select', {
 			width : 5,
 			leadTime : 0,
@@ -507,11 +524,12 @@ var Simulation = function(magoInstance, viewer, $) {
 			
 			for(var index in entitis) {
 				var entitiyObj = entitis[index];
-debugger;
+
 
 				let destrictPositions = entitiyObj.polygon._hierarchy._value.positions;
 				let destrictArea = getArea(destrictPositions);
-				console.log(destrictArea);
+				//todo: save this in Object
+				// console.log(destrictArea);
 
 //				entitiyObj.polygon.extrudedHeight = 10; 
 				var glowingLine = _viewer.entities.add(entitiyObj)
@@ -1002,7 +1020,7 @@ debugger;
 								// 3. 폴리곤 좌표정보를 찾는다.
 								const pro = pickedFeature.id.polygon.hierarchy._value.positions[i];
 								var d = Cesium.Cartesian3.distance(pro, center);
-								debugger;
+								
 								resaclePoly(center.x, center.y, pro);
 							}
 							
@@ -1072,7 +1090,7 @@ debugger;
     }
 
 	function resaclePoly(centerX, centerY, polyObj) {
-    	debugger;
+    	
 		// 해당 좌표들을 가중치만큼 재 조정한다.
 		if(polyObj.x <= centerX && polyObj.y >= centerY) {
 			// 외쪽 상단 위도 + 경도 -
@@ -1431,7 +1449,7 @@ debugger;
 	})
 	
 	$('#upload_constructionProcess').click(function() {
-		debugger;
+		
         var form = $('#construc_proc_file_upload')[0];
         startLoading();
 	    // Create an FormData object 

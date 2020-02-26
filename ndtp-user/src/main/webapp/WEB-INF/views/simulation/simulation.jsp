@@ -170,6 +170,9 @@
 
 					<button type="button" id="testBuilding" class="btnTextF" style="margin-top:10px; display:none;">testBuilding</button>
 					<button type="button" id="comment" class="btnTextF" style="margin-top:10px;">comment</button>
+					<button type="button" id="test111" class="btnTextF" style="margin-top:10px;">test111</button>
+					<button type="button" id="test222" class="btnTextF" style="margin-top:10px;">test222</button>
+					<button type="button" id="test333" class="btnTextF" style="margin-top:10px;">test333</button>
 				</li>
 
 			</ul>
@@ -254,8 +257,6 @@
 				console.log("err=", request, status, error);
 			}
 		});
-
-
 	});
 
 
