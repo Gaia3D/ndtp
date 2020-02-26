@@ -15,8 +15,8 @@
 <script id="templateCivilVoiceModify" type="text/x-handlebars-template">
 	<li>
 		<label for="civilVoiceTitle">제목 <span style="color: red;">*</span></label>
-		<input type="text" id="civilVoiceTitle" name="title" value="{{civilVoice.title}}" style="width:94%;" maxlength="256">
- 		<p class="info">256자 이내</p>
+		<input type="text" id="civilVoiceTitle" name="title" value="{{civilVoice.title}}" style="width:91%;" maxlength="256">
+ 		<p class="info" style="margin-right: 15px;">256자 이내</p>
 	</li>
 	<li>
 		<label for="civilVoiceLongitude">위치 <span style="color: red;">*</span></label>
@@ -27,7 +27,7 @@
 	</li>
 	<li>
 		<label for="contents">내용 <span style="color: red;">*</span></label>
-		<textarea id="contents" name="contents" cols="47" rows="10">{{civilVoice.contents}}</textarea>
+		<textarea id="contents" name="contents" cols="47" rows="10" style="width:96%;">{{civilVoice.contents}}</textarea>
 	</li>
 	<li class="form-group button-group-center">
 		<button id="civilVoiceUpdateButton" onClick="updateCivilVoice();" class="btnTextF" title="등록" style="width: 200px;">수정</button>
