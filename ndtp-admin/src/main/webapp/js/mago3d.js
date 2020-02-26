@@ -18599,7 +18599,7 @@ CesiumViewerInit.prototype.geoserverTerrainProviderBuild = function()
 	var policy = this.policy;
 
 	var terrainParam = {
-		service: 'WMS'
+		service: 'WMTS'
 	};
 	var terrainUrl = policy.geoserverTerrainproviderUrl;
     
@@ -34104,12 +34104,12 @@ SmartTile.prototype.parseSmartTileF4d = function(dataArrayBuffer, magoManager)
 		var savedProjectId = smartTilePathInfo[projectId].projectId;
 		
 		// Now, must check if the node exists.
-		var node = hierarchyManager.getNodeByDataKey(projectId, buildingId);
+		var node = hierarchyManager.getNodeByDataKey(savedProjectId, buildingId);
 		var neoBuilding;
 		var data;
 		if (!node)
 		{ 
-			node = hierarchyManager.newNode(buildingId, projectId, attributes); 
+			node = hierarchyManager.newNode(buildingId, savedProjectId, attributes); 
 			
 			// Create a neoBuilding.
 			data = node.data;
@@ -34217,7 +34217,7 @@ SmartTile.prototype.parseSmartTileF4d = function(dataArrayBuffer, magoManager)
 		var dataGroupId = (new Int32Array(dataArrayBuffer.slice(bytesReaded, bytesReaded+4)))[0]; bytesReaded += 4;
 		var endMark = (new Int8Array(dataArrayBuffer.slice(bytesReaded, bytesReaded+1)))[0]; bytesReaded += 1;
 		data.dataId = dataId;
-		data.dataGroupId = dataGroupId;
+		data.dataGroupId = savedProjectId;
 
 		node.data.smartTileOwner = this;
 		this.nodesArray.push(node);
@@ -57262,42 +57262,6 @@ TinTerrainManager.prototype.render = function(magoManager, bDepth, renderType, s
 'use strict';
 
 /**
- * Geoserver for mago3Djs object.
- * @class Geoserver
- */
-var GeoServer = function() 
-{
-
-	this.serverInfo = {};
-}; 
-
-GeoServer.prototype.setServerInfo = function(info) 
-{
-	this.serverInfo = info;
-};
-
-GeoServer.prototype.getDataUrl = function() 
-{
-	return this.serverInfo.dataUrl;
-};
-
-GeoServer.prototype.getDataWorkspace = function() 
-{
-	return this.serverInfo.dataWorkspace;
-};
-
-GeoServer.prototype.getDataRequestUrl = function() 
-{
-	return this.getDataUrl() + '/' + this.getDataWorkspace();
-};
-
-GeoServer.prototype.getWmsVersion = function() 
-{
-	return this.serverInfo.wmsVersion;
-};
-'use strict';
-
-/**
  * This represent Arc feature in 2D
  * @class Arc2D
  */
@@ -76866,6 +76830,42 @@ MessageSource.ko = {
     }
   };
 
+'use strict';
+
+/**
+ * Geoserver for mago3Djs object.
+ * @class Geoserver
+ */
+var GeoServer = function() 
+{
+
+	this.serverInfo = {};
+}; 
+
+GeoServer.prototype.setServerInfo = function(info) 
+{
+	this.serverInfo = info;
+};
+
+GeoServer.prototype.getDataUrl = function() 
+{
+	return this.serverInfo.dataUrl;
+};
+
+GeoServer.prototype.getDataWorkspace = function() 
+{
+	return this.serverInfo.dataWorkspace;
+};
+
+GeoServer.prototype.getDataRequestUrl = function() 
+{
+	return this.getDataUrl() + '/' + this.getDataWorkspace();
+};
+
+GeoServer.prototype.getWmsVersion = function() 
+{
+	return this.serverInfo.wmsVersion;
+};
 'use strict';
 
 /**
