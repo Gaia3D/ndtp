@@ -14,13 +14,13 @@ button { cursor:pointer; font-family:'Malgun Gothic','돋움'; }
 /* ////////// LAYOUT ////////// */
 header {
 display: flex;
-min-width: 1420px;
+/* min-width: 1420px; */
 height: 50px;
 background-color: #287be4;
 }
 #wrap {
 position: relative;
-min-width: 1420px;
+/* min-width: 1420px; */
 height: calc(100% - 50px);
 }
 .map {
