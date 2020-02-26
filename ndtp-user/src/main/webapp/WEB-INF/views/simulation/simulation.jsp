@@ -123,6 +123,7 @@
 						<input type="file" name="files" style="width:100%" multiple>
 						<button id="upload_cityplan" type="submit" class="btnTextF" title="업로드">업로드</button>
 						<button id="run_cityplan" type="button" class="btnTextF" title="가시화">가시화</button>
+						<button id="run_sample_raster" type="button" class="btnTextF" title="가시화">도시계획정보가시화</button>
 						<button id="move_cityplan" type="button" class="btnTextF" title="가시화" style='display:none'>이동</button>
 					</form>
 				</li>
@@ -183,26 +184,23 @@
 <div id="constructionProcessUploadDialog" title="건설 공정 파일 업로드">
 	<div class="listContents">
 		<ul class="analysisGroup">
+
 			<li>
-				<form id="construc_proc_file_upload" name="file_upload"method="post" enctype="multipart/form-data" action="simulation-rest/upload" style="width:100%" target="dummyConsProcessFrame">
+				<form id="construc_proc_file_upload" name="file_upload" style="width:100%" target="dummyConsProcessFrame">
 					<div>
-						<label for="">위도</label>
-						<input id="cons_proc_lon" class="" type="number" placeholder="" value="0">
-						<label for="">경도</label>
-						<input id="cons_proc_lat" class="" type="number" placeholder="" value="0">
-						<label for="">고도</label>
-						<input id="cons_proc_alt" class="" type="number" placeholder="" value="0">
+						<label>위치</label>
+						<label style="width:26px;" for="cpSejong">세종</label>
+						<input style="width:20px;" type="radio" id="cpSejong" name="cityTypeString" value="s" checked/>
+						<label style="width:26px;" for="cpBusan">부산</label>
+						<input style="width:20px;" type="radio" id="cpBusan"  name="cityTypeString" value="p"/>
 					</div>
 					<div>
-						<span style="display: inline-block;padding: 3px 0;margin-right: 20px;">위치</span>
-						<label style="width:26px;" for="cpSejong">세종</label>
-						<input style="width:20px;" type="radio" id="cpSejong" name="cpProtoArea" value="s" checked/>
-						<label style="width:26px;" for="cpBusan">부산</label>
-						<input style="width:20px;" type="radio" id="cpBusan"  name="cpProtoArea" value="p"/>
+						<label for="consRatio">단계 공정률</label>
+						<input type="number" id="consRatio" name="consRatio" value="100"/>
 					</div>
 					<div>
 						<label for="">업로드 시점 선택</label>
-						<select id="consProcessType" name="consProcessType">
+						<select id="consProcessType" name="consTypeString">
 							<option value="">선택안함</option>
 							<option value="0">1단계</option>
 							<option value="1">2단계</option>
@@ -212,11 +210,13 @@
 							<option value="5">6단계</option>
 						</select>
 					</div>
-					<div style="display:flex">
+					<div>
 						<input type="file" name="files" style="width:80%" multiple>
-						<button id="upload_constructionProcess" type="submit" class="btnTextF" style="margin-left:5px" title="업로드">업로드</button>
 					</div>
 				</form>
+				<div style="margin-top:5px; float: right">
+					<button id="upload_constructionProcess" class="btnTextF" style="margin-left:5px" title="업로드">업로드</button>
+				</div>
 			</li>
 		</ul>
 	</div>

@@ -461,6 +461,19 @@ var Simulation = function(magoInstance, viewer, $) {
 
         sejeonjochiwonPoly();
 	});
+
+	$('#run_sample_raster').click(function() {
+		var layers = viewer.scene.imageryLayers;
+
+		layers.addImageryProvider(new Cesium.SingleTileImageryProvider({
+			url : '/images/mapgeoref.png',
+			rectangle : Cesium.Rectangle.fromDegrees(127.2603901, 36.5187878, 127.2875007, 36.5349324)
+		}));
+
+		_viewer.scene.camera.flyTo({
+			destination : Cesium.Cartesian3.fromDegrees(127.2739454, 36.5268601, 600.0)
+		});
+	});
 	
 	function sejeonjochiwonPoly() {
 		//_geojsonSample
@@ -545,7 +558,6 @@ debugger;
 				    }
 				})
 			}
-
 			setTimeout(function() {
 				stopLoading();
 		        _viewer.scene.camera.flyTo({
@@ -990,7 +1002,7 @@ debugger;
 								// 3. 폴리곤 좌표정보를 찾는다.
 								const pro = pickedFeature.id.polygon.hierarchy._value.positions[i];
 								var d = Cesium.Cartesian3.distance(pro, center);
-								
+								debugger;
 								resaclePoly(center.x, center.y, pro);
 							}
 							
@@ -1060,6 +1072,7 @@ debugger;
     }
 
 	function resaclePoly(centerX, centerY, polyObj) {
+    	debugger;
 		// 해당 좌표들을 가중치만큼 재 조정한다.
 		if(polyObj.x <= centerX && polyObj.y >= centerY) {
 			// 외쪽 상단 위도 + 경도 -
@@ -1317,8 +1330,6 @@ debugger;
     
     var constProcUploadDialog = $('#constructionProcessUploadDialog').dialog({
 		autoOpen: false,
-		width: 370,
-		height: 200,
 		modal: true,
 		overflow : "auto",
 		resizable: false
@@ -1420,6 +1431,7 @@ debugger;
 	})
 	
 	$('#upload_constructionProcess').click(function() {
+		debugger;
         var form = $('#construc_proc_file_upload')[0];
         startLoading();
 	    // Create an FormData object 
@@ -1518,15 +1530,12 @@ debugger;
 	}
 	
 	function dispConstructProcessModel(index) {
-
-		
 		for(var i = 0; i < 6; i++) {
 			_viewer.entities.getById(_bsConstructProcessModels[i].id).show = false
 		}
 		for(var i = 0; i < index+1; i++) {
 			_viewer.entities.getById(_bsConstructProcessModels[i].id).show = true
 		}
-		
 	}
 
 	function getAverage(list, type) {
@@ -1546,7 +1555,6 @@ debugger;
 		return sum/length;
 	}
 }
-
 
 var SampleJsonSejon = [
 	   {

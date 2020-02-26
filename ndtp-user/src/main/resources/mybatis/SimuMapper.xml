@@ -19,7 +19,18 @@
 			#{simFileSeq}, #{originFileName}, #{saveFileName}, #{saveFilePath}, NOW(), #{saveFileType} 
 		)
 	</insert>
-	
+
+	<insert id="insertConsProcFile" parameterType="simFileInfo">
+		<selectKey keyProperty="simFileSeq" resultType="int" order="BEFORE">
+			SELECt NEXTVAL('sim_file_sequence')
+		</selectKey>
+		INSERT INTO public.sim_file_master
+		(sim_file_seq, origin_file_name, save_file_name, save_file_path, create_dt, save_file_type, cons_type, cons_ratio)
+		VALUES (
+		#{simFileSeq}, #{originFileName}, #{saveFileName}, #{saveFilePath}, NOW(), #{saveFileType}, #{consType}, #{consRatio}
+		)
+	</insert>
+
 	<insert id="insertSimCityPlanFileResult" parameterType="cityPlanResult">
 		<selectKey keyProperty="cityPlanResultSeq" resultType="int" order="BEFORE">
 			SELECt NEXTVAL('city_plan_result_sequence')

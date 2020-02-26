@@ -12,6 +12,7 @@ import ndtp.domain.UserSession;
 public interface SimuMapper {
 
 	int insertSimCityPlanFile(SimFileMaster simFileInfo);
+	int insertConsProcFile(SimFileMaster simFileInfo);
 	int insertSimCityPlanFileResult(CityPlanResult simFileInfo);
 
 	SimFileMaster getSimCityPlanFileList();
