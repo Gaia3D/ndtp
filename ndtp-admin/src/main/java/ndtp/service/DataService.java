@@ -2,8 +2,10 @@ package ndtp.service;
 
 import java.util.List;
 
+import ndtp.domain.DataFileInfo;
 import ndtp.domain.DataInfo;
 import ndtp.domain.DataInfoSimple;
+import ndtp.domain.DataSmartTilingFileInfo;
 
 /**
  * Data 관리
@@ -74,6 +76,13 @@ public interface DataService {
 	 * @return
 	 */
 	int updateData(DataInfo dataInfo);
+	
+	/**
+	 * Data Bulk 등록
+	 * @param dataFileInfo
+	 * @return
+	 */
+	DataFileInfo upsertBulkData(DataFileInfo dataFileInfo);
 	
 	/**
 	 * Data 상태 수정

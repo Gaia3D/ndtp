@@ -116,7 +116,7 @@ public class UploadDataRestController {
 			String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY_TIME14);
 			
 			// 1 directory 생성
-			String makedDirectory = FileUtils.makeDirectory(userId, UploadDirectoryType.YEAR_MONTH, propertiesConfig.getUploadDataDir());
+			String makedDirectory = FileUtils.makeDirectory(userId, UploadDirectoryType.YEAR_MONTH, propertiesConfig.getDataUploadDir());
 			log.info("@@@@@@@ = {}", makedDirectory);
 			
 			// 2 한건이면서 zip 의 경우

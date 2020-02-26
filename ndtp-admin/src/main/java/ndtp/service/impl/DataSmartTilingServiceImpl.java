@@ -16,7 +16,8 @@ import ndtp.domain.DataStatus;
 import ndtp.domain.ServerTarget;
 import ndtp.domain.SharingType;
 import ndtp.parser.DataFileParser;
-import ndtp.parser.impl.DataFileJsonParser;
+import ndtp.parser.DataSmartTilingFileParser;
+import ndtp.parser.impl.DataSmartTilingFileJsonParser;
 import ndtp.persistence.DataSmartTilingMapper;
 import ndtp.service.DataGroupService;
 import ndtp.service.DataService;
@@ -50,8 +51,8 @@ public class DataSmartTilingServiceImpl implements DataSmartTilingService {
 		// 파일 이력을 저장
 		dataSmartTilingMapper.insertDataSmartTilingFileInfo(dataSmartTilingFileInfo);
 		
-		DataFileParser dataFileParser = new DataFileJsonParser();
-		Map<String, Object> map = dataFileParser.parse(dataGroupId, dataSmartTilingFileInfo);
+		DataSmartTilingFileParser dataSmartTilingFileParser = new DataSmartTilingFileJsonParser();
+		Map<String, Object> map = dataSmartTilingFileParser.parse(dataGroupId, dataSmartTilingFileInfo);
 		
 		DataGroup dataGroup = DataGroup.builder().dataGroupId(dataGroupId).build();
 		dataGroup = dataGroupService.getDataGroup(dataGroup);

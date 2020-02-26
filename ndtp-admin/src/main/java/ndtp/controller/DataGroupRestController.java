@@ -267,13 +267,13 @@ public class DataGroupRestController {
 	 * @return
 	 */
 	@GetMapping(value = "/download/{dataGroupId}")
-	public String downloadTxtUser(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dataGroupId) {
+	public String downloadSmartTiling(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dataGroupId) {
 		
 		log.info("@@ dataGroupId = {}", dataGroupId);
 		
 		response.setContentType("application/force-download");
 		response.setHeader("Content-Transfer-Encoding", "binary");
-		response.setHeader("Content-Disposition", "attachment; filename=\"" + dataGroupId + ".json \"");
+		response.setHeader("Content-Disposition", "attachment; filename=\"" + dataGroupId + ".json\"");
 		
 		DataGroup dataGroup = DataGroup.builder().dataGroupId(dataGroupId).build();
 		dataGroup = dataGroupService.getDataGroup(dataGroup);

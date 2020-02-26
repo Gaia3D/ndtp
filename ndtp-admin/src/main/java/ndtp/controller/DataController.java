@@ -53,6 +53,9 @@ public class DataController {
 	@GetMapping(value = "/list")
 	public String list(HttpServletRequest request, DataInfo dataInfo, @RequestParam(defaultValue="1") String pageNo, Model model) {
 		
+		DataGroup dataGroup = DataGroup.builder().available(true).build();
+		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup(dataGroup);
+		
 		dataInfo.setSearchWord(SQLInjectSupport.replaceSqlInection(dataInfo.getSearchWord()));
 		dataInfo.setOrderWord(SQLInjectSupport.replaceSqlInection(dataInfo.getOrderWord()));
 		
@@ -79,6 +82,7 @@ public class DataController {
 			dataList = dataService.getListData(dataInfo);
 		}
 
+		model.addAttribute("dataGroupList", dataGroupList);
 		model.addAttribute(pagination);
 		model.addAttribute("dataList", dataList);
 		return "/data/list";

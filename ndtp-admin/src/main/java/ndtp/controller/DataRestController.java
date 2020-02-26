@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
 import ndtp.domain.DataAttribute;
 import ndtp.domain.DataAttributeFileInfo;
+import ndtp.domain.DataFileInfo;
 import ndtp.domain.DataInfo;
 import ndtp.domain.DataObjectAttribute;
 import ndtp.domain.DataObjectAttributeFileInfo;
@@ -216,6 +217,65 @@ public class DataRestController {
 		result.put("errorCode", errorCode);
 		result.put("message", message);
 		
+		return result;
+	}
+	
+	/**
+	 * 데이터 파일 업로딩
+	 * @param model
+	 * @return
+	 */
+	@PostMapping(value = "/bulk-upload")
+	public Map<String, Object> bulkUpload(MultipartHttpServletRequest request) {
+		
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		try {
+			UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+			
+			Integer dataGroupId = Integer.valueOf(request.getParameter("dataGroupId"));
+			MultipartFile multipartFile = request.getFile("dataFileName");
+			// TODO
+			FileInfo fileInfo = FileUtils.upload(userSession.getUserId(), multipartFile, FileUtils.DATA_FILE_UPLOAD, propertiesConfig.getDataBulkUploadDir());
+			if(fileInfo.getErrorCode() != null && !"".equals(fileInfo.getErrorCode())) {
+				log.info("@@@@@@@@@@@@@@@@@@@@ error_code = {}", fileInfo.getErrorCode());
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", fileInfo.getErrorCode());
+				result.put("message", message);
+				
+				return result;
+			}
+			
+			ModelMapper modelMapper = new ModelMapper();
+			DataFileInfo dataFileInfo = modelMapper.map(fileInfo, DataFileInfo.class);
+			dataFileInfo.setUserId(userSession.getUserId());
+			dataFileInfo.setDataGroupId(dataGroupId);
+			dataFileInfo = dataService.upsertBulkData(dataFileInfo);
+			
+			result.put("totalCount", dataFileInfo.getTotalCount());
+			result.put("parseSuccessCount", dataFileInfo.getParseSuccessCount());
+			result.put("parseErrorCount", dataFileInfo.getParseErrorCount());
+			result.put("insertSuccessCount", dataFileInfo.getInsertSuccessCount());
+			result.put("updateSuccessCount", dataFileInfo.getUpdateSuccessCount());
+			result.put("insertErrorCount", dataFileInfo.getInsertErrorCount());
+			
+			// 파일 삭제
+			File copyFile = new File(fileInfo.getFilePath() + fileInfo.getFileRealName());
+			if(copyFile.exists()) {
+				copyFile.delete();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+            errorCode = "db.exception";
+            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+		
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
 		return result;
 	}
 	

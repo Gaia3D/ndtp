@@ -17,6 +17,8 @@
     	<typeAlias type="ndtp.domain.ConverterJobFile" alias="converterJobFile" />
 		<typeAlias type="ndtp.domain.DataAdjustLog" alias="dataAdjustLog" />
 		<typeAlias type="ndtp.domain.DataAttribute" alias="dataAttribute" />
+		<typeAlias type="ndtp.domain.DataFileInfo" alias="dataFileInfo" />
+		<typeAlias type="ndtp.domain.DataFileParseLog" alias="dataFileParseLog" />
 		<typeAlias type="ndtp.domain.DataSmartTilingFileInfo" alias="dataSmartTilingFileInfo" />
 		<typeAlias type="ndtp.domain.DataSmartTilingFileParseLog" alias="dataSmartTilingFileParseLog" />
 		<typeAlias type="ndtp.domain.DataAttributeFileInfo" alias="dataAttributeFileInfo" />

@@ -1,16 +1,24 @@
 package ndtp.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import ndtp.domain.DataFileInfo;
+import ndtp.domain.DataFileParseLog;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
 import ndtp.domain.DataInfoLog;
 import ndtp.domain.DataInfoSimple;
+import ndtp.domain.DataStatus;
 import ndtp.domain.MethodType;
+import ndtp.domain.ServerTarget;
+import ndtp.domain.SharingType;
+import ndtp.parser.DataFileParser;
+import ndtp.parser.impl.DataFileJsonParser;
 import ndtp.persistence.DataMapper;
 import ndtp.service.DataGroupService;
 import ndtp.service.DataLogService;
@@ -141,6 +149,85 @@ public class DataServiceImpl implements DataService {
 		dataInfoLog.setUpdateUserId(dataInfo.getUserId());
 		return dataLogService.insertDataInfoLog(dataInfoLog);
 	}
+	
+	/**
+	 * Data Bulk 등록
+	 * @param dataFileInfo
+	 * @return
+	 */
+	@Transactional
+	public DataFileInfo upsertBulkData(DataFileInfo dataFileInfo) {
+		Integer dataGroupId = dataFileInfo.getDataGroupId();
+		String userId = dataFileInfo.getUserId();
+		
+		// 파일 이력을 저장
+		dataMapper.insertDataFileInfo(dataFileInfo);
+		
+		DataFileParser dataFileParser = new DataFileJsonParser();
+		Map<String, Object> map = dataFileParser.parse(dataGroupId, dataFileInfo);
+		
+		DataGroup dataGroup = DataGroup.builder().dataGroupId(dataGroupId).build();
+		dataGroup = dataGroupService.getDataGroup(dataGroup);
+		
+		@SuppressWarnings("unchecked")
+		List<DataInfo> dataInfoList = (List<DataInfo>) map.get("dataInfoList");
+		
+		DataFileParseLog dataFileParseLog = new DataFileParseLog();
+		dataFileParseLog.setDataFileInfoId(dataFileInfo.getDataFileInfoId());
+		dataFileParseLog.setLogType(DataFileParseLog.DB);
+		
+		int insertSuccessCount = 0;
+		int updateSuccessCount = 0;
+		int insertErrorCount = 0;
+		String dataGroupTarget = ServerTarget.ADMIN.name().toLowerCase();
+		String sharing = SharingType.COMMON.name().toLowerCase();
+		String status = DataStatus.USE.name().toLowerCase();
+		for(DataInfo dataInfo : dataInfoList) {
+			// TODO 계층 관련 코딩이 있어야 함
+			try {
+				dataInfo.setDataGroupId(dataGroupId);
+				DataInfo dbDataInfo = dataMapper.getDataByDataKey(dataInfo);
+				if(dbDataInfo == null) {
+					dataInfo.setDataGroupTarget(dataGroupTarget);
+					dataInfo.setSharing(sharing);
+					dataInfo.setUserId(userId);
+					dataInfo.setStatus(status);
+					dataMapper.insertBulkData(dataInfo);
+					insertSuccessCount++;
+				} else {
+					dataInfo.setDataId(dbDataInfo.getDataId());
+					dataMapper.updateData(dataInfo);
+					updateSuccessCount++;
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
+				dataFileParseLog.setIdentifierValue(dataFileInfo.getUserId());
+				dataFileParseLog.setErrorCode(e.getMessage());
+				dataMapper.insertDataFileParseLog(dataFileParseLog);
+				insertErrorCount++;
+			}
+		}
+		
+		dataFileInfo.setTotalCount((Integer) map.get("totalCount"));
+		dataFileInfo.setParseSuccessCount((Integer) map.get("parseSuccessCount"));
+		dataFileInfo.setParseErrorCount((Integer) map.get("parseErrorCount"));
+		dataFileInfo.setInsertSuccessCount(insertSuccessCount);
+		dataFileInfo.setUpdateSuccessCount(updateSuccessCount);
+		dataFileInfo.setInsertErrorCount(insertErrorCount);
+		
+		dataMapper.updateDataFileInfo(dataFileInfo);
+		
+		// data group update
+		int dataCount = dataGroup.getDataCount() + insertSuccessCount;
+		dataGroup = DataGroup.builder()
+				.dataGroupId(dataGroupId)
+				.dataCount(dataCount)
+				.build();
+		dataGroupService.updateDataGroup(dataGroup);
+		
+		return dataFileInfo;
+	}
+	
 	/**
 	 * Data 상태 수정
 	 * @param dataInfo

@@ -175,7 +175,7 @@
 					                    </td>
 					                    <td class="col-functions">
 											<a href="#" onclick="uploadSmartTilingData('${dataGroup.dataGroupId }', '${dataGroup.dataGroupName }'); return false;">
-												수정</a>&nbsp;&nbsp;&nbsp;&nbsp;
+												메타 정보 수정</a>&nbsp;&nbsp;&nbsp;&nbsp;
 											<a href="/data-groups/download/${dataGroup.dataGroupId }">내보내기	</a>	
 	<%-- <c:if test="${dataGroup.tiling eq 'false' }">
 											미사용
