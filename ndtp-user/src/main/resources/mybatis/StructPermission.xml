@@ -16,9 +16,9 @@
 			SELECt NEXTVAL('perm_sequence')
 		</selectKey>
 		INSERT INTO struct_permission(
-			perm_seq, constructor, constructor_type, perm_officer, birthday, license_num, phone_number, is_complete, latitude, longitude, save_file_path, save_file_name, origin_file_name, apply_date, save_model_file_path, save_model_file_name
+			perm_seq, constructor, constructor_type, perm_officer, birthday, license_num, phone_number, is_complete, latitude, longitude, save_file_path, save_file_name, origin_file_name, apply_date, save_model_file_path, save_model_file_name, altitude, heading, pitch, roll
 		) VALUES (
-			#{permSeq}, #{constructor}, #{constructorType}, #{permOfficer}, #{birthday}, #{licenseNum}, #{phoneNumber}, #{isComplete}, #{latitude}, #{longitude}, #{saveFilePath}, #{saveFileName}, #{originFileName}, NOW(), #{saveModelFilePath}, #{saveModelFileName}
+			#{permSeq}, #{constructor}, #{constructorType}, #{permOfficer}, #{birthday}, #{licenseNum}, #{phoneNumber}, #{isComplete}, #{latitude}, #{longitude}, #{saveFilePath}, #{saveFileName}, #{originFileName}, NOW(), #{saveModelFilePath}, #{saveModelFileName}, #{altitude}, #{heading}, #{pitch}, #{roll}
 		)
 	</insert>
 

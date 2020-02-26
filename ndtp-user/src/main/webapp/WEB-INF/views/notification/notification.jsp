@@ -32,14 +32,11 @@
                 let content = obj.constructor+"님의 건축인 허가 신청입니다. 좌표 ("+obj.latitude+", "+obj.longitude+")";
                 $.growl.notice({
                     title: "민원이 접수되었습니다.",
-                    message: content,
-                    // url: "www.naver.com"
+                    message: content
                 });
             });
 
             $(".growl").click(event => {
-                console.log("whole_viewer=", whole_viewer);
-
                 const eventMessage = event.delegateTarget.children[2].textContent;
                 // console.log("message=", eventMessage);
                 const openIndex = eventMessage.lastIndexOf("(");
@@ -53,13 +50,8 @@
                 console.log("go to("+latitude+", "+longitude+")");
 
                 // genBuild(126.92377563766438, 37.5241752651257 , 0.3);
-                // genBuild(longitude, latitude , 0.3);
-                $("#testBuilding").trigger("click");
-
-                whole_viewer.scene.camera.flyTo({
-                    destination : Cesium.Cartesian3.fromDegrees(latitude, longitude, 1000)
-                });
-
+                makeBuilding();
+                // $("#testBuilding").trigger("click");
                 setTimeout(() => {
                     event.delegateTarget.children[0].click();
                 }, 200);
@@ -70,6 +62,92 @@
         }
     });
 
+    function makeBuilding(perm_seq, magoInstance) {
+        let data = {
+            isComplete: "N",
+            constructor: "건축주1",
+            permSeq: perm_seq
+        };
+        $.ajax({
+            url: "/data/simulation-rest/getPermRequestByConstructor",
+            type: "POST",
+            headers: {"X-Requested-With": "XMLHttpRequest"},
+            data: data,
+            dataType: "json",
+            success: function(msg){
+                debugger;
+                const result = SampleJsonSejon;
+                const resultObj = makeSampleJson(result);
+                var f4dController = MAGO3D_INSTANCE.getF4dController();
+                f4dController.addF4dGroup(resultObj);
+                whole_viewer.scene.camera.flyTo({
+                    destination : Cesium.Cartesian3.fromDegrees(126.9785978787040, 37.56690158584144, 1000)
+                });
+            },
+            error:function(request,status,error) {
+                alert('error');
+                console.log("err=", request, status, error);
+            }
+        });
+    }
+
+    function makeSampleJson(sampleJson) {
+        var object = {
+            "attributes": {
+                "isPhysical": false,
+                "nodeType": " root ",
+                "projectType": "collada",
+                "specularLighting": true
+            },
+            "children": [],
+            "parent": 0,
+            "depth": 1,
+            "view_order": 2,
+            "data_key": "ds-service\\finish\\202002261053137\\Output",
+            "data_name": "ds-service\\finish\\202002261053137\\Output",
+            "mapping_type": "origin"
+        }
+
+        for(var i = 0; i < SampleJsonSejon.length; i++) {
+            var obj = SampleJsonSejon[i];
+            var dataKey = obj.data_key;
+            var lat = obj.latitude;
+            var lon = obj.longitude;
+
+            var imsiObj = {
+                "attributes": {
+                    "isPhysical": true,
+                    "nodeType": "daejeon",
+                    "flipYTexCoords": true
+                },
+                "children": [],
+                "data_key": "",
+                "data_name": "",
+                "mapping_type":"origin",
+                "longitude": 0,
+                "latitude": 0,
+                "height": -5.000000,
+                "heading": 48.000000,
+                "pitch": 0.000000,
+                "roll": 0.000000
+            };
+
+            imsiObj.data_key = dataKey;
+            imsiObj.data_name = dataKey;
+            imsiObj.latitude = lat;
+            imsiObj.longitude = lon;
+            object.children.push(imsiObj);
+        }
+        return object;
+    }
+    var SampleJsonSejon =
+    [
+        {
+            "data_key" : "KSJ_100",
+            "longitude" : 127.27030500949927,
+            "latitude" : 36.524662808423344,
+        }
+    ]
 
 </script>
 

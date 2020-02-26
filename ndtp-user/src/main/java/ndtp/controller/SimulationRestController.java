@@ -128,6 +128,7 @@ public class SimulationRestController {
         }
         return null;
     }
+
 	@RequestMapping(value = "/cityPlanModelSelect2", method = RequestMethod.GET)
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public Object cityPlanModelSelect2(String FileName) {
@@ -149,7 +150,70 @@ public class SimulationRestController {
 		return null;
 	}
 
-    @RequestMapping(value = "/cityPlanResultInsert", method = RequestMethod.POST)
+	@RequestMapping(value = "/getAccepBuildF4dJsonFile", method = RequestMethod.GET)
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	public Object getAccepBuildF4dJsonFile(String fileName) {
+
+		// 세종인지 , 부산인지 먼저 선택 받아 그중 lonlats json만을 호출
+		// 세종/부산 인지, 몇단계인지
+		// mybatis에서는
+
+		// 세종/부산, 면단계인지 정보를 통해 파일을 가져온다.
+
+		// 가져온 파일에서 LonLats.json만을 추출한다.
+
+
+//    	String resultFullPath = "C:\\data\\Apartment_Building_26_obj\\Apartment_Building_26_obj.gltf";
+		String resultFullPath = "C:\\data\\Apartment_Building_26_obj\\" + fileName;
+		String os = System.getProperty("os.name").toLowerCase();
+		if (os.contains("mac")) {
+//			resultFullPath = "/Users/junho/data/mago3d/building_obj/Apartment_Building_26_obj.gltf";
+			resultFullPath = "/Users/junho/data/mago3d/building_obj/CesiumMilkTruck.gltf";
+		}
+		File fi = new File(resultFullPath.trim());
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			InputStream targetStream = new FileInputStream(fi);
+			return mapper.readValue(targetStream, Object.class);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@RequestMapping(value = "/getConsBuildF4dJsonFile", method = RequestMethod.GET)
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	public Object getConsBuildF4dJsonFile(String fileName) {
+		// 세종인지 , 부산인지 먼저 선택 받아 그중 lonlats json만을 호출
+
+		// 세종/부산 인지, 몇단계인지
+
+		// mybatis에서는
+
+		// 세종/부산, 면단계인지 정보를 통해 파일을 가져온다.
+
+		// 가져온 파일에서 LonLats.json만을 추출한다.
+
+
+		String resultFullPath = "C:\\data\\Apartment_Building_26_obj\\" + fileName;
+		String os = System.getProperty("os.name").toLowerCase();
+		if (os.contains("mac")) {
+			resultFullPath = "/Users/junho/data/mago3d/building_obj/CesiumMilkTruck.gltf";
+		}
+		File fi = new File(resultFullPath.trim());
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			InputStream targetStream = new FileInputStream(fi);
+			return mapper.readValue(targetStream, Object.class);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+
+	@RequestMapping(value = "/cityPlanResultInsert", method = RequestMethod.POST)
     public List<String> cityPlanResultInsert(CityPlanResult cityPlanResult) {
     	List<String> result = this.simServiceImpl.procCityPlanResult(cityPlanResult);
 		return result;
@@ -169,26 +233,71 @@ public class SimulationRestController {
 		String constructor = mReq.getParameter("constructor");
 		String constructor_type = mReq.getParameter("constructor_type");
 		String birthday = mReq.getParameter("birthday");
-		String license_num = mReq.getParameter("license_num");
+		Float longitude = Float.parseFloat(mReq.getParameter("longitude"));
+		Float latitude = Float.parseFloat(mReq.getParameter("latitude"));
+		Float altitude = Float.parseFloat(mReq.getParameter("altitude"));
+		Float heading = Float.parseFloat(mReq.getParameter("heading"));
+		Float pitch = Float.parseFloat(mReq.getParameter("pitch"));
+		Float roll = Float.parseFloat(mReq.getParameter("roll"));
+		StructPermission spParam = StructPermission.builder()
+				.constructor(constructor)
+				.constructorType(constructor_type)
+				.birthday(birthday)
+				.longitude(longitude)
+				.latitude(latitude)
+				.altitude(altitude)
+				.heading(heading)
+				.pitch(pitch)
+				.roll(roll)
+				.build();
 
-		this.simServiceImpl.procAcceptBuild(files, constructor, constructor_type, birthday, license_num);
+		this.simServiceImpl.procAcceptBuild(files, spParam);
 		return true;
 	}
 
 	@RequestMapping(value = "/getPermRequest", method = RequestMethod.POST)
 	public List<StructPermission> getPermRequest(HttpServletRequest request, StructPermission sp) {
 		List<StructPermission> result = structPermissionMapper.selectStructPermission();
-		System.out.println(result);
-
 		return result;
 	}
-	@RequestMapping(value = "/getPermRequestByConstructor", method = RequestMethod.POST)
-	public StructPermission getPermRequestByConstructor(HttpServletRequest request, StructPermission sp) {
-		String is_complete = sp.getIsComplete();
-		String constructor = sp.getConstructor();
 
+	// 지금
+	@RequestMapping(value = "/getPermRequestByConstructor", method = RequestMethod.POST)
+	public StructPermission getPermRequestByConstructor(HttpServletRequest request, StructPermission sp) throws IOException {
 		StructPermission oneResult = structPermissionMapper.selectOne(sp);
-		System.out.println(oneResult);
+
+		RelativePathItem[] rp = simServiceImpl.getJsonByRelationFile(oneResult.getSaveModelFilePath() + oneResult.getSaveModelFileName());
+
+		String[] pathArr = oneResult.getSaveFilePath().split("/");
+		boolean startFlat = false;
+		String f4dDataKey = "";
+		List<String> f4dKeyGenObj = new ArrayList<>();
+		for ( String str : pathArr ) {
+			if(str.equals("f4d"))
+				startFlat = true;
+
+			if(startFlat){
+				f4dKeyGenObj.add(str);
+			}
+		}
+
+		for ( String str : f4dKeyGenObj ) {
+			f4dDataKey = f4dDataKey + "/" + str;
+		}
+
+		// IFC 파일 기준
+		String dataKey = rp[0].getData_key();
+
+		F4DSubObject subF4dObj = new F4DSubObject().builder().date_key(dataKey).date_name(dataKey).build();
+		List<F4DSubObject> f4dSubObjectList = new ArrayList<>();
+		f4dSubObjectList.add(subF4dObj);
+
+		F4DObject f4dObject = new F4DObject();
+		f4dObject.setF4dSubList(f4dSubObjectList);
+		f4dObject.setData_key(f4dDataKey);
+		f4dObject.setData_name(f4dDataKey);
+
+		oneResult.setF4dObject(f4dObject);
 
 		return oneResult;
 	}
@@ -308,6 +417,7 @@ public class SimulationRestController {
 
 		return fileName;
 	}
+
 	private void writeFile(MultipartFile multipartFile, String saveFileName, String SAVE_PATH) throws IOException{
 		this.genSaveFileName(SAVE_PATH);
 
@@ -317,4 +427,6 @@ public class SimulationRestController {
 		fos.close();
 
 	}
+
+
 }

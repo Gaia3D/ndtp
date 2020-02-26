@@ -54,59 +54,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	var observer;
 	var observerTarget = document.getElementById('simulationContent');
 	var observerConfig = { attributes: true};
-	
-	
-	function makeSampleJson() {
-		var object = {
-				"attributes": {
-					"isPhysical": false,
-					"nodeType": " root ",
-					"projectType": "collada",
-					"specularLighting": true
-				},
-				"children": [],
-				"parent": 0,
-				"depth": 1,
-				"view_order": 2,  	
-				"data_key": "conversionResult",
-				"data_name": "conversionResult",
-			    "mapping_type": "origin"
-			}
-		
-		for(var i = 0; i < SampleJsonSejon.length; i++) {
-			var obj = SampleJsonSejon[i];
-			var dataKey = obj.data_key;
-			var lat = obj.latitude;
-			var lon = obj.longitude;
-			
-			var imsiObj = {
-				    "attributes": {
-				        "isPhysical": true,
-				        "nodeType": "daejeon",
-				        "flipYTexCoords": true
-				    },
-				    "children": [],
-				    "data_key": "7D6_1",
-				    "data_name": "7D6_1",
-				    "mapping_type":"origin",
-				    "longitude": 127.284010,
-				    "latitude": 36.473449,
-				    "height": 29.067726,
-				    "heading": 0.000000,
-				    "pitch": 0.000000,
-				    "roll": 0.000000
-				};
-			
-			imsiObj.data_key = dataKey;
-			imsiObj.data_name = dataKey;
-			imsiObj.latitude = lat;
-			imsiObj.longitude = lon;
-			object.children.push(imsiObj);
-		}
-		return object; 
-	}
-	
-	
+
 	var datepicker = new tui.DatePicker('#solayDatePicker', {
         date: new Date(),
         input: {
@@ -1207,6 +1155,15 @@ debugger;
             duration: 1000
         });
     })
+
+	// F4D파일을 통한 표출
+	function genBuildByF4D() {
+		
+	}
+
+	function genF4DFileConvert(url) {
+
+	}
     
     function genBuild(lon, lat, alt, scale, fileName) {
     	var position = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
@@ -1556,86 +1513,136 @@ debugger;
 	}
 }
 
-var SampleJsonSejon = [
-	   {
-		      "data_key" : "KSJ_100_0_0",
-		      "latitude" : 37.56690158584144,
-		      "longitude" : 126.9785978787040
-		   },
-		   {
-		      "data_key" : "KSJ_100_0_1",
-		      "latitude" : 37.56690158584144,
-		      "longitude" : 126.9785978787040
-		   },
-		   {
-		      "data_key" : "KSJ_100_0_2",
-		      "latitude" : 37.56690158584144,
-		      "longitude" : 126.9785978787040
-		   },
-		   {
-		      "data_key" : "KSJ_100_0_3",
-		      "latitude" : 37.56690158584144,
-		      "longitude" : 126.9785978787040
-		   },
-		   {
-		      "data_key" : "KSJ_100_1_0",
-		      "latitude" : 37.56690158584144,
-		      "longitude" : 126.9785978787040
-		   },
-		   {
-		      "data_key" : "KSJ_100_1_1",
-		      "latitude" : 37.56690158584144,
-		      "longitude" : 126.9785978787040
-		   },
-		   {
-		      "data_key" : "KSJ_100_1_2",
-		      "latitude" : 37.56690158584144,
-		      "longitude" : 126.9785978787040
-		   },
-		   {
-		      "data_key" : "KSJ_100_1_3",
-		      "latitude" : 37.56690158584144,
-		      "longitude" : 126.9785978787040
-		   },
-		   {
-		      "data_key" : "KSJ_100_1_4",
-		      "latitude" : 37.56690158584144,
-		      "longitude" : 126.9785978787040
-		   },
-		   {
-		      "data_key" : "KSJ_100_2_0",
-		      "latitude" : 37.56690158584144,
-		      "longitude" : 126.9785978787040
-		   },
-		   {
-		      "data_key" : "KSJ_100_2_1",
-		      "latitude" : 37.56690158584144,
-		      "longitude" : 126.9785978787040
-		   },
-		   {
-		      "data_key" : "KSJ_100_2_2",
-		      "latitude" : 37.56690158584144,
-		      "longitude" : 126.9785978787040
-		   },
-		   {
-		      "data_key" : "KSJ_100_2_3",
-		      "latitude" : 37.56690158584144,
-		      "longitude" : 126.9785978787040
-		   },
-		   {
-		      "data_key" : "KSJ_100_2_4",
-		      "latitude" : 37.56690158584144,
-		      "longitude" : 126.9785978787040
-		   },
-		   {
-		      "data_key" : "KSJ_100_3_0",
-		      "latitude" : 37.56690158584144,
-		      "longitude" : 126.9785978787040
-		   },
-		   {
-		      "data_key" : "KSJ_100_3_1",
-		      "latitude" : 37.56690158584144,
-		      "longitude" : 126.9785978787040
-		   }
-		]
+function makeSampleJson(sampleJson) {
+	var object = {
+		"attributes": {
+			"isPhysical": false,
+			"nodeType": " root ",
+			"projectType": "collada",
+			"specularLighting": true
+		},
+		"children": [],
+		"parent": 0,
+		"depth": 1,
+		"view_order": 2,
+		"data_key": "conversionResult",
+		"data_name": "conversionResult",
+		"mapping_type": "origin"
+	}
+
+	for(var i = 0; i < SampleJsonSejon.length; i++) {
+		var obj = SampleJsonSejon[i];
+		var dataKey = obj.data_key;
+		var lat = obj.latitude;
+		var lon = obj.longitude;
+
+		var imsiObj = {
+			"attributes": {
+				"isPhysical": true,
+				"nodeType": "daejeon",
+				"flipYTexCoords": true
+			},
+			"children": [],
+			"data_key": "7D6_1",
+			"data_name": "7D6_1",
+			"mapping_type":"origin",
+			"longitude": 127.284010,
+			"latitude": 36.473449,
+			"height": 29.067726,
+			"heading": 0.000000,
+			"pitch": 0.000000,
+			"roll": 0.000000
+		};
+
+		imsiObj.data_key = dataKey;
+		imsiObj.data_name = dataKey;
+		imsiObj.latitude = lat;
+		imsiObj.longitude = lon;
+		object.children.push(imsiObj);
+	}
+	return object;
+}
+var SampleJsonSejon =
+[
+	{
+	  "data_key" : "KSJ_100_0_0",
+	  "latitude" : 37.56690158584144,
+	  "longitude" : 126.9785978787040
+   },
+   {
+	  "data_key" : "KSJ_100_0_1",
+	  "latitude" : 37.56690158584144,
+	  "longitude" : 126.9785978787040
+   },
+   {
+	  "data_key" : "KSJ_100_0_2",
+	  "latitude" : 37.56690158584144,
+	  "longitude" : 126.9785978787040
+   },
+   {
+	  "data_key" : "KSJ_100_0_3",
+	  "latitude" : 37.56690158584144,
+	  "longitude" : 126.9785978787040
+   },
+   {
+	  "data_key" : "KSJ_100_1_0",
+	  "latitude" : 37.56690158584144,
+	  "longitude" : 126.9785978787040
+   },
+   {
+	  "data_key" : "KSJ_100_1_1",
+	  "latitude" : 37.56690158584144,
+	  "longitude" : 126.9785978787040
+   },
+   {
+	  "data_key" : "KSJ_100_1_2",
+	  "latitude" : 37.56690158584144,
+	  "longitude" : 126.9785978787040
+   },
+   {
+	  "data_key" : "KSJ_100_1_3",
+	  "latitude" : 37.56690158584144,
+	  "longitude" : 126.9785978787040
+   },
+   {
+	  "data_key" : "KSJ_100_1_4",
+	  "latitude" : 37.56690158584144,
+	  "longitude" : 126.9785978787040
+   },
+   {
+	  "data_key" : "KSJ_100_2_0",
+	  "latitude" : 37.56690158584144,
+	  "longitude" : 126.9785978787040
+   },
+   {
+	  "data_key" : "KSJ_100_2_1",
+	  "latitude" : 37.56690158584144,
+	  "longitude" : 126.9785978787040
+   },
+   {
+	  "data_key" : "KSJ_100_2_2",
+	  "latitude" : 37.56690158584144,
+	  "longitude" : 126.9785978787040
+   },
+   {
+	  "data_key" : "KSJ_100_2_3",
+	  "latitude" : 37.56690158584144,
+	  "longitude" : 126.9785978787040
+   },
+   {
+	  "data_key" : "KSJ_100_2_4",
+	  "latitude" : 37.56690158584144,
+	  "longitude" : 126.9785978787040
+   },
+   {
+	  "data_key" : "KSJ_100_3_0",
+	  "latitude" : 37.56690158584144,
+	  "longitude" : 126.9785978787040
+   },
+   {
+	  "data_key" : "KSJ_100_3_1",
+	  "latitude" : 37.56690158584144,
+	  "longitude" : 126.9785978787040
+   }
+]
 

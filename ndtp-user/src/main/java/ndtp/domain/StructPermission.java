@@ -19,14 +19,19 @@ public class StructPermission {
 	private String licenseNum;
 	private String phoneNumber;
 	private String isComplete;
-	private String latitude;
-	private String longitude;
+	private Float latitude;
+	private Float longitude;
 	private String saveFilePath;
 	private String saveFileName;
 	private String saveModelFilePath;
 	private String saveModelFileName;
 	private String originFileName;
 	private Date applyDate;
+	private F4DObject f4dObject;
+	private Float altitude;
+	private Float heading;
+	private Float pitch;
+	private Float roll;
 }
 
 

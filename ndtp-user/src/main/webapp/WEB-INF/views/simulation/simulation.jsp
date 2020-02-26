@@ -258,8 +258,6 @@
 
 	});
 
-
-
 	$("#testBuilding").click(()=> {
 		console.log("testBuilding");
 		let urlParam = "http://localhost/data/simulation-rest/cityPlanModelSelect";
@@ -300,7 +298,7 @@
 		// todo: change data
 		let data = {
 			isComplete: "N",
-			constructor: "건축주1",
+			constructor: "건축주1"
 		};
 		$.ajax({
 			url: "/data/simulation-rest/getPermRequestByConstructor",
