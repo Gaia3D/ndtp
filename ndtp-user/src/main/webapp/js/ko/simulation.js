@@ -236,7 +236,7 @@ var Simulation = function(magoInstance, viewer, $) {
 		var dataName;
 		var initPosition;
 		if(targetArea === 's') {
-debugger;
+
 			var msj = makeSampleJson();
 			//
 			var policy = Mago3D.MagoConfig.getPolicy();
@@ -364,48 +364,6 @@ debugger;
 			});
 		} else if (targetArea === "etc") {
 			console.log("etc");
-			debugger;
-			dataName = SEJONG_TILE_NAME;
-			initPosition = SEJONG_POSITION;
-
-			if(!slider) {
-				slider = new KotSlider('rangeInput');
-			}
-
-			//레인지, 레전드 보이기
-			$('#csRange, #constructionProcess .profileInfo').show();
-			$('#saRange').hide();
-
-			//slider.setValue(0);
-			simulating = true;
-			if(!cache[dataName]) {
-				if(dataName.indexOf('tiles') > 0) {
-					magoManager.getObjectIndexFileSmartTileF4d(dataName);
-					magoManager.on(Mago3D.MagoManager.EVENT_TYPE.SMARTTILELOADEND, smartTileLoaEndCallbak);
-
-					var html = '';
-					html += '<span>1단계</span>';
-					html += '<span>2단계</span>';
-					html += '<span>3단계</span>';
-					html += '<span>4단계</span>';
-					html += '<span>5단계</span>';
-					html += '<span>6단계</span>';
-
-					$('#csRange .rangeWrapChild.legend').html(html);
-					$('#csRange .rangeWrapChild.legend').on('click','span',function(){
-						slider.setValue($(this).index());
-					});
-				}
-			}
-
-			var dis = Math.abs(Cesium.Cartesian3.distance(initPosition, MAGO3D_INSTANCE.getViewer().camera.position));
-			if(dis > CAMERA_MOVE_NEED_DISTANCE) {
-				magoInstance.getViewer().camera.flyTo({
-					destination:initPosition,
-					duration : 1
-				});
-			}
-			setObserver();
 		}
 	});
 	
@@ -536,7 +494,7 @@ debugger;
 			
 			for(var index in entitis) {
 				var entitiyObj = entitis[index];
-
+debugger;
 
 				let destrictPositions = entitiyObj.polygon._hierarchy._value.positions;
 				let destrictArea = getArea(destrictPositions);
