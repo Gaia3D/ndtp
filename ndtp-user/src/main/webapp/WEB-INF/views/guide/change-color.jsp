@@ -83,7 +83,6 @@
 		var objectIds = $('#api7-p3').val();
 		var property = $('#api7-p4').val();
 		var color = $('#api7-p5')[0].nextSibling.nodeValue;
-		console.log(color);
 		arr1[0] = objectIds;
 
 		changeColorAPI(MAGO3D_INSTANCE2, projectId, dataKey, arr1, property, color);

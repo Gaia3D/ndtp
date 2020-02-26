@@ -53,8 +53,10 @@
 		</div>
 		<br/> 
 		<input type="button" id="getCameraCurrentPosition" value="Run" class="popupBtn">
-		<h4>결과</h4>
-		<table id="api34-result"></table>
+		<div id="resultContainer">
+			<h4>결과</h4>
+			<table id="api34-result"></table>
+		</div>
 	</div>
 	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
 </div>

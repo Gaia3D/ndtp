@@ -7,7 +7,7 @@
 <meta name="referrer" content="origin">
 <meta name="viewport" content="width=device-width">
 <meta name="robots" content="index,nofollow" />
-<title>Mago3DJS API</title>
+<title>mago3DJS API | NDTP</title>
 <link rel="shortcut icon" href="/images/favicon.ico">
 <link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
 <link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
@@ -94,12 +94,6 @@
 		}
 		
 var MAGO3D_INSTANCE2;
-var NDTP2 = {
-	policy : ${geoPolicyJson},
-	baseLayers : "ndtp:land_block",
-	wmsProvider : {},	
-	districtProvider : {}
-};
 
 magoInit2();
 
@@ -144,7 +138,6 @@ function magoLoadEnd2(e) {
 		dataType: "json",
 		success: function(res){
 			if(res) {
-				console.log(res);
 				var policy = Mago3D.MagoConfig.getPolicy();
 				var initLat = parseFloat(policy.initLatitude);
 				var initLon = parseFloat(policy.initLongitude);
@@ -170,9 +163,9 @@ $('.item').on("click", function(){
 	$(this).addClass('on');
 })
 
+
 $( document ).ready(function() {
 	cesiumCreditAlt();
-
 });
 function changeToggleTab(apiIndex){
 
@@ -196,40 +189,34 @@ function changeToggleTab(apiIndex){
             // Contents 영역 교체
             $('#testtoggle').scrollTop(0);
             $('#testtoggle').html(data);
+        	
             var codeTabContainer1 = document.createElement("div");
             codeTabContainer1.setAttribute("class", "codeTabContainer1");
             var codeTabContainer2 = document.createElement("div");
             codeTabContainer2.setAttribute("class", "codeTabContainer2");
             if(document.getElementsByClassName("paramContainer").length!=0){
-   			 
    				var parmScript = document.createTextNode(($('.paramContainer')[0].innerHTML).replace(/\s{2,}/gi, ' '));
-   				
    				var preTagBr = document.createElement("br");
    				var codeParmTag = document.createElement("code");
-   				
    				codeParmTag.setAttribute("class","html");
    				codeParmTag.appendChild(parmScript);
    				var preTagParm = document.createElement("pre");
    				preTagParm.appendChild(codeParmTag);
    				codeTabContainer1.appendChild(preTagParm);
    				codeTabContainer1.appendChild(preTagBr);
-   				
    				var codeTitle1 = document.createElement("h4");
    				var txt = document.createTextNode("HTML");
    				codeTitle1.appendChild(txt);
    				$('.menu_tab01')[0].appendChild(codeTitle1);
    	            $('.menu_tab01')[0].appendChild(codeTabContainer1);
-   	            
    				// hilight
    				document.querySelector('.codeTabContainer1').querySelectorAll('pre code').forEach((block) => {
    				    hljs.highlightBlock(block);
    				  });
    			}
             if($('.api-help-toggle').next()[0]){
-      			
    				var script = document.createTextNode($('.api-help-toggle').next()[0].text);
    				var preTagBr = document.createElement("br");
-   				
    				var codeScriptTag = document.createElement("code");
    				codeScriptTag.setAttribute("class","javascript");
    				codeScriptTag.appendChild(script);		
@@ -237,13 +224,11 @@ function changeToggleTab(apiIndex){
    				preTagScript.appendChild(codeScriptTag);
    				codeTabContainer2.appendChild(preTagBr);
    				codeTabContainer2.appendChild(preTagScript);
-   				
    				var codeTitle2 = document.createElement("h4");
    				var txt = document.createTextNode("JAVASCRIPT");
    				codeTitle2.appendChild(txt);
    				$('.menu_tab01')[0].appendChild(codeTitle2);
    				$('.menu_tab01')[0].appendChild(codeTabContainer2);
-   				
    				// hilight
    				document.querySelector('.codeTabContainer2').querySelectorAll('pre code').forEach((block) => {
    				    hljs.highlightBlock(block);
@@ -277,8 +262,7 @@ function changeToggleTab(apiIndex){
 			
 			// null check and start function
 			$('.popupBtn').on("click", function(){
-				var id = $(this).attr('id');/* 
-				$('.menu_tab00').scrollTop($('.menu_tab00')[0].scrollHeight); */
+				var id = $(this).attr('id');
 				var inputTags = $("#"+id).siblings('.paramContainer').children('input[type=text]');
 				var count=0;
 				if(id=="changeLod"){
@@ -325,6 +309,10 @@ function changeToggleTab(apiIndex){
 					}
 					window[id]();
 				}
+				 if($('#resultContainer').length!=0){
+					 $('.popupGroup').stop().animate({scrollTop:$('.menu_tab00').height()},800);
+						console.log("test");
+					}
 			})
 			
 			//color picker
@@ -381,15 +369,6 @@ function convertColor(color) {
   return rgbColor;
  }
 
-function validateCheckGuide() {
-	/* for(var i = 0; i = ){
-		if ($("#issueTitle").val() === "") {
-			alert("제목을 입력하여 주십시오.");
-			$("#issueTitle").focus();
-			return false;
-		}
-	} */
-}
 </script>
 </body>
 </html>

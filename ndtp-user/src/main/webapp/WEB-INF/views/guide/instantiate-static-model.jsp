@@ -74,7 +74,12 @@
 			pitch : pc,
 			roll : rl
 		}
-
-		instantiateStaticModelAPI(MAGO3D_INSTANCE2, attrObject);
+		try{
+			instantiateStaticModelAPI(MAGO3D_INSTANCE2, attrObject);
+		}
+		catch(e){
+			alert(e);
+			//console.info(e);
+		}
 	}
 </script>
