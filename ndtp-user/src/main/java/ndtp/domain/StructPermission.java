@@ -23,6 +23,8 @@ public class StructPermission {
 	private String longitude;
 	private String saveFilePath;
 	private String saveFileName;
+	private String saveModelFilePath;
+	private String saveModelFileName;
 	private String originFileName;
 	private Date applyDate;
 }

@@ -74,12 +74,14 @@
     $('#permReqCancel').click(function() {
         $("#permRequestDialog").dialog("close");
     });
+
+    /*
     $('#permReqRegister').click(function() {
         setTimeout(() => {
             $("#permRequestDialog").dialog("close");
         }, 1000);
     });
-
+	*/
 </script>
 
 <style>

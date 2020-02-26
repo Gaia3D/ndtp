@@ -439,9 +439,6 @@
 			commentListViewer.append(timeSpan);
 		});
 	}
-
-
-
 </script>
 
 

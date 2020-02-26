@@ -55,4 +55,12 @@ public class PropertiesConfig {
     private String dataAttributeDir;
     private String dataAttributeUploadDir;
     private String dataObjectAttributeUploadDir;
+
+    private String serviceF4dRunDir;
+    private String serviceF4dInputDir;
+    private String serviceF4dOutputDir;
+    private String serviceF4dFinishRootDir;
+    private String serviceFileUploadDir;
+    private String serviceF4dFailRootDir;
+
 }
