@@ -70,11 +70,11 @@
 			<label for="api8-p2">dataKey</label>
 			<input type="text" data-require="true" id="api8-p2" value="SOCIALROOM" disabled><br/>
 			<label for="api8-p3">longitude</label>
-			<input type="text" data-require="true" id="api8-p3" value="127.0000"><br/>
+			<input type="text" data-require="true" id="api8-p3" value="126.923785"><br/>
 			<label for="api8-p4">latitude</label>
-			<input type="text" data-require="true" id="api8-p4" value="37.000"><br/>
+			<input type="text" data-require="true" id="api8-p4" value="37.521868"><br/>
 			<label for="api8-p5">height</label>
-			<input type="text" data-require="false" id="api8-p5" value="550"><br/>
+			<input type="text" data-require="false" id="api8-p5" value="100"><br/>
 			<label for="api8-p6">heading</label>
 			<input type="text" data-require="false" id="api8-p6" value="0"><br/>
 			<label for="api8-p7">pitch</label>

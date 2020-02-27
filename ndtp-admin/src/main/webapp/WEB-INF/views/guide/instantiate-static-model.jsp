@@ -35,9 +35,9 @@
 			<label for="api37-p2">instanceId</label>
 			<input type="text" data-require="true" id="api37-p2" value="building"><br>
 			<label for="api37-p3">longitude</label>
-			<input type="text" data-require="true" id="api37-p3" value="127.000"><br>
+			<input type="text" data-require="true" id="api37-p3" value="126.924985"><br>
 			<label for="api37-p4">latitude</label>
-			<input type="text" data-require="true" id="api37-p4" value="37.000"><br>
+			<input type="text" data-require="true" id="api37-p4" value="37.521068"><br>
 			<label for="api37-p5">height</label>
 			<input type="text" data-require="false" id="api37-p5" value="100"><br>
 			<label for="api37-p6">heading</label>
@@ -79,7 +79,7 @@
 		}
 		catch(e){
 			alert(e);
-			//console.info(e);
+			console.error(e);
 		}
 	}
 </script>

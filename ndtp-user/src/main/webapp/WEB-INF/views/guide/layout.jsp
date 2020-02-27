@@ -199,7 +199,6 @@ function changeToggleTab(apiIndex){
             	var testString = "";
             	var offsetLength = ($('.paramContainer')[0].innerHTML).replace(/\t/gi,"    ").indexOf( "<" )-1;
             	for(var i = 0; i < test.length; i++){
-            		console.log(offsetLength);
             		test[i] = test[i].replace(/\t/gi,"    ");
             		if(test[i].length >(($('.paramContainer')[0].innerHTML).replace(/\t/gi,"    ").indexOf( "<" )-1)){
             			if(offsetLength>test[i].indexOf( "<" )){
@@ -209,7 +208,6 @@ function changeToggleTab(apiIndex){
             		}
             	}
             	for(var i = 0; i < test.length; i++){
-            		console.log(offsetLength);
             		test[i] = test[i].replace(/\t/gi,"    ");
             		if(test[i].length >(($('.paramContainer')[0].innerHTML).replace(/\t/gi,"    ").indexOf( "<" )-1)){
             			testString += test[i].substr(offsetLength, test[i].length);
@@ -334,7 +332,6 @@ function changeToggleTab(apiIndex){
 				}
 				 if($('#resultContainer').length!=0){
 					 $('.popupGroup').stop().animate({scrollTop:$('.menu_tab00').height()},800);
-						console.log("test");
 					}
 			})
 			
