@@ -61,8 +61,6 @@ public class CacheConfig {
 		geoPolicy(cacheParams);
 		// 운영 정책 캐시 갱신
 		policy(cacheParams);
-		// 운영 정책 캐시 갱신
-		policy(cacheParams);
 		// 사용자 그룹별 메뉴, Menu
         menu(cacheParams);
         // 사용자 그룹별 메뉴, Role

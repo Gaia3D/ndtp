@@ -9,13 +9,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,16 +17,13 @@ import ndtp.domain.CacheManager;
 import ndtp.domain.CacheName;
 import ndtp.domain.CacheParams;
 import ndtp.domain.CacheType;
-import ndtp.domain.GeoPolicy;
 import ndtp.domain.Menu;
 import ndtp.domain.MenuTarget;
 import ndtp.domain.RoleTarget;
-import ndtp.domain.ServerTarget;
 import ndtp.domain.UserGroup;
 import ndtp.domain.UserGroupMenu;
 import ndtp.domain.UserGroupRole;
 import ndtp.domain.YOrN;
-import ndtp.service.GeoPolicyService;
 import ndtp.service.MenuService;
 import ndtp.service.UserGroupService;
 
@@ -40,8 +31,6 @@ import ndtp.service.UserGroupService;
 @Component
 public class CacheConfig {
 
-	@Autowired
-	private GeoPolicyService geoPolicyService;
 	@Autowired
 	private MenuService menuService;
 	@Autowired
@@ -84,8 +73,11 @@ public class CacheConfig {
      * @param cacheParams
      */
     private void geoPolicy(CacheParams cacheParams) {
-    	GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
-    	CacheManager.setGeoPolicy(geoPolicy);
+    	log.info("************ Cache Reload Policy ************");
+    	CacheType cacheType = cacheParams.getCacheType();
+    	if(cacheType == CacheType.BROADCAST) {
+    		callRemoteCache(cacheParams);
+    	}
     }
     
     /**
