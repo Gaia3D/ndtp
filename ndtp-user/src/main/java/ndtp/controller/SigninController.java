@@ -44,8 +44,6 @@ import ndtp.utils.WebUtils;
 public class SigninController {
 	
 	@Autowired
-	private PolicyService policyService;
-	@Autowired
 	private RoleService roleService;
 	@Autowired
 	private SigninService signinService;
@@ -58,13 +56,13 @@ public class SigninController {
 	 */
 	@GetMapping("/signin")
 	public String signin(HttpServletRequest request, Model model) {
-		Policy policy = policyService.getPolicy();
+		Policy policy = CacheManager.getPolicy();
 		log.info("@@ policy = {}", policy);
 		
 		UserInfo signinForm = new UserInfo();
 		model.addAttribute("signinForm", signinForm);
 		model.addAttribute("policy", policy);
-		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
+		model.addAttribute("contentCacheVersion", policy.getContentCacheVersion());
 		
 		return "/sign/signin";
 	}
@@ -78,7 +76,7 @@ public class SigninController {
 	@PostMapping(value = "/process-signin")
 	public String processSignin(HttpServletRequest request, @Valid @ModelAttribute("signinForm") UserInfo signinForm, BindingResult bindingResult, Model model) {
 		
-		Policy policy = policyService.getPolicy();
+		Policy policy = CacheManager.getPolicy();
 			
 		signinForm.setPasswordChangeTerm(policy.getPasswordChangeTerm());
 		signinForm.setUserLastSigninLock(policy.getUserLastSigninLock());

@@ -116,7 +116,6 @@ public class MapController {
 		model.addAttribute("dataInfo", dataInfo);
 		model.addAttribute("dataInfoJson", dataInfoJson);
 		model.addAttribute("owner", userId);
-		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
         
         return "/map/find-data-point";
     }
@@ -137,7 +136,6 @@ public class MapController {
         	List<LayerGroup> layerGroupList = LayerDisplaySupport.getListDisplayLayer(layerGroupService.getListLayerGroupAndLayer(), userPolicy.getBaseLayers());
             model.addAttribute("geoPolicyJson", objectMapper.writeValueAsString(geoPolicy));
             model.addAttribute("baseLayerJson", objectMapper.writeValueAsString(layerGroupList));
-            model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -156,7 +154,7 @@ public class MapController {
 
 //        UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 //        UserPolicy userPolicy = userPolicyService.getUserPolicy(userSession.getUserId());
-        GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
+        GeoPolicy geoPolicy = CacheManager.getGeoPolicy();
         try {
             model.addAttribute("geoPolicyJson", objectMapper.writeValueAsString(geoPolicy));
         } catch (Exception e) {

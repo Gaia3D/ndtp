@@ -79,7 +79,6 @@ public class ConverterController {
 		
 		model.addAttribute(pagination);
 		model.addAttribute("converterJobList", converterJobList);
-		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
 		
 		return "/converter/list";
 	}

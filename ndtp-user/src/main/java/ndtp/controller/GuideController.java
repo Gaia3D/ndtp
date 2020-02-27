@@ -1,6 +1,7 @@
 package ndtp.controller;
 
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,7 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import ndtp.domain.CacheManager;
 import ndtp.domain.GeoPolicy;
+import ndtp.domain.Policy;
 import ndtp.service.GeoPolicyService;
 
 /**
@@ -34,8 +38,10 @@ public class GuideController {
 	@GetMapping(value = "/help")
 	public String gotoApiHelp(HttpServletRequest request, Model model) {
 		GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
+		Policy policy = CacheManager.getPolicy();
 		try {
 			model.addAttribute("geoPolicyJson", objectMapper.writeValueAsString(geoPolicy));
+			model.addAttribute("contentCacheVersion", policy.getContentCacheVersion());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
