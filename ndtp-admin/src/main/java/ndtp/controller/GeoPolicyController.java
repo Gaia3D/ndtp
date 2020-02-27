@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.extern.slf4j.Slf4j;
+import ndtp.config.CacheConfig;
+import ndtp.domain.CacheName;
+import ndtp.domain.CacheParams;
+import ndtp.domain.CacheType;
 import ndtp.domain.GeoPolicy;
 import ndtp.service.GeoPolicyService;
 
@@ -24,11 +29,10 @@ import ndtp.service.GeoPolicyService;
 @RequestMapping("/geopolicy")
 public class GeoPolicyController {
 
-	private final GeoPolicyService geoPolicyService;
-
-	public GeoPolicyController(GeoPolicyService geoPolicyService) {
-		this.geoPolicyService = geoPolicyService;
-	}
+	@Autowired
+	private CacheConfig cacheConfig;
+	@Autowired
+	private GeoPolicyService geoPolicyService;
 
 	@GetMapping(value = "/modify")
 	public String modify(HttpServletRequest reuqet, Model model) {
@@ -56,6 +60,8 @@ public class GeoPolicyController {
 	            return result;
 			}
 			geoPolicyService.updateGeoPolicy(geoPolicy);
+			
+			reloadCache();
 		} catch (Exception e) {
 			e.printStackTrace();
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
@@ -85,6 +91,8 @@ public class GeoPolicyController {
 	            return result;
 			}
 			geoPolicyService.updateGeoPolicyGeoServer(geoPolicy);
+			
+			reloadCache();
 		} catch (Exception e) {
 			e.printStackTrace();
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
@@ -96,4 +104,11 @@ public class GeoPolicyController {
 		result.put("message", message);
 		return result;
     }
+	
+	private void reloadCache() {
+		CacheParams cacheParams = new CacheParams();
+		cacheParams.setCacheName(CacheName.GEO_POLICY);
+		cacheParams.setCacheType(CacheType.BROADCAST);
+		cacheConfig.loadCache(cacheParams);
+	}
 }

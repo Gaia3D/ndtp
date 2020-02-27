@@ -12,6 +12,11 @@ import lombok.Data;
 @ConfigurationProperties(prefix = "ndtp")
 public class PropertiesConfig {
 	
+	/**
+	 * 로컬 : local, 개발 : develop, 운영 : product
+	 */
+	private String profile;
+	
     /**
      * 로컬 환경은 WINDOW, 운영 환경은 LINUX 
      */
@@ -23,12 +28,13 @@ public class PropertiesConfig {
     private boolean mockEnable;
     private boolean callRemoteEnable;
     private String serverIp;
+
+    // TODO 원래는 external_service table로 관리됨. 임시 버전
+    private String cacheClientUrl;
     
     // http, https
     private String restTemplateMode;
-    
     private String restAuthKey;
-
     private String gisRestServer;
     
     private String layerUploadDir;

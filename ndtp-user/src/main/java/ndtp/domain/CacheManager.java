@@ -18,6 +18,11 @@ public class CacheManager {
     private CacheManager() {
     }
 
+    // 2D, 3D 운영 정책
+    private GeoPolicy geoPolicy;
+    // 운영 정책
+    private Policy policy;
+    
     // 대메뉴 정보
  	private Map<Integer, Menu> menuMap = null;
  	// url과 menu_id를 매핑
@@ -29,7 +34,23 @@ public class CacheManager {
  	
     // Smart Tiling 데이터 정보
   	private Map<Integer, List<DataInfoSimple>> smartTilingDataMap = null;
-    
+  	
+  	public static GeoPolicy getGeoPolicy() {
+		return cacheManager.geoPolicy;
+	}
+
+	public static void setGeoPolicy(GeoPolicy geoPolicy) {
+		cacheManager.geoPolicy = geoPolicy;
+	}
+
+	public static Policy getPolicy() {
+		return cacheManager.policy;
+	}
+
+	public static void setPolicy(Policy policy) {
+		cacheManager.policy = policy;
+	}
+
 	/**
 	 * 대메뉴(1 Depth) Map, 화면 왼쪽 메뉴 표시용
 	 * @param userGroupId
