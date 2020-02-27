@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import ndtp.domain.DataFileInfo;
+import ndtp.domain.DataFileParseLog;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
 import ndtp.domain.DataInfoSimple;
@@ -102,6 +104,27 @@ public interface DataMapper {
 	int insertData(DataInfo dataInfo);
 	
 	/**
+	 * Bulk 파일로 부터 데이터 등록(시퀀스를 사용하지 않고, 파일에 있는 dataId 사용)
+	 * @param dataInfo
+	 * @return
+	 */
+	int insertBulkData(DataInfo dataInfo);
+	
+	/**
+	 * Data 파일 정보 등록
+	 * @param dataFileInfo
+	 * @return
+	 */
+	int insertDataFileInfo(DataFileInfo dataFileInfo);
+	
+	/**
+	 * Data 파일 파싱 정보 등록
+	 * @param dataFileParseLog
+	 * @return
+	 */
+	int insertDataFileParseLog(DataFileParseLog dataFileParseLog);
+	
+	/**
 	 * 데이터 속성 파일 정보 등록
 	 * @param fileInfo
 	 * @return
@@ -114,6 +137,13 @@ public interface DataMapper {
 	 * @return
 	 */
 	int updateData(DataInfo dataInfo);
+	
+	/**
+	 * Data 파일 정보 수정
+	 * @param dataFileInfo
+	 * @return
+	 */
+	int updateDataFileInfo(DataFileInfo dataFileInfo);
 	
 	/**
 	 * Data 테이블의 Data 그룹 정보 변경

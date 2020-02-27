@@ -88,7 +88,7 @@
 								</div>
 								<!-- <div class="list-functions u-pull-right">
 									<div class="button-group">
-										<a href="#" onclick="uploadTilingData(); return false;" class="button">Smart Tiling 데이터 업로드</a>
+										<a href="#" onclick="uploadDataFile(); return false;" class="button">데이터 일괄 업로딩</a>
 									</div>
 								</div> -->
 							</div>
@@ -212,6 +212,7 @@
 <%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
 
 <%@ include file="/WEB-INF/views/data/group-dialog.jsp" %>
+<%@ include file="/WEB-INF/views/data/data-file-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/data-metainfo-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/data-attribute-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/data-object-attribute-dialog.jsp" %>
@@ -345,6 +346,75 @@
 				alert(JS_MESSAGE["ajax.error.message"]);
 			}
 		});
+	}
+	
+	// Data 일괄 등록
+	function uploadDataFile() {
+		uploadDataFileDialog.dialog( "open" );
+		$("#dataFileName").val("");
+ 		$("#dataFileUploadLog > tbody:last").html("");
+	}
+	
+	// Data 일괄 등록 닫기
+	function popClose() {
+		uploadDataFileDialog.dialog( "close" );
+		location.reload();
+	}
+	
+	// 일괄등록(파일)
+	var dataFileUploadFlag = true;
+	function uploadDataFileSave() {
+		var fileName = $("#dataFileName").val();
+		if(fileName === "") {
+			alert(JS_MESSAGE["file.name.empty"]);
+			$("#dataFileName").focus();
+			return false;
+		}
+		
+		if( fileName.lastIndexOf("xlsx") <=0 
+				&& fileName.lastIndexOf("xls") <=0
+				&& fileName.lastIndexOf("json") <=0 
+				&& fileName.lastIndexOf("txt") <=0 ) {
+			alert(JS_MESSAGE["file.ext.invalid"]);
+			$("#dataFileName").focus();
+			return false;
+		}
+		
+		if(dataFileUploadFlag) {
+			dataFileUploadFlag = false;
+			$("#dataFileInfo").ajaxSubmit({
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+				dataType: "json",
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						if(msg.parseErrorCount != 0 || msg.insertErrorCount != 0) {
+							$("#dataFileName").val("");
+							alert(JS_MESSAGE["error.exist.in.processing"]);
+						} else {
+							alert(JS_MESSAGE["update"]);
+						}
+						
+						var source = $("#templateDataFileUploadLog").html();
+						var template = Handlebars.compile(source);
+						var dataFileUploadHtml = template(msg);
+						
+						$("#dataFileUploadLog").html("");
+		                $("#dataFileUploadLog").append(dataFileUploadHtml);
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+	    			}
+					dataFileUploadFlag = true;
+				},
+				error:function(request,status,error){
+					alert(JS_MESSAGE["ajax.error.message"]);
+					dataFileUploadFlag = true;
+				}
+			});
+		} else {
+			alert(JS_MESSAGE["button.dobule.click"]);
+			return;
+		}
 	}
 
 	// 데이터 속성 수정
@@ -550,6 +620,17 @@
 		modal: true,
 		resizable: false
 	});
+	
+	// 데이터 일괄 등록 다이얼 로그
+	var uploadDataFileDialog = $( ".uploadDataFileDialog" ).dialog({
+		autoOpen: false,
+		width: 600,
+		height: 445,
+		modal: true,
+		resizable: false,
+		close: function() { location.reload(); }
+	});
+	
 	// 데이터 속성 하나 등록 다이얼 로그
 	var uploadDataAttributeDialog = $( ".uploadDataAttributeDialog" ).dialog({
 		autoOpen: false,

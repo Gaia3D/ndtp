@@ -252,6 +252,18 @@ function isHangul(value) {
 	}
 }
 
+// 경도 체크
+function isLongitude(value) {
+	var regexLongitude = /^[-+]?(180(\.0{0,6})?|((1[0-7]\d)|([1-9]?\d))(\.\d{0,8})?)$/;
+	return regexLongitude.test(value) ? true : false;
+}
+
+// 위도 체크
+function isLatitude(value) {
+	var regexLatitude = /^[-+]?([0-8]?\d(\.\d{0,6})?|90(\.0{0,8})?)$/;
+	return regexLatitude.test(value) ? true : false;
+}
+
 function notyetAlram() {
 	alert('아직 준비중입니다.');
 }

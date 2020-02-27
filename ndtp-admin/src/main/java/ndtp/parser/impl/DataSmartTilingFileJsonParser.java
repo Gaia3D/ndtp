@@ -11,15 +11,15 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ndtp.domain.DataFileInfo;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
-import ndtp.parser.DataFileParser;
+import ndtp.domain.DataSmartTilingFileInfo;
+import ndtp.parser.DataSmartTilingFileParser;
 
-public class DataFileJsonParser implements DataFileParser {
+public class DataSmartTilingFileJsonParser implements DataSmartTilingFileParser {
 
 	@Override
-	public Map<String, Object> parse(Integer dataGroupId, DataFileInfo fileInfo) {
+	public Map<String, Object> parse(Integer dataGroupId, DataSmartTilingFileInfo fileInfo) {
 		
 		int totalCount = 0;
 		int parseSuccessCount = 0;
@@ -39,7 +39,7 @@ public class DataFileJsonParser implements DataFileParser {
 			String longitude = jsonNode.path("longitude").asText().trim();
 			String latitude = jsonNode.path("latitude").asText().trim();
 			String altitude = jsonNode.path("height").asText().trim();
-			String mappingType = jsonNode.path("mappingType").asText();
+			String mappingType = jsonNode.path("mapping_type").asText();
 			JsonNode metainfo = jsonNode.path("attributes");
 			JsonNode childrenNode = jsonNode.path("children");
 			
@@ -85,16 +85,15 @@ public class DataFileJsonParser implements DataFileParser {
 		depth++;
 		int viewOrder = 1;
 		for(JsonNode jsonNode : childrenNode) {
-			Long dataId = jsonNode.path("dataId").asLong();
-			String dataName = jsonNode.path("dataName").asText();
-			String dataKey = jsonNode.path("dataKey").asText();
+			String dataName = jsonNode.path("data_name").asText();
+			String dataKey = jsonNode.path("data_key").asText();
 			String longitude = jsonNode.path("longitude").asText().trim();
 			String latitude = jsonNode.path("latitude").asText().trim();
 			String altitude = jsonNode.path("height").asText().trim();
 			String heading = jsonNode.path("heading").asText().trim();
 			String pitch = jsonNode.path("pitch").asText().trim();
 			String roll = jsonNode.path("roll").asText().trim();
-			String mappingType = jsonNode.path("mappingType").asText();
+			String mappingType = jsonNode.path("mapping_type").asText();
 			JsonNode metainfo = jsonNode.path("attributes");
 			JsonNode childrene = jsonNode.path("children");
 			
