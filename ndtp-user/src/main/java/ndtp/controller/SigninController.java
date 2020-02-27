@@ -64,6 +64,7 @@ public class SigninController {
 		UserInfo signinForm = new UserInfo();
 		model.addAttribute("signinForm", signinForm);
 		model.addAttribute("policy", policy);
+		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
 		
 		return "/sign/signin";
 	}

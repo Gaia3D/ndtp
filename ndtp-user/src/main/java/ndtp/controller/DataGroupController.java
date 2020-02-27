@@ -17,6 +17,7 @@ import ndtp.domain.Key;
 import ndtp.domain.Policy;
 import ndtp.domain.SharingType;
 import ndtp.config.PropertiesConfig;
+import ndtp.domain.CacheManager;
 import ndtp.domain.DataGroup;
 import ndtp.domain.UserSession;
 import ndtp.service.PolicyService;
@@ -74,6 +75,7 @@ public class DataGroupController {
 		}
 		
 		model.addAttribute("dataGroupList", dataGroupList);
+		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
 		return "/data-group/list";
 	}
 	
@@ -113,6 +115,7 @@ public class DataGroupController {
 		model.addAttribute("policy", policy);
 		model.addAttribute("dataGroup", dataGroup);
 		model.addAttribute("dataGroupList", dataGroupList);
+		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
 		
 		return "/data-group/input";
 	}
@@ -139,6 +142,7 @@ public class DataGroupController {
 		dataGroup.setOldDataGroupKey(dataGroup.getDataGroupKey());
 		
 		model.addAttribute("dataGroup", dataGroup);
+		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
 		
 		return "/data-group/modify";
 	}

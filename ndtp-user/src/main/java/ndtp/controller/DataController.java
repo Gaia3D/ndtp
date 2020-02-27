@@ -100,6 +100,8 @@ public class DataController {
 		model.addAttribute(pagination);
 		model.addAttribute("owner", userSession.getUserId());
 		model.addAttribute("dataInfoList", dataInfoList);
+		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
+		
 		return "/data/list";
 	}
 
@@ -243,6 +245,7 @@ public class DataController {
 		}
 
 		model.addAttribute("dataInfo", dataInfo);
+		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
 
 		return "/data/modify";
 	}

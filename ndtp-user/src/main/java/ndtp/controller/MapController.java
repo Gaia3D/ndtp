@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
+import ndtp.domain.CacheManager;
 import ndtp.domain.DataInfo;
 import ndtp.domain.GeoPolicy;
 import ndtp.domain.Key;
@@ -115,6 +116,7 @@ public class MapController {
 		model.addAttribute("dataInfo", dataInfo);
 		model.addAttribute("dataInfoJson", dataInfoJson);
 		model.addAttribute("owner", userId);
+		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
         
         return "/map/find-data-point";
     }
@@ -135,6 +137,7 @@ public class MapController {
         	List<LayerGroup> layerGroupList = LayerDisplaySupport.getListDisplayLayer(layerGroupService.getListLayerGroupAndLayer(), userPolicy.getBaseLayers());
             model.addAttribute("geoPolicyJson", objectMapper.writeValueAsString(geoPolicy));
             model.addAttribute("baseLayerJson", objectMapper.writeValueAsString(layerGroupList));
+            model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
         } catch (Exception e) {
             e.printStackTrace();
         }
