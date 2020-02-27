@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +22,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.extern.slf4j.Slf4j;
+import ndtp.config.CacheConfig;
+import ndtp.domain.CacheName;
+import ndtp.domain.CacheParams;
+import ndtp.domain.CacheType;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
 import ndtp.domain.Role;
@@ -33,11 +38,10 @@ import ndtp.utils.DateUtils;
 @RequestMapping("/role/")
 public class RoleController {
 
-	private final RoleService roleService;
-
-	public  RoleController(RoleService roleService) {
-		this.roleService = roleService;
-	}
+	@Autowired
+	private CacheConfig cacheConfig;
+	@Autowired
+	private RoleService roleService;
 
 	/**
 	 * Role 목록
@@ -118,6 +122,8 @@ public class RoleController {
 			}
 
 			roleService.insertRole(role);
+			
+			reloadCache();
 		} catch (Exception e) {
 			e.printStackTrace();
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
@@ -174,6 +180,8 @@ public class RoleController {
 			}
 
 			roleService.updateRole(role);
+			
+			reloadCache();
 		} catch (Exception e) {
 			e.printStackTrace();
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
@@ -201,6 +209,8 @@ public class RoleController {
 		String message = null;
 		try {
 			roleService.deleteRole(roleId);
+			
+			reloadCache();
 		} catch (Exception e) {
 			e.printStackTrace();
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
@@ -222,5 +232,12 @@ public class RoleController {
 	 */
 	private String getSearchParameters(PageType pageType, Role role) {
 		return role.getParameters();
+	}
+	
+	private void reloadCache() {
+		CacheParams cacheParams = new CacheParams();
+		cacheParams.setCacheName(CacheName.ROLE);
+		cacheParams.setCacheType(CacheType.BROADCAST);
+		cacheConfig.loadCache(cacheParams);
 	}
 }

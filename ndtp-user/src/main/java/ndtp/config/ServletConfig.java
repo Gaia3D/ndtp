@@ -63,18 +63,18 @@ public class ServletConfig implements WebMvcConfigurer {
 		
 		registry.addInterceptor(securityInterceptor)
 				.addPathPatterns("/**")
-				.excludePathPatterns("/f4d/**", "/sign/**", "/guide/**", "/sample/**", "/css/**", "/externlib/**", "favicon*", "/images/**", "/js/**");
+				.excludePathPatterns("/f4d/**", "/sign/**", "/cache/reload", "/guide/**", "/sample/**", "/css/**", "/externlib/**", "favicon*", "/images/**", "/js/**");
 		registry.addInterceptor(cSRFHandlerInterceptor)
 				.addPathPatterns("/**")
 				.excludePathPatterns("/f4d/**",
-						"/sign/**", "/data-groups/view-order/*", "/layer-groups/view-order/*", "/upload-datas", "//issues",
+						"/sign/**", "/cache/reload", "/data-groups/view-order/*", "/layer-groups/view-order/*", "/upload-datas", "//issues",
 						"/guide/**", "/css/**", "/externlib/**", "favicon*", "/images/**", "/js/**");
 		registry.addInterceptor(logInterceptor)
 				.addPathPatterns("/**")
-				.excludePathPatterns("/f4d/**",	"/sign/**", "/guide/**", "/css/**", "/externlib/**", "favicon*", "/images/**", "/js/**");
+				.excludePathPatterns("/f4d/**",	"/sign/**", "/cache/reload", "/guide/**", "/css/**", "/externlib/**", "favicon*", "/images/**", "/js/**");
 		registry.addInterceptor(configInterceptor)
 				.addPathPatterns("/**")
-				.excludePathPatterns("/f4d/**", "/sign/**", "/guide/**", "/sample/**", "/css/**", "/externlib/**", "favicon*", "/images/**", "/js/**");
+				.excludePathPatterns("/f4d/**", "/sign/**", "/cache/reload", "/guide/**", "/sample/**", "/css/**", "/externlib/**", "favicon*", "/images/**", "/js/**");
     }
 	
 	@Bean

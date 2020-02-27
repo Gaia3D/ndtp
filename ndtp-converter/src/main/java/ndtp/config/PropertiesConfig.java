@@ -12,6 +12,11 @@ import lombok.Data;
 @ConfigurationProperties(prefix = "ndtp")
 public class PropertiesConfig {
 	
+	/**
+	 * 로컬 : local, 개발 : develop, 운영 : product
+	 */
+	private String profile;
+	
 	private String osType;
 	private boolean callRemoteEnable;
 	private String serverIp;
