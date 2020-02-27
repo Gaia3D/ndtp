@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class F4DSubObject {
-    private String date_key;
-    private String date_name;
+    private String data_key;
+    private String data_name;
     private Float longitude;
     private Float latitude;
     private Float height;

@@ -17,6 +17,7 @@
         is_complete: "N",
         constructor: "아무개",
     };
+    let buildAcceptPermSeq = 0;
 
     $.ajax({
         url: "/data/simulation-rest/getPermRequest",
@@ -32,12 +33,14 @@
                 let content = obj.constructor+"님의 건축인 허가 신청입니다. 좌표 ("+obj.latitude+", "+obj.longitude+")";
                 $.growl.notice({
                     title: "민원이 접수되었습니다.",
-                    message: content
+                    message: content,
+                    permSeq: obj.permSeq
                 });
             });
 
             $(".growl").click(event => {
                 const eventMessage = event.delegateTarget.children[2].textContent;
+                const parmSeq = event.delegateTarget.children[3].textContent;
                 // console.log("message=", eventMessage);
                 const openIndex = eventMessage.lastIndexOf("(");
                 const commaIndex = eventMessage.lastIndexOf(",");
@@ -49,8 +52,9 @@
                 // todo: connect flyto
                 console.log("go to("+latitude+", "+longitude+")");
 
+                debugger;
                 // genBuild(126.92377563766438, 37.5241752651257 , 0.3);
-                makeBuilding();
+                acceptMakeBuilding(parmSeq);
                 // $("#testBuilding").trigger("click");
                 setTimeout(() => {
                     event.delegateTarget.children[0].click();
@@ -62,10 +66,8 @@
         }
     });
 
-    function makeBuilding(perm_seq, magoInstance) {
+    function acceptMakeBuilding(perm_seq) {
         let data = {
-            isComplete: "N",
-            constructor: "건축주1",
             permSeq: perm_seq
         };
         $.ajax({
@@ -76,12 +78,20 @@
             dataType: "json",
             success: function(msg){
                 debugger;
-                const result = SampleJsonSejon;
-                const resultObj = makeSampleJson(result);
+                buildAcceptPermSeq = msg.permSeq;
+                const longitude = msg.longitude;
+                const latitude = msg.latitude;
+                const altitude = msg.altitude;
+                const heading = msg.heading;
+                const pitch = msg.pitch;
+                const roll = msg.roll;
+                let f4dObject = makeF4dObject(msg.f4dObject);
+                f4dObject.children = makeF4dSubObject(msg.f4dObject.f4dSubList, longitude, latitude, altitude, heading, pitch, roll);
+                debugger;
                 var f4dController = MAGO3D_INSTANCE.getF4dController();
-                f4dController.addF4dGroup(resultObj);
+                f4dController.addF4dGroup(f4dObject);
                 whole_viewer.scene.camera.flyTo({
-                    destination : Cesium.Cartesian3.fromDegrees(126.9785978787040, 37.56690158584144, 1000)
+                    destination : Cesium.Cartesian3.fromDegrees(longitude, latitude, 1000)
                 });
             },
             error:function(request,status,error) {
@@ -91,7 +101,7 @@
         });
     }
 
-    function makeSampleJson(sampleJson) {
+    function makeF4dObject(f4dObject) {
         var object = {
             "attributes": {
                 "isPhysical": false,
@@ -103,18 +113,20 @@
             "parent": 0,
             "depth": 1,
             "view_order": 2,
-            "data_key": "ds-service\\finish\\202002261053137\\Output",
-            "data_name": "ds-service\\finish\\202002261053137\\Output",
+            "data_key": f4dObject.data_key,
+            "data_name": f4dObject.data_name,
             "mapping_type": "origin"
         }
+        return object;
+    }
 
-        for(var i = 0; i < SampleJsonSejon.length; i++) {
-            var obj = SampleJsonSejon[i];
-            var dataKey = obj.data_key;
-            var lat = obj.latitude;
-            var lon = obj.longitude;
+    function makeF4dSubObject(f4dSubObject, lon, lat, alt, head, pich, roll) {
+        arr = [];
+        debugger;
+        for(var i = 0; i < f4dSubObject.length; i++) {
+            var obj = f4dSubObject[i];
 
-            var imsiObj = {
+            var imsiF4dSubObject = {
                 "attributes": {
                     "isPhysical": true,
                     "nodeType": "daejeon",
@@ -124,21 +136,21 @@
                 "data_key": "",
                 "data_name": "",
                 "mapping_type":"origin",
-                "longitude": 0,
-                "latitude": 0,
-                "height": -5.000000,
-                "heading": 48.000000,
-                "pitch": 0.000000,
-                "roll": 0.000000
+                "longitude": lon,
+                "latitude": lat,
+                "height": alt,
+                "heading": head,
+                "pitch": pich,
+                "roll": roll
             };
 
-            imsiObj.data_key = dataKey;
-            imsiObj.data_name = dataKey;
-            imsiObj.latitude = lat;
-            imsiObj.longitude = lon;
-            object.children.push(imsiObj);
+            imsiF4dSubObject.data_key = obj.data_key;
+            imsiF4dSubObject.data_name = obj.data_key;
+            imsiF4dSubObject.latitude = lat;
+            imsiF4dSubObject.longitude = lon;
+            arr.push(imsiF4dSubObject);
         }
-        return object;
+        return arr;
     }
     var SampleJsonSejon =
     [

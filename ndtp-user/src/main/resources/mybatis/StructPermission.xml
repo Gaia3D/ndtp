@@ -8,7 +8,7 @@
 		select * from struct_permission
 	</select>
 	<select id="selectOne" parameterType="structPermission" resultType="structPermission">
-		select * from struct_permission where constructor = #{constructor} and is_complete=#{isComplete} order by perm_seq DESC limit 1
+		select * from struct_permission where perm_seq = #{permSeq}
 	</select>
 
 	<insert id="insertStructPermission" parameterType="structPermission">

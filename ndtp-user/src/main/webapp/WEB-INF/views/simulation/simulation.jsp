@@ -231,7 +231,7 @@
 	$("#comment").on('click', function() {
 		let commentData = {
 			// todo: 클릭시 오브젝트에서 정보 가져와서 셋팅
-			objectName: "testObject"
+			permSeq: buildAcceptPermSeq
 		};
 		$.ajax({
 			url: "/data/simulation-rest/commentList",
@@ -297,8 +297,7 @@
 	$("#permView").on('click', function() {
 		// todo: change data
 		let data = {
-			isComplete: "N",
-			constructor: "건축주1"
+			permSeq: buildAcceptPermSeq
 		};
 		$.ajax({
 			url: "/data/simulation-rest/getPermRequestByConstructor",
@@ -308,7 +307,6 @@
 			dataType: "json",
 			success: function(msg){
 				console.log("getPermRequestByConstructor msg=", msg);
-
 				$("#permViewDialog #constructor").get(0).value = msg.constructor;
 				$("#permViewDialog #constructor_type").get(0).value = msg.constructorType;
 				$("#permViewDialog #constructor_type").get(0).disabled = true;
@@ -430,6 +428,7 @@
 			commentListViewer.append(timeSpan);
 		});
 	}
+
 </script>
 
 

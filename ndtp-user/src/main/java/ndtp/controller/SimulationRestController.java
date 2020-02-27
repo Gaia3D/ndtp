@@ -265,30 +265,31 @@ public class SimulationRestController {
 	@RequestMapping(value = "/getPermRequestByConstructor", method = RequestMethod.POST)
 	public StructPermission getPermRequestByConstructor(HttpServletRequest request, StructPermission sp) throws IOException {
 		StructPermission oneResult = structPermissionMapper.selectOne(sp);
-
+		System.out.println(oneResult.toString());
 		RelativePathItem[] rp = simServiceImpl.getJsonByRelationFile(oneResult.getSaveModelFilePath() + oneResult.getSaveModelFileName());
-
-		String[] pathArr = oneResult.getSaveFilePath().split("/");
+		String[] pathArr = oneResult.getSaveModelFilePath().split("\\\\");
 		boolean startFlat = false;
 		String f4dDataKey = "";
 		List<String> f4dKeyGenObj = new ArrayList<>();
 		for ( String str : pathArr ) {
-			if(str.equals("f4d"))
+			if(str.equals("f4d")) {
 				startFlat = true;
-
-			if(startFlat){
-				f4dKeyGenObj.add(str);
+			} else {
+				if(startFlat){
+					f4dKeyGenObj.add(str);
+				}
 			}
 		}
 
 		for ( String str : f4dKeyGenObj ) {
-			f4dDataKey = f4dDataKey + "/" + str;
+			f4dDataKey = f4dDataKey + "\\\\" + str;
 		}
+		f4dDataKey = f4dDataKey.substring(2);
 
 		// IFC 파일 기준
 		String dataKey = rp[0].getData_key();
 
-		F4DSubObject subF4dObj = new F4DSubObject().builder().date_key(dataKey).date_name(dataKey).build();
+		F4DSubObject subF4dObj = new F4DSubObject().builder().data_key(dataKey).data_name(dataKey).build();
 		List<F4DSubObject> f4dSubObjectList = new ArrayList<>();
 		f4dSubObjectList.add(subF4dObj);
 
@@ -393,8 +394,8 @@ public class SimulationRestController {
 		String commentTitle = cm.getCommentTitle();
 		String commentContent = cm.getCommentContent();
 
-		cm.setWriter(writer);
-		cm.setObjectName("testObject");
+		// cm.setWriter(writer);
+		// cm.setObjectName("testObject");
 		int resultInsert = commentManageMapper.insertCommentManage(cm);
 
 		List<CommentManage> res = commentManageMapper.selectCondition(cm);

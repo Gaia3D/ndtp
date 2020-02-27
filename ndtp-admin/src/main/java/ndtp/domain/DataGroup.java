@@ -31,7 +31,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DataGroup extends Search {
-
+	@Builder.Default
 	private List<DataInfoSimple> datas = new ArrayList<>();
 	
 	/****** 화면 표시용 *******/

@@ -23,9 +23,11 @@
 </div>
 <script>
     $("#commentSave").click(()=> {
+        const permSeq = buildAcceptPermSeq;
         const commentTitle = $("#commentTitle").val();
         const commentContent = $("#commentContent").val();
         let commentData = {
+            permSeq: permSeq,
             commentTitle: commentTitle,
             commentContent: commentContent
         };

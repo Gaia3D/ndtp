@@ -153,8 +153,6 @@
             $("#permViewDialog").dialog("close");
         }, 300);
     });
-
-
 </script>
 
 <style>
