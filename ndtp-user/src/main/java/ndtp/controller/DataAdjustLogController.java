@@ -64,7 +64,6 @@ public class DataAdjustLogController {
 		dataInfo = dataService.getData(dataInfo);
 		
 		model.addAttribute("dataInfo", dataInfo);
-		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
 		
 		return "/data-adjust-log/modify";
 	}
@@ -116,7 +115,6 @@ public class DataAdjustLogController {
 		model.addAttribute(pagination);
 		model.addAttribute("dataGroupList", dataGroupList);
 		model.addAttribute("dataAdjustLogList", dataAdjustLogList);
-		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
 		
 		return "/data-adjust-log/list";
 	}

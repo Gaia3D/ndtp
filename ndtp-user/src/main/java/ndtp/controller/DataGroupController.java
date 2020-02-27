@@ -75,7 +75,7 @@ public class DataGroupController {
 		}
 		
 		model.addAttribute("dataGroupList", dataGroupList);
-		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
+		
 		return "/data-group/list";
 	}
 	
@@ -115,7 +115,6 @@ public class DataGroupController {
 		model.addAttribute("policy", policy);
 		model.addAttribute("dataGroup", dataGroup);
 		model.addAttribute("dataGroupList", dataGroupList);
-		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
 		
 		return "/data-group/input";
 	}
@@ -142,7 +141,6 @@ public class DataGroupController {
 		dataGroup.setOldDataGroupKey(dataGroup.getDataGroupKey());
 		
 		model.addAttribute("dataGroup", dataGroup);
-		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
 		
 		return "/data-group/modify";
 	}

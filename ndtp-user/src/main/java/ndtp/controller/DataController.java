@@ -100,7 +100,6 @@ public class DataController {
 		model.addAttribute(pagination);
 		model.addAttribute("owner", userSession.getUserId());
 		model.addAttribute("dataInfoList", dataInfoList);
-		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
 		
 		return "/data/list";
 	}
@@ -218,7 +217,6 @@ public class DataController {
 		model.addAttribute("geoPolicyJson", geoPolicyJson);
 		model.addAttribute("baseLayerJson", baseLayerJson);
 		model.addAttribute("owner", userSession.getUserId());
-		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
 
 		return "/data/map";
 	}
@@ -245,7 +243,6 @@ public class DataController {
 		}
 
 		model.addAttribute("dataInfo", dataInfo);
-		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
 
 		return "/data/modify";
 	}

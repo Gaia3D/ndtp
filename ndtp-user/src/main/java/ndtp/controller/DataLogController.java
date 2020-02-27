@@ -64,7 +64,6 @@ public class DataLogController {
 		dataInfo = dataService.getData(dataInfo);
 		
 		model.addAttribute("dataInfo", dataInfo);
-		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
 		
 		return "/data-log/modify";
 	}
@@ -120,7 +119,6 @@ public class DataLogController {
 		model.addAttribute(pagination);
 		model.addAttribute("dataGroupList", dataGroupList);
 		model.addAttribute("dataInfoLogList", dataInfoLogList);
-		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
 		
 		return "/data-log/list";
 	}

@@ -105,7 +105,6 @@ public class UploadDataController {
 		model.addAttribute("uploadData", uploadData);
 		model.addAttribute("converterJobForm", new ConverterJob());
 		model.addAttribute("uploadDataList", uploadDataList);
-		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
 		
 		return "/upload-data/list";
 	}
@@ -151,7 +150,6 @@ public class UploadDataController {
 		model.addAttribute("uploadData", uploadData);
 		model.addAttribute("dataGroupList", dataGroupList);
 		model.addAttribute("acceptedFiles", acceptedFiles);
-		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
 		
 		return "/upload-data/input";
 	}
@@ -177,7 +175,6 @@ public class UploadDataController {
 		model.addAttribute("uploadData", uploadData);
 		model.addAttribute("uploadDataFileList", uploadDataFileList);
 		model.addAttribute("dataGroupList", dataGroupList);
-		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
 		
 		return "/upload-data/modify";
 	}
