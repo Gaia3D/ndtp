@@ -273,12 +273,21 @@ function CivilVoiceControll(magoInstance, viewer) {
 			var markerSize = store.marker.size;
 			var img = sb.getPng([markerSize,markerSize],store.marker.color.toCssColorString());
 
-			var options = {
-				positionWC    : Mago3D.ManagerUtils.geographicCoordToWorldPoint(longitude, latitude, 0),
-				imageFilePath : img
-			};
-			var om = magoManager.objMarkerManager.newObjectMarker(options, magoManager);
-			om.civilDrawMarker = true;
+			var terrainProvider = viewer.terrainProvider;
+	        var positions = [
+	            Cesium.Cartographic.fromDegrees(longitude, latitude)
+	        ];
+	        var promise = Cesium.sampleTerrain(terrainProvider, 11, positions);
+	        Cesium.when(promise, function(updatedPositions) {
+	            console.info(updatedPositions);
+	            var options = {
+	    				positionWC    : Mago3D.ManagerUtils.geographicCoordToWorldPoint(longitude, latitude,updatedPositions[0].height),
+	    				imageFilePath : img
+	    			};
+	    			var om = magoManager.objMarkerManager.newObjectMarker(options, magoManager);
+	    			om.civilDrawMarker = true;
+	    			store.beforeEntity = om;
+	        });
 
 			/*var x = Number(longitude);
 	   		var y = Number(latitude);
@@ -295,8 +304,6 @@ function CivilVoiceControll(magoInstance, viewer) {
 	   	            verticalOrigin : Cesium.VerticalOrigin.BOTTOM
 	   		    }
 	   		});*/
-
-			store.beforeEntity = om;
 		},
 		updateMarker: function(count) {
 			if(store.beforeEntity) {
