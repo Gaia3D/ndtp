@@ -363,6 +363,18 @@ function mapInit(magoInstance, baseLayers, policy) {
 			}
 			// wfs 삭제 
 			dataSources.removeAll();
+		},
+		
+		getWMSLayers : function() {
+			return getWMSLayers();
+		},
+		
+		getImageryLayerById : function(layerKey) {
+			return getImageryLayerById(layerKey);
+		},
+		
+		getDataSourceById : function(layerKey) {
+			return getDataSourceById(layerKey);
 		}
 	}
 }
