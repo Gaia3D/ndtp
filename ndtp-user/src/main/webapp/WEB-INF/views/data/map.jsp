@@ -226,6 +226,7 @@
 		// TODO : 세슘 MAP 선택 UI 제거,엔진에서 처리로 변경 예정.
 		viewer.baseLayerPicker.destroy();
 		viewer.scene.globe.depthTestAgainstTerrain = true;
+		viewer.scene.screenSpaceCameraController.minimumZoomDistance = 10;
 		magoManager.on(Mago3D.MagoManager.EVENT_TYPE.MOUSEMOVE, function(result) {
 			//console.info(result);
 		});
