@@ -111,7 +111,7 @@
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'dataInfoWidget'}">
+		<c:when test="${dbWidget.name == 'dataStatusWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column" style="font-size: 16px;">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
@@ -128,7 +128,7 @@
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'dataInfoLogListWidget'}">
+		<c:when test="${dbWidget.name == 'dataAdjustLogWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
@@ -145,7 +145,7 @@
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'userWidget'}">
+		<c:when test="${dbWidget.name == 'userStatusWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column" style="font-size: 16px;">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
@@ -157,6 +157,25 @@
 							</div>
 						</div>
 						<div id="${dbWidget.name}" class="widget-content row">
+						</div>
+					</div>
+		</c:when>
+		<c:when test="${dbWidget.name == 'userAccessLogWidget'}">
+					<div id="${dbWidget.widgetId }" class="widget one-third column">
+						<div class="widget-header row">
+							<div class="widget-heading u-pull-left">
+								<h3 class="widget-title"><spring:message code='main.status.user.tracking'/><span class="widget-desc">${today } <spring:message code='main.standard'/></span></h3>
+							</div>
+							<div class="widget-functions u-pull-right">
+								<spring:message code='main.status.user.moretracking' var='moreTracking'/>
+								<a href="/access/list" title="${moreTracking}"><span class="icon-glyph glyph-plus"></span></a>
+							</div>
+						</div>
+
+						<div id="${dbWidget.name}" class="widget-content row">
+							<div style="text-align: center; padding-top: 60px; padding-left: 150px;">
+			            		<div id="accessLogSpinner" style="width: 150px; height: 70px;"></div>
+			            	</div>
 						</div>
 					</div>
 		</c:when>
@@ -178,25 +197,6 @@
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'accessLogWidget'}">
-					<div id="${dbWidget.widgetId }" class="widget one-third column">
-						<div class="widget-header row">
-							<div class="widget-heading u-pull-left">
-								<h3 class="widget-title"><spring:message code='main.status.user.tracking'/><span class="widget-desc">${today } <spring:message code='main.standard'/></span></h3>
-							</div>
-							<div class="widget-functions u-pull-right">
-								<spring:message code='main.status.user.moretracking' var='moreTracking'/>
-								<a href="/access/list" title="${moreTracking}"><span class="icon-glyph glyph-plus"></span></a>
-							</div>
-						</div>
-
-						<div id="${dbWidget.name}" class="widget-content row">
-							<div style="text-align: center; padding-top: 60px; padding-left: 150px;">
-			            		<div id="accessLogSpinner" style="width: 150px; height: 70px;"></div>
-			            	</div>
-						</div>
-					</div>
-		</c:when>
 		<c:when test="${dbWidget.name == 'systemUsageWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column">
 						<div class="widget-header row">
@@ -212,7 +212,7 @@
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'dbcpWidget'}">
+		<c:when test="${dbWidget.name == 'dbcpStatusWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
@@ -430,54 +430,54 @@
 	var refreshTime = parseInt("${widgetInterval}") * 1000;
 
 	var isDataGroupDraw = "${isDataGroupDraw}";
-	var isDataInfoDraw = "${isDataInfoDraw}";
-	var isDataInfoLogListDraw = "${isDataInfoLogListDraw}";
-	var isIssueDraw = "${isIssueDraw}";
-	var isUserDraw = "${isUserDraw}";
+	var isDataStatusDraw = "${isDataStatusDraw}";
+	var isDataAdjustLogDraw = "${isDataAdjustLogDraw}";
+	var isUserStatusDraw = "${isUserStatusDraw}";
+	var isUserAccessLogDraw = "${isUserAccessLogDraw}";
 	var isCivilVoiceDraw = "${isCivilVoiceDraw}";
-	var isAccessLogDraw = "${isAccessLogDraw}";
-	var isDbcpDraw = "${isDbcpDraw}";
-	var isDbSessionDraw = "${isDbSessionDraw}";
 	var isSystemUsageDraw = "${isSystemUsageDraw}";
+	var isDbcpStatusDraw = "${isDbcpStatusDraw}";
+	var isDbSessionDraw = "${isDbSessionDraw}";
+	var isIssueDraw = "${isIssueDraw}";
 
 	$(document).ready(function() {
 		if(isDataGroupDraw == "true") {
 			startSpinner("dataGroupSpinner");
 			dataGroupWidget();
 		}
-		if(isDataInfoDraw == "true") {
+		if(isDataStatusDraw == "true") {
 			startSpinner("dataInfoSpinner");
-			dataInfoWidget();
+			dataStatusWidget();
 		}
-		if(isDataInfoLogListDraw == "true") {
+		if(isDataAdjustLogDraw == "true") {
 			startSpinner("dataInfoLogListSpinner");
-			dataInfoLogListWidget();
+			dataAdjustLogWidget();
 		}
-		if(isIssueDraw == "true") {
-			// TODO spinner
-			issueWidget();
+		if(isUserStatusDraw == "true") {
+			userStatusWidget(0, null);
 		}
-		if(isUserDraw == "true") {
-			userWidget(0, null);
+		if(isUserAccessLogDraw == "true") {
+			startSpinner("accessLogSpinner");
+		    setTimeout(callUserAccessLogWidget, 1000);
 		}
 		if(isCivilVoiceDraw == "true") {
 			startSpinner("civilVoiceSpinner");
 			civilVoiceWidget();
 		}
-		if(isAccessLogDraw == "true") {
-			startSpinner("accessLogSpinner");
-		    setTimeout(callAccessLogWidget, 1000);
+		if(isSystemUsageDraw == "true") {
+			startSpinner("systemUsageSpinner");
+		    setTimeout(callSystemUsageWidget, 1000);
 		}
-		if(isDbcpDraw == "true") {
-			setTimeout(callDbcpWidget, 2000);
+		if(isDbcpStatusDraw == "true") {
+			setTimeout(callDbcpStatusWidget, 2000);
 		}
 		if(isDbSessionDraw == "true") {
 			//startSpinner("dbSessionSpinner");
 		    setTimeout(dbSessionWidget, 3000);
 		}
-		if(isSystemUsageDraw == "true") {
-			startSpinner("systemUsageSpinner");
-		    setTimeout(callSystemUsageWidget, 1000);
+		if(isIssueDraw == "true") {
+			// TODO spinner
+			issueWidget();
 		}
 
 		var isActive = "${isActive}";
@@ -491,29 +491,29 @@
 		if(isDataGroupDraw == "true") {
 			dataGroupWidget();
 		}
-		if(isDataInfoDraw == "true") {
-			dataInfoWidget();
+		if(isDataStatusDraw == "true") {
+			dataStatusWidget();
 		}
-		if(isDataInfoLogListDraw == "true") {
-			dataInfoLogListWidget();
+		if(isDataAdjustLogDraw == "true") {
+			dataAdjustLogWidget();
+		}
+		if(isUserStatusDraw == "true") {
+			//userStatusWidget();
 		}
 		if(isIssueDraw == "true") {
 			issueWidget();
-		}
-		if(isUserDraw == "true") {
-			//userWidget();
 		}
 		// TODO You'll need to add the remaining widgets later
 	}
 
 	// DB Connection Pool 현황
-	function callDbcpWidget() {
+	function callDbcpStatusWidget() {
 		//dbcpWidget();
 		//setInterval(ajaxDbcpWidget, refreshTime);
 	}
 
 	// 사용자 추적
-	function callAccessLogWidget() {
+	function callUserAccessLogWidget() {
 		accessLogWidget();
 		setInterval(accessLogWidget, refreshTime);
 	}
@@ -525,7 +525,7 @@
 	}
 
 	function dataGroupWidget() {
-		var url = "/main/ajax-data-group-widget";
+		var url = "/widgets/data-group-statistics";
 		var info = "";
 		$.ajax({
 			url: url,
@@ -597,9 +597,9 @@
         });
 	}
 
-	function dataInfoWidget() {
+	function dataStatusWidget() {
 		$.ajax({
-			url : "/main/ajax-data-status-widget",
+			url : "/widgets/data-status-statistics",
 			type : "GET",
 			cache : false,
 			dataType : "json",
@@ -618,7 +618,7 @@
 
 	function showDataInfo(jsonData) {
 
-		$("#dataInfoWidget").empty();
+		$("#dataStatusWidget").empty();
 
 		var useTotalCount = parseInt(jsonData.useTotalCount);
 		var forbidTotalCount = parseInt(jsonData.forbidTotalCount);
@@ -635,7 +635,7 @@
 			yMax = Math.max(useTotalCount, forbidTotalCount, etcTotalCount) + (useTotalCount * 0.2);
 		}
 
-		var plot = $.jqplot("dataInfoWidget", [dataValues], {
+		var plot = $.jqplot("dataStatusWidget", [dataValues], {
         	//title : "data info status",
         	height: 205,
         	animate: !$.jqplot.use_excanvas,
@@ -686,9 +686,9 @@
         });
 	}
 
-	function dataInfoLogListWidget() {
+	function dataAdjustLogWidget() {
 		$.ajax({
-			url : "/main/ajax-data-info-log-widget",
+			url : "/widgets/data-adjust-log",
 			type : "GET",
 			cache : false,
 			dataType : "json",
@@ -728,8 +728,8 @@
 								+ 	"</tr>";
 						}
 					}
-					$("#dataInfoLogListWidget").empty();
-					$("#dataInfoLogListWidget").html(content);
+					$("#dataAdjustLogWidget").empty();
+					$("#dataAdjustLogWidget").html(content);
 				} else {
 					alert(JS_MESSAGE[msg.result]);
 				}
@@ -779,7 +779,7 @@
 			yMax = Math.max(activeUserTotalCount, fobidUserTotalCount, failUserTotalCount, sleepUserTotalCount, expireUserTotalCount, tempPasswordUserTotalCount) + (activeUserTotalCount * 0.2);
 		}
 
-        var plot = $.jqplot("userWidget", [userValues], {
+        var plot = $.jqplot("userStatusWidget", [userValues], {
         	//title : "사용자 상태별 현황",
         	height: 205,
         	animate: !$.jqplot.use_excanvas,
@@ -831,9 +831,9 @@
 	}
 
 	// 사용자 상태별 현황 정보 갱신
-	function userWidget() {
+	function userStatusWidget() {
 		$.ajax({
-			url : "/main/ajax-user-widget",
+			url : "/widgets/user-status-statistics",
 			type : "GET",
 			cache : false,
 			dataType : "json",
@@ -843,7 +843,7 @@
 				} else if (msg.result == "db.exception") {
 					//alert("데이터 베이스 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
 				} else if (msg.result == "success") {
-					$("#userWidget").empty();
+					$("#userStatusWidget").empty();
 					showUser(1, msg);
 				}
 			},
@@ -853,10 +853,58 @@
 		});
 	}
 
+	// 사용자 추적
+	function accessLogWidget() {
+		$.ajax({
+			url : "/widgets/user-access-log",
+			type : "GET",
+			cache : false,
+			dataType : "json",
+			success : function(msg) {
+				if (msg.result == "user.session.empty") {
+					//alert("로그인 후 사용 가능한 서비스 입니다.");
+				} else if (msg.result == "db.exception") {
+					//alert("데이터 베이스 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
+				} else if (msg.result == "success") {
+					var accessLogList = msg.accessLogList;
+					var content = "";
+					content 	= "<table class=\"widget-table\">"
+								+	"<col class=\"col-left\" />"
+								+	"<col class=\"col-left\" />";
+					if(accessLogList == null || accessLogList.length == 0) {
+						content += 	"<tr>"
+								+	"	<td colspan=\"2\" class=\"col-none\"><spring:message code='main.status.no.user.tracking'/></td>"
+								+	"</tr>";
+					} else {
+						for(i=0; i<accessLogList.length; i++ ) {
+							var accessLog = null;
+							accessLog = accessLogList[i];
+							content = content
+								+ 	"<tr>"
+								+ 	"	<td class=\"col-left\">"
+								+		"	<span class=\"index\"></span>"
+								+		"	<em>" + accessLog.userName + "</em>"
+								+		"</td>"
+								+ 		"<td class=\"col-left\">" + accessLog.viewRequestUri + "</td>"
+								+ 	"</tr>";
+						}
+					}
+					$("#accessLogWidget").empty();
+					$("#accessLogWidget").html(content);
+				}
+			},
+			error : function(request, status, error) {
+				//alert("잠시 후 이용해 주시기 바랍니다. 장시간 같은 현상이(DBCP) 반복될 경우 관리자에게 문의하여 주십시오.");
+				$("#accessLogWidget").empty();
+				$("#accessLogWidget").html(content);
+			}
+		});
+	}
+
 	// 스케줄 실행 이력 갱신
 	function civilVoiceWidget() {
 		$.ajax({
-			url : "/main/ajax-civil-voice-widget",
+			url : "/widgets/civil-voice-status",
 			type : "GET",
 			cache : false,
 			dataType : "json",
@@ -905,91 +953,10 @@
 		});
 	}
 
-	// DB Connection Pool 현황
-	function dbcpWidget() {
-		$.ajax({
-			url : "/main/ajax-dbcp-widget",
-			type : "GET",
-			cache : false,
-			dataType : "json",
-			success : function(msg) {
-				if (msg.result == "user.session.empty") {
-					//alert("로그인 후 사용 가능한 서비스 입니다.");
-				} else if (msg.result == "db.exception") {
-					//alert("데이터 베이스 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
-				} else if (msg.result == "success") {
-					$("#userSessionCount").html(msg.userSessionCount);
-					$("#userUserSessionCount").html(msg.userUserSessionCount);
-					$("#initialSize").html(msg.initialSize);
-					$("#userInitialSize").html(msg.userInitialSize);
-					$("#maxTotal").html(msg.maxTotal);
-					$("#userMaxTotal").html(msg.userMaxTotal);
-					$("#maxIdle").html(msg.maxIdle);
-					$("#userMaxIdle").html(msg.userMaxIdle);
-					$("#numActive").html(msg.numActive);
-					$("#userNumActive").html(msg.userNumActive);
-					$("#minIdle").html(msg.minIdle + "," + msg.numIdle);
-					$("#userMinIdle").html(msg.userMinIdle + "," + msg.userNumIdle);
-				}
-			},
-			error : function(request, status, error) {
-				//alert("잠시 후 이용해 주시기 바랍니다. 장시간 같은 현상이(DBCP) 반복될 경우 관리자에게 문의하여 주십시오.");
-			}
-		});
-	}
-
-	// 사용자 추적
-	function accessLogWidget() {
-		$.ajax({
-			url : "/main/ajax-access-log-widget",
-			type : "GET",
-			cache : false,
-			dataType : "json",
-			success : function(msg) {
-				if (msg.result == "user.session.empty") {
-					//alert("로그인 후 사용 가능한 서비스 입니다.");
-				} else if (msg.result == "db.exception") {
-					//alert("데이터 베이스 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
-				} else if (msg.result == "success") {
-					var accessLogList = msg.accessLogList;
-					var content = "";
-					content 	= "<table class=\"widget-table\">"
-								+	"<col class=\"col-left\" />"
-								+	"<col class=\"col-left\" />";
-					if(accessLogList == null || accessLogList.length == 0) {
-						content += 	"<tr>"
-								+	"	<td colspan=\"2\" class=\"col-none\"><spring:message code='main.status.no.user.tracking'/></td>"
-								+	"</tr>";
-					} else {
-						for(i=0; i<accessLogList.length; i++ ) {
-							var accessLog = null;
-							accessLog = accessLogList[i];
-							content = content
-								+ 	"<tr>"
-								+ 	"	<td class=\"col-left\">"
-								+		"	<span class=\"index\"></span>"
-								+		"	<em>" + accessLog.userName + "</em>"
-								+		"</td>"
-								+ 		"<td class=\"col-left\">" + accessLog.viewRequestUri + "</td>"
-								+ 	"</tr>";
-						}
-					}
-					$("#accessLogWidget").empty();
-					$("#accessLogWidget").html(content);
-				}
-			},
-			error : function(request, status, error) {
-				//alert("잠시 후 이용해 주시기 바랍니다. 장시간 같은 현상이(DBCP) 반복될 경우 관리자에게 문의하여 주십시오.");
-				$("#accessLogWidget").empty();
-				$("#accessLogWidget").html(content);
-			}
-		});
-	}
-
 	// 시스템 사용량
 	function systemUsageWidget() {
 		$.ajax({
-			url : "/main/ajax-system-usage-widget",
+			url : "/widgets/system-usage-status",
 			type : "GET",
 			cache : false,
 			dataType : "json",
@@ -1011,12 +978,9 @@
 
 					// cpu
 					var cpuMax = msg.systemCpuUsage[0]["value"];
-					console.log("cpuMax >>> " + cpuMax);
 					if(!cpuMax) cpuMax = 1;
 					var cpuUsed = msg.processCpuUsage[0]["value"];
 					var cpuValue = cpuUsed / cpuMax * 100;
-					console.log("cpuUsed >>> " + cpuUsed);
-					console.log("cpuValue >>> " + cpuValue);
 
 					var res = {
 						disk: {
@@ -1061,9 +1025,41 @@
 		});
 	}
 
+	// DB Connection Pool 현황
+	function dbcpWidget() {
+		$.ajax({
+			url : "/widgets/dbcp-status",
+			type : "GET",
+			cache : false,
+			dataType : "json",
+			success : function(msg) {
+				if (msg.result == "user.session.empty") {
+					//alert("로그인 후 사용 가능한 서비스 입니다.");
+				} else if (msg.result == "db.exception") {
+					//alert("데이터 베이스 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
+				} else if (msg.result == "success") {
+					$("#userSessionCount").html(msg.userSessionCount);
+					$("#userUserSessionCount").html(msg.userUserSessionCount);
+					$("#initialSize").html(msg.initialSize);
+					$("#userInitialSize").html(msg.userInitialSize);
+					$("#maxTotal").html(msg.maxTotal);
+					$("#userMaxTotal").html(msg.userMaxTotal);
+					$("#maxIdle").html(msg.maxIdle);
+					$("#userMaxIdle").html(msg.userMaxIdle);
+					$("#numActive").html(msg.numActive);
+					$("#userNumActive").html(msg.userNumActive);
+					$("#minIdle").html(msg.minIdle + "," + msg.numIdle);
+					$("#userMinIdle").html(msg.userMinIdle + "," + msg.userNumIdle);
+				}
+			},
+			error : function(request, status, error) {
+				//alert("잠시 후 이용해 주시기 바랍니다. 장시간 같은 현상이(DBCP) 반복될 경우 관리자에게 문의하여 주십시오.");
+			}
+		});
+	}
+
 	function goMagoAPIGuide() {
 		var url = "/guide/help";
-		//console.log("test");
 		var width = 1200;
 		var height = 800;
 
