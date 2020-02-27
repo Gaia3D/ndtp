@@ -7,7 +7,7 @@ var SpatialAnalysis = function(magoInstance) {
 	var entities = viewer.entities;
 	var entityObject = {};
 	var geoserverTerrainproviderLayerName = NDTP.policy.geoserverTerrainproviderLayerName;
-	var layerDEM = (geoserverTerrainproviderLayerName ? geoserverTerrainproviderLayerName.length>0) ? geoserverTerrainproviderLayerName : 'mago3d:dem';
+	var layerDEM = (geoserverTerrainproviderLayerName && geoserverTerrainproviderLayerName.length>0) ? geoserverTerrainproviderLayerName : 'mago3d:dem';
 	var rasterProfileChart = null;
 	var domeIds = [];
 	
