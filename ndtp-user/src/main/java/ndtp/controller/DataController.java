@@ -52,9 +52,6 @@ public class DataController {
 	private DataService dataService;
 
 	@Autowired
-	private GeoPolicyService geoPolicyService;
-
-	@Autowired
 	private ObjectMapper objectMapper;
 	
 	@Autowired
@@ -127,7 +124,7 @@ public class DataController {
 		String roleCheckResult = roleValidator(request, userSession.getUserGroupId(), RoleKey.USER_DATA_READ.name());
 		if(roleCheckResult != null) return roleCheckResult;
 
-		GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
+		GeoPolicy geoPolicy = CacheManager.getGeoPolicy();
 		UserPolicy userPolicy = userPolicyService.getUserPolicy(userSession.getUserId());
 		if(userPolicy.getUserId() != null) {
 			geoPolicy.setInitLatitude(userPolicy.getInitLatitude());
@@ -219,6 +216,7 @@ public class DataController {
 		model.addAttribute("geoPolicyJson", geoPolicyJson);
 		model.addAttribute("baseLayerJson", baseLayerJson);
 		model.addAttribute("owner", userSession.getUserId());
+		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
 
 		return "/data/map";
 	}
