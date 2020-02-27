@@ -139,8 +139,8 @@
 
 					<tr>
 						<td class="col-number">${pagination.rowNumber - status.index }</td>
-						<td class="col-name ellipsis" style="max-width: 200px;">${dataInfo.dataGroupName }</td>
-						<td class="col-name ellipsis" style="max-width: 400px;">
+						<td class="col-name ellipsis" style="min-width:100px;max-width:100px;">${dataInfo.dataGroupName }</td>
+						<td class="col-name ellipsis" style="min-width:160px;max-width:160px;">
 		<c:if test="${dataInfo.dataGroupTarget eq 'admin'}">
 							<a href="/data-adjust-log/modify?dataId=${dataInfo.dataId}">${dataInfo.dataName }</a>
 		</c:if>
@@ -168,7 +168,7 @@
 		<c:if test="${dataInfo.sharing eq 'private'}">개인</c:if>
 		<c:if test="${dataInfo.sharing eq 'group'}">그룹</c:if>
 						</td>
-						<td class="col-name">${dataInfo.mappingType }</td>
+						<td class="col-name ellipsis" style="min-width:80px;max-width:80px;">${dataInfo.mappingType }</td>
 						<td class="col-type">
 		<c:if test="${dataInfo.status eq 'processing' }">
 							변환중

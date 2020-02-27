@@ -142,7 +142,7 @@
 							<input type="checkbox" id="uploadDataId_${uploadData.uploadDataId}" name="uploadDataId" value="${uploadData.uploadDataId}" />
 						</td>
 						<td class="col-number">${pagination.rowNumber - status.index }</td>
-						<td class="col-name ellipsis" style="max-width:200px;">${uploadData.dataGroupName }</td>
+						<td class="col-name ellipsis" style="min-width:120px;max-width:120px;">${uploadData.dataGroupName }</td>
 						<td class="col-type">
 <c:if test="${uploadData.sharing eq 'common' }">
 							공통
@@ -158,7 +158,7 @@
 </c:if>
 						</td>
 						<td class="col-type">${uploadData.dataType }</td>
-						<td class="col-name ellipsis" style="max-width:400px;">
+						<td class="col-name ellipsis" style="min-width:300px;max-width:300px;">
 							<a href="/upload-data/modify?uploadDataId=${uploadData.uploadDataId }">
 							${uploadData.dataName }
 							</a>

@@ -1306,6 +1306,9 @@ html, body {
   min-width: 1420px; }
 	
 /* header */
+header {
+min-width: 1420px;
+}
 .site-header {
 	padding-top: 13px; }
 	
@@ -1319,6 +1322,10 @@ html, body {
 	padding: 24px 0 0 0; }
 	
 /* body */
+#wrap {
+min-width: 1420px;
+min-height: 700px;
+}
 .site-body {
 	padding: 14px 0 21px 0; }
 

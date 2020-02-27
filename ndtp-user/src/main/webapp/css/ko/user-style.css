@@ -22,6 +22,7 @@ background-color: #287be4;
 position: relative;
 /* min-width: 1420px; */
 height: calc(100% - 50px);
+min-height: 560px;
 }
 .map {
 height: 100%;
