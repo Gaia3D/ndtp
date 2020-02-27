@@ -62,17 +62,17 @@
 											<col class="col-input" />
 											<tr>
 												<th class="col-label" scope="row">
-													<label for="menuTarget">메뉴 Target</label>
+													<label for="viewMenuTarget">메뉴 Target</label>
 													<span class="icon-glyph glyph-emark-dot color-warning"></span>
 												</th>
-												<td><input type="text" id="menuTarget" value="사용자 사이트" readOnly/></td>
+												<td><input type="text" id="viewMenuTarget" value="사용자 사이트" readOnly/></td>
 											</tr>
 											<tr>
 												<th class="col-label" scope="row">
-													<label for="menuType">메뉴 타입</label>
+													<label for="viewMenuType">메뉴 타입</label>
 													<span class="icon-glyph glyph-emark-dot color-warning"></span>
 												</th>
-												<td><input type="text" id="menuType" value="HTML ID" readOnly/></td>
+												<td><input type="text" id="viewMenuType" value="HTML ID" readOnly/></td>
 											</tr>
 											<tr>
 												<th class="col-label" scope="row">

@@ -450,8 +450,12 @@ public class MenuRestController {
 				
 				if(i == (count-1)) {
 					// 맨 마지막의 경우 괄호를 닫음
-					if(bigParentheses == 0 && preParent != 0) {
-						buffer.append("}");
+					if(bigParentheses == 0) {
+						if(preParent == 0) {
+							buffer.append("}");
+						} else {
+							buffer.append("}");
+						}
 					} else {
 						for(int k=0; k<bigParentheses; k++) {
 							buffer.append("}");
