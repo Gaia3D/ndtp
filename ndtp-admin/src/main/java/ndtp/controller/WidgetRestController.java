@@ -75,11 +75,11 @@ public class WidgetRestController {
 	private CivilVoiceService civilVoiceService;
 
 	/**
-	 * 데이터 그룹 건수
+	 * 데이터 그룹별 통계 정보
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/data-group")
+	@RequestMapping(value = "/data-group-statistics")
 	@ResponseBody
 	public Map<String, Object> dataGroupStatistics(HttpServletRequest request) {
 
@@ -131,7 +131,7 @@ public class WidgetRestController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/data-status")
+	@RequestMapping(value = "/data-status-statistics")
 	@ResponseBody
 	public Map<String, Object> dataStatusStatistics(HttpServletRequest request) {
 
@@ -161,7 +161,7 @@ public class WidgetRestController {
 	 */
 	@GetMapping(value = "/data-adjust-log")
 	@ResponseBody
-	public Map<String, Object> dataAdjustLogStatistics(HttpServletRequest request) {
+	public Map<String, Object> dataAdjustLogList(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
 		try {
@@ -191,13 +191,13 @@ public class WidgetRestController {
 	}
 
 	/**
-	 * 사용자 현황
+	 * 사용자 상태별 통계 정보
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "/user-status")
+	@GetMapping(value = "/user-status-statistics")
 	@ResponseBody
-	public Map<String, Object> userWidget(HttpServletRequest request) {
+	public Map<String, Object> userStatusStatistics(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
 		try {
@@ -234,13 +234,13 @@ public class WidgetRestController {
 	}
 
 	/**
-	 * 시민 참여 현황 갱신
+	 * 시민 참여 현황
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "/civil-voice")
+	@GetMapping(value = "/civil-voice-status")
 	@ResponseBody
-	public Map<String, Object> civilVoiceWidget(HttpServletRequest request) {
+	public Map<String, Object> civilVoiceStatus(HttpServletRequest request) {
 
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
@@ -275,13 +275,13 @@ public class WidgetRestController {
 	}
 
 	/**
-	 * 시스템 사용량 갱신
+	 * 시스템 사용 현황
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "/system-usage")
+	@GetMapping(value = "/system-usage-status")
 	@ResponseBody
-	public Map<String, Object> systemUsageWidget(HttpServletRequest request) {
+	public Map<String, Object> systemUsageStatus(HttpServletRequest request) {
 
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
@@ -333,7 +333,7 @@ public class WidgetRestController {
 	 */
 	@GetMapping(value = "/dbcp-status")
 	@ResponseBody
-	public Map<String, Object> dbcpWidget(HttpServletRequest request) {
+	public Map<String, Object> dbcpStatus(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
 		try {
@@ -370,13 +370,13 @@ public class WidgetRestController {
 	}
 
 	/**
-	 * 사용자 추적 이력 목록
+	 * 사용자 접근 이력 목록
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "/access-log")
+	@GetMapping(value = "/user-access-log")
 	@ResponseBody
-	public Map<String, Object> accessLogWidget(HttpServletRequest request) {
+	public Map<String, Object> userAccessLogList(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
 		try {

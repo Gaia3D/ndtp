@@ -158,17 +158,17 @@ values
 
 
 -- 메인 화면 위젯
-insert into widget(	widget_id, name, view_order, user_id)
+insert into widget(widget_id, name, view_order, user_id)
 values
 	(NEXTVAL('widget_seq'), 'dataGroupWidget', 1, 'admin' ),
-	(NEXTVAL('widget_seq'), 'dataInfoWidget', 2, 'admin' ),
-	(NEXTVAL('widget_seq'), 'dataInfoLogListWidget', 3, 'admin' ),
-	(NEXTVAL('widget_seq'), 'userWidget', 4, 'admin' ),
+	(NEXTVAL('widget_seq'), 'dataStatusWidget', 2, 'admin' ),
+	(NEXTVAL('widget_seq'), 'dataAdjustLogWidget', 3, 'admin' ),
+	(NEXTVAL('widget_seq'), 'userStatusWidget', 4, 'admin' ),
 	(NEXTVAL('widget_seq'), 'systemUsageWidget', 5, 'admin' ),
 	(NEXTVAL('widget_seq'), 'civilVoiceWidget', 6, 'admin' ),
-	(NEXTVAL('widget_seq'), 'accessLogWidget', 7, 'admin' ),
-	(NEXTVAL('widget_seq'), 'dbcpWidget', 8, 'admin' ),
-	(NEXTVAL('widget_seq'), 'dbSessionWidget', 9, 'admin' );
+	(NEXTVAL('widget_seq'), 'userAccessLogWidget', 7, 'admin' ),
+	(NEXTVAL('widget_seq'), 'dbcpStatusWidget', 8, 'admin' );
+
 
 -- 운영 정책
 insert into policy(	policy_id, password_exception_char)

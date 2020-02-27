@@ -64,27 +64,8 @@ public class MainController {
 	 */
 	@GetMapping(value = "/index")
 	public String index(HttpServletRequest request, Model model) {
-//		if(!ConfigCache.isCompanyConfigValidation()) {
-//			log.error("@@@@@@@@@@@@@@@@@ 설정 파일을 잘못 로딩 하였습니다. Properties, Quartz 파일등을 확인해 주십시오.");
-//			return "/error/config-error";
-//		}
-
 		Policy policy = policyService.getPolicy();
-		//Policy policy = CacheManager.getPolicy();
 		boolean isActive = true;
-//		if("UNIX".equals(OS_TYPE)) {
-//			SystemConfig systemConfig = loadBalancingService.getSystemConfig();
-//			String hostname = ConfigCache.getHostname();
-//			if(hostname == null || "".equals(hostname)) {
-//				hostname = WebUtil.getHostName();
-//			}
-//			if(systemConfig == null
-//					|| !SystemConfig.ACTIVE.equals(systemConfig.getLoad_balancing_status())
-//					|| !hostname.equals(systemConfig.getHostname())) {
-//				log.error("@@@@@@@@@ hostname = {}, load_balancing_status = {}", hostname, systemConfig);
-//				isActive = false;
-//			}
-//		}
 
 		Widget widget = new Widget();
 		widget.setLimit(policy.getContentMainWidgetCount());
@@ -96,14 +77,14 @@ public class MainController {
 		String endDate = yearMonthDay + DateUtils.END_TIME;
 
 		boolean isDataGroupDraw = false;
-		boolean isDataInfoDraw = false;
-		boolean isDataInfoLogListDraw = false;
-		boolean isUserDraw = false;
+		boolean isDataStatusDraw = false;
+		boolean isDataAdjustLogDraw = false;
+		boolean isUserStatusDraw = false;
+		boolean isUserAccessLogDraw = false;
 		boolean isCivilVoiceDraw = false;
-		boolean isAccessLogDraw = false;
-		boolean isDbcpDraw = false;
-		boolean isDbSessionDraw = false;
 		boolean isSystemUsageDraw = false;
+		boolean isDbcpStatusDraw = false;
+		boolean isDbSessionDraw = false;
 
 		// widget-header
 		converterWidget(startDate, endDate, model);
@@ -113,30 +94,30 @@ public class MainController {
 			if("dataGroupWidget".equals(dbWidget.getName())) {
 				isDataGroupDraw = true;
 				dataGroupWidget(startDate, endDate, model);
-			} else if("dataInfoWidget".equals(dbWidget.getName())) {
-				isDataInfoDraw = true;
-				dataInfoWidget(startDate, endDate, model);
-			} else if("dataInfoLogListWidget".equals(dbWidget.getName())) {
-				isDataInfoLogListDraw = true;
-				dataInfoLogListWidget(startDate, endDate, model);
-			} else if("userWidget".equals(dbWidget.getName())) {
-				isUserDraw = true;
-				userWidget(startDate, endDate, model);
+			} else if("dataStatusWidget".equals(dbWidget.getName())) {
+				isDataStatusDraw = true;
+				dataStatusWidget(startDate, endDate, model);
+			} else if("dataAdjustLogWidget".equals(dbWidget.getName())) {
+				isDataAdjustLogDraw = true;
+				dataAdjustLogWidget(startDate, endDate, model);
+			} else if("userStatusWidget".equals(dbWidget.getName())) {
+				isUserStatusDraw = true;
+				userStatusWidget(startDate, endDate, model);
 			} else if("civilVoiceWidget".equals(dbWidget.getName())) {
 				isCivilVoiceDraw = true;
 				civilVoiceWidget(startDate, endDate, model);
-			} else if("accessLogWidget".equals(dbWidget.getName())) {
-				isAccessLogDraw = true;
-				accessLogWidget(startDate, endDate, model);
-			} else if("dbcpWidget".equals(dbWidget.getName())) {
-				isDbcpDraw = true;
-				dbcpWidget(model);
-			} else if("dbSessionWidget".equals(dbWidget.getName())) {
-//				isDbSessionDraw = true;
-//				dbSessionWidget(model);
+			} else if("userAccessLogWidget".equals(dbWidget.getName())) {
+				isUserAccessLogDraw = true;
+				userAccessLogWidget(startDate, endDate, model);
 			} else if("systemUsageWidget".equals(dbWidget.getName())) {
 				isSystemUsageDraw = true;
 				systemUsageWidget(model);
+			} else if("dbcpStatusWidget".equals(dbWidget.getName())) {
+				isDbcpStatusDraw = true;
+				dbcpStatusWidget(model);
+//			} else if("dbSessionWidget".equals(dbWidget.getName())) {
+//			isDbSessionDraw = true;
+//			dbSessionWidget(model);
 			}
 		}
 
@@ -152,46 +133,16 @@ public class MainController {
 
 		model.addAttribute("isActive", isActive);
 		model.addAttribute("isDataGroupDraw", isDataGroupDraw);
-		model.addAttribute("isDataInfoDraw", isDataInfoDraw);
-		model.addAttribute("isDataInfoLogListDraw", isDataInfoLogListDraw);
-		model.addAttribute("isUserDraw", isUserDraw);
+		model.addAttribute("isDataStatusDraw", isDataStatusDraw);
+		model.addAttribute("isDataAdjustLogDraw", isDataAdjustLogDraw);
+		model.addAttribute("isUserStatusDraw", isUserStatusDraw);
+		model.addAttribute("isUserAccessLogDraw", isUserAccessLogDraw);
 		model.addAttribute("isCivilVoiceDraw", isCivilVoiceDraw);
-		model.addAttribute("isAccessLogDraw", isAccessLogDraw);
-		model.addAttribute("isDbcpDraw", isDbcpDraw);
-		model.addAttribute("isDbSessionDraw", isDbSessionDraw);
 		model.addAttribute("isSystemUsageDraw", isSystemUsageDraw);
+		model.addAttribute("isDbcpStatusDraw", isDbcpStatusDraw);
+		model.addAttribute("isDbSessionDraw", isDbSessionDraw);
 
 		return "/main/index";
-	}
-
-	/**
-	 * dataGroup
-	 * @param startDate
-	 * @param endDate
-	 * @param model
-	 */
-	private void dataGroupWidget(String startDate, String endDate, Model model) {
-		// ajax 에서 처리 하기 위해서 여기는 공백
-	}
-
-	/**
-	 * dataInfo
-	 * @param startDate
-	 * @param endDate
-	 * @param model
-	 */
-	private void dataInfoWidget(String startDate, String endDate, Model model) {
-		// ajax 에서 처리 하기 위해서 여기는 공백
-	}
-
-	/**
-	 * dataInfoLog
-	 * @param startDate
-	 * @param endDate
-	 * @param model
-	 */
-	private void dataInfoLogListWidget(String startDate, String endDate, Model model) {
-		// ajax 에서 처리 하기 위해서 여기는 공백
 	}
 
 	/**
@@ -218,12 +169,42 @@ public class MainController {
 	}
 
 	/**
+	 * dataGroup
+	 * @param startDate
+	 * @param endDate
+	 * @param model
+	 */
+	private void dataGroupWidget(String startDate, String endDate, Model model) {
+		// ajax 에서 처리 하기 위해서 여기는 공백
+	}
+
+	/**
+	 * dataInfo
+	 * @param startDate
+	 * @param endDate
+	 * @param model
+	 */
+	private void dataStatusWidget(String startDate, String endDate, Model model) {
+		// ajax 에서 처리 하기 위해서 여기는 공백
+	}
+
+	/**
+	 * dataInfoLog
+	 * @param startDate
+	 * @param endDate
+	 * @param model
+	 */
+	private void dataAdjustLogWidget(String startDate, String endDate, Model model) {
+		// ajax 에서 처리 하기 위해서 여기는 공백
+	}
+
+	/**
 	 * 사용자 현황
 	 * @param startDate
 	 * @param endDate
 	 * @param model
 	 */
-	private void userWidget(String startDate, String endDate, Model model) {
+	private void userStatusWidget(String startDate, String endDate, Model model) {
 		// 사용자 현황
 		UserInfo userInfo = new UserInfo();
 		userInfo.setStatus(UserStatus.USE.getValue());
@@ -248,6 +229,27 @@ public class MainController {
 	}
 
 	/**
+	 * 사용자 추적
+	 * @param startDate
+	 * @param endDate
+	 * @param model
+	 */
+	private void userAccessLogWidget(String startDate, String endDate, Model model) {
+	}
+
+	/**
+	 * DB Session 현황
+	  * @param model
+	 */
+//	private void dbSessionWidget(Model model) {
+//		List<PGStatActivity> dbSessionList = monitoringService.getListDBSession();
+//		Integer dbSessionCount = dbSessionList.size();
+//		if(dbSessionCount > 7) dbSessionList = dbSessionList.subList(0, 7);
+//		model.addAttribute("dbSessionCount", dbSessionCount);
+//		model.addAttribute("dbSessionList", dbSessionList);
+//	}
+
+	/**
 	 * 시민 참여 현황 목록
 	 * @param startDate
 	 * @param endDate
@@ -269,7 +271,7 @@ public class MainController {
 	 * DB Connection Pool 현황
 	  * @param model
 	 */
-	private void dbcpWidget(Model model) {
+	private void dbcpStatusWidget(Model model) {
 		model.addAttribute("userSessionCount", SessionUserSupport.signinUsersMap.size());
 
 		model.addAttribute("initialSize", dataSource.getMaximumPoolSize());
@@ -323,26 +325,4 @@ public class MainController {
 
 		return userDbcp;
 	}
-
-	/**
-	 * 사용자 추적
-	 * @param startDate
-	 * @param endDate
-	 * @param model
-	 */
-	private void accessLogWidget(String startDate, String endDate, Model model) {
-	}
-
-	/**
-	 * DB Session 현황
-	  * @param model
-	 */
-//	private void dbSessionWidget(Model model) {
-//		List<PGStatActivity> dbSessionList = monitoringService.getListDBSession();
-//		Integer dbSessionCount = dbSessionList.size();
-//		if(dbSessionCount > 7) dbSessionList = dbSessionList.subList(0, 7);
-//		model.addAttribute("dbSessionCount", dbSessionCount);
-//		model.addAttribute("dbSessionList", dbSessionList);
-//	}
-
 }
