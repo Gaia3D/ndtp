@@ -23,7 +23,6 @@
 			</tr>
 		</table>
 		<br>
-		<div class="paramContainer"></div>
 		<br> 
 		<input type="button" id="stopTrack" value="Run" class="popupBtn" >
 	</div>

@@ -195,7 +195,29 @@ function changeToggleTab(apiIndex){
             var codeTabContainer2 = document.createElement("div");
             codeTabContainer2.setAttribute("class", "codeTabContainer2");
             if(document.getElementsByClassName("paramContainer").length!=0){
-   				var parmScript = document.createTextNode(($('.paramContainer')[0].innerHTML).replace(/\s{2,}/gi, ' '));
+            	var test = ($('.paramContainer')[0].innerHTML).split("\n");
+            	var testString = "";
+            	var offsetLength = ($('.paramContainer')[0].innerHTML).replace(/\t/gi,"    ").indexOf( "<" )-1;
+            	for(var i = 0; i < test.length; i++){
+            		console.log(offsetLength);
+            		test[i] = test[i].replace(/\t/gi,"    ");
+            		if(test[i].length >(($('.paramContainer')[0].innerHTML).replace(/\t/gi,"    ").indexOf( "<" )-1)){
+            			if(offsetLength>test[i].indexOf( "<" )){
+            				offsetLength = test[i].indexOf( "<" );
+            			}
+            			
+            		}
+            	}
+            	for(var i = 0; i < test.length; i++){
+            		console.log(offsetLength);
+            		test[i] = test[i].replace(/\t/gi,"    ");
+            		if(test[i].length >(($('.paramContainer')[0].innerHTML).replace(/\t/gi,"    ").indexOf( "<" )-1)){
+            			testString += test[i].substr(offsetLength, test[i].length);
+                		testString += "\n";
+            		}
+            	}
+            	var testString;
+   				var parmScript = document.createTextNode(testString);
    				var preTagBr = document.createElement("br");
    				var codeParmTag = document.createElement("code");
    				codeParmTag.setAttribute("class","html");
@@ -211,7 +233,7 @@ function changeToggleTab(apiIndex){
    	            $('.menu_tab01')[0].appendChild(codeTabContainer1);
    				// hilight
    				document.querySelector('.codeTabContainer1').querySelectorAll('pre code').forEach((block) => {
-   				    hljs.highlightBlock(block);
+   					hljs.highlightBlock(block);
    				  });
    			}
             if($('.api-help-toggle').next()[0]){
@@ -235,14 +257,15 @@ function changeToggleTab(apiIndex){
    				  });
    			}
          // code toggle align
-			for (var i =0; i< $("code").children('.hljs-tag').length; i++) {
+			/* for (var i =0; i< $("code").children('.hljs-tag').length; i++) {
 				if($("code").children('.hljs-tag')[i].childNodes[0].nodeValue=="</"){
 					$("code").children('.hljs-tag')[i].childNodes[2].nodeValue = $("code").children('.hljs-tag')[i].childNodes[2].nodeValue+"\n";
 				}
-				if($("code").children('.hljs-tag')[i].childNodes[1].childNodes[0]=="br"){
+				if($("code").children('.hljs-tag')[i].childNodes[1].childNodes[0].wholeText=="br"){
+					console.log($("code").children('.hljs-tag')[i].childNodes[2].nodeValue);
 					$("code").children('.hljs-tag')[i].childNodes[2].nodeValue = $("code").children('.hljs-tag')[i].childNodes[2].nodeValue+"\n";
 				}
-			};
+			}; */
 			
 			// cesium credit img alt
 			
