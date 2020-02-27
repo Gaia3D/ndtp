@@ -217,7 +217,7 @@ function changeLanguage(lang) {
 	if(updateFlag) {
 		updateFlag = false;
 		$.ajax({
-			url: "/sign/ajax-change-language.do?lang=" + lang,
+			url: "/sign/change-language?lang=" + lang,
 			type: "GET",
 			//data: info,
 			cache: false,

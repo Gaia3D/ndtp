@@ -389,7 +389,7 @@ public class MainController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "ajax-data-group-widget")
+	@RequestMapping(value = "data-group-widget")
 	@ResponseBody
 	public Map<String, Object> ajaxDataGroupWidget(HttpServletRequest request) {
 
@@ -441,7 +441,7 @@ public class MainController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "ajax-data-status-widget")
+	@RequestMapping(value = "data-status-widget")
 	@ResponseBody
 	public Map<String, Object> ajaxDataStatusStatistics(HttpServletRequest request) {
 
@@ -469,7 +469,7 @@ public class MainController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "ajax-data-info-log-widget")
+	@GetMapping(value = "data-info-log-widget")
 	@ResponseBody
 	public Map<String, Object> ajaxDataAdjustLogWidget(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
@@ -505,7 +505,7 @@ public class MainController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "ajax-user-widget")
+	@GetMapping(value = "user-widget")
 	@ResponseBody
 	public Map<String, Object> ajaxUserWidget(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
@@ -548,7 +548,7 @@ public class MainController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "ajax-civil-voice-widget")
+	@GetMapping(value = "civil-voice-widget")
 	@ResponseBody
 	public Map<String, Object> ajaxCivilVoiceWidget(HttpServletRequest request) {
 
@@ -589,7 +589,7 @@ public class MainController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "ajax-system-usage-widget")
+	@GetMapping(value = "system-usage-widget")
 	@ResponseBody
 	public Map<String, Object> ajaxSystemUsageDraw(HttpServletRequest request) {
 
@@ -641,7 +641,7 @@ public class MainController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "ajax-dbcp-widget")
+	@GetMapping(value = "dbcp-widget")
 	@ResponseBody
 	public Map<String, Object> ajaxDbcpWidget(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
@@ -684,7 +684,7 @@ public class MainController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "ajax-access-log-widget")
+	@GetMapping(value = "access-log-widget")
 	@ResponseBody
 	public Map<String, Object> ajaxAccessLogWidget(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();

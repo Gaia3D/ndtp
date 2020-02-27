@@ -525,7 +525,7 @@
 	}
 
 	function dataGroupWidget() {
-		var url = "/main/ajax-data-group-widget";
+		var url = "/main/data-group-widget";
 		var info = "";
 		$.ajax({
 			url: url,
@@ -599,7 +599,7 @@
 
 	function dataInfoWidget() {
 		$.ajax({
-			url : "/main/ajax-data-status-widget",
+			url : "/main/data-status-widget",
 			type : "GET",
 			cache : false,
 			dataType : "json",
@@ -688,7 +688,7 @@
 
 	function dataInfoLogListWidget() {
 		$.ajax({
-			url : "/main/ajax-data-info-log-widget",
+			url : "/main/data-info-log-widget",
 			type : "GET",
 			cache : false,
 			dataType : "json",
@@ -833,7 +833,7 @@
 	// 사용자 상태별 현황 정보 갱신
 	function userWidget() {
 		$.ajax({
-			url : "/main/ajax-user-widget",
+			url : "/main/user-widget",
 			type : "GET",
 			cache : false,
 			dataType : "json",
@@ -856,7 +856,7 @@
 	// 스케줄 실행 이력 갱신
 	function civilVoiceWidget() {
 		$.ajax({
-			url : "/main/ajax-civil-voice-widget",
+			url : "/main/civil-voice-widget",
 			type : "GET",
 			cache : false,
 			dataType : "json",
@@ -908,7 +908,7 @@
 	// DB Connection Pool 현황
 	function dbcpWidget() {
 		$.ajax({
-			url : "/main/ajax-dbcp-widget",
+			url : "/main/dbcp-widget",
 			type : "GET",
 			cache : false,
 			dataType : "json",
@@ -941,7 +941,7 @@
 	// 사용자 추적
 	function accessLogWidget() {
 		$.ajax({
-			url : "/main/ajax-access-log-widget",
+			url : "/main/access-log-widget",
 			type : "GET",
 			cache : false,
 			dataType : "json",
@@ -989,7 +989,7 @@
 	// 시스템 사용량
 	function systemUsageWidget() {
 		$.ajax({
-			url : "/main/ajax-system-usage-widget",
+			url : "/main/system-usage-widget",
 			type : "GET",
 			cache : false,
 			dataType : "json",
