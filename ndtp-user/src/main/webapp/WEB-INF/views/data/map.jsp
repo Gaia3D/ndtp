@@ -302,7 +302,10 @@
 						for(var i in tilingDataGroupList)
 						{
 							var tilingDataGroup = tilingDataGroupList[i];
-							f4dController.addSmartTileGroup(tilingDataGroup)
+							if(i == tilingDataGroupList.length-1) {
+								tilingDataGroup.smartTileIndexPath = tilingDataGroup.dataGroupPath + tilingDataGroup.dataGroupKey + '_TILE';
+							}
+							f4dController.addSmartTileGroup(tilingDataGroup);
 						}
 					}
 				} else {

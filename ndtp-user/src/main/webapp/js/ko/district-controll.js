@@ -18,6 +18,7 @@ function District(magoInstance, viewer)
         var provider = new Cesium.WebMapServiceImageryProvider({
             url : policy.geoserverDataUrl + "/wms",
             layers : 'ndtp:district',
+            maximumLevel : 20,
             parameters : {
                 service : 'WMS'
                 ,version : '1.1.1'
