@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
+import ndtp.domain.CacheManager;
 import ndtp.domain.DataAdjustLog;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
@@ -63,6 +64,7 @@ public class DataAdjustLogController {
 		dataInfo = dataService.getData(dataInfo);
 		
 		model.addAttribute("dataInfo", dataInfo);
+		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
 		
 		return "/data-adjust-log/modify";
 	}
@@ -114,6 +116,8 @@ public class DataAdjustLogController {
 		model.addAttribute(pagination);
 		model.addAttribute("dataGroupList", dataGroupList);
 		model.addAttribute("dataAdjustLogList", dataAdjustLogList);
+		model.addAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
+		
 		return "/data-adjust-log/list";
 	}
 	
