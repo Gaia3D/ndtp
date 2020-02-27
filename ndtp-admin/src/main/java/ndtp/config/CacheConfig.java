@@ -1,5 +1,7 @@
 package ndtp.config;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,20 +9,30 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.CacheManager;
 import ndtp.domain.CacheName;
 import ndtp.domain.CacheParams;
 import ndtp.domain.CacheType;
+import ndtp.domain.GeoPolicy;
 import ndtp.domain.Menu;
 import ndtp.domain.MenuTarget;
 import ndtp.domain.RoleTarget;
+import ndtp.domain.ServerTarget;
 import ndtp.domain.UserGroup;
 import ndtp.domain.UserGroupMenu;
 import ndtp.domain.UserGroupRole;
 import ndtp.domain.YOrN;
+import ndtp.service.GeoPolicyService;
 import ndtp.service.MenuService;
 import ndtp.service.UserGroupService;
 
@@ -29,7 +41,13 @@ import ndtp.service.UserGroupService;
 public class CacheConfig {
 
 	@Autowired
+	private GeoPolicyService geoPolicyService;
+	@Autowired
 	private MenuService menuService;
+	@Autowired
+	private PropertiesConfig propertiesConfig;
+	@Autowired
+	private RestTemplate restTemplate;
     @Autowired
     private UserGroupService userGroupService;
 
@@ -56,9 +74,19 @@ public class CacheConfig {
 		CacheName cacheName = cacheParams.getCacheName();
 		
 		if(cacheName == CacheName.POLICY) policy(cacheParams);
+		if(cacheName == CacheName.GEO_POLICY) geoPolicy(cacheParams);
 		else if(cacheName == CacheName.MENU) menu(cacheParams);
 		else if(cacheName == CacheName.ROLE) role(cacheParams);
 	}
+    
+    /**
+     * 2D, 3D 운영 정책
+     * @param cacheParams
+     */
+    private void geoPolicy(CacheParams cacheParams) {
+    	GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
+    	CacheManager.setGeoPolicy(geoPolicy);
+    }
     
     /**
      * policy
@@ -154,42 +182,36 @@ public class CacheConfig {
 	private void callRemoteCache(CacheParams cacheParams) {
 
 		log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@ callRemoteCache start! ");
-//		if(!propertiesConfig.isCallRemoteEnable()) {
-//			log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@ isCallRemoteEnable = {}. skip callRemoteCache ", propertiesConfig.isCallRemoteEnable());
-//			return;
-//		}
-//
-//		CacheName cacheName = cacheParams.getCacheName();
-//		log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@ cacheName ={}", cacheName.toString());
-//
-//		StringBuilder stringBuilder = new StringBuilder();
-//		stringBuilder.append("api-key=" + Crypt.decrypt(propertiesConfig.getRestAuthKey()))
-//		.append("&")
-//		.append("cache_name=" + cacheName.toString())
-//		.append("&");
-//		if(cacheParams.getProject_id() != null) stringBuilder.append("project_id=" + cacheParams.getProject_id());
-//		stringBuilder.append("&")
-//		.append("time=" + System.nanoTime());
-//		
-//		String authData = Crypt.encrypt(stringBuilder.toString());
-//		
-//		// TODO 로컬, 이중화 등의 분기 처리가 생략되어 있음
-//		List<ExternalService> remoteCacheServerList = CacheManager.getRemoteCacheServiceList();
-//		for(ExternalService externalService : remoteCacheServerList) {
-//			// TODO 환경 설정으로 빼서 로컬이거나 단독 서버인 경우 호출하지 않게 설계해야 함
-//			try {
-//				Map<String, Object> resultObject = HttpClientHelper.httpPost(externalService, authData);
-//				if(resultObject != null && !resultObject.isEmpty() ) {
-//					int statusCode = (Integer)resultObject.get("statusCode");
-//					String statusCodeValue = (String)resultObject.get("statusCodeValue");
-//					String result = (String)resultObject.get("result");
-//					log.error("@@@ statusCode = {}.", statusCode);
-//					log.error("@@@ statusCodeValue = {}.", statusCodeValue);
-//					log.error("@@@ result = {}.", result);
-//				}
-//			} catch(Exception e) {
-//				e.printStackTrace();
-//			}
-//		}
+		if(!propertiesConfig.isCallRemoteEnable()) {
+			log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@ isCallRemoteEnable = {}. skip callRemoteCache ", propertiesConfig.isCallRemoteEnable());
+			return;
+		}
+
+		CacheName cacheName = cacheParams.getCacheName();
+		log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@ cacheName ={}", cacheName.toString());
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("cache_name=" + cacheName.toString());
+		
+		String authData = stringBuilder.toString();
+
+		// TODO 암호화 해야 하는데 임시 처리
+//		HttpHeaders headers = new HttpHeaders();
+//		headers.setContentType(MediaType.APPLICATION_JSON);
+//		MultiValueMap<String, String> params= new LinkedMultiValueMap<String, String>();
+//		params.add("cacheName", cacheName.toString());
+//		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(params, headers);
+
+		// TODO 임시. external_service table로 옮겨야 함
+		try {
+			URI uri = new URI(propertiesConfig.getCacheClientUrl() + "cache/reload");
+			@SuppressWarnings("unchecked")
+			Map<String, Object> result = restTemplate.postForObject(uri, authData, Map.class);
+
+            //ResponseEntity<APIResult> responseEntity = restTemplate.exchange(url, HttpMethod.POST, request, APIResult.class);
+            log.info("----------------------- result = {}", result);
+		} catch (URISyntaxException e) {
+			log.info("데이터 converter 상태 변경 api 호출 실패 = {}", e.getMessage());
+			e.printStackTrace();
+		}
 	}
 }

@@ -5,6 +5,7 @@ package ndtp.domain;
  *
  */
 public enum CacheName {
+	GEO_POLICY,
 	//LICENSE, 
 	MENU,
 	POLICY,

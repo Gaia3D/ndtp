@@ -1,7 +1,13 @@
 package ndtp.config;
 
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
@@ -14,6 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -148,4 +155,41 @@ public class ServletConfig implements WebMvcConfigurer {
 		log.info(" @@@ ServletConfig requestDataValueProcessor @@@ ");
 		return new CSRFRequestDataValueProcessor();
 	}
+	
+	@Bean
+    public RestTemplate restTempate() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+    	// https://github.com/jonashackt/spring-boot-rest-clientcertificate/blob/master/src/test/java/de/jonashackt/RestClientCertTestConfiguration.java
+    	
+    	String restTemplateMode = propertiesConfig.getRestTemplateMode();
+    	RestTemplateBuilder builder = new RestTemplateBuilder();
+    	RestTemplate restTemplate = builder.
+    					setConnectTimeout(Duration.ofMillis(10000))
+	            		.setReadTimeout(Duration.ofMillis(10000))
+	            		.build();
+    	
+//    	RestTemplateBuilder builder = new RestTemplateBuilder(new CustomRestTemplateCustomizer());
+//    	if("http".equals(restTemplateMode)) {
+//    		restTemplate = builder.errorHandler(new RestTemplateResponseErrorHandler())
+//						.setConnectTimeout(Duration.ofMillis(10000))
+//	            		.setReadTimeout(Duration.ofMillis(10000))
+//	            		.build();
+//    	} else {
+//    		TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
+//	    	SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy).build();
+//	 
+//	    	SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
+//	    	CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
+//	 
+//	    	HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+//	        requestFactory.setHttpClient(httpClient);
+//	        
+//	    	restTemplate = builder.errorHandler(new RestTemplateResponseErrorHandler())
+//						.setConnectTimeout(Duration.ofMillis(10000))
+//	            		.setReadTimeout(Duration.ofMillis(10000))
+//	            		.build();
+//			restTemplate.setRequestFactory(requestFactory);
+//    	}
+    	
+		return restTemplate;
+    }
 }
