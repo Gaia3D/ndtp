@@ -51,6 +51,7 @@ function createWmsProvider(viewer, layerList) {
 	var provider = new Cesium.WebMapServiceImageryProvider({
         url : policy.geoserverDataUrl + "/wms",
         layers : layerList.join(","),
+        maximumLevel : 20,
         parameters : {
             service : 'WMS'
             ,version : '1.1.1'

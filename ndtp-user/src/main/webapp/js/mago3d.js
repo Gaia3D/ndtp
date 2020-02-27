@@ -18608,14 +18608,13 @@ CesiumViewerInit.prototype.geoserverTerrainProviderBuild = function()
 		throw new Error('If use geoserverTerrainproviderEnable, geoserverTerrainproviderUrl is required.');
 	}
 
-	var terrainLayerName = policy.geoserverTerrainproviderLayerName; 
-
+	var terrainLayerName = policy.geoserverTerrainproviderLayerName;
 	var terrainStyleName = policy.geoserverTerrainproviderStyleName;
 
 	terrainParam.url = terrainUrl;
 	terrainParam.layerName = terrainLayerName;
 	terrainParam.styleName = terrainStyleName;
-	terrainParam.maxLevel = 16;
+	terrainParam.maxLevel = 13;
 
 	this.options.terrainProvider = new Cesium.GeoserverTerrainProvider(terrainParam);
 };
@@ -19193,9 +19192,12 @@ F4dController.prototype.addSmartTileGroup = function(f4dObject)
 
 		this.smartTilePathInfo[groupKey].projectId = groupId;
 		this.smartTilePathInfo[groupKey].projectFolderPath = groupDataFolder;
-		this.smartTilePathInfo[groupKey].smartTileIndexPath = groupDataFolder + '/' + groupKey + '_TILE';
+		//this.smartTilePathInfo[groupKey].smartTileIndexPath = groupDataFolder + '/' + groupKey + '_TILE';
 
-		magoManager.getObjectIndexFileSmartTileF4d(this.smartTilePathInfo[groupKey].smartTileIndexPath);
+		if (f4dObject.smartTileIndexPath) 
+		{
+			magoManager.getObjectIndexFileSmartTileF4d(f4dObject.smartTileIndexPath);
+		}
 	}
 };
 /**
@@ -27353,7 +27355,7 @@ MagoManager.prototype.checkPropertyFilters = function(nodesArray)
 			{
 				if (node.data.attributes[propertyKey] !== undefined && node.data.attributes[propertyKey].toString() === propertyValue)
 				{
-					if (visible === "true")
+					if (visible === true)
 					{
 						// do nothing.
 					}
@@ -27366,7 +27368,7 @@ MagoManager.prototype.checkPropertyFilters = function(nodesArray)
 				}
 				else
 				{
-					if (visible === "true")
+					if (visible === true)
 					{
 						nodesArray.splice(i, 1);
 						i--;

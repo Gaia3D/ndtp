@@ -1,7 +1,7 @@
 /**
- * Cesium - https://github.com/AnalyticalGraphicsInc/cesium
+ * Cesium - https://github.com/CesiumGS/cesium
  *
- * Copyright 2011-2017 Cesium Contributors
+ * Copyright 2011-2020 Cesium Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,6 @@
  * Columbus View (Pat. Pend.)
  *
  * Portions licensed separately.
- * See https://github.com/AnalyticalGraphicsInc/cesium/blob/master/LICENSE.md for full licensing details.
+ * See https://github.com/CesiumGS/cesium/blob/master/LICENSE.md for full licensing details.
  */
-define(["./defined-2a4f2d00","./Check-e5651467","./freezeObject-a51e076f","./defaultValue-29c9b1af","./Math-7782f09e","./Cartesian2-ba70b51f","./defineProperties-c817531e","./Transforms-5119c07b","./RuntimeError-51c34ab4","./WebGLConstants-90dbfe2f","./ComponentDatatype-418b1c61","./GeometryAttribute-8bc1900e","./when-1faa3867","./GeometryAttributes-f8548d3f","./AttributeCompression-5601f533","./GeometryPipeline-bb485d83","./EncodedCartesian3-4813be74","./IndexDatatype-2bcfc06b","./IntersectionTests-35b85442","./Plane-475170f0","./PrimitivePipeline-2295818f","./WebMercatorProjection-1ecca5ba","./createTaskProcessorWorker"],function(b,e,r,t,n,a,i,o,f,s,c,u,d,m,l,p,y,P,k,v,C,h,G){"use strict";var W={};function A(e){var r=W[e];return b.defined(r)||("object"==typeof exports?W[r]=r=require("Workers/"+e):require(["Workers/"+e],function(e){W[r=e]=e})),r}return G(function(e,r){for(var t=e.subTasks,n=t.length,a=new Array(n),i=0;i<n;i++){var o=t[i],f=o.geometry,s=o.moduleName;if(b.defined(s)){var c=A(s);a[i]=c(f,o.offset)}else a[i]=f}return d.when.all(a,function(e){return C.PrimitivePipeline.packCreateGeometryResults(e,r)})})});
+define(["./defined-b9ff0e39","./Check-e6691f86","./freezeObject-2d5b18ce","./defaultValue-199f5aa8","./Math-92bd3539","./Cartesian2-12797039","./Transforms-1175e52c","./RuntimeError-d5522ee3","./WebGLConstants-1819379c","./ComponentDatatype-a270fa7e","./GeometryAttribute-9396e1af","./when-c208a7cf","./GeometryAttributes-c3465b51","./AttributeCompression-5ee93a38","./GeometryPipeline-03f56e11","./EncodedCartesian3-9ab2586f","./IndexDatatype-d9fd3d17","./IntersectionTests-e0f27278","./Plane-9e603d64","./PrimitivePipeline-d883f7b2","./WebMercatorProjection-ecf80563","./createTaskProcessorWorker"],function(u,e,r,t,n,a,i,o,f,s,c,d,b,m,l,p,y,P,k,v,C,h){"use strict";var G={};function W(e){var r=G[e];return u.defined(r)||("object"==typeof exports?G[r]=r=require("Workers/"+e):require(["Workers/"+e],function(e){G[r=e]=e})),r}return h(function(e,r){for(var t=e.subTasks,n=t.length,a=new Array(n),i=0;i<n;i++){var o=t[i],f=o.geometry,s=o.moduleName;if(u.defined(s)){var c=W(s);a[i]=c(f,o.offset)}else a[i]=f}return d.when.all(a,function(e){return v.PrimitivePipeline.packCreateGeometryResults(e,r)})})});
