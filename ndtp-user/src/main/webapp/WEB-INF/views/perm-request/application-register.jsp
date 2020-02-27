@@ -105,6 +105,12 @@
         startLoading();
         // Create an FormData object
         var data = new FormData(form);
+        data.append('longitude', 127.27030500949927);
+        data.append('latitude', 36.524662808423344);
+        data.append('altitude', -5.0000);
+        data.append('heading', 48.000000);
+        data.append('pitch', 0);
+        data.append('roll', 0);
         $.ajax({
             type: "POST",
             enctype: 'multipart/form-data',

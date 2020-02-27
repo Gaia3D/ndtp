@@ -17,6 +17,7 @@
         is_complete: "N",
         constructor: "아무개",
     };
+    let buildAcceptPermSeq = 0;
 
     $.ajax({
         url: "/data/simulation-rest/getPermRequest",
@@ -33,14 +34,13 @@
                 $.growl.notice({
                     title: "민원이 접수되었습니다.",
                     message: content,
-                    // url: "www.naver.com"
+                    permSeq: obj.permSeq
                 });
             });
 
             $(".growl").click(event => {
-                console.log("whole_viewer=", whole_viewer);
-
                 const eventMessage = event.delegateTarget.children[2].textContent;
+                const parmSeq = event.delegateTarget.children[3].textContent;
                 // console.log("message=", eventMessage);
                 const openIndex = eventMessage.lastIndexOf("(");
                 const commaIndex = eventMessage.lastIndexOf(",");
@@ -52,14 +52,10 @@
                 // todo: connect flyto
                 console.log("go to("+latitude+", "+longitude+")");
 
+                debugger;
                 // genBuild(126.92377563766438, 37.5241752651257 , 0.3);
-                // genBuild(longitude, latitude , 0.3);
-                $("#testBuilding").trigger("click");
-
-                whole_viewer.scene.camera.flyTo({
-                    destination : Cesium.Cartesian3.fromDegrees(latitude, longitude, 1000)
-                });
-
+                acceptMakeBuilding(parmSeq);
+                // $("#testBuilding").trigger("click");
                 setTimeout(() => {
                     event.delegateTarget.children[0].click();
                 }, 200);
@@ -70,6 +66,100 @@
         }
     });
 
+    function acceptMakeBuilding(perm_seq) {
+        let data = {
+            permSeq: perm_seq
+        };
+        $.ajax({
+            url: "/data/simulation-rest/getPermRequestByConstructor",
+            type: "POST",
+            headers: {"X-Requested-With": "XMLHttpRequest"},
+            data: data,
+            dataType: "json",
+            success: function(msg){
+                debugger;
+                buildAcceptPermSeq = msg.permSeq;
+                const longitude = msg.longitude;
+                const latitude = msg.latitude;
+                const altitude = msg.altitude;
+                const heading = msg.heading;
+                const pitch = msg.pitch;
+                const roll = msg.roll;
+                let f4dObject = makeF4dObject(msg.f4dObject);
+                f4dObject.children = makeF4dSubObject(msg.f4dObject.f4dSubList, longitude, latitude, altitude, heading, pitch, roll);
+                debugger;
+                var f4dController = MAGO3D_INSTANCE.getF4dController();
+                f4dController.addF4dGroup(f4dObject);
+                whole_viewer.scene.camera.flyTo({
+                    destination : Cesium.Cartesian3.fromDegrees(longitude, latitude, 1000)
+                });
+            },
+            error:function(request,status,error) {
+                alert('error');
+                console.log("err=", request, status, error);
+            }
+        });
+    }
+
+    function makeF4dObject(f4dObject) {
+        var object = {
+            "attributes": {
+                "isPhysical": false,
+                "nodeType": " root ",
+                "projectType": "collada",
+                "specularLighting": true
+            },
+            "children": [],
+            "parent": 0,
+            "depth": 1,
+            "view_order": 2,
+            "data_key": f4dObject.data_key,
+            "data_name": f4dObject.data_name,
+            "mapping_type": "origin"
+        }
+        return object;
+    }
+
+    function makeF4dSubObject(f4dSubObject, lon, lat, alt, head, pich, roll) {
+        arr = [];
+        debugger;
+        for(var i = 0; i < f4dSubObject.length; i++) {
+            var obj = f4dSubObject[i];
+
+            var imsiF4dSubObject = {
+                "attributes": {
+                    "isPhysical": true,
+                    "nodeType": "daejeon",
+                    "flipYTexCoords": true
+                },
+                "children": [],
+                "data_key": "",
+                "data_name": "",
+                "mapping_type":"origin",
+                "longitude": lon,
+                "latitude": lat,
+                "height": alt,
+                "heading": head,
+                "pitch": pich,
+                "roll": roll
+            };
+
+            imsiF4dSubObject.data_key = obj.data_key;
+            imsiF4dSubObject.data_name = obj.data_key;
+            imsiF4dSubObject.latitude = lat;
+            imsiF4dSubObject.longitude = lon;
+            arr.push(imsiF4dSubObject);
+        }
+        return arr;
+    }
+    var SampleJsonSejon =
+    [
+        {
+            "data_key" : "KSJ_100",
+            "longitude" : 127.27030500949927,
+            "latitude" : 36.524662808423344,
+        }
+    ]
 
 </script>
 

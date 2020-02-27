@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ndtp.config.PropertiesConfig;
 import ndtp.domain.*;
 import ndtp.persistence.StructPermissionMapper;
@@ -124,7 +125,7 @@ public class SimuServiceImpl {
 		return result;
 	}
 
-	public void procAcceptBuild(MultipartFile[] files, String constructor, String constructor_type, String birthday, String license_num) {
+	public void procAcceptBuild(MultipartFile[] files, StructPermission spParam) {
 		List<SimFileMaster> lsfm = saveMultiFile(files);
 
 		movedFinishFolder mff = runFileConvertProcess();
@@ -136,14 +137,18 @@ public class SimuServiceImpl {
 
 		// savedBuildingInfo
 		StructPermission spObj = StructPermission.builder()
-				.constructor(constructor)
-				.constructorType(constructor_type)
+				.constructor(spParam.getConstructor())
+				.constructorType(spParam.getConstructorType())
 				.permOfficer("ndtp")
-				.birthday(birthday)
-				.licenseNum(license_num)
+				.birthday(spParam.getBirthday())
+				.licenseNum(spParam.getLicenseNum())
 				.isComplete("N")
-				.latitude("126.92377563766438")
-				.longitude("37.5241752651257")
+				.latitude(spParam.getLatitude())
+				.longitude(spParam.getLongitude())
+				.altitude(spParam.getAltitude())
+				.heading(spParam.getHeading())
+				.pitch(spParam.getPitch())
+				.roll(spParam.getRoll())
 				.saveFilePath(sfmPDF.getSaveFilePath())
 				.saveFileName(sfmPDF.getSaveFileName())
 				.saveModelFilePath(sfm.getSaveFilePath())
@@ -397,6 +402,18 @@ public class SimuServiceImpl {
 			}
 		}
 		return resultList;
+	}
+
+	public RelativePathItem[] getJsonByRelationFile(String fullPath) throws IOException{
+		ObjectMapper objectMapper = new ObjectMapper();
+		File file = new File(fullPath);
+		Scanner scan = new Scanner(file);
+		String resultJson = "";
+		while(scan.hasNextLine()){
+			resultJson += scan.nextLine();
+		}
+		RelativePathItem[] myObjects = objectMapper.readValue(resultJson, RelativePathItem[].class);
+		return myObjects;
 	}
 
 	private boolean procF4DProcess(String inputFolder, String outputFolder, String F4DRunPath) throws  IOException, InterruptedException{

@@ -11,8 +11,8 @@ public interface CommentManageMapper {
 	int insertCommentManage(CommentManage commentManage);
 
 	List<CommentManage> selectCondition(CommentManage commentManage);
-//	StructPermission selectOne(StructPermission structPermission);
-//
-//	int updateStructPermission(StructPermission structPermission);
+
+	//	StructPermission selectOne(StructPermission structPermission);
+	// 	int updateStructPermission(StructPermission structPermission);
 
 }

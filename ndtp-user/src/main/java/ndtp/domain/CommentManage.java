@@ -21,6 +21,7 @@ public class CommentManage {
 	private String latitude;
 	private String longitude;
 	private String height;
+	private Integer permSeq;
 //	private Date applyDate;
 @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 private Timestamp applyDate;
