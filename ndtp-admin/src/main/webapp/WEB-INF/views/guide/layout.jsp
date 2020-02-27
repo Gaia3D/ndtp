@@ -8,12 +8,12 @@
 <meta name="viewport" content="width=device-width">
 <meta name="robots" content="index,nofollow" />
 <title>mago3DJS API | NDTP</title>
-<link rel="shortcut icon" href="/images/favicon.ico">
-<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
-<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-<link rel="stylesheet" href="/externlib/highlightjs/styles/dark.css">
-<link rel="stylesheet" href="/css/ko/apihelp-style.css" />
-<script src="/externlib/highlightjs/highlight.pack.js"></script>
+<link rel="shortcut icon" href="/images/favicon.ico?cacheVersion=${contentCacheVersion}">
+<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css?cacheVersion=${contentCacheVersion}" />
+<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css?cacheVersion=${contentCacheVersion}" />
+<link rel="stylesheet" href="/externlib/highlightjs/styles/dark.css?cacheVersion=${contentCacheVersion}">
+<link rel="stylesheet" href="/css/ko/apihelp-style.css?cacheVersion=${contentCacheVersion}" />
+<script src="/externlib/highlightjs/highlight.pack.js?cacheVersion=${contentCacheVersion}"></script>
 
 </head>
 <body>
@@ -46,16 +46,16 @@
 		</div>
 	</div>
 
-	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
-	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
+	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>
 	<script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>
-	<script type="text/javascript" src="/externlib/cesium-geoserver-terrain-provider/GeoserverTerrainProvider.js"></script>
-	<script type="text/javascript" src="/externlib/decodeTextAlternative/encoding-indexes.js"></script>
-	<script type="text/javascript" src="/externlib/decodeTextAlternative/encoding.js"></script>
-	<script type="text/javascript" src="/externlib/moment-2.22.2/moment-with-locales.min.js"></script>
-	<script type="text/javascript" src="/js/mago3d.js"></script>
-	<script type="text/javascript" src="/js/mago3d_lx.js"></script>
-	<script type="text/javascript" src="/js/ko/common.js"></script>
+	<script type="text/javascript" src="/externlib/cesium-geoserver-terrain-provider/GeoserverTerrainProvider.js?cacheVersion=${contentCacheVersion}"></script>
+	<script type="text/javascript" src="/externlib/decodeTextAlternative/encoding-indexes.js?cacheVersion=${contentCacheVersion}"></script>
+	<script type="text/javascript" src="/externlib/decodeTextAlternative/encoding.js?cacheVersion=${contentCacheVersion}"></script>
+	<script type="text/javascript" src="/externlib/moment-2.22.2/moment-with-locales.min.js?cacheVersion=${contentCacheVersion}"></script>
+	<script type="text/javascript" src="/js/mago3d.js?cacheVersion=${contentCacheVersion}"></script>
+	<script type="text/javascript" src="/js/mago3d_lx.js?cacheVersion=${contentCacheVersion}"></script>
+	<script type="text/javascript" src="/js/ko/common.js?cacheVersion=${contentCacheVersion}"></script>
 	
 
 	<script type="text/javascript">

@@ -8,18 +8,18 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<title>관리자 메뉴 | NDTP</title>
-	<link rel="stylesheet" href="/css/${lang}/font/font.css" />
-	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
-	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
-	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css">
-    <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
-    <link type="text/css" rel="stylesheet" href="/externlib/${lang}/axisj/ui/arongi/font-awesome.min.css" />
-   	<link type="text/css" rel="stylesheet" href="../externlib/${lang}/axisj/ui/arongi/AXJ.min.css" />
-	<link type="text/css" rel="stylesheet" href="../externlib/${lang}/axisj/ui/arongi/AXButton.css" />
-	<link type="text/css" rel="stylesheet" href="../externlib/${lang}/axisj/ui/arongi/AXInput.css" />
-	<link type="text/css" rel="stylesheet" href="../externlib/${lang}/axisj/ui/arongi/AXSelect.css" />
-	<link type="text/css" rel="stylesheet" href="../externlib/${lang}/axisj/ui/arongi/AXTree.css" />
+	<link rel="stylesheet" href="/css/${lang}/font/font.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css?cacheVersion=${contentCacheVersion}">
+    <link rel="stylesheet" href="/css/${lang}/admin-style.css?cacheVersion=${contentCacheVersion}" />
+    <link type="text/css" rel="stylesheet" href="/externlib/${lang}/axisj/ui/arongi/font-awesome.min.css?cacheVersion=${contentCacheVersion}" />
+   	<link type="text/css" rel="stylesheet" href="../externlib/${lang}/axisj/ui/arongi/AXJ.min.css?cacheVersion=${contentCacheVersion}" />
+	<link type="text/css" rel="stylesheet" href="../externlib/${lang}/axisj/ui/arongi/AXButton.css?cacheVersion=${contentCacheVersion}" />
+	<link type="text/css" rel="stylesheet" href="../externlib/${lang}/axisj/ui/arongi/AXInput.css?cacheVersion=${contentCacheVersion}" />
+	<link type="text/css" rel="stylesheet" href="../externlib/${lang}/axisj/ui/arongi/AXSelect.css?cacheVersion=${contentCacheVersion}" />
+	<link type="text/css" rel="stylesheet" href="../externlib/${lang}/axisj/ui/arongi/AXTree.css?cacheVersion=${contentCacheVersion}" />
 
 </head>
 <body>
@@ -197,17 +197,17 @@
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
 
-<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
-<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-<script type="text/javascript" src="/js/${lang}/common.js"></script>
-<script type="text/javascript" src="/js/${lang}/message.js"></script>
-<script type="text/javascript" src="/js/navigation.js"></script>
-<script type="text/javascript" src="../externlib/${lang}/axisj/lib/AXJ.js"></script>
-<script type="text/javascript" src="../externlib/${lang}/axisj/lib/AXInput.js"></script>
-<script type="text/javascript" src="../externlib/${lang}/axisj/lib/AXModal.js"></script>
-<script type="text/javascript" src="../externlib/${lang}/axisj/lib/AXSelect.js"></script>
-<script type="text/javascript" src="../externlib/${lang}/axisj/lib/AXTree.js"></script>
-<script type="text/javascript" src="../js/${lang}/menuTree.js"></script>
+<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/common.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/message.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/navigation.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="../externlib/${lang}/axisj/lib/AXJ.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="../externlib/${lang}/axisj/lib/AXInput.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="../externlib/${lang}/axisj/lib/AXModal.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="../externlib/${lang}/axisj/lib/AXSelect.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="../externlib/${lang}/axisj/lib/AXTree.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="../js/${lang}/menuTree.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript">
 	var MENU_TREE_DATA = null;
 

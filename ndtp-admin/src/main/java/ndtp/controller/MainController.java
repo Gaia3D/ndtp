@@ -141,7 +141,6 @@ public class MainController {
 		model.addAttribute("isSystemUsageDraw", isSystemUsageDraw);
 		model.addAttribute("isDbcpStatusDraw", isDbcpStatusDraw);
 		model.addAttribute("isDbSessionDraw", isDbSessionDraw);
-		model.addAttribute("contentCacheVersion", policy.getContentCacheVersion());
 
 		return "/main/index";
 	}

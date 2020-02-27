@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -13,9 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.CacheManager;
 import ndtp.domain.Key;
 import ndtp.domain.Menu;
+import ndtp.domain.Policy;
 import ndtp.domain.UserGroupMenu;
 import ndtp.domain.UserSession;
 import ndtp.domain.YOrN;
+import ndtp.service.PolicyService;
 
 /**
  * 사이트 전체 설정 관련 처리를 담당
@@ -26,12 +29,17 @@ import ndtp.domain.YOrN;
 @Slf4j
 @Component
 public class ConfigInterceptor extends HandlerInterceptorAdapter {
+	
+	@Autowired
+	private PolicyService policyService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
     	
     	String uri = request.getRequestURI();
     	HttpSession session = request.getSession();
+    	
+    	Policy policy = policyService.getPolicy();
     	
     	// TODO 너무 비 효율 적이다. 좋은 방법을 찾자.
     	// 세션이 존재하지 않는 경우
@@ -89,6 +97,7 @@ public class ConfigInterceptor extends HandlerInterceptorAdapter {
 			
 			request.setAttribute("cacheUserGroupMenuList", userGroupMenuList);
 			request.setAttribute("cacheUserGroupMenuListSize", userGroupMenuList.size());
+			request.setAttribute("contentCacheVersion", policy.getContentCacheVersion());
     	}
     	
         return true;
