@@ -534,21 +534,23 @@
 			dataType: "json",
 			headers: { "X-mago3D-Header" : "mago3D"},
 			success : function(msg) {
-				if(msg.result === "success") {
+				if(msg.statusCode <= 200) {
+					$("#dataGroupWidget").empty();
 					showDataGroup(msg.dataGroupWidgetList);
 				} else {
-					alert(JS_MESSAGE[msg.result]);
+					$("#dataGroupWidget").html(JS_MESSAGE[msg.errorCode]);
+					//alert(JS_MESSAGE[msg.errorCode]);
+					//console.log("---- " + msg.errorCode);
 				}
 			},
 			error : function(request, status, error) {
-				alert(JS_MESSAGE["ajax.error.message"]);
-				console.log("code : " + request.status + "\n message : " + request.responseText + "\n error : " + error);
+				$("#dataGroupWidget").html(JS_MESSAGE[ajax.error.message]);
+				//alert(JS_MESSAGE[ajax.error.message]);
 			}
 		});
 	}
 
 	function showDataGroup(dataGroupWidgetList) {
-		$("#dataGroupWidget").empty();
 		if(dataGroupWidgetList == null || dataGroupWidgetList.length == 0) {
 			return;
 		}

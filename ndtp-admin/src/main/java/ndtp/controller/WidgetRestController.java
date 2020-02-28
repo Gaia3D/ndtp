@@ -81,9 +81,11 @@ public class WidgetRestController {
 	 */
 	@RequestMapping(value = "/data-group-statistics")
 	public Map<String, Object> dataGroupStatistics(HttpServletRequest request) {
-
-		Map<String, Object> map = new HashMap<>();
-		String result = "success";
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		List<Map<String, Object>> dataGroupWidgetList = new ArrayList<>();
 		try {
 			UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 
@@ -91,7 +93,6 @@ public class WidgetRestController {
 			dataGroup.setUserId(userSession.getUserId());
 			List<DataGroup> dataGroupList = dataGroupService.getListDataGroup(dataGroup);
 
-			List<Map<String, Object>> dataGroupWidgetList = new ArrayList<>();
 			for(DataGroup dbDataGroup : dataGroupList) {
 				// get count
 				DataInfo dataInfo = new DataInfo();
@@ -114,15 +115,19 @@ public class WidgetRestController {
 	                return i2.compareTo(i1);
 	            }
 	        });
-
-			map.put("dataGroupWidgetList", dataGroupWidgetList);
 		} catch(Exception e) {
 			e.printStackTrace();
-			result = "db.exception";
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 		}
 
-		map.put("result", result);
-		return map;
+		result.put("dataGroupWidgetList", dataGroupWidgetList);
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+
+		return result;
 	}
 
 	/**
