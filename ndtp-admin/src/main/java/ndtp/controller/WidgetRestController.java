@@ -355,9 +355,12 @@ public class WidgetRestController {
 	 */
 	@GetMapping(value = "/system-usage-status")
 	public Map<String, Object> systemUsageStatus(HttpServletRequest request) {
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		Map<String, Object> statistics = new HashMap<>();
 
-		Map<String, Object> map = new HashMap<>();
-		String result = "success";
 		try {
 			RestTemplate restTemplate = new RestTemplate();
 			String serverHost = "http://localhost:9090";
@@ -382,21 +385,25 @@ public class WidgetRestController {
 			ResponseEntity<Map> response5 = restTemplate.getForEntity(cpuUsed, Map.class);
 			List<Map<String, Object>> processCpuUsage = (List<Map<String, Object>>) response5.getBody().get("measurements");
 
-			map.put("diskSpaceTotal", diskSpace.get("total"));
-			map.put("diskSpaceFree", diskSpace.get("free"));
-			map.put("jvmMemoryMax", jvmMemoryMax);
-			map.put("jvmMemoryUsed", jvmMemoryUsed);
-			map.put("systemCpuUsage", systemCpuUsage);
-			map.put("processCpuUsage", processCpuUsage);
-
+			statistics.put("diskSpaceTotal", diskSpace.get("total"));
+			statistics.put("diskSpaceFree", diskSpace.get("free"));
+			statistics.put("jvmMemoryMax", jvmMemoryMax);
+			statistics.put("jvmMemoryUsed", jvmMemoryUsed);
+			statistics.put("systemCpuUsage", systemCpuUsage);
+			statistics.put("processCpuUsage", processCpuUsage);
 		} catch(Exception e) {
 			e.printStackTrace();
-			result = "db.exception";
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 		}
 
-		map.put("result", result);
+		result.put("statistics", statistics);
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
 
-		return map;
+		return result;
 	}
 
 	/**
@@ -406,39 +413,48 @@ public class WidgetRestController {
 	 */
 	@GetMapping(value = "/dbcp-status")
 	public Map<String, Object> dbcpStatus(HttpServletRequest request) {
-		Map<String, Object> map = new HashMap<>();
-		String result = "success";
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		Map<String, Object> dbcp = new HashMap<>();
+
 		try {
-			map.put("userSessionCount", SessionUserSupport.signinUsersMap.size());
+			dbcp.put("userSessionCount", SessionUserSupport.signinUsersMap.size());
 
-			map.put("initialSize", dataSource.getMaximumPoolSize());
-			map.put("minIdle", dataSource.getMinimumIdle());
-			map.put("numIdle", dataSource.getMaximumPoolSize());
+			dbcp.put("initialSize", dataSource.getMaximumPoolSize());
+			dbcp.put("minIdle", dataSource.getMinimumIdle());
+			dbcp.put("numIdle", dataSource.getMaximumPoolSize());
 
-//			map.put("initialSize", dataSource.getInitialSize());
-////			map.put("maxTotal", dataSource.getMaxTotal());
-//			map.put("maxIdle", dataSource.getMaxIdle());
-//			map.put("minIdle", dataSource.getMinIdle());
-//			map.put("numActive", dataSource.getNumActive());
-//			map.put("numIdle", dataSource.getNumIdle());
+//			dbcp.put("initialSize", dataSource.getInitialSize());
+////			dbcp.put("maxTotal", dataSource.getMaxTotal());
+//			dbcp.put("maxIdle", dataSource.getMaxIdle());
+//			dbcp.put("minIdle", dataSource.getMinIdle());
+//			dbcp.put("numActive", dataSource.getNumActive());
+//			dbcp.put("numIdle", dataSource.getNumIdle());
 
 			// 사용자 dbcp 정보
 			Map<String, Integer> userDbcp = getUserDbcp();
-			map.put("userUserSessionCount", userDbcp.get("userSessionCount"));
-			map.put("userInitialSize", userDbcp.get("initialSize"));
-			map.put("userMaxTotal", userDbcp.get("maxTotal"));
-			map.put("userMaxIdle", userDbcp.get("maxIdle"));
-			map.put("userMinIdle", userDbcp.get("minIdle"));
-			map.put("userNumActive", userDbcp.get("numActive"));
-			map.put("userNumIdle", userDbcp.get("numIdle"));
+			dbcp.put("userUserSessionCount", userDbcp.get("userSessionCount"));
+			dbcp.put("userInitialSize", userDbcp.get("initialSize"));
+			dbcp.put("userMaxTotal", userDbcp.get("maxTotal"));
+			dbcp.put("userMaxIdle", userDbcp.get("maxIdle"));
+			dbcp.put("userMinIdle", userDbcp.get("minIdle"));
+			dbcp.put("userNumActive", userDbcp.get("numActive"));
+			dbcp.put("userNumIdle", userDbcp.get("numIdle"));
 		} catch(Exception e) {
 			e.printStackTrace();
-			result = "db.exception";
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 		}
 
-		map.put("result", result);
+		result.put("dbcp", dbcp);
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
 
-		return map;
+		return result;
 	}
 
 	/**

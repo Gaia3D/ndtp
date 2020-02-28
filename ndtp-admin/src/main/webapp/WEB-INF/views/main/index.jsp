@@ -508,8 +508,8 @@
 
 	// DB Connection Pool 현황
 	function callDbcpStatusWidget() {
-		//dbcpWidget();
-		//setInterval(ajaxDbcpWidget, refreshTime);
+		dbcpStatusWidget();
+		setInterval(dbcpStatusWidget, refreshTime);
 	}
 
 	// 사용자 추적
@@ -544,8 +544,8 @@
 				}
 			},
 			error : function(request, status, error) {
-				$("#dataGroupWidget").html(JS_MESSAGE[ajax.error.message]);
-				//alert(JS_MESSAGE[ajax.error.message]);
+				$("#dataGroupWidget").html(JS_MESSAGE["ajax.error.message"]);
+				//alert(JS_MESSAGE["ajax.error.message"]);
 			}
 		});
 	}
@@ -615,8 +615,8 @@
 				}
 			},
 			error : function(request, status, error) {
-				$("#dataStatusWidget").html(JS_MESSAGE[ajax.error.message]);
-				//alert(JS_MESSAGE[ajax.error.message]);
+				$("#dataStatusWidget").html(JS_MESSAGE["ajax.error.message"]);
+				//alert(JS_MESSAGE["ajax.error.message"]);
 			}
 		});
 	}
@@ -739,8 +739,8 @@
 				}
 			},
 			error : function(request, status, error) {
-				$("#dataAdjustLogWidget").html(JS_MESSAGE[ajax.error.message]);
-				//alert(JS_MESSAGE[ajax.error.message]);
+				$("#dataAdjustLogWidget").html(JS_MESSAGE["ajax.error.message"]);
+				//alert(JS_MESSAGE["ajax.error.message"]);
 			}
 		});
 	}
@@ -852,8 +852,8 @@
 				}
 			},
 			error : function(request, status, error) {
-				$("#userStatusWidget").html(JS_MESSAGE[ajax.error.message]);
-				//alert(JS_MESSAGE[ajax.error.message]);
+				$("#userStatusWidget").html(JS_MESSAGE["ajax.error.message"]);
+				//alert(JS_MESSAGE["ajax.error.message"]);
 			}
 		});
 	}
@@ -899,8 +899,8 @@
 				}
 			},
 			error : function(request, status, error) {
-				$("#userAccessLogWidget").html(JS_MESSAGE[ajax.error.message]);
-				//alert(JS_MESSAGE[ajax.error.message]);
+				$("#userAccessLogWidget").html(JS_MESSAGE["ajax.error.message"]);
+				//alert(JS_MESSAGE["ajax.error.message"]);
 			}
 		});
 	}
@@ -952,8 +952,8 @@
 				}
 			},
 			error : function(request, status, error) {
-				$("#civilVoiceWidget").html(JS_MESSAGE[ajax.error.message]);
-				//alert(JS_MESSAGE[ajax.error.message]);
+				$("#civilVoiceWidget").html(JS_MESSAGE["ajax.error.message"]);
+				//alert(JS_MESSAGE["ajax.error.message"]);
 			}
 		});
 	}
@@ -966,25 +966,23 @@
 			cache : false,
 			dataType : "json",
 			success : function(msg) {
-				if (msg.result == "user.session.empty") {
-					//alert("로그인 후 사용 가능한 서비스 입니다.");
-				} else if (msg.result == "db.exception") {
-					//alert("데이터 베이스 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
-				} else if (msg.result == "success") {
+				if(msg.statusCode <= 200) {
+					var stat = msg.statistics;
+
 					// disk
-					var diskMax = msg.diskSpaceTotal;
-					var diskUsed = (diskMax - msg.diskSpaceFree);
+					var diskMax = stat.diskSpaceTotal;
+					var diskUsed = (diskMax - stat.diskSpaceFree);
 					var diskValue = diskUsed / diskMax * 100;
 
 					// memory
-					var memoryMax = msg.jvmMemoryMax[0]["value"];
-					var memoryUsed = msg.jvmMemoryUsed[0]["value"];
+					var memoryMax = stat.jvmMemoryMax[0]["value"];
+					var memoryUsed = stat.jvmMemoryUsed[0]["value"];
 					var memoryValue = memoryUsed / memoryMax * 100;
 
 					// cpu
-					var cpuMax = msg.systemCpuUsage[0]["value"];
+					var cpuMax = stat.systemCpuUsage[0]["value"];
 					if(!cpuMax) cpuMax = 1;
-					var cpuUsed = msg.processCpuUsage[0]["value"];
+					var cpuUsed = stat.processCpuUsage[0]["value"];
 					var cpuValue = cpuUsed / cpuMax * 100;
 
 					var res = {
@@ -1021,44 +1019,50 @@
 
 					$("#systemUsageWidget").empty();
 					$("#systemUsageWidget").html(content);
+				} else {
+					$("#systemUsageWidget").html(JS_MESSAGE[msg.errorCode]);
+					//alert(JS_MESSAGE[msg.errorCode]);
+					//console.log("---- " + msg.errorCode);
 				}
 			},
 			error : function(request, status, error) {
-				$("#systemUsageWidget").empty();
-				$("#systemUsageWidget").html(content);
+				$("#systemUsageWidget").html(JS_MESSAGE["ajax.error.message"]);
+				//alert(JS_MESSAGE["ajax.error.message"]);
 			}
 		});
 	}
 
 	// DB Connection Pool 현황
-	function dbcpWidget() {
+	function dbcpStatusWidget() {
 		$.ajax({
 			url : "/widgets/dbcp-status",
 			type : "GET",
 			cache : false,
 			dataType : "json",
 			success : function(msg) {
-				if (msg.result == "user.session.empty") {
-					//alert("로그인 후 사용 가능한 서비스 입니다.");
-				} else if (msg.result == "db.exception") {
-					//alert("데이터 베이스 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
-				} else if (msg.result == "success") {
-					$("#userSessionCount").html(msg.userSessionCount);
-					$("#userUserSessionCount").html(msg.userUserSessionCount);
-					$("#initialSize").html(msg.initialSize);
-					$("#userInitialSize").html(msg.userInitialSize);
-					$("#maxTotal").html(msg.maxTotal);
-					$("#userMaxTotal").html(msg.userMaxTotal);
-					$("#maxIdle").html(msg.maxIdle);
-					$("#userMaxIdle").html(msg.userMaxIdle);
-					$("#numActive").html(msg.numActive);
-					$("#userNumActive").html(msg.userNumActive);
-					$("#minIdle").html(msg.minIdle + "," + msg.numIdle);
-					$("#userMinIdle").html(msg.userMinIdle + "," + msg.userNumIdle);
+				if(msg.statusCode <= 200) {
+					var dbcp = msg.dbcp;
+					$("#userSessionCount").html(dbcp.userSessionCount);
+					$("#userUserSessionCount").html(dbcp.userUserSessionCount);
+					$("#initialSize").html(dbcp.initialSize);
+					$("#userInitialSize").html(dbcp.userInitialSize);
+					$("#maxTotal").html(dbcp.maxTotal);
+					$("#userMaxTotal").html(dbcp.userMaxTotal);
+					$("#maxIdle").html(dbcp.maxIdle);
+					$("#userMaxIdle").html(dbcp.userMaxIdle);
+					$("#numActive").html(dbcp.numActive);
+					$("#userNumActive").html(dbcp.userNumActive);
+					$("#minIdle").html(dbcp.minIdle + "," + dbcp.numIdle);
+					$("#userMinIdle").html(dbcp.userMinIdle + "," + dbcp.userNumIdle);
+				} else {
+					$("#dbcpStatusWidget").html(JS_MESSAGE[msg.errorCode]);
+					//alert(JS_MESSAGE[msg.errorCode]);
+					//console.log("---- " + msg.errorCode);
 				}
 			},
 			error : function(request, status, error) {
-				//alert("잠시 후 이용해 주시기 바랍니다. 장시간 같은 현상이(DBCP) 반복될 경우 관리자에게 문의하여 주십시오.");
+				$("#dbcpStatusWidget").html(JS_MESSAGE["ajax.error.message"]);
+				//alert(JS_MESSAGE["ajax.error.message"]);
 			}
 		});
 	}
