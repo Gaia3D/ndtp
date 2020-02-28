@@ -125,34 +125,7 @@ public class DataController {
 		String roleCheckResult = roleValidator(request, userSession.getUserGroupId(), RoleKey.USER_DATA_READ.name());
 		if(roleCheckResult != null) return roleCheckResult;
 
-		GeoPolicy geoPolicy = CacheManager.getGeoPolicy();
 		UserPolicy userPolicy = userPolicyService.getUserPolicy(userSession.getUserId());
-		if(userPolicy.getUserId() != null) {
-			geoPolicy.setInitLatitude(userPolicy.getInitLatitude());
-			geoPolicy.setInitLongitude(userPolicy.getInitLongitude());
-			geoPolicy.setInitAltitude(userPolicy.getInitAltitude());
-			geoPolicy.setInitDuration(userPolicy.getInitDuration());
-			geoPolicy.setInitDefaultFov(userPolicy.getInitDefaultFov());
-			geoPolicy.setLod0(userPolicy.getLod0());
-			geoPolicy.setLod1(userPolicy.getLod1());
-			geoPolicy.setLod2(userPolicy.getLod2());
-			geoPolicy.setLod3(userPolicy.getLod3());
-			geoPolicy.setLod4(userPolicy.getLod4());
-			geoPolicy.setLod5(userPolicy.getLod5());
-			geoPolicy.setSsaoRadius(userPolicy.getSsaoRadius());
-		}
-
-		String geoPolicyJson = "";
-		String baseLayerJson = "";
-		try {
-			geoPolicyJson = objectMapper.writeValueAsString(geoPolicy);
-			List<LayerGroup> layerGroupList = LayerDisplaySupport.getListDisplayLayer(layerGroupService.getListLayerGroupAndLayer(), userPolicy.getBaseLayers());
-			baseLayerJson = objectMapper.writeValueAsString(layerGroupList);
-		} catch(Exception e) {
-			log.info("@@ objectMapper exception");
-			e.printStackTrace();
-		}
-
 		Long commonDataCount = 0l;
 		Long publicDataCount = 0l;
 		Long privateDataCount = 0l;
@@ -214,8 +187,6 @@ public class DataController {
 		model.addAttribute("dataList", dataList);
 		model.addAttribute("dataGroupList", dataGroupList);
 		model.addAttribute("userPolicy", userPolicy);
-		model.addAttribute("geoPolicyJson", geoPolicyJson);
-		model.addAttribute("baseLayerJson", baseLayerJson);
 		model.addAttribute("owner", userSession.getUserId());
 
 		return "/data/map";
