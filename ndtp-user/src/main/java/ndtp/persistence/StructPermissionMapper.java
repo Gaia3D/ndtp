@@ -10,9 +10,11 @@ public interface StructPermissionMapper {
 
 	int insertStructPermission(StructPermission structPermission);
 
-	List<StructPermission> selectStructPermission();
+	List<StructPermission> selectStructPermission(StructPermission sp);
+
 	StructPermission selectOne(StructPermission structPermission);
 
-	int updateStructPermission(StructPermission structPermission);
+	StructPermission putPermSend(StructPermission structPermission);
 
+	int updateStructPermission(StructPermission structPermission);
 }

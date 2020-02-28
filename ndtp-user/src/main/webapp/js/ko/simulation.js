@@ -27,7 +27,7 @@ var Simulation = function(magoInstance, viewer, $) {
     var locaMonitor = false;
 	var magoManager = magoInstance.getMagoManager();
 	var f4dController = magoInstance.getF4dController();
-	
+
 	var L00  = new Cesium.Cartesian3( 0.170455150831422,  0.163151083190219,  0.196966760289763);
 	var L1_1 = new Cesium.Cartesian3(-0.066550267689383, -0.022088055746048,  0.078835009246127);
 	var L10  = new Cesium.Cartesian3( 0.038364097478591,  0.045714300098753,  0.063498904606215);
@@ -39,7 +39,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	var L22  = new Cesium.Cartesian3(-0.004953478914091, -0.000479681664876,  0.008508150106928);
 	var coefficients = [L00, L1_1, L10, L11, L2_2, L2_1, L20, L21, L22];
 	var environmentMapURL = 'https://cesium.com/assets/kiara_6_afternoon_2k_ibl.ktx';
-	
+
     var runAllocBuildStat = "";
 
     var cityPlanTargetArea = 0; // 기준 면적
@@ -1121,7 +1121,7 @@ debugger;
 		    }
 		});
     });
-    
+
     // 카메라 위치 저장
     $("#cameraLocaSave").click(function() {
     	var camera = _viewer.scene.camera;
@@ -1511,6 +1511,103 @@ debugger;
 		}
 		return sum/length;
 	}
+	$('#acceptCompleteBuildList').change(function(event) {
+		var selectSeqBuild = event.target.value;
+		acceptMakeBuilding(selectSeqBuild);
+	});
+
+	initAcceptBuild('N');
+	initAcceptBuild('Y');
+
+	function initAcceptBuild(permReqType) {
+		const permReqParam = {
+			isComplete: permReqType
+		};
+		$.ajax({
+			url: "/data/simulation-rest/getPermRequest",
+			type: "POST",
+			data: permReqParam,
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			dataType: "json",
+			success: function(permList){
+				var perDomItems = "";
+				for (let i = 0; i<permList.length; i++) {
+					var permName = permList[i].constructor + ' - ' + permList[i].permSeq;
+					perDomItems += "<option value=" + permList[i].permSeq + ">" + permName + "</option>";
+				}
+				if(permReqType === 'N') {
+					$("#acceptBuildList").append(perDomItems);
+				} else {
+					$("#acceptCompleteBuildList").append(perDomItems);
+				}
+
+			},
+			error:function(request,status,error) {
+				console.log("err=", request, status, error);
+			}
+		});
+	};
+
+	// 진행
+	$('#permCompleteView').click(function() {
+		let data = {
+			permSeq: $('#acceptCompleteBuildList').val()
+		};
+		$.ajax({
+			url: "/data/simulation-rest/getPermRequestByConstructor",
+			type: "POST",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			data: data,
+			dataType: "json",
+			success: function(msg){
+				console.log("getPermRequestByConstructor msg=", msg);
+				$("#permViewDialog #constructor").get(0).value = msg.constructor;
+				$("#permViewDialog #constructor_type").get(0).value = msg.constructorType;
+				$("#permViewDialog #constructor_type").get(0).disabled = true;
+				$("#permViewDialog #birthday").get(0).value = msg.birthday;
+				$("#permViewDialog #license_num").get(0).value = msg.licenseNum;
+				// $("#permViewDialog #phone_number").get(0).value = msg.phoneNumber;
+				$("#permViewDialog #district_unit_plan").get(0).value = msg.saveFileName;
+
+				permViewDialog.dialog("open");
+			},
+			error:function(request,status,error) {
+				alert('error');
+				console.log("err=", request, status, error);
+			}
+		});
+	});
+
+	$('#permSend').click(function(event) {
+		const notSuitableReason = $('#notSuitableReason').text();
+		const suitable = $('#suitableCheck').val();
+		const PermSend = {
+			permSeq: 0,
+			isComplete: 'Y',
+			suitable: suitable,
+			notSuitableReason: notSuitableReason
+	};
+
+	$.ajax({
+		url: "/data/simulation-rest/putPemSend",
+		type: "PUT",
+		data: PermSend,
+		headers: {"X-Requested-With": "XMLHttpRequest"},
+		dataType: "json",
+		success: function(permList){
+			debugger;
+			var perDomItems = "";
+			for (let i = 0; i<permList.length; i++) {
+				var permName = permList[i].constructor + ' - ' + permList[i].permSeq;
+				perDomItems += "<option value=" + permList[i].permSeq + ">" + permName + "</option>";
+			}
+			$("#acceptBuildList").append(perDomItems);
+		},
+		error:function(request,status,error) {
+			console.log("err=", request, status, error);
+		}
+	});
+	});
 }
 
 function makeSampleJson(sampleJson) {
@@ -1644,5 +1741,5 @@ var SampleJsonSejon =
 	  "latitude" : 37.56690158584144,
 	  "longitude" : 126.9785978787040
    }
-]
+];
 

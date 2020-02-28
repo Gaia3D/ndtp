@@ -13,21 +13,17 @@
 
 <script>
     Growl.settings.duration = 100000; // 100
-    let data = {
-        is_complete: "N",
-        constructor: "아무개",
-    };
-    let buildAcceptPermSeq = 0;
-
+    debugger;
+    var permReqeustParam = {
+        isComplete: 'N'
+    }
     $.ajax({
         url: "/data/simulation-rest/getPermRequest",
         type: "POST",
-        headers: {"X-Requested-With": "XMLHttpRequest"},
-        data: data,
+        data: permReqeustParam,
         dataType: "json",
-        success: function(msg){
+        success: function(msg) {
             console.log("msg  =", msg);
-
             msg.forEach(obj => {
                 console.log("위도 =", obj.latitude, " 경도=", obj.longitude);
                 let content = obj.constructor+"님의 건축인 허가 신청입니다. 좌표 ("+obj.latitude+", "+obj.longitude+")";
@@ -51,11 +47,8 @@
 
                 // todo: connect flyto
                 console.log("go to("+latitude+", "+longitude+")");
-
-                debugger;
-                // genBuild(126.92377563766438, 37.5241752651257 , 0.3);
                 acceptMakeBuilding(parmSeq);
-                // $("#testBuilding").trigger("click");
+                $('#acceptBuildList').val(parmSeq);
                 setTimeout(() => {
                     event.delegateTarget.children[0].click();
                 }, 200);

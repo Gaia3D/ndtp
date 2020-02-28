@@ -20,8 +20,10 @@
     });
     $("#commentWrite").click(()=>{
         // commentRegisterDialog.dialog("open");
+        const permSeq = buildAcceptPermSeq;
         const commentContent = $("#commentContent").val();
         let commentData = {
+            permSeq: permSeq,
             commentContent: commentContent
         };
         $.ajax({

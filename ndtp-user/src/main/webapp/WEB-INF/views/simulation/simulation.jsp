@@ -163,13 +163,31 @@
 		<div class="listContents" id="">
 			<ul class="analysisGroup">
 				<li>
+					<div>
+						<label for="">처리 목록</label>
+						<div style="display: flex; align-items: center; justify-content: space-between;">
+							<select id="acceptBuildList" name="searchDataStatus">
+								<option value="">선택없음</option>
+							</select>
+							<div>
+								<button type="button" id="permView" title="인허가 시뮬레이션" class="btnTextF" style="">인허가 확인</button>
+								<button type="button" id="comment" class="btnTextF">대화 하기</button>
+							</div>
+						</div>
+					</div>
+					<div>
+						<label for="">완료 목록</label>
+						<div style="display: flex; align-items: center; justify-content: space-between;">
+							<select id="acceptCompleteBuildList" name="searchDataStatus">
+								<option value="">선택없음</option>
+							</select>
+							<button type="button" id="permCompleteView" title="인허가 시뮬레이션" class="btnTextF" style="width: 52%;">완료 인허가 확인</button>
+						</div>
+					</div>
 					<button type="button" id="permRequest" title="건축인 허가 신청" class="btnTextF" style="margin-top:10px;">건축인 허가 신청</button>
-					<button type="button" id="permView" title="인허가 시뮬레이션" class="btnTextF" style="margin-top:10px;">인허가 시뮬레이션</button>
-					<button type="button" id="testFly" class="btnTextF" style="margin-top:10px;">Fly Test</button>
-					<button type="button" id="testingPicking" class="btnTextF" style="margin-top:10px;">testingPicking</button>
-
+					<button type="button" id="testFly" class="btnTextF" style="margin-top:10px; display: none;">Fly Test</button>
+					<button type="button" id="testingPicking" class="btnTextF" style="margin-top:10px; display: none;">testingPicking</button>
 					<button type="button" id="testBuilding" class="btnTextF" style="margin-top:10px; display:none;">testBuilding</button>
-					<button type="button" id="comment" class="btnTextF" style="margin-top:10px;">comment</button>
 				</li>
 
 			</ul>
@@ -294,8 +312,38 @@
 		permRequestDialog.dialog( "open" );
 	});
 
-	$("#permView").on('click', function() {
+	$("#permCompleteView").click(function(event) {
 		// todo: change data
+		let data = {
+			permSeq: buildAcceptPermSeq
+		};
+		$.ajax({
+			url: "/data/simulation-rest/getPermRequestByConstructor",
+			type: "POST",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			data: data,
+			dataType: "json",
+			success: function(msg){
+				console.log("getPermRequestByConstructor msg=", msg);
+				$("#permViewDialog #constructor").get(0).value = msg.constructor;
+				$("#permViewDialog #constructor_type").get(0).value = msg.constructorType;
+				$("#permViewDialog #constructor_type").get(0).disabled = true;
+				$("#permViewDialog #birthday").get(0).value = msg.birthday;
+				$("#permViewDialog #license_num").get(0).value = msg.licenseNum;
+				// $("#permViewDialog #phone_number").get(0).value = msg.phoneNumber;
+				$("#permViewDialog #district_unit_plan").get(0).value = msg.saveFileName;
+
+				permViewDialog.dialog("open");
+			},
+			error:function(request,status,error) {
+				alert('error');
+				console.log("err=", request, status, error);
+			}
+		});
+	});
+
+
+	$("#permView").on('click', function() {
 		let data = {
 			permSeq: buildAcceptPermSeq
 		};
