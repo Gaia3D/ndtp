@@ -67,8 +67,8 @@
 			<div id="dataContent" class="contents-margin-default fullHeight">
 				<div class="tabs">
 					<ul id="dataInfoTab" class="tab tab-divide">
-						<li data-nav="dataGroupInfoContent">데이터 그룹</li>
-						<li data-nav="dataInfoContent" class="on">데이터 목록</li>
+						<li id="dataGroupTab" data-nav="dataGroupInfoContent">데이터 그룹</li>
+						<li id="dataListTab" data-nav="dataInfoContent" class="on">데이터 목록</li>
 					</ul>
 				</div>
 				<%@ include file="/WEB-INF/views/data/map-data.jsp" %>
@@ -132,7 +132,6 @@
 	<!-- E: MAP -->
 </div>
 <!-- E: WRAP -->
-
 <%@ include file="/WEB-INF/views/data/data-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/data-group-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/map-data-template.jsp" %>
@@ -175,11 +174,6 @@
 <script type="text/javascript" src="/js/${lang}/map-init.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript" src="/js/${lang}/issue-controller.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript">
-	// 임시로...
-	$(document).ready(function() {
-		$(".ui-slider-handle").slider({});
- 		initDataGroupList();
-	});
 
 	//Cesium.Ion.defaultAccessToken = '';
 	//var viewer = new Cesium.Viewer('magoContainer');
@@ -277,93 +271,6 @@
 		}); */
 	}
 
-	// 데이터 그룹 목록
-	function dataGroupList() {
-		let dataGroupMap = new Map();
-		$.ajax({
-			url: "/data-groups/all",
-			type: "GET",
-			headers: {"X-Requested-With": "XMLHttpRequest"},
-			dataType: "json",
-			success: function(msg){
-				if(msg.statusCode <= 200) {
-					var dataGroupList = msg.dataGroupList;
-					if(dataGroupList !== null && dataGroupList !== undefined) {
-						var noneTilingDataGroupList = dataGroupList.filter(function(dataGroup){
-							dataGroupMap.set(dataGroup.dataGroupId, dataGroup.dataGroupName);
-							return !dataGroup.tiling;
-						});
-						
-						NDTP.dataGroup = dataGroupMap;
-						
-						dataList(noneTilingDataGroupList);
-
-						var tilingDataGroupList = dataGroupList.filter(function(dataGroup){
-							return dataGroup.tiling;
-						});
-
-						var f4dController = MAGO3D_INSTANCE.getF4dController();
-						for(var i in tilingDataGroupList)
-						{
-							var tilingDataGroup = tilingDataGroupList[i];
-							if(i == tilingDataGroupList.length-1) {
-								tilingDataGroup.smartTileIndexPath = tilingDataGroup.dataGroupPath + tilingDataGroup.dataGroupKey + '_TILE';
-							}
-							f4dController.addSmartTileGroup(tilingDataGroup);
-						}
-					}
-				} else {
-					alert(JS_MESSAGE[msg.errorCode]);
-				}
-			},
-			error:function(request,status,error){
-				alert(JS_MESSAGE["ajax.error.message"]);
-			}
-		});
-	}
-
-	// 데이터 정보 목록
-	function dataList(dataGroupArray) {
-		var dataArray = new Array();
-		var dataGroupArrayLength = dataGroupArray.length;
-		for(var i=0; i<dataGroupArrayLength; i++) {
-			var dataGroup = dataGroupArray[i];
-			if(!dataGroup.tiling) {
-				var f4dController = MAGO3D_INSTANCE.getF4dController();
-				$.ajax({
-					url: "/datas/" + dataGroup.dataGroupId + "/list",
-					type: "GET",
-					headers: {"X-Requested-With": "XMLHttpRequest"},
-					dataType: "json",
-					success: function(msg){
-						if(msg.statusCode <= 200) {
-							var dataInfoList = msg.dataInfoList;
-							if(dataInfoList != null && dataInfoList.length > 0) {
-								var dataInfoFirst = dataInfoList[0];
-								var dataInfoGroupId = dataInfoFirst.dataGroupId;
-								var group;
-								for(var j in dataGroupArray) {
-									if(dataGroupArray[j].dataGroupId === dataInfoGroupId) {
-										group = dataGroupArray[j];
-										break;
-									}
-								}
-	
-								group.datas = dataInfoList;
-								f4dController.addF4dGroup(group);
-							}
-						} else {
-							alert(JS_MESSAGE[msg.errorCode]);
-						}
-					},
-					error:function(request,status,error){
-						alert(JS_MESSAGE["ajax.error.message"]);
-					}
-				});
-			}
-		}
-	}
-	
 	// smart tiling data flyTo
 	function gotoFly(longitude, latitude, altitude) {
 		if(longitude === null || longitude === '' || latitude === null || latitude === '' || altitude === null || altitude === '') {
@@ -392,55 +299,7 @@
 		gotoFlyAPI(MAGO3D_INSTANCE, parseFloat(longitude), parseFloat(latitude), parseFloat(altitude), parseFloat(duration));
 	}
 	
-	//데이터 3D Instance show/hide
-	$('#dataInfoListArea').on('click', '.showHideButton', function() {
-		var dataGroupId = $(this).data('group-id');
-		var dataKey = $(this).data('key');
-		
-		if(dataGroupId === null || dataGroupId === '' || dataKey === null || dataKey === '') {
-			alert("객체 정보가 올바르지 않습니다. 확인하여 주십시오.");
-			return;
-		}
-		
-		var option = true;
-		if ($(this).hasClass("show")) {
-			$(this).removeClass("show");
-			$(this).addClass("hide");
-			option = false;
-		} else {
-			$(this).removeClass("hide");
-			$(this).addClass("show");
-		}
-		
-		var optionObject = { isVisible : option };
-		setNodeAttributeAPI(MAGO3D_INSTANCE, dataGroupId, dataKey, optionObject);
-		
-	});
-	
-	/*
-	function showHideData(dataGroupId, dataKey) {
-		
-		if(dataGroupId === null || dataGroupId === '' || dataKey === null || dataKey === '') {
-			alert("객체 정보가 올바르지 않습니다. 확인하여 주십시오.");
-			return;
-		}
-		
-		//버튼에 id와 class(= "on")가 부여되어있어야 함 (또는, isVisible : !option)
-		var option = true;
-		if ($('#showHideButton').hasClass("show")) {
-			$('#showHideButton').removeClass("show");
-			$('#showHideButton').addClass("hide");
-			option = false;
-		} else {
-			$('#showHideButton').removeClass("hide");
-			$('#showHideButton').addClass("show");
-		}
-		
-		var optionObject = { isVisible : option };
-		setNodeAttributeAPI(MAGO3D_INSTANCE, dataGroupId, dataKey, optionObject);
-	}
-	*/
-	
+	// 데이터 정보 다이얼 로그
 	var dataInfoDialog = $( "#dataInfoDialog" ).dialog({
 		autoOpen: false,
 		width: 500,
@@ -449,8 +308,8 @@
 		overflow : "auto",
 		resizable: false
 	});
-
-	// 데이터 상세 정보 조회
+	
+	//데이터 상세 정보 조회
 	function detailDataInfo(url) {
 		dataInfoDialog.dialog( "open" );
 		$.ajax({
@@ -476,151 +335,6 @@
 				alert(JS_MESSAGE["ajax.error.message"]);
 			}
 		});
-	}
-
-	// 데이터 검색 버튼 클릭
-	$("#mapDataSearch").click(function() {
-		mapDataInfoList(1, $("#searchDataName").val(), $("#searchDataStatus").val(), $("#searchDataType").val());
-	});
-
-	// 데이터 검색 페이징에서 호출됨
-	function pagingDataInfoList(pageNo, searchParameters) {
-		// searchParameters=&searchWord=dataName&searchOption=&searchValue=%ED%95%9C%EA%B8%80&startDate=&endDate=&orderWord=&orderValue=&status=&dataType=
-		var dataName = null;
-		var status = null;
-		var dataType = null;
-		var parameters = searchParameters.split("&");
-		for(var i=0; i<parameters.length; i++) {
-			if(i == 3) {
-				var tempDataName = parameters[3].split("=");
-				dataName = tempDataName[1];
-			} else if(i == 8) {
-				var tempDataStatus = parameters[8].split("=");
-				status = tempDataStatus[1];
-			} else if(i == 9) {
-				var tempDataType = parameters[9].split("=");
-				dataType = tempDataType[1];
-			}
-		}
-
-		mapDataInfoList(pageNo, dataName, status, dataType);
-	}
-
-	// 데이터 검색
-	var dataSearchFlag = true;
-	function mapDataInfoList(pageNo, searchDataName, searchStatus, searchDataType) {
-		// searchOption : 1 like
-
-		//searchDataName
-		if(dataSearchFlag) {
-			dataSearchFlag = false;
-			//var formData =$("#searchDataForm").serialize();
-
-			$.ajax({
-				url: "/datas",
-				type: "GET",
-				data: { pageNo : pageNo, searchWord : "data_name", searchValue : searchDataName, searchOption : "1", status : searchStatus, dataType : searchDataType},
-				dataType: "json",
-				headers: {"X-Requested-With": "XMLHttpRequest"},
-				success: function(msg){
-					if(msg.statusCode <= 200) {
-						$("#dataInfoListArea").html("");
-
-						var source = $("#templateDataList").html();
-		                //핸들바 템플릿 컴파일
-		                var template = Handlebars.compile(source);
-
-		               	//핸들바 템플릿에 데이터를 바인딩해서 HTML 생성
-		                var dataInfoListHtml = template(msg);
-		                $("#dataInfoListArea").html("");
-		                $("#dataInfoListArea").append(dataInfoListHtml);
-					} else {
-						alert(JS_MESSAGE[msg.errorCode]);
-					}
-					dataSearchFlag = true;
-				},
-				error:function(request,status,error){
-					alert(JS_MESSAGE["ajax.error.message"]);
-					dataSearchFlag = true;
-				}
-			});
-		} else {
-			alert(JS_MESSAGE["button.dobule.click"]);
-			return;
-		}
-	}
-
-	// 데이터 그룹 목록 초기화
-	function initDataGroupList() {
-		mapDataGroupList(1, null);
-	}
-
-	// 데이터 그룹 검색 버튼 클릭
-	$("#mapDataGroupSearch").click(function() {
-		mapDataGroupList(1, $("#searchDataGroupName").val());
-	});
-
-	$("#searchDataGroupName").keyup(function(e) {
-		if(e.keyCode == 13) mapDataGroupList(1, $("#searchDataGroupName").val());
-	});
-
-	// 데이터 그룹 검색 페이징에서 호출됨
-	function pagingDataGroupList(pageNo, searchParameters) {
-		// searchParameters=&searchWord=dataName&searchOption=&searchValue=%ED%95%9C%EA%B8%80&startDate=&endDate=&orderWord=&orderValue=&status=&dataType=
-		var dataGroupName = null;
-		var parameters = searchParameters.split("&");
-		for(var i=0; i<parameters.length; i++) {
-			if(i == 3) {
-				var tempDataName = parameters[3].split("=");
-				dataGroupName = tempDataName[1];
-			}
-		}
-
-		mapDataGroupList(pageNo, dataGroupName);
-	}
-
-	// 데이터 그룹 검색
-	var dataGroupSearchFlag = true;
-	function mapDataGroupList(pageNo, searchDataGroupName) {
-		// searchOption : 1 like
-
-		//searchDataName
-		if(dataGroupSearchFlag) {
-			dataGroupSearchFlag = false;
-			//var formData =$("#searchDataForm").serialize();
-
-			$.ajax({
-				url: "/data-groups",
-				type: "GET",
-				data: { pageNo : pageNo, searchWord : "data_group_name", searchValue : searchDataGroupName, searchOption : "1"},
-				dataType: "json",
-				headers: {"X-Requested-With": "XMLHttpRequest"},
-				success: function(msg){
-					if(msg.statusCode <= 200) {
-						$("#dataGroupListArea").html("");
-
-						var source = $("#templateDataGroupList").html();
-		                //핸들바 템플릿 컴파일
-		                var template = Handlebars.compile(source);
-
-		                //핸들바 템플릿에 데이터를 바인딩해서 HTML 생성
-		                var dataGroupListHtml = template(msg);
-		                $("#dataGroupListArea").html("");
-		                $("#dataGroupListArea").append(dataGroupListHtml);
-					} else {
-						alert(JS_MESSAGE[msg.errorCode]);
-					}
-					dataGroupSearchFlag = true;
-				},
-				error:function(request,status,error){
-					alert(JS_MESSAGE["ajax.error.message"]);
-					dataGroupSearchFlag = true;
-				}
-			});
-		} else {
-			alert(JS_MESSAGE["button.dobule.click"]);
-			return;
-		}
 	}
 	
 	// 데이터 속성 다이얼 로그
@@ -863,5 +577,7 @@
 		}
 	}
 </script>
+<script type="text/javascript" src="/js/${lang}/map-data.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/map-data-group.js?cacheVersion=${contentCacheVersion}"></script>
 </body>
 </html>

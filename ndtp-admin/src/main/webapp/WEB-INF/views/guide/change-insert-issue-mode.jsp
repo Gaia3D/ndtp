@@ -81,5 +81,8 @@
 				row.appendChild(td);
 			}
 		}
+		if($('#api13').length!=0){
+			$('.popupGroup').stop().animate({scrollTop:$('.menu_tab00').height()},800);
+		}
     }
 </script>

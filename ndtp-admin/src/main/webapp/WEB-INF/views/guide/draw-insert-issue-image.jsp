@@ -69,11 +69,11 @@
 			<label for="api23-p4">data_key</label>
 			<input type="text" id="api23-p4" value="factory" data-require="true"><br/>
 			<label for="api23-p5">longitude</label>
-			<input type="text" id="api23-p5" value="127.000" data-require="true"><br/>
+			<input type="text" id="api23-p5" value="126.923785" data-require="true"><br/>
 			<label for="api23-p6">latitude</label>
-			<input type="text" id="api23-p6" value="37.000" data-require="true"><br/>
+			<input type="text" id="api23-p6" value="37.521168" data-require="true"><br/>
 			<label for="api23-p7">height</label>
-			<input type="text" id="api23-p7" value="550" data-require="true">
+			<input type="text" id="api23-p7" value="100" data-require="true">
 		</div>
 		<br/> 
 		<input type="button" id="drawInsertIssueImage" value="Run" class="popupBtn">

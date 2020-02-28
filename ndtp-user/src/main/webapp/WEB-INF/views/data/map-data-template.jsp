@@ -3,6 +3,7 @@
 	<div>
 		<span><spring:message code='all.d'/> <span>{{formatNumber pagination.totalCount}}</span> <spring:message code='search.what.count'/></span>
 		<span class="float-right">{{formatNumber pagination.pageNo}} / {{formatNumber pagination.lastPage}} <spring:message code='search.page'/></span>
+		<input type="hidden" name="pageNo" value="{{pagination.pageNo}}">
 	</div>
 	<div class="dataBtns"></div>
 		<div class="tableList marT10 yScroll" style="height: calc(100% - 43px)">
@@ -44,7 +45,13 @@
 		{{/ifMatch}}
 						</td>
 						<td class="alignLeft ellipsis" style="max-width:100px;"><a href="/datas/{{dataId}}" onclick="detailDataInfo(this.href); return false;">{{dataName}}</a></td>
-						<td><button type="button" title="표시" class="showHideButton show" data-group-id="{{dataGroupId}}" data-key="{{dataKey}}">표시</button></td>
+						<td>
+		{{#if groupVisible}}
+							<button type="button" title="표시" class="showHideButton show" data-group-id="{{dataGroupId}}" data-key="{{dataKey}}">표시</button>
+		{{else}}
+							<button type="button" title="표시" class="showHideButton hide" data-group-id="{{dataGroupId}}" data-key="{{dataKey}}">표시</button>
+		{{/if}}
+						</td>
 						<td>
 		{{#if tiling}}
 						<button type="button" title="바로가기" class="goto" style="margin: 0px; padding: 0px;"

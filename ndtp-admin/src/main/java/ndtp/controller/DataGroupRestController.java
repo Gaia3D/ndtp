@@ -23,7 +23,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.DataGroup;
-import ndtp.domain.DataInfo;
 import ndtp.domain.DataInfoSimple;
 import ndtp.domain.Key;
 import ndtp.domain.LocationUdateType;
