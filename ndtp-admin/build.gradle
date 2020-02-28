@@ -102,14 +102,22 @@ dependencies {
 	providedRuntime 'org.apache.tomcat.embed:tomcat-embed-jasper'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	
+	//testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude module: 'junit'
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 	
-	testImplementation 'org.junit.jupiter:junit-jupiter-api'
-    testCompile 'org.junit.jupiter:junit-jupiter-params'
-    testRuntime 'org.junit.jupiter:junit-jupiter-engine'
+	//testImplementation 'org.junit.jupiter:junit-jupiter-api'
+	//testCompile 'org.junit.jupiter:junit-jupiter-params'
+	//testRuntime 'org.junit.jupiter:junit-jupiter-engine'
+    //implementation 'org.junit.platform:junit-platform-runner:1.6.0'
+    //implementation 'org.junit.platform:junit-platform-launcher:1.6.0'
+    //implementation 'org.junit.jupiter:junit-jupiter:5.6.0'
+    //implementation 'org.junit.platform:junit-platform-commons:1.6.0'
+    
+    //implementation 'org.junit:junit-bom:5.6.0'
     
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'

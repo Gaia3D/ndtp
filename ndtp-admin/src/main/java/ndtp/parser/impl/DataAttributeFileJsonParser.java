@@ -1,5 +1,6 @@
 package ndtp.parser.impl;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -18,9 +19,8 @@ public class DataAttributeFileJsonParser implements DataAttributeFileParser {
 		String attribute = null;
 		
 		try {
-			byte[] jsonData = Files.readAllBytes(Paths.get(dataAttributeFileInfo.getFilePath() + dataAttributeFileInfo.getFileRealName()));
-			attribute = new String(jsonData);
-			
+			//byte[] jsonData = Files.readAllBytes(Paths.get(dataAttributeFileInfo.getFilePath() + dataAttributeFileInfo.getFileRealName()));
+			attribute = new String(Files.readAllBytes(Paths.get(dataAttributeFileInfo.getFilePath() + dataAttributeFileInfo.getFileRealName())), StandardCharsets.UTF_8);
 			parseSuccessCount++;
 		} catch (Exception e) {
 			parseErrorCount++;
