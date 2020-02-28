@@ -184,7 +184,9 @@
 		baseLayers : {}
 	};
 	
-	initPolicy(function(){
+	initPolicy(function(policy, baseLayers){
+		NDTP.policy = policy;
+		NDTP.baseLayers = baseLayers;
 		magoInit();
 	});
 
@@ -560,28 +562,6 @@
 			alert(JS_MESSAGE["button.dobule.click"]);
 			return;
 		}
-	}
-	
-	// init policy
-	function initPolicy(callback) {
-		$.ajax({
-			url: "/policy/",
-			type: "GET",
-			headers: {"X-Requested-With": "XMLHttpRequest"},
-			dataType: "json",
-			success: function(msg){
-				if(msg.statusCode <= 200) {
-					NDTP.policy = msg.geoPolicy;
-					NDTP.baseLayers = msg.baseLayers;
-					callback();
-				} else {
-					alert(JS_MESSAGE[msg.errorCode]);
-				}
-			},
-			error:function(request,status,error){
-				alert(JS_MESSAGE["ajax.error.message"]);
-			}
-		});
 	}
 	
 	function validate() {
