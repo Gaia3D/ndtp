@@ -101,6 +101,9 @@ function mapDataInfoList(pageNo, searchDataName, searchStatus, searchDataType) {
 							var data = dataList[i];
 							var dataId = parseInt(data.dataGroupId);
 							if (!$.isEmptyObject(groupMap)) {
+								if (!groupMap[dataGroupId]) {
+									break;
+								}
 								var visible = groupMap[dataId].attributes.visible;
 								if (visible === undefined) {
 									data.groupVisible = true;

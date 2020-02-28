@@ -38,12 +38,15 @@ $(document).ready(function() {
 		
 		var groupMap = MAGO3D_INSTANCE.getMagoManager().hierarchyManager.projectsMap;
 		dataGroupId = parseInt(dataGroupId);
-		groupMap[dataGroupId].attributes.visible = option;
+		if (!$.isEmptyObject(groupMap) && groupMap[dataGroupId] && groupMap[dataGroupId].attributes) {
+			groupMap[dataGroupId].attributes.visible = option;
+		}
 		
 		var optionObject = { isVisible : option };
 		var nodeMap = MAGO3D_INSTANCE.getMagoManager().hierarchyManager.getNodesMap(dataGroupId);
 		for (var key in nodeMap){ 
 		    var node = nodeMap[key];
+		    if (!nodeMap[key]) break;
 		    var nodeData = node.data;
 		    if (nodeData && nodeData.attributes && nodeData.attributes.isPhysical) {
 		        setNodeAttributeAPI(MAGO3D_INSTANCE, dataGroupId, key, optionObject);
