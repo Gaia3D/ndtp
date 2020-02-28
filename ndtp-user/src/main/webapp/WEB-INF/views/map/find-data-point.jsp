@@ -213,23 +213,22 @@
 	let dataGroupMap = new Map();
 	dataGroupMap.set(parseInt('${dataInfo.dataGroupId}'), '${dataInfo.dataGroupName}');
 	var NDTP = NDTP ||{
-		policy : ${geoPolicyJson},
+		policy : {},
 		dataGroup : dataGroupMap,
-		baseLayers : ${baseLayerJson},
-		//wmsProvider : {},
-		//districtProvider : {}
+		baseLayers : {},
 	};
 
-	var geoPolicyJson = null;
 	var viewer = null;
 	var entities = null;
-
-	magoInit();
+	
+	initPolicy(function(policy, baseLayers){
+		NDTP.policy = policy;
+		NDTP.baseLayers = baseLayers;
+		magoInit();
+	}, '${dataInfo.dataId}');
 
 	function magoInit() {
-
-		geoPolicyJson = ${geoPolicyJson};
-
+		var geoPolicyJson = NDTP.policy;
 		var cesiumViewerOption = {};
 		cesiumViewerOption.infoBox = false;
 		cesiumViewerOption.navigationHelpButton = false;
@@ -252,6 +251,7 @@
 
 	var beforePointId = null;
 	function magoLoadEnd(e) {
+		var geoPolicyJson = NDTP.policy;
 		var magoInstance = e;
 		viewer = magoInstance.getViewer();
 		entities = viewer.entities;
@@ -289,7 +289,7 @@
 
 	    // 기본 레이어 랜더링
 		setTimeout(function(){
-			var map = new mapInit(magoInstance, ${baseLayerJson}, ${geoPolicyJson});
+			var map = new mapInit(magoInstance, NDTP.baseLayers, geoPolicyJson);
         	map.initLayer();
         }, geoPolicyJson.initDuration * 1000);
 
@@ -377,7 +377,6 @@
 	}
 
 	function initData(dataInfo) {
-
 		//clearDataControl();
 		//$('#dcColor').hide();
 
