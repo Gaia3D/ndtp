@@ -3,7 +3,7 @@
 	<div>
 		<span><spring:message code='all.d'/> <span>{{formatNumber pagination.totalCount}}</span> <spring:message code='search.what.count'/></span>
 		<span class="float-right">{{formatNumber pagination.pageNo}} / {{formatNumber pagination.lastPage}} <spring:message code='search.page'/></span>
-		<input type="hidden" name="pageNo" value="{{formatNumber pagination.pageNo}}">
+		<input type="hidden" name="pageNo" value="{{pagination.pageNo}}">
 	</div>
 	<div class="dataBtns"></div>
 		<div class="tableList marT10 yScroll" style="height: calc(100% - 43px)">

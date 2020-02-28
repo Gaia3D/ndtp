@@ -101,10 +101,11 @@ function mapDataInfoList(pageNo, searchDataName, searchStatus, searchDataType) {
 							var data = dataList[i];
 							var dataId = parseInt(data.dataGroupId);
 							if (!$.isEmptyObject(groupMap)) {
-								if (!groupMap[dataId]) {
+								var dataGroup = groupMap[dataId];
+								if (!dataGroup || $.isEmptyObject(dataGroup)) {
 									break;
 								}
-								var visible = groupMap[dataId].attributes.visible;
+								var visible = dataGroup.attributes.visible;
 								if (visible === undefined) {
 									data.groupVisible = true;
 								} else {
