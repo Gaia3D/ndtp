@@ -46,9 +46,9 @@ $(document).ready(function() {
 		var nodeMap = MAGO3D_INSTANCE.getMagoManager().hierarchyManager.getNodesMap(dataGroupId);
 		for (var key in nodeMap){ 
 		    var node = nodeMap[key];
-		    if (!nodeMap[key]) break;
+		    if (!node || $.isEmptyObject(node)) break;
 		    var nodeData = node.data;
-		    if (nodeData && nodeData.attributes && nodeData.attributes.isPhysical) {
+		    if (nodeData && nodeData.attributes && nodeData.attributes.isPhysical === true) {
 		        setNodeAttributeAPI(MAGO3D_INSTANCE, dataGroupId, key, optionObject);
 		    }
 		}
