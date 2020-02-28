@@ -372,12 +372,17 @@ public class DataRestController {
 //			buffer.append("dataName=");
 //		}
 		
-		buffer.append("&");
-		buffer.append("status=");
-		buffer.append(dataInfo.getStatus());
-		buffer.append("&");
-		buffer.append("dataType=");
-		buffer.append(dataInfo.getDataType());
+		if (dataInfo.getStatus() != null) {
+			buffer.append("&");
+			buffer.append("status=");
+			buffer.append(dataInfo.getStatus());
+		}
+		
+		if (dataInfo.getDataType() != null) {
+			buffer.append("&");
+			buffer.append("dataType=");
+			buffer.append(dataInfo.getDataType());
+		}
 		return buffer.toString();
 	}
 	
