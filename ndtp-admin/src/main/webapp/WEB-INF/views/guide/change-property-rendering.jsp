@@ -47,7 +47,7 @@
 			<label for="api5-p2">projectId</label>
 			<input type="text" data-require="true" id="api5-p2" value="sample" disabled><br/>
 			<label for="api5-p3">property</label>
-			<input type="text" data-require="true" id="api5-p3" value="propertyFilter" disabled>
+			<input type="text" data-require="true" id="api5-p3" value="isPhysical=true" disabled>
 		</div>
 		<br/> 
 		<input type="button" id="changePropertyRendering" value="Run" class="popupBtn">
@@ -61,8 +61,7 @@
 		var isFalseBoolean = (flag === 'true');
 		var projectId = $('#api5-p2').val();
 		var property = $('#api5-p3').val();
-		var propertyValue = property+"="+isFalseBoolean;
 
-		changePropertyRenderingAPI(MAGO3D_INSTANCE2, true, projectId, propertyValue);
+		changePropertyRenderingAPI(MAGO3D_INSTANCE2, isFalseBoolean, projectId, property);
 	}
 </script>
