@@ -184,16 +184,18 @@
 	//Cesium.Ion.defaultAccessToken = '';
 	//var viewer = new Cesium.Viewer('magoContainer');
 	var MAGO3D_INSTANCE;
-	// ndtp 전역 네임스페이스
 	var NDTP = NDTP || {
-		policy : ${geoPolicyJson},
+		policy : {},
 		dataGroup : {},
-		baseLayers : ${baseLayerJson}
+		baseLayers : {}
 	};
-	magoInit();
+	
+	initPolicy(function(){
+		magoInit();
+	});
 
 	function magoInit() {
-		var geoPolicyJson = ${geoPolicyJson};
+		var geoPolicyJson = NDTP.policy;
 
 		var cesiumViewerOption = {};
 		cesiumViewerOption.infoBox = false;
@@ -218,7 +220,7 @@
 
 	function magoLoadEnd(e) {
 		var magoInstance = e;
-		var geoPolicyJson = ${geoPolicyJson};
+		var geoPolicyJson = NDTP.policy;
 		var viewer = magoInstance.getViewer();
 		var magoManager = magoInstance.getMagoManager();
 		var f4dController = magoInstance.getF4dController();
@@ -250,7 +252,7 @@
         CivilVoice(magoInstance);
         // 기본 레이어 랜더링
         setTimeout(function(){
-        	NDTP.map = new mapInit(magoInstance, ${baseLayerJson}, ${geoPolicyJson});
+        	NDTP.map = new mapInit(magoInstance, NDTP.baseLayers, geoPolicyJson);
         	NDTP.map.initLayer();
         }, geoPolicyJson.initDuration * 1000);
 
@@ -844,6 +846,28 @@
 			alert(JS_MESSAGE["button.dobule.click"]);
 			return;
 		}
+	}
+	
+	// init policy
+	function initPolicy(callback) {
+		$.ajax({
+			url: "/policy/",
+			type: "GET",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			dataType: "json",
+			success: function(msg){
+				if(msg.statusCode <= 200) {
+					NDTP.policy = msg.geoPolicy;
+					NDTP.baseLayers = msg.baseLayers;
+					callback();
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+				}
+			},
+			error:function(request,status,error){
+				alert(JS_MESSAGE["ajax.error.message"]);
+			}
+		});
 	}
 	
 	function validate() {
