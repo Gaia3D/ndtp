@@ -23,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 import com.zaxxer.hikari.HikariDataSource;
 
 import lombok.extern.slf4j.Slf4j;
+import ndtp.config.PropertiesConfig;
 import ndtp.domain.AccessLog;
 import ndtp.domain.CivilVoice;
 import ndtp.domain.DataAdjustLog;
@@ -73,6 +74,9 @@ public class WidgetRestController {
 
 	@Autowired
 	private CivilVoiceService civilVoiceService;
+
+	@Autowired
+	private PropertiesConfig propertiesConfig;
 
 	/**
 	 * 데이터 그룹별 통계 정보
@@ -363,7 +367,7 @@ public class WidgetRestController {
 
 		try {
 			RestTemplate restTemplate = new RestTemplate();
-			String serverHost = "http://localhost:9090";
+			String serverHost = propertiesConfig.getRestServer();
 
 			URI diskSpaceURI = new URI(serverHost + "/actuator/health/diskSpace");
 			ResponseEntity<Map> response1 = restTemplate.getForEntity(diskSpaceURI, Map.class);
