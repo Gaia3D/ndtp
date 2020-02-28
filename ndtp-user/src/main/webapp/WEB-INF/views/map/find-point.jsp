@@ -62,14 +62,21 @@
 	//Cesium.Ion.defaultAccessToken = '';
 	//var viewer = new Cesium.Viewer('magoContainer');
 	var MAGO3D_INSTANCE;
+	var NDTP = NDTP || {
+		policy : {},
+		baseLayers : {}
+	};
 	var viewer = null; 
 	var entities = null;
-	var geoPolicyJson = ${geoPolicyJson};
 	
-	magoInit();
+	initPolicy(function(policy, baseLayers){
+		NDTP.policy = policy;
+		NDTP.baseLayers = baseLayers;
+		magoInit();
+	});
 	
 	function magoInit() {
-		
+		var geoPolicyJson = NDTP.policy;
 		var cesiumViewerOption = {};
 			cesiumViewerOption.infoBox = false;
 			cesiumViewerOption.navigationHelpButton = false;
@@ -93,7 +100,7 @@
 	var beforePointId = null;
 	function magoLoadEnd(e) {
 		var magoInstance = e;
-		
+		var geoPolicyJson = NDTP.policy;
 		viewer = magoInstance.getViewer(); 
 		entities = viewer.entities;
 		var magoManager = magoInstance.getMagoManager();
@@ -139,7 +146,7 @@
 		});
 		
 		setTimeout(function(){
-			var map = new mapInit(magoInstance, ${baseLayerJson}, ${geoPolicyJson});
+			var map = new mapInit(magoInstance, NDTP.baseLayers, geoPolicyJson);
         	map.initLayer();
         }, geoPolicyJson.initDuration * 1000);
 	}
