@@ -69,10 +69,10 @@
 	        updatPolicyUserFlag = false;
 	        var formData = $('#policyUser').serialize();
 	        $.ajax({
-				url: "/policy/modify-user",
+				url: "/policies/user/" + "${policy.policyId}",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
-		        data: formData + "&policyId=${policy.policyId}",
+		        data: formData,
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						alert("사용자 정책이 수정 되었습니다");
@@ -101,10 +101,10 @@
 	        updatPolicyPasswordFlag = false;
 	        var formData = $('#policyPassword').serialize();
 	        $.ajax({
-				url: "/policy/modify-password",
+				url: "/policies/password/" + "${policy.policyId}",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
-		        data: formData + "&policyId=${policy.policyId}",
+		        data: formData,
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						alert("비밀번호 정책이 수정 되었습니다");
@@ -133,10 +133,10 @@
 	        updatPolicyNoticeFlag = false;
 	        var formData = $('#policyNotice').serialize();
 	        $.ajax({
-				url: "/policy/modify-notice",
+				url: "/policies/notice/" + "${policy.policyId}",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
-		        data: formData + "&policyId=${policy.policyId}",
+		        data: formData,
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						alert("알림 정책이 수정 되었습니다");
@@ -165,10 +165,10 @@
 	        updatPolicySecurityFlag = false;
 	        var formData = $('#policySecurity').serialize();
 	        $.ajax({
-				url: "/policy/modify-security",
+				url: "/policies/security/" + "${policy.policyId}",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
-		        data: formData + "&policyId=${policy.policyId}",
+		        data: formData,
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						alert("보안 정책이 수정 되었습니다");
@@ -197,10 +197,10 @@
 	        updatPolicyContentFlag = false;
 	        var formData = $('#policyContent').serialize();
 	        $.ajax({
-				url: "/policy/modify-content",
+				url: "/policies/content/" + "${policy.policyId}",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
-		        data: formData + "&policyId=${policy.policyId}",
+		        data: formData,
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						alert("컨텐트 정책이 수정 되었습니다");
@@ -229,10 +229,10 @@
 	        updatPolicyUploadFlag = false;
 	        var formData = $('#policyUpload').serialize();
 	        $.ajax({
-				url: "/policy/modify-upload",
+				url: "/policies/upload/" + "${policy.policyId}",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
-		        data: formData + "&policyId=${policy.policyId}",
+		        data: formData,
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						alert("업로드 정책이 수정 되었습니다");

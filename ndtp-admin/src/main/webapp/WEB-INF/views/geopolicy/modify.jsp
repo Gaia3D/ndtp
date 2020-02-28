@@ -61,10 +61,10 @@
 	        updatePolicyGeoInfoFlag = false;
 	        var formData = $('#geoPolicyGeoInfo').serialize();
 	        $.ajax({
-				url: "/geopolicy/modify-geopolicy",
+				url: "/geopolicies/" + "${geoPolicy.geoPolicyId}",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
-		        data: formData + "&geoPolicyId=${geoPolicy.geoPolicyId}",
+		        data: formData,
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						alert("공간정보 정책이 수정 되었습니다");
@@ -93,10 +93,10 @@
 	        updatePolicyGeoServerFlag = false;
 	        var formData = $('#geoPolicyGeoServer').serialize();
 	        $.ajax({
-				url: "/geopolicy/modify-geoserver",
+				url: "/geopolicies/geoserver/" + "${geoPolicy.geoPolicyId}",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
-		        data: formData + "&geoPolicyId=${geoPolicy.geoPolicyId}",
+		        data: formData,
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						alert("GeoServer 정책이 수정 되었습니다");
