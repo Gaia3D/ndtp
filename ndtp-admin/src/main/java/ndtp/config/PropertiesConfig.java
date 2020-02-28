@@ -66,5 +66,6 @@ public class PropertiesConfig {
     private String dataObjectAttributeUploadDir;
     
     private String guideDataServiceDir;
-
+    
+    private String ogr2ogrEnviromentPath; 
 }
