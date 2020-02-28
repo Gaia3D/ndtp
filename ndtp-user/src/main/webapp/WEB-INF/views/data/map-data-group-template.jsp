@@ -14,6 +14,7 @@
 				<col />
 				<col class="col-width-17" />
 				<col class="col-width-12" />
+				<col class="col-width-12" />
 			</colgroup>
 			<thead>
 				<tr>
@@ -21,7 +22,8 @@
 					<th>공유 유형</th>
 					<th>그룹명</th>
 					<th>데이터 건수</th>
-					<th>보기</th>
+					<th>표시</th>
+					<th>이동</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -57,9 +59,8 @@
 							{{dataGroupName}}
 						</a>
 					</td>
-					<td>
-						{{dataCount}}
-					</td>
+					<td>{{dataCount}}</td>
+					<td><button type="button" title="표시" class="showHideButton show" data-group-id="{{dataGroupId}}">표시</button></td>
 					<td>
 						<button type="button" title="바로가기" class="goto" onclick="flyToGroup('{{longitude}}', '{{latitude}}', '{{altitude}}', '2');">바로가기</button>
 					</td>
