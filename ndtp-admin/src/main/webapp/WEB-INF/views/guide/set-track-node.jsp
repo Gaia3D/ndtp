@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>setTrackNodeAPI</h2>
 		<p>트래킹 할 노드를 설정하는 API입니다. 설정한 데이터를 카메라가 계속 바라보게 됩니다.</p>
 		<table>
@@ -41,18 +41,18 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api39-p1">projectId</label>
-			<input type="text" id="api39-p1" data-require="true" value="sample" disabled><br>
+			<input type="text" id="api39-p1" value="sample" data-require="true" disabled><br>
 			<label for="api39-p2">dataKey</label>
-			<input type="text" id="api39-p2" data-require="true" value="SOCIALROOM" disabled><br>
+			<input type="text" id="api39-p2" value="SOCIALROOM" data-require="true" disabled><br>
 			<label for="api39-p3">option_y</label>
-			<input type="text" id="api39-p3" data-require="false" value="-1"><br>
+			<input type="text" id="api39-p3" value="-1" data-require="false"><br>
 			<label for="api39-p4">option_z</label>
-			<input type="text" id="api39-p4" data-require="false" value="12">
+			<input type="text" id="api39-p4" value="12" data-require="false">
 		</div>
 		<br> 
 		<input type="button" id="setTrackNode" value="Run" class="popupBtn" >
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var setTrackNode = function() {

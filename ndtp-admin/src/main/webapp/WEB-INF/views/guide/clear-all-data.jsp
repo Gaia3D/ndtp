@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>clearAllDataAPI</h2>
 		<p>화면에 있는 모든 데이터를 삭제, 비표시하는 API입니다.</p>
 		<table>
@@ -25,7 +25,7 @@
 		<br/>
 		<input type="button" id="clearAllData" value="Run" class="popupBtn">
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var clearAllData = function() {

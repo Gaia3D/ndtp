@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>searchDataAPI</h2>
 		<p>프로젝트 아이디(projectId)와 데이터 고유키(dataKey)에 해당하는 지도 상의 데이터를 찾아 이동하는
 			API입니다.</p>
@@ -37,14 +37,14 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api26-p1">projectId</label>
-			<input type="text" data-require="true" id="api26-p1" value="sample" disabled><br>
+			<input type="text" id="api26-p1" value="sample" data-require="true" disabled><br>
 			<label for="api26-p2">dataKey</label>
-			<input type="text" data-require="true" id="api26-p2" value="SOCIALROOM" disabled>
+			<input type="text" id="api26-p2" value="SOCIALROOM" data-require="true" disabled>
 		</div>
 		<br> 
 		<input type="button" id="searchData" value="Run" class="popupBtn">
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var searchData = function() {

@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>getCoordinateRelativeToBuildingAPI</h2>
 		<p>입력받은 지점 좌표를 해당 건물 기준의 상대좌표로 변환합니다.</p>
 		<table>
@@ -58,15 +58,15 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api32-p1">projectId</label>
-			<input type="text" data-require="true" id="api32-p1" value="sample" disabled><br>
+			<input type="text" id="api32-p1" value="sample" data-require="true" disabled><br>
 			<label for="api32-p2">dataKey</label>
-			<input type="text" data-require="true" id="api32-p2" value="SOCIALROOM" disabled><br>
+			<input type="text" id="api32-p2" value="SOCIALROOM" data-require="true" disabled><br>
 			<label for="api32-p3">inputPoint_x</label>
-			<input type="text" data-require="true" id="api32-p3" value="-3042900.885750481"><br>
+			<input type="text" id="api32-p3" value="-3042900.885750481" data-require="true"><br>
 			<label for="api32-p4">inputPoint_y</label>
-			<input type="text" data-require="true" id="api32-p4" value="4049125.0454490855"><br>
+			<input type="text" id="api32-p4" value="4049125.0454490855" data-require="true"><br>
 			<label for="api32-p5">inputPoint_z</label>
-			<input type="text" data-require="true" id="api32-p5" value="3863515.8373681">
+			<input type="text" id="api32-p5" value="3863515.8373681" data-require="true">
 		</div>
 		<br> 
 		<input type="button" id="getCoordinateRelativeToBuilding" value="Run" class="popupBtn">
@@ -75,7 +75,7 @@
 			<table id="api32-result"></table>
 		</div>
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var getCoordinateRelativeToBuilding = function() {

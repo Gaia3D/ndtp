@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>addStaticModelAPI</h2>
 		<p>정적 모델을 추가하는 API입니다.</p>
 		
@@ -32,16 +32,16 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api38-p1">projectId</label>
-			<input type="text" id="api38-p1" data-require="true" value="static_sample"><br/>
+			<input type="text" id="api38-p1" value="static_sample" data-require="true"><br/>
 			<label for="api38-p2">projectFolderName</label>
-			<input type="text" id="api38-p2" data-require="true" value="sample" disabled><br/>
+			<input type="text" id="api38-p2" value="sample" data-require="true" disabled><br/>
 			<label for="api38-p3">buildingFolderName</label>
-			<input type="text" id="api38-p3" data-require="true" value="F4D_SOCIALROOM" disabled>
+			<input type="text" id="api38-p3" value="F4D_SOCIALROOM" data-require="true" disabled>
 		</div>
 		<br/> 
 		<input type="button" id="addStaticModel" value="Run" class="popupBtn">
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var addStaticModel = function() {

@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>changeObjectMoveAPI</h2>
 		<p>객체의 이동 모드를 변경하는 API입니다. 이동 모드(objectMoveMode) 값이 0(All)일 경우 건물
 			전체가 선택 및 이동되며, 1(Object)일 경우 창문과 같이 객체 단위로 선택 및 이동이 가능하며, 2(None)일 경우
@@ -42,7 +42,7 @@
 		<br/> 
 		<input type="button" id="changeObjectMove" value="Run" class="popupBtn">
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var changeObjectMove = function() {

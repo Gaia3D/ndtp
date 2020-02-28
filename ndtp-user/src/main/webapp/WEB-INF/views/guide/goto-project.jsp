@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>gotoProjectAPI</h2>
 		<p>해당 프로젝트를 로딩하고 그 프로젝트로 이동하는 API입니다.</p>
 		<table>
@@ -61,24 +61,24 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api24-p1">projectId</label>
-			<input type="text" data-require="true" id="api24-p1" value="sample2"><br>
+			<input type="text" id="api24-p1" value="sample2" data-require="true"><br>
 			<label for="api24-p2">projectData</label>
-			<input type="text" data-require="true" id="api24-p2" value="sample_f4d"><br>
+			<input type="text" id="api24-p2" value="sample_f4d" data-require="true"><br>
 			<label for="api24-p3">projectDataFolder</label>
-			<input type="text" data-require="true" id="api24-p3" value="sample"><br>
+			<input type="text" id="api24-p3" value="sample" data-require="true"><br>
 			<label for="api24-p4">longitude</label>
-			<input type="text" data-require="true" id="api24-p4" value="126.60890424717905"><br>
+			<input type="text" id="api24-p4" value="126.60890424717905" data-require="true"><br>
 			<label for="api24-p5">latitude</label>
-			<input type="text" data-require="true" id="api24-p5" value="37.58358288958673"><br>
+			<input type="text" id="api24-p5" value="37.58358288958673" data-require="true"><br>
 			<label for="api24-p6">height</label>
-			<input type="text" data-require="true" id="api24-p6" value="550"><br>
+			<input type="text" id="api24-p6" value="550" data-require="true"><br>
 			<label for="api24-p7">duration</label>
-			<input type="text" data-require="true" id="api24-p7" value="1">
+			<input type="text" id="api24-p7" value="1" data-require="true">
 		</div>
 		<br> 
 		<input type="button" id="gotoProject" value="Run" class="popupBtn">
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var gotoProject = function() {

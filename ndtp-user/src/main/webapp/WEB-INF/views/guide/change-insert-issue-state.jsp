@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>changeInsertIssueStateAPI</h2>
 		<p>mago3DJS 엔진이 이슈 등록을 위해서 좌표를 기억하고 있었는데
 		changeInsertIssueStateAPI에 파라미터에 0을 넘겨 주면 좌표를 초기화합니다.</p>
@@ -32,12 +32,12 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api18-p1">insertIssueState</label>
-			<input type="text" data-require="true" id="api18-p1" value="0">
+			<input type="text" id="api18-p1" value="0" data-require="true">
 		</div>
 		<br/> 
 		<input type="button" id="changeInsertIssueState" value="Run" class="popupBtn">
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var changeInsertIssueState = function() {

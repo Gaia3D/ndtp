@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>getCameraCurrentPositionAPI</h2>
 
 		<p>현재 카메라의 위치를 구하는 API입니다.</p>
@@ -58,7 +58,7 @@
 			<table id="api34-result"></table>
 		</div>
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var getCameraCurrentPosition = function() {

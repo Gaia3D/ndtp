@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>gotoIssueAPI</h2>
 		<p>해당 프로젝트를 로딩하고 그 이슈로 이동하는 API입니다.</p>
 		<table>
@@ -71,28 +71,28 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api25-p1">projectId</label>
-			<input type="text" data-require="true" id="api25-p1" value="gotoIssueSample"><br>
+			<input type="text" id="api25-p1" value="gotoIssueSample" data-require="true"><br>
 			<label for="api25-p2">projectData</label>
-			<input type="text" data-require="true" id="api25-p2" value="ProjectDataObject" disabled><br>
+			<input type="text" id="api25-p2" value="ProjectDataObject" data-require="true" disabled><br>
 			<label for="api25-p3">projectDataFolder</label>
-			<input type="text" data-require="true" id="api25-p3" value="sample" disabled><br>
+			<input type="text" id="api25-p3" value="sample" data-require="true" disabled><br>
 			<label for="api25-p4">issueId</label>
-			<input type="text" data-require="true" id="api25-p4" value="128"><br>
+			<input type="text" id="api25-p4" value="128" data-require="true"><br>
 			<label for="api25-p5">issueType</label>
-			<input type="text" data-require="true" id="api25-p5" value="ISSUE_TYPE_BUGGER"><br>
+			<input type="text" id="api25-p5" value="ISSUE_TYPE_BUGGER" data-require="true"><br>
 			<label for="api25-p6">longitude</label>
-			<input type="text" data-require="true" id="api25-p6" value="127.000"><br>
+			<input type="text" id="api25-p6" value="127.000" data-require="true"><br>
 			<label for="api25-p7">latitude</label>
-			<input type="text" data-require="true" id="api25-p7" value="37.000"><br>
+			<input type="text" id="api25-p7" value="37.000" data-require="true"><br>
 			<label for="api25-p8">height</label>
-			<input type="text" data-require="true" id="api25-p8" value="550"><br>
+			<input type="text" id="api25-p8" value="550" data-require="true"><br>
 			<label for="api25-p9">duration</label>
-			<input type="text" data-require="true" id="api25-p9" value="10">
+			<input type="text" id="api25-p9" value="10" data-require="true">
 		</div>
 		<br> 
 		<input type="button" id="gotoIssue" value="Run" class="popupBtn">
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var gotoIssue = function() {

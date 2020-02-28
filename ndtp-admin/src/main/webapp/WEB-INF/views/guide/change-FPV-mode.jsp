@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>changeFPVModeAPI</h2>
 		<p>카메라를 1인칭, 3인칭 모드로 변경해주는 API입니다.</p>
 		<table>
@@ -38,14 +38,14 @@
 		<br/> 
 		<input type="button" id="changeFPVMode" value="Run" class="popupBtn">
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var changeFPVMode = function() {
 
 		var flag = $("input[name=api16-p1]:checked").val();
-		var isFalseBoolean = (flag === 'true');
+		flag = (flag === 'true');
 
-		changeFPVModeAPI(MAGO3D_INSTANCE2, isFalseBoolean);
+		changeFPVModeAPI(MAGO3D_INSTANCE2, flag);
 	}
 </script>

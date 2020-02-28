@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>changeColorAPI</h2>
 
 		<p>프로젝트 단위로 원하는 데이터나 데이터의 객체에 색상을 변경해주는 API입니다.</p>
@@ -52,9 +52,9 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api7-p1">projectId</label>
-			<input type="text" id="api7-p1" data-require="true" value="sample" disabled><br/>
+			<input type="text" id="api7-p1" value="sample" data-require="true" disabled><br/>
 			<label for="api7-p2">dataKey</label>
-			<input type="text" id="api7-p2" data-require="true" value="STUDENTROOM" disabled><br/>
+			<input type="text" id="api7-p2" value="STUDENTROOM" data-require="true" disabled><br/>
 			<label for="api7-p3">objectId</label>
 			<select id="api7-p3">
 				<option value="10U2f_fnrEI86flB9mNA6u" selected>1번</option>
@@ -64,14 +64,14 @@
 				<option value="2Dzz1wTo51BAnDnXy3jXKd">5번</option>
 			</select><br/>
 			<label for="api7-p4">property</label>
-			<input type="text" id="api7-p4" data-require="true" value="isMain=true"  disabled><br/>
+			<input type="text" id="api7-p4" value="isMain=true" data-require="true"  disabled><br/>
 			<label for="api7-p5">color</label>
 			<input type="color" id="api7-p5">0,0,0
 		</div>
 		<br/>
 		<input type="button" id="changeColor" value="Run" class="popupBtn">
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 

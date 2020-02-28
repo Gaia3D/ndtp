@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>changePropertyRenderingAPI</h2>
 		<p>속성값에 의한 가시화 여부를 설정하는 API입니다.</p>
 		<table>
@@ -45,23 +45,23 @@
 			<input type="radio" id="api5-opt2" name="api5-p1" value="false" checked />
 			<label for="api5-opt2">false</label><br/>
 			<label for="api5-p2">projectId</label>
-			<input type="text" data-require="true" id="api5-p2" value="sample" disabled><br/>
+			<input type="text" id="api5-p2" value="sample" data-require="true" disabled><br/>
 			<label for="api5-p3">property</label>
-			<input type="text" data-require="true" id="api5-p3" value="isPhysical=true" disabled>
+			<input type="text" id="api5-p3" value="isPhysical=true" data-require="true" disabled>
 		</div>
 		<br/> 
 		<input type="button" id="changePropertyRendering" value="Run" class="popupBtn">
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var changePropertyRendering = function() {
 		
 		var flag = $("input[name=api5-p1]:checked").val();
-		var isFalseBoolean = (flag === 'true');
+		flag = (flag === 'true');
 		var projectId = $('#api5-p2').val();
 		var property = $('#api5-p3').val();
 
-		changePropertyRenderingAPI(MAGO3D_INSTANCE2, isFalseBoolean, projectId, property);
+		changePropertyRenderingAPI(MAGO3D_INSTANCE2, flag, projectId, property);
 	}
 </script>
