@@ -6,8 +6,8 @@ var SpatialAnalysis = function(magoInstance) {
 	var viewer = magoInstance.getViewer();
 	var entities = viewer.entities;
 	var entityObject = {};
-	var geoserverTerrainproviderLayerName = NDTP.policy.geoserverTerrainproviderLayerName;
-	var layerDEM = (geoserverTerrainproviderLayerName && geoserverTerrainproviderLayerName.length>0) ? geoserverTerrainproviderLayerName : 'mago3d:dem';
+	//wps 관련 스키마가 추가될때까지 하드코딩, 각자 환경에 맞는 이름으로..
+	var layerDEM = 'mago3d:sejong_dem';
 	var rasterProfileChart = null;
 	var domeIds = [];
 	
@@ -201,7 +201,7 @@ var SpatialAnalysis = function(magoInstance) {
 						});
 						
 					}
-					var geographics = []
+					var geographics = [];
 					for(var i in positions) {
 						var pos = positions[i];
 						var geog = Cesium.Cartographic.fromCartesian(pos);
@@ -227,7 +227,12 @@ var SpatialAnalysis = function(magoInstance) {
 			
 			if(!drawType) return false;
 			
-			var geographicCoord = result.clickCoordinate.geographicCoordinate
+			var geographicCoord = result.clickCoordinate.geographicCoordinate;
+			if(!checkValidArea(geographicCoord)) {
+				alert('유효범위를 벗어났습니다. 현재 유효 범위는 세종시입니다.');
+				return false;
+			}
+			
 			var worldCoordinate = result.clickCoordinate.worldCoordinate;
 			
 			if(drawType === 'POINT') {
@@ -967,5 +972,14 @@ var SpatialAnalysis = function(magoInstance) {
 		$('#analysisRasterHighLowPoints li.extentInfo').hide();
 		mapToggleLike2D(false);
 		minMaxObserver.disconnect();
+	}
+	
+	function checkValidArea(geoGraphic) {
+		//여기도 하드코딩 일단함.
+		var validBound = [127.19931049066805, 36.44941898280123, 127.32576852118987, 36.55053669535394];
+		var lon = geoGraphic.longitude;
+		var lat = geoGraphic.latitude;
+		
+		return lon > validBound[0] && lon < validBound[2] && lat > validBound[1] && lat < validBound[3];
 	}
 }
