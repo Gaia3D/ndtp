@@ -836,17 +836,17 @@
 			cache : false,
 			dataType : "json",
 			success : function(msg) {
-				if (msg.result == "user.session.empty") {
-					//alert("로그인 후 사용 가능한 서비스 입니다.");
-				} else if (msg.result == "db.exception") {
-					//alert("데이터 베이스 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
-				} else if (msg.result == "success") {
+				if(msg.statusCode <= 200) {
 					$("#userStatusWidget").empty();
-					showUserStatus(1, msg);
+					showUserStatus(1, msg.statistics);
+				} else {
+					$("#userStatusWidget").html("데이터 조회에 문제가 발생하였습니다.<br/>잠시 후 다시 이용하여 주시기 바랍니다.");
+					//alert(JS_MESSAGE[msg.errorCode]);
+					//console.log("---- " + msg.errorCode);
 				}
 			},
 			error : function(request, status, error) {
-				//alert("잠시 후 이용해 주시기 바랍니다. 장시간 같은 현상이(사용자) 반복될 경우 관리자에게 문의하여 주십시오.");
+				alert(JS_MESSAGE["ajax.error.message"]);
 			}
 		});
 	}

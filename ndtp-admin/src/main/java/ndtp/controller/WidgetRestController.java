@@ -13,11 +13,11 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -44,7 +44,7 @@ import ndtp.utils.DateUtils;
 import ndtp.utils.FormatUtils;
 
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("/widgets")
 public class WidgetRestController {
 
@@ -80,7 +80,6 @@ public class WidgetRestController {
 	 * @return
 	 */
 	@RequestMapping(value = "/data-group-statistics")
-	@ResponseBody
 	public Map<String, Object> dataGroupStatistics(HttpServletRequest request) {
 
 		Map<String, Object> map = new HashMap<>();
@@ -132,7 +131,6 @@ public class WidgetRestController {
 	 * @return
 	 */
 	@RequestMapping(value = "/data-status-statistics")
-	@ResponseBody
 	public Map<String, Object> dataStatusStatistics(HttpServletRequest request) {
 
 		Map<String, Object> map = new HashMap<>();
@@ -160,7 +158,6 @@ public class WidgetRestController {
 	 * @return
 	 */
 	@GetMapping(value = "/data-adjust-log")
-	@ResponseBody
 	public Map<String, Object> dataAdjustLogList(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
@@ -196,10 +193,12 @@ public class WidgetRestController {
 	 * @return
 	 */
 	@GetMapping(value = "/user-status-statistics")
-	@ResponseBody
 	public Map<String, Object> userStatusStatistics(HttpServletRequest request) {
-		Map<String, Object> map = new HashMap<>();
-		String result = "success";
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		Map<String, Object> statistics = new HashMap<>();
 		try {
 			// 사용자 현황
 			UserInfo userInfo = new UserInfo();
@@ -216,21 +215,25 @@ public class WidgetRestController {
 			userInfo.setStatus(UserStatus.TEMP_PASSWORD.getValue());
 			Long tempPasswordUserTotalCount = userService.getUserTotalCount(userInfo);
 
-			map.put("activeUserTotalCount", activeUserTotalCount);
-			map.put("fobidUserTotalCount", fobidUserTotalCount);
-			map.put("failUserTotalCount", String.valueOf(failUserTotalCount));
-			map.put("sleepUserTotalCount", sleepUserTotalCount);
-			map.put("expireUserTotalCount", expireUserTotalCount);
-			map.put("tempPasswordUserTotalCount", tempPasswordUserTotalCount);
-
+			statistics.put("activeUserTotalCount", activeUserTotalCount);
+			statistics.put("fobidUserTotalCount", fobidUserTotalCount);
+			statistics.put("failUserTotalCount", String.valueOf(failUserTotalCount));
+			statistics.put("sleepUserTotalCount", sleepUserTotalCount);
+			statistics.put("expireUserTotalCount", expireUserTotalCount);
+			statistics.put("tempPasswordUserTotalCount", tempPasswordUserTotalCount);
 		} catch(Exception e) {
 			e.printStackTrace();
-			result = "db.exception";
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 		}
 
-		map.put("result", result);
+		result.put("statistics", statistics);
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
 
-		return map;
+		return result;
 	}
 
 	/**
@@ -239,7 +242,6 @@ public class WidgetRestController {
 	 * @return
 	 */
 	@GetMapping(value = "/civil-voice-status")
-	@ResponseBody
 	public Map<String, Object> civilVoiceStatus(HttpServletRequest request) {
 
 		Map<String, Object> map = new HashMap<>();
@@ -280,7 +282,6 @@ public class WidgetRestController {
 	 * @return
 	 */
 	@GetMapping(value = "/system-usage-status")
-	@ResponseBody
 	public Map<String, Object> systemUsageStatus(HttpServletRequest request) {
 
 		Map<String, Object> map = new HashMap<>();
@@ -332,7 +333,6 @@ public class WidgetRestController {
 	 * @return
 	 */
 	@GetMapping(value = "/dbcp-status")
-	@ResponseBody
 	public Map<String, Object> dbcpStatus(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
@@ -375,7 +375,6 @@ public class WidgetRestController {
 	 * @return
 	 */
 	@GetMapping(value = "/user-access-log")
-	@ResponseBody
 	public Map<String, Object> userAccessLogList(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
