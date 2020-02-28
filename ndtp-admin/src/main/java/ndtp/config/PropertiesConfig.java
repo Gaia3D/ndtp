@@ -36,7 +36,8 @@ public class PropertiesConfig {
     private String restTemplateMode;
     private String restAuthKey;
     private String gisRestServer;
-    
+    private String restServer;
+
     private String layerUploadDir;
     
     private String layerExportDir;
