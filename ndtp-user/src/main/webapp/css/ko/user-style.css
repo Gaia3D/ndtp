@@ -506,6 +506,7 @@ border-bottom: 1px solid #999;
 }
 .tableList > table tr:nth-child(odd) td:nth-child(2) {
 border: 1px dotted #999;
+border-top: none;
 }
 .tableList > table tr:nth-child(odd) td:nth-child(3) {
 border-right: 1px dotted #999;

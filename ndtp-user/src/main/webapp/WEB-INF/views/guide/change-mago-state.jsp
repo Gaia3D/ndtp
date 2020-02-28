@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>changeMagoStateAPI</h2>
 		<p>mago3D 활성화 상태 값을 변경함으로써 화면에 mago3D Object가 표시, 비표시 됩니다.</p>
 		<table>
@@ -38,13 +38,13 @@
 		<br/> 
 		<input type="button" id="changeMagoState" value="Run" class="popupBtn">
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none; float: left"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none; float: left"></div>
 </div>
 <script>
 	var changeMagoState = function() {
 
 		var flag = $("input[name=api1-p1]:checked").val();
-		var isFalseBoolean = (flag === 'true');
-		changeMagoStateAPI(MAGO3D_INSTANCE2, isFalseBoolean);
+		flag = (flag === 'true');
+		changeMagoStateAPI(MAGO3D_INSTANCE2, flag);
 	}
 </script>

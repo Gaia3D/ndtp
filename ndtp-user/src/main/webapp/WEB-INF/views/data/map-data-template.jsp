@@ -31,16 +31,16 @@
 						<td rowspan="2"><span class="no">{{subtract ../pagination.rowNumber @index}}</span></td>
 						<td>
 		{{#ifMatch sharing 'common'}}
-				<span class="legend co">C</span>	
+				<span class="legend co mar0">C</span>	
 		{{/ifMatch}}
 		{{#ifMatch sharing 'public'}}
-				<span class="legend pu">O</span>
+				<span class="legend pu mar0">O</span>
 		{{/ifMatch}}
 		{{#ifMatch sharing 'private'}}
-				<span class="legend pr">P</span>
+				<span class="legend pr mar0">P</span>
 		{{/ifMatch}}
 		{{#ifMatch sharing 'group'}}
-				<span class="legend gr">G</span>
+				<span class="legend gr mar0">G</span>
 		{{/ifMatch}}
 						</td>
 						<td class="alignLeft ellipsis" style="max-width:100px;"><a href="/datas/{{dataId}}" onclick="detailDataInfo(this.href); return false;">{{dataName}}</a></td>

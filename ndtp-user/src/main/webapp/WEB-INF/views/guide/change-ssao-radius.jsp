@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>changeSsaoRadiusAPI</h2>
 		<p>선택한 객체의 그림자 반경를 설정해주는 API입니다.</p>
 		<table>
@@ -31,12 +31,12 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api21-p1">ssaoRadius</label>
-			<input type="text" data-require="true" id="api21-p1" value="0.15">
+			<input type="text" id="api21-p1" value="0.15" data-require="true">
 		</div>
 		<br/> 
 		<input type="button" id="changeSsaoRadius" value="Run" class="popupBtn">
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var changeSsaoRadius = function() {

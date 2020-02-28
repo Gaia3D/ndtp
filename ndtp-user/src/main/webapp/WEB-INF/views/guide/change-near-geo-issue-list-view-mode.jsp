@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>changeNearGeoIssueListViewModeAPI</h2>
 		<p>활성화시 현재 위치 근처 이슈를 보여주는 API입니다.</p>
 		<table>
@@ -38,14 +38,14 @@
 		<br/> 
 		<input type="button" id="changeNearGeoIssueListViewMode" value="Run" class="popupBtn">
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var changeNearGeoIssueListViewMode = function() {
 
 		var flag = $("input[name=api17-p1]:checked").val();
-		var isFalseBoolean = (flag === 'true');
+		flag = (flag === 'true');
 
-		changeNearGeoIssueListViewModeAPI(MAGO3D_INSTANCE2, isFalseBoolean);
+		changeNearGeoIssueListViewModeAPI(MAGO3D_INSTANCE2, flag);
 	}
 </script>

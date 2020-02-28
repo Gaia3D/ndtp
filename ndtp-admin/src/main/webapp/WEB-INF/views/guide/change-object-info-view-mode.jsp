@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>changeObjectInfoViewModeAPI</h2>
 		<p>changeObjectInfoViewModeAPI는 Object정보표시 기능을 활성화하는 API입니다. 이
 			API에 파라미터인 flag는 Boolean 타입이고 true이면 정보 표시 모드가 활성화되고 false이면 비활성화되는
@@ -46,7 +46,7 @@
 			<table id="api14-result"></table>
 		</div>
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var changeObjectInfoViewMode = function() {
@@ -54,9 +54,9 @@
 		var table = document.getElementById("api14-result");
 		table.innerHTML = '';
 		var flag = $("input[name=api14-p1]:checked").val();
-		var isFalseBoolean = (flag === 'true');
+		flag = (flag === 'true');
 
-		changeObjectInfoViewModeAPI(MAGO3D_INSTANCE2, isFalseBoolean);
+		changeObjectInfoViewModeAPI(MAGO3D_INSTANCE2, flag);
 	}
 
 	function selectedObjectCallBack(projectId, dataKey, objectId, latitude, longitude, altitude, heading, pitch, roll){

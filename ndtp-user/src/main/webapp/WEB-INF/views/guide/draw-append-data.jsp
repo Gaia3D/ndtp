@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>drawAppendDataAPI</h2>
 
 		<p>프로젝트 단위 데이터를 추가하고 렌더링 하는 API입니다.</p>
@@ -42,16 +42,16 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api30-p1">projectIdArray</label>
-			<input type="text" data-require="true" id="api30-p1" value='appendId1, appendId2'><br/>
+			<input type="text" id="api30-p1" value="appendId1, appendId2" data-require="true"><br/>
 			<label for="api30-p2">projectDataArray</label>
-			<input type="text" data-require="true" id="api30-p2" value='sample_obj1, sample_obj1' disabled><br/>
+			<input type="text"id="api30-p2" value="sample_obj1, sample_obj1" data-require="true"  disabled><br/>
 			<label for="api30-p3">projectDataFolderArray</label>
-			<input type="text" data-require="true" id="api30-p3" value='sample' disabled>
+			<input type="text" id="api30-p3" value="sample" data-require="true" disabled>
 		</div>
 		<br/> 
 		<input type="button" id="drawAppendData" value="Run" class="popupBtn">
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var drawAppendData = function() {

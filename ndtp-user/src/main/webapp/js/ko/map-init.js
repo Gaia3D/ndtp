@@ -47,6 +47,7 @@ function mapInit(magoInstance, baseLayers, policy) {
 		var provider = new Cesium.WebMapServiceImageryProvider({
 	        url : geoserverDataUrl + "/wms",
 	        layers : layerList.map(function(e){return geoserverDataWorkspace + ':'+e}).join(','),
+	        minimumLevel:2,
 	        maximumLevel : 20,
 	        parameters : {
 	            service : 'WMS'
@@ -124,6 +125,7 @@ function mapInit(magoInstance, baseLayers, policy) {
 		var provider = new Cesium.WebMapServiceImageryProvider({
 	        url : geoserverDataUrl + "/gwc/service/wms",
 	        layers : [geoserverDataWorkspace + ':'+layerKey],
+	        minimumLevel:2,
 	        maximumLevel : 20,
 	        parameters : {
 	            service : 'WMS'

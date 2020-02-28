@@ -73,16 +73,16 @@
 						<td rowspan="2"><span class="no">${pagination.rowNumber - status.index}</span></td>
 						<td>
 		<c:if test="${dataInfo.sharing eq 'common'}">
-				<span class="legend co">C</span>	
+				<span class="legend co mar0">C</span>	
 		</c:if>
 		<c:if test="${dataInfo.sharing eq 'public'}">
-				<span class="legend pu">O</span>
+				<span class="legend pu mar0">O</span>
 		</c:if>
 		<c:if test="${dataInfo.sharing eq 'private'}">
-				<span class="legend pr">P</span>
+				<span class="legend pr mar0">P</span>
 		</c:if>
 		<c:if test="${dataInfo.sharing eq 'group'}">
-				<span class="legend gr">G</span>
+				<span class="legend gr mar0">G</span>
 		</c:if>
 						</td>
 						<td class="alignLeft ellipsis" style="max-width:100px;"><a href="/datas/${dataInfo.dataId}" onclick="detailDataInfo(this.href); return false;">${dataInfo.dataName}</a></td>

@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>togglePointCloudColorAPI</h2>
 		<p>포인트 클라우드 색상 모드를 토글하는 API입니다. 이 API를 호출하면 색상 모드가 on 되어 있다면 off가
 			되고, off가 되어 있다면 on이 됩니다.</p>
@@ -26,7 +26,7 @@
 		<br>
 		<input type="button" id="togglePointCloudColor" value="Run" class="popupBtn">
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var togglePointCloudColor = function() {

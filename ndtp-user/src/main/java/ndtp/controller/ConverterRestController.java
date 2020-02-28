@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,7 +37,7 @@ public class ConverterRestController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping
+	@PostMapping
 	public Map<String, Object> insert(HttpServletRequest request, ConverterJob converterJob) {
 		log.info("@@@ converterJob = {}", converterJob);
 		

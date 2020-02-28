@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>isDataExistAPI</h2>
 		<p>환경 설정 data map에 key 값의 존재 유무를 판별하는 API입니다.</p>
 		<table>
@@ -38,7 +38,7 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api27-p1">dataKey</label>
-			<input type="text" data-require="true" id="api27-p1" value="sample">
+			<input type="text" id="api27-p1" value="sample" data-require="true">
 		</div>
 		<br> <input type="button" id="isDataExist" value="Run" class="popupBtn">
 		<div id="resultContainer">
@@ -47,7 +47,7 @@
 		</div>
 	</div>
 
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var isDataExist = function() {

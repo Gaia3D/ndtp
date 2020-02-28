@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>setNodeAttributeAPI</h2>
 		<p>데이터의 속성을 설정하는 API입니다.</p>
 		<table>
@@ -41,9 +41,9 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api44-p1">projectId</label>
-			<input type="text" data-require="true" id="api44-p1" value="sample" disabled><br>
+			<input type="text" id="api44-p1" value="sample" data-require="true" disabled><br>
 			<label for="api44-p2">dataKey</label>
-			<input type="text" data-require="true" id="api44-p2" value="SOCIALROOM" disabled><br>
+			<input type="text" id="api44-p2" value="SOCIALROOM" data-require="true" disabled><br>
 			<label for="api44-p3">isVisible</label>
 			<select id="api44-p3">
 				<option value="true">true</option>
@@ -52,7 +52,7 @@
 		</div>
 		<br> <input type="button" id="setNodeAttribute" value="Run" class="popupBtn">
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var setNodeAttribute = function() {
@@ -60,9 +60,9 @@
 		var projectId = $('#api44-p1').val();
 		var dataKey = $('#api44-p2').val();
 		var isVisible = $('#api44-p3').val();
-		var isFalseBoolean = (isVisible === 'true');
+		flag = (isVisible === 'true');
 		var optionObject = {
-			isVisible : isFalseBoolean
+			isVisible : flag
 		}
 		var result = setNodeAttributeAPI(MAGO3D_INSTANCE2, projectId, dataKey, optionObject);
 	}
