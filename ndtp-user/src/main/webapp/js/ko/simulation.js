@@ -416,27 +416,36 @@ var Simulation = function(magoInstance, viewer, $) {
 		buildingHeight: 40,
 		buildingAdjust: 0,
 	};
+	var pickedObj = {
+		terrain: "",   		// single entity
+		buildings: [], 		// [] entity
+		plottage: 0, 		// 대지 면적
+		totalFloorArea: 0, 	// 빌딩들의 총 건축면적
+		// 각 빌딩별 층수: entity.polygon.extrudedHeight
+		// 총 빌딩 갯수 : buildings.length
+	};
+	a=pickedObj;
+
 	var standardHeight = parseInt(viewModel.buildingHeight);
-	var pickedObj;
 	var smulationToolbar = document.getElementById('smulationToolbar');
 	Cesium.knockout.track(viewModel);
 	Cesium.knockout.applyBindings(viewModel, smulationToolbar);
 
 	$("#districtDisplay").change(value => {
 		let val = value.target.value;
-		if (pickedObj === undefined) {
+		if (pickedObj.terrain === undefined) {
 			alert("지역을 먼저 선택해 주시기 바랍니다.");
 			return;
 		}
 		switch (val) {
 			case "disable":
-				if (pickedObj.id.show === true) {
-					pickedObj.id.show = !pickedObj.id.show;
+				if (pickedObj.terrain.id.show === true) {
+					pickedObj.terrain.id.show = !pickedObj.terrain.id.show;
 				}
 				break;
 			case "enable":
-				if (pickedObj.id.show === false) {
-					pickedObj.id.show = !pickedObj.id.show;
+				if (pickedObj.terrain.id.show === false) {
+					pickedObj.terrain.id.show = !pickedObj.terrain.id.show;
 				}
 				break;
 			default:
@@ -445,32 +454,32 @@ var Simulation = function(magoInstance, viewer, $) {
 	});
 	$("#districtType").change(function(value){
 		let val = value.target.value;
-		if (pickedObj === undefined) {
+		if (pickedObj.terrain === undefined || pickedObj.terrain === "") {
 			alert("지역을 먼저 선택해 주시기 바랍니다.");
 			$("#districtType").val("");
 			return;
 		}
 		switch (val){
 			case "dType1":
-				pickedObj.id.polygon.material.color=Cesium.Color.YELLOW.withAlpha(0.6);
+				pickedObj.terrain.id.polygon.material.color=Cesium.Color.YELLOW.withAlpha(0.6);
 				$("#standardFloorAreaRatio").val(140).trigger("change");
 				$("#standardBuildingToLandRatio").val(50).trigger("change");
 				$("#standardFloorCount").val(25).trigger("change");
 				break;
 			case "dType2":
-				pickedObj.id.polygon.material.color=Cesium.Color.ORANGERED.withAlpha(0.6);
+				pickedObj.terrain.id.polygon.material.color=Cesium.Color.ORANGERED.withAlpha(0.6);
 				$("#standardFloorAreaRatio").val(120).trigger("change");
 				$("#standardBuildingToLandRatio").val(40).trigger("change");
 				$("#standardFloorCount").val(15).trigger("change");
 				break;
 			case "dType3":
-				pickedObj.id.polygon.material.color=Cesium.Color.MEDIUMTURQUOISE.withAlpha(0.6);
+				pickedObj.terrain.id.polygon.material.color=Cesium.Color.MEDIUMTURQUOISE.withAlpha(0.6);
 				$("#standardFloorAreaRatio").val(80).trigger("change");
 				$("#standardBuildingToLandRatio").val(20).trigger("change");
 				$("#standardFloorCount").val(10).trigger("change");
 				break;
 			case "dType4":
-				pickedObj.id.polygon.material.color=Cesium.Color.YELLOWGREEN.withAlpha(0.6);
+				pickedObj.terrain.id.polygon.material.color=Cesium.Color.YELLOWGREEN.withAlpha(0.6);
 				$("#standardFloorAreaRatio").val(50).trigger("change");
 				$("#standardBuildingToLandRatio").val(25).trigger("change");
 				$("#standardFloorCount").val(40).trigger("change");
@@ -530,12 +539,22 @@ var Simulation = function(magoInstance, viewer, $) {
 
 		Cesium.GeoJsonDataSource.load(url, obj).then(function(dataSource) {
 			let entitis = dataSource.entities._entities._array;
+			let sumFloorArea = 0;
 
 			for(let index in entitis) {
 				let entitiyObj = entitis[index];
 				let registeredEntity = _viewer.entities.add(entitiyObj);
 				registeredEntity.name = "아파트_" + index;
 				registeredEntity.polygon.extrudedHeight = parseInt(viewModel.buildingHeight);
+
+				let buildingFloorArea = parseFloat(getArea(registeredEntity.polygon._hierarchy._value.positions));	// 건축면적
+				let totalBuildingFloorArea = buildingFloorArea * registeredEntity.polygon.extrudedHeight;  // 건축면적 * 층수 = 연면적
+				registeredEntity.buildingFloorArea = buildingFloorArea; // 건축면적
+				registeredEntity.totalBuildingFloorArea = totalBuildingFloorArea; // 연면적
+				sumFloorArea += buildingFloorArea;
+
+				// todo: 임시
+				pickedObj.buildings.push(registeredEntity);
 
 				let intIndex = parseInt(index);
 				if (intIndex % 2 === 0) {
@@ -546,6 +565,9 @@ var Simulation = function(magoInstance, viewer, $) {
 							let customizing = parseInt($("#inputCustomizing").val());
 
 							registeredEntity.polygon.extrudedHeight = newVal + customizing;
+
+							// 변경된 연면적 계산
+							registeredEntity.totalBuildingFloorArea = registeredEntity.buildingFloorArea * registeredEntity.polygon.extrudedHeight;
 							standardHeight = parseInt(newValue);
 						}
 					);
@@ -553,6 +575,9 @@ var Simulation = function(magoInstance, viewer, $) {
 						function(newValue) {
 							let newVal = parseInt(newValue);
 							registeredEntity.polygon.extrudedHeight = standardHeight + newVal;
+
+							// 변경된 연면적 계산
+							registeredEntity.totalBuildingFloorArea = registeredEntity.buildingFloorArea * registeredEntity.polygon.extrudedHeight;
 						}
 					);
 				} else {
@@ -563,6 +588,9 @@ var Simulation = function(magoInstance, viewer, $) {
 							let customizing = parseInt($("#inputCustomizing").val());
 
 							registeredEntity.polygon.extrudedHeight = newVal - customizing;
+
+							// 변경된 연면적 계산
+							registeredEntity.totalBuildingFloorArea = registeredEntity.buildingFloorArea * registeredEntity.polygon.extrudedHeight;
 							standardHeight = parseInt(newValue);
 						}
 					);
@@ -570,11 +598,18 @@ var Simulation = function(magoInstance, viewer, $) {
 						function(newValue) {
 							let newVal = parseInt(newValue);
 							registeredEntity.polygon.extrudedHeight = standardHeight - newVal;
+
+							// 변경된 연면적 계산
+							registeredEntity.totalBuildingFloorArea = registeredEntity.buildingFloorArea * registeredEntity.polygon.extrudedHeight;
 						}
 					);
 				}
 			}
 			// $("#inputBuildingHeight").trigger("change");
+			pickedObj.totalFloorArea = sumFloorArea;
+
+			buildingToLandRatioCalc();
+			floorAreaRatioCalc();
 		}, function(err) {
 			console.log(err);
 		});
@@ -611,6 +646,47 @@ var Simulation = function(magoInstance, viewer, $) {
 			console.log(err);
 		});
 	});
+
+	$("#inputBuildingHeight").change(()=> {
+		floorAreaRatioCalc();
+	});
+	$("#inputCustomizing").change(() => {
+		// todo: 원래는 용적률이 안바껴야 되는데 조금씩의 오차가 생김
+		// floorAreaRatioCalc();
+	});
+
+	// 건폐율 계산 및 view (건축면적 / 대지면적)
+	function buildingToLandRatioCalc() {
+		let plottage = parseFloat(pickedObj.plottage); // 대지면적
+		let totalFloorArea = parseFloat(pickedObj.totalFloorArea); // 총 건축면적
+
+		if (plottage === 0.0) {
+			alert("대지면적이 0입니다. 다시 확인해 주시기 바랍니다.");
+			return;
+		}
+		let result = (totalFloorArea / plottage) * 100.0;
+		$("#curBuildingToLandRatio").val(result.toFixed(2));
+	}
+	// 용적율 계산 및 view (연면적 / 대지면적)
+	function floorAreaRatioCalc() {
+		let plottage = parseFloat(pickedObj.plottage); // 대지면적
+		let totalArea = totalAreaCalc(pickedObj.buildings); // 총 연면적
+
+		if (plottage === 0.0) {
+			alert("대지면적이 0입니다. 다시 확인해 주시기 바랍니다.");
+			return;
+		}
+		let result = (totalArea / plottage) * 100.0;
+		$("#curFloorAreaRatio").val(result.toFixed(2));
+	}
+	// 모든 빌딩들의 연면적 합
+	function totalAreaCalc(entityArray) {
+		let sum = 0;
+		entityArray.forEach(entity => {
+			sum += entity.totalBuildingFloorArea;
+		});
+		return sum;
+	}
 
 
 
@@ -1142,7 +1218,9 @@ var Simulation = function(magoInstance, viewer, $) {
 //                    _viewer._selectedEntity = pickedFeature.id.polygon;
                 } else {
 					var pickedFeature = viewer.scene.pick(event.position);
-					pickedObj = viewer.scene.pick(event.position);
+					pickedObj.terrain = viewer.scene.pick(event.position);
+					pickedObj.plottage = getArea(pickedObj.terrain.id.polygon._hierarchy._value.positions);
+
 					if(pickedFeature) {
 						$("#objectName").val(pickedFeature.id.name);
 						$("#districtDisplay").val("enable").trigger("change");

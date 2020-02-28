@@ -158,7 +158,7 @@
 			</ul>
 		</div>
 	</li>
-	<li >
+	<li class="on">
 		<p>도시 계획2<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="">
 			<ul class="analysisGroup">
@@ -192,13 +192,17 @@
 						</select>
 
 						<label for="">기준 용적률</label>
-						<input id="standardFloorAreaRatio" type="number"   />
+						<input id="standardFloorAreaRatio" type="number"  value="0" style="background-color: gainsboro;" readonly />
+						<label for="">용적률</label>
+						<input id="curFloorAreaRatio" type="number"  value="0" readonly />
 						<label for="">기준 건폐율</label>
-						<input id="standardBuildingToLandRatio" type="number" data-bind="" value="0"  />
+						<input id="standardBuildingToLandRatio" type="number" value="0" style="background-color: gainsboro;" readonly />
+						<label for="">건폐율</label>
+						<input id="curBuildingToLandRatio" type="number" value="0" readonly />
 						<label for="">기준 층수</label>
-						<input id="standardFloorCount" type="number" data-bind="value: standardFloorCount"  />
+						<input id="standardFloorCount" type="number" data-bind="value: standardFloorCount" style="background-color: gainsboro;" readonly />
 
-						<label for="">건물 높이</label>
+						<label for="">층수</label>
 						<input id="inputBuildingHeight" type="number" data-bind="value: buildingHeight" />
 						<label for="">높이 커스터마이징</label>
 						<input id="inputCustomizing" type="number" data-bind="value: buildingAdjust" />
@@ -208,7 +212,7 @@
 			</ul>
 		</div>
 	</li>
-	<li class="on">
+	<li >
 		<p>건축인 허가 신청<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="">
 			<ul class="analysisGroup">
