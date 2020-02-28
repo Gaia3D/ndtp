@@ -50,7 +50,7 @@
 	        <button type="button" class="layerClose" title="닫기">닫기</button>
 	    </div>
 	    <div class="layerContents">
-			
+
 			<div class="inline-toggle">
 				<h4 class="category">Origin</h4>
 				<div id="datainfoDisplay" class="switch-toggle switch-ios">
@@ -61,7 +61,7 @@
 					<a></a>
 				</div>
 			</div>
-			
+
 			<div class="inline-toggle">
 				<h4 class="category">Bounding Box</h4>
 				<div id="datainfoDisplay" class="switch-toggle switch-ios">
@@ -72,7 +72,7 @@
 					<a></a>
 				</div>
 			</div>
-	
+
 			<div class="inline-toggle marB20">
 				<h4 class="category">선택 및 이동</h4>
 				<div class="switch-toggle switch-ios" style="width: 60%;">
@@ -86,7 +86,7 @@
 				</div>
 			</div>
 
-	
+
 			<div id="dataControllWrap" style="display:none;">
 				<p class="layerDivTit"><span>test / 오전반1조_행복관_s</span></p>
 				<div class="layerDiv">
@@ -122,7 +122,7 @@
 							<input type="text" id="dcAltitudeOffset" value="1" size="1">
 						</li>
 					</ul>
-	
+
 					<h4 class="category">회전 변경</h4>
 					<ul class="layerDiv">
 						<li>
@@ -132,7 +132,7 @@
 							<input id="dcPitchRange" data-type="Pitch" style="width: 140px;" type="range" min="-360" max="360" step="1" value="1">
 							<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcPitchNext"></button>
 						</li>
-	
+
 						<li>
 							<label for="dcRoll">y(roll)</label>
 							<input type="text" id="dcRoll" name="roll" size="2" readonly>
@@ -140,7 +140,7 @@
 							<input id="dcRollRange" data-type="Roll" style="width: 140px;" type="range" min="-360" max="360" step="1" value="1">
 							<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcRollNext"></button>
 						</li>
-	
+
 						<li>
 							<label for="dcHeading">z(heading)</label>
 							<input type="text" id="dcHeading" name="heading" size="2" readonly>
@@ -200,17 +200,17 @@
 		//wmsProvider : {},
 		//districtProvider : {}
 	};
-	
+
 	var geoPolicyJson = null;
 	var viewer = null;
 	var entities = null;
-	
+
 	magoInit();
-	
+
 	function magoInit() {
-		
+
 		geoPolicyJson = ${geoPolicyJson};
-		
+
 		var cesiumViewerOption = {};
 		cesiumViewerOption.infoBox = false;
 		cesiumViewerOption.navigationHelpButton = false;
@@ -220,25 +220,25 @@
 		cesiumViewerOption.geocoder = false;
 		cesiumViewerOption.baseLayerPicker = false;
 		cesiumViewerOption.sceneModePicker = false;
-		
+
 		/**
 		 * @param {Stirng} containerId container div id. required.
 		 * @param {object} serverPolicy mage3d geopolicy. required.
 		 * @param {object} callback loadstart callback, loadend callback. option.
 		 * @param {object} options Cesium viewer parameter. option.
 		 * @param {Cesium.Viewer} legacyViewer 타 시스템과의 연동의 경우 view 객체가 생성되어서 넘어 오는 경우가 있음. option.
-		*/	
+		*/
 		MAGO3D_INSTANCE = new Mago3D.Mago3d('magoContainer', geoPolicyJson, {loadend : magoLoadEnd}, cesiumViewerOption);
 	}
-	
+
 	var beforePointId = null;
 	function magoLoadEnd(e) {
 		var magoInstance = e;
-		viewer = magoInstance.getViewer(); 
+		viewer = magoInstance.getViewer();
 		entities = viewer.entities;
 		var magoManager = magoInstance.getMagoManager();
 		var f4dController = magoInstance.getF4dController();
-		
+
 		// TODO : 세슘 MAP 선택 UI 제거,엔진에서 처리로 변경 예정.
 		viewer.baseLayerPicker.destroy();
 		viewer.scene.globe.depthTestAgainstTerrain = true;
@@ -248,13 +248,13 @@
 
 		// mago3d logo 추가
 		Mago3D.tempCredit(viewer);
-		
+
 		//우측 상단 지도 컨트롤러
 		MapControll(viewer);
 		dataGroupList(magoInstance);
         // 환경 설정.
         UserPolicy(magoInstance);
-				
+
      	// 선택 및 이동 all 로 선택
 		changeObjectMoveAPI(magoInstance, "0");
 		$('#objectAllMove').prop("checked", true);
@@ -267,23 +267,23 @@
 	    	var dataInfo = result.result;
 	    	initData(dataInfo);
 	    });
-	
+
 	    // 기본 레이어 랜더링
 		setTimeout(function(){
         	initLayer('${baseLayers}');
         }, geoPolicyJson.initDuration * 1000);
-		
+
 		/* setTimeout(function(){
 			changeObjectMove();
         }, 5000); */
-		
+
 	}
-	/* 
+	/*
 	function changeObjectMove() {
 		// 선택 및 이동 all 로 선택
 		changeObjectMoveAPI(MAGO3D_INSTANCE, "0");
 	} */
-	
+
 	// 데이터 그룹 목록
 	function dataGroupList(magoInstance) {
 		$.ajax({
@@ -306,13 +306,13 @@
 			}
 		});
 	}
-	
+
 	// 데이터 정보 목록
 	function dataList(magoInstance, dataGroup) {
 		var dataInfoJson = ${dataInfoJson};
-		
+
 		var f4dController = MAGO3D_INSTANCE.getF4dController();
-		
+
 		var dataInfoList = new Array();
 
 		if (dataInfoJson && f4dController) {
@@ -351,21 +351,21 @@
 			flyTo(magoInstance);
 		}, 500); */
 	}
-	
+
 	// smart tiling data flyTo
 	function gotoFly(magoInstance) {
 		gotoFlyAPI(magoInstance, "${dataInfo.longitude}", "${dataInfo.latitude}", "${dataInfo.altitude}", 3);
 	}
-	
+
 	function flyTo(magoInstance) {
 		//  searchDataAPI
 		searchDataAPI(magoInstance, "${dataInfo.dataGroupId}", "${dataInfo.dataKey}");
 	}
-	
+
 	function remove(entityStored) {
 		entities.removeById(entityStored);
 	}
-	
+
 	function initLayer(baseLayers) {
 		if(!baseLayers) return;
 		var layerList = baseLayers.split(",");
@@ -387,7 +387,7 @@
 	        },
 	        enablePickFeatures : false
 	    });
-	    
+
 		viewer.imageryLayers.addImageryProvider(provider);
 	}
 
@@ -450,7 +450,7 @@
 			return false;
 		}
 	}
-	
+
 	// 위치/회전 저장 버튼 클릭
 	$("#dcSavePosRotPop").click(function(){
 		if (validate() == false) {
@@ -507,9 +507,9 @@
 				}
 			}).always(/* stopLoading */);
 		} else {
-			alert('no');
+			//alert('no');
 		}
 	});
-	
+
 </script>
 </html>
