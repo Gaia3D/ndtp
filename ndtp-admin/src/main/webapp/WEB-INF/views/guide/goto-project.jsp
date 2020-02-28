@@ -73,7 +73,7 @@
 			<label for="api24-p6">height</label>
 			<input type="text" id="api24-p6" value="550" data-require="true"><br>
 			<label for="api24-p7">duration</label>
-			<input type="text" id="api24-p7" value="1" data-require="true">
+			<input type="text" id="api24-p7" value="10" data-require="true">
 		</div>
 		<br> 
 		<input type="button" id="gotoProject" value="Run" class="popupBtn">

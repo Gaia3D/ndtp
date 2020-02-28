@@ -35,7 +35,6 @@
 			</tr>
 		</table>
 		<br/>
-		<div class="paramContainer"></div>
 		<input type="button" id="getCameraCurrentOrientaion" value="Run" class="popupBtn">
 		<div id="resultContainer">
 			<h4>결과</h4>
