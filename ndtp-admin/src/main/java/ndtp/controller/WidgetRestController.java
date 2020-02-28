@@ -137,24 +137,33 @@ public class WidgetRestController {
 	 */
 	@RequestMapping(value = "/data-status-statistics")
 	public Map<String, Object> dataStatusStatistics(HttpServletRequest request) {
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		Map<String, Object> statistics = new HashMap<>();
 
-		Map<String, Object> map = new HashMap<>();
-		String result = "success";
 		try {
 			long useTotalCount = dataService.getDataTotalCountByStatus(DataStatus.USE.name().toLowerCase());
 			long forbidTotalCount = dataService.getDataTotalCountByStatus(DataStatus.UNUSED.name().toLowerCase());
 			long etcTotalCount = dataService.getDataTotalCountByStatus(DataStatus.DELETE.name().toLowerCase());
 
-			map.put("useTotalCount", useTotalCount);
-			map.put("forbidTotalCount", forbidTotalCount);
-			map.put("etcTotalCount", etcTotalCount);
+			statistics.put("useTotalCount", useTotalCount);
+			statistics.put("forbidTotalCount", forbidTotalCount);
+			statistics.put("etcTotalCount", etcTotalCount);
 		} catch(Exception e) {
 			e.printStackTrace();
-			result = "db.exception";
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 		}
 
-		map.put("result", result);
-		return map;
+		result.put("statistics", statistics);
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+
+		return result;
 	}
 
 	/**

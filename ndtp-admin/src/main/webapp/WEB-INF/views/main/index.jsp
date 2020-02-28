@@ -605,21 +605,23 @@
 			cache : false,
 			dataType : "json",
 			success : function(msg) {
-				if (msg.result == "success") {
-					showDataStatus(msg);
+				if(msg.statusCode <= 200) {
+					$("#dataStatusWidget").empty();
+					showDataStatus(msg.statistics);
 				} else {
-					alert(JS_MESSAGE[msg.result]);
+					$("#dataStatusWidget").html(JS_MESSAGE[msg.errorCode]);
+					//alert(JS_MESSAGE[msg.errorCode]);
+					//console.log("---- " + msg.errorCode);
 				}
 			},
 			error : function(request, status, error) {
-				alert(JS_MESSAGE["ajax.error.message"]);
+				$("#dataStatusWidget").html(JS_MESSAGE[ajax.error.message]);
+				//alert(JS_MESSAGE[ajax.error.message]);
 			}
 		});
 	}
 
 	function showDataStatus(jsonData) {
-		$("#dataStatusWidget").empty();
-
 		var useTotalCount = parseInt(jsonData.useTotalCount);
 		var forbidTotalCount = parseInt(jsonData.forbidTotalCount);
 		var etcTotalCount = parseInt(jsonData.etcTotalCount);
