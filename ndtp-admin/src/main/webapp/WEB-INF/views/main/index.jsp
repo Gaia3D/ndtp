@@ -695,7 +695,7 @@
 			cache : false,
 			dataType : "json",
 			success : function(msg) {
-				if (msg.result == "success") {
+				if(msg.statusCode <= 200) {
 					var dataAdjustLogList = msg.dataAdjustLogList;
 					var content = "";
 					content 	= "<table class=\"widget-table\">"
@@ -733,12 +733,14 @@
 					$("#dataAdjustLogWidget").empty();
 					$("#dataAdjustLogWidget").html(content);
 				} else {
-					alert(JS_MESSAGE[msg.result]);
+					$("#dataAdjustLogWidget").html(JS_MESSAGE[msg.errorCode]);
+					//alert(JS_MESSAGE[msg.errorCode]);
+					//console.log("---- " + msg.errorCode);
 				}
 			},
 			error : function(request, status, error) {
-				console.log("code : " + request.status + "\n message : " + request.responseText + "\n error : " + error);
-				alert(JS_MESSAGE["ajax.error.message"]);
+				$("#dataAdjustLogWidget").html(JS_MESSAGE[ajax.error.message]);
+				//alert(JS_MESSAGE[ajax.error.message]);
 			}
 		});
 	}
@@ -911,11 +913,7 @@
 			cache : false,
 			dataType : "json",
 			success : function(msg) {
-				if (msg.result == "user.session.empty") {
-					//alert("로그인 후 사용 가능한 서비스 입니다.");
-				} else if (msg.result == "db.exception") {
-					//alert("데이터 베이스 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
-				} else if (msg.result == "success") {
+				if(msg.statusCode <= 200) {
 					var civilVoiceList = msg.civilVoiceList;
 					var content = "";
 					content 	= "<table class=\"widget-table\">"
@@ -947,10 +945,15 @@
 					}
 					$("#civilVoiceWidget").empty();
 					$("#civilVoiceWidget").html(content);
+				} else {
+					$("#civilVoiceWidget").html(JS_MESSAGE[msg.errorCode]);
+					//alert(JS_MESSAGE[msg.errorCode]);
+					//console.log("---- " + msg.errorCode);
 				}
 			},
 			error : function(request, status, error) {
-				//alert("잠시 후 이용해 주시기 바랍니다. 장시간 같은 현상이 반복될 경우 관리자에게 문의하여 주십시오.");
+				$("#civilVoiceWidget").html(JS_MESSAGE[ajax.error.message]);
+				//alert(JS_MESSAGE[ajax.error.message]);
 			}
 		});
 	}

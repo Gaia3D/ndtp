@@ -86,6 +86,7 @@ public class WidgetRestController {
 		String errorCode = null;
 		String message = null;
 		List<Map<String, Object>> dataGroupWidgetList = new ArrayList<>();
+
 		try {
 			UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 
@@ -173,8 +174,12 @@ public class WidgetRestController {
 	 */
 	@GetMapping(value = "/data-adjust-log")
 	public Map<String, Object> dataAdjustLogList(HttpServletRequest request) {
-		Map<String, Object> map = new HashMap<>();
-		String result = "success";
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		List<DataAdjustLog> dataAdjustLogList = new ArrayList<>();
+
 		try {
 			String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
 			Calendar calendar = Calendar.getInstance();
@@ -189,16 +194,20 @@ public class WidgetRestController {
 			dataInfoAdjustLog.setEndDate(endDate);
 			dataInfoAdjustLog.setOffset(0l);
 			dataInfoAdjustLog.setLimit(WIDGET_LIST_VIEW_COUNT);
-			List<DataAdjustLog> dataAdjustLogList = dataAdjustLogService.getListDataAdjustLog(dataInfoAdjustLog);
-
-			map.put("dataAdjustLogList", dataAdjustLogList);
+			dataAdjustLogList = dataAdjustLogService.getListDataAdjustLog(dataInfoAdjustLog);
 		} catch(Exception e) {
 			e.printStackTrace();
-			result = "db.exception";
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 		}
 
-		map.put("result", result);
-		return map;
+		result.put("dataAdjustLogList", dataAdjustLogList);
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+
+		return result;
 	}
 
 	/**
@@ -213,6 +222,7 @@ public class WidgetRestController {
 		String errorCode = null;
 		String message = null;
 		Map<String, Object> statistics = new HashMap<>();
+
 		try {
 			// 사용자 현황
 			UserInfo userInfo = new UserInfo();
@@ -251,15 +261,61 @@ public class WidgetRestController {
 	}
 
 	/**
+	 * 사용자 접근 이력 목록
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "/user-access-log")
+	public Map<String, Object> userAccessLogList(HttpServletRequest request) {
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		List<AccessLog> userAccessLogList = new ArrayList<>();
+
+		try {
+			String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.DATE, -7);
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+			String searchDay = simpleDateFormat.format(calendar.getTime());
+			String startDate = searchDay + DateUtils.START_TIME;
+			String endDate = today + DateUtils.END_TIME;
+
+			AccessLog accessLog = new AccessLog();
+			accessLog.setStartDate(startDate);
+			accessLog.setEndDate(endDate);
+			accessLog.setOffset(0l);
+			accessLog.setLimit(WIDGET_LIST_VIEW_COUNT);
+			userAccessLogList = logService.getListAccessLog(accessLog);
+		} catch(Exception e) {
+			e.printStackTrace();
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+
+		result.put("userAccessLogList", userAccessLogList);
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+
+		return result;
+	}
+
+	/**
 	 * 시민 참여 현황
 	 * @param model
 	 * @return
 	 */
 	@GetMapping(value = "/civil-voice-status")
 	public Map<String, Object> civilVoiceStatus(HttpServletRequest request) {
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		List<CivilVoice> civilVoiceList = new ArrayList<>();
 
-		Map<String, Object> map = new HashMap<>();
-		String result = "success";
 		try {
 			String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
 			Calendar calendar = Calendar.getInstance();
@@ -276,18 +332,20 @@ public class WidgetRestController {
 			civilVoice.setLimit(WIDGET_LIST_VIEW_COUNT);
 			civilVoice.setOrderWord("comment_count");
 			civilVoice.setOrderValue("desc");
-			List<CivilVoice> civilVoiceList = civilVoiceService.getListCivilVoice(civilVoice);
-
-//			map.put("civilVoiceList", new JSONArray.fromObject(civilVoiceList));
-			map.put("civilVoiceList", civilVoiceList);
+			civilVoiceList = civilVoiceService.getListCivilVoice(civilVoice);
 		} catch(Exception e) {
 			e.printStackTrace();
-			result = "db.exception";
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 		}
 
-		map.put("result", result);
+		result.put("civilVoiceList", civilVoiceList);
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
 
-		return map;
+		return result;
 	}
 
 	/**
@@ -381,48 +439,6 @@ public class WidgetRestController {
 		map.put("result", result);
 
 		return map;
-	}
-
-	/**
-	 * 사용자 접근 이력 목록
-	 * @param model
-	 * @return
-	 */
-	@GetMapping(value = "/user-access-log")
-	public Map<String, Object> userAccessLogList(HttpServletRequest request) {
-		Map<String, Object> result = new HashMap<>();
-		int statusCode = 0;
-		String errorCode = null;
-		String message = null;
-		List<AccessLog> userAccessLogList = null;
-		try {
-			String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
-			Calendar calendar = Calendar.getInstance();
-			calendar.add(Calendar.DATE, -7);
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
-			String searchDay = simpleDateFormat.format(calendar.getTime());
-			String startDate = searchDay + DateUtils.START_TIME;
-			String endDate = today + DateUtils.END_TIME;
-
-			AccessLog accessLog = new AccessLog();
-			accessLog.setStartDate(startDate);
-			accessLog.setEndDate(endDate);
-			accessLog.setOffset(0l);
-			accessLog.setLimit(WIDGET_LIST_VIEW_COUNT);
-			userAccessLogList = logService.getListAccessLog(accessLog);
-		} catch(Exception e) {
-			e.printStackTrace();
-			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-			errorCode = "db.exception";
-			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-		}
-
-		result.put("userAccessLogList", userAccessLogList);
-		result.put("statusCode", statusCode);
-		result.put("errorCode", errorCode);
-		result.put("message", message);
-
-		return result;
 	}
 
 	/**
