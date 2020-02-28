@@ -370,7 +370,6 @@ var Simulation = function(magoInstance) {
 			node.setRenderCondition(function(data){
 				var attributes = data.attributes; 
 				if(!simulatingSejong) {
-					attributes.isVisible = true;
 					data.isColorChanged = false;
 				} else {
 					var sliderValue = slider.getValue();
