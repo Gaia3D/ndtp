@@ -376,8 +376,11 @@ public class WidgetRestController {
 	 */
 	@GetMapping(value = "/user-access-log")
 	public Map<String, Object> userAccessLogList(HttpServletRequest request) {
-		Map<String, Object> map = new HashMap<>();
-		String result = "success";
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		List<AccessLog> userAccessLogList = null;
 		try {
 			String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY);
 			Calendar calendar = Calendar.getInstance();
@@ -392,17 +395,20 @@ public class WidgetRestController {
 			accessLog.setEndDate(endDate);
 			accessLog.setOffset(0l);
 			accessLog.setLimit(WIDGET_LIST_VIEW_COUNT);
-
-			List<AccessLog> userAccessLogList = logService.getListAccessLog(accessLog);
-			map.put("userAccessLogList", userAccessLogList);
+			userAccessLogList = logService.getListAccessLog(accessLog);
 		} catch(Exception e) {
 			e.printStackTrace();
-			result = "db.exception";
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 		}
 
-		map.put("result", result);
+		result.put("userAccessLogList", userAccessLogList);
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
 
-		return map;
+		return result;
 	}
 
 	/**
