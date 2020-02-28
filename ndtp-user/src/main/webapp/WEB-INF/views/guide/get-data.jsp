@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>getDataAPI</h2>
 		<p>data map에 담겨있는 데이터정보(json)를 불러오는 API입니다.</p>
 		<table>
@@ -38,7 +38,7 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api28-p1">projectId</label>
-			<input type="text" data-require="true" id="api28-p1" value="sample">
+			<input type="text" id="api28-p1" value="sample" data-require="true">
 		</div>
 		<br> 
 		<input type="button" id="getData" value="Run" class="popupBtn">
@@ -47,7 +47,7 @@
 			<table id="api28-result"></table>
 		</div>
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var getData = function() {

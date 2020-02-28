@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>changeCameraOrientationAPI</h2>
 		<p>카메라의 회전정보를 변경하는 API입니다.</p>
 		<table>
@@ -46,18 +46,18 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api36-p1">heading</label>
-			<input type="text" id="api36-p1" data-require="false" value="89.2471"><br/>
+			<input type="text" id="api36-p1" value="89.2471" data-require="false"><br/>
 			<label for="api36-p2">pitch</label>
-			<input type="text" id="api36-p2" data-require="false" value="43.1837"><br/>
+			<input type="text" id="api36-p2" value="43.1837" data-require="false"><br/>
 			<label for="api36-p3">roll</label>
-			<input type="text" id="api36-p3" data-require="false" value="30.9415"><br/>
+			<input type="text" id="api36-p3" value="30.9415" data-require="false"><br/>
 			<label for="api36-p4">duration</label>
-			<input type="text" id="api36-p4" data-require="false" value="0">
+			<input type="text" id="api36-p4" value="0" data-require="false">
 		</div>
 		<br/> 
 		<input type="button" id="changeCameraOrientation" value="Run" class="popupBtn">
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var changeCameraOrientation = function() {

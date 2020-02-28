@@ -24,7 +24,7 @@
 			</h3>
 			<div class="searchWrap">
 			<label for="searchApi"></label>
-				<input id="searchApi" type="text" placeholder="검색어를 입력하세요">
+				<input type="text" id="searchApi" placeholder="검색어를 입력하세요">
 				<button type="button">검색</button>
 			</div>
 			<ul></ul>

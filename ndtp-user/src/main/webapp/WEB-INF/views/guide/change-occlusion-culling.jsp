@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>changeOcclusionCullingAPI</h2>
 		<p>객체 Occlusion Culling 기능을 활성화, 비활성화 하는 기능입니다.</p>
 		<table>
@@ -40,20 +40,20 @@
 			<input type="radio" id="api15-opt2" name="api15-p1" value="false" checked />
 			<label for="api15-opt2">비활성</label><br/>
 			<label for="api15-p2">dataKey</label>
-			<input type="text" data-require="true" id="api15-p2" value="SOCIALROOM" disabled>
+			<input type="text" id="api15-p2" value="SOCIALROOM" data-require="true" disabled>
 			
 		</div>
 		<br/> 
 		<input type="button" id="changeOcclusionCulling" value="Run" class="popupBtn">
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var changeOcclusionCulling = function() {
 		var flag = $("input[name=api15-p1]:checked").val();
-		var isFalseBoolean = (flag === 'true');
+		flag = (flag === 'true');
 		var dataKey = $('#api15-p2').val();
 
-		changeOcclusionCullingAPI(MAGO3D_INSTANCE2, isFalseBoolean, dataKey);
+		changeOcclusionCullingAPI(MAGO3D_INSTANCE2, flag, dataKey);
 	}
 </script>

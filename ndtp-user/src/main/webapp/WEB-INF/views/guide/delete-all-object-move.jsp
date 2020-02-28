@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>deleteAllObjectMoveAPI</h2>
 		<p>모든 객체 마우스 이동 이력을 Cache로 삭제합니다.</p>
 		<table>
@@ -26,7 +26,7 @@
 		<br/> 
 		<input type="button" id="deleteAllObjectMove" value="Run" class="popupBtn">
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var deleteAllObjectMove = function() {

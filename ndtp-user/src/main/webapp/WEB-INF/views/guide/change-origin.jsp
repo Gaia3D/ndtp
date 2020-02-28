@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>changeOriginAPI</h2>
 		<p>changeOriginAPI 활성화 상태 값을 변경함으로써 Origin이 표시, 비표시 됩니다.</p>
 		<table>
@@ -38,14 +38,14 @@
 		<br/> 
 		<input type="button" id="changeOrigin" value="Run" class="popupBtn">
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var changeOrigin = function() {
 
 		var flag = $("input[name=api3-p1]:checked").val();
-		var isFalseBoolean = (flag === 'true');
+		flag = (flag === 'true');
 
-		changeOriginAPI(MAGO3D_INSTANCE2, isFalseBoolean);
+		changeOriginAPI(MAGO3D_INSTANCE2, flag);
 	}
 </script>

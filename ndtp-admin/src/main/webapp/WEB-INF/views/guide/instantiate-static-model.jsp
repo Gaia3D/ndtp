@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>instantiateStaticModelAPI</h2>
 		<p>정적 모델 인스턴스를 생성하는 API입니다.</p>
 		<table>
@@ -31,26 +31,26 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api37-p1">projectId</label>
-			<input type="text" data-require="true" id="api37-p1" value="static_sample"><br>
+			<input type="text" id="api37-p1" value="static_sample" data-require="true"><br>
 			<label for="api37-p2">instanceId</label>
-			<input type="text" data-require="true" id="api37-p2" value="building"><br>
+			<input type="text" id="api37-p2" value="building" data-require="true"><br>
 			<label for="api37-p3">longitude</label>
-			<input type="text" data-require="true" id="api37-p3" value="126.924985"><br>
+			<input type="text" id="api37-p3" value="126.924985" data-require="true"><br>
 			<label for="api37-p4">latitude</label>
-			<input type="text" data-require="true" id="api37-p4" value="37.521068"><br>
+			<input type="text" id="api37-p4" value="37.521068" data-require="true"><br>
 			<label for="api37-p5">height</label>
-			<input type="text" data-require="false" id="api37-p5" value="100"><br>
+			<input type="text" id="api37-p5" value="100" data-require="false"><br>
 			<label for="api37-p6">heading</label>
-			<input type="text" data-require="false" id="api37-p6" value="93.03254"><br>
+			<input type="text" id="api37-p6" value="93.03254" data-require="false"><br>
 			<label for="api37-p7">pitch</label>
-			<input type="text" data-require="false" id="api37-p7" value="223.84163"><br>
+			<input type="text" id="api37-p7" value="223.84163" data-require="false"><br>
 			<label for="api37-p8">roll</label>
-			<input type="text" data-require="false" id="api37-p8" value="123.74897">
+			<input type="text" id="api37-p8" value="123.74897" data-require="false">
 		</div>
 		<br> 
 		<input type="button" id="instantiateStaticModel" value="Run" class="popupBtn">
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var instantiateStaticModel = function() {

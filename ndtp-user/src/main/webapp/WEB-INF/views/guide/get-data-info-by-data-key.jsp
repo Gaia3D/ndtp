@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>getDataInfoByDataKeyAPI</h2>
 		<p>데이터 고유키를 이용하여 데이터의 위치정보, 회전정보를 취득하는 API입니다.</p>
 		<table>
@@ -36,9 +36,9 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api29-p1">projectId</label>
-			<input type="text" data-require="true" id="api29-p1" value="sample"><br>
+			<input type="text" id="api29-p1" value="sample" data-require="true"><br>
 			<label for="api29-p2">dataKey</label>
-			<input type="text" data-require="true" id="api29-p2" value="SOCIALROOM">
+			<input type="text" id="api29-p2" value="SOCIALROOM" data-require="true">
 		</div>
 		<br>
 		<input type="button" id="getDataInfoByDataKey" value="Run" class="popupBtn">
@@ -47,7 +47,7 @@
 			<table id="api29-result"></table>
 		</div>
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var getDataInfoByDataKey = function() {

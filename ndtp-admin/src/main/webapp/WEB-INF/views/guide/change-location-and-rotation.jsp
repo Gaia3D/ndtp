@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>changeLocationAndRotationAPI</h2>
 		<p>입력 받은 위치정보와 회전 정보로 블록을 변환 시킵니다.</p>
 		<table>
@@ -66,26 +66,26 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api8-p1">projectId</label>
-			<input type="text" data-require="true" id="api8-p1" value="sample" disabled><br/>
+			<input type="text" id="api8-p1" value="sample" data-require="true" disabled><br/>
 			<label for="api8-p2">dataKey</label>
-			<input type="text" data-require="true" id="api8-p2" value="SOCIALROOM" disabled><br/>
+			<input type="text" id="api8-p2" value="SOCIALROOM" data-require="true" disabled><br/>
 			<label for="api8-p3">longitude</label>
-			<input type="text" data-require="true" id="api8-p3" value="126.923785"><br/>
+			<input type="text" id="api8-p3" value="126.923785" data-require="true"><br/>
 			<label for="api8-p4">latitude</label>
-			<input type="text" data-require="true" id="api8-p4" value="37.521868"><br/>
+			<input type="text" id="api8-p4" value="37.521868" data-require="true"><br/>
 			<label for="api8-p5">height</label>
-			<input type="text" data-require="false" id="api8-p5" value="100"><br/>
+			<input type="text" id="api8-p5" value="100" data-require="false"><br/>
 			<label for="api8-p6">heading</label>
-			<input type="text" data-require="false" id="api8-p6" value="0"><br/>
+			<input type="text" id="api8-p6" value="0" data-require="false"><br/>
 			<label for="api8-p7">pitch</label>
-			<input type="text" data-require="false" id="api8-p7" value="0"><br/>
+			<input type="text" id="api8-p7" value="0" data-require="false"><br/>
 			<label for="api8-p8">roll</label>
-			<input type="text" data-require="false" id="api8-p8" value="0">
+			<input type="text" id="api8-p8" value="0" data-require="false">
 		</div>
 		<br/> 
 		<input type="button" id="changeLocationAndRotation" value="Run" class="popupBtn">
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var changeLocationAndRotation = function() {

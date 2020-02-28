@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>changeInsertIssueModeAPI</h2>
 		<p>changeInsertIssueModeAPI란 이슈 기능을 활성화하는 API입니다. 이 API에 파라미터인
 			flag는 Boolean 타입이고 true이면 이슈 모드가 활성화되고 false이면 비활성화되는 방식입니다. 활성화되어있는
@@ -44,16 +44,16 @@
 			<table id="api13-result"></table>
 		</div>
 		</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var changeInsertIssueMode = function() {
 		var table = document.getElementById("api13-result");
 		table.innerHTML = '';
 		var flag = $("input[name=api13-p1]:checked").val();
-		var isFalseBoolean = (flag === 'true');
+		flag = (flag === 'true');
 
-		changeInsertIssueModeAPI(MAGO3D_INSTANCE2, isFalseBoolean);
+		changeInsertIssueModeAPI(MAGO3D_INSTANCE2, flag);
 	}
 
 	function insertIssueCallBack(projectId, dataKey, objectId, latitude, longitude, altitude){

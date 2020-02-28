@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>getAbsoluteCoodinateOfBuildingPointAPI</h2>
 		<p>특정 건물의 원점을 기준으로 한 좌표를 세계좌표로 변환</p>
 		<table>
@@ -58,15 +58,15 @@
 		<h4>실행</h4>
 		<div class="paramContainer">
 			<label for="api33-p1">projectId</label>
-			<input type="text" data-require="true" id="api33-p1" value="sample" disabled><br/>
+			<input type="text" id="api33-p1" value="sample" data-require="true" disabled><br/>
 			<label for="api33-p2">dataKey</label>
-			<input type="text" data-require="true" id="api33-p2" value="SOCIALROOM" disabled><br/>
+			<input type="text" id="api33-p2" value="SOCIALROOM" data-require="true" disabled><br/>
 			<label for="api33-p3">inputPoint_x</label>
-			<input type="text" data-require="true" id="api33-p3" value="4713784.056940694"><br/>
+			<input type="text" id="api33-p3" value="4713784.056940694" data-require="true"><br/>
 			<label for="api33-p4">inputPoint_y</label> 
-			<input type="text" data-require="true" id="api33-p4" value="-3158185.8634899906"><br/>
+			<input type="text" id="api33-p4" value="-3158185.8634899906" data-require="true"><br/>
 			<label for="api33-p5">inputPoint_z</label>
-			<input type="text" data-require="true" id="api33-p5" value="4516771.367915208">
+			<input type="text" id="api33-p5" value="4516771.367915208" data-require="true">
 		</div>
 		<br/> 
 		<input type="button" id="getAbsoluteCoodinateOfBuildingPoint" value="Run" class="popupBtn">
@@ -75,7 +75,7 @@
 			<table id="api33-result"></table>
 		</div>
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var getAbsoluteCoodinateOfBuildingPoint = function() {

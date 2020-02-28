@@ -6,7 +6,7 @@
 			<li><a href="#" onclick="tabMenu(1);">Code</a></li>
 		</ul>
 	</div>
-	<div class="menu_tab00 mTs" id="panels">
+	<div id="panels" class="menu_tab00 mTs">
 		<h2>deleteAllChangeColorAPI</h2>
 		<p>변경한 색상 이력을 전체 삭제합니다.</p>
 		<table>
@@ -25,7 +25,7 @@
 		<br/>
 		<input type="button" id="deleteAllChangeColor" value="Run" class="popupBtn">
 	</div>
-	<div class="menu_tab01 mTs" id="panels" style="display: none;"></div>
+	<div id="panels" class="menu_tab01 mTs" style="display: none;"></div>
 </div>
 <script>
 	var deleteAllChangeColor = function() {
