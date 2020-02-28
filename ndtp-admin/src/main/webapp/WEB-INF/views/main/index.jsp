@@ -123,7 +123,7 @@
 						</div>
 						<div id="${dbWidget.name}" class="widget-content row">
 							<div style="text-align: center; padding-top: 60px; padding-left: 150px;">
-					      		<div id="dataInfoSpinner" style="width: 150px; height: 70px;"></div>
+					      		<div id="dataStatusSpinner" style="width: 150px; height: 70px;"></div>
 					       	</div>
 						</div>
 					</div>
@@ -140,7 +140,7 @@
 						</div>
 						<div id="${dbWidget.name}" class="widget-content row">
 							<div style="text-align: center; padding-top: 60px; padding-left: 150px;">
-					       		<div id="dataInfoLogListSpinner" style="width: 150px; height: 70px;"></div>
+					       		<div id="dataAdjustLogSpinner" style="width: 150px; height: 70px;"></div>
 					       	</div>
 						</div>
 					</div>
@@ -168,13 +168,13 @@
 							</div>
 							<div class="widget-functions u-pull-right">
 								<spring:message code='main.status.user.moretracking' var='moreTracking'/>
-								<a href="/access/list" title="${moreTracking}"><span class="icon-glyph glyph-plus"></span></a>
+								<%-- <a href="/access/list" title="${moreTracking}"><span class="icon-glyph glyph-plus"></span></a> --%>
 							</div>
 						</div>
 
 						<div id="${dbWidget.name}" class="widget-content row">
 							<div style="text-align: center; padding-top: 60px; padding-left: 150px;">
-			            		<div id="accessLogSpinner" style="width: 150px; height: 70px;"></div>
+			            		<div id="userAccessLogSpinner" style="width: 150px; height: 70px;"></div>
 			            	</div>
 						</div>
 					</div>
@@ -446,18 +446,18 @@
 			dataGroupWidget();
 		}
 		if(isDataStatusDraw == "true") {
-			startSpinner("dataInfoSpinner");
+			startSpinner("dataStatusSpinner");
 			dataStatusWidget();
 		}
 		if(isDataAdjustLogDraw == "true") {
-			startSpinner("dataInfoLogListSpinner");
+			startSpinner("dataAdjustLogSpinner");
 			dataAdjustLogWidget();
 		}
 		if(isUserStatusDraw == "true") {
 			userStatusWidget(0, null);
 		}
 		if(isUserAccessLogDraw == "true") {
-			startSpinner("accessLogSpinner");
+			startSpinner("userAccessLogSpinner");
 		    setTimeout(callUserAccessLogWidget, 1000);
 		}
 		if(isCivilVoiceDraw == "true") {
@@ -514,8 +514,8 @@
 
 	// 사용자 추적
 	function callUserAccessLogWidget() {
-		accessLogWidget();
-		setInterval(accessLogWidget, refreshTime);
+		userAccessLogWidget();
+		setInterval(userAccessLogWidget, refreshTime);
 	}
 
 	// 시스템 사용량
@@ -548,7 +548,6 @@
 	}
 
 	function showDataGroup(dataGroupWidgetList) {
-
 		$("#dataGroupWidget").empty();
 		if(dataGroupWidgetList == null || dataGroupWidgetList.length == 0) {
 			return;
@@ -605,7 +604,7 @@
 			dataType : "json",
 			success : function(msg) {
 				if (msg.result == "success") {
-					showDataInfo(msg);
+					showDataStatus(msg);
 				} else {
 					alert(JS_MESSAGE[msg.result]);
 				}
@@ -616,8 +615,7 @@
 		});
 	}
 
-	function showDataInfo(jsonData) {
-
+	function showDataStatus(jsonData) {
 		$("#dataStatusWidget").empty();
 
 		var useTotalCount = parseInt(jsonData.useTotalCount);
@@ -706,22 +704,22 @@
 								+	"</tr>";
 					} else {
 						for(i=0; i<dataAdjustLogList.length; i++ ) {
-							var dataInfoAdjustLog = null;
-							dataInfoAdjustLog = dataAdjustLogList[i];
+							var dataAdjustLog = null;
+							dataAdjustLog = dataAdjustLogList[i];
 							var viewStatus = "";
-							if(dataInfoAdjustLog.status === "request") viewStatus = "요청";
-							else if(dataInfoAdjustLog.status === "approval") viewStatus = "승인";
-							else if(dataInfoAdjustLog.status === "reject") viewStatus = "반려";
-							else if(dataInfoAdjustLog.status === "rollback") viewStatus = "원복";
+							if(dataAdjustLog.status === "request") viewStatus = "요청";
+							else if(dataAdjustLog.status === "approval") viewStatus = "승인";
+							else if(dataAdjustLog.status === "reject") viewStatus = "반려";
+							else if(dataAdjustLog.status === "rollback") viewStatus = "원복";
 
-							var date = new Date(dataInfoAdjustLog.insertDate);
+							var date = new Date(dataAdjustLog.insertDate);
 							var insertDate = date.toLocaleDateString();
 
 							content = content
 								+ 	"<tr>"
 								+ 	"	<td class=\"col-left ellipsis\" style='max-width:160px;'>"
 								+		"	<span class=\"index\"></span>"
-								+		"	<em>" + dataInfoAdjustLog.dataName + "</em>"
+								+		"	<em>" + dataAdjustLog.dataName + "</em>"
 								+		"</td>"
 								+ 		"<td class=\"col-center\" style='width:60px;'>" + viewStatus + "</td>"
 								+ 		"<td class=\"col-center\">" + insertDate + "</td>"
@@ -746,7 +744,7 @@
 	}
 
 	// 사용자 상태별 현황
-	function showUser(drawType, jsonData) {
+	function showUserStatus(drawType, jsonData) {
 		var activeUserTotalCount = null;
 		var fobidUserTotalCount = null;
 		var failUserTotalCount = null;
@@ -844,7 +842,7 @@
 					//alert("데이터 베이스 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
 				} else if (msg.result == "success") {
 					$("#userStatusWidget").empty();
-					showUser(1, msg);
+					showUserStatus(1, msg);
 				}
 			},
 			error : function(request, status, error) {
@@ -854,7 +852,7 @@
 	}
 
 	// 사용자 추적
-	function accessLogWidget() {
+	function userAccessLogWidget() {
 		$.ajax({
 			url : "/widgets/user-access-log",
 			type : "GET",
@@ -866,37 +864,37 @@
 				} else if (msg.result == "db.exception") {
 					//alert("데이터 베이스 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
 				} else if (msg.result == "success") {
-					var accessLogList = msg.accessLogList;
+					var userAccessLogList = msg.userAccessLogList;
 					var content = "";
 					content 	= "<table class=\"widget-table\">"
 								+	"<col class=\"col-left\" />"
 								+	"<col class=\"col-left\" />";
-					if(accessLogList == null || accessLogList.length == 0) {
+					if(userAccessLogList == null || userAccessLogList.length == 0) {
 						content += 	"<tr>"
 								+	"	<td colspan=\"2\" class=\"col-none\"><spring:message code='main.status.no.user.tracking'/></td>"
 								+	"</tr>";
 					} else {
-						for(i=0; i<accessLogList.length; i++ ) {
-							var accessLog = null;
-							accessLog = accessLogList[i];
+						for(i=0; i<userAccessLogList.length; i++ ) {
+							var userAccessLog = null;
+							userAccessLog = userAccessLogList[i];
 							content = content
 								+ 	"<tr>"
 								+ 	"	<td class=\"col-left\">"
 								+		"	<span class=\"index\"></span>"
-								+		"	<em>" + accessLog.userName + "</em>"
+								+		"	<em>" + userAccessLog.userName + "</em>"
 								+		"</td>"
-								+ 		"<td class=\"col-left\">" + accessLog.viewRequestUri + "</td>"
+								+ 		"<td class=\"col-left\">" + userAccessLog.viewRequestUri + "</td>"
 								+ 	"</tr>";
 						}
 					}
-					$("#accessLogWidget").empty();
-					$("#accessLogWidget").html(content);
+					$("#userAccessLogWidget").empty();
+					$("#userAccessLogWidget").html(content);
 				}
 			},
 			error : function(request, status, error) {
 				//alert("잠시 후 이용해 주시기 바랍니다. 장시간 같은 현상이(DBCP) 반복될 경우 관리자에게 문의하여 주십시오.");
-				$("#accessLogWidget").empty();
-				$("#accessLogWidget").html(content);
+				$("#userAccessLogWidget").empty();
+				$("#userAccessLogWidget").html(content);
 			}
 		});
 	}

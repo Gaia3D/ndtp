@@ -393,9 +393,9 @@ public class WidgetRestController {
 			accessLog.setEndDate(endDate);
 			accessLog.setOffset(0l);
 			accessLog.setLimit(WIDGET_LIST_VIEW_COUNT);
-			List<AccessLog> accessLogList = logService.getListAccessLog(accessLog);
 
-			map.put("accessLogList", accessLogList);
+			List<AccessLog> userAccessLogList = logService.getListAccessLog(accessLog);
+			map.put("userAccessLogList", userAccessLogList);
 		} catch(Exception e) {
 			e.printStackTrace();
 			result = "db.exception";
