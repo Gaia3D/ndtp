@@ -393,7 +393,7 @@ function convertColor(color) {
 
 function initBasePolicy(callback) {
 	$.ajax({
-		url: "/policy/base",
+		url: "/geopolicies",
 		type: "GET",
 		headers: {"X-Requested-With": "XMLHttpRequest"},
 		dataType: "json",
