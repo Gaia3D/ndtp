@@ -34,15 +34,15 @@ import ndtp.support.LayerDisplaySupport;
  */
 @Slf4j
 @RestController
-@RequestMapping("/policy")
-public class PolicyRestController {
+@RequestMapping("/geopolicies")
+public class GeoPolicyRestController {
 	
 	private final UserPolicyService userPolicyService;
 	private final LayerGroupService layerGroupService;
 	private final DataService dataService;
 	private final GeoPolicyService geoPolicyService;
 	
-	public PolicyRestController(UserPolicyService userPolicyService, LayerGroupService layerGroupService, DataService dataService, GeoPolicyService geoPolicyService) {
+	public GeoPolicyRestController(UserPolicyService userPolicyService, LayerGroupService layerGroupService, DataService dataService, GeoPolicyService geoPolicyService) {
 		this.userPolicyService = userPolicyService;
 		this.layerGroupService = layerGroupService;
 		this.dataService = dataService;
@@ -50,8 +50,31 @@ public class PolicyRestController {
 	}
 	
 	@GetMapping
-	public Map<String, Object> init(HttpServletRequest request, @RequestParam String dataId) {
-		log.info("@@ Policy init");
+	public Map<String, Object> getGeoPolicy(HttpServletRequest request) {
+		log.info("@@ user GeoPolicy");
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		try {
+			result.put("geoPolicy", geoPolicyService.getGeoPolicy());
+		} catch(Exception e) {
+			e.printStackTrace();
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		}
+
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+
+		return result;
+	}
+	
+	@GetMapping("/user")
+	public Map<String, Object> basePolicy(HttpServletRequest request, @RequestParam String dataId) {
+		log.info("@@ default Policy");
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String errorCode = null;
@@ -90,29 +113,6 @@ public class PolicyRestController {
 			List<LayerGroup> baseLayers = LayerDisplaySupport.getListDisplayLayer(layerGroupService.getListLayerGroupAndLayer(), userPolicy.getBaseLayers());
 			result.put("geoPolicy", geoPolicy);
 			result.put("baseLayers", baseLayers);
-		} catch(Exception e) {
-			e.printStackTrace();
-			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-			errorCode = "db.exception";
-			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-		}
-
-		result.put("statusCode", statusCode);
-		result.put("errorCode", errorCode);
-		result.put("message", message);
-
-		return result;
-	}
-	
-	@GetMapping("/base")
-	public Map<String, Object> basePolicy(HttpServletRequest request) {
-		log.info("@@ Policy default");
-		Map<String, Object> result = new HashMap<>();
-		int statusCode = 0;
-		String errorCode = null;
-		String message = null;
-		try {
-			result.put("geoPolicy", geoPolicyService.getGeoPolicy());
 		} catch(Exception e) {
 			e.printStackTrace();
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();

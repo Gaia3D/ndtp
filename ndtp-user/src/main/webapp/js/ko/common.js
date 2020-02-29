@@ -324,7 +324,7 @@ function cesiumCreditAlt(){
 function initPolicy(callback, dataId) {
 	if(!dataId) dataId = "";
 	$.ajax({
-		url: "/policy?dataId="+dataId,
+		url: "/geopolicies/user?dataId="+dataId,
 		type: "GET",
 		headers: {"X-Requested-With": "XMLHttpRequest"},
 		dataType: "json",
