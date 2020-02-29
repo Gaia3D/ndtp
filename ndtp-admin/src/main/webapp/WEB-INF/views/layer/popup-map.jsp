@@ -18,7 +18,7 @@
     <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>
     <script type="text/javascript" src="/externlib/ol45/ol.js?cacheVersion=${contentCacheVersion}"></script>
-    <script type="text/javascript" src="/js/${lang}/mapInit.js?cacheVersion=${contentCacheVersion}"></script>
+    <script type="text/javascript" src="/js/${lang}/map-view.js?cacheVersion=${contentCacheVersion}"></script>
  </head>
 <body>
     <div style="height: 100%;">
@@ -28,6 +28,6 @@
 <script type="text/javascript">
     var policy = JSON.parse('${policyJson}');
     var layer = JSON.parse('${layerJson}');
-    var mapInit = new MapInit(policy, layer, '${versionId}');
+    var mapViewer = new mapViewer(policy, layer, '${versionId}');
 </script>
 </html>

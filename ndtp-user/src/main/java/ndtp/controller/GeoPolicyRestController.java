@@ -73,7 +73,7 @@ public class GeoPolicyRestController {
 	}
 	
 	@GetMapping("/user")
-	public Map<String, Object> basePolicy(HttpServletRequest request, @RequestParam String dataId) {
+	public Map<String, Object> getUserGeoPolicy(HttpServletRequest request, @RequestParam String dataId) {
 		log.info("@@ default Policy");
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;

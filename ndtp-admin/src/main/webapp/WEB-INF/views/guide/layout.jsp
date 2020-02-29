@@ -95,10 +95,13 @@
 		
 var MAGO3D_INSTANCE2;
 
-magoInit2();
+var geoPolicyJson;
+initBasePolicy(function(policy){
+	geoPolicyJson = policy; 
+	magoInit2();
+});
 
 function magoInit2() {
-	var geoPolicyJson = ${geoPolicyJson};
 	geoPolicyJson.initAltitude = 250.0;
 	var cesiumViewerOption = {};
 	cesiumViewerOption.infoBox = false;
@@ -115,7 +118,6 @@ function magoInit2() {
 
 function magoLoadEnd2(e) {
 	var magoInstance = e;
-	var geoPolicyJson = ${geoPolicyJson};
 	var viewer = magoInstance.getViewer();
 	var magoManager = magoInstance.getMagoManager();
 	var f4dController = magoInstance.getF4dController();
@@ -150,6 +152,7 @@ function magoLoadEnd2(e) {
 				}
 				
 				f4dController.addF4dGroup(res);
+				cesiumCreditAlt();
 			}
 		},
 		error:function(request,status,error){
@@ -165,7 +168,7 @@ $('.item').on("click", function(){
 
 
 $( document ).ready(function() {
-	cesiumCreditAlt();
+// 	cesiumCreditAlt();
 });
 function changeToggleTab(apiIndex){
 
@@ -388,7 +391,24 @@ function convertColor(color) {
 
   return rgbColor;
  }
-
+function initBasePolicy(callback) {
+	$.ajax({
+		url: "/geopolicies",
+		type: "GET",
+		headers: {"X-Requested-With": "XMLHttpRequest"},
+		dataType: "json",
+		success: function(msg){
+			if(msg.statusCode <= 200) {
+				callback(msg.geoPolicy);
+			} else {
+				alert(JS_MESSAGE[msg.errorCode]);
+			}
+		},
+		error:function(request,status,error){
+			alert(JS_MESSAGE["ajax.error.message"]);
+		}
+	});
+}
 </script>
 </body>
 </html>

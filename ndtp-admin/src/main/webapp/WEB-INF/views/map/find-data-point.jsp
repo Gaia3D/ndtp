@@ -181,6 +181,7 @@
 <script type="text/javascript" src="/js/${lang}/data-info.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript" src="/js/${lang}/user-policy.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript" src="/js/${lang}/map-data-controll.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/map-init.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("#magoTool").addClass("on");
@@ -194,22 +195,22 @@
 	let dataGroupMap = new Map();
 	dataGroupMap.set(parseInt('${dataInfo.dataGroupId}'), '${dataInfo.dataGroupName}');
 	var NDTP = NDTP ||{
-		policy : ${geoPolicyJson},
-		dataGroup : dataGroupMap
-		//baseLayers : ${baseLayerJson},
-		//wmsProvider : {},
-		//districtProvider : {}
+		policy : {},
+		dataGroup : dataGroupMap,
+		baseLayers : {}
 	};
-
-	var geoPolicyJson = null;
 	var viewer = null;
 	var entities = null;
-
-	magoInit();
+	
+	initPolicy(function(policy, baseLayers){
+		NDTP.policy = policy;
+		NDTP.baseLayers = baseLayers;
+		magoInit();
+	},'${dataInfo.dataId}');
 
 	function magoInit() {
 
-		geoPolicyJson = ${geoPolicyJson};
+		var geoPolicyJson = NDTP.policy;
 
 		var cesiumViewerOption = {};
 		cesiumViewerOption.infoBox = false;
@@ -234,6 +235,7 @@
 	var beforePointId = null;
 	function magoLoadEnd(e) {
 		var magoInstance = e;
+		var geoPolicyJson = NDTP.policy;
 		viewer = magoInstance.getViewer();
 		entities = viewer.entities;
 		var magoManager = magoInstance.getMagoManager();
@@ -269,9 +271,10 @@
 	    });
 
 	    // 기본 레이어 랜더링
-		setTimeout(function(){
-        	initLayer('${baseLayers}');
-        }, geoPolicyJson.initDuration * 1000);
+// 		setTimeout(function(){
+// 			var ndtpMap = new mapInit(magoInstance, NDTP.baseLayers, geoPolicyJson);
+// 			ndtpMap.initLayer();
+//         }, geoPolicyJson.initDuration * 1000);
 
 		/* setTimeout(function(){
 			changeObjectMove();
@@ -364,31 +367,6 @@
 
 	function remove(entityStored) {
 		entities.removeById(entityStored);
-	}
-
-	function initLayer(baseLayers) {
-		if(!baseLayers) return;
-		var layerList = baseLayers.split(",");
-		var queryString = "enable_yn='Y'";
-	    var queryStrings = layerList.map(function(){ return queryString; }).join(';');	// map: ie9부터 지원
-		var provider = new Cesium.WebMapServiceImageryProvider({
-	        url : geoPolicyJson.geoserverDataUrl + "/wms",
-	        layers : layerList.join(","),
-	        parameters : {
-	            service : 'WMS'
-	            ,version : '1.1.1'
-	            ,request : 'GetMap'
-	            ,transparent : 'true'
-	            ,format : 'image/png'
-	            ,time : 'P2Y/PRESENT'
-	            ,maxZoom : 25
-	            ,maxNativeZoom : 23
-	            ,CQL_FILTER: queryStrings
-	        },
-	        enablePickFeatures : false
-	    });
-
-		viewer.imageryLayers.addImageryProvider(provider);
 	}
 
 	function initData(dataInfo) {
