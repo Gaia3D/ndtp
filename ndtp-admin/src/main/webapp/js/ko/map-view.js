@@ -1,9 +1,9 @@
 /**
  * 지도 객체 생성
  */
-var MapInit = function(policy, layer, versionId) {
+var mapViewer = function(policy, layer, versionId) {
 
-    if (!(this instanceof MapInit)) {
+    if (!(this instanceof mapViewer)) {
         throw new Error("New 를 통해 생성 하십시오.");
     }
     

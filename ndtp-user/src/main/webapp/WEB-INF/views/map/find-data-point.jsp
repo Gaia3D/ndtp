@@ -288,10 +288,10 @@
 	    });
 
 	    // 기본 레이어 랜더링
-		setTimeout(function(){
-			var map = new mapInit(magoInstance, NDTP.baseLayers, geoPolicyJson);
-        	map.initLayer();
-        }, geoPolicyJson.initDuration * 1000);
+// 		setTimeout(function(){
+// 			var map = new mapInit(magoInstance, NDTP.baseLayers, geoPolicyJson);
+//         	map.initLayer();
+//         }, geoPolicyJson.initDuration * 1000);
 
 		/* setTimeout(function(){
 			changeObjectMove();
