@@ -21,8 +21,8 @@
 			<option value="indoorgml">indoorgml</option>
 			<option value="las">las</option>
 			<option value="ifc">ifc</option>
-			<option value="collada">collada</option>
-			<option value="dae">dae</option>
+			<!-- <option value="collada">collada</option> -->
+			<option value="dae">dae(collada)</option>
 			<option value="obj">obj</option>
 			<option value="3ds">3ds</option>
 		</select>
