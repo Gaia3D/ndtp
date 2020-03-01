@@ -68,7 +68,7 @@
 	{{/each}}
 {{else}}
 				<tr>
-					<td colspan="5" class="center">데이터 그룹이 존재하지 않습니다.</td>
+					<td colspan="6" class="center">데이터 그룹이 존재하지 않습니다.</td>
 				</tr>
 {{/greaterThan}}
 			</tbody>
