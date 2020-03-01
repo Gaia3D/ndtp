@@ -137,7 +137,7 @@
 										<option value="las"> LAS(POINT CLOUD) </option>
 										<option value="3ds"> 3DS </option>
 										<option value="obj"> OBJ </option>
-		          						<option value="dae"> DAE(COLLADA) </option>
+		          						<option value="dae"> COLLADA(DAE) </option>
 									</select>
 								</td>
 							</tr>
