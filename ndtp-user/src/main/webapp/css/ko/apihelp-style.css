@@ -1121,3 +1121,18 @@ margin-right: 10px;
 .paramContainer  input {
 padding: 5px;
 }
+
+ul.mainlist li:before{
+    content: "-";
+    display: inline-block;
+    vertical-align: middle;
+    padding: 0px 3px 4px 0px;
+}
+
+#api0 > h3  {
+margin: 10px 0;
+padding: 0 0 15px 0;
+font-size: 22px;
+font-weight: normal;
+border-bottom: 1px solid #ccc;
+}
