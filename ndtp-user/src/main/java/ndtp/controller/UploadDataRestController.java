@@ -375,7 +375,17 @@ public class UploadDataRestController {
             			directoryPath = directoryPath + directoryName;
             			//subDirectoryPath = directoryName;
             		} else {
-            			String fileName = entry.getName().substring(entry.getName().indexOf(directoryName) + directoryName.length());  
+            			String fileName = null;
+            			if(entry.getName().indexOf(directoryName) >=0) {
+            				fileName = entry.getName().substring(entry.getName().indexOf(directoryName) + directoryName.length());  
+            			} else {
+            				// 이전이 디렉토리, 현재도 디렉토리인데 서로 다른 디렉토리
+            				if(directoryPath.indexOf(directoryName) >=0) {
+            					directoryPath = directoryPath.replace(directoryName, "");
+            					directoryName = null;
+            				}
+            				fileName = entry.getName();
+            			}
             			uploadDataFile.setFileName(fileName);
             			uploadDataFile.setFileRealName(fileName);
             			directoryName = fileName;

@@ -21,10 +21,10 @@
 		    </thead>
 		    <tbody>
 		    	<tr>
-		        	<td class="col-number"><fmt:formatNumber value="${commonDataCount}" type="number"/></td>
-		        	<td class="col-number"><fmt:formatNumber value="${publicDataCount}" type="number"/></td>
-		        	<td class="col-number"><fmt:formatNumber value="${privateDataCount}" type="number"/></td>
-		        	<td class="col-number"><fmt:formatNumber value="${groupDataCount}" type="number"/></td>
+		        	<td class="col-number"><fmt:formatNumber value="${commonDataCount}" type="number" /></td>
+		        	<td class="col-number"><fmt:formatNumber value="${publicDataCount}" type="number" /></td>
+		        	<td class="col-number"><fmt:formatNumber value="${privateDataCount}" type="number" /></td>
+		        	<td class="col-number"><fmt:formatNumber value="${groupDataCount}" type="number" /></td>
 		        </tr>
 		    </tbody>
 		</table>
