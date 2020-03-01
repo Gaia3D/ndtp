@@ -43,7 +43,7 @@ public class DataFileJsonParser implements DataFileParser {
 			String altitude = jsonNode.path("height").asText().trim();
 			String mappingType = jsonNode.path("mappingType").asText();
 			JsonNode metainfo = jsonNode.path("attributes");
-			JsonNode childrenNode = jsonNode.path("children");
+			JsonNode childrenNode = jsonNode.path("datas");
 			
 			dataGroup.setDataGroupId(dataGroupId);
 //			dataGroup.setDataGroupName(dataName);
@@ -92,7 +92,7 @@ public class DataFileJsonParser implements DataFileParser {
 			String dataKey = jsonNode.path("dataKey").asText();
 			String longitude = jsonNode.path("longitude").asText().trim();
 			String latitude = jsonNode.path("latitude").asText().trim();
-			String altitude = jsonNode.path("height").asText().trim();
+			String altitude = jsonNode.path("altitude").asText().trim();
 			String heading = jsonNode.path("heading").asText().trim();
 			String pitch = jsonNode.path("pitch").asText().trim();
 			String roll = jsonNode.path("roll").asText().trim();
@@ -101,6 +101,7 @@ public class DataFileJsonParser implements DataFileParser {
 			JsonNode childrene = jsonNode.path("children");
 			
 			DataInfo dataInfo = new DataInfo();
+			dataInfo.setDataId(dataId);
 			dataInfo.setDataName(dataName);
 			dataInfo.setDataKey(dataKey);
 			if(longitude != null && !"".equals(longitude)) dataInfo.setLongitude(new BigDecimal(longitude));

@@ -5,7 +5,7 @@ $(document).ready(function() {
 	$(".ui-slider-handle").slider({});
 	
 	//데이터 목록 초기화
-	mapDataInfoList(1, null);
+	//mapDataInfoList(1, null);
 	
 	// 데이터 검색 버튼 클릭
 	$("#mapDataSearch").click(function() {
@@ -27,6 +27,7 @@ $(document).ready(function() {
 	$('#dataInfoListArea').on('click', '.showHideButton', function() {
 		var dataGroupId = $(this).data('group-id');
 		var dataKey = $(this).data('key');
+		var dataTiling = $(this).data('tiling');
 		
 		if(dataGroupId === null || dataGroupId === '' || dataKey === null || dataKey === '') {
 			alert("객체 정보가 올바르지 않습니다. 확인하여 주십시오.");
@@ -35,16 +36,48 @@ $(document).ready(function() {
 		
 		var option = true;
 		if ($(this).hasClass("show")) {
+			option = false;
+		}
+		
+		if (dataTiling) {
+			dataKey = "F4D_" + dataKey;
+		}
+		//setNodeAttributeAPI(MAGO3D_INSTANCE, dataGroupId, dataKey, optionObject);
+		
+		dataGroupId = parseInt(dataGroupId);
+		var nodeMap = MAGO3D_INSTANCE.getMagoManager().hierarchyManager.getNodesMap(dataGroupId);
+		var projectsMap = MAGO3D_INSTANCE.getMagoManager().hierarchyManager.projectsMap;
+		
+		var flag = false;
+		if (!$.isEmptyObject(nodeMap)) {
+			for (var key in nodeMap) {
+				var node = nodeMap[key];
+				if (!$.isEmptyObject(nodeMap)) {
+					if (key == dataKey) {
+						var optionObject = { isVisible : option };
+						setNodeAttributeAPI(MAGO3D_INSTANCE, dataGroupId, key, optionObject);
+					}
+				} else {
+					flag = true;
+					break;
+				}
+			}
+		} else {
+			flag = true;
+		}
+		
+		if (flag) {
+			alert('아직 로드되지 않은 데이터입니다.\n이동 후 다시 시도해 주시기 바랍니다.');
+			return;
+		}
+
+		if ($(this).hasClass("show")) {
 			$(this).removeClass("show");
 			$(this).addClass("hide");
-			option = false;
 		} else {
 			$(this).removeClass("hide");
 			$(this).addClass("show");
 		}
-		
-		var optionObject = { isVisible : option };
-		setNodeAttributeAPI(MAGO3D_INSTANCE, dataGroupId, dataKey, optionObject);
 		
 	});
 	
@@ -91,30 +124,31 @@ function mapDataInfoList(pageNo, searchDataName, searchStatus, searchDataType) {
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 			success: function(msg){
 				if(msg.statusCode <= 200) {
-					$("#dataInfoListArea").html("");
 					
 					var dataList = msg.dataList;
-					var groupMap = MAGO3D_INSTANCE.getMagoManager().hierarchyManager.projectsMap;
+					var projectsMap = MAGO3D_INSTANCE.getMagoManager().hierarchyManager.projectsMap;
 					
 					if (dataList.length > 0) {
 						for (i in dataList) {
 							var data = dataList[i];
 							var dataId = parseInt(data.dataGroupId);
-							if (!$.isEmptyObject(groupMap)) {
-								var dataGroup = groupMap[dataId];
-								if (!dataGroup || $.isEmptyObject(dataGroup)) break;
-								var visible = dataGroup.attributes.visible;
-								if (visible === undefined) {
-									data.groupVisible = true;
-								} else {
-									data.groupVisible = visible;
+							isVisible = true;
+							if (!$.isEmptyObject(projectsMap)) {
+								var projects = projectsMap[dataId];
+								if ($.isEmptyObject(projectsMap) || !projects) {
+									continue;
 								}
-							} else {
-								data.groupVisible = true;
+								var groupVisible = projects.attributes.isVisible;
+								if (groupVisible !== undefined) {
+									isVisible = groupVisible;
+								}
 							}
+							data.groupVisible = isVisible;
 						}
 					}
 					pageNo = msg.pagination.pageNo;
+					
+					$("#dataInfoListArea").html("");
 					var source = $("#templateDataList").html();
 	                //핸들바 템플릿 컴파일
 	                var template = Handlebars.compile(source);

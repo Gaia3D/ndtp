@@ -60,7 +60,13 @@
 						</a>
 					</td>
 					<td>{{dataCount}}</td>
-					<td><button type="button" title="표시" class="showHideButton show" data-group-id="{{dataGroupId}}">표시</button></td>
+					<td>
+		{{#if groupVisible}}
+						<button type="button" title="표시" class="showHideButton show" data-group-id="{{dataGroupId}}">표시</button>
+		{{else}}
+						<button type="button" title="표시" class="showHideButton hide" data-group-id="{{dataGroupId}}">표시</button>
+		{{/if}}
+					</td>
 					<td>
 						<button type="button" title="바로가기" class="goto" onclick="flyToGroup('{{longitude}}', '{{latitude}}', '{{altitude}}', '2');">바로가기</button>
 					</td>

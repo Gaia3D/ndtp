@@ -240,6 +240,8 @@
         DistrictControll(magoInstance);
 
         dataGroupList();
+        mapDataGroupList(1, null);
+        mapDataInfoList(1, null);
 
         Simulation(magoInstance);
         // 환경 설정.

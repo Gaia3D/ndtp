@@ -3,7 +3,7 @@ $(document).ready(function() {
 	$(".ui-slider-handle").slider({});
 	
 	//데이터 그룹 목록 초기화
-	mapDataGroupList(1, null);
+	//mapDataGroupList(1, null);
 	
 	// 데이터 그룹 검색 버튼 클릭
 	$("#mapDataGroupSearch").click(function() {
@@ -26,31 +26,49 @@ $(document).ready(function() {
 		
 		var option = true;
 		if ($(this).hasClass("show")) {
-			$(this).removeClass("show");
-			$(this).addClass("hide");
 			option = false;
-		} else {
-			$(this).removeClass("hide");
-			$(this).addClass("show");
 		}
 		
 		//changePropertyRenderingAPI(MAGO3D_INSTANCE, option, dataGroupId, 'isPhysical=true');
 		
-		var groupMap = MAGO3D_INSTANCE.getMagoManager().hierarchyManager.projectsMap;
 		dataGroupId = parseInt(dataGroupId);
-		if (!$.isEmptyObject(groupMap) && groupMap[dataGroupId] && groupMap[dataGroupId].attributes) {
-			groupMap[dataGroupId].attributes.visible = option;
+		var nodeMap = MAGO3D_INSTANCE.getMagoManager().hierarchyManager.getNodesMap(dataGroupId);
+		var projectsMap = MAGO3D_INSTANCE.getMagoManager().hierarchyManager.projectsMap;
+		
+		var flag = false;
+		if (!$.isEmptyObject(nodeMap)) {
+			for (var key in nodeMap) {
+				var node = nodeMap[key];
+				if (!$.isEmptyObject(nodeMap)) {
+					var nodeData = node.data;
+				    if (nodeData && nodeData.attributes && nodeData.attributes.isPhysical === true) {
+				    	var optionObject = { isVisible : option };
+				    	setNodeAttributeAPI(MAGO3D_INSTANCE, dataGroupId, key, optionObject);
+				    }
+				} else {
+					flag = true;
+					break;
+				}
+			}
+		} else {
+			flag = true;
 		}
 		
-		var optionObject = { isVisible : option };
-		var nodeMap = MAGO3D_INSTANCE.getMagoManager().hierarchyManager.getNodesMap(dataGroupId);
-		for (var key in nodeMap){ 
-		    var node = nodeMap[key];
-		    if (!node || $.isEmptyObject(node)) break;
-		    var nodeData = node.data;
-		    if (nodeData && nodeData.attributes && nodeData.attributes.isPhysical === true) {
-		        setNodeAttributeAPI(MAGO3D_INSTANCE, dataGroupId, key, optionObject);
-		    }
+		if (flag) {
+			alert('아직 로드되지 않은 데이터입니다.\n이동 후 다시 시도해 주시기 바랍니다.');
+			return;
+		}
+		
+		if (!$.isEmptyObject(projectsMap) && projectsMap[dataGroupId] && projectsMap[dataGroupId].attributes) {
+			projectsMap[dataGroupId].attributes.isVisible = option;
+		}
+		
+		if ($(this).hasClass("show")) {
+			$(this).removeClass("show");
+			$(this).addClass("hide");
+		} else {
+			$(this).removeClass("hide");
+			$(this).addClass("show");
 		}
 		
 	});
@@ -176,6 +194,29 @@ function mapDataGroupList(pageNo, searchDataGroupName) {
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 			success: function(msg){
 				if(msg.statusCode <= 200) {
+					
+					var dataGroupList = msg.dataGroupList;
+					var projectsMap = MAGO3D_INSTANCE.getMagoManager().hierarchyManager.projectsMap;
+					
+					if (dataGroupList.length > 0) {
+						for (i in dataGroupList) {
+							var dataGroup = dataGroupList[i];
+							var dataId = parseInt(dataGroup.dataGroupId);
+							isVisible = true;
+							if (!$.isEmptyObject(projectsMap)) {
+								var projects = projectsMap[dataId];
+								if ($.isEmptyObject(projectsMap) || !projects) {
+									continue;
+								}
+								var groupVisible = projects.attributes.isVisible;
+								if (groupVisible !== undefined) {
+									isVisible = groupVisible;
+								}
+							}
+							dataGroup.groupVisible = isVisible;
+						}
+					}
+					
 					$("#dataGroupListArea").html("");
 
 					var source = $("#templateDataGroupList").html();

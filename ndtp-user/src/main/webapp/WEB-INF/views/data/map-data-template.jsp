@@ -47,9 +47,9 @@
 						<td class="alignLeft ellipsis" style="max-width:100px;"><a href="/datas/{{dataId}}" onclick="detailDataInfo(this.href); return false;">{{dataName}}</a></td>
 						<td>
 		{{#if groupVisible}}
-							<button type="button" title="표시" class="showHideButton show" data-group-id="{{dataGroupId}}" data-key="{{dataKey}}">표시</button>
+							<button type="button" title="표시" class="showHideButton show" data-group-id="{{dataGroupId}}" data-key="{{dataKey}}" data-tiling="{{tiling}}">표시</button>
 		{{else}}
-							<button type="button" title="표시" class="showHideButton hide" data-group-id="{{dataGroupId}}" data-key="{{dataKey}}">표시</button>
+							<button type="button" title="표시" class="showHideButton hide" data-group-id="{{dataGroupId}}" data-key="{{dataKey}}" data-tiling="{{tiling}}">표시</button>
 		{{/if}}
 						</td>
 						<td>
