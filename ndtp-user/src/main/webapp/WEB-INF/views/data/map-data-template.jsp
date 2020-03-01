@@ -94,7 +94,7 @@
 					</tr>
 	{{/each}}
 {{else}}
-			<tr><td colspan="5">데이터가 존재하지 않습니다.</td></tr>
+			<tr><td colspan="5" style="height: 30px;">데이터가 존재하지 않습니다.</td></tr>
 {{/greaterThan}}
 				</tbody>
 			</table>
