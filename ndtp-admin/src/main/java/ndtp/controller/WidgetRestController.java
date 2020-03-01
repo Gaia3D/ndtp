@@ -370,23 +370,33 @@ public class WidgetRestController {
 			String serverHost = propertiesConfig.getRestServer();
 
 			URI diskSpaceURI = new URI(serverHost + "/actuator/health/diskSpace");
+			@SuppressWarnings("rawtypes")
 			ResponseEntity<Map> response1 = restTemplate.getForEntity(diskSpaceURI, Map.class);
+			@SuppressWarnings("unchecked")
 			Map<String, Long> diskSpace = (Map<String, Long>) response1.getBody().get("details");
 
 			URI memoryMax = new URI(serverHost + "/actuator/metrics/jvm.memory.max");
+			@SuppressWarnings("rawtypes")
 			ResponseEntity<Map> response2 = restTemplate.getForEntity(memoryMax, Map.class);
+			@SuppressWarnings("unchecked")
 			List<Map<String, Object>> jvmMemoryMax = (List<Map<String, Object>>) response2.getBody().get("measurements");
 
 			URI memoryUsed = new URI(serverHost + "/actuator/metrics/jvm.memory.used");
+			@SuppressWarnings("rawtypes")
 			ResponseEntity<Map> response3 = restTemplate.getForEntity(memoryUsed, Map.class);
+			@SuppressWarnings("unchecked")
 			List<Map<String, Object>> jvmMemoryUsed = (List<Map<String, Object>>) response3.getBody().get("measurements");
 
 			URI cpuMax = new URI(serverHost + "/actuator/metrics/system.cpu.usage");
+			@SuppressWarnings("rawtypes")
 			ResponseEntity<Map> response4 = restTemplate.getForEntity(cpuMax, Map.class);
+			@SuppressWarnings("unchecked")
 			List<Map<String, Object>> systemCpuUsage = (List<Map<String, Object>>) response4.getBody().get("measurements");
 
 			URI cpuUsed = new URI(serverHost + "/actuator/metrics/process.cpu.usage");
+			@SuppressWarnings("rawtypes")
 			ResponseEntity<Map> response5 = restTemplate.getForEntity(cpuUsed, Map.class);
+			@SuppressWarnings("unchecked")
 			List<Map<String, Object>> processCpuUsage = (List<Map<String, Object>>) response5.getBody().get("measurements");
 
 			statistics.put("diskSpaceTotal", diskSpace.get("total"));

@@ -2,7 +2,6 @@ package ndtp.domain;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.Size;
@@ -32,7 +31,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class DataGroup extends Search {
 
-	private List<DataInfoSimple> datas = new ArrayList<>();
+	private List<DataInfoSimple> datas;
 	
 	/****** 화면 표시용 *******/
 	private String parentName;
