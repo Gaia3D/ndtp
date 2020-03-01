@@ -1,18 +1,8 @@
 package ndtp.service.impl;
 
-import java.awt.Point;
-import java.awt.Transparency;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.ComponentColorModel;
-import java.awt.image.DataBuffer;
-import java.awt.image.DataBufferByte;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -42,7 +32,7 @@ public class SimuServiceImpl {
 	private PropertiesConfig propertiesConfig;
 
 	public SimFileMaster getSimFileMaster() {
-		return this.simuMapper.getSimCityPlanFileList();
+		return this.simuMapper.getSimCityPlanFile();
 	}
 
 	@Transactional
@@ -80,7 +70,7 @@ public class SimuServiceImpl {
 		// movedFinishFolder mff = new movedFinishFolder(propertiesConfig.getServiceF4dFinishRootDir(), propertiesConfig.getServiceF4dOutputDir(), propertiesConfig.getServiceF4dFailRootDir());
 		List<SimFileMaster>  fmeSFM = fmeSimFileList.stream().filter(obj -> obj.getSaveFileName().contains(".json")).collect(Collectors.toList());
 		for (SimFileMaster sfmObj : fmeSFM) {
-			sfmObj.setConsType(getConsTypeByConsTypeString(sfm));
+			sfmObj.setConsType(getConsTypeByConsTypeString(sfm.getConsTypeString()));
 
 			SimFileMaster obj = SimFileMaster.builder()
 					.saveFilePath(sfmObj.getSaveFilePath())
@@ -98,22 +88,36 @@ public class SimuServiceImpl {
 		}
 	}
 
-	private ConsType getConsTypeByConsTypeString(SimFileMaster sfm) {
+	public List<SimFileMaster> getConsBuildList(SimFileMaster sfm) {
+		return this.simuMapper.getSimMasterList(sfm);
+	}
+
+	public ConsType getConsTypeByConsTypeString(String consTypeString) {
 		ConsType ct = null;
-		if (sfm.getConsTypeString().equals("0")) {
+		if (consTypeString.equals("0")) {
 			ct = ConsType.StepOne;
-		} else if (sfm.getConsTypeString().equals("1")) {
+		} else if (consTypeString.equals("1")) {
 			ct = ConsType.StepTwo;
-		} else if  (sfm.getConsTypeString().equals("2")) {
+		} else if  (consTypeString.equals("2")) {
 			ct = ConsType.StepThree;
-		} else if  (sfm.getConsTypeString().equals("3")) {
+		} else if  (consTypeString.equals("3")) {
 			ct = ConsType.StepFour;
-		} else if  (sfm.getConsTypeString().equals("4")) {
+		} else if  (consTypeString.equals("4")) {
 			ct = ConsType.StepFive;
-		} else if  (sfm.getConsTypeString().equals("5")) {
+		} else if  (consTypeString.equals("5")) {
 			ct = ConsType.StepSix;
 		}
 		return ct;
+	}
+
+	public FileType getCityTypeByCityTypeString(String cityTypeString) {
+		FileType ft = null;
+		if (cityTypeString.equals("s")) {
+			ft = FileType.CONSTPROCSEJON;
+		} else if (cityTypeString.equals("c")) {
+			ft = FileType.CONSTPROCBUSAN;
+		}
+		return ft;
 	}
 
 	@Transactional
@@ -404,7 +408,7 @@ public class SimuServiceImpl {
 		return resultList;
 	}
 
-	public RelativePathItem[] getJsonByRelationFile(String fullPath) throws IOException{
+	private RelativePathItem[] getJsonByRelationFile(String fullPath) throws IOException{
 		ObjectMapper objectMapper = new ObjectMapper();
 		File file = new File(fullPath);
 		Scanner scan = new Scanner(file);
@@ -416,6 +420,18 @@ public class SimuServiceImpl {
 		return myObjects;
 	}
 
+	private LonsLatsItem[] getJsonByLonsLatsFile(String fullPath) throws IOException{
+		ObjectMapper objectMapper = new ObjectMapper();
+		File file = new File(fullPath);
+		Scanner scan = new Scanner(file);
+		String resultJson = "";
+		while(scan.hasNextLine()){
+			resultJson += scan.nextLine();
+		}
+		LonsLatsItem[] myObjects = objectMapper.readValue(resultJson, LonsLatsItem[].class);
+		return myObjects;
+	}
+
 	private boolean procF4DProcess(String inputFolder, String outputFolder, String F4DRunPath) throws  IOException, InterruptedException{
 		Process pc = null;
 		boolean result = false;
@@ -423,7 +439,7 @@ public class SimuServiceImpl {
 		SimpleDateFormat sf = new SimpleDateFormat("yyyyMMddhhmmss");
 		String logFileName = sf.format(new Date()) + ".txt";
 		String logFullPath = outputFolder + logFileName;
-		String Option = "#meshType 0 #indexing y";
+		String Option = "#meshType 2 #indexing y #epsg 4326";
 
 		F4DRunPath = F4DRunPath + " #inputFolder " + inputFolder + " #outputFolder " + outputFolder + " #log " + logFullPath + " " + Option;
 		System.out.println(F4DRunPath);
@@ -460,6 +476,57 @@ public class SimuServiceImpl {
 			pc.destroy();
 		}
 		return true;
+	}
+
+	public F4DObject procF4DDataStrucreByPaths(String modelFilePath, String modelFileName) throws IOException {
+		F4DSubObject subF4dObj;
+		List<F4DSubObject> f4dSubObjectList = new ArrayList<>();
+		if(modelFileName.contains("lonsLats")) {
+			LonsLatsItem[] lli = getJsonByLonsLatsFile(modelFilePath + modelFileName);
+			for(LonsLatsItem lliObj : lli) {
+				subF4dObj = new F4DSubObject().builder()
+						.data_key(lliObj.getData_key())
+						.data_name(lliObj.getData_key())
+						.longitude(lliObj.getLongitude())
+						.latitude(lliObj.getLatitude())
+						.heading(0.0f)
+						.pitch(0.0f)
+						.roll(0.0f)
+						.build();
+				f4dSubObjectList.add(subF4dObj);
+			}
+		} else {
+			RelativePathItem[] rp = getJsonByRelationFile(modelFilePath + modelFileName);
+			String dataKey = rp[0].getData_key();
+			subF4dObj = new F4DSubObject().builder().data_key(dataKey).data_name(dataKey).build();
+			f4dSubObjectList.add(subF4dObj);
+		}
+		String[] pathArr = modelFilePath.split("\\\\");
+		boolean startFlat = false;
+		String f4dDataKey = "";
+		List<String> f4dKeyGenObj = new ArrayList<>();
+		for ( String str : pathArr ) {
+			if(str.equals("f4d")) {
+				startFlat = true;
+			} else {
+				if(startFlat){
+					f4dKeyGenObj.add(str);
+				}
+			}
+		}
+
+		for ( String str : f4dKeyGenObj ) {
+			f4dDataKey = f4dDataKey + "\\\\" + str;
+		}
+		f4dDataKey = f4dDataKey.substring(2);
+
+
+		F4DObject f4dObject = new F4DObject();
+		f4dObject.setF4dSubList(f4dSubObjectList);
+		f4dObject.setData_key(f4dDataKey);
+		f4dObject.setData_name(f4dDataKey);
+
+		return f4dObject;
 	}
 
 	private boolean makeDir(String source) throws IOException {
@@ -512,7 +579,6 @@ public class SimuServiceImpl {
 	}
 
 	public void delete(String path) {
-
 		File folder = new File(path);
 		try {
 			if(folder.exists()){

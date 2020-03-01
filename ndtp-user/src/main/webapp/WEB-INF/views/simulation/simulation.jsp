@@ -312,37 +312,6 @@
 		permRequestDialog.dialog( "open" );
 	});
 
-	$("#permCompleteView").click(function(event) {
-		// todo: change data
-		let data = {
-			permSeq: buildAcceptPermSeq
-		};
-		$.ajax({
-			url: "/data/simulation-rest/getPermRequestByConstructor",
-			type: "POST",
-			headers: {"X-Requested-With": "XMLHttpRequest"},
-			data: data,
-			dataType: "json",
-			success: function(msg){
-				console.log("getPermRequestByConstructor msg=", msg);
-				$("#permViewDialog #constructor").get(0).value = msg.constructor;
-				$("#permViewDialog #constructor_type").get(0).value = msg.constructorType;
-				$("#permViewDialog #constructor_type").get(0).disabled = true;
-				$("#permViewDialog #birthday").get(0).value = msg.birthday;
-				$("#permViewDialog #license_num").get(0).value = msg.licenseNum;
-				// $("#permViewDialog #phone_number").get(0).value = msg.phoneNumber;
-				$("#permViewDialog #district_unit_plan").get(0).value = msg.saveFileName;
-
-				permViewDialog.dialog("open");
-			},
-			error:function(request,status,error) {
-				alert('error');
-				console.log("err=", request, status, error);
-			}
-		});
-	});
-
-
 	$("#permView").on('click', function() {
 		let data = {
 			permSeq: buildAcceptPermSeq

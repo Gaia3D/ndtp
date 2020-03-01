@@ -72,11 +72,24 @@ public class SimulationRestController {
 	}
 
     @RequestMapping(value = "/cityConstProcUpload", method = RequestMethod.POST)
-    public boolean upload(SimFileMaster sfm) {
+    public boolean cityConstProcUpload(SimFileMaster sfm) {
 		System.out.println(sfm.toString());
 		this.simServiceImpl.procConstProc(sfm);
 		return true;
     }
+
+	@RequestMapping(value = "/cityConstProcSelect", method = RequestMethod.GET)
+	public F4DObject cityConstProcSelect(SimFileMaster sfm) throws IOException {
+		System.out.println(sfm.toString());
+		sfm.setConsType(simServiceImpl.getConsTypeByConsTypeString(sfm.getConsTypeString()));
+		sfm.setSaveFileType(simServiceImpl.getCityTypeByCityTypeString(sfm.getCityTypeString()));
+		var consBuildList = this.simServiceImpl.getConsBuildList(sfm);
+		if(consBuildList.size() == 0)
+			return null;
+		SimFileMaster consBUildListObj = consBuildList.get(0);
+		var result = this.simServiceImpl.procF4DDataStrucreByPaths(consBUildListObj.getSaveFilePath(), consBUildListObj.getSaveFileName());
+		return result;
+	}
 	
     @RequestMapping(value = "/cityPlanUpload", method = RequestMethod.POST)
     public List<String> cityPlanUpload(MultipartFile[] files) {
@@ -270,40 +283,8 @@ public class SimulationRestController {
 	public StructPermission getPermRequestByConstructor(HttpServletRequest request, StructPermission sp) throws IOException {
 		StructPermission oneResult = structPermissionMapper.selectOne(sp);
 		System.out.println(oneResult.toString());
-		RelativePathItem[] rp = simServiceImpl.getJsonByRelationFile(oneResult.getSaveModelFilePath() + oneResult.getSaveModelFileName());
-		String[] pathArr = oneResult.getSaveModelFilePath().split("\\\\");
-		boolean startFlat = false;
-		String f4dDataKey = "";
-		List<String> f4dKeyGenObj = new ArrayList<>();
-		for ( String str : pathArr ) {
-			if(str.equals("f4d")) {
-				startFlat = true;
-			} else {
-				if(startFlat){
-					f4dKeyGenObj.add(str);
-				}
-			}
-		}
-
-		for ( String str : f4dKeyGenObj ) {
-			f4dDataKey = f4dDataKey + "\\\\" + str;
-		}
-		f4dDataKey = f4dDataKey.substring(2);
-
-		// IFC 파일 기준
-		String dataKey = rp[0].getData_key();
-
-		F4DSubObject subF4dObj = new F4DSubObject().builder().data_key(dataKey).data_name(dataKey).build();
-		List<F4DSubObject> f4dSubObjectList = new ArrayList<>();
-		f4dSubObjectList.add(subF4dObj);
-
-		F4DObject f4dObject = new F4DObject();
-		f4dObject.setF4dSubList(f4dSubObjectList);
-		f4dObject.setData_key(f4dDataKey);
-		f4dObject.setData_name(f4dDataKey);
-
+		F4DObject f4dObject = this.simServiceImpl.procF4DDataStrucreByPaths(oneResult.getSaveModelFilePath(), oneResult.getSaveModelFileName());
 		oneResult.setF4dObject(f4dObject);
-
 		return oneResult;
 	}
 

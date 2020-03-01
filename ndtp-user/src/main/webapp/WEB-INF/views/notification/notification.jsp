@@ -78,8 +78,9 @@
                 const heading = msg.heading;
                 const pitch = msg.pitch;
                 const roll = msg.roll;
-                let f4dObject = makeF4dObject(msg.f4dObject);
-                f4dObject.children = makeF4dSubObject(msg.f4dObject.f4dSubList, longitude, latitude, altitude, heading, pitch, roll);
+                const f4dObject = f4dDataGenMaster.initIfc(msg.f4dObject, longitude, latitude, altitude, heading, pitch, roll);
+                // let f4dObject = makeF4dObject(msg.f4dObject);
+                // f4dObject.children = makeF4dSubObject(msg.f4dObject.f4dSubList, longitude, latitude, altitude, heading, pitch, roll);
                 debugger;
                 var f4dController = MAGO3D_INSTANCE.getF4dController();
                 f4dController.addF4dGroup(f4dObject);
@@ -93,67 +94,6 @@
             }
         });
     }
-
-    function makeF4dObject(f4dObject) {
-        var object = {
-            "attributes": {
-                "isPhysical": false,
-                "nodeType": " root ",
-                "projectType": "collada",
-                "specularLighting": true
-            },
-            "children": [],
-            "parent": 0,
-            "depth": 1,
-            "view_order": 2,
-            "data_key": f4dObject.data_key,
-            "data_name": f4dObject.data_name,
-            "mapping_type": "origin"
-        }
-        return object;
-    }
-
-    function makeF4dSubObject(f4dSubObject, lon, lat, alt, head, pich, roll) {
-        arr = [];
-        debugger;
-        for(var i = 0; i < f4dSubObject.length; i++) {
-            var obj = f4dSubObject[i];
-
-            var imsiF4dSubObject = {
-                "attributes": {
-                    "isPhysical": true,
-                    "nodeType": "daejeon",
-                    "flipYTexCoords": true
-                },
-                "children": [],
-                "data_key": "",
-                "data_name": "",
-                "mapping_type":"origin",
-                "longitude": lon,
-                "latitude": lat,
-                "height": alt,
-                "heading": head,
-                "pitch": pich,
-                "roll": roll
-            };
-
-            imsiF4dSubObject.data_key = obj.data_key;
-            imsiF4dSubObject.data_name = obj.data_key;
-            imsiF4dSubObject.latitude = lat;
-            imsiF4dSubObject.longitude = lon;
-            arr.push(imsiF4dSubObject);
-        }
-        return arr;
-    }
-    var SampleJsonSejon =
-    [
-        {
-            "data_key" : "KSJ_100",
-            "longitude" : 127.27030500949927,
-            "latitude" : 36.524662808423344,
-        }
-    ]
-
 </script>
 
 <style>

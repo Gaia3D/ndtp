@@ -12,6 +12,7 @@ var Simulation = function(magoInstance, viewer, $) {
     var _camera_scene = [];
     var _cityPlanModels = [];
     var _bsConstructProcessModels = [];
+    let _sejongDataGroupList = [];
     var _geojsonSample = null;
     var mesurPolyList = [];
     var handler = null;
@@ -28,18 +29,6 @@ var Simulation = function(magoInstance, viewer, $) {
 	var magoManager = magoInstance.getMagoManager();
 	var f4dController = magoInstance.getF4dController();
 
-	var L00  = new Cesium.Cartesian3( 0.170455150831422,  0.163151083190219,  0.196966760289763);
-	var L1_1 = new Cesium.Cartesian3(-0.066550267689383, -0.022088055746048,  0.078835009246127);
-	var L10  = new Cesium.Cartesian3( 0.038364097478591,  0.045714300098753,  0.063498904606215);
-	var L11  = new Cesium.Cartesian3(-0.014365363312810, -0.026490613715151, -0.050189404066020);
-	var L2_2 = new Cesium.Cartesian3(-0.051532786917890, -0.050777795729986, -0.056449044453032);
-	var L2_1 = new Cesium.Cartesian3( 0.043454596136534,  0.046672590104157,  0.057530107646610);
-	var L20  = new Cesium.Cartesian3(-0.001640466274110,  0.001286638231156,  0.007228908989616);
-	var L21  = new Cesium.Cartesian3(-0.042260855700641, -0.046394335094707, -0.057562936365585);
-	var L22  = new Cesium.Cartesian3(-0.004953478914091, -0.000479681664876,  0.008508150106928);
-	var coefficients = [L00, L1_1, L10, L11, L2_2, L2_1, L20, L21, L22];
-	var environmentMapURL = 'https://cesium.com/assets/kiara_6_afternoon_2k_ibl.ktx';
-
     var runAllocBuildStat = "";
 
     var cityPlanTargetArea = 0; // 기준 면적
@@ -49,8 +38,7 @@ var Simulation = function(magoInstance, viewer, $) {
     var buildCoverateRatio = 0; // 건폐율
     
     var stdFairRate = 0;
-	
-	magoManager.on(Mago3D.MagoManager.EVENT_TYPE.SMARTTILELOADEND, smartTileLoaEndCallbak);
+
 	var observer;
 	var observerTarget = document.getElementById('simulationContent');
 	var observerConfig = { attributes: true};
@@ -171,22 +159,87 @@ var Simulation = function(magoInstance, viewer, $) {
 	var SEJONG_TILE_NAME = 'sejong_time_series_tiles';
 	var BUSAN_TILE_NAME = 'busan_time_series_tiles';
 	// var SEJONG_TILE_NAME = 'SEJONG_TILE';
-
-	var SEJONG_POSITION = new Cesium.Cartesian3(-3108649.1049808883, 4086368.566202183, 3773910.6726226895);
-	var BUSAN_POSITION = new Cesium.Cartesian3(-3108649.1049808883, 4086368.566202183, 0);
 	var slider;
 	var simulating = false;
-	//zBounceSpring zBounceLinear
-	//건설공정 조회
-	$('#constructionProcess .execute').click(function(){
-		var targetArea = $('input[name="cpProtoArea"]:checked').val();
 
+	const consBuildSlider =  {
+		consType: 0,
+		saveFileType: '',
+		sliderSejongInit: () => {
+			if(!slider) {
+				slider = new KotSlider('rangeInput');
+			}
+			//레인지, 레전드 보이기
+			$('#csRange, #constructionProcess .profileInfo').show();
+			$('#saRange').hide();
+
+			var html = '';
+			html += '<span>1단계</span>';
+			html += '<span>2단계</span>';
+			html += '<span>3단계</span>';
+			html += '<span>4단계</span>';
+			html += '<span>5단계</span>';
+			html += '<span>6단계</span>';
+			whole_viewer.scene.camera.flyTo({
+				destination : Cesium.Cartesian3.fromDegrees(127.249979, 36.4799635, 1000)
+			});
+
+			$('#csRange .rangeWrapChild.legend').html(html);
+
+			$('#csRange .rangeWrapChild.legend').on('click','span',function() {
+				slider.setValue($(this).index());
+			});
+
+			$('#rangeInput').on('change', function(data) {
+				if(_sejongDataGroupList.length !== 0)
+					clearAllDataAPI(MAGO3D_INSTANCE);
+				/*
+				for(const sejgonObj of _sejongDataGroupList) {
+					MAGO3D_INSTANCE.getF4dController().deleteF4dGroup(sejgonObj);
+				}*/
+
+				_sejongDataGroupList = [];
+				var index = parseInt($('#rangeInput').val());
+				var consTypeString = $('input[name="cpProtoArea"]:checked').val();
+				for( let i = 0 ; i < index+1; i++) {
+					consBuildSlider.sejongDataReq(i, consTypeString);
+				}
+			})
+		},
+		sejongDataReq: (step, cityType) => {
+			const reqParam = {
+				consTypeString : step + "",
+				cityTypeString : cityType
+			};
+			console.log(step, ', ', cityType);
+			$.ajax({
+				url: "/data/simulation-rest/cityConstProcSelect",
+				type: "GET",
+				data: reqParam,
+				dataType: "json",
+				success: function (msg) {
+					_sejongDataGroupList.push(msg.data_key);
+					const f4dObject = f4dDataGenMaster.initGml(msg);
+					var f4dController = MAGO3D_INSTANCE.getF4dController();
+					f4dController.addF4dGroup(f4dObject);
+					const lon = f4dDataGenMaster.avg_lon;
+					const lat = f4dDataGenMaster.avg_lat;
+					console.log(lon, ', ' ,lat);
+				}
+			});
+		}
+	};
+
+	consBuildSlider.sliderSejongInit();
+
+	//건설공정 조회
+	$('#constructionProcess .execute').click(function() {
+		var targetArea = $('input[name="cpProtoArea"]:checked').val();
 		var dataName;
 		var initPosition;
-		if(targetArea === 's') {
 
+		if(targetArea === 's') {
 			var msj = makeSampleJson();
-			//
 			var policy = Mago3D.MagoConfig.getPolicy();
 			var initLat = parseFloat(policy.initLatitude);
 			var initLon = parseFloat(policy.initLongitude);
@@ -220,73 +273,22 @@ var Simulation = function(magoInstance, viewer, $) {
 				position : objPosition,
 			});
 
-
-
-
 			_viewer.camera.flyTo({
 			    destination : Cesium.Cartesian3.fromDegrees(126.9785978787040,  37.56690158584144, 100)
 			});
-			
-//			dataName = SEJONG_TILE_NAME;
-//			initPosition = SEJONG_POSITION;
-
-//			if(!slider) {
-//				slider = new KotSlider('rangeInput');
-//			}
-			
-//			//레인지, 레전드 보이기
-//			$('#csRange, #constructionProcess .profileInfo').show();
-//			$('#saRange').hide();
-//			
-//			//slider.setValue(0);
-//			simulating = true;
-//			if(!cache[dataName]) {
-//				if(dataName.indexOf('tiles') > 0) {
-//					magoManager.getObjectIndexFileSmartTileF4d(dataName);
-//					magoManager.on(Mago3D.MagoManager.EVENT_TYPE.SMARTTILELOADEND, smartTileLoaEndCallbak);
-//					
-//					var html = '';
-//					html += '<span>1단계</span>';
-//					html += '<span>2단계</span>';
-//					html += '<span>3단계</span>';
-//					html += '<span>4단계</span>';
-//					html += '<span>5단계</span>';
-//					html += '<span>6단계</span>';
-//					
-//					$('#csRange .rangeWrapChild.legend').html(html);
-//					$('#csRange .rangeWrapChild.legend').on('click','span',function(){
-//						slider.setValue($(this).index());
-//					});
-//				}
-//			}
-//			
-//			var dis = Math.abs(Cesium.Cartesian3.distance(initPosition, MAGO3D_INSTANCE.getViewer().camera.position));
-//			if(dis > CAMERA_MOVE_NEED_DISTANCE) {
-//				magoInstance.getViewer().camera.flyTo({
-//					destination:initPosition,
-//					duration : 1
-//				});
-//			}
-//			setObserver();
-			
 		} else if (targetArea === "p") {
 			initConsturctProcessModel(); 
 			dataName = BUSAN_TILE_NAME;
-			initPosition = BUSAN_POSITION;
-
 			if(!slider) {
 				slider = new KotSlider('rangeInput');
 			}
 			//레인지, 레전드 보이기
 			$('#csRange, #constructionProcess .profileInfo').show();
-
 			$('#saRange').hide();
-			
 			if(!cache[dataName]) {
 				if(dataName.indexOf('tiles') > 0) {
 //					magoManager.getObjectIndexFileSmartTileF4d(dataName);
-//					magoManager.on(Mago3D.MagoManager.EVENT_TYPE.SMARTTILELOADEND, smartTileLoaEndCallbak);
-					
+
 					var html = '';
 					html += '<span>1단계</span>';
 					html += '<span>2단계</span>';
@@ -305,7 +307,6 @@ var Simulation = function(magoInstance, viewer, $) {
 				}
 			}
 			dispConstructProcessModel(0);
-			
 //			genBillboard(126.90497956470877, 37.521051475771344);
 			_viewer.camera.flyTo({
 			    destination : Cesium.Cartesian3.fromDegrees(126.90497956470877,  37.521051475771344, 100)
@@ -455,8 +456,6 @@ var Simulation = function(magoInstance, viewer, $) {
 			
 			for(var index in entitis) {
 				var entitiyObj = entitis[index];
-debugger;
-
 				let destrictPositions = entitiyObj.polygon._hierarchy._value.positions;
 				let destrictArea = getArea(destrictPositions);
 				console.log(destrictArea);
@@ -518,8 +517,8 @@ debugger;
 	}
 	
 	$('#move_cityplan').click(function() {
-	})
-	
+	});
+
 	$("#run_work_state").change(function(value){
 		runAllocBuildStat = value.target.value;
 		if(value.target.value === 'imsiBuild') {
@@ -548,17 +547,17 @@ debugger;
             startDrawPolyLine();
         }
     });
-    
-	var smartTileLoaEndCallbak = function(evt){
 
+	var smartTileLoaEndCallbak = function(evt) {
+		debugger;
 		var nodes = evt.tile.nodesArray;
-		for(var i in nodes){
+		for(var i in nodes) {
 			var node = nodes[i];
 			var data = node.data;
 			
 			if(!cache[node.data.nodeId]) {
 				cache[node.data.nodeId] = true;
-			}else {
+			} else {
 				return;
 			}
 			/**
@@ -599,17 +598,7 @@ debugger;
 			var newHeight = offset + geo.altitude;
 			
 			node.changeLocationAndRotation(geo.latitude, geo.longitude, newHeight, heading, pitch, roll,magoManager);*/
-			
-			magoManager.effectsManager.addEffect(data.nodeId, new Mago3D.Effect({
-				//effectType      : pitch > 0 ? "zBounceLinear":"zBounceSpring",
-				effectType      : "zBounceSpring",
-				durationSeconds : 0.4
-			}));
-			magoManager.effectsManager.addEffect(data.nodeId, new Mago3D.Effect({
-				effectType      : "borningLight",
-				durationSeconds : 0.6
-			}));
-			
+
 			node.setRenderCondition(function(data){
 				var attributes = data.attributes; 
 				if(!simulating) {
@@ -660,6 +649,7 @@ debugger;
 			})
 		}
 	}
+
 	var setObserver = function(){
 		if(!observer) {
 			observer = new MutationObserver(function(mutations) {
@@ -673,6 +663,7 @@ debugger;
 		}
 		observer.observe(observerTarget, observerConfig);
 	}
+
 	var constructionProcessReset = function() {
 		simulating = false;
 		//레인지, 레전드 끄기
@@ -915,7 +906,7 @@ debugger;
                     }
                     this._polylines.push(createPoint(tempPosition));	
                 } else if (runAllocBuildStat === "autoBuild") {
-                	genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.02, "Apartment_Building_26_obj.gltf")
+                	genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 10, "7M6_871.gltf")
                 } else if(runAllocBuildStat === "imsiBuildSelect") {
                 	// 새로운 모델 선택
                 	
@@ -950,7 +941,6 @@ debugger;
 								// 3. 폴리곤 좌표정보를 찾는다.
 								const pro = pickedFeature.id.polygon.hierarchy._value.positions[i];
 								var d = Cesium.Cartesian3.distance(pro, center);
-								debugger;
 								resaclePoly(center.x, center.y, pro);
 							}
 							
@@ -1004,7 +994,6 @@ debugger;
 							
 						});*/
 //						getCommentList(pickedFeature.id);
-
 					}
 				}
             }
@@ -1020,7 +1009,6 @@ debugger;
     }
 
 	function resaclePoly(centerX, centerY, polyObj) {
-    	debugger;
 		// 해당 좌표들을 가중치만큼 재 조정한다.
 		if(polyObj.x <= centerX && polyObj.y >= centerY) {
 			// 외쪽 상단 위도 + 경도 -
@@ -1176,7 +1164,7 @@ debugger;
 	        url : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName,
 	        modelMatrix : modelMatrix,
 	        scale : scale,
-//	        debugWireframe: true,
+	        debugWireframe: true,
 	        shadows : 1,
 	        name : name,
 	        show: false
@@ -1195,12 +1183,12 @@ debugger;
 	  			data.show = false;
 	  		})
 	  		model.show = true;
-	  		
+
 	  		for(var i = 0; i < model._nodeCommands.length; i++) {
 	  			var timedata = 100 * i;
 	  			function showAnimationModel(i) {
 		  			setTimeout(function() {
-			  			model._nodeCommands[i].show = true;		
+			  			model._nodeCommands[i].show = true;
 			    	}, timedata);
 	  			}
 	  			showAnimationModel(i);
@@ -1388,7 +1376,6 @@ debugger;
 	})
 	
 	$('#upload_constructionProcess').click(function() {
-		debugger;
         var form = $('#construc_proc_file_upload')[0];
         startLoading();
 	    // Create an FormData object 
@@ -1511,6 +1498,7 @@ debugger;
 		}
 		return sum/length;
 	}
+
 	$('#acceptCompleteBuildList').change(function(event) {
 		var selectSeqBuild = event.target.value;
 		acceptMakeBuilding(selectSeqBuild);
@@ -1540,13 +1528,12 @@ debugger;
 				} else {
 					$("#acceptCompleteBuildList").append(perDomItems);
 				}
-
 			},
 			error:function(request,status,error) {
 				console.log("err=", request, status, error);
 			}
 		});
-	};
+	}
 
 	// 진행
 	$('#permCompleteView').click(function() {
@@ -1595,7 +1582,6 @@ debugger;
 		headers: {"X-Requested-With": "XMLHttpRequest"},
 		dataType: "json",
 		success: function(permList){
-			debugger;
 			var perDomItems = "";
 			for (let i = 0; i<permList.length; i++) {
 				var permName = permList[i].constructor + ' - ' + permList[i].permSeq;
@@ -1610,136 +1596,160 @@ debugger;
 	});
 }
 
-function makeSampleJson(sampleJson) {
-	var object = {
-		"attributes": {
-			"isPhysical": false,
-			"nodeType": " root ",
-			"projectType": "collada",
-			"specularLighting": true
-		},
-		"children": [],
-		"parent": 0,
-		"depth": 1,
-		"view_order": 2,
-		"data_key": "conversionResult",
-		"data_name": "conversionResult",
-		"mapping_type": "origin"
-	}
-
-	for(var i = 0; i < SampleJsonSejon.length; i++) {
-		var obj = SampleJsonSejon[i];
-		var dataKey = obj.data_key;
-		var lat = obj.latitude;
-		var lon = obj.longitude;
-
-		var imsiObj = {
+const f4dDataGenMaster = {
+	avg_lon: 0,
+	avg_lat: 0,
+	rootObject: function(f4dObject) {
+		return  {
 			"attributes": {
-				"isPhysical": true,
-				"nodeType": "daejeon",
-				"flipYTexCoords": true
+				"isPhysical": false,
+				"nodeType": " root ",
+				"projectType": "collada",
+				"specularLighting": true
 			},
 			"children": [],
-			"data_key": "7D6_1",
-			"data_name": "7D6_1",
-			"mapping_type":"origin",
-			"longitude": 127.284010,
-			"latitude": 36.473449,
-			"height": 29.067726,
-			"heading": 0.000000,
-			"pitch": 0.000000,
-			"roll": 0.000000
+			"parent": 0,
+			"depth": 1,
+			"view_order": 2,
+			"data_key": f4dObject.data_key,
+			"data_name": f4dObject.data_name,
+			"mapping_type": "origin"
 		};
+	},
+	initIfc: (f4dObject, lon, lat, alt, head, pich, roll) => {
+		const rootObj = f4dDataGenMaster.rootObject(f4dObject);
+		rootObj.children = f4dDataGenMaster.genIfcChild(f4dObject.f4dSubList, lon, lat, alt, head, pich, roll);
+		return rootObj;
+	},
+	initGml: (f4dObject) => {
+		const rootObj = f4dDataGenMaster.rootObject(f4dObject);
+		rootObj.children = f4dDataGenMaster.genGmlChild(f4dObject.f4dSubList);
+		return rootObj;
+	},
+	genIfcChild: function(f4dSubObject, lon, lat, alt, head, pich, roll) {
+		arr = [];
+		for(var i = 0; i < f4dSubObject.length; i++) {
+			var obj = f4dSubObject[i];
+			var imsiF4dSubObject = {
+				"attributes": {
+					"isPhysical": true,
+					"nodeType": "daejeon",
+					"flipYTexCoords": true
+				},
+				"children": [],
+				"data_key": obj.data_key,
+				"data_name": obj.data_key,
+				"mapping_type":"origin",
+				"longitude": lon,
+				"latitude": lat,
+				"height": alt,
+				"heading": head,
+				"pitch": pich,
+				"roll": roll
+			};
+			arr.push(imsiF4dSubObject);
+		}
+		return arr;
+	},
 
-		imsiObj.data_key = dataKey;
-		imsiObj.data_name = dataKey;
-		imsiObj.latitude = lat;
-		imsiObj.longitude = lon;
-		object.children.push(imsiObj);
+	genGmlChild: function(f4dSubObject) {
+		arr = [];
+		arr_lon = [];
+		arr_lat = [];
+		for(var i = 0; i < f4dSubObject.length; i++) {
+			var obj = f4dSubObject[i];
+			var imsiF4dSubObject = {
+				"attributes": {
+					"isPhysical": true,
+					"nodeType": "daejeon",
+					"flipYTexCoords": true
+				},
+				"children": [],
+				"data_key": obj.data_key,
+				"data_name": obj.data_key,
+				"mapping_type":"origin",
+				"longitude": obj.longitude,
+				"latitude": obj.latitude,
+				"height": -40,
+				"heading": obj.heading,
+				"pitch": obj.pitch,
+				"roll": obj.roll
+			};
+			arr_lon.push(obj.longitude);
+			arr_lat.push(obj.latitude);
+			arr.push(imsiF4dSubObject);
+		}
+		this.avg_lon = arr_lon.reduce((prev, curr) => prev + curr) / arr_lon.length;
+		this.avg_lat = arr_lat.reduce((prev, curr) => prev + curr) / arr_lat.length;
+		return arr;
+	},
+};
+
+//4fd sample data structure
+const f4dJsonStudySample = {
+	makeSampleJson: function() {
+		var object = {
+			"attributes": {
+				"isPhysical": false,
+				"nodeType": " root ",
+				"projectType": "collada",
+				"specularLighting": true
+			},
+			"children": [],
+			"parent": 0,
+			"depth": 1,
+			"view_order": 2,
+			"data_key": "conversionResult",
+			"data_name": "conversionResult",
+			"mapping_type": "origin"
+		}
+		const sampleJsonSejon = f4dJsonStudySample.SampleChildrenData();
+		for(var i = 0; i < sampleJsonSejon.length; i++) {
+			var obj = sampleJsonSejon[i];
+			var dataKey = obj.data_key;
+			var lat = obj.latitude;
+			var lon = obj.longitude;
+
+			var sampleRootObject = {
+				"attributes": {
+					"isPhysical": true,
+					"nodeType": "daejeon",
+					"flipYTexCoords": true
+				},
+				"children": [],
+				"data_key": "7D6_1",
+				"data_name": "7D6_1",
+				"mapping_type":"origin",
+				"longitude": 0.0,
+				"latitude": 0.0,
+				"height": 0.0,
+				"heading": 0.000000,
+				"pitch": 0.000000,
+				"roll": 0.000000
+			};
+
+			sampleRootObject.data_key = dataKey;
+			sampleRootObject.data_name = dataKey;
+			sampleRootObject.latitude = lat;
+			sampleRootObject.longitude = lon;
+			object.children.push(sampleRootObject);
+		}
+		return object;
+	},
+
+	SampleChildrenData : () => {
+		return [
+			{
+				"data_key" : "KSJ_100_0_0",
+				"latitude" : 37.56690158584144,
+				"longitude" : 126.9785978787040
+			},
+			{
+				"data_key" : "KSJ_100_0_1",
+				"latitude" : 37.56690158584144,
+				"longitude" : 126.9785978787040
+			}
+		];
 	}
-	return object;
-}
-var SampleJsonSejon =
-[
-	{
-	  "data_key" : "KSJ_100_0_0",
-	  "latitude" : 37.56690158584144,
-	  "longitude" : 126.9785978787040
-   },
-   {
-	  "data_key" : "KSJ_100_0_1",
-	  "latitude" : 37.56690158584144,
-	  "longitude" : 126.9785978787040
-   },
-   {
-	  "data_key" : "KSJ_100_0_2",
-	  "latitude" : 37.56690158584144,
-	  "longitude" : 126.9785978787040
-   },
-   {
-	  "data_key" : "KSJ_100_0_3",
-	  "latitude" : 37.56690158584144,
-	  "longitude" : 126.9785978787040
-   },
-   {
-	  "data_key" : "KSJ_100_1_0",
-	  "latitude" : 37.56690158584144,
-	  "longitude" : 126.9785978787040
-   },
-   {
-	  "data_key" : "KSJ_100_1_1",
-	  "latitude" : 37.56690158584144,
-	  "longitude" : 126.9785978787040
-   },
-   {
-	  "data_key" : "KSJ_100_1_2",
-	  "latitude" : 37.56690158584144,
-	  "longitude" : 126.9785978787040
-   },
-   {
-	  "data_key" : "KSJ_100_1_3",
-	  "latitude" : 37.56690158584144,
-	  "longitude" : 126.9785978787040
-   },
-   {
-	  "data_key" : "KSJ_100_1_4",
-	  "latitude" : 37.56690158584144,
-	  "longitude" : 126.9785978787040
-   },
-   {
-	  "data_key" : "KSJ_100_2_0",
-	  "latitude" : 37.56690158584144,
-	  "longitude" : 126.9785978787040
-   },
-   {
-	  "data_key" : "KSJ_100_2_1",
-	  "latitude" : 37.56690158584144,
-	  "longitude" : 126.9785978787040
-   },
-   {
-	  "data_key" : "KSJ_100_2_2",
-	  "latitude" : 37.56690158584144,
-	  "longitude" : 126.9785978787040
-   },
-   {
-	  "data_key" : "KSJ_100_2_3",
-	  "latitude" : 37.56690158584144,
-	  "longitude" : 126.9785978787040
-   },
-   {
-	  "data_key" : "KSJ_100_2_4",
-	  "latitude" : 37.56690158584144,
-	  "longitude" : 126.9785978787040
-   },
-   {
-	  "data_key" : "KSJ_100_3_0",
-	  "latitude" : 37.56690158584144,
-	  "longitude" : 126.9785978787040
-   },
-   {
-	  "data_key" : "KSJ_100_3_1",
-	  "latitude" : 37.56690158584144,
-	  "longitude" : 126.9785978787040
-   }
-];
 
+};
