@@ -172,7 +172,7 @@
 						<td class="col-count"><fmt:formatNumber value="${uploadData.converterCount}" type="number"/> 건</td>
 						<td class="col-functions">
 							<span class="button-group">
-								<a href="#" onclick="converterFile('${uploadData.uploadDataId}', '${uploadData.dataName}'); return false;"
+								<a href="#" onclick="converterFile('${uploadData.uploadDataId}', '${uploadData.dataName}', '${uploadData.dataType}'); return false;"
 									class="button" style="text-decoration: none;">
 									F4D 변환
 								</a>
@@ -245,10 +245,17 @@
 	});
 
 	// F4D Converter Button Click
-	function converterFile(uploadDataId, dataName) {
+	function converterFile(uploadDataId, dataName, dataType) {
+		$("#dataType").val(dataType);
 		$("#converterCheckIds").val(uploadDataId + ",");
 		$("#title").val(dataName);
-
+		// 여기서 확장자가 las면 template 을 포인트 클라우트 클릭하게
+		if(dataType === "las") {
+			$("#converterTemplate").val("point-cloud");
+		} else {
+			$("#converterTemplate").val("basic");
+		}
+		
 		dialogConverterJob.dialog( "open" );
 	}
 
@@ -262,6 +269,7 @@
 			alert("파일을 선택해 주십시오.");
 			return;
 		}
+		$("#dataType").val("");
 		$("#converterCheckIds").val(checkedValue);
 
 		dialogConverterJob.dialog( "open" );
@@ -275,7 +283,16 @@
 			$("#title").focus();
 			return false;
 		}
-
+		
+		if($("#dataType").val() === "las") {
+			// 여기서 확장자가 las면 template 을 포인트 클라우트 클릭하게
+			if($("#converterTemplate").val() != "point-cloud") {
+				alert("LAS 데이터의 경우 변환 템플릿을 Point Cloud 로 선택하여 주십시오.");
+				$("#converterTemplate").focus();
+				return false;
+			}
+		}
+		
 		if(saveConverterJobFlag) {
 			saveConverterJobFlag = false;
 			var formData =$("#converterJobForm").serialize();
