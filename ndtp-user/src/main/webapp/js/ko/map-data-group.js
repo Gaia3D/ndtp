@@ -33,7 +33,6 @@ $(document).ready(function() {
 		
 		dataGroupId = parseInt(dataGroupId);
 		var nodeMap = MAGO3D_INSTANCE.getMagoManager().hierarchyManager.getNodesMap(dataGroupId);
-		var projectsMap = MAGO3D_INSTANCE.getMagoManager().hierarchyManager.projectsMap;
 		
 		var flag = false;
 		if (!$.isEmptyObject(nodeMap)) {
@@ -59,6 +58,7 @@ $(document).ready(function() {
 			return;
 		}
 		
+		var projectsMap = MAGO3D_INSTANCE.getMagoManager().hierarchyManager.projectsMap;
 		if (!$.isEmptyObject(projectsMap) && projectsMap[dataGroupId] && projectsMap[dataGroupId].attributes) {
 			projectsMap[dataGroupId].attributes.isVisible = option;
 		}

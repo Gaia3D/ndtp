@@ -45,32 +45,19 @@ $(document).ready(function() {
 		//setNodeAttributeAPI(MAGO3D_INSTANCE, dataGroupId, dataKey, optionObject);
 		
 		dataGroupId = parseInt(dataGroupId);
-		var nodeMap = MAGO3D_INSTANCE.getMagoManager().hierarchyManager.getNodesMap(dataGroupId);
-		var projectsMap = MAGO3D_INSTANCE.getMagoManager().hierarchyManager.projectsMap;
+		//var nodeMap = MAGO3D_INSTANCE.getMagoManager().hierarchyManager.getNodesMap(dataGroupId);
 		
-		var flag = false;
-		if (!$.isEmptyObject(nodeMap)) {
-			for (var key in nodeMap) {
-				var node = nodeMap[key];
-				if (!$.isEmptyObject(nodeMap)) {
-					if (key == dataKey) {
-						var optionObject = { isVisible : option };
-						setNodeAttributeAPI(MAGO3D_INSTANCE, dataGroupId, key, optionObject);
-					}
-				} else {
-					flag = true;
-					break;
-				}
-			}
-		} else {
-			flag = true;
-		}
+		//isExistDataAPI(MAGO3D_INSTANCE, dataGroupId, dataKey);
+		//isDataReadyToRender(MAGO3D_INSTANCE, dataGroupId, dataKey);
 		
-		if (flag) {
+		if (!isExistDataAPI(MAGO3D_INSTANCE, dataGroupId, dataKey)) {
 			alert('아직 로드되지 않은 데이터입니다.\n이동 후 다시 시도해 주시기 바랍니다.');
 			return;
 		}
 
+		var optionObject = { isVisible : option };
+		setNodeAttributeAPI(MAGO3D_INSTANCE, dataGroupId, dataKey, optionObject);
+		
 		if ($(this).hasClass("show")) {
 			$(this).removeClass("show");
 			$(this).addClass("hide");
