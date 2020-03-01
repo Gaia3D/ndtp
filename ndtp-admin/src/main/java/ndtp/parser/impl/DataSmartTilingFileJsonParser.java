@@ -30,6 +30,8 @@ public class DataSmartTilingFileJsonParser implements DataSmartTilingFileParser 
 		try {
 			byte[] jsonData = Files.readAllBytes(Paths.get(fileInfo.getFilePath() + fileInfo.getFileRealName()));
 
+			// TODO 한글 깨질거 같은데....
+			
 			ObjectMapper objectMapper = new ObjectMapper();
 			//read JSON like DOM Parser
 			JsonNode jsonNode = objectMapper.readTree(jsonData);

@@ -319,3 +319,24 @@ function cesiumCreditAlt(){
 	var creditImgTag = magoContiner.getElementsByTagName("img")[0];
 	creditImgTag.setAttribute( 'alt', 'cesium credit' );
 };
+
+//init policy
+function initPolicy(callback, dataId) {
+	if(!dataId) dataId = "";
+	$.ajax({
+		url: "/geopolicies/user?dataId="+dataId,
+		type: "GET",
+		headers: {"X-Requested-With": "XMLHttpRequest"},
+		dataType: "json",
+		success: function(msg){
+			if(msg.statusCode <= 200) {
+				callback(msg.geoPolicy, msg.baseLayers);
+			} else {
+				alert(JS_MESSAGE[msg.errorCode]);
+			}
+		},
+		error:function(request,status,error){
+			alert(JS_MESSAGE["ajax.error.message"]);
+		}
+	});
+}

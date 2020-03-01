@@ -51,7 +51,7 @@
 	        <button type="button" class="layerClose" title="닫기">닫기</button>
 	    </div>
 	    <div class="layerContents">
-			
+
 			<div class="inline-toggle">
 				<h4 class="category">Origin</h4>
 				<div id="datainfoDisplay" class="switch-toggle switch-ios">
@@ -62,7 +62,7 @@
 					<a></a>
 				</div>
 			</div>
-			
+
 			<div class="inline-toggle">
 				<h4 class="category">Bounding Box</h4>
 				<div id="datainfoDisplay" class="switch-toggle switch-ios">
@@ -73,7 +73,7 @@
 					<a></a>
 				</div>
 			</div>
-	
+
 			<div class="inline-toggle marB20">
 				<h4 class="category">선택 및 이동</h4>
 				<div class="switch-toggle switch-ios" style="width: 60%;">
@@ -87,7 +87,7 @@
 				</div>
 			</div>
 
-	
+
 			<div id="dataControllWrap" style="display:none;">
 				<p class="layerDivTit"><span>test / 오전반1조_행복관_s</span></p>
 				<div class="layerDiv">
@@ -123,7 +123,7 @@
 							<input type="text" id="dcAltitudeOffset" value="1" size="1">
 						</li>
 					</ul>
-	
+
 					<h4 class="category">회전 변경</h4>
 					<ul class="layerDiv">
 						<li>
@@ -133,7 +133,7 @@
 							<input id="dcPitchRange" data-type="Pitch" style="width: 140px;" type="range" min="-360" max="360" step="1" value="1">
 							<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcPitchNext"></button>
 						</li>
-	
+
 						<li>
 							<label for="dcRoll">y(roll)</label>
 							<input type="text" id="dcRoll" name="roll" size="2" readonly>
@@ -141,7 +141,7 @@
 							<input id="dcRollRange" data-type="Roll" style="width: 140px;" type="range" min="-360" max="360" step="1" value="1">
 							<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcRollNext"></button>
 						</li>
-	
+
 						<li>
 							<label for="dcHeading">z(heading)</label>
 							<input type="text" id="dcHeading" name="heading" size="2" readonly>
@@ -150,26 +150,26 @@
 							<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcHeadingNext"></button>
 						</li>
 					</ul>
-	
+
 					<div>
 						<c:if test="${dataInfo.dataGroupTarget eq 'admin'}">
-							<button type="button" id="dcSavePosRotReqPop" class="btnTextF" 
+							<button type="button" id="dcSavePosRotReqPop" class="btnTextF"
 									title="<spring:message code='data.transform.save.request'/>">
 									<spring:message code='data.transform.save.request'/>
 							</button>
 						</c:if>
 						<c:if test="${dataInfo.dataGroupTarget eq 'user'}">
 							<c:if test="${dataInfo.userId eq owner}">
-								<button type="button" id="dcSavePosRotPop" class="btnTextF" 
+								<button type="button" id="dcSavePosRotPop" class="btnTextF"
 										title="<spring:message code='data.transform.save'/>">
 									<spring:message code='data.transform.save'/>
 								</button>
 							</c:if>
 							<c:if test="${dataInfo.userId ne owner}">
-								<button type="button" id="dcSavePosRotReqPop" class="btnTextF" 
+								<button type="button" id="dcSavePosRotReqPop" class="btnTextF"
 										title="<spring:message code='data.transform.save.request'/>">
 										<spring:message code='data.transform.save.request'/>
-								</button>	
+								</button>
 							</c:if>
 						</c:if>
 						<button type="button" id="dcShowAttr" class="btnTextF">데이터 정보 조회</button>
@@ -213,23 +213,22 @@
 	let dataGroupMap = new Map();
 	dataGroupMap.set(parseInt('${dataInfo.dataGroupId}'), '${dataInfo.dataGroupName}');
 	var NDTP = NDTP ||{
-		policy : ${geoPolicyJson},
+		policy : {},
 		dataGroup : dataGroupMap,
-		baseLayers : ${baseLayerJson},
-		//wmsProvider : {},
-		//districtProvider : {}
+		baseLayers : {},
 	};
 
-	var geoPolicyJson = null;
 	var viewer = null;
 	var entities = null;
-
-	magoInit();
+	
+	initPolicy(function(policy, baseLayers){
+		NDTP.policy = policy;
+		NDTP.baseLayers = baseLayers;
+		magoInit();
+	}, '${dataInfo.dataId}');
 
 	function magoInit() {
-
-		geoPolicyJson = ${geoPolicyJson};
-
+		var geoPolicyJson = NDTP.policy;
 		var cesiumViewerOption = {};
 		cesiumViewerOption.infoBox = false;
 		cesiumViewerOption.navigationHelpButton = false;
@@ -252,6 +251,7 @@
 
 	var beforePointId = null;
 	function magoLoadEnd(e) {
+		var geoPolicyJson = NDTP.policy;
 		var magoInstance = e;
 		viewer = magoInstance.getViewer();
 		entities = viewer.entities;
@@ -267,7 +267,7 @@
 
 		// mago3d logo 추가
 		Mago3D.tempCredit(viewer);
-		
+
 		//우측 상단 지도 컨트롤러
 		MapControll(viewer);
 		dataGroupList(magoInstance);
@@ -288,10 +288,10 @@
 	    });
 
 	    // 기본 레이어 랜더링
-		setTimeout(function(){
-			var map = new mapInit(magoInstance, ${baseLayerJson}, ${geoPolicyJson});
-        	map.initLayer();
-        }, geoPolicyJson.initDuration * 1000);
+// 		setTimeout(function(){
+// 			var map = new mapInit(magoInstance, NDTP.baseLayers, geoPolicyJson);
+//         	map.initLayer();
+//         }, geoPolicyJson.initDuration * 1000);
 
 		/* setTimeout(function(){
 			changeObjectMove();
@@ -377,7 +377,6 @@
 	}
 
 	function initData(dataInfo) {
-
 		//clearDataControl();
 		//$('#dcColor').hide();
 
@@ -387,13 +386,13 @@
 		var $header = $dataControlWrap.find('.layerDivTit span');
 
 		var groupId = dataInfo.dataGroupId;
-		
+
 		if (groupId) {
 			var title = dataInfo.dataGroupName + ' / ' + (dataInfo.dataName || dataInfo.dataKey);
 			$header.text(title);
 			$header.attr('title', title);
 		}
-		
+
 
 		$('#dcLongitude').val(dataInfo.longitude);
 		$('#dcLatitude').val(dataInfo.latitude);
@@ -437,7 +436,7 @@
 			return false;
 		}
 	}
-	
+
 	// 위치/회전 저장 버튼 클릭
 	$("#dcSavePosRotPop").click(function(){
 		if (validate() == false) {
@@ -494,10 +493,10 @@
 				}
 			}).always(stopLoading);
 		} else {
-			alert('no');
+			//alert('no');
 		}
 	});
-	
+
 	// 위치/회전 저장 요청 버튼 클릭
 	var insertDataAdjustLogFlag = true;
 	$("#dcSavePosRotReqPop").click(function(){
@@ -506,7 +505,7 @@
 		}
 		if(insertDataAdjustLogFlag) {
 			insertDataAdjustLogFlag = false;
-			var formData = $("#dcRotLocForm").serialize();		
+			var formData = $("#dcRotLocForm").serialize();
 			$.ajax({
 				url: "/data-adjust-logs",
 				type: "POST",

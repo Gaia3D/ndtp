@@ -57,41 +57,8 @@ public class MapController {
     	String referrer = dataInfo.getReferrer();
         UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
         
-        GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
-//		UserPolicy userPolicy = userPolicyService.getUserPolicy(userSession.getUserId());
-		
 //		dataInfo.setUserId(userSession.getUserId());
 		dataInfo = dataService.getData(dataInfo);
-		
-//		if(userPolicy.getUserId() != null) {
-//			
-////			geoPolicy.setInitLatitude(userPolicy.getInitLatitude());
-////			geoPolicy.setInitLongitude(userPolicy.getInitLongitude());
-////			geoPolicy.setInitAltitude(userPolicy.getInitAltitude());
-//			geoPolicy.setInitLongitude(dataInfo.getLongitude().toString());
-//			geoPolicy.setInitLatitude(dataInfo.getLatitude().toString());
-//			BigDecimal altitude = new BigDecimal(dataInfo.getAltitude().toString());
-//			geoPolicy.setInitAltitude(altitude.add(new BigDecimal("10")).toString());
-//			geoPolicy.setInitDuration(userPolicy.getInitDuration());
-//			geoPolicy.setInitDefaultFov(userPolicy.getInitDefaultFov());
-//			geoPolicy.setLod0(userPolicy.getLod0());
-//			geoPolicy.setLod1(userPolicy.getLod1());
-//			geoPolicy.setLod2(userPolicy.getLod2());
-//			geoPolicy.setLod3(userPolicy.getLod3());
-//			geoPolicy.setLod4(userPolicy.getLod4());
-//			geoPolicy.setLod5(userPolicy.getLod5());
-//			geoPolicy.setSsaoRadius(userPolicy.getSsaoRadius());
-//		}
-        
-		geoPolicy.setInitCameraEnable(false);
-		
-        String geoPolicyJson = "";
-		try {
-			geoPolicyJson = objectMapper.writeValueAsString(geoPolicy);
-		} catch(Exception e) {
-			log.info("@@ objectMapper exception");
-			e.printStackTrace();
-		}
 		
 		String dataInfoJson = "";
 		try {
@@ -102,8 +69,6 @@ public class MapController {
 		}
 		
 		model.addAttribute("referrer", referrer);
-		model.addAttribute("geoPolicyJson", geoPolicyJson);
-//		model.addAttribute("baseLayers", userPolicy.getBaseLayers());
 		model.addAttribute("dataInfo", dataInfo);
 		model.addAttribute("dataInfoJson", dataInfoJson);
         
@@ -118,17 +83,6 @@ public class MapController {
      */
     @GetMapping(value = "/find-point")
     public String findPoint(HttpServletRequest request, Model model) {
-
-        UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-        UserPolicy userPolicy = userPolicyService.getUserPolicy(userSession.getUserId());
-        GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
-        try {
-            model.addAttribute("geoPolicyJson", objectMapper.writeValueAsString(geoPolicy));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        model.addAttribute("baseLayers", userPolicy.getBaseLayers());
 
         return "/map/find-point";
     }

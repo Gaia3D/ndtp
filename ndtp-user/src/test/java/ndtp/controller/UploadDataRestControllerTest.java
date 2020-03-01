@@ -12,6 +12,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.DataType;
@@ -42,9 +43,10 @@ class UploadDataRestControllerTest {
 		)
 	);
 
+	//@Test
 	@Disabled
 	void 압축파일_업로드_버그수정() {
-		File uploadedFile = new File("d:\\test.zip");
+		File uploadedFile = new File("d:\\01.zip");
 		
 		// input directory 생성
 		String targetDirectory = "D:\\" + System.nanoTime() + File.separator;
@@ -56,6 +58,7 @@ class UploadDataRestControllerTest {
 		int converterTargetCount = 0;
 		List<UploadDataFile> uploadDataFileList = new ArrayList<>();
 		
+		int count = 0;
 		try ( ZipFile zipFile = new ZipFile(uploadedFile);) {
 			
 			String directoryPath = targetDirectory;
@@ -71,7 +74,9 @@ class UploadDataRestControllerTest {
             	String unzipfileName = targetDirectory + entry.getName();
             	Boolean converterTarget = false;
             	
+            	log.info(" ==============> {}, unzipfileName = {}", count, unzipfileName);
             	if( entry.isDirectory() ) {
+            		log.info(" ***** directory. directoryName = {}, ", directoryName);
             		// 디렉토리인 경우
             		uploadDataFile.setFileType(FileType.DIRECTORY.name());
             		if(directoryName == null) {
@@ -81,13 +86,26 @@ class UploadDataRestControllerTest {
             			directoryPath = directoryPath + directoryName;
             			//subDirectoryPath = directoryName;
             		} else {
-            			String fileName = entry.getName().substring(entry.getName().indexOf(directoryName) + directoryName.length());  
+            			String fileName = null;
+            			if(entry.getName().indexOf(directoryName) >=0) {
+            				fileName = entry.getName().substring(entry.getName().indexOf(directoryName) + directoryName.length());  
+            			} else {
+            				// 이전이 디렉토리, 현재도 디렉토리인데 서로 다른 디렉토리
+            				if(directoryPath.indexOf(directoryName) >=0) {
+            					directoryPath = directoryPath.replace(directoryName, "");
+            					directoryName = null;
+            				}
+            				fileName = entry.getName();
+            			}
+            			log.info("===== filename = {}", fileName);
             			uploadDataFile.setFileName(fileName);
             			uploadDataFile.setFileRealName(fileName);
             			directoryName = fileName;
             			directoryPath = directoryPath + fileName;
             			subDirectoryPath = fileName;
             		}
+            		
+            		log.info("==== directoryPath = {}, subDirectoryPath = {} ", directoryPath, subDirectoryPath);
             		
                 	File file = new File(unzipfileName);
                     file.mkdirs();
@@ -96,6 +114,7 @@ class UploadDataRestControllerTest {
                     uploadDataFile.setDepth(depth);
                     depth++;
             	} else {
+            		log.info(" ***** file, directoryName = {}", directoryName);
             		// 파일인 경우
             		String fileName = null;
             		String extension = null;
@@ -137,6 +156,7 @@ class UploadDataRestControllerTest {
             					}
 	        				}
             			}
+            			log.info("==== fileName = {} ", fileName);
             		} else {
             			if(entry.getName().indexOf(directoryName) >= 0) {
             				// 디렉토리내 파일의 경우
@@ -183,6 +203,7 @@ class UploadDataRestControllerTest {
 	        					log.info("@@ file.ext.invalid. extList = {}, extension = {}", uploadTypeList, fileName);
 	        				}
             			}
+            			log.info("==== fileName = {} ", fileName);
             		}
             		
             		long size = 0L;
@@ -214,6 +235,9 @@ class UploadDataRestControllerTest {
             	uploadDataFile.setConverterTarget(converterTarget);
             	uploadDataFile.setFileSize(String.valueOf(entry.getSize()));
             	uploadDataFileList.add(uploadDataFile);
+            	
+            	System.out.println();
+            	count++;
             }
 		} catch(IOException ex) {
 			ex.printStackTrace(); 

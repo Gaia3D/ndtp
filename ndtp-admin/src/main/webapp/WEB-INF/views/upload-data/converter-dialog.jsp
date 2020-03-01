@@ -2,6 +2,7 @@
 <div class=dialogConverterJob title="F4D Converter Job 등록">
 	<form:form id="converterJobForm" name="converterJobForm" action="" method="post">
 		<input type="hidden" id="converterCheckIds" name="converterCheckIds" value="" />
+		<input type="hidden" id="dataType" name=dataType value="" />
 		<table class="inner-table scope-row" summary="F4D Converter Job 등록">
 		<caption class="hiddenTag">Job 등록</caption>
 			<col class="col-sub-label xl" />

@@ -305,3 +305,24 @@ function goMagoAPIGuide(url) {
 			", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
 	return false;
 }
+
+//init policy
+function initPolicy(callback, dataId) {
+	if(!dataId) dataId = "";
+	$.ajax({
+		url: "/geopolicies/user?dataId="+dataId,
+		type: "GET",
+		headers: {"X-Requested-With": "XMLHttpRequest"},
+		dataType: "json",
+		success: function(msg){
+			if(msg.statusCode <= 200) {
+				callback(msg.geoPolicy, msg.baseLayers);
+			} else {
+				alert(JS_MESSAGE[msg.errorCode]);
+			}
+		},
+		error:function(request,status,error){
+			alert(JS_MESSAGE["ajax.error.message"]);
+		}
+	});
+}

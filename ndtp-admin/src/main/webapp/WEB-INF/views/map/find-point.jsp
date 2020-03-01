@@ -55,6 +55,7 @@
 <script type="text/javascript" src="/js/${lang}/message.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript" src="/js/mago3d.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript" src="/js/mago3d_lx.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/map-init.js?cacheVersion=${contentCacheVersion}"></script>
 
 <script type="text/javascript">
 	//Cesium.Ion.defaultAccessToken = '';
@@ -62,12 +63,19 @@
 	var MAGO3D_INSTANCE;
 	var viewer = null; 
 	var entities = null;
-	var geoPolicyJson = ${geoPolicyJson};
+	var NDTP = NDTP || {
+		policy : {},
+		baseLayers : {}
+	};
 	
-	magoInit();
+	initPolicy(function(policy, baseLayers){
+		NDTP.policy = policy;
+		NDTP.baseLayers = baseLayers;
+		magoInit();
+	});
 	
 	function magoInit() {
-		
+		var geoPolicyJson = NDTP.policy;
 		var cesiumViewerOption = {};
 			cesiumViewerOption.infoBox = false;
 			cesiumViewerOption.navigationHelpButton = false;
@@ -91,7 +99,7 @@
 	var beforePointId = null;
 	function magoLoadEnd(e) {
 		var magoInstance = e;
-		
+		var geoPolicyJson = NDTP.policy;
 		viewer = magoInstance.getViewer(); 
 		entities = viewer.entities;
 		var magoManager = magoInstance.getMagoManager();
@@ -137,36 +145,13 @@
 		});
 		
 		setTimeout(function(){
-        	initLayer('${baseLayers}');
+			var ndtpMap = new mapInit(magoInstance, NDTP.baseLayers, geoPolicyJson);
+			ndtpMap.initLayer();
         }, geoPolicyJson.initDuration * 1000);
 	}
 	
 	function remove(entityStored) {
 		entities.removeById(entityStored);
-	}
-	
-	function initLayer(baseLayers) {
-		var layerList = baseLayers.split(",");
-		var queryString = "enable_yn='Y'";
-	    var queryStrings = layerList.map(function(){ return queryString; }).join(';');	// map: ie9부터 지원
-		var provider = new Cesium.WebMapServiceImageryProvider({
-	        url : geoPolicyJson.geoserverDataUrl + "/wms",
-	        layers : layerList.join(","),
-	        parameters : {
-	            service : 'WMS'
-	            ,version : '1.1.1'
-	            ,request : 'GetMap'
-	            ,transparent : 'true'
-	            ,format : 'image/png'
-	            ,time : 'P2Y/PRESENT'
-	            ,maxZoom : 25
-	            ,maxNativeZoom : 23
-	            ,CQL_FILTER: queryStrings
-	        },
-	        enablePickFeatures : false
-	    });
-	    
-		viewer.imageryLayers.addImageryProvider(provider);
 	}
 </script>
 </html>

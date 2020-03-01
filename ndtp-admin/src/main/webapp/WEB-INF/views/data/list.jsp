@@ -637,7 +637,8 @@
 		width: 600,
 		height: 445,
 		modal: true,
-		resizable: false
+		resizable: false,
+		close: function() { location.reload(); }
 	});
 	// 데이터 Object 속성 하나 등록
 	var uploadDataObjectAttributeDialog = $( ".uploadDataObjectAttributeDialog" ).dialog({
@@ -645,7 +646,8 @@
 		width: 600,
 		height: 445,
 		modal: true,
-		resizable: false
+		resizable: false,
+		close: function() { location.reload(); }
 	});
 	
 	// 지도에서 찾기 -- common.js, openFindDataPoint

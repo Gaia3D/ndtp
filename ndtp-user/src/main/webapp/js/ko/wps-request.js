@@ -273,13 +273,16 @@ function bodyInputCoverageAll(inputCoverage) {
 	
 	//geoserver 2.16.x 
 	xml += '<ows:BoundingBox  crs="http://www.opengis.net/gml/srs/epsg.xml#4326">';
-	if ( inputCoverage == 'mago3d:dem') {
+	/*if ( inputCoverage == 'mago3d:dem') {
 		xml += '<ows:LowerCorner>122.99986111111112 32.999861111111116</ows:LowerCorner>';
 		xml += '<ows:UpperCorner>132.0001388888889 44.00013888888889</ows:UpperCorner>';
 	} else if ( inputCoverage == 'mago3d:dsm') {
 		xml += '<ows:LowerCorner>125.57264500000001 38.93901000503942</ows:LowerCorner>';
 		xml += '<ows:UpperCorner>125.92047999121296 39.13849500000006</ows:UpperCorner>';
-	}
+	}*/
+	
+	xml += '<ows:LowerCorner>127.19931049066805 36.44941898280123</ows:LowerCorner>';
+	xml += '<ows:UpperCorner>127.32576852118987 36.55053669535394</ows:UpperCorner>';
 
 	xml += '</ows:BoundingBox>';
 	xml += '</wcs:DomainSubset>';

@@ -14,9 +14,7 @@
 		/* updateGeoPolicy */
 		UPDATE geopolicy
 		SET cesium_ion_token = #{cesiumIonToken},
-			<if test="dataApiUrl != null and dataApiUrl != ''">
 			data_api_url = #{dataApiUrl},
-			</if>
 			data_service_path = #{dataServicePath},
 			data_change_request_decision = #{dataChangeRequestDecision}
 			<!-- init_camera_enable = #{initCameraEnable},
@@ -66,59 +64,25 @@
 		/* updateGeoPolicyGeoServer */
 		UPDATE geopolicy
 		SET geoserver_enable = #{geoserverEnable},
-			<if test="geoserverDataUrl != null and geoserverDataUrl != ''">
 			geoserver_data_url = #{geoserverDataUrl},
-			</if>
-			<if test="geoserverDataWorkspace != null and geoserverDataWorkspace != ''">
 			geoserver_data_workspace = #{geoserverDataWorkspace},
-			</if>
-			<if test="geoserverDataStore != null and geoserverDataStore != ''">
 			geoserver_data_store = #{geoserverDataStore},
-			</if>
-			<if test="geoserverUser != null and geoserverUser != ''">
 			geoserver_user = #{geoserverUser},
-			</if>
-			<if test="geoserverPassword != null and geoserverPassword != ''">
 			geoserver_password = #{geoserverPassword},
-			</if>
 			geoserver_imageprovider_enable = #{geoserverImageproviderEnable},
-			<if test="geoserverImageproviderUrl != null and geoserverImageproviderUrl != ''">
 			geoserver_imageprovider_url = #{geoserverImageproviderUrl},
-			</if>
-			<if test="geoserverImageproviderLayerName != null and geoserverImageproviderLayerName != ''">
 			geoserver_imageprovider_layer_name = #{geoserverImageproviderLayerName},
-			</if>
-			<if test="geoserverImageproviderStyleName != null and geoserverImageproviderStyleName != ''">
 			geoserver_imageprovider_style_name = #{geoserverImageproviderStyleName},
-			</if>
-			<if test="geoserverImageproviderParametersWidth != null and geoserverImageproviderParametersWidth != ''">
 			geoserver_imageprovider_parameters_width = #{geoserverImageproviderParametersWidth},
-			</if>
-			<if test="geoserverImageproviderParametersHeight != null and geoserverImageproviderParametersHeight != ''">
 			geoserver_imageprovider_parameters_height = #{geoserverImageproviderParametersHeight},
-			</if>
-			<if test="geoserverImageproviderParametersFormat != null and geoserverImageproviderParametersFormat != ''">
 			geoserver_imageprovider_parameters_format = #{geoserverImageproviderParametersFormat},
-			</if>
 			geoserver_terrainprovider_enable = #{geoserverTerrainproviderEnable},
-			<if test="geoserverTerrainproviderUrl != null and geoserverTerrainproviderUrl != ''">
 			geoserver_terrainprovider_url = #{geoserverTerrainproviderUrl},
-			</if>
-			<if test="geoserverTerrainproviderLayerName != null and geoserverTerrainproviderLayerName != ''">
 			geoserver_terrainprovider_layer_name = #{geoserverTerrainproviderLayerName},
-			</if>
-			<if test="geoserverTerrainproviderStyleName != null and geoserverTerrainproviderStyleName != ''">
 			geoserver_terrainprovider_style_name = #{geoserverTerrainproviderStyleName},
-			</if>
-			<if test="geoserverTerrainproviderParametersWidth != null and geoserverTerrainproviderParametersWidth != ''">
 			geoserver_terrainprovider_parameters_width = #{geoserverTerrainproviderParametersWidth},
-			</if>
-			<if test="geoserverTerrainproviderParametersHeight != null and geoserverTerrainproviderParametersHeight != ''">
 			geoserver_terrainprovider_parameters_height = #{geoserverTerrainproviderParametersHeight},
-			</if>
-			<if test="geoserverTerrainproviderParametersFormat != null and geoserverTerrainproviderParametersFormat != ''">
 			geoserver_terrainprovider_parameters_format = #{geoserverTerrainproviderParametersFormat},
-			</if>
 			geoserver_wms_version = #{geoserverWmsVersion}
 		WHERE geopolicy_id = #{geoPolicyId}
 	</update>

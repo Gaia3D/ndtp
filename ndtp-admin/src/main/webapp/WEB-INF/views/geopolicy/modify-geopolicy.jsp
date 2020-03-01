@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 	<div id="geopolicyTab">
 		<form:form id="geoPolicyGeoInfo" modelAttribute="geoPolicy" method="post" onsubmit="return false;">
-			<form:hidden path="geoPolicyId" />
 			<table class="input-table scope-row" summary="환경설정 공간정보 테이블">
 			<caption class="hiddenTag">환경설정 공간정보 테이블</caption>
 				<col class="col-label l" />
