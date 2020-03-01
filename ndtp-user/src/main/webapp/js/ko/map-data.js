@@ -123,6 +123,7 @@ function mapDataInfoList(pageNo, searchDataName, searchStatus, searchDataType) {
 							if (!$.isEmptyObject(projectsMap)) {
 								var projects = projectsMap[dataId];
 								if ($.isEmptyObject(projectsMap) || !projects) {
+									data.groupVisible = isVisible;
 									continue;
 								}
 								var groupVisible = projects.attributes.isVisible;

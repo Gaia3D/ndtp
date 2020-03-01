@@ -206,6 +206,7 @@ function mapDataGroupList(pageNo, searchDataGroupName) {
 							if (!$.isEmptyObject(projectsMap)) {
 								var projects = projectsMap[dataId];
 								if ($.isEmptyObject(projectsMap) || !projects) {
+									dataGroup.groupVisible = isVisible;
 									continue;
 								}
 								var groupVisible = projects.attributes.isVisible;
