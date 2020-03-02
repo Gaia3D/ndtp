@@ -10,12 +10,12 @@
 	</div>
 	<div class="userPolicyContentDetail">
 		<div class="form-group form-group-policy">
-			<label for="initLatitude">위도</label>
-			<form:input type="text" id="initLatitude" path="initLatitude" size="15" />M
-		</div>
-		<div class="form-group form-group-policy">
 			<label for="initLongitude">경도</label>
 			<form:input type="text" id="initLongitude" path="initLongitude" size="15" />M
+		</div>
+		<div class="form-group form-group-policy">
+			<label for="initLatitude">위도</label>
+			<form:input type="text" id="initLatitude" path="initLatitude" size="15" />M
 		</div>
 		<div class="form-group form-group-policy">
 			<label for="initAltitude">높이</label>
