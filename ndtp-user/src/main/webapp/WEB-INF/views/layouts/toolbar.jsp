@@ -108,6 +108,7 @@
 					<li>
 						<label for="dcColorPicker">색상</label>
 						<input type="color" id="dcColorPicker">
+						<label for="dcColorInput" class="hiddenTag">RGB색상표</label>
 						<input type="text" id="dcColorInput" value="#000000" size="6" readonly style="color: rgb(0, 0, 0);">
 						<button type="button" id="dcColorApply" class="btnTextF">적용</button>
 						<button type="button" id="dcColorCancle" class="btnText">되돌리기</button>
@@ -142,6 +143,7 @@
 						<label for="dcPitch">x(pitch)</label>
 						<input type="text" id="dcPitch" name="pitch" size="2" readonly>
 						<button type="button" class="dcRangeBtn rangePrev" data-type="prev" id="rcPitchPrev"></button>
+						<label for="dcPitchRange" class="hiddenTag">x(pitch) 슬라이드</label>
 						<input id="dcPitchRange" data-type="Pitch" style="width: 140px;" type="range" min="-360" max="360" step="1" value="1">
 						<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcPitchNext"></button>
 					</li>
@@ -150,6 +152,7 @@
 						<label for="dcRoll">y(roll)</label>
 						<input type="text" id="dcRoll" name="roll" size="2" readonly>
 						<button type="button" class="dcRangeBtn rangePrev" data-type="prev" id="rcRollPrev"></button>
+						<label for="dcRollRange" class="hiddenTag">y(roll) 슬라이드</label>
 						<input id="dcRollRange" data-type="Roll" style="width: 140px;" type="range" min="-360" max="360" step="1" value="1">
 						<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcRollNext"></button>
 					</li>
@@ -158,6 +161,7 @@
 						<label for="dcHeading">z(heading)</label>
 						<input type="text" id="dcHeading" name="heading" size="2" readonly>
 						<button type="button" class="dcRangeBtn rangePrev" data-type="prev" id="rcHeadingPrev"></button>
+						<label for="dcHeadingRange" class="hiddenTag">z(heading) 슬라이드</label>
 						<input id="dcHeadingRange" data-type="Heading" style="width: 140px;" type="range" min="-360" max="360" step="1" value="1">
 						<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcHeadingNext"></button>
 					</li>

@@ -23,30 +23,35 @@
 		<tr>
 			<th class="col-label" scope="row">경도</th>
 			<td class="col-data">
+				<label for="issueLongitude" class="hiddenTag">경도</label>
 				<input type="text" id="issueLongitude" name="issueLongitude" readonly="readonly" size="25" style="background-color: #CBCBCB;" />
 			</td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">위도</th>
 			<td class="col-data">
+				<label for="issueLatitude" class="hiddenTag">위도</label>
 				<input type="text" id="issueLatitude" name="issueLatitude" readonly="readonly" size="25" style="background-color: #CBCBCB;" />
 			</td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">높이</th>
 			<td class="col-data">
+				<label for="issueAltitude" class="hiddenTag">높이</label>
 				<input type="text" id="issueAltitude" name="issueAltitude" readonly="readonly" size="25" style="background-color: #CBCBCB;" />
 			</td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">제목</th>
 			<td class="col-data">
+				<label for="issueTitle" class="hiddenTag">제목</label>
 				<textarea id="issueTitle" name="issueTitle" rows="2" cols="47"></textarea>
 			</td>
 		</tr>
 		<tr>
 			<th class="col-label" scope="row">내용</th>
 			<td class="col-data">
+				<label for="issueContents" class="hiddenTag">내용</label>
 				<textarea id="issueContents" name="issueContents" rows="5" cols="47"></textarea>
 			</td>
 		</tr>
