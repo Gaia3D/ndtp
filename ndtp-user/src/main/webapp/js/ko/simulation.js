@@ -41,6 +41,17 @@ var Simulation = function(magoInstance, viewer, $) {
     
     var stdFairRate = 0;
 
+    var locationList = {
+    	"seoul": [126.9282132, 37.5201354],
+		"sejong": [127.2739454, 36.5268601],
+		"pusan": [129.0015885, 35.1645701],
+	};
+	setTimeout(()=> {
+		_viewer.camera.flyTo({
+			destination : Cesium.Cartesian3.fromDegrees(locationList["seoul"][0],  locationList["seoul"][1], 2000)
+		});
+	}, 1000);
+
 	var observer;
 	var observerTarget = document.getElementById('simulationContent');
 	var observerConfig = { attributes: true};
@@ -417,15 +428,9 @@ var Simulation = function(magoInstance, viewer, $) {
 		buildingHeight: 40,
 		buildingAdjust: 0,
 	};
-	var pickedObj = {
-		terrain: "",   		// single entity
-		buildings: [], 		// [] entity
-		plottage: 0, 		// 대지 면적
-		totalFloorArea: 0, 	// 빌딩들의 총 건축면적
-		// 각 빌딩별 층수: entity.polygon.extrudedHeight
-		// 총 빌딩 갯수 : buildings.length
-	};
-	a=pickedObj;
+	var allObject = {};
+	var pickedName = "";
+	a=allObject;
 
 	var standardHeight = parseInt(viewModel.buildingHeight);
 	var smulationToolbar = document.getElementById('smulationToolbar');
@@ -434,53 +439,187 @@ var Simulation = function(magoInstance, viewer, $) {
 
 	$("#districtDisplay").change(value => {
 		let val = value.target.value;
-		if (pickedObj.terrain === undefined) {
+		if (pickedName === "") {
 			alert("지역을 먼저 선택해 주시기 바랍니다.");
 			return;
 		}
 		switch (val) {
 			case "disable":
-				if (pickedObj.terrain.id.show === true) {
-					pickedObj.terrain.id.show = !pickedObj.terrain.id.show;
+				if (allObject[pickedName].terrain.show === true) {
+					allObject[pickedName].terrain.show = !allObject[pickedName].terrain.show;
 				}
 				break;
 			case "enable":
-				if (pickedObj.terrain.id.show === false) {
-					pickedObj.terrain.id.show = !pickedObj.terrain.id.show;
+				if (allObject[pickedName].terrain.show === false) {
+					allObject[pickedName].terrain.show = !allObject[pickedName].terrain.show;
 				}
 				break;
 			default:
 				console.log("아무것도 선택되지 않았습니다.");
 		}
 	});
-	$("#districtType").change(function(value){
+	$("#curLocation").change((value) => {
 		let val = value.target.value;
-		if (pickedObj.terrain === undefined || pickedObj.terrain === "") {
+		let height = 2000;
+
+		_viewer.scene.camera.flyTo({
+			destination : Cesium.Cartesian3.fromDegrees(locationList[val][0], locationList[val][1], height)
+		});
+	});
+	$("#selectPiece").change((value) => {
+		let val = value.target.value;
+		switch (val) {
+			case "sejong6_4":
+				var layers = viewer.scene.imageryLayers;
+
+				layers.addImageryProvider(new Cesium.SingleTileImageryProvider({
+					url : '/images/mapgeoref.png',
+					rectangle : Cesium.Rectangle.fromDegrees(127.2603901, 36.5187878, 127.2875007, 36.5349324)
+				}));
+
+				_viewer.scene.camera.flyTo({
+					destination : Cesium.Cartesian3.fromDegrees(127.2739454, 36.5268601, 600.0)
+				});
+				break;
+			default:
+				console.log("val is empty or undefined");
+		}
+	});
+
+	$("#selectDistrict").change(value => {
+		let val = value.target.value;
+		pickedName = val;
+		if( val === "sejong_apartmentComplex1") {
+			if (allObject[val] !== undefined) {
+				buildingToLandRatioCalc();
+				floorAreaRatioCalc();
+				settingDistrictDisplay();
+				_viewer.selectedEntity = allObject[pickedName].terrain;
+				return;
+			}
+			allObject[val] = {
+				terrain: "",   		// single entity
+				buildings: [], 		// [] entity
+				plottage: 0, 		// 대지 면적
+				totalFloorArea: 0, 	// 빌딩들의 총 건축면적
+			};
+
+			const fileName = "Parcel6-4.geojson";
+			const obj = {
+				width : 5,
+				leadTime : 0,
+				trailTime : 100,
+				resolution : 5,
+				strokeWidth: 0,
+				stroke: Cesium.Color.AQUA.withAlpha(0.0),
+				fill: Cesium.Color.AQUA.withAlpha(0.8),
+			};
+			let url = "http://localhost/data/simulation-rest/drawGeojson?fileName=" + fileName;
+
+			Cesium.GeoJsonDataSource.load(url, obj).then(function(dataSource) {
+				let entitis = dataSource.entities._entities._array;
+
+				for(let index in entitis) {
+					let entitiyObj = entitis[index];
+					let registeredEntity = _viewer.entities.add(entitiyObj);
+					registeredEntity.name = "sejong_apartmentComplex1";
+
+					Cesium.knockout.getObservable(viewModel, 'standardFloorCount').subscribe(
+						function(newValue) {
+							registeredEntity.polygon.extrudedHeight = newValue;
+						}
+					);
+					allObject[val].terrain = registeredEntity;
+				}
+				settingDistrictDisplay();
+				// setTimeout(()=>{
+					_viewer.selectedEntity = allObject[pickedName].terrain;
+				// }, 500);
+			}, function(err) {
+				console.log(err);
+			});
+		}
+		else if(val === "sejong_church1") {
+			if (allObject[val] !== undefined) {
+				buildingToLandRatioCalc();
+				floorAreaRatioCalc();
+				settingDistrictDisplay();
+				_viewer.selectedEntity = allObject[pickedName].terrain;
+				return;
+			}
+			allObject[val] = {
+				terrain: "",   		// single entity
+				buildings: [], 		// [] entity
+				plottage: 0, 		// 대지 면적
+				totalFloorArea: 0, 	// 빌딩들의 총 건축면적
+			};
+
+			const fileName = "schoolphill.geojson";
+			const obj = {
+				width : 5,
+				leadTime : 0,
+				trailTime : 100,
+				resolution : 5,
+				strokeWidth: 0,
+				stroke: Cesium.Color.AQUA.withAlpha(0.0),
+				fill: Cesium.Color.AQUA.withAlpha(0.8),
+			};
+			let url = "http://localhost/data/simulation-rest/drawGeojson?fileName=" + fileName;
+
+			Cesium.GeoJsonDataSource.load(url, obj).then(function(dataSource) {
+				let entitis = dataSource.entities._entities._array;
+
+				for(let index in entitis) {
+					let entitiyObj = entitis[index];
+					let registeredEntity = _viewer.entities.add(entitiyObj);
+					registeredEntity.name = "sejong_church1";
+
+					Cesium.knockout.getObservable(viewModel, 'standardFloorCount').subscribe(
+						function(newValue) {
+							registeredEntity.polygon.extrudedHeight = newValue;
+						}
+					);
+					allObject[val].terrain = registeredEntity;
+				}
+				settingDistrictDisplay();
+				// setTimeout(()=>{
+					_viewer.selectedEntity = allObject[pickedName].terrain;
+				// }, 500);
+			}, function(err) {
+				console.log(err);
+			});
+		} else {
+			console.log("val is empty or undefined");
+		}
+	});
+	$("#districtType").change((value) => {
+		let val = value.target.value;
+		if (pickedName === "") {
 			alert("지역을 먼저 선택해 주시기 바랍니다.");
 			$("#districtType").val("");
 			return;
 		}
 		switch (val){
 			case "dType1":
-				pickedObj.terrain.id.polygon.material.color=Cesium.Color.YELLOW.withAlpha(0.6);
+				allObject[pickedName].terrain.polygon.material.color=Cesium.Color.YELLOW.withAlpha(0.6);
 				$("#standardFloorAreaRatio").val(140).trigger("change");
 				$("#standardBuildingToLandRatio").val(50).trigger("change");
 				$("#standardFloorCount").val(25).trigger("change");
 				break;
 			case "dType2":
-				pickedObj.terrain.id.polygon.material.color=Cesium.Color.ORANGERED.withAlpha(0.6);
+				allObject[pickedName].terrain.polygon.material.color=Cesium.Color.ORANGERED.withAlpha(0.6);
 				$("#standardFloorAreaRatio").val(120).trigger("change");
 				$("#standardBuildingToLandRatio").val(40).trigger("change");
 				$("#standardFloorCount").val(15).trigger("change");
 				break;
 			case "dType3":
-				pickedObj.terrain.id.polygon.material.color=Cesium.Color.MEDIUMTURQUOISE.withAlpha(0.6);
+				allObject[pickedName].terrain.polygon.material.color=Cesium.Color.MEDIUMTURQUOISE.withAlpha(0.6);
 				$("#standardFloorAreaRatio").val(80).trigger("change");
 				$("#standardBuildingToLandRatio").val(20).trigger("change");
 				$("#standardFloorCount").val(10).trigger("change");
 				break;
 			case "dType4":
-				pickedObj.terrain.id.polygon.material.color=Cesium.Color.YELLOWGREEN.withAlpha(0.6);
+				allObject[pickedName].terrain.polygon.material.color=Cesium.Color.YELLOWGREEN.withAlpha(0.6);
 				$("#standardFloorAreaRatio").val(50).trigger("change");
 				$("#standardBuildingToLandRatio").val(25).trigger("change");
 				$("#standardFloorCount").val(40).trigger("change");
@@ -490,43 +629,17 @@ var Simulation = function(magoInstance, viewer, $) {
 		}
 	});
 
+	$("#create3dModel").click(()=> {
+		let val = $("#selectDistrict").val();
+		if (allObject[val] === undefined) {
+			alert("지역을 먼저 선택해 주시기 바랍니다.");
+			return;
+		}
+		if (pickedName !== "sejong_apartmentComplex1") {
+			alert("현재는 세종시 아파트만 지원됩니다.");
+			return;
+		}
 
-	$("#test000").click(()=> {
-		$("#run_sample_raster").trigger("click");
-	});
-	$("#test111").click(()=> {
-		const fileName = "Parcel6-4.geojson";
-		const obj = {
-			width : 5,
-			leadTime : 0,
-			trailTime : 100,
-			resolution : 5,
-			strokeWidth: 0,
-			stroke: Cesium.Color.AQUA.withAlpha(0.0),
-			fill: Cesium.Color.AQUA.withAlpha(0.8),
-		};
-		let url = "http://localhost/data/simulation-rest/drawGeojson?fileName=" + fileName;
-
-		Cesium.GeoJsonDataSource.load(url, obj).then(function(dataSource) {
-			let entitis = dataSource.entities._entities._array;
-
-			for(let index in entitis) {
-				let entitiyObj = entitis[index];
-				let registeredEntity = _viewer.entities.add(entitiyObj);
-				registeredEntity.name = "세종시 아파트단지";
-
-				Cesium.knockout.getObservable(viewModel, 'standardFloorCount').subscribe(
-					function(newValue) {
-						registeredEntity.polygon.extrudedHeight = newValue;
-					}
-				);
-			}
-		}, function(err) {
-			console.log(err);
-		});
-	});
-
-	$("#test222").click(()=> {
 		const fileName = "Parcel6-4-Buidling.geojson";
 		const obj = {
 			width : 5,
@@ -555,7 +668,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				sumFloorArea += buildingFloorArea;
 
 				// todo: 임시
-				pickedObj.buildings.push(registeredEntity);
+				allObject[pickedName].buildings.push(registeredEntity);
 
 				let intIndex = parseInt(index);
 				if (intIndex % 2 === 0) {
@@ -607,42 +720,10 @@ var Simulation = function(magoInstance, viewer, $) {
 				}
 			}
 			// $("#inputBuildingHeight").trigger("change");
-			pickedObj.totalFloorArea = sumFloorArea;
+			allObject[pickedName].totalFloorArea = sumFloorArea;
 
 			buildingToLandRatioCalc();
 			floorAreaRatioCalc();
-		}, function(err) {
-			console.log(err);
-		});
-	});
-
-	$("#test333").click(()=> {
-		const fileName = "schoolphill.geojson";
-		const obj = {
-			width : 5,
-			leadTime : 0,
-			trailTime : 100,
-			resolution : 5,
-			strokeWidth: 0,
-			stroke: Cesium.Color.AQUA.withAlpha(0.0),
-			fill: Cesium.Color.AQUA.withAlpha(0.8),
-		};
-		let url = "http://localhost/data/simulation-rest/drawGeojson?fileName=" + fileName;
-
-		Cesium.GeoJsonDataSource.load(url, obj).then(function(dataSource) {
-			let entitis = dataSource.entities._entities._array;
-
-			for(let index in entitis) {
-				let entitiyObj = entitis[index];
-				let registeredEntity = _viewer.entities.add(entitiyObj);
-				registeredEntity.name = "세종시 교회";
-
-				// Cesium.knockout.getObservable(viewModel, 'buildingAdjust').subscribe(
-				// 	function(newValue) {
-				// 		registeredEntity.polygon.extrudedHeight = newValue;
-				// 	}
-				// );
-			}
 		}, function(err) {
 			console.log(err);
 		});
@@ -657,11 +738,14 @@ var Simulation = function(magoInstance, viewer, $) {
 
 	// 건폐율 계산 및 view (건축면적 / 대지면적)
 	function buildingToLandRatioCalc() {
-		let plottage = parseFloat(pickedObj.plottage); // 대지면적
-		let totalFloorArea = parseFloat(pickedObj.totalFloorArea); // 총 건축면적
+		if (pickedName === "") {
+			alert("오브젝트를 먼저 선택해 주시기 바랍니다.");
+			return;
+		}
+		let plottage = parseFloat(allObject[pickedName].plottage); // 대지면적
+		let totalFloorArea = parseFloat(allObject[pickedName].totalFloorArea); // 총 건축면적
 
 		if (plottage === 0.0) {
-			alert("대지면적이 0입니다. 다시 확인해 주시기 바랍니다.");
 			return;
 		}
 		let result = (totalFloorArea / plottage) * 100.0;
@@ -669,11 +753,14 @@ var Simulation = function(magoInstance, viewer, $) {
 	}
 	// 용적율 계산 및 view (연면적 / 대지면적)
 	function floorAreaRatioCalc() {
-		let plottage = parseFloat(pickedObj.plottage); // 대지면적
-		let totalArea = totalAreaCalc(pickedObj.buildings); // 총 연면적
+		if (pickedName === "") {
+			alert("오브젝트를 먼저 선택해 주시기 바랍니다.");
+			return;
+		}
+		let plottage = parseFloat(allObject[pickedName].plottage); // 대지면적
+		let totalArea = totalAreaCalc(allObject[pickedName].buildings); // 총 연면적
 
 		if (plottage === 0.0) {
-			alert("대지면적이 0입니다. 다시 확인해 주시기 바랍니다.");
 			return;
 		}
 		let result = (totalArea / plottage) * 100.0;
@@ -686,6 +773,13 @@ var Simulation = function(magoInstance, viewer, $) {
 			sum += entity.totalBuildingFloorArea;
 		});
 		return sum;
+	}
+	function settingDistrictDisplay() {
+		if (allObject[pickedName].terrain.show) {
+			$("#districtDisplay").val("enable");
+		} else {
+			$("#districtDisplay").val("disable");
+		}
 	}
 
 
@@ -703,32 +797,6 @@ var Simulation = function(magoInstance, viewer, $) {
 			destination : Cesium.Cartesian3.fromDegrees(127.2739454, 36.5268601, 600.0)
 		});
 	});
-
-	function parselBuilding(fileName, obj) {
-		let url = "http://localhost/data/simulation-rest/drawGeojson?fileName=" + fileName;
-		Cesium.GeoJsonDataSource.load(url, obj).then(function(dataSource) {
-			let entitis = dataSource.entities._entities._array;
-
-			for(let index in entitis) {
-				let entitiyObj = entitis[index];
-				let registeredEntity = _viewer.entities.add(entitiyObj);
-
-				Cesium.knockout.getObservable(viewModel, 'standardFloorCount').subscribe(
-					function(newValue) {
-						registeredEntity.polygon.extrudedHeight = newValue;
-					}
-				);
-			}
-			setTimeout(function() {
-				// stopLoading();
-				_viewer.scene.camera.flyTo({
-					destination : Cesium.Cartesian3.fromDegrees(127.2739454, 36.5268601, 600.0)
-				});
-			},500);
-		}, function(err) {
-			// stopLoading();
-		});
-	}
 	
 	function sejeonjochiwonPoly() {
 		Cesium.GeoJsonDataSource.load('http://localhost/data/simulation-rest/select', {
@@ -837,7 +905,6 @@ var Simulation = function(magoInstance, viewer, $) {
     });
 
 	var smartTileLoaEndCallbak = function(evt) {
-		debugger;
 		var nodes = evt.tile.nodesArray;
 		for(var i in nodes) {
 			var node = nodes[i];
@@ -1209,14 +1276,16 @@ var Simulation = function(magoInstance, viewer, $) {
 //                    _viewer._selectedEntity = pickedFeature.id.polygon;
                 } else {
 					var pickedFeature = viewer.scene.pick(event.position);
-					pickedObj.terrain = viewer.scene.pick(event.position);
-					pickedObj.plottage = getArea(pickedObj.terrain.id.polygon._hierarchy._value.positions);
 
 					if(pickedFeature) {
-						$("#objectName").val(pickedFeature.id.name);
-						$("#districtDisplay").val("enable").trigger("change");
+						pickedName = pickedFeature.id.name;
+						allObject[pickedName].terrain = pickedFeature.id;
+						allObject[pickedName].plottage = getArea(allObject[pickedName].terrain.polygon._hierarchy._value.positions);
+
+						$("#selectDistrict").val(allObject[pickedName].terrain.name).trigger("change");
+						// $("#districtDisplay").val("enable").trigger("change");
 					} else {
-						$("#objectName").val("");
+						pickedName = "";
 					}
 
 				}

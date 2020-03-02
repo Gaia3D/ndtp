@@ -13,7 +13,6 @@
 
 <script>
     Growl.settings.duration = 100000; // 100
-    debugger;
     var permReqeustParam = {
         isComplete: 'N'
     }
@@ -70,7 +69,6 @@
             data: data,
             dataType: "json",
             success: function(msg){
-                debugger;
                 buildAcceptPermSeq = msg.permSeq;
                 const longitude = msg.longitude;
                 const latitude = msg.latitude;
@@ -81,7 +79,7 @@
                 const f4dObject = f4dDataGenMaster.initIfc(msg.f4dObject, longitude, latitude, altitude, heading, pitch, roll);
                 // let f4dObject = makeF4dObject(msg.f4dObject);
                 // f4dObject.children = makeF4dSubObject(msg.f4dObject.f4dSubList, longitude, latitude, altitude, heading, pitch, roll);
-                debugger;
+
                 var f4dController = MAGO3D_INSTANCE.getF4dController();
                 f4dController.addF4dGroup(f4dObject);
                 whole_viewer.scene.camera.flyTo({
