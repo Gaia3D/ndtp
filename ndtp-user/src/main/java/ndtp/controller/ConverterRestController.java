@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -70,11 +71,21 @@ public class ConverterRestController {
 			converterJob.setUserId(userSession.getUserId());
 			
 			converterService.insertConverter(converterJob);
-		} catch(Exception e) {
-			e.printStackTrace();
+		} catch(DataAccessException e) {
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "db.exception";
 			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 		
 		result.put("statusCode", statusCode);

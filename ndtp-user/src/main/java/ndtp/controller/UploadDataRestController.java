@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
@@ -253,8 +254,13 @@ public class UploadDataRestController {
             			uploadDataFile.setFileSize(String.valueOf(size));
             			uploadDataFile.setConverterTarget(converterTarget);
             			uploadDataFile.setDepth(1);
+					} catch(IOException e) {
+						log.info("@@@@@@@@@@@@ io exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+						result.put("statusCode", HttpStatus.INTERNAL_SERVER_ERROR.value());
+						result.put("errorCode", "io.exception");
+						result.put("message", message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+			            return result;
 					} catch(Exception e) {
-						e.printStackTrace();
 						log.info("@@@@@@@@@@@@ file copy exception.");
     					result.put("statusCode", HttpStatus.INTERNAL_SERVER_ERROR.value());
 						result.put("errorCode", "file.copy.exception");
@@ -297,11 +303,21 @@ public class UploadDataRestController {
 			
 			log.info("@@@@@@@@@@@@ uploadData = {}", uploadData);
 			uploadDataService.insertUploadData(uploadData, uploadDataFileList);       
-		} catch(Exception e) {
-			e.printStackTrace();
+		} catch(DataAccessException e) {
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "db.exception";
 			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 		
 		result.put("statusCode", statusCode);
@@ -514,9 +530,12 @@ public class UploadDataRestController {
                 		uploadDataFile.setFileSubPath(subDirectoryPath);
                 		uploadDataFile.setDepth(depth);
                 		uploadDataFile.setFileSize(String.valueOf(size));
-                		
+                	
+                	} catch(IOException e) {
+                		log.info("@@@@@@@@@@@@ io exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+                		uploadDataFile.setErrorMessage(e.getMessage());
                     } catch(Exception e) {
-                    	e.printStackTrace();
+                    	log.info("@@@@@@@@@@@@ exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
                     	uploadDataFile.setErrorMessage(e.getMessage());
                     }
                 }
@@ -526,7 +545,7 @@ public class UploadDataRestController {
             	uploadDataFileList.add(uploadDataFile);
             }
 		} catch(IOException ex) {
-			ex.printStackTrace(); 
+			log.info("@@@@@@@@@@@@ io exception. ex message = {}", ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage());
 		}
 		
 		result.put("converterTargetCount", converterTargetCount);
@@ -654,11 +673,21 @@ public class UploadDataRestController {
 			// DB 갱신과 파일 확장자 변경
 			uploadDataService.updateUploadDataAndFile(uploadData);
 			
-		} catch (Exception e) {
-			e.printStackTrace();
-            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-            errorCode = "db.exception";
-            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		} catch(DataAccessException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 		
 		result.put("statusCode", statusCode);
@@ -696,11 +725,21 @@ public class UploadDataRestController {
 			uploadData.setUploadDataId(uploadDataId);
 			
 			uploadDataService.deleteUploadData(uploadData);
-		} catch(Exception e) {
-			e.printStackTrace();
+		} catch(DataAccessException e) {
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "db.exception";
 			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 		
 		result.put("statusCode", statusCode);

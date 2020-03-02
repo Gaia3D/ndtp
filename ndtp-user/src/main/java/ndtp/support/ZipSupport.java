@@ -5,13 +5,16 @@ import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 
+import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.LayerFileInfo;
 
+@Slf4j
 public class ZipSupport {
 
 	public static void makeZip(String zipFileName, List<LayerFileInfo> layerFileInfoList) throws Exception {
@@ -37,13 +40,16 @@ public class ZipSupport {
         				zipArchiveOutputStream.write(buf,0,len);
         			}
         			zipArchiveOutputStream.closeArchiveEntry();
+        		} catch(IOException e) {
+        			log.info("@@ IOException. message = {}", e.getMessage());
+        			throw new RuntimeException(e.getMessage());
         		} catch(Exception e) {
-        			e.printStackTrace();
+        			log.info("@@ Exception. message = {}", e.getMessage());
 					throw new RuntimeException(e.getMessage());
         		}
             }
         } catch (FileNotFoundException e) {
-        	e.printStackTrace();
+        	log.info("@@ FileNotFoundException. message = {}", e.getMessage());
         }
 	}
 }

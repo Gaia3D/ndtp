@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -70,11 +71,21 @@ public class IssueRestController {
 			Issue issue = issueService.getIssue(issueId);
 			
 			result.put("issue", issue);
-		} catch(Exception e) {
-			e.printStackTrace();
+		} catch(DataAccessException e) {
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "db.exception";
 			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 		
 		result.put("statusCode", statusCode);
@@ -119,11 +130,21 @@ public class IssueRestController {
 			
 			result.put("issueId", issue.getIssueId());
 			// TODO cache 갱신 되어야 함
-		} catch(Exception e) {
-			e.printStackTrace();
+		} catch(DataAccessException e) {
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "db.exception";
 			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 		
 		result.put("statusCode", statusCode);
@@ -176,11 +197,21 @@ public class IssueRestController {
 			result.put("totalCount", totalCount);
 			result.put("pagination", pagination);
 			result.put("issueList", issueList);
-		} catch(Exception e) {
-			e.printStackTrace();
+		} catch(DataAccessException e) {
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "db.exception";
 			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 
 		result.put("statusCode", statusCode);
@@ -201,7 +232,6 @@ public class IssueRestController {
 //		try {
 //			buffer.append("dataName=" + URLEncoder.encode(getDefaultValue(dataInfo.getDataName()), "UTF-8"));
 //		} catch(Exception e) {
-//			e.printStackTrace();
 //			buffer.append("dataName=");
 //		}
 		
