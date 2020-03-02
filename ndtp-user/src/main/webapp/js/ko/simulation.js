@@ -651,8 +651,7 @@ var Simulation = function(magoInstance, viewer, $) {
 		floorAreaRatioCalc();
 	});
 	$("#inputCustomizing").change(() => {
-		// todo: 원래는 용적률이 안바껴야 되는데 조금씩의 오차가 생김
-		// floorAreaRatioCalc();
+		floorAreaRatioCalc();
 	});
 
 	// 건폐율 계산 및 view (건축면적 / 대지면적)
