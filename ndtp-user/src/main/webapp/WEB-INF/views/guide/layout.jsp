@@ -95,6 +95,7 @@
 	<script type="text/javascript" src="/js/mago3d.js?cacheVersion=${contentCacheVersion}"></script>
 	<script type="text/javascript" src="/js/mago3d_lx.js?cacheVersion=${contentCacheVersion}"></script>
 	<script type="text/javascript" src="/js/ko/common.js?cacheVersion=${contentCacheVersion}"></script>
+	<script type="text/javascript" src="/js/ko/message.js?cacheVersion=${contentCacheVersion}"></script>
 	
 
 	<script type="text/javascript">
