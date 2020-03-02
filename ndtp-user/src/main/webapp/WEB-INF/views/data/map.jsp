@@ -122,9 +122,11 @@
 			<div class="closeGraphic">X</div>
 		</div>
 		<div class="sliderWrap" id="csRange">
+			<label for="rangeInput" class="hiddenTag">caRange</label>
 			<input id="rangeInput"/>
 		</div>
 		<div class="sliderWrap" id="saRange">
+			<label for="timeInput" class="hiddenTag">saRange</label>
 			<input id="timeInput"/>
 		</div>
 	</div>
@@ -252,6 +254,7 @@
         setTimeout(function(){
         	NDTP.map = new mapInit(magoInstance, NDTP.baseLayers, geoPolicyJson);
         	NDTP.map.initLayer();
+        	cesiumCreditAlt(); //웹접근성
         }, geoPolicyJson.initDuration * 1000);
 
 		//지도상에 데이터 다루는거
