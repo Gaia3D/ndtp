@@ -988,80 +988,32 @@
 
 					var res = {
 						disk: {
+							id: 'pie-chart1',
+							title: 'Disk',
 							value: Math.round(diskValue),
-							classname: 'pie-chart1',
 							color: 'tomato'
 						},
 						memory: {
+							id: 'pie-chart2',
+							title: 'JVM Memory',
 							value: Math.round(memoryValue),
-							classname: 'pie-chart2',
 							color: '#8b22ff'
 						},
 						cpu: {
+							id: 'pie-chart3',
+							title: 'CPU',
 							value: Math.round(cpuValue),
-							classname: 'pie-chart3',
 							color: '#1cabf1'
 						}
 					}
 
-					var content = "";
-					content += "<div style='text-align: center; margin-top: 10px;'>";
-					content += "	<div id='pie-chart1' class='pie-chart pie-chart1'>";
-					content += "		<span class='center'>" + res.disk.value + "%</span><span class='title'>Disk</span></div>";
-					content += "	<div id='pie-chart2' class='pie-chart pie-chart2'>";
-					content += "		<span class='center'>" + res.memory.value + "%</span><span class='title'>JVM Memory</span></div>";
-					content += "	<div id='pie-chart3' class='pie-chart pie-chart3'>";
-					content += "		<span class='center'>" + res.cpu.value + "%</span><span class='title'>CPU</span></div>";
-					content += "</div>";
-
 					$("#systemUsageWidget").empty();
-					$("#systemUsageWidget").html(content);
+					$("#systemUsageWidget").html('<div class="gaugeGraph"></div>');
 
 					for(var property in res) {
-						var value = res[property].value;
-						var classname = res[property].classname;
-						var color = res[property].color;
-
-						var data = [[classname, value], ['blank', (100-value)]];
-
-				      	var plot4 = $.jqplot(classname, [data], {
-				      		animate: true,
-				      		animateReplot: true,
-				      		seriesColors: [color, "#e0e0e0"],
-				            grid: {
-				                drawBorder: false,
-				                drawGridlines: false,
-				                background: "#ffffff",
-				                shadow: false
-				            },
-				            seriesDefaults:{
-				            	renderer:$.jqplot.DonutRenderer,
-				          		rendererOptions:{
-						            sliceMargin: 0,
-						            startAngle: -90,
-						            diameter : 100,
-						            padding: 10,
-						            animation: {
-				                        speed: 2000
-				                    }
-						            //showDataLabels: true,
-						            //dataLabels: 'value',
-						            //totalLabel: true
-				          		}
-				            },
-				            legend: {
-				                background: 'white',
-				                textColor: 'black',
-				                fontFamily: 'Times New Roman',
-				                border: '1px solid black'
-				            }
-				      	});
-
-					 	//drawGauge(value, '.'+classname, color);
+						showSystemUsageHtml(res[property]);
+						showSystemUsageGraph(res[property]);
 					}
-
-					//$("#systemUsageWidget").empty();
-					//$("#systemUsageWidget").html(content);
 				} else {
 					$("#systemUsageWidget").html(JS_MESSAGE[msg.errorCode]);
 					//alert(JS_MESSAGE[msg.errorCode]);
@@ -1110,6 +1062,44 @@
 		});
 	}
 
+	function showSystemUsageHtml(data) {
+		var content = "";
+		content += "<div id='"+ data.id +"' class='pie-chart'>";
+		content += "	<span class='center'>" + data.value + "%</span>";
+		content += "	<span class='title'>" + data.title + "</span>";
+		content += "</div>";
+		$('#systemUsageWidget div.gaugeGraph').append(content);
+	}
+
+	function showSystemUsageGraph(data) {
+		var usageValues = [[data.title, data.value], ['blank', (100-data.value)]];
+
+		$.jqplot(data.id, [usageValues], {
+      		seriesColors: [data.color, "#e0e0e0"],
+            grid: {
+                drawBorder: false,
+                drawGridlines: false,
+                background: "#ffffff",
+                shadow: false
+            },
+            seriesDefaults:{
+            	renderer:$.jqplot.DonutRenderer,
+          		rendererOptions:{
+		            sliceMargin: 0,
+		            startAngle: -90,
+		            diameter : 100,
+		            padding: 10
+          		}
+            },
+            legend: {
+                background: 'white',
+                textColor: 'black',
+                fontFamily: 'Times New Roman',
+                border: '1px solid black'
+            }
+      	});
+	}
+
 	function goMagoAPIGuide() {
 		var url = "/guide/help";
 		var width = 1200;
@@ -1124,25 +1114,6 @@
 		return false;
 	}
 
-	function drawGauge(value, classname, colorname) {
-	   	var i=1;
-	    var drawFunction = setInterval(function(){
-	      	if(i<=value){
-	          	setGaugeColor(i, classname, colorname);
-	         	i++;
-	      	} else{
-	        	clearInterval(drawFunction);
-	      	}
-	    }, 10);
-	}
-
-	function setGaugeColor(i, classname, colorname) {
-	   	$(classname).css({
-	        "background": "conic-gradient("+colorname+" 0% "+i+"%, #e0e0e0 "+i+"% 100%)"
-	        //"background": "linear-gradient(0deg, "+colorname+" "+i+"%, #e0e0e0 0%)"
-	        //"background": "radial-gradient(circle at 50%, "+colorname+" "+i+"%, #e0e0e0 0%)"
-	   	});
-	}
 </script>
 </body>
 </html>
