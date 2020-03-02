@@ -15,6 +15,7 @@ public interface SimuMapper {
 	int insertConsProcFile(SimFileMaster simFileInfo);
 	int insertSimCityPlanFileResult(CityPlanResult simFileInfo);
 
-	SimFileMaster getSimCityPlanFileList();
+	SimFileMaster getSimCityPlanFile();
+	List<SimFileMaster> getSimMasterList(SimFileMaster sfm);
 
 }

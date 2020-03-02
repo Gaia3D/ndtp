@@ -91,11 +91,24 @@ public class SimulationRestController {
 	}
 
     @RequestMapping(value = "/cityConstProcUpload", method = RequestMethod.POST)
-    public boolean upload(SimFileMaster sfm) {
+    public boolean cityConstProcUpload(SimFileMaster sfm) {
 		System.out.println(sfm.toString());
 		this.simServiceImpl.procConstProc(sfm);
 		return true;
     }
+
+	@RequestMapping(value = "/cityConstProcSelect", method = RequestMethod.GET)
+	public F4DObject cityConstProcSelect(SimFileMaster sfm) throws IOException {
+		System.out.println(sfm.toString());
+		sfm.setConsType(simServiceImpl.getConsTypeByConsTypeString(sfm.getConsTypeString()));
+		sfm.setSaveFileType(simServiceImpl.getCityTypeByCityTypeString(sfm.getCityTypeString()));
+		var consBuildList = this.simServiceImpl.getConsBuildList(sfm);
+		if(consBuildList.size() == 0)
+			return null;
+		SimFileMaster consBUildListObj = consBuildList.get(0);
+		var result = this.simServiceImpl.procF4DDataStrucreByPaths(consBUildListObj.getSaveFilePath(), consBUildListObj.getSaveFileName());
+		return result;
+	}
 	
     @RequestMapping(value = "/cityPlanUpload", method = RequestMethod.POST)
     public List<String> cityPlanUpload(MultipartFile[] files) {
@@ -212,8 +225,6 @@ public class SimulationRestController {
 		// 세종/부산, 면단계인지 정보를 통해 파일을 가져온다.
 
 		// 가져온 파일에서 LonLats.json만을 추출한다.
-
-
 		String resultFullPath = "C:\\data\\Apartment_Building_26_obj\\" + fileName;
 		String os = System.getProperty("os.name").toLowerCase();
 		if (os.contains("mac")) {
@@ -276,8 +287,14 @@ public class SimulationRestController {
 
 	@RequestMapping(value = "/getPermRequest", method = RequestMethod.POST)
 	public List<StructPermission> getPermRequest(HttpServletRequest request, StructPermission sp) {
-		List<StructPermission> result = structPermissionMapper.selectStructPermission();
+		List<StructPermission> result = structPermissionMapper.selectStructPermission(sp);
 		return result;
+	}
+
+	@RequestMapping(value = "/putPemSend", method = RequestMethod.PUT)
+	public StructPermission putPemSend(HttpServletRequest request, StructPermission sp) throws IOException {
+		StructPermission oneResult = structPermissionMapper.putPermSend(sp);
+		return oneResult;
 	}
 
 	// 지금
@@ -285,42 +302,11 @@ public class SimulationRestController {
 	public StructPermission getPermRequestByConstructor(HttpServletRequest request, StructPermission sp) throws IOException {
 		StructPermission oneResult = structPermissionMapper.selectOne(sp);
 		System.out.println(oneResult.toString());
-		RelativePathItem[] rp = simServiceImpl.getJsonByRelationFile(oneResult.getSaveModelFilePath() + oneResult.getSaveModelFileName());
-		String[] pathArr = oneResult.getSaveModelFilePath().split("\\\\");
-		boolean startFlat = false;
-		String f4dDataKey = "";
-		List<String> f4dKeyGenObj = new ArrayList<>();
-		for ( String str : pathArr ) {
-			if(str.equals("f4d")) {
-				startFlat = true;
-			} else {
-				if(startFlat){
-					f4dKeyGenObj.add(str);
-				}
-			}
-		}
-
-		for ( String str : f4dKeyGenObj ) {
-			f4dDataKey = f4dDataKey + "\\\\" + str;
-		}
-		f4dDataKey = f4dDataKey.substring(2);
-
-		// IFC 파일 기준
-		String dataKey = rp[0].getData_key();
-
-		F4DSubObject subF4dObj = new F4DSubObject().builder().data_key(dataKey).data_name(dataKey).build();
-		List<F4DSubObject> f4dSubObjectList = new ArrayList<>();
-		f4dSubObjectList.add(subF4dObj);
-
-		F4DObject f4dObject = new F4DObject();
-		f4dObject.setF4dSubList(f4dSubObjectList);
-		f4dObject.setData_key(f4dDataKey);
-		f4dObject.setData_name(f4dDataKey);
-
+		F4DObject f4dObject = this.simServiceImpl.procF4DDataStrucreByPaths(oneResult.getSaveModelFilePath(), oneResult.getSaveModelFileName());
 		oneResult.setF4dObject(f4dObject);
-
 		return oneResult;
 	}
+
 	@RequestMapping(value = "/updateStructPermission", method = RequestMethod.POST)
 	public int updateStructPermission(HttpServletRequest req) {
 		String suitableCheck = req.getParameter("suitableCheck");
@@ -344,16 +330,23 @@ public class SimulationRestController {
 		String os = System.getProperty("os.name").toLowerCase();
 
 		String projectPath = System.getProperty("user.dir");
-		String fileName = req.getParameter("save_file_name");
+		Integer permSeq = Integer.parseInt(req.getParameter("permSeq"));
 		String oriFilePath = "";
 		String copyFilePath = "";
 
+		var structPermOne = new StructPermission().builder().permSeq(permSeq).build();
+
+		StructPermission oneResult = structPermissionMapper.selectOne(structPermOne);
+
 		if (os.contains("mac")) {
-			oriFilePath = "/Users/junho/data/mago3d/" + fileName;
-			copyFilePath = projectPath + "/src/main/webapp/externlib/pdfjs/web/pdf_files/" + fileName;
+			/**
+			 * MAC의경우 해당 Path로 바꾸는 작업을 해주어야함.
+			 */
+			oriFilePath = oneResult.getSaveFilePath() + oneResult.getSaveFileName();
+			copyFilePath = oneResult.getSaveFilePath() + oneResult.getSaveFileName();
 		} else {
-			oriFilePath = SAVE_PATH + fileName;
-			copyFilePath = projectPath + "\\src\\main\\webapp\\externlib\\pdfjs\\web\\pdf_files\\" + fileName;
+			oriFilePath = oneResult.getSaveFilePath() + oneResult.getSaveFileName();
+			copyFilePath = oneResult.getSaveFilePath() + oneResult.getSaveFileName();
 		}
 
 		Path source = Paths.get(oriFilePath);
@@ -367,7 +360,7 @@ public class SimulationRestController {
 			throw new IllegalArgumentException("target must be specified");
 		}
 		if (Files.exists(target)) {
-			return fileName;
+			return structPermOne.getSaveFileName();
 		}
 
 		// 소스파일이 실제로 존재하는지 체크
@@ -386,7 +379,7 @@ public class SimulationRestController {
 //		Base64.Encoder encoder = Base64.getEncoder();
 		if (Files.exists(target, new LinkOption[] {})) { // 파일이 정상적으로 생성이 되었다면
 			// System.out.println("File Copied");
-			return fileName;
+			return structPermOne.getSaveFileName();
 		} else {
 //			System.out.println("File Copy Failed");
 			return "false";
@@ -406,6 +399,7 @@ public class SimulationRestController {
 		List<CommentManage> res = commentManageMapper.selectCondition(cm);
 		return res;
 	}
+
 	@RequestMapping(value = "/commentRegister", method = RequestMethod.POST)
 	public List<CommentManage> commentRegister(HttpServletRequest req, CommentManage cm) {
 		UserSession userSession = (UserSession)req.getSession().getAttribute(Key.USER_SESSION.name());
@@ -413,8 +407,8 @@ public class SimulationRestController {
 		String commentTitle = cm.getCommentTitle();
 		String commentContent = cm.getCommentContent();
 
-		// cm.setWriter(writer);
-		// cm.setObjectName("testObject");
+		cm.setWriter(writer);
+		cm.setObjectName("testObject");
 		int resultInsert = commentManageMapper.insertCommentManage(cm);
 
 		List<CommentManage> res = commentManageMapper.selectCondition(cm);
@@ -445,8 +439,5 @@ public class SimulationRestController {
 		FileOutputStream fos = new FileOutputStream(SAVE_PATH + "/" + saveFileName);
 		fos.write(data);
 		fos.close();
-
 	}
-
-
 }

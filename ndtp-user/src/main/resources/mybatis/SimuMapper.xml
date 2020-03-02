@@ -4,9 +4,25 @@
 <mapper namespace="ndtp.persistence.SimuMapper">
 	<!-- 세션 정보 -->
 	<select id="getSimCityPlanFileList" resultType="simFileInfo">
-		<![CDATA[
-			select sim_file_seq, origin_file_name, save_file_name, save_file_path, create_dt, save_file_type from sim_file_master where save_file_type = 'ECHODELTASHP' limit 1;
-		]]>
+		select sim_file_seq, origin_file_name, save_file_name, save_file_path, create_dt, save_file_type from sim_file_master where save_file_type = 'ECHODELTASHP' limit 1;
+	</select>
+
+	<!-- 세션 정보 -->
+	<select id="getSimMasterList" parameterType="simFileInfo" resultType="simFileInfo">
+		SELECT sim_file_seq, origin_file_name, save_file_name, save_file_path, save_file_type, create_dt,
+		       lon, lat, alt, cons_type, city_type, cons_ratio, objectid FROM sim_file_master
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="saveFileType != null">
+			<![CDATA[
+				save_file_type = #{saveFileType}
+			]]>
+			</if>
+			<if test="consType != null">
+			<![CDATA[
+				AND cons_type = #{consType}
+			]]>
+			</if>
+		</trim>
 	</select>
 
 	<insert id="insertSimCityPlanFile" parameterType="simFileInfo">

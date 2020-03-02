@@ -6,7 +6,29 @@
 	<!-- 세션 정보 -->
 	<select id="selectStructPermission" resultType="structPermission">
 		select * from struct_permission
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="permSeq != null and permSeq != ''">
+			<![CDATA[
+				perm_seq = #{permSeq}
+			]]>
+			</if>
+			<if test="isComplete != null and isComplete != ''">
+			<![CDATA[
+				is_complete = #{isComplete}
+			]]>
+			</if>
+		</trim>
 	</select>
+
+	<!-- 세션 정보 -->
+	<update id="putPermSend" parameterType="structPermission">
+		UPDATE struct_permission SET
+		<![CDATA[
+		is_complete = {#isComplete}, suitable = {#suitable}, notsuitablereason = {#notSuitableReason}
+		where perm_seq = {#perm_seq};
+		]]>
+	</update>
+
 	<select id="selectOne" parameterType="structPermission" resultType="structPermission">
 		select * from struct_permission where perm_seq = #{permSeq}
 	</select>

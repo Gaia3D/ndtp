@@ -86,7 +86,7 @@
                         </li>
                         <li style="width:70%;">
                             <label for="notSuitableReason" style="width:25%;">부적합 사유</label>
-                            <textarea id="notSuitableReason" name="notSuitableReason" class="radius" type="text" rows="4" style="width:74%;" value="">
+                            <textarea id="notSuitableReason" name="notSuitableReason" class="radius" type="text" rows="4" style="width:74%;">
                             </textarea>
                         </li>
                     </ul>
@@ -113,7 +113,7 @@
     $("#permViewDialog #district_unit_plan_viewer").click(()=> {
         console.log("clicked pdf_file");
         let data = {
-            save_file_name: $("#permViewDialog #district_unit_plan").get(0).value,
+            permSeq: buildAcceptPermSeq,
         };
         $.ajax({
             url: "/data/simulation-rest/viewPdf",

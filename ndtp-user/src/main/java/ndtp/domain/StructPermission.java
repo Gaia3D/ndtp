@@ -32,6 +32,8 @@ public class StructPermission {
 	private Float heading;
 	private Float pitch;
 	private Float roll;
+	private String suitable;
+	private String notSuitableReason;
 }
 
 

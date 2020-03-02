@@ -240,7 +240,7 @@
 
 	function refreshCommentDialog() {
 		let commentData = {
-			objectName: "testObject"
+			permSeq: buildAcceptPermSeq
 		};
 		$.ajax({
 			url: "/data/simulation-rest/commentList",
