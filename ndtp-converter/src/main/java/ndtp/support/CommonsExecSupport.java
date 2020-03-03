@@ -52,13 +52,15 @@ public class CommonsExecSupport {
 			log.info("@@@@@@@ execute flag = {}", !isFail);
 			
 			isSuccess = Boolean.TRUE;
+		} catch(IllegalArgumentException e) {
+			log.info("@@@@@@@ IllegalArgumentException errorCode = {}", e.getMessage());
 		} catch(ExecuteException e) {
 			log.info("@@@@@@@ executor.isFailure = {}", executor.isFailure(e.getExitValue()));
-			errorCode = e.getMessage();
-			log.info("@@@@@@@ errorCode = {}", errorCode);
+			log.info("@@@@@@@ ExecuteException errorCode = {}", e.getMessage());
 		} catch(IOException e) {
-			e.printStackTrace();
-			errorCode = e.getMessage();
+			log.info("@@@@@@@ IOException errorCode = {}", e.getMessage());
+		} catch(Exception e) {
+			log.info("@@@@@@@ Exception errorCode = {}", e.getMessage());
 		}
 		
 		result.put("isSuccess", isSuccess);
@@ -96,13 +98,15 @@ public class CommonsExecSupport {
 			log.info("@@@@@@@ execute flag = {}", !isFail);
 			
 			isSuccess = Boolean.TRUE;
+		} catch(IllegalArgumentException e) {
+			log.info("@@@@@@@ IllegalArgumentException errorCode = {}", e.getMessage());
 		} catch(ExecuteException e) {
 			log.info("@@@@@@@ executor.isFailure = {}", executor.isFailure(e.getExitValue()));
-			errorCode = e.getMessage();
-			log.info("@@@@@@@ errorCode = {}", errorCode);
+			log.info("@@@@@@@ ExecuteException errorCode = {}", e.getMessage());
 		} catch(IOException e) {
-			e.printStackTrace();
-			errorCode = e.getMessage();
+			log.info("@@@@@@@ IOException errorCode = {}", e.getMessage());
+		} catch(Exception e) {
+			log.info("@@@@@@@ Exception errorCode = {}", e.getMessage());
 		}
 		
 		result.put("isSuccess", isSuccess);
@@ -142,14 +146,15 @@ public class CommonsExecSupport {
 			log.info("@@@@@@@ execute flag = {}", !isFail);
 			
 			isSuccess = Boolean.TRUE;
+		} catch(IllegalArgumentException e) {
+			log.info("@@@@@@@ IllegalArgumentException errorCode = {}", e.getMessage());
 		} catch(ExecuteException e) {
-			e.printStackTrace();
 			log.info("@@@@@@@ executor.isFailure = {}", executor.isFailure(e.getExitValue()));
-			errorCode = e.getMessage();
-			log.info("@@@@@@@ errorCode = {}", errorCode);
+			log.info("@@@@@@@ ExecuteException errorCode = {}", e.getMessage());
 		} catch(IOException e) {
-			e.printStackTrace();
-			errorCode = e.getMessage();
+			log.info("@@@@@@@ IOException errorCode = {}", e.getMessage());
+		} catch(Exception e) {
+			log.info("@@@@@@@ Exception errorCode = {}", e.getMessage());
 		}
 		
 		result.put("isSuccess", isSuccess);
@@ -182,11 +187,15 @@ public class CommonsExecSupport {
 			boolean isFail = executor.isFailure(exitValue);
 			log.info("@@@@@@@ execute flag = {}", !isFail);
 			
+		} catch(IllegalArgumentException e) {
+			log.info("@@@@@@@ IllegalArgumentException errorCode = {}", e.getMessage());
 		} catch(ExecuteException e) {
 			log.info("@@@@@@@ executor.isFailure = {}", executor.isFailure(e.getExitValue()));
-			log.info("@@@@@@@ errorCode = {}", e.getMessage());
+			log.info("@@@@@@@ ExecuteException errorCode = {}", e.getMessage());
 		} catch(IOException e) {
-			e.printStackTrace();
+			log.info("@@@@@@@ IOException errorCode = {}", e.getMessage());
+		} catch(Exception e) {
+			log.info("@@@@@@@ Exception errorCode = {}", e.getMessage());
 		}
 	}
 	
@@ -220,13 +229,15 @@ public class CommonsExecSupport {
 	        message = baos.toString().trim();
 	        log.info("@@@@@@@ message = {}", message);
 	        isSuccess = Boolean.TRUE;
+		} catch(IllegalArgumentException e) {
+			log.info("@@@@@@@ IllegalArgumentException errorCode = {}", e.getMessage());
 		} catch(ExecuteException e) {
 			log.info("@@@@@@@ executor.isFailure = {}", executor.isFailure(e.getExitValue()));
-			errorCode = e.getMessage();
-			log.info("@@@@@@@ errorCode = {}", errorCode);
+			log.info("@@@@@@@ ExecuteException errorCode = {}", e.getMessage());
 		} catch(IOException e) {
-			e.printStackTrace();
-			errorCode = e.getMessage();
+			log.info("@@@@@@@ IOException errorCode = {}", e.getMessage());
+		} catch(Exception e) {
+			log.info("@@@@@@@ Exception errorCode = {}", e.getMessage());
 		}
 		
 		result.put("isSuccess", isSuccess);
@@ -274,16 +285,15 @@ public class CommonsExecSupport {
 	        message = baos.toString().trim();
 	        log.info("@@@@@@@ message = {}", message);
 	        isSuccess = Boolean.TRUE;
+		} catch(IllegalArgumentException e) {
+			log.info("@@@@@@@ IllegalArgumentException errorCode = {}", e.getMessage());
 		} catch(ExecuteException e) {
 			log.info("@@@@@@@ executor.isFailure = {}", executor.isFailure(e.getExitValue()));
-			errorCode = e.getMessage();
-			log.info("@@@@@@@ errorCode = {}", errorCode);
+			log.info("@@@@@@@ ExecuteException errorCode = {}", e.getMessage());
 		} catch(IOException e) {
-			e.printStackTrace();
-			errorCode = e.getMessage();
-		} catch(InterruptedException e) {
-			e.printStackTrace();
-			errorCode = e.getMessage();
+			log.info("@@@@@@@ IOException errorCode = {}", e.getMessage());
+		} catch(Exception e) {
+			log.info("@@@@@@@ Exception errorCode = {}", e.getMessage());
 		}
 		
 		result.put("isSuccess", isSuccess);
