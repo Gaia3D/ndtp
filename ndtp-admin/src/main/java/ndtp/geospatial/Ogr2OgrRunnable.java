@@ -68,9 +68,10 @@ public class Ogr2OgrRunnable implements Runnable {
 		
 		try {
 			ProcessBuilderSupport.execute(command, environmentPath);
+		} catch(RuntimeException e) {
+			log.info("@@@ RuntimeException. message = {}", e.getMessage());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.info("@@@ Exception. message = {}", e.getMessage());
 		}
 	}
 }

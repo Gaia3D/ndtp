@@ -544,8 +544,10 @@ public class UploadDataRestController {
             	uploadDataFile.setFileSize(String.valueOf(entry.getSize()));
             	uploadDataFileList.add(uploadDataFile);
             }
+		} catch(RuntimeException ex) {
+			log.info("@@@@@@@@@@@@ RuntimeException. message = {}", ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage());
 		} catch(IOException ex) {
-			ex.printStackTrace(); 
+			log.info("@@@@@@@@@@@@ IOException. message = {}", ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage());
 		}
 		
 		result.put("converterTargetCount", converterTargetCount);

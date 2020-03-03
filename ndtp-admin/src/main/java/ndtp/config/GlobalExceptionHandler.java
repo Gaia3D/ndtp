@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
 		log.error("**************** GlobalExceptionHandler ******************");
 		log.error("**********************************************************");
 		
-		exception.printStackTrace();
+		log.info("@@@ message = {}", exception.getMessage());
 		
 		ModelAndView mav = new ModelAndView();
 	    mav.addObject("exception", exception);
@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
 //	@ExceptionHandler(BusinessLogicException.class)
 //	public String notFound(Exception exception) {
 //		//System.out.println("----Caught KeywordNotFoundException----");
-//		exception.printStackTrace();
+//		log.info("@@@ message = {}", exception.getMessage());
 //		return "404";
 //	}
 }

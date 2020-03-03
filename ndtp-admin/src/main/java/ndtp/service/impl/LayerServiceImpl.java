@@ -19,6 +19,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import lombok.extern.slf4j.Slf4j;
@@ -113,9 +114,13 @@ public class LayerServiceImpl implements LayerService {
 			ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 			log.info("-------- statusCode = {}, body = {}", response.getStatusCodeValue(), response.getBody());
 			geoserverLayerJson = response.getBody().toString();
-			
+		
+    	} catch(RestClientException e) {
+    		log.info("@@@ RestClientException. message = {}", e.getMessage());
+    	} catch(RuntimeException e) {
+    		log.info("@@@ RuntimeException. message = {}", e.getMessage());
 		} catch(Exception e) {
-			e.printStackTrace();
+			log.info("@@@ Exception. message = {}", e.getMessage());
 		}
     	
     	return geoserverLayerJson;
