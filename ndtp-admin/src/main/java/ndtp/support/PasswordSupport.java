@@ -19,9 +19,10 @@ public class PasswordSupport {
 		try {
 			BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(10);
 			encodePassword = bCryptPasswordEncoder.encode(password);
+		} catch(IllegalArgumentException e) {
+			log.error("@@ IllegalArgumentException. 사인인 체크 암호화 처리 모듈에서 오류가 발생 했습니다. ");
 		} catch(Exception e) {
 			log.error("@@ 사인인 체크 암호화 처리 모듈에서 오류가 발생 했습니다. ");
-			e.printStackTrace();
 		}
 		return encodePassword;
 	}
@@ -34,6 +35,8 @@ public class PasswordSupport {
 				log.error("@@ 비밀번호 matches = true. ");
 				result = true;
 			}
+		} catch(IllegalArgumentException e) {
+			log.error("@@ IllegalArgumentException. 사인인 체크 암호화 처리 모듈에서 오류가 발생 했습니다. ");
 		} catch(Exception e) {
 			log.error("@@ 사인인 체크 암호화 처리 모듈에서 오류가 발생 했습니다. ");
 			e.printStackTrace();

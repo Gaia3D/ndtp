@@ -9,10 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import lombok.extern.slf4j.Slf4j;
-import ndtp.config.PropertiesConfig;
 
 /**
  * @author Cheon JeongDae
@@ -64,9 +62,9 @@ public class ProcessBuilderSupport {
 			inputStreamReader.close();
 			inputStream.close();
 		} catch (IOException e) {
-			throw new RuntimeException("IOException . " + e.getMessage());
+			throw new RuntimeException("IOException. " + e.getMessage());
 		} catch (Exception e) {
-			throw new RuntimeException("Exception readLine Error. " + e.getMessage());
+			throw new RuntimeException("Exception. " + e.getMessage());
 		} finally {
 			if (bufferedReader != null) { try { bufferedReader.close(); } catch (IOException e) { log.info("@@ IOException. message = {}", e.getMessage()); } }
 			if (inputStreamReader != null) { try { inputStreamReader.close(); } catch (IOException e) { log.info("@@ IOException. message = {}", e.getMessage()); } }
