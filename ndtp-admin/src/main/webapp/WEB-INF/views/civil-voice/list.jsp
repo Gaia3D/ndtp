@@ -118,11 +118,15 @@
 
 										<tr>
 											<td class="col-number">${pagination.rowNumber - status.index}</td>
-											<td class="col-type" style="color: #573592; font-weight: bold;"><span class="likes-icon" style="float: left;">icon</span> ${civilVoice.commentCount}</td>
+											<td class="col-type" style="color: #573592; font-weight: bold;">
+												<span class="likes-icon" style="float: left;">icon</span>
+												<fmt:formatNumber value="${civilVoice.commentCount}" type="number"/>
+											</td>
 											<td class="col-name">
 												<a href="/civil-voice/detail?civilVoiceId=${civilVoice.civilVoiceId}&amp;pageNo=${pagination.pageNo }${pagination.searchParameters}" class="linkButton">${civilVoice.title}</a>
 											</td>
-											<td class="col-type">${civilVoice.viewCount}</td>
+											<td class="col-type"><fmt:formatNumber value="${civilVoice.viewCount}" type="number"/></td>
+
 											<td class="col-type">
 												<a href="#" onClick="flyToPoint(${civilVoice.longitude}, ${civilVoice.latitude});">보기</a>
 											</td>
