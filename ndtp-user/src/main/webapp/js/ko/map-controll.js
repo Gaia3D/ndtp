@@ -48,8 +48,13 @@ function MapControll(viewer, option) {
 			return undefined;
 		}
 	}
-
+	
+	var preventTags = ['INPUT','A','BUTTON','SELECT'];
 	document.addEventListener('keydown', function(e) {
+		var tagName = e.target.tagName;
+		if(preventTags.includes(tagName)){
+			return;
+		}
 		var flagName = getFlagForKeyCode(e.keyCode);
 		if (typeof flagName !== 'undefined') {
 			flags[flagName] = true;

@@ -175,6 +175,8 @@
 <script type="text/javascript" src="/js/${lang}/civil-voice.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript" src="/js/${lang}/map-init.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript" src="/js/${lang}/issue-controller.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/map-data.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/map-data-group.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript">
 
 	//Cesium.Ion.defaultAccessToken = '';
@@ -227,6 +229,7 @@
 		viewer.baseLayerPicker.destroy();
 		viewer.scene.globe.depthTestAgainstTerrain = true;
 		viewer.scene.screenSpaceCameraController.minimumZoomDistance = 10;
+		
 		magoManager.on(Mago3D.MagoManager.EVENT_TYPE.MOUSEMOVE, function(result) {
 			//console.info(result);
 		});
@@ -638,7 +641,5 @@
 		}
 	}
 </script>
-<script type="text/javascript" src="/js/${lang}/map-data.js?cacheVersion=${contentCacheVersion}"></script>
-<script type="text/javascript" src="/js/${lang}/map-data-group.js?cacheVersion=${contentCacheVersion}"></script>
 </body>
 </html>
