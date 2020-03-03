@@ -3,6 +3,7 @@ package ndtp.controller;
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -98,16 +99,21 @@ public class SimulationRestController {
     }
 
 	@RequestMapping(value = "/cityConstProcSelect", method = RequestMethod.GET)
-	public F4DObject cityConstProcSelect(SimFileMaster sfm) throws IOException {
+	public List<F4DObject> cityConstProcSelect(SimFileMaster sfm) throws IOException {
 		System.out.println(sfm.toString());
 		sfm.setConsType(simServiceImpl.getConsTypeByConsTypeString(sfm.getConsTypeString()));
 		sfm.setSaveFileType(simServiceImpl.getCityTypeByCityTypeString(sfm.getCityTypeString()));
-		var consBuildList = this.simServiceImpl.getConsBuildList(sfm);
-		if(consBuildList.size() == 0)
-			return null;
-		SimFileMaster consBUildListObj = consBuildList.get(0);
-		var result = this.simServiceImpl.procF4DDataStrucreByPaths(consBUildListObj.getSaveFilePath(), consBUildListObj.getSaveFileName());
-		return result;
+		var consBuildList = this.simServiceImpl.getConsBuildList(sfm)
+				.stream().filter(obj -> obj.getSaveFileName().equals("lonsLats.json"))
+				.collect(Collectors.toList());
+		 List<F4DObject> f4dObjList = new ArrayList<>();
+		for( var obj : consBuildList) {
+			var f4dObj = this.simServiceImpl.procF4DDataStrucreByPaths(obj.getSaveFilePath(), obj.getSaveFileName());
+			f4dObj.setCons_ratio(obj.getConsRatio());
+			f4dObjList.add(f4dObj);
+		}
+
+		return f4dObjList;
 	}
 	
     @RequestMapping(value = "/cityPlanUpload", method = RequestMethod.POST)

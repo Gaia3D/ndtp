@@ -1,12 +1,11 @@
 
+
 var Simulation = function(magoInstance, viewer, $) {
 	var that = this;
 	var CAMERA_MOVE_NEED_DISTANCE = 5000;
 	console.log(viewer);
 
 	var _viewer = viewer;
-	// _viewer.selectionIndicator = false;
-	// _viewer.selectionIndicator.viewModel.isVisible = false;
     var _scene = viewer.scene;
     var _polylines = [];
     var _labels = [];   
@@ -15,7 +14,8 @@ var Simulation = function(magoInstance, viewer, $) {
     var _cityPlanModels = [];
     var _bsConstructProcessModels = [];
     let _sejongDataGroupList = [];
-    var _geojsonSample = null;
+	const consBuildBillboard = [];
+	const consBuildStepInfo = {};
     var mesurPolyList = [];
     var handler = null;
     var drawingMode = 'line';
@@ -30,6 +30,43 @@ var Simulation = function(magoInstance, viewer, $) {
     var locaMonitor = false;
 	var magoManager = magoInstance.getMagoManager();
 	var f4dController = magoInstance.getF4dController();
+	magoManager.on(Mago3D.MagoManager.EVENT_TYPE.F4DLOADEND, F4DLoadEnd);
+	function F4DLoadEnd(evt) {
+		const _projectsMap = MAGO3D_INSTANCE.getMagoManager().hierarchyManager.projectsMap;
+		for(const obj of evt.f4d){
+			const rootNode = _projectsMap[obj.data.projectFolderName];
+			const node = rootNode[obj.data.nodeId];
+			const dataId = node.data.nodeId;
+			if(!magoManager.effectsManager.hasEffects(dataId)) {
+				magoManager.effectsManager.addEffect(dataId, new Mago3D.Effect({
+					effectType      : "zBounceSpring",
+					durationSeconds : 0.4
+				}));
+				magoManager.effectsManager.addEffect(dataId, new Mago3D.Effect({
+					effectType      : 'borningLight',
+					durationSeconds : 0.6
+				}));
+			}
+			if(rootNode.attributes.ratio < 50) {
+				let objPosition = Cesium.Cartesian3.fromDegrees(node.data.geographicCoord.longitude, node.data.geographicCoord.latitude, node.data.geographicCoord.altitude + 40);
+				let objPinBuilder = new Cesium.PinBuilder();
+				node.data.isColorChanged = true;
+				if(!node.data.aditionalColor) {
+					node.data.aditionalColor = new Mago3D.Color();
+					node.data.aditionalColor.setRGB(230/255,8/255,0);
+				}
+
+				const entitiyObj = _viewer.entities.add({
+					billboard : {
+						image : objPinBuilder.fromText('!', Cesium.Color.BLACK, 48).toDataURL(),
+						eyeOffset : new Cesium.Cartesian3(0.0, 20.0, 0.0), // default
+					},
+					position : objPosition,
+				});
+				consBuildBillboard.push(entitiyObj);
+			}
+		}
+	}
 
     var runAllocBuildStat = "";
 
@@ -98,8 +135,8 @@ var Simulation = function(magoInstance, viewer, $) {
 			timeSlider.setMax(24);
 			timeSlider.setDuration(200);
 			var html = '';
-			_viewer.shadows = true
-			_viewer.softShadows = true 
+			_viewer.shadows = true;
+			_viewer.softShadows = true;
 			for(var i=1;i<25;i++) {
 				if(i === 1 || 1 === 10) {
 					html += '<span style="margin-left:22px;">' + i + '</span>';
@@ -169,22 +206,18 @@ var Simulation = function(magoInstance, viewer, $) {
 	
 	var cache = {};
 
-	var SEJONG_TILE_NAME = 'sejong_time_series_tiles';
-	var BUSAN_TILE_NAME = 'busan_time_series_tiles';
-	// var SEJONG_TILE_NAME = 'SEJONG_TILE';
 	var slider;
 	var simulating = false;
 
 	const consBuildSlider =  {
+		// type s, p, other
+		targetArea: 's',
 		consType: 0,
 		saveFileType: '',
 		sliderSejongInit: () => {
 			if(!slider) {
 				slider = new KotSlider('rangeInput');
 			}
-			//레인지, 레전드 보이기
-			$('#csRange, #constructionProcess .profileInfo').show();
-			$('#saRange').hide();
 
 			var html = '';
 			html += '<span>1단계</span>';
@@ -193,9 +226,6 @@ var Simulation = function(magoInstance, viewer, $) {
 			html += '<span>4단계</span>';
 			html += '<span>5단계</span>';
 			html += '<span>6단계</span>';
-			whole_viewer.scene.camera.flyTo({
-				destination : Cesium.Cartesian3.fromDegrees(127.249979, 36.4799635, 1000)
-			});
 
 			$('#csRange .rangeWrapChild.legend').html(html);
 
@@ -204,132 +234,90 @@ var Simulation = function(magoInstance, viewer, $) {
 			});
 
 			$('#rangeInput').on('change', function(data) {
-				if(_sejongDataGroupList.length !== 0)
-					clearAllDataAPI(MAGO3D_INSTANCE);
-				/*
-				for(const sejgonObj of _sejongDataGroupList) {
-					MAGO3D_INSTANCE.getF4dController().deleteF4dGroup(sejgonObj);
-				}*/
-
 				_sejongDataGroupList = [];
 				var index = parseInt($('#rangeInput').val());
 				var consTypeString = $('input[name="cpProtoArea"]:checked').val();
-				for( let i = 0 ; i < index+1; i++) {
-					consBuildSlider.sejongDataReq(i, consTypeString);
+
+				let procStepNum = [];
+
+				// dic를 탐색하여 현재 값 -1 의 자료들을 찾아 없으면 요청한다.
+				for( let i = 0 ; i < index; i++) {
+					if(consBuildStepInfo[i] === undefined)
+						procStepNum.push(i);
+				}
+
+				for (let procObj of procStepNum) {
+					consBuildSlider.consBuildDataReq(procObj, consTypeString);
+				}
+
+				// 현재 INDEX 있는 값을 제거하고 다시 요청한다
+				consBuildSlider.consBuildDataReq(index, consTypeString);
+
+				//  현재 값 이후에 있는 데이터 들은 모두 제거한다.
+				var f4dController = MAGO3D_INSTANCE.getF4dController();
+				for( const obj in consBuildStepInfo) {
+					if (index < parseInt(obj)) {
+						const dataKey = consBuildStepInfo[parseInt(obj)][0].data_key;
+						f4dController.deleteF4dGroup(dataKey);
+					}
 				}
 			})
 		},
-		sejongDataReq: (step, cityType) => {
+		sliderSejongShow: function() {
+			$('#csRange, #constructionProcess .profileInfo').show();
+			$('#saRange').hide();
+		},
+		consBuildDataReq: (step, cityType) => {
+			debugger;
 			const reqParam = {
 				consTypeString : step + "",
 				cityTypeString : cityType
 			};
-			console.log(step, ', ', cityType);
+
 			$.ajax({
 				url: "/data/simulation-rest/cityConstProcSelect",
 				type: "GET",
 				data: reqParam,
 				dataType: "json",
-				success: function (msg) {
-					_sejongDataGroupList.push(msg.data_key);
-					const f4dObject = f4dDataGenMaster.initGml(msg);
-					var f4dController = MAGO3D_INSTANCE.getF4dController();
-					f4dController.addF4dGroup(f4dObject);
-					const lon = f4dDataGenMaster.avg_lon;
-					const lat = f4dDataGenMaster.avg_lat;
-					console.log(lon, ', ' ,lat);
+				success: function (msg_list) {
+					if(msg_list.length === 0)
+						return;
+					consBuildStepInfo[step] = msg_list;
+					dispConsGroup(msg_list);
 				}
 			});
 		}
+
 	};
 
 	consBuildSlider.sliderSejongInit();
 
+	function dispConsGroup ( msg_list ) {
+		for (const msg of msg_list) {
+			debugger;
+			var f4dController = MAGO3D_INSTANCE.getF4dController();
+			f4dController.deleteF4dGroup(msg.data_key);
+			_sejongDataGroupList.push(msg.data_key);
+			const f4dObject = f4dDataGenMaster.initGml(msg);
+			f4dController.addF4dGroup(f4dObject);
+			const lon = f4dDataGenMaster.avg_lon;
+			const lat = f4dDataGenMaster.avg_lat;
+			console.log(lon, ', ' ,lat);
+		}
+	}
+
 	//건설공정 조회
 	$('#constructionProcess .execute').click(function() {
 		var targetArea = $('input[name="cpProtoArea"]:checked').val();
-		var dataName;
-		var initPosition;
-
-		if(targetArea === 's') {
-			var msj = makeSampleJson();
-			var policy = Mago3D.MagoConfig.getPolicy();
-			var initLat = parseFloat(policy.initLatitude);
-			var initLon = parseFloat(policy.initLongitude);
-			var childs = msj.children;
-			f4dController.addF4dGroup(msj);
-
-			let objPinBuilder = new Cesium.PinBuilder();
-			// let objLon = msj.children[0].longitude;
-			// let objLat = msj.children[0].latitude;
-			// let objHeight = msj.children[0].height;
-			let objLon = getAverage(msj.children, "longitude");
-			let objLat = getAverage(msj.children, "latitude");
-			let objHeight = getAverage(msj.children, "height");
-
-			let objPosition = Cesium.Cartesian3.fromDegrees(objLon, objLat, objHeight-2);
-			console.log("objPosition   >> lon=", objLon, " lat=", objLat, " h=", objHeight);
-
-			// let clampPosition = whole_viewer.scene.clampToHeight(objPosition);
-			// let clampCarto  = Cesium.Ellipsoid.WGS84.cartesianToCartographic(clampPosition);
-			// let clampLon = Cesium.Math.toDegrees(clampCarto.longitude);
-			// let clampLat = Cesium.Math.toDegrees(clampCarto.latitude);
-			// let clampHeight = clampCarto.height;
-			// console.log("clampPosition >> lon=", clampLon, " lat=", clampLat, " h=", clampHeight);
-
-			_viewer.entities.add({
-				billboard : {
-					image : objPinBuilder.fromText('!', Cesium.Color.BLACK, 48).toDataURL(),
-					verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-					eyeOffset: new Cesium.Cartesian3(0, objHeight, 0)
-				},
-				position : objPosition,
-			});
-
-			_viewer.camera.flyTo({
-			    destination : Cesium.Cartesian3.fromDegrees(126.9785978787040,  37.56690158584144, 100)
-			});
-		} else if (targetArea === "p") {
-			initConsturctProcessModel(); 
-			dataName = BUSAN_TILE_NAME;
-			if(!slider) {
-				slider = new KotSlider('rangeInput');
-			}
-			//레인지, 레전드 보이기
-			$('#csRange, #constructionProcess .profileInfo').show();
-			$('#saRange').hide();
-			if(!cache[dataName]) {
-				if(dataName.indexOf('tiles') > 0) {
-//					magoManager.getObjectIndexFileSmartTileF4d(dataName);
-
-					var html = '';
-					html += '<span>1단계</span>';
-					html += '<span>2단계</span>';
-					html += '<span>3단계</span>';
-					html += '<span>4단계</span>';
-					html += '<span>5단계</span>';
-					html += '<span>6단계</span>';
-					$('#csRange .rangeWrapChild.legend').html(html);
-					$('#csRange .rangeWrapChild.legend').on('click','span',function(){
-						slider.setValue($(this).index());
-					});
-					$('#rangeInput').on('change', function(data) {
-						var index = $('#rangeInput').val();
-						dispConstructProcessModel(parseInt(index));
-					})
-				}
-			}
-			dispConstructProcessModel(0);
-//			genBillboard(126.90497956470877, 37.521051475771344);
-			_viewer.camera.flyTo({
-			    destination : Cesium.Cartesian3.fromDegrees(126.90497956470877,  37.521051475771344, 100)
-			});
-		} else if (targetArea === "etc") {
-			console.log("etc");
-		}
+		// Typer s -> Sejong, p -> busan, etc -> etc....
+		consBuildSlider.sliderSejongShow();
+		consBuildSlider.targetArea = targetArea;
+		consBuildSlider.consBuildDataReq(0, consBuildSlider.targetArea);
 	});
-	
-	
+
+	whole_viewer.scene.camera.flyTo({
+		destination : Cesium.Cartesian3.fromDegrees(127.2488029413557,  36.47892205410332, 1000)
+	});
 	
 	//건설공정 취소
 	$('#constructionProcess .reset').click(function(){
@@ -783,9 +771,6 @@ var Simulation = function(magoInstance, viewer, $) {
 		}
 	}
 
-
-
-
 	$('#run_sample_raster').click(function() {
 		var layers = viewer.scene.imageryLayers;
 
@@ -904,107 +889,6 @@ var Simulation = function(magoInstance, viewer, $) {
             startDrawPolyLine();
         }
     });
-
-	var smartTileLoaEndCallbak = function(evt) {
-		var nodes = evt.tile.nodesArray;
-		for(var i in nodes) {
-			var node = nodes[i];
-			var data = node.data;
-			
-			if(!cache[node.data.nodeId]) {
-				cache[node.data.nodeId] = true;
-			} else {
-				return;
-			}
-			/**
-			 * TODO: 스마트타일링 이슈
-			 * 세종시 스마트타일링 데이터 높이값 보정 코드.
-			 * 문제 : 노드가 로드 완료된 시점에서 처리하려하는데 해당 시점에는 bbox와 geoLocationDataManager가 존재하지 않음
-			 * 해결 : 일단 억지로 끼워 넣음.
-			 * 추후 목표 : 강제로 데이터 로드시 해당 부분을 미리 생성하는 옵션을 추가, 원래는 데이터가 표출될 때 처리되는 부분.
-			 */
-			/*var metaData = data.neoBuilding.metaData;
-			if (metaData.fileLoadState === Mago3D.CODE.fileLoadState.LOADING_FINISHED) 
-			{
-				var auxBytesReaded = 0;
-				data.neoBuilding.parseHeader(data.neoBuilding.headerDataArrayBuffer, auxBytesReaded);
-
-			}
-			if(!data.geoLocDataManager) {
-				data.geoLocDataManager = new Mago3D.GeoLocationDataManager();
-				data.geoLocDataManager.newGeoLocationData("deploymentLoc");
-			}
-
-			var bbox = data.neoBuilding.bbox;
-			data.bbox = bbox;
-			// 여기까지.
-			
-			var rotDeg = data.rotationsDegree;
-			var pitch = rotDeg.x;
-			var heading = rotDeg.z;
-			var roll = rotDeg.y;
-			var geo = data.geographicCoord;
-			
-			var offset;
-			if(pitch > 0 ){
-				 offset = bbox.getYLength() / 2;
-			} else {
-				offset = bbox.getZLength() / 2;
-			}
-			var newHeight = offset + geo.altitude;
-			
-			node.changeLocationAndRotation(geo.latitude, geo.longitude, newHeight, heading, pitch, roll,magoManager);*/
-
-			node.setRenderCondition(function(data){
-				var attributes = data.attributes; 
-				if(!simulating) {
-					attributes.isVisible = true;
-					data.isColorChanged = false;
-				} else {
-					var sliderValue = slider.getValue();
-					
-					var dataId =data.nodeId;
-					var refNum = parseInt(dataId.split('_')[2]);
-					var specify = refNum % 6;
-					
-					if(sliderValue >= specify) {
-						attributes.isVisible = true;
-						
-						if(data.currentLod < 4) {
-							data.isColorChanged = false;
-						} else {
-							data.isColorChanged = true;
-							if(!data.aditionalColor) {
-								data.aditionalColor = new Mago3D.Color();
-								
-								switch(specify) {
-									case 0 : data.aditionalColor.setRGB(230/255,8/255,0);break; 
-									case 1 : data.aditionalColor.setRGB(255/255,100/255,28/255);break;
-									case 2 : data.aditionalColor.setRGB(141/255,30/255,77/255);break;
-									case 3 : data.aditionalColor.setRGB(125/255,44/255,121/255);break;
-									case 4 : data.aditionalColor.setRGB(255/255,208/255,9/255);break;
-									case 5 : data.aditionalColor.setRGB(0,169/255,182/255);break;
-								}
-							}
-						}
-					} else {
-						attributes.isVisible = false;
-						if(!magoManager.effectsManager.hasEffects(dataId)) {
-							magoManager.effectsManager.addEffect(dataId, new Mago3D.Effect({
-								//effectType      : pitch > 0 ? "zBounceLinear":"zBounceSpring",
-								effectType      : "zBounceSpring",
-								durationSeconds : 0.4
-							}));
-							magoManager.effectsManager.addEffect(dataId, new Mago3D.Effect({
-								effectType      : 'borningLight',
-								durationSeconds : 0.6
-							}));
-						}
-					}
-				}
-			})
-		}
-	}
 
 	var setObserver = function(){
 		if(!observer) {
@@ -1291,7 +1175,6 @@ var Simulation = function(magoInstance, viewer, $) {
 
 				}
                 /*else {
-
 					var pickedFeature = _viewer.scene.pick(event.position);
 					if(pickedFeature) {
 //						const imsi = pickedFeature.id.polygon.hierarchy._value.positions.map(function(key,index){
@@ -1692,7 +1575,8 @@ var Simulation = function(magoInstance, viewer, $) {
 
 		resultCityPlanDialog.dialog( "open" );
 	}
-	
+
+	//save CitPlanDlg
 	$("#resultCityPlanDlgReg").click(function() {
 		var cityPlanResult = new FormData();
 		cityPlanResult.append('cityPlanTargetArea', cityPlanTargetArea.toString());
@@ -1703,6 +1587,7 @@ var Simulation = function(magoInstance, viewer, $) {
 
 		// 실제 데이터는 iVBO...부터이므로 split한다.
 		var imgData = atob($('#cityplanImg').attr('src').split(',')[1]);
+
 		var len = imgData.length;
 		var buf = new ArrayBuffer(len); // 비트를 담을 버퍼를 만든다.
 		var view = new Uint8Array(buf); // 버퍼를 8bit Unsigned Int로 담는다.
@@ -1713,7 +1598,6 @@ var Simulation = function(magoInstance, viewer, $) {
 		}
 		// Blob 객체를 image/png 타입으로 생성한다. (application/octet-stream도 가능)
 		blob = new Blob([view], { type: "image/png" });
-
 		cityPlanResult.append("files", blob, "aaa.png");
 		// cityPlanResult.files = blob;
 		$.ajax({
@@ -1961,7 +1845,7 @@ var Simulation = function(magoInstance, viewer, $) {
 		data: PermSend,
 		headers: {"X-Requested-With": "XMLHttpRequest"},
 		dataType: "json",
-		success: function(permList){
+		success: function(permList) {
 			var perDomItems = "";
 			for (let i = 0; i<permList.length; i++) {
 				var permName = permList[i].constructor + ' - ' + permList[i].permSeq;
@@ -1982,10 +1866,11 @@ const f4dDataGenMaster = {
 	rootObject: function(f4dObject) {
 		return  {
 			"attributes": {
-				"isPhysical": false,
+				"isPhysical": true,
 				"nodeType": " root ",
-				"projectType": "collada",
-				"specularLighting": true
+				"projectType": "citygml",
+				"specularLighting": true,
+				"ratio": f4dObject.cons_ratio
 			},
 			"children": [],
 			"parent": 0,
@@ -2031,7 +1916,6 @@ const f4dDataGenMaster = {
 		}
 		return arr;
 	},
-
 	genGmlChild: function(f4dSubObject) {
 		arr = [];
 		arr_lon = [];
@@ -2042,7 +1926,7 @@ const f4dDataGenMaster = {
 				"attributes": {
 					"isPhysical": true,
 					"nodeType": "daejeon",
-					"flipYTexCoords": true
+					"flipYTexCoords": false
 				},
 				"children": [],
 				"data_key": obj.data_key,

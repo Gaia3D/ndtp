@@ -114,8 +114,10 @@ public class SimuServiceImpl {
 		FileType ft = null;
 		if (cityTypeString.equals("s")) {
 			ft = FileType.CONSTPROCSEJON;
-		} else if (cityTypeString.equals("c")) {
+		} else if (cityTypeString.equals("p")) {
 			ft = FileType.CONSTPROCBUSAN;
+		} else if (cityTypeString.equals("g")) {
+			ft = FileType.CONSTPROCGEUMGANG;
 		}
 		return ft;
 	}
@@ -444,7 +446,7 @@ public class SimuServiceImpl {
 		SimpleDateFormat sf = new SimpleDateFormat("yyyyMMddhhmmss");
 		String logFileName = sf.format(new Date()) + ".txt";
 		String logFullPath = outputFolder + logFileName;
-		String Option = "#meshType 2 #indexing y #epsg 4326";
+		String Option = "#meshType 0 #indexing y";
 
 		F4DRunPath = F4DRunPath + " #inputFolder " + inputFolder + " #outputFolder " + outputFolder + " #log " + logFullPath + " " + Option;
 		System.out.println(F4DRunPath);
@@ -460,24 +462,6 @@ public class SimuServiceImpl {
 			throw new Error("IFC 파일 처리에 실패했습니다");
 		} finally {
 			pc.waitFor();
-
-			BufferedReader error = new BufferedReader(new InputStreamReader(pc.getErrorStream()));
-			while((line = error.readLine()) != null){
-				System.out.println(line);
-			}
-			error.close();
-
-			BufferedReader input = new BufferedReader(new InputStreamReader(pc.getInputStream()));
-			while((line=input.readLine()) != null){
-				System.out.println(line);
-			}
-
-			input.close();
-			OutputStream outputStream = pc.getOutputStream();
-			PrintStream printStream = new PrintStream(outputStream);
-			printStream.println();
-			printStream.flush();
-			printStream.close();
 			pc.destroy();
 		}
 		return true;
@@ -494,6 +478,7 @@ public class SimuServiceImpl {
 						.data_name(lliObj.getData_key())
 						.longitude(lliObj.getLongitude())
 						.latitude(lliObj.getLatitude())
+						.height(0.0f)
 						.heading(0.0f)
 						.pitch(0.0f)
 						.roll(0.0f)
