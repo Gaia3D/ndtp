@@ -3,6 +3,7 @@ package ndtp.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -322,6 +323,14 @@ public class DataGroupRestController {
 		
 		log.info("@@ dataGroupId = {}", dataGroupId);
 		
+		if(dataGroupId != null) {
+			String pattern = "^[0-9]*$";
+			if(!Pattern.matches(pattern, String.valueOf(dataGroupId))) {
+				log.info("@@ 유효하지 않은 데이터[숫자타입 아님] 입니다.");
+				return null;
+			}
+		}
+		
 		response.setContentType("application/force-download");
 		response.setHeader("Content-Transfer-Encoding", "binary");
 		response.setHeader("Content-Disposition", "attachment; filename=\"" + dataGroupId + ".json\"");
@@ -333,6 +342,10 @@ public class DataGroupRestController {
 		dataGroup.setDatas(dataInfoList);
 		try {
 			String dataJson = objectMapper.writeValueAsString(dataGroup);
+			
+			// 불필요한 코드
+			dataJson = dataJson.replaceAll("<", "&lt;");
+			dataJson = dataJson.replaceAll(">", "&gt;");
 			response.getWriter().write(dataJson);
 		} catch(JsonProcessingException e) {
 			log.info("@@@@@@@@@@@@ jsonProcessing exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
