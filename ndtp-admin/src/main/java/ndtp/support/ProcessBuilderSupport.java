@@ -64,15 +64,13 @@ public class ProcessBuilderSupport {
 			inputStreamReader.close();
 			inputStream.close();
 		} catch (IOException e) {
-			e.printStackTrace();
 			throw new RuntimeException("IOException . " + e.getMessage());
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new RuntimeException("Exception readLine Error. " + e.getMessage());
 		} finally {
-			if (bufferedReader != null) { try { bufferedReader.close(); } catch (Exception e) { e.printStackTrace(); } }
-			if (inputStreamReader != null) { try { inputStreamReader.close(); } catch (Exception e) { e.printStackTrace(); } }
-			if (inputStream != null) { try { inputStream.close(); } catch (Exception e) { e.printStackTrace(); } }
+			if (bufferedReader != null) { try { bufferedReader.close(); } catch (IOException e) { log.info("@@ IOException. message = {}", e.getMessage()); } }
+			if (inputStreamReader != null) { try { inputStreamReader.close(); } catch (IOException e) { log.info("@@ IOException. message = {}", e.getMessage()); } }
+			if (inputStream != null) { try { inputStream.close(); } catch (IOException e) { log.info("@@ IOException. message = {}", e.getMessage()); } }
 		}
 	}
 }
