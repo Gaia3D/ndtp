@@ -1,5 +1,6 @@
 package ndtp.parser.impl;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -60,9 +61,8 @@ public class DataFileJsonParser implements DataFileParser {
 			if(childrenNode.isArray() && childrenNode.size() != 0) {
 				dataInfoList.addAll(parseChildren(null, 0, childrenNode));
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException("Data 일괄 등록 Json 파일 파싱 오류!");
+		} catch (IOException e) {
+			throw new RuntimeException("Data 일괄 등록 Json 파일 파싱 오류! message = " + e.getMessage());
 		}
 		
 		Map<String, Object> result = new HashMap<>();

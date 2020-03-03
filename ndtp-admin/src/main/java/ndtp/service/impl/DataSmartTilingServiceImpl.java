@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,8 +88,20 @@ public class DataSmartTilingServiceImpl implements DataSmartTilingService {
 					dataService.updateData(dataInfo);
 					updateSuccessCount++;
 				}
+			} catch(DataAccessException e) {
+				log.info("@@@@@@@@@@@@ dataAccess exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+				dataSmartTilingFileParseLog.setIdentifierValue(dataSmartTilingFileInfo.getUserId());
+				dataSmartTilingFileParseLog.setErrorCode(e.getMessage());
+				dataSmartTilingMapper.insertDataSmartTilingFileParseLog(dataSmartTilingFileParseLog);
+				insertErrorCount++;
+			} catch(RuntimeException e) {
+				log.info("@@@@@@@@@@@@ runtime exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+				dataSmartTilingFileParseLog.setIdentifierValue(dataSmartTilingFileInfo.getUserId());
+				dataSmartTilingFileParseLog.setErrorCode(e.getMessage());
+				dataSmartTilingMapper.insertDataSmartTilingFileParseLog(dataSmartTilingFileParseLog);
+				insertErrorCount++;
 			} catch(Exception e) {
-				e.printStackTrace();
+				log.info("@@@@@@@@@@@@ exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
 				dataSmartTilingFileParseLog.setIdentifierValue(dataSmartTilingFileInfo.getUserId());
 				dataSmartTilingFileParseLog.setErrorCode(e.getMessage());
 				dataSmartTilingMapper.insertDataSmartTilingFileParseLog(dataSmartTilingFileParseLog);

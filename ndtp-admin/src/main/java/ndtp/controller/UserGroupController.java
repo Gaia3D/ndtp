@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,6 @@ import ndtp.service.MenuService;
 import ndtp.service.PolicyService;
 import ndtp.service.RoleService;
 import ndtp.service.UserGroupService;
-import ndtp.support.SQLInjectSupport;
 
 @Slf4j
 @Controller
@@ -153,8 +153,12 @@ public class UserGroupController implements AuthorizationController {
 			userGroupMenu.setUserGroupId(userGroupId);
 			List<UserGroupMenu> userGroupMenuList = userGroupService.getListUserGroupMenu(userGroupMenu);
 			userGroupMenuJson = objectMapper.writeValueAsString(userGroupMenuList);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch(JsonProcessingException e) {
+			log.info("@@@@@@@@@@@@ jsonProcessing exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+		} catch(RuntimeException e) {
+			log.info("@@@@@@@@@@@@ runtime exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+		} catch(Exception e) {
+			log.info("@@@@@@@@@@@@ exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
 		}
 
 		model.addAttribute("userGroup", userGroup);
@@ -191,8 +195,12 @@ public class UserGroupController implements AuthorizationController {
 			userGroupRole.setUserGroupId(userGroupId);
 			List<UserGroupRole> userGroupRoleList = userGroupService.getListUserGroupRole(userGroupRole);
 			userGroupRoleJson = objectMapper.writeValueAsString(userGroupRoleList);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch(JsonProcessingException e) {
+			log.info("@@@@@@@@@@@@ jsonProcessing exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+		} catch(RuntimeException e) {
+			log.info("@@@@@@@@@@@@ runtime exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+		} catch(Exception e) {
+			log.info("@@@@@@@@@@@@ exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
 		}
 
 		model.addAttribute("userGroup", userGroup);

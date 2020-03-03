@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -82,11 +83,21 @@ public class DataRestController {
 			dataInfo = dataService.getData(dataInfo);
 			
 			result.put("dataInfo", dataInfo);
-		} catch(Exception e) {
-			e.printStackTrace();
+		} catch(DataAccessException e) {
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "db.exception";
 			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 		
 		result.put("statusCode", statusCode);
@@ -129,11 +140,21 @@ public class DataRestController {
 				dataInfo.setLocation("POINT(" + dataInfo.getLongitude() + " " + dataInfo.getLatitude() + ")");
 			}
 			dataService.updateData(dataInfo);
-		} catch (Exception e) {
-			e.printStackTrace();
-            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-            errorCode = "db.exception";
-            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		} catch(DataAccessException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 		
 		result.put("statusCode", statusCode);
@@ -167,11 +188,21 @@ public class DataRestController {
 			
 			DataAttribute dataAttribute = dataAttributeService.getDataAttribute(dataId);
 			result.put("dataAttribute", dataAttribute);
-		} catch(Exception e) {
-			e.printStackTrace();
+		} catch(DataAccessException e) {
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "db.exception";
 			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 		
 		result.put("statusCode", statusCode);
@@ -206,11 +237,21 @@ public class DataRestController {
 			
 			DataObjectAttribute dataObjectAttribute = dataObjectAttributeService.getDataObjectAttribute(dataId);
 			result.put("dataObjectAttribute", dataObjectAttribute);
-		} catch(Exception e) {
-			e.printStackTrace();
+		} catch(DataAccessException e) {
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "db.exception";
 			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 		
 		result.put("statusCode", statusCode);
@@ -266,11 +307,21 @@ public class DataRestController {
 			if(copyFile.exists()) {
 				copyFile.delete();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-            errorCode = "db.exception";
-            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		} catch(DataAccessException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 		
 		result.put("statusCode", statusCode);
@@ -325,11 +376,21 @@ public class DataRestController {
 			if(copyFile.exists()) {
 				copyFile.delete();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-            errorCode = "db.exception";
-            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		} catch(DataAccessException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 		
 		result.put("statusCode", statusCode);
@@ -385,11 +446,21 @@ public class DataRestController {
 			if(copyFile.exists()) {
 				copyFile.delete();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-            errorCode = "db.exception";
-            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		} catch(DataAccessException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 		
 		result.put("statusCode", statusCode);
@@ -445,11 +516,21 @@ public class DataRestController {
 			if(copyFile.exists()) {
 				copyFile.delete();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-            errorCode = "db.exception";
-            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		} catch(DataAccessException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 		
 		result.put("statusCode", statusCode);

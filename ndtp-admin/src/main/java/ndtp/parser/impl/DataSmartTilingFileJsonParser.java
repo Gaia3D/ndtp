@@ -61,8 +61,7 @@ public class DataSmartTilingFileJsonParser implements DataSmartTilingFileParser 
 				dataInfoList.addAll(parseChildren(null, 0, childrenNode));
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException("Data 일괄 등록 Json 파일 파싱 오류!");
+			throw new RuntimeException("Data 일괄 등록 Json 파일 파싱 오류! message = " + e.getMessage());
 		}
 		
 		Map<String, Object> result = new HashMap<>();

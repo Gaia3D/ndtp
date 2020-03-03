@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,11 +61,21 @@ public class GeoPolicyRestController {
 		String message = null;
 		try {
 			result.put("geoPolicy", geoPolicyService.getGeoPolicy());
-		} catch(Exception e) {
-			e.printStackTrace();
+		} catch(DataAccessException e) {
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "db.exception";
 			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 
 		result.put("statusCode", statusCode);
@@ -115,11 +126,21 @@ public class GeoPolicyRestController {
 			List<LayerGroup> baseLayers = LayerDisplaySupport.getListDisplayLayer(layerGroupService.getListLayerGroupAndLayer(), userPolicy.getBaseLayers());
 			result.put("geoPolicy", geoPolicy);
 			result.put("baseLayers", baseLayers);
-		} catch(Exception e) {
-			e.printStackTrace();
+		} catch(DataAccessException e) {
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "db.exception";
 			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 
 		result.put("statusCode", statusCode);
@@ -148,11 +169,21 @@ public class GeoPolicyRestController {
 			geoPolicyService.updateGeoPolicy(geoPolicy);
 
 			reloadCache();
-		} catch (Exception e) {
-			e.printStackTrace();
-            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-            errorCode = "db.exception";
-            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		} catch(DataAccessException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 		result.put("statusCode", statusCode);
 		result.put("errorCode", errorCode);
@@ -179,11 +210,21 @@ public class GeoPolicyRestController {
 			geoPolicyService.updateGeoPolicyGeoServer(geoPolicy);
 
 			reloadCache();
-		} catch (Exception e) {
-			e.printStackTrace();
-            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-            errorCode = "db.exception";
-            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		} catch(DataAccessException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 		result.put("statusCode", statusCode);
 		result.put("errorCode", errorCode);
