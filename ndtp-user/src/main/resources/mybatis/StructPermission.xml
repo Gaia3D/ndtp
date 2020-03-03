@@ -32,6 +32,9 @@
 	<select id="selectOne" parameterType="structPermission" resultType="structPermission">
 		select * from struct_permission where perm_seq = #{permSeq}
 	</select>
+	<select id="selectNew" parameterType="structPermission" resultType="structPermission">
+		select * from struct_permission where save_file_name = #{saveFileName} and save_model_file_path = #{saveModelFilePath}
+	</select>
 
 	<insert id="insertStructPermission" parameterType="structPermission">
 		<selectKey keyProperty="permSeq" resultType="int" order="BEFORE">

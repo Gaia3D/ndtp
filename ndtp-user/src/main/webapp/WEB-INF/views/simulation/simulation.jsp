@@ -253,7 +253,7 @@
 								<option value="">선택없음</option>
 							</select>
 							<div>
-								<button type="button" id="permView" title="인허가 시뮬레이션" class="btnTextF" style="">인허가 확인</button>
+<%--								<button type="button" id="permView" title="인허가 시뮬레이션" class="btnTextF" style="">인허가 확인</button>--%>
 								<button type="button" id="comment" class="btnTextF">대화 하기</button>
 							</div>
 						</div>
@@ -392,6 +392,7 @@
 		let data = {
 			permSeq: buildAcceptPermSeq
 		};
+		debugger;
 		$.ajax({
 			url: "/data/simulation-rest/getPermRequestByConstructor",
 			type: "POST",
@@ -431,6 +432,7 @@
 					$("#permRequest").attr('style', "display:none;");
 					// $("#testBuilding").trigger("click");
 				} else {
+					debugger;
 					$("#permView").attr('style', "display:none;");
 				}
 			},

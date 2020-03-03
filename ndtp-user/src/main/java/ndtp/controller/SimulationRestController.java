@@ -255,7 +255,7 @@ public class SimulationRestController {
 	 * @return
 	 */
 	@RequestMapping(value = "/uploadBuildAccept", method = RequestMethod.POST)
-	public boolean upload(MultipartHttpServletRequest mReq) {
+	public StructPermission upload(MultipartHttpServletRequest mReq) {
 		Map<String, MultipartFile> fileMap = mReq.getFileMap();
 		Collection<MultipartFile> mFileCollection = fileMap.values();
 		MultipartFile[] files = mFileCollection.toArray(MultipartFile[]::new);
@@ -281,8 +281,8 @@ public class SimulationRestController {
 				.roll(roll)
 				.build();
 
-		this.simServiceImpl.procAcceptBuild(files, spParam);
-		return true;
+		StructPermission spNew = this.simServiceImpl.procAcceptBuild(files, spParam);
+		return spNew;
 	}
 
 	@RequestMapping(value = "/getPermRequest", method = RequestMethod.POST)

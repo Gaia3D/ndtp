@@ -13,6 +13,7 @@ public interface StructPermissionMapper {
 	List<StructPermission> selectStructPermission(StructPermission sp);
 
 	StructPermission selectOne(StructPermission structPermission);
+	StructPermission selectNew(StructPermission structPermission);
 
 	StructPermission putPermSend(StructPermission structPermission);
 

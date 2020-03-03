@@ -129,7 +129,7 @@ public class SimuServiceImpl {
 		return result;
 	}
 
-	public void procAcceptBuild(MultipartFile[] files, StructPermission spParam) {
+	public StructPermission procAcceptBuild(MultipartFile[] files, StructPermission spParam) {
 		List<SimFileMaster> lsfm = saveMultiFile(files);
 
 		movedFinishFolder mff = runFileConvertProcess();
@@ -158,7 +158,9 @@ public class SimuServiceImpl {
 				.saveModelFilePath(sfm.getSaveFilePath())
 				.saveModelFileName(sfm.getSaveFileName())
 				.build();
-		structPermissionMapper.insertStructPermission(spObj);
+		int result = structPermissionMapper.insertStructPermission(spObj);
+		StructPermission spNew = structPermissionMapper.selectNew(spObj);
+		return spNew;
 	}
 
 	private List<SimFileMaster> saveMultiFile(MultipartFile[] files) {
@@ -504,7 +506,15 @@ public class SimuServiceImpl {
 			subF4dObj = new F4DSubObject().builder().data_key(dataKey).data_name(dataKey).build();
 			f4dSubObjectList.add(subF4dObj);
 		}
-		String[] pathArr = modelFilePath.split("\\\\");
+		String[] pathArr = null;
+
+		String os = System.getProperty("os.name").toLowerCase();
+		if (os.contains("mac")) {
+			pathArr = modelFilePath.split("/");
+		} else {
+			pathArr = modelFilePath.split("\\\\");
+		}
+
 		boolean startFlat = false;
 		String f4dDataKey = "";
 		List<String> f4dKeyGenObj = new ArrayList<>();
@@ -519,10 +529,17 @@ public class SimuServiceImpl {
 		}
 
 		for ( String str : f4dKeyGenObj ) {
-			f4dDataKey = f4dDataKey + "\\\\" + str;
+			if (os.contains("mac")) {
+				f4dDataKey = f4dDataKey + "/" + str;
+			} else {
+				f4dDataKey = f4dDataKey + "\\\\" + str;
+			}
 		}
-		f4dDataKey = f4dDataKey.substring(2);
-
+		if (os.contains("mac")) {
+			f4dDataKey = f4dDataKey.substring(1);
+		} else {
+			f4dDataKey = f4dDataKey.substring(2);
+		}
 
 		F4DObject f4dObject = new F4DObject();
 		f4dObject.setF4dSubList(f4dSubObjectList);
