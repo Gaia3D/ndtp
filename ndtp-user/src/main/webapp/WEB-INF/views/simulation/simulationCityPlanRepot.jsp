@@ -13,33 +13,33 @@
 		            <ul class="analysisGroup">
 		                <li>
 		                    <label for="img_src">위치</label>
-		                    <label for="constructor">에코델타 시티</label>
+		                    <label id ="loc" for="constructor"></label>
 		                </li>
 		                <li>
 		                    <label for="constructor">대상 면적</label>
-		                    <label id="cityPlanDlgArea" for="constructor">OO m</label>
+		                    <label id="cityPlanDlgArea" for="constructor"></label>
 		                </li>
 		                <li>
 			                <div>
 			                    <label for="constructor">기준 용적율</label>
-			                    <label id="cityPlanDlgStdFloorCov" for="constructor">OO%</label>
-			                    <label for="constructor">예측 용적율</label>
-			                    <label id="cityPlanDlgFloorCov" for="constructor">OO %</label>
+			                    <label id="cityPlanDlgStdFloorCov" for="constructor">%</label>
+								<label for="constructor">기준 건폐율</label>
+								<label id="cityPlanDlgStdBuildCov" for="constructor">%</label>
 			                </div>
 		                </li>
 		                <li>
 			                <div>
-			                    <label for="constructor">기준 건폐율</label>
-			                    <label id="cityPlanDlgStdBuildCov" for="constructor">OO%</label>
-			                    <label for="constructor">예측 건폐율</label>
-			                    <label id="cityPlanDlgBuildCov" for="constructor">OO %</label>
+								<label for="constructor">용적율</label>
+								<label id="cityPlanDlgFloorCov" for="constructor">%</label>
+			                    <label for="constructor">건폐율</label>
+			                    <label id="cityPlanDlgBuildCov" for="constructor">%</label>
 			                </div>
 		                </li>
 		                <li>
 		                    <label for="constructor">용적률 적합 여부</label>
-		                    <label id="chkCityPlanDlgFloorCov" for="constructor">OO</label>
+		                    <label id="chkCityPlanDlgFloorCov" for="constructor"></label>
 		                    <label for="constructor">건폐율 적합 여부</label>
-		                    <label id="chkcityPlanDlgBuildCov" id="" for="constructor">OO</label>
+		                    <label id="chkcityPlanDlgBuildCov" for="constructor"></label>
 		                </li>
 		                <li>
 		                    <label for="constructor">일조분석 평가기준</label>
@@ -47,7 +47,7 @@
 		                </li>
 		                <li>
 		                    <label for="constructor">일조분석 의견 </label>
-		                    <textarea id="" class="" cols="40" rows="8" value="특이사항 없음"></textarea>
+		                    <textarea id="" class="" cols="50" rows="8" value="특이사항 없음"></textarea>
 		                </li>
 		                
 		            </ul>
@@ -56,7 +56,7 @@
 	        </div>
 	    </li>
 	</ul>
-<div style="float:right">
+<div style="float:right; margin-top:12px;">
     <button id="resultCityPlanDlgReg" class="focusA" type="submit" title="적합" style="width: 200px;">적합</button>
     <button id="resultCityPlanDlgCle" class="focusC" type="button" title="부적합">부적합</button>
 </div>
@@ -65,6 +65,8 @@
 
 
 <script>
+
+
     $('#permRequestDialog ul.listDrop li > p').click(function() {
         var parentObj = $(this).parent();
         var index = parentObj.index();

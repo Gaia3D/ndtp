@@ -120,7 +120,11 @@
             contentType: false,
             cache: false,
             timeout: 600000,
-            success: function (data) {
+            success: function (msg) {
+                var permName = msg.constructor + ' - ' + msg.permSeq;
+                var perDomItem = "<option value=" + msg.permSeq + ">" + permName + "</option>";
+                $("#acceptBuildList").append(perDomItem);
+
                 $.growl.notice({
                     message: "파일업로드가 완료되었습니다",
                     duration: 1000

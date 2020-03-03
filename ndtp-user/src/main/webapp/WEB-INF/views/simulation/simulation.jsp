@@ -3,6 +3,15 @@
 
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+<style>
+	#smulationToolbar .line {
+		width: 90%;
+		height: 0;
+		border: 0.6px solid #C4C4C4;
+		margin-bottom: 6px;
+		display:block;
+	}
+</style>
 
 <ul class="listDrop">
 	<li>
@@ -70,8 +79,8 @@
 					<input style="width:20px;" type="radio" id="cpSejong" name="cpProtoArea" value="s" checked/>
 					<label style="width:26px;" for="cpBusan">부산</label>
 					<input style="width:20px;" type="radio" id="cpBusan"  name="cpProtoArea" value="p"/>
-					<label style="width:26px;" for="cpEtc">금강대교</label>
-					<input style="width:20px;" type="radio" id="cpEtc"  name="cpProtoArea" value="g"/>
+					<label style="width:26px;" for="cpEtc">기타</label>
+					<input style="width:20px;" type="radio" id="cpEtc"  name="cpProtoArea" value="etc"/>
 				</li>
 
 				<li class="btns">
@@ -152,26 +161,36 @@
 						<option value="location">경관 좌표 배치 모드</option>
 					</select>
 				</li>
-				<li>
-					<button id="result_build" type="button" class="btnText drawObserverPoint">결과 산출</button>
-				</li>
 			</ul>
 		</div>
 	</li>
-	<li class="on">
+	<li >
 		<p>도시 계획2<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="">
 			<ul class="analysisGroup">
-				<li>
-					<button type="button" id="test000" class="btnTextF" style="margin-top:10px;">도시계획정보가시화</button>
-					<button type="button" id="test111" class="btnTextF" style="margin-top:10px;">test111</button>
-					<button type="button" id="test222" class="btnTextF" style="margin-top:10px;">test222</button>
-					<button type="button" id="test333" class="btnTextF" style="margin-top:10px;">test333</button>
-				</li>
 				<li >
 					<div id="smulationToolbar">
+						<label for="">위치</label>
+						<select id="curLocation" name="curLocation">
+							<option value="seoul">서울시</option>
+							<option value="sejong">세종시</option>
+							<option value="pusan">부산시</option>
+						</select>
+						<label for="">필지 선택</label>
+						<select id="selectPiece" name="selectPiece">
+							<option value="">선택안함</option>
+							<option value="sejong6_4">6-4 생활권</option>
+						</select>
+						<div class="line"></div>
+
 						<label for="">지역</label>
-						<input id="objectName" type="text" placeholder="" />
+						<select id="selectDistrict" name="selectDistrict">
+							<option value="">선택안함</option>
+							<option value="sejong_apartmentComplex1">세종시 아파트단지</option>
+							<option value="sejong_church1">세종시 교회</option>
+						</select>
+<%--						<input id="objectName" type="text" placeholder="" />--%>
+
 						<label for="">지역 타입</label>
 						<select id="districtType" name="districtType">
 							<option value="">선택안함</option>
@@ -185,11 +204,17 @@
 							<option value="disable">Disable</option>
 							<option value="enable">Enable</option>
 						</select>
+
+						<button type="button" id="create3dModel" class="btnText drawObserverPoint" style="">3D모형 생성</button>
+						<label for="">  </label>
+
+						<div class="line" style="margin-top:5px;"></div>
+
 						<%--						<label for="">건물 전시</label>--%>
 						<%--						<select id="buildingDisplay" name="buildingDisplay">--%>
 						<%--							<option value="disable">Disable</option>--%>
 						<%--							<option value="enable">Enable</option>--%>
-						</select>
+<%--						</select>--%>
 
 						<label for="">기준 용적률</label>
 						<input id="standardFloorAreaRatio" type="number"  value="0" style="background-color: gainsboro;" readonly />
@@ -199,9 +224,10 @@
 						<input id="standardBuildingToLandRatio" type="number" value="0" style="background-color: gainsboro;" readonly />
 						<label for="">건폐율</label>
 						<input id="curBuildingToLandRatio" type="number" value="0" readonly />
+						<div class="line" style="margin-top:5px;"></div>
+
 						<label for="">기준 층수</label>
 						<input id="standardFloorCount" type="number" data-bind="value: standardFloorCount" style="background-color: gainsboro;" readonly />
-
 						<label for="">층수</label>
 						<input id="inputBuildingHeight" type="number" data-bind="value: buildingHeight" />
 						<label for="">높이 커스터마이징</label>
@@ -209,10 +235,13 @@
 						<%--						<button id="dd" type="button" class="btnText drawObserverPoint">면적 설정</button>--%>
 					</div>
 				</li>
+				<li style="text-align: right;">
+					<button id="result_build" type="button" class="btnTextF" >결과 산출</button>
+				</li>
 			</ul>
 		</div>
 	</li>
-	<li >
+	<li class="on">
 		<p>건축인 허가 신청<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="">
 			<ul class="analysisGroup">
@@ -224,7 +253,7 @@
 								<option value="">선택없음</option>
 							</select>
 							<div>
-								<button type="button" id="permView" title="인허가 시뮬레이션" class="btnTextF" style="">인허가 확인</button>
+<%--								<button type="button" id="permView" title="인허가 시뮬레이션" class="btnTextF" style="">인허가 확인</button>--%>
 								<button type="button" id="comment" class="btnTextF">대화 하기</button>
 							</div>
 						</div>
@@ -240,7 +269,7 @@
 					</div>
 					<button type="button" id="permRequest" title="건축인 허가 신청" class="btnTextF" style="margin-top:10px;">건축인 허가 신청</button>
 					<button type="button" id="permView" title="인허가 시뮬레이션" class="btnTextF" style="margin-top:10px;">인허가 시뮬레이션</button>
-					<button type="button" id="testFly" class="btnTextF" style="margin-top:10px;">Fly Test</button>
+<%--					<button type="button" id="testFly" class="btnTextF" style="margin-top:10px;">Fly Test</button>--%>
 <%--					<button type="button" id="testingPicking" class="btnTextF" style="margin-top:10px;">testingPicking</button>--%>
 					<button type="button" id="testBuilding" class="btnTextF" style="margin-top:10px; display:none;">testBuilding</button>
 				</li>
@@ -295,12 +324,6 @@
 	</div>
 </div>
 <script>
-	// setTimeout(()=> {
-	// 	_viewer.camera.flyTo({
-	// 		destination : Cesium.Cartesian3.fromDegrees(126.9785978787040,  37.56690158584144, 100)
-	// 	});
-	// }, 1000);
-
 	$("#comment").on('click', function() {
 		let commentData = {
 			// todo: 클릭시 오브젝트에서 정보 가져와서 셋팅
@@ -337,7 +360,6 @@
 		let height = 0.3;
 		genBuild(urlParam, lon, lat, height);
 	});
-
 	var testingPickingDialog = $( "#testingPickingDialog" ).dialog({
 		autoOpen: false,
 		width: 1100,
@@ -346,11 +368,9 @@
 		overflow : "auto",
 		resizable: false
 	});
-
 	$("#testingPicking").on('click', function() {
 		testingPickingDialog.dialog("open");
 	});
-
 	var testingDialog = $( "#testingDialog" ).dialog({
 		autoOpen: false,
 		width: 1100,
@@ -359,10 +379,10 @@
 		overflow : "auto",
 		resizable: false
 	});
-
 	$("#testFly").on('click', function() {
 		testingDialog.dialog("open");
 	});
+
 
 	$("#permRequest").on('click', function() {
 		permRequestDialog.dialog( "open" );
@@ -372,6 +392,7 @@
 		let data = {
 			permSeq: buildAcceptPermSeq
 		};
+		debugger;
 		$.ajax({
 			url: "/data/simulation-rest/getPermRequestByConstructor",
 			type: "POST",
@@ -411,6 +432,7 @@
 					$("#permRequest").attr('style', "display:none;");
 					// $("#testBuilding").trigger("click");
 				} else {
+					debugger;
 					$("#permView").attr('style', "display:none;");
 				}
 			},
