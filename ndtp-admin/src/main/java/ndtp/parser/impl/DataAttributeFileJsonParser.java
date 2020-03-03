@@ -1,5 +1,6 @@
 package ndtp.parser.impl;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -22,10 +23,9 @@ public class DataAttributeFileJsonParser implements DataAttributeFileParser {
 			//byte[] jsonData = Files.readAllBytes(Paths.get(dataAttributeFileInfo.getFilePath() + dataAttributeFileInfo.getFileRealName()));
 			attribute = new String(Files.readAllBytes(Paths.get(dataAttributeFileInfo.getFilePath() + dataAttributeFileInfo.getFileRealName())), StandardCharsets.UTF_8);
 			parseSuccessCount++;
-		} catch (Exception e) {
+		} catch (IOException e) {
 			parseErrorCount++;
-			e.printStackTrace();
-			throw new RuntimeException("Data 속성 파일 파싱 오류!");
+			throw new RuntimeException("Data 속성 파일 파싱 오류! message = " + e.getMessage());
 		}
 		
 		Map<String, Object> result = new HashMap<>();

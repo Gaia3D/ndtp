@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.DataFileInfo;
 import ndtp.domain.DataFileParseLog;
 import ndtp.domain.DataGroup;
@@ -29,6 +31,7 @@ import ndtp.service.DataService;
  * @author jeongdae
  *
  */
+@Slf4j
 @Service
 public class DataServiceImpl implements DataService {
 
@@ -199,13 +202,26 @@ public class DataServiceImpl implements DataService {
 					dataMapper.updateData(dataInfo);
 					updateSuccessCount++;
 				}
+			} catch(DataAccessException e) {
+				log.info("@@@@@@@@@@@@ dataAccess exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+				dataFileParseLog.setIdentifierValue(dataFileInfo.getUserId());
+				dataFileParseLog.setErrorCode(e.getMessage());
+				dataMapper.insertDataFileParseLog(dataFileParseLog);
+				insertErrorCount++;
+			} catch(RuntimeException e) {
+				log.info("@@@@@@@@@@@@ runtime exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+				dataFileParseLog.setIdentifierValue(dataFileInfo.getUserId());
+				dataFileParseLog.setErrorCode(e.getMessage());
+				dataMapper.insertDataFileParseLog(dataFileParseLog);
+				insertErrorCount++;
 			} catch(Exception e) {
-				e.printStackTrace();
+				log.info("@@@@@@@@@@@@ exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
 				dataFileParseLog.setIdentifierValue(dataFileInfo.getUserId());
 				dataFileParseLog.setErrorCode(e.getMessage());
 				dataMapper.insertDataFileParseLog(dataFileParseLog);
 				insertErrorCount++;
 			}
+			
 		}
 		
 		dataFileInfo.setTotalCount((Integer) map.get("totalCount"));

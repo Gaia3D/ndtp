@@ -5,9 +5,11 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.DataType;
 import ndtp.domain.FileType;
 import ndtp.domain.UploadData;
@@ -19,6 +21,7 @@ import ndtp.service.UploadDataService;
  * @author Cheon JeongDae
  *
  */
+@Slf4j
 @Service
 public class UploadDataServiceImpl implements UploadDataService {
 
@@ -182,8 +185,12 @@ public class UploadDataServiceImpl implements UploadDataService {
 					}
 				}
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch(DataAccessException e) {
+			log.info("@@ DataAccessException. message = {}", e.getMessage());
+		} catch(RuntimeException e) {
+			log.info("@@ RuntimeException. message = {}", e.getMessage());
+		} catch(Exception e) {
+			log.info("@@ Exception. message = {}", e.getMessage());
 		}
 		return result;
 	}

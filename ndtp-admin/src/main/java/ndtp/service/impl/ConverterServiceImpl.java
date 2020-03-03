@@ -3,6 +3,7 @@ package ndtp.service.impl;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.springframework.amqp.AmqpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -215,15 +216,15 @@ public class ConverterServiceImpl implements ConverterService {
 		// 별도 기능으로 분리해야 하나?
 		try {
 			aMQPPublishService.send(queueMessage);
-		} catch(Exception ex) {
+		} catch(AmqpException e) {
 			ConverterJob converterJob = new ConverterJob();
 			//converterJob.setUserId(userId);
 			converterJob.setConverterJobId(inConverterJob.getConverterJobId());
 			converterJob.setStatus(ConverterJobStatus.WAITING.name());
-			converterJob.setErrorCode(ex.getMessage());
+			converterJob.setErrorCode(e.getMessage());
 			converterMapper.updateConverterJob(converterJob);
 			
-			ex.printStackTrace();
+			log.info("@@@@@@@@@@@@ AmqpException. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
 		}
 	}
 	

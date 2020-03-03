@@ -3,9 +3,12 @@ package ndtp.service.impl;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.DataAttribute;
 import ndtp.domain.DataAttributeFileInfo;
 import ndtp.domain.DataInfo;
@@ -21,6 +24,7 @@ import ndtp.utils.FileUtils;
  * @author jeongdae
  *
  */
+@Slf4j
 @Service
 public class DataAttributeServiceImpl implements DataAttributeService {
 	
@@ -76,12 +80,14 @@ public class DataAttributeServiceImpl implements DataAttributeService {
 				dataAttributeMapper.updateDataAttribute(dataAttribute);
 				updateSuccessCount++;
 			}
+		} catch(DataAccessException e) {
+			log.info("@@@@@@@@@@@@ dataAccess exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+			insertErrorCount++;
+		} catch(RuntimeException e) {
+			log.info("@@@@@@@@@@@@ runtime exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+			insertErrorCount++;
 		} catch(Exception e) {
-			e.printStackTrace();
-			// TODO 파싱을 하지 않아서 따로 로그를 남길 필요는 현재는 없음. 삭제 할 예정
-//			fileParseLog.setIdentifier_value(fileInfo.getUser_id());
-//			fileParseLog.setError_code(e.getMessage());
-//			fileMapper.insertFileParseLog(fileParseLog);
+			log.info("@@@@@@@@@@@@ exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
 			insertErrorCount++;
 		}
 		
