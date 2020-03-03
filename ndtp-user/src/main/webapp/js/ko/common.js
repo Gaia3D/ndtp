@@ -264,6 +264,11 @@ function isLatitude(value) {
 	return regexLatitude.test(value) ? true : false;
 }
 
+// 세자리 콤마
+function formatNumber(value) {
+	return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 function notyetAlram() {
 	alert('아직 준비중입니다.');
 }

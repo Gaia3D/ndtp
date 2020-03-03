@@ -257,10 +257,8 @@ function CivilVoiceControll(magoInstance, viewer) {
 			removeStoredEntity();
 
 		},
-		flyToLocation: function(longitude, latitude, commentCount) {
+		flyToLocation: function(longitude, latitude) {
 			this.flyTo(longitude, latitude);
-			//this.drawMarker(longitude, latitude);
-			//this.updateMarker(commentCount);
 		},
 		flyTo: function(longitude, latitude) {
 			var altitude = 100;
@@ -281,12 +279,12 @@ function CivilVoiceControll(magoInstance, viewer) {
 	        Cesium.when(promise, function(updatedPositions) {
 	            console.info(updatedPositions);
 	            var options = {
-	    				positionWC    : Mago3D.ManagerUtils.geographicCoordToWorldPoint(longitude, latitude,updatedPositions[0].height),
-	    				imageFilePath : img
-	    			};
-	    			var om = magoManager.objMarkerManager.newObjectMarker(options, magoManager);
-	    			om.civilDrawMarker = true;
-	    			store.beforeEntity = om;
+    				positionWC    : Mago3D.ManagerUtils.geographicCoordToWorldPoint(longitude, latitude,updatedPositions[0].height),
+    				imageFilePath : img
+    			};
+    			var om = magoManager.objMarkerManager.newObjectMarker(options, magoManager);
+    			om.civilDrawMarker = true;
+    			store.beforeEntity = om;
 	        });
 
 			/*var x = Number(longitude);
@@ -366,8 +364,7 @@ $('#civilVoiceList').on('click', '.goto', function(e) {
 	e.stopPropagation();
 	var longitude = $(this).data('longitude');
 	var latitude = $(this).data('latitude');
-	var commentCount = $(this).data('count');
-	civilVoice.flyToLocation(longitude, latitude, commentCount);
+	civilVoice.flyToLocation(longitude, latitude);
 });
 
 // 시민참여 상세보기
@@ -422,7 +419,7 @@ function getCivilVoiceList(page) {
 		dataType: 'json',
 		success: function(res){
 			if(res.statusCode <= 200) {
-				$('#civilVoiceTotalCount').text(res.totalCount);
+				$('#civilVoiceTotalCount').text(formatNumber(res.totalCount));
 				$('#civilVoiceCurrentPage').text(res.pagination.pageNo);
 				$('#civilVoiceLastPage').text(res.pagination.lastPage);
 				civilVoice.drawHandlebarsHtml(res, 'templateCivilVoiceList', 'civilVoiceList');
@@ -476,7 +473,7 @@ function getCivilVoiceDetail() {
 		success: function(res){
 			if(res.statusCode <= 200) {
 				civilVoice.drawHandlebarsHtml(res, 'templateCivilVoiceView', 'civilVoiceView');
-				civilVoice.flyToLocation(res.civilVoice.longitude, res.civilVoice.latitude, res.civilVoice.commentCount);
+				civilVoice.flyToLocation(res.civilVoice.longitude, res.civilVoice.latitude);
 
 				var contents = $('#civilVoiceContents').text();
 				contents = contents.replace(/(?:\r\n|\r|\n)/g, '<br />');
@@ -531,7 +528,7 @@ function getCivilVoiceCommentList(page) {
 		data: {pageNo: page},
 		success: function(res){
 			if(res.statusCode <= 200) {
-				$('#civilVoiceCommentTotalCount').text(res.totalCount);
+				$('#civilVoiceCommentTotalCount').text(formatNumber(res.totalCount));
 				civilVoice.drawHandlebarsHtml(res, 'templateCivilVoiceComment', 'civilVoiceComment');
 				civilVoice.drawHandlebarsHtml(res, 'templateCivilVoiceCommentPagination', 'civilVoiceCommentPagination');
 
