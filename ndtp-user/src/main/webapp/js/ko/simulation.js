@@ -721,6 +721,7 @@ var Simulation = function(magoInstance, viewer, $) {
 			}
 			// $("#inputBuildingHeight").trigger("change");
 			allObject[pickedName].totalFloorArea = sumFloorArea;
+			allObject[pickedName].plottage = getArea(allObject[pickedName].terrain.polygon._hierarchy._value.positions);
 
 			buildingToLandRatioCalc();
 			floorAreaRatioCalc();
@@ -1411,11 +1412,11 @@ var Simulation = function(magoInstance, viewer, $) {
     	cityPlanStdFloorCov = parseInt($('#target_floor_cov').val());
         cityPlanStdBuildCov = parseInt($('#target_build_cov').val());
         $('#targetfloorCoverateRatio').text('기준 용적율 : ' + cityPlanStdFloorCov + '%');
-        $('#targetbuildCoverateRatio').text('기준 건폐율 : ' + cityPlanStdBuildCov + '%');;
-    })
+        $('#targetbuildCoverateRatio').text('기준 건폐율 : ' + cityPlanStdBuildCov + '%');
+    });
     
     // 결과 산출
-    $('#result_build').click(function() {
+    $('#result_build').click(() => {
 
     	// console.log("맵컨트롤 : 저장");
         var targetResolutionScale = 1.0;
@@ -1436,7 +1437,7 @@ var Simulation = function(magoInstance, viewer, $) {
             setTimeout(function(){
                 scene.postRender.addEventListener(takeScreenshot);
             }, timeout);
-        }
+        };
 
         var takeScreenshot = function(){
             scene.postRender.removeEventListener(takeScreenshot);
@@ -1449,14 +1450,13 @@ var Simulation = function(magoInstance, viewer, $) {
 //            canvas.toBlob(function(blob){
 //                var url = URL.createObjectURL(blob);
 //            });
-        }
+        };
         scene.preRender.addEventListener(prepareScreenshot);
     	
-    })
+    });
     
     function openCityPlanResultDlg() {
         simCityPlanDlgInit();
-    	resultCityPlanDialog.dialog( "open" );
     }
     
     function dispCameraSceneList() {
@@ -1652,58 +1652,70 @@ var Simulation = function(magoInstance, viewer, $) {
 	var resultCityPlanDialog = $( "#resultCityPlanDialog" ).dialog({
 		autoOpen: false,
 		width: 1100,
-		height: 650,
+		height: 550,
 		modal: true,
 		overflow : "auto",
 		resizable: false
 	});
 	
 	function simCityPlanDlgInit() {
-		$('#cityPlanDlgArea').text(cityPlanTargetArea + "m");
-		$('#cityPlanDlgStdFloorCov').text(cityPlanStdFloorCov + "%");
-		$('#cityPlanDlgFloorCov').text(floorCoverateRatio + "%");
-		$('#cityPlanDlgStdBuildCov').text(cityPlanStdBuildCov + "%");
-		$('#cityPlanDlgBuildCov').text(buildCoverateRatio + "%");
-		
-		var chkCityPlanStdFloorCov = ""
-		var chkbuildCoverateRatio = ""
-		if(cityPlanTargetArea > cityPlanStdFloorCov) { 
-			chkCityPlanStdFloorCov = "부적합";
-		} else { 
-			chkCityPlanStdFloorCov = "적합";
+		if (pickedName === "") {
+			alert("지역을 먼저 선택해 주시기 바랍니다.");
+			return;
 		}
-		$('#chkCityPlanDlgFloorCov').text(chkCityPlanStdFloorCov);
 
-		if(cityPlanStdBuildCov > buildCoverateRatio) {  
-			chkbuildCoverateRatio = "부적합";
+		let loc = $("#selectDistrict option:selected").text();
+		cityPlanTargetArea = allObject[pickedName].plottage.toFixed(2);// 대지면적
+		cityPlanStdFloorCov = parseFloat($("#standardFloorAreaRatio").val());		// 기준 용적률
+		floorCoverateRatio = parseFloat($("#curFloorAreaRatio").val());				// 용적률
+		cityPlanStdBuildCov = parseFloat($("#standardBuildingToLandRatio").val());	// 기준 건폐율
+		buildCoverateRatio = parseFloat($("#curBuildingToLandRatio").val());		// 건폐율
+
+		$("#loc").text(loc);
+		$('#cityPlanDlgArea').text(cityPlanTargetArea + "㎡");
+		$('#cityPlanDlgStdFloorCov').text(cityPlanStdFloorCov + ".0%");
+		$('#cityPlanDlgFloorCov').text(floorCoverateRatio + "%");
+		$('#cityPlanDlgStdBuildCov').text(cityPlanStdBuildCov + ".0%");
+		$('#cityPlanDlgBuildCov').text(buildCoverateRatio + "%");
+
+		if(cityPlanStdFloorCov < floorCoverateRatio) {
+			$('#chkCityPlanDlgFloorCov').text("부적합").css("color", "red").css("font-weight", "bold");
 		} else {
-			chkbuildCoverateRatio = "적합";
+			$('#chkCityPlanDlgFloorCov').text("적합").css("color", "blue").css("font-weight", "bold");
 		}
-		$('#chkcityPlanDlgBuildCov').text(chkbuildCoverateRatio);
+
+		if(cityPlanStdBuildCov < buildCoverateRatio) {
+			$('#chkcityPlanDlgBuildCov').text("부적합").css("color", "red").css("font-weight", "bold");
+		} else {
+			$('#chkcityPlanDlgBuildCov').text("적합").css("color", "blue").css("font-weight", "bold");
+		}
+
+		resultCityPlanDialog.dialog( "open" );
 	}
 	
 	$("#resultCityPlanDlgReg").click(function() {
 		var cityPlanResult = new FormData();
-		cityPlanResult.append('cityPlanTargetArea', cityPlanTargetArea);
-		cityPlanResult.append('cityPlanStdFloorCov', cityPlanStdFloorCov);
-		cityPlanResult.append('floorCoverateRatio', floorCoverateRatio);
-		cityPlanResult.append('cityPlanStdBuildCov', cityPlanStdBuildCov);
-		cityPlanResult.append('buildCoverateRatio', buildCoverateRatio);
-		
+		cityPlanResult.append('cityPlanTargetArea', cityPlanTargetArea.toString());
+		cityPlanResult.append('cityPlanStdFloorCov', cityPlanStdFloorCov.toString());
+		cityPlanResult.append('floorCoverateRatio', floorCoverateRatio.toString());
+		cityPlanResult.append('cityPlanStdBuildCov', cityPlanStdBuildCov.toString());
+		cityPlanResult.append('buildCoverateRatio', buildCoverateRatio.toString());
+
 		// 실제 데이터는 iVBO...부터이므로 split한다.
-		var imgData = atob($('#cityplanImg').attr('src').split(',')[1])
-		var len = imgData.length
-		var buf = new ArrayBuffer(len) // 비트를 담을 버퍼를 만든다.
-		var view = new Uint8Array(buf) // 버퍼를 8bit Unsigned Int로 담는다.
-		var blob, i
+		var imgData = atob($('#cityplanImg').attr('src').split(',')[1]);
+		var len = imgData.length;
+		var buf = new ArrayBuffer(len); // 비트를 담을 버퍼를 만든다.
+		var view = new Uint8Array(buf); // 버퍼를 8bit Unsigned Int로 담는다.
+		var blob, i;
 
 		for (i = 0; i < len; i++) {
 		  view[i] = imgData.charCodeAt(i) & 0xff // 비트 마스킹을 통해 msb를 보호한다.
 		}
 		// Blob 객체를 image/png 타입으로 생성한다. (application/octet-stream도 가능)
-		blob = new Blob([view], { type: "image/png" })
-		
+		blob = new Blob([view], { type: "image/png" });
+
 		cityPlanResult.append("files", blob, "aaa.png");
+		// cityPlanResult.files = blob;
 		$.ajax({
 			url: "/data/simulation-rest/cityPlanResultInsert",
 			type: "POST",
@@ -1712,28 +1724,27 @@ var Simulation = function(magoInstance, viewer, $) {
 		    contentType: false,
 		    processData: false,
 			success: function(msg){
-				if(msg.statusCode <= 200) {
-					alert(JS_MESSAGE["insert"]);
-				} else {
-					alert(JS_MESSAGE[msg.errorCode]);
-				}
+				// if(msg.statusCode <= 200) {
+				// 	alert(JS_MESSAGE["insert"]);
+				// } else {
+				// 	alert(JS_MESSAGE[msg.errorCode]);
+				// }
 
-				$("#converterCheckIds").val("");
-				$("#title").val("");
-				$(":checkbox[name=uploadDataId]").prop("checked", false);
-				dialogConverterJob.dialog( "close" );
-				saveConverterJobFlag = true;
+				// $("#converterCheckIds").val("");
+				// $("#title").val("");
+				// $(":checkbox[name=uploadDataId]").prop("checked", false);
+				// saveConverterJobFlag = true;
+				alert("저장이 완료되었습니다.");
+				resultCityPlanDialog.dialog( "close" );
 			},
 			error:function(request,status,error){
 				alert(JS_MESSAGE["ajax.error.message"]);
 			}
 		});
-	})
-	
-	$("#resultCityPlanDlgCle").click(function() {
-		
-		
-	})
+	});
+	$("#resultCityPlanDlgCle").click(()=>{
+		resultCityPlanDialog.dialog( "close" );
+	});
 	
 	$("#locaMonitorChk").change(function(data) {
 		if(this.checked) {

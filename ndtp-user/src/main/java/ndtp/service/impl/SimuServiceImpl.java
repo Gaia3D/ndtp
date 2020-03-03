@@ -247,12 +247,15 @@ public class SimuServiceImpl {
 		String uploadDir = propertiesConfig.getServiceFileUploadDir();
 		MultipartFile multipartFile = cpr.getFiles();
 
+		String PREFIX_URL = "C:\\data\\mago3d\\normal-upload-data\\";
+		String SAVE_PATH = "C:\\data\\mago3d\\normal-upload-data\\";
+
 		String os = System.getProperty("os.name").toLowerCase();
 		if (os.contains("mac")) {
 			uploadDir = "/Users/junho/data/mago3d/";
+			PREFIX_URL = "/Users/junho/data/mago3d/normal-upload-data/";
+			SAVE_PATH = "/Users/junho/data/mago3d/normal-upload-data/";
 		}
-		String PREFIX_URL = "C:\\data\\mago3d\\normal-upload-data\\";
-		String SAVE_PATH = "C:\\data\\mago3d\\normal-upload-data\\";
 
 		try {
 			// 파일 정보

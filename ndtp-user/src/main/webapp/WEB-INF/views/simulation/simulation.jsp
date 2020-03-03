@@ -161,9 +161,6 @@
 						<option value="location">경관 좌표 배치 모드</option>
 					</select>
 				</li>
-				<li>
-					<button id="result_build" type="button" class="btnText drawObserverPoint">결과 산출</button>
-				</li>
 			</ul>
 		</div>
 	</li>
@@ -208,7 +205,7 @@
 							<option value="enable">Enable</option>
 						</select>
 
-						<button type="button" id="create3dModel" class="btnTextF" style="">3D모형 생성</button>
+						<button type="button" id="create3dModel" class="btnText drawObserverPoint" style="">3D모형 생성</button>
 						<label for="">  </label>
 
 						<div class="line" style="margin-top:5px;"></div>
@@ -237,6 +234,9 @@
 						<input id="inputCustomizing" type="number" data-bind="value: buildingAdjust" />
 						<%--						<button id="dd" type="button" class="btnText drawObserverPoint">면적 설정</button>--%>
 					</div>
+				</li>
+				<li style="text-align: right;">
+					<button id="result_build" type="button" class="btnTextF" >결과 산출</button>
 				</li>
 			</ul>
 		</div>
