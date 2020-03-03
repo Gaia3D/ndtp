@@ -9,6 +9,7 @@ import org.geotools.data.shapefile.dbf.DbaseFileReader;
 import org.geotools.data.shapefile.files.ShpFileType;
 import org.geotools.data.shapefile.files.ShpFiles;
 
+import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.ShapeFileExt;
 import ndtp.domain.ShapeFileField;
 
@@ -16,6 +17,7 @@ import ndtp.domain.ShapeFileField;
  * Shape file 관련 유틸 
  *
  */
+@Slf4j
 public class ShapeFileParser {
 	
 	// shapefile 경로 
@@ -52,9 +54,9 @@ public class ShapeFileParser {
             
             reader.close();
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            log.info("MalformedURLException ============ {}", e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            log.info("IOException ============== {} ", e.getMessage());
         }
         
         return fieldValid;

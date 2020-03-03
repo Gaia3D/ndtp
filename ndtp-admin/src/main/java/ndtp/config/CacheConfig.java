@@ -203,7 +203,6 @@ public class CacheConfig {
             log.info("----------------------- result = {}", result);
 		} catch (URISyntaxException e) {
 			log.info("데이터 converter 상태 변경 api 호출 실패 = {}", e.getMessage());
-			e.printStackTrace();
 		}
 	}
 }
