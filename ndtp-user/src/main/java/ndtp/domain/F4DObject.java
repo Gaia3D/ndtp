@@ -14,5 +14,6 @@ import java.util.List;
 public class F4DObject {
     private String data_key;
     private String data_name;
+    private Integer cons_ratio;
     private List<F4DSubObject> f4dSubList;
 }

@@ -70,8 +70,8 @@
 					<input style="width:20px;" type="radio" id="cpSejong" name="cpProtoArea" value="s" checked/>
 					<label style="width:26px;" for="cpBusan">부산</label>
 					<input style="width:20px;" type="radio" id="cpBusan"  name="cpProtoArea" value="p"/>
-					<label style="width:26px;" for="cpEtc">기타</label>
-					<input style="width:20px;" type="radio" id="cpEtc"  name="cpProtoArea" value="etc"/>
+					<label style="width:26px;" for="cpEtc">금강대교</label>
+					<input style="width:20px;" type="radio" id="cpEtc"  name="cpProtoArea" value="g"/>
 				</li>
 
 				<li class="btns">
@@ -337,6 +337,7 @@
 		let height = 0.3;
 		genBuild(urlParam, lon, lat, height);
 	});
+
 	var testingPickingDialog = $( "#testingPickingDialog" ).dialog({
 		autoOpen: false,
 		width: 1100,
@@ -345,9 +346,11 @@
 		overflow : "auto",
 		resizable: false
 	});
+
 	$("#testingPicking").on('click', function() {
 		testingPickingDialog.dialog("open");
 	});
+
 	var testingDialog = $( "#testingDialog" ).dialog({
 		autoOpen: false,
 		width: 1100,
@@ -356,10 +359,10 @@
 		overflow : "auto",
 		resizable: false
 	});
+
 	$("#testFly").on('click', function() {
 		testingDialog.dialog("open");
 	});
-
 
 	$("#permRequest").on('click', function() {
 		permRequestDialog.dialog( "open" );

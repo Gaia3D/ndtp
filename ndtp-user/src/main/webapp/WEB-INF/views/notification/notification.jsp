@@ -13,7 +13,6 @@
 
 <script>
     Growl.settings.duration = 100000; // 100
-    debugger;
     var permReqeustParam = {
         isComplete: 'N'
     }
