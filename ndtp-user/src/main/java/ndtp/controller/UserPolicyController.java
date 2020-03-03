@@ -7,17 +7,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.Key;
 import ndtp.domain.UserPolicy;
 import ndtp.domain.UserSession;
 import ndtp.service.UserPolicyService;
 
+@Slf4j
 @RequestMapping("/user-policy")
 @RestController
 public class UserPolicyController {
@@ -47,12 +50,22 @@ public class UserPolicyController {
             userPolicy.setUserId(userId);
             userPolicyService.updateUserPolicy(userPolicy);
 
-        } catch(Exception e) {
-        	e.printStackTrace();
+    	} catch(DataAccessException e) {
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "db.exception";
 			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-        }
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
+		}
     	
     	result.put("statusCode", statusCode);
 		result.put("errorCode", errorCode);
@@ -74,12 +87,22 @@ public class UserPolicyController {
     		userPolicy.setUserId(userId);
             userPolicyService.updateBaseLayers(userPolicy);
 
-        } catch(Exception e) {
-        	e.printStackTrace();
+    	} catch(DataAccessException e) {
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "db.exception";
 			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-        }
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
+		}
     	
     	result.put("statusCode", statusCode);
 		result.put("errorCode", errorCode);

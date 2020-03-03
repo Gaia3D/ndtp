@@ -1,5 +1,6 @@
 package ndtp.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +10,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,17 +42,35 @@ public class SearchMapController {
 	 */
 	@GetMapping("/sdos")
 	public Map<String, Object> getListSdo() {
-		Map<String, Object> map = new HashMap<>();
-		String result = "success";
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
 		try {
 			List<SkSdo> sdoList = searchMapService.getListSdoExceptGeom();
-			map.put("sdoList", sdoList);
-		} catch (Exception e) {
-			e.printStackTrace();
-			result = "db.exception";
+			result.put("sdoList", sdoList);
+		} catch(DataAccessException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
-		map.put("result", result);
-		return map;
+		
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		
+		return result;
 	}
 
 	/**
@@ -59,25 +80,44 @@ public class SearchMapController {
 	 */
 	@GetMapping("/sdos/{sdoCode:[0-9]+}/sggs")
 	public Map<String, Object> getListSggBySdo(@PathVariable String sdoCode) {
-		Map<String, Object> map = new HashMap<>();
-		String result = "success";
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
 		try {
 			// TODO 여기 들어 오지 않음. PathVariable 은 불칠전해서 이렇게 하고 싶음
 			if (sdoCode == null || "".equals(sdoCode)) {
-				map.put("result", "sdo.code.invalid");
-				log.info("validate error 발생: {} ", map.toString());
-				return map;
+				log.info("@@@@@ message = {}", "sdo.code.invalid");
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "sdo.code.invalid");
+				result.put("message", message);
+	            return result;
 			}
 
 			List<SkSgg> sggList = searchMapService.getListSggBySdoExceptGeom(sdoCode);
-			map.put("sggList", sggList);
-		} catch (Exception e) {
-			e.printStackTrace();
-			result = "db.exception";
+			result.put("sggList", sggList);
+		} catch(DataAccessException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 
-		map.put("result", result);
-		return map;
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		
+		return result;
 	}
 
 	/**
@@ -88,19 +128,25 @@ public class SearchMapController {
 	 */
 	@GetMapping("/sdos/{sdoCode:[0-9]+}/sggs/{sggCode:[0-9]+}/emds")
 	public Map<String, Object> getListEmdBySdoAndSgg(@PathVariable String sdoCode, @PathVariable String sggCode) {
-		Map<String, Object> map = new HashMap<>();
-		String result = "success";
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
 		try {
 			// TODO 여기 들어 오지 않음. PathVariable 은 불칠전해서 이렇게 하고 싶음
 			if (sdoCode == null || "".equals(sdoCode)) {
-				map.put("result", "sdo.code.invalid");
-				log.info("validate error 발생: {} ", map.toString());
-				return map;
+				log.info("@@@@@ message = {}", "sdo.code.invalid");
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "sdo.code.invalid");
+				result.put("message", message);
+	            return result;
 			}
 			if (sggCode == null || "".equals(sggCode)) {
-				map.put("result", "sgg.code.invalid");
-				log.info("validate error 발생: {} ", map.toString());
-				return map;
+				log.info("@@@@@ message = {}", "sgg.code.invalid");
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "sgg.code.invalid");
+				result.put("message", message);
+	            return result;
 			}
 
 			SkEmd mapEmd = new SkEmd();
@@ -108,14 +154,29 @@ public class SearchMapController {
 			mapEmd.setSggCode(sggCode);
 
 			List<SkEmd> emdList = searchMapService.getListEmdBySdoAndSggExceptGeom(mapEmd);
-			map.put("emdList", emdList);
-		} catch (Exception e) {
-			e.printStackTrace();
-			result = "db.exception";
+			result.put("emdList", emdList);
+		} catch(DataAccessException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 
-		map.put("result", result);
-		return map;
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		
+		return result;
 	}
 
 	/**
@@ -128,8 +189,10 @@ public class SearchMapController {
 	public Map<String, Object> getCentroid(SkEmd skEmd) {
 		log.info("@@@@ skEmd = {}", skEmd);
 
-		Map<String, Object> map = new HashMap<>();
-		String result = "success";
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
 		try {
 			// TODO 여기 들어 오지 않음. PathVariable 은 불칠전해서 이렇게 하고 싶음
 			String centerPoint = null;
@@ -154,15 +217,30 @@ public class SearchMapController {
 			}
 
 			String[] location = centerPoint.substring(centerPoint.indexOf("(") + 1, centerPoint.indexOf(")")).split(" ");
-			map.put("longitude", location[0]);
-			map.put("latitude", location[1]);
-		} catch (Exception e) {
-			e.printStackTrace();
-			result = "db.exception";
+			result.put("longitude", location[0]);
+			result.put("latitude", location[1]);
+		} catch(DataAccessException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 
-		map.put("result", result);
-		return map;
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		
+		return result;
 	}
 
 	/**
@@ -174,21 +252,26 @@ public class SearchMapController {
 	public Map<String, Object> districts(HttpServletRequest request, District district, @RequestParam(defaultValue = "1") String pageNo) {
 
 		// TODO 아직 정리가 안되서.... fullTextSearch라는 변수를 임시로 추가해 두었음. 다음에 고쳐야 함
-		Map<String, Object> map = new HashMap<>();
-		String result = "success";
+		Map<String, Object> result = new HashMap<>();
+		int statusCode = 0;
+		String errorCode = null;
+		String message = null;
+		
 		log.info("@@ district = {}", district);
 		district.setSearchValue(district.getFullTextSearch());
 		district.setSearchWord(district.getFullTextSearch());
 		String searchKey = request.getParameter("searchKey");
 
-		map.put("searchWord", district.getFullTextSearch());
-		map.put("searchKey", searchKey);
+		result.put("searchWord", district.getFullTextSearch());
+		result.put("searchKey", searchKey);
 
 		try {
 			if (district.getSearchValue() == null || "".equals(district.getSearchValue())) {
-				map.put("result", "search.word.invalid");
-				log.info("validate error 발생: {} ", map.toString());
-				return map;
+				log.info("@@@@@ message = {}", "search.word.invalid");
+				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+				result.put("errorCode", "search.word.invalid");
+				result.put("message", message);
+	            return result;
 			}
 
 			long totalCount = searchMapService.getDistrictTotalCount(district);
@@ -203,16 +286,31 @@ public class SearchMapController {
 				districtList = searchMapService.getListDistrict(district);
 			}
 
-			map.put("pagination", pagination);
-			map.put("totalCount", totalCount);
-			map.put("districtList", districtList);
-		} catch (Exception e) {
-			e.printStackTrace();
-			result = "db.exception";
+			result.put("pagination", pagination);
+			result.put("totalCount", totalCount);
+			result.put("districtList", districtList);
+		} catch(DataAccessException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 
-		map.put("result", result);
-		return map;
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		
+		return result;
 	}
 
 	private String getSearchParameters(String fullTextSearch) {
@@ -220,8 +318,8 @@ public class SearchMapController {
 		buffer.append("&");
 		try {
 			buffer.append("searchValue=" + URLEncoder.encode(fullTextSearch, "UTF-8"));
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			log.info("@@ objectMapper exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
 			buffer.append("searchValue=");
 		}
 		return buffer.toString();

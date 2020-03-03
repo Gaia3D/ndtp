@@ -700,9 +700,14 @@
 					var dataAdjustLogList = msg.dataAdjustLogList;
 					var content = "";
 					content 	= "<table class=\"widget-table\">"
-								+	"<col class=\"col-left\" />"
-								+	"<col class=\"col-left\" />";
-								+	"<col class=\"col-left\" />";
+								+	"<col class=\"col-left\"/>"
+								+	"<col class=\"col-center\"/>"
+								+	"<col class=\"col-center\" />"
+								+	"<thead><tr>"
+								+	"	<td class=\"col-left\"><em>데이터 명</em></td>"
+								+	"	<td class=\"col-center\"><em>요청 현황</em></td>"
+								+ 	"	<td class=\"col-center\"><em>요청 일시</em></td>"
+								+	"</tr></thead>";
 					if(dataAdjustLogList == null || dataAdjustLogList.length == 0) {
 						content += 	"<tr>"
 								+	"	<td colspan=\"3\" class=\"col-none\">데이터 변경 요청 이력이 존재하지 않습니다.</td>"
@@ -717,17 +722,14 @@
 							else if(dataAdjustLog.status === "reject") viewStatus = "반려";
 							else if(dataAdjustLog.status === "rollback") viewStatus = "원복";
 
-							var date = new Date(dataAdjustLog.insertDate);
-							var insertDate = date.toLocaleDateString();
-
 							content = content
 								+ 	"<tr>"
-								+ 	"	<td class=\"col-left ellipsis\" style='max-width:160px;'>"
+								+ 	"	<td class=\"col-left ellipsis\" style=\"max-width:160px;\">"
 								+		"	<span class=\"index\"></span>"
 								+		"	<em>" + dataAdjustLog.dataName + "</em>"
 								+		"</td>"
-								+ 		"<td class=\"col-center\" style='width:60px;'>" + viewStatus + "</td>"
-								+ 		"<td class=\"col-center\">" + insertDate + "</td>"
+								+ 		"<td class=\"col-center\" style=\"width:60px;\">" + viewStatus + "</td>"
+								+ 		"<td class=\"col-center\">" + dataAdjustLog.viewInsertDate + "</td>"
 								+ 	"</tr>";
 						}
 					}
@@ -872,7 +874,11 @@
 					var content = "";
 					content 	= "<table class=\"widget-table\">"
 								+	"<col class=\"col-left\" />"
-								+	"<col class=\"col-left\" />";
+								+	"<col class=\"col-left\" />"
+								+	"<thead><tr>"
+								+	"	<td class=\"col-left\"><em>사용자 명</em></td>"
+								+	"	<td class=\"col-left\"><em>접근 URL</em></td>"
+								+	"</tr></thead>";
 					if(userAccessLogList == null || userAccessLogList.length == 0) {
 						content += 	"<tr>"
 								+	"	<td colspan=\"2\" class=\"col-none\"><spring:message code='main.status.no.user.tracking'/></td>"
@@ -918,9 +924,14 @@
 					var civilVoiceList = msg.civilVoiceList;
 					var content = "";
 					content 	= "<table class=\"widget-table\">"
-								+	"<col class=\"col-left\" />"
-								+	"<col class=\"col-center\" style=\"min-width:80px;\"/>"
-								+	"<col class=\"col-center\" style=\"width:100px;\"/>";
+								+	"<col class=\"col-left\"/>"
+								+	"<col class=\"col-center\"/>"
+								+	"<col class=\"col-center\"/>"
+								+	"<thead><tr>"
+								+	"	<td class=\"col-left\"><em>제목</em></td>"
+								+	"	<td class=\"col-center\"><em>동의 수</em></td>"
+								+ 	"	<td class=\"col-center\"><em>등록 일시</em></td>"
+								+	"</tr></thead>";
 					if(civilVoiceList == null || civilVoiceList.length == 0) {
 						content += 	"<tr>"
 								+	"	<td colspan=\"3\" class=\"col-none\"><spring:message code='main.status.no.civilvoice'/></td>"
@@ -929,18 +940,17 @@
 						for(i=0; i<civilVoiceList.length; i++ ) {
 							var civilVoice = null;
 							civilVoice = civilVoiceList[i];
-
-							var date = new Date(civilVoice.insertDate);
-							var insertDate = date.toLocaleDateString();
-
 							content = content
 								+ 	"<tr>"
-								+ 	"	<td class=\"col-left ellipsis\" style='max-width:160px;'>"  + civilVoice.title + "</td>"
-								+ 	"	<td class=\"col-center\">"
+								+ 	"	<td class=\"col-left ellipsis\" style=\"max-width:160px;\">"
+								+	"		<span class=\"index\"></span>"
+								+ 	"		<em>" + civilVoice.title + "</em>"
+								+	"	</td>"
+								+ 	"	<td class=\"col-center\" style=\"width:70px;\">"
 								+	"		<span class='likes-icon' style='float: left;'>icon</span>"
 								+	"		<span style='font-weight:bold;'>" + civilVoice.commentCount + "</span>"
 								+	"	</td>"
-								+ 	"	<td class=\"col-center\">" + insertDate + "</td>"
+								+ 	"	<td class=\"col-center\">" + civilVoice.viewInsertDate + "</td>"
 								+ 	"</tr>";
 						}
 					}

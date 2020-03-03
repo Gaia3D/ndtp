@@ -32,7 +32,10 @@ JS_MESSAGE["fileinfo.size.invalid"] = "업로딩 가능한 파일 사이즈를 �
 
 // 공통
 JS_MESSAGE["user.session.empty"] = "사인인 후 사용 가능한 서비스 입니다.";
-JS_MESSAGE["db.exception"] = "데이터 베이스 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.";
+JS_MESSAGE["db.exception"] = "데이터 베이스 오류가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.";
+JS_MESSAGE["io.exception"] = "입출력 처리 과정중 오류가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.";
+JS_MESSAGE["runtime.exception"] = "프로그램 실행중 오류가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.";
+JS_MESSAGE["unknown.exception"] = "서버 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.";
 JS_MESSAGE["ajax.error.message"] = "잠시 후 이용해 주시기 바랍니다. 장시간 같은 현상이 반복될 경우 관리자에게 문의하여 주십시오.";
 JS_MESSAGE["button.dobule.click"] = "진행 중입니다.";
 JS_MESSAGE["cache.reloaded"] = "캐시를 갱신 하였습니다.";

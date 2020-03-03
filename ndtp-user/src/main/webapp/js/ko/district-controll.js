@@ -100,7 +100,7 @@ function loadDistrict()
         type: "GET",
         dataType: "json",
         success : function(msg) {
-            if(msg.result === "success") {
+        	if(msg.statusCode <= 200) {
                 var sdoList = msg.sdoList;
                 var content = "";
 
@@ -111,6 +111,9 @@ function loadDistrict()
                     content += '<li onclick="changeSdo(this, '+sdo.sdoCode+')">'+sdo.name+'</li>';
                 }
                 $('#sdoList').html(content);
+            } else {
+            	alert(JS_MESSAGE[msg.errorCode]);
+				console.log("---- " + msg.message);
             }
         },
         error : function(request, status, error) {
@@ -132,7 +135,7 @@ function changeSdo(_this, _sdoCode) {
         type: "GET",
         dataType: "json",
         success : function(msg) {
-            if(msg.result === "success") {
+        	if(msg.statusCode <= 200) {
                 var sggList = msg.sggList;
                 var content = "";
 
@@ -153,6 +156,9 @@ function changeSdo(_this, _sdoCode) {
                 $(_this).addClass('on');
 
                 updateViewDistrictName();
+            } else {
+            	alert(JS_MESSAGE[msg.errorCode]);
+				console.log("---- " + msg.message);
             }
         },
         error : function(request, status, error) {
@@ -174,7 +180,7 @@ function changeSgg(_this, _sdoCode, _sggCode) {
         type: "GET",
         dataType: "json",
         success : function(msg) {
-            if(msg.result === "success") {
+        	if(msg.statusCode <= 200) {
                 var emdList = msg.emdList;
                 var content = "";
 
@@ -193,6 +199,9 @@ function changeSgg(_this, _sdoCode, _sggCode) {
                 $(_this).addClass('on');
 
                 updateViewDistrictName();
+            } else {
+            	alert(JS_MESSAGE[msg.errorCode]);
+				console.log("---- " + msg.message);
             }
         },
         error : function(request, status, error) {
@@ -240,7 +249,7 @@ function getCentroid(name, sdoCode, sggCode, emdCode) {
         data: info,
         dataType: "json",
         success : function(msg) {
-            if(msg.result === "success") {
+        	if(msg.statusCode <= 200) {
                 var altitude = 50000;
                 if(layerType === 2) {
                     altitude = 15000;
@@ -249,7 +258,8 @@ function getCentroid(name, sdoCode, sggCode, emdCode) {
                 }
                 gotoFly(msg.longitude, msg.latitude, altitude, time);
             } else {
-                alert(msg.result);
+            	alert(JS_MESSAGE[msg.errorCode]);
+				console.log("---- " + msg.message);
             }
         },
         error : function(request, status, error) {

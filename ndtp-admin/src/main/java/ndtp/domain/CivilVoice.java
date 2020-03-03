@@ -8,6 +8,9 @@ import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -90,12 +93,30 @@ public class CivilVoice extends Search implements Serializable {
 	private String sggCd;
 	// 읍면동 코드
 	private String emdCd;
-	// 등록일
-	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	private Timestamp insertDate;
+
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+	private Timestamp viewUpdateDate;
+
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+	private Timestamp viewInsertDate;
+
+	public Timestamp getViewUpdateDate() {
+		return this.updateDate;
+	}
+	public Timestamp getViewInsertDate() {
+		return this.insertDate;
+	}
+
 	// 수정일
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Timestamp updateDate;
+	// 등록일
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Timestamp insertDate;
 
 
 }

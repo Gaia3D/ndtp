@@ -244,7 +244,6 @@ public class FileUtils {
 //			fileInfo.setFileSize(String.valueOf(size));
 //			fileInfo.setFilePath(sourceDirectory);
 //		} catch(Exception e) {
-//			e.printStackTrace();
 //			fileInfo.setErrorCode("fileinfo.copy.exception");
 //		}
 //

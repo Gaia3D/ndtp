@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -215,15 +216,23 @@ public class ConverterServiceImpl implements ConverterService {
 		// 별도 기능으로 분리해야 하나?
 		try {
 			aMQPPublishService.send(queueMessage);
-		} catch(Exception ex) {
+		} catch(DataAccessException e) {
 			ConverterJob converterJob = new ConverterJob();
 			converterJob.setUserId(userId);
 			converterJob.setConverterJobId(inConverterJob.getConverterJobId());
 			converterJob.setStatus(ConverterJobStatus.WAITING.name());
-			converterJob.setErrorCode(ex.getMessage());
+			converterJob.setErrorCode(e.getMessage());
+			converterMapper.updateConverterJob(converterJob);
+			log.info("@@ DataAccessException. message = {}", e.getMessage());
+		} catch(Exception e) {
+			ConverterJob converterJob = new ConverterJob();
+			converterJob.setUserId(userId);
+			converterJob.setConverterJobId(inConverterJob.getConverterJobId());
+			converterJob.setStatus(ConverterJobStatus.WAITING.name());
+			converterJob.setErrorCode(e.getMessage());
 			converterMapper.updateConverterJob(converterJob);
 
-			ex.printStackTrace();
+			log.info("@@ Exception. message = {}", e.getMessage());
 		}
 	}
 

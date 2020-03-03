@@ -358,17 +358,16 @@ input.toggle-button:checked + label:after {
 	text-align: center;
 	font-size: 90%; }
 
-table tr:nth-of-type(1) .index:after { content: '1'; }
-table tr:nth-of-type(2) .index:after { content: '2'; }
-table tr:nth-of-type(3) .index:after { content: '3'; }
-table tr:nth-of-type(4) .index:after { content: '4'; }
-table tr:nth-of-type(5) .index:after { content: '5'; }
-table tr:nth-of-type(6) .index:after { content: '6'; }
-table tr:nth-of-type(7) .index:after { content: '7'; }
-table tr:nth-of-type(8) .index:after { content: '8'; }
-table tr:nth-of-type(9) .index:after { content: '9'; }
-table tr:nth-of-type(10) .index:after { content: '10'; }
-
+table tbody tr:nth-of-type(1) .index:after { content: '1'; }
+table tbody tr:nth-of-type(2) .index:after { content: '2'; }
+table tbody tr:nth-of-type(3) .index:after { content: '3'; }
+table tbody tr:nth-of-type(4) .index:after { content: '4'; }
+table tbody tr:nth-of-type(5) .index:after { content: '5'; }
+table tbody tr:nth-of-type(6) .index:after { content: '6'; }
+table tbody tr:nth-of-type(7) .index:after { content: '7'; }
+table tbody tr:nth-of-type(8) .index:after { content: '8'; }
+table tbody tr:nth-of-type(9) .index:after { content: '9'; }
+table tbody tr:nth-of-type(10) .index:after { content: '10'; }
 
 
 /* Buttons
@@ -1910,6 +1909,7 @@ tr:hover td {
 	padding: 3px; }
 
 .widget-content {
+	font-size: 1.3rem;
 	padding-left: 10px;
 	padding-right: 10px;
 	padding-top: 7px; }

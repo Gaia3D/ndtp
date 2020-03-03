@@ -49,7 +49,7 @@ import ndtp.utils.FormatUtils;
 @RequestMapping("/widgets")
 public class WidgetRestController {
 
-	private static final long WIDGET_LIST_VIEW_COUNT = 7l;
+	private static final long WIDGET_LIST_VIEW_COUNT = 6l;
 
 	@Autowired
 	private HikariDataSource dataSource;

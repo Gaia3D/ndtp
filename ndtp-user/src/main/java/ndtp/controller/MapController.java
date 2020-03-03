@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
@@ -54,9 +55,8 @@ public class MapController {
 		String dataInfoJson = "";
 		try {
 			dataInfoJson = objectMapper.writeValueAsString(dataInfo);
-		} catch(Exception e) {
-			log.info("@@ objectMapper exception");
-			e.printStackTrace();
+		} catch(JsonProcessingException e) {
+			log.info("@@ objectMapper exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
 		}
 		
 		model.addAttribute("referrer", referrer);
@@ -93,9 +93,9 @@ public class MapController {
         GeoPolicy geoPolicy = CacheManager.getGeoPolicy();
         try {
             model.addAttribute("geoPolicyJson", objectMapper.writeValueAsString(geoPolicy));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch(JsonProcessingException e) {
+			log.info("@@ objectMapper exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+		}
 //        
 //        model.addAttribute("baseLayers", userPolicy.getBaseLayers());
         
