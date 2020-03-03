@@ -700,8 +700,8 @@
 					var dataAdjustLogList = msg.dataAdjustLogList;
 					var content = "";
 					content 	= "<table class=\"widget-table\">"
-								+	"<col class=\"col-left\" />"
-								+	"<col class=\"col-center\" />"
+								+	"<col class=\"col-left\"/>"
+								+	"<col class=\"col-center\"/>"
 								+	"<col class=\"col-center\" />"
 								+	"<thead><tr>"
 								+	"	<td class=\"col-left\"><em>데이터 명</em></td>"
@@ -722,17 +722,14 @@
 							else if(dataAdjustLog.status === "reject") viewStatus = "반려";
 							else if(dataAdjustLog.status === "rollback") viewStatus = "원복";
 
-							var date = new Date(dataAdjustLog.insertDate);
-							var insertDate = date.toLocaleDateString();
-
 							content = content
 								+ 	"<tr>"
-								+ 	"	<td class=\"col-left ellipsis\" style='max-width:160px;'>"
+								+ 	"	<td class=\"col-left ellipsis\" style=\"max-width:160px;\">"
 								+		"	<span class=\"index\"></span>"
 								+		"	<em>" + dataAdjustLog.dataName + "</em>"
 								+		"</td>"
-								+ 		"<td class=\"col-center\" style='width:60px;'>" + viewStatus + "</td>"
-								+ 		"<td class=\"col-center\">" + insertDate + "</td>"
+								+ 		"<td class=\"col-center\" style=\"width:60px;\">" + viewStatus + "</td>"
+								+ 		"<td class=\"col-center\">" + dataAdjustLog.viewInsertDate + "</td>"
 								+ 	"</tr>";
 						}
 					}
@@ -927,9 +924,9 @@
 					var civilVoiceList = msg.civilVoiceList;
 					var content = "";
 					content 	= "<table class=\"widget-table\">"
-								+	"<col class=\"col-left\" />"
-								+	"<col class=\"col-center\" style=\"min-width:80px;\"/>"
-								+	"<col class=\"col-center\" style=\"width:100px;\"/>"
+								+	"<col class=\"col-left\"/>"
+								+	"<col class=\"col-center\"/>"
+								+	"<col class=\"col-center\"/>"
 								+	"<thead><tr>"
 								+	"	<td class=\"col-left\"><em>제목</em></td>"
 								+	"	<td class=\"col-center\"><em>동의 수</em></td>"
@@ -943,21 +940,17 @@
 						for(i=0; i<civilVoiceList.length; i++ ) {
 							var civilVoice = null;
 							civilVoice = civilVoiceList[i];
-
-							var date = new Date(civilVoice.insertDate);
-							var insertDate = date.toLocaleDateString();
-
 							content = content
 								+ 	"<tr>"
-								+ 	"	<td class=\"col-left ellipsis\" style='max-width:160px;'>"
+								+ 	"	<td class=\"col-left ellipsis\" style=\"max-width:160px;\">"
 								+	"		<span class=\"index\"></span>"
 								+ 	"		<em>" + civilVoice.title + "</em>"
 								+	"	</td>"
-								+ 	"	<td class=\"col-center\">"
+								+ 	"	<td class=\"col-center\" style=\"width:70px;\">"
 								+	"		<span class='likes-icon' style='float: left;'>icon</span>"
 								+	"		<span style='font-weight:bold;'>" + civilVoice.commentCount + "</span>"
 								+	"	</td>"
-								+ 	"	<td class=\"col-center\">" + insertDate + "</td>"
+								+ 	"	<td class=\"col-center\">" + civilVoice.viewInsertDate + "</td>"
 								+ 	"</tr>";
 						}
 					}

@@ -5,6 +5,9 @@ import java.sql.Timestamp;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,13 +27,13 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DataAdjustLog extends Search {
-	
+
 	// 사용자명
 	private String userId;
 	// 수정자 아이디
 	private String updateUserId;
 	private String userName;
-	
+
 	/****** validator ********/
 	private String methodMode;
 
@@ -82,13 +85,31 @@ public class DataAdjustLog extends Search {
 	private String changeType;
 	// 설명
 	private String description;
-	// 수정일 
+
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+	private Timestamp viewUpdateDate;
+
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+	private Timestamp viewInsertDate;
+
+	public Timestamp getViewUpdateDate() {
+		return this.updateDate;
+	}
+	public Timestamp getViewInsertDate() {
+		return this.insertDate;
+	}
+
+	// 수정일
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Timestamp updateDate;
 	// 등록일
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Timestamp insertDate;
-	
+
 	public String validate() {
 		// TODO 구현해야 한다.
 		return null;
