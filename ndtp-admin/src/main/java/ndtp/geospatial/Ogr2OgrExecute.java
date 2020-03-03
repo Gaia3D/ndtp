@@ -67,7 +67,6 @@ public class Ogr2OgrExecute {
 
         command.add("-f");
         command.add("PostgreSQL");
-        //command.add("PG:\"host=localhost dbname=gis user=postgres password=postgres\"");
         command.add(this.driver);
         log.info("============= driver = {}", this.driver);
 
