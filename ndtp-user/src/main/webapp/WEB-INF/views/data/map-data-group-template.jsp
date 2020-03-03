@@ -59,7 +59,7 @@
 							{{dataGroupName}}
 						</a>
 					</td>
-					<td>{{dataCount}}</td>
+					<td>{{#formatNumber dataCount}}{{/formatNumber}}</td>
 					<td>
 		{{#if groupVisible}}
 						<button type="button" title="표시" class="showHideButton show" data-group-id="{{dataGroupId}}">표시</button>

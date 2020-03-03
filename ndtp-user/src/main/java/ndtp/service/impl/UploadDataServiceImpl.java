@@ -140,6 +140,8 @@ public class UploadDataServiceImpl implements UploadDataService {
 				fileName = deleteUploadDataFile.getFilePath() + deleteUploadDataFile.getFileRealName();
 			}
 			
+			// TODO 처리 불필요
+			fileName = fileName.replaceAll("&", "");
 			File file = new File(fileName);
 			if(file.exists()) {
 				file.delete();

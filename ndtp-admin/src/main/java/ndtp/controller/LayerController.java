@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,6 +41,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
@@ -147,11 +149,21 @@ public class LayerController implements AuthorizationController {
 		try {
 			GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
 			geoserverLayerJson = layerService.getListGeoserverLayer(geoPolicy);
-		} catch (Exception e) {
-			e.printStackTrace();
-            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-            errorCode = "db.exception";
-            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		} catch(DataAccessException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 
 		result.put("statusCode", statusCode);
@@ -247,11 +259,21 @@ public class LayerController implements AuthorizationController {
 			if(LayerType.VECTOR == LayerType.valueOf(layerType.toUpperCase())) {
 				layerService.updateLayerStyle(layer);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-            errorCode = "db.exception";
-            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		} catch(DataAccessException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 
 		result.put("statusCode", statusCode);
@@ -384,7 +406,7 @@ public class LayerController implements AuthorizationController {
 					}
 
 					long size = 0L;
-					try (InputStream inputStream = multipartFile.getInputStream();
+					try (	InputStream inputStream = multipartFile.getInputStream();
 							OutputStream outputStream = new FileOutputStream(makedDirectory + saveFileName)) {
 
 						int bytesRead = 0;
@@ -399,9 +421,11 @@ public class LayerController implements AuthorizationController {
 						layerFileInfo.setFilePath(makedDirectory);
 						layerFileInfo.setFileSize(String.valueOf(size));
 						layerFileInfo.setShapeEncoding(shapeEncoding);
-
-					} catch (Exception e) {
-						e.printStackTrace();
+					} catch(IOException e) {
+						log.info("@@@@@@@@@@@@ IOException. message = {}", e.getMessage());
+						layerFileInfo.setErrorMessage(e.getMessage());
+					} catch(Exception e) {
+						log.info("@@@@@@@@@@@@ Exception. message = {}", e.getMessage());
 						layerFileInfo.setErrorMessage(e.getMessage());
 					}
 
@@ -449,16 +473,39 @@ public class LayerController implements AuthorizationController {
 			}
 
 			statusCode = HttpStatus.OK.value();
-		} catch (Exception e) {
+		} catch(DataAccessException e) {
 			// ogr2ogr2 실행하다가 에러날경우 이미 들어간 레이어, 레이러 파일정보 삭제 
 			Integer layerId = (Integer) updateLayerMap.get("layerId");
 			Integer layerFileInfoGroupId = (Integer) updateLayerMap.get("layerFileInfoGroupId");
 			layerService.deleteLayer(layerId);
 			layerFileInfoService.deleteLayerFileInfoByGroupId(layerFileInfoGroupId);
-			e.printStackTrace();
+			
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "db.exception";
 			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			// ogr2ogr2 실행하다가 에러날경우 이미 들어간 레이어, 레이러 파일정보 삭제 
+			Integer layerId = (Integer) updateLayerMap.get("layerId");
+			Integer layerFileInfoGroupId = (Integer) updateLayerMap.get("layerFileInfoGroupId");
+			layerService.deleteLayer(layerId);
+			layerFileInfoService.deleteLayerFileInfoByGroupId(layerFileInfoGroupId);
+			
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			// ogr2ogr2 실행하다가 에러날경우 이미 들어간 레이어, 레이러 파일정보 삭제 
+			Integer layerId = (Integer) updateLayerMap.get("layerId");
+			Integer layerFileInfoGroupId = (Integer) updateLayerMap.get("layerFileInfoGroupId");
+			layerService.deleteLayer(layerId);
+			layerFileInfoService.deleteLayerFileInfoByGroupId(layerFileInfoGroupId);
+			
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 
 		result.put("statusCode", statusCode);
@@ -485,11 +532,21 @@ public class LayerController implements AuthorizationController {
 			if(LayerType.VECTOR == LayerType.valueOf(layerType.toUpperCase())) {
 				layerService.updateLayerStyle(layer);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-            errorCode = "db.exception";
-            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		} catch(DataAccessException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 
 		result.put("statusCode", statusCode);
@@ -614,8 +671,11 @@ public class LayerController implements AuthorizationController {
                         layerFileInfo.setFileSize(String.valueOf(size));
                         layerFileInfo.setShapeEncoding(shapeEncoding);
 
+                    } catch(IOException e) {
+						log.info("@@@@@@@@@@@@ IOException. message = {}", e.getMessage());
+						layerFileInfo.setErrorMessage(e.getMessage());
                     } catch(Exception e) {
-                        e.printStackTrace();
+                    	log.info("@@@@@@@@@@@@ Exception. message = {}", e.getMessage());
                         layerFileInfo.setErrorMessage(e.getMessage());
                     }
 
@@ -697,16 +757,36 @@ public class LayerController implements AuthorizationController {
 			}
 
             statusCode = HttpStatus.OK.value();
-        } catch(Exception e) {
-            if(isRollback) {
+        } catch(DataAccessException e) {
+        	if(isRollback) {
                 // rollback 처리
                 layerService.rollbackLayer(rollbackLayer, isLayerFileInfoExist, rollbackLayerFileInfo, deleteLayerFileInfoGroupId);
             }
-
-            e.printStackTrace();
-            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-            errorCode = "db.exception";
-            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+        	
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			if(isRollback) {
+                // rollback 처리
+                layerService.rollbackLayer(rollbackLayer, isLayerFileInfoExist, rollbackLayerFileInfo, deleteLayerFileInfoGroupId);
+            }
+			
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			if(isRollback) {
+                // rollback 처리
+                layerService.rollbackLayer(rollbackLayer, isLayerFileInfoExist, rollbackLayerFileInfo, deleteLayerFileInfoGroupId);
+            }
+			
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
         }
 
         result.put("statusCode", statusCode);
@@ -729,11 +809,21 @@ public class LayerController implements AuthorizationController {
 		String message = null;
 		try {
 			layerService.deleteLayer(layerId);
-		} catch (Exception e) {
-			e.printStackTrace();
-            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-            errorCode = "db.exception";
-            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+		} catch(DataAccessException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
 		}
 
 		result.put("statusCode", statusCode);
@@ -760,17 +850,30 @@ public class LayerController implements AuthorizationController {
         try {
             layerFileInfoList = layerFileInfoService.getListLayerFileInfo(layerId);
             statusCode = HttpStatus.OK.value();
-        } catch(Exception e) {
-            e.printStackTrace();
-            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-            errorCode = "db.exception";
-            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-        }
+            
+            result.put("layerFileInfoList", layerFileInfoList);
+        } catch(DataAccessException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
+		}
+        
         log.info("layerFileInfoList =============================== {} " , layerFileInfoList);
         result.put("statusCode", statusCode);
 		result.put("errorCode", errorCode);
 		result.put("message", message);
-		result.put("layerFileInfoList", layerFileInfoList);
+		
 		return result;
     }
 
@@ -780,8 +883,7 @@ public class LayerController implements AuthorizationController {
     * @return
     */
     @GetMapping(value = "/{layerId}/layer-file-info/{layerFileInfoGroupId}/download")
-    public void download(HttpServletRequest request, HttpServletResponse response,
-            @PathVariable Integer layerId, @PathVariable Integer layerFileInfoGroupId) {
+    public void download(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer layerId, @PathVariable Integer layerFileInfoGroupId) {
 
         log.info("@@@@@@@@@@@@ layerId = {}, layerFileInfoGroupId = {}", layerId, layerFileInfoGroupId);
         try {
@@ -790,6 +892,12 @@ public class LayerController implements AuthorizationController {
             String today = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
             String filePath = propertiesConfig.getLayerExportDir() + today.substring(0, 6) + File.separator;
             String fileRealName = layer.getLayerKey() + "_" + today + "_" + System.nanoTime();
+            // TODO 필요 없는 로직. 추후 삭제
+            fileRealName = fileRealName.replaceAll("/", "");
+            fileRealName = fileRealName.replaceAll("\\", "");
+            fileRealName = fileRealName.replaceAll(".", "");
+            fileRealName = fileRealName.replaceAll("&", "");
+            
             createDirectory(filePath);
             log.info("@@@@@@@ zip directory = {}", filePath);
 
@@ -821,12 +929,17 @@ public class LayerController implements AuthorizationController {
 
                 FileCopyUtils.copy(in, out);
                 out.flush();
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch(IOException e) {
+            	log.info("@@ IOException. message = {}", e.getMessage());
+            	throw new RuntimeException(e.getMessage());
             }
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+        } catch(DataAccessException e) {
+			log.info("@@ DataAccessException. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+        } catch(RuntimeException e) {
+			log.info("@@ RuntimeException. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+		} catch(Exception e) {
+			log.info("@@ Exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+		}
     }
 
     /**
@@ -851,14 +964,22 @@ public class LayerController implements AuthorizationController {
             layerService.updateLayerByLayerFileInfoId(layerId, layerFileInfoGroupId, layerFileInfoId);
 
             statusCode = HttpStatus.OK.value();
-        } catch(Exception e) {
-            e.printStackTrace();
-
-            e.printStackTrace();
-            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-            errorCode = "db.exception";
-            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-        }
+        } catch(DataAccessException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
+		}
 
         result.put("statusCode", statusCode);
 		result.put("errorCode", errorCode);
@@ -880,12 +1001,22 @@ public class LayerController implements AuthorizationController {
             log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@ layerFileInfo = {}", layerFileInfo);
 
             statusCode = HttpStatus.OK.value();
-        } catch (Exception e) {
-            e.printStackTrace();
-            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-            errorCode = "db.exception";
-            message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-        }
+    	} catch(DataAccessException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "db.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ db.exception. message = {}", message);
+		} catch(RuntimeException e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "runtime.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ runtime.exception. message = {}", message);
+		} catch(Exception e) {
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			errorCode = "unknown.exception";
+			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			log.info("@@ exception. message = {}", message);
+		}
 
     	result.put("statusCode", statusCode);
 		result.put("errorCode", errorCode);
@@ -916,8 +1047,8 @@ public class LayerController implements AuthorizationController {
         try {
             policyJson = objectMapper.writeValueAsString(policy);
             layerJson = objectMapper.writeValueAsString(layer);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+        	log.info("@@ JsonProcessingException. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
         }
 
         model.addAttribute("policyJson", policyJson);
@@ -934,6 +1065,7 @@ public class LayerController implements AuthorizationController {
 
     /**
     * 업로딩 파일을 압축 해제
+    * TODO 여기 Exception을 던지면 안될거 같음. 수정 필요
     * @param policy
     * @param groupFileName layer 의 경우 한 세트가 같은 이름에 확장자만 달라야 함
     * @param userId
@@ -1001,9 +1133,10 @@ public class LayerController implements AuthorizationController {
                         layerFileInfo.setFileSize(String.valueOf(size));
                         layerFileInfo.setShapeEncoding(shapeEncoding);
 
-                    } catch(Exception e) {
-                        e.printStackTrace();
-                        layerFileInfo.setErrorMessage(e.getMessage());
+                    } catch(IOException e) {
+                    	log.info("@@ IOException. message = {}", e.getMessage());
+                    	layerFileInfo.setErrorMessage(e.getMessage());
+                    	throw new RuntimeException(e.getMessage());
                     }
                 }
                 layerFileInfo.setFileSize(String.valueOf(entry.getSize()));
@@ -1011,8 +1144,10 @@ public class LayerController implements AuthorizationController {
                     layerFileInfoList.add(layerFileInfo);
                 }
             }
-        } catch(IOException ex) {
-            ex.printStackTrace();
+        } catch(RuntimeException ex) {
+        	log.info("@@ RuntimeException. message = {}", ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage());
+        } catch(Exception ex) {
+        	log.info("@@ RuntimeException. message = {}", ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage());
         }
 
         log.info("##################### unzip layerFileInfoList = {}", layerFileInfoList.size());

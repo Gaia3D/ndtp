@@ -948,7 +948,7 @@
 								+	"	</td>"
 								+ 	"	<td class=\"col-center\" style=\"width:70px;\">"
 								+	"		<span class='likes-icon' style='float: left;'>icon</span>"
-								+	"		<span style='font-weight:bold;'>" + civilVoice.commentCount + "</span>"
+								+	"		<span style='font-weight:bold;'>" + formatNumber(civilVoice.commentCount) + "</span>"
 								+	"	</td>"
 								+ 	"	<td class=\"col-center\">" + civilVoice.viewInsertDate + "</td>"
 								+ 	"</tr>";

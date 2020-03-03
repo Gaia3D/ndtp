@@ -64,11 +64,16 @@ function isExcelFile(fileName) {
 	}
 }
 
+// 세자리 콤마
+function formatNumber(value) {
+	return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 // 선택된 checkbox 가 있으면 true, 없으면 false
 function checkedStatus(element) {
 	var returnVal = true;
 	var checkStatusVal = 0;
-	$.each(element, function(index) {			
+	$.each(element, function(index) {
 		if (element[index].checked == true) {
 			checkStatusVal++;
 		}
