@@ -123,6 +123,7 @@
             // dataType: "json",
             success: function(msg){
                 console.log("msg=", msg);
+
                 setTimeout(() => {
                     const fileLoc = "pdf_files/" + msg;
                     const url = "/externlib/pdfjs/web/viewer.html?file=" + fileLoc;

@@ -268,7 +268,6 @@ var Simulation = function(magoInstance, viewer, $) {
 			$('#saRange').hide();
 		},
 		consBuildDataReq: (step, cityType) => {
-			debugger;
 			const reqParam = {
 				consTypeString : step + "",
 				cityTypeString : cityType
@@ -294,7 +293,6 @@ var Simulation = function(magoInstance, viewer, $) {
 
 	function dispConsGroup ( msg_list ) {
 		for (const msg of msg_list) {
-			debugger;
 			var f4dController = MAGO3D_INSTANCE.getF4dController();
 			f4dController.deleteF4dGroup(msg.data_key);
 			_sejongDataGroupList.push(msg.data_key);
@@ -1766,6 +1764,12 @@ var Simulation = function(magoInstance, viewer, $) {
 	$('#acceptCompleteBuildList').change(function(event) {
 		var selectSeqBuild = event.target.value;
 		acceptMakeBuilding(selectSeqBuild);
+	});
+
+	$("#acceptBuildList").change(value => {
+		let val = value.target.value;
+		console.log(val);
+		buildAcceptPermSeq = val;
 	});
 
 	initAcceptBuild('N');

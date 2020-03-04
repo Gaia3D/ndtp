@@ -254,6 +254,8 @@
 							</select>
 							<div>
 <%--								<button type="button" id="permView" title="인허가 시뮬레이션" class="btnTextF" style="">인허가 확인</button>--%>
+								<button type="button" id="permRequest" title="건축인 허가 신청" class="btnTextF" style="">건축인 허가 신청</button>
+								<button type="button" id="permView" title="인허가 시뮬레이션" class="btnTextF" style="">인허가 시뮬레이션</button>
 								<button type="button" id="comment" class="btnTextF">대화 하기</button>
 							</div>
 						</div>
@@ -267,8 +269,7 @@
 							<button type="button" id="permCompleteView" title="인허가 시뮬레이션" class="btnTextF" style="width: 52%;">완료 인허가 확인</button>
 						</div>
 					</div>
-					<button type="button" id="permRequest" title="건축인 허가 신청" class="btnTextF" style="margin-top:10px;">건축인 허가 신청</button>
-					<button type="button" id="permView" title="인허가 시뮬레이션" class="btnTextF" style="margin-top:10px;">인허가 시뮬레이션</button>
+
 <%--					<button type="button" id="testFly" class="btnTextF" style="margin-top:10px;">Fly Test</button>--%>
 <%--					<button type="button" id="testingPicking" class="btnTextF" style="margin-top:10px;">testingPicking</button>--%>
 					<button type="button" id="testBuilding" class="btnTextF" style="margin-top:10px; display:none;">testBuilding</button>
@@ -392,7 +393,6 @@
 		let data = {
 			permSeq: buildAcceptPermSeq
 		};
-		debugger;
 		$.ajax({
 			url: "/data/simulation-rest/getPermRequestByConstructor",
 			type: "POST",
@@ -432,7 +432,6 @@
 					$("#permRequest").attr('style', "display:none;");
 					// $("#testBuilding").trigger("click");
 				} else {
-					debugger;
 					$("#permView").attr('style', "display:none;");
 				}
 			},
