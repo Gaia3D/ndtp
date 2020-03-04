@@ -363,7 +363,9 @@
 			$("#altitude").focus();
 			return false;
 		}
-		// TODO : 위치 위도, 경도, 높이 숫자 validation
+		if(!locationValidation($("#longitude").val(), $("#latitude").val(), $("#altitude").val())) {
+			return false;
+		}
 	}
 	
 	function alertMessage(response) {
