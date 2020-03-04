@@ -142,9 +142,9 @@
 						<td class="col-name ellipsis" style="min-width:160px;max-width:160px;">${dataInfoLog.dataName}</td>
 						<td class="col-name">${dataInfoLog.userId}</td>
 						<td class="col-name">${dataInfoLog.dataType}</td>
-						<td class="col-name">${dataInfoLog.sharing}</td>
+						<td class="col-type">${dataInfoLog.sharing}</td>
 						<td class="col-name ellipsis" style="min-width:80px;max-width:80px;">${dataInfoLog.mappingType}</td>
-						<td class="col-name">${dataInfoLog.changeType}</td>
+						<td class="col-type">${dataInfoLog.changeType}</td>
 						<td class="col-type">
 							<fmt:parseDate value="${dataInfoLog.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
 							<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
