@@ -249,7 +249,7 @@
 					<div>
 						<label for="">처리 목록</label>
 						<div style="display: flex; align-items: center; justify-content: space-between;">
-							<select id="acceptBuildList" name="searchDataStatus">
+							<select id="acceptBuildList" name="searchDataStatus" style="width:110px; ">
 								<option value="">선택없음</option>
 							</select>
 							<div>
@@ -263,7 +263,7 @@
 					<div>
 						<label for="">완료 목록</label>
 						<div style="display: flex; align-items: center; justify-content: space-between;">
-							<select id="acceptCompleteBuildList" name="searchDataStatus">
+							<select id="acceptCompleteBuildList" name="searchDataStatus" style="width:110px; ">
 								<option value="">선택없음</option>
 							</select>
 							<button type="button" id="permCompleteView" title="인허가 시뮬레이션" class="btnTextF" style="width: 52%;">완료 인허가 확인</button>
