@@ -52,7 +52,6 @@ public class Ogr2OgrRunnable implements Runnable {
 		command.add("-f");
 		command.add("PostgreSQL");
 		//command.add(this.driver);
-		log.info("============= driver = {}", this.driver);
 		command.add("PG:host=localhost dbname=ndtp user=test password=test");
 		
 		// shape file full path 파일 호가장자 까지

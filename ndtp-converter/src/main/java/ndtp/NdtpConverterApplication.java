@@ -14,8 +14,6 @@ public class NdtpConverterApplication {
 		SpringApplication application = new SpringApplication(NdtpConverterApplication.class);
 		application.addListeners(new ApplicationPidFileWriter("./bin/app.pid"));
 		application.run(args);
-
-		// kill -9 $(cat ./shutdown.pid)
 	}
 
 }

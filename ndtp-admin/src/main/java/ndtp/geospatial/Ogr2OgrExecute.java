@@ -68,8 +68,7 @@ public class Ogr2OgrExecute {
         command.add("-f");
         command.add("PostgreSQL");
         command.add(this.driver);
-        log.info("============= driver = {}", this.driver);
-
+        
         // shape file full path 파일 호가장자 까지
         command.add(this.shapeFile);
         command.add("-nlt");
