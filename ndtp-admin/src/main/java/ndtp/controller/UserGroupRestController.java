@@ -262,7 +262,7 @@ public class UserGroupRestController implements AuthorizationController {
 
 	        CacheParams cacheParams = new CacheParams();
 			cacheParams.setCacheType(CacheType.SELF);
-			cacheParams.setCacheName(CacheName.USER_GROUP);
+			cacheParams.setCacheName(CacheName.MENU);
 			cacheConfig.loadCache(cacheParams);
 
 		} catch(DataAccessException e) {
@@ -309,7 +309,7 @@ public class UserGroupRestController implements AuthorizationController {
 
 	        CacheParams cacheParams = new CacheParams();
 			cacheParams.setCacheType(CacheType.SELF);
-			cacheParams.setCacheName(CacheName.USER_GROUP);
+			cacheParams.setCacheName(CacheName.ROLE);
 			cacheConfig.loadCache(cacheParams);
 
 		} catch(DataAccessException e) {

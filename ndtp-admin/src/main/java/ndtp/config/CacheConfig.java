@@ -48,7 +48,8 @@ public class CacheConfig {
 
         CacheParams cacheParams = new CacheParams();
 		cacheParams.setCacheType(CacheType.SELF);
-        
+        // 사용자 그룹
+		userGroup(cacheParams);
         // 사용자 그룹별 메뉴, Menu
         menu(cacheParams);
         // 사용자 그룹별 메뉴, Role
@@ -66,6 +67,7 @@ public class CacheConfig {
 		if(cacheName == CacheName.GEO_POLICY) geoPolicy(cacheParams);
 		else if(cacheName == CacheName.MENU) menu(cacheParams);
 		else if(cacheName == CacheName.ROLE) role(cacheParams);
+		else if(cacheName == CacheName.USER_GROUP) userGroup(cacheParams);
 	}
     
     /**
@@ -90,6 +92,13 @@ public class CacheConfig {
     	if(cacheType == CacheType.BROADCAST) {
     		callRemoteCache(cacheParams);
     	}
+    }
+    
+    /**
+     * 사용자 그룹
+     */
+    private void userGroup(CacheParams cacheParams) {
+    	// 
     }
     
     /**
