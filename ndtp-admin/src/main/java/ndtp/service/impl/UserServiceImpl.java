@@ -12,6 +12,7 @@ import ndtp.domain.UserInfo;
 import ndtp.domain.UserStatus;
 import ndtp.persistence.UserMapper;
 import ndtp.service.UserService;
+import ndtp.support.PasswordSupport;
 
 /**
  * 사용자
@@ -71,9 +72,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Transactional
 	public int insertUser(UserInfo userInfo) {
-		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(10);
-		String encodePassword = bCryptPasswordEncoder.encode(userInfo.getPassword());
-		userInfo.setPassword(encodePassword);
+		userInfo.setPassword(PasswordSupport.encodePassword(userInfo.getPassword()));
 		return userMapper.insertUser(userInfo);
 	}
 
@@ -85,6 +84,7 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public int updateUser(UserInfo userInfo) {
 		// TODO 환경 설정 값을 읽어 와서 update 할 건지, delete 할건지 분기를 타야 함
+		userInfo.setPassword(PasswordSupport.encodePassword(userInfo.getPassword()));
 		return userMapper.updateUser(userInfo);
 	}
 
