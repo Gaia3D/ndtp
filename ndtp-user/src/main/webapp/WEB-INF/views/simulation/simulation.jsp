@@ -7,7 +7,7 @@
 	#smulationToolbar .line {
 		width: 90%;
 		height: 0;
-		border: 0.6px solid #C4C4C4;
+		border: 0.5px solid #C4C4C4;
 		margin-bottom: 6px;
 		display:block;
 	}
@@ -190,14 +190,21 @@
 							<option value="dType3">일반 공업지역</option>
 							<option value="dType4">공동 주거지역</option>
 						</select>
+
+						<div class="line" style="margin-top:5px;"></div>
+						<button type="button" id="create3dModel" class="btnText drawObserverPoint" style="">3D모형 생성</button>
+						<label for="">  </label>
+
 						<label for="">지역 전시</label>
 						<select id="districtDisplay" name="districtDisplay">
 							<option value="disable">Disable</option>
 							<option value="enable">Enable</option>
 						</select>
-
-						<button type="button" id="create3dModel" class="btnText drawObserverPoint" style="">3D모형 생성</button>
-						<label for="">  </label>
+						<label for="">건물 그림자 생성</label>
+						<select id="buildingShadow" name="buildingShadow">
+							<option value="disable">Disable</option>
+							<option value="enable">Enable</option>
+						</select>
 
 						<div class="line" style="margin-top:5px;"></div>
 

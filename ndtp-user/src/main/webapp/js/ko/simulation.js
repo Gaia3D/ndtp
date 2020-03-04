@@ -423,6 +423,34 @@ var Simulation = function(magoInstance, viewer, $) {
 	Cesium.knockout.track(viewModel);
 	Cesium.knockout.applyBindings(viewModel, smulationToolbar);
 
+	$("#buildingShadow").change(value => {
+		let val = value.target.value;
+		if (pickedName === "") {
+			alert("지역을 먼저 선택해 주시기 바랍니다.");
+			return;
+		}
+		switch (val) {
+			case "disable":
+				allObject[pickedName].shadowView = false;
+				_viewer.shadows = false;
+				_viewer.softShadows = false;
+				allObject[pickedName].buildings.forEach((val, idx) => {
+					val.polygon.shadows = Cesium.ShadowMode.DISABLED;
+				});
+				break;
+			case "enable":
+				allObject[pickedName].shadowView = true;
+				_viewer.shadows = true;
+				_viewer.softShadows = true;
+				allObject[pickedName].buildings.forEach((val, idx) => {
+					val.polygon.shadows = Cesium.ShadowMode.ENABLED;
+				});
+				break;
+			default:
+				console.log("아무것도 선택되지 않았습니다.");
+		}
+	});
+
 	$("#districtDisplay").change(value => {
 		let val = value.target.value;
 		if (pickedName === "") {
@@ -480,6 +508,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				buildingToLandRatioCalc();
 				floorAreaRatioCalc();
 				settingDistrictDisplay();
+				settingBuildingShadow();
 				_viewer.selectedEntity = allObject[pickedName].terrain;
 				return;
 			}
@@ -488,6 +517,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				buildings: [], 		// [] entity
 				plottage: 0, 		// 대지 면적
 				totalFloorArea: 0, 	// 빌딩들의 총 건축면적
+				shadowView: false	// building shadow
 			};
 
 			const fileName = "Parcel6-4.geojson";
@@ -518,6 +548,7 @@ var Simulation = function(magoInstance, viewer, $) {
 					allObject[val].terrain = registeredEntity;
 				}
 				settingDistrictDisplay();
+				settingBuildingShadow();
 				// setTimeout(()=>{
 					_viewer.selectedEntity = allObject[pickedName].terrain;
 				// }, 500);
@@ -530,6 +561,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				buildingToLandRatioCalc();
 				floorAreaRatioCalc();
 				settingDistrictDisplay();
+				settingBuildingShadow();
 				_viewer.selectedEntity = allObject[pickedName].terrain;
 				return;
 			}
@@ -538,6 +570,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				buildings: [], 		// [] entity
 				plottage: 0, 		// 대지 면적
 				totalFloorArea: 0, 	// 빌딩들의 총 건축면적
+				shadowView: false	// building shadow
 			};
 
 			const fileName = "schoolphill.geojson";
@@ -568,6 +601,7 @@ var Simulation = function(magoInstance, viewer, $) {
 					allObject[val].terrain = registeredEntity;
 				}
 				settingDistrictDisplay();
+				settingBuildingShadow();
 				// setTimeout(()=>{
 					_viewer.selectedEntity = allObject[pickedName].terrain;
 				// }, 500);
@@ -766,6 +800,13 @@ var Simulation = function(magoInstance, viewer, $) {
 			$("#districtDisplay").val("enable");
 		} else {
 			$("#districtDisplay").val("disable");
+		}
+	}
+	function settingBuildingShadow() {
+		if (allObject[pickedName].shadowView) {
+			$("#buildingShadow").val("enable");
+		} else {
+			$("#buildingShadow").val("disable");
 		}
 	}
 
@@ -1164,7 +1205,7 @@ var Simulation = function(magoInstance, viewer, $) {
 						pickedName = pickedFeature.id.name;
 						allObject[pickedName].terrain = pickedFeature.id;
 						allObject[pickedName].plottage = getArea(allObject[pickedName].terrain.polygon._hierarchy._value.positions);
-
+b=pickedName;
 						$("#selectDistrict").val(allObject[pickedName].terrain.name).trigger("change");
 						// $("#districtDisplay").val("enable").trigger("change");
 					} else {

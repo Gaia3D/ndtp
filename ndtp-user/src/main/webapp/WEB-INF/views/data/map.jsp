@@ -185,6 +185,7 @@
 <script type="text/javascript" src="/js/${lang}/issue-controller.js"></script>
 <script type="text/javascript">
 	var a=1;
+	var b=2;
 	var buildAcceptPermSeq;
 	// 임시로...
 	$(document).ready(function() {
