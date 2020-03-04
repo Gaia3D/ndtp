@@ -24,8 +24,8 @@
 	<update id="putPermSend" parameterType="structPermission">
 		UPDATE struct_permission SET
 		<![CDATA[
-		is_complete = {#isComplete}, suitable = {#suitable}, notsuitablereason = {#notSuitableReason}
-		where perm_seq = {#perm_seq};
+		is_complete = #{isComplete}, suitable = #{suitable}, notsuitablereason = #{notSuitableReason}
+		where perm_seq = #{perm_seq};
 		]]>
 	</update>
 
