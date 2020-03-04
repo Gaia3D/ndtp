@@ -98,7 +98,16 @@ public class CacheConfig {
      * 사용자 그룹
      */
     private void userGroup(CacheParams cacheParams) {
-    	// 
+    	log.info("************ Cache Reload userGroup ************");
+    	CacheParams selfParams = new CacheParams();
+    	selfParams.setCacheType(CacheType.SELF);
+    	menu(selfParams);
+    	role(selfParams);
+    	
+    	CacheType cacheType = cacheParams.getCacheType();
+    	if(cacheType == CacheType.BROADCAST) {
+    		callRemoteCache(cacheParams);
+    	}
     }
     
     /**

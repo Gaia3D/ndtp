@@ -81,6 +81,7 @@ public class CacheConfig {
 		if(cacheName == CacheName.POLICY) policy(cacheParams);
 		else if(cacheName == CacheName.MENU) menu(cacheParams);
 		else if(cacheName == CacheName.ROLE) role(cacheParams);
+		else if(cacheName == CacheName.USER_GROUP) userGroup(cacheParams);
 		else if(cacheName == CacheName.SMART_TILING_DATA) smartTilingData(cacheParams);
 	}
     
@@ -102,6 +103,15 @@ public class CacheConfig {
     	log.info("************ Cache Reload geoPolicy ************");
     	GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
     	CacheManager.setGeoPolicy(geoPolicy);
+    }
+    
+    /**
+     * 사용자 그룹
+     */
+    private void userGroup(CacheParams cacheParams) {
+    	log.info("************ Cache Reload userGroup ************");
+    	menu(cacheParams);
+    	role(cacheParams);
     }
     
     /**

@@ -169,6 +169,12 @@ public class UserGroupRestController implements AuthorizationController {
 			//userGroup.setUserId(userSession.getUserId());
 
 			userGroupService.insertUserGroup(userGroup);
+			
+			CacheParams cacheParams = new CacheParams();
+			cacheParams.setCacheType(CacheType.BROADCAST);
+			cacheParams.setCacheName(CacheName.USER_GROUP);
+			cacheConfig.loadCache(cacheParams);
+			
 		} catch(DataAccessException e) {
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "db.exception";
@@ -218,6 +224,12 @@ public class UserGroupRestController implements AuthorizationController {
 			}
 
 			userGroupService.updateUserGroup(userGroup);
+			
+			CacheParams cacheParams = new CacheParams();
+			cacheParams.setCacheType(CacheType.BROADCAST);
+			cacheParams.setCacheName(CacheName.USER_GROUP);
+			cacheConfig.loadCache(cacheParams);
+			
 		} catch(DataAccessException e) {
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "db.exception";
@@ -261,7 +273,7 @@ public class UserGroupRestController implements AuthorizationController {
 			userGroupService.updateUserGroupMenu(userGroupMenu);
 
 	        CacheParams cacheParams = new CacheParams();
-			cacheParams.setCacheType(CacheType.SELF);
+			cacheParams.setCacheType(CacheType.BROADCAST);
 			cacheParams.setCacheName(CacheName.MENU);
 			cacheConfig.loadCache(cacheParams);
 
@@ -308,7 +320,7 @@ public class UserGroupRestController implements AuthorizationController {
 			userGroupService.updateUserGroupRole(userGroupRole);
 
 	        CacheParams cacheParams = new CacheParams();
-			cacheParams.setCacheType(CacheType.SELF);
+			cacheParams.setCacheType(CacheType.BROADCAST);
 			cacheParams.setCacheName(CacheName.ROLE);
 			cacheConfig.loadCache(cacheParams);
 
