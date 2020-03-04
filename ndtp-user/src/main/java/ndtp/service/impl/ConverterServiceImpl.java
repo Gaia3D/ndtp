@@ -224,7 +224,8 @@ public class ConverterServiceImpl implements ConverterService {
 			converterJob.setStatus(ConverterJobStatus.WAITING.name());
 			converterJob.setErrorCode(e.getMessage());
 			converterMapper.updateConverterJob(converterJob);
-			log.info("@@ AmqpException. message = {}", e.getMessage());
+			
+			log.info("@@@@@@@@@@@@ AmqpException. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
 		}
 	}
 
