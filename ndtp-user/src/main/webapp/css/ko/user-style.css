@@ -1506,9 +1506,11 @@ background:url(/images/ko/ico_layer.png) no-repeat 5px -248px;
 li.nodepth.on span {
 background:url(/images/ko/ico_layer.png) no-repeat 5px -198px;
 }
-
+.btnGroup {
+text-align:center;
+}
 button.textBtnSub {
-padding: 8px;
+padding: 6px;
 border-radius: 3px;
 color: #333;
 font-size: 14px;
