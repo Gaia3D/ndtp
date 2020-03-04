@@ -345,3 +345,27 @@ function initPolicy(callback, dataId) {
 		}
 	});
 }
+
+/**
+ * 경위도 유효 범위 체크 
+ * @param longitude
+ * @param latitude
+ * @param altitude
+ * @returns
+ */
+function locationValidation(longitude, latitude, altitude) {
+	var lon = Number(longitude);
+	var lat = Number(latitude);
+	var alt = Number(altitude);
+	if(isNaN(lon) || isNaN(lat) || isNaN(alt)) {
+		alert("숫자만 입력 가능합니다.");
+		return false;
+	}
+	if((-180 <= lon && lon <= 180) &&  (-90 <= lat && lat <= 90) && (0 <= alt && alt <= 300000)) {
+		return true;
+	} else {
+		alert("경도 유효범위 : -180 ~ 180\n위도 유효범위 : -90 ~ 90 \n높이 유효범위 : 300000 입니다.");
+		return false;
+	}
+	
+}

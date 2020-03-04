@@ -357,6 +357,9 @@
 			$("#altitude").focus();
 			return false;
 		}
+		if(!locationValidation($("#longitude").val(), $("#latitude").val(), $("#altitude").val())) {
+			return false;
+		}
 	}
 
 	function alertMessage(response) {
