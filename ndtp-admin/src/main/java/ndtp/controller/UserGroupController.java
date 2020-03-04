@@ -16,6 +16,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
+import ndtp.config.CacheConfig;
+import ndtp.domain.CacheName;
+import ndtp.domain.CacheParams;
+import ndtp.domain.CacheType;
 import ndtp.domain.Menu;
 import ndtp.domain.MenuTarget;
 import ndtp.domain.MenuType;
@@ -48,6 +52,9 @@ public class UserGroupController implements AuthorizationController {
 
 	@Autowired
 	private ObjectMapper objectMapper;
+	
+	@Autowired
+	private CacheConfig cacheConfig;
 
 	/**
 	 * 사용자 그룹 목록
@@ -121,6 +128,11 @@ public class UserGroupController implements AuthorizationController {
 		userGroup.setUserGroupId(userGroupId);
 
 		userGroupService.deleteUserGroup(userGroup);
+		
+		CacheParams cacheParams = new CacheParams();
+		cacheParams.setCacheType(CacheType.BROADCAST);
+		cacheParams.setCacheName(CacheName.USER_GROUP);
+		cacheConfig.loadCache(cacheParams);
 
 		return "redirect:/user-group/list";
 	}
