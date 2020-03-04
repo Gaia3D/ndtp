@@ -391,6 +391,7 @@
 						alert("삭제되었습니다.");
 						MENU_TREE.setTree(JSON.parse(msg.menuTree));
 						MENU_TREE.collapseAll();
+						location.reload();
 					} else {
 						alert(JS_MESSAGE[msg.errorCode]);
 						console.log("---- " + msg.message);

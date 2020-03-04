@@ -36,6 +36,20 @@ public interface UserGroupMapper {
      * @return
      */
     UserGroup getUserGroupByParentAndViewOrder(UserGroup userGroup);
+    
+    /**
+     * 조상이 같은 사용자 그룹 아이디 목록
+     * @param userGroupId
+     * @return
+     */
+    List<Integer> getUserGroupIdByAncestor(Integer userGroupId);
+    
+    /**
+     * 부모가 같은 사용자 그룹 아이디 목록
+     * @param userGroupId
+     * @return
+     */
+    List<Integer> getUserGroupIdByParent(Integer userGroupId);
 
     /**
      * 사용자 그룹 Key 중복 확인
