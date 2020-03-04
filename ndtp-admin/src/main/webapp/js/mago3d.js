@@ -14437,534 +14437,6 @@ var Mago3D = (function()
 {
 'use strict';
 
-var Emitter = function () 
-{
-	this._events = {};
-};
-
-Emitter.prototype.on = function (event, fn, once) 
-{
-	if (!this._events[event]) 
-	{
-		this._events[event] = [];
-	}
-	this._events[event].push({
-		fn   : fn,
-		once : once
-	});
-
-	return this;
-};
-Emitter.prototype.once = function (event, fn) 
-{
-	return this.on(event, fn, true);
-};
-
-Emitter.prototype.emit = function (event) 
-{
-	var callbacks = this._events[event];
-	var onces = [];
-	if (callbacks) 
-	{
-		for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) 
-		{
-			args[_key - 1] = arguments[_key];
-		}
-
-		for (var _iterator = callbacks, _isArray = true, _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator](); ;) 
-		{
-			var _ref;
-
-			if (_isArray) 
-			{
-				if (_i >= _iterator.length) { break; }
-				_ref = _iterator[_i++];
-			}
-			else 
-			{
-				_i = _iterator.next();
-				if (_i.done) { break; }
-				_ref = _i.value;
-			}
-			var callbackObj = _ref;
-			if (callbackObj.fn && typeof callbackObj.fn === 'function') 
-			{
-				callbackObj.fn.apply(this, args);
-			}
-
-			if (callbackObj.once && _isArray) 
-			{
-				onces.push(_i-1);
-			}
-			//
-		}
-	}
-	if (onces.length > 0 && Array.isArray(callbacks)) 
-	{
-		for (var i=onces.length-1;i>=0;i--) 
-		{
-			callbacks.splice(onces[i], 1);
-		}
-	}
-
-	return this;
-};
-
-Emitter.prototype.off = function (event, fn) 
-{
-	if (!this._events || arguments.length === 0) 
-	{
-		this._events = {};
-		return this;
-	}
-
-	// specific event
-	var callbacks = this._events[event];
-	if (!callbacks) 
-	{
-		return this;
-	}
-
-	// remove all handlers
-	if (arguments.length === 1) 
-	{
-		delete this._events[event];
-		return this;
-	}
-
-	// remove specific handler
-	for (var i = 0; i < callbacks.length; i++) 
-	{
-		var callback = callbacks[i];
-		if (callback.fn === fn) 
-		{
-			callbacks.splice(i, 1);
-			break;
-		}
-	}
-
-	return this;
-};
-'use strict';
-
-var MagoRenderable = function(options) 
-{
-	this.objectsArray = [];
-
-	this.id;
-	this.name;
-	this.owner;
-
-	this.attributes = {
-		isVisible: true
-	};
-	// Use this matrix if this is child.
-	this.tMat;
-	this.tMatOriginal;
-
-	// use this geoLocDataManager if this is no child.
-	this.geoLocDataManager;
-	
-	this.dirty = true;
-	this.color4;
-	this.wireframeColor4;
-	this.selectedColor4;
-
-	this.eventObject = {};
-	
-	this.options = options;
-	if (options !== undefined)
-	{
-		if (options.color && options.color instanceof Color) 
-		{
-			this.color4 = options.color;
-		}
-	}
-};
-
-MagoRenderable.EVENT_TYPE = {
-	'RENDER_END'   : 'renderEnd',
-	'RENDER_START' : 'renderStart',
-	'MOVE_END'     : 'moveEnd',
-	'MOVE_START'   : 'moveStart'
-};
-/**
- * 이벤트 등록
- * @param {MagoEvent} event 
- */
-MagoRenderable.prototype.addEventListener = function(event) 
-{
-	if (!event instanceof MagoEvent) 
-	{
-		throw new Error('args event must MagoEvent!');
-	}
-
-	var type = event.getType();
-
-	if (!MagoRenderable.EVENT_TYPE[type]) 
-	{
-		throw new Error('this type is not support.');
-	}
-
-	if (!this.eventObject[type]) 
-	{
-		this.eventObject[type] = [];
-	}
-
-	this.eventObject[type].push(event);
-};
-/**
- * 이벤트 실행
- * @param {String} type 
- */
-MagoRenderable.prototype.dispatchEvent = function(type, magoManager) 
-{
-	if (!MagoRenderable.EVENT_TYPE[type]) 
-	{
-		throw new Error('this type is not support.');
-	}
-
-	var events = this.eventObject[type];
-
-	if (!events || !Array.isArray(events)) { return; } 
-	
-	for (var i=0, len=events.length;i<len;i++) 
-	{
-		var event = events[i];
-		var listener = event.getListener();
-		if (typeof listener === 'function') 
-		{
-			listener.apply(this, [this, magoManager]);
-		}
-	}
-};
-MagoRenderable.prototype.getRootOwner = function() 
-{
-	if (this.owner === undefined)
-	{ return this; }
-	else 
-	{
-		return this.owner.getRootOwner();
-	}
-};
-
-MagoRenderable.prototype.getObject = function(idx) 
-{
-	if (idx > this.objectsArray.length-1) 
-	{
-		throw new Error('out of bound range.');
-		//return undefined;
-	}
-
-	return this.objectsArray[idx];
-};
-
-MagoRenderable.prototype.render = function(magoManager, shader, renderType, glPrimitive, bIsSelected) 
-{
-	if (this.attributes) 
-	{
-		if (this.attributes.isVisible !== undefined && this.attributes.isVisible === false) 
-		{
-			return;
-		}
-		
-		if (renderType === 2)
-		{
-			if (this.attributes.isSelectable !== undefined && this.attributes.isSelectable === false) 
-			{
-				return;
-			}
-		}
-	}
-	
-
-	if (this.dirty)
-	{ this.makeMesh(); }
-	
-	if (this.objectsArray.length === 0)
-	{ return false; }
-
-	// Set geoLocation uniforms.***
-	var gl = magoManager.getGl();
-	var buildingGeoLocation = this.geoLocDataManager.getCurrentGeoLocationData();
-	buildingGeoLocation.bindGeoLocationUniforms(gl, shader); // rotMatrix, positionHIGH, positionLOW.
-	
-	this.renderAsChild(magoManager, shader, renderType, glPrimitive, bIsSelected, this.options);
-	
-	// check options provisionally here.
-	if (this.options)
-	{
-		if (this.options.renderWireframe)
-		{
-			var shaderThickLine = magoManager.postFxShadersManager.getShader("thickLine");
-			shaderThickLine.useProgram();
-			shaderThickLine.bindUniformGenerals();
-			var gl = magoManager.getGl();
-
-			gl.blendEquationSeparate(gl.FUNC_ADD, gl.FUNC_ADD);
-			gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-			gl.disable(gl.CULL_FACE);
-			
-			gl.enableVertexAttribArray(shaderThickLine.prev_loc);
-			gl.enableVertexAttribArray(shaderThickLine.current_loc);
-			gl.enableVertexAttribArray(shaderThickLine.next_loc);
-			
-			var geoLocData = this.geoLocDataManager.getCurrentGeoLocationData();
-			geoLocData.bindGeoLocationUniforms(gl, shaderThickLine);
-
-			var sceneState = magoManager.sceneState;
-			var drawingBufferWidth = sceneState.drawingBufferWidth;
-			var drawingBufferHeight = sceneState.drawingBufferHeight;
-			if (this.wireframeColor4)
-			{ gl.uniform4fv(shaderThickLine.color_loc, [this.wireframeColor4.r, this.wireframeColor4.g, this.wireframeColor4.b, this.wireframeColor4.a]); }
-			else
-			{ gl.uniform4fv(shaderThickLine.color_loc, [0.6, 0.8, 0.9, 1.0]); }
-			gl.uniform2fv(shaderThickLine.viewport_loc, [drawingBufferWidth[0], drawingBufferHeight[0]]);
-
-			this.renderAsChild(magoManager, shaderThickLine, renderType, glPrimitive, bIsSelected, this.options);
-			
-			// Return to the currentShader.
-			shader.useProgram();
-		}
-	}
-};
-
-MagoRenderable.prototype.renderAsChild = function(magoManager, shader, renderType, glPrimitive, bIsSelected, options) 
-{
-	if (this.dirty)
-	{ this.makeMesh(); }
-
-	// Set geoLocation uniforms.***
-	var gl = magoManager.getGl();
-	
-	if (renderType === 0)
-	{
-		// Depth render.***
-	}
-	else if (renderType === 1)
-	{
-		// Color render.***
-		gl.enable(gl.BLEND);
-		gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.***
-		
-		// Check if is selected.***
-		var selectionManager = magoManager.selectionManager;
-		
-		if (bIsSelected !== undefined && bIsSelected)
-		{
-			var color = this.selectedColor4 ? this.selectedColor4 : this.color4;
-			if (color) 
-			{
-				gl.uniform4fv(shader.oneColor4_loc, [color.r, color.g, color.b, color.a]);
-			}
-		}
-		else if (selectionManager.isObjectSelected(this))
-		{
-			bIsSelected = true;
-			var selColor = [0.9, 0.1, 0.1, 1.0];
-			if (this.attributes.selectedColor4)
-			{
-				var selectedColor = this.attributes.selectedColor4;
-				selColor = [selectedColor.r, selectedColor.g, selectedColor.b, selectedColor.a];
-			}
-			
-			gl.uniform4fv(shader.oneColor4_loc, selColor);
-		}
-		else 
-		{
-			if (this.color4) 
-			{
-				gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, this.color4.a]);
-			}
-		}
-	}
-	else if (renderType === 2)
-	{
-		// Selection render.***
-		var selectionColor = magoManager.selectionColor;
-		var colorAux = selectionColor.getAvailableColor(undefined);
-		var idxKey = selectionColor.decodeColor3(colorAux.r, colorAux.g, colorAux.b);
-		magoManager.selectionManager.setCandidateGeneral(idxKey, this);
-		
-		gl.uniform4fv(shader.oneColor4_loc, [colorAux.r/255.0, colorAux.g/255.0, colorAux.b/255.0, 1.0]);
-		gl.disable(gl.BLEND);
-	}
-
-	if (this.tMat) 
-	{
-		gl.uniformMatrix4fv(shader.buildingRotMatrix_loc, false, this.tMat._floatArrays);
-	}
-	
-	var objectsCount = this.objectsArray.length;
-	
-	for (var i=0; i<objectsCount; i++)
-	{
-		this.objectsArray[i].renderAsChild(magoManager, shader, renderType, glPrimitive, bIsSelected, options);
-	}
-
-	gl.disable(gl.BLEND);
-
-	this.dispatchEvent('RENDER_END', magoManager);
-};
-
-MagoRenderable.prototype.makeMesh = function() 
-{
-	return abstract();
-};
-
-MagoRenderable.prototype.moved = function() 
-{
-	// do something.
-};
-
-MagoRenderable.prototype.updateMatrix = function(ownerMatrix) 
-{
-	if (!ownerMatrix) 
-	{
-		if (this.geoLocDataManager === undefined || this.geoLocDataManager === null) 
-		{
-			return;
-		}
-
-		var geoLocDataManager = this.geoLocDataManager;
-		var geoLocData = geoLocDataManager.getCurrentGeoLocationData();
-		this.tMat = geoLocData.rotMatrix;
-	}
-	else 
-	{
-		this.tMat = this.tMatOriginal.getMultipliedByMatrix(ownerMatrix, this.tMat);
-	}
-    
-	if (this.objectsArray === undefined)
-	{ return; }
-	for (var i=0, len=this.objectsArray.length; i <len;++i) 
-	{
-		var object = this.objectsArray[i];
-		if (object instanceof MagoRenderable)
-		{
-			this.objectsArray[i].updateMatrix(this.tMat);
-		}
-	}
-};
-MagoRenderable.prototype.setDirty = function(dirty) 
-{
-	this.dirty = dirty;
-};
-/**
- * Set the unique one color of the box
- * @param {Number} r
- * @param {Number} g
- * @param {Number} b 
- * @param {Number} a
- */
-MagoRenderable.prototype.setOneColor = function(r, g, b, a)
-{
-	// This function sets the unique one color of the mesh.***
-	if (this.color4 === undefined)
-	{ this.color4 = new Color(); }
-	
-	this.color4.setRGBA(r, g, b, a);
-
-	//TODO : 좀 더 정교한 근사값 구하기로 변경
-	if (a < 1) 
-	{
-		this.setOpaque(false);
-	}
-};
-/**
- * Set the unique one color of the box
- * @param {Number} r
- * @param {Number} g
- * @param {Number} b 
- * @param {Number} a
- */
-MagoRenderable.prototype.setWireframeColor = function(r, g, b, a)
-{
-	// This function sets the unique one color of the mesh.***
-	if (this.wireframeColor4 === undefined)
-	{ this.wireframeColor4 = new Color(); }
-	
-	this.wireframeColor4.setRGBA(r, g, b, a);
-
-	//TODO : 좀 더 정교한 근사값 구하기로 변경
-	if (a < 1) 
-	{
-		this.setOpaque(false);
-	}
-};
-
-MagoRenderable.prototype.setOpaque = function(opaque)
-{
-	this.attributes.opaque = opaque;
-};
-MagoRenderable.prototype.isOpaque = function()
-{
-	if (this.attributes.opaque === undefined) 
-	{
-		return true;
-	}
-
-	return this.attributes.opaque;
-};
-MagoRenderable.prototype.getGeoLocDataManager = function()
-{
-	return this.geoLocDataManager;
-};
-'use strict';
-
-var ViewerInit = function(containerId, serverPolicy) 
-{
-
-	if (!containerId || !document.getElementById(containerId)) 
-	{
-		throw new Error('containerId is required.');
-	}
-	serverPolicy.maxPartitionsLod0 = 8;
-	serverPolicy.maxPartitionsLod1 = 4;
-	serverPolicy.maxPartitionsLod2OrLess = 2;
-
-	serverPolicy.maxRatioPointsDist0m = 1.0;
-	serverPolicy.maxRatioPointsDist100m = 10.0;
-	serverPolicy.maxRatioPointsDist200m = 20.0;
-	serverPolicy.maxRatioPointsDist400m = 40.0;
-	serverPolicy.maxRatioPointsDist800m = 80.0;
-	serverPolicy.maxRatioPointsDist1600m = 160.0;
-	serverPolicy.maxRatioPointsDistOver1600m = 320.0;
-
-	serverPolicy.maxPointSizeForPc = 10.0;
-	serverPolicy.minPointSizeForPc = 2.0;
-	serverPolicy.pendentPointSizeForPc = 60.0;
-
-	serverPolicy.minHeight_rainbow_loc = 0.0;
-	serverPolicy.maxHeight_rainbow_loc = 100.0;
-
-	MagoConfig.init(serverPolicy, null, null);
-
-	this.targetId = containerId;
-	this.magoManager;
-	this.viewer;
-	this.policy = MagoConfig.getPolicy();
-
-	MagoConfig.setContainerId(this.targetId);
-	this.init();
-};
-
-ViewerInit.prototype.init = function() 
-{
-	return abstract();
-};
-
-ViewerInit.prototype.initMagoManager = function() 
-{
-	return abstract();
-};
-
-ViewerInit.prototype.setEventHandler = function() 
-{
-	return abstract();
-};
-'use strict';
-
 /**
  * color 처리 관련 도메인
  * @class ColorAPI
@@ -15139,1932 +14611,556 @@ LodAPI.changeLod = function(api, magoManager)
 };
 'use strict';
 
-/**
- * mago3djs API
- * 
- * @alias API
- * @class API
- * 
- * @param {any} apiName api이름
- */
-function API(apiName)
+var Emitter = function () 
 {
-	if (!(this instanceof API)) 
+	this._events = {};
+};
+
+Emitter.prototype.on = function (event, fn, once) 
+{
+	if (!this._events[event]) 
 	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
+		this._events[event] = [];
 	}
+	this._events[event].push({
+		fn   : fn,
+		once : once
+	});
 
-	// mago3d 활성화/비활성화 여부
-	this.magoEnable = true;
-	// return
-	this.returnable = false;
-
-	// api 이름
-	this.apiName = apiName;
-	
-	// project id
-	this.projectId = null;
-	this.projectDataFolder = null;
-	// objectIds
-	this.objectIds = null;
-	// data_key
-	this.dataKey = null;
-	// issueId
-	this.issueId = null;
-	// issueType
-	this.issueType = null;
-	// drawType 이미지를 그리는 유형 0 : DB, 1 : 이슈등록
-	this.drawType = 0;
-
-	// 위도
-	this.latitude = 0;
-	// 경도
-	this.longitude = 0;
-	// 높이
-	this.elevation = 0;
-	// heading
-	this.heading = 0;
-	// pitch
-	this.pitch = 0;
-	// roll
-	this.roll = 0;
-	// duration
-	this.duration = 0;
-
-	// 속성
-	this.property = null;
-	// 색깔
-	this.color = 0;
-	// structs = MSP, outfitting = MOP
-	this.blockType = null;
-	// outfitting 표시/비표시
-	this.showOutFitting = false;
-	// label 표시/비표시
-	this.showLabelInfo = true;
-	// origin 표시/비표시
-	this.showOrigin = false;
-	// boundingBox 표시/비표시
-	this.showBoundingBox = false;
-	// 그림자 표시/비표시
-	this.showShadow = false;
-	// frustum culling 가시 거리(M단위)
-	this.frustumFarDistance = 0;
-	// move mode 
-	this.objectMoveMode = CODE.moveMode.NONE;
-	// 이슈 등록 표시
-	this.issueInsertEnable = false;
-	// object 정보 표시
-	this.objectInfoViewEnable = false;
-	// 이슈 목록 표시
-	this.nearGeoIssueListEnable = false;
-	// occlusion culling
-	this.occlusionCullingEnable = false;
-	//
-	this.insertIssueState = 0;
-	
-	// LOD1
-	this.lod0DistInMeters = null;
-	this.lod1DistInMeters = null;
-	this.lod2DistInMeters = null;
-	this.lod3DistInMeters = null;
-	this.lod4DistInMeters = null;
-	this.lod5DistInMeters = null;
-	
-	// Lighting
-	this.ambientReflectionCoef = null;
-	this.diffuseReflectionCoef = null;
-	this.specularReflectionCoef = null;
-	this.ambientColor = null;
-	this.specularColor = null;
-	
-	this.ssaoRadius = null;
-	//
-	this.FPVMode = false;
-
-	// input x, y, z
-	this.inputPoint = null;
-	// result x, y, z
-	this.resultPoint = null;
-	
-	// General magoMode.
-	this.magoMode = CODE.magoMode.NORMAL;
-
-	//position unit
-	this.unit = CODE.units.DEGREE;
-
-	//for staticModel instantiate
-	this.instantiateObj = null;
-
-	//for staticModel add
-	this.staticModelAttributeObj = null;
-
-	//animation option. 
-	this.animationOption = null;
-
-	/**
-	 * @type {trackOption}
-	 */
-	this.trackOption = null;
-
-	/**
-	 * @type {nodeAttribute}
-	 */
-	this.nodeAttribute = null;
+	return this;
+};
+Emitter.prototype.once = function (event, fn) 
+{
+	return this.on(event, fn, true);
 };
 
-API.prototype.getMagoEnable = function() 
-{
-	return this.magoEnable;
-};
-API.prototype.setMagoEnable = function(magoEnable) 
-{
-	this.magoEnable = magoEnable;
-};
-
-API.prototype.getReturnable = function()
-{
-	return this.returnable;
-};
-API.prototype.setReturnable = function(returnable)
-{
-	this.returnable = returnable;
-};
-
-API.prototype.getAPIName = function() 
-{
-	return this.apiName;
-};
-
-API.prototype.getProjectId = function() 
-{
-	return this.projectId;
-};
-API.prototype.setProjectId = function(projectId) 
-{
-	this.projectId = projectId;
-};
-
-API.prototype.getProjectDataFolder = function() 
-{
-	return this.projectDataFolder;
-};
-API.prototype.setProjectDataFolder = function(projectDataFolder) 
-{
-	this.projectDataFolder = projectDataFolder;
-};
-
-API.prototype.getObjectIds = function() 
-{
-	return this.objectIds;
-};
-API.prototype.setObjectIds = function(objectIds) 
-{
-	this.objectIds = objectIds;
-};
-
-API.prototype.getIssueId = function() 
-{
-	return this.issueId;
-};
-API.prototype.setIssueId = function(issueId) 
-{
-	this.issueId = issueId;
-};
-API.prototype.getIssueType = function() 
-{
-	return this.issueType;
-};
-API.prototype.setIssueType = function(issueType) 
-{
-	this.issueId = issueType;
-};
-
-API.prototype.getDataKey = function() 
-{
-	return this.dataKey;
-};
-API.prototype.setDataKey = function(dataKey) 
-{
-	this.dataKey = dataKey;
-};
-
-API.prototype.getLatitude = function() 
-{
-	return this.latitude;
-};
-API.prototype.setLatitude = function(latitude) 
-{
-	this.latitude = latitude;
-};
-
-API.prototype.getLongitude = function() 
-{
-	return this.longitude;
-};
-API.prototype.setLongitude = function(longitude) 
-{
-	this.longitude = longitude;
-};
-
-API.prototype.getElevation = function() 
-{
-	return this.elevation;
-};
-API.prototype.setElevation = function(elevation) 
-{
-	this.elevation = elevation;
-};
-
-API.prototype.getHeading = function() 
-{
-	return this.heading;
-};
-API.prototype.setHeading = function(heading) 
-{
-	this.heading = heading;
-};
-
-API.prototype.getPitch = function() 
-{
-	return this.pitch;
-};
-API.prototype.setPitch = function(pitch) 
-{
-	this.pitch = pitch;
-};
-
-API.prototype.getRoll = function() 
-{
-	return this.roll;
-};
-API.prototype.setRoll = function(roll) 
-{
-	this.roll = roll;
-};
-
-API.prototype.getProperty = function() 
-{
-	return this.property;
-};
-API.prototype.setProperty = function(property) 
-{
-	this.property = property;
-};
-
-API.prototype.getColor = function() 
-{
-	return this.color;
-};
-API.prototype.setColor = function(color) 
-{
-	this.color = color;
-};
-
-API.prototype.getBlockType = function() 
-{
-	return this.blockType;
-};
-API.prototype.setBlockType = function(blockType) 
-{
-	this.blockType = blockType;
-};
-
-API.prototype.getShowOutFitting = function() 
-{
-	return this.showOutFitting;
-};
-API.prototype.setShowOutFitting = function(showOutFitting) 
-{
-	this.showOutFitting = showOutFitting;
-};
-
-
-API.prototype.getShowLabelInfo = function() 
-{
-	return this.showLabelInfo;
-};
-API.prototype.setShowLabelInfo = function(showLabelInfo) 
-{
-	this.showLabelInfo = showLabelInfo;
-};
-
-API.prototype.getShowOrigin = function()
-{
-	return this.showOrigin;
-};
-API.prototype.setShowOrigin = function(showOrigin)
-{
-	this.showOrigin = showOrigin;
-};
-
-API.prototype.getShowBoundingBox = function() 
-{
-	return this.showBoundingBox;
-};
-API.prototype.setShowBoundingBox = function(showBoundingBox) 
-{
-	this.showBoundingBox = showBoundingBox;
-};
-
-API.prototype.getShowShadow = function() 
-{
-	return this.showShadow;
-};
-API.prototype.setShowShadow = function(showShadow) 
-{
-	this.showShadow = showShadow;
-};
-
-API.prototype.getFrustumFarDistance = function() 
-{
-	return this.frustumFarDistance;
-};
-API.prototype.setFrustumFarDistance = function(frustumFarDistance) 
-{
-	this.frustumFarDistance = frustumFarDistance;
-};
-
-API.prototype.getObjectMoveMode = function() 
-{
-	return this.objectMoveMode;
-};
-API.prototype.setObjectMoveMode = function(objectMoveMode) 
-{
-	this.objectMoveMode = objectMoveMode;
-};
-
-API.prototype.getIssueInsertEnable = function() 
-{
-	return this.issueInsertEnable;
-};
-API.prototype.setIssueInsertEnable = function(issueInsertEnable) 
-{
-	this.issueInsertEnable = issueInsertEnable;
-};
-API.prototype.getObjectInfoViewEnable = function() 
-{
-	return this.objectInfoViewEnable;
-};
-API.prototype.setObjectInfoViewEnable = function(objectInfoViewEnable) 
-{
-	this.objectInfoViewEnable = objectInfoViewEnable;
-};
-API.prototype.getOcclusionCullingEnable = function() 
-{
-	return this.occlusionCullingEnable;
-};
-API.prototype.setOcclusionCullingEnable = function(occlusionCullingEnable) 
-{
-	this.occlusionCullingEnable = occlusionCullingEnable;
-};
-API.prototype.getNearGeoIssueListEnable = function() 
-{
-	return this.nearGeoIssueListEnable;
-};
-API.prototype.setNearGeoIssueListEnable = function(nearGeoIssueListEnable) 
-{
-	this.nearGeoIssueListEnable = nearGeoIssueListEnable;
-};
-
-API.prototype.getInsertIssueState = function() 
-{
-	return this.insertIssueState;
-};
-API.prototype.setInsertIssueState = function(insertIssueState) 
-{
-	this.insertIssueState = insertIssueState;
-};
-
-API.prototype.getDrawType = function() 
-{
-	return this.drawType;
-};
-API.prototype.setDrawType = function(drawType) 
-{
-	this.drawType = drawType;
-};
-
-API.prototype.getLod0DistInMeters = function() 
-{
-	return this.lod0DistInMeters;
-};
-API.prototype.setLod0DistInMeters = function(lod0DistInMeters) 
-{
-	this.lod0DistInMeters = lod0DistInMeters;
-};
-API.prototype.getLod1DistInMeters = function() 
-{
-	return this.lod1DistInMeters;
-};
-API.prototype.setLod1DistInMeters = function(lod1DistInMeters) 
-{
-	this.lod1DistInMeters = lod1DistInMeters;
-};
-API.prototype.getLod2DistInMeters = function() 
-{
-	return this.lod2DistInMeters;
-};
-API.prototype.setLod2DistInMeters = function(lod2DistInMeters) 
-{
-	this.lod2DistInMeters = lod2DistInMeters;
-};
-API.prototype.getLod3DistInMeters = function() 
-{
-	return this.lod3DistInMeters;
-};
-API.prototype.setLod3DistInMeters = function(lod3DistInMeters) 
-{
-	this.lod3DistInMeters = lod3DistInMeters;
-};
-API.prototype.getLod4DistInMeters = function() 
-{
-	return this.lod4DistInMeters;
-};
-API.prototype.setLod4DistInMeters = function(lod4DistInMeters) 
-{
-	this.lod4DistInMeters = lod4DistInMeters;
-};
-API.prototype.getLod5DistInMeters = function() 
-{
-	return this.lod5DistInMeters;
-};
-API.prototype.setLod5DistInMeters = function(lod5DistInMeters) 
-{
-	this.lod5DistInMeters = lod5DistInMeters;
-};
-
-API.prototype.getAmbientReflectionCoef = function() 
-{
-	return this.ambientReflectionCoef;
-};
-API.prototype.setAmbientReflectionCoef = function(ambientReflectionCoef) 
-{
-	this.ambientReflectionCoef = ambientReflectionCoef;
-};
-API.prototype.getDiffuseReflectionCoef = function() 
-{
-	return this.diffuseReflectionCoef;
-};
-API.prototype.setDiffuseReflectionCoef = function(diffuseReflectionCoef) 
-{
-	this.diffuseReflectionCoef = diffuseReflectionCoef;
-};
-API.prototype.getSpecularReflectionCoef = function() 
-{
-	return this.specularReflectionCoef;
-};
-API.prototype.setSpecularReflectionCoef = function(specularReflectionCoef) 
-{
-	this.specularReflectionCoef = specularReflectionCoef;
-};
-API.prototype.getAmbientColor = function() 
-{
-	return this.ambientColor;
-};
-API.prototype.setAmbientColor = function(ambientColor) 
-{
-	this.ambientColor = ambientColor;
-};
-API.prototype.getSpecularColor = function() 
-{
-	return this.specularColor;
-};
-API.prototype.setSpecularColor = function(specularColor) 
-{
-	this.specularColor = specularColor;
-};
-API.prototype.getSsaoRadius = function() 
-{
-	return this.ssaoRadius;
-};
-API.prototype.setSsaoRadius = function(ssaoRadius) 
-{
-	this.ssaoRadius = ssaoRadius;
-};
-API.prototype.getFPVMode = function()
-{
-	return this.FPVMode;
-};
-API.prototype.setFPVMode = function(value)
-{
-	this.FPVMode = value;
-};
-API.prototype.getMagoMode = function()
-{
-	return this.magoMode;
-};
-API.prototype.setMagoMode = function(value)
-{
-	this.magoMode = value;
-};
-API.prototype.getDuration = function()
-{
-	return this.duration;
-};
-API.prototype.setDuration = function(duration)
-{
-	this.duration = duration;
-};
-
-API.prototype.getInputPoint = function()
-{
-	return this.inputPoint;
-};
-API.prototype.setInputPoint = function(inputPoint)
-{
-	this.inputPoint = inputPoint;
-};
-
-API.prototype.getResultPoint = function()
-{
-	return this.resultPoint;
-};
-API.prototype.setResultPoint = function(resultPoint)
-{
-	this.resultPoint = resultPoint;
-};
-
-API.prototype.getUnit = function()
-{
-	return this.unit;
-};
-API.prototype.setUnit = function(unit)
-{
-	if (unit !== undefined)
+Emitter.prototype.emit = function (event) 
+{
+	var callbacks = this._events[event];
+	var onces = [];
+	if (callbacks) 
 	{
-		if (isNaN(unit) || unit > CODE.units.RADIAN)
+		for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) 
 		{
-			throw new Error('unit parameter needs CODE.units');
+			args[_key - 1] = arguments[_key];
 		}
-		this.unit = unit;
-	}
-};
 
-API.prototype.getInstantiateObj = function()
-{
-	return this.instantiateObj;
-};
-API.prototype.setInstantiateObj = function(instantiateObj)
-{
-	this.instantiateObj = instantiateObj;
-};
-
-API.prototype.getStaticModelAttributeObj = function()
-{
-	return this.staticModelAttributeObj;
-};
-API.prototype.setStaticModelAttributeObj = function(staticModelAttributeObj)
-{
-	this.staticModelAttributeObj = staticModelAttributeObj;
-};
-
-API.prototype.getAnimationOption = function()
-{
-	return this.animationOption;
-};
-API.prototype.setAnimationOption = function(animationOption)
-{
-	this.animationOption = animationOption;
-};
-
-API.prototype.getTrackOption = function()
-{
-	return this.trackOption;
-};
-API.prototype.setTrackOption = function(trackOption)
-{
-	this.trackOption = trackOption;
-};
-
-API.prototype.getNodeAttribute = function()
-{
-	return this.nodeAttribute;
-};
-API.prototype.setNodeAttribute = function(nodeAttribute)
-{
-	this.nodeAttribute = nodeAttribute;
-};
-
-'use strict';
-
-/**
- * 사용자가 변경한 moving, color, rotation 등 이력 정보를 위한 domain
- * @class Policy
- */
-var ChangeHistory = function() 
-{
-	if (!(this instanceof ChangeHistory)) 
-	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
-	}
-
-	this.moveHistory = false;
-	this.colorHistory = false;
-	this.rotationHistory = false;
-	
-	// move mode. ALL : 0 , OBJECT : 1, NONE : 2
-	this.objectMoveMode = null;
-	
-	// project id
-	this.projectId = null;
-	// project data folder
-	this.projectDataFolder = null;
-	// data_key
-	this.dataKey = null;	
-	// objectId
-	this.objectId = null;
-	// objectIndexOrder
-	this.objectIndexOrder = 0;
-	
-	// referenceObject aditional movement.
-	this.refObjectAditionalMove;
-	this.refObjectAditionalMoveRelToBuilding;
-	
-	// 위도
-	this.latitude = 0.0;
-	// 경도
-	this.longitude = 0.0;
-	// 높이
-	this.elevation = 0.0;
-	// heading
-	this.heading = 0.0;
-	// pitch
-	this.pitch = 0.0;
-	// roll
-	this.roll = 0.0;
-	// duration
-	this.duration = 0;
-	// 색깔
-	this.color = 0;
-	// color rgb
-	this.rgbColor = [];
-	// 속성
-	this.property = null;
-	this.propertyKey = null;
-	this.propertyValue = null;
-};
-
-ChangeHistory.prototype.getReferenceObjectAditionalMovement = function() 
-{
-	if (this.refObjectAditionalMove === undefined)
-	{ this.refObjectAditionalMove = new Point3D(); }
-	
-	return this.refObjectAditionalMove;
-};
-
-ChangeHistory.prototype.getReferenceObjectAditionalMovementRelToBuilding = function() 
-{
-	if (this.refObjectAditionalMoveRelToBuilding === undefined)
-	{ this.refObjectAditionalMoveRelToBuilding = new Point3D(); }
-	
-	return this.refObjectAditionalMoveRelToBuilding;
-};
-
-ChangeHistory.prototype.getProjectId = function() 
-{
-	return this.projectId;
-};
-ChangeHistory.prototype.setProjectId = function(projectId) 
-{
-	this.projectId = projectId;
-};
-
-ChangeHistory.prototype.getProjectDataFolder = function() 
-{
-	return this.projectDataFolder;
-};
-ChangeHistory.prototype.setProjectDataFolder = function(projectDataFolder) 
-{
-	this.projectDataFolder = projectDataFolder;
-};
-
-ChangeHistory.prototype.getDataKey = function() 
-{
-	return this.dataKey;
-};
-ChangeHistory.prototype.setDataKey = function(dataKey) 
-{
-	this.dataKey = dataKey;
-};
-
-ChangeHistory.prototype.getObjectId = function() 
-{
-	return this.objectId;
-};
-ChangeHistory.prototype.setObjectId = function(objectId) 
-{
-	this.objectId = objectId;
-};
-
-ChangeHistory.prototype.getObjectIndexOrder = function() 
-{
-	return this.objectIndexOrder;
-};
-ChangeHistory.prototype.setObjectIndexOrder = function(objectIndexOrder) 
-{
-	this.objectIndexOrder = objectIndexOrder;
-};
-
-ChangeHistory.prototype.getLatitude = function() 
-{
-	return this.latitude;
-};
-ChangeHistory.prototype.setLatitude = function(latitude) 
-{
-	this.latitude = latitude;
-};
-
-ChangeHistory.prototype.getLongitude = function() 
-{
-	return this.longitude;
-};
-ChangeHistory.prototype.setLongitude = function(longitude) 
-{
-	this.longitude = longitude;
-};
-
-ChangeHistory.prototype.getElevation = function() 
-{
-	return this.elevation;
-};
-ChangeHistory.prototype.setElevation = function(elevation) 
-{
-	this.elevation = elevation;
-};
-
-ChangeHistory.prototype.getHeading = function() 
-{
-	return this.heading;
-};
-ChangeHistory.prototype.setHeading = function(heading) 
-{
-	this.heading = heading;
-};
-
-ChangeHistory.prototype.getPitch = function() 
-{
-	return this.pitch;
-};
-ChangeHistory.prototype.setPitch = function(pitch) 
-{
-	this.pitch = pitch;
-};
-
-ChangeHistory.prototype.getRoll = function() 
-{
-	return this.roll;
-};
-ChangeHistory.prototype.setRoll = function(roll) 
-{
-	this.roll = roll;
-};
-
-ChangeHistory.prototype.getColor = function() 
-{
-	return this.color;
-};
-ChangeHistory.prototype.setColor = function(color) 
-{
-	this.color = color;
-};
-ChangeHistory.prototype.getRgbColor = function() 
-{
-	return this.rgbColor;
-};
-ChangeHistory.prototype.setRgbColor = function(rgbColor) 
-{
-	this.rgbColor = rgbColor;
-};
-
-ChangeHistory.prototype.getProperty = function() 
-{
-	return this.property;
-};
-ChangeHistory.prototype.setProperty = function(property) 
-{
-	this.property = property;
-};
-ChangeHistory.prototype.getPropertyKey = function() 
-{
-	return this.propertyKey;
-};
-ChangeHistory.prototype.setPropertyKey = function(propertyKey) 
-{
-	this.propertyKey = propertyKey;
-};
-ChangeHistory.prototype.getPropertyValue = function() 
-{
-	return this.propertyValue;
-};
-ChangeHistory.prototype.setPropertyValue = function(propertyValue) 
-{
-	this.propertyValue = propertyValue;
-};
-
-ChangeHistory.prototype.getDuration = function()
-{
-	return this.duration;
-};
-ChangeHistory.prototype.setDuration = function(duration)
-{
-	this.duration = duration;
-};
-
-ChangeHistory.prototype.getObjectMoveMode = function() 
-{
-	return this.objectMoveMode;
-};
-ChangeHistory.prototype.setObjectMoveMode = function(objectMoveMode) 
-{
-	this.objectMoveMode = objectMoveMode;
-};
-"use strict";
-
-var CODE = {};
-
-// magoManager가 다 로딩 되지 않은 상태에서 화면으로 부터 호출 되는 것을 막기 위해
-CODE.magoManagerState = {
-	"INIT"   	: 0,
-	"STARTED"	: 1,
-	"READY"   : 2
-};
-
-//0 = no started to load. 1 = started loading. 2 = finished loading. 3 = parse started. 4 = parse finished.
-CODE.fileLoadState = {
-	"READY"            : 0,
-	"LOADING_STARTED"  : 1,
-	"LOADING_FINISHED" : 2,
-	"PARSE_STARTED"    : 3,
-	"PARSE_FINISHED"   : 4,
-	"IN_QUEUE"         : 5,
-	"IN_PARSE_QUEUE"   : 6,
-	"BINDING_STARTED"  : 7,
-	"BINDING_FINISHED" : 8,
-	"LOAD_FAILED"      : 9
-};
-
-CODE.moveMode = {
-	"ALL"              : "0",
-	"OBJECT"           : "1",
-	"GEOGRAPHICPOINTS" : "2",
-	"NONE"             : "3"
-};
-
-CODE.magoMode = {
-	"NORMAL"  : 0,
-	"DRAWING" : 1
-};
-
-CODE.magoCurrentProcess = {
-	"Unknown"                    : 0,
-	"DepthRendering"             : 1,
-	"ColorRendering"             : 2,
-	"ColorCodeRendering"         : 3,
-	"DepthShadowRendering"       : 4,
-	"SilhouetteDepthRendering"   : 5,
-	"StencilSilhouetteRendering" : 6
-};
-
-CODE.modelerMode = {
-	"INACTIVE"                 : 0,
-	"DRAWING_POLYLINE"         : 1,
-	"DRAWING_PLANEGRID"        : 2,
-	"DRAWING_GEOGRAPHICPOINTS" : 3,
-	"DRAWING_EXCAVATIONPOINTS" : 4,
-	"DRAWING_TUNNELPOINTS"     : 5,
-	"DRAWING_BSPLINE"          : 6,
-	"DRAWING_BASICFACTORY"     : 7,
-	"DRAWING_STATICGEOMETRY"   : 8,
-	"DRAWING_PIPE"             : 9,
-	"DRAWING_SPHERE"           : 10,
-	"DRAWING_BOX"              : 11,
-	"DRAWING_CUTTINGPLANE"     : 12,
-	"DRAWING_CLIPPINGBOX"      : 13,
-	"DRAWING_CONCENTRICTUBES"  : 14,
-	"DRAWING_TUBE"             : 15,
-	"DRAWING_FREECONTOURWALL"  : 16,
-	"DRAWING_CYLYNDER"         : 17
-};
-
-CODE.boxFace = {
-	"UNKNOWN" : 0,
-	"LEFT"    : 1,
-	"RIGHT"   : 2,
-	"FRONT"   : 3,
-	"REAR"    : 4,
-	"TOP"     : 5,
-	"BOTTOM"  : 6
-};
-
-CODE.modelerDrawingState = {
-	"NO_STARTED" : 0,
-	"STARTED"    : 1
-};
-
-CODE.modelerDrawingElement = {
-	"NOTHING"          : 0,
-	"POINTS"           : 1,
-	"LINES"            : 2,
-	"POLYLINES"        : 3,
-	"GEOGRAPHICPOINTS" : 4,
-};
-
-CODE.units = {
-	"METRE"  : 0,
-	"DEGREE" : 1,
-	"RADIAN" : 2
-};
-
-
-CODE.trackMode = {
-	"TRACKING" : 0,
-	"DRIVER"   : 1
-};
-
-CODE.imageryType = {
-	"UNKNOWN"      : 0,
-	"CRS84"        : 1,
-	"WEB_MERCATOR" : 2
-};
-
-CODE.animationType = {
-	"UNKNOWN"         : 0,
-	"REALTIME_POINTS" : 1,
-	"PATH"            : 2
-};
-
-CODE.relativePosition2D = {
-	"UNKNOWN"    : 0,
-	"LEFT"       : 1,
-	"RIGHT"      : 2,
-	"COINCIDENT" : 3
-};
-
-CODE.PROJECT_ID_PREFIX = "projectId_";
-CODE.PROJECT_DATA_FOLDER_PREFIX = "projectDataFolder_";
-
-'use strict';
-
-/**
- * 상수 설정
- * @class Constant
- */
-var Constant = {};
-
-Constant.CESIUM = "cesium";
-Constant.WORLDWIND = "worldwind";
-Constant.MAGOWORLD = "magoworld";
-Constant.OBJECT_INDEX_FILE = "/objectIndexFile.ihe";
-Constant.TILE_INDEX_FILE = "/smartTile_f4d_indexFile.sii";
-Constant.CACHE_VERSION = "?cache_version=";
-Constant.SIMPLE_BUILDING_TEXTURE3x3_BMP = "/SimpleBuildingTexture3x3.bmp";
-Constant.RESULT_XDO2F4D = "/Result_xdo2f4d/Images/";
-Constant.RESULT_XDO2F4D_TERRAINTILES = "/Result_xdo2f4d/F4D_TerrainTiles/";
-Constant.RESULT_XDO2F4D_TERRAINTILEFILE_TXT = "/Result_xdo2f4d/f4dTerranTileFile.txt";
-
-Constant.INTERSECTION_OUTSIDE = 0;
-Constant.INTERSECTION_INTERSECT= 1;
-Constant.INTERSECTION_INSIDE = 2;
-Constant.INTERSECTION_POINT_A = 3;
-Constant.INTERSECTION_POINT_B = 4;
-
-'use strict';
-
-/**
- * mago3D 전체 환경 설정을 관리
- * @class MagoConfig
- */
-var MagoConfig = {};
-
-MagoConfig.setContainerId = function(containerId) 
-{
-	this.containerId = containerId;
-};
-
-MagoConfig.getContainerId = function() 
-{
-	return this.containerId;
-};
-
-MagoConfig.getPolicy = function() 
-{
-	return this.serverPolicy;
-};
-
-MagoConfig.getGeoserver = function() 
-{
-	return this.geoserver;
-};
-
-MagoConfig.getData = function(key) 
-{
-	return this.dataObject[key];
-};
-
-MagoConfig.isDataExist = function(key) 
-{
-	return this.dataObject.hasOwnProperty(key);
-};
-
-MagoConfig.deleteData = function(key) 
-{
-	return delete this.dataObject[key];
-};
-
-/**
- * data 를 map에 저장
- * @param key map에 저장될 key
- * @param value map에 저장될 value
- */
-MagoConfig.setData = function(key, value) 
-{
-	if (!this.isDataExist(key)) 
-	{
-		this.dataObject[key] = value;
-	}
-};
-
-/**
- * F4D Converter 실행 결과물이 저장된 project data folder 명을 획득
- * @param projectDataFolder data folder
- */
-MagoConfig.getProjectDataFolder = function(projectDataFolder) 
-{
-	var key = CODE.PROJECT_DATA_FOLDER_PREFIX + projectDataFolder;
-	return this.dataObject[key];
-};
-
-/**
- * project map에 data folder명의 존재 유무를 검사
- * @param projectDataFolder
- */
-MagoConfig.isProjectDataFolderExist = function(projectDataFolder) 
-{
-	var key = CODE.PROJECT_DATA_FOLDER_PREFIX + projectDataFolder;
-	return this.dataObject.hasOwnProperty(key);
-};
-
-/**
- * project data folder명을 map에서 삭제
- * @param projectDataFolder
- */
-MagoConfig.deleteProjectDataFolder = function(projectDataFolder) 
-{
-	var key = CODE.PROJECT_DATA_FOLDER_PREFIX + projectDataFolder;
-	return delete this.dataObject[key];
-};
-
-/**
- * project data folder명을 Object에서 삭제
- * @param projectDataFolder Object에 저장될 key
- * @param value Object에 저장될 value
- */
-MagoConfig.setProjectDataFolder = function(projectDataFolder, value) 
-{
-	var key = CODE.PROJECT_DATA_FOLDER_PREFIX + projectDataFolder;
-	if (!this.isProjectDataFolderExist(key))
-	{
-		this.dataObject[key] = value;
-	}
-};
-
-/**
- * 환경설정 초기화
- * @param serverPolicy mago3d policy(json)
- * @param projectIdArray data 정보를 map 저장할 key name
- * @param projectDataArray data 정보(json)
- */
-MagoConfig.init = function(serverPolicy, projectIdArray, projectDataArray) 
-{
-	if (!serverPolicy || !serverPolicy instanceof Object) 
-	{
-		throw new Error('geopolicy is required object.');
-	}
-	this.dataObject = {};
-	
-	this.selectHistoryObject = {};
-	this.movingHistoryObject = {};
-	this.colorHistoryObject = {};
-	this.locationAndRotationHistoryObject = {};
-
-	this.serverPolicy = serverPolicy;
-	this.twoDimension = false;
-	if (!this.serverPolicy.basicGlobe) { this.serverPolicy.basicGlobe = Constant.CESIUM; }
-
-	this.serverPolicy.online = true;
-
-	if (this.serverPolicy.geoserverEnable) 
-	{
-		this.geoserver = new GeoServer();
-
-		var info = {
-			"wmsVersion"    : this.serverPolicy.geoserverWmsVersion,
-			"dataUrl"       : this.serverPolicy.geoserverDataUrl,
-			"dataWorkspace" : this.serverPolicy.geoserverDataWorkspace,
-			"dataStore"     : this.serverPolicy.geoserverDataStore,
-			"user"          : this.serverPolicy.geoserverUser,
-			"password"      : this.serverPolicy.geoserverPassword
-		};
-		this.geoserver.setServerInfo(info);
-	}
-
-
-	if (projectIdArray && projectIdArray.length > 0) 
-	{
-		for (var i=0; i<projectIdArray.length; i++) 
+		for (var _iterator = callbacks, _isArray = true, _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator](); ;) 
 		{
-			if (!this.isDataExist(CODE.PROJECT_ID_PREFIX + projectIdArray[i])) 
+			var _ref;
+
+			if (_isArray) 
 			{
-				this.setData(CODE.PROJECT_ID_PREFIX + projectIdArray[i], projectDataArray[i]);
-				this.setProjectDataFolder(CODE.PROJECT_DATA_FOLDER_PREFIX + projectDataArray[i].data_key, projectDataArray[i].data_key);
+				if (_i >= _iterator.length) { break; }
+				_ref = _iterator[_i++];
+			}
+			else 
+			{
+				_i = _iterator.next();
+				if (_i.done) { break; }
+				_ref = _i.value;
+			}
+			var callbackObj = _ref;
+			if (callbackObj.fn && typeof callbackObj.fn === 'function') 
+			{
+				callbackObj.fn.apply(this, args);
+			}
+
+			if (callbackObj.once && _isArray) 
+			{
+				onces.push(_i-1);
+			}
+			//
+		}
+	}
+	if (onces.length > 0 && Array.isArray(callbacks)) 
+	{
+		for (var i=onces.length-1;i>=0;i--) 
+		{
+			callbacks.splice(onces[i], 1);
+		}
+	}
+
+	return this;
+};
+
+Emitter.prototype.off = function (event, fn) 
+{
+	if (!this._events || arguments.length === 0) 
+	{
+		this._events = {};
+		return this;
+	}
+
+	// specific event
+	var callbacks = this._events[event];
+	if (!callbacks) 
+	{
+		return this;
+	}
+
+	// remove all handlers
+	if (arguments.length === 1) 
+	{
+		delete this._events[event];
+		return this;
+	}
+
+	// remove specific handler
+	for (var i = 0; i < callbacks.length; i++) 
+	{
+		var callback = callbacks[i];
+		if (callback.fn === fn) 
+		{
+			callbacks.splice(i, 1);
+			break;
+		}
+	}
+
+	return this;
+};
+'use strict';
+
+var MagoRenderable = function(options) 
+{
+	this.objectsArray = [];
+
+	this.id;
+	this.name;
+	this.owner;
+
+	this.attributes = {
+		isVisible: true
+	};
+	// Use this matrix if this is child.
+	this.tMat;
+	this.tMatOriginal;
+
+	// use this geoLocDataManager if this is no child.
+	this.geoLocDataManager;
+	
+	this.dirty = true;
+	this.color4;
+	this.wireframeColor4;
+	this.selectedColor4;
+	this.objectType = MagoRenderable.OBJECT_TYPE.MESH; // Init as mesh type.
+
+	this.eventObject = {};
+	
+	this.options = options;
+	if (options !== undefined)
+	{
+		if (options.color && options.color instanceof Color) 
+		{
+			this.color4 = options.color;
+		}
+	}
+};
+
+MagoRenderable.EVENT_TYPE = {
+	'RENDER_END'   : 'renderEnd',
+	'RENDER_START' : 'renderStart',
+	'MOVE_END'     : 'moveEnd',
+	'MOVE_START'   : 'moveStart'
+};
+
+MagoRenderable.OBJECT_TYPE = {
+	'MESH'       : 0,
+	'VECTORMESH' : 1
+};
+
+/**
+ * 이벤트 등록
+ * @param {MagoEvent} event 
+ */
+MagoRenderable.prototype.addEventListener = function(event) 
+{
+	if (!event instanceof MagoEvent) 
+	{
+		throw new Error('args event must MagoEvent!');
+	}
+
+	var type = event.getType();
+
+	if (!MagoRenderable.EVENT_TYPE[type]) 
+	{
+		throw new Error('this type is not support.');
+	}
+
+	if (!this.eventObject[type]) 
+	{
+		this.eventObject[type] = [];
+	}
+
+	this.eventObject[type].push(event);
+};
+/**
+ * 이벤트 실행
+ * @param {String} type 
+ */
+MagoRenderable.prototype.dispatchEvent = function(type, magoManager) 
+{
+	if (!MagoRenderable.EVENT_TYPE[type]) 
+	{
+		throw new Error('this type is not support.');
+	}
+
+	var events = this.eventObject[type];
+
+	if (!events || !Array.isArray(events)) { return; } 
+	
+	for (var i=0, len=events.length;i<len;i++) 
+	{
+		var event = events[i];
+		var listener = event.getListener();
+		if (typeof listener === 'function') 
+		{
+			listener.apply(this, [this, magoManager]);
+		}
+	}
+};
+MagoRenderable.prototype.getRootOwner = function() 
+{
+	if (this.owner === undefined)
+	{ return this; }
+	else 
+	{
+		return this.owner.getRootOwner();
+	}
+};
+
+MagoRenderable.prototype.getObject = function(idx) 
+{
+	if (idx > this.objectsArray.length-1) 
+	{
+		throw new Error('out of bound range.');
+		//return undefined;
+	}
+
+	return this.objectsArray[idx];
+};
+
+MagoRenderable.prototype.render = function(magoManager, shader, renderType, glPrimitive, bIsSelected) 
+{
+	if (this.attributes) 
+	{
+		if (this.attributes.isVisible !== undefined && this.attributes.isVisible === false) 
+		{
+			return;
+		}
+		
+		if (renderType === 2)
+		{
+			if (this.attributes.isSelectable !== undefined && this.attributes.isSelectable === false) 
+			{
+				return;
 			}
 		}
 	}
-};
 
-/**
- * 모든 데이터를 삭제함
- */
-MagoConfig.clearAllData = function() 
-{
-	this.dataObject = {};
-};
+	if (this.dirty)
+	{ this.makeMesh(); }
+	
+	if (this.objectsArray.length === 0)
+	{ return false; }
 
-/**
- * 모든 선택 히스토리 삭제
- */
-MagoConfig.clearSelectHistory = function() 
-{
-	this.selectHistoryObject = {};
-};
-
-/**
- * 모든 object 선택 내용 이력을 취득
- */
-MagoConfig.getAllSelectHistory = function()
-{
-	return this.selectHistoryObject;
-};
-
-/**
- * project 별 해당 키에 해당하는 모든 object 선택 내용 이력을 취득
- */
-MagoConfig.getSelectHistoryObjects = function(projectId, dataKey)
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.selectHistoryObject[projectId];
-	if (projectIdObject === undefined) { return undefined; }
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	return dataKeyObject;
-};
-
-/**
- * object 선택 내용 이력을 취득
- */
-MagoConfig.getSelectHistoryObject = function(projectId, dataKey, objectIndexOrder)
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.selectHistoryObject[projectId];
-	if (projectIdObject === undefined) { return undefined; }
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	if (dataKeyObject === undefined) { return undefined; }
-	// objectIndexOrder 를 저장
-	return dataKeyObject[objectIndexOrder];
-};
-
-/**
- * object 선택 내용을 저장
- */
-MagoConfig.saveSelectHistory = function(projectId, dataKey, objectIndexOrder, changeHistory) 
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.selectHistoryObject.get(projectId);
-	if (projectIdObject === undefined)
+	// Set geoLocation uniforms.***
+	var gl = magoManager.getGl();
+	var buildingGeoLocation = this.geoLocDataManager.getCurrentGeoLocationData();
+	buildingGeoLocation.bindGeoLocationUniforms(gl, shader); // rotMatrix, positionHIGH, positionLOW.
+	
+	var renderShaded = true;
+	if (this.options && this.options.renderShaded === false)
 	{
-		projectIdObject = {};
-		this.selectHistoryObject[projectId] = projectIdObject;
+		renderShaded = false;
 	}
 	
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	if (dataKeyObject === undefined)
+	if (renderShaded)
+	{ this.renderAsChild(magoManager, shader, renderType, glPrimitive, bIsSelected, this.options); }
+	
+	// check options provisionally here.
+	if (this.options)
 	{
-		dataKeyObject = {};
-		projectIdObject[dataKey] = dataKeyObject;
+		if (this.options.renderWireframe)
+		{
+			var shaderThickLine = magoManager.postFxShadersManager.getShader("thickLine");
+			shaderThickLine.useProgram();
+			shaderThickLine.bindUniformGenerals();
+			var gl = magoManager.getGl();
+
+			gl.blendEquationSeparate(gl.FUNC_ADD, gl.FUNC_ADD);
+			gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+			gl.disable(gl.CULL_FACE);
+			
+			gl.enableVertexAttribArray(shaderThickLine.prev_loc);
+			gl.enableVertexAttribArray(shaderThickLine.current_loc);
+			gl.enableVertexAttribArray(shaderThickLine.next_loc);
+			
+			var geoLocData = this.geoLocDataManager.getCurrentGeoLocationData();
+			geoLocData.bindGeoLocationUniforms(gl, shaderThickLine);
+
+			var sceneState = magoManager.sceneState;
+			var drawingBufferWidth = sceneState.drawingBufferWidth;
+			var drawingBufferHeight = sceneState.drawingBufferHeight;
+			if (this.wireframeColor4)
+			{ gl.uniform4fv(shaderThickLine.oneColor4_loc, [this.wireframeColor4.r, this.wireframeColor4.g, this.wireframeColor4.b, this.wireframeColor4.a]); }
+			else
+			{ gl.uniform4fv(shaderThickLine.oneColor4_loc, [0.6, 0.8, 0.9, 1.0]); }
+			gl.uniform2fv(shaderThickLine.viewport_loc, [drawingBufferWidth[0], drawingBufferHeight[0]]);
+			
+			var bWireframe = true;
+			this.renderAsChild(magoManager, shaderThickLine, renderType, glPrimitive, bIsSelected, this.options, bWireframe);
+			
+			// Return to the currentShader.
+			shader.useProgram();
+		}
+	}
+};
+
+MagoRenderable.prototype.renderAsChild = function(magoManager, shader, renderType, glPrimitive, bIsSelected, options, bWireframe) 
+{
+	if (this.dirty)
+	{ this.makeMesh(); }
+
+	// Set geoLocation uniforms.***
+	var gl = magoManager.getGl();
+	
+	if (renderType === 0)
+	{
+		// Depth render.***
+	}
+	else if (renderType === 1)
+	{
+		// Color render.***
+		gl.enable(gl.BLEND);
+		gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.***
+		
+		// Check if is selected.***
+		var selectionManager = magoManager.selectionManager;
+
+		if (selectionManager.isObjectSelected(this))
+		{ bIsSelected = true; }
+		
+		if (bIsSelected)
+		{
+			var selColor = [0.9, 0.1, 0.1, 1.0];
+			if (bWireframe)
+			{
+				selColor = [0.6, 0.6, 0.99, 1.0];
+			}
+			else
+			{
+				if (this.attributes.selectedColor4)
+				{
+					var selectedColor = this.attributes.selectedColor4;
+					selColor = [selectedColor.r, selectedColor.g, selectedColor.b, selectedColor.a];
+				}
+			}
+			
+			gl.uniform4fv(shader.oneColor4_loc, selColor);
+		}
+		else 
+		{
+			if (bWireframe)
+			{
+				if (this.wireframeColor4) 
+				{
+					gl.uniform4fv(shader.oneColor4_loc, [this.wireframeColor4.r, this.wireframeColor4.g, this.wireframeColor4.b, this.wireframeColor4.a]); 
+				}
+			}
+			else
+			{
+				if (this.color4) 
+				{
+					gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, this.color4.a]);
+				}
+			}
+		}
+	}
+	else if (renderType === 2)
+	{
+		// Selection render.***
+		var selectionColor = magoManager.selectionColor;
+		var colorAux = selectionColor.getAvailableColor(undefined);
+		var idxKey = selectionColor.decodeColor3(colorAux.r, colorAux.g, colorAux.b);
+		magoManager.selectionManager.setCandidateGeneral(idxKey, this);
+		
+		gl.uniform4fv(shader.oneColor4_loc, [colorAux.r/255.0, colorAux.g/255.0, colorAux.b/255.0, 1.0]);
+		gl.disable(gl.BLEND);
+	}
+
+	if (this.tMat) 
+	{
+		gl.uniformMatrix4fv(shader.buildingRotMatrix_loc, false, this.tMat._floatArrays);
 	}
 	
-	// objectIndexOrder 를 저장
-	dataKeyObject[objectIndexOrder] = changeHistory;
-};
-
-/**
- * object 선택 내용을 삭제
- */
-MagoConfig.deleteSelectHistoryObject = function(projectId, dataKey, objectIndexOrder)
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.selectHistoryObject[projectId];
-	if (projectIdObject === undefined) { return undefined; }
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	if (dataKeyObject === undefined) { return undefined; }
-	// objectIndexOrder 를 저장
-	return delete dataKeyObject[objectIndexOrder];
-};
-
-/**
- * 모든 이동 히스토리 삭제
- */
-MagoConfig.clearMovingHistory = function() 
-{
-	this.movingHistoryObject = {};
-};
-
-/**
- * 모든 object 선택 내용 이력을 취득
- */
-MagoConfig.getAllMovingHistory = function()
-{
-	return this.movingHistoryObject;
-};
-
-/**
- * project별 입력키 값과 일치하는 object 이동 내용 이력을 취득
- */
-MagoConfig.getMovingHistoryObjects = function(projectId, dataKey)
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.movingHistoryObject[projectId];
-	if (projectIdObject === undefined) { return undefined; }
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	return dataKeyObject;
-};
-
-/**
- * object 이동 내용 이력을 취득
- */
-MagoConfig.getMovingHistoryObject = function(projectId, dataKey, objectIndexOrder)
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.movingHistoryObject[projectId];
-	if (projectIdObject === undefined) { return undefined; }
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	if (dataKeyObject === undefined) { return undefined; }
-	// objectIndexOrder 를 저장
-	return dataKeyObject[objectIndexOrder];
-};
-
-/**
- * object 이동 내용을 저장
- */
-MagoConfig.saveMovingHistory = function(projectId, dataKey, objectIndexOrder, changeHistory) 
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.movingHistoryObject[projectId];
-	if (projectIdObject === undefined)
+	var objectsCount = this.objectsArray.length;
+	for (var i=0; i<objectsCount; i++)
 	{
-		projectIdObject = {};
-		this.movingHistoryObject[projectId] = projectIdObject;
+		this.objectsArray[i].renderAsChild(magoManager, shader, renderType, glPrimitive, bIsSelected, options, bWireframe);
 	}
 	
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	if (dataKeyObject === undefined)
+	gl.disable(gl.BLEND);
+
+	this.dispatchEvent('RENDER_END', magoManager);
+};
+
+MagoRenderable.prototype.makeMesh = function() 
+{
+	return abstract();
+};
+
+MagoRenderable.prototype.moved = function() 
+{
+	// do something.
+};
+
+MagoRenderable.prototype.updateMatrix = function(ownerMatrix) 
+{
+	if (!ownerMatrix) 
 	{
-		dataKeyObject = {};
-		projectIdObject[dataKey] = dataKeyObject;
-	}
-	
-	// objectIndexOrder 를 저장
-	dataKeyObject[objectIndexOrder] = changeHistory;
-};
+		if (this.geoLocDataManager === undefined || this.geoLocDataManager === null) 
+		{
+			return;
+		}
 
-/**
- * object 이동 내용을 삭제
- */
-MagoConfig.deleteMovingHistoryObject = function(projectId, dataKey, objectIndexOrder)
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.movingHistoryObject[projectId];
-	if (projectIdObject === undefined) { return undefined; }
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	if (dataKeyObject === undefined) { return undefined; }
-	// objectIndexOrder 를 저장
-	return delete dataKeyObject[objectIndexOrder];
-};
-
-/**
- * 모든 색깔 변경 이력을 획득
- */
-MagoConfig.getAllColorHistory = function() 
-{
-	return this.colorHistoryObject;
-};
-
-/**
- * 모든 색깔변경 히스토리 삭제
- */
-MagoConfig.clearColorHistory = function() 
-{
-	this.colorHistoryObject = {};
-};
-
-/**
- * project별 키에 해당하는 모든 색깔 변경 이력을 획득
- */
-MagoConfig.getColorHistorys = function(projectId, dataKey)
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.colorHistoryObject[projectId];
-	if (projectIdObject === undefined) { return undefined; }
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	return dataKeyObject;
-};
-
-/**
- * 색깝 변경 이력을 획득
- */
-MagoConfig.getColorHistory = function(projectId, dataKey, objectId)
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.colorHistoryObject[projectId];
-	if (projectIdObject === undefined) { return undefined; }
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	if (dataKeyObject === undefined) { return undefined; }
-	// objectId 를 저장
-	return dataKeyObject[objectId];
-};
-
-/**
- * 색깝 변경 내용을 저장
- */
-MagoConfig.saveColorHistory = function(projectId, dataKey, objectId, changeHistory) 
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.colorHistoryObject[projectId];
-	if (projectIdObject === undefined)
-	{
-		projectIdObject = {};
-		this.colorHistoryObject[projectId] = projectIdObject;
-	}
-	
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	if (dataKeyObject === undefined)
-	{
-		dataKeyObject = {};
-		projectIdObject[dataKey] = dataKeyObject;
-	}
-
-	if (objectId === null || objectId === "") 
-	{
-		dataKeyObject[dataKey] = changeHistory;
+		var geoLocDataManager = this.geoLocDataManager;
+		var geoLocData = geoLocDataManager.getCurrentGeoLocationData();
+		this.tMat = geoLocData.rotMatrix;
 	}
 	else 
 	{
-		dataKeyObject[objectId] = changeHistory;
+		this.tMat = this.tMatOriginal.getMultipliedByMatrix(ownerMatrix, this.tMat);
 	}
-};
-
-/**
- * 색깔 변경 이력을 삭제
- */
-MagoConfig.deleteColorHistory = function(projectId, dataKey, objectId)
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.colorHistoryObject[projectId];
-	if (projectIdObject === undefined) { return undefined; }
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	if (dataKeyObject === undefined) { return undefined; }
-	// objectIndexOrder 를 저장
-	return delete dataKeyObject[objectId];
-};
-
-/**
- * 모든 색깔변경 히스토리 삭제
- */
-MagoConfig.clearColorHistory = function() 
-{
-	this.colorHistoryObject = {};
-};
-
-/**
- * 모든 location and rotation 변경 이력을 획득
- */
-MagoConfig.getAllLocationAndRotationHistory = function() 
-{
-	return this.locationAndRotationHistoryObject;
-};
-
-/**
- * 프로젝트별 해당 키 값을 갖는 모든 location and rotation 이력을 획득
- */
-MagoConfig.getLocationAndRotationHistorys = function(projectId, dataKey)
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.locationAndRotationHistoryObject[projectId];
-	if (projectIdObject === undefined) { return undefined; }
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	return dataKeyObject;
-};
-
-/**
- * location and rotation 이력을 획득
- */
-MagoConfig.getLocationAndRotationHistory = function(projectId, dataKey)
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.locationAndRotationHistoryObject[projectId];
-	if (projectIdObject === undefined) { return undefined; }
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	
-	return dataKeyObject;
-};
-
-/**
- * location and rotation 내용을 저장
- */
-MagoConfig.saveLocationAndRotationHistory = function(projectId, dataKey, changeHistory) 
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.locationAndRotationHistoryObject[projectId];
-	if (projectIdObject === undefined)
+    
+	if (this.objectsArray === undefined)
+	{ return; }
+	for (var i=0, len=this.objectsArray.length; i <len;++i) 
 	{
-		projectIdObject = {};
-		this.locationAndRotationHistoryObject[projectId] = projectIdObject;
-	}
-	
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	if (dataKeyObject === undefined)
-	{
-		dataKeyObject = {};
-	}
-
-	dataKeyObject[dataKey] = changeHistory;
-};
-
-/**
- * location and rotation 이력을 삭제
- */
-MagoConfig.deleteLocationAndRotationHistory = function(projectId, dataKey)
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.locationAndRotationHistoryObject[projectId];
-	if (projectIdObject === undefined) { return undefined; }
-	// dataKey 별 Object을 검사
-	var dataKeyObject = delete projectIdObject[dataKey];
-};
-
-/**
- * 모든 location and rotation 히스토리 삭제
- */
-MagoConfig.clearLocationAndRotationHistory = function() 
-{
-	this.locationAndRotationHistoryObject = {};
-};
-	
-/**
- * TODO 이건 나중에 활요. 사용하지 않음
- * check 되지 않은 데이터들을 삭제함
- * @param keyObject 비교할 맵
- */
-/*MagoConfig.clearUnSelectedData = function(keyObject)
-{
-	for (var key of this.dataObject.keys())
-	{
-		if (!keyObject.hasxxxxx(key))
+		var object = this.objectsArray[i];
+		if (object instanceof MagoRenderable)
 		{
-			// data folder path가 존재하면....
-			if (key.indexOf(CODE.PROJECT_DATA_FOLDER_PREFIX) >= 0) 
-			{
-				// 지우는 처리가 있어야 함
-			}
-			this.dataObject.delete(key);
+			this.objectsArray[i].updateMatrix(this.tMat);
 		}
 	}
-};*/
-
-MagoConfig.setTwoDimension = function(twoDimension) 
-{
-	this.twoDimension = twoDimension;
 };
-MagoConfig.isTwoDimension = function()
+MagoRenderable.prototype.setDirty = function(dirty) 
 {
-	return this.twoDimension;
+	this.dirty = dirty;
+};
+/**
+ * Set the unique one color of the box
+ * @param {Number} r
+ * @param {Number} g
+ * @param {Number} b 
+ * @param {Number} a
+ */
+MagoRenderable.prototype.setOneColor = function(r, g, b, a)
+{
+	// This function sets the unique one color of the mesh.***
+	if (this.color4 === undefined)
+	{ this.color4 = new Color(); }
+	
+	this.color4.setRGBA(r, g, b, a);
+
+	//TODO : 좀 더 정교한 근사값 구하기로 변경
+	if (a < 1) 
+	{
+		this.setOpaque(false);
+	}
+};
+/**
+ * Set the unique one color of the box
+ * @param {Number} r
+ * @param {Number} g
+ * @param {Number} b 
+ * @param {Number} a
+ */
+MagoRenderable.prototype.setWireframeColor = function(r, g, b, a)
+{
+	// This function sets the unique one color of the mesh.***
+	if (this.wireframeColor4 === undefined)
+	{ this.wireframeColor4 = new Color(); }
+	
+	this.wireframeColor4.setRGBA(r, g, b, a);
+
+	//TODO : 좀 더 정교한 근사값 구하기로 변경
+	if (a < 1) 
+	{
+		this.setOpaque(false);
+	}
+};
+
+MagoRenderable.prototype.setOpaque = function(opaque)
+{
+	this.attributes.opaque = opaque;
+};
+MagoRenderable.prototype.isOpaque = function()
+{
+	if (this.attributes.opaque === undefined) 
+	{
+		return true;
+	}
+
+	return this.attributes.opaque;
+};
+MagoRenderable.prototype.getGeoLocDataManager = function()
+{
+	return this.geoLocDataManager;
 };
 'use strict';
 
-/**
- * Policy
- * @class Policy
- */
-var Policy = function() 
+var ViewerInit = function(containerId, serverPolicy) 
 {
-	if (!(this instanceof Policy)) 
+
+	if (!containerId || !document.getElementById(containerId)) 
 	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
+		throw new Error('containerId is required.');
 	}
+	serverPolicy.maxPartitionsLod0 = 8;
+	serverPolicy.maxPartitionsLod1 = 4;
+	serverPolicy.maxPartitionsLod2OrLess = 2;
 
-	// mago3d 활성화/비활성화 여부
-	this.magoEnable = true;
+	serverPolicy.maxRatioPointsDist0m = 1.0;
+	serverPolicy.maxRatioPointsDist100m = 10.0;
+	serverPolicy.maxRatioPointsDist200m = 20.0;
+	serverPolicy.maxRatioPointsDist400m = 40.0;
+	serverPolicy.maxRatioPointsDist800m = 80.0;
+	serverPolicy.maxRatioPointsDist1600m = 160.0;
+	serverPolicy.maxRatioPointsDistOver1600m = 320.0;
 
-	// outfitting 표시 여부
-	this.showOutFitting = false;
-	// label 표시/비표시
-	this.showLabelInfo = false;
-	// boundingBox 표시/비표시
-	this.showBoundingBox = false;
-	// 그림자 표시/비표시
-	this.showShadow = false;
-	// squared far frustum 거리
-	this.frustumFarSquaredDistance = 5000000;
-	// far frustum
-	this.frustumFarDistance = 20000;
+	serverPolicy.maxPointSizeForPc = 10.0;
+	serverPolicy.minPointSizeForPc = 2.0;
+	serverPolicy.pendentPointSizeForPc = 60.0;
 
-	// highlighting
-	this.highLightedBuildings = [];
-	// color
-	this.colorBuildings = [];
-	// color
-	this.color = [];
-	// show/hide
-	this.hideBuildings = [];
-	// move mode
-	this.objectMoveMode = CODE.moveMode.NONE;
-	// 이슈 등록 표시
-	this.issueInsertEnable = false;
-	// object 정보 표시
-	this.objectInfoViewEnable = false;
-	// 이슈 목록 표시
-	this.nearGeoIssueListEnable = false;
-	// occlusion culling
-	this.occlusionCullingEnable = false;
-	// origin axis XYZ
-	this.showOrigin = false;
-	// mago generalMode
-	this.magoMode = CODE.magoMode.NORMAL;
-	
-	// 이미지 경로
-	this.imagePath = "";
-	
-	// provisional.
-	this.colorChangedObjectId;
-	
-	// LOD1
-	this.lod0DistInMeters = 15;
-	this.lod1DistInMeters = 50;
-	this.lod2DistInMeters = 90;
-	this.lod3DistInMeters = 200;
-	this.lod4DistInMeters = 1000;
-	this.lod5DistInMeters = 50000;
-	
-	// Lighting
-	this.ambientReflectionCoef = 0.45; // 0.2.
-	this.diffuseReflectionCoef = 0.75; // 1.0
-	this.specularReflectionCoef = 0.6; // 0.7
-	this.ambientColor = null;
-	this.specularColor = new Float32Array([0.6, 0.6, 0.6]);
-	
-	this.ssaoRadius = 0.15;
-	
-	var policy = MagoConfig.getPolicy();
-	// PointsCloud.
-	this.pointsCloudSettings = {};
-	if (defined(policy)) 
-	{
-		this.pointsCloudSettings.maxPartitionsLod0 = defaultValueCheckLength(policy.maxPartitionsLod0, 4);
-		this.pointsCloudSettings.maxPartitionsLod1 = defaultValueCheckLength(policy.maxPartitionsLod1, 2);
-		this.pointsCloudSettings.maxPartitionsLod2orLess = defaultValueCheckLength(policy.maxPartitionsLod2OrLess, 1);
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam0m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist0m, 10.0);
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam100m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist100m, 120.0);
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam200m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist200m, 240.0);
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam400m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist400m, 480.0);
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam800m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist800m, 960.0);
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam1600m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist1600m, 1920.0);
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCamMoreThan1600m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDistOver1600m, 3840.0);
-		this.pointsCloudSettings.maxPointSize = defaultValueCheckLength(policy.maxPointSizeForPc, 40.0);
-		this.pointsCloudSettings.minPointSize = defaultValueCheckLength(policy.minPointSizeForPc, 3.0);
-		this.pointsCloudSettings.pendentPointSize = defaultValueCheckLength(policy.pendentPointSizeForPc, 60.0);
-		this.pointsCloudSettings.minHeightRainbow = defaultValueCheckLength(policy.minHeight_rainbow_loc, 0.0);
-		this.pointsCloudSettings.maxHeightRainbow = defaultValueCheckLength(policy.maxHeight_rainbow_loc, 100.0);
-	}
-	else 
-	{
-		this.pointsCloudSettings.maxPartitionsLod0 = 4;
-		this.pointsCloudSettings.maxPartitionsLod1 = 2;
-		this.pointsCloudSettings.maxPartitionsLod2orLess = 1;
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam0m = 1.0/10.0;
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam100m = 1.0/120.0;
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam200m = 1.0/240.0;
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam400m = 1.0/480.0;
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam800m = 1.0/960.0;
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam1600m = 1.0/1920.0;
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCamMoreThan1600m = 1.0/3840.0;
-		this.pointsCloudSettings.maxPointSize = 40.0;
-		this.pointsCloudSettings.minPointSize = 3.0;
-		this.pointsCloudSettings.pendentPointSize = 60.0;
-		this.pointsCloudSettings.minHeightRainbow = 0.0;
-		this.pointsCloudSettings.maxHeightRainbow = 100.0;
-	}
+	serverPolicy.minHeight_rainbow_loc = 0.0;
+	serverPolicy.maxHeight_rainbow_loc = 100.0;
+
+	MagoConfig.init(serverPolicy, null, null);
+
+	this.targetId = containerId;
+	this.magoManager;
+	this.viewer;
+	this.policy = MagoConfig.getPolicy();
+
+	MagoConfig.setContainerId(this.targetId);
+	this.init();
 };
 
-Policy.prototype.getPointsCloudSettings = function() 
+ViewerInit.prototype.init = function() 
 {
-	return this.pointsCloudSettings;
+	return abstract();
 };
 
-Policy.prototype.getShowOrigin = function() 
+ViewerInit.prototype.initMagoManager = function() 
 {
-	return this.showOrigin;
-};
-Policy.prototype.setShowOrigin = function(showOrigin) 
-{
-	this.showOrigin = showOrigin;
+	return abstract();
 };
 
-Policy.prototype.getMagoEnable = function() 
+ViewerInit.prototype.setEventHandler = function() 
 {
-	return this.magoEnable;
+	return abstract();
 };
-Policy.prototype.setMagoEnable = function(magoEnable) 
-{
-	this.magoEnable = magoEnable;
-};
-
-Policy.prototype.getShowOutFitting = function() 
-{
-	return this.showOutFitting;
-};
-Policy.prototype.setShowOutFitting = function(showOutFitting) 
-{
-	this.showOutFitting = showOutFitting;
-};
-Policy.prototype.getShowLabelInfo = function() 
-{
-	return this.showLabelInfo;
-};
-Policy.prototype.setShowLabelInfo = function(showLabelInfo) 
-{
-	this.showLabelInfo = showLabelInfo;
-};
-Policy.prototype.getShowBoundingBox = function() 
-{
-	return this.showBoundingBox;
-};
-Policy.prototype.setShowBoundingBox = function(showBoundingBox) 
-{
-	this.showBoundingBox = showBoundingBox;
-};
-
-Policy.prototype.getShowShadow = function() 
-{
-	return this.showShadow;
-};
-Policy.prototype.setShowShadow = function(showShadow) 
-{
-	this.showShadow = showShadow;
-};
-
-Policy.prototype.getFrustumFarSquaredDistance = function() 
-{
-	return this.frustumFarSquaredDistance;
-};
-Policy.prototype.setFrustumFarSquaredDistance = function(frustumFarSquaredDistance) 
-{
-	this.frustumFarSquaredDistance = frustumFarSquaredDistance;
-};
-
-Policy.prototype.getFrustumFarDistance = function() 
-{
-	return this.frustumFarDistance;
-};
-Policy.prototype.setFrustumFarDistance = function(frustumFarDistance) 
-{
-	this.frustumFarDistance = frustumFarDistance;
-};
-
-Policy.prototype.getHighLightedBuildings = function() 
-{
-	return this.highLightedBuildings;
-};
-Policy.prototype.setHighLightedBuildings = function(highLightedBuildings) 
-{
-	this.highLightedBuildings = highLightedBuildings;
-};
-
-Policy.prototype.getColorBuildings = function() 
-{
-	return this.colorBuildings;
-};
-Policy.prototype.setColorBuildings = function(colorBuildings) 
-{
-	this.colorBuildings = colorBuildings;
-};
-
-Policy.prototype.getColor = function() 
-{
-	return this.color;
-};
-Policy.prototype.setColor = function(color) 
-{
-	this.color = color;
-};
-
-Policy.prototype.getHideBuildings = function() 
-{
-	return this.hideBuildings;
-};
-Policy.prototype.setHideBuildings = function(hideBuildings) 
-{
-	this.hideBuildings = hideBuildings;
-};
-
-Policy.prototype.getObjectMoveMode = function() 
-{
-	return this.objectMoveMode;
-};
-Policy.prototype.setObjectMoveMode = function(objectMoveMode) 
-{
-	this.objectMoveMode = objectMoveMode;
-};
-
-Policy.prototype.getMagoMode = function() 
-{
-	return this.magoMode;
-};
-Policy.prototype.setMagoMode = function(magoMode) 
-{
-	this.magoMode = magoMode;
-};
-
-Policy.prototype.getIssueInsertEnable = function() 
-{
-	return this.issueInsertEnable;
-};
-Policy.prototype.setIssueInsertEnable = function(issueInsertEnable) 
-{
-	this.issueInsertEnable = issueInsertEnable;
-};
-Policy.prototype.getObjectInfoViewEnable = function() 
-{
-	return this.objectInfoViewEnable;
-};
-Policy.prototype.setObjectInfoViewEnable = function(objectInfoViewEnable) 
-{
-	this.objectInfoViewEnable = objectInfoViewEnable;
-};
-Policy.prototype.getOcclusionCullingEnable = function() 
-{
-	return this.occlusionCullingEnable;
-};
-Policy.prototype.setOcclusionCullingEnable = function(occlusionCullingEnable) 
-{
-	this.occlusionCullingEnable = occlusionCullingEnable;
-};
-Policy.prototype.getNearGeoIssueListEnable = function() 
-{
-	return this.nearGeoIssueListEnable;
-};
-Policy.prototype.setNearGeoIssueListEnable = function(nearGeoIssueListEnable) 
-{
-	this.nearGeoIssueListEnable = nearGeoIssueListEnable;
-};
-
-Policy.prototype.getImagePath = function() 
-{
-	return this.imagePath;
-};
-Policy.prototype.setImagePath = function(imagePath) 
-{
-	this.imagePath = imagePath;
-};
-
-Policy.prototype.getLod = function(distInMeters) 
-{
-	var lod = -1;
-	if (distInMeters < this.lod0DistInMeters)
-	{ lod = 0; }
-	else if (distInMeters < this.lod1DistInMeters)
-	{ lod = 1; }
-	else if (distInMeters < this.lod2DistInMeters)
-	{ lod = 2; }
-	else if (distInMeters < this.lod3DistInMeters)
-	{ lod = 3; }
-	else if (distInMeters < this.lod4DistInMeters)
-	{ lod = 4; }
-	else 
-	{ lod = 5; }
-	
-	return lod;	
-};
-Policy.prototype.getLod0DistInMeters = function() 
-{
-	return this.lod0DistInMeters;
-};
-Policy.prototype.setLod0DistInMeters = function(lod0DistInMeters) 
-{
-	this.lod0DistInMeters = lod0DistInMeters;
-};
-Policy.prototype.getLod1DistInMeters = function() 
-{
-	return this.lod1DistInMeters;
-};
-Policy.prototype.setLod1DistInMeters = function(lod1DistInMeters) 
-{
-	this.lod1DistInMeters = lod1DistInMeters;
-};
-Policy.prototype.getLod2DistInMeters = function() 
-{
-	return this.lod2DistInMeters;
-};
-Policy.prototype.setLod2DistInMeters = function(lod2DistInMeters) 
-{
-	this.lod2DistInMeters = lod2DistInMeters;
-};
-Policy.prototype.getLod3DistInMeters = function() 
-{
-	return this.lod3DistInMeters;
-};
-Policy.prototype.setLod3DistInMeters = function(lod3DistInMeters) 
-{
-	this.lod3DistInMeters = lod3DistInMeters;
-};
-Policy.prototype.getLod4DistInMeters = function() 
-{
-	return this.lod4DistInMeters;
-};
-Policy.prototype.setLod4DistInMeters = function(lod4DistInMeters) 
-{
-	this.lod4DistInMeters = lod4DistInMeters;
-};
-Policy.prototype.getLod5DistInMeters = function() 
-{
-	return this.lod5DistInMeters;
-};
-Policy.prototype.setLod5DistInMeters = function(lod5DistInMeters) 
-{
-	this.lod5DistInMeters = lod5DistInMeters;
-};
-Policy.prototype.getAmbientReflectionCoef = function() 
-{
-	return this.ambientReflectionCoef;
-};
-Policy.prototype.setAmbientReflectionCoef = function(ambientReflectionCoef) 
-{
-	this.ambientReflectionCoef = ambientReflectionCoef;
-};
-Policy.prototype.getDiffuseReflectionCoef = function() 
-{
-	return this.diffuseReflectionCoef;
-};
-Policy.prototype.setDiffuseReflectionCoef = function(diffuseReflectionCoef) 
-{
-	this.diffuseReflectionCoef = diffuseReflectionCoef;
-};
-Policy.prototype.getSpecularReflectionCoef = function() 
-{
-	return this.specularReflectionCoef;
-};
-Policy.prototype.setSpecularReflectionCoef = function(specularReflectionCoef) 
-{
-	this.specularReflectionCoef = specularReflectionCoef;
-};
-Policy.prototype.getAmbientColor = function() 
-{
-	return this.ambientColor;
-};
-Policy.prototype.setAmbientColor = function(ambientColor) 
-{
-	this.ambientColor = ambientColor;
-};
-Policy.prototype.getSpecularColor = function() 
-{
-	return this.specularColor;
-};
-Policy.prototype.setSpecularColor = function(specularColor) 
-{
-	this.specularColor = specularColor;
-};
-Policy.prototype.getSsaoRadius = function() 
-{
-	return this.ssaoRadius;
-};
-Policy.prototype.setSsaoRadius = function(ssaoRadius) 
-{
-	this.ssaoRadius = ssaoRadius;
-};
-
 'use strict';
 
 /**
@@ -22735,16 +20831,16 @@ GeographicCoordsList.prototype.getCopy = function(resultGeoCoordsListCopy)
  * @param resultPoint3dArray
  * 
  */
-GeographicCoordsList.prototype.getPointsRelativeToGeoLocation = function(geoLocIn, resultPoints3dArray) 
+GeographicCoordsList.getPointsRelativeToGeoLocation = function(geoLocIn, geoCoordsArray, resultPoints3dArray) 
 {
 	if (resultPoints3dArray === undefined)
 	{ resultPoints3dArray = []; }
 	
-	var geoPointsCount = this.getGeoCoordsCount();
+	var geoPointsCount = geoCoordsArray.length;
 	
 	for (var i=0; i<geoPointsCount; i++)
 	{
-		var geoCoord = this.getGeoCoord(i);
+		var geoCoord = geoCoordsArray[i];
 		var geoLocDataManager = geoCoord.getGeoLocationDataManager();
 		var geoLoc = geoLocDataManager.getCurrentGeoLocationData();
 		if (geoLoc === undefined)
@@ -22759,6 +20855,45 @@ GeographicCoordsList.prototype.getPointsRelativeToGeoLocation = function(geoLocI
 	}
 	
 	return resultPoints3dArray;
+};
+
+/**
+ * Returns renderableObject of the geoCoordsList.
+ */
+GeographicCoordsList.getRenderableObjectOfGeoCoordsArray = function(geoCoordsArray, magoManager, options) 
+{
+	if (geoCoordsArray === undefined || geoCoordsArray.length === 0)
+	{ return undefined; }
+	
+	// 1rst, make points3dList relative to the 1rst_geoCoord.
+	var firstGeoCoord = geoCoordsArray[0];
+	var geoLoc = ManagerUtils.calculateGeoLocationData(firstGeoCoord.longitude, firstGeoCoord.latitude, firstGeoCoord.altitude, 0, 0, 0, undefined);
+	
+	var points3dLCArray = GeographicCoordsList.getPointsRelativeToGeoLocation(geoLoc, geoCoordsArray, undefined);
+	
+	// Create a vectorMesh.
+	if (options === undefined)
+	{
+		options = {
+			thickness: 2.0
+		};
+	}
+	else
+	{
+		if (options.thickness === undefined)
+		{ options.thickness = 2.0; }
+	}
+	
+	var vectorMesh = new VectorMesh(options);
+	vectorMesh.vboKeysContainer = Point3DList.getVboThickLines(magoManager, points3dLCArray, vectorMesh.vboKeysContainer);
+	
+	var renderableObject = new RenderableObject();
+	renderableObject.geoLocDataManager = new GeoLocationDataManager();
+	renderableObject.geoLocDataManager.addGeoLocationData(geoLoc);
+	renderableObject.objectType = MagoRenderable.OBJECT_TYPE.VECTORMESH;
+	renderableObject.objectsArray.push(vectorMesh);
+	
+	return renderableObject;
 };
 
 /**
@@ -22817,6 +20952,8 @@ GeographicCoordsList.prototype.deleteObjects = function(vboMemManager)
 	
 	this.owner = undefined;
 };
+
+
 
 /**
  * Make Lines making the first point as the origin for the other points. Change the points to the GeographicCoords.
@@ -22907,8 +21044,8 @@ GeographicCoordsList.prototype.getExtrudedMeshRenderableObject = function(height
 	
 	// All points3d is referenced to the middleGeoCoord.
 	ManagerUtils.calculateGeoLocationData(midGeoCoord.longitude, midGeoCoord.latitude, midGeoCoord.altitude, 0, 0, 0, geoLocData);
-	var basePoints3dArray = this.getPointsRelativeToGeoLocation(geoLocData, undefined);
-	var topPoints3dArray = topGeoCoordsList.getPointsRelativeToGeoLocation(geoLocData, undefined);
+	var basePoints3dArray = GeographicCoordsList.getPointsRelativeToGeoLocation(geoLocData, this.geographicCoordsArray, undefined);
+	var topPoints3dArray = GeographicCoordsList.getPointsRelativeToGeoLocation(geoLocData, topGeoCoordsList.geographicCoordsArray, undefined);
 	
 	// Now, with basePoints3dArray & topPoints3dArray make a mesh.
 	// Create a VtxProfilesList.
@@ -22953,7 +21090,7 @@ GeographicCoordsList.prototype.makeLines = function(magoManager)
 	
 	geoLoc.copyFrom(geoLocFirst);
 	
-	var points3dArray = this.getPointsRelativeToGeoLocation(geoLoc, undefined);
+	var points3dArray = GeographicCoordsList.getPointsRelativeToGeoLocation(geoLoc, this.geographicCoordsArray, undefined);
 	this.points3dList.deleteVboKeysContainer(magoManager);
 	this.points3dList.deletePoints3d();
 	this.points3dList.addPoint3dArray(points3dArray);
@@ -23380,6 +21517,23 @@ GeographicExtent.prototype.getMaxLongitudeRad = function()
 	{ return; }
 	
 	return this.maxGeographicCoord.getLongitudeRad();
+};
+
+GeographicExtent.prototype.intersects2dWithGeoCoord = function(geoCoord) 
+{
+	// In 2D intersection do not considere "altitude".
+	var lon = geoCoord.longitude;
+	var lat = geoCoord.latitude;
+	
+	if (lon > this.minGeographicCoord.longitude && lon < this.maxGeographicCoord.longitude)
+	{
+		if (lat > this.minGeographicCoord.latitude && lat < this.maxGeographicCoord.latitude)
+		{
+			return true;
+		}
+	}
+	
+	return false;
 };
 
 
@@ -27495,9 +25649,9 @@ MagoManager.prototype.keyDown = function(key)
 		
 		if (this.counterAux === -1)
 		{
-			this.modeler.mode = CODE.modelerMode.DRAWING_CLIPPINGBOX;
+			//this.modeler.mode = CODE.modelerMode.DRAWING_CLIPPINGBOX;
 			//this.modeler.mode = CODE.modelerMode.DRAWING_CYLYNDER;
-			//this.modeler.mode = CODE.modelerMode.DRAWING_GEOGRAPHICPOINTS;
+			this.modeler.mode = CODE.modelerMode.DRAWING_GEOGRAPHICPOINTS;
 			//this.modeler.mode = CODE.modelerMode.DRAWING_EXCAVATIONPOINTS;
 			this.counterAux++;
 		}
@@ -27616,37 +25770,11 @@ MagoManager.prototype.keyDown = function(key)
 	}
 	else if (key === 84) // 84 = 't'.***
 	{
-		// change sunPosition test.***
-		/*
-		var sunSystem = this.sceneState.sunSystem;
-		if (this.dateTest === undefined)
-		{
-			this.dateTest = new Date();
-			this.dateTest.setMonth(2);
-			this.dateTest.setHours(9);
-			this.dateTest.setMinutes(30);
-		}
-		
-		var currHour = this.dateTest.getHours();
-		var currMin = this.dateTest.getMinutes()+10;
-		if (currMin >= 50)
-		{
-			this.dateTest.setMinutes(0);
-			currHour += 1;
-			this.dateTest.setHours(currHour);
-		}
-		else 
-		{
-			this.dateTest.setMinutes(currMin);
-		}
-		sunSystem.setDate(this.dateTest);
-		*/
-		
-		
-		if (this.magoPolicy.issueInsertEnable)
-		{ this.magoPolicy.issueInsertEnable = false; }
-		else
-		{ this.magoPolicy.issueInsertEnable = true; }
+
+		//if (this.magoPolicy.issueInsertEnable)
+		//{ this.magoPolicy.issueInsertEnable = false; }
+		//else
+		//{ this.magoPolicy.issueInsertEnable = true; }
 		
 		
 		// Stencil shadow mesh making test.********************
@@ -27671,14 +25799,22 @@ MagoManager.prototype.keyDown = function(key)
 		// another test.***
 		if (this.modeler !== undefined)
 		{
-			/*
+			
 			var geoCoordsList = this.modeler.getGeographicCoordsList();
 			if (geoCoordsList !== undefined)
 			{
 				// test make thickLine.
-				geoCoordsList.test__makeThickLines(this);
+				//geoCoordsList.test__makeThickLines(this);
+				if (geoCoordsList.getGeoCoordsCount() > 0)
+				{
+					var renderableObject = GeographicCoordsList.getRenderableObjectOfGeoCoordsArray(geoCoordsList.geographicCoordsArray, this);
+					this.modeler.addObject(renderableObject, 15);
+					
+					geoCoordsList.geographicCoordsArray.length = 0;
+				}
+				var hola = 0;
 			}
-			*/
+			
 			//var excavation = this.modeler.getExcavation();
 			//if (excavation !== undefined)
 			//{
@@ -30096,17 +28232,17 @@ MagoManager.prototype.tilesMultiFrustumCullingFinished = function(intersectedLow
 					}
 					
 					// If necessary do frustum culling.**********************************************************
-					if (doFrustumCullingToBuildings)
-					{
-						var frustumCull = frustumVolume.intersectionSphere(this.boundingSphere_Aux); // cesium.***
-						// intersect with Frustum
-						if (frustumCull === Constant.INTERSECTION_OUTSIDE) 
-						{
-							// put this node to delete into queue.***
-							//this.processQueue.putNodeToDeleteLessThanLod3(node, 0);
-							continue;
-						}
-					}
+					//if (doFrustumCullingToBuildings)
+					//{
+					//	var frustumCull = frustumVolume.intersectionSphere(this.boundingSphere_Aux); // cesium.***
+					//	// intersect with Frustum
+					//	if (frustumCull === Constant.INTERSECTION_OUTSIDE) 
+					//	{
+					//		// put this node to delete into queue.***
+					//		//this.processQueue.putNodeToDeleteLessThanLod3(node, 0);
+					//		continue;
+					//	}
+					//}
 					//-------------------------------------------------------------------------------------------
 					
 					visibleNodes.putNodeByLod(node, lodByDist);
@@ -30114,38 +28250,19 @@ MagoManager.prototype.tilesMultiFrustumCullingFinished = function(intersectedLow
 			}
 		}
 		
-		// Now, check parametric objects created natively in mago.
-		if (lowestTile.objectsArray !== undefined && lowestTile.objectsArray.length > 0)
-		{
-			// check parametric objects.
-			var objectsCount = lowestTile.objectsArray.length;
-			for (var j=0; j<objectsCount; j++)
-			{
-				var object = lowestTile.objectsArray[j];
-				visibleNodes.putNativeObject(object);
-				
-				//var bbox = object.getBoundingBox();
-				//this.boundingSphere_Aux = bbox.getBoundingSphere(this.boundingSphere_Aux);
-				
-				//// do frustumCulling.
-				//var frustumCull = frustumVolume.intersectionSphere(this.boundingSphere_Aux); // cesium.***
-				//// intersect with Frustum
-				//if (frustumCull !== Constant.INTERSECTION_OUTSIDE) 
-				//{
-				//	visibleNodes.currentVisibleNativeObjects.push(object);
-				//}
-				
-			}
-		}
-		
-		
+		// Check native objects.
+		var nativeObjects = lowestTile.nativeObjects;
+		var currVisibleNativeObjects = visibleNodes.currentVisibleNativeObjects;
+		Array.prototype.push.apply(currVisibleNativeObjects.opaquesArray, nativeObjects.opaquesArray);
+		Array.prototype.push.apply(currVisibleNativeObjects.transparentsArray, nativeObjects.transparentsArray);
+		Array.prototype.push.apply(currVisibleNativeObjects.excavationsArray, nativeObjects.excavationsArray);
+		Array.prototype.push.apply(currVisibleNativeObjects.vectorTypeArray, nativeObjects.vectorTypeArray);
+
 		if (lowestTile.isNeededToCreateGeometriesFromSeeds())
 		{
 			lowestTile.createGeometriesFromSeeds(this);
 		}
-		
 	}
-	
 };
 
 /**
@@ -34870,6 +32987,14 @@ var SmartTile = function(smartTileName)
 	this.nodesFromSmartTileF4dArray; 
 	this.nodesArray; 
 	this.objectsArray; // parametric objects.
+	this.vectorTypeObjectsArray;
+	
+	this.nativeObjects = {
+		opaquesArray      : [],
+		transparentsArray : [],
+		excavationsArray  : [],
+		vectorTypeArray   : []
+	};
 	
 	this.isVisible; // var to manage the frustumCulling and delete buildings if necessary.
 	this.distToCamera;
@@ -35361,16 +33486,34 @@ SmartTile.prototype.putObject = function(targetDepth, object, magoManager)
 	}
 	else if (this.depth === targetDepth)
 	{
-		if (this.objectsArray === undefined)
-		{ this.objectsArray = []; }
-		
 		object.smartTileOwner = this;
-		this.objectsArray.push(object);
-		
+		if (object instanceof MagoRenderable) 
+		{
+			if (object.objectType === MagoRenderable.OBJECT_TYPE.MESH)
+			{
+				if (object.isOpaque())
+				{
+					this.nativeObjects.opaquesArray.push(object);
+				}
+				else 
+				{
+					this.nativeObjects.transparentsArray.push(object);
+				}
+			}
+			else if (object.objectType === MagoRenderable.OBJECT_TYPE.VECTORMESH)
+			{
+				this.nativeObjects.vectorTypeArray.push(object);
+			}
+		}
+		else if (object instanceof Excavation) 
+		{
+			this.nativeObjects.excavationsArray.push(object);
+		}
 		// todo: Must recalculate the smartTile sphereExtent.
 		return true;
 	}
 };
+
 
 /**
  * 목표레벨까지 각 타일의 SUB타일 생성 및 노드의 위치와 교점이 있는지 파악 후 노드를 보관.
@@ -35811,8 +33954,12 @@ SmartTile.prototype.hasRenderables = function()
 	{ return true; }
 
 	// check native objects.
-	if (this.objectsArray !== undefined && this.objectsArray.length > 0)
+	var nativeObjects = this.nativeObjects;
+	if (nativeObjects.opaquesArray.length > 0 || nativeObjects.transparentsArray.length > 0 || nativeObjects.excavationsArray.length > 0 || nativeObjects.vectorTypeArray.length > 0)
 	{ return true; }
+	
+	//if (this.objectsArray !== undefined && this.objectsArray.length > 0)
+	//{ return true; }
 	
 	return hasObjects;
 };
@@ -38642,13 +36789,11 @@ function handleTextureLoaded(gl, image, texture, flip_y_texCoords)
 	{
 		gl.bindTexture(gl.TEXTURE_2D, texture);
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flip_y_texCoords); // if need vertical mirror of the image.
-		//gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image); // Original.
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-		//gl.generateMipmap(gl.TEXTURE_2D);
 		gl.bindTexture(gl.TEXTURE_2D, null);
 	}
 };
@@ -40317,7 +38462,8 @@ var VisibleObjectsController = function()
 	this.currentVisibleNativeObjects = {
 		opaquesArray      : [],
 		transparentsArray : [],
-		excavationsArray  : []
+		excavationsArray  : [],
+		vectorTypeArray   : []
 	};
 	this.currentVisiblesToPrepare = [];
 	
@@ -40335,7 +38481,8 @@ VisibleObjectsController.prototype.initArrays = function()
 	this.currentVisibleNativeObjects = {
 		opaquesArray      : [],
 		transparentsArray : [],
-		excavationsArray  : []
+		excavationsArray  : [],
+		vectorTypeArray   : []
 	};
 	this.currentVisiblesToPrepare = [];
 	
@@ -40355,7 +38502,9 @@ VisibleObjectsController.prototype.clear = function()
 	this.currentVisibleNativeObjects.opaquesArray.length = 0;
 	this.currentVisibleNativeObjects.transparentsArray.length = 0;
 	this.currentVisibleNativeObjects.excavationsArray.length = 0;
+	this.currentVisibleNativeObjects.vectorTypeArray.length = 0;
 	this.currentVisiblesToPrepare.length = 0;
+	
 	
 	this.bSphere = undefined;
 	this.bFrustumNear = undefined;
@@ -40385,6 +38534,7 @@ VisibleObjectsController.prototype.get01Visibles = function()
  */
 VisibleObjectsController.prototype.hasRenderables = function() 
 {
+
 	if (this.currentVisibles0.length > 0 || 
 		this.currentVisibles1.length > 0 || 
 		this.currentVisibles2.length > 0 || 
@@ -40392,10 +38542,12 @@ VisibleObjectsController.prototype.hasRenderables = function()
 		this.currentVisiblesAux.length > 0 || 
 		this.currentVisibleNativeObjects.opaquesArray.length > 0 ||
 		this.currentVisibleNativeObjects.transparentsArray.length > 0 ||
-		this.currentVisibleNativeObjects.excavationsArray.length > 0)
+		this.currentVisibleNativeObjects.excavationsArray.length > 0 ||
+		this.currentVisibleNativeObjects.vectorTypeArray.length > 0)
 	{ return true; }
 	else
 	{ return false; }
+
 };
 
 /**
@@ -40813,6 +38965,1934 @@ VisibleObjectsController.prototype.putNodeByLod = function(node, lod)
 
 
 
+
+'use strict';
+
+/**
+ * mago3djs API
+ * 
+ * @alias API
+ * @class API
+ * 
+ * @param {any} apiName api이름
+ */
+function API(apiName)
+{
+	if (!(this instanceof API)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+
+	// mago3d 활성화/비활성화 여부
+	this.magoEnable = true;
+	// return
+	this.returnable = false;
+
+	// api 이름
+	this.apiName = apiName;
+	
+	// project id
+	this.projectId = null;
+	this.projectDataFolder = null;
+	// objectIds
+	this.objectIds = null;
+	// data_key
+	this.dataKey = null;
+	// issueId
+	this.issueId = null;
+	// issueType
+	this.issueType = null;
+	// drawType 이미지를 그리는 유형 0 : DB, 1 : 이슈등록
+	this.drawType = 0;
+
+	// 위도
+	this.latitude = 0;
+	// 경도
+	this.longitude = 0;
+	// 높이
+	this.elevation = 0;
+	// heading
+	this.heading = 0;
+	// pitch
+	this.pitch = 0;
+	// roll
+	this.roll = 0;
+	// duration
+	this.duration = 0;
+
+	// 속성
+	this.property = null;
+	// 색깔
+	this.color = 0;
+	// structs = MSP, outfitting = MOP
+	this.blockType = null;
+	// outfitting 표시/비표시
+	this.showOutFitting = false;
+	// label 표시/비표시
+	this.showLabelInfo = true;
+	// origin 표시/비표시
+	this.showOrigin = false;
+	// boundingBox 표시/비표시
+	this.showBoundingBox = false;
+	// 그림자 표시/비표시
+	this.showShadow = false;
+	// frustum culling 가시 거리(M단위)
+	this.frustumFarDistance = 0;
+	// move mode 
+	this.objectMoveMode = CODE.moveMode.NONE;
+	// 이슈 등록 표시
+	this.issueInsertEnable = false;
+	// object 정보 표시
+	this.objectInfoViewEnable = false;
+	// 이슈 목록 표시
+	this.nearGeoIssueListEnable = false;
+	// occlusion culling
+	this.occlusionCullingEnable = false;
+	//
+	this.insertIssueState = 0;
+	
+	// LOD1
+	this.lod0DistInMeters = null;
+	this.lod1DistInMeters = null;
+	this.lod2DistInMeters = null;
+	this.lod3DistInMeters = null;
+	this.lod4DistInMeters = null;
+	this.lod5DistInMeters = null;
+	
+	// Lighting
+	this.ambientReflectionCoef = null;
+	this.diffuseReflectionCoef = null;
+	this.specularReflectionCoef = null;
+	this.ambientColor = null;
+	this.specularColor = null;
+	
+	this.ssaoRadius = null;
+	//
+	this.FPVMode = false;
+
+	// input x, y, z
+	this.inputPoint = null;
+	// result x, y, z
+	this.resultPoint = null;
+	
+	// General magoMode.
+	this.magoMode = CODE.magoMode.NORMAL;
+
+	//position unit
+	this.unit = CODE.units.DEGREE;
+
+	//for staticModel instantiate
+	this.instantiateObj = null;
+
+	//for staticModel add
+	this.staticModelAttributeObj = null;
+
+	//animation option. 
+	this.animationOption = null;
+
+	/**
+	 * @type {trackOption}
+	 */
+	this.trackOption = null;
+
+	/**
+	 * @type {nodeAttribute}
+	 */
+	this.nodeAttribute = null;
+};
+
+API.prototype.getMagoEnable = function() 
+{
+	return this.magoEnable;
+};
+API.prototype.setMagoEnable = function(magoEnable) 
+{
+	this.magoEnable = magoEnable;
+};
+
+API.prototype.getReturnable = function()
+{
+	return this.returnable;
+};
+API.prototype.setReturnable = function(returnable)
+{
+	this.returnable = returnable;
+};
+
+API.prototype.getAPIName = function() 
+{
+	return this.apiName;
+};
+
+API.prototype.getProjectId = function() 
+{
+	return this.projectId;
+};
+API.prototype.setProjectId = function(projectId) 
+{
+	this.projectId = projectId;
+};
+
+API.prototype.getProjectDataFolder = function() 
+{
+	return this.projectDataFolder;
+};
+API.prototype.setProjectDataFolder = function(projectDataFolder) 
+{
+	this.projectDataFolder = projectDataFolder;
+};
+
+API.prototype.getObjectIds = function() 
+{
+	return this.objectIds;
+};
+API.prototype.setObjectIds = function(objectIds) 
+{
+	this.objectIds = objectIds;
+};
+
+API.prototype.getIssueId = function() 
+{
+	return this.issueId;
+};
+API.prototype.setIssueId = function(issueId) 
+{
+	this.issueId = issueId;
+};
+API.prototype.getIssueType = function() 
+{
+	return this.issueType;
+};
+API.prototype.setIssueType = function(issueType) 
+{
+	this.issueId = issueType;
+};
+
+API.prototype.getDataKey = function() 
+{
+	return this.dataKey;
+};
+API.prototype.setDataKey = function(dataKey) 
+{
+	this.dataKey = dataKey;
+};
+
+API.prototype.getLatitude = function() 
+{
+	return this.latitude;
+};
+API.prototype.setLatitude = function(latitude) 
+{
+	this.latitude = latitude;
+};
+
+API.prototype.getLongitude = function() 
+{
+	return this.longitude;
+};
+API.prototype.setLongitude = function(longitude) 
+{
+	this.longitude = longitude;
+};
+
+API.prototype.getElevation = function() 
+{
+	return this.elevation;
+};
+API.prototype.setElevation = function(elevation) 
+{
+	this.elevation = elevation;
+};
+
+API.prototype.getHeading = function() 
+{
+	return this.heading;
+};
+API.prototype.setHeading = function(heading) 
+{
+	this.heading = heading;
+};
+
+API.prototype.getPitch = function() 
+{
+	return this.pitch;
+};
+API.prototype.setPitch = function(pitch) 
+{
+	this.pitch = pitch;
+};
+
+API.prototype.getRoll = function() 
+{
+	return this.roll;
+};
+API.prototype.setRoll = function(roll) 
+{
+	this.roll = roll;
+};
+
+API.prototype.getProperty = function() 
+{
+	return this.property;
+};
+API.prototype.setProperty = function(property) 
+{
+	this.property = property;
+};
+
+API.prototype.getColor = function() 
+{
+	return this.color;
+};
+API.prototype.setColor = function(color) 
+{
+	this.color = color;
+};
+
+API.prototype.getBlockType = function() 
+{
+	return this.blockType;
+};
+API.prototype.setBlockType = function(blockType) 
+{
+	this.blockType = blockType;
+};
+
+API.prototype.getShowOutFitting = function() 
+{
+	return this.showOutFitting;
+};
+API.prototype.setShowOutFitting = function(showOutFitting) 
+{
+	this.showOutFitting = showOutFitting;
+};
+
+
+API.prototype.getShowLabelInfo = function() 
+{
+	return this.showLabelInfo;
+};
+API.prototype.setShowLabelInfo = function(showLabelInfo) 
+{
+	this.showLabelInfo = showLabelInfo;
+};
+
+API.prototype.getShowOrigin = function()
+{
+	return this.showOrigin;
+};
+API.prototype.setShowOrigin = function(showOrigin)
+{
+	this.showOrigin = showOrigin;
+};
+
+API.prototype.getShowBoundingBox = function() 
+{
+	return this.showBoundingBox;
+};
+API.prototype.setShowBoundingBox = function(showBoundingBox) 
+{
+	this.showBoundingBox = showBoundingBox;
+};
+
+API.prototype.getShowShadow = function() 
+{
+	return this.showShadow;
+};
+API.prototype.setShowShadow = function(showShadow) 
+{
+	this.showShadow = showShadow;
+};
+
+API.prototype.getFrustumFarDistance = function() 
+{
+	return this.frustumFarDistance;
+};
+API.prototype.setFrustumFarDistance = function(frustumFarDistance) 
+{
+	this.frustumFarDistance = frustumFarDistance;
+};
+
+API.prototype.getObjectMoveMode = function() 
+{
+	return this.objectMoveMode;
+};
+API.prototype.setObjectMoveMode = function(objectMoveMode) 
+{
+	this.objectMoveMode = objectMoveMode;
+};
+
+API.prototype.getIssueInsertEnable = function() 
+{
+	return this.issueInsertEnable;
+};
+API.prototype.setIssueInsertEnable = function(issueInsertEnable) 
+{
+	this.issueInsertEnable = issueInsertEnable;
+};
+API.prototype.getObjectInfoViewEnable = function() 
+{
+	return this.objectInfoViewEnable;
+};
+API.prototype.setObjectInfoViewEnable = function(objectInfoViewEnable) 
+{
+	this.objectInfoViewEnable = objectInfoViewEnable;
+};
+API.prototype.getOcclusionCullingEnable = function() 
+{
+	return this.occlusionCullingEnable;
+};
+API.prototype.setOcclusionCullingEnable = function(occlusionCullingEnable) 
+{
+	this.occlusionCullingEnable = occlusionCullingEnable;
+};
+API.prototype.getNearGeoIssueListEnable = function() 
+{
+	return this.nearGeoIssueListEnable;
+};
+API.prototype.setNearGeoIssueListEnable = function(nearGeoIssueListEnable) 
+{
+	this.nearGeoIssueListEnable = nearGeoIssueListEnable;
+};
+
+API.prototype.getInsertIssueState = function() 
+{
+	return this.insertIssueState;
+};
+API.prototype.setInsertIssueState = function(insertIssueState) 
+{
+	this.insertIssueState = insertIssueState;
+};
+
+API.prototype.getDrawType = function() 
+{
+	return this.drawType;
+};
+API.prototype.setDrawType = function(drawType) 
+{
+	this.drawType = drawType;
+};
+
+API.prototype.getLod0DistInMeters = function() 
+{
+	return this.lod0DistInMeters;
+};
+API.prototype.setLod0DistInMeters = function(lod0DistInMeters) 
+{
+	this.lod0DistInMeters = lod0DistInMeters;
+};
+API.prototype.getLod1DistInMeters = function() 
+{
+	return this.lod1DistInMeters;
+};
+API.prototype.setLod1DistInMeters = function(lod1DistInMeters) 
+{
+	this.lod1DistInMeters = lod1DistInMeters;
+};
+API.prototype.getLod2DistInMeters = function() 
+{
+	return this.lod2DistInMeters;
+};
+API.prototype.setLod2DistInMeters = function(lod2DistInMeters) 
+{
+	this.lod2DistInMeters = lod2DistInMeters;
+};
+API.prototype.getLod3DistInMeters = function() 
+{
+	return this.lod3DistInMeters;
+};
+API.prototype.setLod3DistInMeters = function(lod3DistInMeters) 
+{
+	this.lod3DistInMeters = lod3DistInMeters;
+};
+API.prototype.getLod4DistInMeters = function() 
+{
+	return this.lod4DistInMeters;
+};
+API.prototype.setLod4DistInMeters = function(lod4DistInMeters) 
+{
+	this.lod4DistInMeters = lod4DistInMeters;
+};
+API.prototype.getLod5DistInMeters = function() 
+{
+	return this.lod5DistInMeters;
+};
+API.prototype.setLod5DistInMeters = function(lod5DistInMeters) 
+{
+	this.lod5DistInMeters = lod5DistInMeters;
+};
+
+API.prototype.getAmbientReflectionCoef = function() 
+{
+	return this.ambientReflectionCoef;
+};
+API.prototype.setAmbientReflectionCoef = function(ambientReflectionCoef) 
+{
+	this.ambientReflectionCoef = ambientReflectionCoef;
+};
+API.prototype.getDiffuseReflectionCoef = function() 
+{
+	return this.diffuseReflectionCoef;
+};
+API.prototype.setDiffuseReflectionCoef = function(diffuseReflectionCoef) 
+{
+	this.diffuseReflectionCoef = diffuseReflectionCoef;
+};
+API.prototype.getSpecularReflectionCoef = function() 
+{
+	return this.specularReflectionCoef;
+};
+API.prototype.setSpecularReflectionCoef = function(specularReflectionCoef) 
+{
+	this.specularReflectionCoef = specularReflectionCoef;
+};
+API.prototype.getAmbientColor = function() 
+{
+	return this.ambientColor;
+};
+API.prototype.setAmbientColor = function(ambientColor) 
+{
+	this.ambientColor = ambientColor;
+};
+API.prototype.getSpecularColor = function() 
+{
+	return this.specularColor;
+};
+API.prototype.setSpecularColor = function(specularColor) 
+{
+	this.specularColor = specularColor;
+};
+API.prototype.getSsaoRadius = function() 
+{
+	return this.ssaoRadius;
+};
+API.prototype.setSsaoRadius = function(ssaoRadius) 
+{
+	this.ssaoRadius = ssaoRadius;
+};
+API.prototype.getFPVMode = function()
+{
+	return this.FPVMode;
+};
+API.prototype.setFPVMode = function(value)
+{
+	this.FPVMode = value;
+};
+API.prototype.getMagoMode = function()
+{
+	return this.magoMode;
+};
+API.prototype.setMagoMode = function(value)
+{
+	this.magoMode = value;
+};
+API.prototype.getDuration = function()
+{
+	return this.duration;
+};
+API.prototype.setDuration = function(duration)
+{
+	this.duration = duration;
+};
+
+API.prototype.getInputPoint = function()
+{
+	return this.inputPoint;
+};
+API.prototype.setInputPoint = function(inputPoint)
+{
+	this.inputPoint = inputPoint;
+};
+
+API.prototype.getResultPoint = function()
+{
+	return this.resultPoint;
+};
+API.prototype.setResultPoint = function(resultPoint)
+{
+	this.resultPoint = resultPoint;
+};
+
+API.prototype.getUnit = function()
+{
+	return this.unit;
+};
+API.prototype.setUnit = function(unit)
+{
+	if (unit !== undefined)
+	{
+		if (isNaN(unit) || unit > CODE.units.RADIAN)
+		{
+			throw new Error('unit parameter needs CODE.units');
+		}
+		this.unit = unit;
+	}
+};
+
+API.prototype.getInstantiateObj = function()
+{
+	return this.instantiateObj;
+};
+API.prototype.setInstantiateObj = function(instantiateObj)
+{
+	this.instantiateObj = instantiateObj;
+};
+
+API.prototype.getStaticModelAttributeObj = function()
+{
+	return this.staticModelAttributeObj;
+};
+API.prototype.setStaticModelAttributeObj = function(staticModelAttributeObj)
+{
+	this.staticModelAttributeObj = staticModelAttributeObj;
+};
+
+API.prototype.getAnimationOption = function()
+{
+	return this.animationOption;
+};
+API.prototype.setAnimationOption = function(animationOption)
+{
+	this.animationOption = animationOption;
+};
+
+API.prototype.getTrackOption = function()
+{
+	return this.trackOption;
+};
+API.prototype.setTrackOption = function(trackOption)
+{
+	this.trackOption = trackOption;
+};
+
+API.prototype.getNodeAttribute = function()
+{
+	return this.nodeAttribute;
+};
+API.prototype.setNodeAttribute = function(nodeAttribute)
+{
+	this.nodeAttribute = nodeAttribute;
+};
+
+'use strict';
+
+/**
+ * 사용자가 변경한 moving, color, rotation 등 이력 정보를 위한 domain
+ * @class Policy
+ */
+var ChangeHistory = function() 
+{
+	if (!(this instanceof ChangeHistory)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+
+	this.moveHistory = false;
+	this.colorHistory = false;
+	this.rotationHistory = false;
+	
+	// move mode. ALL : 0 , OBJECT : 1, NONE : 2
+	this.objectMoveMode = null;
+	
+	// project id
+	this.projectId = null;
+	// project data folder
+	this.projectDataFolder = null;
+	// data_key
+	this.dataKey = null;	
+	// objectId
+	this.objectId = null;
+	// objectIndexOrder
+	this.objectIndexOrder = 0;
+	
+	// referenceObject aditional movement.
+	this.refObjectAditionalMove;
+	this.refObjectAditionalMoveRelToBuilding;
+	
+	// 위도
+	this.latitude = 0.0;
+	// 경도
+	this.longitude = 0.0;
+	// 높이
+	this.elevation = 0.0;
+	// heading
+	this.heading = 0.0;
+	// pitch
+	this.pitch = 0.0;
+	// roll
+	this.roll = 0.0;
+	// duration
+	this.duration = 0;
+	// 색깔
+	this.color = 0;
+	// color rgb
+	this.rgbColor = [];
+	// 속성
+	this.property = null;
+	this.propertyKey = null;
+	this.propertyValue = null;
+};
+
+ChangeHistory.prototype.getReferenceObjectAditionalMovement = function() 
+{
+	if (this.refObjectAditionalMove === undefined)
+	{ this.refObjectAditionalMove = new Point3D(); }
+	
+	return this.refObjectAditionalMove;
+};
+
+ChangeHistory.prototype.getReferenceObjectAditionalMovementRelToBuilding = function() 
+{
+	if (this.refObjectAditionalMoveRelToBuilding === undefined)
+	{ this.refObjectAditionalMoveRelToBuilding = new Point3D(); }
+	
+	return this.refObjectAditionalMoveRelToBuilding;
+};
+
+ChangeHistory.prototype.getProjectId = function() 
+{
+	return this.projectId;
+};
+ChangeHistory.prototype.setProjectId = function(projectId) 
+{
+	this.projectId = projectId;
+};
+
+ChangeHistory.prototype.getProjectDataFolder = function() 
+{
+	return this.projectDataFolder;
+};
+ChangeHistory.prototype.setProjectDataFolder = function(projectDataFolder) 
+{
+	this.projectDataFolder = projectDataFolder;
+};
+
+ChangeHistory.prototype.getDataKey = function() 
+{
+	return this.dataKey;
+};
+ChangeHistory.prototype.setDataKey = function(dataKey) 
+{
+	this.dataKey = dataKey;
+};
+
+ChangeHistory.prototype.getObjectId = function() 
+{
+	return this.objectId;
+};
+ChangeHistory.prototype.setObjectId = function(objectId) 
+{
+	this.objectId = objectId;
+};
+
+ChangeHistory.prototype.getObjectIndexOrder = function() 
+{
+	return this.objectIndexOrder;
+};
+ChangeHistory.prototype.setObjectIndexOrder = function(objectIndexOrder) 
+{
+	this.objectIndexOrder = objectIndexOrder;
+};
+
+ChangeHistory.prototype.getLatitude = function() 
+{
+	return this.latitude;
+};
+ChangeHistory.prototype.setLatitude = function(latitude) 
+{
+	this.latitude = latitude;
+};
+
+ChangeHistory.prototype.getLongitude = function() 
+{
+	return this.longitude;
+};
+ChangeHistory.prototype.setLongitude = function(longitude) 
+{
+	this.longitude = longitude;
+};
+
+ChangeHistory.prototype.getElevation = function() 
+{
+	return this.elevation;
+};
+ChangeHistory.prototype.setElevation = function(elevation) 
+{
+	this.elevation = elevation;
+};
+
+ChangeHistory.prototype.getHeading = function() 
+{
+	return this.heading;
+};
+ChangeHistory.prototype.setHeading = function(heading) 
+{
+	this.heading = heading;
+};
+
+ChangeHistory.prototype.getPitch = function() 
+{
+	return this.pitch;
+};
+ChangeHistory.prototype.setPitch = function(pitch) 
+{
+	this.pitch = pitch;
+};
+
+ChangeHistory.prototype.getRoll = function() 
+{
+	return this.roll;
+};
+ChangeHistory.prototype.setRoll = function(roll) 
+{
+	this.roll = roll;
+};
+
+ChangeHistory.prototype.getColor = function() 
+{
+	return this.color;
+};
+ChangeHistory.prototype.setColor = function(color) 
+{
+	this.color = color;
+};
+ChangeHistory.prototype.getRgbColor = function() 
+{
+	return this.rgbColor;
+};
+ChangeHistory.prototype.setRgbColor = function(rgbColor) 
+{
+	this.rgbColor = rgbColor;
+};
+
+ChangeHistory.prototype.getProperty = function() 
+{
+	return this.property;
+};
+ChangeHistory.prototype.setProperty = function(property) 
+{
+	this.property = property;
+};
+ChangeHistory.prototype.getPropertyKey = function() 
+{
+	return this.propertyKey;
+};
+ChangeHistory.prototype.setPropertyKey = function(propertyKey) 
+{
+	this.propertyKey = propertyKey;
+};
+ChangeHistory.prototype.getPropertyValue = function() 
+{
+	return this.propertyValue;
+};
+ChangeHistory.prototype.setPropertyValue = function(propertyValue) 
+{
+	this.propertyValue = propertyValue;
+};
+
+ChangeHistory.prototype.getDuration = function()
+{
+	return this.duration;
+};
+ChangeHistory.prototype.setDuration = function(duration)
+{
+	this.duration = duration;
+};
+
+ChangeHistory.prototype.getObjectMoveMode = function() 
+{
+	return this.objectMoveMode;
+};
+ChangeHistory.prototype.setObjectMoveMode = function(objectMoveMode) 
+{
+	this.objectMoveMode = objectMoveMode;
+};
+"use strict";
+
+var CODE = {};
+
+// magoManager가 다 로딩 되지 않은 상태에서 화면으로 부터 호출 되는 것을 막기 위해
+CODE.magoManagerState = {
+	"INIT"   	: 0,
+	"STARTED"	: 1,
+	"READY"   : 2
+};
+
+//0 = no started to load. 1 = started loading. 2 = finished loading. 3 = parse started. 4 = parse finished.
+CODE.fileLoadState = {
+	"READY"            : 0,
+	"LOADING_STARTED"  : 1,
+	"LOADING_FINISHED" : 2,
+	"PARSE_STARTED"    : 3,
+	"PARSE_FINISHED"   : 4,
+	"IN_QUEUE"         : 5,
+	"IN_PARSE_QUEUE"   : 6,
+	"BINDING_STARTED"  : 7,
+	"BINDING_FINISHED" : 8,
+	"LOAD_FAILED"      : 9
+};
+
+CODE.moveMode = {
+	"ALL"              : "0",
+	"OBJECT"           : "1",
+	"GEOGRAPHICPOINTS" : "2",
+	"NONE"             : "3"
+};
+
+CODE.magoMode = {
+	"NORMAL"  : 0,
+	"DRAWING" : 1
+};
+
+CODE.magoCurrentProcess = {
+	"Unknown"                    : 0,
+	"DepthRendering"             : 1,
+	"ColorRendering"             : 2,
+	"ColorCodeRendering"         : 3,
+	"DepthShadowRendering"       : 4,
+	"SilhouetteDepthRendering"   : 5,
+	"StencilSilhouetteRendering" : 6
+};
+
+CODE.modelerMode = {
+	"INACTIVE"                 : 0,
+	"DRAWING_POLYLINE"         : 1,
+	"DRAWING_PLANEGRID"        : 2,
+	"DRAWING_GEOGRAPHICPOINTS" : 3,
+	"DRAWING_EXCAVATIONPOINTS" : 4,
+	"DRAWING_TUNNELPOINTS"     : 5,
+	"DRAWING_BSPLINE"          : 6,
+	"DRAWING_BASICFACTORY"     : 7,
+	"DRAWING_STATICGEOMETRY"   : 8,
+	"DRAWING_PIPE"             : 9,
+	"DRAWING_SPHERE"           : 10,
+	"DRAWING_BOX"              : 11,
+	"DRAWING_CUTTINGPLANE"     : 12,
+	"DRAWING_CLIPPINGBOX"      : 13,
+	"DRAWING_CONCENTRICTUBES"  : 14,
+	"DRAWING_TUBE"             : 15,
+	"DRAWING_FREECONTOURWALL"  : 16,
+	"DRAWING_CYLYNDER"         : 17
+};
+
+CODE.boxFace = {
+	"UNKNOWN" : 0,
+	"LEFT"    : 1,
+	"RIGHT"   : 2,
+	"FRONT"   : 3,
+	"REAR"    : 4,
+	"TOP"     : 5,
+	"BOTTOM"  : 6
+};
+
+CODE.modelerDrawingState = {
+	"NO_STARTED" : 0,
+	"STARTED"    : 1
+};
+
+CODE.modelerDrawingElement = {
+	"NOTHING"          : 0,
+	"POINTS"           : 1,
+	"LINES"            : 2,
+	"POLYLINES"        : 3,
+	"GEOGRAPHICPOINTS" : 4,
+};
+
+CODE.units = {
+	"METRE"  : 0,
+	"DEGREE" : 1,
+	"RADIAN" : 2
+};
+
+
+CODE.trackMode = {
+	"TRACKING" : 0,
+	"DRIVER"   : 1
+};
+
+CODE.imageryType = {
+	"UNKNOWN"      : 0,
+	"CRS84"        : 1,
+	"WEB_MERCATOR" : 2
+};
+
+CODE.animationType = {
+	"UNKNOWN"         : 0,
+	"REALTIME_POINTS" : 1,
+	"PATH"            : 2
+};
+
+CODE.relativePosition2D = {
+	"UNKNOWN"    : 0,
+	"LEFT"       : 1,
+	"RIGHT"      : 2,
+	"COINCIDENT" : 3
+};
+
+CODE.PROJECT_ID_PREFIX = "projectId_";
+CODE.PROJECT_DATA_FOLDER_PREFIX = "projectDataFolder_";
+
+'use strict';
+
+/**
+ * 상수 설정
+ * @class Constant
+ */
+var Constant = {};
+
+Constant.CESIUM = "cesium";
+Constant.WORLDWIND = "worldwind";
+Constant.MAGOWORLD = "magoworld";
+Constant.OBJECT_INDEX_FILE = "/objectIndexFile.ihe";
+Constant.TILE_INDEX_FILE = "/smartTile_f4d_indexFile.sii";
+Constant.CACHE_VERSION = "?cache_version=";
+Constant.SIMPLE_BUILDING_TEXTURE3x3_BMP = "/SimpleBuildingTexture3x3.bmp";
+Constant.RESULT_XDO2F4D = "/Result_xdo2f4d/Images/";
+Constant.RESULT_XDO2F4D_TERRAINTILES = "/Result_xdo2f4d/F4D_TerrainTiles/";
+Constant.RESULT_XDO2F4D_TERRAINTILEFILE_TXT = "/Result_xdo2f4d/f4dTerranTileFile.txt";
+
+Constant.INTERSECTION_OUTSIDE = 0;
+Constant.INTERSECTION_INTERSECT= 1;
+Constant.INTERSECTION_INSIDE = 2;
+Constant.INTERSECTION_POINT_A = 3;
+Constant.INTERSECTION_POINT_B = 4;
+
+'use strict';
+
+/**
+ * mago3D 전체 환경 설정을 관리
+ * @class MagoConfig
+ */
+var MagoConfig = {};
+
+MagoConfig.setContainerId = function(containerId) 
+{
+	this.containerId = containerId;
+};
+
+MagoConfig.getContainerId = function() 
+{
+	return this.containerId;
+};
+
+MagoConfig.getPolicy = function() 
+{
+	return this.serverPolicy;
+};
+
+MagoConfig.getGeoserver = function() 
+{
+	return this.geoserver;
+};
+
+MagoConfig.getData = function(key) 
+{
+	return this.dataObject[key];
+};
+
+MagoConfig.isDataExist = function(key) 
+{
+	return this.dataObject.hasOwnProperty(key);
+};
+
+MagoConfig.deleteData = function(key) 
+{
+	return delete this.dataObject[key];
+};
+
+/**
+ * data 를 map에 저장
+ * @param key map에 저장될 key
+ * @param value map에 저장될 value
+ */
+MagoConfig.setData = function(key, value) 
+{
+	if (!this.isDataExist(key)) 
+	{
+		this.dataObject[key] = value;
+	}
+};
+
+/**
+ * F4D Converter 실행 결과물이 저장된 project data folder 명을 획득
+ * @param projectDataFolder data folder
+ */
+MagoConfig.getProjectDataFolder = function(projectDataFolder) 
+{
+	var key = CODE.PROJECT_DATA_FOLDER_PREFIX + projectDataFolder;
+	return this.dataObject[key];
+};
+
+/**
+ * project map에 data folder명의 존재 유무를 검사
+ * @param projectDataFolder
+ */
+MagoConfig.isProjectDataFolderExist = function(projectDataFolder) 
+{
+	var key = CODE.PROJECT_DATA_FOLDER_PREFIX + projectDataFolder;
+	return this.dataObject.hasOwnProperty(key);
+};
+
+/**
+ * project data folder명을 map에서 삭제
+ * @param projectDataFolder
+ */
+MagoConfig.deleteProjectDataFolder = function(projectDataFolder) 
+{
+	var key = CODE.PROJECT_DATA_FOLDER_PREFIX + projectDataFolder;
+	return delete this.dataObject[key];
+};
+
+/**
+ * project data folder명을 Object에서 삭제
+ * @param projectDataFolder Object에 저장될 key
+ * @param value Object에 저장될 value
+ */
+MagoConfig.setProjectDataFolder = function(projectDataFolder, value) 
+{
+	var key = CODE.PROJECT_DATA_FOLDER_PREFIX + projectDataFolder;
+	if (!this.isProjectDataFolderExist(key))
+	{
+		this.dataObject[key] = value;
+	}
+};
+
+/**
+ * 환경설정 초기화
+ * @param serverPolicy mago3d policy(json)
+ * @param projectIdArray data 정보를 map 저장할 key name
+ * @param projectDataArray data 정보(json)
+ */
+MagoConfig.init = function(serverPolicy, projectIdArray, projectDataArray) 
+{
+	if (!serverPolicy || !serverPolicy instanceof Object) 
+	{
+		throw new Error('geopolicy is required object.');
+	}
+	this.dataObject = {};
+	
+	this.selectHistoryObject = {};
+	this.movingHistoryObject = {};
+	this.colorHistoryObject = {};
+	this.locationAndRotationHistoryObject = {};
+
+	this.serverPolicy = serverPolicy;
+	this.twoDimension = false;
+	if (!this.serverPolicy.basicGlobe) { this.serverPolicy.basicGlobe = Constant.CESIUM; }
+
+	this.serverPolicy.online = true;
+
+	if (this.serverPolicy.geoserverEnable) 
+	{
+		this.geoserver = new GeoServer();
+
+		var info = {
+			"wmsVersion"    : this.serverPolicy.geoserverWmsVersion,
+			"dataUrl"       : this.serverPolicy.geoserverDataUrl,
+			"dataWorkspace" : this.serverPolicy.geoserverDataWorkspace,
+			"dataStore"     : this.serverPolicy.geoserverDataStore,
+			"user"          : this.serverPolicy.geoserverUser,
+			"password"      : this.serverPolicy.geoserverPassword
+		};
+		this.geoserver.setServerInfo(info);
+	}
+
+
+	if (projectIdArray && projectIdArray.length > 0) 
+	{
+		for (var i=0; i<projectIdArray.length; i++) 
+		{
+			if (!this.isDataExist(CODE.PROJECT_ID_PREFIX + projectIdArray[i])) 
+			{
+				this.setData(CODE.PROJECT_ID_PREFIX + projectIdArray[i], projectDataArray[i]);
+				this.setProjectDataFolder(CODE.PROJECT_DATA_FOLDER_PREFIX + projectDataArray[i].data_key, projectDataArray[i].data_key);
+			}
+		}
+	}
+};
+
+/**
+ * 모든 데이터를 삭제함
+ */
+MagoConfig.clearAllData = function() 
+{
+	this.dataObject = {};
+};
+
+/**
+ * 모든 선택 히스토리 삭제
+ */
+MagoConfig.clearSelectHistory = function() 
+{
+	this.selectHistoryObject = {};
+};
+
+/**
+ * 모든 object 선택 내용 이력을 취득
+ */
+MagoConfig.getAllSelectHistory = function()
+{
+	return this.selectHistoryObject;
+};
+
+/**
+ * project 별 해당 키에 해당하는 모든 object 선택 내용 이력을 취득
+ */
+MagoConfig.getSelectHistoryObjects = function(projectId, dataKey)
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.selectHistoryObject[projectId];
+	if (projectIdObject === undefined) { return undefined; }
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	return dataKeyObject;
+};
+
+/**
+ * object 선택 내용 이력을 취득
+ */
+MagoConfig.getSelectHistoryObject = function(projectId, dataKey, objectIndexOrder)
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.selectHistoryObject[projectId];
+	if (projectIdObject === undefined) { return undefined; }
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	if (dataKeyObject === undefined) { return undefined; }
+	// objectIndexOrder 를 저장
+	return dataKeyObject[objectIndexOrder];
+};
+
+/**
+ * object 선택 내용을 저장
+ */
+MagoConfig.saveSelectHistory = function(projectId, dataKey, objectIndexOrder, changeHistory) 
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.selectHistoryObject.get(projectId);
+	if (projectIdObject === undefined)
+	{
+		projectIdObject = {};
+		this.selectHistoryObject[projectId] = projectIdObject;
+	}
+	
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	if (dataKeyObject === undefined)
+	{
+		dataKeyObject = {};
+		projectIdObject[dataKey] = dataKeyObject;
+	}
+	
+	// objectIndexOrder 를 저장
+	dataKeyObject[objectIndexOrder] = changeHistory;
+};
+
+/**
+ * object 선택 내용을 삭제
+ */
+MagoConfig.deleteSelectHistoryObject = function(projectId, dataKey, objectIndexOrder)
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.selectHistoryObject[projectId];
+	if (projectIdObject === undefined) { return undefined; }
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	if (dataKeyObject === undefined) { return undefined; }
+	// objectIndexOrder 를 저장
+	return delete dataKeyObject[objectIndexOrder];
+};
+
+/**
+ * 모든 이동 히스토리 삭제
+ */
+MagoConfig.clearMovingHistory = function() 
+{
+	this.movingHistoryObject = {};
+};
+
+/**
+ * 모든 object 선택 내용 이력을 취득
+ */
+MagoConfig.getAllMovingHistory = function()
+{
+	return this.movingHistoryObject;
+};
+
+/**
+ * project별 입력키 값과 일치하는 object 이동 내용 이력을 취득
+ */
+MagoConfig.getMovingHistoryObjects = function(projectId, dataKey)
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.movingHistoryObject[projectId];
+	if (projectIdObject === undefined) { return undefined; }
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	return dataKeyObject;
+};
+
+/**
+ * object 이동 내용 이력을 취득
+ */
+MagoConfig.getMovingHistoryObject = function(projectId, dataKey, objectIndexOrder)
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.movingHistoryObject[projectId];
+	if (projectIdObject === undefined) { return undefined; }
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	if (dataKeyObject === undefined) { return undefined; }
+	// objectIndexOrder 를 저장
+	return dataKeyObject[objectIndexOrder];
+};
+
+/**
+ * object 이동 내용을 저장
+ */
+MagoConfig.saveMovingHistory = function(projectId, dataKey, objectIndexOrder, changeHistory) 
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.movingHistoryObject[projectId];
+	if (projectIdObject === undefined)
+	{
+		projectIdObject = {};
+		this.movingHistoryObject[projectId] = projectIdObject;
+	}
+	
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	if (dataKeyObject === undefined)
+	{
+		dataKeyObject = {};
+		projectIdObject[dataKey] = dataKeyObject;
+	}
+	
+	// objectIndexOrder 를 저장
+	dataKeyObject[objectIndexOrder] = changeHistory;
+};
+
+/**
+ * object 이동 내용을 삭제
+ */
+MagoConfig.deleteMovingHistoryObject = function(projectId, dataKey, objectIndexOrder)
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.movingHistoryObject[projectId];
+	if (projectIdObject === undefined) { return undefined; }
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	if (dataKeyObject === undefined) { return undefined; }
+	// objectIndexOrder 를 저장
+	return delete dataKeyObject[objectIndexOrder];
+};
+
+/**
+ * 모든 색깔 변경 이력을 획득
+ */
+MagoConfig.getAllColorHistory = function() 
+{
+	return this.colorHistoryObject;
+};
+
+/**
+ * 모든 색깔변경 히스토리 삭제
+ */
+MagoConfig.clearColorHistory = function() 
+{
+	this.colorHistoryObject = {};
+};
+
+/**
+ * project별 키에 해당하는 모든 색깔 변경 이력을 획득
+ */
+MagoConfig.getColorHistorys = function(projectId, dataKey)
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.colorHistoryObject[projectId];
+	if (projectIdObject === undefined) { return undefined; }
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	return dataKeyObject;
+};
+
+/**
+ * 색깝 변경 이력을 획득
+ */
+MagoConfig.getColorHistory = function(projectId, dataKey, objectId)
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.colorHistoryObject[projectId];
+	if (projectIdObject === undefined) { return undefined; }
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	if (dataKeyObject === undefined) { return undefined; }
+	// objectId 를 저장
+	return dataKeyObject[objectId];
+};
+
+/**
+ * 색깝 변경 내용을 저장
+ */
+MagoConfig.saveColorHistory = function(projectId, dataKey, objectId, changeHistory) 
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.colorHistoryObject[projectId];
+	if (projectIdObject === undefined)
+	{
+		projectIdObject = {};
+		this.colorHistoryObject[projectId] = projectIdObject;
+	}
+	
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	if (dataKeyObject === undefined)
+	{
+		dataKeyObject = {};
+		projectIdObject[dataKey] = dataKeyObject;
+	}
+
+	if (objectId === null || objectId === "") 
+	{
+		dataKeyObject[dataKey] = changeHistory;
+	}
+	else 
+	{
+		dataKeyObject[objectId] = changeHistory;
+	}
+};
+
+/**
+ * 색깔 변경 이력을 삭제
+ */
+MagoConfig.deleteColorHistory = function(projectId, dataKey, objectId)
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.colorHistoryObject[projectId];
+	if (projectIdObject === undefined) { return undefined; }
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	if (dataKeyObject === undefined) { return undefined; }
+	// objectIndexOrder 를 저장
+	return delete dataKeyObject[objectId];
+};
+
+/**
+ * 모든 색깔변경 히스토리 삭제
+ */
+MagoConfig.clearColorHistory = function() 
+{
+	this.colorHistoryObject = {};
+};
+
+/**
+ * 모든 location and rotation 변경 이력을 획득
+ */
+MagoConfig.getAllLocationAndRotationHistory = function() 
+{
+	return this.locationAndRotationHistoryObject;
+};
+
+/**
+ * 프로젝트별 해당 키 값을 갖는 모든 location and rotation 이력을 획득
+ */
+MagoConfig.getLocationAndRotationHistorys = function(projectId, dataKey)
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.locationAndRotationHistoryObject[projectId];
+	if (projectIdObject === undefined) { return undefined; }
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	return dataKeyObject;
+};
+
+/**
+ * location and rotation 이력을 획득
+ */
+MagoConfig.getLocationAndRotationHistory = function(projectId, dataKey)
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.locationAndRotationHistoryObject[projectId];
+	if (projectIdObject === undefined) { return undefined; }
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	
+	return dataKeyObject;
+};
+
+/**
+ * location and rotation 내용을 저장
+ */
+MagoConfig.saveLocationAndRotationHistory = function(projectId, dataKey, changeHistory) 
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.locationAndRotationHistoryObject[projectId];
+	if (projectIdObject === undefined)
+	{
+		projectIdObject = {};
+		this.locationAndRotationHistoryObject[projectId] = projectIdObject;
+	}
+	
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	if (dataKeyObject === undefined)
+	{
+		dataKeyObject = {};
+	}
+
+	dataKeyObject[dataKey] = changeHistory;
+};
+
+/**
+ * location and rotation 이력을 삭제
+ */
+MagoConfig.deleteLocationAndRotationHistory = function(projectId, dataKey)
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.locationAndRotationHistoryObject[projectId];
+	if (projectIdObject === undefined) { return undefined; }
+	// dataKey 별 Object을 검사
+	var dataKeyObject = delete projectIdObject[dataKey];
+};
+
+/**
+ * 모든 location and rotation 히스토리 삭제
+ */
+MagoConfig.clearLocationAndRotationHistory = function() 
+{
+	this.locationAndRotationHistoryObject = {};
+};
+	
+/**
+ * TODO 이건 나중에 활요. 사용하지 않음
+ * check 되지 않은 데이터들을 삭제함
+ * @param keyObject 비교할 맵
+ */
+/*MagoConfig.clearUnSelectedData = function(keyObject)
+{
+	for (var key of this.dataObject.keys())
+	{
+		if (!keyObject.hasxxxxx(key))
+		{
+			// data folder path가 존재하면....
+			if (key.indexOf(CODE.PROJECT_DATA_FOLDER_PREFIX) >= 0) 
+			{
+				// 지우는 처리가 있어야 함
+			}
+			this.dataObject.delete(key);
+		}
+	}
+};*/
+
+MagoConfig.setTwoDimension = function(twoDimension) 
+{
+	this.twoDimension = twoDimension;
+};
+MagoConfig.isTwoDimension = function()
+{
+	return this.twoDimension;
+};
+'use strict';
+
+/**
+ * Policy
+ * @class Policy
+ */
+var Policy = function() 
+{
+	if (!(this instanceof Policy)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+
+	// mago3d 활성화/비활성화 여부
+	this.magoEnable = true;
+
+	// outfitting 표시 여부
+	this.showOutFitting = false;
+	// label 표시/비표시
+	this.showLabelInfo = false;
+	// boundingBox 표시/비표시
+	this.showBoundingBox = false;
+	// 그림자 표시/비표시
+	this.showShadow = false;
+	// squared far frustum 거리
+	this.frustumFarSquaredDistance = 5000000;
+	// far frustum
+	this.frustumFarDistance = 20000;
+
+	// highlighting
+	this.highLightedBuildings = [];
+	// color
+	this.colorBuildings = [];
+	// color
+	this.color = [];
+	// show/hide
+	this.hideBuildings = [];
+	// move mode
+	this.objectMoveMode = CODE.moveMode.NONE;
+	// 이슈 등록 표시
+	this.issueInsertEnable = false;
+	// object 정보 표시
+	this.objectInfoViewEnable = false;
+	// 이슈 목록 표시
+	this.nearGeoIssueListEnable = false;
+	// occlusion culling
+	this.occlusionCullingEnable = false;
+	// origin axis XYZ
+	this.showOrigin = false;
+	// mago generalMode
+	this.magoMode = CODE.magoMode.NORMAL;
+	
+	// 이미지 경로
+	this.imagePath = "";
+	
+	// provisional.
+	this.colorChangedObjectId;
+	
+	// LOD1
+	this.lod0DistInMeters = 15;
+	this.lod1DistInMeters = 50;
+	this.lod2DistInMeters = 90;
+	this.lod3DistInMeters = 200;
+	this.lod4DistInMeters = 1000;
+	this.lod5DistInMeters = 50000;
+	
+	// Lighting
+	this.ambientReflectionCoef = 0.45; // 0.2.
+	this.diffuseReflectionCoef = 0.75; // 1.0
+	this.specularReflectionCoef = 0.6; // 0.7
+	this.ambientColor = null;
+	this.specularColor = new Float32Array([0.6, 0.6, 0.6]);
+	
+	this.ssaoRadius = 0.15;
+	
+	var policy = MagoConfig.getPolicy();
+	// PointsCloud.
+	this.pointsCloudSettings = {};
+	if (defined(policy)) 
+	{
+		this.pointsCloudSettings.maxPartitionsLod0 = defaultValueCheckLength(policy.maxPartitionsLod0, 4);
+		this.pointsCloudSettings.maxPartitionsLod1 = defaultValueCheckLength(policy.maxPartitionsLod1, 2);
+		this.pointsCloudSettings.maxPartitionsLod2orLess = defaultValueCheckLength(policy.maxPartitionsLod2OrLess, 1);
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam0m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist0m, 10.0);
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam100m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist100m, 120.0);
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam200m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist200m, 240.0);
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam400m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist400m, 480.0);
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam800m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist800m, 960.0);
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam1600m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist1600m, 1920.0);
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCamMoreThan1600m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDistOver1600m, 3840.0);
+		this.pointsCloudSettings.maxPointSize = defaultValueCheckLength(policy.maxPointSizeForPc, 40.0);
+		this.pointsCloudSettings.minPointSize = defaultValueCheckLength(policy.minPointSizeForPc, 3.0);
+		this.pointsCloudSettings.pendentPointSize = defaultValueCheckLength(policy.pendentPointSizeForPc, 60.0);
+		this.pointsCloudSettings.minHeightRainbow = defaultValueCheckLength(policy.minHeight_rainbow_loc, 0.0);
+		this.pointsCloudSettings.maxHeightRainbow = defaultValueCheckLength(policy.maxHeight_rainbow_loc, 100.0);
+	}
+	else 
+	{
+		this.pointsCloudSettings.maxPartitionsLod0 = 4;
+		this.pointsCloudSettings.maxPartitionsLod1 = 2;
+		this.pointsCloudSettings.maxPartitionsLod2orLess = 1;
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam0m = 1.0/10.0;
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam100m = 1.0/120.0;
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam200m = 1.0/240.0;
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam400m = 1.0/480.0;
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam800m = 1.0/960.0;
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam1600m = 1.0/1920.0;
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCamMoreThan1600m = 1.0/3840.0;
+		this.pointsCloudSettings.maxPointSize = 40.0;
+		this.pointsCloudSettings.minPointSize = 3.0;
+		this.pointsCloudSettings.pendentPointSize = 60.0;
+		this.pointsCloudSettings.minHeightRainbow = 0.0;
+		this.pointsCloudSettings.maxHeightRainbow = 100.0;
+	}
+};
+
+Policy.prototype.getPointsCloudSettings = function() 
+{
+	return this.pointsCloudSettings;
+};
+
+Policy.prototype.getShowOrigin = function() 
+{
+	return this.showOrigin;
+};
+Policy.prototype.setShowOrigin = function(showOrigin) 
+{
+	this.showOrigin = showOrigin;
+};
+
+Policy.prototype.getMagoEnable = function() 
+{
+	return this.magoEnable;
+};
+Policy.prototype.setMagoEnable = function(magoEnable) 
+{
+	this.magoEnable = magoEnable;
+};
+
+Policy.prototype.getShowOutFitting = function() 
+{
+	return this.showOutFitting;
+};
+Policy.prototype.setShowOutFitting = function(showOutFitting) 
+{
+	this.showOutFitting = showOutFitting;
+};
+Policy.prototype.getShowLabelInfo = function() 
+{
+	return this.showLabelInfo;
+};
+Policy.prototype.setShowLabelInfo = function(showLabelInfo) 
+{
+	this.showLabelInfo = showLabelInfo;
+};
+Policy.prototype.getShowBoundingBox = function() 
+{
+	return this.showBoundingBox;
+};
+Policy.prototype.setShowBoundingBox = function(showBoundingBox) 
+{
+	this.showBoundingBox = showBoundingBox;
+};
+
+Policy.prototype.getShowShadow = function() 
+{
+	return this.showShadow;
+};
+Policy.prototype.setShowShadow = function(showShadow) 
+{
+	this.showShadow = showShadow;
+};
+
+Policy.prototype.getFrustumFarSquaredDistance = function() 
+{
+	return this.frustumFarSquaredDistance;
+};
+Policy.prototype.setFrustumFarSquaredDistance = function(frustumFarSquaredDistance) 
+{
+	this.frustumFarSquaredDistance = frustumFarSquaredDistance;
+};
+
+Policy.prototype.getFrustumFarDistance = function() 
+{
+	return this.frustumFarDistance;
+};
+Policy.prototype.setFrustumFarDistance = function(frustumFarDistance) 
+{
+	this.frustumFarDistance = frustumFarDistance;
+};
+
+Policy.prototype.getHighLightedBuildings = function() 
+{
+	return this.highLightedBuildings;
+};
+Policy.prototype.setHighLightedBuildings = function(highLightedBuildings) 
+{
+	this.highLightedBuildings = highLightedBuildings;
+};
+
+Policy.prototype.getColorBuildings = function() 
+{
+	return this.colorBuildings;
+};
+Policy.prototype.setColorBuildings = function(colorBuildings) 
+{
+	this.colorBuildings = colorBuildings;
+};
+
+Policy.prototype.getColor = function() 
+{
+	return this.color;
+};
+Policy.prototype.setColor = function(color) 
+{
+	this.color = color;
+};
+
+Policy.prototype.getHideBuildings = function() 
+{
+	return this.hideBuildings;
+};
+Policy.prototype.setHideBuildings = function(hideBuildings) 
+{
+	this.hideBuildings = hideBuildings;
+};
+
+Policy.prototype.getObjectMoveMode = function() 
+{
+	return this.objectMoveMode;
+};
+Policy.prototype.setObjectMoveMode = function(objectMoveMode) 
+{
+	this.objectMoveMode = objectMoveMode;
+};
+
+Policy.prototype.getMagoMode = function() 
+{
+	return this.magoMode;
+};
+Policy.prototype.setMagoMode = function(magoMode) 
+{
+	this.magoMode = magoMode;
+};
+
+Policy.prototype.getIssueInsertEnable = function() 
+{
+	return this.issueInsertEnable;
+};
+Policy.prototype.setIssueInsertEnable = function(issueInsertEnable) 
+{
+	this.issueInsertEnable = issueInsertEnable;
+};
+Policy.prototype.getObjectInfoViewEnable = function() 
+{
+	return this.objectInfoViewEnable;
+};
+Policy.prototype.setObjectInfoViewEnable = function(objectInfoViewEnable) 
+{
+	this.objectInfoViewEnable = objectInfoViewEnable;
+};
+Policy.prototype.getOcclusionCullingEnable = function() 
+{
+	return this.occlusionCullingEnable;
+};
+Policy.prototype.setOcclusionCullingEnable = function(occlusionCullingEnable) 
+{
+	this.occlusionCullingEnable = occlusionCullingEnable;
+};
+Policy.prototype.getNearGeoIssueListEnable = function() 
+{
+	return this.nearGeoIssueListEnable;
+};
+Policy.prototype.setNearGeoIssueListEnable = function(nearGeoIssueListEnable) 
+{
+	this.nearGeoIssueListEnable = nearGeoIssueListEnable;
+};
+
+Policy.prototype.getImagePath = function() 
+{
+	return this.imagePath;
+};
+Policy.prototype.setImagePath = function(imagePath) 
+{
+	this.imagePath = imagePath;
+};
+
+Policy.prototype.getLod = function(distInMeters) 
+{
+	var lod = -1;
+	if (distInMeters < this.lod0DistInMeters)
+	{ lod = 0; }
+	else if (distInMeters < this.lod1DistInMeters)
+	{ lod = 1; }
+	else if (distInMeters < this.lod2DistInMeters)
+	{ lod = 2; }
+	else if (distInMeters < this.lod3DistInMeters)
+	{ lod = 3; }
+	else if (distInMeters < this.lod4DistInMeters)
+	{ lod = 4; }
+	else 
+	{ lod = 5; }
+	
+	return lod;	
+};
+Policy.prototype.getLod0DistInMeters = function() 
+{
+	return this.lod0DistInMeters;
+};
+Policy.prototype.setLod0DistInMeters = function(lod0DistInMeters) 
+{
+	this.lod0DistInMeters = lod0DistInMeters;
+};
+Policy.prototype.getLod1DistInMeters = function() 
+{
+	return this.lod1DistInMeters;
+};
+Policy.prototype.setLod1DistInMeters = function(lod1DistInMeters) 
+{
+	this.lod1DistInMeters = lod1DistInMeters;
+};
+Policy.prototype.getLod2DistInMeters = function() 
+{
+	return this.lod2DistInMeters;
+};
+Policy.prototype.setLod2DistInMeters = function(lod2DistInMeters) 
+{
+	this.lod2DistInMeters = lod2DistInMeters;
+};
+Policy.prototype.getLod3DistInMeters = function() 
+{
+	return this.lod3DistInMeters;
+};
+Policy.prototype.setLod3DistInMeters = function(lod3DistInMeters) 
+{
+	this.lod3DistInMeters = lod3DistInMeters;
+};
+Policy.prototype.getLod4DistInMeters = function() 
+{
+	return this.lod4DistInMeters;
+};
+Policy.prototype.setLod4DistInMeters = function(lod4DistInMeters) 
+{
+	this.lod4DistInMeters = lod4DistInMeters;
+};
+Policy.prototype.getLod5DistInMeters = function() 
+{
+	return this.lod5DistInMeters;
+};
+Policy.prototype.setLod5DistInMeters = function(lod5DistInMeters) 
+{
+	this.lod5DistInMeters = lod5DistInMeters;
+};
+Policy.prototype.getAmbientReflectionCoef = function() 
+{
+	return this.ambientReflectionCoef;
+};
+Policy.prototype.setAmbientReflectionCoef = function(ambientReflectionCoef) 
+{
+	this.ambientReflectionCoef = ambientReflectionCoef;
+};
+Policy.prototype.getDiffuseReflectionCoef = function() 
+{
+	return this.diffuseReflectionCoef;
+};
+Policy.prototype.setDiffuseReflectionCoef = function(diffuseReflectionCoef) 
+{
+	this.diffuseReflectionCoef = diffuseReflectionCoef;
+};
+Policy.prototype.getSpecularReflectionCoef = function() 
+{
+	return this.specularReflectionCoef;
+};
+Policy.prototype.setSpecularReflectionCoef = function(specularReflectionCoef) 
+{
+	this.specularReflectionCoef = specularReflectionCoef;
+};
+Policy.prototype.getAmbientColor = function() 
+{
+	return this.ambientColor;
+};
+Policy.prototype.setAmbientColor = function(ambientColor) 
+{
+	this.ambientColor = ambientColor;
+};
+Policy.prototype.getSpecularColor = function() 
+{
+	return this.specularColor;
+};
+Policy.prototype.setSpecularColor = function(specularColor) 
+{
+	this.specularColor = specularColor;
+};
+Policy.prototype.getSsaoRadius = function() 
+{
+	return this.ssaoRadius;
+};
+Policy.prototype.setSsaoRadius = function(ssaoRadius) 
+{
+	this.ssaoRadius = ssaoRadius;
+};
 
 'use strict';
 
@@ -46576,6 +46656,9 @@ NeoBuilding.prototype.renderDetailed = function(magoManager, shader, renderType,
 		relCamPosZ = this.myCameraRelative.position.z;
 	}
 	
+	if (this.buildingId === "gangnam_del")
+	{ var hola = 0; }
+	
 	// LOD0.
 	var minSize = 0.0;
 	var lowestOctreesCount = this.currentVisibleOctreesControler.currentVisibles0.length;
@@ -46585,8 +46668,7 @@ NeoBuilding.prototype.renderDetailed = function(magoManager, shader, renderType,
 		if (lowestOctree.neoReferencesMotherAndIndices === undefined) 
 		{ continue; }
 		
-		if (applyOcclusionCulling)
-		{ lowestOctree.neoReferencesMotherAndIndices.updateCurrentVisibleIndices(relCamPosX, relCamPosY, relCamPosZ, applyOcclusionCulling); }
+		lowestOctree.neoReferencesMotherAndIndices.updateCurrentVisibleIndices(relCamPosX, relCamPosY, relCamPosZ, applyOcclusionCulling);
 		
 		lowestOctree.lod = 0; // set current lod to octree.
 		if (lowestOctree.renderContent(magoManager, this, renderType, renderTexture, shader, minSize, refMatrixIdxKey, flipYTexCoord))
@@ -46602,8 +46684,7 @@ NeoBuilding.prototype.renderDetailed = function(magoManager, shader, renderType,
 		if (lowestOctree.neoReferencesMotherAndIndices === undefined) 
 		{ continue; }
 	
-		if (applyOcclusionCulling)
-		{ lowestOctree.neoReferencesMotherAndIndices.updateCurrentVisibleIndices(relCamPosX, relCamPosY, relCamPosZ, applyOcclusionCulling); }
+		lowestOctree.neoReferencesMotherAndIndices.updateCurrentVisibleIndices(relCamPosX, relCamPosY, relCamPosZ, applyOcclusionCulling);
 		
 		lowestOctree.lod = 1; // set current lod to octree.
 		if (lowestOctree.renderContent(magoManager, this, renderType, renderTexture, shader, minSize, refMatrixIdxKey, flipYTexCoord))
@@ -54917,6 +54998,9 @@ ReaderWriter.loadImage = function(gl, filePath_inServer, texture)
 			return;
 		}
 		
+		texture.imageWidth = image.width;
+		texture.imageHeight = image.height;
+		
 		function createTexture(_gl, filter, data, width, height) 
 		{
 			var textureAux = _gl.createTexture();
@@ -55158,30 +55242,6 @@ ReaderWriter.prototype.loadWMSImage = function(gl, filePath_inServer, texture, m
 		
 };
 
-/*
-ReaderWriter.prototype.handleTextureLoaded = function(gl, image, texture, flip_y_texCoord) 
-{
-	// https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial/Using_textures_in_WebGL
-	//var gl = viewer.scene.context._gl;
-	texture.imageWidth = image.width;
-	texture.imageHeight = image.height;
-	
-	if (flip_y_texCoord === undefined)
-	{ flip_y_texCoord = true; }
-	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flip_y_texCoord); // if need vertical mirror of the image.***
-	gl.bindTexture(gl.TEXTURE_2D, texture);
-	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image); // Original.***
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-	//gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-	//gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
-	//gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
-	gl.generateMipmap(gl.TEXTURE_2D);
-	gl.bindTexture(gl.TEXTURE_2D, null);
-};
-*/
 'use strict';
 
 /**
@@ -62868,43 +62928,51 @@ Mesh.prototype.getTrianglesListsArrayBy2ByteSize = function(trianglesArray, resu
  * @param glPrimitive
  * @TODO : 누가 이 gl primitive의 type 정체를 안다면 좀 달아주세요ㅠㅠ 세슘 쪽인거 같은데ㅠㅠ
  */
-Mesh.prototype.renderAsChild = function (magoManager, shader, renderType, glPrimitive, isSelected, options) 
+Mesh.prototype.renderAsChild = function (magoManager, shader, renderType, glPrimitive, isSelected, options, bWireframe) 
 {
 	var renderShaded = true;
 	var renderWireframe = false;
 	var depthMask = true;
 	
 	var gl = magoManager.getGl();
-	
-	if (options)
+
+	if (bWireframe)
 	{
-		if (options.renderShaded !== undefined)
+		if (options)
 		{
-			renderShaded = options.renderShaded;
+			if (options.renderWireframe !== undefined)
+			{ renderWireframe = options.renderWireframe; }
+			
+			if (options.depthMask !== undefined)
+			{ depthMask = options.depthMask; }
+		}
+	
+		if (renderWireframe)
+		{
+			this.renderWireframe(magoManager, shader, renderType, glPrimitive, isSelected);
+		}
+	}
+	else
+	{
+		if (options)
+		{
+			if (options.renderShaded !== undefined)
+			{ renderShaded = options.renderShaded; }
+
+			if (options.depthMask !== undefined)
+			{ depthMask = options.depthMask; }
 		}
 		
-		if (options.renderWireframe !== undefined)
+		if (renderShaded)
 		{
-			renderWireframe = options.renderWireframe;
-		}
-		
-		if (options.depthMask !== undefined)
-		{
-			depthMask = options.depthMask;
+			gl.depthMask(depthMask);
+			this.render(magoManager, shader, renderType, glPrimitive, isSelected);
+			gl.depthMask(true);
 		}
 	}
 	
-	if (renderShaded)
-	{
-		gl.depthMask(depthMask);
-		this.render(magoManager, shader, renderType, glPrimitive, isSelected);
-		gl.depthMask(true);
-	}
 	
-	if (renderWireframe)
-	{
-		this.renderWireframe(magoManager, shader, renderType, glPrimitive, isSelected);
-	}
+	
 	
 };
 
@@ -63389,6 +63457,7 @@ var Modeler = function(magoManager)
 	this.testObjectsArray;
 	
 	this.objectsArray; // put here all objects.***
+	this.vectorsArray; // put here vector objects (lines, polylines, etc.).***
 	this.currentVisibleObjectsArray;
 };
 
@@ -63796,7 +63865,7 @@ Modeler.prototype.render = function(magoManager, shader, renderType, glPrimitive
 			
 			var gl = this.magoManager.getGl();
 			var sceneState = this.magoManager.sceneState;
-			gl.uniform4fv(thickLineShader.color_loc, [0.9, 0.5, 0.3, 1.0]);
+			gl.uniform4fv(thickLineShader.oneColor4_loc, [0.9, 0.5, 0.3, 1.0]);
 			gl.uniform2fv(thickLineShader.viewport_loc, [sceneState.drawingBufferWidth, sceneState.drawingBufferHeight]);
 			gl.uniform1f(thickLineShader.thickness_loc, 5.0);
 			this.geoCoordsList.points3dList.renderThickLines(magoManager, thickLineShader, renderType, bEnableDepth, options);
@@ -76657,4657 +76726,6 @@ VtxSegment.prototype.intersectionWithPoint = function(point, error)
 'use strict';
 
 /**
- * 메세지
- * 
- * @class
- */
-var Message = function(i18next, message) 
-{
-	this.handle  = i18next;
-	this.message = message || MessageSource;
-};
-
-/**
- * 메세지 클래스 초기화
- *
- * @param {Function} callback
- */
-Message.prototype.init = function (callback)
-{
-	var h = this.handle;
-	this.handle.use(i18nextXHRBackend)
-		.use(i18nextBrowserLanguageDetector)
-		.init({
-			// Useful for debuging, displays which key is missing
-			debug: false,
-
-			detection: {
-				// keys or params to lookup language from
-				lookupQuerystring  : 'lang',
-				lookupCookie       : 'i18nextLang',
-				lookupLocalStorage : 'i18nextLang',
-			},
-    
-			// If translation key is missing, which lang use instead
-			fallbackLng: 'en',
-
-			resources: this.message,
-
-			// all, languageOnly
-			load: "languageOnly",
-
-			ns        : ['common'],
-			// Namespace to use by default, when not indicated
-			defaultNS : 'common',
-    
-			keySeparator     : ".",
-			nsSeparator      : ":",
-			pluralSeparator  : "_",
-			contextSeparator : "_"
-
-		}, function(err, t)
-		{
-			console.log("detected user language: " + h.language);
-			console.log("loaded languages: " + h.languages.join(', '));
-			h.changeLanguage(h.languages[0]);
-			callback(err, t);
-		});
-};
-
-/**
- * 메세지 핸들러를 가져온다.
- *
- * @returns {i18next} message handler
- */
-Message.prototype.getHandle = function ()
-{
-	return this.handle;
-};
-
-/**
- * 메세지를 가져온다.
- *
- * @returns {Object} message
- */
-Message.prototype.getMessage = function ()
-{
-	return this.message;
-};
-
-'use strict';
-var MessageSource = {};
-MessageSource.en = {
-  "common": {
-    "welcome" : "Welcome",
-    "error": {
-        "title" : "Error",
-        "construct" : {
-            "create" : "This object should be created using new."
-        }
-    }
-  }
-};
-MessageSource.ko = {
-    "common": {
-      "welcome" : "환영합니다.",
-      "error": {
-          "title" : "오류",
-          "construct" : {
-              "create" : "이 객체는 new 를 사용하여 생성해야 합니다."
-          }
-      }
-    }
-  };
-
-'use strict';
-
-/**
- * Geoserver for mago3Djs object.
- * @class Geoserver
- */
-var GeoServer = function() 
-{
-
-	this.serverInfo = {};
-}; 
-
-GeoServer.prototype.setServerInfo = function(info) 
-{
-	this.serverInfo = info;
-};
-
-GeoServer.prototype.getDataUrl = function() 
-{
-	return this.serverInfo.dataUrl;
-};
-
-GeoServer.prototype.getDataWorkspace = function() 
-{
-	return this.serverInfo.dataWorkspace;
-};
-
-GeoServer.prototype.getDataRequestUrl = function() 
-{
-	return this.getDataUrl() + '/' + this.getDataWorkspace();
-};
-
-GeoServer.prototype.getWmsVersion = function() 
-{
-	return this.serverInfo.wmsVersion;
-};
-'use strict';
-
-/**
- * AnimatedPerson is a class object.
- * 
- * @class AnimatedPerson
- * @constructor 
- * @param {string} The name of the AnimatedPerson.
- */
-var AnimatedPerson = function(name) 
-{
-	this.skeletalAnimObject;
-	
-};
-
-AnimatedPerson.prototype.render = function(magoManager)
-{
-	
-};
-'use strict';
-
-
-var Arrow = function(width, length, height, option) 
-{
-	MagoRenderable.call(this);
-	this.color4 = new Color();
-	this.color4.setRGBA(0.2, 0.2, 0.25, 1);
-
-	this.type = 'extruded';
-
-	this.totalLength = 10;
-	if (length) 
-	{
-		this.totalLength = length;
-	}
-
-	this.bodyWidth = 1;
-	if (width) 
-	{
-		this.bodyWidth = width * 0.5;
-	}
-	this.headWidth = 1.5;
-	if (width) 
-	{
-		this.headWidth = width;
-	}
-
-	this.extrude = 1;
-	if (height) 
-	{
-		this.extrude = height;
-	}
-	
-	this.tailLength = this.totalLength * 0.7;
-
-	if (option) 
-	{
-		var bodyWidth = option.bodyWidth;
-		if (bodyWidth) 
-		{
-			this.bodyWidth = bodyWidth;
-		}
-        
-		var headWidth = option.headWidth;
-		if (headWidth) 
-		{
-			this.headWidth = headWidth;
-		}
-        
-		var headLength = option.headLength;
-		if (headLength) 
-		{
-			this.headLength = headLength;
-		}
-        
-		var totalLength = option.totalLength;
-		if (totalLength) 
-		{
-			this.totalLength = totalLength;
-		}
-        
-		var tailLength = option.tailLength;
-		if (tailLength) 
-		{
-			this.tailLength = tailLength;
-		}
-
-		var extrude = option.extrude;
-		if (extrude) 
-		{
-			this.extrude = extrude;
-		}
-	}
-
-	if (this.headWidth < this.bodyWidth) 
-	{
-		this.headWidth = this.bodyWidth * 1.5;
-	}
-
-	if (!this.headLength) 
-	{
-		this.headLength = this.totalLength *0.3;
-	}
-};
-Arrow.prototype = Object.create(MagoRenderable.prototype);
-Arrow.prototype.constructor = Arrow;
-
-Arrow.prototype.makeMesh = function() 
-{
-	var profile2dAux = new Profile2D();
-	
-	// Outer ring.**
-	var outerRing = profile2dAux.newOuterRing();
- 
-	var halfBodyWidth = this.bodyWidth * 0.5;
-	var halfHeadWidth = this.headWidth * 0.5;
-	var bodyLengthWithoutHead = this.totalLength - this.headLength;
-
-	var polyline = outerRing.newElement("POLYLINE");
-	
-	if (this.tailLength)
-	{
-		polyline.newPoint2d(0, 0);
-		polyline.newPoint2d(halfBodyWidth, this.tailLength);
-		polyline.newPoint2d(halfBodyWidth, bodyLengthWithoutHead);
-		polyline.newPoint2d(halfHeadWidth, bodyLengthWithoutHead);
-		polyline.newPoint2d(0, this.totalLength);
-		polyline.newPoint2d(-halfHeadWidth, bodyLengthWithoutHead);
-		polyline.newPoint2d(-halfBodyWidth, bodyLengthWithoutHead);
-		polyline.newPoint2d(-halfBodyWidth, this.tailLength);
-	}
-	else 
-	{
-		polyline.newPoint2d(-halfBodyWidth, 0);    
-		polyline.newPoint2d(halfBodyWidth, 0);    
-		polyline.newPoint2d(halfBodyWidth, bodyLengthWithoutHead);
-		polyline.newPoint2d(halfHeadWidth, bodyLengthWithoutHead);
-		polyline.newPoint2d(0, this.totalLength);
-		polyline.newPoint2d(-halfHeadWidth, bodyLengthWithoutHead);
-		polyline.newPoint2d(-halfBodyWidth, bodyLengthWithoutHead);
-	}
-
-	var extrudeSegmentsCount = 1;
-	var extrusionVector = undefined;
-	var bIncludeBottomCap = false;
-	var bIncludeTopCap = false;
-    
-	var mesh = Modeler.getExtrudedMesh(profile2dAux, this.extrude, extrudeSegmentsCount, extrusionVector, bIncludeBottomCap, bIncludeTopCap, mesh);
-	this.mesh = mesh;
-	this.dirty = false;
-};
-
-/**
- * Renders the factory.
- */
-Arrow.prototype.render = function(magoManager, shader, renderType, glPrimitive)
-{
-	if (this.attributes && this.attributes.isVisible !== undefined && this.attributes.isVisible === false) 
-	{
-		return;
-	}
-	if (this.dirty)
-	{ this.makeMesh(); }
-	
-	if (this.mesh === undefined)
-	{ return false; }
-
-	// Set geoLocation uniforms.***
-	
-	var gl = magoManager.getGl();
-	/*
-	var buildingGeoLocation = this.geoLocDataManager.getCurrentGeoLocationData();
-	buildingGeoLocation.bindGeoLocationUniforms(gl, shader); // rotMatrix, positionHIGH, positionLOW.
-	
-	gl.uniform1i(shader.refMatrixType_loc, 0); // in magoManager case, there are not referencesMatrix.***
-	gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.***
-	*/
-	if (renderType === 2)
-	{
-		// Selection render.***
-		var selectionColor = magoManager.selectionColor;
-		var colorAux = magoManager.selectionColor.getAvailableColor(undefined);
-		var idxKey = magoManager.selectionColor.decodeColor3(colorAux.r, colorAux.g, colorAux.b);
-		magoManager.selectionManager.setCandidateGeneral(idxKey, this);
-		
-		gl.uniform4fv(shader.oneColor4_loc, [colorAux.r/255.0, colorAux.g/255.0, colorAux.b/255.0, 1.0]);
-		gl.disable(gl.BLEND);
-	}
-	
-	this.renderRaw(magoManager, shader, renderType, glPrimitive);
-	//this.mesh.render(magoManager, shader, renderType, glPrimitive);
-
-	gl.disable(gl.BLEND);
-};
-
-Arrow.prototype.renderAsChild = function(magoManager, shader, renderType, glPrimitive, bIsSelected) 
-{
-	if (this.attributes && this.attributes.isVisible !== undefined && this.attributes.isVisible === false) 
-	{
-		return;
-	}
-	if (this.dirty)
-	{ this.makeMesh(); }
-	
-	if (this.mesh === undefined)
-	{ return false; }
-
-	// Set geoLocation uniforms.***
-	var gl = magoManager.getGl();
-	if (this.tMat && this.tMat instanceof Matrix4) 
-	{
-		gl.uniformMatrix4fv(shader.buildingRotMatrix_loc, false, this.tMat._floatArrays);
-	}
-	
-	if (renderType === 0)
-	{
-		// Depth render.***
-	}
-	else if (renderType === 1)
-	{
-		// Color render.***
-		//gl.blendFunc( gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA );
-		gl.enable(gl.BLEND);
-		gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.***
-		
-		// Check if is selected.***
-		var selectionManager = magoManager.selectionManager;
-		if (bIsSelected !== undefined && bIsSelected)
-		{
-			//gl.disable(gl.BLEND);
-			gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, 1.0]);
-		}
-		else if (selectionManager.isObjectSelected(this))
-		{
-			//gl.disable(gl.BLEND);
-			gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, 1.0]);
-		}
-		else 
-		{
-			gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, this.color4.a]);
-		}
-		
-	}
-
-	this.mesh.render(magoManager, shader, renderType, glPrimitive, bIsSelected);
-
-	gl.disable(gl.BLEND);
-};
-
-/**
- * Renders the factory.
- */
-Arrow.prototype.renderRaw = function(magoManager, shader, renderType, glPrimitive, bIsSelected)
-{
-	if (this.dirty)
-	{ this.makeMesh(); }
-	
-	if (this.mesh === undefined)
-	{ return false; }
-
-	// Set geoLocation uniforms.***
-	var gl = magoManager.getGl();
-	var buildingGeoLocation = this.geoLocDataManager.getCurrentGeoLocationData();
-	buildingGeoLocation.bindGeoLocationUniforms(gl, shader); // rotMatrix, positionHIGH, positionLOW.
-	
-	if (renderType === 0)
-	{
-		// Depth render.***
-	}
-	else if (renderType === 1)
-	{
-		// Color render.***
-		//gl.blendFunc( gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA );
-		gl.enable(gl.BLEND);
-		gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.***
-		
-		// Check if is selected.***
-		var selectionManager = magoManager.selectionManager;
-		if (bIsSelected !== undefined && bIsSelected)
-		{
-			//gl.disable(gl.BLEND);
-			gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, 1.0]);
-		}
-		else if (selectionManager.isObjectSelected(this))
-		{
-			//gl.disable(gl.BLEND);
-			gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, 1.0]);
-		}
-		else 
-		{
-			gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, this.color4.a]);
-		}
-		
-	}
-
-	this.mesh.render(magoManager, shader, renderType, glPrimitive, bIsSelected);
-
-	gl.disable(gl.BLEND);
-};
-'use strict';
-
-/**
- * Factory shaped object.
- * @class BasicFactory
- */
-var BasicFactory = function(factoryWidth, factoryLength, factoryHeight, options) 
-{
-	if (!(this instanceof BasicFactory)) 
-	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
-	}
-	MagoRenderable.call(this);
-	/**
-	 * The name of the factory.
-	 * @type {String}
-	 * @default undefined
-	 */
-	this.name;
-	
-	/**
-	 * The entire width of the factory.
-	 * @type {Number}
-	 * @default undefined
-	 */
-	this.width = factoryWidth;
-	
-	/**
-	 * The entire length of the factory.
-	 * @type {Number}
-	 * @default undefined
-	 */
-	this.length = factoryLength;
-	
-	/**
-	 * The entire height of the factory.
-	 * @type {Number}
-	 * @default undefined
-	 */
-	this.height = factoryHeight;
-	
-	/**
-	 * This boolean variable indicates if the factory has his own ground.
-	 * @type {Boolean}
-	 * @default false
-	 */
-	this.bHasGround = false;
-	
-	/**
-	 * This minimum height of the roof.
-	 * @type {Number}
-	 * @default undefined
-	 */
-	this.roofMinHeight;
-	
-	
-	/**
-	 * The geographic location of the factory.
-	 * @type {GeoLocationDataManager}
-	 * @default undefined
-	 */
-	this.geoLocDataManager;
-	
-	/**
-	 * Array of the objects that configures the fatory.
-	 * @type {Array}
-	 * @default undefined
-	 */
-	this.objectsArray;
-	
-	this.objectsMap;
-	
-	/**
-	 * The bounding box of the fatory.
-	 * @type {BoundingBox}
-	 * @default undefined
-	 */
-	this.bbox;
-	
-	/**
-	 * Boolean variable that indicates that the geometry is dirty.
-	 * @type {Boolean}
-	 * @default true
-	 */
-	this.dirty = true;
-	
-	this.roofColor4 = new Color();
-	this.roofColor4.setRGBA(98/256, 233/256, 134/256, 0.3);
-	
-	this.options = options;
-
-	// After check the option values, set the boundingBox.***
-	this.bbox = new BoundingBox();
-	this.bbox.set(-this.width/2, -this.length/2, 0, this.width/2, this.length/2, this.height);
-	
-	this.attributes = {isVisible: true};
-};
-
-BasicFactory.prototype = Object.create(MagoRenderable.prototype);
-BasicFactory.prototype.constructor = BasicFactory;
-
-/**
- * BasicFactory wallType.
- */
-BasicFactory.wallType = {
-	'FRONT' : 'front',
-	'REAR'  : 'rear',
-	'LEFT'  : 'left',
-	'RIGHT' : 'right'
-};
-/**
- * Returns the bbox.
- */
-BasicFactory.prototype.getBoundingBox = function()
-{
-	return this.bbox;
-};
-
-/**
- * Returns the bbox.
- */
-BasicFactory.getFactoryDimensionsByGeoCoordsArray = function(geoCoordsArray, edgeIdxOfDoor, magoManager)
-{
-	if (geoCoordsArray === undefined || geoCoordsArray.length < 4)
-	{ return undefined; }
-	
-	var geoCoord_0 = geoCoordsArray[0];
-	var geoCoord_1 = geoCoordsArray[1];
-	var geoCoord_2 = geoCoordsArray[2];
-	var geoCoord_3 = geoCoordsArray[3];
-	var fWidth, fLength, headingAngDeg;
-	if (edgeIdxOfDoor === 0)
-	{
-		var geoCoordSegment = new GeographicCoordSegment(geoCoord_0, geoCoord_1);
-		var geoCoordSegment2 = new GeographicCoordSegment(geoCoord_1, geoCoord_2);
-	}
-	else if (edgeIdxOfDoor === 1)
-	{
-		var geoCoordSegment = new GeographicCoordSegment(geoCoord_1, geoCoord_2);
-		var geoCoordSegment2 = new GeographicCoordSegment(geoCoord_2, geoCoord_3);
-	}
-	else if (edgeIdxOfDoor === 2)
-	{
-		var geoCoordSegment = new GeographicCoordSegment(geoCoord_2, geoCoord_3);
-		var geoCoordSegment2 = new GeographicCoordSegment(geoCoord_3, geoCoord_0);
-	}
-	else if (edgeIdxOfDoor === 3)
-	{
-		var geoCoordSegment = new GeographicCoordSegment(geoCoord_3, geoCoord_0);
-		var geoCoordSegment2 = new GeographicCoordSegment(geoCoord_0, geoCoord_1);
-	}
-	
-	fWidth = GeographicCoordSegment.getLengthInMeters(geoCoordSegment, magoManager);
-	fLength = GeographicCoordSegment.getLengthInMeters(geoCoordSegment2, magoManager);
-	headingAngDeg = GeographicCoordSegment.calculateHeadingAngRadToNorthOfSegment(geoCoordSegment2, magoManager)*180/Math.PI;
-	
-	var lon = (geoCoord_0.longitude + geoCoord_0.longitude + geoCoord_0.longitude + geoCoord_0.longitude )/4;
-	var lat = (geoCoord_0.latitude + geoCoord_0.latitude + geoCoord_0.latitude + geoCoord_0.latitude )/4;
-	
-	var result = {
-		factoryWidth  : fWidth,
-		factoryLength : fLength,
-		headingDeg    : headingAngDeg,
-		longitude     : lon,
-		latitude      : lat
-	};
-	return result;
-};
-
-/**
- * Makes triangular wall profile.
- */
-BasicFactory.getTriangularWallProfile2d = function(options, resultProfile2d)
-{
-	// Triangular wall with opening.****************************************
-	//
-	//                   Y
-	//                   ^
-	//                   |
-	//                  /7\             <-- height
-	//                /  |  \
-	//              /    |    \
-	//            /      |      \
-	//          8        |        6     <-- roofMinHeight
-	//          |        |         |
-	//          |  2------------3  |    <-- openingHeight (if exist).
-	//          |  |     |      |  |
-	//          |  |     |      |  |
-	//          0--1     +      4--5-------> X
-	//
-	
-	// Triangular wall without opening.**************************************
-	//
-	//                   Y
-	//                   ^
-	//                   |
-	//                  /3\             <-- height
-	//                /  |  \
-	//              /    |    \
-	//            /      |      \
-	//          4        |        2     <-- roofMinHeigh
-	//          |        |         |
-	//          |        |         |    
-	//          |        |         |
-	//          |        |         |
-	//          0--------+---------1-------> X
-	//
-	
-	if (options === undefined)
-	{ return resultProfile2d; }
-	
-	if (resultProfile2d === undefined)
-	{ resultProfile2d = new Profile2D(); }
-	
-	var hasOpening = options.hasOpening;
-	if (hasOpening === undefined)
-	{ hasOpening = false; }
-	
-	// factory width.
-	var width = options.width;
-	
-	// factory height.
-	var height = options.height;
-	
-	// factory roof min height.
-	var roofMinHeight = options.roofMinHeight;
-	if (roofMinHeight === undefined)
-	{ roofMinHeight = height * 0.75; }
-	
-	var halfWidth = width * 0.5;
-	
-	if (hasOpening)
-	{
-		// opening dimensions.
-		var openingHeight = options.openingHeight;
-		if (openingHeight === undefined)
-		{ openingHeight = height * 0.6; }
-		
-		var openingWidth = options.openingWidth;
-		if (openingWidth === undefined)
-		{ openingWidth = width * 0.8; }
-		
-		var openingLeftWidth = openingWidth * 0.5;
-		var openingRightWidth = openingWidth * 0.5;
-	
-		// Create a outer ring in the Profile2d.
-		var outerRing = resultProfile2d.newOuterRing();
-		var polyline = outerRing.newElement("POLYLINE");
-		polyline.newPoint2d(-halfWidth, 0);                          // 0
-		polyline.newPoint2d(-openingLeftWidth, 0);                   // 1
-		polyline.newPoint2d(-openingLeftWidth, openingHeight);       // 2
-		polyline.newPoint2d(openingRightWidth, openingHeight);       // 3
-		polyline.newPoint2d(openingRightWidth, 0);                   // 4
-		polyline.newPoint2d(halfWidth, 0);                           // 5
-		polyline.newPoint2d(halfWidth, roofMinHeight);               // 6
-		polyline.newPoint2d(0, height);                              // 7
-		polyline.newPoint2d(-halfWidth, roofMinHeight);              // 8
-	}
-	else 
-	{
-		// wall without opening.
-		// Create a outer ring in the Profile2d.
-		var outerRing = resultProfile2d.newOuterRing();
-		var polyline = outerRing.newElement("POLYLINE");
-		polyline.newPoint2d(-halfWidth, 0);                          // 0
-		polyline.newPoint2d(halfWidth, 0);                           // 1
-		polyline.newPoint2d(halfWidth, roofMinHeight);               // 2
-		polyline.newPoint2d(0, height);                              // 3
-		polyline.newPoint2d(-halfWidth, roofMinHeight);              // 4
-	}
-	
-	return resultProfile2d;
-};
-
-/**
- * Makes triangular wall profile.
- */
-BasicFactory.getLateralWallProfile2d = function(options, resultProfile2d)
-{
-	//
-	//   15-----------------------------------------------------------14      <-- height
-	//   |                                                            |
-	//   |                      6--------------7                      |               
-	//   |   2-----------3      |              |                      |       <-- openingHeight
-	//   |   |           |      |              |                      |
-	//   |   |           |      |              |      10----------11  |       <-- openingHeight
-	//   |   |           |      |              |      |           |   |
-	//   0---1           4------5              8------9           12--13
-	//
-	//   offset,width,height    offset,width,height    offset,width,height ...
-	
-	if (resultProfile2d === undefined)
-	{ resultProfile2d = new Profile2D(); }
-
-	// wall height.
-	var height = options.height;
-	var length = options.length;
-	
-	// Create a outer ring in the Profile2d.
-	var outerRing = resultProfile2d.newOuterRing();
-	var polyline = outerRing.newElement("POLYLINE");
-	
-	// create the 1rst point2d.
-	polyline.newPoint2d(0, 0);   
-	var currOffSet = 0;
-	
-	// insert openings if exist.
-	var openingsDataArray = options.openingsDataArray;
-	var openingsCount = 0;
-	if (openingsDataArray !== undefined)
-	{ openingsCount = openingsDataArray.length; }
-	
-	for (var i=0; i<openingsCount; i++)
-	{
-		var openingData = options.openingsDataArray[i];
-		var openingOffSet = openingData.offSet;
-		var openingHeight = openingData.height;
-		var openingWidth = openingData.width;
-		
-		// insert opening into profile.
-		polyline.newPoint2d(currOffSet + openingOffSet, 0);
-		polyline.newPoint2d(currOffSet + openingOffSet, openingHeight);
-		polyline.newPoint2d(currOffSet + openingOffSet + openingWidth, openingHeight);
-		polyline.newPoint2d(currOffSet + openingOffSet + openingWidth, 0);
-		
-		// update currentOffSet.
-		currOffSet = currOffSet + openingOffSet + openingWidth;
-	}
-	
-	// Now, finish the profile (13).
-	polyline.newPoint2d(length, 0);
-	polyline.newPoint2d(length, height);
-	polyline.newPoint2d(0, height);
-	
-	return resultProfile2d;
-};
-
-/**
- * 공장 벽 프로파일
- * @param {string} wallType 벽 위치
- * @param {object} wallOption 벽 옵션, 존재하면 문을 그림.
- * @param {Profile2d}} resultProfile2d
- * @return {Profile2d}
- */
-BasicFactory.prototype.getWallProfile2d = function(wallType, wallOption, resultProfile2d) 
-{
-	if (resultProfile2d === undefined)
-	{ resultProfile2d = new Profile2D(); }
-
-	// 앞뒤인지 여부
-	var isFrontOrRear = (wallType === BasicFactory.wallType.FRONT || wallType === BasicFactory.wallType.REAR);
-	// factory width.
-	var width = isFrontOrRear ? this.width : this.length;
-	// factory height.
-	var height = this.height;
-	// factory roof min height.
-	var roofMinHeight = this.roofMinHeight;
-
-	var outerRing = resultProfile2d.newOuterRing();
-	var polyline = outerRing.newElement("POLYLINE");
-	polyline.newPoint2d(0, 0);
-	if (wallOption && wallOption.openingInfo) 
-	{
-		if (Array.isArray(wallOption.openingInfo)) 
-		{
-			var curOffset = 0;
-			var openingInfos = wallOption.openingInfo;
-			for (var i=0, len=openingInfos.length;i<len;i++) 
-			{
-				var openingInfo = openingInfos[i];
-
-				if (!defined(openingInfo.offset)) { continue; }
-
-				var doorOffset = openingInfo.offset;
-				var doorHeight = openingInfo.height;
-				var doorWidth = openingInfo.width;
-
-				curOffset = curOffset + doorOffset;
-				openingInfo.centerPropterties = this.calculateOpeningProperties(wallType, curOffset, doorWidth, doorHeight, openingInfo.thickness);
-
-				polyline.newPoint2d(curOffset, 0);
-				polyline.newPoint2d(curOffset, doorHeight);
-
-				curOffset = curOffset + doorWidth;
-				polyline.newPoint2d(curOffset, doorHeight);
-				polyline.newPoint2d(curOffset, 0);
-			}
-		}
-		else 
-		{
-			var openingInfo = wallOption.openingInfo;
-			var offset = defined(openingInfo.offset) ? openingInfo.offset : (width - openingInfo.width) * 0.5;
-
-			var doorHeight = openingInfo.height;
-			var doorWidth = openingInfo.width;
-
-			openingInfo.centerPropterties = this.calculateOpeningProperties(wallType, offset, doorWidth, doorHeight, openingInfo.thickness);
-			polyline.newPoint2d(offset, 0);
-			polyline.newPoint2d(offset, doorHeight);
-			polyline.newPoint2d(offset + doorWidth, doorHeight);
-			polyline.newPoint2d(offset + doorWidth, 0);
-		}
-	}
-
-	polyline.newPoint2d(width, 0);
-	polyline.newPoint2d(width, roofMinHeight);
-	if (isFrontOrRear) 
-	{
-		polyline.newPoint2d(width*0.5, height);
-	}
-	polyline.newPoint2d(0, roofMinHeight);
-
-	return resultProfile2d;
-};
-BasicFactory.prototype.calculateOpeningProperties = function(wallType, start, width, height) 
-{
-	var profile2d = new Profile2D();
-	var outerRing = profile2d.newOuterRing();
-	var polyline = outerRing.newElement("POLYLINE");
-
-	/*polyline.newPoint2d(start, 0);
-	polyline.newPoint2d(start, height);
-	polyline.newPoint2d(start + width, height);
-	polyline.newPoint2d(start + width, 0);*/
-
-	polyline.newPoint2d(start, 0);
-	polyline.newPoint2d(start + width, 0);
-	polyline.newPoint2d(start + width, height);
-	polyline.newPoint2d(start, height);
-	
-	var vp =  new VtxProfile();
-	vp.makeByProfile2D(profile2d);
-
-	this.validateWallGeom(wallType, vp);
-
-	var outerRing = vp.outerVtxRing;
-	var outerVertexList = outerRing.vertexList;
-	var openingBbox = outerVertexList.getBoundingBox();
-
-	var openingCenterPointLC = openingBbox.getCenterPoint();
-	var openingNormalLC = outerRing.calculatePlaneNormal();
-
-	var geoLocDataManager = this.geoLocDataManager;
-	var geoLocData = geoLocDataManager.getCurrentGeoLocationData();
-	var rotMatrix = geoLocData.rotMatrix;
-
-	var openingCenterPointWC = geoLocData.localCoordToWorldCoord(openingCenterPointLC);
-	var openingNormalWC = rotMatrix.transformPoint3D(openingNormalLC);
-
-	return {
-		openeingProfile2d : profile2d,
-		centerLC          : openingCenterPointLC,
-		normalLC          : openingNormalLC,
-		centerWC          : openingCenterPointWC,
-		normalWC          : openingNormalWC
-	};
-};
-
-BasicFactory.prototype.getOpeningProperties = function(wallType, index) 
-{
-	var wallOptions = this.options.wallOptions;
-
-	if (!defined(index)) { index = 0; }
-
-	var wallOption;
-	if (wallOptions) 
-	{
-		for (var j in wallOptions) 
-		{
-			if (wallOptions[j].type === wallType) 
-			{
-				wallOption = wallOptions[j];
-			}
-		}
-	}
-	var centerProperties;
-	if (Array.isArray(wallOption.openingInfo)) 
-	{
-		if (wallOption.openingInfo[index].centerPropterties) 
-		{
-			wallOption.openingInfo[index].centerPropterties.wallType = wallType;
-		}
-		centerProperties = wallOption.openingInfo[index].centerPropterties;
-	}
-	else 
-	{
-		if (wallOption.openingInfo.centerPropterties) 
-		{
-			wallOption.openingInfo.centerPropterties.wallType = wallType;
-		}
-		centerProperties = wallOption.openingInfo.centerPropterties;
-	}
-
-	return centerProperties;
-};
-/**
- * Makes the geometry mesh.
- */
-BasicFactory.prototype.makeMesh = function()
-{	
-	if (this.width === undefined || this.length === undefined || this.height === undefined)
-	{ return; }
-	
-	if (this.objectsArray === undefined)
-	{ this.objectsArray = []; }
-
-	if (this.objectsMap === undefined)
-	{ this.objectsMap = {}; }
-	
-	if (this.bHasGround)
-	{
-		// Make the ground.***
-		var groundWidth = this.width;
-		var groundLength = this.length;
-		var groundHeight = this.height * 0.02;
-		
-		var groundMesh = new Box(groundWidth, groundLength, groundHeight, "ground");
-		groundMesh.setOneColor(0.2, 0.3, 0.3, 1.0);
-		groundMesh.owner = this;
-		this.objectsArray.push(groundMesh);
-		this.objectsMap[groundMesh.name] = groundMesh;
-	}
-	this.roofMinHeight = defaultValue(this.options.roofMinHeight, this.height*0.75);
-
-	// Walls.***
-	var wallOptions = this.options.wallOptions;
-	var extrusionDist = 0.4;
-	var extrudeSegmentsCount = 1;
-	var extrusionVector = undefined;
-	var bIncludeBottomCap = true;
-	var bIncludeTopCap = true;
-
-	for (var key in BasicFactory.wallType) 
-	{
-		if (!BasicFactory.wallType.hasOwnProperty(key)) { continue; }
-		
-		var wallType = BasicFactory.wallType[key];
-		var wallOption;
-		if (wallOptions) 
-		{
-			for (var j in wallOptions) 
-			{
-				if (wallOptions[j].type === wallType) 
-				{
-					wallOption = wallOptions[j];
-					extrusionDist = defaultValue(wallOption.thickness, 0.4);
-					break;
-				}
-				else 
-				{
-					wallOption = null;
-				}
-			}
-			var meshName = wallType + "Wall";
-      		if (!this.objectsMap[meshName]) 
-			{
-        		var profileAux = this.getWallProfile2d(wallType, wallOption, undefined);
-
-        		var mesh = Modeler.getExtrudedMesh(profileAux, extrusionDist, extrudeSegmentsCount, extrusionVector, bIncludeBottomCap, bIncludeTopCap, undefined);
-        		mesh.name = meshName;
-        		this.objectsArray.push(mesh);
-        		this.objectsMap[meshName] = mesh;
-
-        		this.validateWallGeom(wallType, mesh);
-      		}
-		}
-	}
-
-	// Roof.*******************************************************************************************************************************
-	var halfWidth = this.width * 0.5;
-	var roofMinHeigh = this.roofMinHeight;
-	var polylineAux = new PolyLine2D();
-	polylineAux.newPoint2d(halfWidth, roofMinHeigh);                 // 0
-	polylineAux.newPoint2d(0, this.height);                          // 1
-	polylineAux.newPoint2d(-halfWidth, roofMinHeigh);                // 2
-	var leftExpandDist = 0;
-	var rightExpandDist = 0.2;
-	var polyline = new PolyLine2D();
-	polyline.point2dArray = Point2DList.getExpandedPoints(polylineAux.point2dArray, polyline.point2dArray, leftExpandDist, rightExpandDist);
-	
-	// Make roof profile.***
-	profileAux = new Profile2D();
-	var outerRing = profileAux.newOuterRing();
-	outerRing.addElement(polyline);
-	extrusionDist = this.length;
-	var mesh = Modeler.getExtrudedMesh(profileAux, extrusionDist, extrudeSegmentsCount, extrusionVector, bIncludeBottomCap, bIncludeTopCap, undefined);
-	mesh.name = "roof";
-	mesh.owner = this;
-	this.objectsArray.push(mesh);
-	this.objectsMap[mesh.name] = mesh;
-	
-	// Now rotate the roof.***
-	mesh.rotate(90, 1, 0, 0);
-	
-	// Now translate the roof to front.***
-	mesh.translate(0, this.length*0.5, 0);
-	mesh.setOneColor(98/256, 233/256, 134/256, 0.3);
-	
-	// Check if there are roof's material.
-	var roofMaterial;
-	var roofOptions = this.options.roofOptions;
-	if (roofOptions !== undefined)
-	{
-		roofMaterial = roofOptions.material;
-		if (roofMaterial !== undefined)
-		{
-			// check if there are texture. If exist texture then calculate texCoord for the roofMesh.
-			if (roofMaterial.diffuseTexture !== undefined)
-			{
-				// Calculate texCoords for the roofMesh.
-				// the difusse texture represents aprox 20x60 meters in the roofTexture.jpg image.
-				var texCoordsBBox = new BoundingBox();
-				var length = 60;
-				var width = this.width;
-				var height = 20;
-				texCoordsBBox.set(-width, -length, -height, width, length, height);
-				mesh.calculateTexCoordsBox(texCoordsBBox);
-				mesh.material = roofMaterial;
-			}
-			
-		}
-	}
-	
-	this.dirty = false;
-};
-
-/**
- * Renders the factory.
- */
-BasicFactory.prototype.getObjectByName = function(objectName)
-{
-	return this.objectsMap[objectName];
-};
-
-/**
- * delete mesh from this factory.
- * @param {string} name Mesh name
- */
-BasicFactory.prototype.removeMesh = function(name) 
-{
-	if (this.objectsMap && this.objectsMap[name]) { this.objectsMap[name] = undefined; }
-
-	if (this.objectsArray && Array.isArray(this.objectsArray)) 
-	{
-		this.objectsArray = this.objectsArray.filter(function(item) 
-		{
-			return item.name !== name;
-		});
-	}
-};
-/**
- * @param {string} wallType
- * @param {Object} geom must have rotate function and translate function
- */
-BasicFactory.prototype.validateWallGeom = function(wallType, geom, extrusionDist) 
-{
-	if (typeof geom.rotate !== 'function' || typeof geom.translate !== 'function') 
-	{
-		throw new Error('invalid geometry type.');
-	}
-
-	if (!defined(extrusionDist)) { extrusionDist = 0.4; }
-
-	switch (wallType) 
-	{
-	case 'front' : {
-		// Now rotate the front wall
-		geom.rotate(90, 1, 0, 0);
-
-		// Now translate the front wall to front
-		geom.translate(-this.width*0.5, -this.length*0.5+extrusionDist, 0);
-		break;
-	}
-	case 'rear' : {
-		// Now rotate the rear wall
-		geom.rotate(90, 1, 0, 0);
-
-		// Now translate the rear wall to rear
-		geom.translate(-this.width*0.5, this.length*0.5, 0);
-		break;
-	}
-	case 'left' : {
-		// Now rotate the left wall
-		geom.rotate(90, 1, 0, 0);
-		geom.rotate(90, 0, 0, 1);
-
-		// Now translate the left wall to left
-		geom.translate(-this.width*0.5, -this.length*0.5, 0);
-		break;
-	}
-	case 'right' : {
-		// Now rotate the right wall.***
-		geom.rotate(90, 1, 0, 0);
-		geom.rotate(90, 0, 0, 1);
-
-		// Now translate the right wall to right
-		geom.translate(this.width*0.5 - extrusionDist, -this.length*0.5, 0);
-		break;
-	}
-	}
-
-	if (geom instanceof Mesh) 
-	{
-		geom.setOneColor(0.9, 0.9, 0.9, 1.0);
-	}
-};
-'use strict';
-
-/**
- * @param {*} option 
- * @class BasicVehicle
- */
-var BasicVehicle = function()
-{
-};
-
-BasicVehicle.degreeValidator = function(deg)
-{
-	//if (deg > 360) { deg -= 360; }
-	//if (deg < -360) { deg += 360; }
-
-	return deg;
-};
-
-BasicVehicle.MODE = {
-	'NORMAL'             : 0,
-	'PARALLEL_TRANSLATE' : 1,
-	'PARALLEL_ROTATION'  : 2,
-	'CIRCULAR_ROTATION'  : 3
-};
-BasicVehicle.ACCEL_STATUS = {
-	'FORWARD' : 0,
-	'REVERSE' : 1,
-	'NONE'    : 2
-};
-'use strict';
-
-/**
- * Box geometry.
- * @class Box
- */
-var Box = function(width, length, height, name) 
-{
-	MagoRenderable.call(this);
-	if (!(this instanceof Box)) 
-	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
-	}
-	// See MagoRenderable's members.
-	// Initially, box centered at the center of the bottom.***
-	this.mesh;
-	this.centerPoint; // Usually (0,0,0).***
-	this.width;
-	this.length;
-	this.height;
-	this.owner;
-	
-	if (name !== undefined)
-	{ this.name = name; }
-	
-	if (width !== undefined)
-	{ this.width = width; }
-	
-	if (length !== undefined)
-	{ this.length = length; }
-	
-	if (height !== undefined)
-	{ this.height = height; }
-
-};
-Box.prototype = Object.create(MagoRenderable.prototype);
-Box.prototype.constructor = Box;
-
-/**
- * Returns the mesh.
- */
-Box.prototype.getMesh = function()
-{
-	if (this.mesh === undefined)
-	{
-		this.mesh = this.makeMesh(this.width, this.length, this.height);
-	}
-	
-	return this.mesh;
-};
-
-Box.prototype.moved = function()
-{
-	// do something.
-};
-
-/**
- * Makes the box mesh.
- * @param {Number} width
- * @param {Number} length
- * @param {Number} height 
- */
-Box.prototype.makeMesh = function()
-{
-	var profileAux = new Profile2D();
-	
-	// Create a outer ring in the Profile2d.
-	var outerRing = profileAux.newOuterRing();
-
-	var halfWidth = this.width * 0.5;
-	var halLength = this.length * 0.5;
-	var polyline = outerRing.newElement("POLYLINE");
-
-	polyline.newPoint2d(-halfWidth, -halLength);
-	polyline.newPoint2d(halfWidth, -halLength);
-	polyline.newPoint2d(halfWidth, halLength);
-	polyline.newPoint2d(-halfWidth, halLength);
-
-	//var rect = outerRing.newElement("RECTANGLE");
-	//rect.setCenterPosition(this.centerPoint.x, this.centerPoint.y);
-	//rect.setDimensions(this.width, this.length);
-	
-	// Extrude the Profile.
-	var extrudeSegmentsCount = 1;
-	var extrusionVector = undefined;
-	var extrusionDist = this.height;
-	var bIncludeBottomCap = true;
-	var bIncludeTopCap = true;
-
-	var mesh = Modeler.getExtrudedMesh(profileAux, extrusionDist, extrudeSegmentsCount, extrusionVector, bIncludeBottomCap, bIncludeTopCap, undefined);
-	this.objectsArray.push(mesh);
-	this.dirty = false;
-};
-'use strict';
-
-/**
- * ClippingBox geometry.
- * @class ClippingBox
- */
-var ClippingBox = function(width, length, height, name) 
-{
-	MagoRenderable.call(this);
-	if (!(this instanceof ClippingBox)) 
-	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
-	}
-	// Initially, box centered at the center of the bottom.***
-	this.centerPoint; // Usually (0,0,0).***
-	this.width;
-	this.length;
-	this.height;
-
-	if (name !== undefined)
-	{ this.name = name; }
-	
-	if (width !== undefined)
-	{ this.width = width; }
-	
-	if (length !== undefined)
-	{ this.length = length; }
-	
-	if (height !== undefined)
-	{ this.height = height; }
-
-	this.planesVec4Array;
-
-};
-
-ClippingBox.prototype = Object.create(MagoRenderable.prototype);
-ClippingBox.prototype.constructor = ClippingBox;
-
-ClippingBox.prototype.getPlanesRelToEyevec4Array = function(magoManager)
-{
-	//if (this.planesVec4Array === undefined)
-	//{ 
-	this.planesVec4Array = []; 
-	var planesArray = this.getPlanesRelToEye(undefined, magoManager);
-	var planesCount = planesArray.length;
-	for (var i=0; i<planesCount; i++)
-	{
-		var plane = planesArray[i];
-		this.planesVec4Array.push(plane.a);
-		this.planesVec4Array.push(plane.b);
-		this.planesVec4Array.push(plane.c);
-		this.planesVec4Array.push(plane.d);
-	}
-	//}
-
-	return this.planesVec4Array;
-};
-
-ClippingBox.prototype.moved = function()
-{
-	this.planesVec4Array = undefined;
-};
-
-ClippingBox.prototype.getPlanesRelToEye = function(resultPlanesArray, magoManager)
-{
-	// 1rst, calculate planes on the initial state.
-	// Initially, box centered at the center of the bottom.***
-	if (resultPlanesArray === undefined)
-	{ resultPlanesArray = []; }
-
-	var sceneState = magoManager.sceneState;
-	var mvMat = sceneState.modelViewMatrix;
-	var mvMatRelToEye = sceneState.modelViewRelToEyeMatrix;
-	var camera = sceneState.camera;
-	var camPos = camera.position;
-	var mvMat_inv = sceneState.modelViewMatrixInv;
-	
-	var geoLocDataManager = this.getGeoLocDataManager();
-	var geoLocData = geoLocDataManager.getCurrentGeoLocationData();
-	var rotMat = geoLocData.rotMatrix;
-	
-	var point = new Point3D();
-	var dir = new Point3D();
-	var pointWC = new Point3D();
-	var dirWC = new Point3D();
-	var pointCamCoord = new Point3D();
-	var dirCamCoord = new Point3D();
-	
-	// top plane.
-	point.set(0.0, 0.0, this.height);
-	dir.set(0.0, 0.0, 1.0);
-	pointWC = geoLocData.localCoordToWorldCoord(point, pointWC);
-	dirWC = rotMat.transformPoint3D(dir, dirWC);
-	pointCamCoord = mvMat.transformPoint3D(pointWC, pointCamCoord);
-	dirCamCoord = mvMatRelToEye.transformPoint3D(dirWC, dirCamCoord);
-	var plane = new Plane();
-	plane.setPointAndNormal(pointCamCoord.x, pointCamCoord.y, pointCamCoord.z, dirCamCoord.x, dirCamCoord.y, dirCamCoord.z);
-	resultPlanesArray.push(plane);
-	
-	// bottom plane.
-	point.set(0.0, 0.0, 0.0);
-	dir.set(0.0, 0.0, -1.0);
-	pointWC = geoLocData.localCoordToWorldCoord(point, pointWC);
-	dirWC = rotMat.transformPoint3D(dir, dirWC);
-	pointCamCoord = mvMat.transformPoint3D(pointWC, pointCamCoord);
-	dirCamCoord = mvMatRelToEye.transformPoint3D(dirWC, dirCamCoord);
-	var plane = new Plane();
-	plane.setPointAndNormal(pointCamCoord.x, pointCamCoord.y, pointCamCoord.z, dirCamCoord.x, dirCamCoord.y, dirCamCoord.z);
-	resultPlanesArray.push(plane);
-	
-	// front plane.
-	point.set(0.0, -this.length/2, this.height/2);
-	dir.set(0.0, -1.0, 0.0);
-	pointWC = geoLocData.localCoordToWorldCoord(point, pointWC);
-	dirWC = rotMat.transformPoint3D(dir, dirWC);
-	pointCamCoord = mvMat.transformPoint3D(pointWC, pointCamCoord);
-	dirCamCoord = mvMatRelToEye.transformPoint3D(dirWC, dirCamCoord);
-	var plane = new Plane();
-	plane.setPointAndNormal(pointCamCoord.x, pointCamCoord.y, pointCamCoord.z, dirCamCoord.x, dirCamCoord.y, dirCamCoord.z);
-	resultPlanesArray.push(plane);
-	
-	// rear plane.
-	point.set(0.0, this.length/2, this.height/2);
-	dir.set(0.0, 1.0, 0.0);
-	pointWC = geoLocData.localCoordToWorldCoord(point, pointWC);
-	dirWC = rotMat.transformPoint3D(dir, dirWC);
-	pointCamCoord = mvMat.transformPoint3D(pointWC, pointCamCoord);
-	dirCamCoord = mvMatRelToEye.transformPoint3D(dirWC, dirCamCoord);
-	var plane = new Plane();
-	plane.setPointAndNormal(pointCamCoord.x, pointCamCoord.y, pointCamCoord.z, dirCamCoord.x, dirCamCoord.y, dirCamCoord.z);
-	resultPlanesArray.push(plane);
-	
-	// left plane.
-	point.set(-this.width/2, 0.0, this.height/2);
-	dir.set(-1.0, 0.0, 0.0);
-	pointWC = geoLocData.localCoordToWorldCoord(point, pointWC);
-	dirWC = rotMat.transformPoint3D(dir, dirWC);
-	pointCamCoord = mvMat.transformPoint3D(pointWC, pointCamCoord);
-	dirCamCoord = mvMatRelToEye.transformPoint3D(dirWC, dirCamCoord);
-	var plane = new Plane();
-	plane.setPointAndNormal(pointCamCoord.x, pointCamCoord.y, pointCamCoord.z, dirCamCoord.x, dirCamCoord.y, dirCamCoord.z);
-	resultPlanesArray.push(plane);
-	
-	// right plane.
-	point.set(this.width/2, 0.0, this.height/2);
-	dir.set(1.0, 0.0, 0.0);
-	pointWC = geoLocData.localCoordToWorldCoord(point, pointWC);
-	dirWC = rotMat.transformPoint3D(dir, dirWC);
-	pointCamCoord = mvMat.transformPoint3D(pointWC, pointCamCoord);
-	dirCamCoord = mvMatRelToEye.transformPoint3D(dirWC, dirCamCoord);
-	var plane = new Plane();
-	plane.setPointAndNormal(pointCamCoord.x, pointCamCoord.y, pointCamCoord.z, dirCamCoord.x, dirCamCoord.y, dirCamCoord.z);
-	resultPlanesArray.push(plane);
-	
-	return resultPlanesArray;
-};
-
-ClippingBox.prototype.getPlanes = function(resultPlanesArray, magoManager)
-{
-	// 1rst, calculate planes on the initial state.
-	// Initially, box centered at the center of the bottom.***
-	if (resultPlanesArray === undefined)
-	{ resultPlanesArray = []; }
-
-	var sceneState = magoManager.sceneState;
-	var mvMat = sceneState.modelViewMatrix;
-	var mvMatRelToEye = sceneState.modelViewRelToEyeMatrix;
-	var camera = sceneState.camera;
-	var camPos = camera.position;
-	var mvMat_inv = sceneState.modelViewMatrixInv;
-	
-	var geoLocDataManager = this.getGeoLocDataManager();
-	var geoLocData = geoLocDataManager.getCurrentGeoLocationData();
-	var rotMat = geoLocData.rotMatrix;
-	
-	var point = new Point3D();
-	var dir = new Point3D();
-	var pointWC = new Point3D();
-	var dirWC = new Point3D();
-	var pointCamCoord = new Point3D();
-	var dirCamCoord = new Point3D();
-	
-	// top plane.
-	point.set(0.0, 0.0, this.height);
-	dir.set(0.0, 0.0, 1.0);
-	pointWC = rotMat.transformPoint3D(point, pointWC);
-	dirWC = rotMat.transformPoint3D(dir, dirWC);
-	var plane = new Plane();
-	plane.setPointAndNormal(pointWC.x, pointWC.y, pointWC.z, dirWC.x, dirWC.y, dirWC.z);
-	resultPlanesArray.push(plane);
-	
-	// bottom plane.
-	point.set(0.0, 0.0, 0.0);
-	dir.set(0.0, 0.0, -1.0);
-	pointWC = rotMat.transformPoint3D(point, pointWC);
-	dirWC = rotMat.transformPoint3D(dir, dirWC);
-	var plane = new Plane();
-	plane.setPointAndNormal(pointWC.x, pointWC.y, pointWC.z, dirWC.x, dirWC.y, dirWC.z);
-	resultPlanesArray.push(plane);
-	
-	// front plane.
-	point.set(0.0, -this.length/2, this.height/2);
-	dir.set(0.0, -1.0, 0.0);
-	pointWC = rotMat.transformPoint3D(point, pointWC);
-	dirWC = rotMat.transformPoint3D(dir, dirWC);
-	var plane = new Plane();
-	plane.setPointAndNormal(pointWC.x, pointWC.y, pointWC.z, dirWC.x, dirWC.y, dirWC.z);
-	resultPlanesArray.push(plane);
-	
-	// rear plane.
-	point.set(0.0, this.length/2, this.height/2);
-	dir.set(0.0, 1.0, 0.0);
-	pointWC = rotMat.transformPoint3D(point, pointWC);
-	dirWC = rotMat.transformPoint3D(dir, dirWC);
-	var plane = new Plane();
-	plane.setPointAndNormal(pointWC.x, pointWC.y, pointWC.z, dirWC.x, dirWC.y, dirWC.z);
-	resultPlanesArray.push(plane);
-	
-	// left plane.
-	point.set(-this.width/2, 0.0, this.height/2);
-	dir.set(-1.0, 0.0, 0.0);
-	pointWC = rotMat.transformPoint3D(point, pointWC);
-	dirWC = rotMat.transformPoint3D(dir, dirWC);
-	var plane = new Plane();
-	plane.setPointAndNormal(pointWC.x, pointWC.y, pointWC.z, dirWC.x, dirWC.y, dirWC.z);
-	resultPlanesArray.push(plane);
-	
-	// right plane.
-	point.set(this.width/2, 0.0, this.height/2);
-	dir.set(1.0, 0.0, 0.0);
-	pointWC = rotMat.transformPoint3D(point, pointWC);
-	dirWC = rotMat.transformPoint3D(dir, dirWC);
-	var plane = new Plane();
-	plane.setPointAndNormal(pointWC.x, pointWC.y, pointWC.z, dirWC.x, dirWC.y, dirWC.z);
-	resultPlanesArray.push(plane);
-	
-	return resultPlanesArray;
-};
-
-/**
- * Makes the box mesh.
- * @param {Number} width
- * @param {Number} length
- * @param {Number} height 
- */
-ClippingBox.prototype.makeMesh = function()
-{
-	var profileAux = new Profile2D();
-	
-	// Create a outer ring in the Profile2d.
-	var outerRing = profileAux.newOuterRing();
-
-	var halfWidth = this.width * 0.5;
-	var halLength = this.length * 0.5;
-	var polyline = outerRing.newElement("POLYLINE");
-
-	polyline.newPoint2d(-halfWidth, -halLength);
-	polyline.newPoint2d(halfWidth, -halLength);
-	polyline.newPoint2d(halfWidth, halLength);
-	polyline.newPoint2d(-halfWidth, halLength);
-
-	//var rect = outerRing.newElement("RECTANGLE");
-	//rect.setCenterPosition(this.centerPoint.x, this.centerPoint.y);
-	//rect.setDimensions(this.width, this.length);
-	
-	// Extrude the Profile.
-	var extrudeSegmentsCount = 1;
-	var extrusionVector = undefined;
-	var extrusionDist = this.height;
-	var bIncludeBottomCap = true;
-	var bIncludeTopCap = true;
-
-	var mesh = Modeler.getExtrudedMesh(profileAux, extrusionDist, extrudeSegmentsCount, extrusionVector, bIncludeBottomCap, bIncludeTopCap, undefined);
-	
-	// set attributes & options.
-	this.setOneColor(0.2, 0.7, 0.8, 0.3);
-	this.attributes.isMovable = true;
-	this.attributes.isSelectable = true;
-	this.attributes.name = "clippingBox";
-	this.attributes.selectedColor4 = new Color(1.0, 0.0, 0.0, 0.0); // selectedColor fully transparent.
-	if (this.options === undefined)
-	{ this.options = {}; }
-	
-	this.options.renderWireframe = true;
-	this.options.renderShaded = true;
-	this.options.depthMask = true;
-	
-	this.objectsArray.push(mesh);
-	this.dirty = false;
-	return mesh;
-};
-'use strict';
-/**
- * 같은 중심을 가진 튜브들의 모임. 우측과 같이 생긴 모양을 뜻함.-> ◎ 
- * @class ConcetricTubes
- * 
- * @param {Object} option 
- * @param {GeoLocationDataManager} geoLocDataManager Optional
- */
-var ConcentricTubes = function(option, geoLocDataManager)
-{
-	MagoRenderable.call(this);
-	/**
-	 * @type {number}
-	 * @default 0
-	 */
-	this.height = defaultValue(option.height, 0);
-
-	/**
-	 * The geographic location of the factory.
-	 * @type {GeoLocationDataManager}
-	 * @default undefined
-	 */
-	this.geoLocDataManager;
-
-	if (defined(geoLocDataManager)) 
-	{
-		this.geoLocDataManager = geoLocDataManager;
-	}
-    
-	
-	this.bbox;
-	this.options = option;
-};
-
-ConcentricTubes.prototype = Object.create(MagoRenderable.prototype);
-ConcentricTubes.prototype.constructor = ConcentricTubes;
-/**
- * 초기 튜브 정보를 가지고 튜브들을 초기화 함.
- */
-ConcentricTubes.prototype.clear = function() 
-{
-	this.objectsArray = [];
-};
-
-/**
- * 튜브정보를 이용하여 튜브 생성 후 튜브어레이에 넣음
- * @param {Object} option
- */
-ConcentricTubes.prototype.makeMesh = function() 
-{
-	var tubeInfos = this.options.tubeInfos;
-	if (defined(tubeInfos))
-	{	
-		this.clear();
-		for (var i=0, len=tubeInfos.length;i<len;i++) 
-		{
-			this.makeTube(tubeInfos[i]);
-		}
-		
-		this.setDirty(false);
-	}
-};
-
-/**
- * 튜브정보를 이용하여 튜브 생성 후 튜브어레이에 넣음
- * @param {Object} option
- */
-ConcentricTubes.prototype.makeTube = function(option) 
-{
-	var interiorRadius = option.interiorRadius;
-	var exteriorRadius = option.exteriorRadius;
-	var height = this.getHeight(); 
-	var options = option;
-
-	var tube = new Tube(interiorRadius, exteriorRadius, height, options);
-	tube.owner = this;
-	this.objectsArray.push(tube);
-};
-
-/**
- * Returns the bbox.
- */
-ConcentricTubes.prototype.getBoundingBox = function()
-{
-	if (this.bbox === undefined)
-	{
-		this.bbox = new BoundingBox();
-		for (var i=0, len=this.getSize(); i<len; i++) 
-		{
-			var tube = this.getTube(i);
-
-			var tubeBbox = tube.getBoundingBox();
-			if (i === 0)
-			{ this.bbox.copyFrom(tubeBbox); }
-			else
-			{ this.bbox.addBox(tubeBbox); }
-		}
-	}
-	return this.bbox;
-};
-
-/**
- * 높이 설정
- * @param {number} height
- */
-ConcentricTubes.prototype.setHeight = function(height) 
-{
-	this.height = height;
-};
-
-/**
- * 높이 반환
- * @return {number}
- */
-ConcentricTubes.prototype.getHeight = function(height) 
-{
-	return this.height;
-};
-
-/**
- * 튜브 추가
- * @param {Tube} tube
- */
-ConcentricTubes.prototype.addTube = function(tube) 
-{
-	this.objectsArray.push(tube);
-};
-/**
- * 튜브 목록 반환
- * @return {Array.<Tube>}
- */
-ConcentricTubes.prototype.getTubes = function() 
-{
-	return this.objectsArray;
-};
-/**
- * 인덱스에 해당하는 튜브 반환
- * @param {number} index array index
- * @return {Tube}
- */
-ConcentricTubes.prototype.getTube = function(index) 
-{
-	return this.objectsArray[index];
-};
-
-/**
- * 튜브 갯수 반환
- * @return {number}
- */
-ConcentricTubes.prototype.getSize = function() 
-{
-	return this.objectsArray.length;
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'use strict';
-
-/**
- * Cylinder.
- * @class Cylinder
- */
-var Cylinder = function(radius, height, options) 
-{
-	MagoRenderable.call(this);
-	if (!(this instanceof Cylinder)) 
-	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
-	}
-	
-	this.radius = 10;
-	this.height = 5;
-	
-	if (radius !== undefined)
-	{ this.radius = radius; }
-	
-	if (height !== undefined)
-	{ this.height = height; }
-	
-	this.dirty = true;
-	this.mesh;
-	this.bbox;
-	
-	/**
-	 * The geographic location of the factory.
-	 * @type {GeoLocationDataManager}
-	 * @default undefined
-	 */
-	this.geoLocDataManager;
-	this.color4;
-	
-	if (options !== undefined)
-	{
-		var color = options.color;
-		if (color)
-		{
-			this.color4 = new Color();
-			this.color4.setRGBA(color.r, color.g, color.b, color.a);
-		}
-		var selectedColor = options.selectedColor;
-		if (selectedColor)
-		{
-			this.selectedColor4 = new Color();
-			this.selectedColor4.setRGBA(selectedColor.r, selectedColor.g, selectedColor.b, selectedColor.a);
-		}
-	}
-};
-Cylinder.prototype = Object.create(MagoRenderable.prototype);
-Cylinder.prototype.constructor = Cylinder;
-
-/**
- * Makes the geometry mesh.
- */
-Cylinder.prototype.makeMesh = function()
-{
-	var profileAux = new Profile2D();
-	var circle;
-	
-	// Create a outer ring in the Profile2d.
-	var outerRing = profileAux.newOuterRing();
-	circle = outerRing.newElement("CIRCLE");
-	circle.setCenterPosition(0, 0);
-	circle.setRadius(this.radius);
-	
-	var extrusionDist = this.height;
-	var extrudeSegmentsCount = 1;
-	var extrusionVector; // undefined.
-	var bIncludeBottomCap = true;
-	var bIncludeTopCap = true;
-	
-	var mesh = Modeler.getExtrudedMesh(profileAux, extrusionDist, extrudeSegmentsCount, extrusionVector, bIncludeBottomCap, bIncludeTopCap, undefined);
-	this.objectsArray.push(mesh);
-	this.dirty = false;
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'use strict';
-
-/**
- * This class represents ellipsoid geometry.
- * @class Ellipsoid
- */
-var Ellipsoid = function(radiusX, radiusY, radiusZ) 
-{
-	if (!(this instanceof Ellipsoid)) 
-	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
-	}
-	// Ellipsoid: x^2/a^2 + y^2/b^2 + z^2/c^2 = 1, (a, b, c) = (radiusX, radiusY, radiusZ).
-	// Parametrization:
-	// polarAng = 90 - latitude, azimuthAng = longitude.
-	// x = a*sin(polarAng)*cos(azimuthAng)
-	// y = b*sin(polarAng)*sin(azimuthAng)
-	// z = c*cos(polarAng)
-	
-	this.radiusX;
-	this.radiusY;
-	this.radiusZ;
-	
-	this.centerPosition;
-	
-	this.strLonRad;
-	this.endLonRad;
-	this.strLatRad;
-	this.endLatRad;
-	
-	this.lonSegments = 120;
-	this.latSegments = 60;
-	
-	// positions(x, y, z), normals, texCoords, colors & indices array.
-	this.cartesiansArray;
-	this.normalsArray;
-	this.texCoordsArray;
-	this.colorsArray;
-	this.indices;
-	
-	this.mesh;
-	
-	if (radiusX !== undefined)
-	{ this.radiusX = radiusX; }
-	
-	if (radiusY !== undefined)
-	{ this.radiusY = radiusY; }
-	
-	if (radiusZ !== undefined)
-	{ this.radiusZ = radiusZ; }
-
-	if (this.strLonRad === undefined)
-	{ this.strLonRad = 0.0; }
-	if (this.endLonRad === undefined)
-	{ this.endLonRad = Math.PI*2; }
-	if (this.strLatRad === undefined)
-	{ this.strLatRad = -Math.PI/2; }
-	if (this.endLatRad === undefined)
-	{ this.endLatRad = Math.PI/2; }	
-
-	//this.strLonRad = 0.0;
-	//this.endLonRad = Math.PI/8;
-	//this.strLatRad = 0.0;
-	//this.endLatRad = Math.PI/8;
-
-};
-
-/**
- * Render this feature
- * @param {MagoManager} magoManager
- * @param {Shader} shader
- * @param {Number} renderType
- */
-Ellipsoid.prototype.render = function(magoManager, shader, renderType, glPrimitive)
-{
-	var gl = magoManager.getGl();
-		
-	
-	if (renderType === 2)
-	{
-		var colorAux;
-		colorAux = magoManager.selectionColor.getAvailableColor(colorAux);
-		var idxKey = magoManager.selectionColor.decodeColor3(colorAux.r, colorAux.g, colorAux.b);
-		magoManager.selectionManager.setCandidateGeneral(idxKey, this);
-		
-		gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.
-		gl.uniform4fv(shader.oneColor4_loc, [colorAux.r/255.0, colorAux.g/255.0, colorAux.b/255.0, 1.0]);
-	}
-	
-	// render this tinTerrain.
-	var renderWireframe = false;
-	
-	var vboKey = this.vboKeyContainer.vboCacheKeysArray[0];
-	
-	// Positions.
-	if (!vboKey.bindDataPosition(shader, magoManager.vboMemoryManager))
-	{ return false; }
-
-	// Normals.***
-	if (vboKey.vboBufferNor !== undefined)
-	{
-		// Has normal data.***
-		if (!vboKey.bindDataNormal(shader, magoManager.vboMemoryManager))
-		{ return false; }
-	}
-
-	// TexCoords (No necessary for depth rendering).
-	/*
-	if (!bDepth)
-	{
-		if (!vboKey.bindDataTexCoord(shader, magoManager.vboMemoryManager))
-		{ return false; }
-	}
-	*/
-	
-	// Colors.
-	// todo:
-	
-	// Indices.
-	if (!vboKey.bindDataIndice(shader, magoManager.vboMemoryManager))
-	{ return false; }
-	
-	var indicesCount = vboKey.indicesCount;
-	
-	if (renderWireframe)
-	{
-		var trianglesCount = indicesCount;
-		for (var i=0; i<trianglesCount; i++)
-		{
-			gl.drawElements(gl.LINE_LOOP, 3, gl.UNSIGNED_SHORT, i*3); // Fill.
-		}
-	}
-	else
-	{
-		gl.drawElements(gl.TRIANGLES, indicesCount, gl.UNSIGNED_SHORT, 0); // Fill.
-	}
-};
-
-/**
- * Makes the vbo mesh.
- */
-Ellipsoid.prototype.makeVbo = function(vboMemManager)
-{
-	if (this.cartesiansArray === undefined)
-	{ return; }
-	
-	if (this.vboKeyContainer === undefined)
-	{ this.vboKeyContainer = new VBOVertexIdxCacheKeysContainer(); }
-	
-	var vboKey = this.vboKeyContainer.newVBOVertexIdxCacheKey();
-	
-	// Positions.
-	vboKey.setDataArrayPos(this.cartesiansArray, vboMemManager);
-	
-	// Normals.
-	if (this.normalsArray)
-	{
-		vboKey.setDataArrayNor(this.normalsArray, vboMemManager);
-	}
-	
-	// TexCoords.
-	if (this.texCoordsArray)
-	{
-		vboKey.setDataArrayTexCoord(this.texCoordsArray, vboMemManager);
-	}
-		
-	// Indices.
-	vboKey.setDataArrayIdx(this.indices, vboMemManager);
-		
-	/*
-	// Todo:
-	if (normal)
-	{ vboKey.norVboDataArray = Int8Array.from(norArray); }
-	
-	if (color)
-	{ vboKey.colVboDataArray = Uint8Array.from(colArray); }
-	this.cartesiansArray;
-	this.texCoordsArray;
-	this.colorsArray;
-	this.indices;
-	*/
-};
-
-/**
- * Makes the ellipsoid mesh.
- */
-Ellipsoid.prototype.makeMesh = function(options)
-{
-	var bTrianglesSenseCCW = true;
-	if (options !== undefined)
-	{
-		if (options.bTrianglesSenseCCW !== undefined)
-		{ bTrianglesSenseCCW = options.bTrianglesSenseCCW; }
-	}
-	
-	if (this.strLonRad > this.endLonRad)
-	{
-		this.strLonRad -= 2*Math.PI;
-	}
-	var increLon = (this.endLonRad - this.strLonRad)/this.lonSegments;
-	var increLat = (this.endLatRad - this.strLatRad)/this.latSegments;
-	var currLonRad = this.strLonRad;
-	var currLatRad = this.strLatRad;
-	var radiusX = this.radiusX;
-	var radiusY = this.radiusY;
-	var radiusZ = this.radiusZ;
-	var radiusX2 = radiusX*radiusX;
-	var radiusY2 = radiusY*radiusY;
-	var radiusZ2 = radiusZ*radiusZ;
-	
-	var totalPointsCount = (this.lonSegments+1)*(this.latSegments+1);
-	this.cartesiansArray = new Float32Array(totalPointsCount*3); // Init.***
-	this.normalsArray = new Int8Array(totalPointsCount*3); // Init.***
-	var idx = 0;
-	
-	var bbox = new BoundingBox();
-	
-	for (var j=0; j<this.latSegments+1; j++)
-	{
-		currLatRad = this.strLatRad + j*increLat;
-		var sinLat = Math.sin(currLatRad);
-		var cosLat = Math.cos(currLatRad);
-		for (var i = 0; i<this.lonSegments+1; i++)
-		{
-			currLonRad = this.strLonRad + i*increLon;
-			var sinLon = Math.sin(currLonRad);
-			var cosLon = Math.cos(currLonRad);
-	
-			// Position.***
-			var x = radiusX * cosLat * cosLon;
-			var y = radiusY * cosLat * sinLon;
-			var z = radiusZ * sinLat;
-			
-			this.cartesiansArray[idx*3] = x;
-			this.cartesiansArray[idx*3+1] = y;
-			this.cartesiansArray[idx*3+2] = z;
-			
-			// Normal.***
-			var point = new Point3D(x, y, z);
-
-			// Calculate bbox before of normalizing the point.***
-			if (idx === 0)
-			{
-				bbox.init(point);
-			}
-			else 
-			{
-				bbox.addPoint(point);
-			}
-			
-			point.set(x/radiusX2, y/radiusY2, z/radiusZ2);
-			point.unitary();
-			
-			if (bTrianglesSenseCCW)
-			{
-				this.normalsArray[idx*3] = point.x*127;
-				this.normalsArray[idx*3+1] = point.y*127;
-				this.normalsArray[idx*3+2] = point.z*127;
-			}
-			else 
-			{
-				this.normalsArray[idx*3] = -point.x*127;
-				this.normalsArray[idx*3+1] = -point.y*127;
-				this.normalsArray[idx*3+2] = -point.z*127;
-			}
-			
-			
-			idx += 1;
-		}
-	}
-	
-	// Calculate the centerPosition of the ellipsoid.***
-	this.centerPosition = bbox.getCenterPoint();
-	
-	for (var i=0; i<totalPointsCount; i++)
-	{
-		this.cartesiansArray[i*3] -= this.centerPosition.x;
-		this.cartesiansArray[i*3+1] -= this.centerPosition.y;
-		this.cartesiansArray[i*3+2] -= this.centerPosition.z;
-	}
-	
-	if (this.terrainPositionHIGH === undefined)
-	{ this.terrainPositionHIGH = new Float32Array(3); }
-
-	if (this.terrainPositionLOW === undefined)
-	{ this.terrainPositionLOW = new Float32Array(3); }
-	ManagerUtils.calculateSplited3fv([this.centerPosition.x, this.centerPosition.y, this.centerPosition.z], this.terrainPositionHIGH, this.terrainPositionLOW);
-	
-	/*
-	for (var i = 0; i<this.lonSegments+1; i++)
-	{
-		currLonRad = this.strLonRad + i*increLon;
-		var sinLon = Math.sin(currLonRad);
-		var cosLon = Math.cos(currLonRad);
-		for (var j=0; j<this.latSegments+1; j++)
-		{
-			// Position.***
-			currLatRad = this.strLatRad + j*increLat;
-			var sinLat = Math.sin(currLatRad);
-			var x = radiusX * sinLat * cosLon;
-			var y = radiusY * sinLat * sinLon;
-			var z = radiusZ*Math.cos(currLatRad);
-			
-			this.cartesiansArray[idx*3] = x;
-			this.cartesiansArray[idx*3+1] = y;
-			this.cartesiansArray[idx*3+2] = z;
-			
-			// Normal.***
-			var normal = new Point3D(x, y, z);
-			normal.unitary();
-			
-			this.normalsArray[idx*3] = normal.x*255;
-			this.normalsArray[idx*3+1] = normal.y*255;
-			this.normalsArray[idx*3+2] = normal.z*255;
-			
-			idx += 1;
-		}
-	}
-	*/
-	
-	// Finally make indices array.***
-	var numCols = this.lonSegments + 1;
-	var numRows = this.latSegments + 1;
-
-	this.indices = GeometryUtils.getIndicesTrianglesRegularNet(numCols, numRows, undefined, options);
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'use strict';
-
-/**
- * GolfHoleFlag.
- * @class GolfHoleFlag
- */
-var GolfHoleFlag = function(radius, height, options) 
-{
-	MagoRenderable.call(this);
-	if (!(this instanceof GolfHoleFlag)) 
-	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
-	}
-	
-	this.radius = 1.0;
-	this.height = 5;
-	
-	if (radius !== undefined)
-	{ this.radius = radius; }
-	
-	if (height !== undefined)
-	{ this.height = height; }
-
-	this.baseRadius = 4.0*this.radius;
-	this.flagOrientation;
-	
-	this.dirty = true;
-	this.mesh;
-	this.bbox;
-	
-	/**
-	 * The geographic location of the factory.
-	 * @type {GeoLocationDataManager}
-	 * @default undefined
-	 */
-	this.geoLocDataManager;
-	this.color4;
-	
-	if (options !== undefined)
-	{
-		var color = options.color;
-		if (color)
-		{
-			this.color4 = new Color();
-			this.color4.setRGBA(color.r, color.g, color.b, color.a);
-		}
-		var selectedColor = options.selectedColor;
-		if (selectedColor)
-		{
-			this.selectedColor4 = new Color();
-			this.selectedColor4.setRGBA(selectedColor.r, selectedColor.g, selectedColor.b, selectedColor.a);
-		}
-	}
-	
-};
-GolfHoleFlag.prototype = Object.create(MagoRenderable.prototype);
-GolfHoleFlag.prototype.constructor = GolfHoleFlag;
-
-/**
- * Makes the geometry mesh.
- */
-GolfHoleFlag.prototype.makeMesh = function()
-{
-	if (this.objectsArray === undefined)
-	{ this.objectsArray = []; }
-
-	// Create the base of the flag.**************************************************
-	var baseHeight = this.height * 0.01;
-	var options = {
-		color: new Color(1.0, 1.0, 0.0, 1.0)
-	};
-	var base = new Cylinder(this.baseRadius, baseHeight, options);
-	this.objectsArray.push(base);
-	
-	// Create the flag flagpole.**************************************************
-	var options = {
-		color: new Color(0.9, 0.9, 0.95, 1.0)
-	};
-	var flagpole = new Cylinder(this.radius, this.height, options);
-	this.objectsArray.push(flagpole);
-	
-	// Create the triangle flag.**************************************************
-	var profile2dAux = new Profile2D();
-	
-	// Outer ring.**
-	var outerRing = profile2dAux.newOuterRing();
- 
-	var flagHeight = 2;
-	var flagWidth = 10.0;
-
-	var polyline = outerRing.newElement("POLYLINE");
-	
-	polyline.newPoint2d(-flagHeight/2, 0);    
-	polyline.newPoint2d(flagHeight/2, 0);    
-	polyline.newPoint2d(0, flagWidth);
-
-	var extrudeSegmentsCount = 1;
-	var extrusionVector = undefined;
-	var bIncludeBottomCap = false;
-	var bIncludeTopCap = false;
-	var extrudeDist = 0.1;
-	var mesh = Modeler.getExtrudedMesh(profile2dAux, extrudeDist, extrudeSegmentsCount, extrusionVector, bIncludeBottomCap, bIncludeTopCap, mesh);
-	mesh.setOneColor(1.0, 0.1, 0.1, 1.0);
-	mesh.rotate(90.0, 0.0, 1.0, 0.0);
-	mesh.rotate(45.0, 0.0, 0.0, 1.0);
-	mesh.translate(0.0, 0.0, this.height - flagHeight/2);
-
-	this.objectsArray.push(mesh);
-	
-	this.dirty = false;
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'use strict';
-
-/**
- * ImageViewerRectangle.
- * @class ImageViewerRectangle
- */
-var ImageViewerRectangle = function(width, height) 
-{
-	if (!(this instanceof ImageViewerRectangle)) 
-	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
-	}
-	
-	this.width = width;
-	this.height = height;
-	this.geoLocDataManager;
-	this.vboKeysContainer;
-};
-
-/**
- * Render this box feature
- * @param {MagoManager} magoManager
- * @param {Shader} shader
- */
-ImageViewerRectangle.prototype.makeMesh = function(magoManager)
-{
-	// There are only 4 vertices.***
-	var semiWidth = this.width/2;
-	var semiHeight = this.height/2;
-	
-	var vertex_ld = new Vertex();
-	vertex_ld.point3d.set(-semiWidth, -semiHeight, 0);
-	vertex_ld.normal = new Point3D(0, 0, 1);
-	vertex_ld.texCoord = new Point2D(0, 0);
-	
-	var vertex_rd = new Vertex();
-	vertex_rd.point3d.set(semiWidth, -semiHeight, 0);
-	vertex_rd.normal = new Point3D(0, 0, 1);
-	vertex_rd.texCoord = new Point2D(1, 0);
-	
-	var vertex_ru = new Vertex();
-	vertex_ru.point3d.set(semiWidth, semiHeight, 0);
-	vertex_ru.normal = new Point3D(0, 0, 1);
-	vertex_ru.texCoord = new Point2D(1, 1);
-	
-	var vertex_lu = new Vertex();
-	vertex_lu.point3d.set(-semiWidth, semiHeight, 0);
-	vertex_lu.normal = new Point3D(0, 0, 1);
-	vertex_lu.texCoord = new Point2D(0, 1);
-	
-	var verticesArray = [vertex_ld, vertex_rd, vertex_ru, vertex_lu];
-	
-	if (this.vboKeysContainer === undefined)
-	{ this.vboKeysContainer = new VBOVertexIdxCacheKeysContainer(); }
-	
-	var vboMemManager = magoManager.vboMemoryManager;
-	var vbo = this.vboKeysContainer.newVBOVertexIdxCacheKey();
-	VertexList.setIdxInList(verticesArray);
-	VertexList.getVboDataArrays(verticesArray, vbo, vboMemManager);
-	
-	// Finally make the indices.***
-	var idxDataArray = new Uint16Array([0, 1, 3, 1, 2, 3]);
-	vbo.setDataArrayIdx(idxDataArray, vboMemManager);
-};
-
-/**
- * Render this box feature
- * @param {MagoManager} magoManager
- * @param {Shader} shader
- */
-ImageViewerRectangle.prototype.render = function(magoManager, shader, glPrimitive)
-{
-	if (this.vboKeysContainer === undefined)
-	{
-		this.makeMesh(magoManager);
-	}
-	
-	var vboMemManager = magoManager.vboMemoryManager;
-	var gl = magoManager.sceneState.gl;
-	var primitive;
-	
-	if (this.color4)
-	{ gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, 1.0]); }
-
-	shader.useProgram();
-	shader.resetLastBuffersBinded();
-
-	shader.enableVertexAttribArray(shader.position3_loc);
-	shader.disableVertexAttribArray(shader.color4_loc);
-	shader.enableVertexAttribArray(shader.normal3_loc); 
-	shader.enableVertexAttribArray(shader.texCoord2_loc); 
-	
-	shader.bindUniformGenerals();
-	
-	var buildingGeoLocation = this.geoLocDataManager.getCurrentGeoLocationData();
-	buildingGeoLocation.bindGeoLocationUniforms(gl, shader); // rotMatrix, positionHIGH, positionLOW.
-	
-	
-	var vboKeysCount = this.vboKeysContainer.vboCacheKeysArray.length;
-	for (var i=0; i<vboKeysCount; i++)
-	{
-		var vboKey = this.vboKeysContainer.vboCacheKeysArray[i];
-		
-		// Positions.
-		if (!vboKey.bindDataPosition(shader, vboMemManager))
-		{ return false; }
-		
-		// Normals.
-		if (vboKey.vboBufferNor)
-		{
-			if (!vboKey.bindDataNormal(shader, vboMemManager))
-			{ return false; }
-		}
-		else 
-		{
-			shader.disableVertexAttribArray(shader.normal3_loc);
-		}
-		
-		// Colors.
-		if (vboKey.vboBufferCol)
-		{
-			if (!vboKey.bindDataColor(shader, vboMemManager))
-			{ return false; }
-		}
-		else 
-		{
-			shader.disableVertexAttribArray(shader.color4_loc);
-		}
-		
-		// TexCoords.
-		if (vboKey.vboBufferTCoord)
-		{
-			if (!vboKey.bindDataTexCoord(shader, vboMemManager))
-			{ return false; }
-		}
-		else 
-		{
-			shader.disableVertexAttribArray(shader.texCoord2_loc);
-		}
-		
-		// Indices.
-		if (!vboKey.bindDataIndice(shader, vboMemManager))
-		{ return false; }
-		
-		if (glPrimitive)
-		{ primitive = glPrimitive; }
-		else
-		{ primitive = gl.TRIANGLES; }
-		
-		gl.drawElements(primitive, vboKey.indicesCount, gl.UNSIGNED_SHORT, 0);
-	}
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'use strict';
-
-/**
- * Pipe.
- * @class Pipe
- */
-var Pipe = function(interiorRadius, exteriorRadius, height, options) 
-{
-	if (!(this instanceof Pipe)) 
-	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
-	}
-	
-	this.intRadius = 10;
-	this.extRadius = 20;
-	this.height = 5;
-	
-	if (interiorRadius !== undefined)
-	{ this.intRadius = interiorRadius; }
-	
-	if (exteriorRadius !== undefined)
-	{ this.extRadius = exteriorRadius; }
-	
-	if (height !== undefined)
-	{ this.height = height; }
-	
-	this.dirty = true;
-	this.mesh;
-	
-	/**
-	 * The geographic location of the factory.
-	 * @type {GeoLocationDataManager}
-	 * @default undefined
-	 */
-	this.geoLocDataManager;
-	this.color4;
-	
-	if (options !== undefined)
-	{
-		var color = options.color;
-		if (color)
-		{
-			this.color4 = new Color();
-			this.color4.setRGBA(color.r, color.g, color.b, color.a);
-		}
-	}
-};
-
-/**
- * Makes the geometry mesh.
- */
-Pipe.prototype.makeMesh = function()
-{
-	var profileAux = new Profile2D();
-	var circle;
-	
-	// Create a outer ring in the Profile2d.
-	var outerRing = profileAux.newOuterRing();
-	circle = outerRing.newElement("CIRCLE");
-	circle.setCenterPosition(0, 0);
-	circle.setRadius(this.extRadius);
-	
-	// Now create interior ring.***
-	var innerRing = profileAux.newInnerRing();
-	circle = innerRing.newElement("CIRCLE");
-	circle.setCenterPosition(0, 0);
-	circle.setRadius(this.intRadius);
-	
-	var extrusionDist = this.height;
-	var extrudeSegmentsCount = 1;
-	var extrusionVector; // undefined.
-	var bIncludeBottomCap = true;
-	var bIncludeTopCap = true;
-	
-	this.mesh = Modeler.getExtrudedMesh(profileAux, extrusionDist, extrudeSegmentsCount, extrusionVector, bIncludeBottomCap, bIncludeTopCap, undefined);
-	
-	this.dirty = false;
-};
-
-/**
- * Renders the factory.
- */
-Pipe.prototype.render = function(magoManager, shader, renderType, glPrimitive)
-{
-	if (this.dirty)
-	{ this.makeMesh(); }
-	
-	if (this.mesh === undefined)
-	{ return false; }
-
-	// Set geoLocation uniforms.***
-	var gl = magoManager.getGl();
-	var buildingGeoLocation = this.geoLocDataManager.getCurrentGeoLocationData();
-	buildingGeoLocation.bindGeoLocationUniforms(gl, shader); // rotMatrix, positionHIGH, positionLOW.
-	
-	gl.uniform1i(shader.refMatrixType_loc, 0); // in magoManager case, there are not referencesMatrix.***
-	
-	if (renderType === 0)
-	{
-		// Depth render.***
-	}
-	else if (renderType === 1)
-	{
-		// Color render.***
-		//gl.blendFunc( gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA );
-		gl.enable(gl.BLEND);
-		gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.***
-		
-		// Check if is selected.***
-		var selectionManager = magoManager.selectionManager;
-		if (selectionManager.isObjectSelected(this))
-		{
-			gl.disable(gl.BLEND);
-			gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, 1.0]);
-		}
-		else 
-		{
-			gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, this.color4.a]);
-		}
-		
-	}
-	else if (renderType === 2)
-	{
-		// Selection render.***
-		var selectionColor = magoManager.selectionColor;
-		var colorAux = magoManager.selectionColor.getAvailableColor(undefined);
-		var idxKey = magoManager.selectionColor.decodeColor3(colorAux.r, colorAux.g, colorAux.b);
-		magoManager.selectionManager.setCandidateGeneral(idxKey, this);
-		
-		gl.uniform4fv(shader.oneColor4_loc, [colorAux.r/255.0, colorAux.g/255.0, colorAux.b/255.0, 1.0]);
-		gl.disable(gl.BLEND);
-	}
-
-	this.mesh.render(magoManager, shader, renderType, glPrimitive);
-
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'use strict';
-
-/**
- * RenderableObject geometry.
- * @class RenderableObject
- */
-var RenderableObject = function(options) 
-{
-	MagoRenderable.call(this);
-	if (!(this instanceof RenderableObject)) 
-	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
-	}
-	// See MagoRenderable's members.
-	this.setDirty(false);
-
-};
-RenderableObject.prototype = Object.create(MagoRenderable.prototype);
-RenderableObject.prototype.constructor = RenderableObject;
-'use strict';
-
-/**
- * SkeletalAnimationObject is a class object.
- * 
- * @class SkeletalAnimationObject
- * @constructor 
- * @param {string} The name of the SkeletalAnimationObject.
- */
-var SkeletalAnimationObject = function(name) 
-{
-	this.modelMesh;
-	
-};
-
-SkeletalAnimationObject.prototype.init_TEST = function()
-{
-	
-};
-'use strict';
-/**
- * SpeechBubble is a class object.
- * 
- * @class SpeechBubble
- * @constructor 
- */
-var SpeechBubble = function() 
-{
-	this.point2dArray = [];
-	this.repository = {};
-};
-
-/**
- * set default speech bubble profile
- */
-SpeechBubble.prototype.makeDefault = function(imageSize)
-{
-	//origin is left up corner 0,0
-	//--------------
-	//
-	var width = imageSize[0];
-	var height = imageSize[1];
-
-	var minSize = (width > height) ? height : width;
-
-	var offset = minSize * 0.05;
-	var bubbleHeight = 0.75 * height;
-	var tailWidth = 0.2 * width;
-	var center = 0.5 * width;
-	var cornerRadius = minSize * 0.20;
-
-
-
-	this.point2dArray[0] = getObj(center, height-offset, 'moveTo');
-	this.point2dArray[1] = getObj(center + tailWidth/2, bubbleHeight, 'lineTo');
-	this.point2dArray[2] = getObj(width - cornerRadius, bubbleHeight, 'lineTo');
-	this.point2dArray[3] = getObj(width-offset, bubbleHeight, 'quadraticCurveTo', width-offset, bubbleHeight - cornerRadius);
-	this.point2dArray[4] = getObj(width-offset, cornerRadius, 'lineTo');
-	this.point2dArray[5] = getObj(width-offset, offset, 'quadraticCurveTo', width - cornerRadius, offset);
-	this.point2dArray[6] = getObj(cornerRadius, offset, 'lineTo');
-	this.point2dArray[7] = getObj(offset, offset, 'quadraticCurveTo', offset, cornerRadius);
-	this.point2dArray[8] = getObj(offset, bubbleHeight - cornerRadius, 'lineTo');
-	this.point2dArray[9] = getObj(offset, bubbleHeight, 'quadraticCurveTo', cornerRadius, bubbleHeight);
-	this.point2dArray[10] = getObj(center - tailWidth/2, bubbleHeight, 'lineTo');
-    
-	function getObj(x, y, command, targetX, targetY) 
-	{
-		var point = [x, y];
-		if (targetX && targetY) 
-		{
-			point.push(targetX);
-			point.push(targetY);
-		}
-		return {
-			point   : point,
-			command : command
-		};
-	}
-};
-
-/**
- * @param {Array<number>} imageSize
- * @param {Color} color
- * @param {object} textOption
- */
-SpeechBubble.prototype.getPng = function (imageSize, color, textOption) 
-{
-	//need validation
-	//var hexColor = color.getHexCode();
-	var aux = [];
-	aux.push(imageSize);
-	aux.push(color);
-	aux.push(textOption);
-	var id = JSON.stringify(aux);
-
-	if (this.repository[id])
-	{
-		return this.repository[id].toDataURL();
-	}
-
-	this.makeDefault(imageSize);
-	var canvas = makeCanvas(imageSize, color, textOption, this.point2dArray);
-	this.repository[id] = canvas;
-	return canvas.toDataURL();
-
-	function makeCanvas(size, hex, tOption, p2dArray) 
-	{
-		var c = document.createElement("canvas");
-		var w = size[0];
-		var h = size[1];
-		c.width = w;
-		c.height = h;
-
-		var ctx = c.getContext("2d");
-		ctx.save();
-		ctx.fillStyle = hex;
-		ctx.strokeStyle = '#000000';
-		ctx.lineWidth = 2;
-		ctx.beginPath();
-		
-		var p2dLength = p2dArray.length;
-		for (var i=0;i<p2dLength;i++) 
-		{
-			var p2d = p2dArray[i];
-			if (p2d.point.length === 2) 
-			{
-				ctx[p2d.command].call(ctx, p2d.point[0], p2d.point[1]);
-			}
-			else 
-			{
-				ctx[p2d.command].call(ctx, p2d.point[0], p2d.point[1], p2d.point[2], p2d.point[3]);
-			}
-		}
-
-		ctx.closePath();
-		ctx.fill();
-		ctx.stroke();
-		
-		if (tOption) 
-		{
-			var textValue = tOption.text; //required.
-			var fontPixel = defaultValue(tOption.pixel, 10);
-			var fontType = defaultValue(tOption.font, 'sans-serif');
-			var fontColor = defaultValue(tOption.color, 'white');
-			var fontBorderColor = defaultValue(tOption.borderColor, 'black');
-
-			ctx.font = 'bold ' + fontPixel + "px " + fontType;
-			ctx.fillStyle = fontColor;
-			ctx.strokeStyle = fontBorderColor;
-			ctx.textAlign = "center";
-			ctx.strokeText(textValue, w /2, h /2);
-			ctx.fillText(textValue, w /2, h /2);
-		}
-
-		ctx.restore();
-		return c;
-	}
-};
-'use strict';
-
-/**
- * TestFreeContourWallBuilding geometry.
- * @class TestFreeContourWallBuilding
- */
-var TestFreeContourWallBuilding = function(options) 
-{
-	MagoRenderable.call(this, options);
-	if (!(this instanceof TestFreeContourWallBuilding)) 
-	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
-	}
-	this.height;
-	this.point2DList;
-	if (options !== undefined)
-	{
-		if (options.points2dArray !== undefined)
-		{
-			if (this.point2DList === undefined)
-			{
-				this.point2DList = new Point2DList();
-			}
-			
-			this.point2DList.pointsArray = options.points2dArray;
-		}
-		
-		if (options.height !== undefined)
-		{
-			this.height = options.height;
-		}
-	}
-	
-	
-};
-
-TestFreeContourWallBuilding.prototype = Object.create(MagoRenderable.prototype);
-TestFreeContourWallBuilding.prototype.constructor = TestFreeContourWallBuilding;
-
-/*
-if (this.testClippingPlanes === undefined)
-	{
-		// make a modelmatrix for the clippingPlanes.
-		var modelMatrix;
-		var geoCoord = new GeographicCoord(126.61340759235748, 37.57613526692086, 0);
-		var modelmatrix = Globe.transformMatrixAtGeographicCoord(geoCoord, undefined);
-		var globe = this.scene._globe;
-		globe.clippingPlanes = new Cesium.ClippingPlaneCollection({
-			modelMatrix : modelmatrix,
-			planes      : [
-				new Cesium.ClippingPlane(new Cesium.Cartesian3( 1.0,  0.0, 0.0), -50.0),
-				new Cesium.ClippingPlane(new Cesium.Cartesian3(-1.0,  0.0, 0.0), -50.0),
-				new Cesium.ClippingPlane(new Cesium.Cartesian3( 0.0,  1.0, 0.0), -200.0),
-				new Cesium.ClippingPlane(new Cesium.Cartesian3( 0.0, -1.0, 0.0), -200.0)
-			],
-			edgeWidth : 1.0,
-			edgeColor : Cesium.Color.WHITE,
-			enabled   : true
-		});
-	
-		this.testClippingPlanes = true;
-	}
-	*/
-	
-TestFreeContourWallBuilding.prototype.makeMesh = function()
-{
-	var profileAux = new Profile2D();
-	
-	// Create a outer ring in the Profile2d.
-	var outerRing = profileAux.newOuterRing();
-	var polyline = outerRing.newElement("POLYLINE");
-
-	var pointsCount = this.point2DList.getPointsCount();
-	for (var i=0; i<pointsCount; i++)
-	{
-		var point2d = this.point2DList.getPoint(i);
-		polyline.newPoint2d(point2d.x, point2d.y);
-	}
-	//var leftExpandDist = 0.2;
-	//var innerPointsArray = Point2DList.getExpandedPoints(this.point2DList.pointsArray, undefined, leftExpandDist, rightExpandDist, bLoop);
-	
-	// Now create interior ring.***
-	//var innerRing = profileAux.newInnerRing();
-	//var circle = innerRing.newElement("CIRCLE");
-	//circle.setCenterPosition(0, 0);
-	//circle.setRadius(2);
-	
-	// Extrude the Profile.
-	var extrudeSegmentsCount = 1;
-	var extrusionVector = undefined;
-	var extrusionDist = this.height;
-	var bIncludeBottomCap = true;
-	var bIncludeTopCap = true;
-	
-	if (this.objectsArray === undefined)
-	{ this.objectsArray = []; }
-
-	var mesh = Modeler.getExtrudedMesh(profileAux, extrusionDist, extrudeSegmentsCount, extrusionVector, bIncludeBottomCap, bIncludeTopCap, undefined);
-	this.objectsArray.push(mesh);
-	this.dirty = false;
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'use strict';
-
-/**
- * Tube.
- * @class Tube
- */
-var Tube = function(interiorRadius, exteriorRadius, height, options) 
-{
-	MagoRenderable.call(this);
-	if (!(this instanceof Tube)) 
-	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
-	}
-	
-	this.intRadius = 10;
-	this.extRadius = 20;
-	this.height = 5;
-	
-	if (interiorRadius !== undefined)
-	{ this.intRadius = interiorRadius; }
-	
-	if (exteriorRadius !== undefined)
-	{ this.extRadius = exteriorRadius; }
-	
-	if (height !== undefined)
-	{ this.height = height; }
-	
-	this.dirty = true;
-	this.mesh;
-	this.bbox;
-	
-	/**
-	 * The geographic location of the factory.
-	 * @type {GeoLocationDataManager}
-	 * @default undefined
-	 */
-	this.geoLocDataManager;
-	this.color4;
-	
-	if (options !== undefined)
-	{
-		var color = options.color;
-		if (color)
-		{
-			this.color4 = new Color();
-			this.color4.setRGBA(color.r, color.g, color.b, color.a);
-		}
-		var selectedColor = options.selectedColor;
-		if (selectedColor)
-		{
-			this.selectedColor4 = new Color();
-			this.selectedColor4.setRGBA(selectedColor.r, selectedColor.g, selectedColor.b, selectedColor.a);
-		}
-	}
-};
-Tube.prototype = Object.create(MagoRenderable.prototype);
-Tube.prototype.constructor = Tube;
-
-/**
- * Returns the bbox.
- */
-Tube.prototype.getBoundingBox = function()
-{
-	if (this.bbox === undefined)
-	{
-		this.bbox = new BoundingBox();
-		var maxRadius = this.extRadius;
-		if (maxRadius < this.intRadius)
-		{ maxRadius = this.intRadius; }
-		
-		this.bbox.set(-maxRadius, -maxRadius, 0.0, maxRadius, maxRadius, this.height);
-	}
-	return this.bbox;
-};
-
-/**
- * Makes the geometry mesh.
- */
-Tube.prototype.makeMesh = function()
-{
-	var profileAux = new Profile2D();
-	var circle;
-	
-	// Create a outer ring in the Profile2d.
-	var outerRing = profileAux.newOuterRing();
-	circle = outerRing.newElement("CIRCLE");
-	circle.setCenterPosition(0, 0);
-	circle.setRadius(this.extRadius);
-	
-	// Now create interior ring.***
-	var innerRing = profileAux.newInnerRing();
-	circle = innerRing.newElement("CIRCLE");
-	circle.setCenterPosition(0, 0);
-	circle.setRadius(this.intRadius);
-	
-	var extrusionDist = this.height;
-	var extrudeSegmentsCount = 1;
-	var extrusionVector; // undefined.
-	var bIncludeBottomCap = true;
-	var bIncludeTopCap = true;
-	
-	var mesh = Modeler.getExtrudedMesh(profileAux, extrusionDist, extrudeSegmentsCount, extrusionVector, bIncludeBottomCap, bIncludeTopCap, undefined);
-	this.objectsArray.push(mesh);
-	this.dirty = false;
-};
-'use strict';
-
-var Vehicle = function(width, length, height, options) 
-{
-	MagoRenderable.call(this);
-
-	if (!(this instanceof Vehicle)) 
-	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
-	}
-	this.PARALLEL_ROTATION_ANGLE = 90;
-	this.frame;
-	this.frontArrow;
-	this.rearArrow;
-    
-	this.frontArrowPos;
-	this.rearArrowPos;
-    
-	this.width = width;
-	this.length = length;
-	this.height = height;
-
-	/**
-	 * distance between wheel axis
-	 * @type {number}
-	 */
-	this.wheelbase = length * 0.8;
-    
-	/**
-	 * y axix is zero degree
-	 * @type {number}
-	 */
-	this.rearAngleDeg = 0;
-
-	/**
-	 * y axix is zero degree
-	 * @type {number}
-	 */
-	this.frontAngleDeg = 0;
-
-	this.isDrawArrow = true;
-
-	this.eventStatus = {
-		changingFrontArrow : false,
-		changingRearArrow  : false,
-		footOnAccel        : false
-	};
-
-	this.mode = BasicVehicle.MODE.NORMAL;
-	this.accelStatus = BasicVehicle.ACCEL_STATUS.FORWARD;
-
-	//this.changingFrontArrow = false;
-	this.changingFrontArrowType = 0;
-	this.changingFrontArrowSpeed = 0.1;
-
-	//this.changingRearArrow = false;
-	this.changingRearArrowType = 0;
-	this.changingRearArrowSpeed = 0.1;
-
-	//move
-	/**
-	 * unit m/s, EXAMPLE. 1.388889M/S IS 5KM/H 
-	 * @type {number}
-	 */
-	this.maxSpeed = 12;
-	this.frontCurrentSpeed = 0;
-	this.frontAcceleration = 1;
-	this.frontDeacceleration = 3.8;
-
-	this.rearCurrentSpeed = 0;
-	this.rearAcceleration = 1;
-	this.rearDeacceleration = 3.8;
-
-	this.pivotPointLC;
-	this.isParallelDirection = false;
-
-	this.guidePoint = new Point3DList();
-
-	this.auxOffsetVector;
-
-	this.parallelRotationDist = 10;
-    
-	this.frame;
-
-	this.carriedObjectsArray = [];
-
-	this.shimmyMatDimension = new Point2D(this.width * 0.7, this.wheelbase);
-	this.shimmyMat = new Point2D(2, 12);
-
-	var maxPointCount = 50;
-
-	this.trajectoryLength = this.length * 2;
-	this.frontTrajectoryPointList = new Point3DList();
-	this.rearTrajectoryPointList = new Point3DList();
-
-	while (this.frontTrajectoryPointList.getPointsCount() !== maxPointCount) 
-	{
-		this.frontTrajectoryPointList.newPoint();
-	}
-	while (this.rearTrajectoryPointList.getPointsCount() !== maxPointCount) 
-	{
-		this.rearTrajectoryPointList.newPoint();
-	}
-
-	this.objectsArray.push(this.frontTrajectoryPointList);
-	this.objectsArray.push(this.rearTrajectoryPointList);
-};
-
-Vehicle.prototype = Object.create(MagoRenderable.prototype);
-Vehicle.prototype.constructor = Vehicle;
-
-
-/**
- * @param {Object} object this must have geoLocationDatamanager. 
- */
-Vehicle.prototype.addToContainer = function(object, magoManager) 
-{
-
-	this.carriedObjectsArray.push(object);
-	this.updateContainer(magoManager);
-};
-
-/**
- * @param {Object} object this must have geoLocationDatamanager. 
- */
-Vehicle.prototype.updateContainer = function(magoManager) 
-{
-	var vehicleGeoLocation = this.geoLocDataManager.getCurrentGeoLocationData();
-	var vehicleGeoCoord = vehicleGeoLocation.getGeographicCoords();
-	//ManagerUtils.calculateGeoLocationData = function(longitude, latitude, altitude, heading, pitch, roll, resultGeoLocationData) 
-	for (var i=0, len=this.carriedObjectsArray.length;i<len;i++) 
-	{
-		var object = this.carriedObjectsArray[i];
-		if (object instanceof Node) 
-		{
-			object.data.mapping_type = 'boundingboxcenter';
-			var objectGeoLocation = object.data.geoLocDataManager.getCurrentGeoLocationData();
-			
-			var heading = vehicleGeoLocation.heading;// + objectGeoLocation.heading;
-
-			var height = object.data.bbox.getZLength()/2;
-
-
-			object.changeLocationAndRotation(vehicleGeoCoord.latitude, vehicleGeoCoord.longitude, vehicleGeoCoord.altitude + this.height + height, heading, undefined, undefined, magoManager);
-		}
-	}
-	
-};
-
-Vehicle.prototype.render = function(magoManager, shader, renderType, glPrimitive) 
-{
-	if (this.attributes && this.attributes.isVisible !== undefined && this.attributes.isVisible === false) 
-	{
-		return;
-	}
-
-	if (this.dirty)
-	{ this.makeMesh(); this.arrowDirectionChanged(magoManager); }//20191114
-	
-	if (this.objectsArray === undefined)
-	{ return false; }
-
-	// Set geoLocation uniforms.***
-	var gl = magoManager.getGl();
-	var buildingGeoLocation = this.geoLocDataManager.getCurrentGeoLocationData();
-	buildingGeoLocation.bindGeoLocationUniforms(gl, shader); // rotMatrix, positionHIGH, positionLOW.
-	gl.uniform4fv(shader.oneColor4_loc, [0, 1, 0, 1.0]); 
-	//20191114
-	//방향 변경
-	this.changeArrow(magoManager);
-
-	this.move(magoManager);
-
-	gl.uniform1i(shader.refMatrixType_loc, 0); // in magoManager case, there are not referencesMatrix.***
-	var isSelected = false;
-	
-	if (renderType === 0)
-	{
-		// Depth render.***
-	}
-	else if (renderType === 1)
-	{
-		// Color render.***
-		// Color render.***
-		var selectionManager = magoManager.selectionManager;
-		if (selectionManager.isObjectSelected(this))
-		{ isSelected = true; }
-	
-		//gl.blendFunc( gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA );
-		gl.enable(gl.BLEND);
-		gl.uniform1i(shader.bApplySsao_loc, true); // apply ssao.***
-		gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.***
-		if (this.color4) 
-		{
-			gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, 1.0]);
-		}		
-	}
-	else if (renderType === 2)
-	{
-		// Selection render.***
-		var selectionColor = magoManager.selectionColor;
-		var colorAux = magoManager.selectionColor.getAvailableColor(undefined);
-		var idxKey = magoManager.selectionColor.decodeColor3(colorAux.r, colorAux.g, colorAux.b);
-		magoManager.selectionManager.setCandidateGeneral(idxKey, this);
-		
-		gl.uniform4fv(shader.oneColor4_loc, [colorAux.r/255.0, colorAux.g/255.0, colorAux.b/255.0, 1.0]);
-		gl.disable(gl.BLEND);
-	}
-	
-	
-	if (isSelected)
-	{
-		if (this.selColor4 === undefined)
-		{
-			this.selColor4 = new Color();
-			this.selColor4.setRGBA(0.8, 0.4, 0.5, 1.0);
-		}
-		gl.uniform4fv(shader.oneColor4_loc, [this.selColor4.r, this.selColor4.g, this.selColor4.b, 1.0]); 
-	}
-
-	//gl.uniform1i(shader.refMatrixType_loc, 0); // in magoManager case, there are not referencesMatrix.***
-	//buildingGeoLocation.bindGeoLocationUniforms(gl, shader); // rotMatrix, positionHIGH, positionLOW.
-	//shader.disableVertexAttribArrayAll();
-	shader.enableVertexAttribArray(shader.position3_loc);
-	this.guidePoint.renderAsChild(magoManager, shader, renderType, glPrimitive);
-
-	shader.enableVertexAttribArray(shader.normal3_loc);
-
-	var objectsCount = this.objectsArray.length;
-	for (var i=0; i<objectsCount; i++)
-	{
-		var object = this.objectsArray[i];
-		object.renderAsChild(magoManager, shader, renderType, glPrimitive, isSelected);
-		/*if (object instanceof Arrow || object instanceof ShimmyGearAssembly) 
-		{
-			object.renderAsChild(magoManager, shader, renderType, glPrimitive, isSelected);
-		}
-		else 
-		{
-			object.render(magoManager, shader, renderType, glPrimitive, isSelected);
-		}*/
-	}
-	
-	gl.disable(gl.BLEND);
-};
-Vehicle.prototype.renderAsChild = function(magoManager, shader, renderType, glPrimitive) 
-{
-
-};
-Vehicle.prototype.makeMesh = function() 
-{
-	if (this.objectsArray === undefined)
-	{ this.objectsArray = []; }
-
-	//width, length, height
-	//caculate frame dimension
-	var frameWidth = this.width;
-	var frameLength = this.length;
-	var frameHeight = this.height * 0.15;
-
-	var frame = new Box(frameWidth, frameLength, frameHeight, 'frame');
-	frame.setOneColor(196/255, 117/255, 0.0, 1);
-    
-	var frameTranslatePoint3D = new Point3D(0.0, 0.0, this.height - frameHeight);
-	frame.tMatOriginal = new Matrix4();
-	frame.tMatOriginal.setTranslation(frameTranslatePoint3D.x, frameTranslatePoint3D.y, frameTranslatePoint3D.z);
-
-	this.objectsArray.push(frame);
-	this.frame = frame;
-
-	var totalLength = 2;
-	var bodyWidth = totalLength * 0.1;
-	var headWidth = totalLength * 0.2;
-	var tailLength = totalLength * 0.2;
-	var extrude = totalLength * 0.05;
-    
-	var frontArrow = new Arrow(10, 50, 0.5, {
-		totalLength : 12,
-		bodyWidth   : 2,
-		headWidth   : 4,
-		tailLength  : 1,
-		extrude     : 2
-	});
-
-	var rearArrow = new Arrow(10, 50, 0.5, {
-		totalLength : 12,
-		bodyWidth   : 2,
-		headWidth   : 4,
-		tailLength  : 1,
-		extrude     : 2
-	});
-
-	this.objectsArray.push(frontArrow);
-	this.frontArrow = frontArrow;
-	this.frontArrow.setOneColor(0.9, 0.1, 0.1, 1);
-	this.frontArrowPos = new Point3D(0.0, this.wheelbase * 1.5, this.height);
-	frontArrow.tMatOriginal = new Matrix4();
-	frontArrow.tMatOriginal.setTranslation(this.frontArrowPos.x, this.frontArrowPos.y, this.frontArrowPos.z);
-	
-	this.objectsArray.push(rearArrow);
-	this.rearArrow = rearArrow;
-    
-	this.rearArrowPos = new Point3D(0.0, -this.wheelbase * 1.5, this.height);
-	rearArrow.tMatOriginal = new Matrix4();
-	rearArrow.tMatOriginal.setTranslation(this.rearArrowPos.x, this.rearArrowPos.y, this.rearArrowPos.z);
-    
-	var shimmyWidth = this.width * 0.25;
-	var shimmyLength = 0.5;
-	var shimmyHeight = this.height - frameHeight;
- 
-	var ShimmyGearAssemblyPrimitive = this.getShimmyGearAssembly();
-	this.shimmyGearAssembly = new ShimmyGearAssemblyPrimitive(shimmyWidth, shimmyLength, shimmyHeight);
-	this.shimmyGearAssembly.setOneColor(196/255, 117/255, 0.0, 1);
-	//this.objectsArray.push(this.shimmyGearAssembly);
-
-
-	this.shimmyGearAssembly.tMatOriginal = new Matrix4();
-	this.shimmyGearAssembly.tMatOriginal.setTranslation(0, 0, shimmyHeight);
-	this.shimmyGearAssembly.makeMesh();
-
-	// shimmy matrix.
-	var numCols = this.shimmyMat.x;
-	var numRows = this.shimmyMat.y;
-
-	var refRow = numRows/2;
-	var colDist = this.shimmyMatDimension.x / (numCols-1);
-	var rowDist = this.shimmyMatDimension.y / (numRows-1);
-
-	for (var c=0;c<numCols;c++) 
-	{
-		for (var r=0;r<numRows;r++)
-		{
-			var auxShimmy = new ShimmyGearAssemblyPrimitive(shimmyWidth, shimmyLength, shimmyHeight);
-			auxShimmy.frame = this.shimmyGearAssembly.frame;
-			auxShimmy.rightWheel = this.shimmyGearAssembly.rightWheel;
-			auxShimmy.leftWheel = this.shimmyGearAssembly.leftWheel;
-			auxShimmy.color4 = this.shimmyGearAssembly.color4;
-			auxShimmy.makeMesh();
-
-			var x = colDist * c;
-			var y = rowDist * r;
-
-			var orginShimmyPos = new Point3D(x - this.shimmyMatDimension.x * 0.5, y - this.shimmyMatDimension.y * 0.5, shimmyHeight);
-			auxShimmy.tMatOriginal = new Matrix4();
-			auxShimmy.tMatOriginal.setTranslation(orginShimmyPos.x, orginShimmyPos.y, orginShimmyPos.z);
-			auxShimmy.orginShimmyPos = orginShimmyPos;
-			this.objectsArray.push(auxShimmy);
-		}
-	}
-
-	this.updateMatrix();
-	this.setDirty(false);
-};
-
-Vehicle.prototype.doChangeFrontAngleDeg = function(type) 
-{
-	this.eventStatus.changingFrontArrow = true;
-	if (type === 'left') 
-	{
-		this.changingFrontArrowType = 0;
-	}
-	else 
-	{
-		this.changingFrontArrowType = 1;
-	}
-};
-
-Vehicle.prototype.stopChangeFrontAngleDeg = function() 
-{
-	this.eventStatus.changingFrontArrow = false;
-};
-
-Vehicle.prototype.doChangeRearAngleDeg = function(type) 
-{
-	this.eventStatus.changingRearArrow = true;
-	if (type === 'left') 
-	{
-		this.changingRearArrowType = 0;
-	}
-	else 
-	{
-		this.changingRearArrowType = 1;
-	}
-};
-Vehicle.prototype.stopChangeRearAngleDeg = function() 
-{
-	this.eventStatus.changingRearArrow = false;
-};
-Vehicle.prototype._updateLastTime = function(currentTime) 
-{
-	this.lastTime = currentTime;
-};
-Vehicle.prototype.moveParallelTranslate = function(deltaTime, magoManager)
-{
-	var geoLocManager = this.geoLocDataManager;
-	//IF YOU WANT TRACKING OR DRIVING THE VEHICLE, USE NEWGEOLOCATIONDATA. ELSE USE GETCURRENTGEOLOCATIONDATA
-	var geoLocData = geoLocManager.newGeoLocationData();
-	var geoCoord = geoLocData.geographicCoord;
-
-	var direction = this.frontDirection2D;//this.getFrontDirection2D(new Point2D());
-	if (this.accelStatus === BasicVehicle.ACCEL_STATUS.REVERSE) 
-	{
-		direction = new Point2D();
-		direction.copyFrom(this.frontDirection2D);
-		direction.inverse();
-	}
-		
-	var direction3D = new Point3D(direction.x, direction.y, 0);
-	var posLC = new Point3D(direction3D.x * this.frontCurrentSpeed * deltaTime, direction3D.y * this.frontCurrentSpeed * deltaTime, direction3D.z * this.frontCurrentSpeed * deltaTime);
-
-	var rotMat = geoLocData.rotMatrix;
-	var posLcRot = rotMat.rotatePoint3D(posLC);
-
-	var posWCHIGH = new Float32Array(3);
-	var posWCLOW = new Float32Array(3);
-
-	posWCLOW[0] = geoLocData.positionLOW[0] + posLcRot.x;
-	posWCLOW[1] = geoLocData.positionLOW[1] + posLcRot.y;
-	posWCLOW[2] = geoLocData.positionLOW[2] + posLcRot.z;
-
-	posWCHIGH[0] = geoLocData.positionHIGH[0];
-	posWCHIGH[1] = geoLocData.positionHIGH[1];
-	posWCHIGH[2] = geoLocData.positionHIGH[2];
-
-	var posWC = geoLocData.localCoordToWorldCoord(posLC);
-	geoCoord = ManagerUtils.pointToGeographicCoord(posWC, geoCoord);
-
-	geoLocData = ManagerUtils.calculateGeoLocationDataByAbsolutePoint(posWCLOW[0] + posWCHIGH[0], posWCLOW[1] + posWCHIGH[1], posWCLOW[2] + posWCHIGH[2], geoLocData, magoManager);
-};
-Vehicle.prototype.moveCircularRotation = function(deltaTime, magoManager) 
-{
-	if (!this.pivotPointLC) { return; }
-    
-	var geoLocManager = this.geoLocDataManager;
-	//IF YOU WANT TRACKING OR DRIVING THE VEHICLE, USE NEWGEOLOCATIONDATA. ELSE USE GETCURRENTGEOLOCATIONDATA
-	var geoLocData = geoLocManager.newGeoLocationData();
-	var geoCoord = geoLocData.geographicCoord;
-	// do rotate
-	var radiusErr = 10E-4;
-	var frontArrowPos = this.frontArrowPos;
-	var rearArrowPos = this.rearArrowPos;
-	var frontLine2D = this.frontLine2D;
-	var rearLine2D = this.rearLine2D;
-	var frontDirection2D = this.frontDirection2D;
-	var rearDirection2D = this.rearDirection2D;
-    
-	if (!this.auxOffsetVector) 
-	{
-		this.auxOffsetVector = new Point3D(0, 0, 0);
-	}
-
-	//front
-	var frontSpeed = this.frontCurrentSpeed;
-	var frontDist = frontSpeed * deltaTime;
-	var frontPosTranslated = new Point3D(frontArrowPos.x, frontArrowPos.y, 0);
-	frontPosTranslated.add(this.auxOffsetVector.x, this.auxOffsetVector.y, 0);
-	var frontRadius = this.pivotPointLC.distToPoint(frontArrowPos);
-
-	//rotation radius coincident
-	if (frontRadius < radiusErr) 
-	{ 
-		this._updateLastTime(undefined);
-		this.frontCurrentSpeed = 0;
-		return; 
-	}
-
-	var frontRad = frontDist / frontRadius;
-	var frontRelativeSideOfPoint = frontLine2D.getRelativeSideOfPoint(this.pivotPointLC);
-	if (frontRelativeSideOfPoint === CODE.relativePosition2D.RIGHT) 
-	{ frontRad *= -1; }
-	
-	if (this.accelStatus === BasicVehicle.ACCEL_STATUS.REVERSE) 
-	{
-		frontRad *= -1;
-	}
-	/*if (Math.abs(frontRad) > 0.0001) 
-	{
-		if (frontRad > 0) 
-		{
-			frontRad = 0.0001;
-		}
-		else 
-		{
-			frontRad = -0.0001;
-		}
-	}*/
-
-	var frontAuxMatrix = new Matrix4();
-	frontAuxMatrix.rotationAxisAngRad(frontRad, 0, 0, 1);
-	var frontPosRotated = frontAuxMatrix.rotatePoint3D(frontPosTranslated);
-	var frontPosTransformed = new Point3D(frontPosRotated.x, frontPosRotated.y, frontPosRotated.z);
-	frontPosTransformed.add(-this.auxOffsetVector.x, -this.auxOffsetVector.y, 0);
-
-	//rear
-	var scalarProduct = rearDirection2D.scalarProduct(frontDirection2D);
-	var rearSpeed = frontSpeed * scalarProduct;
-	var rearDist = rearSpeed * deltaTime;
-	var rearPosTranslated = new Point3D(rearArrowPos.x, rearArrowPos.y, 0);
-	rearPosTranslated.add(this.auxOffsetVector.x, this.auxOffsetVector.y, 0);
-	var rearRadius = this.pivotPointLC.distToPoint(rearArrowPos);
-	
-	//rotation radius coincident
-	/*if (rearRadius < radiusErr) 
-	{ 
-		this._updateLastTime(undefined);
-		this.frontCurrentSpeed = 0;
-		return; 
-	}*/
-
-	//var rearRad = rearDist / rearRadius;
-	var rearRad = frontRad;
-
-	//var rearRelativeSideOfPoint = rearLine2D.getRelativeSideOfPoint(this.pivotPointLC);
-	//if (rearRelativeSideOfPoint === CODE.relativePosition2D.RIGHT) { rearRad *= -1; }
-
-	var rearAuxMatrix = new Matrix4();
-	rearAuxMatrix.rotationAxisAngRad(rearRad, 0, 0, 1);
-	var rearPosRotated = rearAuxMatrix.rotatePoint3D(rearPosTranslated);
-	var rearPosTransformed = new Point3D(rearPosRotated.x, rearPosRotated.y, rearPosRotated.z);
-	rearPosTransformed.add(-this.auxOffsetVector.x, -this.auxOffsetVector.y, 0);
-
-	//frame
-	var framePosLC = new Point3D((frontPosTransformed.x + rearPosTransformed.x) / 2, (frontPosTransformed.y + rearPosTransformed.y) / 2, 0);
-	var frameSegemnt = new Segment2D(rearPosTransformed, frontPosTransformed);
-	var frameDirection = frameSegemnt.getDirection();
-	var initialFrameDirection = new Point2D(0, 1);//this.getFrameDirection2D();
-
-	var heading = frameDirection.angleDegToVector(initialFrameDirection);
-	if (frameDirection.x > 0 ) { heading *= -1; }
-
-	var rotMat = geoLocData.rotMatrix;
-
-	var posWCHIGH = new Float32Array(3);
-	var posWCLOW = new Float32Array(3);
-
-	var framePosWCRot = rotMat.rotatePoint3D(framePosLC);
-
-	posWCLOW[0] = geoLocData.positionLOW[0] + framePosWCRot.x;
-	posWCLOW[1] = geoLocData.positionLOW[1] + framePosWCRot.y;
-	posWCLOW[2] = geoLocData.positionLOW[2] + framePosWCRot.z;
-
-	posWCHIGH[0] = geoLocData.positionHIGH[0];
-	posWCHIGH[1] = geoLocData.positionHIGH[1];
-	posWCHIGH[2] = geoLocData.positionHIGH[2];
-	if (geoLocData.heading === undefined) { geoLocData.heading = 0; }
-	heading = geoLocData.heading + heading;
-	//geoLocData.heading = Vehicle.degreeValidator(heading);
-	//geoLocData = ManagerUtils.calculateGeoLocationDataByAbsolutePoint(posWCLOW[0] + posWCHIGH[0], posWCLOW[1] + posWCHIGH[1], posWCLOW[2] + posWCHIGH[2], geoLocData, magoManager);
-
-	var auxPoint3DWC = new Point3D(posWCLOW[0] + posWCHIGH[0], posWCLOW[1] + posWCHIGH[1], posWCLOW[2] + posWCHIGH[2]);
-	var auxGeoCoord = ManagerUtils.pointToGeographicCoord(auxPoint3DWC);
-	
-	auxGeoCoord.altitude = 0;
-	geoLocData = ManagerUtils.calculateGeoLocationData(auxGeoCoord.longitude, auxGeoCoord.latitude, auxGeoCoord.altitude, BasicVehicle.degreeValidator(heading), geoLocData.pitch, geoLocData.roll, geoLocData, magoManager);
-
-	//헤딩이 변할 시 화살표 업데이트 해줘야함.
-	this.update(magoManager);
-};
-Vehicle.prototype.changeParallelRotationDist = function(mode) 
-{
-	if (mode === 0 ) 
-	{
-		this.parallelRotationDist -= 0.1;
-	}
-	else 
-	{
-		this.parallelRotationDist += 0.1;
-	}
-};
-Vehicle.prototype.moveNormal = function(deltaTime, magoManager)
-{
-	if (this.isParallelDirection) 
-	{
-		this.moveParallelTranslate(deltaTime, magoManager);
-	}
-	else 
-	{
-		this.moveCircularRotation(deltaTime, magoManager);
-	}
-};
-Vehicle.prototype.moveParallelRotation = function(deltaTime, magoManager) 
-{
-	var geoLocManager = this.geoLocDataManager;
-	//IF YOU WANT TRACKING OR DRIVING THE VEHICLE, USE NEWGEOLOCATIONDATA. ELSE USE GETCURRENTGEOLOCATIONDATA
-	var geoLocData = geoLocManager.newGeoLocationData();
-	var geoCoord = geoLocData.geographicCoord;
-	// do rotate
-	var radiusErr = 10E-4;
-	var frontArrowPos = this.frontArrowPos;
-	var rearArrowPos = this.rearArrowPos;
-	var frontDirection2D = this.frontDirection2D;
-	var rearDirection2D = this.rearDirection2D;
-
-	var frontArrowSegment = new Segment2D(new Point2D(frontArrowPos.x, frontArrowPos.y), new Point2D(frontArrowPos.x + frontDirection2D.x, frontArrowPos.y + frontDirection2D.y));
-	var rearArrowSegment = new Segment2D(new Point2D(rearArrowPos.x, rearArrowPos.y),  new Point2D(rearArrowPos.x + rearDirection2D.x, rearArrowPos.y + rearDirection2D.y));
-
-	this.frontLine2D = frontArrowSegment.getLine(); 
-	this.rearLine2D = rearArrowSegment.getLine();
-
-	var frontLine2D = this.frontLine2D;
-	var rearLine2D = this.rearLine2D;
-	
-
-	if (!this.pivotPointLC) { this.pivotPointLC = new Point3D(); }
-	this.setPivotPointLC(0, this.parallelRotationDist, 0, magoManager);
-
-	this.guidePoint.deleteObjects(magoManager);
-	this.guidePoint.addPoint(new Point3D(this.pivotPointLC.x, this.pivotPointLC.y, 2.2));
-
-	var translationVector = new Point2D(this.pivotPointLC.x, this.pivotPointLC.y);
-	translationVector.inverse();
-
-	this.auxOffsetVector = translationVector;
-
-	//front
-	var frontSpeed = this.frontCurrentSpeed;
-	var frontDist = frontSpeed * deltaTime;
-	var frontPosTranslated = new Point3D(frontArrowPos.x, frontArrowPos.y, 0);
-	frontPosTranslated.add(this.auxOffsetVector.x, this.auxOffsetVector.y, 0);
-	var frontRadius = this.pivotPointLC.distToPoint(frontArrowPos);
-
-	//rotation radius coincident
-	if (frontRadius < radiusErr) 
-	{ 
-		this._updateLastTime(undefined);
-		this.frontCurrentSpeed = 0;
-		return; 
-	}
-
-	var frontRad = frontDist / frontRadius;
-	var frontRelativeSideOfPoint = frontLine2D.getRelativeSideOfPoint(this.pivotPointLC);
-	if (frontRelativeSideOfPoint === CODE.relativePosition2D.RIGHT) 
-	{ frontRad *= -1; }
-
-	if (this.accelStatus === BasicVehicle.ACCEL_STATUS.REVERSE) 
-	{
-		frontRad *= -1;
-	}
-	
-	var frontAuxMatrix = new Matrix4();
-	frontAuxMatrix.rotationAxisAngRad(frontRad, 0, 0, 1);
-	var frontPosRotated = frontAuxMatrix.rotatePoint3D(frontPosTranslated);
-	var frontPosTransformed = new Point3D(frontPosRotated.x, frontPosRotated.y, frontPosRotated.z);
-	frontPosTransformed.add(-this.auxOffsetVector.x, -this.auxOffsetVector.y, 0);
-
-	//rear
-	var rearDist = this.parallelRotationDist + this.wheelbase * 0.5;
-	var frontDist = this.parallelRotationDist - this.wheelbase * 0.5;
-	var rearSpeed = (frontSpeed * rearDist) / frontDist;
-
-	var rearPosTranslated = new Point3D(rearArrowPos.x, rearArrowPos.y, 0);
-	rearPosTranslated.add(this.auxOffsetVector.x, this.auxOffsetVector.y, 0);
-	var rearRadius = this.pivotPointLC.distToPoint(rearArrowPos);
-	
-
-
-	//var rearRad = rearDist / rearRadius;
-	var rearRad = frontRad;
-
-	//var rearRelativeSideOfPoint = rearLine2D.getRelativeSideOfPoint(this.pivotPointLC);
-	//if (rearRelativeSideOfPoint === CODE.relativePosition2D.RIGHT) { rearRad *= -1; }
-
-	var rearAuxMatrix = new Matrix4();
-	rearAuxMatrix.rotationAxisAngRad(rearRad, 0, 0, 1);
-	var rearPosRotated = rearAuxMatrix.rotatePoint3D(rearPosTranslated);
-	var rearPosTransformed = new Point3D(rearPosRotated.x, rearPosRotated.y, rearPosRotated.z);
-	rearPosTransformed.add(-this.auxOffsetVector.x, -this.auxOffsetVector.y, 0);
-
-	//frame
-	var framePosLC = new Point3D((frontPosTransformed.x + rearPosTransformed.x) / 2, (frontPosTransformed.y + rearPosTransformed.y) / 2, 0);
-	var frameSegemnt = new Segment2D(rearPosTransformed, frontPosTransformed);
-	var frameDirection = frameSegemnt.getDirection();
-	var initialFrameDirection = new Point2D(0, 1);//this.getFrameDirection2D();
-
-	var heading = frameDirection.angleDegToVector(initialFrameDirection);
-	if (frameDirection.x > 0 ) { heading *= -1; }
-
-	var rotMat = geoLocData.rotMatrix;
-
-	var posWCHIGH = new Float32Array(3);
-	var posWCLOW = new Float32Array(3);
-
-	var framePosWCRot = rotMat.rotatePoint3D(framePosLC);
-
-	posWCLOW[0] = geoLocData.positionLOW[0] + framePosWCRot.x;
-	posWCLOW[1] = geoLocData.positionLOW[1] + framePosWCRot.y;
-	posWCLOW[2] = geoLocData.positionLOW[2] + framePosWCRot.z;
-
-	posWCHIGH[0] = geoLocData.positionHIGH[0];
-	posWCHIGH[1] = geoLocData.positionHIGH[1];
-	posWCHIGH[2] = geoLocData.positionHIGH[2];
-	if (geoLocData.heading === undefined) { geoLocData.heading = 0; }
-	heading = geoLocData.heading + heading;
-	//geoLocData.heading = Vehicle.degreeValidator(heading);
-	//geoLocData = ManagerUtils.calculateGeoLocationDataByAbsolutePoint(posWCLOW[0] + posWCHIGH[0], posWCLOW[1] + posWCHIGH[1], posWCLOW[2] + posWCHIGH[2], geoLocData, magoManager);
-
-	var auxPoint3DWC = new Point3D(posWCLOW[0] + posWCHIGH[0], posWCLOW[1] + posWCHIGH[1], posWCLOW[2] + posWCHIGH[2]);
-	var auxGeoCoord = ManagerUtils.pointToGeographicCoord(auxPoint3DWC);
-	
-	auxGeoCoord.altitude = 0;
-	geoLocData = ManagerUtils.calculateGeoLocationData(auxGeoCoord.longitude, auxGeoCoord.latitude, auxGeoCoord.altitude, BasicVehicle.degreeValidator(heading), geoLocData.pitch, geoLocData.roll, geoLocData, magoManager);
-
-	//헤딩이 변할 시 화살표 업데이트 해줘야함.
-	this.update(magoManager);
-};
-Vehicle.prototype.move = function(magoManager) 
-{
-	if (this.renderingFase === undefined || this.renderingFase === null) { this.renderingFase = magoManager.renderingFase; }
-	if (this.renderingFase === magoManager.renderingFase)
-	{ return; }
-	if (!this.eventStatus.footOnAccel && this.frontCurrentSpeed === 0) { return; }
-	
-	var frontSpeed = 1;
-	var rearSpeed = 0.8;
-	var currentTime = magoManager.getCurrentTime();
-	if (!this.lastTime) { this._updateLastTime(currentTime); }
-
-	var deltaTime = (currentTime - this.lastTime) / 1000;
-	if (deltaTime === 0) { return; }
-
-	var accel = this.eventStatus.footOnAccel ? this.frontAcceleration : -this.frontDeacceleration;
-	this.frontCurrentSpeed = calculateSpeed(deltaTime, accel, this.frontCurrentSpeed);
-
-	if (this.frontCurrentSpeed > this.maxSpeed) { this.frontCurrentSpeed = this.maxSpeed; }
-
-	
-	
-	//this.frontDirection2D = this.getFrontDirection2D(new Point2D());
-	//this.rearDirection2D = this.getRearDirection2D(new Point2D());
-
-
-	var mode = this.mode;
-	switch (mode) 
-	{
-	//NORMAL
-	case BasicVehicle.MODE.NORMAL : {
-		this.moveNormal(deltaTime, magoManager);
-		break;
-	}
-	case BasicVehicle.MODE.CIRCULAR_ROTATION : {
-		this.moveCircularRotation(deltaTime, magoManager);
-		break;
-	}
-	case BasicVehicle.MODE.PARALLEL_TRANSLATE : {
-		this.moveParallelTranslate(deltaTime, magoManager);
-		break;
-	}
-	case BasicVehicle.MODE.PARALLEL_ROTATION : {
-		this.moveParallelRotation(deltaTime, magoManager);
-		break;
-	}
-	}
-
-	var geoLocManager = this.geoLocDataManager;
-	var geoLocData = geoLocManager.getCurrentGeoLocationData();
-
-	var geoCoord = geoLocData.geographicCoord;
-	var tile = this.smartTileOwner;
-	var lon = geoCoord.longitude;
-	var lat = geoCoord.latitude;
-	
-	if (!tile.intersectPoint(lon, lat))
-	{
-		tile.eraseObjectByComparision(this, 'name');
-		var targetDepth = tile.depth;
-		
-		magoManager.smartTileManager.putObject(targetDepth, this, magoManager);
-	}
-	
-	//시간 초기화
-	if (this.frontCurrentSpeed === 0 && !this.eventStatus.footOnAccel) { currentTime = undefined; }
-	this._updateLastTime(currentTime);
-
-	this.renderingFase = !this.renderingFase;
-
-	this.updateContainer(magoManager);
-	function calculateSpeed(dTime, acc, currentSpeed) 
-	{
-		var deltaSpeed = acc * dTime;
-		currentSpeed = currentSpeed + deltaSpeed;
-
-		if (currentSpeed < 0) { currentSpeed = 0; }
-		return currentSpeed;
-	}
-};
-/**
- * @return {Point2D}
- */
-Vehicle.prototype.getFrameDirection2D = function(resultPoint2D)
-{
-	if (!resultPoint2D) { resultPoint2D = new Point2D(); }
-	var geoLocManager = this.geoLocDataManager;
-	var geoLocData = geoLocManager.getCurrentGeoLocationData();
-	var heading = geoLocData.heading;
-
-	var headingRad = heading * Math.PI / 180;
-	resultPoint2D.set(-Math.sin(headingRad), Math.cos(headingRad));
-	
-	return resultPoint2D;
-};
-/**
- * @return {Point2D}
- */
-Vehicle.prototype.getFrontDirection2D = function(resultPoint2D)
-{
-	if (!resultPoint2D) { resultPoint2D = new Point2D(); }
-	var frontAngleRad = this.frontAngleDeg * Math.PI / 180;
-	resultPoint2D.set(-Math.sin(frontAngleRad), Math.cos(frontAngleRad));
-	return resultPoint2D;
-};
-/**
- * @return {Point2D}
- */
-Vehicle.prototype.getRearDirection2D = function(resultPoint2D) 
-{
-	if (!resultPoint2D) { resultPoint2D = new Point2D(); }
-	var rearAngleRad = this.rearAngleDeg * Math.PI / 180;
-	resultPoint2D.set(-Math.sin(rearAngleRad), Math.cos(rearAngleRad));
-	return resultPoint2D;
-};
-Vehicle.prototype.footOnAccel = function() 
-{
-	this.eventStatus.footOnAccel = true;
-	this.accelStatus = BasicVehicle.ACCEL_STATUS.FORWARD;
-};
-Vehicle.prototype.footOnReverseAccel = function() 
-{
-	this.eventStatus.footOnAccel = true;
-	this.accelStatus = BasicVehicle.ACCEL_STATUS.REVERSE;
-};
-Vehicle.prototype.footOffAccel = function() 
-{
-	this.eventStatus.footOnAccel = false;
-};
-Vehicle.prototype.arrowDirectionChanged = function(magoManager) 
-{
-	//front arrow
-	this.update(magoManager);
-	var frontDirection2D = this.frontDirection2D;//this.getFrontDirection2D(new Point2D());
-	var rearDirection2D = this.rearDirection2D;//this.getRearDirection2D(new Point2D());
-
-	var error = 0.1;
-	this.isParallelDirection = frontDirection2D.isParallelToPoint(rearDirection2D, error);
-
-	if (!this.isParallelDirection) 
-	{
-		var frontArrowPos = this.frontArrowPos;
-		var rearArrowPos = this.rearArrowPos;
-
-		var frontArrowSegment = new Segment2D(new Point2D(frontArrowPos.x, frontArrowPos.y), new Point2D(frontArrowPos.x + frontDirection2D.x, frontArrowPos.y + frontDirection2D.y));
-		var rearArrowSegment = new Segment2D(new Point2D(rearArrowPos.x, rearArrowPos.y),  new Point2D(rearArrowPos.x + rearDirection2D.x, rearArrowPos.y + rearDirection2D.y));
-
-		this.frontLine2D = frontArrowSegment.getLine(); 
-		this.rearLine2D = rearArrowSegment.getLine();
-		
-		var frontLine2D = this.frontLine2D;
-		var rearLine2D = this.rearLine2D;
-		//getPerpendicularRight
-		var frontLinePerpendicular2D = frontLine2D.getPerpendicularRight();
-		var rearLinePerpendicular2D = rearLine2D.getPerpendicularRight();
-
-		var intersectPoint2D = frontLinePerpendicular2D.intersectionWithLine(rearLinePerpendicular2D);
-
-		if (!intersectPoint2D) { return; }
-		
-		this.setPivotPointLC(intersectPoint2D.x, intersectPoint2D.y, 0, magoManager);
-		this.guidePoint.deleteObjects(magoManager);
-		this.guidePoint.addPoint(new Point3D(this.pivotPointLC.x, this.pivotPointLC.y, 2.2));
-
-		var translationVector = new Point2D(intersectPoint2D.x, intersectPoint2D.y);
-		translationVector.inverse();
-
-		this.auxOffsetVector = translationVector;
-	}
-	else 
-	{
-		this.linearTrajectory();
-		this.frontTrajectoryPointList.deleteVboKeysContainer(magoManager);
-		this.rearTrajectoryPointList.deleteVboKeysContainer(magoManager);
-	}
-};
-Vehicle.prototype.changeArrow = function(magoManager) 
-{
-	var isUpdate = false;
-	var mode = this.mode;
-	switch (mode) 
-	{
-	//NORMAL
-	case BasicVehicle.MODE.NORMAL : {
-		if (this.eventStatus.changingFrontArrow) 
-		{
-			var factor = this.changingFrontArrowSpeed;//(currTime - this.changingFrontArrowStartTime) /5000;
-			if (this.changingFrontArrowType > 0) { factor = -factor; }
-			this.frontAngleDeg = this.frontAngleDeg + factor;
-
-			this.frontAngleDeg = BasicVehicle.degreeValidator(this.frontAngleDeg);
-			isUpdate = true;
-		}
-
-		if (this.eventStatus.changingRearArrow) 
-		{
-			var factor = this.changingRearArrowSpeed;
-			if (this.changingRearArrowType > 0) { factor = -factor; }
-			this.rearAngleDeg = this.rearAngleDeg + factor;
-
-			this.rearAngleDeg = BasicVehicle.degreeValidator(this.rearAngleDeg);
-			isUpdate = true;
-		}
-		break;
-	}
-	case BasicVehicle.MODE.CIRCULAR_ROTATION : 
-	case BasicVehicle.MODE.PARALLEL_TRANSLATE : {
-		if (this.eventStatus.changingFrontArrow || this.eventStatus.changingRearArrow) 
-		{
-			var factor = this.changingFrontArrowSpeed;
-
-			var arrowType = 0;
-			if (this.eventStatus.changingFrontArrow) 
-			{
-				arrowType = this.changingFrontArrowType;
-			}
-			else 
-			{ /*if(this.eventStatus.changingRearArrow){*/
-				arrowType = this.changingRearArrowType;
-			}
-
-			if (arrowType > 0) { factor = -factor; }
-			this.frontAngleDeg = this.frontAngleDeg + factor;
-			this.rearAngleDeg = (mode === BasicVehicle.MODE.CIRCULAR_ROTATION) ? -this.frontAngleDeg : this.frontAngleDeg; 
-
-			isUpdate = true;
-		} 
-
-		break;
-	}
-	case BasicVehicle.MODE.PARALLEL_ROTATION : {
-		this.frontAngleDeg = this.PARALLEL_ROTATION_ANGLE;
-		this.rearAngleDeg = this.PARALLEL_ROTATION_ANGLE;
-
-		isUpdate = true;
-		break;
-	}
-	}
-	if (isUpdate) { this.arrowDirectionChanged(magoManager); }
-};
-Vehicle.prototype.update = function(magoManager) 
-{
-	//front arrow
-	var frontArrow = this.frontArrow;
-
-	var frontTranslateAuxMat = new Matrix4();
-	frontTranslateAuxMat.setTranslation(this.frontArrowPos.x, this.frontArrowPos.y, this.frontArrowPos.z);
-	var frontRotAuxMat = new Matrix4();
-	frontRotAuxMat.rotationAxisAngDeg(this.frontAngleDeg, 0, 0, 1);
-
-	this.frontDirection2D = this.getFrontDirection2D();
-	var frontTAuxMat = frontRotAuxMat.getMultipliedByMatrix(frontTranslateAuxMat);
-	frontArrow.tMatOriginal = frontTAuxMat;
-	//rear arrow
-	var rearArrow = this.rearArrow;
-	var rearTranslateAuxMat = new Matrix4();
-	rearTranslateAuxMat.setTranslation(this.rearArrowPos.x, this.rearArrowPos.y, this.rearArrowPos.z);
-	var rearRotAuxMat = new Matrix4();
-	rearRotAuxMat.rotationAxisAngDeg(this.rearAngleDeg, 0, 0, 1);
-
-	this.rearDirection2D = this.getRearDirection2D();
-	var rearTAuxMat = rearRotAuxMat.getMultipliedByMatrix(rearTranslateAuxMat);
-	rearArrow.tMatOriginal = rearTAuxMat;
-
-	var pivotPointLc = this.pivotPointLC;
-	if (!pivotPointLc || pivotPointLc.x === Infinity) 
-	{ 
-		for (var i=0, len=this.objectsArray.length; i<len;i++)
-		{
-			var object = this.objectsArray[i];
-			if (object instanceof Box || object instanceof Arrow || object instanceof Point3DList) { continue; }
-			
-			
-			var pos = object.orginShimmyPos;
-
-			var shimmyTranslateAuxMat = new Matrix4();
-			shimmyTranslateAuxMat.setTranslation(pos.x, pos.y, pos.z);
-			var shimmyRotAuxMat = new Matrix4();
-
-			shimmyRotAuxMat.rotationAxisAngDeg(this.frontAngleDeg, 0, 0, 1);
-
-			var tAuxMat = shimmyRotAuxMat.getMultipliedByMatrix(shimmyTranslateAuxMat);
-			object.tMatOriginal = tAuxMat;
-		}
-	}
-	else 
-	{
-		var pivotPoint2D = new Point2D(pivotPointLc.x, pivotPointLc.y);
-		var auxDirction =  new Point2D(0, 1);
-		for (var i=0, len=this.objectsArray.length; i<len;i++)
-		{
-			var object = this.objectsArray[i];
-			if (object instanceof Box || object instanceof Arrow || object instanceof Point3DList) { continue; }
-			
-			
-			var pos = object.orginShimmyPos;
-
-			var shimmyTranslateAuxMat = new Matrix4();
-			shimmyTranslateAuxMat.setTranslation(pos.x, pos.y, pos.z);
-			var shimmyRotAuxMat = new Matrix4();
-
-			var direction = pivotPoint2D.getVectorToPoint(new Point2D(pos.x, pos.y));
-			direction.unitary();
-			var auxAngleDeg = auxDirction.angleDegToVector(direction);
-
-			var angleDeg = 90 - auxAngleDeg;
-			if (direction.x < 0) { angleDeg *= -1; }
-
-			shimmyRotAuxMat.rotationAxisAngDeg(angleDeg, 0, 0, 1);
-
-			var tAuxMat = shimmyRotAuxMat.getMultipliedByMatrix(shimmyTranslateAuxMat);
-			object.tMatOriginal = tAuxMat;
-		}
-	}
-
-	this.updateMatrix();
-};
-
-Vehicle.prototype.getShimmyGearAssembly = function() 
-{
-	var ShimmyGearAssembly = function(width, length, height, options) 
-	{
-		MagoRenderable.call(this);
-		this.width = width;
-		this.height = height;
-		this.wheelRadius = this.height * 0.4;
-		this.frameLength = length * 0.4;
-		this.frameHeight = this.height - this.wheelRadius*0.5;
-
-		this.frame;
-	};
-	ShimmyGearAssembly.prototype = Object.create(MagoRenderable.prototype);
-	ShimmyGearAssembly.prototype.constructor = ShimmyGearAssembly;
-
-	ShimmyGearAssembly.prototype.makeMesh = function() 
-	{
-		if (this.objectsArray === undefined)
-		{ this.objectsArray = []; }
-
-		if (this.objectsMap === undefined)
-		{ this.objectsMap = {}; }
-
-		//frame
-		var profile2dAux = new Profile2D();
-	
-		// Outer ring.**
-		var outerRing = profile2dAux.newOuterRing();
-		var frameHalfLength = this.frameLength * 0.5;
-		var frameWidth = this.width * 0.25;
-
-		var polyline = outerRing.newElement("POLYLINE");
-		polyline.newPoint2d(frameHalfLength, 0);
-		polyline.newPoint2d(-frameHalfLength, 0);
-		polyline.newPoint2d(-frameHalfLength, -this.frameHeight);
-		polyline.newPoint2d(frameHalfLength, -this.frameHeight);
-		polyline.newPoint2d(frameHalfLength * 2.5, -this.frameHeight * 0.5);
-
-		var extrusionDist = frameWidth;
-		var extrudeSegmentsCount = 1;
-		var extrusionVector = undefined;
-		var bIncludeBottomCap = true;
-		var bIncludeTopCap = true;
-		
-		var mesh = Modeler.getExtrudedMesh(profile2dAux, extrusionDist, extrudeSegmentsCount, extrusionVector, bIncludeBottomCap, bIncludeTopCap, undefined);
-		mesh.name = 'frame';
-		mesh.rotate(90, 1, 0, 0);
-		mesh.rotate(90, 0, 0, 1);
-		mesh.translate(-extrusionDist * 0.5, 0, 0);
-
-		this.objectsArray.push(mesh);
-		this.objectsMap[mesh.name] = mesh;
-
-		var exteriorRadius = this.wheelRadius;
-		var interiorRadius = exteriorRadius * 0.5;
-		var wheelWidth = this.width * 0.5 - frameWidth*0.5;
-        
-		var leftWheel = new Wheel(interiorRadius, exteriorRadius, wheelWidth, {borderRadius: wheelWidth * 0.2});
-		var rightWheel = new Wheel(interiorRadius, exteriorRadius, wheelWidth, {borderRadius: wheelWidth * 0.2});
-		leftWheel.setOneColor(0.1, 0.1, 0.15, 1);
-		rightWheel.setOneColor(0.1, 0.1, 0.15, 1);
-		this.objectsArray.push(leftWheel);
-		this.objectsArray.push(rightWheel);
-
-		var leftWheelTranslation = new Point3D(-frameWidth*0.5-wheelWidth*0.5, 0, -this.height + exteriorRadius);
-		var rightWheelTranslation = new Point3D(frameWidth*0.5+wheelWidth*0.5, 0, -this.height + exteriorRadius);
-
-		leftWheel.tMatOriginal = new Matrix4();
-		leftWheel.tMatOriginal.setTranslation(leftWheelTranslation.x, leftWheelTranslation.y, leftWheelTranslation.z);
-
-		rightWheel.tMatOriginal = new Matrix4();
-	    rightWheel.tMatOriginal.setTranslation(rightWheelTranslation.x, rightWheelTranslation.y, rightWheelTranslation.z);
-
-		this.dirty = false;
-	};
-	ShimmyGearAssembly.prototype.renderAsChild = function(magoManager, shader, renderType, glPrimitive) 
-	{
-		if (this.attributes && this.attributes.isVisible !== undefined && this.attributes.isVisible === false) 
-		{
-			return;
-		}
-
-		if (this.dirty)
-		{ this.makeMesh(); }
-		
-		if (this.objectsArray === undefined)
-		{ return false; }
-
-
-		
-		// Set geoLocation uniforms.***
-		var gl = magoManager.getGl();
-		gl.uniform1i(shader.refMatrixType_loc, 0); // in magoManager case, there are not referencesMatrix.***
-		var isSelected = false;
-		
-		if (renderType === 0)
-		{
-			// Depth render.***
-		}
-		else if (renderType === 1)
-		{
-			// Color render.***
-			// Color render.***
-			var selectionManager = magoManager.selectionManager;
-			if (selectionManager.isObjectSelected(this))
-			{ isSelected = true; }
-		
-			//gl.blendFunc( gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA );
-			gl.enable(gl.BLEND);
-			gl.uniform1i(shader.bApplySsao_loc, true); // apply ssao.***
-			gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.***
-			if (this.color4) 
-			{
-				gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, 1.0]);
-			}
-		}
-		else if (renderType === 2)
-		{
-			// Selection render.***
-			var selectionColor = magoManager.selectionColor;
-			var colorAux = magoManager.selectionColor.getAvailableColor(undefined);
-			var idxKey = magoManager.selectionColor.decodeColor3(colorAux.r, colorAux.g, colorAux.b);
-			magoManager.selectionManager.setCandidateGeneral(idxKey, this);
-			
-			gl.uniform4fv(shader.oneColor4_loc, [colorAux.r/255.0, colorAux.g/255.0, colorAux.b/255.0, 1.0]);
-			gl.disable(gl.BLEND);
-		}
-		
-		
-		if (isSelected)
-		{
-			if (this.selColor4 === undefined)
-			{
-				this.selColor4 = new Color();
-				this.selColor4.setRGBA(0.8, 0.4, 0.5, 1.0);
-			}
-			gl.uniform4fv(shader.oneColor4_loc, [this.selColor4.r, this.selColor4.g, this.selColor4.b, 1.0]); 
-		}
-		//shader.disableVertexAttribArrayAll();
-		//shader.enableVertexAttribArray(shader.position3_loc);
-		//shader.enableVertexAttribArray(shader.normal3_loc);
-		if (this.tMat) 
-		{
-			gl.uniformMatrix4fv(shader.buildingRotMatrix_loc, false, this.tMat._floatArrays);
-		}
-		
-		var objectsCount = this.objectsArray.length;
-
-		for (var i=0; i<objectsCount; i++)
-		{
-			var object = this.objectsArray[i];
-			object.renderAsChild(magoManager, shader, renderType, glPrimitive, isSelected);
-		}
-		
-		gl.disable(gl.BLEND);
-	};
-    
-	return ShimmyGearAssembly;
-};
-
-
-
-Vehicle.prototype.setPivotPointLC = function(x, y, z, magoManager) 
-{
-	if (!this.pivotPointLC) { this.pivotPointLC = new Point3D(); }
-	this.pivotPointLC.set(x, y, z);
-
-	//calculate trajectory points
-	var mode = this.mode;	
-	
-	switch (mode) 
-	{
-	//NORMAL
-	case BasicVehicle.MODE.NORMAL : {
-		if (this.isParallelDirection) 
-		{
-			//
-			this.linearTrajectory();
-		}
-		else 
-		{
-			//
-			this.circleTrajectory();
-		}
-		break;
-	}
-	case BasicVehicle.MODE.PARALLEL_TRANSLATE : {
-		this.linearTrajectory();
-		break;
-	}
-	case BasicVehicle.MODE.CIRCULAR_ROTATION : 
-	case BasicVehicle.MODE.PARALLEL_ROTATION : {
-		this.circleTrajectory();
-		break;
-	}
-	}
-
-	this.frontTrajectoryPointList.deleteVboKeysContainer(magoManager);
-	this.rearTrajectoryPointList.deleteVboKeysContainer(magoManager);
-};
-
-
-Vehicle.prototype.linearTrajectory = function() 
-{
-	var pointCount = this.frontTrajectoryPointList.getPointsCount();
-	var increDist = this.trajectoryLength / pointCount;
-	for (var i=0;i<pointCount;i++)
-	{
-		var frontTPoint = this.frontTrajectoryPointList.getPoint(i);
-		var rearTPoint = this.rearTrajectoryPointList.getPoint(i);
-
-		frontTPoint.set(this.frontDirection2D.x * increDist * (i+1), this.frontDirection2D.y * increDist * (i+1), this.height);
-		rearTPoint.set(this.frontDirection2D.x * -increDist * (i+1), this.frontDirection2D.y * -increDist * (i+1), this.height);
-	}
-};
-
-Vehicle.prototype.circleTrajectory = function() 
-{
-	if (!this.pivotPointLC) { return; }
-
-	var pointCount = this.frontTrajectoryPointList.getPointsCount();
-	var pivotPoint2DLC = new Point2D(-this.pivotPointLC.x, -this.pivotPointLC.y);
-	var xAxis2D = new Point2D(1, 0);
-	var startAngleRad =pivotPoint2DLC.angleRadToVector(xAxis2D);
-	if (pivotPoint2DLC.y < 0) { startAngleRad*= -1; }
-
-	var pivotPointLength = pivotPoint2DLC.getModul();
-	var totalAngleRad = this.trajectoryLength / pivotPointLength;
-	var icreAngleRad = totalAngleRad /  (pointCount-1);
-		
-	for (var i=0;i<pointCount;i++)
-	{
-		var frontTPoint = this.frontTrajectoryPointList.getPoint(i);
-		var rearTPoint = this.rearTrajectoryPointList.getPoint(i);
-
-		var frontCurrAngleRad = startAngleRad + (i * icreAngleRad);
-		var rearCurrAngleRad = startAngleRad + (i * -icreAngleRad);
-		frontTPoint.set(-pivotPoint2DLC.x + pivotPointLength * Math.cos(frontCurrAngleRad), -pivotPoint2DLC.y + pivotPointLength * Math.sin(frontCurrAngleRad), this.height);
-		rearTPoint.set(-pivotPoint2DLC.x + pivotPointLength * Math.cos(rearCurrAngleRad), -pivotPoint2DLC.y + pivotPointLength * Math.sin(rearCurrAngleRad), this.height);
-	}
-};
-
-
-
-
-
-'use strict';
-
-/**
- * @typedef
- * @property {number} interiorRadius
- * @property {number} exteriorRadius
- * @property {number} width
- * @property {object} options
- */
-
-/**
- * @param {*} option 
- * @class Wheel
- */
-var Wheel = function(interiorRadius, exteriorRadius, width, options)
-{
-	MagoRenderable.call(this);
-	if (!(this instanceof Wheel)) 
-	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
-	}
-    
-	this.intRadius = 10;
-	this.extRadius = 20;
-	this.width = 5;
-	this.color4 = new Color();
-	this.color4.setRGBA(0.2, 0.2, 0.25, 1);
-    
-	if (interiorRadius !== undefined)
-	{ this.intRadius = interiorRadius; }
-	
-	if (exteriorRadius !== undefined)
-	{ this.extRadius = exteriorRadius; }
-	
-	if (width !== undefined)
-	{ this.width = width; }
-    
-	this.borderRadius = (this.extRadius - this.intRadius ) * 0.2;
-    
-	if (options !== undefined)
-	{
-		var color = options.color;
-		if (color)
-		{
-			this.color4.setRGBA(color.r, color.g, color.b, color.a);
-		}
-		var borderRadius = options.borderRadius;
-		if (borderRadius) 
-		{
-			this.borderRadius = borderRadius;
-		}
-	}
-    
-	this.width < this.borderRadius, this.borderRadius = this.width * 0.2;
-};
-Wheel.prototype = Object.create(MagoRenderable.prototype);
-Wheel.prototype.constructor = Wheel;
-/**
- * Makes the geometry mesh.
- */
-Wheel.prototype.makeMesh = function()
-{
-	var profile2dAux = new Profile2D();
-	
-	// Outer ring.**
-	var outerRing = profile2dAux.newOuterRing();
-
-	var halfWidth = this.width * 0.5;
-	var exteriorRadiusWithoutBorder = this.extRadius - this.borderRadius;
-
-	var polyline = outerRing.newElement("POLYLINE");
-	polyline.newPoint2d(-halfWidth, this.intRadius);            
-	polyline.newPoint2d(halfWidth, this.intRadius);             
-	polyline.newPoint2d(halfWidth, exteriorRadiusWithoutBorder);
-
-	var rightArc = outerRing.newElement("ARC");
-	rightArc.setCenterPosition(halfWidth - this.borderRadius, exteriorRadiusWithoutBorder);
-	rightArc.setRadius(this.borderRadius);
-	rightArc.setStartAngleDegree(0);
-	rightArc.setSweepAngleDegree(90);
-    
-	var polylineUpper = outerRing.newElement("POLYLINE");
-	polylineUpper.newPoint2d(halfWidth - this.borderRadius, this.extRadius);
-	polylineUpper.newPoint2d(-halfWidth + this.borderRadius, this.extRadius);
-
-	var leftArc = outerRing.newElement("ARC");
-	leftArc.setCenterPosition(-halfWidth + this.borderRadius, exteriorRadiusWithoutBorder);
-	leftArc.setRadius(this.borderRadius);
-	leftArc.setStartAngleDegree(90);
-	leftArc.setSweepAngleDegree(90);
-
-	var polylineLeft = outerRing.newElement("POLYLINE");
-	polylineLeft.newPoint2d(-halfWidth, exteriorRadiusWithoutBorder);
-	
-	var revolveAngDeg = 360;
-	var revolveSegmentsCount = 18;
-	var revolveSegment2d = new Segment2D();
-	var strPoint2d = new Point2D(-1, 0);
-	var endPoint2d = new Point2D(1, 0);
-	revolveSegment2d.setPoints(strPoint2d, endPoint2d);
-	var bIncludeBottomCap = false;
-	var bIncludeTopCap = false;
-	var mesh = Modeler.getRevolvedSolidMesh(profile2dAux, revolveAngDeg, revolveSegmentsCount, revolveSegment2d, bIncludeBottomCap, bIncludeTopCap, undefined);
-	this.mesh = mesh.getCopySurfaceIndependentMesh(mesh);
-	this.dirty = false;
-};
-
-/**
- * Renders the factory.
- */
-Wheel.prototype.render = function(magoManager, shader, renderType, glPrimitive)
-{
-	if (this.attributes && this.attributes.isVisible !== undefined && this.attributes.isVisible === false) 
-	{
-		return;
-	}
-	if (this.dirty)
-	{ this.makeMesh(); }
-	
-	if (this.mesh === undefined)
-	{ return false; }
-
-	// Set geoLocation uniforms.***
-	
-	var gl = magoManager.getGl();
-	if (!this.geoLocDataManager) { return; }
-
-	var buildingGeoLocation = this.geoLocDataManager.getCurrentGeoLocationData();
-	buildingGeoLocation.bindGeoLocationUniforms(gl, shader); // rotMatrix, positionHIGH, positionLOW.
-	
-	gl.uniform1i(shader.refMatrixType_loc, 0); // in magoManager case, there are not referencesMatrix.***
-	gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.***
-	
-	if (renderType === 2)
-	{
-		// Selection render.***
-		var selectionColor = magoManager.selectionColor;
-		var colorAux = magoManager.selectionColor.getAvailableColor(undefined);
-		var idxKey = magoManager.selectionColor.decodeColor3(colorAux.r, colorAux.g, colorAux.b);
-		magoManager.selectionManager.setCandidateGeneral(idxKey, this);
-		
-		gl.uniform4fv(shader.oneColor4_loc, [colorAux.r/255.0, colorAux.g/255.0, colorAux.b/255.0, 1.0]);
-		gl.disable(gl.BLEND);
-	}
-	
-	this.mesh.render(magoManager, shader, renderType, glPrimitive);
-
-	gl.disable(gl.BLEND);
-};
-
-
-/**
- * Renders the factory.
- */
-Wheel.prototype.renderAsChild = function(magoManager, shader, renderType, glPrimitive)
-{
-	if (this.attributes && this.attributes.isVisible !== undefined && this.attributes.isVisible === false) 
-	{
-		return;
-	}
-	if (this.dirty)
-	{ this.makeMesh(); }
-	
-	if (this.mesh === undefined)
-	{ return false; }
-
-	// Set geoLocation uniforms.***
-	
-	var gl = magoManager.getGl();
-	var bIsSelected = false;
-	if (renderType === 1)
-	{
-		// Color render.***
-		//gl.blendFunc( gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA );
-		gl.enable(gl.BLEND);
-		gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.***
-		
-		// Check if is selected.***
-		var selectionManager = magoManager.selectionManager;
-		if (bIsSelected !== undefined && bIsSelected)
-		{
-			//gl.disable(gl.BLEND);
-			if (this.color4) 
-			{
-				gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, 1.0]);
-			}
-			
-		}
-		else if (selectionManager.isObjectSelected(this))
-		{
-			//gl.disable(gl.BLEND);
-			gl.uniform4fv(shader.oneColor4_loc, [0.9, 0.1, 0.1, 1.0]);
-		}
-		else 
-		{
-			if (this.color4) 
-			{
-				gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, 1.0]);
-			}
-		}
-		
-	}
-	else if (renderType === 2)
-	{
-		// Selection render.***
-		var selectionColor = magoManager.selectionColor;
-		var colorAux = magoManager.selectionColor.getAvailableColor(undefined);
-		var idxKey = magoManager.selectionColor.decodeColor3(colorAux.r, colorAux.g, colorAux.b);
-		magoManager.selectionManager.setCandidateGeneral(idxKey, this);
-		
-		gl.uniform4fv(shader.oneColor4_loc, [colorAux.r/255.0, colorAux.g/255.0, colorAux.b/255.0, 1.0]);
-		gl.disable(gl.BLEND);
-	}
-
-	if (this.tMat) 
-	{
-		gl.uniformMatrix4fv(shader.buildingRotMatrix_loc, false, this.tMat._floatArrays);
-	}
-	
-	this.mesh.render(magoManager, shader, renderType, glPrimitive);
-
-	gl.disable(gl.BLEND);
-};
-'use strict';
-
-/**
  * This class contains the current objects that are rendering. 
  * @class CurrentObjectsRendering
  */
@@ -82243,6 +77661,33 @@ Renderer.prototype.renderNativeObjects = function(gl, shader, renderType, visibl
 		for (var i=0; i<nativeObjectsCount; i++)
 		{
 			transparentsArray[i].render(magoManager, shader, renderType, glPrimitive);
+		}
+	}
+	
+	// vectorType objects.
+	if (renderType === 1)
+	{
+		var vectorTypeObjectsArray = visibleObjControlerNodes.currentVisibleNativeObjects.vectorTypeArray;
+		var vectorTypeObjectsCount = vectorTypeObjectsArray.length;
+		if (vectorTypeObjectsCount > 0)
+		{
+			// change shader. use "thickLines" shader.
+			var sceneState = magoManager.sceneState;
+			var thickLineShader = magoManager.postFxShadersManager.getShader("thickLine"); 
+			thickLineShader.useProgram();
+			thickLineShader.bindUniformGenerals();
+			
+			gl.uniform4fv(thickLineShader.oneColor4_loc, [0.3, 0.9, 0.5, 1.0]);
+			gl.uniform2fv(thickLineShader.viewport_loc, [sceneState.drawingBufferWidth, sceneState.drawingBufferHeight]);
+			gl.uniform1f(thickLineShader.thickness_loc, 5.0);
+				
+			for (var i=0; i<vectorTypeObjectsCount; i++)
+			{
+				vectorTypeObjectsArray[i].render(magoManager, thickLineShader, renderType, glPrimitive);
+			}
+			
+			// return to the current shader.
+			shader.useProgram();
 		}
 	}
 };
@@ -84445,6 +79890,609 @@ SelectionManager.prototype.TEST__CurrGeneralObjSel = function()
 'use strict';
 
 /**
+ * Network.
+ * IndoorGML의 네트워크를 파싱하고 그리는 데 사용합니다.
+ * @alias Network
+ * @class Network
+ */
+var Network = function(owner) 
+{
+	if (!(this instanceof Network)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+	
+	this.nodeOwner;
+	if (owner)
+	{ this.nodeOwner = owner; }
+	
+	this.id; // network id.
+	this.nodesArray;
+	this.edgesArray;
+	this.spacesArray;
+	
+	this.attributes;
+	this.edgesVboKeysContainer; // to draw edges with an unique vbo.
+	this.nodesVboKeysContainer; // to draw nodes with an unique vbo.
+	
+	this.renderSpaces = true;
+	this.spacesAlpha = 0.2;
+};
+
+/**
+ * 
+ */
+Network.prototype.newNode = function()
+{
+	if (this.nodesArray === undefined)
+	{ this.nodesArray = []; }
+	
+	var networkNode = new NetworkNode(this);
+	this.nodesArray.push(networkNode);
+	return networkNode;
+};
+
+/**
+ * 
+ */
+Network.prototype.newEdge = function()
+{
+	if (this.edgesArray === undefined)
+	{ this.edgesArray = []; }
+	
+	var networkEdge = new NetworkEdge(this);
+	this.edgesArray.push(networkEdge);
+	return networkEdge;
+};
+
+/**
+ * 
+ */
+Network.prototype.newSpace = function()
+{
+	if (this.spacesArray === undefined)
+	{ this.spacesArray = []; }
+	
+	var networkSpace = new NetworkSpace(this);
+	this.spacesArray.push(networkSpace);
+	return networkSpace;
+};
+
+/**
+ * 
+ */
+Network.prototype.test__makeVbos = function(magoManager)
+{
+	// Here makes meshes and vbos.
+	// For edges, make an unique vbo for faster rendering.
+	var edgesCount = 0;
+	if (this.edgesArray)
+	{ edgesCount = this.edgesArray.length; }
+	
+	var pointsArray = [];
+	
+	for (var i=0; i<edgesCount; i++)
+	{
+		var edge = this.edgesArray[i];
+		var vtxSegment = edge.vtxSegment;
+		var point1 = vtxSegment.startVertex.point3d;
+		var point2 = vtxSegment.endVertex.point3d;
+		pointsArray.push(point1.x);
+		pointsArray.push(point1.y);
+		pointsArray.push(point1.z);
+		
+		pointsArray.push(point2.x);
+		pointsArray.push(point2.y);
+		pointsArray.push(point2.z);
+	}
+	
+	if (this.edgesVboKeysContainer === undefined)
+	{
+		this.edgesVboKeysContainer = new VBOVertexIdxCacheKeysContainer();
+	}
+	
+	var vboKey = this.edgesVboKeysContainer.newVBOVertexIdxCacheKey();
+	
+	var vboMemManager = magoManager.vboMemoryManager;
+	var pointsCount = edgesCount * 2;
+	var posByteSize = pointsCount * 3;
+	var classifiedPosByteSize = vboMemManager.getClassifiedBufferSize(posByteSize);
+	vboKey.posVboDataArray = new Float32Array(classifiedPosByteSize);
+	vboKey.posVboDataArray.set(pointsArray);
+	vboKey.posArrayByteSize = pointsArray.length;
+	vboKey.segmentsCount = edgesCount;
+	
+};
+
+/**
+ * Make triangle from IndoorGML data
+ * @param magoManager
+ * @param gmlDataContainer 
+ * 
+ */
+Network.prototype.parseTopologyData = function(magoManager, gmlDataContainer) 
+{
+	// gmlDataContainer.cellSpaceMembers
+	// gmlDataContainer.edges
+	// gmlDataContainer.nodes
+	// cityGML Lower point (78.02094, -82.801873, 18).
+	// cityGML Upper point (152.17466, 19.03087, 39).
+	// cityGML Center point {x=115.09780549999999 y=-31.885501999999999 z=28.500000000000000 ...}
+	
+	var bbox = new BoundingBox();
+	bbox.minX = gmlDataContainer.min_X;
+	bbox.minY = gmlDataContainer.min_Y;
+	bbox.minZ = gmlDataContainer.min_Z;
+	bbox.maxX = gmlDataContainer.max_X;
+	bbox.maxY = gmlDataContainer.max_Y;
+	bbox.maxZ = gmlDataContainer.max_Z;
+	
+	//bbox.maxX = 56.19070816040039;
+	//bbox.maxY = 71.51078033447266;
+	//bbox.maxZ = 10.5;
+	//bbox.minX = -379.18280029296875;
+	//bbox.minY = -142.4878387451172;
+	//bbox.minZ = -46.5;
+	
+	var offsetVector = new Point3D();
+	var zOffset = 0.1;
+	offsetVector.set(-115.0978055, 31.885502, -28.5); // cityGML ORIGINAL Center point inversed.
+	
+	var nodesMap = {};
+	var nodesCount = gmlDataContainer.nodes.length;
+	for (var i=0; i<nodesCount; i++)
+	{
+		var node = gmlDataContainer.nodes[i];
+		var networkNode = this.newNode();
+		networkNode.id = "#" + node.id;
+		
+		networkNode.position = new Point3D(node.coordinates[0], node.coordinates[1], node.coordinates[2]);
+		networkNode.position.addPoint(offsetVector); // rest bbox centerPoint.
+		networkNode.position.add(0.0, 0.0, zOffset); // aditional pos.
+		networkNode.box = new Box(0.6, 0.6, 0.6);
+		
+		nodesMap[networkNode.id] = networkNode;
+	}
+	
+	
+	var cellSpaceMap = {};
+	var cellSpacesCount = gmlDataContainer.cellSpaceMembers.length;
+	for (var i=0; i<cellSpacesCount; i++)
+	{
+		var cellSpace = gmlDataContainer.cellSpaceMembers[i];
+		var id = cellSpace.href;
+		var networkSpace = this.newSpace();
+		var mesh = new Mesh();
+		networkSpace.mesh = mesh; // assign mesh to networkSpace provisionally.
+		var vertexList = mesh.getVertexList();
+		
+		var surfacesMembersCount = cellSpace.surfaceMember.length;
+		for (var j=0; j<surfacesMembersCount; j++)
+		{
+			var surface = mesh.newSurface();
+			var face = surface.newFace();
+			
+			var coordinates = cellSpace.surfaceMember[j].coordinates;
+			var coordinatedCount = coordinates.length;
+			var pointsCount = coordinatedCount/3;
+			
+			for (var k=0; k<pointsCount; k++)
+			{
+				var x = coordinates[k * 3];
+				var y = coordinates[k * 3 + 1];
+				var z = coordinates[k * 3 + 2];
+				
+				var vertex = vertexList.newVertex();
+				vertex.setPosition(x, y, z);
+				vertex.point3d.addPoint(offsetVector); // rest bbox centerPoint.
+				face.addVertex(vertex);
+				
+			}
+			face.solveUroborus(); // Check & solve if the last point is coincident with the 1rst point.
+			face.calculateVerticesNormals();
+		}
+		
+		cellSpaceMap[cellSpace.href] = cellSpace;
+	}
+	
+	var edgesCount = gmlDataContainer.edges.length;
+	for (var i=0; i<edgesCount; i++)
+	{
+		var edge = gmlDataContainer.edges[i];
+		var networkEdge = this.newEdge();
+		
+		var point1 = edge.stateMembers[0].coordinates;
+		var point2 = edge.stateMembers[1].coordinates;
+		var vertex1 = new Vertex();
+		var vertex2 = new Vertex();
+		vertex1.setPosition(point1[0], point1[1], point1[2]);
+		vertex2.setPosition(point2[0], point2[1], point2[2]);
+		vertex1.point3d.addPoint(offsetVector); // rest bbox centerPoint.
+		vertex1.point3d.add(0.0, 0.0, zOffset); // aditional pos.
+		vertex2.point3d.addPoint(offsetVector); // rest bbox centerPoint.
+		vertex2.point3d.add(0.0, 0.0, zOffset); // aditional pos.
+		var vtxSegment = new VtxSegment(vertex1, vertex2);
+		networkEdge.vtxSegment = vtxSegment; // assign vtxSegment to networkEdge provisionally.
+		
+		var connect_1_id = edge.connects[0];
+		var connect_2_id = edge.connects[1];
+		
+		networkEdge.strNodeId = connect_1_id;
+		networkEdge.endNodeId = connect_2_id;
+	}
+	
+	this.test__makeVbos(magoManager);
+};
+
+/**
+ * 
+ */
+Network.prototype.renderColorCoding = function(magoManager, shader, renderType)
+{
+	// Provisional function.
+	// render nodes & edges.
+	var selectionColor = magoManager.selectionColor;
+	//selectionColor.init(); 
+	
+	// Check if exist selectionFamilies.
+	var selFamilyNameNodes = "networkNodes";
+	var selManager = magoManager.selectionManager;
+	var selCandidateNodes = selManager.getSelectionCandidatesFamily(selFamilyNameNodes);
+	if (selCandidateNodes === undefined)
+	{
+		selCandidateNodes = selManager.newCandidatesFamily(selFamilyNameNodes);
+	}
+	
+	var selFamilyNameEdges = "networkEdges";
+	var selManager = magoManager.selectionManager;
+	var selCandidateEdges = selManager.getSelectionCandidatesFamily(selFamilyNameEdges);
+	if (selCandidateEdges === undefined)
+	{
+		selCandidateEdges = selManager.newCandidatesFamily(selFamilyNameEdges);
+	}
+	
+	var vboMemManager = magoManager.vboMemoryManager;
+	var gl = magoManager.sceneState.gl;
+	var vboKey;
+	
+	shader.disableVertexAttribArray(shader.texCoord2_loc); 
+	shader.enableVertexAttribArray(shader.normal3_loc); 
+	gl.uniform1i(shader.hasTexture_loc, false); //.
+	gl.uniform4fv(shader.oneColor4_loc, [0.8, 0.8, 0.8, 1.0]);
+	
+	if (!shader.last_isAditionalMovedZero)
+	{
+		gl.uniform1i(shader.hasAditionalMov_loc, false);
+		gl.uniform3fv(shader.aditionalMov_loc, [0.0, 0.0, 0.0]); //.
+		shader.last_isAditionalMovedZero = true;
+	}
+	
+	// Nodes.**
+	var nodesCount = 0;
+	if (this.nodesArray)
+	{ nodesCount = this.nodesArray.length; }
+	
+	if (nodesCount > 0 )//&& !magoManager.isCameraMoving)
+	{
+		var refMatrixType = 1; // translation-type.
+		gl.uniform1i(shader.refMatrixType_loc, refMatrixType);
+		//gl.uniform4fv(shader.oneColor4_loc, [0.3, 0.3, 0.9, 1.0]);
+		var nodeMaster = this.nodesArray[0]; // render all with an unique box.
+		for (var i=0; i<nodesCount; i++)
+		{
+			var node = this.nodesArray[i];
+			
+			// nodes has a position, so render a point or a box.
+			gl.uniform3fv(shader.refTranslationVec_loc, [node.position.x, node.position.y, node.position.z]); 
+			
+			var selColor4 = selectionColor.getAvailableColor(undefined); // new.
+			var idxKey = selectionColor.decodeColor3(selColor4.r, selColor4.g, selColor4.b);
+			selManager.setCandidateCustom(idxKey, selFamilyNameNodes, node);
+			gl.uniform4fv(shader.oneColor4_loc, [selColor4.r/255.0, selColor4.g/255.0, selColor4.b/255.0, 1.0]);
+
+			nodeMaster.box.render(magoManager, shader, renderType);
+			
+		}
+	}
+	
+	// Edges.**
+	// Render with a unique vbo.
+	if (this.edgesVboKeysContainer)
+	{
+		var vboKey = this.edgesVboKeysContainer.vboCacheKeysArray[0];
+		if (vboKey.isReadyPositions(gl, vboMemManager))
+		{ 
+			shader.disableVertexAttribArray(shader.texCoord2_loc); 
+			shader.disableVertexAttribArray(shader.normal3_loc); 
+			refMatrixType = 0;
+			gl.uniform1i(shader.refMatrixType_loc, refMatrixType);
+			
+			// Positions.
+			if (vboKey.meshVertexCacheKey !== shader.lastVboKeyBindedMap[shader.position3_loc])
+			{
+				gl.bindBuffer(gl.ARRAY_BUFFER, vboKey.meshVertexCacheKey);
+				gl.vertexAttribPointer(shader.position3_loc, 3, gl.FLOAT, false, 0, 0);
+				shader.lastVboKeyBindedMap[shader.position3_loc] = vboKey.meshVertexCacheKey;
+			}
+				
+			var edgesCount = this.edgesArray.length;
+			for (var i=0; i<edgesCount; i++)
+			{
+				var edge = this.edgesArray[i];
+				var selColor4 = selectionColor.getAvailableColor(undefined); // new.
+				var idxKey = selectionColor.decodeColor3(selColor4.r, selColor4.g, selColor4.b);
+				selManager.setCandidateCustom(idxKey, selFamilyNameEdges, edge);
+				gl.uniform4fv(shader.oneColor4_loc, [selColor4.r/255.0, selColor4.g/255.0, selColor4.b/255.0, 1.0]);
+				gl.drawArrays(gl.LINES, i*2, 2);
+			}
+		}
+	}
+	
+};
+
+/**
+ * 
+ */
+Network.prototype.render = function(magoManager, shader, renderType)
+{
+	if (renderType === 2)
+	{
+		this.renderColorCoding(magoManager, shader, renderType);
+		return;
+	}
+	
+	// Check if ready smallBox and bigBox.
+	var selectionColor = magoManager.selectionColor;
+	selectionColor.init(); 
+	
+	// Check if exist selectionFamilies.
+	var selFamilyNameNodes = "networkNodes";
+	var selManager = magoManager.selectionManager;
+	var selCandidateNodes = selManager.getSelectionCandidatesFamily(selFamilyNameNodes);
+	if (selCandidateNodes === undefined)
+	{
+		selCandidateNodes = selManager.newCandidatesFamily(selFamilyNameNodes);
+	}
+	
+	var selFamilyNameEdges = "networkEdges";
+	var selManager = magoManager.selectionManager;
+	var selCandidateEdges = selManager.getSelectionCandidatesFamily(selFamilyNameEdges);
+	if (selCandidateEdges === undefined)
+	{
+		selCandidateEdges = selManager.newCandidatesFamily(selFamilyNameEdges);
+	}
+	
+	// Provisional function.
+	// render nodes & edges.
+	var vboMemManager = magoManager.vboMemoryManager;
+	var gl = magoManager.sceneState.gl;
+	var vboKey;
+	
+	shader.disableVertexAttribArray(shader.texCoord2_loc); 
+	shader.enableVertexAttribArray(shader.normal3_loc); 
+	
+	gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.
+	gl.uniform4fv(shader.oneColor4_loc, [0.8, 0.8, 0.8, 1.0]);
+	
+	if (!shader.last_isAditionalMovedZero)
+	{
+		gl.uniform1i(shader.hasAditionalMov_loc, false);
+		gl.uniform3fv(shader.aditionalMov_loc, [0.0, 0.0, 0.0]); //.
+		shader.last_isAditionalMovedZero = true;
+	}
+	
+	// Nodes.**
+	var nodesCount = 0;
+	if (this.nodesArray)
+	{ nodesCount = this.nodesArray.length; }
+	
+	if (nodesCount > 0 )//&& !magoManager.isCameraMoving)
+	{
+		gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.
+		var refMatrixType = 1; // translation-type.
+		gl.uniform1i(shader.refMatrixType_loc, refMatrixType);
+		gl.uniform4fv(shader.oneColor4_loc, [0.3, 0.3, 0.9, 1.0]);
+		var nodeMaster = this.nodesArray[0]; // render all with an unique box.
+		for (var i=0; i<nodesCount; i++)
+		{
+			var node = this.nodesArray[i];
+			
+			// check if is selected.
+			if (node === selCandidateNodes.currentSelected)
+			{
+				gl.uniform4fv(shader.oneColor4_loc, [0.9, 0.5, 0.1, 1.0]);
+			}
+			
+			// nodes has a position, so render a point or a box.
+			gl.uniform3fv(shader.refTranslationVec_loc, [node.position.x, node.position.y, node.position.z]); 
+			nodeMaster.box.render(magoManager, shader, renderType);
+			
+			// restore defaultColor.
+			if (node === selCandidateNodes.currentSelected)
+			{
+				gl.uniform4fv(shader.oneColor4_loc, [0.3, 0.3, 0.9, 1.0]);
+			}
+		}
+	}
+	
+	// Edges.**
+	// Render with a unique vbo.
+	if (this.edgesVboKeysContainer)
+	{
+		var vboKey = this.edgesVboKeysContainer.vboCacheKeysArray[0];
+		if (vboKey.isReadyPositions(gl, vboMemManager))
+		{ 
+			shader.disableVertexAttribArray(shader.texCoord2_loc); 
+			shader.disableVertexAttribArray(shader.normal3_loc); 
+			gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.
+			refMatrixType = 0;
+			gl.uniform1i(shader.refMatrixType_loc, refMatrixType);
+			gl.uniform4fv(shader.oneColor4_loc, [0.1, 0.1, 0.6, 1.0]);
+	
+			// Positions.
+			if (vboKey.meshVertexCacheKey !== shader.lastVboKeyBindedMap[shader.position3_loc])
+			{
+				gl.bindBuffer(gl.ARRAY_BUFFER, vboKey.meshVertexCacheKey);
+				gl.vertexAttribPointer(shader.position3_loc, 3, gl.FLOAT, false, 0, 0);
+				shader.lastVboKeyBindedMap[shader.position3_loc] = vboKey.meshVertexCacheKey;
+			}
+			
+			//gl.drawArrays(gl.LINES, 0, vboKey.segmentsCount*2);
+			
+			var edgesCount = this.edgesArray.length;
+			for (var i=0; i<edgesCount; i++)
+			{
+				var edge = this.edgesArray[i];
+				if (edge === selCandidateEdges.currentSelected)
+				{
+					gl.uniform4fv(shader.oneColor4_loc, [0.0, 1.0, 0.0, 1.0]);
+				}
+				gl.drawArrays(gl.LINES, i*2, 2);
+				
+				// restore default color.
+				if (edge === selCandidateEdges.currentSelected)
+				{
+					gl.uniform4fv(shader.oneColor4_loc, [0.1, 0.1, 0.6, 1.0]);
+				}
+			}
+		}
+	}
+	
+	// Spaces.
+	this.renderSpaces = magoManager.tempSettings.renderSpaces;
+	this.spacesAlpha = magoManager.tempSettings.spacesAlpha;
+	
+	if (renderType === 1)
+	{ shader.enableVertexAttribArray(shader.normal3_loc); } 
+	
+	if (this.renderSpaces)
+	{
+		gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.
+		refMatrixType = 0;
+		gl.uniform1i(shader.refMatrixType_loc, refMatrixType);
+		gl.uniform4fv(shader.oneColor4_loc, [0.8, 0.8, 0.8, this.spacesAlpha]);
+		gl.enable(gl.BLEND);
+		var spacesCount = 0;
+		if (this.spacesArray)
+		{ spacesCount = this.spacesArray.length; }
+		
+		for (var i=0; i<spacesCount; i++)
+		{
+			var space = this.spacesArray[i];
+			space.mesh.render(magoManager, shader);
+		}
+		
+		gl.disable(gl.BLEND);
+	}
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+/**
+ * NetworkEdge.
+ * 
+ * @alias NetworkEdge
+ * @class NetworkEdge
+ */
+var NetworkEdge = function(owner) 
+{
+	if (!(this instanceof NetworkEdge)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+	this.networkOwner = owner;
+	this.id;
+	this.strNode;
+	this.endNode;
+	this.sense;
+	this.attributes;
+	
+	// provisionally:
+	this.strNodeId;
+	this.endNodeId;
+};
+'use strict';
+
+/**
+ * NetworkNode.
+ * 
+ * @alias NetworkNode
+ * @class NetworkNode
+ */
+var NetworkNode = function(owner) 
+{
+	if (!(this instanceof NetworkNode)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+	this.networkOwner = owner;
+	this.id;
+	this.edgesArray;
+	this.attributes;
+	this.box;
+	//this.mesh; // if display as a box, cilinder, etc.
+};
+'use strict';
+
+/**
+ * NetworkSpace.
+ * 
+ * @alias NetworkSpace
+ * @class NetworkSpace
+ */
+var NetworkSpace = function(owner) 
+{
+	if (!(this instanceof NetworkSpace)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+	this.networkOwner = owner;
+	this.id;
+	this.mesh;
+	this.attributes;
+	
+};
+'use strict';
+
+/**
  * 어떤 일을 하고 있습니까?
  * @class AttribLocationState
  */
@@ -84496,6 +80544,8 @@ var PostFxShader = function(gl)
 	
 	// attribLocations state management.
 	this.attribLocationStateArray = [];
+	
+	this.shaderManager; 
 };
 
 PostFxShader.createShader = function(gl, type, source) 
@@ -84670,6 +80720,7 @@ PostFxShader.prototype.useProgram = function()
 	if (currProgram !== this.program)
 	{
 		gl.useProgram(this.program);
+		this.shaderManager.currentShaderUsing = this;
 	}
 	this.resetLastBuffersBinded();
 };
@@ -85172,6 +81223,8 @@ var PostFxShadersManager = function()
 	this.modelRefShader;
 	this.modelRefSilhouetteShader;
 	this.lodBuildingShader;
+	
+	this.currentShaderUsing = undefined;
 };
 
 /**
@@ -85183,6 +81236,7 @@ PostFxShadersManager.prototype.newShader = function(shaderName)
 {
 	var shader = new PostFxShader(this.gl);
 	shader.name = shaderName;
+	shader.shaderManager = this;
 	this.shadersMap[shaderName] = shader;
 	return shader;
 };
@@ -88760,15 +84814,17 @@ void main()\n\
     \n\
 }";
 ShaderSource.thickLineFS = "precision highp float;\n\
-uniform vec4 color;\n\
+\n\
+varying vec4 vColor;\n\
 void main() {\n\
-	gl_FragColor = color;\n\
+	gl_FragColor = vColor;\n\
 }";
 ShaderSource.thickLineVS = "\n\
 attribute vec4 prev;\n\
 attribute vec4 current;\n\
 attribute vec4 next;\n\
-//attribute float order;\n\
+attribute vec4 color4;\n\
+\n\
 uniform float thickness;\n\
 uniform mat4 buildingRotMatrix;\n\
 uniform mat4 projectionMatrix;\n\
@@ -88780,6 +84836,11 @@ uniform vec3 buildingPosHIGH;\n\
 uniform vec3 buildingPosLOW;\n\
 uniform vec3 encodedCameraPositionMCHigh;\n\
 uniform vec3 encodedCameraPositionMCLow;\n\
+//uniform vec4 color;\n\
+uniform vec4 oneColor4;\n\
+uniform highp int colorType; // 0= oneColor, 1= attribColor, 2= texture.\n\
+\n\
+varying vec4 vColor;\n\
 \n\
 \n\
 const float error = 0.001;\n\
@@ -88873,6 +84934,12 @@ void main(){\n\
 	vec4 offset = vec4(normal * direction, 0.0, 1.0);\n\
 	gl_Position = currentProjected + offset; \n\
 	\n\
+	if(colorType == 0)\n\
+		vColor = oneColor4;\n\
+	else if(colorType == 1)\n\
+		vColor = oneColor4;\n\
+	else\n\
+		vColor = oneColor4;\n\
 }\n\
 \n\
 \n\
@@ -90232,609 +86299,6 @@ UniformVec4fvDataPair.prototype.bindUniform = function()
 	this.gl.uniform4fv(this.uniformLocation, this.vec4fv);
 };
 
-'use strict';
-
-/**
- * Network.
- * IndoorGML의 네트워크를 파싱하고 그리는 데 사용합니다.
- * @alias Network
- * @class Network
- */
-var Network = function(owner) 
-{
-	if (!(this instanceof Network)) 
-	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
-	}
-	
-	this.nodeOwner;
-	if (owner)
-	{ this.nodeOwner = owner; }
-	
-	this.id; // network id.
-	this.nodesArray;
-	this.edgesArray;
-	this.spacesArray;
-	
-	this.attributes;
-	this.edgesVboKeysContainer; // to draw edges with an unique vbo.
-	this.nodesVboKeysContainer; // to draw nodes with an unique vbo.
-	
-	this.renderSpaces = true;
-	this.spacesAlpha = 0.2;
-};
-
-/**
- * 
- */
-Network.prototype.newNode = function()
-{
-	if (this.nodesArray === undefined)
-	{ this.nodesArray = []; }
-	
-	var networkNode = new NetworkNode(this);
-	this.nodesArray.push(networkNode);
-	return networkNode;
-};
-
-/**
- * 
- */
-Network.prototype.newEdge = function()
-{
-	if (this.edgesArray === undefined)
-	{ this.edgesArray = []; }
-	
-	var networkEdge = new NetworkEdge(this);
-	this.edgesArray.push(networkEdge);
-	return networkEdge;
-};
-
-/**
- * 
- */
-Network.prototype.newSpace = function()
-{
-	if (this.spacesArray === undefined)
-	{ this.spacesArray = []; }
-	
-	var networkSpace = new NetworkSpace(this);
-	this.spacesArray.push(networkSpace);
-	return networkSpace;
-};
-
-/**
- * 
- */
-Network.prototype.test__makeVbos = function(magoManager)
-{
-	// Here makes meshes and vbos.
-	// For edges, make an unique vbo for faster rendering.
-	var edgesCount = 0;
-	if (this.edgesArray)
-	{ edgesCount = this.edgesArray.length; }
-	
-	var pointsArray = [];
-	
-	for (var i=0; i<edgesCount; i++)
-	{
-		var edge = this.edgesArray[i];
-		var vtxSegment = edge.vtxSegment;
-		var point1 = vtxSegment.startVertex.point3d;
-		var point2 = vtxSegment.endVertex.point3d;
-		pointsArray.push(point1.x);
-		pointsArray.push(point1.y);
-		pointsArray.push(point1.z);
-		
-		pointsArray.push(point2.x);
-		pointsArray.push(point2.y);
-		pointsArray.push(point2.z);
-	}
-	
-	if (this.edgesVboKeysContainer === undefined)
-	{
-		this.edgesVboKeysContainer = new VBOVertexIdxCacheKeysContainer();
-	}
-	
-	var vboKey = this.edgesVboKeysContainer.newVBOVertexIdxCacheKey();
-	
-	var vboMemManager = magoManager.vboMemoryManager;
-	var pointsCount = edgesCount * 2;
-	var posByteSize = pointsCount * 3;
-	var classifiedPosByteSize = vboMemManager.getClassifiedBufferSize(posByteSize);
-	vboKey.posVboDataArray = new Float32Array(classifiedPosByteSize);
-	vboKey.posVboDataArray.set(pointsArray);
-	vboKey.posArrayByteSize = pointsArray.length;
-	vboKey.segmentsCount = edgesCount;
-	
-};
-
-/**
- * Make triangle from IndoorGML data
- * @param magoManager
- * @param gmlDataContainer 
- * 
- */
-Network.prototype.parseTopologyData = function(magoManager, gmlDataContainer) 
-{
-	// gmlDataContainer.cellSpaceMembers
-	// gmlDataContainer.edges
-	// gmlDataContainer.nodes
-	// cityGML Lower point (78.02094, -82.801873, 18).
-	// cityGML Upper point (152.17466, 19.03087, 39).
-	// cityGML Center point {x=115.09780549999999 y=-31.885501999999999 z=28.500000000000000 ...}
-	
-	var bbox = new BoundingBox();
-	bbox.minX = gmlDataContainer.min_X;
-	bbox.minY = gmlDataContainer.min_Y;
-	bbox.minZ = gmlDataContainer.min_Z;
-	bbox.maxX = gmlDataContainer.max_X;
-	bbox.maxY = gmlDataContainer.max_Y;
-	bbox.maxZ = gmlDataContainer.max_Z;
-	
-	//bbox.maxX = 56.19070816040039;
-	//bbox.maxY = 71.51078033447266;
-	//bbox.maxZ = 10.5;
-	//bbox.minX = -379.18280029296875;
-	//bbox.minY = -142.4878387451172;
-	//bbox.minZ = -46.5;
-	
-	var offsetVector = new Point3D();
-	var zOffset = 0.1;
-	offsetVector.set(-115.0978055, 31.885502, -28.5); // cityGML ORIGINAL Center point inversed.
-	
-	var nodesMap = {};
-	var nodesCount = gmlDataContainer.nodes.length;
-	for (var i=0; i<nodesCount; i++)
-	{
-		var node = gmlDataContainer.nodes[i];
-		var networkNode = this.newNode();
-		networkNode.id = "#" + node.id;
-		
-		networkNode.position = new Point3D(node.coordinates[0], node.coordinates[1], node.coordinates[2]);
-		networkNode.position.addPoint(offsetVector); // rest bbox centerPoint.
-		networkNode.position.add(0.0, 0.0, zOffset); // aditional pos.
-		networkNode.box = new Box(0.6, 0.6, 0.6);
-		
-		nodesMap[networkNode.id] = networkNode;
-	}
-	
-	
-	var cellSpaceMap = {};
-	var cellSpacesCount = gmlDataContainer.cellSpaceMembers.length;
-	for (var i=0; i<cellSpacesCount; i++)
-	{
-		var cellSpace = gmlDataContainer.cellSpaceMembers[i];
-		var id = cellSpace.href;
-		var networkSpace = this.newSpace();
-		var mesh = new Mesh();
-		networkSpace.mesh = mesh; // assign mesh to networkSpace provisionally.
-		var vertexList = mesh.getVertexList();
-		
-		var surfacesMembersCount = cellSpace.surfaceMember.length;
-		for (var j=0; j<surfacesMembersCount; j++)
-		{
-			var surface = mesh.newSurface();
-			var face = surface.newFace();
-			
-			var coordinates = cellSpace.surfaceMember[j].coordinates;
-			var coordinatedCount = coordinates.length;
-			var pointsCount = coordinatedCount/3;
-			
-			for (var k=0; k<pointsCount; k++)
-			{
-				var x = coordinates[k * 3];
-				var y = coordinates[k * 3 + 1];
-				var z = coordinates[k * 3 + 2];
-				
-				var vertex = vertexList.newVertex();
-				vertex.setPosition(x, y, z);
-				vertex.point3d.addPoint(offsetVector); // rest bbox centerPoint.
-				face.addVertex(vertex);
-				
-			}
-			face.solveUroborus(); // Check & solve if the last point is coincident with the 1rst point.
-			face.calculateVerticesNormals();
-		}
-		
-		cellSpaceMap[cellSpace.href] = cellSpace;
-	}
-	
-	var edgesCount = gmlDataContainer.edges.length;
-	for (var i=0; i<edgesCount; i++)
-	{
-		var edge = gmlDataContainer.edges[i];
-		var networkEdge = this.newEdge();
-		
-		var point1 = edge.stateMembers[0].coordinates;
-		var point2 = edge.stateMembers[1].coordinates;
-		var vertex1 = new Vertex();
-		var vertex2 = new Vertex();
-		vertex1.setPosition(point1[0], point1[1], point1[2]);
-		vertex2.setPosition(point2[0], point2[1], point2[2]);
-		vertex1.point3d.addPoint(offsetVector); // rest bbox centerPoint.
-		vertex1.point3d.add(0.0, 0.0, zOffset); // aditional pos.
-		vertex2.point3d.addPoint(offsetVector); // rest bbox centerPoint.
-		vertex2.point3d.add(0.0, 0.0, zOffset); // aditional pos.
-		var vtxSegment = new VtxSegment(vertex1, vertex2);
-		networkEdge.vtxSegment = vtxSegment; // assign vtxSegment to networkEdge provisionally.
-		
-		var connect_1_id = edge.connects[0];
-		var connect_2_id = edge.connects[1];
-		
-		networkEdge.strNodeId = connect_1_id;
-		networkEdge.endNodeId = connect_2_id;
-	}
-	
-	this.test__makeVbos(magoManager);
-};
-
-/**
- * 
- */
-Network.prototype.renderColorCoding = function(magoManager, shader, renderType)
-{
-	// Provisional function.
-	// render nodes & edges.
-	var selectionColor = magoManager.selectionColor;
-	//selectionColor.init(); 
-	
-	// Check if exist selectionFamilies.
-	var selFamilyNameNodes = "networkNodes";
-	var selManager = magoManager.selectionManager;
-	var selCandidateNodes = selManager.getSelectionCandidatesFamily(selFamilyNameNodes);
-	if (selCandidateNodes === undefined)
-	{
-		selCandidateNodes = selManager.newCandidatesFamily(selFamilyNameNodes);
-	}
-	
-	var selFamilyNameEdges = "networkEdges";
-	var selManager = magoManager.selectionManager;
-	var selCandidateEdges = selManager.getSelectionCandidatesFamily(selFamilyNameEdges);
-	if (selCandidateEdges === undefined)
-	{
-		selCandidateEdges = selManager.newCandidatesFamily(selFamilyNameEdges);
-	}
-	
-	var vboMemManager = magoManager.vboMemoryManager;
-	var gl = magoManager.sceneState.gl;
-	var vboKey;
-	
-	shader.disableVertexAttribArray(shader.texCoord2_loc); 
-	shader.enableVertexAttribArray(shader.normal3_loc); 
-	gl.uniform1i(shader.hasTexture_loc, false); //.
-	gl.uniform4fv(shader.oneColor4_loc, [0.8, 0.8, 0.8, 1.0]);
-	
-	if (!shader.last_isAditionalMovedZero)
-	{
-		gl.uniform1i(shader.hasAditionalMov_loc, false);
-		gl.uniform3fv(shader.aditionalMov_loc, [0.0, 0.0, 0.0]); //.
-		shader.last_isAditionalMovedZero = true;
-	}
-	
-	// Nodes.**
-	var nodesCount = 0;
-	if (this.nodesArray)
-	{ nodesCount = this.nodesArray.length; }
-	
-	if (nodesCount > 0 )//&& !magoManager.isCameraMoving)
-	{
-		var refMatrixType = 1; // translation-type.
-		gl.uniform1i(shader.refMatrixType_loc, refMatrixType);
-		//gl.uniform4fv(shader.oneColor4_loc, [0.3, 0.3, 0.9, 1.0]);
-		var nodeMaster = this.nodesArray[0]; // render all with an unique box.
-		for (var i=0; i<nodesCount; i++)
-		{
-			var node = this.nodesArray[i];
-			
-			// nodes has a position, so render a point or a box.
-			gl.uniform3fv(shader.refTranslationVec_loc, [node.position.x, node.position.y, node.position.z]); 
-			
-			var selColor4 = selectionColor.getAvailableColor(undefined); // new.
-			var idxKey = selectionColor.decodeColor3(selColor4.r, selColor4.g, selColor4.b);
-			selManager.setCandidateCustom(idxKey, selFamilyNameNodes, node);
-			gl.uniform4fv(shader.oneColor4_loc, [selColor4.r/255.0, selColor4.g/255.0, selColor4.b/255.0, 1.0]);
-
-			nodeMaster.box.render(magoManager, shader, renderType);
-			
-		}
-	}
-	
-	// Edges.**
-	// Render with a unique vbo.
-	if (this.edgesVboKeysContainer)
-	{
-		var vboKey = this.edgesVboKeysContainer.vboCacheKeysArray[0];
-		if (vboKey.isReadyPositions(gl, vboMemManager))
-		{ 
-			shader.disableVertexAttribArray(shader.texCoord2_loc); 
-			shader.disableVertexAttribArray(shader.normal3_loc); 
-			refMatrixType = 0;
-			gl.uniform1i(shader.refMatrixType_loc, refMatrixType);
-			
-			// Positions.
-			if (vboKey.meshVertexCacheKey !== shader.lastVboKeyBindedMap[shader.position3_loc])
-			{
-				gl.bindBuffer(gl.ARRAY_BUFFER, vboKey.meshVertexCacheKey);
-				gl.vertexAttribPointer(shader.position3_loc, 3, gl.FLOAT, false, 0, 0);
-				shader.lastVboKeyBindedMap[shader.position3_loc] = vboKey.meshVertexCacheKey;
-			}
-				
-			var edgesCount = this.edgesArray.length;
-			for (var i=0; i<edgesCount; i++)
-			{
-				var edge = this.edgesArray[i];
-				var selColor4 = selectionColor.getAvailableColor(undefined); // new.
-				var idxKey = selectionColor.decodeColor3(selColor4.r, selColor4.g, selColor4.b);
-				selManager.setCandidateCustom(idxKey, selFamilyNameEdges, edge);
-				gl.uniform4fv(shader.oneColor4_loc, [selColor4.r/255.0, selColor4.g/255.0, selColor4.b/255.0, 1.0]);
-				gl.drawArrays(gl.LINES, i*2, 2);
-			}
-		}
-	}
-	
-};
-
-/**
- * 
- */
-Network.prototype.render = function(magoManager, shader, renderType)
-{
-	if (renderType === 2)
-	{
-		this.renderColorCoding(magoManager, shader, renderType);
-		return;
-	}
-	
-	// Check if ready smallBox and bigBox.
-	var selectionColor = magoManager.selectionColor;
-	selectionColor.init(); 
-	
-	// Check if exist selectionFamilies.
-	var selFamilyNameNodes = "networkNodes";
-	var selManager = magoManager.selectionManager;
-	var selCandidateNodes = selManager.getSelectionCandidatesFamily(selFamilyNameNodes);
-	if (selCandidateNodes === undefined)
-	{
-		selCandidateNodes = selManager.newCandidatesFamily(selFamilyNameNodes);
-	}
-	
-	var selFamilyNameEdges = "networkEdges";
-	var selManager = magoManager.selectionManager;
-	var selCandidateEdges = selManager.getSelectionCandidatesFamily(selFamilyNameEdges);
-	if (selCandidateEdges === undefined)
-	{
-		selCandidateEdges = selManager.newCandidatesFamily(selFamilyNameEdges);
-	}
-	
-	// Provisional function.
-	// render nodes & edges.
-	var vboMemManager = magoManager.vboMemoryManager;
-	var gl = magoManager.sceneState.gl;
-	var vboKey;
-	
-	shader.disableVertexAttribArray(shader.texCoord2_loc); 
-	shader.enableVertexAttribArray(shader.normal3_loc); 
-	
-	gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.
-	gl.uniform4fv(shader.oneColor4_loc, [0.8, 0.8, 0.8, 1.0]);
-	
-	if (!shader.last_isAditionalMovedZero)
-	{
-		gl.uniform1i(shader.hasAditionalMov_loc, false);
-		gl.uniform3fv(shader.aditionalMov_loc, [0.0, 0.0, 0.0]); //.
-		shader.last_isAditionalMovedZero = true;
-	}
-	
-	// Nodes.**
-	var nodesCount = 0;
-	if (this.nodesArray)
-	{ nodesCount = this.nodesArray.length; }
-	
-	if (nodesCount > 0 )//&& !magoManager.isCameraMoving)
-	{
-		gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.
-		var refMatrixType = 1; // translation-type.
-		gl.uniform1i(shader.refMatrixType_loc, refMatrixType);
-		gl.uniform4fv(shader.oneColor4_loc, [0.3, 0.3, 0.9, 1.0]);
-		var nodeMaster = this.nodesArray[0]; // render all with an unique box.
-		for (var i=0; i<nodesCount; i++)
-		{
-			var node = this.nodesArray[i];
-			
-			// check if is selected.
-			if (node === selCandidateNodes.currentSelected)
-			{
-				gl.uniform4fv(shader.oneColor4_loc, [0.9, 0.5, 0.1, 1.0]);
-			}
-			
-			// nodes has a position, so render a point or a box.
-			gl.uniform3fv(shader.refTranslationVec_loc, [node.position.x, node.position.y, node.position.z]); 
-			nodeMaster.box.render(magoManager, shader, renderType);
-			
-			// restore defaultColor.
-			if (node === selCandidateNodes.currentSelected)
-			{
-				gl.uniform4fv(shader.oneColor4_loc, [0.3, 0.3, 0.9, 1.0]);
-			}
-		}
-	}
-	
-	// Edges.**
-	// Render with a unique vbo.
-	if (this.edgesVboKeysContainer)
-	{
-		var vboKey = this.edgesVboKeysContainer.vboCacheKeysArray[0];
-		if (vboKey.isReadyPositions(gl, vboMemManager))
-		{ 
-			shader.disableVertexAttribArray(shader.texCoord2_loc); 
-			shader.disableVertexAttribArray(shader.normal3_loc); 
-			gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.
-			refMatrixType = 0;
-			gl.uniform1i(shader.refMatrixType_loc, refMatrixType);
-			gl.uniform4fv(shader.oneColor4_loc, [0.1, 0.1, 0.6, 1.0]);
-	
-			// Positions.
-			if (vboKey.meshVertexCacheKey !== shader.lastVboKeyBindedMap[shader.position3_loc])
-			{
-				gl.bindBuffer(gl.ARRAY_BUFFER, vboKey.meshVertexCacheKey);
-				gl.vertexAttribPointer(shader.position3_loc, 3, gl.FLOAT, false, 0, 0);
-				shader.lastVboKeyBindedMap[shader.position3_loc] = vboKey.meshVertexCacheKey;
-			}
-			
-			//gl.drawArrays(gl.LINES, 0, vboKey.segmentsCount*2);
-			
-			var edgesCount = this.edgesArray.length;
-			for (var i=0; i<edgesCount; i++)
-			{
-				var edge = this.edgesArray[i];
-				if (edge === selCandidateEdges.currentSelected)
-				{
-					gl.uniform4fv(shader.oneColor4_loc, [0.0, 1.0, 0.0, 1.0]);
-				}
-				gl.drawArrays(gl.LINES, i*2, 2);
-				
-				// restore default color.
-				if (edge === selCandidateEdges.currentSelected)
-				{
-					gl.uniform4fv(shader.oneColor4_loc, [0.1, 0.1, 0.6, 1.0]);
-				}
-			}
-		}
-	}
-	
-	// Spaces.
-	this.renderSpaces = magoManager.tempSettings.renderSpaces;
-	this.spacesAlpha = magoManager.tempSettings.spacesAlpha;
-	
-	if (renderType === 1)
-	{ shader.enableVertexAttribArray(shader.normal3_loc); } 
-	
-	if (this.renderSpaces)
-	{
-		gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.
-		refMatrixType = 0;
-		gl.uniform1i(shader.refMatrixType_loc, refMatrixType);
-		gl.uniform4fv(shader.oneColor4_loc, [0.8, 0.8, 0.8, this.spacesAlpha]);
-		gl.enable(gl.BLEND);
-		var spacesCount = 0;
-		if (this.spacesArray)
-		{ spacesCount = this.spacesArray.length; }
-		
-		for (var i=0; i<spacesCount; i++)
-		{
-			var space = this.spacesArray[i];
-			space.mesh.render(magoManager, shader);
-		}
-		
-		gl.disable(gl.BLEND);
-	}
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'use strict';
-
-/**
- * NetworkEdge.
- * 
- * @alias NetworkEdge
- * @class NetworkEdge
- */
-var NetworkEdge = function(owner) 
-{
-	if (!(this instanceof NetworkEdge)) 
-	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
-	}
-	this.networkOwner = owner;
-	this.id;
-	this.strNode;
-	this.endNode;
-	this.sense;
-	this.attributes;
-	
-	// provisionally:
-	this.strNodeId;
-	this.endNodeId;
-};
-'use strict';
-
-/**
- * NetworkNode.
- * 
- * @alias NetworkNode
- * @class NetworkNode
- */
-var NetworkNode = function(owner) 
-{
-	if (!(this instanceof NetworkNode)) 
-	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
-	}
-	this.networkOwner = owner;
-	this.id;
-	this.edgesArray;
-	this.attributes;
-	this.box;
-	//this.mesh; // if display as a box, cilinder, etc.
-};
-'use strict';
-
-/**
- * NetworkSpace.
- * 
- * @alias NetworkSpace
- * @class NetworkSpace
- */
-var NetworkSpace = function(owner) 
-{
-	if (!(this instanceof NetworkSpace)) 
-	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
-	}
-	this.networkOwner = owner;
-	this.id;
-	this.mesh;
-	this.attributes;
-	
-};
 'use strict';
 
 function abstract() 
@@ -92317,6 +87781,4772 @@ ManagerUtils.getComplexCoordinateByScreenCoord = function(gl, pixelX, pixelY, de
 		worldCoordinate      : worldCoord,
 		geographicCoordinate : geographicCoord
 	};
+};
+'use strict';
+
+/**
+ * Geoserver for mago3Djs object.
+ * @class Geoserver
+ */
+var GeoServer = function() 
+{
+
+	this.serverInfo = {};
+}; 
+
+GeoServer.prototype.setServerInfo = function(info) 
+{
+	this.serverInfo = info;
+};
+
+GeoServer.prototype.getDataUrl = function() 
+{
+	return this.serverInfo.dataUrl;
+};
+
+GeoServer.prototype.getDataWorkspace = function() 
+{
+	return this.serverInfo.dataWorkspace;
+};
+
+GeoServer.prototype.getDataRequestUrl = function() 
+{
+	return this.getDataUrl() + '/' + this.getDataWorkspace();
+};
+
+GeoServer.prototype.getWmsVersion = function() 
+{
+	return this.serverInfo.wmsVersion;
+};
+'use strict';
+
+/**
+ * 메세지
+ * 
+ * @class
+ */
+var Message = function(i18next, message) 
+{
+	this.handle  = i18next;
+	this.message = message || MessageSource;
+};
+
+/**
+ * 메세지 클래스 초기화
+ *
+ * @param {Function} callback
+ */
+Message.prototype.init = function (callback)
+{
+	var h = this.handle;
+	this.handle.use(i18nextXHRBackend)
+		.use(i18nextBrowserLanguageDetector)
+		.init({
+			// Useful for debuging, displays which key is missing
+			debug: false,
+
+			detection: {
+				// keys or params to lookup language from
+				lookupQuerystring  : 'lang',
+				lookupCookie       : 'i18nextLang',
+				lookupLocalStorage : 'i18nextLang',
+			},
+    
+			// If translation key is missing, which lang use instead
+			fallbackLng: 'en',
+
+			resources: this.message,
+
+			// all, languageOnly
+			load: "languageOnly",
+
+			ns        : ['common'],
+			// Namespace to use by default, when not indicated
+			defaultNS : 'common',
+    
+			keySeparator     : ".",
+			nsSeparator      : ":",
+			pluralSeparator  : "_",
+			contextSeparator : "_"
+
+		}, function(err, t)
+		{
+			console.log("detected user language: " + h.language);
+			console.log("loaded languages: " + h.languages.join(', '));
+			h.changeLanguage(h.languages[0]);
+			callback(err, t);
+		});
+};
+
+/**
+ * 메세지 핸들러를 가져온다.
+ *
+ * @returns {i18next} message handler
+ */
+Message.prototype.getHandle = function ()
+{
+	return this.handle;
+};
+
+/**
+ * 메세지를 가져온다.
+ *
+ * @returns {Object} message
+ */
+Message.prototype.getMessage = function ()
+{
+	return this.message;
+};
+
+'use strict';
+var MessageSource = {};
+MessageSource.en = {
+  "common": {
+    "welcome" : "Welcome",
+    "error": {
+        "title" : "Error",
+        "construct" : {
+            "create" : "This object should be created using new."
+        }
+    }
+  }
+};
+MessageSource.ko = {
+    "common": {
+      "welcome" : "환영합니다.",
+      "error": {
+          "title" : "오류",
+          "construct" : {
+              "create" : "이 객체는 new 를 사용하여 생성해야 합니다."
+          }
+      }
+    }
+  };
+
+'use strict';
+
+/**
+ * AnimatedPerson is a class object.
+ * 
+ * @class AnimatedPerson
+ * @constructor 
+ * @param {string} The name of the AnimatedPerson.
+ */
+var AnimatedPerson = function(name) 
+{
+	this.skeletalAnimObject;
+	
+};
+
+AnimatedPerson.prototype.render = function(magoManager)
+{
+	
+};
+'use strict';
+
+
+var Arrow = function(width, length, height, option) 
+{
+	MagoRenderable.call(this);
+	this.color4 = new Color();
+	this.color4.setRGBA(0.2, 0.2, 0.25, 1);
+
+	this.type = 'extruded';
+
+	this.totalLength = 10;
+	if (length) 
+	{
+		this.totalLength = length;
+	}
+
+	this.bodyWidth = 1;
+	if (width) 
+	{
+		this.bodyWidth = width * 0.5;
+	}
+	this.headWidth = 1.5;
+	if (width) 
+	{
+		this.headWidth = width;
+	}
+
+	this.extrude = 1;
+	if (height) 
+	{
+		this.extrude = height;
+	}
+	
+	this.tailLength = this.totalLength * 0.7;
+
+	if (option) 
+	{
+		var bodyWidth = option.bodyWidth;
+		if (bodyWidth) 
+		{
+			this.bodyWidth = bodyWidth;
+		}
+        
+		var headWidth = option.headWidth;
+		if (headWidth) 
+		{
+			this.headWidth = headWidth;
+		}
+        
+		var headLength = option.headLength;
+		if (headLength) 
+		{
+			this.headLength = headLength;
+		}
+        
+		var totalLength = option.totalLength;
+		if (totalLength) 
+		{
+			this.totalLength = totalLength;
+		}
+        
+		var tailLength = option.tailLength;
+		if (tailLength) 
+		{
+			this.tailLength = tailLength;
+		}
+
+		var extrude = option.extrude;
+		if (extrude) 
+		{
+			this.extrude = extrude;
+		}
+	}
+
+	if (this.headWidth < this.bodyWidth) 
+	{
+		this.headWidth = this.bodyWidth * 1.5;
+	}
+
+	if (!this.headLength) 
+	{
+		this.headLength = this.totalLength *0.3;
+	}
+};
+Arrow.prototype = Object.create(MagoRenderable.prototype);
+Arrow.prototype.constructor = Arrow;
+
+Arrow.prototype.makeMesh = function() 
+{
+	var profile2dAux = new Profile2D();
+	
+	// Outer ring.**
+	var outerRing = profile2dAux.newOuterRing();
+ 
+	var halfBodyWidth = this.bodyWidth * 0.5;
+	var halfHeadWidth = this.headWidth * 0.5;
+	var bodyLengthWithoutHead = this.totalLength - this.headLength;
+
+	var polyline = outerRing.newElement("POLYLINE");
+	
+	if (this.tailLength)
+	{
+		polyline.newPoint2d(0, 0);
+		polyline.newPoint2d(halfBodyWidth, this.tailLength);
+		polyline.newPoint2d(halfBodyWidth, bodyLengthWithoutHead);
+		polyline.newPoint2d(halfHeadWidth, bodyLengthWithoutHead);
+		polyline.newPoint2d(0, this.totalLength);
+		polyline.newPoint2d(-halfHeadWidth, bodyLengthWithoutHead);
+		polyline.newPoint2d(-halfBodyWidth, bodyLengthWithoutHead);
+		polyline.newPoint2d(-halfBodyWidth, this.tailLength);
+	}
+	else 
+	{
+		polyline.newPoint2d(-halfBodyWidth, 0);    
+		polyline.newPoint2d(halfBodyWidth, 0);    
+		polyline.newPoint2d(halfBodyWidth, bodyLengthWithoutHead);
+		polyline.newPoint2d(halfHeadWidth, bodyLengthWithoutHead);
+		polyline.newPoint2d(0, this.totalLength);
+		polyline.newPoint2d(-halfHeadWidth, bodyLengthWithoutHead);
+		polyline.newPoint2d(-halfBodyWidth, bodyLengthWithoutHead);
+	}
+
+	var extrudeSegmentsCount = 1;
+	var extrusionVector = undefined;
+	var bIncludeBottomCap = false;
+	var bIncludeTopCap = false;
+    
+	var mesh = Modeler.getExtrudedMesh(profile2dAux, this.extrude, extrudeSegmentsCount, extrusionVector, bIncludeBottomCap, bIncludeTopCap, mesh);
+	this.mesh = mesh;
+	this.dirty = false;
+};
+
+/**
+ * Renders the factory.
+ */
+Arrow.prototype.render = function(magoManager, shader, renderType, glPrimitive)
+{
+	if (this.attributes && this.attributes.isVisible !== undefined && this.attributes.isVisible === false) 
+	{
+		return;
+	}
+	if (this.dirty)
+	{ this.makeMesh(); }
+	
+	if (this.mesh === undefined)
+	{ return false; }
+
+	// Set geoLocation uniforms.***
+	
+	var gl = magoManager.getGl();
+	/*
+	var buildingGeoLocation = this.geoLocDataManager.getCurrentGeoLocationData();
+	buildingGeoLocation.bindGeoLocationUniforms(gl, shader); // rotMatrix, positionHIGH, positionLOW.
+	
+	gl.uniform1i(shader.refMatrixType_loc, 0); // in magoManager case, there are not referencesMatrix.***
+	gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.***
+	*/
+	if (renderType === 2)
+	{
+		// Selection render.***
+		var selectionColor = magoManager.selectionColor;
+		var colorAux = magoManager.selectionColor.getAvailableColor(undefined);
+		var idxKey = magoManager.selectionColor.decodeColor3(colorAux.r, colorAux.g, colorAux.b);
+		magoManager.selectionManager.setCandidateGeneral(idxKey, this);
+		
+		gl.uniform4fv(shader.oneColor4_loc, [colorAux.r/255.0, colorAux.g/255.0, colorAux.b/255.0, 1.0]);
+		gl.disable(gl.BLEND);
+	}
+	
+	this.renderRaw(magoManager, shader, renderType, glPrimitive);
+	//this.mesh.render(magoManager, shader, renderType, glPrimitive);
+
+	gl.disable(gl.BLEND);
+};
+
+Arrow.prototype.renderAsChild = function(magoManager, shader, renderType, glPrimitive, bIsSelected) 
+{
+	if (this.attributes && this.attributes.isVisible !== undefined && this.attributes.isVisible === false) 
+	{
+		return;
+	}
+	if (this.dirty)
+	{ this.makeMesh(); }
+	
+	if (this.mesh === undefined)
+	{ return false; }
+
+	// Set geoLocation uniforms.***
+	var gl = magoManager.getGl();
+	if (this.tMat && this.tMat instanceof Matrix4) 
+	{
+		gl.uniformMatrix4fv(shader.buildingRotMatrix_loc, false, this.tMat._floatArrays);
+	}
+	
+	if (renderType === 0)
+	{
+		// Depth render.***
+	}
+	else if (renderType === 1)
+	{
+		// Color render.***
+		//gl.blendFunc( gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA );
+		gl.enable(gl.BLEND);
+		gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.***
+		
+		// Check if is selected.***
+		var selectionManager = magoManager.selectionManager;
+		if (bIsSelected !== undefined && bIsSelected)
+		{
+			//gl.disable(gl.BLEND);
+			gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, 1.0]);
+		}
+		else if (selectionManager.isObjectSelected(this))
+		{
+			//gl.disable(gl.BLEND);
+			gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, 1.0]);
+		}
+		else 
+		{
+			gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, this.color4.a]);
+		}
+		
+	}
+
+	this.mesh.render(magoManager, shader, renderType, glPrimitive, bIsSelected);
+
+	gl.disable(gl.BLEND);
+};
+
+/**
+ * Renders the factory.
+ */
+Arrow.prototype.renderRaw = function(magoManager, shader, renderType, glPrimitive, bIsSelected)
+{
+	if (this.dirty)
+	{ this.makeMesh(); }
+	
+	if (this.mesh === undefined)
+	{ return false; }
+
+	// Set geoLocation uniforms.***
+	var gl = magoManager.getGl();
+	var buildingGeoLocation = this.geoLocDataManager.getCurrentGeoLocationData();
+	buildingGeoLocation.bindGeoLocationUniforms(gl, shader); // rotMatrix, positionHIGH, positionLOW.
+	
+	if (renderType === 0)
+	{
+		// Depth render.***
+	}
+	else if (renderType === 1)
+	{
+		// Color render.***
+		//gl.blendFunc( gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA );
+		gl.enable(gl.BLEND);
+		gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.***
+		
+		// Check if is selected.***
+		var selectionManager = magoManager.selectionManager;
+		if (bIsSelected !== undefined && bIsSelected)
+		{
+			//gl.disable(gl.BLEND);
+			gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, 1.0]);
+		}
+		else if (selectionManager.isObjectSelected(this))
+		{
+			//gl.disable(gl.BLEND);
+			gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, 1.0]);
+		}
+		else 
+		{
+			gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, this.color4.a]);
+		}
+		
+	}
+
+	this.mesh.render(magoManager, shader, renderType, glPrimitive, bIsSelected);
+
+	gl.disable(gl.BLEND);
+};
+'use strict';
+
+/**
+ * Factory shaped object.
+ * @class BasicFactory
+ */
+var BasicFactory = function(factoryWidth, factoryLength, factoryHeight, options) 
+{
+	if (!(this instanceof BasicFactory)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+	MagoRenderable.call(this);
+	/**
+	 * The name of the factory.
+	 * @type {String}
+	 * @default undefined
+	 */
+	this.name;
+	
+	/**
+	 * The entire width of the factory.
+	 * @type {Number}
+	 * @default undefined
+	 */
+	this.width = factoryWidth;
+	
+	/**
+	 * The entire length of the factory.
+	 * @type {Number}
+	 * @default undefined
+	 */
+	this.length = factoryLength;
+	
+	/**
+	 * The entire height of the factory.
+	 * @type {Number}
+	 * @default undefined
+	 */
+	this.height = factoryHeight;
+	
+	/**
+	 * This boolean variable indicates if the factory has his own ground.
+	 * @type {Boolean}
+	 * @default false
+	 */
+	this.bHasGround = false;
+	
+	/**
+	 * This minimum height of the roof.
+	 * @type {Number}
+	 * @default undefined
+	 */
+	this.roofMinHeight;
+	
+	
+	/**
+	 * The geographic location of the factory.
+	 * @type {GeoLocationDataManager}
+	 * @default undefined
+	 */
+	this.geoLocDataManager;
+	
+	/**
+	 * Array of the objects that configures the fatory.
+	 * @type {Array}
+	 * @default undefined
+	 */
+	this.objectsArray;
+	
+	this.objectsMap;
+	
+	/**
+	 * The bounding box of the fatory.
+	 * @type {BoundingBox}
+	 * @default undefined
+	 */
+	this.bbox;
+	
+	/**
+	 * Boolean variable that indicates that the geometry is dirty.
+	 * @type {Boolean}
+	 * @default true
+	 */
+	this.dirty = true;
+	
+	this.roofColor4 = new Color();
+	this.roofColor4.setRGBA(98/256, 233/256, 134/256, 0.3);
+	
+	this.options = options;
+
+	// After check the option values, set the boundingBox.***
+	this.bbox = new BoundingBox();
+	this.bbox.set(-this.width/2, -this.length/2, 0, this.width/2, this.length/2, this.height);
+	
+	this.attributes = {isVisible: true};
+};
+
+BasicFactory.prototype = Object.create(MagoRenderable.prototype);
+BasicFactory.prototype.constructor = BasicFactory;
+
+/**
+ * BasicFactory wallType.
+ */
+BasicFactory.wallType = {
+	'FRONT' : 'front',
+	'REAR'  : 'rear',
+	'LEFT'  : 'left',
+	'RIGHT' : 'right'
+};
+/**
+ * Returns the bbox.
+ */
+BasicFactory.prototype.getBoundingBox = function()
+{
+	return this.bbox;
+};
+
+/**
+ * Returns the bbox.
+ */
+BasicFactory.getFactoryDimensionsByGeoCoordsArray = function(geoCoordsArray, edgeIdxOfDoor, magoManager)
+{
+	if (geoCoordsArray === undefined || geoCoordsArray.length < 4)
+	{ return undefined; }
+	
+	var geoCoord_0 = geoCoordsArray[0];
+	var geoCoord_1 = geoCoordsArray[1];
+	var geoCoord_2 = geoCoordsArray[2];
+	var geoCoord_3 = geoCoordsArray[3];
+	var fWidth, fLength, headingAngDeg;
+	if (edgeIdxOfDoor === 0)
+	{
+		var geoCoordSegment = new GeographicCoordSegment(geoCoord_0, geoCoord_1);
+		var geoCoordSegment2 = new GeographicCoordSegment(geoCoord_1, geoCoord_2);
+	}
+	else if (edgeIdxOfDoor === 1)
+	{
+		var geoCoordSegment = new GeographicCoordSegment(geoCoord_1, geoCoord_2);
+		var geoCoordSegment2 = new GeographicCoordSegment(geoCoord_2, geoCoord_3);
+	}
+	else if (edgeIdxOfDoor === 2)
+	{
+		var geoCoordSegment = new GeographicCoordSegment(geoCoord_2, geoCoord_3);
+		var geoCoordSegment2 = new GeographicCoordSegment(geoCoord_3, geoCoord_0);
+	}
+	else if (edgeIdxOfDoor === 3)
+	{
+		var geoCoordSegment = new GeographicCoordSegment(geoCoord_3, geoCoord_0);
+		var geoCoordSegment2 = new GeographicCoordSegment(geoCoord_0, geoCoord_1);
+	}
+	
+	fWidth = GeographicCoordSegment.getLengthInMeters(geoCoordSegment, magoManager);
+	fLength = GeographicCoordSegment.getLengthInMeters(geoCoordSegment2, magoManager);
+	headingAngDeg = GeographicCoordSegment.calculateHeadingAngRadToNorthOfSegment(geoCoordSegment2, magoManager)*180/Math.PI;
+	
+	var lon = (geoCoord_0.longitude + geoCoord_0.longitude + geoCoord_0.longitude + geoCoord_0.longitude )/4;
+	var lat = (geoCoord_0.latitude + geoCoord_0.latitude + geoCoord_0.latitude + geoCoord_0.latitude )/4;
+	
+	var result = {
+		factoryWidth  : fWidth,
+		factoryLength : fLength,
+		headingDeg    : headingAngDeg,
+		longitude     : lon,
+		latitude      : lat
+	};
+	return result;
+};
+
+/**
+ * Makes triangular wall profile.
+ */
+BasicFactory.getTriangularWallProfile2d = function(options, resultProfile2d)
+{
+	// Triangular wall with opening.****************************************
+	//
+	//                   Y
+	//                   ^
+	//                   |
+	//                  /7\             <-- height
+	//                /  |  \
+	//              /    |    \
+	//            /      |      \
+	//          8        |        6     <-- roofMinHeight
+	//          |        |         |
+	//          |  2------------3  |    <-- openingHeight (if exist).
+	//          |  |     |      |  |
+	//          |  |     |      |  |
+	//          0--1     +      4--5-------> X
+	//
+	
+	// Triangular wall without opening.**************************************
+	//
+	//                   Y
+	//                   ^
+	//                   |
+	//                  /3\             <-- height
+	//                /  |  \
+	//              /    |    \
+	//            /      |      \
+	//          4        |        2     <-- roofMinHeigh
+	//          |        |         |
+	//          |        |         |    
+	//          |        |         |
+	//          |        |         |
+	//          0--------+---------1-------> X
+	//
+	
+	if (options === undefined)
+	{ return resultProfile2d; }
+	
+	if (resultProfile2d === undefined)
+	{ resultProfile2d = new Profile2D(); }
+	
+	var hasOpening = options.hasOpening;
+	if (hasOpening === undefined)
+	{ hasOpening = false; }
+	
+	// factory width.
+	var width = options.width;
+	
+	// factory height.
+	var height = options.height;
+	
+	// factory roof min height.
+	var roofMinHeight = options.roofMinHeight;
+	if (roofMinHeight === undefined)
+	{ roofMinHeight = height * 0.75; }
+	
+	var halfWidth = width * 0.5;
+	
+	if (hasOpening)
+	{
+		// opening dimensions.
+		var openingHeight = options.openingHeight;
+		if (openingHeight === undefined)
+		{ openingHeight = height * 0.6; }
+		
+		var openingWidth = options.openingWidth;
+		if (openingWidth === undefined)
+		{ openingWidth = width * 0.8; }
+		
+		var openingLeftWidth = openingWidth * 0.5;
+		var openingRightWidth = openingWidth * 0.5;
+	
+		// Create a outer ring in the Profile2d.
+		var outerRing = resultProfile2d.newOuterRing();
+		var polyline = outerRing.newElement("POLYLINE");
+		polyline.newPoint2d(-halfWidth, 0);                          // 0
+		polyline.newPoint2d(-openingLeftWidth, 0);                   // 1
+		polyline.newPoint2d(-openingLeftWidth, openingHeight);       // 2
+		polyline.newPoint2d(openingRightWidth, openingHeight);       // 3
+		polyline.newPoint2d(openingRightWidth, 0);                   // 4
+		polyline.newPoint2d(halfWidth, 0);                           // 5
+		polyline.newPoint2d(halfWidth, roofMinHeight);               // 6
+		polyline.newPoint2d(0, height);                              // 7
+		polyline.newPoint2d(-halfWidth, roofMinHeight);              // 8
+	}
+	else 
+	{
+		// wall without opening.
+		// Create a outer ring in the Profile2d.
+		var outerRing = resultProfile2d.newOuterRing();
+		var polyline = outerRing.newElement("POLYLINE");
+		polyline.newPoint2d(-halfWidth, 0);                          // 0
+		polyline.newPoint2d(halfWidth, 0);                           // 1
+		polyline.newPoint2d(halfWidth, roofMinHeight);               // 2
+		polyline.newPoint2d(0, height);                              // 3
+		polyline.newPoint2d(-halfWidth, roofMinHeight);              // 4
+	}
+	
+	return resultProfile2d;
+};
+
+/**
+ * Makes triangular wall profile.
+ */
+BasicFactory.getLateralWallProfile2d = function(options, resultProfile2d)
+{
+	//
+	//   15-----------------------------------------------------------14      <-- height
+	//   |                                                            |
+	//   |                      6--------------7                      |               
+	//   |   2-----------3      |              |                      |       <-- openingHeight
+	//   |   |           |      |              |                      |
+	//   |   |           |      |              |      10----------11  |       <-- openingHeight
+	//   |   |           |      |              |      |           |   |
+	//   0---1           4------5              8------9           12--13
+	//
+	//   offset,width,height    offset,width,height    offset,width,height ...
+	
+	if (resultProfile2d === undefined)
+	{ resultProfile2d = new Profile2D(); }
+
+	// wall height.
+	var height = options.height;
+	var length = options.length;
+	
+	// Create a outer ring in the Profile2d.
+	var outerRing = resultProfile2d.newOuterRing();
+	var polyline = outerRing.newElement("POLYLINE");
+	
+	// create the 1rst point2d.
+	polyline.newPoint2d(0, 0);   
+	var currOffSet = 0;
+	
+	// insert openings if exist.
+	var openingsDataArray = options.openingsDataArray;
+	var openingsCount = 0;
+	if (openingsDataArray !== undefined)
+	{ openingsCount = openingsDataArray.length; }
+	
+	for (var i=0; i<openingsCount; i++)
+	{
+		var openingData = options.openingsDataArray[i];
+		var openingOffSet = openingData.offSet;
+		var openingHeight = openingData.height;
+		var openingWidth = openingData.width;
+		
+		// insert opening into profile.
+		polyline.newPoint2d(currOffSet + openingOffSet, 0);
+		polyline.newPoint2d(currOffSet + openingOffSet, openingHeight);
+		polyline.newPoint2d(currOffSet + openingOffSet + openingWidth, openingHeight);
+		polyline.newPoint2d(currOffSet + openingOffSet + openingWidth, 0);
+		
+		// update currentOffSet.
+		currOffSet = currOffSet + openingOffSet + openingWidth;
+	}
+	
+	// Now, finish the profile (13).
+	polyline.newPoint2d(length, 0);
+	polyline.newPoint2d(length, height);
+	polyline.newPoint2d(0, height);
+	
+	return resultProfile2d;
+};
+
+/**
+ * 공장 벽 프로파일
+ * @param {string} wallType 벽 위치
+ * @param {object} wallOption 벽 옵션, 존재하면 문을 그림.
+ * @param {Profile2d}} resultProfile2d
+ * @return {Profile2d}
+ */
+BasicFactory.prototype.getWallProfile2d = function(wallType, wallOption, resultProfile2d) 
+{
+	if (resultProfile2d === undefined)
+	{ resultProfile2d = new Profile2D(); }
+
+	// 앞뒤인지 여부
+	var isFrontOrRear = (wallType === BasicFactory.wallType.FRONT || wallType === BasicFactory.wallType.REAR);
+	// factory width.
+	var width = isFrontOrRear ? this.width : this.length;
+	// factory height.
+	var height = this.height;
+	// factory roof min height.
+	var roofMinHeight = this.roofMinHeight;
+
+	var outerRing = resultProfile2d.newOuterRing();
+	var polyline = outerRing.newElement("POLYLINE");
+	polyline.newPoint2d(0, 0);
+	if (wallOption && wallOption.openingInfo) 
+	{
+		if (Array.isArray(wallOption.openingInfo)) 
+		{
+			var curOffset = 0;
+			var openingInfos = wallOption.openingInfo;
+			for (var i=0, len=openingInfos.length;i<len;i++) 
+			{
+				var openingInfo = openingInfos[i];
+
+				if (!defined(openingInfo.offset)) { continue; }
+
+				var doorOffset = openingInfo.offset;
+				var doorHeight = openingInfo.height;
+				var doorWidth = openingInfo.width;
+
+				curOffset = curOffset + doorOffset;
+				openingInfo.centerPropterties = this.calculateOpeningProperties(wallType, curOffset, doorWidth, doorHeight, openingInfo.thickness);
+
+				polyline.newPoint2d(curOffset, 0);
+				polyline.newPoint2d(curOffset, doorHeight);
+
+				curOffset = curOffset + doorWidth;
+				polyline.newPoint2d(curOffset, doorHeight);
+				polyline.newPoint2d(curOffset, 0);
+			}
+		}
+		else 
+		{
+			var openingInfo = wallOption.openingInfo;
+			var offset = defined(openingInfo.offset) ? openingInfo.offset : (width - openingInfo.width) * 0.5;
+
+			var doorHeight = openingInfo.height;
+			var doorWidth = openingInfo.width;
+
+			openingInfo.centerPropterties = this.calculateOpeningProperties(wallType, offset, doorWidth, doorHeight, openingInfo.thickness);
+			polyline.newPoint2d(offset, 0);
+			polyline.newPoint2d(offset, doorHeight);
+			polyline.newPoint2d(offset + doorWidth, doorHeight);
+			polyline.newPoint2d(offset + doorWidth, 0);
+		}
+	}
+
+	polyline.newPoint2d(width, 0);
+	polyline.newPoint2d(width, roofMinHeight);
+	if (isFrontOrRear) 
+	{
+		polyline.newPoint2d(width*0.5, height);
+	}
+	polyline.newPoint2d(0, roofMinHeight);
+
+	return resultProfile2d;
+};
+BasicFactory.prototype.calculateOpeningProperties = function(wallType, start, width, height) 
+{
+	var profile2d = new Profile2D();
+	var outerRing = profile2d.newOuterRing();
+	var polyline = outerRing.newElement("POLYLINE");
+
+	/*polyline.newPoint2d(start, 0);
+	polyline.newPoint2d(start, height);
+	polyline.newPoint2d(start + width, height);
+	polyline.newPoint2d(start + width, 0);*/
+
+	polyline.newPoint2d(start, 0);
+	polyline.newPoint2d(start + width, 0);
+	polyline.newPoint2d(start + width, height);
+	polyline.newPoint2d(start, height);
+	
+	var vp =  new VtxProfile();
+	vp.makeByProfile2D(profile2d);
+
+	this.validateWallGeom(wallType, vp);
+
+	var outerRing = vp.outerVtxRing;
+	var outerVertexList = outerRing.vertexList;
+	var openingBbox = outerVertexList.getBoundingBox();
+
+	var openingCenterPointLC = openingBbox.getCenterPoint();
+	var openingNormalLC = outerRing.calculatePlaneNormal();
+
+	var geoLocDataManager = this.geoLocDataManager;
+	var geoLocData = geoLocDataManager.getCurrentGeoLocationData();
+	var rotMatrix = geoLocData.rotMatrix;
+
+	var openingCenterPointWC = geoLocData.localCoordToWorldCoord(openingCenterPointLC);
+	var openingNormalWC = rotMatrix.transformPoint3D(openingNormalLC);
+
+	return {
+		openeingProfile2d : profile2d,
+		centerLC          : openingCenterPointLC,
+		normalLC          : openingNormalLC,
+		centerWC          : openingCenterPointWC,
+		normalWC          : openingNormalWC
+	};
+};
+
+BasicFactory.prototype.getOpeningProperties = function(wallType, index) 
+{
+	var wallOptions = this.options.wallOptions;
+
+	if (!defined(index)) { index = 0; }
+
+	var wallOption;
+	if (wallOptions) 
+	{
+		for (var j in wallOptions) 
+		{
+			if (wallOptions[j].type === wallType) 
+			{
+				wallOption = wallOptions[j];
+			}
+		}
+	}
+	var centerProperties;
+	if (Array.isArray(wallOption.openingInfo)) 
+	{
+		if (wallOption.openingInfo[index].centerPropterties) 
+		{
+			wallOption.openingInfo[index].centerPropterties.wallType = wallType;
+		}
+		centerProperties = wallOption.openingInfo[index].centerPropterties;
+	}
+	else 
+	{
+		if (wallOption.openingInfo.centerPropterties) 
+		{
+			wallOption.openingInfo.centerPropterties.wallType = wallType;
+		}
+		centerProperties = wallOption.openingInfo.centerPropterties;
+	}
+
+	return centerProperties;
+};
+/**
+ * Makes the geometry mesh.
+ */
+BasicFactory.prototype.makeMesh = function()
+{	
+	if (this.width === undefined || this.length === undefined || this.height === undefined)
+	{ return; }
+	
+	if (this.objectsArray === undefined)
+	{ this.objectsArray = []; }
+
+	if (this.objectsMap === undefined)
+	{ this.objectsMap = {}; }
+	
+	if (this.bHasGround)
+	{
+		// Make the ground.***
+		var groundWidth = this.width;
+		var groundLength = this.length;
+		var groundHeight = this.height * 0.02;
+		
+		var groundMesh = new Box(groundWidth, groundLength, groundHeight, "ground");
+		groundMesh.setOneColor(0.2, 0.3, 0.3, 1.0);
+		groundMesh.owner = this;
+		this.objectsArray.push(groundMesh);
+		this.objectsMap[groundMesh.name] = groundMesh;
+	}
+	this.roofMinHeight = defaultValue(this.options.roofMinHeight, this.height*0.75);
+
+	// Walls.***
+	var wallOptions = this.options.wallOptions;
+	var extrusionDist = 0.4;
+	var extrudeSegmentsCount = 1;
+	var extrusionVector = undefined;
+	var bIncludeBottomCap = true;
+	var bIncludeTopCap = true;
+
+	for (var key in BasicFactory.wallType) 
+	{
+		if (!BasicFactory.wallType.hasOwnProperty(key)) { continue; }
+		
+		var wallType = BasicFactory.wallType[key];
+		var wallOption;
+		if (wallOptions) 
+		{
+			for (var j in wallOptions) 
+			{
+				if (wallOptions[j].type === wallType) 
+				{
+					wallOption = wallOptions[j];
+					extrusionDist = defaultValue(wallOption.thickness, 0.4);
+					break;
+				}
+				else 
+				{
+					wallOption = null;
+				}
+			}
+			var meshName = wallType + "Wall";
+      		if (!this.objectsMap[meshName]) 
+			{
+        		var profileAux = this.getWallProfile2d(wallType, wallOption, undefined);
+
+        		var mesh = Modeler.getExtrudedMesh(profileAux, extrusionDist, extrudeSegmentsCount, extrusionVector, bIncludeBottomCap, bIncludeTopCap, undefined);
+        		mesh.name = meshName;
+        		this.objectsArray.push(mesh);
+        		this.objectsMap[meshName] = mesh;
+
+        		this.validateWallGeom(wallType, mesh);
+      		}
+		}
+	}
+
+	// Roof.*******************************************************************************************************************************
+	var halfWidth = this.width * 0.5;
+	var roofMinHeigh = this.roofMinHeight;
+	var polylineAux = new PolyLine2D();
+	polylineAux.newPoint2d(halfWidth, roofMinHeigh);                 // 0
+	polylineAux.newPoint2d(0, this.height);                          // 1
+	polylineAux.newPoint2d(-halfWidth, roofMinHeigh);                // 2
+	var leftExpandDist = 0;
+	var rightExpandDist = 0.2;
+	var polyline = new PolyLine2D();
+	polyline.point2dArray = Point2DList.getExpandedPoints(polylineAux.point2dArray, polyline.point2dArray, leftExpandDist, rightExpandDist);
+	
+	// Make roof profile.***
+	profileAux = new Profile2D();
+	var outerRing = profileAux.newOuterRing();
+	outerRing.addElement(polyline);
+	extrusionDist = this.length;
+	var mesh = Modeler.getExtrudedMesh(profileAux, extrusionDist, extrudeSegmentsCount, extrusionVector, bIncludeBottomCap, bIncludeTopCap, undefined);
+	mesh.name = "roof";
+	mesh.owner = this;
+	this.objectsArray.push(mesh);
+	this.objectsMap[mesh.name] = mesh;
+	
+	// Now rotate the roof.***
+	mesh.rotate(90, 1, 0, 0);
+	
+	// Now translate the roof to front.***
+	mesh.translate(0, this.length*0.5, 0);
+	mesh.setOneColor(98/256, 233/256, 134/256, 0.3);
+	
+	// Check if there are roof's material.
+	var roofMaterial;
+	var roofOptions = this.options.roofOptions;
+	if (roofOptions !== undefined)
+	{
+		roofMaterial = roofOptions.material;
+		if (roofMaterial !== undefined)
+		{
+			// check if there are texture. If exist texture then calculate texCoord for the roofMesh.
+			if (roofMaterial.diffuseTexture !== undefined)
+			{
+				// Calculate texCoords for the roofMesh.
+				// the difusse texture represents aprox 20x60 meters in the roofTexture.jpg image.
+				var texCoordsBBox = new BoundingBox();
+				var length = 60;
+				var width = this.width;
+				var height = 20;
+				texCoordsBBox.set(-width, -length, -height, width, length, height);
+				mesh.calculateTexCoordsBox(texCoordsBBox);
+				mesh.material = roofMaterial;
+			}
+			
+		}
+	}
+	
+	this.dirty = false;
+};
+
+/**
+ * Renders the factory.
+ */
+BasicFactory.prototype.getObjectByName = function(objectName)
+{
+	return this.objectsMap[objectName];
+};
+
+/**
+ * delete mesh from this factory.
+ * @param {string} name Mesh name
+ */
+BasicFactory.prototype.removeMesh = function(name) 
+{
+	if (this.objectsMap && this.objectsMap[name]) { this.objectsMap[name] = undefined; }
+
+	if (this.objectsArray && Array.isArray(this.objectsArray)) 
+	{
+		this.objectsArray = this.objectsArray.filter(function(item) 
+		{
+			return item.name !== name;
+		});
+	}
+};
+/**
+ * @param {string} wallType
+ * @param {Object} geom must have rotate function and translate function
+ */
+BasicFactory.prototype.validateWallGeom = function(wallType, geom, extrusionDist) 
+{
+	if (typeof geom.rotate !== 'function' || typeof geom.translate !== 'function') 
+	{
+		throw new Error('invalid geometry type.');
+	}
+
+	if (!defined(extrusionDist)) { extrusionDist = 0.4; }
+
+	switch (wallType) 
+	{
+	case 'front' : {
+		// Now rotate the front wall
+		geom.rotate(90, 1, 0, 0);
+
+		// Now translate the front wall to front
+		geom.translate(-this.width*0.5, -this.length*0.5+extrusionDist, 0);
+		break;
+	}
+	case 'rear' : {
+		// Now rotate the rear wall
+		geom.rotate(90, 1, 0, 0);
+
+		// Now translate the rear wall to rear
+		geom.translate(-this.width*0.5, this.length*0.5, 0);
+		break;
+	}
+	case 'left' : {
+		// Now rotate the left wall
+		geom.rotate(90, 1, 0, 0);
+		geom.rotate(90, 0, 0, 1);
+
+		// Now translate the left wall to left
+		geom.translate(-this.width*0.5, -this.length*0.5, 0);
+		break;
+	}
+	case 'right' : {
+		// Now rotate the right wall.***
+		geom.rotate(90, 1, 0, 0);
+		geom.rotate(90, 0, 0, 1);
+
+		// Now translate the right wall to right
+		geom.translate(this.width*0.5 - extrusionDist, -this.length*0.5, 0);
+		break;
+	}
+	}
+
+	if (geom instanceof Mesh) 
+	{
+		geom.setOneColor(0.9, 0.9, 0.9, 1.0);
+	}
+};
+'use strict';
+
+/**
+ * @param {*} option 
+ * @class BasicVehicle
+ */
+var BasicVehicle = function()
+{
+};
+
+BasicVehicle.degreeValidator = function(deg)
+{
+	//if (deg > 360) { deg -= 360; }
+	//if (deg < -360) { deg += 360; }
+
+	return deg;
+};
+
+BasicVehicle.MODE = {
+	'NORMAL'             : 0,
+	'PARALLEL_TRANSLATE' : 1,
+	'PARALLEL_ROTATION'  : 2,
+	'CIRCULAR_ROTATION'  : 3
+};
+BasicVehicle.ACCEL_STATUS = {
+	'FORWARD' : 0,
+	'REVERSE' : 1,
+	'NONE'    : 2
+};
+'use strict';
+
+/**
+ * Box geometry.
+ * @class Box
+ */
+var Box = function(width, length, height, name) 
+{
+	MagoRenderable.call(this);
+	if (!(this instanceof Box)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+	// See MagoRenderable's members.
+	// Initially, box centered at the center of the bottom.***
+	this.mesh;
+	this.centerPoint; // Usually (0,0,0).***
+	this.width;
+	this.length;
+	this.height;
+	this.owner;
+	
+	if (name !== undefined)
+	{ this.name = name; }
+	
+	if (width !== undefined)
+	{ this.width = width; }
+	
+	if (length !== undefined)
+	{ this.length = length; }
+	
+	if (height !== undefined)
+	{ this.height = height; }
+
+};
+Box.prototype = Object.create(MagoRenderable.prototype);
+Box.prototype.constructor = Box;
+
+/**
+ * Returns the mesh.
+ */
+Box.prototype.getMesh = function()
+{
+	if (this.mesh === undefined)
+	{
+		this.mesh = this.makeMesh(this.width, this.length, this.height);
+	}
+	
+	return this.mesh;
+};
+
+Box.prototype.moved = function()
+{
+	// do something.
+};
+
+/**
+ * Makes the box mesh.
+ * @param {Number} width
+ * @param {Number} length
+ * @param {Number} height 
+ */
+Box.prototype.makeMesh = function()
+{
+	var profileAux = new Profile2D();
+	
+	// Create a outer ring in the Profile2d.
+	var outerRing = profileAux.newOuterRing();
+
+	var halfWidth = this.width * 0.5;
+	var halLength = this.length * 0.5;
+	var polyline = outerRing.newElement("POLYLINE");
+
+	polyline.newPoint2d(-halfWidth, -halLength);
+	polyline.newPoint2d(halfWidth, -halLength);
+	polyline.newPoint2d(halfWidth, halLength);
+	polyline.newPoint2d(-halfWidth, halLength);
+
+	//var rect = outerRing.newElement("RECTANGLE");
+	//rect.setCenterPosition(this.centerPoint.x, this.centerPoint.y);
+	//rect.setDimensions(this.width, this.length);
+	
+	// Extrude the Profile.
+	var extrudeSegmentsCount = 1;
+	var extrusionVector = undefined;
+	var extrusionDist = this.height;
+	var bIncludeBottomCap = true;
+	var bIncludeTopCap = true;
+
+	var mesh = Modeler.getExtrudedMesh(profileAux, extrusionDist, extrudeSegmentsCount, extrusionVector, bIncludeBottomCap, bIncludeTopCap, undefined);
+	this.objectsArray.push(mesh);
+	this.dirty = false;
+};
+'use strict';
+
+/**
+ * ClippingBox geometry.
+ * @class ClippingBox
+ */
+var ClippingBox = function(width, length, height, name) 
+{
+	MagoRenderable.call(this);
+	if (!(this instanceof ClippingBox)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+	// Initially, box centered at the center of the bottom.***
+	this.centerPoint; // Usually (0,0,0).***
+	this.width;
+	this.length;
+	this.height;
+
+	if (name !== undefined)
+	{ this.name = name; }
+	
+	if (width !== undefined)
+	{ this.width = width; }
+	
+	if (length !== undefined)
+	{ this.length = length; }
+	
+	if (height !== undefined)
+	{ this.height = height; }
+
+	this.planesVec4Array;
+
+};
+
+ClippingBox.prototype = Object.create(MagoRenderable.prototype);
+ClippingBox.prototype.constructor = ClippingBox;
+
+ClippingBox.prototype.getPlanesRelToEyevec4Array = function(magoManager)
+{
+	//if (this.planesVec4Array === undefined)
+	//{ 
+	this.planesVec4Array = []; 
+	var planesArray = this.getPlanesRelToEye(undefined, magoManager);
+	var planesCount = planesArray.length;
+	for (var i=0; i<planesCount; i++)
+	{
+		var plane = planesArray[i];
+		this.planesVec4Array.push(plane.a);
+		this.planesVec4Array.push(plane.b);
+		this.planesVec4Array.push(plane.c);
+		this.planesVec4Array.push(plane.d);
+	}
+	//}
+
+	return this.planesVec4Array;
+};
+
+ClippingBox.prototype.moved = function()
+{
+	this.planesVec4Array = undefined;
+};
+
+ClippingBox.prototype.getPlanesRelToEye = function(resultPlanesArray, magoManager)
+{
+	// 1rst, calculate planes on the initial state.
+	// Initially, box centered at the center of the bottom.***
+	if (resultPlanesArray === undefined)
+	{ resultPlanesArray = []; }
+
+	var sceneState = magoManager.sceneState;
+	var mvMat = sceneState.modelViewMatrix;
+	var mvMatRelToEye = sceneState.modelViewRelToEyeMatrix;
+	var camera = sceneState.camera;
+	var camPos = camera.position;
+	var mvMat_inv = sceneState.modelViewMatrixInv;
+	
+	var geoLocDataManager = this.getGeoLocDataManager();
+	var geoLocData = geoLocDataManager.getCurrentGeoLocationData();
+	var rotMat = geoLocData.rotMatrix;
+	
+	var point = new Point3D();
+	var dir = new Point3D();
+	var pointWC = new Point3D();
+	var dirWC = new Point3D();
+	var pointCamCoord = new Point3D();
+	var dirCamCoord = new Point3D();
+	
+	// top plane.
+	point.set(0.0, 0.0, this.height);
+	dir.set(0.0, 0.0, 1.0);
+	pointWC = geoLocData.localCoordToWorldCoord(point, pointWC);
+	dirWC = rotMat.transformPoint3D(dir, dirWC);
+	pointCamCoord = mvMat.transformPoint3D(pointWC, pointCamCoord);
+	dirCamCoord = mvMatRelToEye.transformPoint3D(dirWC, dirCamCoord);
+	var plane = new Plane();
+	plane.setPointAndNormal(pointCamCoord.x, pointCamCoord.y, pointCamCoord.z, dirCamCoord.x, dirCamCoord.y, dirCamCoord.z);
+	resultPlanesArray.push(plane);
+	
+	// bottom plane.
+	point.set(0.0, 0.0, 0.0);
+	dir.set(0.0, 0.0, -1.0);
+	pointWC = geoLocData.localCoordToWorldCoord(point, pointWC);
+	dirWC = rotMat.transformPoint3D(dir, dirWC);
+	pointCamCoord = mvMat.transformPoint3D(pointWC, pointCamCoord);
+	dirCamCoord = mvMatRelToEye.transformPoint3D(dirWC, dirCamCoord);
+	var plane = new Plane();
+	plane.setPointAndNormal(pointCamCoord.x, pointCamCoord.y, pointCamCoord.z, dirCamCoord.x, dirCamCoord.y, dirCamCoord.z);
+	resultPlanesArray.push(plane);
+	
+	// front plane.
+	point.set(0.0, -this.length/2, this.height/2);
+	dir.set(0.0, -1.0, 0.0);
+	pointWC = geoLocData.localCoordToWorldCoord(point, pointWC);
+	dirWC = rotMat.transformPoint3D(dir, dirWC);
+	pointCamCoord = mvMat.transformPoint3D(pointWC, pointCamCoord);
+	dirCamCoord = mvMatRelToEye.transformPoint3D(dirWC, dirCamCoord);
+	var plane = new Plane();
+	plane.setPointAndNormal(pointCamCoord.x, pointCamCoord.y, pointCamCoord.z, dirCamCoord.x, dirCamCoord.y, dirCamCoord.z);
+	resultPlanesArray.push(plane);
+	
+	// rear plane.
+	point.set(0.0, this.length/2, this.height/2);
+	dir.set(0.0, 1.0, 0.0);
+	pointWC = geoLocData.localCoordToWorldCoord(point, pointWC);
+	dirWC = rotMat.transformPoint3D(dir, dirWC);
+	pointCamCoord = mvMat.transformPoint3D(pointWC, pointCamCoord);
+	dirCamCoord = mvMatRelToEye.transformPoint3D(dirWC, dirCamCoord);
+	var plane = new Plane();
+	plane.setPointAndNormal(pointCamCoord.x, pointCamCoord.y, pointCamCoord.z, dirCamCoord.x, dirCamCoord.y, dirCamCoord.z);
+	resultPlanesArray.push(plane);
+	
+	// left plane.
+	point.set(-this.width/2, 0.0, this.height/2);
+	dir.set(-1.0, 0.0, 0.0);
+	pointWC = geoLocData.localCoordToWorldCoord(point, pointWC);
+	dirWC = rotMat.transformPoint3D(dir, dirWC);
+	pointCamCoord = mvMat.transformPoint3D(pointWC, pointCamCoord);
+	dirCamCoord = mvMatRelToEye.transformPoint3D(dirWC, dirCamCoord);
+	var plane = new Plane();
+	plane.setPointAndNormal(pointCamCoord.x, pointCamCoord.y, pointCamCoord.z, dirCamCoord.x, dirCamCoord.y, dirCamCoord.z);
+	resultPlanesArray.push(plane);
+	
+	// right plane.
+	point.set(this.width/2, 0.0, this.height/2);
+	dir.set(1.0, 0.0, 0.0);
+	pointWC = geoLocData.localCoordToWorldCoord(point, pointWC);
+	dirWC = rotMat.transformPoint3D(dir, dirWC);
+	pointCamCoord = mvMat.transformPoint3D(pointWC, pointCamCoord);
+	dirCamCoord = mvMatRelToEye.transformPoint3D(dirWC, dirCamCoord);
+	var plane = new Plane();
+	plane.setPointAndNormal(pointCamCoord.x, pointCamCoord.y, pointCamCoord.z, dirCamCoord.x, dirCamCoord.y, dirCamCoord.z);
+	resultPlanesArray.push(plane);
+	
+	return resultPlanesArray;
+};
+
+ClippingBox.prototype.getPlanes = function(resultPlanesArray, magoManager)
+{
+	// 1rst, calculate planes on the initial state.
+	// Initially, box centered at the center of the bottom.***
+	if (resultPlanesArray === undefined)
+	{ resultPlanesArray = []; }
+
+	var sceneState = magoManager.sceneState;
+	var mvMat = sceneState.modelViewMatrix;
+	var mvMatRelToEye = sceneState.modelViewRelToEyeMatrix;
+	var camera = sceneState.camera;
+	var camPos = camera.position;
+	var mvMat_inv = sceneState.modelViewMatrixInv;
+	
+	var geoLocDataManager = this.getGeoLocDataManager();
+	var geoLocData = geoLocDataManager.getCurrentGeoLocationData();
+	var rotMat = geoLocData.rotMatrix;
+	
+	var point = new Point3D();
+	var dir = new Point3D();
+	var pointWC = new Point3D();
+	var dirWC = new Point3D();
+	var pointCamCoord = new Point3D();
+	var dirCamCoord = new Point3D();
+	
+	// top plane.
+	point.set(0.0, 0.0, this.height);
+	dir.set(0.0, 0.0, 1.0);
+	pointWC = rotMat.transformPoint3D(point, pointWC);
+	dirWC = rotMat.transformPoint3D(dir, dirWC);
+	var plane = new Plane();
+	plane.setPointAndNormal(pointWC.x, pointWC.y, pointWC.z, dirWC.x, dirWC.y, dirWC.z);
+	resultPlanesArray.push(plane);
+	
+	// bottom plane.
+	point.set(0.0, 0.0, 0.0);
+	dir.set(0.0, 0.0, -1.0);
+	pointWC = rotMat.transformPoint3D(point, pointWC);
+	dirWC = rotMat.transformPoint3D(dir, dirWC);
+	var plane = new Plane();
+	plane.setPointAndNormal(pointWC.x, pointWC.y, pointWC.z, dirWC.x, dirWC.y, dirWC.z);
+	resultPlanesArray.push(plane);
+	
+	// front plane.
+	point.set(0.0, -this.length/2, this.height/2);
+	dir.set(0.0, -1.0, 0.0);
+	pointWC = rotMat.transformPoint3D(point, pointWC);
+	dirWC = rotMat.transformPoint3D(dir, dirWC);
+	var plane = new Plane();
+	plane.setPointAndNormal(pointWC.x, pointWC.y, pointWC.z, dirWC.x, dirWC.y, dirWC.z);
+	resultPlanesArray.push(plane);
+	
+	// rear plane.
+	point.set(0.0, this.length/2, this.height/2);
+	dir.set(0.0, 1.0, 0.0);
+	pointWC = rotMat.transformPoint3D(point, pointWC);
+	dirWC = rotMat.transformPoint3D(dir, dirWC);
+	var plane = new Plane();
+	plane.setPointAndNormal(pointWC.x, pointWC.y, pointWC.z, dirWC.x, dirWC.y, dirWC.z);
+	resultPlanesArray.push(plane);
+	
+	// left plane.
+	point.set(-this.width/2, 0.0, this.height/2);
+	dir.set(-1.0, 0.0, 0.0);
+	pointWC = rotMat.transformPoint3D(point, pointWC);
+	dirWC = rotMat.transformPoint3D(dir, dirWC);
+	var plane = new Plane();
+	plane.setPointAndNormal(pointWC.x, pointWC.y, pointWC.z, dirWC.x, dirWC.y, dirWC.z);
+	resultPlanesArray.push(plane);
+	
+	// right plane.
+	point.set(this.width/2, 0.0, this.height/2);
+	dir.set(1.0, 0.0, 0.0);
+	pointWC = rotMat.transformPoint3D(point, pointWC);
+	dirWC = rotMat.transformPoint3D(dir, dirWC);
+	var plane = new Plane();
+	plane.setPointAndNormal(pointWC.x, pointWC.y, pointWC.z, dirWC.x, dirWC.y, dirWC.z);
+	resultPlanesArray.push(plane);
+	
+	return resultPlanesArray;
+};
+
+/**
+ * Makes the box mesh.
+ * @param {Number} width
+ * @param {Number} length
+ * @param {Number} height 
+ */
+ClippingBox.prototype.makeMesh = function()
+{
+	var profileAux = new Profile2D();
+	
+	// Create a outer ring in the Profile2d.
+	var outerRing = profileAux.newOuterRing();
+
+	var halfWidth = this.width * 0.5;
+	var halLength = this.length * 0.5;
+	var polyline = outerRing.newElement("POLYLINE");
+
+	polyline.newPoint2d(-halfWidth, -halLength);
+	polyline.newPoint2d(halfWidth, -halLength);
+	polyline.newPoint2d(halfWidth, halLength);
+	polyline.newPoint2d(-halfWidth, halLength);
+
+	//var rect = outerRing.newElement("RECTANGLE");
+	//rect.setCenterPosition(this.centerPoint.x, this.centerPoint.y);
+	//rect.setDimensions(this.width, this.length);
+	
+	// Extrude the Profile.
+	var extrudeSegmentsCount = 1;
+	var extrusionVector = undefined;
+	var extrusionDist = this.height;
+	var bIncludeBottomCap = true;
+	var bIncludeTopCap = true;
+
+	var mesh = Modeler.getExtrudedMesh(profileAux, extrusionDist, extrudeSegmentsCount, extrusionVector, bIncludeBottomCap, bIncludeTopCap, undefined);
+	
+	// set attributes & options.
+	this.setOneColor(0.2, 0.7, 0.8, 0.3);
+	this.attributes.isMovable = true;
+	this.attributes.isSelectable = true;
+	this.attributes.name = "clippingBox";
+	this.attributes.selectedColor4 = new Color(1.0, 0.0, 0.0, 0.0); // selectedColor fully transparent.
+	if (this.options === undefined)
+	{ this.options = {}; }
+	
+	this.options.renderWireframe = true;
+	this.options.renderShaded = true;
+	this.options.depthMask = true;
+	
+	this.objectsArray.push(mesh);
+	this.dirty = false;
+	return mesh;
+};
+'use strict';
+/**
+ * 같은 중심을 가진 튜브들의 모임. 우측과 같이 생긴 모양을 뜻함.-> ◎ 
+ * @class ConcetricTubes
+ * 
+ * @param {Object} option 
+ * @param {GeoLocationDataManager} geoLocDataManager Optional
+ */
+var ConcentricTubes = function(option, geoLocDataManager)
+{
+	MagoRenderable.call(this);
+	/**
+	 * @type {number}
+	 * @default 0
+	 */
+	this.height = defaultValue(option.height, 0);
+
+	/**
+	 * The geographic location of the factory.
+	 * @type {GeoLocationDataManager}
+	 * @default undefined
+	 */
+	this.geoLocDataManager;
+
+	if (defined(geoLocDataManager)) 
+	{
+		this.geoLocDataManager = geoLocDataManager;
+	}
+    
+	
+	this.bbox;
+	this.options = option;
+};
+
+ConcentricTubes.prototype = Object.create(MagoRenderable.prototype);
+ConcentricTubes.prototype.constructor = ConcentricTubes;
+/**
+ * 초기 튜브 정보를 가지고 튜브들을 초기화 함.
+ */
+ConcentricTubes.prototype.clear = function() 
+{
+	this.objectsArray = [];
+};
+
+/**
+ * 튜브정보를 이용하여 튜브 생성 후 튜브어레이에 넣음
+ * @param {Object} option
+ */
+ConcentricTubes.prototype.makeMesh = function() 
+{
+	var tubeInfos = this.options.tubeInfos;
+	if (defined(tubeInfos))
+	{	
+		this.clear();
+		for (var i=0, len=tubeInfos.length;i<len;i++) 
+		{
+			this.makeTube(tubeInfos[i]);
+		}
+		
+		this.setDirty(false);
+	}
+};
+
+/**
+ * 튜브정보를 이용하여 튜브 생성 후 튜브어레이에 넣음
+ * @param {Object} option
+ */
+ConcentricTubes.prototype.makeTube = function(option) 
+{
+	var interiorRadius = option.interiorRadius;
+	var exteriorRadius = option.exteriorRadius;
+	var height = this.getHeight(); 
+	var options = option;
+
+	var tube = new Tube(interiorRadius, exteriorRadius, height, options);
+	tube.owner = this;
+	this.objectsArray.push(tube);
+};
+
+/**
+ * Returns the bbox.
+ */
+ConcentricTubes.prototype.getBoundingBox = function()
+{
+	if (this.bbox === undefined)
+	{
+		this.bbox = new BoundingBox();
+		for (var i=0, len=this.getSize(); i<len; i++) 
+		{
+			var tube = this.getTube(i);
+
+			var tubeBbox = tube.getBoundingBox();
+			if (i === 0)
+			{ this.bbox.copyFrom(tubeBbox); }
+			else
+			{ this.bbox.addBox(tubeBbox); }
+		}
+	}
+	return this.bbox;
+};
+
+/**
+ * 높이 설정
+ * @param {number} height
+ */
+ConcentricTubes.prototype.setHeight = function(height) 
+{
+	this.height = height;
+};
+
+/**
+ * 높이 반환
+ * @return {number}
+ */
+ConcentricTubes.prototype.getHeight = function(height) 
+{
+	return this.height;
+};
+
+/**
+ * 튜브 추가
+ * @param {Tube} tube
+ */
+ConcentricTubes.prototype.addTube = function(tube) 
+{
+	this.objectsArray.push(tube);
+};
+/**
+ * 튜브 목록 반환
+ * @return {Array.<Tube>}
+ */
+ConcentricTubes.prototype.getTubes = function() 
+{
+	return this.objectsArray;
+};
+/**
+ * 인덱스에 해당하는 튜브 반환
+ * @param {number} index array index
+ * @return {Tube}
+ */
+ConcentricTubes.prototype.getTube = function(index) 
+{
+	return this.objectsArray[index];
+};
+
+/**
+ * 튜브 갯수 반환
+ * @return {number}
+ */
+ConcentricTubes.prototype.getSize = function() 
+{
+	return this.objectsArray.length;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+/**
+ * Cylinder.
+ * @class Cylinder
+ */
+var Cylinder = function(radius, height, options) 
+{
+	MagoRenderable.call(this);
+	if (!(this instanceof Cylinder)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+	
+	this.radius = 10;
+	this.height = 5;
+	
+	if (radius !== undefined)
+	{ this.radius = radius; }
+	
+	if (height !== undefined)
+	{ this.height = height; }
+	
+	this.dirty = true;
+	this.mesh;
+	this.bbox;
+	
+	/**
+	 * The geographic location of the factory.
+	 * @type {GeoLocationDataManager}
+	 * @default undefined
+	 */
+	this.geoLocDataManager;
+	this.color4;
+	
+	if (options !== undefined)
+	{
+		var color = options.color;
+		if (color)
+		{
+			this.color4 = new Color();
+			this.color4.setRGBA(color.r, color.g, color.b, color.a);
+		}
+		var selectedColor = options.selectedColor;
+		if (selectedColor)
+		{
+			this.selectedColor4 = new Color();
+			this.selectedColor4.setRGBA(selectedColor.r, selectedColor.g, selectedColor.b, selectedColor.a);
+		}
+	}
+};
+Cylinder.prototype = Object.create(MagoRenderable.prototype);
+Cylinder.prototype.constructor = Cylinder;
+
+/**
+ * Makes the geometry mesh.
+ */
+Cylinder.prototype.makeMesh = function()
+{
+	var profileAux = new Profile2D();
+	var circle;
+	
+	// Create a outer ring in the Profile2d.
+	var outerRing = profileAux.newOuterRing();
+	circle = outerRing.newElement("CIRCLE");
+	circle.setCenterPosition(0, 0);
+	circle.setRadius(this.radius);
+	
+	var extrusionDist = this.height;
+	var extrudeSegmentsCount = 1;
+	var extrusionVector; // undefined.
+	var bIncludeBottomCap = true;
+	var bIncludeTopCap = true;
+	
+	var mesh = Modeler.getExtrudedMesh(profileAux, extrusionDist, extrudeSegmentsCount, extrusionVector, bIncludeBottomCap, bIncludeTopCap, undefined);
+	this.objectsArray.push(mesh);
+	this.dirty = false;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+/**
+ * This class represents ellipsoid geometry.
+ * @class Ellipsoid
+ */
+var Ellipsoid = function(radiusX, radiusY, radiusZ) 
+{
+	if (!(this instanceof Ellipsoid)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+	// Ellipsoid: x^2/a^2 + y^2/b^2 + z^2/c^2 = 1, (a, b, c) = (radiusX, radiusY, radiusZ).
+	// Parametrization:
+	// polarAng = 90 - latitude, azimuthAng = longitude.
+	// x = a*sin(polarAng)*cos(azimuthAng)
+	// y = b*sin(polarAng)*sin(azimuthAng)
+	// z = c*cos(polarAng)
+	
+	this.radiusX;
+	this.radiusY;
+	this.radiusZ;
+	
+	this.centerPosition;
+	
+	this.strLonRad;
+	this.endLonRad;
+	this.strLatRad;
+	this.endLatRad;
+	
+	this.lonSegments = 120;
+	this.latSegments = 60;
+	
+	// positions(x, y, z), normals, texCoords, colors & indices array.
+	this.cartesiansArray;
+	this.normalsArray;
+	this.texCoordsArray;
+	this.colorsArray;
+	this.indices;
+	
+	this.mesh;
+	
+	if (radiusX !== undefined)
+	{ this.radiusX = radiusX; }
+	
+	if (radiusY !== undefined)
+	{ this.radiusY = radiusY; }
+	
+	if (radiusZ !== undefined)
+	{ this.radiusZ = radiusZ; }
+
+	if (this.strLonRad === undefined)
+	{ this.strLonRad = 0.0; }
+	if (this.endLonRad === undefined)
+	{ this.endLonRad = Math.PI*2; }
+	if (this.strLatRad === undefined)
+	{ this.strLatRad = -Math.PI/2; }
+	if (this.endLatRad === undefined)
+	{ this.endLatRad = Math.PI/2; }	
+
+	//this.strLonRad = 0.0;
+	//this.endLonRad = Math.PI/8;
+	//this.strLatRad = 0.0;
+	//this.endLatRad = Math.PI/8;
+
+};
+
+/**
+ * Render this feature
+ * @param {MagoManager} magoManager
+ * @param {Shader} shader
+ * @param {Number} renderType
+ */
+Ellipsoid.prototype.render = function(magoManager, shader, renderType, glPrimitive)
+{
+	var gl = magoManager.getGl();
+		
+	
+	if (renderType === 2)
+	{
+		var colorAux;
+		colorAux = magoManager.selectionColor.getAvailableColor(colorAux);
+		var idxKey = magoManager.selectionColor.decodeColor3(colorAux.r, colorAux.g, colorAux.b);
+		magoManager.selectionManager.setCandidateGeneral(idxKey, this);
+		
+		gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.
+		gl.uniform4fv(shader.oneColor4_loc, [colorAux.r/255.0, colorAux.g/255.0, colorAux.b/255.0, 1.0]);
+	}
+	
+	// render this tinTerrain.
+	var renderWireframe = false;
+	
+	var vboKey = this.vboKeyContainer.vboCacheKeysArray[0];
+	
+	// Positions.
+	if (!vboKey.bindDataPosition(shader, magoManager.vboMemoryManager))
+	{ return false; }
+
+	// Normals.***
+	if (vboKey.vboBufferNor !== undefined)
+	{
+		// Has normal data.***
+		if (!vboKey.bindDataNormal(shader, magoManager.vboMemoryManager))
+		{ return false; }
+	}
+
+	// TexCoords (No necessary for depth rendering).
+	/*
+	if (!bDepth)
+	{
+		if (!vboKey.bindDataTexCoord(shader, magoManager.vboMemoryManager))
+		{ return false; }
+	}
+	*/
+	
+	// Colors.
+	// todo:
+	
+	// Indices.
+	if (!vboKey.bindDataIndice(shader, magoManager.vboMemoryManager))
+	{ return false; }
+	
+	var indicesCount = vboKey.indicesCount;
+	
+	if (renderWireframe)
+	{
+		var trianglesCount = indicesCount;
+		for (var i=0; i<trianglesCount; i++)
+		{
+			gl.drawElements(gl.LINE_LOOP, 3, gl.UNSIGNED_SHORT, i*3); // Fill.
+		}
+	}
+	else
+	{
+		gl.drawElements(gl.TRIANGLES, indicesCount, gl.UNSIGNED_SHORT, 0); // Fill.
+	}
+};
+
+/**
+ * Makes the vbo mesh.
+ */
+Ellipsoid.prototype.makeVbo = function(vboMemManager)
+{
+	if (this.cartesiansArray === undefined)
+	{ return; }
+	
+	if (this.vboKeyContainer === undefined)
+	{ this.vboKeyContainer = new VBOVertexIdxCacheKeysContainer(); }
+	
+	var vboKey = this.vboKeyContainer.newVBOVertexIdxCacheKey();
+	
+	// Positions.
+	vboKey.setDataArrayPos(this.cartesiansArray, vboMemManager);
+	
+	// Normals.
+	if (this.normalsArray)
+	{
+		vboKey.setDataArrayNor(this.normalsArray, vboMemManager);
+	}
+	
+	// TexCoords.
+	if (this.texCoordsArray)
+	{
+		vboKey.setDataArrayTexCoord(this.texCoordsArray, vboMemManager);
+	}
+		
+	// Indices.
+	vboKey.setDataArrayIdx(this.indices, vboMemManager);
+		
+	/*
+	// Todo:
+	if (normal)
+	{ vboKey.norVboDataArray = Int8Array.from(norArray); }
+	
+	if (color)
+	{ vboKey.colVboDataArray = Uint8Array.from(colArray); }
+	this.cartesiansArray;
+	this.texCoordsArray;
+	this.colorsArray;
+	this.indices;
+	*/
+};
+
+/**
+ * Makes the ellipsoid mesh.
+ */
+Ellipsoid.prototype.makeMesh = function(options)
+{
+	var bTrianglesSenseCCW = true;
+	if (options !== undefined)
+	{
+		if (options.bTrianglesSenseCCW !== undefined)
+		{ bTrianglesSenseCCW = options.bTrianglesSenseCCW; }
+	}
+	
+	if (this.strLonRad > this.endLonRad)
+	{
+		this.strLonRad -= 2*Math.PI;
+	}
+	var increLon = (this.endLonRad - this.strLonRad)/this.lonSegments;
+	var increLat = (this.endLatRad - this.strLatRad)/this.latSegments;
+	var currLonRad = this.strLonRad;
+	var currLatRad = this.strLatRad;
+	var radiusX = this.radiusX;
+	var radiusY = this.radiusY;
+	var radiusZ = this.radiusZ;
+	var radiusX2 = radiusX*radiusX;
+	var radiusY2 = radiusY*radiusY;
+	var radiusZ2 = radiusZ*radiusZ;
+	
+	var totalPointsCount = (this.lonSegments+1)*(this.latSegments+1);
+	this.cartesiansArray = new Float32Array(totalPointsCount*3); // Init.***
+	this.normalsArray = new Int8Array(totalPointsCount*3); // Init.***
+	var idx = 0;
+	
+	var bbox = new BoundingBox();
+	
+	for (var j=0; j<this.latSegments+1; j++)
+	{
+		currLatRad = this.strLatRad + j*increLat;
+		var sinLat = Math.sin(currLatRad);
+		var cosLat = Math.cos(currLatRad);
+		for (var i = 0; i<this.lonSegments+1; i++)
+		{
+			currLonRad = this.strLonRad + i*increLon;
+			var sinLon = Math.sin(currLonRad);
+			var cosLon = Math.cos(currLonRad);
+	
+			// Position.***
+			var x = radiusX * cosLat * cosLon;
+			var y = radiusY * cosLat * sinLon;
+			var z = radiusZ * sinLat;
+			
+			this.cartesiansArray[idx*3] = x;
+			this.cartesiansArray[idx*3+1] = y;
+			this.cartesiansArray[idx*3+2] = z;
+			
+			// Normal.***
+			var point = new Point3D(x, y, z);
+
+			// Calculate bbox before of normalizing the point.***
+			if (idx === 0)
+			{
+				bbox.init(point);
+			}
+			else 
+			{
+				bbox.addPoint(point);
+			}
+			
+			point.set(x/radiusX2, y/radiusY2, z/radiusZ2);
+			point.unitary();
+			
+			if (bTrianglesSenseCCW)
+			{
+				this.normalsArray[idx*3] = point.x*127;
+				this.normalsArray[idx*3+1] = point.y*127;
+				this.normalsArray[idx*3+2] = point.z*127;
+			}
+			else 
+			{
+				this.normalsArray[idx*3] = -point.x*127;
+				this.normalsArray[idx*3+1] = -point.y*127;
+				this.normalsArray[idx*3+2] = -point.z*127;
+			}
+			
+			
+			idx += 1;
+		}
+	}
+	
+	// Calculate the centerPosition of the ellipsoid.***
+	this.centerPosition = bbox.getCenterPoint();
+	
+	for (var i=0; i<totalPointsCount; i++)
+	{
+		this.cartesiansArray[i*3] -= this.centerPosition.x;
+		this.cartesiansArray[i*3+1] -= this.centerPosition.y;
+		this.cartesiansArray[i*3+2] -= this.centerPosition.z;
+	}
+	
+	if (this.terrainPositionHIGH === undefined)
+	{ this.terrainPositionHIGH = new Float32Array(3); }
+
+	if (this.terrainPositionLOW === undefined)
+	{ this.terrainPositionLOW = new Float32Array(3); }
+	ManagerUtils.calculateSplited3fv([this.centerPosition.x, this.centerPosition.y, this.centerPosition.z], this.terrainPositionHIGH, this.terrainPositionLOW);
+	
+	/*
+	for (var i = 0; i<this.lonSegments+1; i++)
+	{
+		currLonRad = this.strLonRad + i*increLon;
+		var sinLon = Math.sin(currLonRad);
+		var cosLon = Math.cos(currLonRad);
+		for (var j=0; j<this.latSegments+1; j++)
+		{
+			// Position.***
+			currLatRad = this.strLatRad + j*increLat;
+			var sinLat = Math.sin(currLatRad);
+			var x = radiusX * sinLat * cosLon;
+			var y = radiusY * sinLat * sinLon;
+			var z = radiusZ*Math.cos(currLatRad);
+			
+			this.cartesiansArray[idx*3] = x;
+			this.cartesiansArray[idx*3+1] = y;
+			this.cartesiansArray[idx*3+2] = z;
+			
+			// Normal.***
+			var normal = new Point3D(x, y, z);
+			normal.unitary();
+			
+			this.normalsArray[idx*3] = normal.x*255;
+			this.normalsArray[idx*3+1] = normal.y*255;
+			this.normalsArray[idx*3+2] = normal.z*255;
+			
+			idx += 1;
+		}
+	}
+	*/
+	
+	// Finally make indices array.***
+	var numCols = this.lonSegments + 1;
+	var numRows = this.latSegments + 1;
+
+	this.indices = GeometryUtils.getIndicesTrianglesRegularNet(numCols, numRows, undefined, options);
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+/**
+ * GolfHoleFlag.
+ * @class GolfHoleFlag
+ */
+var GolfHoleFlag = function(radius, height, options) 
+{
+	MagoRenderable.call(this);
+	if (!(this instanceof GolfHoleFlag)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+	
+	this.radius = 1.0;
+	this.height = 5;
+	
+	if (radius !== undefined)
+	{ this.radius = radius; }
+	
+	if (height !== undefined)
+	{ this.height = height; }
+
+	this.baseRadius = 4.0*this.radius;
+	this.flagOrientation;
+	
+	this.dirty = true;
+	this.mesh;
+	this.bbox;
+	
+	/**
+	 * The geographic location of the factory.
+	 * @type {GeoLocationDataManager}
+	 * @default undefined
+	 */
+	this.geoLocDataManager;
+	this.color4;
+	
+	if (options !== undefined)
+	{
+		var color = options.color;
+		if (color)
+		{
+			this.color4 = new Color();
+			this.color4.setRGBA(color.r, color.g, color.b, color.a);
+		}
+		var selectedColor = options.selectedColor;
+		if (selectedColor)
+		{
+			this.selectedColor4 = new Color();
+			this.selectedColor4.setRGBA(selectedColor.r, selectedColor.g, selectedColor.b, selectedColor.a);
+		}
+	}
+	
+};
+GolfHoleFlag.prototype = Object.create(MagoRenderable.prototype);
+GolfHoleFlag.prototype.constructor = GolfHoleFlag;
+
+/**
+ * Makes the geometry mesh.
+ */
+GolfHoleFlag.prototype.makeMesh = function()
+{
+	if (this.objectsArray === undefined)
+	{ this.objectsArray = []; }
+
+	// Create the base of the flag.**************************************************
+	var baseHeight = this.height * 0.01;
+	var options = {
+		color: new Color(1.0, 1.0, 0.0, 1.0)
+	};
+	var base = new Cylinder(this.baseRadius, baseHeight, options);
+	this.objectsArray.push(base);
+	
+	// Create the flag flagpole.**************************************************
+	var options = {
+		color: new Color(0.9, 0.9, 0.95, 1.0)
+	};
+	var flagpole = new Cylinder(this.radius, this.height, options);
+	this.objectsArray.push(flagpole);
+	
+	// Create the triangle flag.**************************************************
+	var profile2dAux = new Profile2D();
+	
+	// Outer ring.**
+	var outerRing = profile2dAux.newOuterRing();
+ 
+	var flagHeight = 2;
+	var flagWidth = 10.0;
+
+	var polyline = outerRing.newElement("POLYLINE");
+	
+	polyline.newPoint2d(-flagHeight/2, 0);    
+	polyline.newPoint2d(flagHeight/2, 0);    
+	polyline.newPoint2d(0, flagWidth);
+
+	var extrudeSegmentsCount = 1;
+	var extrusionVector = undefined;
+	var bIncludeBottomCap = false;
+	var bIncludeTopCap = false;
+	var extrudeDist = 0.1;
+	var mesh = Modeler.getExtrudedMesh(profile2dAux, extrudeDist, extrudeSegmentsCount, extrusionVector, bIncludeBottomCap, bIncludeTopCap, mesh);
+	mesh.setOneColor(1.0, 0.1, 0.1, 1.0);
+	mesh.rotate(90.0, 0.0, 1.0, 0.0);
+	mesh.rotate(45.0, 0.0, 0.0, 1.0);
+	mesh.translate(0.0, 0.0, this.height - flagHeight/2);
+
+	this.objectsArray.push(mesh);
+	
+	this.dirty = false;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+/**
+ * ImageViewerRectangle.
+ * @class ImageViewerRectangle
+ */
+var ImageViewerRectangle = function(width, height) 
+{
+	if (!(this instanceof ImageViewerRectangle)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+	
+	this.width = width;
+	this.height = height;
+	this.geoLocDataManager;
+	this.vboKeysContainer;
+};
+
+/**
+ * Render this box feature
+ * @param {MagoManager} magoManager
+ * @param {Shader} shader
+ */
+ImageViewerRectangle.prototype.makeMesh = function(magoManager)
+{
+	// There are only 4 vertices.***
+	var semiWidth = this.width/2;
+	var semiHeight = this.height/2;
+	
+	var vertex_ld = new Vertex();
+	vertex_ld.point3d.set(-semiWidth, -semiHeight, 0);
+	vertex_ld.normal = new Point3D(0, 0, 1);
+	vertex_ld.texCoord = new Point2D(0, 0);
+	
+	var vertex_rd = new Vertex();
+	vertex_rd.point3d.set(semiWidth, -semiHeight, 0);
+	vertex_rd.normal = new Point3D(0, 0, 1);
+	vertex_rd.texCoord = new Point2D(1, 0);
+	
+	var vertex_ru = new Vertex();
+	vertex_ru.point3d.set(semiWidth, semiHeight, 0);
+	vertex_ru.normal = new Point3D(0, 0, 1);
+	vertex_ru.texCoord = new Point2D(1, 1);
+	
+	var vertex_lu = new Vertex();
+	vertex_lu.point3d.set(-semiWidth, semiHeight, 0);
+	vertex_lu.normal = new Point3D(0, 0, 1);
+	vertex_lu.texCoord = new Point2D(0, 1);
+	
+	var verticesArray = [vertex_ld, vertex_rd, vertex_ru, vertex_lu];
+	
+	if (this.vboKeysContainer === undefined)
+	{ this.vboKeysContainer = new VBOVertexIdxCacheKeysContainer(); }
+	
+	var vboMemManager = magoManager.vboMemoryManager;
+	var vbo = this.vboKeysContainer.newVBOVertexIdxCacheKey();
+	VertexList.setIdxInList(verticesArray);
+	VertexList.getVboDataArrays(verticesArray, vbo, vboMemManager);
+	
+	// Finally make the indices.***
+	var idxDataArray = new Uint16Array([0, 1, 3, 1, 2, 3]);
+	vbo.setDataArrayIdx(idxDataArray, vboMemManager);
+};
+
+/**
+ * Render this box feature
+ * @param {MagoManager} magoManager
+ * @param {Shader} shader
+ */
+ImageViewerRectangle.prototype.render = function(magoManager, shader, glPrimitive)
+{
+	if (this.vboKeysContainer === undefined)
+	{
+		this.makeMesh(magoManager);
+	}
+	
+	var vboMemManager = magoManager.vboMemoryManager;
+	var gl = magoManager.sceneState.gl;
+	var primitive;
+	
+	if (this.color4)
+	{ gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, 1.0]); }
+
+	shader.useProgram();
+	shader.resetLastBuffersBinded();
+
+	shader.enableVertexAttribArray(shader.position3_loc);
+	shader.disableVertexAttribArray(shader.color4_loc);
+	shader.enableVertexAttribArray(shader.normal3_loc); 
+	shader.enableVertexAttribArray(shader.texCoord2_loc); 
+	
+	shader.bindUniformGenerals();
+	
+	var buildingGeoLocation = this.geoLocDataManager.getCurrentGeoLocationData();
+	buildingGeoLocation.bindGeoLocationUniforms(gl, shader); // rotMatrix, positionHIGH, positionLOW.
+	
+	
+	var vboKeysCount = this.vboKeysContainer.vboCacheKeysArray.length;
+	for (var i=0; i<vboKeysCount; i++)
+	{
+		var vboKey = this.vboKeysContainer.vboCacheKeysArray[i];
+		
+		// Positions.
+		if (!vboKey.bindDataPosition(shader, vboMemManager))
+		{ return false; }
+		
+		// Normals.
+		if (vboKey.vboBufferNor)
+		{
+			if (!vboKey.bindDataNormal(shader, vboMemManager))
+			{ return false; }
+		}
+		else 
+		{
+			shader.disableVertexAttribArray(shader.normal3_loc);
+		}
+		
+		// Colors.
+		if (vboKey.vboBufferCol)
+		{
+			if (!vboKey.bindDataColor(shader, vboMemManager))
+			{ return false; }
+		}
+		else 
+		{
+			shader.disableVertexAttribArray(shader.color4_loc);
+		}
+		
+		// TexCoords.
+		if (vboKey.vboBufferTCoord)
+		{
+			if (!vboKey.bindDataTexCoord(shader, vboMemManager))
+			{ return false; }
+		}
+		else 
+		{
+			shader.disableVertexAttribArray(shader.texCoord2_loc);
+		}
+		
+		// Indices.
+		if (!vboKey.bindDataIndice(shader, vboMemManager))
+		{ return false; }
+		
+		if (glPrimitive)
+		{ primitive = glPrimitive; }
+		else
+		{ primitive = gl.TRIANGLES; }
+		
+		gl.drawElements(primitive, vboKey.indicesCount, gl.UNSIGNED_SHORT, 0);
+	}
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+/**
+ * Pipe.
+ * @class Pipe
+ */
+var Pipe = function(interiorRadius, exteriorRadius, height, options) 
+{
+	if (!(this instanceof Pipe)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+	
+	this.intRadius = 10;
+	this.extRadius = 20;
+	this.height = 5;
+	
+	if (interiorRadius !== undefined)
+	{ this.intRadius = interiorRadius; }
+	
+	if (exteriorRadius !== undefined)
+	{ this.extRadius = exteriorRadius; }
+	
+	if (height !== undefined)
+	{ this.height = height; }
+	
+	this.dirty = true;
+	this.mesh;
+	
+	/**
+	 * The geographic location of the factory.
+	 * @type {GeoLocationDataManager}
+	 * @default undefined
+	 */
+	this.geoLocDataManager;
+	this.color4;
+	
+	if (options !== undefined)
+	{
+		var color = options.color;
+		if (color)
+		{
+			this.color4 = new Color();
+			this.color4.setRGBA(color.r, color.g, color.b, color.a);
+		}
+	}
+};
+
+/**
+ * Makes the geometry mesh.
+ */
+Pipe.prototype.makeMesh = function()
+{
+	var profileAux = new Profile2D();
+	var circle;
+	
+	// Create a outer ring in the Profile2d.
+	var outerRing = profileAux.newOuterRing();
+	circle = outerRing.newElement("CIRCLE");
+	circle.setCenterPosition(0, 0);
+	circle.setRadius(this.extRadius);
+	
+	// Now create interior ring.***
+	var innerRing = profileAux.newInnerRing();
+	circle = innerRing.newElement("CIRCLE");
+	circle.setCenterPosition(0, 0);
+	circle.setRadius(this.intRadius);
+	
+	var extrusionDist = this.height;
+	var extrudeSegmentsCount = 1;
+	var extrusionVector; // undefined.
+	var bIncludeBottomCap = true;
+	var bIncludeTopCap = true;
+	
+	this.mesh = Modeler.getExtrudedMesh(profileAux, extrusionDist, extrudeSegmentsCount, extrusionVector, bIncludeBottomCap, bIncludeTopCap, undefined);
+	
+	this.dirty = false;
+};
+
+/**
+ * Renders the factory.
+ */
+Pipe.prototype.render = function(magoManager, shader, renderType, glPrimitive)
+{
+	if (this.dirty)
+	{ this.makeMesh(); }
+	
+	if (this.mesh === undefined)
+	{ return false; }
+
+	// Set geoLocation uniforms.***
+	var gl = magoManager.getGl();
+	var buildingGeoLocation = this.geoLocDataManager.getCurrentGeoLocationData();
+	buildingGeoLocation.bindGeoLocationUniforms(gl, shader); // rotMatrix, positionHIGH, positionLOW.
+	
+	gl.uniform1i(shader.refMatrixType_loc, 0); // in magoManager case, there are not referencesMatrix.***
+	
+	if (renderType === 0)
+	{
+		// Depth render.***
+	}
+	else if (renderType === 1)
+	{
+		// Color render.***
+		//gl.blendFunc( gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA );
+		gl.enable(gl.BLEND);
+		gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.***
+		
+		// Check if is selected.***
+		var selectionManager = magoManager.selectionManager;
+		if (selectionManager.isObjectSelected(this))
+		{
+			gl.disable(gl.BLEND);
+			gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, 1.0]);
+		}
+		else 
+		{
+			gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, this.color4.a]);
+		}
+		
+	}
+	else if (renderType === 2)
+	{
+		// Selection render.***
+		var selectionColor = magoManager.selectionColor;
+		var colorAux = magoManager.selectionColor.getAvailableColor(undefined);
+		var idxKey = magoManager.selectionColor.decodeColor3(colorAux.r, colorAux.g, colorAux.b);
+		magoManager.selectionManager.setCandidateGeneral(idxKey, this);
+		
+		gl.uniform4fv(shader.oneColor4_loc, [colorAux.r/255.0, colorAux.g/255.0, colorAux.b/255.0, 1.0]);
+		gl.disable(gl.BLEND);
+	}
+
+	this.mesh.render(magoManager, shader, renderType, glPrimitive);
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+/**
+ * RenderableObject geometry.
+ * @class RenderableObject
+ */
+var RenderableObject = function(options) 
+{
+	MagoRenderable.call(this);
+	if (!(this instanceof RenderableObject)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+	// See MagoRenderable's members.
+	this.setDirty(false);
+
+};
+RenderableObject.prototype = Object.create(MagoRenderable.prototype);
+RenderableObject.prototype.constructor = RenderableObject;
+'use strict';
+
+/**
+ * SkeletalAnimationObject is a class object.
+ * 
+ * @class SkeletalAnimationObject
+ * @constructor 
+ * @param {string} The name of the SkeletalAnimationObject.
+ */
+var SkeletalAnimationObject = function(name) 
+{
+	this.modelMesh;
+	
+};
+
+SkeletalAnimationObject.prototype.init_TEST = function()
+{
+	
+};
+'use strict';
+/**
+ * SpeechBubble is a class object.
+ * 
+ * @class SpeechBubble
+ * @constructor 
+ */
+var SpeechBubble = function() 
+{
+	this.point2dArray = [];
+	this.repository = {};
+};
+
+/**
+ * set default speech bubble profile
+ */
+SpeechBubble.prototype.makeDefault = function(imageSize)
+{
+	//origin is left up corner 0,0
+	//--------------
+	//
+	var width = imageSize[0];
+	var height = imageSize[1];
+
+	var minSize = (width > height) ? height : width;
+
+	var offset = minSize * 0.05;
+	var bubbleHeight = 0.75 * height;
+	var tailWidth = 0.2 * width;
+	var center = 0.5 * width;
+	var cornerRadius = minSize * 0.20;
+
+
+
+	this.point2dArray[0] = getObj(center, height-offset, 'moveTo');
+	this.point2dArray[1] = getObj(center + tailWidth/2, bubbleHeight, 'lineTo');
+	this.point2dArray[2] = getObj(width - cornerRadius, bubbleHeight, 'lineTo');
+	this.point2dArray[3] = getObj(width-offset, bubbleHeight, 'quadraticCurveTo', width-offset, bubbleHeight - cornerRadius);
+	this.point2dArray[4] = getObj(width-offset, cornerRadius, 'lineTo');
+	this.point2dArray[5] = getObj(width-offset, offset, 'quadraticCurveTo', width - cornerRadius, offset);
+	this.point2dArray[6] = getObj(cornerRadius, offset, 'lineTo');
+	this.point2dArray[7] = getObj(offset, offset, 'quadraticCurveTo', offset, cornerRadius);
+	this.point2dArray[8] = getObj(offset, bubbleHeight - cornerRadius, 'lineTo');
+	this.point2dArray[9] = getObj(offset, bubbleHeight, 'quadraticCurveTo', cornerRadius, bubbleHeight);
+	this.point2dArray[10] = getObj(center - tailWidth/2, bubbleHeight, 'lineTo');
+    
+	function getObj(x, y, command, targetX, targetY) 
+	{
+		var point = [x, y];
+		if (targetX && targetY) 
+		{
+			point.push(targetX);
+			point.push(targetY);
+		}
+		return {
+			point   : point,
+			command : command
+		};
+	}
+};
+
+/**
+ * @param {Array<number>} imageSize
+ * @param {Color} color
+ * @param {object} textOption
+ */
+SpeechBubble.prototype.getPng = function (imageSize, color, textOption) 
+{
+	//need validation
+	//var hexColor = color.getHexCode();
+	var aux = [];
+	aux.push(imageSize);
+	aux.push(color);
+	aux.push(textOption);
+	var id = JSON.stringify(aux);
+
+	if (this.repository[id])
+	{
+		return this.repository[id].toDataURL();
+	}
+
+	this.makeDefault(imageSize);
+	var canvas = makeCanvas(imageSize, color, textOption, this.point2dArray);
+	this.repository[id] = canvas;
+	return canvas.toDataURL();
+
+	function makeCanvas(size, hex, tOption, p2dArray) 
+	{
+		var c = document.createElement("canvas");
+		var w = size[0];
+		var h = size[1];
+		c.width = w;
+		c.height = h;
+
+		var ctx = c.getContext("2d");
+		ctx.save();
+		ctx.fillStyle = hex;
+		ctx.strokeStyle = '#000000';
+		ctx.lineWidth = 2;
+		ctx.beginPath();
+		
+		var p2dLength = p2dArray.length;
+		for (var i=0;i<p2dLength;i++) 
+		{
+			var p2d = p2dArray[i];
+			if (p2d.point.length === 2) 
+			{
+				ctx[p2d.command].call(ctx, p2d.point[0], p2d.point[1]);
+			}
+			else 
+			{
+				ctx[p2d.command].call(ctx, p2d.point[0], p2d.point[1], p2d.point[2], p2d.point[3]);
+			}
+		}
+
+		ctx.closePath();
+		ctx.fill();
+		ctx.stroke();
+		
+		if (tOption) 
+		{
+			var textValue = tOption.text; //required.
+			var fontPixel = defaultValue(tOption.pixel, 10);
+			var fontType = defaultValue(tOption.font, 'sans-serif');
+			var fontColor = defaultValue(tOption.color, 'white');
+			var fontBorderColor = defaultValue(tOption.borderColor, 'black');
+
+			ctx.font = 'bold ' + fontPixel + "px " + fontType;
+			ctx.fillStyle = fontColor;
+			ctx.strokeStyle = fontBorderColor;
+			ctx.textAlign = "center";
+			ctx.strokeText(textValue, w /2, h /2);
+			ctx.fillText(textValue, w /2, h /2);
+		}
+
+		ctx.restore();
+		return c;
+	}
+};
+'use strict';
+
+/**
+ * TestFreeContourWallBuilding geometry.
+ * @class TestFreeContourWallBuilding
+ */
+var TestFreeContourWallBuilding = function(options) 
+{
+	MagoRenderable.call(this, options);
+	if (!(this instanceof TestFreeContourWallBuilding)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+	this.height;
+	this.point2DList;
+	if (options !== undefined)
+	{
+		if (options.points2dArray !== undefined)
+		{
+			if (this.point2DList === undefined)
+			{
+				this.point2DList = new Point2DList();
+			}
+			
+			this.point2DList.pointsArray = options.points2dArray;
+		}
+		
+		if (options.height !== undefined)
+		{
+			this.height = options.height;
+		}
+	}
+	
+	
+};
+
+TestFreeContourWallBuilding.prototype = Object.create(MagoRenderable.prototype);
+TestFreeContourWallBuilding.prototype.constructor = TestFreeContourWallBuilding;
+
+/*
+if (this.testClippingPlanes === undefined)
+	{
+		// make a modelmatrix for the clippingPlanes.
+		var modelMatrix;
+		var geoCoord = new GeographicCoord(126.61340759235748, 37.57613526692086, 0);
+		var modelmatrix = Globe.transformMatrixAtGeographicCoord(geoCoord, undefined);
+		var globe = this.scene._globe;
+		globe.clippingPlanes = new Cesium.ClippingPlaneCollection({
+			modelMatrix : modelmatrix,
+			planes      : [
+				new Cesium.ClippingPlane(new Cesium.Cartesian3( 1.0,  0.0, 0.0), -50.0),
+				new Cesium.ClippingPlane(new Cesium.Cartesian3(-1.0,  0.0, 0.0), -50.0),
+				new Cesium.ClippingPlane(new Cesium.Cartesian3( 0.0,  1.0, 0.0), -200.0),
+				new Cesium.ClippingPlane(new Cesium.Cartesian3( 0.0, -1.0, 0.0), -200.0)
+			],
+			edgeWidth : 1.0,
+			edgeColor : Cesium.Color.WHITE,
+			enabled   : true
+		});
+	
+		this.testClippingPlanes = true;
+	}
+	*/
+	
+TestFreeContourWallBuilding.prototype.makeMesh = function()
+{
+	var profileAux = new Profile2D();
+	
+	// Create a outer ring in the Profile2d.
+	var outerRing = profileAux.newOuterRing();
+	var polyline = outerRing.newElement("POLYLINE");
+
+	var pointsCount = this.point2DList.getPointsCount();
+	for (var i=0; i<pointsCount; i++)
+	{
+		var point2d = this.point2DList.getPoint(i);
+		polyline.newPoint2d(point2d.x, point2d.y);
+	}
+	//var leftExpandDist = 0.2;
+	//var innerPointsArray = Point2DList.getExpandedPoints(this.point2DList.pointsArray, undefined, leftExpandDist, rightExpandDist, bLoop);
+	
+	// Now create interior ring.***
+	//var innerRing = profileAux.newInnerRing();
+	//var circle = innerRing.newElement("CIRCLE");
+	//circle.setCenterPosition(0, 0);
+	//circle.setRadius(2);
+	
+	// Extrude the Profile.
+	var extrudeSegmentsCount = 1;
+	var extrusionVector = undefined;
+	var extrusionDist = this.height;
+	var bIncludeBottomCap = true;
+	var bIncludeTopCap = true;
+	
+	if (this.objectsArray === undefined)
+	{ this.objectsArray = []; }
+
+	var mesh = Modeler.getExtrudedMesh(profileAux, extrusionDist, extrudeSegmentsCount, extrusionVector, bIncludeBottomCap, bIncludeTopCap, undefined);
+	this.objectsArray.push(mesh);
+	this.dirty = false;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+/**
+ * Tube.
+ * @class Tube
+ */
+var Tube = function(interiorRadius, exteriorRadius, height, options) 
+{
+	MagoRenderable.call(this);
+	if (!(this instanceof Tube)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+	
+	this.intRadius = 10;
+	this.extRadius = 20;
+	this.height = 5;
+	
+	if (interiorRadius !== undefined)
+	{ this.intRadius = interiorRadius; }
+	
+	if (exteriorRadius !== undefined)
+	{ this.extRadius = exteriorRadius; }
+	
+	if (height !== undefined)
+	{ this.height = height; }
+	
+	this.dirty = true;
+	this.mesh;
+	this.bbox;
+	
+	/**
+	 * The geographic location of the factory.
+	 * @type {GeoLocationDataManager}
+	 * @default undefined
+	 */
+	this.geoLocDataManager;
+	this.color4;
+	
+	if (options !== undefined)
+	{
+		var color = options.color;
+		if (color)
+		{
+			this.color4 = new Color();
+			this.color4.setRGBA(color.r, color.g, color.b, color.a);
+		}
+		var selectedColor = options.selectedColor;
+		if (selectedColor)
+		{
+			this.selectedColor4 = new Color();
+			this.selectedColor4.setRGBA(selectedColor.r, selectedColor.g, selectedColor.b, selectedColor.a);
+		}
+	}
+};
+Tube.prototype = Object.create(MagoRenderable.prototype);
+Tube.prototype.constructor = Tube;
+
+/**
+ * Returns the bbox.
+ */
+Tube.prototype.getBoundingBox = function()
+{
+	if (this.bbox === undefined)
+	{
+		this.bbox = new BoundingBox();
+		var maxRadius = this.extRadius;
+		if (maxRadius < this.intRadius)
+		{ maxRadius = this.intRadius; }
+		
+		this.bbox.set(-maxRadius, -maxRadius, 0.0, maxRadius, maxRadius, this.height);
+	}
+	return this.bbox;
+};
+
+/**
+ * Makes the geometry mesh.
+ */
+Tube.prototype.makeMesh = function()
+{
+	var profileAux = new Profile2D();
+	var circle;
+	
+	// Create a outer ring in the Profile2d.
+	var outerRing = profileAux.newOuterRing();
+	circle = outerRing.newElement("CIRCLE");
+	circle.setCenterPosition(0, 0);
+	circle.setRadius(this.extRadius);
+	
+	// Now create interior ring.***
+	var innerRing = profileAux.newInnerRing();
+	circle = innerRing.newElement("CIRCLE");
+	circle.setCenterPosition(0, 0);
+	circle.setRadius(this.intRadius);
+	
+	var extrusionDist = this.height;
+	var extrudeSegmentsCount = 1;
+	var extrusionVector; // undefined.
+	var bIncludeBottomCap = true;
+	var bIncludeTopCap = true;
+	
+	var mesh = Modeler.getExtrudedMesh(profileAux, extrusionDist, extrudeSegmentsCount, extrusionVector, bIncludeBottomCap, bIncludeTopCap, undefined);
+	this.objectsArray.push(mesh);
+	this.dirty = false;
+};
+'use strict';
+
+/**
+ * vector geometry.
+ * This class is analog to "Mesh" class, but vectorMesh is for points, lines, polylines data type.
+ * @class VectorMesh
+ */
+var VectorMesh = function(options) 
+{
+	if (!(this instanceof VectorMesh)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+	// This class is analog to "Mesh" class, but "VectorMesh" is for points, lines, polylines data type.
+
+	this.name;
+	this.id;
+	this.thickness = 1.0;
+	this.color4;
+	
+	this.vertexList;
+
+	this.vboKeysContainer;
+	
+	if (options)
+	{
+		if (options.thickness)
+		{ this.thickness = options.thickness; }
+		
+		if (options.color)
+		{ this.color4 = options.color; }
+	}
+};
+
+/**
+ * Render the VectorMesh as child. equal render
+ * @param {MagoManager}magoManager
+ * @param {Shader} shader
+ * @param {Number} renderType
+ * @param glPrimitive
+ * @TODO : 누가 이 gl primitive의 type 정체를 안다면 좀 달아주세요ㅠㅠ 세슘 쪽인거 같은데ㅠㅠ
+ */
+VectorMesh.prototype.renderAsChild = function (magoManager, shader, renderType, glPrimitive, isSelected, options) 
+{
+	var depthMask = true;
+	var gl = magoManager.getGl();
+	
+	if (options)
+	{
+		if (options.depthMask !== undefined)
+		{
+			depthMask = options.depthMask;
+		}
+	}
+
+	gl.depthMask(depthMask);
+	this.render(magoManager, shader, renderType, glPrimitive, isSelected);
+	gl.depthMask(true);
+
+};
+
+/**
+ * Render the VectorMesh
+ * @param {MagoManager}magoManager
+ * @param {Shader} shader
+ * @param {Number} renderType
+ * @param glPrimitive
+ * @TODO : 누가 이 gl primitive의 type 정체를 안다면 좀 달아주세요ㅠㅠ 세슘 쪽인거 같은데ㅠㅠ
+ */
+VectorMesh.prototype.render = function(magoManager, shader, renderType, glPrimitive, isSelected)
+{
+	if (this.vboKeysContainer === undefined)
+	{ return; }
+	
+	var vbo = this.vboKeysContainer.getVboKey(0);
+	var gl = magoManager.getGl();
+
+	gl.blendEquationSeparate(gl.FUNC_ADD, gl.FUNC_ADD);
+	gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+	gl.disable(gl.CULL_FACE);
+	
+	gl.enableVertexAttribArray(shader.prev_loc);
+	gl.enableVertexAttribArray(shader.current_loc);
+	gl.enableVertexAttribArray(shader.next_loc);
+
+	var sceneState = magoManager.sceneState;
+	var projMat = sceneState.projectionMatrix;
+	var viewMat = sceneState.modelViewMatrix;
+	var drawingBufferWidth = sceneState.drawingBufferWidth;
+	var drawingBufferHeight = sceneState.drawingBufferHeight;
+	
+	if (this.thickness === undefined)
+	{ this.thickness = 2.0; }
+	
+	gl.uniform4fv(shader.color_loc, [0.5, 0.7, 0.9, 1.0]);
+	gl.uniform2fv(shader.viewport_loc, [drawingBufferWidth[0], drawingBufferHeight[0]]);
+	gl.uniform1f(shader.thickness_loc, this.thickness);
+
+	var vboPos = vbo.vboBufferPos;
+	var dim = vboPos.dataDimensions; // in this case dimensions = 4.
+	if (!vboPos.isReady(gl, magoManager.vboMemoryManager))
+	{
+		return;
+	}
+
+	gl.bindBuffer(gl.ARRAY_BUFFER, vboPos.key);
+	gl.vertexAttribPointer(shader.prev_loc, dim, gl.FLOAT, false, 16, 0);
+	gl.vertexAttribPointer(shader.current_loc, dim, gl.FLOAT, false, 16, 64-32);
+	gl.vertexAttribPointer(shader.next_loc, dim, gl.FLOAT, false, 16, 128-32);
+
+	gl.drawArrays(gl.TRIANGLE_STRIP, 0, vbo.vertexCount-4);
+
+	gl.enable(gl.CULL_FACE);
+	
+};
+'use strict';
+
+var Vehicle = function(width, length, height, options) 
+{
+	MagoRenderable.call(this);
+
+	if (!(this instanceof Vehicle)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+	this.PARALLEL_ROTATION_ANGLE = 90;
+	this.frame;
+	this.frontArrow;
+	this.rearArrow;
+    
+	this.frontArrowPos;
+	this.rearArrowPos;
+    
+	this.width = width;
+	this.length = length;
+	this.height = height;
+
+	/**
+	 * distance between wheel axis
+	 * @type {number}
+	 */
+	this.wheelbase = length * 0.8;
+    
+	/**
+	 * y axix is zero degree
+	 * @type {number}
+	 */
+	this.rearAngleDeg = 0;
+
+	/**
+	 * y axix is zero degree
+	 * @type {number}
+	 */
+	this.frontAngleDeg = 0;
+
+	this.isDrawArrow = true;
+
+	this.eventStatus = {
+		changingFrontArrow : false,
+		changingRearArrow  : false,
+		footOnAccel        : false
+	};
+
+	this.mode = BasicVehicle.MODE.NORMAL;
+	this.accelStatus = BasicVehicle.ACCEL_STATUS.FORWARD;
+
+	//this.changingFrontArrow = false;
+	this.changingFrontArrowType = 0;
+	this.changingFrontArrowSpeed = 0.1;
+
+	//this.changingRearArrow = false;
+	this.changingRearArrowType = 0;
+	this.changingRearArrowSpeed = 0.1;
+
+	//move
+	/**
+	 * unit m/s, EXAMPLE. 1.388889M/S IS 5KM/H 
+	 * @type {number}
+	 */
+	this.maxSpeed = 12;
+	this.frontCurrentSpeed = 0;
+	this.frontAcceleration = 1;
+	this.frontDeacceleration = 3.8;
+
+	this.rearCurrentSpeed = 0;
+	this.rearAcceleration = 1;
+	this.rearDeacceleration = 3.8;
+
+	this.pivotPointLC;
+	this.isParallelDirection = false;
+
+	this.guidePoint = new Point3DList();
+
+	this.auxOffsetVector;
+
+	this.parallelRotationDist = 10;
+    
+	this.frame;
+
+	this.carriedObjectsArray = [];
+
+	this.shimmyMatDimension = new Point2D(this.width * 0.7, this.wheelbase);
+	this.shimmyMat = new Point2D(2, 12);
+
+	var maxPointCount = 50;
+
+	this.trajectoryLength = this.length * 2;
+	this.frontTrajectoryPointList = new Point3DList();
+	this.rearTrajectoryPointList = new Point3DList();
+
+	while (this.frontTrajectoryPointList.getPointsCount() !== maxPointCount) 
+	{
+		this.frontTrajectoryPointList.newPoint();
+	}
+	while (this.rearTrajectoryPointList.getPointsCount() !== maxPointCount) 
+	{
+		this.rearTrajectoryPointList.newPoint();
+	}
+
+	this.objectsArray.push(this.frontTrajectoryPointList);
+	this.objectsArray.push(this.rearTrajectoryPointList);
+};
+
+Vehicle.prototype = Object.create(MagoRenderable.prototype);
+Vehicle.prototype.constructor = Vehicle;
+
+
+/**
+ * @param {Object} object this must have geoLocationDatamanager. 
+ */
+Vehicle.prototype.addToContainer = function(object, magoManager) 
+{
+
+	this.carriedObjectsArray.push(object);
+	this.updateContainer(magoManager);
+};
+
+/**
+ * @param {Object} object this must have geoLocationDatamanager. 
+ */
+Vehicle.prototype.updateContainer = function(magoManager) 
+{
+	var vehicleGeoLocation = this.geoLocDataManager.getCurrentGeoLocationData();
+	var vehicleGeoCoord = vehicleGeoLocation.getGeographicCoords();
+	//ManagerUtils.calculateGeoLocationData = function(longitude, latitude, altitude, heading, pitch, roll, resultGeoLocationData) 
+	for (var i=0, len=this.carriedObjectsArray.length;i<len;i++) 
+	{
+		var object = this.carriedObjectsArray[i];
+		if (object instanceof Node) 
+		{
+			object.data.mapping_type = 'boundingboxcenter';
+			var objectGeoLocation = object.data.geoLocDataManager.getCurrentGeoLocationData();
+			
+			var heading = vehicleGeoLocation.heading;// + objectGeoLocation.heading;
+
+			var height = object.data.bbox.getZLength()/2;
+
+
+			object.changeLocationAndRotation(vehicleGeoCoord.latitude, vehicleGeoCoord.longitude, vehicleGeoCoord.altitude + this.height + height, heading, undefined, undefined, magoManager);
+		}
+	}
+	
+};
+
+Vehicle.prototype.render = function(magoManager, shader, renderType, glPrimitive) 
+{
+	if (this.attributes && this.attributes.isVisible !== undefined && this.attributes.isVisible === false) 
+	{
+		return;
+	}
+
+	if (this.dirty)
+	{ this.makeMesh(); this.arrowDirectionChanged(magoManager); }//20191114
+	
+	if (this.objectsArray === undefined)
+	{ return false; }
+
+	// Set geoLocation uniforms.***
+	var gl = magoManager.getGl();
+	var buildingGeoLocation = this.geoLocDataManager.getCurrentGeoLocationData();
+	buildingGeoLocation.bindGeoLocationUniforms(gl, shader); // rotMatrix, positionHIGH, positionLOW.
+	gl.uniform4fv(shader.oneColor4_loc, [0, 1, 0, 1.0]); 
+	//20191114
+	//방향 변경
+	this.changeArrow(magoManager);
+
+	this.move(magoManager);
+
+	gl.uniform1i(shader.refMatrixType_loc, 0); // in magoManager case, there are not referencesMatrix.***
+	var isSelected = false;
+	
+	if (renderType === 0)
+	{
+		// Depth render.***
+	}
+	else if (renderType === 1)
+	{
+		// Color render.***
+		// Color render.***
+		var selectionManager = magoManager.selectionManager;
+		if (selectionManager.isObjectSelected(this))
+		{ isSelected = true; }
+	
+		//gl.blendFunc( gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA );
+		gl.enable(gl.BLEND);
+		gl.uniform1i(shader.bApplySsao_loc, true); // apply ssao.***
+		gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.***
+		if (this.color4) 
+		{
+			gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, 1.0]);
+		}		
+	}
+	else if (renderType === 2)
+	{
+		// Selection render.***
+		var selectionColor = magoManager.selectionColor;
+		var colorAux = magoManager.selectionColor.getAvailableColor(undefined);
+		var idxKey = magoManager.selectionColor.decodeColor3(colorAux.r, colorAux.g, colorAux.b);
+		magoManager.selectionManager.setCandidateGeneral(idxKey, this);
+		
+		gl.uniform4fv(shader.oneColor4_loc, [colorAux.r/255.0, colorAux.g/255.0, colorAux.b/255.0, 1.0]);
+		gl.disable(gl.BLEND);
+	}
+	
+	
+	if (isSelected)
+	{
+		if (this.selColor4 === undefined)
+		{
+			this.selColor4 = new Color();
+			this.selColor4.setRGBA(0.8, 0.4, 0.5, 1.0);
+		}
+		gl.uniform4fv(shader.oneColor4_loc, [this.selColor4.r, this.selColor4.g, this.selColor4.b, 1.0]); 
+	}
+
+	//gl.uniform1i(shader.refMatrixType_loc, 0); // in magoManager case, there are not referencesMatrix.***
+	//buildingGeoLocation.bindGeoLocationUniforms(gl, shader); // rotMatrix, positionHIGH, positionLOW.
+	//shader.disableVertexAttribArrayAll();
+	shader.enableVertexAttribArray(shader.position3_loc);
+	this.guidePoint.renderAsChild(magoManager, shader, renderType, glPrimitive);
+
+	shader.enableVertexAttribArray(shader.normal3_loc);
+
+	var objectsCount = this.objectsArray.length;
+	for (var i=0; i<objectsCount; i++)
+	{
+		var object = this.objectsArray[i];
+		object.renderAsChild(magoManager, shader, renderType, glPrimitive, isSelected);
+		/*if (object instanceof Arrow || object instanceof ShimmyGearAssembly) 
+		{
+			object.renderAsChild(magoManager, shader, renderType, glPrimitive, isSelected);
+		}
+		else 
+		{
+			object.render(magoManager, shader, renderType, glPrimitive, isSelected);
+		}*/
+	}
+	
+	gl.disable(gl.BLEND);
+};
+Vehicle.prototype.renderAsChild = function(magoManager, shader, renderType, glPrimitive) 
+{
+
+};
+Vehicle.prototype.makeMesh = function() 
+{
+	if (this.objectsArray === undefined)
+	{ this.objectsArray = []; }
+
+	//width, length, height
+	//caculate frame dimension
+	var frameWidth = this.width;
+	var frameLength = this.length;
+	var frameHeight = this.height * 0.15;
+
+	var frame = new Box(frameWidth, frameLength, frameHeight, 'frame');
+	frame.setOneColor(196/255, 117/255, 0.0, 1);
+    
+	var frameTranslatePoint3D = new Point3D(0.0, 0.0, this.height - frameHeight);
+	frame.tMatOriginal = new Matrix4();
+	frame.tMatOriginal.setTranslation(frameTranslatePoint3D.x, frameTranslatePoint3D.y, frameTranslatePoint3D.z);
+
+	this.objectsArray.push(frame);
+	this.frame = frame;
+
+	var totalLength = 2;
+	var bodyWidth = totalLength * 0.1;
+	var headWidth = totalLength * 0.2;
+	var tailLength = totalLength * 0.2;
+	var extrude = totalLength * 0.05;
+    
+	var frontArrow = new Arrow(10, 50, 0.5, {
+		totalLength : 12,
+		bodyWidth   : 2,
+		headWidth   : 4,
+		tailLength  : 1,
+		extrude     : 2
+	});
+
+	var rearArrow = new Arrow(10, 50, 0.5, {
+		totalLength : 12,
+		bodyWidth   : 2,
+		headWidth   : 4,
+		tailLength  : 1,
+		extrude     : 2
+	});
+
+	this.objectsArray.push(frontArrow);
+	this.frontArrow = frontArrow;
+	this.frontArrow.setOneColor(0.9, 0.1, 0.1, 1);
+	this.frontArrowPos = new Point3D(0.0, this.wheelbase * 1.5, this.height);
+	frontArrow.tMatOriginal = new Matrix4();
+	frontArrow.tMatOriginal.setTranslation(this.frontArrowPos.x, this.frontArrowPos.y, this.frontArrowPos.z);
+	
+	this.objectsArray.push(rearArrow);
+	this.rearArrow = rearArrow;
+    
+	this.rearArrowPos = new Point3D(0.0, -this.wheelbase * 1.5, this.height);
+	rearArrow.tMatOriginal = new Matrix4();
+	rearArrow.tMatOriginal.setTranslation(this.rearArrowPos.x, this.rearArrowPos.y, this.rearArrowPos.z);
+    
+	var shimmyWidth = this.width * 0.25;
+	var shimmyLength = 0.5;
+	var shimmyHeight = this.height - frameHeight;
+ 
+	var ShimmyGearAssemblyPrimitive = this.getShimmyGearAssembly();
+	this.shimmyGearAssembly = new ShimmyGearAssemblyPrimitive(shimmyWidth, shimmyLength, shimmyHeight);
+	this.shimmyGearAssembly.setOneColor(196/255, 117/255, 0.0, 1);
+	//this.objectsArray.push(this.shimmyGearAssembly);
+
+
+	this.shimmyGearAssembly.tMatOriginal = new Matrix4();
+	this.shimmyGearAssembly.tMatOriginal.setTranslation(0, 0, shimmyHeight);
+	this.shimmyGearAssembly.makeMesh();
+
+	// shimmy matrix.
+	var numCols = this.shimmyMat.x;
+	var numRows = this.shimmyMat.y;
+
+	var refRow = numRows/2;
+	var colDist = this.shimmyMatDimension.x / (numCols-1);
+	var rowDist = this.shimmyMatDimension.y / (numRows-1);
+
+	for (var c=0;c<numCols;c++) 
+	{
+		for (var r=0;r<numRows;r++)
+		{
+			var auxShimmy = new ShimmyGearAssemblyPrimitive(shimmyWidth, shimmyLength, shimmyHeight);
+			auxShimmy.frame = this.shimmyGearAssembly.frame;
+			auxShimmy.rightWheel = this.shimmyGearAssembly.rightWheel;
+			auxShimmy.leftWheel = this.shimmyGearAssembly.leftWheel;
+			auxShimmy.color4 = this.shimmyGearAssembly.color4;
+			auxShimmy.makeMesh();
+
+			var x = colDist * c;
+			var y = rowDist * r;
+
+			var orginShimmyPos = new Point3D(x - this.shimmyMatDimension.x * 0.5, y - this.shimmyMatDimension.y * 0.5, shimmyHeight);
+			auxShimmy.tMatOriginal = new Matrix4();
+			auxShimmy.tMatOriginal.setTranslation(orginShimmyPos.x, orginShimmyPos.y, orginShimmyPos.z);
+			auxShimmy.orginShimmyPos = orginShimmyPos;
+			this.objectsArray.push(auxShimmy);
+		}
+	}
+
+	this.updateMatrix();
+	this.setDirty(false);
+};
+
+Vehicle.prototype.doChangeFrontAngleDeg = function(type) 
+{
+	this.eventStatus.changingFrontArrow = true;
+	if (type === 'left') 
+	{
+		this.changingFrontArrowType = 0;
+	}
+	else 
+	{
+		this.changingFrontArrowType = 1;
+	}
+};
+
+Vehicle.prototype.stopChangeFrontAngleDeg = function() 
+{
+	this.eventStatus.changingFrontArrow = false;
+};
+
+Vehicle.prototype.doChangeRearAngleDeg = function(type) 
+{
+	this.eventStatus.changingRearArrow = true;
+	if (type === 'left') 
+	{
+		this.changingRearArrowType = 0;
+	}
+	else 
+	{
+		this.changingRearArrowType = 1;
+	}
+};
+Vehicle.prototype.stopChangeRearAngleDeg = function() 
+{
+	this.eventStatus.changingRearArrow = false;
+};
+Vehicle.prototype._updateLastTime = function(currentTime) 
+{
+	this.lastTime = currentTime;
+};
+Vehicle.prototype.moveParallelTranslate = function(deltaTime, magoManager)
+{
+	var geoLocManager = this.geoLocDataManager;
+	//IF YOU WANT TRACKING OR DRIVING THE VEHICLE, USE NEWGEOLOCATIONDATA. ELSE USE GETCURRENTGEOLOCATIONDATA
+	var geoLocData = geoLocManager.newGeoLocationData();
+	var geoCoord = geoLocData.geographicCoord;
+
+	var direction = this.frontDirection2D;//this.getFrontDirection2D(new Point2D());
+	if (this.accelStatus === BasicVehicle.ACCEL_STATUS.REVERSE) 
+	{
+		direction = new Point2D();
+		direction.copyFrom(this.frontDirection2D);
+		direction.inverse();
+	}
+		
+	var direction3D = new Point3D(direction.x, direction.y, 0);
+	var posLC = new Point3D(direction3D.x * this.frontCurrentSpeed * deltaTime, direction3D.y * this.frontCurrentSpeed * deltaTime, direction3D.z * this.frontCurrentSpeed * deltaTime);
+
+	var rotMat = geoLocData.rotMatrix;
+	var posLcRot = rotMat.rotatePoint3D(posLC);
+
+	var posWCHIGH = new Float32Array(3);
+	var posWCLOW = new Float32Array(3);
+
+	posWCLOW[0] = geoLocData.positionLOW[0] + posLcRot.x;
+	posWCLOW[1] = geoLocData.positionLOW[1] + posLcRot.y;
+	posWCLOW[2] = geoLocData.positionLOW[2] + posLcRot.z;
+
+	posWCHIGH[0] = geoLocData.positionHIGH[0];
+	posWCHIGH[1] = geoLocData.positionHIGH[1];
+	posWCHIGH[2] = geoLocData.positionHIGH[2];
+
+	var posWC = geoLocData.localCoordToWorldCoord(posLC);
+	geoCoord = ManagerUtils.pointToGeographicCoord(posWC, geoCoord);
+
+	geoLocData = ManagerUtils.calculateGeoLocationDataByAbsolutePoint(posWCLOW[0] + posWCHIGH[0], posWCLOW[1] + posWCHIGH[1], posWCLOW[2] + posWCHIGH[2], geoLocData, magoManager);
+};
+Vehicle.prototype.moveCircularRotation = function(deltaTime, magoManager) 
+{
+	if (!this.pivotPointLC) { return; }
+    
+	var geoLocManager = this.geoLocDataManager;
+	//IF YOU WANT TRACKING OR DRIVING THE VEHICLE, USE NEWGEOLOCATIONDATA. ELSE USE GETCURRENTGEOLOCATIONDATA
+	var geoLocData = geoLocManager.newGeoLocationData();
+	var geoCoord = geoLocData.geographicCoord;
+	// do rotate
+	var radiusErr = 10E-4;
+	var frontArrowPos = this.frontArrowPos;
+	var rearArrowPos = this.rearArrowPos;
+	var frontLine2D = this.frontLine2D;
+	var rearLine2D = this.rearLine2D;
+	var frontDirection2D = this.frontDirection2D;
+	var rearDirection2D = this.rearDirection2D;
+    
+	if (!this.auxOffsetVector) 
+	{
+		this.auxOffsetVector = new Point3D(0, 0, 0);
+	}
+
+	//front
+	var frontSpeed = this.frontCurrentSpeed;
+	var frontDist = frontSpeed * deltaTime;
+	var frontPosTranslated = new Point3D(frontArrowPos.x, frontArrowPos.y, 0);
+	frontPosTranslated.add(this.auxOffsetVector.x, this.auxOffsetVector.y, 0);
+	var frontRadius = this.pivotPointLC.distToPoint(frontArrowPos);
+
+	//rotation radius coincident
+	if (frontRadius < radiusErr) 
+	{ 
+		this._updateLastTime(undefined);
+		this.frontCurrentSpeed = 0;
+		return; 
+	}
+
+	var frontRad = frontDist / frontRadius;
+	var frontRelativeSideOfPoint = frontLine2D.getRelativeSideOfPoint(this.pivotPointLC);
+	if (frontRelativeSideOfPoint === CODE.relativePosition2D.RIGHT) 
+	{ frontRad *= -1; }
+	
+	if (this.accelStatus === BasicVehicle.ACCEL_STATUS.REVERSE) 
+	{
+		frontRad *= -1;
+	}
+	/*if (Math.abs(frontRad) > 0.0001) 
+	{
+		if (frontRad > 0) 
+		{
+			frontRad = 0.0001;
+		}
+		else 
+		{
+			frontRad = -0.0001;
+		}
+	}*/
+
+	var frontAuxMatrix = new Matrix4();
+	frontAuxMatrix.rotationAxisAngRad(frontRad, 0, 0, 1);
+	var frontPosRotated = frontAuxMatrix.rotatePoint3D(frontPosTranslated);
+	var frontPosTransformed = new Point3D(frontPosRotated.x, frontPosRotated.y, frontPosRotated.z);
+	frontPosTransformed.add(-this.auxOffsetVector.x, -this.auxOffsetVector.y, 0);
+
+	//rear
+	var scalarProduct = rearDirection2D.scalarProduct(frontDirection2D);
+	var rearSpeed = frontSpeed * scalarProduct;
+	var rearDist = rearSpeed * deltaTime;
+	var rearPosTranslated = new Point3D(rearArrowPos.x, rearArrowPos.y, 0);
+	rearPosTranslated.add(this.auxOffsetVector.x, this.auxOffsetVector.y, 0);
+	var rearRadius = this.pivotPointLC.distToPoint(rearArrowPos);
+	
+	//rotation radius coincident
+	/*if (rearRadius < radiusErr) 
+	{ 
+		this._updateLastTime(undefined);
+		this.frontCurrentSpeed = 0;
+		return; 
+	}*/
+
+	//var rearRad = rearDist / rearRadius;
+	var rearRad = frontRad;
+
+	//var rearRelativeSideOfPoint = rearLine2D.getRelativeSideOfPoint(this.pivotPointLC);
+	//if (rearRelativeSideOfPoint === CODE.relativePosition2D.RIGHT) { rearRad *= -1; }
+
+	var rearAuxMatrix = new Matrix4();
+	rearAuxMatrix.rotationAxisAngRad(rearRad, 0, 0, 1);
+	var rearPosRotated = rearAuxMatrix.rotatePoint3D(rearPosTranslated);
+	var rearPosTransformed = new Point3D(rearPosRotated.x, rearPosRotated.y, rearPosRotated.z);
+	rearPosTransformed.add(-this.auxOffsetVector.x, -this.auxOffsetVector.y, 0);
+
+	//frame
+	var framePosLC = new Point3D((frontPosTransformed.x + rearPosTransformed.x) / 2, (frontPosTransformed.y + rearPosTransformed.y) / 2, 0);
+	var frameSegemnt = new Segment2D(rearPosTransformed, frontPosTransformed);
+	var frameDirection = frameSegemnt.getDirection();
+	var initialFrameDirection = new Point2D(0, 1);//this.getFrameDirection2D();
+
+	var heading = frameDirection.angleDegToVector(initialFrameDirection);
+	if (frameDirection.x > 0 ) { heading *= -1; }
+
+	var rotMat = geoLocData.rotMatrix;
+
+	var posWCHIGH = new Float32Array(3);
+	var posWCLOW = new Float32Array(3);
+
+	var framePosWCRot = rotMat.rotatePoint3D(framePosLC);
+
+	posWCLOW[0] = geoLocData.positionLOW[0] + framePosWCRot.x;
+	posWCLOW[1] = geoLocData.positionLOW[1] + framePosWCRot.y;
+	posWCLOW[2] = geoLocData.positionLOW[2] + framePosWCRot.z;
+
+	posWCHIGH[0] = geoLocData.positionHIGH[0];
+	posWCHIGH[1] = geoLocData.positionHIGH[1];
+	posWCHIGH[2] = geoLocData.positionHIGH[2];
+	if (geoLocData.heading === undefined) { geoLocData.heading = 0; }
+	heading = geoLocData.heading + heading;
+	//geoLocData.heading = Vehicle.degreeValidator(heading);
+	//geoLocData = ManagerUtils.calculateGeoLocationDataByAbsolutePoint(posWCLOW[0] + posWCHIGH[0], posWCLOW[1] + posWCHIGH[1], posWCLOW[2] + posWCHIGH[2], geoLocData, magoManager);
+
+	var auxPoint3DWC = new Point3D(posWCLOW[0] + posWCHIGH[0], posWCLOW[1] + posWCHIGH[1], posWCLOW[2] + posWCHIGH[2]);
+	var auxGeoCoord = ManagerUtils.pointToGeographicCoord(auxPoint3DWC);
+	
+	auxGeoCoord.altitude = 0;
+	geoLocData = ManagerUtils.calculateGeoLocationData(auxGeoCoord.longitude, auxGeoCoord.latitude, auxGeoCoord.altitude, BasicVehicle.degreeValidator(heading), geoLocData.pitch, geoLocData.roll, geoLocData, magoManager);
+
+	//헤딩이 변할 시 화살표 업데이트 해줘야함.
+	this.update(magoManager);
+};
+Vehicle.prototype.changeParallelRotationDist = function(mode) 
+{
+	if (mode === 0 ) 
+	{
+		this.parallelRotationDist -= 0.1;
+	}
+	else 
+	{
+		this.parallelRotationDist += 0.1;
+	}
+};
+Vehicle.prototype.moveNormal = function(deltaTime, magoManager)
+{
+	if (this.isParallelDirection) 
+	{
+		this.moveParallelTranslate(deltaTime, magoManager);
+	}
+	else 
+	{
+		this.moveCircularRotation(deltaTime, magoManager);
+	}
+};
+Vehicle.prototype.moveParallelRotation = function(deltaTime, magoManager) 
+{
+	var geoLocManager = this.geoLocDataManager;
+	//IF YOU WANT TRACKING OR DRIVING THE VEHICLE, USE NEWGEOLOCATIONDATA. ELSE USE GETCURRENTGEOLOCATIONDATA
+	var geoLocData = geoLocManager.newGeoLocationData();
+	var geoCoord = geoLocData.geographicCoord;
+	// do rotate
+	var radiusErr = 10E-4;
+	var frontArrowPos = this.frontArrowPos;
+	var rearArrowPos = this.rearArrowPos;
+	var frontDirection2D = this.frontDirection2D;
+	var rearDirection2D = this.rearDirection2D;
+
+	var frontArrowSegment = new Segment2D(new Point2D(frontArrowPos.x, frontArrowPos.y), new Point2D(frontArrowPos.x + frontDirection2D.x, frontArrowPos.y + frontDirection2D.y));
+	var rearArrowSegment = new Segment2D(new Point2D(rearArrowPos.x, rearArrowPos.y),  new Point2D(rearArrowPos.x + rearDirection2D.x, rearArrowPos.y + rearDirection2D.y));
+
+	this.frontLine2D = frontArrowSegment.getLine(); 
+	this.rearLine2D = rearArrowSegment.getLine();
+
+	var frontLine2D = this.frontLine2D;
+	var rearLine2D = this.rearLine2D;
+	
+
+	if (!this.pivotPointLC) { this.pivotPointLC = new Point3D(); }
+	this.setPivotPointLC(0, this.parallelRotationDist, 0, magoManager);
+
+	this.guidePoint.deleteObjects(magoManager);
+	this.guidePoint.addPoint(new Point3D(this.pivotPointLC.x, this.pivotPointLC.y, 2.2));
+
+	var translationVector = new Point2D(this.pivotPointLC.x, this.pivotPointLC.y);
+	translationVector.inverse();
+
+	this.auxOffsetVector = translationVector;
+
+	//front
+	var frontSpeed = this.frontCurrentSpeed;
+	var frontDist = frontSpeed * deltaTime;
+	var frontPosTranslated = new Point3D(frontArrowPos.x, frontArrowPos.y, 0);
+	frontPosTranslated.add(this.auxOffsetVector.x, this.auxOffsetVector.y, 0);
+	var frontRadius = this.pivotPointLC.distToPoint(frontArrowPos);
+
+	//rotation radius coincident
+	if (frontRadius < radiusErr) 
+	{ 
+		this._updateLastTime(undefined);
+		this.frontCurrentSpeed = 0;
+		return; 
+	}
+
+	var frontRad = frontDist / frontRadius;
+	var frontRelativeSideOfPoint = frontLine2D.getRelativeSideOfPoint(this.pivotPointLC);
+	if (frontRelativeSideOfPoint === CODE.relativePosition2D.RIGHT) 
+	{ frontRad *= -1; }
+
+	if (this.accelStatus === BasicVehicle.ACCEL_STATUS.REVERSE) 
+	{
+		frontRad *= -1;
+	}
+	
+	var frontAuxMatrix = new Matrix4();
+	frontAuxMatrix.rotationAxisAngRad(frontRad, 0, 0, 1);
+	var frontPosRotated = frontAuxMatrix.rotatePoint3D(frontPosTranslated);
+	var frontPosTransformed = new Point3D(frontPosRotated.x, frontPosRotated.y, frontPosRotated.z);
+	frontPosTransformed.add(-this.auxOffsetVector.x, -this.auxOffsetVector.y, 0);
+
+	//rear
+	var rearDist = this.parallelRotationDist + this.wheelbase * 0.5;
+	var frontDist = this.parallelRotationDist - this.wheelbase * 0.5;
+	var rearSpeed = (frontSpeed * rearDist) / frontDist;
+
+	var rearPosTranslated = new Point3D(rearArrowPos.x, rearArrowPos.y, 0);
+	rearPosTranslated.add(this.auxOffsetVector.x, this.auxOffsetVector.y, 0);
+	var rearRadius = this.pivotPointLC.distToPoint(rearArrowPos);
+	
+
+
+	//var rearRad = rearDist / rearRadius;
+	var rearRad = frontRad;
+
+	//var rearRelativeSideOfPoint = rearLine2D.getRelativeSideOfPoint(this.pivotPointLC);
+	//if (rearRelativeSideOfPoint === CODE.relativePosition2D.RIGHT) { rearRad *= -1; }
+
+	var rearAuxMatrix = new Matrix4();
+	rearAuxMatrix.rotationAxisAngRad(rearRad, 0, 0, 1);
+	var rearPosRotated = rearAuxMatrix.rotatePoint3D(rearPosTranslated);
+	var rearPosTransformed = new Point3D(rearPosRotated.x, rearPosRotated.y, rearPosRotated.z);
+	rearPosTransformed.add(-this.auxOffsetVector.x, -this.auxOffsetVector.y, 0);
+
+	//frame
+	var framePosLC = new Point3D((frontPosTransformed.x + rearPosTransformed.x) / 2, (frontPosTransformed.y + rearPosTransformed.y) / 2, 0);
+	var frameSegemnt = new Segment2D(rearPosTransformed, frontPosTransformed);
+	var frameDirection = frameSegemnt.getDirection();
+	var initialFrameDirection = new Point2D(0, 1);//this.getFrameDirection2D();
+
+	var heading = frameDirection.angleDegToVector(initialFrameDirection);
+	if (frameDirection.x > 0 ) { heading *= -1; }
+
+	var rotMat = geoLocData.rotMatrix;
+
+	var posWCHIGH = new Float32Array(3);
+	var posWCLOW = new Float32Array(3);
+
+	var framePosWCRot = rotMat.rotatePoint3D(framePosLC);
+
+	posWCLOW[0] = geoLocData.positionLOW[0] + framePosWCRot.x;
+	posWCLOW[1] = geoLocData.positionLOW[1] + framePosWCRot.y;
+	posWCLOW[2] = geoLocData.positionLOW[2] + framePosWCRot.z;
+
+	posWCHIGH[0] = geoLocData.positionHIGH[0];
+	posWCHIGH[1] = geoLocData.positionHIGH[1];
+	posWCHIGH[2] = geoLocData.positionHIGH[2];
+	if (geoLocData.heading === undefined) { geoLocData.heading = 0; }
+	heading = geoLocData.heading + heading;
+	//geoLocData.heading = Vehicle.degreeValidator(heading);
+	//geoLocData = ManagerUtils.calculateGeoLocationDataByAbsolutePoint(posWCLOW[0] + posWCHIGH[0], posWCLOW[1] + posWCHIGH[1], posWCLOW[2] + posWCHIGH[2], geoLocData, magoManager);
+
+	var auxPoint3DWC = new Point3D(posWCLOW[0] + posWCHIGH[0], posWCLOW[1] + posWCHIGH[1], posWCLOW[2] + posWCHIGH[2]);
+	var auxGeoCoord = ManagerUtils.pointToGeographicCoord(auxPoint3DWC);
+	
+	auxGeoCoord.altitude = 0;
+	geoLocData = ManagerUtils.calculateGeoLocationData(auxGeoCoord.longitude, auxGeoCoord.latitude, auxGeoCoord.altitude, BasicVehicle.degreeValidator(heading), geoLocData.pitch, geoLocData.roll, geoLocData, magoManager);
+
+	//헤딩이 변할 시 화살표 업데이트 해줘야함.
+	this.update(magoManager);
+};
+Vehicle.prototype.move = function(magoManager) 
+{
+	if (this.renderingFase === undefined || this.renderingFase === null) { this.renderingFase = magoManager.renderingFase; }
+	if (this.renderingFase === magoManager.renderingFase)
+	{ return; }
+	if (!this.eventStatus.footOnAccel && this.frontCurrentSpeed === 0) { return; }
+	
+	var frontSpeed = 1;
+	var rearSpeed = 0.8;
+	var currentTime = magoManager.getCurrentTime();
+	if (!this.lastTime) { this._updateLastTime(currentTime); }
+
+	var deltaTime = (currentTime - this.lastTime) / 1000;
+	if (deltaTime === 0) { return; }
+
+	var accel = this.eventStatus.footOnAccel ? this.frontAcceleration : -this.frontDeacceleration;
+	this.frontCurrentSpeed = calculateSpeed(deltaTime, accel, this.frontCurrentSpeed);
+
+	if (this.frontCurrentSpeed > this.maxSpeed) { this.frontCurrentSpeed = this.maxSpeed; }
+
+	
+	
+	//this.frontDirection2D = this.getFrontDirection2D(new Point2D());
+	//this.rearDirection2D = this.getRearDirection2D(new Point2D());
+
+
+	var mode = this.mode;
+	switch (mode) 
+	{
+	//NORMAL
+	case BasicVehicle.MODE.NORMAL : {
+		this.moveNormal(deltaTime, magoManager);
+		break;
+	}
+	case BasicVehicle.MODE.CIRCULAR_ROTATION : {
+		this.moveCircularRotation(deltaTime, magoManager);
+		break;
+	}
+	case BasicVehicle.MODE.PARALLEL_TRANSLATE : {
+		this.moveParallelTranslate(deltaTime, magoManager);
+		break;
+	}
+	case BasicVehicle.MODE.PARALLEL_ROTATION : {
+		this.moveParallelRotation(deltaTime, magoManager);
+		break;
+	}
+	}
+
+	var geoLocManager = this.geoLocDataManager;
+	var geoLocData = geoLocManager.getCurrentGeoLocationData();
+
+	var geoCoord = geoLocData.geographicCoord;
+	var tile = this.smartTileOwner;
+	var lon = geoCoord.longitude;
+	var lat = geoCoord.latitude;
+	
+	if (!tile.intersectPoint(lon, lat))
+	{
+		tile.eraseObjectByComparision(this, 'name');
+		var targetDepth = tile.depth;
+		
+		magoManager.smartTileManager.putObject(targetDepth, this, magoManager);
+	}
+	
+	//시간 초기화
+	if (this.frontCurrentSpeed === 0 && !this.eventStatus.footOnAccel) { currentTime = undefined; }
+	this._updateLastTime(currentTime);
+
+	this.renderingFase = !this.renderingFase;
+
+	this.updateContainer(magoManager);
+	function calculateSpeed(dTime, acc, currentSpeed) 
+	{
+		var deltaSpeed = acc * dTime;
+		currentSpeed = currentSpeed + deltaSpeed;
+
+		if (currentSpeed < 0) { currentSpeed = 0; }
+		return currentSpeed;
+	}
+};
+/**
+ * @return {Point2D}
+ */
+Vehicle.prototype.getFrameDirection2D = function(resultPoint2D)
+{
+	if (!resultPoint2D) { resultPoint2D = new Point2D(); }
+	var geoLocManager = this.geoLocDataManager;
+	var geoLocData = geoLocManager.getCurrentGeoLocationData();
+	var heading = geoLocData.heading;
+
+	var headingRad = heading * Math.PI / 180;
+	resultPoint2D.set(-Math.sin(headingRad), Math.cos(headingRad));
+	
+	return resultPoint2D;
+};
+/**
+ * @return {Point2D}
+ */
+Vehicle.prototype.getFrontDirection2D = function(resultPoint2D)
+{
+	if (!resultPoint2D) { resultPoint2D = new Point2D(); }
+	var frontAngleRad = this.frontAngleDeg * Math.PI / 180;
+	resultPoint2D.set(-Math.sin(frontAngleRad), Math.cos(frontAngleRad));
+	return resultPoint2D;
+};
+/**
+ * @return {Point2D}
+ */
+Vehicle.prototype.getRearDirection2D = function(resultPoint2D) 
+{
+	if (!resultPoint2D) { resultPoint2D = new Point2D(); }
+	var rearAngleRad = this.rearAngleDeg * Math.PI / 180;
+	resultPoint2D.set(-Math.sin(rearAngleRad), Math.cos(rearAngleRad));
+	return resultPoint2D;
+};
+Vehicle.prototype.footOnAccel = function() 
+{
+	this.eventStatus.footOnAccel = true;
+	this.accelStatus = BasicVehicle.ACCEL_STATUS.FORWARD;
+};
+Vehicle.prototype.footOnReverseAccel = function() 
+{
+	this.eventStatus.footOnAccel = true;
+	this.accelStatus = BasicVehicle.ACCEL_STATUS.REVERSE;
+};
+Vehicle.prototype.footOffAccel = function() 
+{
+	this.eventStatus.footOnAccel = false;
+};
+Vehicle.prototype.arrowDirectionChanged = function(magoManager) 
+{
+	//front arrow
+	this.update(magoManager);
+	var frontDirection2D = this.frontDirection2D;//this.getFrontDirection2D(new Point2D());
+	var rearDirection2D = this.rearDirection2D;//this.getRearDirection2D(new Point2D());
+
+	var error = 0.1;
+	this.isParallelDirection = frontDirection2D.isParallelToPoint(rearDirection2D, error);
+
+	if (!this.isParallelDirection) 
+	{
+		var frontArrowPos = this.frontArrowPos;
+		var rearArrowPos = this.rearArrowPos;
+
+		var frontArrowSegment = new Segment2D(new Point2D(frontArrowPos.x, frontArrowPos.y), new Point2D(frontArrowPos.x + frontDirection2D.x, frontArrowPos.y + frontDirection2D.y));
+		var rearArrowSegment = new Segment2D(new Point2D(rearArrowPos.x, rearArrowPos.y),  new Point2D(rearArrowPos.x + rearDirection2D.x, rearArrowPos.y + rearDirection2D.y));
+
+		this.frontLine2D = frontArrowSegment.getLine(); 
+		this.rearLine2D = rearArrowSegment.getLine();
+		
+		var frontLine2D = this.frontLine2D;
+		var rearLine2D = this.rearLine2D;
+		//getPerpendicularRight
+		var frontLinePerpendicular2D = frontLine2D.getPerpendicularRight();
+		var rearLinePerpendicular2D = rearLine2D.getPerpendicularRight();
+
+		var intersectPoint2D = frontLinePerpendicular2D.intersectionWithLine(rearLinePerpendicular2D);
+
+		if (!intersectPoint2D) { return; }
+		
+		this.setPivotPointLC(intersectPoint2D.x, intersectPoint2D.y, 0, magoManager);
+		this.guidePoint.deleteObjects(magoManager);
+		this.guidePoint.addPoint(new Point3D(this.pivotPointLC.x, this.pivotPointLC.y, 2.2));
+
+		var translationVector = new Point2D(intersectPoint2D.x, intersectPoint2D.y);
+		translationVector.inverse();
+
+		this.auxOffsetVector = translationVector;
+	}
+	else 
+	{
+		this.linearTrajectory();
+		this.frontTrajectoryPointList.deleteVboKeysContainer(magoManager);
+		this.rearTrajectoryPointList.deleteVboKeysContainer(magoManager);
+	}
+};
+Vehicle.prototype.changeArrow = function(magoManager) 
+{
+	var isUpdate = false;
+	var mode = this.mode;
+	switch (mode) 
+	{
+	//NORMAL
+	case BasicVehicle.MODE.NORMAL : {
+		if (this.eventStatus.changingFrontArrow) 
+		{
+			var factor = this.changingFrontArrowSpeed;//(currTime - this.changingFrontArrowStartTime) /5000;
+			if (this.changingFrontArrowType > 0) { factor = -factor; }
+			this.frontAngleDeg = this.frontAngleDeg + factor;
+
+			this.frontAngleDeg = BasicVehicle.degreeValidator(this.frontAngleDeg);
+			isUpdate = true;
+		}
+
+		if (this.eventStatus.changingRearArrow) 
+		{
+			var factor = this.changingRearArrowSpeed;
+			if (this.changingRearArrowType > 0) { factor = -factor; }
+			this.rearAngleDeg = this.rearAngleDeg + factor;
+
+			this.rearAngleDeg = BasicVehicle.degreeValidator(this.rearAngleDeg);
+			isUpdate = true;
+		}
+		break;
+	}
+	case BasicVehicle.MODE.CIRCULAR_ROTATION : 
+	case BasicVehicle.MODE.PARALLEL_TRANSLATE : {
+		if (this.eventStatus.changingFrontArrow || this.eventStatus.changingRearArrow) 
+		{
+			var factor = this.changingFrontArrowSpeed;
+
+			var arrowType = 0;
+			if (this.eventStatus.changingFrontArrow) 
+			{
+				arrowType = this.changingFrontArrowType;
+			}
+			else 
+			{ /*if(this.eventStatus.changingRearArrow){*/
+				arrowType = this.changingRearArrowType;
+			}
+
+			if (arrowType > 0) { factor = -factor; }
+			this.frontAngleDeg = this.frontAngleDeg + factor;
+			this.rearAngleDeg = (mode === BasicVehicle.MODE.CIRCULAR_ROTATION) ? -this.frontAngleDeg : this.frontAngleDeg; 
+
+			isUpdate = true;
+		} 
+
+		break;
+	}
+	case BasicVehicle.MODE.PARALLEL_ROTATION : {
+		this.frontAngleDeg = this.PARALLEL_ROTATION_ANGLE;
+		this.rearAngleDeg = this.PARALLEL_ROTATION_ANGLE;
+
+		isUpdate = true;
+		break;
+	}
+	}
+	if (isUpdate) { this.arrowDirectionChanged(magoManager); }
+};
+Vehicle.prototype.update = function(magoManager) 
+{
+	//front arrow
+	var frontArrow = this.frontArrow;
+
+	var frontTranslateAuxMat = new Matrix4();
+	frontTranslateAuxMat.setTranslation(this.frontArrowPos.x, this.frontArrowPos.y, this.frontArrowPos.z);
+	var frontRotAuxMat = new Matrix4();
+	frontRotAuxMat.rotationAxisAngDeg(this.frontAngleDeg, 0, 0, 1);
+
+	this.frontDirection2D = this.getFrontDirection2D();
+	var frontTAuxMat = frontRotAuxMat.getMultipliedByMatrix(frontTranslateAuxMat);
+	frontArrow.tMatOriginal = frontTAuxMat;
+	//rear arrow
+	var rearArrow = this.rearArrow;
+	var rearTranslateAuxMat = new Matrix4();
+	rearTranslateAuxMat.setTranslation(this.rearArrowPos.x, this.rearArrowPos.y, this.rearArrowPos.z);
+	var rearRotAuxMat = new Matrix4();
+	rearRotAuxMat.rotationAxisAngDeg(this.rearAngleDeg, 0, 0, 1);
+
+	this.rearDirection2D = this.getRearDirection2D();
+	var rearTAuxMat = rearRotAuxMat.getMultipliedByMatrix(rearTranslateAuxMat);
+	rearArrow.tMatOriginal = rearTAuxMat;
+
+	var pivotPointLc = this.pivotPointLC;
+	if (!pivotPointLc || pivotPointLc.x === Infinity) 
+	{ 
+		for (var i=0, len=this.objectsArray.length; i<len;i++)
+		{
+			var object = this.objectsArray[i];
+			if (object instanceof Box || object instanceof Arrow || object instanceof Point3DList) { continue; }
+			
+			
+			var pos = object.orginShimmyPos;
+
+			var shimmyTranslateAuxMat = new Matrix4();
+			shimmyTranslateAuxMat.setTranslation(pos.x, pos.y, pos.z);
+			var shimmyRotAuxMat = new Matrix4();
+
+			shimmyRotAuxMat.rotationAxisAngDeg(this.frontAngleDeg, 0, 0, 1);
+
+			var tAuxMat = shimmyRotAuxMat.getMultipliedByMatrix(shimmyTranslateAuxMat);
+			object.tMatOriginal = tAuxMat;
+		}
+	}
+	else 
+	{
+		var pivotPoint2D = new Point2D(pivotPointLc.x, pivotPointLc.y);
+		var auxDirction =  new Point2D(0, 1);
+		for (var i=0, len=this.objectsArray.length; i<len;i++)
+		{
+			var object = this.objectsArray[i];
+			if (object instanceof Box || object instanceof Arrow || object instanceof Point3DList) { continue; }
+			
+			
+			var pos = object.orginShimmyPos;
+
+			var shimmyTranslateAuxMat = new Matrix4();
+			shimmyTranslateAuxMat.setTranslation(pos.x, pos.y, pos.z);
+			var shimmyRotAuxMat = new Matrix4();
+
+			var direction = pivotPoint2D.getVectorToPoint(new Point2D(pos.x, pos.y));
+			direction.unitary();
+			var auxAngleDeg = auxDirction.angleDegToVector(direction);
+
+			var angleDeg = 90 - auxAngleDeg;
+			if (direction.x < 0) { angleDeg *= -1; }
+
+			shimmyRotAuxMat.rotationAxisAngDeg(angleDeg, 0, 0, 1);
+
+			var tAuxMat = shimmyRotAuxMat.getMultipliedByMatrix(shimmyTranslateAuxMat);
+			object.tMatOriginal = tAuxMat;
+		}
+	}
+
+	this.updateMatrix();
+};
+
+Vehicle.prototype.getShimmyGearAssembly = function() 
+{
+	var ShimmyGearAssembly = function(width, length, height, options) 
+	{
+		MagoRenderable.call(this);
+		this.width = width;
+		this.height = height;
+		this.wheelRadius = this.height * 0.4;
+		this.frameLength = length * 0.4;
+		this.frameHeight = this.height - this.wheelRadius*0.5;
+
+		this.frame;
+	};
+	ShimmyGearAssembly.prototype = Object.create(MagoRenderable.prototype);
+	ShimmyGearAssembly.prototype.constructor = ShimmyGearAssembly;
+
+	ShimmyGearAssembly.prototype.makeMesh = function() 
+	{
+		if (this.objectsArray === undefined)
+		{ this.objectsArray = []; }
+
+		if (this.objectsMap === undefined)
+		{ this.objectsMap = {}; }
+
+		//frame
+		var profile2dAux = new Profile2D();
+	
+		// Outer ring.**
+		var outerRing = profile2dAux.newOuterRing();
+		var frameHalfLength = this.frameLength * 0.5;
+		var frameWidth = this.width * 0.25;
+
+		var polyline = outerRing.newElement("POLYLINE");
+		polyline.newPoint2d(frameHalfLength, 0);
+		polyline.newPoint2d(-frameHalfLength, 0);
+		polyline.newPoint2d(-frameHalfLength, -this.frameHeight);
+		polyline.newPoint2d(frameHalfLength, -this.frameHeight);
+		polyline.newPoint2d(frameHalfLength * 2.5, -this.frameHeight * 0.5);
+
+		var extrusionDist = frameWidth;
+		var extrudeSegmentsCount = 1;
+		var extrusionVector = undefined;
+		var bIncludeBottomCap = true;
+		var bIncludeTopCap = true;
+		
+		var mesh = Modeler.getExtrudedMesh(profile2dAux, extrusionDist, extrudeSegmentsCount, extrusionVector, bIncludeBottomCap, bIncludeTopCap, undefined);
+		mesh.name = 'frame';
+		mesh.rotate(90, 1, 0, 0);
+		mesh.rotate(90, 0, 0, 1);
+		mesh.translate(-extrusionDist * 0.5, 0, 0);
+
+		this.objectsArray.push(mesh);
+		this.objectsMap[mesh.name] = mesh;
+
+		var exteriorRadius = this.wheelRadius;
+		var interiorRadius = exteriorRadius * 0.5;
+		var wheelWidth = this.width * 0.5 - frameWidth*0.5;
+        
+		var leftWheel = new Wheel(interiorRadius, exteriorRadius, wheelWidth, {borderRadius: wheelWidth * 0.2});
+		var rightWheel = new Wheel(interiorRadius, exteriorRadius, wheelWidth, {borderRadius: wheelWidth * 0.2});
+		leftWheel.setOneColor(0.1, 0.1, 0.15, 1);
+		rightWheel.setOneColor(0.1, 0.1, 0.15, 1);
+		this.objectsArray.push(leftWheel);
+		this.objectsArray.push(rightWheel);
+
+		var leftWheelTranslation = new Point3D(-frameWidth*0.5-wheelWidth*0.5, 0, -this.height + exteriorRadius);
+		var rightWheelTranslation = new Point3D(frameWidth*0.5+wheelWidth*0.5, 0, -this.height + exteriorRadius);
+
+		leftWheel.tMatOriginal = new Matrix4();
+		leftWheel.tMatOriginal.setTranslation(leftWheelTranslation.x, leftWheelTranslation.y, leftWheelTranslation.z);
+
+		rightWheel.tMatOriginal = new Matrix4();
+	    rightWheel.tMatOriginal.setTranslation(rightWheelTranslation.x, rightWheelTranslation.y, rightWheelTranslation.z);
+
+		this.dirty = false;
+	};
+	ShimmyGearAssembly.prototype.renderAsChild = function(magoManager, shader, renderType, glPrimitive) 
+	{
+		if (this.attributes && this.attributes.isVisible !== undefined && this.attributes.isVisible === false) 
+		{
+			return;
+		}
+
+		if (this.dirty)
+		{ this.makeMesh(); }
+		
+		if (this.objectsArray === undefined)
+		{ return false; }
+
+
+		
+		// Set geoLocation uniforms.***
+		var gl = magoManager.getGl();
+		gl.uniform1i(shader.refMatrixType_loc, 0); // in magoManager case, there are not referencesMatrix.***
+		var isSelected = false;
+		
+		if (renderType === 0)
+		{
+			// Depth render.***
+		}
+		else if (renderType === 1)
+		{
+			// Color render.***
+			// Color render.***
+			var selectionManager = magoManager.selectionManager;
+			if (selectionManager.isObjectSelected(this))
+			{ isSelected = true; }
+		
+			//gl.blendFunc( gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA );
+			gl.enable(gl.BLEND);
+			gl.uniform1i(shader.bApplySsao_loc, true); // apply ssao.***
+			gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.***
+			if (this.color4) 
+			{
+				gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, 1.0]);
+			}
+		}
+		else if (renderType === 2)
+		{
+			// Selection render.***
+			var selectionColor = magoManager.selectionColor;
+			var colorAux = magoManager.selectionColor.getAvailableColor(undefined);
+			var idxKey = magoManager.selectionColor.decodeColor3(colorAux.r, colorAux.g, colorAux.b);
+			magoManager.selectionManager.setCandidateGeneral(idxKey, this);
+			
+			gl.uniform4fv(shader.oneColor4_loc, [colorAux.r/255.0, colorAux.g/255.0, colorAux.b/255.0, 1.0]);
+			gl.disable(gl.BLEND);
+		}
+		
+		
+		if (isSelected)
+		{
+			if (this.selColor4 === undefined)
+			{
+				this.selColor4 = new Color();
+				this.selColor4.setRGBA(0.8, 0.4, 0.5, 1.0);
+			}
+			gl.uniform4fv(shader.oneColor4_loc, [this.selColor4.r, this.selColor4.g, this.selColor4.b, 1.0]); 
+		}
+		//shader.disableVertexAttribArrayAll();
+		//shader.enableVertexAttribArray(shader.position3_loc);
+		//shader.enableVertexAttribArray(shader.normal3_loc);
+		if (this.tMat) 
+		{
+			gl.uniformMatrix4fv(shader.buildingRotMatrix_loc, false, this.tMat._floatArrays);
+		}
+		
+		var objectsCount = this.objectsArray.length;
+
+		for (var i=0; i<objectsCount; i++)
+		{
+			var object = this.objectsArray[i];
+			object.renderAsChild(magoManager, shader, renderType, glPrimitive, isSelected);
+		}
+		
+		gl.disable(gl.BLEND);
+	};
+    
+	return ShimmyGearAssembly;
+};
+
+
+
+Vehicle.prototype.setPivotPointLC = function(x, y, z, magoManager) 
+{
+	if (!this.pivotPointLC) { this.pivotPointLC = new Point3D(); }
+	this.pivotPointLC.set(x, y, z);
+
+	//calculate trajectory points
+	var mode = this.mode;	
+	
+	switch (mode) 
+	{
+	//NORMAL
+	case BasicVehicle.MODE.NORMAL : {
+		if (this.isParallelDirection) 
+		{
+			//
+			this.linearTrajectory();
+		}
+		else 
+		{
+			//
+			this.circleTrajectory();
+		}
+		break;
+	}
+	case BasicVehicle.MODE.PARALLEL_TRANSLATE : {
+		this.linearTrajectory();
+		break;
+	}
+	case BasicVehicle.MODE.CIRCULAR_ROTATION : 
+	case BasicVehicle.MODE.PARALLEL_ROTATION : {
+		this.circleTrajectory();
+		break;
+	}
+	}
+
+	this.frontTrajectoryPointList.deleteVboKeysContainer(magoManager);
+	this.rearTrajectoryPointList.deleteVboKeysContainer(magoManager);
+};
+
+
+Vehicle.prototype.linearTrajectory = function() 
+{
+	var pointCount = this.frontTrajectoryPointList.getPointsCount();
+	var increDist = this.trajectoryLength / pointCount;
+	for (var i=0;i<pointCount;i++)
+	{
+		var frontTPoint = this.frontTrajectoryPointList.getPoint(i);
+		var rearTPoint = this.rearTrajectoryPointList.getPoint(i);
+
+		frontTPoint.set(this.frontDirection2D.x * increDist * (i+1), this.frontDirection2D.y * increDist * (i+1), this.height);
+		rearTPoint.set(this.frontDirection2D.x * -increDist * (i+1), this.frontDirection2D.y * -increDist * (i+1), this.height);
+	}
+};
+
+Vehicle.prototype.circleTrajectory = function() 
+{
+	if (!this.pivotPointLC) { return; }
+
+	var pointCount = this.frontTrajectoryPointList.getPointsCount();
+	var pivotPoint2DLC = new Point2D(-this.pivotPointLC.x, -this.pivotPointLC.y);
+	var xAxis2D = new Point2D(1, 0);
+	var startAngleRad =pivotPoint2DLC.angleRadToVector(xAxis2D);
+	if (pivotPoint2DLC.y < 0) { startAngleRad*= -1; }
+
+	var pivotPointLength = pivotPoint2DLC.getModul();
+	var totalAngleRad = this.trajectoryLength / pivotPointLength;
+	var icreAngleRad = totalAngleRad /  (pointCount-1);
+		
+	for (var i=0;i<pointCount;i++)
+	{
+		var frontTPoint = this.frontTrajectoryPointList.getPoint(i);
+		var rearTPoint = this.rearTrajectoryPointList.getPoint(i);
+
+		var frontCurrAngleRad = startAngleRad + (i * icreAngleRad);
+		var rearCurrAngleRad = startAngleRad + (i * -icreAngleRad);
+		frontTPoint.set(-pivotPoint2DLC.x + pivotPointLength * Math.cos(frontCurrAngleRad), -pivotPoint2DLC.y + pivotPointLength * Math.sin(frontCurrAngleRad), this.height);
+		rearTPoint.set(-pivotPoint2DLC.x + pivotPointLength * Math.cos(rearCurrAngleRad), -pivotPoint2DLC.y + pivotPointLength * Math.sin(rearCurrAngleRad), this.height);
+	}
+};
+
+
+
+
+
+'use strict';
+
+/**
+ * @typedef
+ * @property {number} interiorRadius
+ * @property {number} exteriorRadius
+ * @property {number} width
+ * @property {object} options
+ */
+
+/**
+ * @param {*} option 
+ * @class Wheel
+ */
+var Wheel = function(interiorRadius, exteriorRadius, width, options)
+{
+	MagoRenderable.call(this);
+	if (!(this instanceof Wheel)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+    
+	this.intRadius = 10;
+	this.extRadius = 20;
+	this.width = 5;
+	this.color4 = new Color();
+	this.color4.setRGBA(0.2, 0.2, 0.25, 1);
+    
+	if (interiorRadius !== undefined)
+	{ this.intRadius = interiorRadius; }
+	
+	if (exteriorRadius !== undefined)
+	{ this.extRadius = exteriorRadius; }
+	
+	if (width !== undefined)
+	{ this.width = width; }
+    
+	this.borderRadius = (this.extRadius - this.intRadius ) * 0.2;
+    
+	if (options !== undefined)
+	{
+		var color = options.color;
+		if (color)
+		{
+			this.color4.setRGBA(color.r, color.g, color.b, color.a);
+		}
+		var borderRadius = options.borderRadius;
+		if (borderRadius) 
+		{
+			this.borderRadius = borderRadius;
+		}
+	}
+    
+	this.width < this.borderRadius, this.borderRadius = this.width * 0.2;
+};
+Wheel.prototype = Object.create(MagoRenderable.prototype);
+Wheel.prototype.constructor = Wheel;
+/**
+ * Makes the geometry mesh.
+ */
+Wheel.prototype.makeMesh = function()
+{
+	var profile2dAux = new Profile2D();
+	
+	// Outer ring.**
+	var outerRing = profile2dAux.newOuterRing();
+
+	var halfWidth = this.width * 0.5;
+	var exteriorRadiusWithoutBorder = this.extRadius - this.borderRadius;
+
+	var polyline = outerRing.newElement("POLYLINE");
+	polyline.newPoint2d(-halfWidth, this.intRadius);            
+	polyline.newPoint2d(halfWidth, this.intRadius);             
+	polyline.newPoint2d(halfWidth, exteriorRadiusWithoutBorder);
+
+	var rightArc = outerRing.newElement("ARC");
+	rightArc.setCenterPosition(halfWidth - this.borderRadius, exteriorRadiusWithoutBorder);
+	rightArc.setRadius(this.borderRadius);
+	rightArc.setStartAngleDegree(0);
+	rightArc.setSweepAngleDegree(90);
+    
+	var polylineUpper = outerRing.newElement("POLYLINE");
+	polylineUpper.newPoint2d(halfWidth - this.borderRadius, this.extRadius);
+	polylineUpper.newPoint2d(-halfWidth + this.borderRadius, this.extRadius);
+
+	var leftArc = outerRing.newElement("ARC");
+	leftArc.setCenterPosition(-halfWidth + this.borderRadius, exteriorRadiusWithoutBorder);
+	leftArc.setRadius(this.borderRadius);
+	leftArc.setStartAngleDegree(90);
+	leftArc.setSweepAngleDegree(90);
+
+	var polylineLeft = outerRing.newElement("POLYLINE");
+	polylineLeft.newPoint2d(-halfWidth, exteriorRadiusWithoutBorder);
+	
+	var revolveAngDeg = 360;
+	var revolveSegmentsCount = 18;
+	var revolveSegment2d = new Segment2D();
+	var strPoint2d = new Point2D(-1, 0);
+	var endPoint2d = new Point2D(1, 0);
+	revolveSegment2d.setPoints(strPoint2d, endPoint2d);
+	var bIncludeBottomCap = false;
+	var bIncludeTopCap = false;
+	var mesh = Modeler.getRevolvedSolidMesh(profile2dAux, revolveAngDeg, revolveSegmentsCount, revolveSegment2d, bIncludeBottomCap, bIncludeTopCap, undefined);
+	this.mesh = mesh.getCopySurfaceIndependentMesh(mesh);
+	this.dirty = false;
+};
+
+/**
+ * Renders the factory.
+ */
+Wheel.prototype.render = function(magoManager, shader, renderType, glPrimitive)
+{
+	if (this.attributes && this.attributes.isVisible !== undefined && this.attributes.isVisible === false) 
+	{
+		return;
+	}
+	if (this.dirty)
+	{ this.makeMesh(); }
+	
+	if (this.mesh === undefined)
+	{ return false; }
+
+	// Set geoLocation uniforms.***
+	
+	var gl = magoManager.getGl();
+	if (!this.geoLocDataManager) { return; }
+
+	var buildingGeoLocation = this.geoLocDataManager.getCurrentGeoLocationData();
+	buildingGeoLocation.bindGeoLocationUniforms(gl, shader); // rotMatrix, positionHIGH, positionLOW.
+	
+	gl.uniform1i(shader.refMatrixType_loc, 0); // in magoManager case, there are not referencesMatrix.***
+	gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.***
+	
+	if (renderType === 2)
+	{
+		// Selection render.***
+		var selectionColor = magoManager.selectionColor;
+		var colorAux = magoManager.selectionColor.getAvailableColor(undefined);
+		var idxKey = magoManager.selectionColor.decodeColor3(colorAux.r, colorAux.g, colorAux.b);
+		magoManager.selectionManager.setCandidateGeneral(idxKey, this);
+		
+		gl.uniform4fv(shader.oneColor4_loc, [colorAux.r/255.0, colorAux.g/255.0, colorAux.b/255.0, 1.0]);
+		gl.disable(gl.BLEND);
+	}
+	
+	this.mesh.render(magoManager, shader, renderType, glPrimitive);
+
+	gl.disable(gl.BLEND);
+};
+
+
+/**
+ * Renders the factory.
+ */
+Wheel.prototype.renderAsChild = function(magoManager, shader, renderType, glPrimitive)
+{
+	if (this.attributes && this.attributes.isVisible !== undefined && this.attributes.isVisible === false) 
+	{
+		return;
+	}
+	if (this.dirty)
+	{ this.makeMesh(); }
+	
+	if (this.mesh === undefined)
+	{ return false; }
+
+	// Set geoLocation uniforms.***
+	
+	var gl = magoManager.getGl();
+	var bIsSelected = false;
+	if (renderType === 1)
+	{
+		// Color render.***
+		//gl.blendFunc( gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA );
+		gl.enable(gl.BLEND);
+		gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.***
+		
+		// Check if is selected.***
+		var selectionManager = magoManager.selectionManager;
+		if (bIsSelected !== undefined && bIsSelected)
+		{
+			//gl.disable(gl.BLEND);
+			if (this.color4) 
+			{
+				gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, 1.0]);
+			}
+			
+		}
+		else if (selectionManager.isObjectSelected(this))
+		{
+			//gl.disable(gl.BLEND);
+			gl.uniform4fv(shader.oneColor4_loc, [0.9, 0.1, 0.1, 1.0]);
+		}
+		else 
+		{
+			if (this.color4) 
+			{
+				gl.uniform4fv(shader.oneColor4_loc, [this.color4.r, this.color4.g, this.color4.b, 1.0]);
+			}
+		}
+		
+	}
+	else if (renderType === 2)
+	{
+		// Selection render.***
+		var selectionColor = magoManager.selectionColor;
+		var colorAux = magoManager.selectionColor.getAvailableColor(undefined);
+		var idxKey = magoManager.selectionColor.decodeColor3(colorAux.r, colorAux.g, colorAux.b);
+		magoManager.selectionManager.setCandidateGeneral(idxKey, this);
+		
+		gl.uniform4fv(shader.oneColor4_loc, [colorAux.r/255.0, colorAux.g/255.0, colorAux.b/255.0, 1.0]);
+		gl.disable(gl.BLEND);
+	}
+
+	if (this.tMat) 
+	{
+		gl.uniformMatrix4fv(shader.buildingRotMatrix_loc, false, this.tMat._floatArrays);
+	}
+	
+	this.mesh.render(magoManager, shader, renderType, glPrimitive);
+
+	gl.disable(gl.BLEND);
 };
 "function"!=typeof Promise.prototype.done&&(Promise.prototype.done=function(t,n){var o=arguments.length?this.then.apply(this,arguments):this;o.then(null,function(t){setTimeout(function(){throw t},0)})});
 (function e(t, n, r) {
@@ -94212,6 +94442,7 @@ Promise.prototype.finally = Promise.prototype.finally || {
 	_mago3d['SpeechBubble'] = SpeechBubble;
 	_mago3d['TestFreeContourWallBuilding'] = TestFreeContourWallBuilding;
 	_mago3d['Tube'] = Tube;
+	_mago3d['VectorMesh'] = VectorMesh;
 	_mago3d['Vehicle'] = Vehicle;
 	_mago3d['Wheel'] = Wheel;
 	_mago3d['Renderer'] = Renderer;
