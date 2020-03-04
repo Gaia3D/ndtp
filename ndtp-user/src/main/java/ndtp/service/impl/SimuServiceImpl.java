@@ -284,9 +284,9 @@ public class SimuServiceImpl {
 						.saveFilePath(SAVE_PATH)
 						.saveFileType(ft)
 						.build();
-				int cityPlanFileInsert = simuMapper.insertSimCityPlanFile(sfm);
-				cpr.setCityPlanResultSeq(sfm.getSimFileSeq());
-				int result = simuMapper.insertSimCityPlanFileResult(cpr);
+				simuMapper.insertSimCityPlanFile(sfm);
+				cpr.setSimFileMasterImgNum(sfm.getSimFileSeq());
+				simuMapper.insertSimCityPlanFileResult(cpr);
 				
 			}
 
@@ -488,6 +488,7 @@ public class SimuServiceImpl {
 	public F4DObject procF4DDataStrucreByPaths(String modelFilePath, String modelFileName) throws IOException {
 		F4DSubObject subF4dObj;
 		List<F4DSubObject> f4dSubObjectList = new ArrayList<>();
+		// if you are process citygml you have longlats, others data don't have this file
 		if(modelFileName.contains("lonsLats")) {
 			LonsLatsItem[] lli = getJsonByLonsLatsFile(modelFilePath + modelFileName);
 			for(LonsLatsItem lliObj : lli) {
@@ -519,6 +520,7 @@ public class SimuServiceImpl {
 							.heading(consDataInfo.getHeading())
 							.pitch(consDataInfo.getPitch())
 							.roll(consDataInfo.getRoll())
+							.ratio(consDataInfo.getRatio())
 							.build();
 				} else {
 					String dataKey = rp[0].getData_key();

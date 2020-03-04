@@ -105,6 +105,7 @@ public class SimulationRestController {
 		sfm.setSaveFileType(simServiceImpl.getCityTypeByCityTypeString(sfm.getCityTypeString()));
 
 		List<F4DObject> f4dObjList = new ArrayList<>();
+		// Sejong Data Process
 		if(sfm.getSaveFileType() == FileType.CONSTPROCSEJON) {
 			var consBuildList = this.simServiceImpl.getConsBuildList(sfm)
 					.stream().filter(obj -> obj.getSaveFileName().equals("relativePaths.json"))
@@ -112,6 +113,8 @@ public class SimulationRestController {
 			for( var obj : consBuildList) {
 				var f4dObj = this.simServiceImpl.procF4DDataStrucreByPaths(obj.getSaveFilePath(), obj.getSaveFileName());
 				f4dObj.setCons_ratio(obj.getConsRatio());
+				f4dObj.setCons_type(FileType.CONSTPRO);
+				f4dObj.setStep(obj.getConsType().getValue());
 				f4dObjList.add(f4dObj);
 			}
 		} else {
@@ -121,6 +124,8 @@ public class SimulationRestController {
 			for( var obj : consBuildList) {
 				var f4dObj = this.simServiceImpl.procF4DDataStrucreByPaths(obj.getSaveFilePath(), obj.getSaveFileName());
 				f4dObj.setCons_ratio(obj.getConsRatio());
+				f4dObj.setCons_type(FileType.CONSTPRO);
+				f4dObj.setStep(obj.getConsType().getValue());
 				f4dObjList.add(f4dObj);
 			}
 		}

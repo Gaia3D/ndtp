@@ -18,4 +18,5 @@ public class F4DSubObject {
     private Float heading;
     private Float pitch;
     private Float roll;
+    private Integer ratio;
 }

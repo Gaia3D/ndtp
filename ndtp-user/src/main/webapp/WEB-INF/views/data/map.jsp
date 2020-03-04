@@ -167,6 +167,8 @@
 <script type="text/javascript" src="/externlib/tuidatepicker-4.0.3/tui-date-picker.min.js"></script>
 <script type="text/javascript" src="/js/mago3d.js"></script>
 <script type="text/javascript" src="/js/mago3d_lx.js"></script>
+<script type="text/javascript" src="/externlib/cesium/HtmlBillboard.js"></script>
+<script type="text/javascript" src="/externlib/cesium/HtmlBillboardCollection.js"></script>
 <script type="text/javascript" src="/js/${lang}/common.js"></script>
 <script type="text/javascript" src="/js/${lang}/message.js"></script>
 <script type="text/javascript" src="/js/${lang}/map-controll.js"></script>
@@ -195,6 +197,7 @@
  		$("#simulationMenu").click(()=> {
 			getUserInfo();
 		});
+
 	});
 
 	var permRequestDialog = $( "#permRequestDialog" ).dialog({

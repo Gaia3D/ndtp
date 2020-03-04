@@ -23,7 +23,6 @@
 </div>
 <script>
     $("#commentSave").click(()=> {
-        debugger;
         const permSeq = buildAcceptPermSeq;
         const commentTitle = $("#commentTitle").val();
         const commentContent = $("#commentContent").val();
@@ -32,7 +31,7 @@
             commentTitle: commentTitle,
             commentContent: commentContent
         };
-        debugger;
+
         $.ajax({
             url: "/data/simulation-rest/commentRegister",
             type: "POST",

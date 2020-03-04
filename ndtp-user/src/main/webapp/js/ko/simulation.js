@@ -1,5 +1,5 @@
 
-
+const consBuildBillboard = [];
 var Simulation = function(magoInstance, viewer, $) {
 	var that = this;
 	var CAMERA_MOVE_NEED_DISTANCE = 5000;
@@ -14,8 +14,8 @@ var Simulation = function(magoInstance, viewer, $) {
     var _cityPlanModels = [];
     var _bsConstructProcessModels = [];
     let _sejongDataGroupList = [];
-	const consBuildBillboard = [];
 	const consBuildStepInfo = {};
+	const consBuildBillboardStepInfo = [];
     var mesurPolyList = [];
     var handler = null;
     var drawingMode = 'line';
@@ -28,6 +28,7 @@ var Simulation = function(magoInstance, viewer, $) {
     var nowPolygon;
     var selectEntity;
     var locaMonitor = false;
+	const htmlBillboard = new HtmlBillboardCollection(viewer.scene);
 	var magoManager = magoInstance.getMagoManager();
 	var f4dController = magoInstance.getF4dController();
 	magoManager.on(Mago3D.MagoManager.EVENT_TYPE.F4DLOADEND, F4DLoadEnd);
@@ -47,23 +48,36 @@ var Simulation = function(magoInstance, viewer, $) {
 					durationSeconds : 0.6
 				}));
 			}
-			if(rootNode.attributes.ratio < 50) {
+			if(node.data.attributes.ratio < 50 && rootNode.attributes.consType === 'CONSTPRO') {
 				let objPosition = Cesium.Cartesian3.fromDegrees(node.data.geographicCoord.longitude, node.data.geographicCoord.latitude, node.data.geographicCoord.altitude + 40);
 				let objPinBuilder = new Cesium.PinBuilder();
-				node.data.isColorChanged = true;
+				/*node.data.isColorChanged = true;
 				if(!node.data.aditionalColor) {
 					node.data.aditionalColor = new Mago3D.Color();
 					node.data.aditionalColor.setRGB(230/255,8/255,0);
-				}
+				}*/
+				var ch = htmlBillboard.add();
+				ch.position = objPosition;
+				ch.offsetLeft = -15;
+				ch.offsetTop = 3;
+				ch.element.style.width = '30px';
+				ch.element.style.height = '30px';
+				ch.element.style.display = 'flex';
+				ch.element.style.alignItems = 'center';
+				ch.element.style.justifyContent = 'center';
+				ch.element.innerHTML = "" +
+					"<div class='tooltip' onclick=''><svg height='20' width='20' viewBox='0 0 20 20'>\n" +
+					"  <circle r='10' cx='10' cy='10' fill='white' />\n" +
+					"  <circle r='5' cx='10' cy='10' fill='transparent'\n" +
+					"          stroke='tomato'\n" +
+					"          stroke-width='10'\n" +
+					"          stroke-dasharray='calc(" + (node.data.attributes.ratio * 31.4 / 100) + ") 31.4'\n" +
+					"          transform='rotate(-90) translate(-20)' />\n" +
+					"</svg>" +
+					"<span class='tooltiptext'>공정률 &nbsp; : "+ node.data.attributes.ratio +"%</span>" +
+					"</div>";
 
-				const entitiyObj = _viewer.entities.add({
-					billboard : {
-						image : objPinBuilder.fromText('!', Cesium.Color.BLACK, 48).toDataURL(),
-						eyeOffset : new Cesium.Cartesian3(0.0, 20.0, 0.0), // default
-					},
-					position : objPosition,
-				});
-				consBuildBillboard.push(entitiyObj);
+				consBuildBillboardStepInfo.push([parseInt(rootNode.attributes.step), ch]);
 			}
 		}
 	}
@@ -241,30 +255,51 @@ var Simulation = function(magoInstance, viewer, $) {
 				let procStepNum = [];
 
 				// dic를 탐색하여 현재 값 -1 의 자료들을 찾아 없으면 요청한다.
+				debugger;
 				for( let i = 0 ; i < index; i++) {
-					if(consBuildStepInfo[i] === undefined)
+					if(consBuildStepInfo[i] === undefined) {
 						procStepNum.push(i);
+					}
 				}
-
 				for (let procObj of procStepNum) {
 					consBuildSlider.consBuildDataReq(procObj, consTypeString);
 				}
-
+				debugger;
 				// 현재 INDEX 있는 값을 제거하고 다시 요청한다
 				consBuildSlider.consBuildDataReq(index, consTypeString);
+				if(consBuildBillboardStepInfo !== undefined) {
+					for(const obj_index in consBuildBillboardStepInfo) {
+						var obj = consBuildBillboardStepInfo[obj_index];
+						if(parseInt(obj[0]) ===  index){
+							htmlBillboard.remove(obj[1]);
+							consBuildBillboardStepInfo.splice(obj_index, 1)
+						}
+					}
+				}
 
 				//  현재 값 이후에 있는 데이터 들은 모두 제거한다.
 				var f4dController = MAGO3D_INSTANCE.getF4dController();
 				for( const obj in consBuildStepInfo) {
 					if (index < parseInt(obj)) {
 						const dataKey = consBuildStepInfo[parseInt(obj)][0].data_key;
+						delete consBuildStepInfo[obj];
 						f4dController.deleteF4dGroup(dataKey);
+					}
+				}
+				if(consBuildBillboardStepInfo !== undefined) {
+					for(const obj_index in consBuildBillboardStepInfo) {
+						const obj = consBuildBillboardStepInfo[obj_index];
+						if (parseInt(obj[0]) > index) {
+							htmlBillboard.remove(obj[1]);
+							consBuildBillboardStepInfo.splice(obj_index, 1)
+						}
 					}
 				}
 			})
 		},
 		sliderSejongShow: function() {
-			$('#csRange, #constructionProcess .profileInfo').show();
+			$('#csRange, #constructionProcess').show();
+			// $('#csRange, #constructionProcess .profileInfo').show();
 			$('#saRange').hide();
 		},
 		consBuildDataReq: (step, cityType) => {
@@ -272,7 +307,6 @@ var Simulation = function(magoInstance, viewer, $) {
 				consTypeString : step + "",
 				cityTypeString : cityType
 			};
-
 			$.ajax({
 				url: "/data/simulation-rest/cityConstProcSelect",
 				type: "GET",
@@ -1922,7 +1956,9 @@ const f4dDataGenMaster = {
 				"nodeType": " root ",
 				"projectType": "citygml",
 				"specularLighting": true,
-				"ratio": f4dObject.cons_ratio
+				"ratio": f4dObject.cons_ratio,
+				"step": f4dObject.step,
+				"consType": f4dObject.cons_type
 			},
 			"children": [],
 			"parent": 0,
@@ -1944,7 +1980,6 @@ const f4dDataGenMaster = {
 		return rootObj;
 	},
 	genIfcChild: function(f4dSubObject, lon, lat, alt, head, pich, roll) {
-		arr = [];
 		for(var i = 0; i < f4dSubObject.length; i++) {
 			var obj = f4dSubObject[i];
 			var imsiF4dSubObject = {
@@ -1978,7 +2013,8 @@ const f4dDataGenMaster = {
 				"attributes": {
 					"isPhysical": true,
 					"nodeType": "daejeon",
-					"flipYTexCoords": false
+					"flipYTexCoords": false,
+					"ratio": obj.ratio
 				},
 				"children": [],
 				"data_key": obj.data_key,
