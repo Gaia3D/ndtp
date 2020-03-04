@@ -20,6 +20,8 @@ public class RoleSupport {
 	 */
 	public static boolean isUserGroupRoleValid(List<UserGroupRole> listUserGroupRole, RoleKey roleKey) {
 		boolean isExist = false;
+		if(listUserGroupRole == null || listUserGroupRole.isEmpty()) return isExist;
+		
 		for(UserGroupRole userGroupRole : listUserGroupRole) {
 			if(roleKey == RoleKey.valueOf(userGroupRole.getRoleKey())) {
 				isExist = true;
@@ -35,6 +37,7 @@ public class RoleSupport {
 	 * @return
 	 */
 	public static boolean isUserGroupRoleValid(List<String> listUserGroupRoleKey, String roleKey) {
+		if(listUserGroupRoleKey == null || listUserGroupRoleKey.isEmpty()) return false;
 		return listUserGroupRoleKey.contains(roleKey);
 	}
 }
