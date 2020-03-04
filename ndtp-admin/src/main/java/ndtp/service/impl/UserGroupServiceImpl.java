@@ -276,14 +276,25 @@ public class UserGroupServiceImpl implements UserGroupService {
     	// 삭제하고, children update
 
     	userGroup = userGroupMapper.getUserGroup(userGroup);
-    	log.info("--- 111111111 delete userGroup = {}", userGroup);
+    	log.info("--- delete userGroup = {}", userGroup);
 
     	int result = 0;
     	if(Depth.ONE == Depth.findBy(userGroup.getDepth())) {
     		log.info("--- one ================");
+    		List<Integer> userGroupIdList = userGroupMapper.getUserGroupIdByAncestor(userGroup.getUserGroupId());
+    		for(Integer userGroupId : userGroupIdList) {
+    			userGroupMapper.deleteUserGroupMenu(userGroupId);
+    			userGroupMapper.deleteUserGroupRole(userGroupId);
+    		}
     		result = userGroupMapper.deleteUserGroupByAncestor(userGroup);
     	} else if(Depth.TWO == Depth.findBy(userGroup.getDepth())) {
     		log.info("--- two ================");
+    		List<Integer> userGroupIdList = userGroupMapper.getUserGroupIdByParent(userGroup.getUserGroupId());
+    		for(Integer userGroupId : userGroupIdList) {
+    			userGroupMapper.deleteUserGroupMenu(userGroupId);
+    			userGroupMapper.deleteUserGroupRole(userGroupId);
+    		}
+    		
     		result = userGroupMapper.deleteUserGroupByParent(userGroup);
 
     		UserGroup ancestorUserGroup = new UserGroup();
@@ -297,6 +308,9 @@ public class UserGroupServiceImpl implements UserGroupService {
     		// ancestor - 1
     	} else if(Depth.THREE == Depth.findBy(userGroup.getDepth())) {
     		log.info("--- three ================");
+    		userGroupMapper.deleteUserGroupMenu(userGroup.getUserGroupId());
+			userGroupMapper.deleteUserGroupRole(userGroup.getUserGroupId());
+    		
     		result = userGroupMapper.deleteUserGroup(userGroup);
     		log.info("--- userGroup ================ {}", userGroup);
 

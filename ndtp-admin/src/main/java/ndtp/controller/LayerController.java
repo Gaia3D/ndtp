@@ -937,7 +937,9 @@ public class LayerController implements AuthorizationController {
 			log.info("@@ DataAccessException. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
         } catch(RuntimeException e) {
 			log.info("@@ RuntimeException. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
-		} catch(Exception e) {
+        } catch(IOException e) {
+        	log.info("@@ FileNotFoundException. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+        } catch(Exception e) {
 			log.info("@@ Exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
 		}
     }

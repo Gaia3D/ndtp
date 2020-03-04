@@ -145,7 +145,23 @@
 	    FROM menu_tree
 	    ORDER BY path
 	</select>
-
+	
+	<!-- 조상이 같은 사용자 그룹 아이디 목록 -->
+	<select id="getUserGroupIdByAncestor" parameterType="int" resultType="int">
+		/* getUserGroupIdByAncestor */
+		SELECT user_group_id
+		FROM user_group
+		WHERE ancestor = #{userGroupId}
+	</select>
+    
+    <!-- 부모가 같은 사용자 그룹 아이디 목록 -->
+	<select id="getUserGroupIdByParent" parameterType="int" resultType="int">
+		/* getUserGroupIdByParent */
+		SELECT user_group_id
+		FROM user_group
+		WHERE parent = #{userGroupId}
+	</select>
+    
 	<!-- 사용자 그룹별 Role 목록 -->
 	<select id="getListUserGroupRole" parameterType="userGroupRole" resultType="userGroupRole">
 		/* getListUserGroupRole */
