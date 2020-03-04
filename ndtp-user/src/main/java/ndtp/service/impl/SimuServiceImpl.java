@@ -186,7 +186,7 @@ public class SimuServiceImpl {
 				writeFile(mtf, saveFileName, uploadDir);
 
 				// if you are have model file moved process target Path
-				if(saveFileName.contains(".ifc") || saveFileName.contains(".gml") || saveFileName.contains(".jpg") || saveFileName.contains(".png") ) {
+				if(saveFileName.contains(".ifc") || saveFileName.contains(".gml") || saveFileName.contains(".jpg") || saveFileName.contains(".png")  || saveFileName.contains(".3ds") || saveFileName.contains(".X") ) {
 					Files.copy(new File(uploadDir + saveFileName).toPath(), new File(f4dInputDir + originFileName).toPath());
 				}
 				lsfm.add(SimFileMaster.builder().originFileName(originFileName).saveFilePath(uploadDir).saveFileName(saveFileName).build());
@@ -451,20 +451,38 @@ public class SimuServiceImpl {
 		F4DRunPath = F4DRunPath + " #inputFolder " + inputFolder + " #outputFolder " + outputFolder + " #log " + logFullPath + " " + Option;
 		System.out.println(F4DRunPath);
 
-		String line = "";
 		try {
 			String cmdStr = F4DRunPath;
-			pc = Runtime.getRuntime().exec(cmdStr);
 
+			pc = Runtime.getRuntime().exec(cmdStr);
 			System.out.println("RunProcF4D");
+			// any error message?
+			StreamGobbler errorGobbler = new
+					StreamGobbler(pc.getErrorStream(), "ERROR");
+
+			// any output?
+			StreamGobbler outputGobbler = new
+					StreamGobbler(pc.getInputStream(), "OUTPUT");
+
+			// kick them off
+			errorGobbler.start();
+			outputGobbler.start();
+
+			// any error???
+			int exitVal = pc.waitFor();
+			System.out.println("ExitValue: " + exitVal);
+			System.out.println("Process exitValue: " + exitVal);
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new Error("IFC 파일 처리에 실패했습니다");
 		} finally {
-			pc.waitFor();
 			pc.destroy();
 		}
 		return true;
+	}
+
+	private ConsDataInfo getConsDataInfoByName(ConsDataInfo sfm) {
+		return this.simuMapper.getConsDataInfo(sfm);
 	}
 
 	public F4DObject procF4DDataStrucreByPaths(String modelFilePath, String modelFileName) throws IOException {
@@ -487,9 +505,29 @@ public class SimuServiceImpl {
 			}
 		} else {
 			RelativePathItem[] rp = getJsonByRelationFile(modelFilePath + modelFileName);
-			String dataKey = rp[0].getData_key();
-			subF4dObj = new F4DSubObject().builder().data_key(dataKey).data_name(dataKey).build();
-			f4dSubObjectList.add(subF4dObj);
+
+			for(RelativePathItem rpObj : rp) {
+				var keyName = rpObj.getData_key();
+				ConsDataInfo consDataInfo = this.getConsDataInfoByName(ConsDataInfo.builder().dataName(keyName).build());
+				if(consDataInfo != null) {
+					subF4dObj = new F4DSubObject().builder()
+							.data_key(rpObj.getData_key())
+							.data_name(rpObj.getData_key())
+							.longitude(consDataInfo.getLon())
+							.latitude(consDataInfo.getLat())
+							.height(consDataInfo.getAlt())
+							.heading(consDataInfo.getHeading())
+							.pitch(consDataInfo.getPitch())
+							.roll(consDataInfo.getRoll())
+							.build();
+				} else {
+					String dataKey = rp[0].getData_key();
+					subF4dObj = new F4DSubObject().builder().data_key(dataKey).data_name(dataKey).build();
+					f4dSubObjectList.add(subF4dObj);
+				}
+
+				f4dSubObjectList.add(subF4dObj);
+			}
 		}
 		String[] pathArr = null;
 
@@ -600,6 +638,33 @@ public class SimuServiceImpl {
 			}
 		} catch (Exception e) {
 			e.getStackTrace();
+		}
+	}
+}
+
+class StreamGobbler extends Thread
+{
+	InputStream is;
+	String type;
+
+	StreamGobbler(InputStream is, String type)
+	{
+		this.is = is;
+		this.type = type;
+	}
+
+	public void run()
+	{
+		try
+		{
+			InputStreamReader isr = new InputStreamReader(is);
+			BufferedReader br = new BufferedReader(isr);
+			String line=null;
+			while ( (line = br.readLine()) != null)
+				System.out.println(type + ">" + line);
+		} catch (IOException ioe)
+		{
+			ioe.printStackTrace();
 		}
 	}
 }

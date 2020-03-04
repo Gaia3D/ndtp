@@ -95,13 +95,6 @@
 </script>
 
 <style>
-    #growls-default {
-        display: flex;
-        flex-direction: column-reverse;
-        /*background-color: red;*/
-        bottom: 30px;
-        right: 20px; }
-
     .growl.growl-medium {
         width: 250px;
         padding: 10px;

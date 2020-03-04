@@ -55,6 +55,11 @@
 			(city_plan_result_seq, city_plan_target_area, city_plan_std_floor_cov, floor_coverate_ratio, city_plan_std_build_cov, build_coverate_ratio, sim_file_master_img_num, create_dt)
 			VALUES(#{cityPlanResultSeq}, #{cityPlanTargetArea}, #{cityPlanStdFloorCov}, #{floorCoverateRatio},  #{cityPlanStdBuildCov}, #{buildCoverateRatio},  #{simFileMasterImgNum}, now());
 	</insert>
-	
-	
+
+	<!-- 세션 정보 -->
+	<select id="getConsDataInfo" parameterType="consDataInfo" resultType="consDataInfo">
+		SELECT data_name, lon, lat, alt, heading, pitch, roll, step FROM cons_data_info WHERE data_name = #{dataName} LIMIT 1
+	</select>
+
+
 </mapper>

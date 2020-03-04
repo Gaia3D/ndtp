@@ -103,14 +103,26 @@ public class SimulationRestController {
 		System.out.println(sfm.toString());
 		sfm.setConsType(simServiceImpl.getConsTypeByConsTypeString(sfm.getConsTypeString()));
 		sfm.setSaveFileType(simServiceImpl.getCityTypeByCityTypeString(sfm.getCityTypeString()));
-		var consBuildList = this.simServiceImpl.getConsBuildList(sfm)
-				.stream().filter(obj -> obj.getSaveFileName().equals("lonsLats.json"))
-				.collect(Collectors.toList());
-		 List<F4DObject> f4dObjList = new ArrayList<>();
-		for( var obj : consBuildList) {
-			var f4dObj = this.simServiceImpl.procF4DDataStrucreByPaths(obj.getSaveFilePath(), obj.getSaveFileName());
-			f4dObj.setCons_ratio(obj.getConsRatio());
-			f4dObjList.add(f4dObj);
+
+		List<F4DObject> f4dObjList = new ArrayList<>();
+		if(sfm.getSaveFileType() == FileType.CONSTPROCSEJON) {
+			var consBuildList = this.simServiceImpl.getConsBuildList(sfm)
+					.stream().filter(obj -> obj.getSaveFileName().equals("relativePaths.json"))
+					.collect(Collectors.toList());
+			for( var obj : consBuildList) {
+				var f4dObj = this.simServiceImpl.procF4DDataStrucreByPaths(obj.getSaveFilePath(), obj.getSaveFileName());
+				f4dObj.setCons_ratio(obj.getConsRatio());
+				f4dObjList.add(f4dObj);
+			}
+		} else {
+			var consBuildList = this.simServiceImpl.getConsBuildList(sfm)
+					.stream().filter(obj -> obj.getSaveFileName().equals("lonsLats.json"))
+					.collect(Collectors.toList());
+			for( var obj : consBuildList) {
+				var f4dObj = this.simServiceImpl.procF4DDataStrucreByPaths(obj.getSaveFilePath(), obj.getSaveFileName());
+				f4dObj.setCons_ratio(obj.getConsRatio());
+				f4dObjList.add(f4dObj);
+			}
 		}
 
 		return f4dObjList;

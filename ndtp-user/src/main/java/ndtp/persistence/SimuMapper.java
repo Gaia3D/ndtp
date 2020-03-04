@@ -2,6 +2,7 @@ package ndtp.persistence;
 
 import java.util.List;
 
+import ndtp.domain.ConsDataInfo;
 import org.springframework.stereotype.Repository;
 
 import ndtp.domain.CityPlanResult;
@@ -17,5 +18,6 @@ public interface SimuMapper {
 
 	SimFileMaster getSimCityPlanFile();
 	List<SimFileMaster> getSimMasterList(SimFileMaster sfm);
+	ConsDataInfo getConsDataInfo(ConsDataInfo sfm);
 
 }
