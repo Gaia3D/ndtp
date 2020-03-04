@@ -151,20 +151,11 @@
 					<label id="targetbuildCoverateRatio" for="">기준 건폐율 00%</label>
 					<label id="buildCoverateRatio" for="">건폐율 00%</label>
 				</li>
-				<li>
-					<label for="">작업 선택</label>
-					<select id="run_work_state" name="searchDataStatus">
-						<option value="">선택안함</option>
-						<option value="imsiBuildSelect">건물 선택 모드</option>
-						<option value="imsiBuild">임시 건물 배치 모드</option>
-						<option value="autoBuild">자동 건물 배치 모드</option>
-						<option value="location">경관 좌표 배치 모드</option>
-					</select>
-				</li>
+
 			</ul>
 		</div>
 	</li>
-	<li >
+	<li class="on">
 		<p>도시 계획2<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="">
 			<ul class="analysisGroup">
@@ -233,6 +224,15 @@
 						<label for="">높이 커스터마이징</label>
 						<input id="inputCustomizing" type="number" data-bind="value: buildingAdjust" />
 						<%--						<button id="dd" type="button" class="btnText drawObserverPoint">면적 설정</button>--%>
+
+						<label for="">작업 선택</label>
+						<select id="run_work_state" name="searchDataStatus">
+							<option value="">선택안함</option>
+							<option value="imsiBuildSelect">건물 선택 모드</option>
+							<option value="imsiBuild">임시 건물 배치 모드</option>
+							<option value="autoBuild">자동 건물 배치 모드</option>
+							<option value="location">경관 좌표 배치 모드</option>
+						</select>
 					</div>
 				</li>
 				<li style="text-align: right;">
@@ -241,7 +241,7 @@
 			</ul>
 		</div>
 	</li>
-	<li class="on">
+	<li >
 		<p>건축인 허가 신청<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="">
 			<ul class="analysisGroup">
