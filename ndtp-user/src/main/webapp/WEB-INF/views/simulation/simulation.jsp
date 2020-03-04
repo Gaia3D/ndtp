@@ -151,20 +151,11 @@
 					<label id="targetbuildCoverateRatio" for="">기준 건폐율 00%</label>
 					<label id="buildCoverateRatio" for="">건폐율 00%</label>
 				</li>
-				<li>
-					<label for="">작업 선택</label>
-					<select id="run_work_state" name="searchDataStatus">
-						<option value="">선택안함</option>
-						<option value="imsiBuildSelect">건물 선택 모드</option>
-						<option value="imsiBuild">임시 건물 배치 모드</option>
-						<option value="autoBuild">자동 건물 배치 모드</option>
-						<option value="location">경관 좌표 배치 모드</option>
-					</select>
-				</li>
+
 			</ul>
 		</div>
 	</li>
-	<li >
+	<li class="on">
 		<p>도시 계획2<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="">
 			<ul class="analysisGroup">
@@ -233,6 +224,15 @@
 						<label for="">높이 커스터마이징</label>
 						<input id="inputCustomizing" type="number" data-bind="value: buildingAdjust" />
 						<%--						<button id="dd" type="button" class="btnText drawObserverPoint">면적 설정</button>--%>
+
+						<label for="">작업 선택</label>
+						<select id="run_work_state" name="searchDataStatus">
+							<option value="">선택안함</option>
+							<option value="imsiBuildSelect">건물 선택 모드</option>
+							<option value="imsiBuild">임시 건물 배치 모드</option>
+							<option value="autoBuild">자동 건물 배치 모드</option>
+							<option value="location">경관 좌표 배치 모드</option>
+						</select>
 					</div>
 				</li>
 				<li style="text-align: right;">
@@ -241,7 +241,7 @@
 			</ul>
 		</div>
 	</li>
-	<li class="on">
+	<li >
 		<p>건축인 허가 신청<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="">
 			<ul class="analysisGroup">
@@ -254,6 +254,8 @@
 							</select>
 							<div>
 <%--								<button type="button" id="permView" title="인허가 시뮬레이션" class="btnTextF" style="">인허가 확인</button>--%>
+								<button type="button" id="permRequest" title="건축인 허가 신청" class="btnTextF" style="">건축인 허가 신청</button>
+								<button type="button" id="permView" title="인허가 시뮬레이션" class="btnTextF" style="">인허가 시뮬레이션</button>
 								<button type="button" id="comment" class="btnTextF">대화 하기</button>
 							</div>
 						</div>
@@ -267,8 +269,7 @@
 							<button type="button" id="permCompleteView" title="인허가 시뮬레이션" class="btnTextF" style="width: 52%;">완료 인허가 확인</button>
 						</div>
 					</div>
-					<button type="button" id="permRequest" title="건축인 허가 신청" class="btnTextF" style="margin-top:10px;">건축인 허가 신청</button>
-					<button type="button" id="permView" title="인허가 시뮬레이션" class="btnTextF" style="margin-top:10px;">인허가 시뮬레이션</button>
+
 <%--					<button type="button" id="testFly" class="btnTextF" style="margin-top:10px;">Fly Test</button>--%>
 <%--					<button type="button" id="testingPicking" class="btnTextF" style="margin-top:10px;">testingPicking</button>--%>
 					<button type="button" id="testBuilding" class="btnTextF" style="margin-top:10px; display:none;">testBuilding</button>
@@ -389,10 +390,13 @@
 	});
 
 	$("#permView").on('click', function() {
+		if (buildAcceptPermSeq === undefined || buildAcceptPermSeq === "") {
+			alert("처리 목록을 먼저 선택해 주시기 바랍니다.");
+			return;
+		}
 		let data = {
 			permSeq: buildAcceptPermSeq
 		};
-		debugger;
 		$.ajax({
 			url: "/data/simulation-rest/getPermRequestByConstructor",
 			type: "POST",
@@ -432,7 +436,6 @@
 					$("#permRequest").attr('style', "display:none;");
 					// $("#testBuilding").trigger("click");
 				} else {
-					debugger;
 					$("#permView").attr('style', "display:none;");
 				}
 			},

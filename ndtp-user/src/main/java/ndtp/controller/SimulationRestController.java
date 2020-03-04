@@ -357,14 +357,11 @@ public class SimulationRestController {
 		StructPermission oneResult = structPermissionMapper.selectOne(structPermOne);
 
 		if (os.contains("mac")) {
-			/**
-			 * MAC의경우 해당 Path로 바꾸는 작업을 해주어야함.
-			 */
 			oriFilePath = oneResult.getSaveFilePath() + oneResult.getSaveFileName();
-			copyFilePath = oneResult.getSaveFilePath() + oneResult.getSaveFileName();
+			copyFilePath = projectPath + "/src/main/webapp/externlib/pdfjs/web/pdf_files/" + oneResult.getSaveFileName();
 		} else {
 			oriFilePath = oneResult.getSaveFilePath() + oneResult.getSaveFileName();
-			copyFilePath = oneResult.getSaveFilePath() + oneResult.getSaveFileName();
+			copyFilePath = projectPath + "\\src\\main\\webapp\\externlib\\pdfjs\\web\\pdf_files\\" + oneResult.getSaveFileName();
 		}
 
 		Path source = Paths.get(oriFilePath);
@@ -378,7 +375,7 @@ public class SimulationRestController {
 			throw new IllegalArgumentException("target must be specified");
 		}
 		if (Files.exists(target)) {
-			return structPermOne.getSaveFileName();
+			return oneResult.getSaveFileName();
 		}
 
 		// 소스파일이 실제로 존재하는지 체크
@@ -397,7 +394,7 @@ public class SimulationRestController {
 //		Base64.Encoder encoder = Base64.getEncoder();
 		if (Files.exists(target, new LinkOption[] {})) { // 파일이 정상적으로 생성이 되었다면
 			// System.out.println("File Copied");
-			return structPermOne.getSaveFileName();
+			return oneResult.getSaveFileName();
 		} else {
 //			System.out.println("File Copy Failed");
 			return "false";
