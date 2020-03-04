@@ -52,6 +52,7 @@
 		<typeAlias type="ndtp.domain.StructPermission" alias="structPermission"/>
 		<typeAlias type="ndtp.domain.CityPlanResult" alias="cityPlanResult"/>
 		<typeAlias type="ndtp.domain.CommentManage" alias="commentManage"/>
+		<typeAlias type="ndtp.domain.ConsDataInfo" alias="consDataInfo"/>
     </typeAliases>
 
 </configuration>

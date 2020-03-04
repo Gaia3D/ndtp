@@ -313,10 +313,10 @@ var Simulation = function(magoInstance, viewer, $) {
 		consBuildSlider.sliderSejongShow();
 		consBuildSlider.targetArea = targetArea;
 		consBuildSlider.consBuildDataReq(0, consBuildSlider.targetArea);
-	});
 
-	whole_viewer.scene.camera.flyTo({
-		destination : Cesium.Cartesian3.fromDegrees(127.2488029413557,  36.47892205410332, 1000)
+		whole_viewer.scene.camera.flyTo({
+			destination : Cesium.Cartesian3.fromDegrees(127.26701,  36.52569, 1000)
+		});
 	});
 	
 	//건설공정 취소
@@ -1934,7 +1934,7 @@ const f4dDataGenMaster = {
 				"mapping_type":"origin",
 				"longitude": obj.longitude,
 				"latitude": obj.latitude,
-				"height": -40,
+				"height": 0,
 				"heading": obj.heading,
 				"pitch": obj.pitch,
 				"roll": obj.roll
