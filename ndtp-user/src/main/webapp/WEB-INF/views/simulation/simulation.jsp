@@ -256,7 +256,7 @@
 <%--								<button type="button" id="permView" title="인허가 시뮬레이션" class="btnTextF" style="">인허가 확인</button>--%>
 								<button type="button" id="permRequest" title="건축인 허가 신청" class="btnTextF" style="">건축인 허가 신청</button>
 								<button type="button" id="permView" title="인허가 시뮬레이션" class="btnTextF" style="">인허가 시뮬레이션</button>
-								<button type="button" id="comment" class="btnTextF">대화 하기</button>
+								<button type="button" id="comment" class="btnTextF">대화</button>
 							</div>
 						</div>
 					</div>
