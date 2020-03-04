@@ -151,9 +151,47 @@
     });
     $('#permSend').click(function() {
         setTimeout(() => {
+            changeAcceptBuild('N');
+            changeAcceptBuild('Y');
             $("#permViewDialog").dialog("close");
         }, 300);
     });
+
+    function changeAcceptBuild(permReqType) {
+        const permReqParam = {
+            isComplete: permReqType
+        };
+        $.ajax({
+            url: "/data/simulation-rest/getPermRequest",
+            type: "POST",
+            data: permReqParam,
+            headers: {"X-Requested-With": "XMLHttpRequest"},
+            dataType: "json",
+            success: function(permList){
+                var perDomItems = "";
+                for (let i = 0; i<permList.length; i++) {
+                    var permName = permList[i].constructor + ' - ' + permList[i].permSeq;
+                    perDomItems += "<option value=" + permList[i].permSeq + ">" + permName + "</option>";
+                }
+                if(permReqType === 'N') {
+                    let cell = $("#acceptBuildList")[0];
+                    while (cell.length > 1) {
+                        cell.removeChild(cell.lastChild);
+                    }
+                    $("#acceptBuildList").append(perDomItems);
+                } else {
+                    let cell = $("#acceptCompleteBuildList")[0];
+                    while (cell.length > 1) {
+                        cell.removeChild(cell.lastChild);
+                    }
+                    $("#acceptCompleteBuildList").append(perDomItems);
+                }
+            },
+            error:function(request,status,error) {
+                console.log("err=", request, status, error);
+            }
+        });
+    }
 </script>
 
 <style>

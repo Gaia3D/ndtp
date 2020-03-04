@@ -390,6 +390,10 @@
 	});
 
 	$("#permView").on('click', function() {
+		if (buildAcceptPermSeq === undefined || buildAcceptPermSeq === "") {
+			alert("처리 목록을 먼저 선택해 주시기 바랍니다.");
+			return;
+		}
 		let data = {
 			permSeq: buildAcceptPermSeq
 		};
