@@ -74,10 +74,12 @@
 	            	공유 타입
 				</th>
 	            <td class="col-input">
-	<c:if test="${dataInfo.sharing eq 'common'}">공통</c:if>
-	<c:if test="${dataInfo.sharing eq 'public'}">공개</c:if>
-	<c:if test="${dataInfo.sharing eq 'private'}">개인</c:if>
-	<c:if test="${dataInfo.sharing eq 'group'}">그룹</c:if>
+					<select id="sharing" name="sharing" class="selectBoxClass">
+						<option value="public">공개</option>
+						<option value="common">공통</option>
+						<option value="private">비공개</option>
+						<option value="group">그룹 공개</option>
+					</select>
 				</td>
 			</tr>
 			<tr>
@@ -208,6 +210,7 @@
 <script type="text/javascript" src="/js/${lang}/ui-controll.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
+		$("#sharing").val("${dataInfo.sharing}");
 		$("#mappingType").val("${dataInfo.mappingType}");
 		$("#status").val("${dataInfo.status}");
 	});

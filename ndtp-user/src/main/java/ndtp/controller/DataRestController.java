@@ -53,7 +53,7 @@ public class DataRestController {
 
 	
 	/**
-	 * 데이터 그룹 정보
+	 * 데이터 그룹에 속하는 전체 데이터 목록
 	 * @param projectId
 	 * @return
 	 */
@@ -105,8 +105,10 @@ public class DataRestController {
 	}
 	
 	/**
-	 * 데이터 그룹 정보
-	 * @param projectId
+	 * 데이터 목록
+	 * @param request
+	 * @param dataInfo
+	 * @param pageNo
 	 * @return
 	 */
 	@GetMapping
@@ -123,7 +125,7 @@ public class DataRestController {
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		try {
-			//dataInfo.setUserId(userSession.getUserId());
+			dataInfo.setUserId(userSession.getUserId());
 			if(!StringUtils.isEmpty(dataInfo.getStartDate())) {
 				dataInfo.setStartDate(dataInfo.getStartDate().substring(0, 8) + DateUtils.START_TIME);
 			}

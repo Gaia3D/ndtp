@@ -72,7 +72,7 @@ public class DataController {
 		log.info("@@ dataInfo = {}, pageNo = {}", dataInfo, pageNo);
 
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-//		dataInfo.setUserId(userSession.getUserId());
+		dataInfo.setUserId(userSession.getUserId());
 
 		if(!StringUtils.isEmpty(dataInfo.getStartDate())) {
 			dataInfo.setStartDate(dataInfo.getStartDate().substring(0, 8) + DateUtils.START_TIME);
@@ -140,7 +140,7 @@ public class DataController {
 			}
 		}
 
-		//dataInfo.setUserId(userSession.getUserId());
+		dataInfo.setUserId(userSession.getUserId());
 		if(!StringUtils.isEmpty(dataInfo.getStartDate())) {
 			dataInfo.setStartDate(dataInfo.getStartDate().substring(0, 8) + DateUtils.START_TIME);
 		}

@@ -150,7 +150,7 @@ public class ConverterServiceImpl implements ConverterService {
 				converterMapper.insertConverterJobFile(converterJobFile);
 
 				// 4. 데이터를 등록. 상태를 ready 로 등록해야 함
-				DataInfo dataInfo = upsertData(userId, converterJobId, uploadDataFile);
+				DataInfo dataInfo = upsertData(userId, converterJobId, converterTargetCount, uploadDataFile);
 
 				// 5. 데이터 그룹 신규 생성의 경우 데이터 건수 update, location_update_type 이 auto 일 경우 dataInfo 위치 정보로 dataGroup 위치 정보 수정
 				updateDataGroup(userId, dataInfo, uploadDataFile);
@@ -234,11 +234,18 @@ public class ConverterServiceImpl implements ConverterService {
 	 * @param userId
 	 * @param uploadDataFile
 	 */
-	private DataInfo upsertData(String userId, Long converterJobId, UploadDataFile uploadDataFile) {
+	private DataInfo upsertData(String userId, Long converterJobId, int converterTargetCount, UploadDataFile uploadDataFile) {
+		
+		// converterTargetCount = 1 이면 uploading 시 데이터 이름을 넣고, 아닐 경우 dataFile명을 등록
 		
 		Integer dataGroupId = uploadDataFile.getDataGroupId();
 		String dataKey = uploadDataFile.getFileRealName().substring(0, uploadDataFile.getFileRealName().lastIndexOf("."));
-		String dataName = uploadDataFile.getFileName().substring(0, uploadDataFile.getFileName().lastIndexOf("."));
+		String dataName = null;
+		if(converterTargetCount == 1) {
+			dataName = uploadDataFile.getDataName();
+		} else {
+			dataName = uploadDataFile.getFileName().substring(0, uploadDataFile.getFileName().lastIndexOf("."));
+		}
 		String dataType = uploadDataFile.getDataType();
 		String sharing = uploadDataFile.getSharing();
 		String mappingType = uploadDataFile.getMappingType();

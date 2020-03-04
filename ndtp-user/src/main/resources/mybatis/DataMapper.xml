@@ -6,41 +6,107 @@
 	<!-- Data 총 건수 -->
 	<select id="getDataTotalCount" parameterType="dataInfo" resultType="long">
 		/* getDataTotalCount */
-		SELECT COUNT(data_id) 
-		FROM data_info
-		<trim prefix="WHERE" prefixOverrides="AND">
-			<if test="dataGroupId != null and dataGroupId > 0">
-			data_group_id = #{dataGroupId}
-			</if>
-			<if test="dataType != null and dataType != ''">
-			AND data_type = #{dataType}
-			</if>
-			<if test="sharing != null and sharing != ''">
-			AND sharing = #{sharing}
-			</if>
-			<if test="userId != null and userId != ''">
-			AND user_id = #{userId}
-			</if>
-			<if test="status != null and status != ''">
-			AND status = #{status}
-			</if>
-			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
-			AND ${searchWord} = #{searchValue}
-			</if>
-			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
-			AND ${searchWord} LIKE '%' || #{searchValue} || '%'
-			</if>
-			<if test="startDate != null and startDate != ''">
-			<![CDATA[
-			AND insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
-			]]>
-			</if>
-			<if test="endDate != null and endDate != ''">
-			<![CDATA[
-			AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
-			]]>
-			</if>
-		</trim>
+		SELECT COUNT(data_id)
+		FROM (
+			SELECT data_id
+			FROM data_info A, data_group B
+			WHERE B.data_group_target = 'admin'
+				AND A.data_group_id = B.data_group_id
+				<if test="dataGroupId != null and dataGroupId > 0">
+				AND A.data_group_id = #{dataGroupId}
+				</if>
+				<if test="dataType != null and dataType != ''">
+				AND A.data_type = #{dataType}
+				</if>
+				<if test="sharing != null and sharing != ''">
+				AND A.sharing = #{sharing}
+				</if>
+				<if test="status != null and status != ''">
+				AND A.status = #{status}
+				</if>
+				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
+				AND A.${searchWord} = #{searchValue}
+				</if>
+				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
+				AND A.${searchWord} LIKE '%' || #{searchValue} || '%'
+				</if>
+				<if test="startDate != null and startDate != ''">
+				<![CDATA[
+				AND A.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+				]]>
+				</if>
+				<if test="endDate != null and endDate != ''">
+				<![CDATA[
+				AND A.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+				]]>
+				</if>
+			UNION
+			SELECT data_id
+			FROM data_info A, data_group B
+			WHERE B.data_group_target = 'user'
+				AND A.user_id = #{userId}
+				AND A.data_group_id = B.data_group_id
+				<if test="dataGroupId != null and dataGroupId > 0">
+				AND A.data_group_id = #{dataGroupId}
+				</if>
+				<if test="dataType != null and dataType != ''">
+				AND A.data_type = #{dataType}
+				</if>
+				<if test="sharing != null and sharing != ''">
+				AND A.sharing = #{sharing}
+				</if>
+				<if test="status != null and status != ''">
+				AND A.status = #{status}
+				</if>
+				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
+				AND A.${searchWord} = #{searchValue}
+				</if>
+				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
+				AND A.${searchWord} LIKE '%' || #{searchValue} || '%'
+				</if>
+				<if test="startDate != null and startDate != ''">
+				<![CDATA[
+				AND A.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+				]]>
+				</if>
+				<if test="endDate != null and endDate != ''">
+				<![CDATA[
+				AND A.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+				]]>
+				</if>
+			UNION
+			SELECT data_id
+			FROM data_info A, data_group B
+			WHERE B.data_group_target = 'user'
+				AND A.user_id != #{userId}
+				AND (A.sharing = 'common' OR A.sharing = 'public')
+				AND A.data_group_id = B.data_group_id
+				<if test="dataGroupId != null and dataGroupId > 0">
+				AND A.data_group_id = #{dataGroupId}
+				</if>
+				<if test="dataType != null and dataType != ''">
+				AND A.data_type = #{dataType}
+				</if>
+				<if test="status != null and status != ''">
+				AND A.status = #{status}
+				</if>
+				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
+				AND A.${searchWord} = #{searchValue}
+				</if>
+				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
+				AND A.${searchWord} LIKE '%' || #{searchValue} || '%'
+				</if>
+				<if test="startDate != null and startDate != ''">
+				<![CDATA[
+				AND A.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+				]]>
+				</if>
+				<if test="endDate != null and endDate != ''">
+				<![CDATA[
+				AND A.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+				]]>
+				</if>
+		) X
 	</select>
 	
 	<!-- 데이터 상태별 통계 정보 -->
@@ -55,7 +121,7 @@
 			</if>
 	</select>
 	
-	<!-- Data 목록 -->
+	<!-- 데이터 그룹에 속하는 전체 데이터 목록  -->
 	<select id="getAllListData" parameterType="dataInfo" resultType="dataInfo">
 		/* getAllListData */
 		SELECT A.*, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude, B.data_group_name, B.data_group_target, B.data_group_key, B.tiling
@@ -74,52 +140,119 @@
 	<!-- Data 목록 -->
 	<select id="getListData" parameterType="dataInfo" resultType="dataInfo">
 		/* getListData */
-		SELECT *, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude, B.data_group_name, B.data_group_key, B.tiling
-		FROM data_info A, data_group B
-		WHERE A.data_group_Id = B.data_group_id
-			<if test="dataGroupId != null and dataGroupId > 0">
-			AND A.data_group_id = #{dataGroupId}
-			</if>
-			<if test="dataType != null and dataType != ''">
-			AND A.data_type = #{dataType}
-			</if>
-			<if test="sharing != null and sharing != ''">
-			AND A.sharing = #{sharing}
-			</if>
-			<if test="userId != null and userId != ''">
-			AND A.user_id = #{userId}
-			</if>
-			<if test="status != null and status != ''">
-			AND A.status = #{status}
-			</if>
-			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
-			AND A.${searchWord} = #{searchValue}
-			</if>
-			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
-			AND A.${searchWord} LIKE '%' || #{searchValue} || '%'
-			</if>
-			<if test="startDate != null and startDate != ''">
-			<![CDATA[
-			AND A.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
-			]]>
-			</if>
-			<if test="endDate != null and endDate != ''">
-			<![CDATA[
-			AND A.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
-			]]>
-			</if>
+		SELECT *
+		FROM (	
+			SELECT A.*, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude, B.data_group_name, B.data_group_target, B.data_group_key, B.tiling
+			FROM data_info A, data_group B
+			WHERE B.data_group_target = 'admin'
+				AND A.data_group_id = B.data_group_id
+				<if test="dataGroupId != null and dataGroupId > 0">
+				AND A.data_group_id = #{dataGroupId}
+				</if>
+				<if test="dataType != null and dataType != ''">
+				AND A.data_type = #{dataType}
+				</if>
+				<if test="sharing != null and sharing != ''">
+				AND A.sharing = #{sharing}
+				</if>
+				<if test="status != null and status != ''">
+				AND A.status = #{status}
+				</if>
+				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
+				AND A.${searchWord} = #{searchValue}
+				</if>
+				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
+				AND A.${searchWord} LIKE '%' || #{searchValue} || '%'
+				</if>
+				<if test="startDate != null and startDate != ''">
+				<![CDATA[
+				AND A.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+				]]>
+				</if>
+				<if test="endDate != null and endDate != ''">
+				<![CDATA[
+				AND A.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+				]]>
+				</if>
+			UNION
+			SELECT A.*, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude, B.data_group_name, B.data_group_target, B.data_group_key, B.tiling
+			FROM data_info A, data_group B
+			WHERE B.data_group_target = 'user'
+				AND A.user_id = #{userId}
+				AND A.data_group_id = B.data_group_id
+				<if test="dataGroupId != null and dataGroupId > 0">
+				AND A.data_group_id = #{dataGroupId}
+				</if>
+				<if test="dataType != null and dataType != ''">
+				AND A.data_type = #{dataType}
+				</if>
+				<if test="sharing != null and sharing != ''">
+				AND A.sharing = #{sharing}
+				</if>
+				<if test="status != null and status != ''">
+				AND A.status = #{status}
+				</if>
+				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
+				AND A.${searchWord} = #{searchValue}
+				</if>
+				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
+				AND A.${searchWord} LIKE '%' || #{searchValue} || '%'
+				</if>
+				<if test="startDate != null and startDate != ''">
+				<![CDATA[
+				AND A.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+				]]>
+				</if>
+				<if test="endDate != null and endDate != ''">
+				<![CDATA[
+				AND A.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+				]]>
+				</if>
+			UNION
+			SELECT A.*, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude, B.data_group_name, B.data_group_target, B.data_group_key, B.tiling
+			FROM data_info A, data_group B
+			WHERE B.data_group_target = 'user'
+				AND A.user_id != #{userId}
+				AND (A.sharing = 'common' OR A.sharing = 'public')
+				AND A.data_group_id = B.data_group_id
+				<if test="dataGroupId != null and dataGroupId > 0">
+				AND A.data_group_id = #{dataGroupId}
+				</if>
+				<if test="dataType != null and dataType != ''">
+				AND A.data_type = #{dataType}
+				</if>
+				<if test="status != null and status != ''">
+				AND A.status = #{status}
+				</if>
+				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
+				AND A.${searchWord} = #{searchValue}
+				</if>
+				<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
+				AND A.${searchWord} LIKE '%' || #{searchValue} || '%'
+				</if>
+				<if test="startDate != null and startDate != ''">
+				<![CDATA[
+				AND A.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+				]]>
+				</if>
+				<if test="endDate != null and endDate != ''">
+				<![CDATA[
+				AND A.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+				]]>
+				</if>
+		) X
 		<choose>
 		<when test="orderWord != null and orderWord != '' and orderValue != null and orderValue != ''">
-		ORDER BY A.${orderWord} ${orderValue}
+		ORDER BY X.${orderWord} ${orderValue}
 		</when>
 		<otherwise>
-		ORDER BY A.insert_date DESC, A.data_id DESC
+		ORDER BY X.insert_date DESC, X.data_id DESC
 		</otherwise>
 		</choose>
 		OFFSET #{offset} LIMIT #{limit}
 	</select>
 	
-	<!-- Data 목록 -->
+	<!-- Smart Tiling용 데이터 그룹에 포함되는 모든 데이터를 취득 -->
 	<select id="getListAllDataByDataGroupId" parameterType="int" resultType="dataInfoSimple">
 		/* getListData */
 		SELECT A.*, ST_X(A.location) AS longitude, ST_Y(A.location) AS latitude, B.data_group_name, B.tiling

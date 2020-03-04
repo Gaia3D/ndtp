@@ -64,7 +64,7 @@ public class DataServiceImpl implements DataService {
 //	}
 	
 	/**
-	 * Data 전체 목록
+	 * 데이터 그룹에 속하는 전체 데이터 목록
 	 * @param dataInfo
 	 * @return
 	 */
@@ -84,7 +84,7 @@ public class DataServiceImpl implements DataService {
 	}
 	
 	/**
-	 * 데이터 그룹에 포함되는 모든 데이터를 취득
+	 * Smart Tiling용 데이터 그룹에 포함되는 모든 데이터를 취득
 	 * @param dataGroupId
 	 * @return
 	 */

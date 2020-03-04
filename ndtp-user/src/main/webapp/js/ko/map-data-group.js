@@ -119,7 +119,7 @@ function dataGroupList() {
 	});
 }
 
-//데이터 정보 목록
+// 데이터 정보 목록
 function dataList(dataGroupArray) {
 	var dataArray = new Array();
 	var dataGroupArrayLength = dataGroupArray.length;
