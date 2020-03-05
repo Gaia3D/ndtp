@@ -125,6 +125,7 @@ public class DataRestController {
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		try {
+			dataInfo.setUserGroupId(userSession.getUserGroupId());
 			dataInfo.setUserId(userSession.getUserId());
 			if(!StringUtils.isEmpty(dataInfo.getStartDate())) {
 				dataInfo.setStartDate(dataInfo.getStartDate().substring(0, 8) + DateUtils.START_TIME);
