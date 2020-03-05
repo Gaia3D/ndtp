@@ -325,7 +325,7 @@
 								<h4 style="margin-top: 30px; margin-bottom: 5px;">파일 업로딩</h4>
 						        <div class="fileSection" style="font-size: 17px;">
 						            <form id="my-dropzone" action="" class="dropzone hzScroll">
-										<label for="dropzoneFile" class="hiddenTag">dropzoneFile영역</label>						            	
+										<label for="dropzoneFile" class="hiddenTag">dropzoneFile영역</label>
 						            </form>
 						        </div>
 						        <div class="button-group">
@@ -699,6 +699,7 @@
 							alert(JS_MESSAGE["insert"]);
 						    uploadFileCount = 0;
 						    uploadFileResultCount = 0;
+		                    myDropzone.removeAllFiles(true);
 						}
 	                } else {
 	                	alert(JS_MESSAGE[response.errorCode]);
