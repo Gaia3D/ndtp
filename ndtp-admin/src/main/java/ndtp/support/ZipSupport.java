@@ -24,7 +24,7 @@ public class ZipSupport {
 	public static void makeZip(String zipFileName, List<LayerFileInfo> layerFileInfoList) throws Exception {
 
 		// buffer size
-		int size = 1024;
+		int size = 8192;
 		byte[] buf = new byte[size];
 		
 		// TODO Controller에서 한번 처리를 한 로직이라 replace 불필요

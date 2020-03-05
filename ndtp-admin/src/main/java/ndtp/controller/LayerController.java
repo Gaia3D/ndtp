@@ -893,9 +893,9 @@ public class LayerController implements AuthorizationController {
             String filePath = propertiesConfig.getLayerExportDir() + today.substring(0, 6) + File.separator;
             String fileRealName = layer.getLayerKey() + "_" + today + "_" + System.nanoTime();
             // TODO 필요 없는 로직. 추후 삭제
-            fileRealName = fileRealName.replaceAll("/", "");
-            fileRealName = fileRealName.replaceAll("\\", "");
-            fileRealName = fileRealName.replaceAll(".", "");
+//            fileRealName = fileRealName.replaceAll("/", "");
+//            fileRealName = fileRealName.replaceAll("\\", "");
+//            fileRealName = fileRealName.replaceAll(".", "");
             fileRealName = fileRealName.replaceAll("&", "");
             
             createDirectory(filePath);
