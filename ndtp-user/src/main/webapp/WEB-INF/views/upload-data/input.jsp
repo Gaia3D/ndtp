@@ -325,6 +325,7 @@
 							    alert("업로딩을 완료 하였습니다.");
 							    uploadFileCount = 0;
 							    uploadFileResultCount = 0;
+							    myDropzone.removeAllFiles(true);
 							}
 		                } else {
 		                	alertMessage(response);
