@@ -63,7 +63,8 @@ var Simulation = function(magoInstance, viewer, $) {
 					node.data.aditionalColor = new Mago3D.Color();
 					node.data.aditionalColor.setRGB(230/255,8/255,0);
 				}*/
-
+debugger;
+console.log(node.data);
 				var ch = htmlBillboard.add();
 				ch.position = objPosition;
 				ch.offsetLeft = -15;
@@ -265,7 +266,6 @@ var Simulation = function(magoInstance, viewer, $) {
 				let procStepNum = [];
 
 				// dic를 탐색하여 현재 값 -1 의 자료들을 찾아 없으면 요청한다.
-				debugger;
 				for( let i = 0 ; i < index; i++) {
 					if(consBuildStepInfo[i] === undefined) {
 						procStepNum.push(i);
@@ -274,7 +274,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				for (let procObj of procStepNum) {
 					consBuildSlider.consBuildDataReq(procObj, consTypeString);
 				}
-				debugger;
+
 				// 현재 INDEX 있는 값을 제거하고 다시 요청한다
 				consBuildSlider.consBuildDataReq(index, consTypeString);
 				if(consBuildBillboardStepInfo !== undefined) {
@@ -698,6 +698,28 @@ var Simulation = function(magoInstance, viewer, $) {
 		}
 	});
 
+	$("#delete3dModel").click(()=> {
+		let val = $("#selectDistrict").val();
+		if (allObject[val] === undefined) {
+			alert("지역을 먼저 선택해 주시기 바랍니다.");
+			return;
+		}
+		if (pickedName !== "sejong_apartmentComplex1") {
+			alert("현재는 세종시 아파트만 지원됩니다.");
+			return;
+		}
+
+		if (allObject[pickedName].buildings.length === 0) {
+			alert("3d 모형이 현재 존재하지 않습니다.");
+		} else {
+			allObject[pickedName].buildings.forEach((val, idx) => {
+				val.show = false;
+			});
+			allObject[pickedName].buildings=[];
+		}
+
+	});
+
 	$("#create3dModel").click(()=> {
 		let val = $("#selectDistrict").val();
 		if (allObject[val] === undefined) {
@@ -708,6 +730,7 @@ var Simulation = function(magoInstance, viewer, $) {
 			alert("현재는 세종시 아파트만 지원됩니다.");
 			return;
 		}
+		// if (allObject[pickedName].buildings.length !==0 ||  )
 
 		// const fileName = "Parcel6-4-Buidling.geojson";
 		const fileName = "6-4_buildings.geojson";
