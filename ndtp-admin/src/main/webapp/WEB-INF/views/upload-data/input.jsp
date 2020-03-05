@@ -391,6 +391,12 @@
 	            alert("업로딩 데이터의 데이터 타입이 올바르지 않습니다.");
 	        } else if(response.errorCode === "db.exception") {
 	            alert("죄송 합니다. 서버 실행중에 오류가 발생 하였습니다. \n 로그를 확인하여 주십시오.");
+	        } else if(response.errorCode === "io.exception") {
+	            alert("입출력 처리 과정중 오류가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
+	        } else if(response.errorCode === "runtime.exception") {
+	            alert("프로그램 실행중 오류가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
+	        } else if(response.errorCode === "unknown.exception") {
+	            alert("서버 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
 	        } else {
 	        	//alert(response.errorCode);
 	        	alert(JS_MESSAGE[response.errorCode]);
