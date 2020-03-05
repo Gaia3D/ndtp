@@ -26,8 +26,8 @@ import ndtp.domain.CivilVoice;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
 import ndtp.domain.Pagination;
+import ndtp.domain.RoleKey;
 import ndtp.domain.UserSession;
-import ndtp.service.CivilVoiceCommentService;
 import ndtp.service.CivilVoiceService;
 import ndtp.support.SQLInjectSupport;
 import ndtp.utils.WebUtils;
@@ -40,11 +40,9 @@ public class CivilVoiceRestController {
 	private static final long PAGE_ROWS = 5l;
 	private static final long PAGE_LIST_COUNT = 5l;
 	private final CivilVoiceService civilVoiceService;
-	private final CivilVoiceCommentService civilVoiceCommentService;
 
-	public CivilVoiceRestController(CivilVoiceService civilVoiceService, CivilVoiceCommentService civilVoiceCommentService) {
+	public CivilVoiceRestController(CivilVoiceService civilVoiceService) {
 		this.civilVoiceService = civilVoiceService;
-		this.civilVoiceCommentService = civilVoiceCommentService;
 	}
 
 	/**
@@ -173,13 +171,6 @@ public class CivilVoiceRestController {
 			@RequestParam(value="readOnly",required=false) Boolean readOnly, CivilVoice civilVoice) {
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 
-		List<String> userGroupRoleKeyList = CacheManager.getUserGroupRoleKeyList(userSession.getUserGroupId());
-		for(String roleName : userGroupRoleKeyList) {
-			// 이 권한일때 삭제가 가능하게 하세요.
-			// 사용자 페이지 시민참여 관리 권한
-			//USER_CIVIL_VOICE_MANAGE;
-		}
-		
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String errorCode = null;
@@ -195,7 +186,14 @@ public class CivilVoiceRestController {
 			civilVoice.setCivilVoiceId(civilVoiceId);
 			civilVoice.setUserId(userSession.getUserId());
 			civilVoice = civilVoiceService.getCivilVocieById(civilVoice);
+			List<String> userGroupRoleKeyList = CacheManager.getUserGroupRoleKeyList(userSession.getUserGroupId());
 			statusCode = HttpStatus.OK.value();
+			// 시민 참여 관리 권한이 있을 경우 자신이 쓴 글이 아니여도 삭제 가능
+			for(String roleName : userGroupRoleKeyList) {
+				if(RoleKey.USER_CIVIL_VOICE_MANAGE == RoleKey.valueOf(roleName)) {
+					civilVoice.setEditable(true);
+				}
+			}
 			result.put("civilVoice", civilVoice);
 
 			// 조회 수 수정
