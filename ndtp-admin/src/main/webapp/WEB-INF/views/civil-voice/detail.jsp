@@ -117,8 +117,9 @@
 	}
 
 	function initFormContent(formId) {
-		$('#' + formId + ' input').val("");
-		$('#' + formId + ' textarea').val("");
+		var tokenSelector = '[name=CSRFToken]';
+		$('#' + formId + ' input').not(tokenSelector).val("");
+		$('#' + formId + ' textarea').not(tokenSelector).val("");
 	}
 
 	// 시민참여 댓글 조회
