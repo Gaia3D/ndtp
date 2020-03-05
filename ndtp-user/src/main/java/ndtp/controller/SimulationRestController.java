@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import ndtp.config.PropertiesConfig;
 import ndtp.domain.*;
 import ndtp.persistence.CommentManageMapper;
 import ndtp.persistence.StructPermissionMapper;
@@ -34,6 +35,8 @@ public class SimulationRestController {
 	private StructPermissionMapper structPermissionMapper;
 	@Autowired
 	private CommentManageMapper commentManageMapper;
+	@Autowired
+	private PropertiesConfig propertiesConfig;
 
 	private static final long PAGE_ROWS = 5l;
 	private static final long PAGE_LIST_COUNT = 5l;
@@ -74,7 +77,7 @@ public class SimulationRestController {
 	@RequestMapping(value = "/drawGeojson", method = RequestMethod.GET)
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public Object drawGeojson(String fileName) {
-		String resultFullPath = "C://data/Apartment_Building_26_obj/" + fileName;
+		String resultFullPath = propertiesConfig.getServiceFileBuildingobjDir() + fileName;
 
 		String os = System.getProperty("os.name").toLowerCase();
 		if (os.contains("mac")) {

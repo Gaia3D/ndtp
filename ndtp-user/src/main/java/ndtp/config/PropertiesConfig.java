@@ -62,5 +62,6 @@ public class PropertiesConfig {
     private String serviceF4dFinishRootDir;
     private String serviceFileUploadDir;
     private String serviceF4dFailRootDir;
+    private String serviceFileBuildingobjDir;
 
 }
