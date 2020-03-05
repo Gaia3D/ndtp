@@ -32,8 +32,38 @@
                         <li>
                             <label for="district_unit_plan">지구단위계획 파일</label>
                             <input id="district_unit_plan" name="district_unit_plan" class="radius" type="text" value="" title="" readonly style="display:none;">
-                            <button id="district_unit_plan_viewer" class="focusC" type="button" title="지구단위계획 파일 보기" >Viewer</button>
-
+                            <button id="district_unit_plan_viewer" class="btnTextF" type="button" title="지구단위계획 파일 보기" >Viewer</button>
+                        </li>
+<%--                        <li>--%>
+                            <%--                            <button id="regMapButtion" class="btnTextF" type="button" title="지도보기">건축물 지도보기</button>--%>
+<%--                        </li>--%>
+                        <li>
+                            <div>
+                                <label for="">기준 용적율</label>
+                                <label id="" for="">140.0%</label>
+                                <label for="">기준 건폐율</label>
+                                <label id="" for="">50.0%</label>
+                            </div>
+                        </li>
+                        <li>
+                            <%--                            <input id="longitude" name="longitude" class="m" placeholder="longitude" type="text" value="" style="width: 140px;">--%>
+                            <%--                            <input id="latitude" name="latitude" class="m" placeholder="latitude" type="text" value="" style="width: 140px;">--%>
+                            <%--                            <input id="altitude" name="altitude" class="m" placeholder="altitude" type="text" value="" style="width: 140px;">--%>
+                        </li>
+                        <li>
+                            <div>
+                                <label for="">용적율</label>
+                                <label id="cur_floorAreaRatio" for="">130.84%</label>
+                                <label for="">건폐율</label>
+                                <label id="cur_buildingLandRatio" for="">16.36%</label>
+                            </div>
+                        </li>
+                        <li></li>
+                        <li>
+                            <label for="">용적률 적합 여부</label>
+                            <label id="floorAreaRatio_isGood" for="" style="font-weight: bold; color:blue;">적합</label>
+                            <label for="">건폐율 적합 여부</label>
+                            <label id="buildingLandRatio_isGood" for="" style="font-weight: bold; color:blue;">적합</label>
                         </li>
 <%--                        <li>--%>
 <%--                            <label for="struct_calculation">구조 계산서 파일</label>--%>

@@ -287,7 +287,7 @@
 		</div>
 	</li>
 	<li >
-		<p>건축인 허가 신청<span class="collapse-icon">icon</span></p>
+		<p id="forEvent">건축인 허가 신청<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="">
 			<ul class="analysisGroup">
 				<li>
@@ -606,6 +606,10 @@
 			commentListViewer.append(timeSpan);
 		});
 	}
+
+	$("#forEvent").click(()=> {
+		getUserInfo();
+	});
 
 </script>
 

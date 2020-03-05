@@ -44,6 +44,37 @@
                             <label for="district_unit_plan">지구단위계획 파일</label>
                             <input id="district_unit_plan" type="file" name="district_unit_plan"  multiple>
                         </li>
+                        <li>
+<%--                            <button id="regMapButtion" class="btnTextF" type="button" title="지도보기">건축물 지도보기</button>--%>
+                        </li>
+                        <li>
+                            <div>
+                                <label for="">기준 용적율</label>
+                                <label id="" for="">140.0%</label>
+                                <label for="">기준 건폐율</label>
+                                <label id="" for="">50.0%</label>
+                            </div>
+                        </li>
+                        <li>
+<%--                            <input id="longitude" name="longitude" class="m" placeholder="longitude" type="text" value="" style="width: 140px;">--%>
+<%--                            <input id="latitude" name="latitude" class="m" placeholder="latitude" type="text" value="" style="width: 140px;">--%>
+<%--                            <input id="altitude" name="altitude" class="m" placeholder="altitude" type="text" value="" style="width: 140px;">--%>
+                        </li>
+                        <li>
+                            <div>
+                                <label for="">용적율</label>
+                                <label id="cur_floorAreaRatio" for="">130.84%</label>
+                                <label for="">건폐율</label>
+                                <label id="cur_buildingLandRatio" for="">16.36%</label>
+                            </div>
+                        </li>
+                        <li></li>
+                        <li>
+                            <label for="">용적률 적합 여부</label>
+                            <label id="floorAreaRatio_isGood" for="" style="font-weight: bold; color:blue;">적합</label>
+                            <label for="">건폐율 적합 여부</label>
+                            <label id="buildingLandRatio_isGood" for="" style="font-weight: bold; color:blue;">적합</label>
+                        </li>
 <%--                        <li>--%>
 <%--                            <label for="phone_number">휴대전화</label>--%>
 <%--                            <input id="phone_number" name="phone_number" class="sides" type="text" placeholder="(-)는 생략하고 입력바랍니다." value="" title="방사형 가시선의 수">--%>
@@ -141,6 +172,20 @@
             }
         });
     }
+
+    $( "#regMapButtion" ).on( "click", function() {
+        var url = "/map/find-point";
+        var width = 800;
+        var height = 700;
+
+        var popupX = (window.screen.width / 2) - (width / 2);
+        // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+        var popupY= (window.screen.height / 2) - (height / 2);
+
+        var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height + ", top=" + popupY + ", left="+popupX
+            + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
+        //popWin.document.title = layerName;
+    });
 
 </script>
 
