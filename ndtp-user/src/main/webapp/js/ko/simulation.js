@@ -703,7 +703,7 @@ console.log(node.data);
 			alert("아직 지역이 생성되지 않았습니다.");
 			return;
 		}
-		let imgLayer = _viewer.scene.imageryLayers.get(1);
+		let imgLayer = _viewer.scene.imageryLayers.get(2);
 		_viewer.scene.imageryLayers.remove(imgLayer);
 	});
 
@@ -739,7 +739,11 @@ console.log(node.data);
 			alert("현재는 세종시 아파트만 지원됩니다.");
 			return;
 		}
-		// if (allObject[pickedName].buildings.length !==0 ||  )
+
+		if (allObject[pickedName].buildings.length !== 0) {
+			alert("이 지역의 3D 모형이 이미 생성되어 있습니다.");
+			return;
+		}
 
 		// const fileName = "Parcel6-4-Buidling.geojson";
 		const fileName = "6-4_buildings.geojson";
