@@ -68,7 +68,11 @@ public class ConverterController {
 		
 		long totalCount = converterService.getConverterJobTotalCount(converterJob);
 		
-		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, converterJob), totalCount, Long.valueOf(pageNo).longValue());
+		Pagination pagination = new Pagination(	request.getRequestURI(), 
+												getSearchParameters(PageType.LIST, converterJob), 
+												totalCount, 
+												Long.valueOf(pageNo).longValue(),
+												converterJob.getListCounter());
 		log.info("@@ pagination = {}", pagination);
 		
 		converterJob.setOffset(pagination.getOffset());

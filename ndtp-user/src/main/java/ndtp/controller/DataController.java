@@ -84,7 +84,11 @@ public class DataController {
 
 		long totalCount = dataService.getDataTotalCount(dataInfo);
 
-		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, dataInfo), totalCount, Long.valueOf(pageNo).longValue());
+		Pagination pagination = new Pagination(	request.getRequestURI(), 
+												getSearchParameters(PageType.LIST, dataInfo), 
+												totalCount, 
+												Long.valueOf(pageNo).longValue(),
+												dataInfo.getListCounter());
 		log.info("@@ pagination = {}", pagination);
 
 		dataInfo.setOffset(pagination.getOffset());

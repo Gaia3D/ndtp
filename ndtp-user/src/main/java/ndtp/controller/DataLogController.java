@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.extern.slf4j.Slf4j;
-import ndtp.domain.CacheManager;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
 import ndtp.domain.DataInfoLog;
@@ -68,7 +67,6 @@ public class DataLogController {
 		return "/data-log/modify";
 	}
 
-	
 	/**
 	 * Data 목록
 	 * @param request
