@@ -1,5 +1,10 @@
 
 const consBuildBillboard = [];
+const consBuildBoardClick = {
+	click: function aaa(data) {
+		alert(data);
+	}
+};
 var Simulation = function(magoInstance, viewer, $) {
 	var that = this;
 	var CAMERA_MOVE_NEED_DISTANCE = 5000;
@@ -32,6 +37,8 @@ var Simulation = function(magoInstance, viewer, $) {
 	var magoManager = magoInstance.getMagoManager();
 	var f4dController = magoInstance.getF4dController();
 	magoManager.on(Mago3D.MagoManager.EVENT_TYPE.F4DLOADEND, F4DLoadEnd);
+
+
 	function F4DLoadEnd(evt) {
 		const _projectsMap = MAGO3D_INSTANCE.getMagoManager().hierarchyManager.projectsMap;
 		for(const obj of evt.f4d){
@@ -56,6 +63,7 @@ var Simulation = function(magoInstance, viewer, $) {
 					node.data.aditionalColor = new Mago3D.Color();
 					node.data.aditionalColor.setRGB(230/255,8/255,0);
 				}*/
+
 				var ch = htmlBillboard.add();
 				ch.position = objPosition;
 				ch.offsetLeft = -15;
@@ -66,7 +74,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				ch.element.style.alignItems = 'center';
 				ch.element.style.justifyContent = 'center';
 				ch.element.innerHTML = "" +
-					"<div class='tooltip' onclick=''><svg height='20' width='20' viewBox='0 0 20 20'>\n" +
+					"<div class='tooltip' onclick='consBuildBoardClick.click(\"dddd\")'><svg height='20' width='20' viewBox='0 0 20 20'>\n" +
 					"  <circle r='10' cx='10' cy='10' fill='white' />\n" +
 					"  <circle r='5' cx='10' cy='10' fill='transparent'\n" +
 					"          stroke='tomato'\n" +
@@ -76,6 +84,8 @@ var Simulation = function(magoInstance, viewer, $) {
 					"</svg>" +
 					"<span class='tooltiptext'>공정률 &nbsp; : "+ node.data.attributes.ratio +"%</span>" +
 					"</div>";
+
+
 
 				consBuildBillboardStepInfo.push([parseInt(rootNode.attributes.step), ch]);
 			}
