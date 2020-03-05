@@ -3,10 +3,6 @@
 
 <mapper namespace="ndtp.persistence.CommentManageMapper">
 
-	<select id="selectCondition" parameterType="commentManage" resultType="commentManage">
-		select * from comment_manage where perm_seq = #{permSeq}
-	</select>
-
 	<insert id="insertCommentManage" parameterType="commentManage">
 		<selectKey keyProperty="commentSeq" resultType="int" order="BEFORE">
 			SELECt NEXTVAL('comment_sequence')
@@ -17,5 +13,12 @@
 			#{commentSeq}, #{writer}, #{objectName}, #{commentTitle}, #{commentContent}, #{latitude}, #{longitude}, #{height}, #{permSeq}
 		)
 	</insert>
+
+	<select id="selectCondition" parameterType="commentManage" resultType="commentManage">
+		select * from comment_manage where perm_seq = #{permSeq}
+	</select>
+	<select id="selectConditionObjectName" parameterType="commentManage" resultType="commentManage">
+		select * from comment_manage where object_name = #{objectName}
+	</select>
 
 </mapper>

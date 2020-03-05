@@ -5,10 +5,10 @@
 <%@ include file="/WEB-INF/views/perm-request/application-register.jsp" %>
 <%@ include file="/WEB-INF/views/perm-request/application-view.jsp" %>
 
-
 <%@ include file="/WEB-INF/views/perm-request/test-fly.jsp" %>
 <%@ include file="/WEB-INF/views/perm-request/test-picking.jsp" %>
 <%@ include file="/WEB-INF/views/perm-request/comment-view.jsp" %>
+<%@ include file="/WEB-INF/views/perm-request/comment-view2.jsp" %>
 <%--<%@ include file="/WEB-INF/views/perm-request/comment-register.jsp" %>--%>
 
 
@@ -189,6 +189,7 @@
 	var a=1;
 	var b=2;
 	var buildAcceptPermSeq;
+	var selectedObjectName;
 	// 임시로...
 	$(document).ready(function() {
 		$(".ui-slider-handle").slider({});
@@ -243,6 +244,24 @@
 		}
 	});
 
+	var viewDialogInterval2="";
+	var commentViewDialog2 = $( "#commentViewDialog2" ).dialog({
+		autoOpen: false,
+		width: 380,
+		height: 600,
+		modal: true,
+		overflow : "auto",
+		resizable: false,
+		open: function( event, ui ) {
+			console.log("commentViewDialog2 opended");
+			viewDialogInterval2 = setInterval(refreshCommentDialog2, 500);
+		},
+		close: function( event, ui ) {
+			console.log("commentViewDialog2 closed");
+			clearInterval(viewDialogInterval2);
+		}
+	});
+
 	function refreshCommentDialog() {
 		let commentData = {
 			permSeq: buildAcceptPermSeq
@@ -255,6 +274,25 @@
 			dataType: "json",
 			success: function(commentList){
 				commentViewFunc(commentList);
+			},
+			error:function(request,status,error) {
+				console.log("err=", request, status, error);
+			}
+		});
+		console.log("refreshed");
+	}
+	function refreshCommentDialog2() {
+		let commentData = {
+			objectName: selectedObjectName
+		};
+		$.ajax({
+			url: "/data/simulation-rest/commentListConstructProcess",
+			type: "POST",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			data: commentData,
+			dataType: "json",
+			success: function(commentList){
+				commentViewFunc2(commentList);
 			},
 			error:function(request,status,error) {
 				console.log("err=", request, status, error);

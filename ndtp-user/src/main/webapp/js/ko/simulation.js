@@ -1,8 +1,33 @@
 
 const consBuildBillboard = [];
 const consBuildBoardClick = {
-	click: function aaa(data) {
-		alert(data);
+	click: function constructProcessChat(objectName) {
+		console.log("clicked objectName=", objectName);
+		let commentData = {
+			objectName: objectName
+		};
+		selectedObjectName = objectName;
+		$.ajax({
+			url: "/data/simulation-rest/commentListConstructProcess",
+			type: "POST",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			data: commentData,
+			dataType: "json",
+			success: function(commentList){
+				const commentListViewer = document.getElementById("commentListViewer2");
+				commentListViewer.setAttribute("objectName", commentData.objectName);
+				const abc = document.getElementById("commentViewDialog");
+				abc.setAttribute("title", "의견 교환창" + commentData.objectName);
+
+				commentViewFunc2(commentList);
+
+				$("#commentContent2").val("");
+				commentViewDialog2.dialog("open");
+			},
+			error:function(request,status,error) {
+				console.log("err=", request, status, error);
+			}
+		});
 	}
 };
 var Simulation = function(magoInstance, viewer, $) {
@@ -63,8 +88,7 @@ var Simulation = function(magoInstance, viewer, $) {
 					node.data.aditionalColor = new Mago3D.Color();
 					node.data.aditionalColor.setRGB(230/255,8/255,0);
 				}*/
-debugger;
-console.log(node.data);
+
 				var ch = htmlBillboard.add();
 				ch.position = objPosition;
 				ch.offsetLeft = -15;
@@ -75,7 +99,7 @@ console.log(node.data);
 				ch.element.style.alignItems = 'center';
 				ch.element.style.justifyContent = 'center';
 				ch.element.innerHTML = "" +
-					"<div class='tooltip' onclick='consBuildBoardClick.click(\"dddd\")'><svg height='20' width='20' viewBox='0 0 20 20'>\n" +
+					"<div class='tooltip' onclick=consBuildBoardClick.click('"+dataId+"')><svg height='20' width='20' viewBox='0 0 20 20'>\n" +
 					"  <circle r='10' cx='10' cy='10' fill='white' />\n" +
 					"  <circle r='5' cx='10' cy='10' fill='transparent'\n" +
 					"          stroke='tomato'\n" +
@@ -698,6 +722,7 @@ console.log(node.data);
 		}
 	});
 
+	// todo: more improve
 	$("#deleteDistrict").click(() => {
 		if (_viewer.scene.imageryLayers.length < 2) {
 			alert("아직 지역이 생성되지 않았습니다.");
@@ -1278,10 +1303,10 @@ console.log(node.data);
                 	genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 10, "7M6_871.gltf")
                 } else if (runAllocBuildStat === "obj_lamp") {
                 	// todo: 가로등 gltf 파일로 변경
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 1, "fox.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 1, "Lantern.gltf")
 				} else if (runAllocBuildStat === "obj_tree") {
                 	// todo: 나무 gltf 파일로 변경
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 1, "fox.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.03, "tree.gltf")
 				} else if(runAllocBuildStat === "imsiBuildSelect") {
                 	// 새로운 모델 선택
                 	
@@ -1839,32 +1864,32 @@ b=pickedName;
 
     startDrawPolyLine();
 
-	function getCommentList(objectName) {
-		let commentData = {
-			objectName: objectName
-		};
-		$.ajax({
-			url: "/data/simulation-rest/commentList",
-			type: "POST",
-			headers: {"X-Requested-With": "XMLHttpRequest"},
-			data: commentData,
-			dataType: "json",
-			success: function(commentList){
-				const commentListViewer = document.getElementById("commentListViewer");
-				commentListViewer.setAttribute("objectName", commentData.objectName);
-				const abc = document.getElementById("commentViewDialog");
-				abc.setAttribute("title", "의견 교환창" + commentData.objectName);
-
-				commentViewFunc(commentList);
-
-				$("#commentContent").val("");
-				commentViewDialog.dialog("open");
-			},
-			error:function(request,status,error) {
-				console.log("err=", request, status, error);
-			}
-		});
-	}
+	// function getCommentList(objectName) {
+	// 	let commentData = {
+	// 		objectName: objectName
+	// 	};
+	// 	$.ajax({
+	// 		url: "/data/simulation-rest/commentList",
+	// 		type: "POST",
+	// 		headers: {"X-Requested-With": "XMLHttpRequest"},
+	// 		data: commentData,
+	// 		dataType: "json",
+	// 		success: function(commentList){
+	// 			const commentListViewer = document.getElementById("commentListViewer");
+	// 			commentListViewer.setAttribute("objectName", commentData.objectName);
+	// 			const abc = document.getElementById("commentViewDialog");
+	// 			abc.setAttribute("title", "의견 교환창" + commentData.objectName);
+	//
+	// 			commentViewFunc(commentList);
+	//
+	// 			$("#commentContent").val("");
+	// 			commentViewDialog.dialog("open");
+	// 		},
+	// 		error:function(request,status,error) {
+	// 			console.log("err=", request, status, error);
+	// 		}
+	// 	});
+	// }
 	
 	function initConsturctProcessModel() {
 		for(var index = 0; index < 6; index++) {
@@ -1900,6 +1925,7 @@ b=pickedName;
 
 	$('#acceptCompleteBuildList').change(function(event) {
 		var selectSeqBuild = event.target.value;
+		buildAcceptPermSeq = selectSeqBuild;
 		if (selectSeqBuild !== "") {
 			acceptMakeBuilding(selectSeqBuild);
 		}
@@ -1907,7 +1933,6 @@ b=pickedName;
 
 	$("#acceptBuildList").change(value => {
 		let val = value.target.value;
-		console.log(val);
 		buildAcceptPermSeq = val;
 	});
 

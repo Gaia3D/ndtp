@@ -19280,7 +19280,7 @@ F4dController.prototype.addF4dMember = function(groupId, f4dObject)
  */
 F4dController.prototype.deleteF4dGroup = function(groupId) 
 {
-    debugger;
+    // debugger;
 	if (!groupId) 
 	{
 		throw new Error('groupId is required.');

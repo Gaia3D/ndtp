@@ -370,6 +370,10 @@
 </div>
 <script>
 	$("#comment").on('click', function() {
+		if (buildAcceptPermSeq === undefined || buildAcceptPermSeq === "") {
+			alert("목록을 먼저 선택해 주시기 바랍니다.");
+			return;
+		}
 		let commentData = {
 			// todo: 클릭시 오브젝트에서 정보 가져와서 셋팅
 			permSeq: buildAcceptPermSeq
@@ -539,6 +543,39 @@
 
 	function commentViewFunc(commentList){
 		const commentListViewer = document.getElementById("commentListViewer");
+
+		commentListViewer.innerHTML = "";
+		// console.log("commentList=", commentList);
+
+		commentList.map((comment, idx) => {
+			const li = document.createElement("li");
+			li.setAttribute("class", "comment flex-align-center");
+			li.setAttribute("commentSeq", comment.commentSeq);
+			li.setAttribute("objectName", comment.objectName);
+			li.setAttribute("commentTitle", comment.commentTitle);
+			li.setAttribute("commentContent", comment.commentContent);
+
+			const idSpan = document.createElement("span");
+			idSpan.setAttribute("class", "id");
+			idSpan.textContent = comment.writer + ":";
+			const titleSpan = document.createElement("span");
+			titleSpan.setAttribute("class", "title");
+			titleSpan.textContent = comment.commentContent;
+			// titleSpan.textContent = comment.commentTitle;
+			const timeSpan = document.createElement("div");
+			let writeDate = new Date(comment.applyDate);
+			timeSpan.setAttribute("class", "commentTime");
+			timeSpan.textContent = writeDate.format('yyyy-MM-dd(KS) HH:mm:ss');
+
+			li.append(idSpan);
+			li.append(titleSpan);
+			commentListViewer.append(li);
+			commentListViewer.append(timeSpan);
+		});
+	}
+
+	function commentViewFunc2(commentList){
+		const commentListViewer = document.getElementById("commentListViewer2");
 
 		commentListViewer.innerHTML = "";
 		// console.log("commentList=", commentList);

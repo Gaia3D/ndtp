@@ -422,7 +422,6 @@ public class SimulationRestController {
 		List<CommentManage> res = commentManageMapper.selectCondition(cm);
 		return res;
 	}
-
 	@RequestMapping(value = "/commentRegister", method = RequestMethod.POST)
 	public List<CommentManage> commentRegister(HttpServletRequest req, CommentManage cm) {
 		UserSession userSession = (UserSession)req.getSession().getAttribute(Key.USER_SESSION.name());
@@ -431,10 +430,31 @@ public class SimulationRestController {
 		String commentContent = cm.getCommentContent();
 
 		cm.setWriter(writer);
-		cm.setObjectName("testObject");
+//		cm.setObjectName("testObject");
 		int resultInsert = commentManageMapper.insertCommentManage(cm);
 
 		List<CommentManage> res = commentManageMapper.selectCondition(cm);
+
+		return res;
+	}
+
+	@RequestMapping(value = "/commentListConstructProcess", method = RequestMethod.POST)
+	public List<CommentManage> commentListConstructProcess(HttpServletRequest req, CommentManage cm) {
+		List<CommentManage> res = commentManageMapper.selectConditionObjectName(cm);
+		return res;
+	}
+	@RequestMapping(value = "/commentRegisterConstructProcess", method = RequestMethod.POST)
+	public List<CommentManage> commentRegisterConstructProcess(HttpServletRequest req, CommentManage cm) {
+		UserSession userSession = (UserSession)req.getSession().getAttribute(Key.USER_SESSION.name());
+		String writer = userSession.getUserId();
+		String commentTitle = cm.getCommentTitle();
+		String commentContent = cm.getCommentContent();
+
+		cm.setWriter(writer);
+//		cm.setObjectName("testObject");
+		int resultInsert = commentManageMapper.insertCommentManage(cm);
+
+		List<CommentManage> res = commentManageMapper.selectConditionObjectName(cm);
 
 		return res;
 	}
