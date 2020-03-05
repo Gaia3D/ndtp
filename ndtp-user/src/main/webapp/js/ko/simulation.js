@@ -434,6 +434,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				allObject[pickedName].shadowView = false;
 				_viewer.shadows = false;
 				_viewer.softShadows = false;
+				_viewer.scene.globe.enableLighting = false;
 				allObject[pickedName].buildings.forEach((val, idx) => {
 					val.polygon.shadows = Cesium.ShadowMode.DISABLED;
 				});
@@ -442,6 +443,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				allObject[pickedName].shadowView = true;
 				_viewer.shadows = true;
 				_viewer.softShadows = true;
+				_viewer.scene.globe.enableLighting = true;
 				allObject[pickedName].buildings.forEach((val, idx) => {
 					val.polygon.shadows = Cesium.ShadowMode.ENABLED;
 				});
@@ -488,7 +490,8 @@ var Simulation = function(magoInstance, viewer, $) {
 
 				layers.addImageryProvider(new Cesium.SingleTileImageryProvider({
 					url : '/images/mapgeoref.png',
-					rectangle : Cesium.Rectangle.fromDegrees(127.2603901, 36.5187878, 127.2875007, 36.5349324)
+					// rectangle : Cesium.Rectangle.fromDegrees(127.2603901, 36.5187878, 127.2875007, 36.5349324)
+					rectangle : Cesium.Rectangle.fromDegrees(127.26024, 36.5189, 127.288, 36.5349)
 				}));
 
 				_viewer.scene.camera.flyTo({
@@ -520,7 +523,8 @@ var Simulation = function(magoInstance, viewer, $) {
 				shadowView: false	// building shadow
 			};
 
-			const fileName = "Parcel6-4.geojson";
+			// const fileName = "Parcel6-4.geojson";
+			const fileName = "6-4_disApart.geojson";
 			const obj = {
 				width : 5,
 				leadTime : 0,
@@ -573,7 +577,8 @@ var Simulation = function(magoInstance, viewer, $) {
 				shadowView: false	// building shadow
 			};
 
-			const fileName = "schoolphill.geojson";
+			// const fileName = "schoolphill.geojson";
+			const fileName = "6-4_disSchool.geojson";
 			const obj = {
 				width : 5,
 				leadTime : 0,
@@ -660,7 +665,8 @@ var Simulation = function(magoInstance, viewer, $) {
 			return;
 		}
 
-		const fileName = "Parcel6-4-Buidling.geojson";
+		// const fileName = "Parcel6-4-Buidling.geojson";
+		const fileName = "6-4_buildings.geojson";
 		const obj = {
 			width : 5,
 			leadTime : 0,
