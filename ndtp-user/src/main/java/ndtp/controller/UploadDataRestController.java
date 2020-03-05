@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -309,6 +310,7 @@ public class UploadDataRestController {
 			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 			log.info("@@ db.exception. message = {}", message);
 		} catch(RuntimeException e) {
+			e.printStackTrace();
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "runtime.exception";
 			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
@@ -366,8 +368,10 @@ public class UploadDataRestController {
 		multipartFile.transferTo(uploadedFile);
 		
 		List<UploadDataFile> uploadDataFileList = new ArrayList<>();
+		// zip 파일을 압축할때 한글이나 다국어가 포함된 경우 java.lang.IllegalArgumentException: malformed input off 같은 오류가 발생. 윈도우가 CP949 인코딩으로 파일명을 저장하기 때문.
+		// Charset CP949 = Charset.forName("UTF-8");
+//		try ( ZipFile zipFile = new ZipFile(uploadedFile, CP949);) {
 		try ( ZipFile zipFile = new ZipFile(uploadedFile);) {
-			
 			String directoryPath = targetDirectory;
 			String subDirectoryPath = "";
 			String directoryName = null;
