@@ -1,6 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/views/simulation/simulationCityPlanRepot.jsp" %>
-
+<script src="/externlib/amchart/core.js"></script>
+<script src="/externlib/amchart/charts.js"></script>
+<script src="/externlib/amchart/themes/animated.js"></script>
+<script src="/externlib/amchart/themes/material.js"></script>
+<script src="/externlib/amchart/lang/de_DE.js"></script>
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 <style>
@@ -11,10 +15,36 @@
 		margin-bottom: 6px;
 		display:block;
 	}
+	/* Tooltip container */
+	.tooltip {
+		position: relative;
+		display: inline-block;
+		border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+	}
+
+	/* Tooltip text */
+	.tooltip .tooltiptext {
+		visibility: hidden;
+		width: 120px;
+		background-color: black;
+		color: #fff;
+		text-align: center;
+		padding: 5px 0;
+		border-radius: 6px;
+
+		/* Position the tooltip text - see examples below! */
+		position: absolute;
+		z-index: 1;
+	}
+
+	/* Show the tooltip text when you mouse over the tooltip container */
+	.tooltip:hover .tooltiptext {
+		visibility: visible;
+	}
 </style>
 
 <ul class="listDrop">
-	<li>
+	<li class="on">
 		<p>좌표 정보<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="solarAnalysis">
 			<ul class="analysisGroup">
@@ -82,12 +112,10 @@
 					<label style="width:26px;" for="cpEtc">기타</label>
 					<input style="width:20px;" type="radio" id="cpEtc"  name="cpProtoArea" value="etc"/>
 				</li>
-
 				<li class="btns">
 					<button type="button" class="btnTextF execute" title="공정 조회">조회</button>
 					<button type="button" class="btnText reset" title="취소">취소</button>
 				</li>
-
 				<li class="profileInfo" style="display:none;cursor: default;">
 					<div class="legend">
 						<div class="geostats-legend">
@@ -122,9 +150,9 @@
 			</ul>
 		</div>
 	</li>
-	<li >
+	<li>
 		<p>도시 계획<span class="collapse-icon">icon</span></p>
-		<div class="listContents" id="constructionProcess">
+		<div class="listContents" id="">
 			<ul class="analysisGroup">
 				<li>
 					<iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
@@ -155,7 +183,7 @@
 			</ul>
 		</div>
 	</li>
-	<li class="on">
+	<li>
 		<p>도시 계획2<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="">
 			<ul class="analysisGroup">
@@ -263,7 +291,7 @@
 <%--								<button type="button" id="permView" title="인허가 시뮬레이션" class="btnTextF" style="">인허가 확인</button>--%>
 								<button type="button" id="permRequest" title="건축인 허가 신청" class="btnTextF" style="">건축인 허가 신청</button>
 								<button type="button" id="permView" title="인허가 시뮬레이션" class="btnTextF" style="">인허가 시뮬레이션</button>
-								<button type="button" id="comment" class="btnTextF">대화 하기</button>
+								<button type="button" id="comment" class="btnTextF">대화</button>
 							</div>
 						</div>
 					</div>
@@ -294,7 +322,6 @@
 <div id="constructionProcessUploadDialog" title="건설 공정 파일 업로드">
 	<div class="listContents">
 		<ul class="analysisGroup">
-
 			<li>
 				<form id="construc_proc_file_upload" name="file_upload" style="width:100%" target="dummyConsProcessFrame">
 					<div>

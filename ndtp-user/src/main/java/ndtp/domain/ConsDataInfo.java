@@ -18,4 +18,5 @@ public class ConsDataInfo {
     private Float pitch;
     private Float roll;
     private ConsType step;
+    private Integer ratio;
 }

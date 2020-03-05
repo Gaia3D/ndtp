@@ -25,7 +25,7 @@
 		UPDATE struct_permission SET
 		<![CDATA[
 		is_complete = #{isComplete}, suitable = #{suitable}, notsuitablereason = #{notSuitableReason}
-		where perm_seq = #{perm_seq};
+		where perm_seq = #{permSeq};
 		]]>
 	</update>
 

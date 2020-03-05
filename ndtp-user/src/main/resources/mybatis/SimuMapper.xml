@@ -58,7 +58,7 @@
 
 	<!-- 세션 정보 -->
 	<select id="getConsDataInfo" parameterType="consDataInfo" resultType="consDataInfo">
-		SELECT data_name, lon, lat, alt, heading, pitch, roll, step FROM cons_data_info WHERE data_name = #{dataName} LIMIT 1
+		SELECT data_name, lon, lat, alt, heading, pitch, roll, step, ratio FROM cons_data_info WHERE data_name = #{dataName} LIMIT 1
 	</select>
 
 
