@@ -204,7 +204,7 @@
 	var permRequestDialog = $( "#permRequestDialog" ).dialog({
 		autoOpen: false,
 		width: 1100,
-		height: 700,
+		height: 620,
 		modal: true,
 		overflow : "auto",
 		resizable: false

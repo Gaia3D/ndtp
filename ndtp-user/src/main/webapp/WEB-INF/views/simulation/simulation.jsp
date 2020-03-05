@@ -277,6 +277,7 @@
 							<option value="">선택안함</option>
 							<option value="obj_lamp">가로등</option>
 							<option value="obj_tree">나무</option>
+<%--							<option value="obj_test">테스트</option>--%>
 						</select>
 					</div>
 				</li>

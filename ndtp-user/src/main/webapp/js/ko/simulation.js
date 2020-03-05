@@ -1298,16 +1298,20 @@ var Simulation = function(magoInstance, viewer, $) {
                     else {
                         //this._labels.push(drawLabel(tempPosition));
                     }
-                    this._polylines.push(createPoint(tempPosition));	
+                    this._polylines.push(createPoint(tempPosition));
                 } else if (runAllocBuildStat === "autoBuild") {
                 	genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 10, "7M6_871.gltf")
-                } else if (runAllocBuildStat === "obj_lamp") {
-                	// todo: 가로등 gltf 파일로 변경
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 1, "STLamp.gltf")
-				} else if (runAllocBuildStat === "obj_tree") {
-                	// todo: 나무 gltf 파일로 변경
+                }
+                else if (runAllocBuildStat === "obj_lamp") {
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.2, "objLamp.gltf")
+				}
+                else if (runAllocBuildStat === "obj_tree") {
 					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.03, "tree.gltf")
-				} else if(runAllocBuildStat === "imsiBuildSelect") {
+				}
+				// else if (runAllocBuildStat === "obj_test") {
+				// 	genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.03, "tree.gltf")
+				// }
+				else if(runAllocBuildStat === "imsiBuildSelect") {
                 	// 새로운 모델 선택
                 	
                     var pickedFeature = viewer.scene.pick(event.position);
