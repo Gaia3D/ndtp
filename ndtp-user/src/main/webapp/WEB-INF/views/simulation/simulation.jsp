@@ -179,6 +179,16 @@
 					<label id="targetbuildCoverateRatio" for="">기준 건폐율 00%</label>
 					<label id="buildCoverateRatio" for="">건폐율 00%</label>
 				</li>
+				<li>
+					<label for="">작업 선택</label>
+					<select id="run_work_state" name="searchDataStatus">
+						<option value="">선택안함</option>
+						<option value="imsiBuildSelect">건물 선택 모드</option>
+						<option value="imsiBuild">임시 건물 배치 모드</option>
+						<option value="autoBuild">자동 건물 배치 모드</option>
+						<option value="location">경관 좌표 배치 모드</option>
+					</select>
+				</li>
 
 			</ul>
 		</div>
@@ -262,13 +272,11 @@
 						<input id="inputCustomizing" type="number" data-bind="value: buildingAdjust" />
 						<%--						<button id="dd" type="button" class="btnText drawObserverPoint">면적 설정</button>--%>
 
-						<label for="">작업 선택</label>
-						<select id="run_work_state" name="searchDataStatus">
+						<label for="">오브젝트 선택</label>
+						<select id="objectSelect" name="">
 							<option value="">선택안함</option>
-							<option value="imsiBuildSelect">건물 선택 모드</option>
-							<option value="imsiBuild">임시 건물 배치 모드</option>
-							<option value="autoBuild">자동 건물 배치 모드</option>
-							<option value="location">경관 좌표 배치 모드</option>
+							<option value="obj_lamp">가로등</option>
+							<option value="obj_tree">나무</option>
 						</select>
 					</div>
 				</li>

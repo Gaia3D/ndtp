@@ -1000,6 +1000,10 @@ console.log(node.data);
             drawingMode = 'line';
 		}
     });
+	$("#objectSelect").change(value => {
+		runAllocBuildStat = value.target.value;
+		console.log(runAllocBuildStat);
+	});
 
     $('#run_work_state').bind('afterClick', function () {
         console.log("맵컨트롤 : 면적");
@@ -1268,7 +1272,13 @@ console.log(node.data);
                     this._polylines.push(createPoint(tempPosition));	
                 } else if (runAllocBuildStat === "autoBuild") {
                 	genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 10, "7M6_871.gltf")
-                } else if(runAllocBuildStat === "imsiBuildSelect") {
+                } else if (runAllocBuildStat === "obj_lamp") {
+                	// todo: 가로등 gltf 파일로 변경
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 1, "fox.gltf")
+				} else if (runAllocBuildStat === "obj_tree") {
+                	// todo: 나무 gltf 파일로 변경
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 1, "fox.gltf")
+				} else if(runAllocBuildStat === "imsiBuildSelect") {
                 	// 새로운 모델 선택
                 	
                     var pickedFeature = viewer.scene.pick(event.position);
@@ -1537,7 +1547,7 @@ b=pickedName;
 	        url : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName,
 	        modelMatrix : modelMatrix,
 	        scale : scale,
-	        debugWireframe: true,
+	        debugWireframe: false,
 	        shadows : 1,
 	        name : name,
 	        show: false
