@@ -698,6 +698,15 @@ console.log(node.data);
 		}
 	});
 
+	$("#deleteDistrict").click(() => {
+		if (_viewer.scene.imageryLayers.length < 2) {
+			alert("아직 지역이 생성되지 않았습니다.");
+			return;
+		}
+		let imgLayer = _viewer.scene.imageryLayers.get(1);
+		_viewer.scene.imageryLayers.remove(imgLayer);
+	});
+
 	$("#delete3dModel").click(()=> {
 		let val = $("#selectDistrict").val();
 		if (allObject[val] === undefined) {

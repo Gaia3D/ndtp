@@ -222,7 +222,8 @@
 						<div class="line" style="margin-top:5px;"></div>
 						<button type="button" id="create3dModel" class="btnText drawObserverPoint" style="">3D모형 생성</button>
 						<button type="button" id="delete3dModel" class="btnText drawObserverPoint" style="margin-bottom: 5px;">3D모형 삭제</button>
-						<label for="">  </label>
+						<button type="button" id="deleteDistrict" class="btnText drawObserverPoint" style="margin-bottom: 5px;">삭제</button>
+
 
 						<label for="">지역 전시</label>
 						<select id="districtDisplay" name="districtDisplay">
