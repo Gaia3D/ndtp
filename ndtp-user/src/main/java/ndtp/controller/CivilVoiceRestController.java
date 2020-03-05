@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
+import ndtp.domain.CacheManager;
 import ndtp.domain.CivilVoice;
 import ndtp.domain.Key;
 import ndtp.domain.PageType;
@@ -172,6 +173,13 @@ public class CivilVoiceRestController {
 			@RequestParam(value="readOnly",required=false) Boolean readOnly, CivilVoice civilVoice) {
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 
+		List<String> userGroupRoleKeyList = CacheManager.getUserGroupRoleKeyList(userSession.getUserGroupId());
+		for(String roleName : userGroupRoleKeyList) {
+			// 이 권한일때 삭제가 가능하게 하세요.
+			// 사용자 페이지 시민참여 관리 권한
+			//USER_CIVIL_VOICE_MANAGE;
+		}
+		
 		Map<String, Object> result = new HashMap<>();
 		int statusCode = 0;
 		String errorCode = null;
@@ -348,6 +356,7 @@ public class CivilVoiceRestController {
 		String message = null;
 
 		try {
+			// TODO 버그, userId 를 사용하지 않고 있음
 			civilVoice.setUserId(userSession.getUserId());
 			civilVoice.setCivilVoiceId(civilVoiceId);
 			civilVoiceService.deleteCivilVoice(civilVoice);
