@@ -367,5 +367,14 @@ function locationValidation(longitude, latitude, altitude) {
 		alert("경도 유효범위 : -180 ~ 180\n위도 유효범위 : -90 ~ 90 \n높이 유효범위 : 300000 입니다.");
 		return false;
 	}
-	
+}
+
+// 빈 객체 체크
+function isEmptyObject(object) {
+    for(var property in object){
+         if(object.hasOwnProperty(property)) {
+        	 return false;
+         }
+    }
+    return true;
 }

@@ -404,9 +404,12 @@ $('#civilVoiceContent').on('click', '[data-goto=detail]', function(){
 // 시민참여 목록 조회
 function getCivilVoiceList(page) {
 	if(!page) page = 1;
-	civilVoice.currentPage = page;
-	civilVoice.currentCivilVoiceId = null;
-	civilVoice.clear();
+
+	if(!isEmptyObject(civilVoice)) {
+		civilVoice.currentPage = page;
+		civilVoice.currentCivilVoiceId = null;
+		civilVoice.clear();
+	}
 
 	var formId = 'civilVoiceSearchForm';
 	var formData = $('#' + formId).serialize();
