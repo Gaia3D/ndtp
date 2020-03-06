@@ -456,6 +456,7 @@
 		let data = {
 			permSeq: buildAcceptPermSeq
 		};
+		debugger
 		$.ajax({
 			url: "/data/simulation-rest/getPermRequestByConstructor",
 			type: "POST",
@@ -471,6 +472,10 @@
 				$("#permViewDialog #license_num").get(0).value = msg.licenseNum;
 				// $("#permViewDialog #phone_number").get(0).value = msg.phoneNumber;
 				$("#permViewDialog #district_unit_plan").get(0).value = msg.saveFileName;
+
+				$("#permViewDialog #longitude").get(0).value = msg.longitude;
+				$("#permViewDialog #latitude").get(0).value = msg.latitude;
+				$("#permViewDialog #altitude").get(0).value = msg.altitude;
 
 				permViewDialog.dialog("open");
 			},

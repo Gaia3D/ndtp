@@ -2028,6 +2028,10 @@ b=pickedName;
 				// $("#permViewDialog #phone_number").get(0).value = msg.phoneNumber;
 				$("#permViewDialog #district_unit_plan").get(0).value = msg.saveFileName;
 
+				$("#permViewDialog #longitude").get(0).value = msg.longitude;
+				$("#permViewDialog #latitude").get(0).value = msg.latitude;
+				$("#permViewDialog #altitude").get(0).value = msg.altitude;
+
 				permViewDialog.dialog("open");
 			},
 			error:function(request,status,error) {
