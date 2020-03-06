@@ -109,8 +109,8 @@
 					<input style="width:20px;" type="radio" id="cpSejong" name="cpProtoArea" value="s" checked/>
 					<label style="width:26px;" for="cpBusan">부산</label>
 					<input style="width:20px;" type="radio" id="cpBusan"  name="cpProtoArea" value="p"/>
-					<label style="width:26px;" for="cpEtc">기타</label>
-					<input style="width:20px;" type="radio" id="cpEtc"  name="cpProtoArea" value="etc"/>
+					<label style="width:26px;" for="cpEtc">금강</label>
+					<input style="width:20px;" type="radio" id="cpEtc"  name="cpProtoArea" value="g"/>
 				</li>
 				<li class="btns">
 					<button type="button" class="btnTextF execute" title="공정 조회">조회</button>
@@ -341,6 +341,8 @@
 						<input style="width:20px;" type="radio" id="cpSejong" name="cityTypeString" value="s" checked/>
 						<label style="width:26px;" for="cpBusan">부산</label>
 						<input style="width:20px;" type="radio" id="cpBusan"  name="cityTypeString" value="p"/>
+						<label style="width:26px;" for="cpEtc">금강</label>
+						<input style="width:20px;" type="radio" id="cpGeng"  name="cityTypeString" value="g"/>
 					</div>
 					<div>
 						<label for="consRatio">단계 공정률</label>

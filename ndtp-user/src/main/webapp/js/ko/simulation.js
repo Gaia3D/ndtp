@@ -375,14 +375,21 @@ var Simulation = function(magoInstance, viewer, $) {
 	//건설공정 조회
 	$('#constructionProcess .execute').click(function() {
 		var targetArea = $('input[name="cpProtoArea"]:checked').val();
-		// Typer s -> Sejong, p -> busan, etc -> etc....
+		// Typer s -> Sejong, p -> busan, g -> gumgang....
 		consBuildSlider.sliderSejongShow();
 		consBuildSlider.targetArea = targetArea;
 		consBuildSlider.consBuildDataReq(0, consBuildSlider.targetArea);
+		if(targetArea === 's') {
+			/*whole_viewer.scene.camera.flyTo({
+				destination : Cesium.Cartesian3.fromDegrees(127.26701,  36.52569, 1000)
+			});*/
+		} else if (targetArea === 'p') {
 
-		whole_viewer.scene.camera.flyTo({
-			destination : Cesium.Cartesian3.fromDegrees(127.26701,  36.52569, 1000)
-		});
+		} else if (targetArea === 'g') {
+			whole_viewer.scene.camera.flyTo({
+				destination : Cesium.Cartesian3.fromDegrees(127.2857722,  36.48363827, 1000)
+			});
+		}
 	});
 	
 	//건설공정 취소
@@ -1306,7 +1313,7 @@ var Simulation = function(magoInstance, viewer, $) {
 					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.2, "objLamp.gltf")
 				}
                 else if (runAllocBuildStat === "obj_tree") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.03, "tree.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.1, "tree.gltf")
 				}
 				// else if (runAllocBuildStat === "obj_test") {
 				// 	genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.03, "tree.gltf")
@@ -1537,9 +1544,9 @@ b=pickedName;
           transform: camera.transform.clone(),
           frustum: camera.frustum.clone()
         };
-        
         _camera_scene.push(store);
         dispCameraSceneList();
+		console.log(store);
 
         var windowPosition = new Cesium.Cartesian2(_viewer.container.clientWidth / 2, _viewer.container.clientHeight / 2);
         var pickRay = _viewer.scene.camera.getPickRay(windowPosition);
@@ -1570,28 +1577,26 @@ b=pickedName;
 	}
     
     function genBuild(lon, lat, alt, scale, fileName) {
-    	var position = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
-	    var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
+    	const position = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
+		const modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
 	    // fromGltf 함수를 사용하여 key : value 값으로 요소를 지정
-	    var name = '슬퍼하지마NONONO'; 
+		const name = '슬퍼하지마NONONO';
 	    // GLTF 모델 데이터 삽입
 
-	    var _model = Cesium.Model.fromGltf({
+		const _model = Cesium.Model.fromGltf({
 	        url : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName,
 	        modelMatrix : modelMatrix,
 	        scale : scale,
 	        debugWireframe: false,
 	        shadows : 1,
 	        name : name,
-	        show: false
+	        show: true
 	    });
 	    _model.areaVal = 714;
 	    _model.floorNum = 6;
 	    _cityPlanModels.push(_model);
-	    
-	    var primiti_model = _viewer.scene.primitives.add(_model);
-	    
-	    viewer.scene.primitives.add(primiti_model);
+		const primiti_model = viewer.scene.primitives.add(_model);
+
 	    Cesium.when(primiti_model.readyPromise).then(function(model) {
 	    	  clacArea();
 	    	  calcFloorCoverage();
@@ -2057,7 +2062,7 @@ const f4dDataGenMaster = {
 			"view_order": 2,
 			"data_key": f4dObject.data_key,
 			"data_name": f4dObject.data_name,
-			"mapping_type": "origin"
+			"mapping_type": "boundingboxcenter"
 		};
 	},
 	initIfc: (f4dObject, lon, lat, alt, head, pich, roll) => {
@@ -2071,6 +2076,7 @@ const f4dDataGenMaster = {
 		return rootObj;
 	},
 	genIfcChild: function(f4dSubObject, lon, lat, alt, head, pich, roll) {
+		arr = [];
 		for(var i = 0; i < f4dSubObject.length; i++) {
 			var obj = f4dSubObject[i];
 			var imsiF4dSubObject = {
@@ -2104,16 +2110,16 @@ const f4dDataGenMaster = {
 				"attributes": {
 					"isPhysical": true,
 					"nodeType": "daejeon",
-					"flipYTexCoords": false,
+					// "flipYTexCoords": false,
 					"ratio": obj.ratio
 				},
 				"children": [],
 				"data_key": obj.data_key,
 				"data_name": obj.data_key,
-				"mapping_type":"origin",
+				"mapping_type":"boundingboxcenter",
 				"longitude": obj.longitude,
 				"latitude": obj.latitude,
-				"height": 0,
+				"height": obj.height,
 				"heading": obj.heading,
 				"pitch": obj.pitch,
 				"roll": obj.roll
