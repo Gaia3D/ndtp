@@ -280,6 +280,12 @@
 							<option value="obj_tree2">나무2</option>
 							<option value="obj_cone">교통 꼬깔콘</option>
 							<option value="obj_bench">의자</option>
+							<option value="obj_bus1">버스1</option>
+							<option value="obj_bus2">버스2</option>
+							<option value="obj_car1">자동차1</option>
+							<option value="obj_car2">자동차2</option>
+							<option value="obj_truck1">트럭1</option>
+							<option value="obj_truck2">트럭2</option>
 						</select>
 					</div>
 				</li>

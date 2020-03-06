@@ -44,37 +44,37 @@
                             <label for="district_unit_plan">지구단위계획 파일</label>
                             <input id="district_unit_plan" type="file" name="district_unit_plan"  multiple>
                         </li>
-                       <%-- <li>
-&lt;%&ndash;                            <button id="regMapButtion" class="btnTextF" type="button" title="지도보기">건축물 지도보기</button>&ndash;%&gt;
+                        <li>
+                            <button id="regMapButtion" class="btnTextF" type="button" title="지도보기">건축물 지도보기</button>
                         </li>
                         <li>
                             <div>
                                 <label for="">기준 용적율</label>
-                                <label id="" for="">140.0%</label>
+                                <label id="std_floorAreaRatio" for="">0.0%</label>
                                 <label for="">기준 건폐율</label>
-                                <label id="" for="">50.0%</label>
+                                <label id="std_buildingLandRatio" for="">0.0%</label>
                             </div>
                         </li>
                         <li>
-&lt;%&ndash;                            <input id="longitude" name="longitude" class="m" placeholder="longitude" type="text" value="" style="width: 140px;">&ndash;%&gt;
-&lt;%&ndash;                            <input id="latitude" name="latitude" class="m" placeholder="latitude" type="text" value="" style="width: 140px;">&ndash;%&gt;
-&lt;%&ndash;                            <input id="altitude" name="altitude" class="m" placeholder="altitude" type="text" value="" style="width: 140px;">&ndash;%&gt;
+                            <input id="longitude" name="longitude" class="m" placeholder="longitude" type="text" value="" style="width: 140px;">
+                            <input id="latitude" name="latitude" class="m" placeholder="latitude" type="text" value="" style="width: 140px;">
+                            <input id="altitude" name="altitude" class="m" placeholder="altitude" type="text" value="" style="width: 140px;">
                         </li>
                         <li>
                             <div>
                                 <label for="">용적율</label>
-                                <label id="cur_floorAreaRatio" for="">130.84%</label>
+                                <label id="cur_floorAreaRatio" for="">0.0%</label>
                                 <label for="">건폐율</label>
-                                <label id="cur_buildingLandRatio" for="">16.36%</label>
+                                <label id="cur_buildingLandRatio" for="">0.0%</label>
                             </div>
                         </li>
                         <li></li>
                         <li>
                             <label for="">용적률 적합 여부</label>
-                            <label id="floorAreaRatio_isGood" for="" style="font-weight: bold; color:blue;">적합</label>
+                            <label id="floorAreaRatio_isGood" for="" style="font-weight: bold; color:blue;"></label>
                             <label for="">건폐율 적합 여부</label>
-                            <label id="buildingLandRatio_isGood" for="" style="font-weight: bold; color:blue;">적합</label>
-                        </li>--%>
+                            <label id="buildingLandRatio_isGood" for="" style="font-weight: bold; color:blue;"></label>
+                        </li>
 <%--                        <li>--%>
 <%--                            <label for="phone_number">휴대전화</label>--%>
 <%--                            <input id="phone_number" name="phone_number" class="sides" type="text" placeholder="(-)는 생략하고 입력바랍니다." value="" title="방사형 가시선의 수">--%>
@@ -106,7 +106,7 @@
                 </div>
             </li>
         </ul>
-        <div style="display: inline-block; position: absolute; bottom: 20px; right: 20px;">
+        <div style="float:right; margin-top:10px; ">
             <button id="permReqRegister" class="focusA" type="button" title="등록" style="width: 200px;">등록</button>
             <button id="permReqCancel" class="focusC" type="button" title="취소">취소</button>
         </div>
@@ -118,6 +118,23 @@
 
 
 <script>
+    // const tmpVals = {
+    //     "std_floorAreaRatio": "140.0%",
+    //     "std_buildingLandRatio": "50.0%",
+    //     "cur_floorAreaRatio": "130.84%",
+    //     "cur_buildingLandRatio": "16.36%",
+    //     "floorAreaRatio_isGood": "적합",
+    //     "buildingLandRatio_isGood": "적합",
+    // };
+    function setTmpVals() {
+        $("#std_floorAreaRatio").html("140.0%");
+        $("#std_buildingLandRatio").html("50.0%");
+        $("#cur_floorAreaRatio").html("130.84%");
+        $("#cur_buildingLandRatio").html("16.36%");
+        $("#floorAreaRatio_isGood").html("적합");
+        $("#buildingLandRatio_isGood").html("적합");
+    }
+
     $('#permRequestDialog ul.listDrop li > p').click(function() {
         var parentObj = $(this).parent();
         var index = parentObj.index();
@@ -173,7 +190,21 @@
         });
     }
 
+    let locTracking="";
+    const lonInput = document.getElementById("longitude");
+    // lonInput.oninput = lonInput.oncut = lonInput.oncopy = lonInput.onpaste = function() {
+    //     console.log("changed");
+    // };
+
     $( "#regMapButtion" ).on( "click", function() {
+        locTracking = setInterval(() => {
+            console.log("interval");
+            if (lonInput.value !== "") {
+                setTmpVals();
+                clearInterval(locTracking);
+            }
+        }, 500);
+
         var url = "/map/find-point";
         var width = 800;
         var height = 700;
@@ -186,6 +217,9 @@
             + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
         //popWin.document.title = layerName;
     });
+
+
+
 
 </script>
 

@@ -1325,6 +1325,24 @@ var Simulation = function(magoInstance, viewer, $) {
 				else if (runAllocBuildStat === "obj_bench") {
 					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.1, "bench", "bank.gltf")
 				}
+				else if (runAllocBuildStat === "obj_bus1") {
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 1, 0.1, "buses", "bus_1.gltf")
+				}
+				else if (runAllocBuildStat === "obj_bus2") {
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.1, "buses", "Mat_1.gltf")
+				}
+				else if (runAllocBuildStat === "obj_car1") {
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 1, 0.1, "buses", "car_1.gltf")
+				}
+				else if (runAllocBuildStat === "obj_car2") {
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 1, 0.1, "buses", "car2_2.gltf")
+				}
+				else if (runAllocBuildStat === "obj_truck1") {
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 1, 0.1, "buses", "truck_1.gltf")
+				}
+				else if (runAllocBuildStat === "obj_truck2") {
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 1, 0.1, "buses", "truck_2.gltf")
+				}
 
 				else if(runAllocBuildStat === "imsiBuildSelect") {
                 	// 새로운 모델 선택
