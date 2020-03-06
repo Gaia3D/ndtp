@@ -572,13 +572,21 @@
 
 	function alertMessage(response) {
 		if(uploadFileResultCount === 0) {
-			if(response.result === "upload.file.type.invalid") {
+			if(response.errorCode === "upload.file.type.invalid") {
 				alert("복수의 파일을 업로딩 할 경우 zip 파일은 사용할 수 없습니다.");
-			} else if(response.result === "layer.name.empty") {
+			} else if(response.errorCode === "layer.name.empty") {
 				alert("Layer 명이 유효하지 않습니다.");
-			} else if("db.exception") {
+			} else if(response.errorCode === "db.exception") {
 				alert("죄송 합니다. 서버 실행중에 오류가 발생 하였습니다. \n 로그를 확인하여 주십시오.");
-			}
+			} else if(response.errorCode === "io.exception") {
+	            alert("입출력 처리 과정중 오류가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
+	        } else if(response.errorCode === "runtime.exception") {
+	            alert("프로그램 실행중 오류가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
+	        } else if(response.errorCode === "unknown.exception") {
+	            alert("서버 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
+	        } else {
+	        	alert(JS_MESSAGE[response.errorCode]);
+	        }
 			uploadFileResultCount++;
 		}
 		return;
@@ -702,9 +710,8 @@
 		                    myDropzone.removeAllFiles(true);
 						}
 	                } else {
-	                	alert(JS_MESSAGE[response.errorCode]);
+	                	alertMessage(response);
 	                	myDropzone.removeAllFiles(true);
-						console.log("---- " + res.message);
 	                }
 	            } else {
 					console.log("------- success response = " + response);
