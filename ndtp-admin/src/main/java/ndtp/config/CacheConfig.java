@@ -19,6 +19,7 @@ import ndtp.domain.CacheParams;
 import ndtp.domain.CacheType;
 import ndtp.domain.Menu;
 import ndtp.domain.MenuTarget;
+import ndtp.domain.ProfileType;
 import ndtp.domain.RoleTarget;
 import ndtp.domain.UserGroup;
 import ndtp.domain.UserGroupMenu;
@@ -26,6 +27,7 @@ import ndtp.domain.UserGroupRole;
 import ndtp.domain.YOrN;
 import ndtp.service.MenuService;
 import ndtp.service.UserGroupService;
+import ndtp.support.LogMessageSupport;
 
 @Slf4j
 @Component
@@ -42,6 +44,16 @@ public class CacheConfig {
 
     @PostConstruct
     public void init() {
+    	log.info("*************************************************");
+        log.info("********** Admin Profile Check Start ************");
+        log.info("*************************************************");
+        if(ProfileType.LOCAL  == ProfileType.valueOf(propertiesConfig.getProfile().toUpperCase())) {
+        	LogMessageSupport.stackTraceEnable = true;
+        }
+        log.info("*************************************************");
+        log.info("*********** Admin Profile Check End *************");
+        log.info("*************************************************");
+        
     	log.info("*************************************************");
         log.info("************ Admin Cache Init Start *************");
         log.info("*************************************************");
