@@ -109,7 +109,7 @@ public class SimulationRestController {
 
 		List<F4DObject> f4dObjList = new ArrayList<>();
 		// Sejong Data Process
-		if(sfm.getSaveFileType() == FileType.CONSTPROCSEJON) {
+		if(sfm.getSaveFileType() == FileType.CONSTPROCSEJON || sfm.getSaveFileType() == FileType.CONSTPROCGEUMGANG) {
 			var consBuildList = this.simServiceImpl.getConsBuildList(sfm)
 					.stream().filter(obj -> obj.getSaveFileName().equals("relativePaths.json"))
 					.collect(Collectors.toList());
@@ -211,16 +211,6 @@ public class SimulationRestController {
 	@RequestMapping(value = "/getAccepBuildF4dJsonFile", method = RequestMethod.GET)
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public Object getAccepBuildF4dJsonFile(String fileName) {
-
-		// 세종인지 , 부산인지 먼저 선택 받아 그중 lonlats json만을 호출
-		// 세종/부산 인지, 몇단계인지
-		// mybatis에서는
-
-		// 세종/부산, 면단계인지 정보를 통해 파일을 가져온다.
-
-		// 가져온 파일에서 LonLats.json만을 추출한다.
-
-
 //    	String resultFullPath = "C:\\data\\Apartment_Building_26_obj\\Apartment_Building_26_obj.gltf";
 		String resultFullPath = "C:\\data\\Apartment_Building_26_obj\\" + fileName;
 		String os = System.getProperty("os.name").toLowerCase();

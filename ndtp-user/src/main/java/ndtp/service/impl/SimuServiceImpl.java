@@ -81,8 +81,10 @@ public class SimuServiceImpl {
 					.build();
 			if (sfm.getCityTypeString().equals("s")) {
 				obj.setSaveFileType(FileType.CONSTPROCSEJON);
-			} else if(sfm.getSaveFileType().equals("p")) {
+			} else if(sfm.getCityTypeString().equals("p")) {
 				obj.setSaveFileType(FileType.CONSTPROCBUSAN);
+			} else if(sfm.getCityTypeString().equals("g")) {
+				obj.setSaveFileType(FileType.CONSTPROCGEUMGANG);
 			}
 			simuMapper.insertConsProcFile(obj);
 		}
@@ -186,7 +188,9 @@ public class SimuServiceImpl {
 				writeFile(mtf, saveFileName, uploadDir);
 
 				// if you are have model file moved process target Path
-				if(saveFileName.contains(".ifc") || saveFileName.contains(".gml") || saveFileName.contains(".jpg") || saveFileName.contains(".png")  || saveFileName.contains(".3ds") || saveFileName.contains(".X") ) {
+				if(saveFileName.contains(".ifc") || saveFileName.contains(".gml")
+						|| saveFileName.contains(".jpg") || saveFileName.contains(".png")
+						|| saveFileName.contains(".3ds") || saveFileName.contains(".X") || saveFileName.contains(".obj") || saveFileName.contains(".mtl")  ) {
 					Files.copy(new File(uploadDir + saveFileName).toPath(), new File(f4dInputDir + originFileName).toPath());
 				}
 				lsfm.add(SimFileMaster.builder().originFileName(originFileName).saveFilePath(uploadDir).saveFileName(saveFileName).build());
