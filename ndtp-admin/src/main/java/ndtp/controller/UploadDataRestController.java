@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -223,6 +224,13 @@ public class UploadDataRestController {
     						}
     					}
     					
+    					if(DataType.CITYGML == DataType.findBy(dataType) && DataType.INDOORGML == DataType.findBy(extension)) {
+							// 전부 예외
+							log.info("@@@@@@@@@@@@ 데이터 타입이 다른 경우. datatype = {}, extension = {}", dataType, extension);
+							result.put("errorCode", "file.ext.invalid");
+							return result;
+						}
+    					
     					if (DataType.CITYGML.getValue().equalsIgnoreCase(dataType) && DataType.GML.getValue().equalsIgnoreCase(extension)) {
     						extension = DataType.CITYGML.getValue();
     					} else if (DataType.INDOORGML.getValue().equalsIgnoreCase(dataType) && DataType.GML.getValue().equalsIgnoreCase(extension)) {
@@ -366,8 +374,10 @@ public class UploadDataRestController {
 		multipartFile.transferTo(uploadedFile);
 		
 		List<UploadDataFile> uploadDataFileList = new ArrayList<>();
+		// zip 파일을 압축할때 한글이나 다국어가 포함된 경우 java.lang.IllegalArgumentException: malformed input off 같은 오류가 발생. 윈도우가 CP949 인코딩으로 파일명을 저장하기 때문.
+		// Charset CP949 = Charset.forName("UTF-8");
+//		try ( ZipFile zipFile = new ZipFile(uploadedFile, CP949);) {
 		try ( ZipFile zipFile = new ZipFile(uploadedFile);) {
-			
 			String directoryPath = targetDirectory;
 			String subDirectoryPath = "";
 			String directoryName = null;
@@ -447,11 +457,19 @@ public class UploadDataRestController {
                 						}
                 					}
             						
+            						if(DataType.CITYGML == DataType.findBy(dataType) && DataType.INDOORGML == DataType.findBy(extension)) {
+            							// 전부 예외
+            							log.info("@@@@@@@@@@@@ 데이터 타입이 다른 경우. datatype = {}, extension = {}", dataType, extension);
+            							result.put("errorCode", "file.ext.invalid");
+            							return result;
+            						}
+            						
             						if (DataType.CITYGML.getValue().equalsIgnoreCase(dataType) && DataType.GML.getValue().equalsIgnoreCase(extension)) {
                 						extension = DataType.CITYGML.getValue();
                 					} else if (DataType.INDOORGML.getValue().equalsIgnoreCase(dataType) && DataType.GML.getValue().equalsIgnoreCase(extension)) {
                 						extension = DataType.INDOORGML.getValue();
                 					}
+            						
             						// 변환 대상 파일만 이름을 변경하고 나머지 파일은 그대로 이름 유지
             						saveFileName = userId + "_" + today + "_" + System.nanoTime() + "." + extension;
             						converterTarget = true;
@@ -491,6 +509,13 @@ public class UploadDataRestController {
                 							return result;
                 						}
                 					}
+            						
+            						if(DataType.CITYGML == DataType.findBy(dataType) && DataType.INDOORGML == DataType.findBy(extension)) {
+            							// 전부 예외
+            							log.info("@@@@@@@@@@@@ 데이터 타입이 다른 경우. datatype = {}, extension = {}", dataType, extension);
+            							result.put("errorCode", "file.ext.invalid");
+            							return result;
+            						}
             						
             						if (DataType.CITYGML.getValue().equalsIgnoreCase(dataType) && DataType.GML.getValue().equalsIgnoreCase(extension)) {
                 						extension = DataType.CITYGML.getValue();

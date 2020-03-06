@@ -224,6 +224,13 @@ public class UploadDataRestController {
     						}
     					}
     					
+    					if(DataType.CITYGML == DataType.findBy(dataType) && DataType.INDOORGML == DataType.findBy(extension)) {
+							// 전부 예외
+							log.info("@@@@@@@@@@@@ 데이터 타입이 다른 경우. datatype = {}, extension = {}", dataType, extension);
+							result.put("errorCode", "file.ext.invalid");
+							return result;
+						}
+    					
     					if (DataType.CITYGML.getValue().equalsIgnoreCase(dataType) && DataType.GML.getValue().equalsIgnoreCase(extension)) {
     						extension = DataType.CITYGML.getValue();
     					} else if (DataType.INDOORGML.getValue().equalsIgnoreCase(dataType) && DataType.GML.getValue().equalsIgnoreCase(extension)) {
@@ -310,7 +317,6 @@ public class UploadDataRestController {
 			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 			log.info("@@ db.exception. message = {}", message);
 		} catch(RuntimeException e) {
-			e.printStackTrace();
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "runtime.exception";
 			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
@@ -451,11 +457,19 @@ public class UploadDataRestController {
                 						}
                 					}
             						
+            						if(DataType.CITYGML == DataType.findBy(dataType) && DataType.INDOORGML == DataType.findBy(extension)) {
+            							// 전부 예외
+            							log.info("@@@@@@@@@@@@ 데이터 타입이 다른 경우. datatype = {}, extension = {}", dataType, extension);
+            							result.put("errorCode", "file.ext.invalid");
+            							return result;
+            						}
+            						
             						if (DataType.CITYGML.getValue().equalsIgnoreCase(dataType) && DataType.GML.getValue().equalsIgnoreCase(extension)) {
                 						extension = DataType.CITYGML.getValue();
                 					} else if (DataType.INDOORGML.getValue().equalsIgnoreCase(dataType) && DataType.GML.getValue().equalsIgnoreCase(extension)) {
                 						extension = DataType.INDOORGML.getValue();
                 					}
+            						
             						// 변환 대상 파일만 이름을 변경하고 나머지 파일은 그대로 이름 유지
             						saveFileName = userId + "_" + today + "_" + System.nanoTime() + "." + extension;
             						converterTarget = true;
@@ -495,6 +509,13 @@ public class UploadDataRestController {
                 							return result;
                 						}
                 					}
+            						
+            						if(DataType.CITYGML == DataType.findBy(dataType) && DataType.INDOORGML == DataType.findBy(extension)) {
+            							// 전부 예외
+            							log.info("@@@@@@@@@@@@ 데이터 타입이 다른 경우. datatype = {}, extension = {}", dataType, extension);
+            							result.put("errorCode", "file.ext.invalid");
+            							return result;
+            						}
             						
             						if (DataType.CITYGML.getValue().equalsIgnoreCase(dataType) && DataType.GML.getValue().equalsIgnoreCase(extension)) {
                 						extension = DataType.CITYGML.getValue();
@@ -548,8 +569,10 @@ public class UploadDataRestController {
             	uploadDataFile.setFileSize(String.valueOf(entry.getSize()));
             	uploadDataFileList.add(uploadDataFile);
             }
+		} catch(RuntimeException ex) {
+			log.info("@@@@@@@@@@@@ RuntimeException. message = {}", ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage());
 		} catch(IOException ex) {
-			log.info("@@@@@@@@@@@@ io exception. ex message = {}", ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage());
+			log.info("@@@@@@@@@@@@ IOException. message = {}", ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage());
 		}
 		
 		result.put("converterTargetCount", converterTargetCount);
