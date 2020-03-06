@@ -44,7 +44,7 @@
 </style>
 
 <ul class="listDrop">
-	<li class="on">
+	<li >
 		<p>좌표 정보<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="solarAnalysis">
 			<ul class="analysisGroup">
@@ -287,7 +287,7 @@
 			</ul>
 		</div>
 	</li>
-	<li >
+	<li class="on">
 		<p id="forEvent">건축인 허가 신청<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="">
 			<ul class="analysisGroup">
@@ -316,7 +316,7 @@
 						</div>
 					</div>
 
-<%--					<button type="button" id="testFly" class="btnTextF" style="margin-top:10px;">Fly Test</button>--%>
+					<button type="button" id="testFly" class="btnTextF" style="margin-top:10px;">Fly Test</button>
 <%--					<button type="button" id="testingPicking" class="btnTextF" style="margin-top:10px;">testingPicking</button>--%>
 					<button type="button" id="testBuilding" class="btnTextF" style="margin-top:10px; display:none;">testBuilding</button>
 				</li>

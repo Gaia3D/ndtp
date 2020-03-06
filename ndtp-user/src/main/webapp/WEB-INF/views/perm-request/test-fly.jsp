@@ -64,10 +64,10 @@
         <input type="button" class="cesium-button" value="btn2" onclick="look2();">
         <input type="button" class="cesium-button" value="btn3" onclick="look3();">
         <input type="button" class="cesium-button" value="용적률" onclick="look4();">
-        <input type="button" class="cesium-button" value="bar" onclick="look5();">
+        <input type="button" class="cesium-button" value="sensor" onclick="look5();">
         <input type="button" class="cesium-button" value="btn6" onclick="look6();">
     </div>
-    <div id="toolbar">
+    <div id="toolbar" style="display: none">
         <div>Model Height</div>
         <div>
             <input type="range" min="0.0" max="300.0" step="1" data-bind="value: floorAreaRatio, valueUpdate: 'input'" style="width:70%; -webkit-appearance: slider-horizontal">
@@ -101,10 +101,6 @@
             // infoBox : true,
             // navigationInstructionsInitiallyVisible : false,
         });
-
-
-
-
 
     function look1(){
         // Gltf포맷 활용가능하게함.
@@ -226,6 +222,7 @@
         createModel(url, 1);
     }
     function look4() {
+        $("#toolbar").css("display", "block");
         let building1 = [ 126.91652864938153, 37.524363769181384, 126.91666340461144, 37.524247637818796, 126.91682331410799, 37.52432934563929, 126.91667773440538, 37.524445694816826 ];
         let building2 = [ 126.91710137997505, 37.524696432397825, 126.91725577562923, 37.52458252772058, 126.91745759427334, 37.524690824242136, 126.9173139107025, 37.524815545446394 ];
         let building3 = [ 126.91686418930314, 37.52499800473463, 126.91699773682063, 37.52488931956934, 126.91716605216082, 37.52498916809968, 126.91699479211833, 37.525150951980315 ];
@@ -333,31 +330,35 @@
 
 
     function look5() {
-        viewer.scene.globe.depthTestAgainstTerrain = true;
+        let scene = viewer.scene;
+        var sensor = scene.primitives.add(new Cesium.RectangularSensor({
+            modelMatrix : Cesium.Transforms.eastNorthUpToFixedFrame(Cesium.Cartesian3.fromDegrees(-123.0744619, 44.0503706)),
+            radius : 1000000.0,
+            xHalfAngle : Cesium.Math.toRadians(25.0),
+            yHalfAngle : Cesium.Math.toRadians(40.0)
+        }));
 
-        var viewModel = {
-            height: 0
-        };
-
-        Cesium.knockout.track(viewModel);
-
-        var toolbar = document.getElementById('toolbar');
-        Cesium.knockout.applyBindings(viewModel, toolbar);
-
-        Cesium.knockout.getObservable(viewModel, 'height').subscribe(function(height) {
-            height = Number(height);
-            if (isNaN(height)) {
-                return;
-            }
-
-            var cartographic = Cesium.Cartographic.fromCartesian(tileset.boundingSphere.center);
-            var surface = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, 0.0);
-            var offset = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, height);
-            var translation = Cesium.Cartesian3.subtract(offset, surface, new Cesium.Cartesian3());
-            tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
+        viewer.scene.camera.flyTo({
+            destination : Cesium.Cartesian3.fromDegrees(-123.0744619, 44.0503706, 300)
         });
-
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
