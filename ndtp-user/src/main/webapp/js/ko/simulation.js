@@ -1303,7 +1303,7 @@ var Simulation = function(magoInstance, viewer, $) {
                 	genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 10, "7M6_871.gltf")
                 }
                 else if (runAllocBuildStat === "obj_lamp") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.2, "objLamp.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.3, "objLamp.gltf")
 				}
                 else if (runAllocBuildStat === "obj_tree") {
 					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.03, "tree.gltf")
