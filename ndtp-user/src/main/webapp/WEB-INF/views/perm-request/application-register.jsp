@@ -197,13 +197,15 @@
     // };
 
     $( "#regMapButtion" ).on( "click", function() {
-        locTracking = setInterval(() => {
-            console.log("interval");
-            if (lonInput.value !== "") {
-                setTmpVals();
-                clearInterval(locTracking);
-            }
-        }, 500);
+        if (locTracking === ""){
+            locTracking = setInterval(() => {
+                console.log("interval");
+                if (lonInput.value !== "") {
+                    setTmpVals();
+                    clearInterval(locTracking);
+                }
+            }, 500);
+        }
 
         var url = "/map/find-point";
         var width = 800;
