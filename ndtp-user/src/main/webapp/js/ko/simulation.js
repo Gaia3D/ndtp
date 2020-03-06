@@ -1306,18 +1306,26 @@ var Simulation = function(magoInstance, viewer, $) {
                         //this._labels.push(drawLabel(tempPosition));
                     }
                     this._polylines.push(createPoint(tempPosition));
-                } else if (runAllocBuildStat === "autoBuild") {
-                	genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 10, "7M6_871.gltf")
                 }
+                // else if (runAllocBuildStat === "autoBuild") {
+                // 	genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 10, "7M6_871.gltf")
+                // }
                 else if (runAllocBuildStat === "obj_lamp") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.3, "objLamp.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.3, "objLamp", "objLamp.gltf")
 				}
                 else if (runAllocBuildStat === "obj_tree") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.1, "tree.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.03, "tree", "tree.gltf")
 				}
-				// else if (runAllocBuildStat === "obj_test") {
-				// 	genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.03, "tree.gltf")
-				// }
+				else if (runAllocBuildStat === "obj_tree2") {
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.4, "Tree2", "Tree.gltf")
+				}
+				else if (runAllocBuildStat === "obj_cone") {
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.1, "TrafficCone", "TrafficCone.gltf")
+				}
+				else if (runAllocBuildStat === "obj_bench") {
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.1, "bench", "bank.gltf")
+				}
+
 				else if(runAllocBuildStat === "imsiBuildSelect") {
                 	// 새로운 모델 선택
                 	
@@ -1576,7 +1584,7 @@ b=pickedName;
 
 	}
     
-    function genBuild(lon, lat, alt, scale, fileName) {
+    function genBuild(lon, lat, alt, scale, preDir, fileName) {
     	const position = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
 		const modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
 	    // fromGltf 함수를 사용하여 key : value 값으로 요소를 지정
@@ -1584,7 +1592,7 @@ b=pickedName;
 	    // GLTF 모델 데이터 삽입
 
 		const _model = Cesium.Model.fromGltf({
-	        url : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName,
+	        url : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir,
 	        modelMatrix : modelMatrix,
 	        scale : scale,
 	        debugWireframe: false,

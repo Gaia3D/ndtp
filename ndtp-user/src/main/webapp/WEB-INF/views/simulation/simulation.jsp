@@ -277,7 +277,9 @@
 							<option value="">선택안함</option>
 							<option value="obj_lamp">가로등</option>
 							<option value="obj_tree">나무</option>
-<%--							<option value="obj_test">테스트</option>--%>
+							<option value="obj_tree2">나무2</option>
+							<option value="obj_cone">교통 꼬깔콘</option>
+							<option value="obj_bench">의자</option>
 						</select>
 					</div>
 				</li>
