@@ -230,17 +230,16 @@
 	}
 
 	// 화살표 클릭시
-	function childrenDisplayToggle(depth, layerGroupId, ancestor) {
+	function childrenDisplayToggle(depth, id, ancestor) {
 	    if(depth === "1") {
-	        console.log("--------- depth 1 = " + $(".oneDepthParent-" + layerGroupId).css("display"));
-	        if( $(".oneDepthParent-" + layerGroupId).css("display") === "none" ) {
+	        if( $(".oneDepthParent-" + id).css("display") === "none" ) {
 	            // 접힌 상태
-	            $(".oneDepthParent-" + layerGroupId).show();
+	            $(".oneDepthParent-" + id).show();
 
-	            $("#oneDepthArrow-" + layerGroupId).removeClass("fa-caret-right");
-	            $("#oneDepthArrow-" + layerGroupId).addClass("fa-caret-down");
-	            $("#oneDepthFolder-" + layerGroupId).removeClass("fa-folder");
-	            $("#oneDepthFolder-" + layerGroupId).addClass("fa-folder-open");
+	            $("#oneDepthArrow-" + id).removeClass("fa-caret-right");
+	            $("#oneDepthArrow-" + id).addClass("fa-caret-down");
+	            $("#oneDepthFolder-" + id).removeClass("fa-folder");
+	            $("#oneDepthFolder-" + id).addClass("fa-folder-open");
 
 	            $(".ancestorArrow-" + ancestor).removeClass("fa-caret-down");
 	            $(".ancestorArrow-" + ancestor).addClass("fa-caret-right");
@@ -248,36 +247,53 @@
 	            $(".ancestorFolder-" + ancestor).addClass("fa-folder");
 	        } else {
 	            // 펼친 상태
-	            $(".ancestor-" + ancestor).hide();
-	            $(".oneDepthParent-" + layerGroupId).hide();
-
-	            $("#oneDepthArrow-" + layerGroupId).removeClass("fa-caret-down");
-	            $("#oneDepthArrow-" + layerGroupId).addClass("fa-caret-right");
-	            $("#oneDepthFolder-" + layerGroupId).removeClass("fa-folder-open");
-	            $("#oneDepthFolder-" + layerGroupId).addClass("fa-folder");
-
+	        	var clickClass = $("#oneDepthArrow-" + id).attr("class");
+	            if(clickClass.indexOf("right") >= 0) {
+	            	// 닫힘 상태라 펼침
+	            	$("#oneDepthArrow-" + id).removeClass("fa-caret-right");
+	            	$("#oneDepthArrow-" + id).addClass("fa-caret-down");
+	            	$("#oneDepthFolder-" + id).removeClass("fa-folder");
+	            	$("#oneDepthFolder-" + id).addClass("fa-folder-open");
+	            } else {
+	            	// 펼침 상태라 닫힘
+	            	$("#oneDepthArrow-" + id).removeClass("fa-caret-down");
+	                $("#oneDepthArrow-" + id).addClass("fa-caret-right");
+	                $("#oneDepthFolder-" + id).removeClass("fa-folder-open");
+	                $("#oneDepthFolder-" + id).addClass("fa-folder");
+	            }
+	            
 	            $(".ancestorArrow-" + ancestor).removeClass("fa-caret-down");
 	            $(".ancestorArrow-" + ancestor).addClass("fa-caret-right");
 	            $(".ancestorFolder-" + ancestor).removeClass("fa-folder-open");
 	            $(".ancestorFolder-" + ancestor).addClass("fa-folder");
 	        }
 	    } else if(depth === "2") {
-	        if( $(".twoDepthParent-" + layerGroupId).css("display") === "none" ) {
+	    	if( $(".twoDepthParent-" + id).css("display") === "none" ) {
 	            // 접힌 상태
-	            $(".twoDepthParent-" + layerGroupId).show();
-
-	            $("#twoDepthArrow-" + layerGroupId).removeClass("fa-caret-right");
-	            $("#twoDepthArrow-" + layerGroupId).addClass("fa-caret-down");
-	            $("#twoDepthFolder-" + layerGroupId).removeClass("fa-folder");
-	            $("#twoDepthFolder-" + layerGroupId).addClass("fa-folder-open");
+	            $(".twoDepthParent-" + id).show();
+	
+	            $("#twoDepthArrow-" + id).removeClass("fa-caret-right");
+	            $("#twoDepthArrow-" + id).addClass("fa-caret-down");
+	            $("#twoDepthFolder-" + id).removeClass("fa-folder");
+	            $("#twoDepthFolder-" + id).addClass("fa-folder-open");
 	        } else {
 	            // 펼친 상태
-	            $(".twoDepthParent-" + layerGroupId).hide();
-
-	            $("#twoDepthArrow-" + layerGroupId).removeClass("fa-caret-down");
-	            $("#twoDepthArrow-" + layerGroupId).addClass("fa-caret-right");
-	            $("#twoDepthFolder-" + layerGroupId).removeClass("fa-folder-open");
-	            $("#twoDepthFolder-" + layerGroupId).addClass("fa-folder");
+	            $(".twoDepthParent-" + id).hide();
+	            
+	            var clickClass = $("#twoDepthArrow-" + id).attr("class");
+	            if(clickClass.indexOf("right") >= 0) {
+	            	// 닫힘 상태라 펼침
+	            	$("#twoDepthArrow-" + id).removeClass("fa-caret-right");
+	            	$("#twoDepthArrow-" + id).addClass("fa-caret-down");
+	            	$("#twoDepthFolder-" + id).removeClass("fa-folder");
+	            	$("#twoDepthFolder-" + id).addClass("fa-folder-open");
+	            } else {
+	            	// 펼침 상태라 닫힘
+	            	$("#twoDepthArrow-" + id).removeClass("fa-caret-down");
+	                $("#twoDepthArrow-" + id).addClass("fa-caret-right");
+	                $("#twoDepthFolder-" + id).removeClass("fa-folder-open");
+	                $("#twoDepthFolder-" + id).addClass("fa-folder");
+	            }
 	        }
 	    }
 	}
