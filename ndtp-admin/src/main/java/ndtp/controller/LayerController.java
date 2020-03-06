@@ -65,6 +65,7 @@ import ndtp.service.LayerFileInfoService;
 import ndtp.service.LayerGroupService;
 import ndtp.service.LayerService;
 import ndtp.service.PolicyService;
+import ndtp.support.LogMessageSupport;
 import ndtp.support.SQLInjectSupport;
 import ndtp.support.ZipSupport;
 import ndtp.utils.DateUtils;
@@ -494,7 +495,8 @@ public class LayerController implements AuthorizationController {
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "runtime.exception";
 			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-			log.info("@@ runtime.exception. message = {}", message);
+			LogMessageSupport.printMessage(e, "@@ runtime.exception. message = {}", message);
+//			log.info("@@ runtime.exception. message = {}", message);
 		} catch(Exception e) {
 			// ogr2ogr2 실행하다가 에러날경우 이미 들어간 레이어, 레이러 파일정보 삭제 
 			Integer layerId = (Integer) updateLayerMap.get("layerId");
@@ -505,7 +507,8 @@ public class LayerController implements AuthorizationController {
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "unknown.exception";
 			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-			log.info("@@ exception. message = {}", message);
+			LogMessageSupport.printMessage(e, "@@ exception. message = {}", message);
+//			log.info("@@ exception. message = {}", message);
 		}
 
 		result.put("statusCode", statusCode);
