@@ -105,12 +105,12 @@
 				</li>
 				<li>
 					<span style="display: inline-block;padding: 3px 0;margin-right: 20px;">위치</span>
-					<label style="width:26px;" for="cpSejong">세종</label>
-					<input style="width:20px;" type="radio" id="cpSejong" name="cpProtoArea" value="s" checked/>
-					<label style="width:26px;" for="cpBusan">부산</label>
-					<input style="width:20px;" type="radio" id="cpBusan"  name="cpProtoArea" value="p"/>
-					<label style="width:26px;" for="cpEtc">금강</label>
-					<input style="width:20px;" type="radio" id="cpEtc"  name="cpProtoArea" value="g"/>
+					<select id="consBuildLoca" name="searchDataStatus">
+						<option value="">선택안함</option>
+						<option value="s">세종 행복도시</option>
+						<option value="p">부산 에코델타</option>
+						<option value="g">금강 보행교</option>
+					</select>
 				</li>
 				<li class="btns">
 					<button type="button" class="btnTextF execute" title="공정 조회">조회</button>
@@ -337,12 +337,12 @@
 				<form id="construc_proc_file_upload" name="file_upload" style="width:100%" target="dummyConsProcessFrame">
 					<div>
 						<label>위치</label>
-						<label style="width:26px;" for="cpSejong">세종</label>
-						<input style="width:20px;" type="radio" id="cpSejong" name="cityTypeString" value="s" checked/>
-						<label style="width:26px;" for="cpBusan">부산</label>
-						<input style="width:20px;" type="radio" id="cpBusan"  name="cityTypeString" value="p"/>
-						<label style="width:26px;" for="cpEtc">금강</label>
-						<input style="width:20px;" type="radio" id="cpGeng"  name="cityTypeString" value="g"/>
+						<select id="consBuildLocaModal" name="cityTypeString">
+							<option value="">선택안함</option>
+							<option value="s">세종 행복도시</option>
+							<option value="p">부산 에코델타</option>
+							<option value="g">금강 보행교</option>
+						</select>
 					</div>
 					<div>
 						<label for="consRatio">단계 공정률</label>

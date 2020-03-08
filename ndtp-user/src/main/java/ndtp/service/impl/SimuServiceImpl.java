@@ -190,7 +190,9 @@ public class SimuServiceImpl {
 				// if you are have model file moved process target Path
 				if(saveFileName.contains(".ifc") || saveFileName.contains(".gml")
 						|| saveFileName.contains(".jpg") || saveFileName.contains(".png")
-						|| saveFileName.contains(".3ds") || saveFileName.contains(".X") || saveFileName.contains(".obj") || saveFileName.contains(".mtl")  ) {
+						|| saveFileName.contains(".3ds") || saveFileName.contains(".X")
+						|| saveFileName.contains(".obj") || saveFileName.contains(".mtl")
+						|| saveFileName.contains(".3DS") ) {
 					Files.copy(new File(uploadDir + saveFileName).toPath(), new File(f4dInputDir + originFileName).toPath());
 				}
 				lsfm.add(SimFileMaster.builder().originFileName(originFileName).saveFilePath(uploadDir).saveFileName(saveFileName).build());

@@ -114,9 +114,9 @@ public class SimulationRestController {
 					.stream().filter(obj -> obj.getSaveFileName().equals("relativePaths.json"))
 					.collect(Collectors.toList());
 			for( var obj : consBuildList) {
-				var f4dObj = this.simServiceImpl.procF4DDataStrucreByPaths(obj.getSaveFilePath(), obj.getSaveFileName());
+				F4DObject f4dObj = this.simServiceImpl.procF4DDataStrucreByPaths(obj.getSaveFilePath(), obj.getSaveFileName());
 				f4dObj.setCons_ratio(obj.getConsRatio());
-				f4dObj.setCons_type(FileType.CONSTPRO);
+				f4dObj.setCons_type(sfm.getSaveFileType());
 				f4dObj.setStep(obj.getConsType().getValue());
 				f4dObjList.add(f4dObj);
 			}

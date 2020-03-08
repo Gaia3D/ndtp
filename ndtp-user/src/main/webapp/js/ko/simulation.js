@@ -70,17 +70,25 @@ var Simulation = function(magoInstance, viewer, $) {
 			const rootNode = _projectsMap[obj.data.projectFolderName];
 			const node = rootNode[obj.data.nodeId];
 			const dataId = node.data.nodeId;
-			if(!magoManager.effectsManager.hasEffects(dataId)) {
+			if(rootNode.attributes.consType === 'CONSTPROCSEJON') {
+				if(!magoManager.effectsManager.hasEffects(dataId)) {
+					magoManager.effectsManager.addEffect(dataId, new Mago3D.Effect({
+						effectType      : "zBounceSpring",
+						durationSeconds : 0.4
+					}));
+					magoManager.effectsManager.addEffect(dataId, new Mago3D.Effect({
+						effectType      : 'borningLight',
+						durationSeconds : 0.6
+					}));
+
+				}
+			} else if(rootNode.attributes.consType === 'CONSTPROCGEUMGANG') {
 				magoManager.effectsManager.addEffect(dataId, new Mago3D.Effect({
 					effectType      : "zBounceSpring",
-					durationSeconds : 0.4
-				}));
-				magoManager.effectsManager.addEffect(dataId, new Mago3D.Effect({
-					effectType      : 'borningLight',
-					durationSeconds : 0.6
+					durationSeconds : 1.5
 				}));
 			}
-			if(node.data.attributes.ratio < 50 && rootNode.attributes.consType === 'CONSTPRO') {
+			if(node.data.attributes.ratio < 50 && rootNode.attributes.consType === 'CONSTPROCSEJON') {
 				let objPosition = Cesium.Cartesian3.fromDegrees(node.data.geographicCoord.longitude, node.data.geographicCoord.latitude, node.data.geographicCoord.altitude + 40);
 				let objPinBuilder = new Cesium.PinBuilder();
 				/*node.data.isColorChanged = true;
@@ -111,7 +119,7 @@ var Simulation = function(magoInstance, viewer, $) {
 					"</div>";
 
 
-
+				debugger;
 				consBuildBillboardStepInfo.push([parseInt(rootNode.attributes.step), ch]);
 			}
 		}
@@ -215,7 +223,7 @@ var Simulation = function(magoInstance, viewer, $) {
 		
 		changeDateTime();
 	});
-	
+
 	//경관 분석 취소
 	$('#solarAnalysis .reset').click(function(){
 		setDate(new Date());
@@ -283,12 +291,13 @@ var Simulation = function(magoInstance, viewer, $) {
 			});
 
 			$('#rangeInput').on('change', function(data) {
+				debugger;
 				_sejongDataGroupList = [];
 				var index = parseInt($('#rangeInput').val());
-				var consTypeString = $('input[name="cpProtoArea"]:checked').val();
+				// var consTypeString = $('input[name="cpProtoArea"]:checked').val();
+				var consTypeString = $('#consBuildLoca').val();
 
 				let procStepNum = [];
-
 				// dic를 탐색하여 현재 값 -1 의 자료들을 찾아 없으면 요청한다.
 				for( let i = 0 ; i < index; i++) {
 					if(consBuildStepInfo[i] === undefined) {
@@ -315,9 +324,11 @@ var Simulation = function(magoInstance, viewer, $) {
 				var f4dController = MAGO3D_INSTANCE.getF4dController();
 				for( const obj in consBuildStepInfo) {
 					if (index < parseInt(obj)) {
-						const dataKey = consBuildStepInfo[parseInt(obj)][0].data_key;
+						for ( const dataKeyObj of consBuildStepInfo[parseInt(obj)]) {
+							const dataKey = dataKeyObj.data_key;
+							f4dController.deleteF4dGroup(dataKey);
+						}
 						delete consBuildStepInfo[obj];
-						f4dController.deleteF4dGroup(dataKey);
 					}
 				}
 				if(consBuildBillboardStepInfo !== undefined) {
@@ -347,6 +358,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				data: reqParam,
 				dataType: "json",
 				success: function (msg_list) {
+					debugger;
 					if(msg_list.length === 0)
 						return;
 					consBuildStepInfo[step] = msg_list;
@@ -364,6 +376,7 @@ var Simulation = function(magoInstance, viewer, $) {
 			var f4dController = MAGO3D_INSTANCE.getF4dController();
 			f4dController.deleteF4dGroup(msg.data_key);
 			_sejongDataGroupList.push(msg.data_key);
+			debugger;
 			const f4dObject = f4dDataGenMaster.initGml(msg);
 			f4dController.addF4dGroup(f4dObject);
 			const lon = f4dDataGenMaster.avg_lon;
@@ -374,7 +387,9 @@ var Simulation = function(magoInstance, viewer, $) {
 
 	//건설공정 조회
 	$('#constructionProcess .execute').click(function() {
-		var targetArea = $('input[name="cpProtoArea"]:checked').val();
+		//var targetArea = $('input[name="cpProtoArea"]:checked').val();
+		var targetArea = $('#consBuildLoca').val();
+		debugger;
 		// Typer s -> Sejong, p -> busan, g -> gumgang....
 		consBuildSlider.sliderSejongShow();
 		consBuildSlider.targetArea = targetArea;
@@ -1328,7 +1343,6 @@ var Simulation = function(magoInstance, viewer, $) {
                     } else {
                     	selectEntity = undefined;
                     }
-//                    ;
 //                    _viewer._selectedEntity = pickedFeature.id.polygon;
                 } else {
 					var pickedFeature = viewer.scene.pick(event.position);
@@ -1337,7 +1351,6 @@ var Simulation = function(magoInstance, viewer, $) {
 						pickedName = pickedFeature.id.name;
 						allObject[pickedName].terrain = pickedFeature.id;
 						allObject[pickedName].plottage = getArea(allObject[pickedName].terrain.polygon._hierarchy._value.positions);
-b=pickedName;
 						$("#selectDistrict").val(allObject[pickedName].terrain.name).trigger("change");
 						// $("#districtDisplay").val("enable").trigger("change");
 					} else {
@@ -2045,7 +2058,7 @@ b=pickedName;
 const f4dDataGenMaster = {
 	avg_lon: 0,
 	avg_lat: 0,
-	rootObject: function(f4dObject) {
+	rootObject: function(f4dObject, mappingType) {
 		return  {
 			"attributes": {
 				"isPhysical": true,
@@ -2062,20 +2075,28 @@ const f4dDataGenMaster = {
 			"view_order": 2,
 			"data_key": f4dObject.data_key,
 			"data_name": f4dObject.data_name,
-			"mapping_type": "boundingboxcenter"
+			"mapping_type": mappingType
 		};
 	},
 	initIfc: (f4dObject, lon, lat, alt, head, pich, roll) => {
-		const rootObj = f4dDataGenMaster.rootObject(f4dObject);
-		rootObj.children = f4dDataGenMaster.genIfcChild(f4dObject.f4dSubList, lon, lat, alt, head, pich, roll);
+		let mappingType = "origin";
+		if(f4dObject.cons_type === 'CONSTPROCGEUMGANG') {
+			mappingType = "boundingboxcenter";
+		}
+		const rootObj = f4dDataGenMaster.rootObject(f4dObject, mappingType);
+		rootObj.children = f4dDataGenMaster.genIfcChild(f4dObject.f4dSubList, lon, lat, alt, head, pich, roll, mappingType);
 		return rootObj;
 	},
 	initGml: (f4dObject) => {
-		const rootObj = f4dDataGenMaster.rootObject(f4dObject);
-		rootObj.children = f4dDataGenMaster.genGmlChild(f4dObject.f4dSubList);
+		let mappingType = "origin";
+		if(f4dObject.cons_type === 'CONSTPROCGEUMGANG') {
+			mappingType = "boundingboxcenter";
+		}
+		const rootObj = f4dDataGenMaster.rootObject(f4dObject, mappingType);
+		rootObj.children = f4dDataGenMaster.genGmlChild(f4dObject.f4dSubList, mappingType);
 		return rootObj;
 	},
-	genIfcChild: function(f4dSubObject, lon, lat, alt, head, pich, roll) {
+	genIfcChild: function(f4dSubObject, lon, lat, alt, head, pich, roll, mappingType) {
 		arr = [];
 		for(var i = 0; i < f4dSubObject.length; i++) {
 			var obj = f4dSubObject[i];
@@ -2088,7 +2109,7 @@ const f4dDataGenMaster = {
 				"children": [],
 				"data_key": obj.data_key,
 				"data_name": obj.data_key,
-				"mapping_type":"origin",
+				"mapping_type": mappingType,
 				"longitude": lon,
 				"latitude": lat,
 				"height": alt,
@@ -2100,7 +2121,7 @@ const f4dDataGenMaster = {
 		}
 		return arr;
 	},
-	genGmlChild: function(f4dSubObject) {
+	genGmlChild: function(f4dSubObject, mappingType) {
 		arr = [];
 		arr_lon = [];
 		arr_lat = [];
@@ -2116,7 +2137,8 @@ const f4dDataGenMaster = {
 				"children": [],
 				"data_key": obj.data_key,
 				"data_name": obj.data_key,
-				"mapping_type":"boundingboxcenter",
+				// origin, boundingboxcenter
+				"mapping_type": mappingType,
 				"longitude": obj.longitude,
 				"latitude": obj.latitude,
 				"height": obj.height,
@@ -2128,8 +2150,8 @@ const f4dDataGenMaster = {
 			arr_lat.push(obj.latitude);
 			arr.push(imsiF4dSubObject);
 		}
-		this.avg_lon = arr_lon.reduce((prev, curr) => prev + curr) / arr_lon.length;
-		this.avg_lat = arr_lat.reduce((prev, curr) => prev + curr) / arr_lat.length;
+		// this.avg_lon = arr_lon.reduce((prev, curr) => prev + curr) / arr_lon.length;
+		// this.avg_lat = arr_lat.reduce((prev, curr) => prev + curr) / arr_lat.length;
 		return arr;
 	},
 };
@@ -2200,5 +2222,4 @@ const f4dJsonStudySample = {
 			}
 		];
 	}
-
 };
