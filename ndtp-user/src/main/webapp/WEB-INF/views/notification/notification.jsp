@@ -62,6 +62,7 @@
         let data = {
             permSeq: perm_seq
         };
+        debugger;
         $.ajax({
             url: "/data/simulation-rest/getPermRequestByConstructor",
             type: "POST",

@@ -46,9 +46,9 @@
                             </div>
                         </li>
                         <li>
-                            <%--                            <input id="longitude" name="longitude" class="m" placeholder="longitude" type="text" value="" style="width: 140px;">--%>
-                            <%--                            <input id="latitude" name="latitude" class="m" placeholder="latitude" type="text" value="" style="width: 140px;">--%>
-                            <%--                            <input id="altitude" name="altitude" class="m" placeholder="altitude" type="text" value="" style="width: 140px;">--%>
+                            <input id="longitude" name="longitude" class="m" placeholder="longitude" type="text" value="" style="width: 140px;" readonly>
+                            <input id="latitude" name="latitude" class="m" placeholder="latitude" type="text" value="" style="width: 140px;" readonly>
+                            <input id="altitude" name="altitude" class="m" placeholder="altitude" type="text" value="" style="width: 140px;" readonly>
                         </li>
                         <li>
                             <div>
@@ -116,7 +116,7 @@
                         </li>
                         <li style="width:70%;">
                             <label for="notSuitableReason" style="width:25%;">부적합 사유</label>
-                            <textarea id="notSuitableReason" name="notSuitableReason" class="radius" type="text" rows="4" style="width:74%;">
+                            <textarea id="notSuitableReason" name="notSuitableReason" class="radius" type="text" rows="4" placeholder="부적합 사유를 작성해 주시기 바랍니다." style="width:74%;">
                             </textarea>
                         </li>
                     </ul>
@@ -124,7 +124,7 @@
             </li>
         </ul>
 
-        <div style="display: inline-block; position: absolute; bottom: 20px; right: 20px;">
+        <div style="float:right; margin-top: 10px;">
             <button id="permSend" class="focusA" type="submit" title="전송" style="width:200px;">전송</button>
             <button id="permCancel" class="focusC" type="button" title="취소" >취소</button>
         </div>

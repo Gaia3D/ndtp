@@ -44,7 +44,7 @@
 </style>
 
 <ul class="listDrop">
-	<li class="on">
+	<li >
 		<p>좌표 정보<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="solarAnalysis">
 			<ul class="analysisGroup">
@@ -277,7 +277,15 @@
 							<option value="">선택안함</option>
 							<option value="obj_lamp">가로등</option>
 							<option value="obj_tree">나무</option>
-<%--							<option value="obj_test">테스트</option>--%>
+							<option value="obj_tree2">나무2</option>
+							<option value="obj_cone">교통 꼬깔콘</option>
+							<option value="obj_bench">의자</option>
+							<option value="obj_bus1">버스1</option>
+							<option value="obj_bus2">버스2</option>
+							<option value="obj_car1">자동차1</option>
+							<option value="obj_car2">자동차2</option>
+							<option value="obj_truck1">트럭1</option>
+							<option value="obj_truck2">트럭2</option>
 						</select>
 					</div>
 				</li>
@@ -287,7 +295,7 @@
 			</ul>
 		</div>
 	</li>
-	<li >
+	<li class="on">
 		<p id="forEvent">건축인 허가 신청<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="">
 			<ul class="analysisGroup">
@@ -316,7 +324,7 @@
 						</div>
 					</div>
 
-<%--					<button type="button" id="testFly" class="btnTextF" style="margin-top:10px;">Fly Test</button>--%>
+					<button type="button" id="testFly" class="btnTextF" style="margin-top:10px;">Fly Test</button>
 <%--					<button type="button" id="testingPicking" class="btnTextF" style="margin-top:10px;">testingPicking</button>--%>
 					<button type="button" id="testBuilding" class="btnTextF" style="margin-top:10px; display:none;">testBuilding</button>
 				</li>
@@ -448,6 +456,7 @@
 		let data = {
 			permSeq: buildAcceptPermSeq
 		};
+		debugger
 		$.ajax({
 			url: "/data/simulation-rest/getPermRequestByConstructor",
 			type: "POST",
@@ -463,6 +472,10 @@
 				$("#permViewDialog #license_num").get(0).value = msg.licenseNum;
 				// $("#permViewDialog #phone_number").get(0).value = msg.phoneNumber;
 				$("#permViewDialog #district_unit_plan").get(0).value = msg.saveFileName;
+
+				$("#permViewDialog #longitude").get(0).value = msg.longitude;
+				$("#permViewDialog #latitude").get(0).value = msg.latitude;
+				$("#permViewDialog #altitude").get(0).value = msg.altitude;
 
 				permViewDialog.dialog("open");
 			},
