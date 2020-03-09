@@ -1,4 +1,4 @@
-package ndtp.controller;
+package ndtp.restcontroller;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
@@ -43,7 +42,6 @@ import ndtp.domain.UploadData;
 import ndtp.domain.UploadDataFile;
 import ndtp.domain.UploadDirectoryType;
 import ndtp.domain.UserSession;
-import ndtp.service.PolicyService;
 import ndtp.service.UploadDataService;
 import ndtp.utils.DateUtils;
 import ndtp.utils.FileUtils;
@@ -76,102 +74,62 @@ public class UploadDataRestController {
 	 * @return
 	 */
 	@PostMapping
-	public Map<String, Object> insert(MultipartHttpServletRequest request) {
-		
+	public Map<String, Object> insert(MultipartHttpServletRequest request) throws Exception {
 		Map<String, Object> result = new HashMap<>();
-		int statusCode = 0;
 		String errorCode = null;
 		String message = null;
 		String dataType = request.getParameter("dataType");
 		
 		// converter 변환 대상 파일 수
 		int converterTargetCount = 0;
-		try {
-			Policy policy = CacheManager.getPolicy();
-			// 여긴 null 체크를 안 하는게 맞음. 없음 장애가 나야 함
-			// 업로딩 가능한 파일 타입
-			String[] uploadTypes = policy.getUserUploadType().toLowerCase().split(",");
-			// 변환 가능한 파일 타입
-			String[] converterTypes = policy.getUserConverterType().split(",");
-			List<String> uploadTypeList = Arrays.asList(uploadTypes);
-			List<String> converterTypeList = Arrays.asList(converterTypes);
-			
-			errorCode = dataValidate(request);
-			if(!StringUtils.isEmpty(errorCode)) {
-				log.info("@@@@@@@@@@@@ errorCode = {}", errorCode);
-				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-				result.put("errorCode", errorCode);
-				result.put("message", message);
-	            return result;
-			}
-			
-			UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-			String userId = userSession.getUserId();
-			List<UploadDataFile> uploadDataFileList = new ArrayList<>();
-			Map<String, MultipartFile> fileMap = request.getFileMap();
-			
-			Map<String, Object> uploadMap = null;
-			String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY_TIME14);
-			
-			// 1 directory 생성
-			String makedDirectory = FileUtils.makeDirectory(userId, UploadDirectoryType.YEAR_MONTH, propertiesConfig.getDataUploadDir());
-			log.info("@@@@@@@ = {}", makedDirectory);
-			
-			// 2 한건이면서 zip 의 경우
-			boolean isZipFile = false;
-			int fileCount = fileMap.values().size();
-			if(fileCount == 1) {
-				// processAsync(policy, userId, fileMap, makedDirectory);
-				for (MultipartFile multipartFile : fileMap.values()) {
-					String[] divideNames = multipartFile.getOriginalFilename().split("\\.");
-					String fileExtension = divideNames[divideNames.length - 1];
-					if(UploadData.ZIP_EXTENSION.equals(fileExtension.toLowerCase())) {
-						isZipFile = true;
-						// zip 파일
-						uploadMap = unzip(policy, uploadTypeList, converterTypeList, today, userId, multipartFile, makedDirectory, dataType);
-						log.info("@@@@@@@ uploadMap = {}", uploadMap);
-						
-						// validation 체크
-						if(uploadMap.containsKey("errorCode")) {
-							errorCode = (String)uploadMap.get("errorCode");
-							log.info("@@@@@@@@@@@@ errorCode = {}", errorCode);
-							result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-							result.put("errorCode", errorCode);
-							result.put("message", message);
-				            return result;
-						}
-						
-						// converter 변환 대상 파일 수
-						converterTargetCount = (Integer)uploadMap.get("converterTargetCount");
-						if(converterTargetCount <= 0) {
-							log.info("@@@@@@@@@@@@ converterTargetCount = {}", converterTargetCount);
-							result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-							result.put("errorCode", "converter.target.count.invalid");
-							result.put("message", message);
-				            return result;
-						}
-						
-						uploadDataFileList = (List<UploadDataFile>)uploadMap.get("uploadDataFileList");
-					}
-				}
-			}
-			
-			if(!isZipFile) {
-				// zip 파일이 아니면 기본적으로 한 폴더에 넣어야 함
-				
-				String tempDirectory = userId + "_" + System.nanoTime();
-				// 파일을 upload 디렉토리로 복사
-				FileUtils.makeDirectory(makedDirectory + tempDirectory);
-				// 3 그 외의 경우는 재귀적으로 파일 복사
-				for (MultipartFile multipartFile : fileMap.values()) {
-					log.info("@@@@@@@@@@@@@@@ name = {}, originalName = {}", multipartFile.getName(), multipartFile.getOriginalFilename());
+		
+		Policy policy = CacheManager.getPolicy();
+		// 여긴 null 체크를 안 하는게 맞음. 없음 장애가 나야 함
+		// 업로딩 가능한 파일 타입
+		String[] uploadTypes = policy.getUserUploadType().toLowerCase().split(",");
+		// 변환 가능한 파일 타입
+		String[] converterTypes = policy.getUserConverterType().split(",");
+		List<String> uploadTypeList = Arrays.asList(uploadTypes);
+		List<String> converterTypeList = Arrays.asList(converterTypes);
+		
+		errorCode = dataValidate(request);
+		if(!StringUtils.isEmpty(errorCode)) {
+			log.info("@@@@@@@@@@@@ errorCode = {}", errorCode);
+			result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+			result.put("errorCode", errorCode);
+			result.put("message", message);
+            return result;
+		}
+		
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		String userId = userSession.getUserId();
+		List<UploadDataFile> uploadDataFileList = new ArrayList<>();
+		Map<String, MultipartFile> fileMap = request.getFileMap();
+		
+		Map<String, Object> uploadMap = null;
+		String today = DateUtils.getToday(FormatUtils.YEAR_MONTH_DAY_TIME14);
+		
+		// 1 directory 생성
+		String makedDirectory = FileUtils.makeDirectory(userId, UploadDirectoryType.YEAR_MONTH, propertiesConfig.getDataUploadDir());
+		log.info("@@@@@@@ = {}", makedDirectory);
+		
+		// 2 한건이면서 zip 의 경우
+		boolean isZipFile = false;
+		int fileCount = fileMap.values().size();
+		if(fileCount == 1) {
+			// processAsync(policy, userId, fileMap, makedDirectory);
+			for (MultipartFile multipartFile : fileMap.values()) {
+				String[] divideNames = multipartFile.getOriginalFilename().split("\\.");
+				String fileExtension = divideNames[divideNames.length - 1];
+				if(UploadData.ZIP_EXTENSION.equalsIgnoreCase(fileExtension)) {
+					isZipFile = true;
+					// zip 파일
+					uploadMap = unzip(policy, uploadTypeList, converterTypeList, today, userId, multipartFile, makedDirectory, dataType);
+					log.info("@@@@@@@ uploadMap = {}", uploadMap);
 					
-					UploadDataFile uploadDataFile = new UploadDataFile();
-					Boolean converterTarget = false;
-					
-					// 파일 기본 validation 체크
-					errorCode = fileValidate(policy, uploadTypeList, multipartFile);
-					if(!StringUtils.isEmpty(errorCode)) {
+					// validation 체크
+					if(uploadMap.containsKey("errorCode")) {
+						errorCode = (String)uploadMap.get("errorCode");
 						log.info("@@@@@@@@@@@@ errorCode = {}", errorCode);
 						result.put("statusCode", HttpStatus.BAD_REQUEST.value());
 						result.put("errorCode", errorCode);
@@ -179,156 +137,178 @@ public class UploadDataRestController {
 			            return result;
 					}
 					
-					String originalName = multipartFile.getOriginalFilename();
-					String[] divideFileName = originalName.split("\\.");
-        			String saveFileName = originalName;
-        			
-        			// validation
-        			if(divideFileName == null || divideFileName.length == 0) {
-        				log.info("@@@@@@@@@@@@ upload.file.type.invalid. originalName = {}", originalName);
-    					result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-						result.put("errorCode", "upload.file.type.invalid");
+					// converter 변환 대상 파일 수
+					converterTargetCount = (Integer)uploadMap.get("converterTargetCount");
+					if(converterTargetCount <= 0) {
+						log.info("@@@@@@@@@@@@ converterTargetCount = {}", converterTargetCount);
+						result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+						result.put("errorCode", "converter.target.count.invalid");
 						result.put("message", message);
 			            return result;
-        			}
-					
-        			String extension = divideFileName[divideFileName.length - 1];
-        			// !extList.contains(extension.toLowerCase())
-    				if(UploadData.ZIP_EXTENSION.equals(extension.toLowerCase()) || !uploadTypeList.contains(extension.toLowerCase())) {
-    					log.info("@@@@@@@@@@@@ upload.file.type.invalid. originalName = {}", originalName);
-    					result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-    					result.put("errorCode", "upload.file.type.invalid");
-    					result.put("message", message);
-    					return result;
-    				}
-    				
-    				if(converterTypeList.contains(extension.toLowerCase())) {
-    					if(!dataType.equalsIgnoreCase(extension)) {
-    						// 데이터 타입과 업로딩 파일 확장자가 같지 않고
-    						if(	DataType.CITYGML == DataType.findBy(dataType)
-    								&& DataType.GML.getValue().equalsIgnoreCase(extension)){
-    							// 데이터 타입은 citygml 인데 확장자는 gml 인 경우 통과
-    						} else if(DataType.INDOORGML == DataType.findBy(dataType)
-    								&& DataType.GML.getValue().equalsIgnoreCase(extension)) {
-    							// 데이터 타입은 indoorgml 인데 확장자는 gml 인 경우 통과
-    						} else {
-    							// 전부 예외
-    							log.info("@@@@@@@@@@@@ datatype = {}, extension = {}", dataType, extension);
-    	    					result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-    	    					result.put("errorCode", "upload.file.type.invalid");
-    	    					result.put("message", message);
-    	    					return result;
-    						}
-    					}
-    					
-    					if(DataType.CITYGML == DataType.findBy(dataType) && DataType.INDOORGML == DataType.findBy(extension)) {
-							// 전부 예외
-							log.info("@@@@@@@@@@@@ 데이터 타입이 다른 경우. datatype = {}, extension = {}", dataType, extension);
-							result.put("errorCode", "file.ext.invalid");
-							return result;
-						}
-    					
-    					if (DataType.CITYGML.getValue().equalsIgnoreCase(dataType) && DataType.GML.getValue().equalsIgnoreCase(extension)) {
-    						extension = DataType.CITYGML.getValue();
-    					} else if (DataType.INDOORGML.getValue().equalsIgnoreCase(dataType) && DataType.GML.getValue().equalsIgnoreCase(extension)) {
-    						extension = DataType.INDOORGML.getValue();
-    					}
-						// 변환 대상 파일만 이름을 변경하고 나머지 파일은 그대로 이름 유지
-						saveFileName = userId + "_" + today + "_" + System.nanoTime() + "." + extension;
-						converterTarget = true;
-						converterTargetCount++;
 					}
-        			
-					long size = 0L;
-					try (	InputStream inputStream = multipartFile.getInputStream();
-							OutputStream outputStream = new FileOutputStream(makedDirectory + tempDirectory + File.separator + saveFileName)) {
 					
-						int bytesRead = 0;
-						byte[] buffer = new byte[BUFFER_SIZE];
-						while ((bytesRead = inputStream.read(buffer, 0, BUFFER_SIZE)) != -1) {
-							size += bytesRead;
-							outputStream.write(buffer, 0, bytesRead);
-						}
-					
-						uploadDataFile.setFileType(FileType.FILE.name());
-						uploadDataFile.setFileExt(extension);
-            			uploadDataFile.setFileName(multipartFile.getOriginalFilename());
-            			uploadDataFile.setFileRealName(saveFileName);
-            			uploadDataFile.setFilePath(makedDirectory + tempDirectory + File.separator);
-            			uploadDataFile.setFileSubPath(tempDirectory);
-            			uploadDataFile.setFileSize(String.valueOf(size));
-            			uploadDataFile.setConverterTarget(converterTarget);
-            			uploadDataFile.setDepth(1);
-					} catch(IOException e) {
-						log.info("@@@@@@@@@@@@ io exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
-						result.put("statusCode", HttpStatus.INTERNAL_SERVER_ERROR.value());
-						result.put("errorCode", "io.exception");
-						result.put("message", message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
-			            return result;
-					} catch(Exception e) {
-						log.info("@@@@@@@@@@@@ file copy exception.");
-    					result.put("statusCode", HttpStatus.INTERNAL_SERVER_ERROR.value());
-						result.put("errorCode", "file.copy.exception");
-						result.put("message", message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
-			            return result;
-					}
-
-					uploadDataFileList.add(uploadDataFile);
+					uploadDataFileList = (List<UploadDataFile>)uploadMap.get("uploadDataFileList");
 				}
 			}
+		}
+		
+		if(!isZipFile) {
+			// zip 파일이 아니면 기본적으로 한 폴더에 넣어야 함
 			
-			if(converterTargetCount <= 0) {
-				log.info("@@@@@@@@@@@@ converterTargetCount = {}", converterTargetCount);
-				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-				result.put("errorCode", "converter.target.count.invalid");
-				result.put("message", message);
-	            return result;
-			}
+			String tempDirectory = userId + "_" + System.nanoTime();
+			// 파일을 upload 디렉토리로 복사
+			FileUtils.makeDirectory(makedDirectory + tempDirectory);
+			// 3 그 외의 경우는 재귀적으로 파일 복사
+			for (MultipartFile multipartFile : fileMap.values()) {
+				log.info("@@@@@@@@@@@@@@@ name = {}, originalName = {}", multipartFile.getName(), multipartFile.getOriginalFilename());
+				
+				UploadDataFile uploadDataFile = new UploadDataFile();
+				Boolean converterTarget = false;
+				
+				// 파일 기본 validation 체크
+				errorCode = fileValidate(policy, uploadTypeList, multipartFile);
+				if(!StringUtils.isEmpty(errorCode)) {
+					log.info("@@@@@@@@@@@@ errorCode = {}", errorCode);
+					result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+					result.put("errorCode", errorCode);
+					result.put("message", message);
+		            return result;
+				}
+				
+				String originalName = multipartFile.getOriginalFilename();
+				String[] divideFileName = originalName.split("\\.");
+    			String saveFileName = originalName;
+    			
+    			// validation
+    			if(divideFileName == null || divideFileName.length == 0) {
+    				log.info("@@@@@@@@@@@@ upload.file.type.invalid. originalName = {}", originalName);
+					result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+					result.put("errorCode", "upload.file.type.invalid");
+					result.put("message", message);
+		            return result;
+    			}
+				
+    			String extension = divideFileName[divideFileName.length - 1];
+    			// !extList.contains(extension.toLowerCase())
+				if(UploadData.ZIP_EXTENSION.equals(extension.toLowerCase()) || !uploadTypeList.contains(extension.toLowerCase())) {
+					log.info("@@@@@@@@@@@@ upload.file.type.invalid. originalName = {}", originalName);
+					result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+					result.put("errorCode", "upload.file.type.invalid");
+					result.put("message", message);
+					return result;
+				}
+				
+				if(converterTypeList.contains(extension.toLowerCase())) {
+					if(!dataType.equalsIgnoreCase(extension)) {
+						// 데이터 타입과 업로딩 파일 확장자가 같지 않고
+						if(	DataType.CITYGML == DataType.findBy(dataType)
+								&& DataType.GML.getValue().equalsIgnoreCase(extension)){
+							// 데이터 타입은 citygml 인데 확장자는 gml 인 경우 통과
+						} else if(DataType.INDOORGML == DataType.findBy(dataType)
+								&& DataType.GML.getValue().equalsIgnoreCase(extension)) {
+							// 데이터 타입은 indoorgml 인데 확장자는 gml 인 경우 통과
+						} else {
+							// 전부 예외
+							log.info("@@@@@@@@@@@@ datatype = {}, extension = {}", dataType, extension);
+	    					result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+	    					result.put("errorCode", "upload.file.type.invalid");
+	    					result.put("message", message);
+	    					return result;
+						}
+					}
+					
+					if(DataType.CITYGML == DataType.findBy(dataType) && DataType.INDOORGML == DataType.findBy(extension)) {
+						// 전부 예외
+						log.info("@@@@@@@@@@@@ 데이터 타입이 다른 경우. datatype = {}, extension = {}", dataType, extension);
+						result.put("errorCode", "file.ext.invalid");
+						return result;
+					}
+					
+					if (DataType.CITYGML.getValue().equalsIgnoreCase(dataType) && DataType.GML.getValue().equalsIgnoreCase(extension)) {
+						extension = DataType.CITYGML.getValue();
+					} else if (DataType.INDOORGML.getValue().equalsIgnoreCase(dataType) && DataType.GML.getValue().equalsIgnoreCase(extension)) {
+						extension = DataType.INDOORGML.getValue();
+					}
+					// 변환 대상 파일만 이름을 변경하고 나머지 파일은 그대로 이름 유지
+					saveFileName = userId + "_" + today + "_" + System.nanoTime() + "." + extension;
+					converterTarget = true;
+					converterTargetCount++;
+				}
+    			
+				long size = 0L;
+				try (	InputStream inputStream = multipartFile.getInputStream();
+						OutputStream outputStream = new FileOutputStream(makedDirectory + tempDirectory + File.separator + saveFileName)) {
+				
+					int bytesRead = 0;
+					byte[] buffer = new byte[BUFFER_SIZE];
+					while ((bytesRead = inputStream.read(buffer, 0, BUFFER_SIZE)) != -1) {
+						size += bytesRead;
+						outputStream.write(buffer, 0, bytesRead);
+					}
+				
+					uploadDataFile.setFileType(FileType.FILE.name());
+					uploadDataFile.setFileExt(extension);
+        			uploadDataFile.setFileName(multipartFile.getOriginalFilename());
+        			uploadDataFile.setFileRealName(saveFileName);
+        			uploadDataFile.setFilePath(makedDirectory + tempDirectory + File.separator);
+        			uploadDataFile.setFileSubPath(tempDirectory);
+        			uploadDataFile.setFileSize(String.valueOf(size));
+        			uploadDataFile.setConverterTarget(converterTarget);
+        			uploadDataFile.setDepth(1);
+				} catch(IOException e) {
+					log.info("@@@@@@@@@@@@ io exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+					result.put("statusCode", HttpStatus.INTERNAL_SERVER_ERROR.value());
+					result.put("errorCode", "io.exception");
+					result.put("message", message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+		            return result;
+				} catch(Exception e) {
+					log.info("@@@@@@@@@@@@ file copy exception.");
+					result.put("statusCode", HttpStatus.INTERNAL_SERVER_ERROR.value());
+					result.put("errorCode", "file.copy.exception");
+					result.put("message", message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+		            return result;
+				}
 
-			UploadData uploadData = new UploadData();
-			uploadData.setDataName(request.getParameter("dataName"));
-			uploadData.setDataGroupId(Integer.valueOf(request.getParameter("dataGroupId")));
-			uploadData.setSharing(request.getParameter("sharing"));
-			uploadData.setDataType(dataType);
-			uploadData.setUserId(userId);
+				uploadDataFileList.add(uploadDataFile);
+			}
+		}
+		
+		if(converterTargetCount <= 0) {
+			log.info("@@@@@@@@@@@@ converterTargetCount = {}", converterTargetCount);
+			result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+			result.put("errorCode", "converter.target.count.invalid");
+			result.put("message", message);
+            return result;
+		}
+
+		UploadData uploadData = new UploadData();
+		uploadData.setDataName(request.getParameter("dataName"));
+		uploadData.setDataGroupId(Integer.valueOf(request.getParameter("dataGroupId")));
+		uploadData.setSharing(request.getParameter("sharing"));
+		uploadData.setDataType(dataType);
+		uploadData.setUserId(userId);
 //			if(request.getParameter("latitude") != null && !"".equals(request.getParameter("latitude"))
 //					&& request.getParameter("longitude") != null && !"".equals(request.getParameter("longitude"))) {
-			uploadData.setLongitude(new BigDecimal(request.getParameter("longitude")) );
-			uploadData.setLatitude(new BigDecimal(request.getParameter("latitude")) );
+		uploadData.setLongitude(new BigDecimal(request.getParameter("longitude")) );
+		uploadData.setLatitude(new BigDecimal(request.getParameter("latitude")) );
 //			if(request.getParameter("altitude") == null || "".equals(request.getParameter("altitude"))) {
 //				uploadData.setAltitude(BigDecimal.valueOf(0l));
 //			} else uploadData.setAltitude(new BigDecimal(request.getParameter("altitude")) );
-			uploadData.setAltitude(new BigDecimal(request.getParameter("altitude")) );
-			uploadData.setLocation("POINT(" + request.getParameter("longitude") + " " + request.getParameter("latitude") + ")");
+		uploadData.setAltitude(new BigDecimal(request.getParameter("altitude")) );
+		uploadData.setLocation("POINT(" + request.getParameter("longitude") + " " + request.getParameter("latitude") + ")");
 //			}
-			
-			uploadData.setFileCount(uploadDataFileList.size());
-			uploadData.setConverterTargetCount(converterTargetCount);
-			uploadData.setDescription(request.getParameter("description"));
-			
-			log.info("@@@@@@@@@@@@ uploadData = {}", uploadData);
-			uploadDataService.insertUploadData(uploadData, uploadDataFileList);       
-		} catch(DataAccessException e) {
-			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-			errorCode = "db.exception";
-			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-			log.info("@@ db.exception. message = {}", message);
-		} catch(RuntimeException e) {
-			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-			errorCode = "runtime.exception";
-			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-			log.info("@@ runtime.exception. message = {}", message);
-		} catch(Exception e) {
-			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-			errorCode = "unknown.exception";
-			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-			log.info("@@ exception. message = {}", message);
-		}
+		
+		uploadData.setFileCount(uploadDataFileList.size());
+		uploadData.setConverterTargetCount(converterTargetCount);
+		uploadData.setDescription(request.getParameter("description"));
+		
+		log.info("@@@@@@@@@@@@ uploadData = {}", uploadData);
+		uploadDataService.insertUploadData(uploadData, uploadDataFileList);       
+		int statusCode = HttpStatus.OK.value();
 		
 		result.put("statusCode", statusCode);
 		result.put("errorCode", errorCode);
 		result.put("message", message);
-		
 		return result;
 	}
 	
@@ -637,82 +617,65 @@ public class UploadDataRestController {
 	@PostMapping(value = "/{uploadDataId}")
 	@ResponseBody
 	public Map<String, Object> update(HttpServletRequest request, @PathVariable Long uploadDataId, @Valid UploadData uploadData, BindingResult bindingResult) {
-		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		log.info("@@ uploadData = {}", uploadData);
 		Map<String, Object> result = new HashMap<>();
-		int statusCode = 0;
 		String errorCode = null;
 		String message = null;
 		
-		try {
-			if(bindingResult.hasErrors()) {
-				message = bindingResult.getAllErrors().get(0).getDefaultMessage();
-				log.info("@@@@@ message = {}", message);
-				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-				result.put("errorCode", errorCode);
-				result.put("message", message);
-	            return result;
-			}
-			
-			if(StringUtils.isEmpty(uploadData.getDataName())) {
-				errorCode = "data.name.empty";
-			}
-			if(StringUtils.isEmpty(uploadData.getDataGroupId())) {
-				errorCode = "data.group.id.empty";
-			}
-			if(StringUtils.isEmpty(uploadData.getSharing())) {
-				errorCode = "data.sharing.empty";
-			}
-			if(StringUtils.isEmpty(uploadData.getDataType())) {
-				errorCode = "data.type.empty";
-			}
-			
-			// TODO citygml, indoorgml 의 경우 위도, 경도, 높이를 포함하고 있어서 validation 체크를 하지 않음
-			// 지금은 converter 가 update를 해 주지 않아서 기본 체크 함
-//			if(!dataType.equals(DataType.CITYGML.getValue()) && !dataType.equals(DataType.INDOORGML.getValue())) {
-			if(uploadData.getLongitude() == null) {
-				errorCode = "data.longitude.empty";
-			}
-			if(uploadData.getLatitude() == null) {
-				errorCode = "data.latitude.empty";
-			}
-			if(uploadData.getAltitude() == null) {
-				errorCode = "data.altitude.empty";
-			}
-//			}
-			
-			if(!StringUtils.isEmpty(errorCode)) {
-				log.info("@@@@@ errorCode = {}", errorCode);
-				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-				result.put("errorCode", errorCode);
-				result.put("message", message);
-	            return result;
-			}
-		
-			uploadData.setLocation("POINT(" + uploadData.getLongitude() + " " + uploadData.getLatitude() + ")");
-			uploadData.setUserId(userSession.getUserId());
-			//uploadDataService.updateUploadData(uploadData);
-			
-			// 원본이 gml 파일일 경우, 데이터 타입을 citygml/indoorgml로 변경할 경우에 DB를 갱신하고 업로드 된 경로의 파일 확장자를 변경.
-			// DB 갱신과 파일 확장자 변경
-			uploadDataService.updateUploadDataAndFile(uploadData);
-			
-		} catch(DataAccessException e) {
-			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-			errorCode = "db.exception";
-			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-			log.info("@@ db.exception. message = {}", message);
-		} catch(RuntimeException e) {
-			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-			errorCode = "runtime.exception";
-			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-			log.info("@@ runtime.exception. message = {}", message);
-		} catch(Exception e) {
-			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-			errorCode = "unknown.exception";
-			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-			log.info("@@ exception. message = {}", message);
+		if(bindingResult.hasErrors()) {
+			message = bindingResult.getAllErrors().get(0).getDefaultMessage();
+			log.info("@@@@@ message = {}", message);
+			result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+			result.put("errorCode", errorCode);
+			result.put("message", message);
+            return result;
 		}
+		
+		if(StringUtils.isEmpty(uploadData.getDataName())) {
+			errorCode = "data.name.empty";
+		}
+		if(StringUtils.isEmpty(uploadData.getDataGroupId())) {
+			errorCode = "data.group.id.empty";
+		}
+		if(StringUtils.isEmpty(uploadData.getSharing())) {
+			errorCode = "data.sharing.empty";
+		}
+		if(StringUtils.isEmpty(uploadData.getDataType())) {
+			errorCode = "data.type.empty";
+		}
+		
+		// TODO citygml, indoorgml 의 경우 위도, 경도, 높이를 포함하고 있어서 validation 체크를 하지 않음
+		// 지금은 converter 가 update를 해 주지 않아서 기본 체크 함
+//			if(!dataType.equals(DataType.CITYGML.getValue()) && !dataType.equals(DataType.INDOORGML.getValue())) {
+		if(uploadData.getLongitude() == null) {
+			errorCode = "data.longitude.empty";
+		}
+		if(uploadData.getLatitude() == null) {
+			errorCode = "data.latitude.empty";
+		}
+		if(uploadData.getAltitude() == null) {
+			errorCode = "data.altitude.empty";
+		}
+//			}
+		
+		if(!StringUtils.isEmpty(errorCode)) {
+			log.info("@@@@@ errorCode = {}", errorCode);
+			result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+			result.put("errorCode", errorCode);
+			result.put("message", message);
+            return result;
+		}
+	
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		
+		uploadData.setLocation("POINT(" + uploadData.getLongitude() + " " + uploadData.getLatitude() + ")");
+		uploadData.setUserId(userSession.getUserId());
+		//uploadDataService.updateUploadData(uploadData);
+		
+		// 원본이 gml 파일일 경우, 데이터 타입을 citygml/indoorgml로 변경할 경우에 DB를 갱신하고 업로드 된 경로의 파일 확장자를 변경.
+		// DB 갱신과 파일 확장자 변경
+		uploadDataService.updateUploadDataAndFile(uploadData);
+		int statusCode = HttpStatus.OK.value();
 		
 		result.put("statusCode", statusCode);
 		result.put("errorCode", errorCode);
@@ -729,47 +692,29 @@ public class UploadDataRestController {
 	 */
 	@DeleteMapping(value = "/{uploadDataId}")
 	public Map<String, Object> deleteDatas(HttpServletRequest request, @PathVariable Long uploadDataId) {
-		
 		log.info("@@@@@@@ uploadDataId = {}", uploadDataId);
 		Map<String, Object> result = new HashMap<>();
-		int statusCode = 0;
 		String errorCode = null;
 		String message = null;
-		try {
-			if(uploadDataId == null) {
-				result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-				result.put("errorCode", "upload.data.id.empty");
-				result.put("message", message);
-	            return result;
-			}
-			
-			UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-			UploadData uploadData = new UploadData();
-			uploadData.setUserId(userSession.getUserId());
-			uploadData.setUploadDataId(uploadDataId);
-			
-			uploadDataService.deleteUploadData(uploadData);
-		} catch(DataAccessException e) {
-			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-			errorCode = "db.exception";
-			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-			log.info("@@ db.exception. message = {}", message);
-		} catch(RuntimeException e) {
-			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-			errorCode = "runtime.exception";
-			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-			log.info("@@ runtime.exception. message = {}", message);
-		} catch(Exception e) {
-			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-			errorCode = "unknown.exception";
-			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-			log.info("@@ exception. message = {}", message);
+		
+		if(uploadDataId == null) {
+			result.put("statusCode", HttpStatus.BAD_REQUEST.value());
+			result.put("errorCode", "upload.data.id.empty");
+			result.put("message", message);
+            return result;
 		}
+		
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
+		UploadData uploadData = new UploadData();
+		uploadData.setUserId(userSession.getUserId());
+		uploadData.setUploadDataId(uploadDataId);
+		
+		uploadDataService.deleteUploadData(uploadData);
+		int statusCode = HttpStatus.OK.value();
 		
 		result.put("statusCode", statusCode);
 		result.put("errorCode", errorCode);
 		result.put("message", message);
-		
 		return result;
 	}
 	

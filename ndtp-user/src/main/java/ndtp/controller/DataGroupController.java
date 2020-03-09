@@ -13,16 +13,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.extern.slf4j.Slf4j;
-import ndtp.domain.Key;
-import ndtp.domain.Policy;
-import ndtp.domain.SharingType;
 import ndtp.config.PropertiesConfig;
 import ndtp.domain.CacheManager;
 import ndtp.domain.DataGroup;
+import ndtp.domain.Key;
+import ndtp.domain.Policy;
+import ndtp.domain.SharingType;
 import ndtp.domain.UserSession;
-import ndtp.service.PolicyService;
-import ndtp.utils.FileUtils;
 import ndtp.service.DataGroupService;
+import ndtp.utils.FileUtils;
 
 /**
  * 사용자 데이터 그룹 관리
