@@ -2083,6 +2083,12 @@ var Simulation = function(magoInstance, viewer, $) {
 		}
 	});
 	});
+
+	$("#processStatusCheck").click(()=> {
+		console.log("processStatusCheck");
+		processStatusCheckDialog.dialog("open");
+	});
+
 }
 
 const f4dDataGenMaster = {

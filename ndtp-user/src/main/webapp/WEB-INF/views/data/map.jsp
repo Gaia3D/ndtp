@@ -11,6 +11,8 @@
 <%@ include file="/WEB-INF/views/perm-request/comment-view2.jsp" %>
 <%--<%@ include file="/WEB-INF/views/perm-request/comment-register.jsp" %>--%>
 
+<%@ include file="/WEB-INF/views/construction-process/process-status-check.jsp" %>
+
 
 <!DOCTYPE html>
 <html lang="${accessibility}">
@@ -225,6 +227,16 @@
 		overflow : "auto",
 		resizable: false
 	});
+
+	var processStatusCheckDialog = $( "#processStatusCheckDialog" ).dialog({
+		autoOpen: false,
+		width: 1100,
+		height: 720,
+		modal: true,
+		overflow : "auto",
+		resizable: false
+	});
+
 
 	var viewDialogInterval="";
 	var commentViewDialog = $( "#commentViewDialog" ).dialog({

@@ -111,6 +111,7 @@
 						<option value="p">부산 에코델타</option>
 						<option value="g">금강 보행교</option>
 					</select>
+					<button type="button" id="processStatusCheck" class="btnTextF" style="float:right;">공정현황조회</button>
 				</li>
 				<li class="btns">
 					<button type="button" class="btnTextF execute" title="공정 조회">조회</button>
