@@ -318,7 +318,7 @@ public class DataGroupRestController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "/download/{dataGroupId:[0-9]+}")
+	@GetMapping(value = "/download/{dataGroupId}")
 	public String downloadSmartTiling(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dataGroupId) {
 		
 		log.info("@@ dataGroupId = {}", dataGroupId);
