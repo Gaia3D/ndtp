@@ -129,8 +129,12 @@
 		layerGroupDialog.dialog( "option", "title", "Layer 그룹 선택");
 	});
 
-	// 상위 Node
-	function confirmParent(parent, parentName) {
+	// 다이얼로그에서 선택
+	function confirmParent(parent, parentName, parentDepth) {
+		if(parentDepth >= 3) {
+			alert("레이어 그룹은 3Depth 이상 계층으로 입력할 수 없습니다.");
+			return;
+		}
 		$("#parent").val(parent);
 		$("#parentName").val(parentName);
 		layerGroupDialog.dialog( "close" );

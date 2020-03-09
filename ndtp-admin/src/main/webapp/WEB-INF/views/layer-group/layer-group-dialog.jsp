@@ -77,7 +77,7 @@
 				<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
 		    </td>
 		    <td class="col-toggle">
-		    	<a href="#" onclick="confirmParent('${layerGroup.layerGroupId}', '${layerGroup.layerGroupName}'); return false;">확인</a></td>
+		    	<a href="#" onclick="confirmParent('${layerGroup.layerGroupId}', '${layerGroup.layerGroupName}', '${layerGroup.depth}'); return false;">확인</a></td>
 		</tr>
 	</c:forEach>
 </c:if>
