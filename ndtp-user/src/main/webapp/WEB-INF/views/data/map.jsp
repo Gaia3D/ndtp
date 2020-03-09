@@ -37,7 +37,7 @@
 		    /* z-index: 10; */
 		    pointer-events: none;
 	   	}
-		/* 
+		/*
 		.ctrlWrap div.zoom button, .ctrlWrap div.rotate button  {
 			width:47px;
 			height:47px;
@@ -130,7 +130,7 @@
 			<input id="timeInput"/>
 		</div>
 	</div>
-	<canvas id="objectLabel"></canvas>	
+	<canvas id="objectLabel"></canvas>
 	<!-- E: MAP -->
 </div>
 <!-- E: WRAP -->
@@ -187,7 +187,7 @@
 		dataGroup : {},
 		baseLayers : {}
 	};
-	
+
 	initPolicy(function(policy, baseLayers){
 		NDTP.policy = policy;
 		NDTP.baseLayers = baseLayers;
@@ -229,14 +229,14 @@
 		viewer.baseLayerPicker.destroy();
 		viewer.scene.globe.depthTestAgainstTerrain = true;
 		viewer.scene.screenSpaceCameraController.minimumZoomDistance = 10;
-		
+
 		magoManager.on(Mago3D.MagoManager.EVENT_TYPE.MOUSEMOVE, function(result) {
 			//console.info(result);
 		});
-		
+
 		// mago3d logo 추가
 		Mago3D.tempCredit(viewer);
-		
+
 		//우측 상단 지도 컨트롤러
 		MapControll(viewer);
 		//공간분석 기능 수행
@@ -266,7 +266,7 @@
 		NDTP.issueController = new IssueController(magoInstance);
 
 
-		/* // hard code : load f4d of echo delta city for simulation 
+		/* // hard code : load f4d of echo delta city for simulation
 		$.ajax({
 			url: '/js/temp/echo.json',
 			type: 'GET',
@@ -362,7 +362,7 @@
 		}
 		gotoFlyAPI(MAGO3D_INSTANCE, parseFloat(longitude), parseFloat(latitude), parseFloat(altitude), parseFloat(duration));
 	}
-	
+
 	// 데이터 정보 다이얼 로그
 	var dataInfoDialog = $( "#dataInfoDialog" ).dialog({
 		autoOpen: false,
@@ -372,7 +372,7 @@
 		overflow : "auto",
 		resizable: false
 	});
-	
+
 	//데이터 상세 정보 조회
 	function detailDataInfo(url) {
 		dataInfoDialog.dialog( "open" );
@@ -400,7 +400,7 @@
 			}
 		});
 	}
-	
+
 	// 데이터 속성 다이얼 로그
 	var dataAttributeDialog = $( "#dataAttributeDialog" ).dialog({
 		autoOpen: false,
@@ -409,10 +409,10 @@
 		modal: true,
 		resizable: false
 	});
-	
+
 	// 데이터 속성
 	function detailDataAttribute(dataId, dataName) {
-		//jQuery('#id').css("display", "block");   
+		//jQuery('#id').css("display", "block");
 		dataAttributeDialog.dialog( "open" );
 		$("#dataNameForAttribute").html(dataName);
 
@@ -439,7 +439,7 @@
 			}
 		});
 	}
-	
+
 	// 데이터 Object 속성 다이얼 로그
 	var dataObjectAttributeDialog = $( "#dataObjectAttributeDialog" ).dialog({
 		autoOpen: false,
@@ -448,7 +448,7 @@
 		modal: true,
 		resizable: false
 	});
-	
+
 	// 데이터 Object 속성
 	function detailDataObjectAttribute(dataId, dataName) {
 		dataObjectAttributeDialog.dialog( "open" );
@@ -477,7 +477,7 @@
 			}
 		});
 	}
-	
+
 	// 데이터 그룹 다이얼로그
 	var dataGroupDialog = $( "#dataGroupDialog" ).dialog({
 		autoOpen: false,
@@ -515,7 +515,7 @@
 			}
 		});
 	}
-	
+
 	// 이슈 등록 버튼 클릭
 	$("#issueButton").click(function() {
 		$('#issueTitle,#issueContents').prop('readonly',false);
@@ -535,7 +535,7 @@
 
 	// 이슈 상세 정보 조회
 	function detailIssueInfo(issueId) {
-		
+
 		$.ajax({
 			url: "/issues/" + issueId,
 			type: "GET",
@@ -546,9 +546,9 @@
 					issueDialog.dialog( "open" );
 					issueDialog.dialog( "option", "title", "이슈 상세 정보");
 					$('#issueSaveButton').parent('.btns').hide();
-					
+
 					$('#issueTitle,#issueContents').prop('readonly',true);
-					
+
 					var issue = msg.issue;
 					$('#issueDataGroupName').text(issue.dataGroupName);
 					$('#issueDataName').text(issue.dataKey);
@@ -566,7 +566,7 @@
 			}
 		});
 	}
-	
+
 	// 이슈 등록
 	var insertIssueFlag = true;
 	function insertIssue() {
@@ -591,7 +591,7 @@
 					if(msg.statusCode <= 200) {
 						alert(JS_MESSAGE["insert"]);
 						insertIssueFlag = true;
-						issueDialog.dialog('close'); 
+						issueDialog.dialog('close');
 
 						NDTP.issueController.addIssue({
 							longitude : parseFloat(lon),
@@ -607,7 +607,7 @@
 						} else {
 							var point = Mago3D.ManagerUtils.geographicCoordToWorldPoint(issue.longitude,issue.latitude,issue.altitude);
 							option.positionWC = point;
-							
+
 							var objMarker = magoManager.objMarkerManager.newObjectMarker(option, magoManager);
 							objMarker.issueId = issue.issueId;
 						} */
@@ -627,7 +627,7 @@
 			return;
 		}
 	}
-	
+
 	function validate() {
 		if ($("#issueTitle").val() === "") {
 			alert("제목을 입력하여 주십시오.");

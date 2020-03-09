@@ -12,13 +12,13 @@
 		</div>
 		</form:form>
 
+		<!-- 시민참여 목록 -->
 		<div class="list" style="height:calc(100% - 70px)">
-			<div class="bothSide">
-				<div><spring:message code='all'/> <span id="civilVoiceTotalCount">0</span> <spring:message code='search.what.count'/></div>
-				<div><span id="civilVoiceCurrentPage">0</span> / <span id="civilVoiceLastPage">0</span> <spring:message code='search.page'/></div>
+			<div>
+				<span><spring:message code='all.d'/> <span id="civilVoiceTotalCount" class="totalCount">0</span> <spring:message code='search.what.count'/></span>
+				<span class="float-right"><span id="civilVoiceCurrentPage">0</span> / <span id="civilVoiceLastPage">0</span> <spring:message code='search.page'/></span>
 			</div>
-
-			<ul id="civilVoiceList" class="commentWrap yScroll" style="height:calc(100% - 60px)"></ul>
+			<ul id="civilVoiceList" class="commentWrap marT10 yScroll" style="height:calc(100% - 60px)"></ul>
 			<ul id="civilVoicePagination" class="pagination"></ul>
 		</div>
 </div>

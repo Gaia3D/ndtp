@@ -92,7 +92,7 @@
 				<input type="hidden" id="checkIds" name="checkIds" value="" />
 			<div class="list-header row">
 				<div class="list-desc u-pull-left">
-					<spring:message code='all'/> <span style="color: #287be4;"><fmt:formatNumber value="${pagination.totalCount}" type="number"/></span> <spring:message code='search.what.count'/>,
+					<spring:message code='all.d'/> <span class="totalCount"><fmt:formatNumber value="${pagination.totalCount}" type="number"/></span> <spring:message code='search.what.count'/>,
 					<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/>
 				</div>
 				<div class="list-functions u-pull-right">
@@ -255,7 +255,7 @@
 		} else {
 			$("#converterTemplate").val("basic");
 		}
-		
+
 		dialogConverterJob.dialog( "open" );
 	}
 
@@ -283,7 +283,7 @@
 			$("#title").focus();
 			return false;
 		}
-		
+
 		if($("#dataType").val() === "las") {
 			// 여기서 확장자가 las면 template 을 포인트 클라우트 클릭하게
 			if($("#converterTemplate").val() != "point-cloud") {
@@ -292,7 +292,7 @@
 				return false;
 			}
 		}
-		
+
 		if(saveConverterJobFlag) {
 			saveConverterJobFlag = false;
 			var formData =$("#converterJobForm").serialize();
@@ -358,7 +358,7 @@
 			}
 		}
 	}
-	
+
 	$('#yAxisUp').change(function() {
 		var desc = $(this).siblings('span');
 		var value = $(this).val();

@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <script id="templateDataList" type="text/x-handlebars-template">
 	<div>
-		<span><spring:message code='all.d'/> <span>{{formatNumber pagination.totalCount}}</span> <spring:message code='search.what.count'/></span>
+		<span><spring:message code='all.d'/> <span class="totalCount">{{formatNumber pagination.totalCount}}</span> <spring:message code='search.what.count'/></span>
 		<span class="float-right">{{formatNumber pagination.pageNo}} / {{formatNumber pagination.lastPage}} <spring:message code='search.page'/></span>
 		<input type="hidden" name="pageNo" value="{{pagination.pageNo}}">
 	</div>
@@ -32,7 +32,7 @@
 						<td rowspan="2"><span class="no">{{subtract ../pagination.rowNumber @index}}</span></td>
 						<td>
 		{{#ifMatch sharing 'common'}}
-				<span class="legend co mar0">C</span>	
+				<span class="legend co mar0">C</span>
 		{{/ifMatch}}
 		{{#ifMatch sharing 'public'}}
 				<span class="legend pu mar0">O</span>

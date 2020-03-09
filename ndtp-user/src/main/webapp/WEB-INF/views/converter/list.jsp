@@ -24,10 +24,10 @@
 <div id="wrap">
 	<!-- S: NAVWRAP -->
 	<div class="navWrap">
-	 	<%@ include file="/WEB-INF/views/layouts/menu.jsp" %> 
+	 	<%@ include file="/WEB-INF/views/layouts/menu.jsp" %>
 	</div>
 	<!-- E: NAVWRAP -->
-	
+
 	<div class="container" style="float:left; width: calc(100% - 78px);">
 		<div style="padding: 20px 20px 0px 10px; font-size: 18px;">3D 업로딩 데이터 자동 변환</div>
 		<div class="tabs" >
@@ -86,13 +86,13 @@
 			</div>
 			</form:form>
 		</div>
-		
+
 		<div class="list">
 			<form:form id="listForm" modelAttribute="converterJob" method="post">
 				<input type="hidden" id="checkIds" name="checkIds" value="" />
 			<div class="list-header row">
 				<div class="list-desc u-pull-left">
-					<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/>, 
+					<spring:message code='all.d'/> <span class="totalCount"><fmt:formatNumber value="${pagination.totalCount}" type="number"/></span> <spring:message code='search.what.count'/>,
 					<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/>
 				</div>
 			</div>
@@ -142,7 +142,7 @@
 <c:if test="${converterJob.usf ge 0.1 and converterJob.usf lt 1 }"> cm</c:if>
 <c:if test="${converterJob.usf ge 0.01 and converterJob.usf lt 0.1}"> cm</c:if>
 <c:if test="${converterJob.usf ge 0.001 and converterJob.usf lt 0.01}"> mm</c:if>
-<c:if test="${converterJob.usf ge 10}"> m</c:if>						
+<c:if test="${converterJob.usf ge 10}"> m</c:if>
 						</td>
 						<td class="col-type">
 <c:if test="${converterJob.viewYAxisUp eq 'N'}">Z축</c:if>
@@ -152,7 +152,7 @@
 <c:if test="${converterJob.status eq 'ready'}">준비</c:if>
 <c:if test="${converterJob.status eq 'success'}">성공</c:if>
 <c:if test="${converterJob.status eq 'waiting'}">승인대기</c:if>
-<c:if test="${converterJob.status eq 'fail'}">실패</c:if>								
+<c:if test="${converterJob.status eq 'fail'}">실패</c:if>
 						</td>
 						<td class="col-count"><fmt:formatNumber value="${converterJob.fileCount}" type="number"/> 개</td>
 						<td class="col-type">
@@ -161,7 +161,7 @@
 </c:if>
 <c:if test="${!empty converterJob.errorCode }">
 							<a href="#" onclick="detailErrorCode('${converterJob.errorCode}'); return false;">[보기]</a>
-</c:if>								
+</c:if>
 						</td>
 						<td class="col-type">
 							<fmt:parseDate value="${converterJob.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
@@ -173,11 +173,11 @@
 				</tbody>
 			</table>
 			</form:form>
-				
+
 		</div>
 		<%@ include file="/WEB-INF/views/common/pagination.jsp" %>
 	</div>
-	
+
 </div>
 <%@ include file="/WEB-INF/views/converter/error-dialog.jsp" %>
 <!-- E: WRAP -->
@@ -193,22 +193,22 @@
 		var orderWord = "${converterJob.orderWord}";
 		var orderValue = "${converterJob.orderValue}";
 		var listCounter = "${converterJob.listCounter}";
-		
+
 		if(searchWord != "") $("#searchWord").val("${converterJob.searchWord}");
 		if(searchOption != "") $("#searchOption").val("${converterJob.searchOption}");
 		if(orderWord != "") $("#orderWord").val("${converterJob.orderWord}");
 		if(orderValue != "") $("#orderValue").val("${converterJob.orderValue}");
 		if(listCounter != "") $("#listCounter").val("${converterJob.listCounter}");
-		
+
 		initDatePicker();
 		initCalendar(new Array("startDate", "endDate"), new Array("${converterJob.startDate}", "${converterJob.endDate}"));
 	});
-	
-	//전체 선택 
+
+	//전체 선택
 	$("#chkAll").click(function() {
 		$(":checkbox[name=uploadDataId]").prop("checked", this.checked);
 	});
-	
+
 	// 프로젝트 다이얼 로그
 	var errorDialog = $( ".errorDialog" ).dialog({
 		autoOpen: false,
@@ -217,7 +217,7 @@
 		modal: true,
 		resizable: false
 	});
-	
+
 	function detailErrorCode(errorCode) {
 		errorDialog.dialog( "open" );
 		$("#dialog_error_code").html(errorCode);
