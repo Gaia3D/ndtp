@@ -1510,7 +1510,7 @@ background:url(/images/ko/ico_layer.png) no-repeat 5px -198px;
 text-align:center;
 }
 button.textBtnSub {
-padding: 6px;
+padding: 8px;
 border-radius: 3px;
 color: #333;
 font-size: 14px;
@@ -1523,7 +1523,7 @@ border: 1px solid #555;
 background-color: #555;
 }
 button.textBtn {
-padding: 6px;
+padding: 8px;
 border-radius: 3px;
 color: #fff;
 font-size: 14px;
