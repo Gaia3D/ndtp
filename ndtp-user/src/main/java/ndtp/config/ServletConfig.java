@@ -67,7 +67,7 @@ public class ServletConfig implements WebMvcConfigurer {
 		registry.addInterceptor(cSRFHandlerInterceptor)
 				.addPathPatterns("/**")
 				.excludePathPatterns("/f4d/**",
-						"/sign/**", "/cache/reload", "/data-groups/view-order/*", "/layer-groups/view-order/*", "/upload-datas", "//issues",
+						"/sign/**", "/cache/reload", "/data-groups/view-order/*", "/layer-groups/view-order/*", "/upload-datas", "/issues",
 						"/guide/**", "/css/**", "/externlib/**", "favicon*", "/images/**", "/js/**");
 		registry.addInterceptor(logInterceptor)
 				.addPathPatterns("/**")

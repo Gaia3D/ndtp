@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
+import ndtp.domain.CacheManager;
 import ndtp.domain.DataInfo;
 import ndtp.domain.GeoPolicy;
 import ndtp.domain.Key;
@@ -40,13 +41,11 @@ public class GeoPolicyRestController {
 	private final UserPolicyService userPolicyService;
 	private final LayerGroupService layerGroupService;
 	private final DataService dataService;
-	private final GeoPolicyService geoPolicyService;
 	
-	public GeoPolicyRestController(UserPolicyService userPolicyService, LayerGroupService layerGroupService, DataService dataService, GeoPolicyService geoPolicyService) {
+	public GeoPolicyRestController(UserPolicyService userPolicyService, LayerGroupService layerGroupService, DataService dataService) {
 		this.userPolicyService = userPolicyService;
 		this.layerGroupService = layerGroupService;
 		this.dataService = dataService;
-		this.geoPolicyService = geoPolicyService;
 	}
 	
 	@GetMapping
@@ -57,7 +56,7 @@ public class GeoPolicyRestController {
 		String errorCode = null;
 		String message = null;
 		try {
-			result.put("geoPolicy", geoPolicyService.getGeoPolicy());
+			result.put("geoPolicy", CacheManager.getGeoPolicy());
 		} catch(DataAccessException e) {
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "db.exception";
@@ -92,7 +91,7 @@ public class GeoPolicyRestController {
 		try {
 			UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 			String userId = userSession.getUserId();
-			GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
+			GeoPolicy geoPolicy = CacheManager.getGeoPolicy();
 			UserPolicy userPolicy = userPolicyService.getUserPolicy(userSession.getUserId());
 			if(userId != null) {
 				if(dataId != null && dataId.trim() != "") {

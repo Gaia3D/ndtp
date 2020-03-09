@@ -66,10 +66,10 @@ public class CacheConfig {
         CacheParams cacheParams = new CacheParams();
 		cacheParams.setCacheType(CacheType.SELF);
         
-		// 2D, 3D 운영 정책
-		geoPolicy(cacheParams);
 		// 운영 정책 캐시 갱신
 		policy(cacheParams);
+		// 2D, 3D 운영 정책
+		geoPolicy(cacheParams);
 		// 사용자 그룹별 메뉴, Menu
         menu(cacheParams);
         // 사용자 그룹별 메뉴, Role
@@ -86,8 +86,8 @@ public class CacheConfig {
     public void loadCache(CacheParams cacheParams) {
 		CacheName cacheName = cacheParams.getCacheName();
 		
-		if(cacheName == CacheName.GEO_POLICY) geoPolicy(cacheParams);
 		if(cacheName == CacheName.POLICY) policy(cacheParams);
+		else if(cacheName == CacheName.GEO_POLICY) geoPolicy(cacheParams);
 		else if(cacheName == CacheName.MENU) menu(cacheParams);
 		else if(cacheName == CacheName.ROLE) role(cacheParams);
 		else if(cacheName == CacheName.USER_GROUP) userGroup(cacheParams);

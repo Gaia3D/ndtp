@@ -44,8 +44,6 @@ public class DataGroupController {
 //	@Autowired
 //	private ObjectMapper objectMapper;
 	@Autowired
-	private PolicyService policyService;
-	@Autowired
 	private PropertiesConfig propertiesConfig;
 	
 	/**
@@ -89,7 +87,7 @@ public class DataGroupController {
 	public String input(HttpServletRequest request, Model model) {
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 				
-		Policy policy = policyService.getPolicy();
+		Policy policy = CacheManager.getPolicy();
 		
 		DataGroup dataGroup = new DataGroup();
 		dataGroup.setUserId(userSession.getUserId());
@@ -135,7 +133,7 @@ public class DataGroupController {
 		
 		dataGroup = dataGroupService.getDataGroup(dataGroup);
 		if(StringUtils.isEmpty(dataGroup.getParentName())) {
-			Policy policy = policyService.getPolicy();
+			Policy policy = CacheManager.getPolicy();
 			dataGroup.setParentName(policy.getContentDataGroupRoot());
 		}
 		dataGroup.setOldDataGroupKey(dataGroup.getDataGroupKey());
