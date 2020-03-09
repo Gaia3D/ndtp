@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import lombok.extern.slf4j.Slf4j;
+import ndtp.domain.CacheManager;
 import ndtp.domain.Key;
 import ndtp.domain.Policy;
 import ndtp.domain.UploadData;
@@ -33,9 +34,6 @@ import ndtp.support.PasswordSupport;
 public class UserController {
 	
 	@Autowired
-	private PolicyService policyService;
-	
-	@Autowired
 	private UserService userService;
 	
 	/**
@@ -49,7 +47,7 @@ public class UserController {
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		uploadData.setUserId(userSession.getUserId());
 		
-		Policy policy = policyService.getPolicy();
+		Policy policy = CacheManager.getPolicy();
 		
 		model.addAttribute("policy", policy);
 		model.addAttribute("userInfo", new UserInfo());
@@ -67,7 +65,7 @@ public class UserController {
 	@PostMapping(value = "update-password")
 	public String updatePassword(HttpServletRequest request, @ModelAttribute("userInfo") UserInfo userInfo, BindingResult bindingResult, Model model) {
 		
-		Policy policy = policyService.getPolicy();
+		Policy policy = CacheManager.getPolicy();
 		// TODO validator 이용하게 수정해야 함
 		
 		String errorcode = userValidate(policy, userInfo);

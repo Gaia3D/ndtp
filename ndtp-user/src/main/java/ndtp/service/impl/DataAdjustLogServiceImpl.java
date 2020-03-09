@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ndtp.domain.ApprovalStatus;
 import ndtp.domain.ApprovalType;
+import ndtp.domain.CacheManager;
 import ndtp.domain.DataInfo;
 import ndtp.domain.DataAdjustLog;
 import ndtp.domain.GeoPolicy;
@@ -70,7 +71,7 @@ public class DataAdjustLogServiceImpl implements DataAdjustLogService {
 	@Transactional
 	public int insertDataAdjustLog(DataAdjustLog dataInfoAdjustLog) {
 		
-		GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
+		GeoPolicy geoPolicy = CacheManager.getGeoPolicy();
 		String dataChangeRequestDecision = geoPolicy.getDataChangeRequestDecision();
 		
 		DataInfo dataInfo = dataService.getData(DataInfo.builder().dataId(dataInfoAdjustLog.getDataId()).build());

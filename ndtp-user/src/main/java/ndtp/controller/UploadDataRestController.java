@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -35,6 +34,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
+import ndtp.domain.CacheManager;
 import ndtp.domain.DataType;
 import ndtp.domain.FileType;
 import ndtp.domain.Key;
@@ -64,9 +64,6 @@ public class UploadDataRestController {
 	public static final int BUFFER_SIZE = 8192;
 	
 	@Autowired
-	private PolicyService policyService;
-	
-	@Autowired
 	private PropertiesConfig propertiesConfig;
 	
 	@Autowired
@@ -90,7 +87,7 @@ public class UploadDataRestController {
 		// converter 변환 대상 파일 수
 		int converterTargetCount = 0;
 		try {
-			Policy policy = policyService.getPolicy();
+			Policy policy = CacheManager.getPolicy();
 			// 여긴 null 체크를 안 하는게 맞음. 없음 장애가 나야 함
 			// 업로딩 가능한 파일 타입
 			String[] uploadTypes = policy.getUserUploadType().toLowerCase().split(",");

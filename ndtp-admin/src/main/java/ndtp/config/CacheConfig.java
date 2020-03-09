@@ -71,17 +71,17 @@ public class CacheConfig {
 		CacheName cacheName = cacheParams.getCacheName();
 		
 		if(cacheName == CacheName.POLICY) policy(cacheParams);
-		if(cacheName == CacheName.GEO_POLICY) geoPolicy(cacheParams);
+		else if(cacheName == CacheName.GEO_POLICY) geoPolicy(cacheParams);
 		else if(cacheName == CacheName.MENU) menu(cacheParams);
 		else if(cacheName == CacheName.ROLE) role(cacheParams);
 		else if(cacheName == CacheName.USER_GROUP) userGroup(cacheParams);
 	}
     
     /**
-     * 2D, 3D 운영 정책
+     * policy
      * @param cacheParams
      */
-    private void geoPolicy(CacheParams cacheParams) {
+    private void policy(CacheParams cacheParams) {
     	log.info("************ Cache Reload Policy ************");
     	CacheType cacheType = cacheParams.getCacheType();
     	if(cacheType == CacheType.BROADCAST) {
@@ -90,10 +90,10 @@ public class CacheConfig {
     }
     
     /**
-     * policy
+     * 2D, 3D 운영 정책
      * @param cacheParams
      */
-    private void policy(CacheParams cacheParams) {
+    private void geoPolicy(CacheParams cacheParams) {
     	log.info("************ Cache Reload Policy ************");
     	CacheType cacheType = cacheParams.getCacheType();
     	if(cacheType == CacheType.BROADCAST) {
