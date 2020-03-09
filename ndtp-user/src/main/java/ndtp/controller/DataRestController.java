@@ -139,7 +139,7 @@ public class DataRestController {
 			Pagination pagination = new Pagination(	request.getRequestURI(), 
 													getSearchParameters(PageType.LIST, dataInfo), 
 													totalCount, 
-													Long.valueOf(pageNo).longValue(),
+													Long.parseLong(pageNo),
 													PAGE_ROWS,
 													PAGE_LIST_COUNT);
 			log.info("@@ pagination = {}", pagination);

@@ -182,7 +182,7 @@ public class IssueRestController {
 			Pagination pagination = new Pagination(	request.getRequestURI(),
 													getSearchParameters(PageType.LIST, issue),
 													totalCount,
-													Long.valueOf(pageNo).longValue(),
+													Long.parseLong(pageNo),
 													rows,
 													PAGE_LIST_COUNT);
 			log.info("@@ pagination = {}", pagination);

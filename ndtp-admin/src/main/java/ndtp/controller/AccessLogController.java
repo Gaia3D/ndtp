@@ -54,7 +54,7 @@ public class AccessLogController {
 		}
 		
 		Long totalCount = accessLogService.getAccessLogTotalCount(accessLog);
-		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(accessLog), totalCount, Long.valueOf(pageNo).longValue());
+		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(accessLog), totalCount, Long.parseLong(pageNo));
 		log.info("@@ pagination = {}", pagination);
 		
 		accessLog.setOffset(pagination.getOffset());
@@ -102,7 +102,7 @@ public class AccessLogController {
 			}
 			
 			if(accessLog.getTotalCount() == null) accessLog.setTotalCount(0l);
-			Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(accessLog), accessLog.getTotalCount().longValue(), Long.valueOf(pageNo).longValue());
+			Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(accessLog), accessLog.getTotalCount().longValue(), Long.parseLong(pageNo));
 			log.info("@@ pagination = {}", pagination);
 			
 			accessLog.setOffset(pagination.getOffset());

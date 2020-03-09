@@ -74,7 +74,7 @@ public class DataLogController {
 		Pagination pagination = new Pagination(	request.getRequestURI(), 
 												getSearchParameters(PageType.LIST, dataInfoLog), 
 												totalCount, 
-												Long.valueOf(pageNo).longValue(), 
+												Long.parseLong(pageNo), 
 												dataInfoLog.getListCounter());
 		log.info("@@ pagination = {}", pagination);
 		

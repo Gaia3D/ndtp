@@ -47,10 +47,10 @@ dependencies {
     testCompile 'org.junit.jupiter:junit-jupiter-params'
     testRuntime 'org.junit.jupiter:junit-jupiter-engine'
     
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
-	testCompileOnly 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+	testCompileOnly 'org.projectlombok:lombok:1.18.12'
 	
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 }

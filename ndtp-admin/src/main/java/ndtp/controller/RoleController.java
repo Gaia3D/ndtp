@@ -67,7 +67,7 @@ public class RoleController {
 
 		long totalCount = roleService.getRoleTotalCount(role);
 		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, role),
-				totalCount, Long.valueOf(pageNo).longValue(), role.getListCounter());
+				totalCount, Long.parseLong(pageNo), role.getListCounter());
 		role.setOffset(pagination.getOffset());
 		role.setLimit(pagination.getPageRows());
 

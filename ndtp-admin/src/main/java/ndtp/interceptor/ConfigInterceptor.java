@@ -67,7 +67,7 @@ public class ConfigInterceptor extends HandlerInterceptorAdapter {
 					} else if( userGroupMenu.getDepth() == 2) {
 						break;
 					} else {
-						continue;
+						// pass
 					}
 				}
 			}

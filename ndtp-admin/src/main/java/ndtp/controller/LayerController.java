@@ -122,7 +122,7 @@ public class LayerController implements AuthorizationController {
 
 		Long totalCount = layerService.getLayerTotalCount(layer);
 		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, layer),
-				totalCount, Long.valueOf(pageNo).longValue(), layer.getListCounter());
+				totalCount, Long.parseLong(pageNo), layer.getListCounter());
 		layer.setOffset(pagination.getOffset());
 		layer.setLimit(pagination.getPageRows());
 

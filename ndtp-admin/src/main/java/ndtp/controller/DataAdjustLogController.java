@@ -75,7 +75,7 @@ public class DataAdjustLogController {
 
 		long totalCount = dataAdjustLogService.getDataAdjustLogTotalCount(dataAdjustLog);
 		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, dataAdjustLog),
-				totalCount, Long.valueOf(pageNo).longValue(), dataAdjustLog.getListCounter());
+				totalCount, Long.parseLong(pageNo), dataAdjustLog.getListCounter());
 		dataAdjustLog.setOffset(pagination.getOffset());
 		dataAdjustLog.setLimit(pagination.getPageRows());
 

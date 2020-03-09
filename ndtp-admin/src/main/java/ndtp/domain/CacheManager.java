@@ -51,7 +51,7 @@ public class CacheManager {
 	 */
 	public static Map<Integer, Menu> getMenuMap() {
 		if(cacheManager.menuMap == null) {
-			return new HashMap<Integer, Menu>();
+			return new HashMap<>();
 		}
 		return cacheManager.menuMap;
 	}
@@ -67,7 +67,7 @@ public class CacheManager {
 	 */
 	public static Map<String, Integer> getMenuUrlMap() {
 		if(cacheManager.menuUrlMap == null) {
-			return new HashMap<String, Integer>();
+			return new HashMap<>();
 		}
 		return cacheManager.menuUrlMap;
 	}

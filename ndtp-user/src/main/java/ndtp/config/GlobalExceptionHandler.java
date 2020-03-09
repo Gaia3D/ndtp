@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
 import lombok.extern.slf4j.Slf4j;
+import ndtp.support.LogMessageSupport;
 
 /**
  * Exception 처리 global 설정?
@@ -21,7 +22,8 @@ public class GlobalExceptionHandler {
 		log.error("**************** GlobalExceptionHandler ******************");
 		log.error("**********************************************************");
 		
-		log.info("@@@ message = {}", exception.getMessage());
+		//log.info("@@@ message = {}", exception.getMessage());
+		LogMessageSupport.printMessage(exception);
 		
 		ModelAndView mav = new ModelAndView();
 	    mav.addObject("exception", exception);

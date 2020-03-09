@@ -44,15 +44,10 @@ public class CacheConfig {
 
     @PostConstruct
     public void init() {
-    	log.info("*************************************************");
-        log.info("********** Admin Profile Check Start ************");
-        log.info("*************************************************");
-        if(ProfileType.LOCAL  == ProfileType.valueOf(propertiesConfig.getProfile().toUpperCase())) {
+    	if(ProfileType.LOCAL  == ProfileType.valueOf(propertiesConfig.getProfile().toUpperCase())) {
         	LogMessageSupport.stackTraceEnable = true;
         }
-        log.info("*************************************************");
-        log.info("*********** Admin Profile Check End *************");
-        log.info("*************************************************");
+    	log.info("************ Admin Profile = {}, stackTraceEnable = {} *************", propertiesConfig.getProfile(), LogMessageSupport.stackTraceEnable);
         
     	log.info("*************************************************");
         log.info("************ Admin Cache Init Start *************");

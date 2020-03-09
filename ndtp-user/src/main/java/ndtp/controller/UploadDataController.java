@@ -94,7 +94,7 @@ public class UploadDataController {
 		Pagination pagination = new Pagination(	request.getRequestURI(), 
 												getSearchParameters(PageType.LIST, uploadData), 
 												totalCount, 
-												Long.valueOf(pageNo).longValue(),
+												Long.parseLong(pageNo),
 												uploadData.getListCounter());
 		log.info("@@ pagination = {}", pagination);
 		

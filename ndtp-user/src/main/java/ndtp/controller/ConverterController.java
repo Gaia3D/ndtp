@@ -71,7 +71,7 @@ public class ConverterController {
 		Pagination pagination = new Pagination(	request.getRequestURI(), 
 												getSearchParameters(PageType.LIST, converterJob), 
 												totalCount, 
-												Long.valueOf(pageNo).longValue(),
+												Long.parseLong(pageNo),
 												converterJob.getListCounter());
 		log.info("@@ pagination = {}", pagination);
 		
@@ -111,7 +111,7 @@ public class ConverterController {
 //		}
 //		long totalCount = converterService.getListConverterJobFileTotalCount(converterJobFile);
 //		
-//		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParametersConverterJobFile(converterJobFile), totalCount, Long.valueOf(pageNo).longValue());
+//		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParametersConverterJobFile(converterJobFile), totalCount, Long.parseLong(pageNo));
 //		log.info("@@ pagination = {}", pagination);
 //		
 //		converterJobFile.setOffset(pagination.getOffset());

@@ -20,6 +20,7 @@ import ndtp.domain.GeoPolicy;
 import ndtp.domain.Menu;
 import ndtp.domain.MenuTarget;
 import ndtp.domain.Policy;
+import ndtp.domain.ProfileType;
 import ndtp.domain.RoleTarget;
 import ndtp.domain.UserGroup;
 import ndtp.domain.UserGroupMenu;
@@ -30,6 +31,7 @@ import ndtp.service.GeoPolicyService;
 import ndtp.service.MenuService;
 import ndtp.service.PolicyService;
 import ndtp.service.UserGroupService;
+import ndtp.support.LogMessageSupport;
 
 @Slf4j
 @Component
@@ -44,12 +46,19 @@ public class CacheConfig {
 	@Autowired
 	private PolicyService policyService;
 	@Autowired
+	private PropertiesConfig propertiesConfig;
+	@Autowired
 	private MenuService menuService;
 	@Autowired
     private UserGroupService userGroupService;
 
     @PostConstruct
     public void init() {
+    	if(ProfileType.LOCAL  == ProfileType.valueOf(propertiesConfig.getProfile().toUpperCase())) {
+        	LogMessageSupport.stackTraceEnable = true;
+        }
+        log.info("************ User Profile = {}, stackTraceEnable = {} *************", propertiesConfig.getProfile(), LogMessageSupport.stackTraceEnable);
+        
     	log.info("*************************************************");
         log.info("************ User Cache Init Start *************");
         log.info("*************************************************");

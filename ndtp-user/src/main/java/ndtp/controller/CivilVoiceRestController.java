@@ -70,7 +70,7 @@ public class CivilVoiceRestController {
 			Pagination pagination = new Pagination(	request.getRequestURI(),
 													getSearchParameters(PageType.LIST, civilVoice),
 													totalCount,
-													Long.valueOf(pageNo).longValue(),
+													Long.parseLong(pageNo),
 													PAGE_ROWS,
 													PAGE_LIST_COUNT);
 			log.info("@@ pagination = {}", pagination);

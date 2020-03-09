@@ -100,7 +100,7 @@ public class DataAdjustLogController {
 		Pagination pagination = new Pagination(	request.getRequestURI(), 
 												getSearchParameters(PageType.LIST, dataAdjustLog), 
 												totalCount, 
-												Long.valueOf(pageNo).longValue(), 
+												Long.parseLong(pageNo), 
 												dataAdjustLog.getListCounter());
 		log.info("@@ pagination = {}", pagination);
 		

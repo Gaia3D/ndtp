@@ -69,7 +69,7 @@ public class CivilVoiceController implements AuthorizationController {
 
 		long totalCount = civilVoiceService.getCivilVoiceTotalCount(civilVoice);
 		Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(PageType.LIST, civilVoice),
-				totalCount, Long.valueOf(pageNo).longValue(), civilVoice.getListCounter());
+				totalCount, Long.parseLong(pageNo), civilVoice.getListCounter());
 		civilVoice.setOffset(pagination.getOffset());
 		civilVoice.setLimit(pagination.getPageRows());
 

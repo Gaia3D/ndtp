@@ -276,7 +276,7 @@ public class SearchMapController {
 
 			long totalCount = searchMapService.getDistrictTotalCount(district);
 			Pagination pagination = new Pagination(request.getRequestURI(),
-					getSearchParameters(district.getFullTextSearch()), totalCount, Long.valueOf(pageNo).longValue());
+					getSearchParameters(district.getFullTextSearch()), totalCount, Long.parseLong(pageNo));
 			log.info("@@ pagination = {}", pagination);
 
 			district.setOffset(pagination.getOffset());
