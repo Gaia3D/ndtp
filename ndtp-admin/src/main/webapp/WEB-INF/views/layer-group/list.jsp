@@ -112,7 +112,9 @@
         </c:if>
         <c:if test="${layerGroup.depth eq '2' }">
             <c:if test="${layerGroup.children == 0}">
-                        					<span style="padding-left: ${paddingLeftValue}; font-size: 1.5em; color: Tomato;"><i class="fa fa-file-alt" aria-hidden="true"></i></span>
+                        					<span style="padding-left: ${paddingLeftValue}; font-size: 1.5em; color: Mediumslateblue;">
+                        						<i class="fa fa-folder twoFolder" aria-hidden="true"></i>
+                        					</span>
             </c:if>
             <c:if test="${layerGroup.children > 0}">
 					                        <span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"
@@ -261,7 +263,7 @@
 	                $("#oneDepthFolder-" + id).removeClass("fa-folder-open");
 	                $("#oneDepthFolder-" + id).addClass("fa-folder");
 	            }
-	            
+
 	            $(".ancestorArrow-" + ancestor).removeClass("fa-caret-down");
 	            $(".ancestorArrow-" + ancestor).addClass("fa-caret-right");
 	            $(".ancestorFolder-" + ancestor).removeClass("fa-folder-open");
@@ -271,7 +273,7 @@
 	    	if( $(".twoDepthParent-" + id).css("display") === "none" ) {
 	            // 접힌 상태
 	            $(".twoDepthParent-" + id).show();
-	
+
 	            $("#twoDepthArrow-" + id).removeClass("fa-caret-right");
 	            $("#twoDepthArrow-" + id).addClass("fa-caret-down");
 	            $("#twoDepthFolder-" + id).removeClass("fa-folder");
@@ -279,7 +281,7 @@
 	        } else {
 	            // 펼친 상태
 	            $(".twoDepthParent-" + id).hide();
-	            
+
 	            var clickClass = $("#twoDepthArrow-" + id).attr("class");
 	            if(clickClass.indexOf("right") >= 0) {
 	            	// 닫힘 상태라 펼침
