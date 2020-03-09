@@ -105,11 +105,11 @@
 				<col class="col-number" />
 				<col class="col-name" />
 				<col class="col-name" />
-				<col class="col-name" />
-				<col class="col-name" />
-				<col class="col-name" />
-				<col class="col-name" />
-				<col class="col-name" />
+				<col class="col-type" />
+				<col class="col-type" />
+				<col class="col-type" />
+				<col class="col-type" />
+				<col class="col-type" />
 				<col class="col-date" />
 				<thead>
 					<tr>
@@ -117,12 +117,12 @@
 						<th scope="col" class="col-number"><spring:message code='number'/></th>
 						<th scope="col" class="col-name">그룹명</th>
 						<th scope="col" class="col-name">데이터명</th>
-						<th scope="col" class="col-name">아이디</th>
-						<th scope="col" class="col-name">데이터타입</th>
-						<th scope="col" class="col-name">공개유형</th>
-						<th scope="col" class="col-name">매핑타입</th>
-						<th scope="col" class="col-name">변경유형</th>
-						<th scope="col" class="col-date">등록일</th>
+						<th scope="col" class="col-type">요청자</th>
+						<th scope="col" class="col-type">데이터타입</th>
+						<th scope="col" class="col-type">공개유형</th>
+						<th scope="col" class="col-type">매핑타입</th>
+						<th scope="col" class="col-type">변경유형</th>
+						<th scope="col" class="col-date">변경일</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -140,12 +140,12 @@
 						<td class="col-number">${pagination.rowNumber - status.index }</td>
 						<td class="col-name ellipsis" style="min-width:100px;max-width:100px;">${dataInfoLog.dataGroupName}</td>
 						<td class="col-name ellipsis" style="min-width:160px;max-width:160px;">${dataInfoLog.dataName}</td>
-						<td class="col-name">${dataInfoLog.userId}</td>
-						<td class="col-name">${dataInfoLog.dataType}</td>
+						<td class="col-type">${dataInfoLog.userId}</td>
+						<td class="col-type">${dataInfoLog.dataType}</td>
 						<td class="col-type">${dataInfoLog.sharing}</td>
-						<td class="col-name ellipsis" style="min-width:80px;max-width:80px;">${dataInfoLog.mappingType}</td>
+						<td class="col-type ellipsis" style="min-width:80px;max-width:80px;">${dataInfoLog.mappingType}</td>
 						<td class="col-type">${dataInfoLog.changeType}</td>
-						<td class="col-type">
+						<td class="col-date">
 							<fmt:parseDate value="${dataInfoLog.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
 							<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
 						</td>

@@ -103,29 +103,29 @@
 				<col class="col-number" />
 				<col class="col-name" />
 				<col class="col-name" />
-				<col class="col-name" />
-				<col class="col-name" />
-				<col class="col-name" />
-				<col class="col-name" />
-				<col class="col-name" />
-				<col class="col-functions" />
-				<col class="col-functions" />
-				<col class="col-functions" />
+				<col class="col-type" />
+				<col class="col-type" />
+				<col class="col-type" />
+				<col class="col-type" />
+				<col class="col-type" />
+				<col class="col-type" />
+				<col class="col-type" />
+				<col class="col-type" />
 				<col class="col-functions" />
 				<thead>
 					<tr>
 						<th scope="col" class="col-number"><spring:message code='number'/></th>
 						<th scope="col" class="col-name">그룹명</th>
 						<th scope="col" class="col-name">데이터명</th>
-						<th scope="col" class="col-name">아이디</th>
-						<th scope="col" class="col-name">데이터 타입</th>
-						<th scope="col" class="col-name">공유 유형</th>
-						<th scope="col" class="col-name">매핑타입</th>
-						<th scope="col" class="col-name">상태</th>
-						<th scope="col" class="col-name">지도</th>
-						<th scope="col" class="col-name">속성</th>
-						<th scope="col" class="col-name">Object 속성</th>
-						<th scope="col" class="col-date">등록일</th>
+						<th scope="col" class="col-type">등록자</th>
+						<th scope="col" class="col-type">데이터 타입</th>
+						<th scope="col" class="col-type">공유 유형</th>
+						<th scope="col" class="col-type">매핑타입</th>
+						<th scope="col" class="col-type">상태</th>
+						<th scope="col" class="col-type">지도</th>
+						<th scope="col" class="col-type">속성</th>
+						<th scope="col" class="col-type">Object 속성</th>
+						<th scope="col" class="col-functions">등록일</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -153,7 +153,7 @@
 			</c:if>
 		</c:if>
 						</td>
-						<td class="col-name">
+						<td class="col-type">
 		<c:if test="${dataInfo.userId eq owner}">
 							${dataInfo.userId }
 		</c:if>
@@ -168,7 +168,7 @@
 		<c:if test="${dataInfo.sharing eq 'private'}">개인</c:if>
 		<c:if test="${dataInfo.sharing eq 'group'}">그룹</c:if>
 						</td>
-						<td class="col-name ellipsis" style="min-width:80px;max-width:80px;">${dataInfo.mappingType }</td>
+						<td class="col-type ellipsis" style="min-width:80px;max-width:80px;">${dataInfo.mappingType }</td>
 						<td class="col-type">
 		<c:if test="${dataInfo.status eq 'processing' }">
 							변환중
@@ -248,7 +248,7 @@
 	$("#chkAll").click(function() {
 		$(":checkbox[name=dataId]").prop("checked", this.checked);
 	});
-	
+
 	// 데이터 속성 다이얼 로그
 	var dataAttributeDialog = $( "#dataAttributeDialog" ).dialog({
 		autoOpen: false,
@@ -257,7 +257,7 @@
 		modal: true,
 		resizable: false
 	});
-	
+
 	// 데이터 속성
 	function detailDataAttribute(dataId, dataName) {
 		dataAttributeDialog.dialog( "open" );
@@ -286,7 +286,7 @@
 			}
 		});
 	}
-	
+
 	// 데이터 Object 속성 다이얼 로그
 	var dataObjectAttributeDialog = $( "#dataObjectAttributeDialog" ).dialog({
 		autoOpen: false,
@@ -295,7 +295,7 @@
 		modal: true,
 		resizable: false
 	});
-	
+
 	// 데이터 Object 속성
 	function detailDataObjectAttribute(dataId, dataName) {
 		dataObjectAttributeDialog.dialog( "open" );
