@@ -130,7 +130,7 @@
         </c:if>
         <c:if test="${dataGroup.depth eq 3 }">
                         					<span style="padding-left: ${paddingLeftValue}; font-size: 1.5em; color: Tomato;">
-                        						<i class="fa fa-file-alt" aria-hidden="true"></i>
+                        						<!-- <i class="fa fa-file-alt" aria-hidden="true"></i> -->
                         						<i id="threeDepthFolder-${dataGroup.dataGroupId }" class="fa fa-folder threeFolder ${ancestorFolderClass }" aria-hidden="true"></i>
                         					</span>
         </c:if>
