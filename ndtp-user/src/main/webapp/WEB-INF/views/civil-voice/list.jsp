@@ -1,27 +1,26 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<div id="civilVoiceListContent" class="contents mar0 pad0 border-none" style="display:block;">
-	<div class="button-group-align marB10">
+<div id="civilVoiceListContent" class="contents mar0 pad0 border-none fullHeight">
 		<h3 class="h3-heading">시민참여</h3>
-		<button type="button" id="civilVoiceInputButton" class="btnTextF right-align" title="의견등록">의견 등록</button>
-	</div>
+		<button type="button" id="civilVoiceInputButton" class="btnTextF float-right" style="margin-top: -30px;" title="의견등록">의견 등록</button>
 
-	<!-- 시민참여 검색 -->
-	<form:form id="civilVoiceSearchForm" modelAttribute="civilVoice" method="get" onsubmit="return false;">
-	<div class="listSearch search-margin flex-align-center">
-		<label for="getCivilVoiceListTitle" class="hiddenTag">검색어 입력</label>
-		<input type="text" id="getCivilVoiceListTitle" name="title" maxlength="256" placeholder="검색어를 입력하세요.">
-		<button type="button" id="civilVoiceSearch" onClick="getCivilVoiceList();" class="btnTotalSearch" title="검색">검색</button>
-	</div>
-	</form:form>
+		<!-- 시민참여 검색 -->
+		<form:form id="civilVoiceSearchForm" modelAttribute="civilVoice" method="get" onsubmit="return false;">
+		<div class="listSearch search-margin flex-align-center">
+			<label for="getCivilVoiceListTitle" class="hiddenTag">검색어 입력</label>
+			<input type="text" id="getCivilVoiceListTitle" name="title" maxlength="256" placeholder="검색어를 입력하세요.">
+			<button type="button" id="civilVoiceSearch" onClick="getCivilVoiceList();" class="btnTotalSearch" title="검색">검색</button>
+		</div>
+		</form:form>
 
-	<div class="bothSide">
-		<div><spring:message code='all'/> <span id="civilVoiceTotalCount">0</span> <spring:message code='search.what.count'/></div>
-		<div><span id="civilVoiceCurrentPage">0</span> / <span id="civilVoiceLastPage">0</span> <spring:message code='search.page'/></div>
-	</div>
+		<div class="list" style="height:calc(100% - 70px)">
+			<div class="bothSide">
+				<div><spring:message code='all'/> <span id="civilVoiceTotalCount">0</span> <spring:message code='search.what.count'/></div>
+				<div><span id="civilVoiceCurrentPage">0</span> / <span id="civilVoiceLastPage">0</span> <spring:message code='search.page'/></div>
+			</div>
 
-	<ul id="civilVoiceList" class="commentWrap"></ul>
-	<ul id="civilVoicePagination" class="pagination"></ul>
-
+			<ul id="civilVoiceList" class="commentWrap yScroll" style="height:calc(100% - 60px)"></ul>
+			<ul id="civilVoicePagination" class="pagination"></ul>
+		</div>
 </div>
 <!-- E: 시민참여 목록 -->
 <%@ include file="/WEB-INF/views/civil-voice/detail.jsp" %>
