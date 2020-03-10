@@ -153,8 +153,8 @@
 					                        <a href="/user-group/role?userGroupId=${userGroup.userGroupId}" class="linkButton">수정</a>
 					                    </td>
 					                    <td class="col-type">
-											<a href="/user-group/modify?userGroupId=${userGroup.userGroupId}" onclick="" class="linkButton"><spring:message code='modified'/></a>&nbsp;&nbsp;
-											<a href="/user-group/delete?userGroupId=${userGroup.userGroupId}" onclick="return deleteWarning();" class="linkButton"><spring:message code='delete'/></a>
+											<a href="/user-group/modify?userGroupId=${userGroup.userGroupId}" class="image-button button-edit"><spring:message code='modified'/></a>&nbsp;&nbsp;
+					                    	<a href="/user-group/delete?userGroupId=${userGroup.userGroupId}" onclick="return deleteWarning();" class="image-button button-delete"><spring:message code='delete'/></a>
 					                    </td>
 					                    <td class="col-date">
 					                    	<fmt:parseDate value="${userGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
@@ -246,7 +246,7 @@
 	                $("#oneDepthFolder-" + id).removeClass("fa-folder-open");
 	                $("#oneDepthFolder-" + id).addClass("fa-folder");
 	            }
-	            
+
 	            $(".ancestorArrow-" + ancestor).removeClass("fa-caret-down");
 	            $(".ancestorArrow-" + ancestor).addClass("fa-caret-right");
 	            $(".ancestorFolder-" + ancestor).removeClass("fa-folder-open");
@@ -256,7 +256,7 @@
 	    	if( $(".twoDepthParent-" + id).css("display") === "none" ) {
 	            // 접힌 상태
 	            $(".twoDepthParent-" + id).show();
-	
+
 	            $("#twoDepthArrow-" + id).removeClass("fa-caret-right");
 	            $("#twoDepthArrow-" + id).addClass("fa-caret-down");
 	            $("#twoDepthFolder-" + id).removeClass("fa-folder");
@@ -264,7 +264,7 @@
 	        } else {
 	            // 펼친 상태
 	            $(".twoDepthParent-" + id).hide();
-	            
+
 	            var clickClass = $("#twoDepthArrow-" + id).attr("class");
 	            if(clickClass.indexOf("right") >= 0) {
 	            	// 닫힘 상태라 펼침

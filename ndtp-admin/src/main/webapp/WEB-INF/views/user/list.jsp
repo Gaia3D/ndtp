@@ -161,8 +161,8 @@
 											<fmt:formatDate value="${viewLastSigninDate}" pattern="yyyy-MM-dd HH:mm"/>
 										</td>
 					                    <td class="col-type">
-											<a href="/user/modify?userId=${user.userId}" class="linkButton"><spring:message code='modified'/></a>&nbsp;&nbsp;
-											<a href="/user/delete?userId=${user.userId}" onclick="return deleteWarning();" class="linkButton"><spring:message code='delete'/></a>
+											<a href="/user/modify?userId=${user.userId}" class="image-button button-edit"><spring:message code='modified'/></a>&nbsp;&nbsp;
+					                    	<a href="/user/delete?userId=${user.userId}" onclick="return deleteWarning();" class="image-button button-delete"><spring:message code='delete'/></a>
 					                    </td>
 										<td class="col-type">
 											<fmt:parseDate value="${user.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
