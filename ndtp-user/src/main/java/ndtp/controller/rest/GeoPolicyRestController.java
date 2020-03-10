@@ -1,4 +1,4 @@
-package ndtp.restcontroller;
+package ndtp.controller.rest;
 
 import java.math.BigDecimal;
 import java.util.HashMap;

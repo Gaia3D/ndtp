@@ -16,7 +16,7 @@ import ndtp.support.LogMessageSupport;
  * @author Cheon JeongDae
  *
  */
-@RestControllerAdvice("ndtp.restcontroller")
+@RestControllerAdvice("ndtp.controller.rest")
 public class RestControllerExceptionHandler {
 	
 	@ExceptionHandler(DataAccessException.class)

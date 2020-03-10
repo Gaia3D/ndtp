@@ -1,4 +1,4 @@
-package ndtp.restcontroller;
+package ndtp.controller.rest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +46,6 @@ public class ConverterRestController {
 		String message = null;
 		
 		if(converterJob.getConverterCheckIds().length() <= 0) {
-			log.info("@@@@@ message = {}", message);
 			result.put("statusCode", HttpStatus.BAD_REQUEST.value());
 			result.put("errorCode", "check.value.required");
 			result.put("message", message);
@@ -67,7 +66,6 @@ public class ConverterRestController {
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		converterJob.setUserId(userSession.getUserId());
-		
 		converterService.insertConverter(converterJob);
 		int statusCode = HttpStatus.OK.value();
 		

@@ -1,4 +1,4 @@
-package ndtp.restcontroller;
+package ndtp.controller.rest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,8 +42,7 @@ public class UserPolicyRestController {
 		}
 
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-        String userId = userSession.getUserId();
-        userPolicy.setUserId(userId);
+        userPolicy.setUserId(userSession.getUserId());
         userPolicyService.updateUserPolicy(userPolicy);
         int statusCode = HttpStatus.OK.value();
         
@@ -60,8 +59,7 @@ public class UserPolicyRestController {
 		String message = null;
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-        String userId = userSession.getUserId();
-		userPolicy.setUserId(userId);
+        userPolicy.setUserId(userSession.getUserId());
         userPolicyService.updateBaseLayers(userPolicy);
         int statusCode = HttpStatus.OK.value();
         

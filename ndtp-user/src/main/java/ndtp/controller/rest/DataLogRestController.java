@@ -1,4 +1,4 @@
-package ndtp.restcontroller;
+package ndtp.controller.rest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,32 +14,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
-import ndtp.domain.DataAdjustLog;
-import ndtp.service.DataAdjustLogService;
+import ndtp.domain.DataInfoLog;
+import ndtp.service.DataLogService;
 
 /**
- * 데이터 geometry 변경 이력
+ * Data
  * @author jeongdae
  *
  */
 @Slf4j
 @RestController
-@RequestMapping("/data-adjust-logs")
-public class DataAdjustLogRestController {
-	
+@RequestMapping("/data-logs")
+public class DataLogRestController {
+
 	@Autowired
-	private DataAdjustLogService dataAdjustLogService;
-	
+	private DataLogService dataLogService;
+
 	/**
-	 * 데이터 geometry 변경 이력 상태 수정
+	 * Data Info Log 상태 수정
 	 * @param request
 	 * @param dataInfo
 	 * @return
 	 */
 	@PostMapping
-	public Map<String, Object> insert(HttpServletRequest request, @Valid DataAdjustLog dataInfoAdjustLog, Errors errors) {
-		log.info("@@ dataInfoAdjustLog = {}", dataInfoAdjustLog);
-		
+	public Map<String, Object> insert(HttpServletRequest request, @Valid DataInfoLog dataInfoLog, Errors errors) {
+		log.info("@@ dataInfoLog = {}", dataInfoLog);
+
 		Map<String, Object> result = new HashMap<>();
 		String errorCode = null;
 		String message = null;
@@ -50,8 +50,8 @@ public class DataAdjustLogRestController {
 			result.put("message", errors.getAllErrors().get(0).getDefaultMessage());
 			return result;
         }
-		
-		dataAdjustLogService.insertDataAdjustLog(dataInfoAdjustLog);
+
+		dataLogService.insertDataInfoLog(dataInfoLog);
 		int statusCode = HttpStatus.OK.value();
 		
 		result.put("statusCode", statusCode);

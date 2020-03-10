@@ -1,4 +1,4 @@
-package ndtp.restcontroller;
+package ndtp.controller.rest;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

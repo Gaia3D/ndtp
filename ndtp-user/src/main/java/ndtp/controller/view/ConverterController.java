@@ -1,4 +1,4 @@
-package ndtp.controller;
+package ndtp.controller.view;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.extern.slf4j.Slf4j;
-import ndtp.config.PropertiesConfig;
 import ndtp.domain.CacheManager;
 import ndtp.domain.ConverterJob;
 import ndtp.domain.Key;
@@ -35,9 +34,6 @@ import ndtp.utils.DateUtils;
 @Controller
 @RequestMapping("/converter")
 public class ConverterController {
-	
-	@Autowired
-	private PropertiesConfig propertiesConfig;
 	
 	@Autowired
 	private ConverterService converterService;

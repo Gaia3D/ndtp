@@ -1,4 +1,4 @@
-package ndtp.controller;
+package ndtp.controller.view;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.CacheManager;
 import ndtp.domain.DataGroup;
@@ -28,7 +26,6 @@ import ndtp.domain.UserPolicy;
 import ndtp.domain.UserSession;
 import ndtp.service.DataGroupService;
 import ndtp.service.DataService;
-import ndtp.service.LayerGroupService;
 import ndtp.service.UserPolicyService;
 import ndtp.support.RoleSupport;
 import ndtp.support.SQLInjectSupport;
@@ -48,14 +45,8 @@ public class DataController {
 	private DataService dataService;
 
 	@Autowired
-	private ObjectMapper objectMapper;
-	
-	@Autowired
 	private UserPolicyService userPolicyService;
 	
-	@Autowired
-	private LayerGroupService layerGroupService;
-
 	/**
 	 * 데이터 목록
 	 * @param request

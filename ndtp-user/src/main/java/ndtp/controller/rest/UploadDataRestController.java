@@ -1,4 +1,4 @@
-package ndtp.restcontroller;
+package ndtp.controller.rest;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -190,7 +190,7 @@ public class UploadDataRestController {
 				
     			String extension = divideFileName[divideFileName.length - 1];
     			// !extList.contains(extension.toLowerCase())
-				if(UploadData.ZIP_EXTENSION.equals(extension.toLowerCase()) || !uploadTypeList.contains(extension.toLowerCase())) {
+				if(UploadData.ZIP_EXTENSION.equalsIgnoreCase(extension) || !uploadTypeList.contains(extension.toLowerCase())) {
 					log.info("@@@@@@@@@@@@ upload.file.type.invalid. originalName = {}", originalName);
 					result.put("statusCode", HttpStatus.BAD_REQUEST.value());
 					result.put("errorCode", "upload.file.type.invalid");

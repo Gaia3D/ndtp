@@ -1,4 +1,4 @@
-package ndtp.restcontroller;
+package ndtp.controller.rest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,7 +91,6 @@ public class IssueRestController {
 			result.put("statusCode", HttpStatus.BAD_REQUEST.value());
 			result.put("errorCode", "validation.error");
 			result.put("message", errors.getAllErrors().get(0).getDefaultMessage());
-			
 			return result;
         }
 

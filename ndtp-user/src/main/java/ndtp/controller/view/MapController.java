@@ -1,4 +1,4 @@
-package ndtp.controller;
+package ndtp.controller.view;
 
 import javax.servlet.http.HttpServletRequest;
 

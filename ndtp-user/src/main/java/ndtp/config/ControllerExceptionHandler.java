@@ -13,7 +13,7 @@ import ndtp.support.LogMessageSupport;
  *
  */
 @Slf4j
-@ControllerAdvice(basePackages = {"ndtp.controller"})
+@ControllerAdvice(basePackages = {"ndtp.controller.view"})
 public class ControllerExceptionHandler {
 	
 	@ExceptionHandler(Exception.class)
