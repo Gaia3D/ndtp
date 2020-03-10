@@ -43,7 +43,7 @@
 								<col class="col-name" />
 								<col class="col-name" />
 								<col class="col-name" />
-								<col class="col-toggle" />
+								<!-- <col class="col-toggle" /> -->
 								<col class="col-functions" />
 								<col class="col-functions" />
 								<col class="col-functions" />
@@ -56,7 +56,7 @@
 										<th scope="col">그룹명</th>
 					                    <th scope="col">그룹 Key</th>
 					                    <th scope="col">공유 유형</th>
-					                    <th scope="col">기본 여부</th>
+					                    <!-- <th scope="col">기본 여부</th> -->
 					                    <th scope="col">사용 여부</th>
 					                    <th scope="col">데이터 건수</th>
 					                    <th scope="col">순서</th>
@@ -110,7 +110,7 @@
         	<c:set var="ancestorFolderClass" value="ancestorFolder-${dataGroup.ancestor }" />
         </c:if>
 									<tr class="${depthClass } ${depthParentClass} ${ancestorClass }" style="${depthStyleDisplay}">
-										<td class="col-key ellipsis" style="text-align: left;" nowrap="nowrap">
+										<td class="col-key ellipsis" style="text-align: left; max-width: 270px;" nowrap="nowrap">
         <c:if test="${dataGroup.depth eq 1 }">
 					                        <span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"
 					                        	onclick="childrenDisplayToggle('${dataGroup.depth}', '${dataGroup.dataGroupId}', '${dataGroup.ancestor}');">
@@ -139,14 +139,14 @@
 										</td>
 										<td class="col-key">${dataGroup.dataGroupKey }</td>
 										<td class="col-type">${dataGroup.sharing }</td>
-					                    <td class="col-type">
+					                    <%-- <td class="col-type">
         <c:if test="${dataGroup.basic eq 'true' }">
                         					기본
         </c:if>
         <c:if test="${dataGroup.basic eq 'false' }">
                         					선택
         </c:if>
-					                    </td>
+					                    </td> --%>
 					                    <td class="col-type">
         <c:if test="${dataGroup.available eq 'true' }">
                         					사용
@@ -162,7 +162,7 @@
 				                    	</a>
 	</c:if>
 	<c:if test="${dataGroup.dataCount eq 0 }">
-											<fmt:formatNumber value="${dataGroup.dataCount}" type="number"/>	
+											<fmt:formatNumber value="${dataGroup.dataCount}" type="number"/>
 	</c:if>
 	                    				</td>
 					                    <td class="col-type">
@@ -176,10 +176,10 @@
 					                    <td class="col-functions">
 											<a href="#" onclick="uploadSmartTilingData('${dataGroup.dataGroupId }', '${dataGroup.dataGroupName }'); return false;">
 												메타 정보 수정</a>&nbsp;&nbsp;&nbsp;&nbsp;
-											<a href="/data-groups/download/${dataGroup.dataGroupId }">내보내기	</a>	
+											<a href="/data-groups/download/${dataGroup.dataGroupId }">내보내기	</a>
 	<%-- <c:if test="${dataGroup.tiling eq 'false' }">
 											미사용
-	</c:if> --%>											
+	</c:if> --%>
 										</td>
 					                    <td class="col-type">
 											<a href="/data-group/modify?dataGroupId=${dataGroup.dataGroupId }" class="image-button button-edit">수정</a>
@@ -187,9 +187,9 @@
 					                     <td class="col-type">
 	<c:if test="${dataGroup.basic eq 'true' }">
 							불가(기본)
-	</c:if>                    
-	<c:if test="${dataGroup.basic ne 'true' }">			
-											<a href="/data-group/delete?dataGroupId=${dataGroup.dataGroupId }" onclick="return deleteWarning();" 
+	</c:if>
+	<c:if test="${dataGroup.basic ne 'true' }">
+											<a href="/data-group/delete?dataGroupId=${dataGroup.dataGroupId }" onclick="return deleteWarning();"
 												class="image-button button-delete"><spring:message code='delete'/></a>
 	</c:if>
 	                    				</td>
@@ -286,7 +286,7 @@
 	                $("#oneDepthFolder-" + id).removeClass("fa-folder-open");
 	                $("#oneDepthFolder-" + id).addClass("fa-folder");
 	            }
-	            
+
 	            $(".ancestorArrow-" + ancestor).removeClass("fa-caret-down");
 	            $(".ancestorArrow-" + ancestor).addClass("fa-caret-right");
 	            $(".ancestorFolder-" + ancestor).removeClass("fa-folder-open");
@@ -296,7 +296,7 @@
 	    	if( $(".twoDepthParent-" + id).css("display") === "none" ) {
 	            // 접힌 상태
 	            $(".twoDepthParent-" + id).show();
-	
+
 	            $("#twoDepthArrow-" + id).removeClass("fa-caret-right");
 	            $("#twoDepthArrow-" + id).addClass("fa-caret-down");
 	            $("#twoDepthFolder-" + id).removeClass("fa-folder");
@@ -304,7 +304,7 @@
 	        } else {
 	            // 펼친 상태
 	            $(".twoDepthParent-" + id).hide();
-	            
+
 	            var clickClass = $("#twoDepthArrow-" + id).attr("class");
 	            if(clickClass.indexOf("right") >= 0) {
 	            	// 닫힘 상태라 펼침
@@ -404,7 +404,7 @@
             return;
         }
     }
-    
+
 	// smart tiling 데이터 등록 다이얼 로그
 	var uploadDataSmartTilingDialog = $( ".uploadDataSmartTilingDialog" ).dialog({
 		autoOpen: false,
@@ -413,7 +413,7 @@
 		modal: true,
 		resizable: false
 	});
-	
+
 	// 데이터 속성 수정
 	function uploadSmartTilingData(dataGroupId, dataGroupName) {
 		uploadDataSmartTilingDialog.dialog( "open" );
@@ -453,11 +453,11 @@
 						} else {
 							alert(JS_MESSAGE["update"]);
 						}
-						
+
 						var source = $("#templateDataSmartTilingUploadLog").html();
 						var template = Handlebars.compile(source);
 						var html = template(msg);
-						
+
 						$("#dataSmartTilingUploadLog").html("");
 		                $("#dataSmartTilingUploadLog").append(html);
 					} else {

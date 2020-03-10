@@ -90,26 +90,26 @@
 									<col class="col-number" />
 									<col class="col-name" />
 									<col class="col-name" />
-									<col class="col-name" />
-									<col class="col-number" />
-									<col class="col-number" />
-									<col class="col-number" />
+									<col class="col-type" />
+									<col class="col-count" />
+									<col class="col-count" />
+									<col class="col-count" />
+									<col class="col-type" />
 									<col class="col-functions" />
-									<col class="col-functions" />
-									<col class="col-functions" />
+									<col class="col-date" />
 									<thead>
 										<tr>
 											<th scope="col" class="col-checkbox"><label for="chkAll" class="hiddenTag">전체선택 체크박스</label><input type="checkbox" id="chkAll" name="chkAll" /></th>
 											<th scope="col" class="col-number"><spring:message code='number'/></th>
 											<th scope="col" class="col-name">그룹명</th>
 											<th scope="col" class="col-name">데이터명</th>
-											<th scope="col" class="col-name">아이디</th>
-											<th scope="col" class="col-name">경도</th>
-											<th scope="col" class="col-name">위도</th>
-											<th scope="col" class="col-name">높이</th>
-											<th scope="col" class="col-name">상태</th>
-											<th scope="col" class="col-name">결재</th>
-											<th scope="col" class="col-date">등록일</th>
+											<th scope="col" class="col-type">요청자</th>
+											<th scope="col" class="col-count">변경 후 경도</th>
+											<th scope="col" class="col-count">변경 후 위도</th>
+											<th scope="col" class="col-count">높이</th>
+											<th scope="col" class="col-type">상태</th>
+											<th scope="col" class="col-functions">결재</th>
+											<th scope="col" class="col-date">요청일</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -135,11 +135,11 @@
 															, '${dataAdjustLog.beforeAltitude}', '${dataAdjustLog.altitude}', '${dataAdjustLog.beforeHeading}', '${dataAdjustLog.heading}'
 															, '${dataAdjustLog.beforePitch}', '${dataAdjustLog.pitch}', '${dataAdjustLog.beforeRoll}', '${dataAdjustLog.roll}'); return false;">${dataAdjustLog.dataName }</a>
 												</td>
-											<td class="col-name">${dataAdjustLog.userId }</td>
-											<td class="col-toggle">${dataAdjustLog.longitude}</td>
-											<td class="col-toggle">${dataAdjustLog.latitude}</td>
-											<td class="col-toggle">${dataAdjustLog.altitude}</td>
-											<td class="col-toggle">
+											<td class="col-type">${dataAdjustLog.userId }</td>
+											<td class="col-count">${dataAdjustLog.longitude}</td>
+											<td class="col-count">${dataAdjustLog.latitude}</td>
+											<td class="col-count">${dataAdjustLog.altitude}</td>
+											<td class="col-type">
 												<span class="icon-glyph glyph-on on"></span>
 				<c:if test="${dataAdjustLog.status eq 'request'}">
 												<span class="icon-text">요청</span>
@@ -171,7 +171,7 @@
 				</c:if>
 														</span>
 											</td>
-											<td class="col-type">
+											<td class="col-date">
 												<fmt:parseDate value="${dataAdjustLog.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
 												<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
 											</td>
@@ -205,17 +205,17 @@
 		var orderWord = "${dataAdjustLog.orderWord}";
 		var orderValue = "${dataAdjustLog.orderValue}";
 		var listCounter = "${dataAdjustLog.listCounter}";
-	
+
 		if(searchWord != "") $("#searchWord").val("${dataAdjustLog.searchWord}");
 		if(searchOption != "") $("#searchOption").val("${dataAdjustLog.searchOption}");
 		if(orderWord != "") $("#orderWord").val("${dataAdjustLog.orderWord}");
 		if(orderValue != "") $("#orderValue").val("${dataAdjustLog.orderValue}");
 		if(listCounter != "") $("#listCounter").val("${dataAdjustLog.listCounter}");
-	
+
 		initDatePicker();
 		initCalendar(new Array("startDate", "endDate"), new Array("${dataAdjustLog.startDate}", "${dataAdjustLog.endDate}"));
 	});
-	
+
 	//전체 선택
 	$("#chkAll").click(function() {
 		$(":checkbox[name=dataAdjustLogId]").prop("checked", this.checked);

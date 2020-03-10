@@ -80,8 +80,8 @@
 						<div class="list-header row">
 							<div class="list-desc u-pull-left">
 								<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em>
-								<spring:message code='search.what.count'/>,
-								<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> 
+								<spring:message code='search.what.count'/>
+								<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/>
 								<spring:message code='search.page'/>
 							</div>
 						</div>
@@ -91,11 +91,11 @@
 							<col class="col-number" />
 							<col class="col-name" />
 							<col class="col-name" />
-							<col class="col-name" />
-							<col class="col-name" />
-							<col class="col-name" />
-							<col class="col-name" />
-							<col class="col-name" />
+							<col class="col-type" />
+							<col class="col-type" />
+							<col class="col-type" />
+							<col class="col-type" />
+							<col class="col-type" />
 							<col class="col-date" />
 							<thead>
 								<tr>
@@ -103,12 +103,12 @@
 									<th scope="col" class="col-number"><spring:message code='number'/></th>
 									<th scope="col" class="col-name">그룹명</th>
 									<th scope="col" class="col-name">데이터명</th>
-									<th scope="col" class="col-name">아이디</th>
-									<th scope="col" class="col-name">데이터타입</th>
-									<th scope="col" class="col-name">공개유형</th>
-									<th scope="col" class="col-name">매핑타입</th>
-									<th scope="col" class="col-name">변경유형</th>
-									<th scope="col" class="col-date">등록일</th>
+									<th scope="col" class="col-type">요청자</th>
+									<th scope="col" class="col-type">데이터타입</th>
+									<th scope="col" class="col-type">공개유형</th>
+									<th scope="col" class="col-type">매핑타입</th>
+									<th scope="col" class="col-type">변경유형</th>
+									<th scope="col" class="col-date">변경일</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -127,12 +127,12 @@
 									<td class="col-number">${pagination.rowNumber - status.index }</td>
 									<td class="col-name ellipsis" style="max-width:120px;">${dataInfoLog.dataGroupName}</td>
 									<td class="col-name ellipsis" style="max-width:140px;">${dataInfoLog.dataName}</td>
-									<td class="col-name">${dataInfoLog.userId}</td>
-									<td class="col-name">${dataInfoLog.dataType}</td>
-									<td class="col-name">${dataInfoLog.sharing}</td>
-									<td class="col-name">${dataInfoLog.mappingType}</td>
-									<td class="col-name">${dataInfoLog.changeType}</td>
-									<td class="col-type">
+									<td class="col-type">${dataInfoLog.userId}</td>
+									<td class="col-type">${dataInfoLog.dataType}</td>
+									<td class="col-type">${dataInfoLog.sharing}</td>
+									<td class="col-type">${dataInfoLog.mappingType}</td>
+									<td class="col-type">${dataInfoLog.changeType}</td>
+									<td class="col-date">
 										<fmt:parseDate value="${dataInfoLog.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
 										<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
 									</td>
@@ -163,13 +163,13 @@
 		var orderWord = "${dataInfoLog.orderWord}";
 		var orderValue = "${dataInfoLog.orderValue}";
 		var listCounter = "${dataInfoLog.listCounter}";
-	
+
 		if(searchWord != "") $("#searchWord").val("${dataInfoLog.searchWord}");
 		if(searchOption != "") $("#searchOption").val("${dataInfoLog.searchOption}");
 		if(orderWord != "") $("#orderWord").val("${dataInfoLog.orderWord}");
 		if(orderValue != "") $("#orderValue").val("${dataInfoLog.orderValue}");
 		if(listCounter != "") $("#listCounter").val("${dataInfoLog.listCounter}");
-	
+
 		initDatePicker();
 		initCalendar(new Array("startDate", "endDate"), new Array("${dataInfoLog.startDate}", "${dataInfoLog.endDate}"));
 	});
@@ -197,12 +197,12 @@
 				return false;
 			}
 		}
-		
+
 		var searchValue = $('#searchValue').val();
 		if (searchValue) {
 			$('#searchValue').val(searchValue.trim());
 		}
-		
+
 		return true;
 	}
 </script>

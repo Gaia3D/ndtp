@@ -12,14 +12,14 @@
 			<th class="col-label" scope="row" style="width: 35%; text-align: center;"><spring:message code='after'/></th>
 		</tr>
 		<tr style="height: 30px;">
-			<th class="col-label" scope="row" style="text-align: left;"><spring:message code='latitude'/></th>
-			<td id="beforeLatitude" class="col-data"></td>
-			<td id="afterLatitude" class="col-data" style="color: blue"></td>
-		</tr>
-		<tr style="height: 30px;">
 			<th class="col-label" scope="row" style="text-align: left"><spring:message code='longitude'/></th>
 			<td id="beforeLongitude" class="col-data"></td>
 			<td id="afterLongitude" class="col-data" style="color: blue"></td>
+		</tr>
+		<tr style="height: 30px;">
+			<th class="col-label" scope="row" style="text-align: left;"><spring:message code='latitude'/></th>
+			<td id="beforeLatitude" class="col-data"></td>
+			<td id="afterLatitude" class="col-data" style="color: blue"></td>
 		</tr>
 		<tr style="height: 30px;">
 			<th class="col-label" scope="row" style="text-align: left">높이</th>
