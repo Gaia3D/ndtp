@@ -74,7 +74,7 @@ function layerGroupOnOff() {
 //레이어 메뉴 목록 조회
 function getLayerList() {
     $.ajax({
-        url: '/layer/list',
+        url: '/layers',
         type: 'GET',
         headers: {'X-Requested-With': 'XMLHttpRequest'},
         contentType: "application/json; charset=utf-8",

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.Key;
 import ndtp.domain.LayerGroup;
 import ndtp.domain.UserSession;
@@ -20,9 +19,8 @@ import ndtp.service.LayerGroupService;
 import ndtp.service.UserPolicyService;
 import ndtp.support.LayerDisplaySupport;
 
-@Slf4j
 @RestController
-@RequestMapping("/layer")
+@RequestMapping("/layers")
 public class LayerRestController {
 
 	private final LayerGroupService layerGroupService;
@@ -40,7 +38,7 @@ public class LayerRestController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "/list")
+	@GetMapping
 	public Map<String, Object> list(HttpServletRequest request, Model model) {
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		String baseLayers = userPolicyService.getUserPolicy(userSession.getUserId()).getBaseLayers();
