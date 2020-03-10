@@ -53,6 +53,9 @@
 	        	ARRAY[A.view_order], false
 			FROM data_group A
 			WHERE A.parent = 0
+			<if test="dataGroupTarget != null">
+				AND A.data_group_target = #{dataGroupTarget}
+			</if>
 			<if test="userId != null and userId != ''">
 				AND A.user_id = #{userId}
 				AND A.data_group_target = 'user'
