@@ -325,7 +325,7 @@
 						</div>
 					</div>
 
-					<button type="button" id="testFly" class="btnTextF" style="margin-top:10px;">Fly Test</button>
+					<button type="button" id="testFly" class="btnTextF" style="margin-top:10px;display: none;">Fly Test</button>
 <%--					<button type="button" id="testingPicking" class="btnTextF" style="margin-top:10px;">testingPicking</button>--%>
 					<button type="button" id="testBuilding" class="btnTextF" style="margin-top:10px; display:none;">testBuilding</button>
 				</li>

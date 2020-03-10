@@ -22403,7 +22403,6 @@ GeographicCoord.prototype.renderPoint = function(magoManager, shader, gl, render
 
 		var selColor = selectionColor.getAvailableColor(undefined); 
 		var idxKey = selectionColor.decodeColor3(selColor.r, selColor.g, selColor.b);
-
 		selectionManager.setCandidateGeneral(idxKey, this);
 		gl.uniform4fv(shader.oneColor4_loc, [selColor.r/255.0, selColor.g/255.0, selColor.b/255.0, 1.0]);
 	}

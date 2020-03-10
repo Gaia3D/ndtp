@@ -115,7 +115,7 @@
 	</div>
 	
 	<div class="" style="text-align: center; margin-top: 50px; font-size: 16px;">
-		NDTP (c) LX LH Gaia3D, Inc All Rights Reserved
+		NDTP (c) LX LH Daumsoft Gaia3D, Inc All Rights Reserved
 	</div>
 	
 <script type="text/javascript">
