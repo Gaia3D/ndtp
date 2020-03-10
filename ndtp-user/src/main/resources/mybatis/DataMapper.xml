@@ -23,13 +23,13 @@
 					(
 						B.data_group_target = 'user'
 						AND A.user_id != #{userId}
-						AND (A.sharing = 'common' OR A.sharing = 'public')
+						AND (B.sharing = 'common' OR B.sharing = 'public')
 					)
 					OR
 					(
 						B.data_group_target = 'user'
 						AND A.user_id != #{userId}
-						AND A.sharing = 'group'
+						AND B.sharing = 'group'
 						AND C.user_group_id = #{userGroupId}
 					)
 				)
@@ -109,13 +109,13 @@
 					(
 						B.data_group_target = 'user'
 						AND A.user_id != #{userId}
-						AND (A.sharing = 'common' OR A.sharing = 'public')
+						AND (B.sharing = 'common' OR B.sharing = 'public')
 					)
 					OR
 					(
 						B.data_group_target = 'user'
 						AND A.user_id != #{userId}
-						AND A.sharing = 'group'
+						AND B.sharing = 'group'
 						AND C.user_group_id = #{userGroupId}
 					)
 				)

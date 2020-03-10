@@ -1,12 +1,15 @@
 package ndtp.parser.impl;
 
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,12 +32,11 @@ public class DataSmartTilingFileJsonParser implements DataSmartTilingFileParser 
 		List<DataInfo> dataInfoList = new ArrayList<>();
 		try {
 			byte[] jsonData = Files.readAllBytes(Paths.get(fileInfo.getFilePath() + fileInfo.getFileRealName()));
-
-			// TODO 한글 깨질거 같은데....
+			String encodingData = new String(jsonData, StandardCharsets.UTF_8);
 			
 			ObjectMapper objectMapper = new ObjectMapper();
 			//read JSON like DOM Parser
-			JsonNode jsonNode = objectMapper.readTree(jsonData);
+			JsonNode jsonNode = objectMapper.readTree(encodingData);
 			
 //			String dataName = jsonNode.path("data_name").asText();
 //			String dataKey = jsonNode.path("data_key").asText();
@@ -48,9 +50,9 @@ public class DataSmartTilingFileJsonParser implements DataSmartTilingFileParser 
 			dataGroup.setDataGroupId(dataGroupId);
 //			dataGroup.setDataGroupName(dataName);
 //			dataGroup.setDataGroupKey(dataKey);
-			if(longitude != null && !"".equals(longitude)) dataGroup.setLongitude(new BigDecimal(longitude));
-			if(latitude != null && !"".equals(latitude)) dataGroup.setLatitude(new BigDecimal(latitude));
-			if(altitude != null && !"".equals(altitude)) dataGroup.setAltitude(new BigDecimal(altitude));
+			if(!StringUtils.isEmpty(longitude)) dataGroup.setLongitude(new BigDecimal(longitude));
+			if(!StringUtils.isEmpty(latitude)) dataGroup.setLatitude(new BigDecimal(latitude));
+			if(!StringUtils.isEmpty(altitude)) dataGroup.setAltitude(new BigDecimal(altitude));
 			if(dataGroup.getLongitude() != null && dataGroup.getLatitude() != null) {
 				dataGroup.setLocation("POINT(" + dataGroup.getLongitude() + " " + dataGroup.getLatitude() + ")");
 			}

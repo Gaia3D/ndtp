@@ -2,12 +2,15 @@ package ndtp.parser.impl;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,12 +33,11 @@ public class DataFileJsonParser implements DataFileParser {
 		List<DataInfo> dataInfoList = new ArrayList<>();
 		try {
 			byte[] jsonData = Files.readAllBytes(Paths.get(fileInfo.getFilePath() + fileInfo.getFileRealName()));
-
-			// TODO 한글 깨질거 같은데....
+			String encodingData = new String(jsonData, StandardCharsets.UTF_8);
 			
 			ObjectMapper objectMapper = new ObjectMapper();
 			//read JSON like DOM Parser
-			JsonNode jsonNode = objectMapper.readTree(jsonData);
+			JsonNode jsonNode = objectMapper.readTree(encodingData);
 			
 //			String dataName = jsonNode.path("data_name").asText();
 //			String dataKey = jsonNode.path("data_key").asText();
@@ -104,15 +106,15 @@ public class DataFileJsonParser implements DataFileParser {
 			dataInfo.setDataId(dataId);
 			dataInfo.setDataName(dataName);
 			dataInfo.setDataKey(dataKey);
-			if(longitude != null && !"".equals(longitude)) dataInfo.setLongitude(new BigDecimal(longitude));
-			if(latitude != null && !"".equals(latitude)) dataInfo.setLatitude(new BigDecimal(latitude));
-			if(altitude != null && !"".equals(altitude)) dataInfo.setAltitude(new BigDecimal(altitude));
+			if(!StringUtils.isEmpty(longitude)) dataInfo.setLongitude(new BigDecimal(longitude));
+			if(!StringUtils.isEmpty(latitude)) dataInfo.setLatitude(new BigDecimal(latitude));
+			if(!StringUtils.isEmpty(altitude)) dataInfo.setAltitude(new BigDecimal(altitude));
 			if(dataInfo.getLongitude() != null && dataInfo.getLatitude() != null) {
 				dataInfo.setLocation("POINT(" + dataInfo.getLongitude() + " " + dataInfo.getLatitude() + ")");
 			}
-			if(heading != null && !"".equals(heading)) dataInfo.setHeading(new BigDecimal(heading));
-			if(pitch != null && !"".equals(pitch)) dataInfo.setPitch(new BigDecimal(pitch));
-			if(roll != null && !"".equals(roll)) dataInfo.setRoll(new BigDecimal(roll));
+			if(!StringUtils.isEmpty(heading)) dataInfo.setHeading(new BigDecimal(heading));
+			if(!StringUtils.isEmpty(pitch)) dataInfo.setPitch(new BigDecimal(pitch));
+			if(!StringUtils.isEmpty(roll)) dataInfo.setRoll(new BigDecimal(roll));
 			
 			dataInfo.setMappingType(mappingType);
 			dataInfo.setMetainfo(metainfo.toString());
