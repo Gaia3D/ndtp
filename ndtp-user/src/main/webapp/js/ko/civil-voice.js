@@ -405,7 +405,7 @@ $('#civilVoiceContent').on('click', '[data-goto=detail]', function(){
 function getCivilVoiceList(page) {
 	if(!page) page = 1;
 
-	if(!isEmptyObject(civilVoice)) {
+	if(!$.isEmptyObject(civilVoice)) {
 		civilVoice.currentPage = page;
 		civilVoice.currentCivilVoiceId = null;
 		civilVoice.clear();

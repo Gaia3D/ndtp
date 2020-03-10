@@ -368,13 +368,3 @@ function locationValidation(longitude, latitude, altitude) {
 		return false;
 	}
 }
-
-// 빈 객체 체크
-function isEmptyObject(object) {
-    for(var property in object){
-         if(object.hasOwnProperty(property)) {
-        	 return false;
-         }
-    }
-    return true;
-}
