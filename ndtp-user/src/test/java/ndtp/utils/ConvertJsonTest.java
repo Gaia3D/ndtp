@@ -52,7 +52,7 @@ class ConvertJsonTest {
 						childrens.add(children);
 					}
 					tgt.setChildren(childrens);
-					String fileName = datas.get(0).getDataGroupId() + "_" + datas.get(0).getDataGroupName() + ".json"; 
+					String fileName = datas.get(0).getDataGroupId() + "_" + src.getDataGroupKey() + ".json"; 
 					
 					String result = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(tgt);
 					

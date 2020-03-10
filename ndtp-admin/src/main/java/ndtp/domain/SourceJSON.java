@@ -14,4 +14,5 @@ import lombok.ToString;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SourceJSON {
 	private List<DataInfo> datas;
+	private String dataGroupKey;
 }
