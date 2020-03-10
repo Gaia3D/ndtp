@@ -24,6 +24,7 @@
 
         chart.paddingRight = 30;
         chart.dateFormatter.inputDateFormat = "yyyy-MM-dd HH:mm";
+        // chart.periodChangeDateFormats
 
         var colorSet = new am4core.ColorSet();
         colorSet.saturation = 0.4;
@@ -121,6 +122,14 @@
 
         var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
         dateAxis.dateFormatter.dateFormat = "yyyy-MM-dd";
+        dateAxis.dateFormats.setKey("year", "yyyy");
+        dateAxis.dateFormats.setKey("month", "MM");
+        dateAxis.periodChangeDateFormats.setKey("month", "[bold]yyyy[/].MM");
+        dateAxis.dateFormats.setKey("week", "MM.dd");
+        dateAxis.periodChangeDateFormats.setKey("week", "[bold]MM[/].dd");
+        dateAxis.dateFormats.setKey("day", "MM.dd");
+        dateAxis.periodChangeDateFormats.setKey("day", "[bold]MM[/].dd");
+
         dateAxis.renderer.minGridDistance = 70;
         dateAxis.baseInterval = { count: 3, timeUnit: "day" };
         // dateAxis.max = new Date(2021, 0, 31, 24, 0, 0, 0).getTime();
