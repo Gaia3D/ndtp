@@ -457,7 +457,7 @@
 		let data = {
 			permSeq: buildAcceptPermSeq
 		};
-		debugger
+		// debugger
 		$.ajax({
 			url: "/data/simulation-rest/getPermRequestByConstructor",
 			type: "POST",
@@ -497,7 +497,7 @@
 			success: function(msg){
 				console.log("msg  =", msg);
 				// $("#testBuilding").attr('style', "display:none;");
-				if (msg === "admin") {
+				if (msg === "admin" || msg === "supervisor" || msg === "admin2") {
 					$("#permRequest").attr('style', "display:none;");
 					// $("#testBuilding").trigger("click");
 				} else {

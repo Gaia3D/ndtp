@@ -9,6 +9,7 @@
 <%@ include file="/WEB-INF/views/perm-request/test-picking.jsp" %>
 <%@ include file="/WEB-INF/views/perm-request/comment-view.jsp" %>
 <%@ include file="/WEB-INF/views/perm-request/comment-view2.jsp" %>
+<%@ include file="/WEB-INF/views/perm-request/agenda-view.jsp" %>
 <%--<%@ include file="/WEB-INF/views/perm-request/comment-register.jsp" %>--%>
 
 <%@ include file="/WEB-INF/views/construction-process/process-status-check.jsp" %>
@@ -200,6 +201,7 @@
  		$("#simulationMenu").click(()=> {
 			getUserInfo();
 		});
+		getUserInfo();
 
 	});
 
@@ -219,6 +221,15 @@
 		overflow : "auto",
 		resizable: false
 	});
+	var agendaConsultationDialog = $( "#agendaConsultationDialog" ).dialog({
+		autoOpen: false,
+		width: 1100,
+		height: 700,
+		modal: true,
+		overflow : "auto",
+		resizable: true
+	});
+
 	var commentRegisterDialog = $( "#commentRegisterDialog" ).dialog({
 		autoOpen: false,
 		width: 380,

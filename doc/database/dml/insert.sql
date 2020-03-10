@@ -10,6 +10,7 @@ insert into user_info(
 	user_id, user_group_id, user_name, password, user_role_check_yn, last_signin_date)
 values
 	 ('admin', 1, '슈퍼관리자', '$2a$10$raxA9.ppTStr4t.sG.OtDuGC5HEHqddGzFVp15FG1p1DLi1rsN006', 'N', now()),
+	 ('supervisor', 1, '슈퍼관리자', '$2a$10$raxA9.ppTStr4t.sG.OtDuGC5HEHqddGzFVp15FG1p1DLi1rsN006', 'N', now()),
    ('ndtp', 2, '사용자', '$2a$10$raxA9.ppTStr4t.sG.OtDu4zS0yQDEP8D0OZfB0yvCzteCGjy256m', 'N', now());
 
 -- 관리자 메뉴
