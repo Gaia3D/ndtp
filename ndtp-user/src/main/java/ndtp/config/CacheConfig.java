@@ -22,6 +22,7 @@ import ndtp.domain.MenuTarget;
 import ndtp.domain.Policy;
 import ndtp.domain.ProfileType;
 import ndtp.domain.RoleTarget;
+import ndtp.domain.ServerTarget;
 import ndtp.domain.UserGroup;
 import ndtp.domain.UserGroupMenu;
 import ndtp.domain.UserGroupRole;
@@ -200,7 +201,7 @@ public class CacheConfig {
     private void smartTilingData(CacheParams cacheParams) {
     	Map<Integer, List<DataInfoSimple>> smartTilingDataMap = new HashMap<>();
     	
-    	DataGroup smartTilingDataGroup = DataGroup.builder().tiling(true).build();
+    	DataGroup smartTilingDataGroup = DataGroup.builder().tiling(true).dataGroupTarget(ServerTarget.ADMIN.name().toLowerCase()).build();
     	List<DataGroup> smartTilingDataGroupList = dataGroupService.getAllListDataGroup(smartTilingDataGroup);
     	for(DataGroup dataGroup : smartTilingDataGroupList) {
     		List<DataInfoSimple> dataList = dataService.getListAllDataByDataGroupId(dataGroup.getDataGroupId());
