@@ -119,7 +119,7 @@ function mapDataInfoList(pageNo, searchDataName, searchStatus, searchDataType) {
 						for (i in dataList) {
 							var data = dataList[i];
 							var dataId = parseInt(data.dataGroupId);
-							isVisible = true;
+							var isVisible = true;
 							if (!$.isEmptyObject(projectsMap)) {
 								var projects = projectsMap[dataId];
 								if ($.isEmptyObject(projectsMap) || !projects) {

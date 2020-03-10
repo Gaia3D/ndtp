@@ -202,7 +202,7 @@ function mapDataGroupList(pageNo, searchDataGroupName) {
 						for (i in dataGroupList) {
 							var dataGroup = dataGroupList[i];
 							var dataId = parseInt(dataGroup.dataGroupId);
-							isVisible = true;
+							var isVisible = true;
 							if (!$.isEmptyObject(projectsMap)) {
 								var projects = projectsMap[dataId];
 								if ($.isEmptyObject(projectsMap) || !projects) {
