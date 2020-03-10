@@ -26458,15 +26458,17 @@ MagoManager.prototype.loadAndPrepareData = function()
 };
 
 /**
- * Manages the selection process.
+ * Manages the selection process. passive
  */
-MagoManager.prototype.managePickingProcess = function() 
+MagoManager.prototype.managePickingProcessPassive = function(buildingFileName, nodeId)
 {
 	var gl = this.getGl();
 	
 	if (this.selectionFbo === undefined) 
 	{ this.selectionFbo = new FBO(gl, this.sceneState.drawingBufferWidth, this.sceneState.drawingBufferHeight); }
-	
+
+    this.bPicking = true;
+
 	if (this.isCameraMoved || this.bPicking) // 
 	{
 		this.selectionFbo.bind(); // framebuffer for color selection.***
@@ -26512,12 +26514,29 @@ MagoManager.prototype.managePickingProcess = function()
 			var selectionManager = this.selectionManager;
 			var selectedGeneralObject = selectionManager.currentGeneralObjectSelected ? true : false;
 			this.bPicking = false;
-			this.arrayAuxSC.length = 0;
-			selectionManager.clearCurrents();
+			// this.arrayAuxSC.length = 0;
+			// selectionManager.clearCurrents();
 			var bSelectObjects = true;
 
-			this.objectSelected = this.getSelectedObjects(gl, this.mouse_x, this.mouse_y, this.arrayAuxSC, bSelectObjects);
-			
+            // this.objectSelected = this.getSelectedObjects(gl, this.mouse_x, this.mouse_y, this.arrayAuxSC, bSelectObjects);
+            // this.objectSelected = obj;
+
+            for (var idx in selectionManager.buildingsMap){
+                if (selectionManager.buildingsMap[idx].buildingFileName === buildingFileName) {
+                    this.arrayAuxSC[0] = selectionManager.buildingsMap[idx];
+                    break;
+                }
+            }
+            this.arrayAuxSC[1] = undefined;
+            this.arrayAuxSC[2] = undefined;
+            for (var idx in selectionManager.nodesMap){
+                if (selectionManager.nodesMap[idx].data.nodeId === nodeId) {
+                    this.arrayAuxSC[3] = selectionManager.nodesMap[idx];
+                    break;
+                }
+            }
+
+
 			var auxBuildingSelected = this.arrayAuxSC[0];
 			var auxOctreeSelected = this.arrayAuxSC[1];
 			var auxNodeSelected = this.arrayAuxSC[3]; 
@@ -26696,6 +26715,246 @@ MagoManager.prototype.managePickingProcess = function()
 	this.selectionFbo.unbind();
 	gl.enable(gl.CULL_FACE);
 };
+
+    /**
+     * Manages the selection process.
+     */
+    MagoManager.prototype.managePickingProcess = function()
+    {
+        var gl = this.getGl();
+
+        if (this.selectionFbo === undefined)
+        { this.selectionFbo = new FBO(gl, this.sceneState.drawingBufferWidth, this.sceneState.drawingBufferHeight); }
+
+        if (this.isCameraMoved || this.bPicking) //
+        {
+            this.selectionFbo.bind(); // framebuffer for color selection.***
+            gl.enable(gl.DEPTH_TEST);
+            gl.depthFunc(gl.LEQUAL);
+            gl.depthRange(0, 1);
+            gl.disable(gl.CULL_FACE);
+            if (this.isLastFrustum)
+            {
+                // this is the farest frustum, so init selection process.***
+                gl.clearColor(1, 1, 1, 1); // white background.***
+                gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // clear buffer.***
+                this.selectionManager.clearCandidates();
+            }
+
+            this.renderer.renderGeometryColorCoding(this.visibleObjControlerNodes);
+            this.swapRenderingFase();
+
+            if (this.currentFrustumIdx === 0)
+            {
+                this.isCameraMoved = false;
+
+                //TODO : MOVEEND EVENT TRIGGER
+                //PSEUDO CODE FOR CLUSTER
+                //if (this.modeler && this.modeler.objectsArray)
+                //{
+                //	for (var i=0, len=this.modeler.objectsArray.length;i<len;i++)
+                //	{
+                //		var obj = this.modeler.objectsArray[i];
+                //		if (!obj instanceof Cluster) { continue; }
+                //
+                //		if (!obj.dirty && !obj.isMaking) { obj.setDirty(true); }
+                //	}
+                //}
+            }
+        }
+
+        if (this.currentFrustumIdx === 0)
+        {
+            if ( this.bPicking === true)
+            {
+                // this is the closest frustum.***
+                var selectionManager = this.selectionManager;
+                var selectedGeneralObject = selectionManager.currentGeneralObjectSelected ? true : false;
+                this.bPicking = false;
+                this.arrayAuxSC.length = 0;
+                selectionManager.clearCurrents();
+                var bSelectObjects = true;
+
+                this.objectSelected = this.getSelectedObjects(gl, this.mouse_x, this.mouse_y, this.arrayAuxSC, bSelectObjects);
+
+                var auxBuildingSelected = this.arrayAuxSC[0];
+                var auxOctreeSelected = this.arrayAuxSC[1];
+                var auxNodeSelected = this.arrayAuxSC[3];
+
+                var mode = this.magoPolicy.getObjectMoveMode();
+
+                if (mode === CODE.moveMode.ALL)
+                {
+                    if (auxBuildingSelected && auxNodeSelected)
+                    {
+                        this.emit(MagoManager.EVENT_TYPE.SELECTEDF4D, {
+                            type      : MagoManager.EVENT_TYPE.SELECTEDF4D,
+                            f4d       : auxNodeSelected,
+                            timestamp : new Date()
+                        });
+                    }
+                    else if ((this.buildingSelected && !auxBuildingSelected) && (this.nodeSelected && !auxNodeSelected))
+                    {
+                        this.emit(MagoManager.EVENT_TYPE.DESELECTEDF4D, {
+                            type: MagoManager.EVENT_TYPE.DESELECTEDF4D
+                        });
+                    }
+                }
+                else if (mode === CODE.moveMode.OBJECT)
+                {
+                    if (auxOctreeSelected && this.objectSelected)
+                    {
+                        this.emit(MagoManager.EVENT_TYPE.SELECTEDF4DOBJECT, {
+                            type      : MagoManager.EVENT_TYPE.SELECTEDF4DOBJECT,
+                            octree    : auxBuildingSelected,
+                            object    : this.objectSelected,
+                            timestamp : new Date()
+                        });
+                    }
+                    else if (this.octreeSelected && !auxOctreeSelected)
+                    {
+                        this.emit(MagoManager.EVENT_TYPE.DESELECTEDF4DOBJECT, {
+                            type: MagoManager.EVENT_TYPE.DESELECTEDF4DOBJECT
+                        });
+                    }
+                }
+
+                this.buildingSelected = auxBuildingSelected;
+                this.octreeSelected = auxOctreeSelected;
+                this.nodeSelected = auxNodeSelected;
+                if (this.nodeSelected)
+                { this.rootNodeSelected = this.nodeSelected.getRoot(); }
+                else
+                { this.rootNodeSelected = undefined; }
+
+                this.arrayAuxSC.length = 0;
+                if (this.buildingSelected !== undefined)
+                {
+                    this.displayLocationAndRotation(this.buildingSelected);
+                    this.selectedObjectNotice(this.buildingSelected);
+                }
+                if (this.objectSelected !== undefined)
+                {
+                    //this.displayLocationAndRotation(currentSelectedBuilding);
+                    //this.selectedObjectNotice(currentSelectedBuilding);
+                    //console.log("objectId = " + selectedObject.objectId);
+                }
+
+                if (selectionManager.currentGeneralObjectSelected)
+                {
+                    this.emit(MagoManager.EVENT_TYPE.SELECTEDGENERALOBJECT, {
+                        type          : MagoManager.EVENT_TYPE.SELECTEDGENERALOBJECT,
+                        generalObject : selectionManager.currentGeneralObjectSelected,
+                        timestamp     : new Date()
+                    });
+                }
+                else if (selectedGeneralObject && !selectionManager.currentGeneralObjectSelected)
+                {
+                    this.emit(MagoManager.EVENT_TYPE.DESELECTEDGENERALOBJECT, {
+                        type: MagoManager.EVENT_TYPE.DESELECTEDGENERALOBJECT
+                    });
+                }
+
+                // Test flyTo by topology.******************************************************************************
+                var selCandidatesEdges = selectionManager.getSelectionCandidatesFamily("networkEdges");
+                var selCandidatesNodes = selectionManager.getSelectionCandidatesFamily("networkNodes");
+                var flyed = false;
+                if (selCandidatesEdges)
+                {
+                    var edgeSelected = selCandidatesEdges.currentSelected;
+                    if (edgeSelected && edgeSelected.vtxSegment)
+                    {
+                        // calculate the 2 positions of the edge.***
+                        var camPos = this.sceneState.camera.position;
+                        var vtxSeg = edgeSelected.vtxSegment;
+                        var pos1 = new Point3D();
+                        var pos2 = new Point3D();
+                        pos1.copyFrom(vtxSeg.startVertex.point3d);
+                        pos2.copyFrom(vtxSeg.endVertex.point3d);
+                        pos1.add(0.0, 0.0, 1.7); // add person height.***
+                        pos2.add(0.0, 0.0, 1.7); // add person height.***
+
+
+                        // calculate pos1 & pos2 to worldCoordinate.***
+                        // Need the building tMatrix.***
+                        var network = edgeSelected.networkOwner;
+                        var node = network.nodeOwner;
+                        var geoLocDataManager = node.data.geoLocDataManager;
+                        var geoLoc = geoLocDataManager.getCurrentGeoLocationData();
+                        var tMat = geoLoc.tMatrix;
+
+                        // To positions must add "pivotPointTraslation" if exist.***
+                        // If building moved to bboxCenter, for example, then exist "pivotPointTraslation".***
+                        var pivotTranslation = geoLoc.pivotPointTraslationLC;
+                        if (pivotTranslation)
+                        {
+                            pos1.add(pivotTranslation.x, pivotTranslation.y, pivotTranslation.z);
+                            pos2.add(pivotTranslation.x, pivotTranslation.y, pivotTranslation.z);
+                        }
+
+                        var worldPos1 = tMat.transformPoint3D(pos1, undefined);
+                        var worldPos2 = tMat.transformPoint3D(pos2, undefined);
+
+                        // select the farestPoint to camera.***
+                        var dist1 = camPos.squareDistToPoint(worldPos1);
+                        var dist2 = camPos.squareDistToPoint(worldPos2);
+                        var pointSelected;
+                        if (dist1<dist2)
+                        {
+                            pointSelected = worldPos2;
+                        }
+                        else
+                        { pointSelected = worldPos1; }
+
+                        // now flyTo pointSelected.***
+                        this.flyToTopology(pointSelected, 2);
+                        flyed = true;
+                    }
+                }
+                if (!flyed && selCandidatesNodes)
+                {
+                    var nodeSelected = selCandidatesNodes.currentSelected;
+                    if (nodeSelected)
+                    {
+                        // calculate the 2 positions of the edge.***
+                        var camPos = this.sceneState.camera.position;
+                        var pos1 = new Point3D(nodeSelected.position.x, nodeSelected.position.y, nodeSelected.position.z);
+                        pos1.add(0.0, 0.0, 1.7); // add person height.***
+
+
+                        // calculate pos1 & pos2 to worldCoordinate.***
+                        // Need the building tMatrix.***
+                        var network = nodeSelected.networkOwner;
+                        var node = network.nodeOwner;
+                        var geoLocDataManager = node.data.geoLocDataManager;
+                        var geoLoc = geoLocDataManager.getCurrentGeoLocationData();
+                        var tMat = geoLoc.tMatrix;
+
+                        // To positions must add "pivotPointTraslation" if exist.***
+                        // If building moved to bboxCenter, for example, then exist "pivotPointTraslation".***
+                        var pivotTranslation = geoLoc.pivotPointTraslationLC;
+                        if (pivotTranslation)
+                        {
+                            pos1.add(pivotTranslation.x, pivotTranslation.y, pivotTranslation.z);
+                        }
+
+                        var worldPos1 = tMat.transformPoint3D(pos1, undefined);
+
+                        // now flyTo pointSelected.***
+                        this.flyToTopology(worldPos1, 2);
+                        flyed = true;
+                    }
+                }
+                // End Test flyTo by topology.******************************************************************************
+
+            }
+
+            this.selectionColor.init(); // selection colors manager.***
+        }
+
+        this.selectionFbo.unbind();
+        gl.enable(gl.CULL_FACE);
+    };
 
 /**
  * Provisional function.
@@ -26904,156 +27163,118 @@ MagoManager.prototype.initCounters = function()
  * @param {Number} frustumIdx Current frustum indice.
  * @param {Number} numFrustums Total frustums count in current rendering pipe-line.
  */
-MagoManager.prototype.startRender = function(isLastFrustum, frustumIdx, numFrustums) 
+MagoManager.prototype.startRender = function(isLastFrustum, frustumIdx, numFrustums)
 {
-	// Update the current frame's frustums count.
-	this.numFrustums = numFrustums;
-	this.isLastFrustum = isLastFrustum;
-	
-	var gl = this.getGl();
-	this.upDateSceneStateMatrices(this.sceneState);
-	
-	if (this.isFarestFrustum())
-	{
-		this.dateSC = new Date();
-		this.prevTime = this.currTime;
-		this.currTime = this.dateSC.getTime();
-		
-		this.initCounters();
-		
-		// Before of multiFrustumCullingSmartTile, do animation check, bcos during animation some object can change smartTile-owner.***
-		if (this.animationManager !== undefined)
-		{ this.animationManager.checkAnimation(this); }
+    // Update the current frame's frustums count.
+    this.numFrustums = numFrustums;
+    this.isLastFrustum = isLastFrustum;
 
-		if (this.myCameraSCX === undefined) 
-		{ this.myCameraSCX = new Camera(); }
-		
-		if (!this.isCameraMoving && !this.mouseLeftDown && !this.mouseMiddleDown)
-		{
-			this.upDateCamera(this.myCameraSCX);
-			this.doMultiFrustumCullingSmartTiles(this.myCameraSCX);
-			this.smartTileManager.doPendentProcess(this);
-		}
-		
-		gl.clearStencil(0); // provisionally here.***
-		gl.clear(gl.STENCIL_BUFFER_BIT);
+    var gl = this.getGl();
+    this.upDateSceneStateMatrices(this.sceneState);
 
-		// If mago camera has track node, camera look track node.
-		this.sceneState.camera.doTrack(this);
-		
-		// reset stadistics data.
-		this.sceneState.resetStadistics();
-	}
-	
-	var cameraPosition = this.sceneState.camera.position;
-	
-	// Take the current frustumVolumenObject.***
-	var frustumVolumenObject = this.frustumVolumeControl.getFrustumVolumeCulling(frustumIdx); 
-	this.myCameraSCX.setCurrentFrustum(frustumIdx);
-	this.sceneState.camera.setCurrentFrustum(frustumIdx);
-	var visibleNodes = frustumVolumenObject.visibleNodes; // class: VisibleObjectsController.
-	
-	if (!this.isCameraMoving && !this.mouseLeftDown && !this.mouseMiddleDown)
-	{
-		if (this.frustumVolumeControl === undefined)
-		{ return; }
-	
-		var frustumVolume = this.myCameraSCX.bigFrustum;
-		this.tilesMultiFrustumCullingFinished(frustumVolumenObject.intersectedTilesArray, visibleNodes, cameraPosition, frustumVolume);
-		this.prepareNeoBuildingsAsimetricVersion(gl, visibleNodes); 
-	}
+    if (this.isFarestFrustum())
+    {
+        this.dateSC = new Date();
+        this.prevTime = this.currTime;
+        this.currTime = this.dateSC.getTime();
 
-	var currentShader = undefined;
-	this.visibleObjControlerNodes = visibleNodes; // set the current visible nodes.***
+        this.initCounters();
 
-	// prepare data if camera is no moving.***
-	//if (!this.isCameraMoving && !this.mouseLeftDown && !this.mouseMiddleDown)
-	if (!this.isCameraMoving && !this.mouseMiddleDown)
-	{
-		this.loadAndPrepareData();
-		this.managePickingProcess();
-	}
-	
-	if (this.bPicking === true && isLastFrustum)
-	{
-		var posWC;
-	
-		/*if (this.magoPolicy.issueInsertEnable === true)
-		{
-			if (this.objMarkerSC === undefined)
-			{ this.objMarkerSC = new ObjectMarker(); }
-			
-			var mouseAction = this.sceneState.mouseAction;
-			var strWC = mouseAction.getStartWorldPoint();
-			posWC = new Point3D(strWC.x, strWC.y, strWC.z);
-			
-			var options = {
-				positionWC            : posWC,
-				imageFilePath         : "defaultBlue",
-				imageFilePathSelected : "defaultRed",
-				sizeX                 : 20.0,
-				sizeY                 : 20.0
-			};
-			var objMarker = this.objMarkerManager.newObjectMarker(options, this);
-		}
+        // Before of multiFrustumCullingSmartTile, do animation check, bcos during animation some object can change smartTile-owner.***
+        if (this.animationManager !== undefined)
+        { this.animationManager.checkAnimation(this); }
 
-		if (this.magoPolicy.objectInfoViewEnable === true)
-		{
-			if (this.objMarkerSC === undefined)
-			{ 
-				if (posWC === undefined)
-				{
-					var mouseAction = this.sceneState.mouseAction;
-					var strWC = mouseAction.getStartWorldPoint();
-					posWC = new Point3D(strWC.x, strWC.y, strWC.z);
-				}
-				
-				var options = {
-					positionWC            : posWC,
-					imageFilePath         : "defaultBlue",
-					imageFilePathSelected : "defaultRed"
-				};
-			
-				this.objMarkerSC = this.objMarkerManager.newObjectMarker(options, this);
-				this.objMarkerManager.objectMarkerArray.pop();
-			}
-		}*/
-	}
+        if (this.myCameraSCX === undefined)
+        { this.myCameraSCX = new Camera(); }
 
-	// Render process.***
-	this.doRender(frustumVolumenObject);
+        if (!this.isCameraMoving && !this.mouseLeftDown && !this.mouseMiddleDown)
+        {
+            this.upDateCamera(this.myCameraSCX);
+            this.doMultiFrustumCullingSmartTiles(this.myCameraSCX);
+            this.smartTileManager.doPendentProcess(this);
+        }
 
-	// test. Draw the buildingNames.***
-	if (this.magoPolicy.getShowLabelInfo())
-	{
-		if (this.currentFrustumIdx === 0)
-		{ this.clearCanvas2D(); }
-		this.drawBuildingNames(this.visibleObjControlerNodes) ;
-		this.canvasDirty = true;
-	}
-	// Do stadistics.
-	var displayStadistics = false;
-	if (this.currentFrustumIdx === 0 && displayStadistics)
-	{
-		if (this.stadisticsDisplayed === undefined)
-		{ this.stadisticsDisplayed = 0; }
+        gl.clearStencil(0); // provisionally here.***
+        gl.clear(gl.STENCIL_BUFFER_BIT);
 
-		if (this.stadisticsDisplayed === 0)
-		{
-			var timePerFrame = this.getCurrentTime() - this.prevTime;
-			this.sceneState.fps = Math.floor(1000.0/timePerFrame);
-			this.clearCanvas2D();
-			this.drawStadistics();
-		}
+        // If mago camera has track node, camera look track node.
+        this.sceneState.camera.doTrack(this);
 
-		this.stadisticsDisplayed+= 1;
-		
-		if (this.stadisticsDisplayed > 5)
-		{ this.stadisticsDisplayed = 0; }
-	
-		this.canvasDirty = true;
-	}
+        // reset stadistics data.
+        this.sceneState.resetStadistics();
+    }
+
+    var cameraPosition = this.sceneState.camera.position;
+
+    // Take the current frustumVolumenObject.***
+    var frustumVolumenObject = this.frustumVolumeControl.getFrustumVolumeCulling(frustumIdx);
+    this.myCameraSCX.setCurrentFrustum(frustumIdx);
+    this.sceneState.camera.setCurrentFrustum(frustumIdx);
+    var visibleNodes = frustumVolumenObject.visibleNodes; // class: VisibleObjectsController.
+
+    if (!this.isCameraMoving && !this.mouseLeftDown && !this.mouseMiddleDown)
+    {
+        if (this.frustumVolumeControl === undefined)
+        { return; }
+
+        var frustumVolume = this.myCameraSCX.bigFrustum;
+        this.tilesMultiFrustumCullingFinished(frustumVolumenObject.intersectedTilesArray, visibleNodes, cameraPosition, frustumVolume);
+        this.prepareNeoBuildingsAsimetricVersion(gl, visibleNodes);
+    }
+
+    var currentShader = undefined;
+    this.visibleObjControlerNodes = visibleNodes; // set the current visible nodes.***
+
+    // prepare data if camera is no moving.***
+    //if (!this.isCameraMoving && !this.mouseLeftDown && !this.mouseMiddleDown)
+    if (!this.isCameraMoving && !this.mouseMiddleDown)
+    {
+        this.loadAndPrepareData();
+        this.managePickingProcess();
+    }
+
+    if (this.bPicking === true && isLastFrustum)
+    {
+        var posWC;
+
+    }
+
+    // Render process.***
+    this.doRender(frustumVolumenObject);
+
+    // test. Draw the buildingNames.***
+    if (this.magoPolicy.getShowLabelInfo())
+    {
+        if (this.currentFrustumIdx === 0)
+        { this.clearCanvas2D(); }
+        this.drawBuildingNames(this.visibleObjControlerNodes) ;
+        this.canvasDirty = true;
+    }
+    // Do stadistics.
+    var displayStadistics = false;
+    if (this.currentFrustumIdx === 0 && displayStadistics)
+    {
+        if (this.stadisticsDisplayed === undefined)
+        { this.stadisticsDisplayed = 0; }
+
+        if (this.stadisticsDisplayed === 0)
+        {
+            var timePerFrame = this.getCurrentTime() - this.prevTime;
+            this.sceneState.fps = Math.floor(1000.0/timePerFrame);
+            this.clearCanvas2D();
+            this.drawStadistics();
+        }
+
+        this.stadisticsDisplayed+= 1;
+
+        if (this.stadisticsDisplayed > 5)
+        { this.stadisticsDisplayed = 0; }
+
+        this.canvasDirty = true;
+    }
 };
+
+
 
 /**
  * Prepare current visibles low LOD nodes.***

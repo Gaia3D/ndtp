@@ -304,7 +304,7 @@
 			data: commentData,
 			dataType: "json",
 			success: function(commentList){
-				commentViewFunc2(commentList);
+				commentViewFunc2(commentListMAGO3D_INSTANCE);
 			},
 			error:function(request,status,error) {
 				console.log("err=", request, status, error);
