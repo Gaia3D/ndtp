@@ -14,11 +14,9 @@
 
 <script>
     am4core.ready(function() {
-
 // Themes begin
         am4core.useTheme(am4themes_animated);
 // Themes end
-
         var chart = am4core.create("chartdiv", am4charts.XYChart);
         chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
 
@@ -35,24 +33,28 @@
 
         chart.data = [{
                 name: names[0],
+                uid: 'gyogak',
                 description: "P3 ~ P4",
                 fromDate: "2020-01-01",
                 toDate: "2020-01-12",
                 color: colorSet.getIndex(4).brighten(0)
             },{
                 name: names[0],
+                uid: 'gyogak_2',
                 description: "P4 ~ P5",
                 fromDate: "2020-01-12",
                 toDate: "2020-02-18",
                 color: colorSet.getIndex(4).brighten(0.4)
             },{
                 name: names[0],
+                uid: 'gyogak_3',
                 description: "P5 ~ P6",
                 fromDate: "2020-02-18",
                 toDate: "2020-03-06",
                 color: colorSet.getIndex(4).brighten(0)
             },{
                 name: names[0],
+                uid: 'gyogak_4',
                 description: "P6 ~ P7",
                 fromDate: "2020-03-06",
                 toDate: "2020-03-21",
@@ -140,8 +142,10 @@
 
         series1.columns.template.events.on("hit", function(ev) {
             b=ev.target;
-            console.log("clicked on ", ev.target);
-            // b.dataItem.dataContext
+            debugger;
+            var dataContextUID = ev.target.dataItem.dataContext.uid;
+            this
+            MAGO3D_INSTANCE.getMagoManager().managePickingProcessPassive("F4D_"+dataContextUID, dataContextUID);
         }, this);
 
         chart.scrollbarX = new am4core.Scrollbar();

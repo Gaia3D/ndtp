@@ -1,5 +1,9 @@
 
 const consBuildBillboard = [];
+const arrIotLonlat = {
+	drone: [],
+	car: []
+};
 const consBuildBoardClick = {
 	click: function constructProcessChat(objectName) {
 		console.log("clicked objectName=", objectName);
@@ -240,19 +244,19 @@ var Simulation = function(magoInstance, viewer, $) {
 	$('#timeInput').on('input change',function(){
 		changeDateTime();
 	});
-	
+
 	var changeDateTime = function() {
 		var date = datepicker.getDate();
 		var hours = $('#timeInput').val();
 		date.setHours(hours);
 		setDate(date);
-	}
+	};
 	
 	var setDate = function(date){
 		var jd = Cesium.JulianDate.fromDate(date, jd);
 		magoInstance.getViewer().clock.currentTime = jd;
 		magoManager.sceneState.sunSystem.setDate(date);
-	}
+	};
 	
 	$('#constUploadBtn').click(function() {
 		constProcUploadDialog.dialog("open");
@@ -366,7 +370,6 @@ var Simulation = function(magoInstance, viewer, $) {
 				}
 			});
 		}
-
 	};
 
 	consBuildSlider.sliderSejongInit();
@@ -955,6 +958,94 @@ var Simulation = function(magoInstance, viewer, $) {
 			destination : Cesium.Cartesian3.fromDegrees(127.2739454, 36.5268601, 600.0)
 		});
 	});
+
+	$('#iotSimReq').click(function() {
+		const iotEnum = $('#iotList').val();
+		if(iotEnum === '1') {
+			const fileName = 'Mat_1.gltf';
+			const preDir = 'buses';
+			const uri = 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir;
+			const scale = 0.01;
+
+			// 개수 만큼 시간을 나눈다.
+			const day_start = moment(datepicker.getDate()); // 7 am
+			const day_end   = moment(datepicker.getDate()).add(30, 'minutes'); // 10 pm
+			const durationTimeStep = parseInt((day_end.unix() - day_start.unix())/parseInt(busSamplePosition.length/3));
+			let startUnidxTIme = day_start.unix();
+			const arrInput = [];
+
+			for(var i = 0; i < busSamplePosition.length; i+=3) {
+				const time = moment(JSON.parse(JSON.stringify((startUnidxTIme += durationTimeStep))) * 1000);
+				const lon = busSamplePosition[i];
+				const lat = busSamplePosition[i+1];
+				const alt = busSamplePosition[i+2];
+				arrInput.push({
+					dateTime: time,
+					lon: lon,
+					lat: lat,
+					alt: alt
+				})
+			}
+			let startTM = moment(JSON.parse(JSON.stringify(arrInput[0].dateTime)));
+			const endTM = moment(JSON.parse(JSON.stringify(arrInput[arrInput.length-1].dateTime)));
+			// time_slots.map(m => m.format('YYYY-MM-DD HH:mm:SS'));
+			runIot(arrInput, uri, scale);
+			setInterval(function() {
+				if(startTM.isBefore(endTM)) {
+					startTM.add(2000, 'milliseconds');
+					var jd = Cesium.JulianDate.fromDate(startTM.toDate());
+					MAGO3D_INSTANCE.getViewer().clock.currentTime = jd;
+					MAGO3D_INSTANCE.getMagoManager().sceneState.sunSystem.setDate(startTM.toDate());
+				} else {
+					console.log(arrInput[0].dateTime);
+					startTM = moment(JSON.parse(JSON.stringify(arrInput[0].dateTime)));
+				}
+			}, 30);
+		} else if(iotEnum === '2') {
+
+			const fileName = 'Mat_1.gltf';
+			const preDir = 'buses';
+			const uri = 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir;
+			const scale = 0.01;
+
+			// 개수 만큼 시간을 나눈다.
+			const day_start = moment(datepicker.getDate()); // 7 am
+			const day_end   = moment(datepicker.getDate()).add(30, 'minutes'); // 10 pm
+			const durationTimeStep = parseInt((day_end.unix() - day_start.unix())/parseInt(droneSamplePosition.length/3));
+			let startUnidxTIme = day_start.unix();
+			const arrInput = [];
+
+			for(var i = 0; i < droneSamplePosition.length; i+=3) {
+				const time = moment(JSON.parse(JSON.stringify((startUnidxTIme += durationTimeStep))) * 1000);
+				const lon = droneSamplePosition[i];
+				const lat = droneSamplePosition[i+1];
+				const alt = droneSamplePosition[i+2];
+				arrInput.push({
+					dateTime: time,
+					lon: lon,
+					lat: lat,
+					alt: alt
+				})
+			}
+			let startTM = moment(JSON.parse(JSON.stringify(arrInput[0].dateTime)));
+			const endTM = moment(JSON.parse(JSON.stringify(arrInput[arrInput.length-1].dateTime)));
+			// time_slots.map(m => m.format('YYYY-MM-DD HH:mm:SS'));
+			runIot(arrInput, uri, scale);
+			setInterval(function() {
+				if(startTM.isBefore(endTM)) {
+					startTM.add(2000, 'milliseconds');
+					var jd = Cesium.JulianDate.fromDate(startTM.toDate());
+					MAGO3D_INSTANCE.getViewer().clock.currentTime = jd;
+					MAGO3D_INSTANCE.getMagoManager().sceneState.sunSystem.setDate(startTM.toDate());
+				} else {
+					console.log(arrInput[0].dateTime);
+					startTM = moment(JSON.parse(JSON.stringify(arrInput[0].dateTime)));
+				}
+			}, 30);
+		}
+	});
+
+
 	
 	function sejeonjochiwonPoly() {
 		Cesium.GeoJsonDataSource.load('http://localhost/data/simulation-rest/select', {
@@ -1289,7 +1380,12 @@ var Simulation = function(magoInstance, viewer, $) {
                 var longitudeString = Cesium.Math.toDegrees(cartographic.longitude);
                 var latitudeString = Cesium.Math.toDegrees(cartographic.latitude);
             	$('#monitorLon').text(longitudeString);
-            	$('#monitorLat').text(latitudeString);	
+            	$('#monitorLat').text(latitudeString);
+            	var lonlat = {
+            		lon: longitudeString,
+					lat: latitudeString
+				};
+				arrIotLonlat.drone.push(lonlat);
         	}
 			console.log('1. 폴리곤 : ', longitudeString, latitudeString);
 
@@ -1365,7 +1461,7 @@ var Simulation = function(magoInstance, viewer, $) {
                     var pickedFeature = viewer.scene.pick(event.position);
                     if(pickedFeature) {
                 		selectBuildDialog.dialog( "open" );
-                		selectEntity =pickedFeature;
+                		selectEntity = pickedFeature;
                     } else {
                     	selectEntity = undefined;
                     }
@@ -1620,14 +1716,14 @@ var Simulation = function(magoInstance, viewer, $) {
 		const modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
 	    // fromGltf 함수를 사용하여 key : value 값으로 요소를 지정
 		const name = '슬퍼하지마NONONO';
-	    // GLTF 모델 데이터 삽입
 
+	    // GLTF 모델 데이터 삽입
 		const _model = Cesium.Model.fromGltf({
 	        url : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir,
 	        modelMatrix : modelMatrix,
-	        scale : scale,
-	        debugWireframe: false,
-	        name : name,
+			scale : scale,
+			debugWireframe: false,
+			name : name,
 	        show: true
 	    });
 	    _model.areaVal = 714;
@@ -2061,34 +2157,170 @@ var Simulation = function(magoInstance, viewer, $) {
 			isComplete: 'Y',
 			suitable: suitable,
 			notSuitableReason: notSuitableReason
-	};
+		};
 
-	$.ajax({
-		url: "/data/simulation-rest/putPemSend",
-		type: "PUT",
-		data: PermSend,
-		headers: {"X-Requested-With": "XMLHttpRequest"},
-		dataType: "json",
-		success: function(permList) {
-			var perDomItems = "";
-			for (let i = 0; i<permList.length; i++) {
-				var permName = permList[i].constructor + ' - ' + permList[i].permSeq;
-				perDomItems += "<option value=" + permList[i].permSeq + ">" + permName + "</option>";
+		$.ajax({
+			url: "/data/simulation-rest/putPemSend",
+			type: "PUT",
+			data: PermSend,
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			dataType: "json",
+			success: function(permList) {
+				var perDomItems = "";
+				for (let i = 0; i<permList.length; i++) {
+					var permName = permList[i].constructor + ' - ' + permList[i].permSeq;
+					perDomItems += "<option value=" + permList[i].permSeq + ">" + permName + "</option>";
+				}
+				$("#acceptBuildList").append(perDomItems);
+			},
+			error:function(request,status,error) {
+				console.log("err=", request, status, error);
 			}
-			$("#acceptBuildList").append(perDomItems);
-		},
-		error:function(request,status,error) {
-			console.log("err=", request, status, error);
-		}
+		});
 	});
-	});
-
 	$("#processStatusCheck").click(()=> {
 		console.log("processStatusCheck");
 		processStatusCheckDialog.dialog("open");
 	});
 
-}
+	const busSamplePosition = [
+		127.268185563992,36.52498984302221,1,
+		127.26787876098984,36.525301485567915,1,
+		127.26767990481896,36.525558132376325,1,
+		127.26747820504661,36.525791865414426,1,
+		127.26741570210505,36.52610809448586,1,
+		127.26747542763627,36.526420606537705,1,
+		127.267532486665,36.526765806481635,1,
+		127.26756957372169,36.527067279608964,1,
+		127.26765516252534,36.527400971539514,1,
+		127.26770651393856,36.52779450064776,1,
+		127.2677893861096,36.52826761249312,1,
+		127.26784664857215,36.528588630785634,1,
+		127.26789818443586,36.5289835536422,1,
+		127.26773178802088,36.52943476242508,1,
+		127.26747924569432,36.52974956928284,1,
+		127.26725253181495,36.5297796606732,1,
+		127.26698851411592,36.52958521868429,1,
+		127.26639733347912,36.52939077280283,1,
+		127.2655830559292,36.529052964342206,1,
+		127.26519035501734,36.528669153993995,1,
+		127.26481792919128,36.52827626402508,1,
+		127.26446894697484,36.52791862411967,1,
+		127.26401412479109,36.52740407791329,1,
+		127.26378889782335,36.527102690625604,1,
+		127.26346957512136,36.52668642773908,1,
+		127.26332417061622,36.52630006158854,1,
+		127.26326714951544,36.5259504902189,1,
+		127.26319047750127,36.525712238393396,1,
+		127.26307119906448,36.52543733336696,1,
+		127.26295192099887,36.52510639039557,1,
+		127.26305984185795,36.52484981307907,1,
+		127.2635710381883,36.52473985176785,1,
+		127.2644400793169,36.524507239871056,1,
+		127.26487120840146,36.52439972714907,1,
+		127.26509227329731,36.52448203149675,1,
+		127.2652368135746,36.52474722971511,1,
+		127.26538985591549,36.52501928775557,1,
+		127.26557691158472,36.525090159985346,1,
+		127.2660473855522,36.524909550442935,1,
+		127.26652919307674,36.52468550268405,1,
+		127.2670450120734,36.5244660255848,1,
+		127.26757217818313,36.52445458906652,1,
+		127.26802882757312,36.52461226556226,1,
+		127.26825591353428,36.5247130152673,1,
+		127.268185563992,36.52498984302221,1,
+		127.26787876098984,36.525301485567915,1];
+
+	const droneSamplePosition =
+		[127.2856504212428,36.48066411326436,2,
+			127.28578304702818,36.48080979054118,2,
+			127.28592662916796,36.48103489505022,4,
+			127.28617248357656,36.48125446340615,4,
+			127.28638765775678,36.48152561777509,6,
+			127.28641000252487,36.48164386125527,6,
+			127.28628911618449,36.481981325955395,6,
+			127.28580573784654,36.481965602851105,6,
+			127.28532255462311,36.481885781823884,6,
+			127.28513165322146,36.48166234771338,8,
+			127.28554530433529,36.48127130963175,8,
+			127.28605964844036,36.481483415184094,10,
+			127.28591970469876,36.482110309041346,26,
+			127.28481112026408,36.481724032641885,26,
+			127.28431385979691,36.48194272150995,26,
+			127.2837558833892,36.48202593951379,26,
+			127.28368326049522,36.48179209922455,26,
+			127.28412163666673,36.48143259180876,14,
+			127.28454406753546,36.481254649097195,6,
+			127.28489244391889,36.481060150041856,4,
+			127.2852421125134,36.48083960258572,2,
+			127.2856504212428,36.48066411326436,2,
+			127.28578304702818,36.48080979054118,2];
+	function runIot(pos, modelPath, scale) {
+		var startTime = '';
+		var endTime = '';
+		function computeCirclularFlight() {
+			var property = new Cesium.SampledPositionProperty();
+			for (var i = 0; i < pos.length-1; i++) {
+				var position = Cesium.Cartesian3.fromDegrees(pos[i].lon, pos[i].lat, pos[i].alt);
+				const julDate = Cesium.JulianDate.fromDate(pos[i].dateTime.toDate());
+				property.addSample(julDate, position);
+/*				_viewer.entities.add({
+					position : position,
+					point : {
+						pixelSize : 8,
+						color : Cesium.Color.TRANSPARENT,
+						outlineColor : Cesium.Color.YELLOW,
+						outlineWidth : 3
+					}
+				});*/
+				if(i === 0)
+					startTime = julDate;
+				if(i === pos.length-2)
+					endTime = julDate;
+			}
+			return property;
+		}
+
+		var position = computeCirclularFlight();
+
+		_viewer.clock.startTime = startTime;
+		_viewer.clock.stopTime = endTime;
+		_viewer.clock.currentTime = startTime;
+		_viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP; //Loop at the end
+		_viewer.clock.multiplier = 10;
+
+		var entity = viewer.entities.add({
+			availability : new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
+				start : startTime,
+				stop : endTime
+			})]),
+			position : position,
+			orientation : new Cesium.VelocityOrientationProperty(position),
+			model : {
+				uri : modelPath,
+				minimumPixelSize : 24,
+				maximumPixelSize : 24,
+				scale : scale
+			},
+			path : {
+				material : new Cesium.PolylineGlowMaterialProperty({
+					glowPower : 0.2,
+					rgba : [23, 184, 190, 255]
+				}),
+				width : 10
+			}
+		});
+
+		entity.position.setInterpolationOptions({
+			interpolationDegree : 5,
+			interpolationAlgorithm : Cesium.LagrangePolynomialApproximation
+		});
+
+		// _viewer.trackedEntity = undefined;
+		// _viewer.zoomTo(_viewer.entities, new Cesium.HeadingPitchRange(0, Cesium.Math.toRadians(-90)));
+	}
+
+};
 
 const f4dDataGenMaster = {
 	avg_lon: 0,
@@ -2256,5 +2488,5 @@ const f4dJsonStudySample = {
 				"longitude" : 126.9785978787040
 			}
 		];
-	}
+	},
 };

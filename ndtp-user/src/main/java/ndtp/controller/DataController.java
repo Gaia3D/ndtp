@@ -47,6 +47,7 @@ public class DataController {
 
 	@Autowired
 	private DataGroupService dataGroupService;
+
 	@Autowired
 	private DataService dataService;
 
