@@ -60,7 +60,7 @@
 				</div>
 			</div>
 			<div class="" style="text-align: center; margin-top: 50px;">
-				NDTP (c) LX LH Gaia3D, Inc All Rights Reserved
+				NDTP (c) LX LH Daumsoft Gaia3D, Inc All Rights Reserved
 			</div>
  		</div>
 	</div>

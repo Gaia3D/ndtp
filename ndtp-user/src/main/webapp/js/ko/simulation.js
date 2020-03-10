@@ -1332,7 +1332,7 @@ var Simulation = function(magoInstance, viewer, $) {
 					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.03, "tree", "tree.gltf")
 				}
 				else if (runAllocBuildStat === "obj_tree2") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.4, "Tree2", "Tree.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 1, "Tree2", "Tree.gltf")
 				}
 				else if (runAllocBuildStat === "obj_cone") {
 					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.1, "TrafficCone", "TrafficCone.gltf")
@@ -1627,7 +1627,6 @@ var Simulation = function(magoInstance, viewer, $) {
 	        modelMatrix : modelMatrix,
 	        scale : scale,
 	        debugWireframe: false,
-	        shadows : 1,
 	        name : name,
 	        show: true
 	    });
