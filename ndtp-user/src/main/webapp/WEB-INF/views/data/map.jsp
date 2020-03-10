@@ -167,6 +167,7 @@
 <script type="text/javascript" src="/externlib/decodeTextAlternative/encoding-indexes.js"></script>
 <script type="text/javascript" src="/externlib/decodeTextAlternative/encoding.js"></script>
 <script type="text/javascript" src="/externlib/moment-2.22.2/moment-with-locales.min.js"></script>
+<script type="text/javascript" src="/externlib/moment-range/moment-range.js"></script>
 <script type="text/javascript" src="/externlib/tuidatepicker-4.0.3/tui-date-picker.min.js"></script>
 <script type="text/javascript" src="/js/mago3d.js"></script>
 <script type="text/javascript" src="/js/mago3d_lx.js"></script>
@@ -193,6 +194,7 @@
 	var b=2;
 	var buildAcceptPermSeq;
 	var selectedObjectName;
+	window['moment-range'].extendMoment(moment);
 	// 임시로...
 	$(document).ready(function() {
 		$(".ui-slider-handle").slider({});
@@ -293,11 +295,24 @@
 		autoOpen: false,
 		width: 1100,
 		height: 720,
-		modal: true,
 		overflow : "auto",
+		buttons: [
+			{
+				text: "확인",
+				click: function() {
+					$( this ).dialog( "close" );
+				}
+			},
+			{
+				text: "최소화",
+				icon: "ui-icon-about",
+				click: function() {
+					$( '#processStatusCheckDialog' ).toggle('fold');
+				}
+			},
+		],
 		resizable: false
 	});
-
 
 	var viewDialogInterval="";
 	var commentViewDialog = $( "#commentViewDialog" ).dialog({
@@ -396,6 +411,10 @@
 		cesiumViewerOption.geocoder = false;
 		cesiumViewerOption.baseLayerPicker = false;
 		cesiumViewerOption.sceneModePicker = false;
+		/*cesiumViewerOption.timeline = true;
+		cesiumViewerOption.shouldAnimate = true;
+		cesiumViewerOption.animation = true;*/
+		// cesiumViewerOption.automaticallyTrackDataSourceClocks = true;
 
 		/**
 		 * @param {Stirng} containerId container div id. required.

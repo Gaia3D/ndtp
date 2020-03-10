@@ -26461,6 +26461,8 @@ MagoManager.prototype.loadAndPrepareData = function()
  */
 MagoManager.prototype.managePickingProcessPassive = function(buildingFileName, nodeId)
 {
+    debugger;
+    this.magoPolicy.objectMoveMode = CODE.moveMode.ALL;
 	var gl = this.getGl();
 	
 	if (this.selectionFbo === undefined) 

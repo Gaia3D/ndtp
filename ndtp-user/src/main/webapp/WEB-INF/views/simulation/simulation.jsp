@@ -44,7 +44,7 @@
 </style>
 
 <ul class="listDrop">
-	<li >
+	<li class="on">
 		<p>좌표 정보<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="solarAnalysis">
 			<ul class="analysisGroup">
@@ -151,7 +151,7 @@
 			</ul>
 		</div>
 	</li>
-	<li>
+	<li style="display: none;">
 		<p>도시 계획<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="">
 			<ul class="analysisGroup">
@@ -195,7 +195,7 @@
 		</div>
 	</li>
 	<li>
-		<p>도시 계획2<span class="collapse-icon">icon</span></p>
+		<p>도시 계획<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="">
 			<ul class="analysisGroup">
 				<li >
@@ -273,7 +273,7 @@
 						<input id="inputCustomizing" type="number" data-bind="value: buildingAdjust" />
 						<%--						<button id="dd" type="button" class="btnText drawObserverPoint">면적 설정</button>--%>
 
-						<label for="">오브젝트 선택</label>
+						<label for="">라이브러리</label>
 						<select id="objectSelect" name="">
 							<option value="">선택안함</option>
 							<option value="obj_lamp">가로등</option>
@@ -296,7 +296,7 @@
 			</ul>
 		</div>
 	</li>
-	<li class="on">
+	<li>
 		<p id="forEvent">건축인 허가 신청<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="">
 			<ul class="analysisGroup">
@@ -329,7 +329,29 @@
 <%--					<button type="button" id="testingPicking" class="btnTextF" style="margin-top:10px;">testingPicking</button>--%>
 					<button type="button" id="testBuilding" class="btnTextF" style="margin-top:10px; display:none;">testBuilding</button>
 				</li>
-
+			</ul>
+		</div>
+	</li>
+	<li>
+		<p id="forEvent">IoT 시뮬레이션<span class="collapse-icon">icon</span></p>
+		<div class="listContents" id="">
+			<ul class="analysisGroup">
+				<li>
+					<div>
+						<label for="">종류</label>
+						<div style="display: flex; align-items: center; justify-content: space-between;">
+							<select id="iotList" name="iotDataStatus" style="width:210px; ">
+								<option value="">선택없음</option>
+								<option value="1">자동차</option>
+								<option value="2">드론</option>
+							</select>
+							<div>
+								<%--								<button type="button" id="permView" title="인허가 시뮬레이션" class="btnTextF" style="">인허가 확인</button>--%>
+								<button type="button" id="iotSimReq" title="Iot시뮬레이션" class="btnTextF" style="">확인</button>
+							</div>
+						</div>
+					</div>
+				</li>
 			</ul>
 		</div>
 	</li>
@@ -623,6 +645,7 @@
 			commentListViewer.append(timeSpan);
 		});
 	}
+
 
 	$("#forEvent").click(()=> {
 		getUserInfo();
