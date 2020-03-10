@@ -104,7 +104,7 @@
 					                    <th scope="col">표시순서(Z-Index)</th>
 					                    <th scope="col">사용 여부</th>
 					                    <th scope="col">지도</th>
-					                    <th scope="col">수정</th>
+					                    <th scope="col">편집</th>
 					                    <th scope="col">최종 수정일</th>
 									</tr>
 								</thead>
@@ -134,8 +134,8 @@
                         					<a href="#" onclick="viewLayer('${layer.layerId}', '${layer.layerName}'); return false;" class="linkButton">보기</a>
 					                    </td>
 					                    <td class="col-type">
-											<a href="/layer/modify?layerId=${layer.layerId}" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;
-											<a href="#" onclick="deleteLayer('${layer.layerId}'); return false;" class="linkButton">삭제</a>
+											<a href="/layer/modify?layerId=${layer.layerId}" class="image-button button-edit"><spring:message code='modified'/></a>&nbsp;&nbsp;
+					                    	<a href="#" onclick="deleteLayer('${layer.layerId}'); return false;" class="image-button button-delete"><spring:message code='delete'/></a>
 					                    </td>
 					                    <td class="col-date">
 					                    	<fmt:parseDate value="${layer.updateDate}" var="viewUpdateDate" pattern="yyyy-MM-dd HH:mm:ss"/>

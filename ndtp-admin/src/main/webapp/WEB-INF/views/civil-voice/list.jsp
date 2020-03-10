@@ -130,10 +130,10 @@
 											<td class="col-type">
 												<a href="#" onClick="flyToPoint(${civilVoice.longitude}, ${civilVoice.latitude});">보기</a>
 											</td>
-											<td class="col-type">
-												<a href="/civil-voice/modify?civilVoiceId=${civilVoice.civilVoiceId}" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;
-												<a href="/civil-voice/delete?civilVoiceId=${civilVoice.civilVoiceId}" onclick="return deleteWarning();" class="linkButton"><spring:message code='delete'/></a>
-											</td>
+						                    <td class="col-type">
+												<a href="/civil-voice/modify?civilVoiceId=${civilVoice.civilVoiceId}" class="image-button button-edit"><spring:message code='modified'/></a>&nbsp;&nbsp;
+						                    	<a href="/civil-voice/delete?civilVoiceId=${civilVoice.civilVoiceId}" onclick="return deleteWarning();" class="image-button button-delete"><spring:message code='delete'/></a>
+						                    </td>
 											<td class="col-functions">
 												<fmt:parseDate value="${civilVoice.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
 												<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
