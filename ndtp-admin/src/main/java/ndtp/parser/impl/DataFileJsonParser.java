@@ -51,9 +51,18 @@ public class DataFileJsonParser implements DataFileParser {
 			dataGroup.setDataGroupId(dataGroupId);
 //			dataGroup.setDataGroupName(dataName);
 //			dataGroup.setDataGroupKey(dataKey);
-			if(longitude != null && !"".equals(longitude)) dataGroup.setLongitude(new BigDecimal(longitude));
-			if(latitude != null && !"".equals(latitude)) dataGroup.setLatitude(new BigDecimal(latitude));
-			if(altitude != null && !"".equals(altitude)) dataGroup.setAltitude(new BigDecimal(altitude));
+			if(!StringUtils.isEmpty(longitude)) {
+				longitude = longitude.replace("null", "");
+				if(!StringUtils.isEmpty(longitude)) dataGroup.setLongitude(new BigDecimal(longitude));
+			}
+			if(!StringUtils.isEmpty(latitude)) {
+				latitude = latitude.replace("null", "");
+				if(!StringUtils.isEmpty(latitude)) dataGroup.setLatitude(new BigDecimal(latitude));
+			}
+			if(!StringUtils.isEmpty(altitude)) {
+				altitude = altitude.replace("null", "");
+				if(!StringUtils.isEmpty(altitude)) dataGroup.setAltitude(new BigDecimal(altitude));
+			}
 			if(dataGroup.getLongitude() != null && dataGroup.getLatitude() != null) {
 				dataGroup.setLocation("POINT(" + dataGroup.getLongitude() + " " + dataGroup.getLatitude() + ")");
 			}
