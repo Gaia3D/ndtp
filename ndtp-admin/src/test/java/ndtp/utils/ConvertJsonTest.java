@@ -23,40 +23,45 @@ class ConvertJsonTest {
 	void test() {
 		try {
 			String filePath = "C:\\temp";
-			String fileName = "121.json";
-			File file = Paths.get(filePath, fileName).toFile();
+			//String fileName = "121.json";
+			File dir = Paths.get(filePath).toFile();
+			File[] files = dir.listFiles();
 			
-			ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-			SourceJSON src = objectMapper.readValue(file, SourceJSON.class);
-			TargetJSON tgt = new TargetJSON();
-			List<Children> childrens = new ArrayList<>();
-			
-			List<DataInfo> datas = src.getDatas();
-			for (DataInfo info : datas) {
-				Children children = new Children();
-				children.setLatitude(info.getLatitude());
-				children.setLongitude(info.getLongitude());
-				children.setDataId(info.getDataId());
-				children.setDataGroupId(info.getDataGroupId());
-				children.setData_key(info.getDataKey());
-				children.setData_name(info.getDataName());
-				children.setMapping_type(info.getMappingType());
-				children.setHeight(info.getAltitude());
-				children.setHeading(info.getHeading());
-				children.setPitch(info.getPitch());
-				children.setRoll(info.getRoll());
-				children.setAttributes(info.getMetainfo());
-				childrens.add(children);
+			for (File file : files) {
+				if (!file.isDirectory()) {
+					ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+					SourceJSON src = objectMapper.readValue(file, SourceJSON.class);
+					TargetJSON tgt = new TargetJSON();
+					List<Children> childrens = new ArrayList<>();
+					
+					List<DataInfo> datas = src.getDatas();
+					for (DataInfo info : datas) {
+						Children children = new Children();
+						children.setLatitude(info.getLatitude());
+						children.setLongitude(info.getLongitude());
+						children.setDataId(info.getDataId());
+						children.setDataGroupId(info.getDataGroupId());
+						children.setData_key(info.getDataKey());
+						children.setData_name(info.getDataName());
+						children.setMapping_type(info.getMappingType());
+						children.setHeight(info.getAltitude());
+						children.setHeading(info.getHeading());
+						children.setPitch(info.getPitch());
+						children.setRoll(info.getRoll());
+						children.setAttributes(info.getMetainfo());
+						childrens.add(children);
+					}
+					tgt.setChildren(childrens);
+					String fileName = datas.get(0).getDataGroupId() + "_" + datas.get(0).getDataGroupName() + ".json"; 
+					
+					String result = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(tgt);
+					
+					File targetFile = Paths.get(filePath, fileName).toFile();
+					objectMapper.writeValue(targetFile, tgt);
+					
+					log.info(result);
+				}  
 			}
-			tgt.setChildren(childrens);
-			fileName = datas.get(0).getDataGroupId() + "_" + datas.get(0).getDataGroupName() + ".json"; 
-			
-			String result = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(tgt);
-			
-			File targetFile = Paths.get(filePath, fileName).toFile();
-			objectMapper.writeValue(targetFile, tgt);
-			
-			log.info(result);
 			
 		} catch (Exception e) {
 			// TODO: handle exception
