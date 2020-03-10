@@ -131,20 +131,12 @@ public class CivilVoiceRestController {
 	 * @param civilVoice
 	 * @return
 	 */
-	@GetMapping("/{civilVoiceId}")
+	@GetMapping("/{civilVoiceId:[0-9]+}")
 	public Map<String, Object> detail(HttpServletRequest request, @PathVariable Long civilVoiceId,
 			@RequestParam(value="readOnly",required=false) Boolean readOnly, CivilVoice civilVoice) {
 		Map<String, Object> result = new HashMap<>();
 		String errorCode = null;
 		String message = null;
-		
-		// TODO @Valid 로 구현해야 함
-		if(civilVoiceId == null) {
-			result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-			result.put("errorCode", "input.invalid");
-			result.put("message", message);
-			return result;
-		}
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		
@@ -219,7 +211,7 @@ public class CivilVoiceRestController {
 	 * @param bindingResult
 	 * @return
 	 */
-	@PostMapping("/{civilVoiceId}")
+	@PostMapping("/{civilVoiceId:[0-9]+}")
 	public Map<String, Object> update(HttpServletRequest request, @PathVariable Long civilVoiceId, @Valid @ModelAttribute CivilVoice civilVoice, BindingResult bindingResult) {
 		Map<String, Object> result = new HashMap<>();
 		String errorCode = null;
@@ -257,7 +249,7 @@ public class CivilVoiceRestController {
 	 * @param civilVoiceId
 	 * @return
 	 */
-	@DeleteMapping("/{civilVoiceId}")
+	@DeleteMapping("/{civilVoiceId:[0-9]+}")
 	public Map<String, Object> delete(HttpServletRequest request, @PathVariable Long civilVoiceId, CivilVoice civilVoice) {
 		Map<String, Object> result = new HashMap<>();
 		String errorCode = null;

@@ -48,20 +48,13 @@ public class IssueRestController {
 	 * @param dataInfo
 	 * @return
 	 */
-	@GetMapping(value = "/{issueId}")
+	@GetMapping(value = "/{issueId:[0-9]+}")
 	public Map<String, Object> detail(HttpServletRequest request, @PathVariable Long issueId) {
 		log.info("@@ issueId = {}", issueId);
 		
 		Map<String, Object> result = new HashMap<>();
 		String errorCode = null;
 		String message = null;
-		
-		if(issueId == null) {
-			result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-			result.put("errorCode", "input.invalid");
-			result.put("message", message);
-			return result;
-        }
 		
 		Issue issue = issueService.getIssue(issueId);
 		int statusCode = HttpStatus.OK.value();

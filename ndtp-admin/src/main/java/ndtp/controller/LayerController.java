@@ -368,7 +368,7 @@ public class LayerController implements AuthorizationController {
 				for (MultipartFile multipartFile : fileMap.values()) {
 					String[] divideNames = multipartFile.getOriginalFilename().split("\\.");
 					String fileExtension = divideNames[divideNames.length - 1];
-					if (LayerFileInfo.ZIP_EXTENSION.equals(fileExtension.toLowerCase())) {
+					if (LayerFileInfo.ZIP_EXTENSION.equalsIgnoreCase(fileExtension)) {
 						isZipFile = true;
 						// zip 파일
 						Map<String, Object> uploadMap = unzip(policy, groupFileName, multipartFile, shapeEncoding, makedDirectory);
@@ -397,7 +397,7 @@ public class LayerController implements AuthorizationController {
 					String extension = null;
 					if (divideFileName != null && divideFileName.length != 0) {
 						extension = divideFileName[divideFileName.length - 1];
-						if (LayerFileInfo.ZIP_EXTENSION.equals(extension.toLowerCase())) {
+						if (LayerFileInfo.ZIP_EXTENSION.equalsIgnoreCase(extension)) {
 							log.info("@@@@@@@@@@@@ upload.file.type.invalid");
 							result.put("statusCode", HttpStatus.BAD_REQUEST.value());
 							result.put("errorCode", "upload.file.type.invalid");
@@ -619,7 +619,7 @@ public class LayerController implements AuthorizationController {
                 for (MultipartFile multipartFile : fileMap.values()) {
                     String[] divideNames = multipartFile.getOriginalFilename().split("\\.");
                     String fileExtension = divideNames[divideNames.length - 1];
-                    if(LayerFileInfo.ZIP_EXTENSION.equals(fileExtension.toLowerCase())) {
+                    if(LayerFileInfo.ZIP_EXTENSION.equalsIgnoreCase(fileExtension)) {
                         isZipFile = true;
                         // zip 파일
                         Map<String, Object> uploadMap = unzip(policy, groupFileName, multipartFile, shapeEncoding, makedDirectory);
@@ -648,7 +648,7 @@ public class LayerController implements AuthorizationController {
                     String extension = null;
                     if(divideFileName != null && divideFileName.length != 0) {
                         extension = divideFileName[divideFileName.length - 1];
-                        if(LayerFileInfo.ZIP_EXTENSION.equals(extension.toLowerCase())) {
+                        if(LayerFileInfo.ZIP_EXTENSION.equalsIgnoreCase(extension)) {
                             log.info("@@@@@@@@@@@@ upload.file.type.invalid");
                             result.put("statusCode", HttpStatus.BAD_REQUEST.value());
                             result.put("errorCode", "upload.file.type.invalid");
