@@ -50,4 +50,7 @@
 	<update id="updateStructPermission" parameterType="structPermission">
 		update struct_permission set is_complete='Y' where constructor = #{constructor}
 	</update>
+	<update id="updateBatchAgenda" parameterType="structPermission">
+		UPDATE struct_permission SET batch_checked=#{batchChecked}, agenda_checked=#{agendaChecked} where perm_seq=#{permSeq}
+	</update>
 </mapper>

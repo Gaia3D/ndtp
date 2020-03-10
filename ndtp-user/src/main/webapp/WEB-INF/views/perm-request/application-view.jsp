@@ -136,9 +136,36 @@
 
 
 <script>
+    let batchTotalFee = 0;
+    let consultationTotalFee = 0;
     $("#agenda_consultations").click(() => {
-        renderAgendaConsultations(getAgendaList());
-        agendaConsultationDialog.dialog("open");
+        // buildAcceptPermSeq
+        let data = {
+            permSeq: buildAcceptPermSeq
+        };
+        $.ajax({
+            url: "/data/simulation-rest/getBatchAgendaChecked",
+            type: "POST",
+            headers: {"X-Requested-With": "XMLHttpRequest"},
+            data: data,
+            dataType: "json",
+            success: function(res){
+                console.log(res);
+
+                batchTotalFee = renderAgendaBatch(getBatchList(res));
+                consultationTotalFee = renderAgendaConsultations(getConsultationList(res));
+
+                document.getElementById("batch_total_fee").innerText = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(batchTotalFee);
+                document.getElementById("consultation_total_fee").innerText = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(consultationTotalFee);
+                // document.getElementById("agenda_total_fee").innerText = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(batchTotalFee + consultationTotalFee);
+
+                agendaConsultationDialog.dialog("open");
+            },
+            error:function(request,status,error) {
+                alert('error');
+                console.log("err=", request, status, error);
+            }
+        });
     });
 
     // function b64DecodeUnicode(str) {
@@ -230,12 +257,10 @@
         });
     }
 
-    function renderAgendaConsultations(agendaList) {
+    function renderAgendaBatch(agendaList) {
         const tbody = document.getElementById("agenda_tbody");
-
-        if (tbody.innerHTML.trim()!=="") {
-            return;
-        }
+        tbody.innerHTML = "";
+        let batchTotalFee = 0;
 
         agendaList.map((agenda, idx) => {
             const tr = document.createElement("tr");
@@ -262,6 +287,7 @@
             td_fee.setAttribute("class", "col-name");
             if (agenda.isChecked) {
                 if (agenda.fee !== 0 && agenda.fee !== undefined) {
+                    batchTotalFee += agenda.fee;
                     td_fee.textContent = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(agenda.fee);
                 }
             }
@@ -282,16 +308,17 @@
 
             input_isChecked.addEventListener("change", function (){
                 if (this.checked) {
-                    console.log("checked");
                     td_timeLimit.textContent = agenda.timeLimit;
                     if (agenda.fee !== 0 && agenda.fee !== undefined) {
                         td_fee.textContent = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(agenda.fee);
+                        batchTotalFee += agenda.fee;
                     }
                 } else {
-                    console.log("not checked");
                     td_timeLimit.textContent = "";
                     td_fee.textContent = "";
+                    batchTotalFee -= agenda.fee;
                 }
+                document.getElementById("batch_total_fee").innerText = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(batchTotalFee);
             });
 
             tr.append(td_processItem);
@@ -302,62 +329,187 @@
             tr.append(td_isChecked);
             tbody.append(tr);
         });
+        return batchTotalFee;
+    }
+    function renderAgendaConsultations(agendaList) {
+        const tbody = document.getElementById("agenda_tbody2");
+        tbody.innerHTML = "";
+        let consultationTotalFee = 0;
 
+        agendaList.map((agenda, idx) => {
+            const tr = document.createElement("tr");
+            tr.setAttribute("idx", idx);
+            tr.setAttribute("processItem", agenda.processItem);
+
+            const td_processItem = document.createElement("td");
+            td_processItem.setAttribute("class", "col-type");
+            td_processItem.textContent = agenda.processItem;
+
+            const td_content = document.createElement("td");
+            td_content.setAttribute("class", "col-name");
+            td_content.textContent = agenda.etc;
+
+            const td_timeLimit = document.createElement("td");
+            td_timeLimit.setAttribute("class", "col-name");
+            if (agenda.isChecked) {
+                td_timeLimit.textContent = agenda.timeLimit;
+            } else {
+                td_timeLimit.textContent = "";
+            }
+
+            const td_fee = document.createElement("td");
+            td_fee.setAttribute("class", "col-name");
+            if (agenda.isChecked) {
+                if (agenda.fee !== 0 && agenda.fee !== undefined) {
+                    consultationTotalFee += agenda.fee;
+                    td_fee.textContent = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(agenda.fee);
+                }
+            }
+
+            const td_isChecked = document.createElement("td");
+            td_isChecked.setAttribute("class", "col-checkbox");
+            const input_isChecked = document.createElement("input");
+            input_isChecked.setAttribute("type", "checkbox");
+            input_isChecked.setAttribute("id", "idx_"+idx);
+            if (agenda.isChecked) {
+                input_isChecked.setAttribute("checked", true);
+            }
+            td_isChecked.append(input_isChecked);
+
+            input_isChecked.addEventListener("change", function (){
+                if (this.checked) {
+                    td_timeLimit.textContent = agenda.timeLimit;
+                    if (agenda.fee !== 0 && agenda.fee !== undefined) {
+                        td_fee.textContent = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(agenda.fee);
+                        consultationTotalFee += agenda.fee;
+                    }
+                } else {
+                    td_timeLimit.textContent = "";
+                    td_fee.textContent = "";
+                    consultationTotalFee -= agenda.fee;
+                }
+                document.getElementById("consultation_total_fee").innerText = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(consultationTotalFee);
+            });
+
+            tr.append(td_processItem);
+            tr.append(td_content);
+            tr.append(td_timeLimit);
+            tr.append(td_fee);
+            tr.append(td_isChecked);
+            tbody.append(tr);
+        });
+        return consultationTotalFee;
     }
 
-    function getAgendaList() {
-        let agendaList = [{
-            processItem: "가축분뇨배출시설설치 신고",
-            content: "",
-            timeLimit: "10일",
-            fee: 1500,
-            application: "",
-            isChecked: false
-        },{
-            processItem: "가축분뇨배출시설설치 허가",
-            content: "",
-            timeLimit: "7일",
-            fee: 1000,
-            application: "",
-            isChecked: false
-        }
-        ,{ processItem: "개발행위 허가", timeLimit: "14일", fee: 2000 }
-        ,{ processItem: "개인하수처리시설설치 신고", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "공사용가설건출물축조 신고", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "공원구역행위 허가", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "공작물축조신고", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "농지전용 변경 신고", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "농지전용 변경 허가", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "농지전용 신고", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "농지전용 허가", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "농지전용 협의", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "대기오염물질배출시설설치의 신고", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "대기오염물질배출시설설치의 허가", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "도로점용 허가", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "도시계획시설사업시행자의지정 및 실시계획", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "도시공원점용 허가", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "배수설비설치 신고", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "비관리청도로공사시행 허가 및 도로의연결 허가", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "사도개설 허가", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "산지일시사용 신고", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "산지일시사용 허가", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "산지전용 변경 신고", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "산지전용 변경 허가", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "산지전용 신고", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "산지전용 허가", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "산지전용 협의", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "상수도공급 신청", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "소음진동배출시설설치의 신고", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "소음진동배출시설설치의 허가", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "수질오염물질배출시설설치의 신고", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "수질오염물질배출시설설치의 허가", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "에너지절약계획서 - [국토해양부고시 제2010-1031호, 2010.12.31] 이후 적용대상", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "자가용전기설비공사계획의 신고", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "자가용전기설비공사계획의 인가", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "특정토양오염관리대상시설 신고", timeLimit: "10일", fee: 1200 }
-        ,{ processItem: "하천점용허가", timeLimit: "10일", fee: 1200 }
+    function getBatchList(res) {
+        let agendaList = [
+        { processItem: "가축분뇨배출시설설치 신고", content: "", timeLimit: "10일", fee: 1500, application: "", isChecked: false },
+        { processItem: "가축분뇨배출시설설치 허가", content: "", timeLimit: "7일", fee: 1000, application: ""},
+        { processItem: "개발행위 허가", timeLimit: "14일", fee: 2000 },
+        { processItem: "개인하수처리시설설치 신고", timeLimit: "10일", fee: 1200 },
+        { processItem: "공사용가설건출물축조 신고", timeLimit: "10일", fee: 1200 },
+        { processItem: "공원구역행위 허가", timeLimit: "10일", fee: 1200 },
+        { processItem: "공작물축조 신고", timeLimit: "10일", fee: 1200 },
+        { processItem: "농지전용 변경 신고", timeLimit: "10일", fee: 1200 },
+        { processItem: "농지전용 변경 허가", timeLimit: "10일", fee: 1200 },
+        { processItem: "농지전용 신고", timeLimit: "10일", fee: 1200 },
+        { processItem: "농지전용 허가", timeLimit: "10일", fee: 1200 },
+        { processItem: "농지전용 협의", timeLimit: "10일", fee: 1200 },
+        { processItem: "대기오염물질배출시설설치의 신고", timeLimit: "10일", fee: 1200 },
+        { processItem: "대기오염물질배출시설설치의 허가", timeLimit: "10일", fee: 1200 },
+        { processItem: "도로점용 허가", timeLimit: "10일", fee: 1200 },
+        { processItem: "도시계획시설사업시행자의지정 및 실시계획", timeLimit: "10일", fee: 1200 },
+        { processItem: "도시공원점용 허가", timeLimit: "10일", fee: 1200 },
+        { processItem: "배수설비설치 신고", timeLimit: "10일", fee: 1200 },
+        { processItem: "비관리청도로공사시행 허가 및 도로의연결 허가", timeLimit: "10일", fee: 1200 },
+        { processItem: "사도개설 허가", timeLimit: "10일", fee: 1200 },
+        { processItem: "산지일시사용 신고", timeLimit: "10일", fee: 1200 },
+        { processItem: "산지일시사용 허가", timeLimit: "10일", fee: 1200 },
+        { processItem: "산지전용 변경 신고", timeLimit: "10일", fee: 1200 },
+        { processItem: "산지전용 변경 허가", timeLimit: "10일", fee: 1200 },
+        { processItem: "산지전용 신고", timeLimit: "10일", fee: 1200 },
+        { processItem: "산지전용 허가", timeLimit: "10일", fee: 1200 },
+        { processItem: "산지전용 협의", timeLimit: "10일", fee: 1200 },
+        { processItem: "상수도공급 신청", timeLimit: "10일", fee: 1200 },
+        { processItem: "소음진동배출시설설치의 신고", timeLimit: "10일", fee: 1200 },
+        { processItem: "소음진동배출시설설치의 허가", timeLimit: "10일", fee: 1200 },
+        { processItem: "수질오염물질배출시설설치의 신고", timeLimit: "10일", fee: 1200 },
+        { processItem: "수질오염물질배출시설설치의 허가", timeLimit: "10일", fee: 1200 },
+        { processItem: "에너지절약계획서 - [국토해양부고시 제2010-1031호, 2010.12.31] 이후 적용대상", timeLimit: "10일", fee: 1200 },
+        { processItem: "자가용전기설비공사계획의 신고", timeLimit: "10일", fee: 1200 },
+        { processItem: "자가용전기설비공사계획의 인가", timeLimit: "10일", fee: 1200 },
+        { processItem: "특정토양오염관리대상시설 신고", timeLimit: "10일", fee: 1200 },
+        { processItem: "하천점용 허가", timeLimit: "10일", fee: 1200 }
         ];
+
+        let batchChecked = stringToArray(res.batchChecked);
+        if (batchChecked !== "") {
+            batchChecked.forEach((val, idx)=>agendaList[val].isChecked=true);
+        }
         return agendaList;
+    }
+    function getConsultationList(res) {
+        let agendaList = [
+            { processItem: "(가축분뇨)신고대상배출시설변경 신고", etc: "", timeLimit: "10일", fee: 1500, isChecked: false },
+            { processItem: "(가축분뇨)신고대상배출시설설치 신고", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "가축분뇨배출시설변경 신고", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "가축분뇨배출시설변경 허가", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "가축분뇨처리시설 신고", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "가축분뇨처리시설준공 검사", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "가축분뇨배출시설설치 허가", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "개발제한구역에서의행위 허가", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "건설공사시문화재보호", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "건축허가신청지필지의분필 및 합필여부", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "경계석낮춤(도로관련)", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "경관심의 검토 및 혐의", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "공원구역내행위 허가", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "공원보호구역안의행위제한", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "공유수면점용 허가", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "공장건축물", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "공중화장실등에관한법률", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "과밀억제권역안의행위제한", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "교통영향평가", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "구거점용", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "국가지정문화재현상변경등", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "국가지정문화재현상변경 허가", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "국공유지매각관련협의", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "국유재산사용수익 허가", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "국토의 계획 및 이용에 관한 법률에 의한 지구단위에 대한 계획", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "국토의 계획 및 이용에 관한 법률에 의한 행위 제한", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "군사시설보호구역안의 건축협의", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "기반시설부담금", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "녹지점용허가", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "농업기반시설 목적외 사용협의", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "농지보전부담금", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "농지전용협의", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "농지타용도 일시점용 허가", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "농지타용도 일시점용 협의", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "도로교통협의", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "도로굴착 및 소관업무", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "도로명주소 건물번호팔설치 대상 협의", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "도시가스공급 협의", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "도시계획시설내행위 제한", etc: "", timeLimit: "10일", fee: 1500},
+            { processItem: "도시계획시설밖의 행위 제한", etc: "", timeLimit: "10일", fee: 1500},
+        ];
+
+        let agendaChecked = stringToArray(res.agendaChecked);
+        if (agendaChecked !== "") {
+            agendaChecked.forEach((val, idx) => agendaList[val].isChecked=true);
+        }
+        return agendaList;
+    }
+
+    // for batchChecked, agendaChecked
+    function stringToArray(str) {
+        let result = "";
+        if (str === "" || str === undefined) {
+            return result;
+        }
+        // let change1 = str.substring(str.indexOf("{")+1, str.indexOf("}"));
+        let change2 = str.split(",");
+
+        result = change2.map(val=>parseInt(val));
+        return result;
     }
 </script>
 

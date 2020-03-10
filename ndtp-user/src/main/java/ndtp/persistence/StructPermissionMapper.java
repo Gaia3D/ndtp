@@ -18,4 +18,5 @@ public interface StructPermissionMapper {
 	StructPermission putPermSend(StructPermission structPermission);
 
 	int updateStructPermission(StructPermission structPermission);
+	int updateBatchAgenda(StructPermission structPermission);
 }

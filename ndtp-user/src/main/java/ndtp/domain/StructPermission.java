@@ -3,6 +3,7 @@ package ndtp.domain;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -34,6 +35,8 @@ public class StructPermission {
 	private Float roll;
 	private String suitable;
 	private String notSuitableReason;
+	private String batchChecked;
+	private String agendaChecked;
 }
 
 

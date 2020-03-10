@@ -20,5 +20,7 @@ CREATE TABLE public.struct_permission (
 	altitude float4 NULL,
 	heading float4 NULL,
 	pitch float4 NULL,
-	roll float4 NULL
+	roll float4 NULL,
+	batch_checked varchar(255),
+	agenda_checked varchar(255)
 );

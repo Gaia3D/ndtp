@@ -316,10 +316,20 @@ public class SimulationRestController {
 	@RequestMapping(value = "/getPermRequestByConstructor", method = RequestMethod.POST)
 	public StructPermission getPermRequestByConstructor(HttpServletRequest request, StructPermission sp) throws IOException {
 		StructPermission oneResult = structPermissionMapper.selectOne(sp);
-		System.out.println(oneResult.toString());
+
 		F4DObject f4dObject = this.simServiceImpl.procF4DDataStrucreByPaths(oneResult.getSaveModelFilePath(), oneResult.getSaveModelFileName());
 		oneResult.setF4dObject(f4dObject);
 		return oneResult;
+	}
+	@RequestMapping(value = "/getBatchAgendaChecked", method = RequestMethod.POST)
+	public StructPermission getBatchAgendaChecked(HttpServletRequest request, StructPermission sp) throws IOException {
+		StructPermission oneResult = structPermissionMapper.selectOne(sp);
+		return oneResult;
+	}
+	@RequestMapping(value = "/saveBatchAgendaChecked", method = RequestMethod.POST)
+	public int saveBatchAgendaChecked(HttpServletRequest request, StructPermission sp) throws IOException {
+		int result = structPermissionMapper.updateBatchAgenda(sp);
+		return result;
 	}
 
 	@RequestMapping(value = "/updateStructPermission", method = RequestMethod.POST)

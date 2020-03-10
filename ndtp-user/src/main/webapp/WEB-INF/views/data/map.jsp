@@ -224,10 +224,60 @@
 	var agendaConsultationDialog = $( "#agendaConsultationDialog" ).dialog({
 		autoOpen: false,
 		width: 1100,
-		height: 700,
+		height: 820,
 		modal: true,
 		overflow : "auto",
-		resizable: true
+		resizable: true,
+		buttons: [{
+				text: "저장",
+				click: function() {
+					let batchCheckedIdx = [];
+					let batchCheckedEl = $("#agenda_tbody input:checked");
+					batchCheckedEl.map((idx, val) => {
+						let rawId = val.getAttribute("id");
+						let id = rawId.substring(rawId.lastIndexOf("_")+1);
+						batchCheckedIdx.push(parseInt(id));
+					});
+					console.log("batchCheckedIdx=", batchCheckedIdx);
+
+					let agendaCheckedIdx = [];
+					let agendaCheckedEl = $("#agenda_tbody2 input:checked");
+					agendaCheckedEl.map((idx, val) => {
+						let rawId = val.getAttribute("id");
+						let id = rawId.substring(rawId.lastIndexOf("_")+1);
+						agendaCheckedIdx.push(parseInt(id));
+					});
+					console.log("agendaCheckedIdx=", agendaCheckedIdx);
+
+					const data = {
+						permSeq: buildAcceptPermSeq,
+						batchChecked: batchCheckedIdx.join(),
+						agendaChecked: agendaCheckedIdx.join(),
+					};
+
+					$.ajax({
+						url: "/data/simulation-rest/saveBatchAgendaChecked",
+						type: "POST",
+						headers: {"X-Requested-With": "XMLHttpRequest"},
+						data: data,
+						// dataType: "json",
+						success: function(msg){
+							console.log("msg=", msg);
+						},
+						error:function(request,status,error) {
+							console.log("err=", request, status, error);
+						}
+					});
+
+					$( this ).dialog( "close" );
+				}
+			},{
+				text: "취소",
+				click: function() {
+					$( this ).dialog( "close" );
+				}
+			},
+		],
 	});
 
 	var commentRegisterDialog = $( "#commentRegisterDialog" ).dialog({
