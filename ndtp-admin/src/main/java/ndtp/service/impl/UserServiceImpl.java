@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import ndtp.domain.CacheManager;
 import ndtp.domain.RoleKey;
@@ -117,7 +118,7 @@ public class UserServiceImpl implements UserService {
 		String[] userIds = checkIds.split(",");
 
 		for(String userId : userIds) {
-			if(userId == null || "".equals(userId)) continue;
+			if(StringUtils.isEmpty(userId)) continue;
 
 			UserInfo userInfo = new UserInfo();
 			userInfo.setUserId(userId);

@@ -19,8 +19,13 @@ var MapDataControll = function(magoInstance) {
 
 			var dataGroupName = NDTP.dataGroup.get(projectId);
 
-			var title = dataGroupName + ' / ' + (data.data_name || data.nodeId);
-			$header.text(title);
+			var tempDataName = data.data_name || data.nodeId;
+			if(tempDataName.indexOf("F4D_") >= 0) {
+				tempDataName = tempDataName.replace("F4D_", "");
+			}
+			//var title = dataGroupName + ' / ' + (data.data_name || data.nodeId);
+			//$header.text(title);
+			$header.text(dataGroupName + ' / ' + tempDataName);
 
 			var currentGeoLocData = f4d.getCurrentGeoLocationData();
 
@@ -62,9 +67,15 @@ var MapDataControll = function(magoInstance) {
 			dataKey = data.nodeId;
 			projectId = data.projectId;
 			var objectId = resultObj.objectId;
-			var title = projectId + ' / ' + (data.data_name || data.nodeId) + ' / ' + objectId;
-			$header.text(title);
-
+			
+			var tempDataName = data.data_name || data.nodeId;
+			if(tempDataName.indexOf("F4D_") >= 0) {
+				tempDataName = tempDataName.replace("F4D_", "");
+			}
+			//var title = projectId + ' / ' + (data.data_name || data.nodeId) + ' / ' + objectId;
+			//$header.text(title);
+			$header.text(projectId + ' / ' + tempDataName + ' / ' + objectId);
+			
 			var block = resultBuilding.motherBlocksArray[resultObj._block_idx];
 			var bbCenter = block.bbox.getCenterPoint();
 			var orgMat = resultObj._originalMatrix4;
@@ -207,7 +218,10 @@ var MapDataControll = function(magoInstance) {
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						alert(JS_MESSAGE["update"]);
-					} else if (msg.statusCode == 428) {
+					} else if(msg.statusCode === 403) {
+						//data.smart.tiling
+						alert("변경 권한(Smart Tiling)이 존재하지 않습니다.");
+					} else if (msg.statusCode === 428) {
 						if(confirm(JS_MESSAGE[msg.errorCode])) {
 							$('input[name="dataId"]').val(dataId);
 							var formData = $('#dcRotLocForm').serialize();
@@ -281,10 +295,15 @@ var MapDataControll = function(magoInstance) {
 			var data = f4d.data;
 			projectId = data.projectId;
 			var dataGroupName = NDTP.dataGroup.get(projectId);
+			
+			var tempDataName = data.data_name;
+			if(tempDataName.indexOf("F4D_") >= 0) {
+				tempDataName = tempDataName.replace("F4D_", "");
+			}
 
 			$("#issueDataId").val(data.dataId);
 			$("#issueDataKey").val(data.nodeId);
-			$("#issueDataName").html(data.data_name);
+			$("#issueDataName").html(tempDataName);
 			$("#issueObjectKey").val(objectId);
 			$("#issueDataGroupId").val(data.projectId);
 			$("#issueDataGroupName").html(dataGroupName);//no exist..
