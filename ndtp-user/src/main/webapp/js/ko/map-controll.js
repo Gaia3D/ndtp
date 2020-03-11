@@ -49,7 +49,7 @@ function MapControll(viewer, option) {
 		}
 	}
 	
-	var preventTags = ['INPUT','A','BUTTON','SELECT'];
+	var preventTags = ['INPUT','SELECT','TEXTAREA'];
 	document.addEventListener('keydown', function(e) {
 		var tagName = e.target.tagName;
 		if(preventTags.includes(tagName)){
