@@ -60,10 +60,10 @@ public interface DataMapper {
 	
 	/**
 	 * 공유 유형별 데이터 통계
-	 * @param userId
+	 * @param dataInfo
 	 * @return
 	 */
-	List<DataInfo> getDataTotalCountBySharing(String userId);
+	List<DataInfo> getDataTotalCountBySharing(DataInfo dataInfo);
 	
 	/**
 	 * DataGroupId를 제외한 Data 목록

@@ -122,8 +122,10 @@ public class DataController {
 		Long publicDataCount = 0l;
 		Long privateDataCount = 0l;
 		Long groupDataCount = 0l;
+		dataInfo.setUserId(userSession.getUserId());
+		dataInfo.setUserGroupId(userSession.getUserGroupId());
 		// 그룹별 통계
-		List<DataInfo> groupDataCountList = dataService.getDataTotalCountBySharing(userSession.getUserId());
+		List<DataInfo> groupDataCountList = dataService.getDataTotalCountBySharing(dataInfo);
 		for(DataInfo statisticDataInfo : groupDataCountList) {
 			if(SharingType.COMMON == SharingType.valueOf(statisticDataInfo.getSharing().toUpperCase())) {
 				commonDataCount = statisticDataInfo.getDataCount();

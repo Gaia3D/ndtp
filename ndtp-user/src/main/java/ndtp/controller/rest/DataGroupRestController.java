@@ -102,7 +102,8 @@ public class DataGroupRestController {
 		if(!StringUtils.isEmpty(dataGroup.getEndDate())) {
 			dataGroup.setEndDate(dataGroup.getEndDate().substring(0, 8) + DateUtils.END_TIME);
 		}
-		
+		dataGroup.setUserId(userSession.getUserId());
+		dataGroup.setUserGroupId(userSession.getUserGroupId());
 		long totalCount = dataGroupService.getDataGroupTotalCount(dataGroup);
 		
 		Pagination pagination = new Pagination(	request.getRequestURI(), 
