@@ -44,11 +44,11 @@
 	<select id="getAllListDataGroup" parameterType="dataGroup" resultType="dataGroup">
 		/* getAllListDataGroup */
 		WITH RECURSIVE data_group_tree (
-			data_group_id, data_group_name, data_group_key, data_group_path, sharing, user_id, ancestor, parent, depth, view_order,
+			data_group_id, data_group_target, data_group_name, data_group_key, data_group_path, sharing, user_id, ancestor, parent, depth, view_order,
 			children, basic, available, tiling, data_count, location, altitude, duration, location_update_type, metainfo, description, update_date, insert_date,
 			path, cycle
 		) AS (
-	        SELECT A.data_group_id, A.data_group_name, A.data_group_key, A.data_group_path, A.sharing, A.user_id, A.ancestor, A.parent, A.depth, A.view_order,
+	        SELECT A.data_group_id, A.data_group_target, A.data_group_name, A.data_group_key, A.data_group_path, A.sharing, A.user_id, A.ancestor, A.parent, A.depth, A.view_order,
 	        	A.children, A.basic, A.available, A.tiling, A.data_count, A.location, A.altitude, A.duration, A.location_update_type, A.metainfo, A.description, A.update_date, A.insert_date,
 	        	ARRAY[A.view_order], false
 			FROM data_group A
@@ -56,7 +56,7 @@
 			<if test="dataGroupTarget != null">
 				AND A.data_group_target = #{dataGroupTarget}
 			</if>
-			<if test="userId != null and userId != ''">
+			<if test="userId != null and userId != '' and userGroupId == null">
 				AND A.user_id = #{userId}
 				AND A.data_group_target = 'user'
 			</if>
@@ -67,12 +67,12 @@
 				AND A.tiling = #{tiling}
 			</if>
 			UNION ALL
-	        SELECT A.data_group_id, A.data_group_name, A.data_group_key, A.data_group_path, A.sharing, A.user_id, A.ancestor, A.parent, A.depth, A.view_order,
+	        SELECT A.data_group_id, A.data_group_target, A.data_group_name, A.data_group_key, A.data_group_path, A.sharing, A.user_id, A.ancestor, A.parent, A.depth, A.view_order,
 	        	A.children, A.basic, A.available, A.tiling, A.data_count, A.location, A.altitude, A.duration, A.location_update_type, A.metainfo, A.description, A.update_date, A.insert_date,
 	        	path || A.view_order, A.data_group_id = ANY(path)
-	        FROM data_group A, data_group_tree B
+	        FROM data_group A,data_group_tree B
 	        WHERE A.parent = B.data_group_id
-	        <if test="userId != null and userId != ''">
+	        <if test="userId != null and userId != '' and userGroupId == null">
 				AND A.user_id = #{userId}
 			</if>
 			<if test="tiling != null">
@@ -80,10 +80,34 @@
 			</if>
 	        	AND not cycle
 		)
-	    SELECT data_group_id, data_group_name, data_group_key, data_group_path, sharing, user_id, ancestor, parent, depth, view_order,
-	    	children, basic, available, tiling, data_count, location, altitude, duration, location_update_type, metainfo, description, update_date, insert_date,
+	    SELECT A.data_group_id, A.data_group_name, A.data_group_key, A.data_group_path, A.sharing, A.user_id, A.ancestor, A.parent, A.depth, A.view_order,
+	    	A.children, A.basic, A.available, A.tiling, A.data_count, A.location, A.altitude, A.duration, A.location_update_type, A.metainfo, A.description, A.update_date, A.insert_date,
 	    	path
-	    FROM data_group_tree
+	    FROM data_group_tree A
+	    <if test="userId != null and userId != '' and userGroupId != null and userGroupId >= 0">
+	    LEFT JOIN user_info B on A.user_id = B.user_id
+			WHERE (
+					A.data_group_target = 'admin'
+				OR
+				(
+					A.data_group_target = 'user'
+					AND A.user_id = #{userId}
+				)
+				OR
+				(
+					A.data_group_target = 'user'
+					AND A.user_id != #{userId}
+					AND (A.sharing = 'common' OR A.sharing = 'public')
+				)
+				OR
+				(
+					A.data_group_target = 'user'
+					AND A.user_id != #{userId}
+					AND A.sharing = 'group'
+					AND B.user_group_id = #{userGroupId}
+				)
+			)
+	    </if>
 	    ORDER BY path
 	</select>
 	

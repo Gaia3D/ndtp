@@ -64,11 +64,13 @@ public class DataGroupRestController {
 		dataGroup.setOrderWord(SQLInjectSupport.replaceSqlInection(dataGroup.getOrderWord()));
 		
 		log.info("@@@@@ list dataGroup = {}", dataGroup);
-		
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		Map<String, Object> result = new HashMap<>();
 		String errorCode = null;
 		String message = null;
 		
+		dataGroup.setUserId(userSession.getUserId());
+		dataGroup.setUserGroupId(userSession.getUserGroupId());
 		List<DataGroup> dataGroupList = dataGroupService.getAllListDataGroup(dataGroup);
 		int statusCode = HttpStatus.OK.value();
 		
