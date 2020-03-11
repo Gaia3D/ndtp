@@ -265,7 +265,7 @@ function bodyInputCoverage(inputCoverage, lowerCorner, upperCorner) {
 function bodyInputCoverageAll(inputCoverage) {
 	var xml = '';
 	xml += '<wcs:GetCoverage service="WCS" version="1.1.1">';
-	xml += '<ows:Identifier>' + inputCoverage + '</ows:Identifier>';
+	xml += '<ows:Identifier>' + inputCoverage.layerName + '</ows:Identifier>';
 	xml += '<wcs:DomainSubset>';
 
 	//geoserver 2.12.5 
@@ -281,8 +281,11 @@ function bodyInputCoverageAll(inputCoverage) {
 		xml += '<ows:UpperCorner>125.92047999121296 39.13849500000006</ows:UpperCorner>';
 	}*/
 	
-	xml += '<ows:LowerCorner>127.19931049066805 36.44941898280123</ows:LowerCorner>';
-	xml += '<ows:UpperCorner>127.32576852118987 36.55053669535394</ows:UpperCorner>';
+	/*xml += '<ows:LowerCorner>127.19931049066805 36.44941898280123</ows:LowerCorner>';
+	xml += '<ows:UpperCorner>127.32576852118987 36.55053669535394</ows:UpperCorner>';*/
+	var bbox = inputCoverage.bbox;
+	xml += '<ows:LowerCorner>' + bbox[0] + ' ' + bbox[1] + '</ows:LowerCorner>';
+	xml += '<ows:UpperCorner>' + bbox[2] + ' ' + bbox[3] + '</ows:UpperCorner>';
 
 	xml += '</ows:BoundingBox>';
 	xml += '</wcs:DomainSubset>';
