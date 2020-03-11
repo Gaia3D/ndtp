@@ -186,4 +186,11 @@ public interface DataMapper {
 	 * @return
 	 */
 	int deleteDataByConverterJob(DataInfo dataInfo);
+	
+	/**
+	 * user data 삭제
+	 * @param userId
+	 * @return
+	 */
+	int deleteDataByUserId(String userId);
 }

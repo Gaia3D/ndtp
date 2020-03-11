@@ -26,8 +26,6 @@ public class DataGroupServiceImpl implements DataGroupService {
 	@Autowired
 	private DataGroupMapper dataGroupMapper;
 	@Autowired
-	private GeoPolicyService geoPolicyService;
-	@Autowired
 	private PropertiesConfig propertiesConfig;
 
 	/**
@@ -273,12 +271,19 @@ public class DataGroupServiceImpl implements DataGroupService {
     	
     	return result;
     }
-
+    
+    @Transactional
 	public int deleteDataGroupByAncestor(DataGroup dataGroup) {
 		return dataGroupMapper.deleteDataGroupByAncestor(dataGroup);
 	}
-
+    
+    @Transactional
 	public int deleteDataGroupByParent(DataGroup dataGroup) {
 		return dataGroupMapper.deleteDataGroupByParent(dataGroup);
+	}
+	
+    @Transactional
+	public int deleteDataGroupByUserId(String userId) {
+		return dataGroupMapper.deleteDataGroupByUserId(userId);
 	}
 }

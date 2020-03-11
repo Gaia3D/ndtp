@@ -7,11 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import ndtp.domain.CacheManager;
+import ndtp.domain.DataGroup;
+import ndtp.domain.DataInfo;
+import ndtp.domain.RoleKey;
 import ndtp.domain.UserInfo;
 import ndtp.domain.UserStatus;
 import ndtp.persistence.UserMapper;
+import ndtp.service.DataGroupService;
+import ndtp.service.DataService;
 import ndtp.service.UserService;
 import ndtp.support.PasswordSupport;
+import ndtp.support.RoleSupport;
 
 /**
  * 사용자
@@ -23,6 +30,10 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserMapper userMapper;
+	@Autowired
+	private DataService dataService;
+	@Autowired
+	private DataGroupService dataGroupService;
 
 	/**
 	 * 사용자 수
@@ -134,6 +145,33 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Transactional
 	public int deleteUser(String userId) {
+		UserInfo userInfo = userMapper.getUser(userId);
+		userInfo.setStatus(UserStatus.LOGICAL_DELETE.getValue());
+		List<String> userGroupRoleKeyList = CacheManager.getUserGroupRoleKeyList(userInfo.getUserGroupId());
+		// 사용자 관리 권한이 없는 사용자일 경우 data, datagroup 삭제
+		if(!RoleSupport.isUserGroupRoleValid(userGroupRoleKeyList, RoleKey.ADMIN_USER_MANAGE.name())) {
+ 			dataService.deleteDataByUserId(userId);
+ 			dataGroupService.deleteDataGroupByUserId(userId);
+		} 
+		// TODO user_id 참조하는 모든 테이블 삭제는 추후에..
+		/*
+		access_log 
+		tn_civil_voice
+		tn_civil_voice_comment
+		converter_job
+		converter_job_file
+		data_adjust_log
+		data_attribute_file_info
+		data_object_attribute_file_info
+		data_file_info
+		data_info_log
+		issue
+		upload_data_file
+		user_device
+		user_policy
+		user_info
+		*/
+ 
 //		Policy policy = policyService.getPolicy();
 //		String userDeleteType = policy.getUser_delete_type();
 
@@ -149,7 +187,7 @@ public class UserServiceImpl implements UserService {
 //		} else {
 //			result = 0;
 //		}
-
-		return userMapper.deleteUser(userId);
+		// 사용자는 삭제하지 않고 논리적인 삭제 상태로 변경
+		return userMapper.updateUser(userInfo);
 	}
 }

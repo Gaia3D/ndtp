@@ -404,4 +404,11 @@
 			AND data_id = #{dataId}
 			</if>
 	</delete>
+	
+	<delete id="deleteDataByUserId" parameterType="string">
+		/* deleteDataByProjectId */
+		DELETE
+		FROM data_info
+		WHERE user_id = #{value}
+	</delete>
 </mapper>
