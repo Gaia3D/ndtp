@@ -552,6 +552,10 @@ var SpatialAnalysis = function(magoInstance) {
 			cropShape = Mago3D.ManagerUtils.geographicToWkt(polygon ,'POLYGON');
 		} else {
 			cropShape = $('#analysisRasterHighLowPoints .cropShape').val();
+			if(!entityObject['analysisRasterHighLowPoints'] || !entityObject['analysisRasterHighLowPoints']['line']) {
+				alert("영역 그리기로 분석할 영역을 선택해주세요.");
+				return;
+			}
 			var entity = entities.getById(entityObject['analysisRasterHighLowPoints']['line']);
 			if(!entity) {
 				alert("영역 그리기로 분석할 영역을 선택해주세요.");
