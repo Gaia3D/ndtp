@@ -149,10 +149,13 @@
     });
 
     function buildAcceptReq() {
-        let lon = parseFloat($("#longitude").val());
-        let lat = parseFloat($("#latitude").val());
+        // let lon = parseFloat($("#longitude").val());
+        // let lat = parseFloat($("#latitude").val());
         let alt = parseFloat($("#altitude").val());
-        debugger;
+        let lon = 127.27372;
+        let lat = 36.52384;
+        let heading = 67;
+
         var form = $('#acceptBuildUpload')[0];
         startLoading();
         // Create an FormData object
@@ -160,7 +163,7 @@
         data.append('longitude', lon);
         data.append('latitude', lat);
         data.append('altitude', alt);
-        data.append('heading', 48.000000);
+        data.append('heading', heading);
         data.append('pitch', 0);
         data.append('roll', 0);
         $.ajax({
