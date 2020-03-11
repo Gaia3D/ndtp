@@ -257,7 +257,7 @@ var SpatialAnalysis = function(magoInstance) {
 			if(!drawType) return false;
 			
 			var geographicCoord = result.clickCoordinate.geographicCoordinate;
-			if(!checkValidArea(geographicCoord, dataType, analysisType)) {
+			if(analysisType !== 'analysisRangeDome' && !checkValidArea(geographicCoord, dataType, analysisType)) {
 				alert('유효범위를 벗어났습니다.');
 				return false;
 			}
