@@ -53,6 +53,14 @@ public class UserServiceImpl implements UserService {
 	public List<UserInfo> getListUser(UserInfo userInfo) {
 		return userMapper.getListUser(userInfo);
 	}
+	
+	/**
+	 * getListUserByGroupId
+	 */
+	@Transactional(readOnly=true)
+	public List<String> getListUserByGroupId(Integer userGroupId) {
+		return userMapper.getListUserByGroupId(userGroupId);
+	}
 
 	/**
 	 * 사용자 정보 취득
@@ -145,7 +153,7 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public int deleteUser(String userId) {
 		UserInfo userInfo = userMapper.getUser(userId);
-		userInfo.setStatus(UserStatus.LOGICAL_DELETE.getValue());
+//		userInfo.setStatus(UserStatus.LOGICAL_DELETE.getValue());
 		List<String> userGroupRoleKeyList = CacheManager.getUserGroupRoleKeyList(userInfo.getUserGroupId());
 		// 사용자 관리 권한이 없는 사용자일 경우 data, datagroup 삭제
 		if(!RoleSupport.isUserGroupRoleValid(userGroupRoleKeyList, RoleKey.ADMIN_USER_MANAGE.name())) {
@@ -186,7 +194,8 @@ public class UserServiceImpl implements UserService {
 //		} else {
 //			result = 0;
 //		}
-		// 사용자는 삭제하지 않고 논리적인 삭제 상태로 변경
-		return userMapper.updateUser(userInfo);
+		// TODO 사용자는 삭제하지 않고 논리적인 삭제 상태로 변경
+//		return userMapper.updateUser(userInfo);
+		return userMapper.deleteUser(userId);
 	}
 }

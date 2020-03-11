@@ -90,7 +90,15 @@
 			OFFSET #{offset} LIMIT #{limit}
 		) X
 	</select>
-
+	
+	<!-- 사용자 정보 -->
+	<select id="getListUserByGroupId" parameterType="int" resultType="string">
+		/* getListUserByGroupId */
+		SELECT user_id
+		FROM user_info
+		WHERE user_group_id = #{userGroupId}
+	</select>
+	
 	<!-- 사용자 정보 -->
 	<select id="getUser" parameterType="string" resultType="userInfo">
 		/* getUser */
@@ -206,7 +214,7 @@
 	<!-- 사용자 삭제 -->
 	<delete id="deleteUser" parameterType="string">
 		/* deleteUser */
-		DELETE FROM user_info WHERE user_id = #{userId}
+		DELETE FROM user_info WHERE user_id = #{value}
 	</delete>
 
 </mapper>

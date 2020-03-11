@@ -12,9 +12,11 @@ import ndtp.domain.Move;
 import ndtp.domain.UserGroup;
 import ndtp.domain.UserGroupMenu;
 import ndtp.domain.UserGroupRole;
+import ndtp.domain.UserInfo;
 import ndtp.domain.YOrN;
 import ndtp.persistence.UserGroupMapper;
 import ndtp.service.UserGroupService;
+import ndtp.service.UserService;
 
 @Slf4j
 @Service
@@ -22,6 +24,8 @@ public class UserGroupServiceImpl implements UserGroupService {
 
 	@Autowired
 	private UserGroupMapper userGroupMapper;
+	@Autowired
+	private UserService userService;
 
 	/**
      * 사용자 그룹 목록
@@ -277,7 +281,7 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     	userGroup = userGroupMapper.getUserGroup(userGroup);
     	log.info("--- delete userGroup = {}", userGroup);
-
+    	// TODO 삭제 후 캐시 갱신 필요 
     	int result = 0;
     	if(Depth.ONE == Depth.findBy(userGroup.getDepth())) {
     		log.info("--- one ================");
@@ -285,17 +289,28 @@ public class UserGroupServiceImpl implements UserGroupService {
     		for(Integer userGroupId : userGroupIdList) {
     			userGroupMapper.deleteUserGroupMenu(userGroupId);
     			userGroupMapper.deleteUserGroupRole(userGroupId);
+    			// 사용자 삭제
+    			List<String> userList = userService.getListUserByGroupId(userGroupId);
+    			for(String userId : userList) {
+    				userService.deleteUser(userId);
+    			}
     		}
     		result = userGroupMapper.deleteUserGroupByAncestor(userGroup);
     	} else if(Depth.TWO == Depth.findBy(userGroup.getDepth())) {
     		log.info("--- two ================");
     		List<Integer> userGroupIdList = userGroupMapper.getUserGroupIdByParent(userGroup.getUserGroupId());
+    		userGroupIdList.add(userGroup.getUserGroupId());
     		for(Integer userGroupId : userGroupIdList) {
     			userGroupMapper.deleteUserGroupMenu(userGroupId);
     			userGroupMapper.deleteUserGroupRole(userGroupId);
+    			List<String> userList = userService.getListUserByGroupId(userGroupId);
+    			// 사용자 삭제
+    			for(String userId : userList) {
+    				userService.deleteUser(userId);
+    			}
     		}
     		
-    		result = userGroupMapper.deleteUserGroupByParent(userGroup);
+    		result = userGroupMapper.deleteUserGroup(userGroup);
 
     		UserGroup ancestorUserGroup = new UserGroup();
     		ancestorUserGroup.setUserGroupId(userGroup.getAncestor());
@@ -310,7 +325,10 @@ public class UserGroupServiceImpl implements UserGroupService {
     		log.info("--- three ================");
     		userGroupMapper.deleteUserGroupMenu(userGroup.getUserGroupId());
 			userGroupMapper.deleteUserGroupRole(userGroup.getUserGroupId());
-    		
+			List<String> userList = userService.getListUserByGroupId(userGroup.getUserGroupId());
+			for(String userId : userList) {
+				userService.deleteUser(userId);
+			}
     		result = userGroupMapper.deleteUserGroup(userGroup);
     		log.info("--- userGroup ================ {}", userGroup);
 
