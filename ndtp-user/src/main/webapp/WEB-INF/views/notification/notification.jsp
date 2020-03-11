@@ -49,6 +49,8 @@
                 acceptMakeBuilding(parmSeq);
                 $('#acceptBuildList').val(parmSeq);
                 setTimeout(() => {
+                    const fileName = "6-4_field.geojson";
+                    createSpecificField(fileName);
                     event.delegateTarget.children[0].click();
                 }, 200);
             });
@@ -57,6 +59,31 @@
             console.log("err=", request, status, error);
         }
     });
+
+    function createSpecificField(fileName) {
+        // const fileName = "6-4_field.geojson";
+        const obj = {
+            width : 5,
+            leadTime : 0,
+            trailTime : 100,
+            resolution : 5,
+            stroke: Cesium.Color.BLUEVIOLET.withAlpha(0.5),
+            fill: Cesium.Color.BLUEVIOLET.withAlpha(0.5),
+        };
+        let url = "http://localhost/data/simulation-rest/drawGeojson?fileName=" + fileName;
+
+        Cesium.GeoJsonDataSource.load(url, obj).then(function(dataSource) {
+            let entitis = dataSource.entities._entities._array;
+
+            for(let index in entitis) {
+                let entitiyObj = entitis[index];
+                let registeredEntity = _viewer.entities.add(entitiyObj);
+                registeredEntity.name = "specificField_6_4";
+            }
+        }, function(err) {
+            console.log(err);
+        });
+    }
 
     function acceptMakeBuilding(perm_seq) {
         let data = {
@@ -84,7 +111,7 @@
                 var f4dController = MAGO3D_INSTANCE.getF4dController();
                 f4dController.addF4dGroup(f4dObject);
                 whole_viewer.scene.camera.flyTo({
-                    destination : Cesium.Cartesian3.fromDegrees(longitude, latitude, 1000)
+                    destination : Cesium.Cartesian3.fromDegrees(longitude, latitude, 200)
                 });
             },
             error:function(request,status,error) {

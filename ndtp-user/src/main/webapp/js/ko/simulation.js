@@ -585,9 +585,9 @@ var Simulation = function(magoInstance, viewer, $) {
 					rectangle : Cesium.Rectangle.fromDegrees(127.26024, 36.5189, 127.288, 36.5349)
 				}));
 
-				_viewer.scene.camera.flyTo({
-					destination : Cesium.Cartesian3.fromDegrees(127.2739454, 36.5268601, 600.0)
-				});
+				// _viewer.scene.camera.flyTo({
+				// 	destination : Cesium.Cartesian3.fromDegrees(127.2739454, 36.5268601, 600.0)
+				// });
 				break;
 			default:
 				console.log("val is empty or undefined");
@@ -774,7 +774,6 @@ var Simulation = function(magoInstance, viewer, $) {
 			});
 			allObject[pickedName].buildings=[];
 		}
-
 	});
 
 	$("#create3dModel").click(()=> {
