@@ -310,7 +310,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     			}
     		}
     		
-    		result = userGroupMapper.deleteUserGroup(userGroup);
+    		result = userGroupMapper.deleteUserGroupByParent(userGroup);
 
     		UserGroup ancestorUserGroup = new UserGroup();
     		ancestorUserGroup.setUserGroupId(userGroup.getAncestor());
