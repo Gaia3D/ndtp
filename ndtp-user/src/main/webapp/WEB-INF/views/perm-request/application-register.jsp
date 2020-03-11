@@ -154,7 +154,7 @@
         // let alt = parseFloat($("#altitude").val());
         let lon = 127.27372;
         let lat = 36.52384;
-        let alt = 0;
+        let alt = -5;
         let heading = 67;
 
         let form = $('#acceptBuildUpload')[0];
