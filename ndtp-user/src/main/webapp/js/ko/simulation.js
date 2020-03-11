@@ -276,9 +276,13 @@ var Simulation = function(magoInstance) {
 			node.setRenderCondition(function(data){
 				var attributes = data.attributes; 
 				if(!simulatingEcho) {
-					attributes.isVisible = true;
-					data.isColorChanged = false;
+					if(data.simulating) {
+						data.simulating = false;
+						attributes.isVisible = true;
+						data.isColorChanged = false;
+					}
 				} else {
+					data.simulating = true;
 					var sliderValue = slider.getValue();
 					
 					var dataId = data.nodeId;
