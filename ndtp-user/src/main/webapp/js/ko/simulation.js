@@ -121,7 +121,7 @@ var Simulation = function(magoInstance, viewer, $) {
 					"</div>";
 
 
-				debugger;
+				
 				consBuildBillboardStepInfo.push([parseInt(rootNode.attributes.step), ch]);
 			}
 		}
@@ -293,7 +293,7 @@ var Simulation = function(magoInstance, viewer, $) {
 			});
 
 			$('#rangeInput').on('change', function(data) {
-				debugger;
+				
 				_sejongDataGroupList = [];
 				var index = parseInt($('#rangeInput').val());
 				// var consTypeString = $('input[name="cpProtoArea"]:checked').val();
@@ -360,7 +360,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				data: reqParam,
 				dataType: "json",
 				success: function (msg_list) {
-					debugger;
+					
 					if(msg_list.length === 0)
 						return;
 					consBuildStepInfo[step] = msg_list;
@@ -377,7 +377,7 @@ var Simulation = function(magoInstance, viewer, $) {
 			var f4dController = MAGO3D_INSTANCE.getF4dController();
 			f4dController.deleteF4dGroup(msg.data_key);
 			_sejongDataGroupList.push(msg.data_key);
-			debugger;
+			
 			const f4dObject = f4dDataGenMaster.initGml(msg);
 			f4dController.addF4dGroup(f4dObject);
 			const lon = f4dDataGenMaster.avg_lon;
@@ -390,7 +390,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	$('#constructionProcess .execute').click(function() {
 		//var targetArea = $('input[name="cpProtoArea"]:checked').val();
 		var targetArea = $('#consBuildLoca').val();
-		debugger;
+		
 		// Typer s -> Sejong, p -> busan, g -> gumgang....
 		consBuildSlider.sliderSejongShow();
 		consBuildSlider.targetArea = targetArea;
@@ -1419,37 +1419,52 @@ var Simulation = function(magoInstance, viewer, $) {
                 // 	genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 10, "7M6_871.gltf")
                 // }
                 else if (runAllocBuildStat === "obj_lamp") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.3, "objLamp", "objLamp.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.4, "objLamp", "objLamp.gltf")
 				}
                 else if (runAllocBuildStat === "obj_tree") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.03, "tree", "tree.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.05, "tree", "tree.gltf")
 				}
 				else if (runAllocBuildStat === "obj_tree2") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 1, "Tree2", "Tree.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.9, "Tree2", "Tree.gltf")
 				}
 				else if (runAllocBuildStat === "obj_cone") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.1, "TrafficCone", "TrafficCone.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.03, "TrafficCone", "TrafficCone.gltf")
 				}
 				else if (runAllocBuildStat === "obj_bench") {
 					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.1, "bench", "bank.gltf")
 				}
 				else if (runAllocBuildStat === "obj_bus1") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 1, 0.1, "buses", "bus_1.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 1, 0.05, "buses", "bus_1.gltf")
 				}
 				else if (runAllocBuildStat === "obj_bus2") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.1, "buses", "Mat_1.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.03, "buses", "Mat_1.gltf")
 				}
 				else if (runAllocBuildStat === "obj_car1") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 1, 0.1, "buses", "car_1.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 1, 0.05, "buses", "car_1.gltf")
 				}
 				else if (runAllocBuildStat === "obj_car2") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 1, 0.1, "buses", "car2_2.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 1, 0.05, "buses", "car2_2.gltf")
 				}
 				else if (runAllocBuildStat === "obj_truck1") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 1, 0.1, "buses", "truck_1.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 1, 0.05, "buses", "truck_1.gltf")
 				}
 				else if (runAllocBuildStat === "obj_truck2") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 1, 0.1, "buses", "truck_2.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 1, 0.05, "buses", "truck_2.gltf")
+				}
+				else if (runAllocBuildStat === "maple_green") {
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 1, "texture_maple", "maple_green.gltf")
+				}
+				else if (runAllocBuildStat === "maple_light_green") {
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 1, "texture_maple", "maple_light_green.gltf")
+				}
+				else if (runAllocBuildStat === "maple_orange") {
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 1, "texture_maple", "maple_orange.gltf")
+				}
+				else if (runAllocBuildStat === "maple_red") {
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 1, "texture_maple", "maple_red.gltf")
+				}
+				else if (runAllocBuildStat === "maple_yellow") {
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 1, "texture_maple", "maple_yellow.gltf")
 				}
 
 				else if(runAllocBuildStat === "imsiBuildSelect") {

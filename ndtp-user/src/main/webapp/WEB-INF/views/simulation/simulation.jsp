@@ -287,6 +287,11 @@
 							<option value="obj_car2">자동차2</option>
 							<option value="obj_truck1">트럭1</option>
 							<option value="obj_truck2">트럭2</option>
+							<option value="maple_green">나무(green)</option>
+							<option value="maple_light_green">나무(light_green)</option>
+							<option value="maple_orange">나무(orange)</option>
+							<option value="maple_red">나무(red)</option>
+							<option value="maple_yellow">나무(yellow)</option>
 						</select>
 					</div>
 				</li>
