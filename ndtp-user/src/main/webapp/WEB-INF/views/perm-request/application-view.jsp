@@ -502,7 +502,7 @@
     // for batchChecked, agendaChecked
     function stringToArray(str) {
         let result = "";
-        if (str === "" || str === undefined) {
+        if (str === "" || str === undefined || str === null) {
             return result;
         }
         // let change1 = str.substring(str.indexOf("{")+1, str.indexOf("}"));

@@ -2308,9 +2308,9 @@ var Simulation = function(magoInstance, viewer, $) {
 					rgba : [23, 184, 190, 255]
 				}),
 				width : 10
-			}
+			},
 		});
-
+		carEntitiy =  entity;
 		entity.position.setInterpolationOptions({
 			interpolationDegree : 5,
 			interpolationAlgorithm : Cesium.LagrangePolynomialApproximation
@@ -2321,7 +2321,10 @@ var Simulation = function(magoInstance, viewer, $) {
 	}
 
 };
-
+$('#iotSimTrack').click(function() {
+	_viewer.trackedEntity = undefined;
+	_viewer.trackedEntity = carEntitiy;
+});
 const f4dDataGenMaster = {
 	avg_lon: 0,
 	avg_lat: 0,

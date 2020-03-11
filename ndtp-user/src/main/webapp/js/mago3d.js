@@ -101,7 +101,7 @@ function changeShadowAPI(managerFactoryInstance, isShow)
  * @param {string} dataKey data key
  * @param {Array<string>} objectIds object id. 복수개의 경우 , 로 입력
  * @param {string} property 속성값 예)isPhysical=true
- * @param {string} color R, G, B 색깔을 ',' 로 연결한 string 값을 받음.
+ * @param {string} color R, G, B, Alpha 색깔을 ',' 로 연결한 string 값을 받음.
  */
 function changeColorAPI(managerFactoryInstance, projectId, dataKey, objectIds, property, color) 
 {
@@ -14437,180 +14437,6 @@ var Mago3D = (function()
 {
 'use strict';
 
-/**
- * color 처리 관련 도메인
- * @class ColorAPI
- */
-var ColorAPI = {};
-
-ColorAPI.changeColor = function(api, magoManager) 
-{
-	var projectId = api.getProjectId();
-	var dataKey = api.getDataKey();
-	var objectIds = api.getObjectIds();
-	var property = api.getProperty();
-	var propertyKey = null;
-	var propertyValue = null;
-	if (property !== null && property !== "") 
-	{
-		var properties = property.split("=");
-		propertyKey = properties[0];
-		propertyValue = properties[1];
-	}
-	var colorString = api.getColor();
-	if (colorString === undefined || colorString === 0)
-	{ return; }
-	
-	var color = api.getColor().split(",");
-	var rgbColor = [ color[0]/255, color[1]/255, color[2]/255 ] ;
-	
-	var isExistObjectIds = false;
-	if (objectIds !== null && objectIds.length !== 0) 
-	{
-		isExistObjectIds = true;
-	}
-	
-	var changeHistorys = [];
-	if (isExistObjectIds) 
-	{
-		for (var i=0, objectCount = objectIds.length; i<objectCount; i++) 
-		{
-			var changeHistory = new ChangeHistory();
-			changeHistory.setProjectId(projectId);
-			changeHistory.setDataKey(dataKey);
-			changeHistory.setObjectId(objectIds[i]);
-			changeHistory.setProperty(property);
-			changeHistory.setPropertyKey(propertyKey);
-			changeHistory.setPropertyValue(propertyValue);
-			changeHistory.setRgbColor(rgbColor);
-			
-			changeHistorys.push(changeHistory);
-		}
-	}
-	else 
-	{
-		var changeHistory = new ChangeHistory();
-		changeHistory.setProjectId(projectId);
-		changeHistory.setDataKey(dataKey);
-		changeHistory.setObjectId(null);
-		changeHistory.setProperty(property);
-		changeHistory.setPropertyKey(propertyKey);
-		changeHistory.setPropertyValue(propertyValue);
-		changeHistory.setRgbColor(rgbColor);
-		
-		changeHistorys.push(changeHistory);
-	}
-
-	var changeHistory;
-	var historiesCount = changeHistorys.length;
-	for (var i=0; i<historiesCount; i++)
-	{
-		changeHistory = changeHistorys[i];
-		MagoConfig.saveColorHistory(projectId, dataKey, changeHistory.getObjectId(), changeHistory);
-	}
-};
-'use strict';
-
-/**
- * Draw 관련 API를 담당하는 클래스
- * 원래는 이렇게 만들려고 한게 아니지만, legacy 파일이랑 이름, function 등이 중복되서 이렇게 만들었음
- * @class DrawAPI
- */
-var DrawAPI = {};
-
-DrawAPI.drawAppendData = function(api, magoManager) 
-{
-	magoManager.getObjectIndexFile(api.getProjectId(), api.getProjectDataFolder());
-};
-
-DrawAPI.drawInsertIssueImage = function(api, magoManager) 
-{
-	// pin 을 표시
-	if (magoManager.objMarkerSC === undefined || api.getDrawType() === 0) 
-	{
-		magoManager.objMarkerSC = new ObjectMarker();
-		magoManager.objMarkerSC.geoLocationData.geographicCoord = new GeographicCoord();
-		ManagerUtils.calculateGeoLocationData(parseFloat(api.getLongitude()), parseFloat(api.getLatitude()), parseFloat(api.getElevation()), 
-			undefined, undefined, undefined, magoManager.objMarkerSC.geoLocationData, magoManager);
-	}
-	
-	var objMarker = magoManager.objMarkerManager.newObjectMarker({
-		imageFilePath : 'defaultRed',
-		sizeX         : 64,
-		sizeY         : 64
-	});
-	
-	magoManager.objMarkerSC.issue_id = api.getIssueId();
-	magoManager.objMarkerSC.issue_type = api.getIssueType();
-	magoManager.objMarkerSC.geoLocationData.geographicCoord.setLonLatAlt(parseFloat(api.getLongitude()), parseFloat(api.getLatitude()), parseFloat(api.getElevation()));
-	
-	objMarker.copyFrom(magoManager.objMarkerSC);
-	magoManager.objMarkerSC = undefined;
-};
-'use strict';
-
-/**
- * 변환 행렬 API
- * @class LocationAndRotationAPI
- */
-var LocationAndRotationAPI = {};
-
-LocationAndRotationAPI.changeLocationAndRotation = function(api, magoManager) 
-{
-//	var buildingId = api.getDataKey();
-//	var buildingType = "structure";
-//	var building = this.getNeoBuildingByTypeId(buildingType, buildingId);
-
-	var changeHistory = new ChangeHistory();
-	changeHistory.setProjectId(api.getProjectId());
-	changeHistory.setDataKey(api.getDataKey());
-	changeHistory.setLatitude(parseFloat(api.getLatitude()));
-	changeHistory.setLongitude(parseFloat(api.getLongitude()));
-	changeHistory.setElevation(parseFloat(api.getElevation()));
-	changeHistory.setHeading(parseFloat(api.getHeading()));
-	changeHistory.setPitch(parseFloat(api.getPitch()));
-	changeHistory.setRoll(parseFloat(api.getRoll()));
-	
-	var lat = api.getLatitude();
-	var lon = api.getLongitude();
-	var elevation = api.getElevation();
-	var heading = api.getHeading();
-	var pitch = api.getPitch();
-	var roll = api.getRoll();
-
-
-	magoManager.changeLocationAndRotation(	api.getProjectId(),
-		api.getDataKey(),
-		lat,
-		lon,
-		elevation,
-		heading,
-		pitch,
-		roll,
-		api.getAnimationOption()
-	);
-	
-	// MagoConfig에 저장......?
-};
-'use strict';
-
-/**
- * lod 처리 관련 도메인
- * @class LodAPI
- */
-var LodAPI = {};
-
-LodAPI.changeLod = function(api, magoManager) 
-{
-	if (api.getLod0DistInMeters() !== null && api.getLod0DistInMeters() !== "") { magoManager.magoPolicy.setLod0DistInMeters(api.getLod0DistInMeters()); }
-	if (api.getLod1DistInMeters() !== null && api.getLod1DistInMeters() !== "") { magoManager.magoPolicy.setLod1DistInMeters(api.getLod1DistInMeters()); }
-	if (api.getLod2DistInMeters() !== null && api.getLod2DistInMeters() !== "") { magoManager.magoPolicy.setLod2DistInMeters(api.getLod2DistInMeters()); }
-	if (api.getLod3DistInMeters() !== null && api.getLod3DistInMeters() !== "") { magoManager.magoPolicy.setLod3DistInMeters(api.getLod3DistInMeters()); }
-	if (api.getLod4DistInMeters() !== null && api.getLod4DistInMeters() !== "") { magoManager.magoPolicy.setLod4DistInMeters(api.getLod4DistInMeters()); }
-	if (api.getLod5DistInMeters() !== null && api.getLod5DistInMeters() !== "") { magoManager.magoPolicy.setLod5DistInMeters(api.getLod5DistInMeters()); }
-};
-'use strict';
-
 var Emitter = function () 
 {
 	this._events = {};
@@ -15160,6 +14986,188 @@ ViewerInit.prototype.initMagoManager = function()
 ViewerInit.prototype.setEventHandler = function() 
 {
 	return abstract();
+};
+'use strict';
+
+/**
+ * color 처리 관련 도메인
+ * @class ColorAPI
+ */
+var ColorAPI = {};
+
+ColorAPI.changeColor = function(api, magoManager) 
+{
+	var projectId = api.getProjectId();
+	var dataKey = api.getDataKey();
+	var objectIds = api.getObjectIds();
+	var property = api.getProperty();
+	var propertyKey = null;
+	var propertyValue = null;
+	if (property !== null && property !== "") 
+	{
+		var properties = property.split("=");
+		propertyKey = properties[0];
+		propertyValue = properties[1];
+	}
+	var colorString = api.getColor();
+	if (colorString === undefined || colorString === 0)
+	{ return; }
+	
+	var color = api.getColor().split(",");
+	var colorsValueCount = color.length;
+	var alpha = 255.0;
+	if (colorsValueCount === 4)
+	{
+		alpha = color[3]/255;
+	}
+	
+	var rgbaColor = [ color[0]/255, color[1]/255, color[2]/255, alpha ] ;
+	
+	var isExistObjectIds = false;
+	if (objectIds !== null && objectIds.length !== 0) 
+	{
+		isExistObjectIds = true;
+	}
+	
+	var changeHistorys = [];
+	if (isExistObjectIds) 
+	{
+		for (var i=0, objectCount = objectIds.length; i<objectCount; i++) 
+		{
+			var changeHistory = new ChangeHistory();
+			changeHistory.setProjectId(projectId);
+			changeHistory.setDataKey(dataKey);
+			changeHistory.setObjectId(objectIds[i]);
+			changeHistory.setProperty(property);
+			changeHistory.setPropertyKey(propertyKey);
+			changeHistory.setPropertyValue(propertyValue);
+			//changeHistory.setRgbColor(rgbColor);
+			changeHistory.setColor(rgbaColor);
+			
+			changeHistorys.push(changeHistory);
+		}
+	}
+	else 
+	{
+		var changeHistory = new ChangeHistory();
+		changeHistory.setProjectId(projectId);
+		changeHistory.setDataKey(dataKey);
+		changeHistory.setObjectId(null);
+		changeHistory.setProperty(property);
+		changeHistory.setPropertyKey(propertyKey);
+		changeHistory.setPropertyValue(propertyValue);
+		//changeHistory.setRgbColor(rgbColor);
+		changeHistory.setColor(rgbaColor);
+		changeHistorys.push(changeHistory);
+	}
+
+	var changeHistory;
+	var historiesCount = changeHistorys.length;
+	for (var i=0; i<historiesCount; i++)
+	{
+		changeHistory = changeHistorys[i];
+		MagoConfig.saveColorHistory(projectId, dataKey, changeHistory.getObjectId(), changeHistory);
+	}
+};
+'use strict';
+
+/**
+ * Draw 관련 API를 담당하는 클래스
+ * 원래는 이렇게 만들려고 한게 아니지만, legacy 파일이랑 이름, function 등이 중복되서 이렇게 만들었음
+ * @class DrawAPI
+ */
+var DrawAPI = {};
+
+DrawAPI.drawAppendData = function(api, magoManager) 
+{
+	magoManager.getObjectIndexFile(api.getProjectId(), api.getProjectDataFolder());
+};
+
+DrawAPI.drawInsertIssueImage = function(api, magoManager) 
+{
+	// pin 을 표시
+	if (magoManager.objMarkerSC === undefined || api.getDrawType() === 0) 
+	{
+		magoManager.objMarkerSC = new ObjectMarker();
+		magoManager.objMarkerSC.geoLocationData.geographicCoord = new GeographicCoord();
+		ManagerUtils.calculateGeoLocationData(parseFloat(api.getLongitude()), parseFloat(api.getLatitude()), parseFloat(api.getElevation()), 
+			undefined, undefined, undefined, magoManager.objMarkerSC.geoLocationData, magoManager);
+	}
+	
+	var objMarker = magoManager.objMarkerManager.newObjectMarker({
+		imageFilePath : 'defaultRed',
+		sizeX         : 64,
+		sizeY         : 64
+	});
+	
+	magoManager.objMarkerSC.issue_id = api.getIssueId();
+	magoManager.objMarkerSC.issue_type = api.getIssueType();
+	magoManager.objMarkerSC.geoLocationData.geographicCoord.setLonLatAlt(parseFloat(api.getLongitude()), parseFloat(api.getLatitude()), parseFloat(api.getElevation()));
+	
+	objMarker.copyFrom(magoManager.objMarkerSC);
+	magoManager.objMarkerSC = undefined;
+};
+'use strict';
+
+/**
+ * 변환 행렬 API
+ * @class LocationAndRotationAPI
+ */
+var LocationAndRotationAPI = {};
+
+LocationAndRotationAPI.changeLocationAndRotation = function(api, magoManager) 
+{
+//	var buildingId = api.getDataKey();
+//	var buildingType = "structure";
+//	var building = this.getNeoBuildingByTypeId(buildingType, buildingId);
+
+	var changeHistory = new ChangeHistory();
+	changeHistory.setProjectId(api.getProjectId());
+	changeHistory.setDataKey(api.getDataKey());
+	changeHistory.setLatitude(parseFloat(api.getLatitude()));
+	changeHistory.setLongitude(parseFloat(api.getLongitude()));
+	changeHistory.setElevation(parseFloat(api.getElevation()));
+	changeHistory.setHeading(parseFloat(api.getHeading()));
+	changeHistory.setPitch(parseFloat(api.getPitch()));
+	changeHistory.setRoll(parseFloat(api.getRoll()));
+	
+	var lat = api.getLatitude();
+	var lon = api.getLongitude();
+	var elevation = api.getElevation();
+	var heading = api.getHeading();
+	var pitch = api.getPitch();
+	var roll = api.getRoll();
+
+
+	magoManager.changeLocationAndRotation(	api.getProjectId(),
+		api.getDataKey(),
+		lat,
+		lon,
+		elevation,
+		heading,
+		pitch,
+		roll,
+		api.getAnimationOption()
+	);
+	
+	// MagoConfig에 저장......?
+};
+'use strict';
+
+/**
+ * lod 처리 관련 도메인
+ * @class LodAPI
+ */
+var LodAPI = {};
+
+LodAPI.changeLod = function(api, magoManager) 
+{
+	if (api.getLod0DistInMeters() !== null && api.getLod0DistInMeters() !== "") { magoManager.magoPolicy.setLod0DistInMeters(api.getLod0DistInMeters()); }
+	if (api.getLod1DistInMeters() !== null && api.getLod1DistInMeters() !== "") { magoManager.magoPolicy.setLod1DistInMeters(api.getLod1DistInMeters()); }
+	if (api.getLod2DistInMeters() !== null && api.getLod2DistInMeters() !== "") { magoManager.magoPolicy.setLod2DistInMeters(api.getLod2DistInMeters()); }
+	if (api.getLod3DistInMeters() !== null && api.getLod3DistInMeters() !== "") { magoManager.magoPolicy.setLod3DistInMeters(api.getLod3DistInMeters()); }
+	if (api.getLod4DistInMeters() !== null && api.getLod4DistInMeters() !== "") { magoManager.magoPolicy.setLod4DistInMeters(api.getLod4DistInMeters()); }
+	if (api.getLod5DistInMeters() !== null && api.getLod5DistInMeters() !== "") { magoManager.magoPolicy.setLod5DistInMeters(api.getLod5DistInMeters()); }
 };
 'use strict';
 
@@ -20955,6 +20963,25 @@ Color.prototype.deleteObjects = function()
 	this.b = undefined;
 	this.a = undefined;
 };
+
+/**
+ * Linear interpolation between colorA & colorB
+ */
+Color.mix = function(colorA, colorB, weight, resultColor ) 
+{
+	if (resultColor === undefined)
+	{ resultColor = new Color(); }
+	
+	var w = weight;
+	var r = colorA.r * w + colorB.r * (1.0 - w);
+	var g = colorA.g * w + colorB.g * (1.0 - w);
+	var b = colorA.b * w + colorB.b * (1.0 - w);
+	var a = colorA.a * w + colorB.a * (1.0 - w);
+	
+	resultColor.setRGBA(r, g, b, a);
+	
+	return resultColor;
+};
   
 /**
  * Set the value of RGBA (A means transparancy) as default. 
@@ -22403,6 +22430,7 @@ GeographicCoord.prototype.renderPoint = function(magoManager, shader, gl, render
 
 		var selColor = selectionColor.getAvailableColor(undefined); 
 		var idxKey = selectionColor.decodeColor3(selColor.r, selColor.g, selColor.b);
+
 		selectionManager.setCandidateGeneral(idxKey, this);
 		gl.uniform4fv(shader.oneColor4_loc, [selColor.r/255.0, selColor.g/255.0, selColor.b/255.0, 1.0]);
 	}
@@ -22869,7 +22897,7 @@ GeographicCoordsList.getRenderableObjectOfGeoCoordsArray = function(geoCoordsArr
 	var optionsThickLine = {
 		colorType: "alphaGradient"
 	};
-	vectorMesh.vboKeysContainer = Point3DList.getVboThickLines(magoManager, points3dLCArray, vectorMesh.vboKeysContainer, optionsThickLine);
+	vectorMesh.vboKeysContainer = Point3DList.getVboThickLines(magoManager, points3dLCArray, vectorMesh.vboKeysContainer, options);
 	
 	var renderableObject = new RenderableObject();
 	renderableObject.geoLocDataManager = new GeoLocationDataManager();
@@ -25818,6 +25846,16 @@ MagoManager.prototype.init = function(gl)
 {
 	this.bInit = true;
 	
+	/*
+	var canvas = this.scene.canvas;
+	var glAttrs = {antialias          : true, 
+		stencil            : true,
+		premultipliedAlpha : false};
+	var gl = canvas.getContext("webgl", glAttrs);
+	if (!gl)
+	{ gl = canvas.getContext("experimental-webgl", glAttrs); }
+	*/
+	
 	if (this.sceneState.gl === undefined)
 	{ this.sceneState.gl = gl; }
 	if (this.vboMemoryManager.gl === undefined)
@@ -26050,12 +26088,12 @@ MagoManager.prototype.upDateSceneStateMatrices = function(sceneState)
 			var camPosX = camera.positionWC.x;
 			var camPosY = camera.positionWC.y;
 			var camPosZ = camera.positionWC.z;
-			var camDirX = camera.direction.x;
-			var camDirY = camera.direction.y;
-			var camDirZ = camera.direction.z;
-			var camUpX = camera.up.x;
-			var camUpY = camera.up.y;
-			var camUpZ = camera.up.z;
+			var camDirX = camera.directionWC.x;
+			var camDirY = camera.directionWC.y;
+			var camDirZ = camera.directionWC.z;
+			var camUpX = camera.upWC.x;
+			var camUpY = camera.upWC.y;
+			var camUpZ = camera.upWC.z;
 		
 			var tergetX = camPosX + camDirX * 1000;
 			var tergetY = camPosY + camDirY * 1000;
@@ -26457,19 +26495,15 @@ MagoManager.prototype.loadAndPrepareData = function()
 };
 
 /**
- * Manages the selection process. passive
+ * Manages the selection process.
  */
-MagoManager.prototype.managePickingProcessPassive = function(buildingFileName, nodeId)
+MagoManager.prototype.managePickingProcess = function() 
 {
-    debugger;
-    this.magoPolicy.objectMoveMode = CODE.moveMode.ALL;
 	var gl = this.getGl();
 	
 	if (this.selectionFbo === undefined) 
 	{ this.selectionFbo = new FBO(gl, this.sceneState.drawingBufferWidth, this.sceneState.drawingBufferHeight); }
-
-    this.bPicking = true;
-
+	
 	if (this.isCameraMoved || this.bPicking) // 
 	{
 		this.selectionFbo.bind(); // framebuffer for color selection.***
@@ -26515,29 +26549,12 @@ MagoManager.prototype.managePickingProcessPassive = function(buildingFileName, n
 			var selectionManager = this.selectionManager;
 			var selectedGeneralObject = selectionManager.currentGeneralObjectSelected ? true : false;
 			this.bPicking = false;
-			// this.arrayAuxSC.length = 0;
-			// selectionManager.clearCurrents();
+			this.arrayAuxSC.length = 0;
+			selectionManager.clearCurrents();
 			var bSelectObjects = true;
 
-            // this.objectSelected = this.getSelectedObjects(gl, this.mouse_x, this.mouse_y, this.arrayAuxSC, bSelectObjects);
-            // this.objectSelected = obj;
-
-            for (var idx in selectionManager.buildingsMap){
-                if (selectionManager.buildingsMap[idx].buildingFileName === buildingFileName) {
-                    this.arrayAuxSC[0] = selectionManager.buildingsMap[idx];
-                    break;
-                }
-            }
-            this.arrayAuxSC[1] = undefined;
-            this.arrayAuxSC[2] = undefined;
-            for (var idx in selectionManager.nodesMap){
-                if (selectionManager.nodesMap[idx].data.nodeId === nodeId) {
-                    this.arrayAuxSC[3] = selectionManager.nodesMap[idx];
-                    break;
-                }
-            }
-
-
+			this.objectSelected = this.getSelectedObjects(gl, this.mouse_x, this.mouse_y, this.arrayAuxSC, bSelectObjects);
+			
 			var auxBuildingSelected = this.arrayAuxSC[0];
 			var auxOctreeSelected = this.arrayAuxSC[1];
 			var auxNodeSelected = this.arrayAuxSC[3]; 
@@ -26716,246 +26733,6 @@ MagoManager.prototype.managePickingProcessPassive = function(buildingFileName, n
 	this.selectionFbo.unbind();
 	gl.enable(gl.CULL_FACE);
 };
-
-    /**
-     * Manages the selection process.
-     */
-    MagoManager.prototype.managePickingProcess = function()
-    {
-        var gl = this.getGl();
-
-        if (this.selectionFbo === undefined)
-        { this.selectionFbo = new FBO(gl, this.sceneState.drawingBufferWidth, this.sceneState.drawingBufferHeight); }
-
-        if (this.isCameraMoved || this.bPicking) //
-        {
-            this.selectionFbo.bind(); // framebuffer for color selection.***
-            gl.enable(gl.DEPTH_TEST);
-            gl.depthFunc(gl.LEQUAL);
-            gl.depthRange(0, 1);
-            gl.disable(gl.CULL_FACE);
-            if (this.isLastFrustum)
-            {
-                // this is the farest frustum, so init selection process.***
-                gl.clearColor(1, 1, 1, 1); // white background.***
-                gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // clear buffer.***
-                this.selectionManager.clearCandidates();
-            }
-
-            this.renderer.renderGeometryColorCoding(this.visibleObjControlerNodes);
-            this.swapRenderingFase();
-
-            if (this.currentFrustumIdx === 0)
-            {
-                this.isCameraMoved = false;
-
-                //TODO : MOVEEND EVENT TRIGGER
-                //PSEUDO CODE FOR CLUSTER
-                //if (this.modeler && this.modeler.objectsArray)
-                //{
-                //	for (var i=0, len=this.modeler.objectsArray.length;i<len;i++)
-                //	{
-                //		var obj = this.modeler.objectsArray[i];
-                //		if (!obj instanceof Cluster) { continue; }
-                //
-                //		if (!obj.dirty && !obj.isMaking) { obj.setDirty(true); }
-                //	}
-                //}
-            }
-        }
-
-        if (this.currentFrustumIdx === 0)
-        {
-            if ( this.bPicking === true)
-            {
-                // this is the closest frustum.***
-                var selectionManager = this.selectionManager;
-                var selectedGeneralObject = selectionManager.currentGeneralObjectSelected ? true : false;
-                this.bPicking = false;
-                this.arrayAuxSC.length = 0;
-                selectionManager.clearCurrents();
-                var bSelectObjects = true;
-
-                this.objectSelected = this.getSelectedObjects(gl, this.mouse_x, this.mouse_y, this.arrayAuxSC, bSelectObjects);
-
-                var auxBuildingSelected = this.arrayAuxSC[0];
-                var auxOctreeSelected = this.arrayAuxSC[1];
-                var auxNodeSelected = this.arrayAuxSC[3];
-
-                var mode = this.magoPolicy.getObjectMoveMode();
-
-                if (mode === CODE.moveMode.ALL)
-                {
-                    if (auxBuildingSelected && auxNodeSelected)
-                    {
-                        this.emit(MagoManager.EVENT_TYPE.SELECTEDF4D, {
-                            type      : MagoManager.EVENT_TYPE.SELECTEDF4D,
-                            f4d       : auxNodeSelected,
-                            timestamp : new Date()
-                        });
-                    }
-                    else if ((this.buildingSelected && !auxBuildingSelected) && (this.nodeSelected && !auxNodeSelected))
-                    {
-                        this.emit(MagoManager.EVENT_TYPE.DESELECTEDF4D, {
-                            type: MagoManager.EVENT_TYPE.DESELECTEDF4D
-                        });
-                    }
-                }
-                else if (mode === CODE.moveMode.OBJECT)
-                {
-                    if (auxOctreeSelected && this.objectSelected)
-                    {
-                        this.emit(MagoManager.EVENT_TYPE.SELECTEDF4DOBJECT, {
-                            type      : MagoManager.EVENT_TYPE.SELECTEDF4DOBJECT,
-                            octree    : auxBuildingSelected,
-                            object    : this.objectSelected,
-                            timestamp : new Date()
-                        });
-                    }
-                    else if (this.octreeSelected && !auxOctreeSelected)
-                    {
-                        this.emit(MagoManager.EVENT_TYPE.DESELECTEDF4DOBJECT, {
-                            type: MagoManager.EVENT_TYPE.DESELECTEDF4DOBJECT
-                        });
-                    }
-                }
-
-                this.buildingSelected = auxBuildingSelected;
-                this.octreeSelected = auxOctreeSelected;
-                this.nodeSelected = auxNodeSelected;
-                if (this.nodeSelected)
-                { this.rootNodeSelected = this.nodeSelected.getRoot(); }
-                else
-                { this.rootNodeSelected = undefined; }
-
-                this.arrayAuxSC.length = 0;
-                if (this.buildingSelected !== undefined)
-                {
-                    this.displayLocationAndRotation(this.buildingSelected);
-                    this.selectedObjectNotice(this.buildingSelected);
-                }
-                if (this.objectSelected !== undefined)
-                {
-                    //this.displayLocationAndRotation(currentSelectedBuilding);
-                    //this.selectedObjectNotice(currentSelectedBuilding);
-                    //console.log("objectId = " + selectedObject.objectId);
-                }
-
-                if (selectionManager.currentGeneralObjectSelected)
-                {
-                    this.emit(MagoManager.EVENT_TYPE.SELECTEDGENERALOBJECT, {
-                        type          : MagoManager.EVENT_TYPE.SELECTEDGENERALOBJECT,
-                        generalObject : selectionManager.currentGeneralObjectSelected,
-                        timestamp     : new Date()
-                    });
-                }
-                else if (selectedGeneralObject && !selectionManager.currentGeneralObjectSelected)
-                {
-                    this.emit(MagoManager.EVENT_TYPE.DESELECTEDGENERALOBJECT, {
-                        type: MagoManager.EVENT_TYPE.DESELECTEDGENERALOBJECT
-                    });
-                }
-
-                // Test flyTo by topology.******************************************************************************
-                var selCandidatesEdges = selectionManager.getSelectionCandidatesFamily("networkEdges");
-                var selCandidatesNodes = selectionManager.getSelectionCandidatesFamily("networkNodes");
-                var flyed = false;
-                if (selCandidatesEdges)
-                {
-                    var edgeSelected = selCandidatesEdges.currentSelected;
-                    if (edgeSelected && edgeSelected.vtxSegment)
-                    {
-                        // calculate the 2 positions of the edge.***
-                        var camPos = this.sceneState.camera.position;
-                        var vtxSeg = edgeSelected.vtxSegment;
-                        var pos1 = new Point3D();
-                        var pos2 = new Point3D();
-                        pos1.copyFrom(vtxSeg.startVertex.point3d);
-                        pos2.copyFrom(vtxSeg.endVertex.point3d);
-                        pos1.add(0.0, 0.0, 1.7); // add person height.***
-                        pos2.add(0.0, 0.0, 1.7); // add person height.***
-
-
-                        // calculate pos1 & pos2 to worldCoordinate.***
-                        // Need the building tMatrix.***
-                        var network = edgeSelected.networkOwner;
-                        var node = network.nodeOwner;
-                        var geoLocDataManager = node.data.geoLocDataManager;
-                        var geoLoc = geoLocDataManager.getCurrentGeoLocationData();
-                        var tMat = geoLoc.tMatrix;
-
-                        // To positions must add "pivotPointTraslation" if exist.***
-                        // If building moved to bboxCenter, for example, then exist "pivotPointTraslation".***
-                        var pivotTranslation = geoLoc.pivotPointTraslationLC;
-                        if (pivotTranslation)
-                        {
-                            pos1.add(pivotTranslation.x, pivotTranslation.y, pivotTranslation.z);
-                            pos2.add(pivotTranslation.x, pivotTranslation.y, pivotTranslation.z);
-                        }
-
-                        var worldPos1 = tMat.transformPoint3D(pos1, undefined);
-                        var worldPos2 = tMat.transformPoint3D(pos2, undefined);
-
-                        // select the farestPoint to camera.***
-                        var dist1 = camPos.squareDistToPoint(worldPos1);
-                        var dist2 = camPos.squareDistToPoint(worldPos2);
-                        var pointSelected;
-                        if (dist1<dist2)
-                        {
-                            pointSelected = worldPos2;
-                        }
-                        else
-                        { pointSelected = worldPos1; }
-
-                        // now flyTo pointSelected.***
-                        this.flyToTopology(pointSelected, 2);
-                        flyed = true;
-                    }
-                }
-                if (!flyed && selCandidatesNodes)
-                {
-                    var nodeSelected = selCandidatesNodes.currentSelected;
-                    if (nodeSelected)
-                    {
-                        // calculate the 2 positions of the edge.***
-                        var camPos = this.sceneState.camera.position;
-                        var pos1 = new Point3D(nodeSelected.position.x, nodeSelected.position.y, nodeSelected.position.z);
-                        pos1.add(0.0, 0.0, 1.7); // add person height.***
-
-
-                        // calculate pos1 & pos2 to worldCoordinate.***
-                        // Need the building tMatrix.***
-                        var network = nodeSelected.networkOwner;
-                        var node = network.nodeOwner;
-                        var geoLocDataManager = node.data.geoLocDataManager;
-                        var geoLoc = geoLocDataManager.getCurrentGeoLocationData();
-                        var tMat = geoLoc.tMatrix;
-
-                        // To positions must add "pivotPointTraslation" if exist.***
-                        // If building moved to bboxCenter, for example, then exist "pivotPointTraslation".***
-                        var pivotTranslation = geoLoc.pivotPointTraslationLC;
-                        if (pivotTranslation)
-                        {
-                            pos1.add(pivotTranslation.x, pivotTranslation.y, pivotTranslation.z);
-                        }
-
-                        var worldPos1 = tMat.transformPoint3D(pos1, undefined);
-
-                        // now flyTo pointSelected.***
-                        this.flyToTopology(worldPos1, 2);
-                        flyed = true;
-                    }
-                }
-                // End Test flyTo by topology.******************************************************************************
-
-            }
-
-            this.selectionColor.init(); // selection colors manager.***
-        }
-
-        this.selectionFbo.unbind();
-        gl.enable(gl.CULL_FACE);
-    };
 
 /**
  * Provisional function.
@@ -27164,118 +26941,156 @@ MagoManager.prototype.initCounters = function()
  * @param {Number} frustumIdx Current frustum indice.
  * @param {Number} numFrustums Total frustums count in current rendering pipe-line.
  */
-MagoManager.prototype.startRender = function(isLastFrustum, frustumIdx, numFrustums)
+MagoManager.prototype.startRender = function(isLastFrustum, frustumIdx, numFrustums) 
 {
-    // Update the current frame's frustums count.
-    this.numFrustums = numFrustums;
-    this.isLastFrustum = isLastFrustum;
+	// Update the current frame's frustums count.
+	this.numFrustums = numFrustums;
+	this.isLastFrustum = isLastFrustum;
+	
+	var gl = this.getGl();
+	this.upDateSceneStateMatrices(this.sceneState);
+	
+	if (this.isFarestFrustum())
+	{
+		this.dateSC = new Date();
+		this.prevTime = this.currTime;
+		this.currTime = this.dateSC.getTime();
+		
+		this.initCounters();
+		
+		// Before of multiFrustumCullingSmartTile, do animation check, bcos during animation some object can change smartTile-owner.***
+		if (this.animationManager !== undefined)
+		{ this.animationManager.checkAnimation(this); }
 
-    var gl = this.getGl();
-    this.upDateSceneStateMatrices(this.sceneState);
+		if (this.myCameraSCX === undefined) 
+		{ this.myCameraSCX = new Camera(); }
+		
+		if (!this.isCameraMoving && !this.mouseLeftDown && !this.mouseMiddleDown)
+		{
+			this.upDateCamera(this.myCameraSCX);
+			this.doMultiFrustumCullingSmartTiles(this.myCameraSCX);
+			this.smartTileManager.doPendentProcess(this);
+		}
+		
+		gl.clearStencil(0); // provisionally here.***
+		gl.clear(gl.STENCIL_BUFFER_BIT);
 
-    if (this.isFarestFrustum())
-    {
-        this.dateSC = new Date();
-        this.prevTime = this.currTime;
-        this.currTime = this.dateSC.getTime();
+		// If mago camera has track node, camera look track node.
+		this.sceneState.camera.doTrack(this);
+		
+		// reset stadistics data.
+		this.sceneState.resetStadistics();
+	}
+	
+	var cameraPosition = this.sceneState.camera.position;
+	
+	// Take the current frustumVolumenObject.***
+	var frustumVolumenObject = this.frustumVolumeControl.getFrustumVolumeCulling(frustumIdx); 
+	this.myCameraSCX.setCurrentFrustum(frustumIdx);
+	this.sceneState.camera.setCurrentFrustum(frustumIdx);
+	var visibleNodes = frustumVolumenObject.visibleNodes; // class: VisibleObjectsController.
+	
+	if (!this.isCameraMoving && !this.mouseLeftDown && !this.mouseMiddleDown)
+	{
+		if (this.frustumVolumeControl === undefined)
+		{ return; }
+	
+		var frustumVolume = this.myCameraSCX.bigFrustum;
+		this.tilesMultiFrustumCullingFinished(frustumVolumenObject.intersectedTilesArray, visibleNodes, cameraPosition, frustumVolume);
+		this.prepareNeoBuildingsAsimetricVersion(gl, visibleNodes); 
+	}
 
-        this.initCounters();
+	var currentShader = undefined;
+	this.visibleObjControlerNodes = visibleNodes; // set the current visible nodes.***
 
-        // Before of multiFrustumCullingSmartTile, do animation check, bcos during animation some object can change smartTile-owner.***
-        if (this.animationManager !== undefined)
-        { this.animationManager.checkAnimation(this); }
+	// prepare data if camera is no moving.***
+	//if (!this.isCameraMoving && !this.mouseLeftDown && !this.mouseMiddleDown)
+	if (!this.isCameraMoving && !this.mouseMiddleDown)
+	{
+		this.loadAndPrepareData();
+		this.managePickingProcess();
+	}
+	
+	if (this.bPicking === true && isLastFrustum)
+	{
+		var posWC;
+	
+		/*if (this.magoPolicy.issueInsertEnable === true)
+		{
+			if (this.objMarkerSC === undefined)
+			{ this.objMarkerSC = new ObjectMarker(); }
+			
+			var mouseAction = this.sceneState.mouseAction;
+			var strWC = mouseAction.getStartWorldPoint();
+			posWC = new Point3D(strWC.x, strWC.y, strWC.z);
+			
+			var options = {
+				positionWC            : posWC,
+				imageFilePath         : "defaultBlue",
+				imageFilePathSelected : "defaultRed",
+				sizeX                 : 20.0,
+				sizeY                 : 20.0
+			};
+			var objMarker = this.objMarkerManager.newObjectMarker(options, this);
+		}
 
-        if (this.myCameraSCX === undefined)
-        { this.myCameraSCX = new Camera(); }
+		if (this.magoPolicy.objectInfoViewEnable === true)
+		{
+			if (this.objMarkerSC === undefined)
+			{ 
+				if (posWC === undefined)
+				{
+					var mouseAction = this.sceneState.mouseAction;
+					var strWC = mouseAction.getStartWorldPoint();
+					posWC = new Point3D(strWC.x, strWC.y, strWC.z);
+				}
+				
+				var options = {
+					positionWC            : posWC,
+					imageFilePath         : "defaultBlue",
+					imageFilePathSelected : "defaultRed"
+				};
+			
+				this.objMarkerSC = this.objMarkerManager.newObjectMarker(options, this);
+				this.objMarkerManager.objectMarkerArray.pop();
+			}
+		}*/
+	}
 
-        if (!this.isCameraMoving && !this.mouseLeftDown && !this.mouseMiddleDown)
-        {
-            this.upDateCamera(this.myCameraSCX);
-            this.doMultiFrustumCullingSmartTiles(this.myCameraSCX);
-            this.smartTileManager.doPendentProcess(this);
-        }
+	// Render process.***
+	this.doRender(frustumVolumenObject);
 
-        gl.clearStencil(0); // provisionally here.***
-        gl.clear(gl.STENCIL_BUFFER_BIT);
+	// test. Draw the buildingNames.***
+	if (this.magoPolicy.getShowLabelInfo())
+	{
+		if (this.currentFrustumIdx === 0)
+		{ this.clearCanvas2D(); }
+		this.drawBuildingNames(this.visibleObjControlerNodes) ;
+		this.canvasDirty = true;
+	}
+	// Do stadistics.
+	var displayStadistics = false;
+	if (this.currentFrustumIdx === 0 && displayStadistics)
+	{
+		if (this.stadisticsDisplayed === undefined)
+		{ this.stadisticsDisplayed = 0; }
 
-        // If mago camera has track node, camera look track node.
-        this.sceneState.camera.doTrack(this);
+		if (this.stadisticsDisplayed === 0)
+		{
+			var timePerFrame = this.getCurrentTime() - this.prevTime;
+			this.sceneState.fps = Math.floor(1000.0/timePerFrame);
+			this.clearCanvas2D();
+			this.drawStadistics();
+		}
 
-        // reset stadistics data.
-        this.sceneState.resetStadistics();
-    }
-
-    var cameraPosition = this.sceneState.camera.position;
-
-    // Take the current frustumVolumenObject.***
-    var frustumVolumenObject = this.frustumVolumeControl.getFrustumVolumeCulling(frustumIdx);
-    this.myCameraSCX.setCurrentFrustum(frustumIdx);
-    this.sceneState.camera.setCurrentFrustum(frustumIdx);
-    var visibleNodes = frustumVolumenObject.visibleNodes; // class: VisibleObjectsController.
-
-    if (!this.isCameraMoving && !this.mouseLeftDown && !this.mouseMiddleDown)
-    {
-        if (this.frustumVolumeControl === undefined)
-        { return; }
-
-        var frustumVolume = this.myCameraSCX.bigFrustum;
-        this.tilesMultiFrustumCullingFinished(frustumVolumenObject.intersectedTilesArray, visibleNodes, cameraPosition, frustumVolume);
-        this.prepareNeoBuildingsAsimetricVersion(gl, visibleNodes);
-    }
-
-    var currentShader = undefined;
-    this.visibleObjControlerNodes = visibleNodes; // set the current visible nodes.***
-
-    // prepare data if camera is no moving.***
-    //if (!this.isCameraMoving && !this.mouseLeftDown && !this.mouseMiddleDown)
-    if (!this.isCameraMoving && !this.mouseMiddleDown)
-    {
-        this.loadAndPrepareData();
-        this.managePickingProcess();
-    }
-
-    if (this.bPicking === true && isLastFrustum)
-    {
-        var posWC;
-
-    }
-
-    // Render process.***
-    this.doRender(frustumVolumenObject);
-
-    // test. Draw the buildingNames.***
-    if (this.magoPolicy.getShowLabelInfo())
-    {
-        if (this.currentFrustumIdx === 0)
-        { this.clearCanvas2D(); }
-        this.drawBuildingNames(this.visibleObjControlerNodes) ;
-        this.canvasDirty = true;
-    }
-    // Do stadistics.
-    var displayStadistics = false;
-    if (this.currentFrustumIdx === 0 && displayStadistics)
-    {
-        if (this.stadisticsDisplayed === undefined)
-        { this.stadisticsDisplayed = 0; }
-
-        if (this.stadisticsDisplayed === 0)
-        {
-            var timePerFrame = this.getCurrentTime() - this.prevTime;
-            this.sceneState.fps = Math.floor(1000.0/timePerFrame);
-            this.clearCanvas2D();
-            this.drawStadistics();
-        }
-
-        this.stadisticsDisplayed+= 1;
-
-        if (this.stadisticsDisplayed > 5)
-        { this.stadisticsDisplayed = 0; }
-
-        this.canvasDirty = true;
-    }
+		this.stadisticsDisplayed+= 1;
+		
+		if (this.stadisticsDisplayed > 5)
+		{ this.stadisticsDisplayed = 0; }
+	
+		this.canvasDirty = true;
+	}
 };
-
-
 
 /**
  * Prepare current visibles low LOD nodes.***
@@ -29824,7 +29639,7 @@ MagoManager.prototype.checkChangesHistoryColors = function(nodesArray)
 												if (data.aditionalColor === undefined)
 												{ data.aditionalColor = new Color(); }
 												
-												data.aditionalColor.setRGB(changeHistory.rgbColor[0], changeHistory.rgbColor[1], changeHistory.rgbColor[2]);
+												data.aditionalColor.setRGBA(changeHistory.color[0], changeHistory.color[1], changeHistory.color[2], changeHistory.color[3]);
 											}
 										}
 									}
@@ -29850,7 +29665,7 @@ MagoManager.prototype.checkChangesHistoryColors = function(nodesArray)
 													if (data.aditionalColor === undefined)
 													{ data.aditionalColor = new Color(); }
 													
-													data.aditionalColor.setRGB(changeHistory.rgbColor[0], changeHistory.rgbColor[1], changeHistory.rgbColor[2]);
+													data.aditionalColor.setRGBA(changeHistory.color[0], changeHistory.color[1], changeHistory.color[2], changeHistory.color[3]);
 												}
 											}
 										}
@@ -32593,6 +32408,8 @@ var ManagerFactory = function(viewer, containerId, serverPolicy, projectIdArray,
 		{
 		  console.log(e); 
 		}, false);
+		
+		
 		//-------------------------------------------------------------
 		
 		if (serverPolicy.geo_server_enable === "true" && serverPolicy.geo_server_url !== null && serverPolicy.geo_server_url !== '') 
@@ -32613,6 +32430,7 @@ var ManagerFactory = function(viewer, containerId, serverPolicy, projectIdArray,
 			// var options = {imageryProvider: imageryProvider, baseLayerPicker: false};
 			_options.imageryProvider = imageryProvider;
 			_options.baseLayerPicker = false;
+			_options.antialias = true;
 			if (viewer === null) { viewer = new Cesium.Viewer(containerId, _options); }
 		}
 		else 
@@ -32622,8 +32440,8 @@ var ManagerFactory = function(viewer, containerId, serverPolicy, projectIdArray,
 				Cesium.Ion.defaultAccessToken = serverPolicy.cesiumIonToken;
 				DEFALUT_TERRAIN = "Cesium World Terrain";
 			}
-
-			_options.shouldAnimate = false;
+			_options.shouldAnimate = true;
+			
 			if (viewer === null) { viewer = new Cesium.Viewer(containerId, _options); }
 			// 기본 지도 설정
 			setDefaultDataset();
@@ -49299,7 +49117,7 @@ Node.prototype.checkChangesHistoryColors = function()
 					if (data.aditionalColor === undefined)
 					{ data.aditionalColor = new Color(); }
 					
-					data.aditionalColor.setRGB(changeHistory.rgbColor[0], changeHistory.rgbColor[1], changeHistory.rgbColor[2]);
+					data.aditionalColor.setRGBA(changeHistory.color[0], changeHistory.color[1], changeHistory.color[2], changeHistory.color[3]);
 				}
 				else 
 				{
@@ -49320,7 +49138,7 @@ Node.prototype.checkChangesHistoryColors = function()
 							if (data.aditionalColor === undefined)
 							{ data.aditionalColor = new Color(); }
 							
-							data.aditionalColor.setRGB(changeHistory.rgbColor[0], changeHistory.rgbColor[1], changeHistory.rgbColor[2]);
+							data.aditionalColor.setRGBA(changeHistory.color[0], changeHistory.color[1], changeHistory.color[2], changeHistory.color[3]);
 						}
 					}
 				}
@@ -49344,7 +49162,7 @@ Node.prototype.checkChangesHistoryColors = function()
 						if (object.aditionalColor === undefined)
 						{ object.aditionalColor = new Color(); }
 						
-						object.aditionalColor.setRGB(changeHistory.rgbColor[0], changeHistory.rgbColor[1], changeHistory.rgbColor[2]);
+						object.aditionalColor.setRGBA(changeHistory.color[0], changeHistory.color[1], changeHistory.color[2], changeHistory.color[3]);
 					}
 				}
 			}	
@@ -56791,7 +56609,7 @@ TinTerrain.prototype.decodeData = function(imageryType)
 			latArray[i] = minLat + vValues[i]*latRangeDivShortMax;
 			altArray[i] = minHeight + hValues[i]*heightRangeDivShortMax;
 			
-			//altArray[i] *= exageration;
+			altArray[i] *= exageration;
 			
 			var currLon = lonArray[i];
 			var currLat = latArray[i];
@@ -62206,7 +62024,6 @@ MagoWorld.prototype.mousemove = function(event)
 		}
 		else
 		{
-			var gl = this.magoManager.sceneState.gl;
 			var sceneState = this.magoManager.sceneState;
 			var strCamera = mouseAction.strCamera; // camera of onMouseDown.
 			var camera = this.magoManager.sceneState.camera;
@@ -66787,44 +66604,67 @@ Point3DList.getVboThickLines = function(magoManager, point3dArray, resultVboKeys
 	}
 	
 	// Check if must make color vbo.
+	var strColor4 = new Color(0.6, 0.9, 0.99, 1.0);
+	var endColor4 = new Color(0.6, 0.9, 0.99, 1.0);
+	
 	var colVboDataArray;
+	var makeColorVbo = false;
 	if (options)
 	{
-		if (options.colorType !== undefined)
+		if (options.color)
 		{
-			if (options.colorType === "alphaGradient")
-			{
-				var color4 = new Color(0.6, 0.9, 0.99, 1.0);
-				colVboDataArray = new Uint8Array(pointsCount * 4 * repeats);
-				for (var i=0; i<pointsCount; i++)
-				{
-					point3d = point3dArray[i];
-					var currAlpha = Math.floor((1.0 - ((pointsCount - i)/pointsCount))*255);
-					//currAlpha = 255;
-					colVboDataArray[i*16] = Math.floor(color4.r*255);
-					colVboDataArray[i*16+1] = Math.floor(color4.g*255);
-					colVboDataArray[i*16+2] = Math.floor(color4.b*255);
-					colVboDataArray[i*16+3] = currAlpha; // alpha.
-					
-					colVboDataArray[i*16+4] = Math.floor(color4.r*255);
-					colVboDataArray[i*16+5] = Math.floor(color4.g*255);
-					colVboDataArray[i*16+6] = Math.floor(color4.b*255);
-					colVboDataArray[i*16+7] = currAlpha; // alpha.
-					
-					colVboDataArray[i*16+8] = Math.floor(color4.r*255);
-					colVboDataArray[i*16+9] = Math.floor(color4.g*255);
-					colVboDataArray[i*16+10] = Math.floor(color4.b*255);
-					colVboDataArray[i*16+11] = currAlpha; // alpha.
-					
-					colVboDataArray[i*16+12] = Math.floor(color4.r*255);
-					colVboDataArray[i*16+13] = Math.floor(color4.g*255);
-					colVboDataArray[i*16+14] = Math.floor(color4.b*255);
-					colVboDataArray[i*16+15] = currAlpha; // alpha.
-				}
-			}
+			strColor4.setRGBA(options.color.r, options.color.g, options.color.b, options.color.a);
+			endColor4.setRGBA(options.color.r, options.color.g, options.color.b, options.color.a);
+		}
+		
+		if (options.startColor)
+		{
+			strColor4.setRGBA(options.startColor.r, options.startColor.g, options.startColor.b, options.startColor.a);
+			makeColorVbo = true;
+		}
+		
+		if (options.endColor)
+		{
+			endColor4.setRGBA(options.endColor.r, options.endColor.g, options.endColor.b, options.endColor.a);
+			makeColorVbo = true;
 		}
 	}
 	
+	// Make the color vbo if necessary.
+	if (makeColorVbo)
+	{
+		colVboDataArray = new Uint8Array(pointsCount * 4 * repeats);
+		
+		var currColor4 = new Color(0.6, 0.9, 0.99, 1.0);
+		currColor4.copyFrom(strColor4);
+		var w = 1.0; // weight.***
+		var r, g, b, a;
+		for (var i=0; i<pointsCount; i++)
+		{
+			w = 1.0 - (i/(pointsCount-1));
+			currColor4 = Color.mix(strColor4, endColor4, w);
+			
+			colVboDataArray[i*16] = Math.floor(currColor4.r*255);
+			colVboDataArray[i*16+1] = Math.floor(currColor4.g*255);
+			colVboDataArray[i*16+2] = Math.floor(currColor4.b*255);
+			colVboDataArray[i*16+3] = Math.floor(currColor4.a*255);
+			
+			colVboDataArray[i*16+4] = Math.floor(currColor4.r*255);
+			colVboDataArray[i*16+5] = Math.floor(currColor4.g*255);
+			colVboDataArray[i*16+6] = Math.floor(currColor4.b*255);
+			colVboDataArray[i*16+7] = Math.floor(currColor4.a*255);
+			
+			colVboDataArray[i*16+8] = Math.floor(currColor4.r*255);
+			colVboDataArray[i*16+9] = Math.floor(currColor4.g*255);
+			colVboDataArray[i*16+10] = Math.floor(currColor4.b*255);
+			colVboDataArray[i*16+11] = Math.floor(currColor4.a*255);
+			
+			colVboDataArray[i*16+12] = Math.floor(currColor4.r*255);
+			colVboDataArray[i*16+13] = Math.floor(currColor4.g*255);
+			colVboDataArray[i*16+14] = Math.floor(currColor4.b*255);
+			colVboDataArray[i*16+15] = Math.floor(currColor4.a*255);
+		}
+	}
 	var vbo = resultVboKeysContainer.newVBOVertexIdxCacheKey();
 	vbo.setDataArrayPos(posVboDataArray, magoManager.vboMemoryManager, pointDimension);
 	
@@ -89273,6 +89113,7 @@ void main()\n\
 ShaderSource.thickLineFS = "precision highp float;\n\
 \n\
 varying vec4 vColor;\n\
+\n\
 void main() {\n\
 	gl_FragColor = vColor;\n\
 }";
@@ -89297,7 +89138,6 @@ uniform vec4 oneColor4;\n\
 uniform highp int colorType; // 0= oneColor, 1= attribColor, 2= texture.\n\
 \n\
 varying vec4 vColor;\n\
-\n\
 \n\
 const float error = 0.001;\n\
 \n\
@@ -89389,6 +89229,7 @@ void main(){\n\
 	// Offset our position along the normal\n\
 	vec4 offset = vec4(normal * direction, 0.0, 1.0);\n\
 	gl_Position = currentProjected + offset; \n\
+\n\
 	\n\
 	if(colorType == 0)\n\
 		vColor = oneColor4;\n\

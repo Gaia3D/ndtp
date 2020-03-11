@@ -348,6 +348,7 @@
 							<div>
 								<%--								<button type="button" id="permView" title="인허가 시뮬레이션" class="btnTextF" style="">인허가 확인</button>--%>
 								<button type="button" id="iotSimReq" title="Iot시뮬레이션" class="btnTextF" style="">확인</button>
+							<button type="button" id="iotSimTrack" title="Iot시뮬레이션" class="btnTextF" style="">트랙킹</button>
 							</div>
 						</div>
 					</div>
