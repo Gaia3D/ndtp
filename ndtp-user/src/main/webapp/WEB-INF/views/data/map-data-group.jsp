@@ -13,7 +13,7 @@
 		    </colgroup>
 		    <thead>
 				<tr>
-					<th scope="col" class="col-number">공공</th>
+					<th scope="col" class="col-number">공통</th>
 					<th scope="col" class="col-number">공개</th>
 					<th scope="col" class="col-number">비공개</th>
 					<th scope="col" class="col-number">그룹</th>
