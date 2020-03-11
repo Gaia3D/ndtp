@@ -58,7 +58,7 @@
 			</tr>
 			<tr>
 				<th class="col-label" scope="row">
-					<form:label path="dataGroupKey">데이터 그룹 Key(영문)</form:label>
+					<form:label path="dataGroupKey">데이터 그룹 Key(영문,숫자,-,_)</form:label>
 					<span class="icon-glyph glyph-emark-dot color-warning"></span>
 				</th>
 				<td class="col-input">
@@ -193,14 +193,14 @@
 	});
 
 	// 입력값이 변경되면 중복체크, 영문+숫자
-	$("#dataGroupKey").on("keyup", function(event) {
+	/* $("#dataGroupKey").on("keyup", function(event) {
 		$("#duplication").val(null);
 		if (!(event.keyCode >=37 && event.keyCode<=40)) {
 			var inputValue = $(this).val();
 			$(this).val(inputValue.replace(/[^a-z0-9]/gi,''));
 		}
-	});
-
+	}); */
+	
 	// 데이터 그룹 중복 확인
 	$( "#duplicationButtion" ).on( "click", function() {
 		var dataGroupKey = $("#dataGroupKey").val();
@@ -209,6 +209,13 @@
 			$("#dataGroupKey").focus();
 			return false;
 		}
+		
+		var regDataGroupKey = /^[a-zA-Z0-9-_]+$/;
+		if (!regDataGroupKey.test(document.getElementById("dataGroupKey").value)) {
+			alert("데이터 그룹키(한글불가)가 올바르지 않습니다.");
+			return false;
+		}
+		
 		var formData = "dataGroupKey=" + dataGroupKey;
 		$.ajax({
 			url: "/data-groups/duplication",
