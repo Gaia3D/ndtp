@@ -19,19 +19,24 @@
 			<option value="">전체</option>
 <c:forEach var="dataGroup" items="${dataGroupList}" varStatus="status">
 			<option value="${dataGroup.dataGroupId }">
-	<c:if test="${dataGroup.sharing eq 'commomn'}">
-				[C]
-	</c:if>
-	<c:if test="${dataGroup.sharing eq 'public'}">
-				[O]
-	</c:if>
-	<c:if test="${dataGroup.sharing eq 'private'}">
-				[P]
-	</c:if>
-	<c:if test="${dataGroup.sharing eq 'group'}">
-				[G]
-	</c:if>
+	<c:if test="${dataGroup.dataGroupTarget eq 'admin'}">
+				[공통]
+	</c:if>		
+	<c:if test="${dataGroup.dataGroupTarget ne 'admin'}">
+		<c:if test="${dataGroup.sharing eq 'commomn'}">
+				[공통]
+		</c:if>
+		<c:if test="${dataGroup.sharing eq 'public'}">
+				[공개]
+		</c:if>
+		<c:if test="${dataGroup.sharing eq 'private'}">
+				[비공개]
+		</c:if>
+		<c:if test="${dataGroup.sharing eq 'group'}">
+				[그룹공개]
+		</c:if>
 				[${dataGroup.userId }]
+	</c:if>		
 				${dataGroup.dataGroupName }
 			</option>
 </c:forEach>
