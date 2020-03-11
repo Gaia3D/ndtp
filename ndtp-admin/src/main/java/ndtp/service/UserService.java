@@ -24,7 +24,13 @@ public interface UserService {
 	 * @return
 	 */
 	List<UserInfo> getListUser(UserInfo userInfo);
-
+	
+	/**
+	 * getListUserByGroupId
+	 * @param userGroupId
+	 * @return
+	 */
+	List<String> getListUserByGroupId(Integer userGroupId);
 
 	/**
 	 * 사용자 정보 취득
