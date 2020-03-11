@@ -66,8 +66,6 @@ var Simulation = function(magoInstance, viewer, $) {
 	var magoManager = magoInstance.getMagoManager();
 	var f4dController = magoInstance.getF4dController();
 	magoManager.on(Mago3D.MagoManager.EVENT_TYPE.F4DLOADEND, F4DLoadEnd);
-
-
 	function F4DLoadEnd(evt) {
 		const _projectsMap = MAGO3D_INSTANCE.getMagoManager().hierarchyManager.projectsMap;
 		for(const obj of evt.f4d){
@@ -2263,7 +2261,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				var position = Cesium.Cartesian3.fromDegrees(pos[i].lon, pos[i].lat, pos[i].alt);
 				const julDate = Cesium.JulianDate.fromDate(pos[i].dateTime.toDate());
 				property.addSample(julDate, position);
-/*				_viewer.entities.add({
+				_viewer.entities.add({
 					position : position,
 					point : {
 						pixelSize : 8,
@@ -2271,7 +2269,7 @@ var Simulation = function(magoInstance, viewer, $) {
 						outlineColor : Cesium.Color.YELLOW,
 						outlineWidth : 3
 					}
-				});*/
+				});
 				if(i === 0)
 					startTime = julDate;
 				if(i === pos.length-2)
