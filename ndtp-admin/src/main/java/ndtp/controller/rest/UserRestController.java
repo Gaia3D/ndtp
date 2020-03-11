@@ -151,9 +151,8 @@ public class UserRestController implements AuthorizationController {
 		String message = null;
 
 		if(checkIds.length() <= 0) {
-			result.put("result", "check.value.required");
 			result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-			result.put("errorCode", errorCode);
+			result.put("errorCode", "check.value.required");
 			result.put("message", message);
             return result;
 		}
