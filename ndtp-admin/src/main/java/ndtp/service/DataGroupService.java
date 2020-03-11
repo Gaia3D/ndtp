@@ -101,4 +101,11 @@ public interface DataGroupService {
 	 * @return
 	 */
 	int deleteDataGroupByParent(DataGroup dataGroup);
+	
+	/**
+	 * user data group delete
+	 * @param userId
+	 * @return
+	 */
+	int deleteDataGroupByUserId(String userId);
 }

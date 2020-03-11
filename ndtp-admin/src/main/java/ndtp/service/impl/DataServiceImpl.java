@@ -316,4 +316,12 @@ public class DataServiceImpl implements DataService {
 	public int deleteDataByConverterJob(DataInfo dataInfo) {
 		return dataMapper.deleteDataByConverterJob(dataInfo);
 	}
+	
+	/**
+	 * user data 삭제
+	 */
+	@Transactional
+	public int deleteDataByUserId(String userId) {
+		return dataMapper.deleteDataByUserId(userId);
+	}
 }
