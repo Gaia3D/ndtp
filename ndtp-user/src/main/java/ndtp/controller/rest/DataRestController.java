@@ -288,11 +288,15 @@ public class DataRestController {
 			buffer.append("status=");
 			buffer.append(dataInfo.getStatus());
 		}
-		
 		if (dataInfo.getDataType() != null) {
 			buffer.append("&");
 			buffer.append("dataType=");
 			buffer.append(dataInfo.getDataType());
+		}
+		if (dataInfo.getDataGroupId() != null) {
+			buffer.append("&");
+			buffer.append("dataGroupId=");
+			buffer.append(dataInfo.getDataGroupId());
 		}
 		return buffer.toString();
 	}

@@ -9,18 +9,18 @@ $(document).ready(function() {
 	
 	// 데이터 검색 버튼 클릭
 	$("#mapDataSearch").click(function() {
-		mapDataInfoList(1, $("#searchDataName").val(), $("#searchDataStatus").val(), $("#searchDataType").val());
+		mapDataInfoList(1, $("#searchDataName").val(), $("#searchDataGroup").val(), $("#searchDataType").val());
 	});
 	
 	// 데이터 그룹 검색 엔터키
 	$("#mapDataSearch").keyup(function(e) {
-		if(e.keyCode == 13) mapDataInfoList(1, $("#searchDataName").val(), $("#searchDataStatus").val(), $("#searchDataType").val());
+		if(e.keyCode == 13) mapDataInfoList(1, $("#searchDataName").val(), $("#searchDataGroup").val(), $("#searchDataType").val());
 	});
 	
 	// 데이터 목록 tab 클릭
 	$('#dataListTab').click(function() {
 		var pageNo = $('input[name="pageNo"]').val();
-		mapDataInfoList(pageNo, $("#searchDataName").val(), $("#searchDataStatus").val(), $("#searchDataType").val());
+		mapDataInfoList(pageNo, $("#searchDataName").val(), $("#searchDataGroup").val(), $("#searchDataType").val());
 	});
 	
 	//데이터 3D Instance show/hide
@@ -72,30 +72,34 @@ $(document).ready(function() {
 
 //데이터 검색 페이징에서 호출됨
 function pagingDataInfoList(pageNo, searchParameters) {
-	// searchParameters=&searchWord=dataName&searchOption=&searchValue=%ED%95%9C%EA%B8%80&startDate=&endDate=&orderWord=&orderValue=&status=&dataType=
+	// searchParameters=&searchWord=data_name&searchOption=1&searchValue=&startDate=&endDate=&orderWord=&orderValue=&dataType=&dataGroupId=
 	var dataName = null;
 	var status = null;
 	var dataType = null;
+	var dataGroupId = null;
 	var parameters = searchParameters.split("&");
 	for(var i=0; i<parameters.length; i++) {
 		if(i == 3) {
 			var tempDataName = parameters[3].split("=");
 			dataName = tempDataName[1];
-		} else if(i == 8) {
+		/*} else if(i == 8) {
 			var tempDataStatus = parameters[8].split("=");
-			status = tempDataStatus[1];
-		} else if(i == 9) {
-			var tempDataType = parameters[9].split("=");
+			status = tempDataStatus[1];*/
+		} else if(i == 8) {
+			var tempDataType = parameters[8].split("=");
 			dataType = tempDataType[1];
+		} else if(i == 9) {
+			var tempDataGroupId = parameters[9].split("=");
+			dataGroupId = tempDataGroupId[1];
 		}
 	}
 
-	mapDataInfoList(pageNo, dataName, status, dataType);
+	mapDataInfoList(pageNo, dataName, dataGroupId, dataType);
 }
 
 //데이터 검색
 var dataSearchFlag = true;
-function mapDataInfoList(pageNo, searchDataName, searchStatus, searchDataType) {
+function mapDataInfoList(pageNo, searchDataName, searchDataGroupId, searchDataType) {
 	// searchOption : 1 like
 
 	//searchDataName
@@ -106,7 +110,7 @@ function mapDataInfoList(pageNo, searchDataName, searchStatus, searchDataType) {
 		$.ajax({
 			url: "/datas",
 			type: "GET",
-			data: { pageNo : pageNo, searchWord : "data_name", searchValue : searchDataName, searchOption : "1", status : searchStatus, dataType : searchDataType},
+			data: { pageNo : pageNo, searchWord : "data_name", searchValue : searchDataName, searchOption : "1", dataGroupId : searchDataGroupId, dataType : searchDataType},
 			dataType: "json",
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 			success: function(msg){
