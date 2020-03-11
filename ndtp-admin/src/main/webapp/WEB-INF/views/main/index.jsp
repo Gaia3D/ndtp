@@ -94,7 +94,7 @@
 
 <c:forEach var="dbWidget" items="${widgetList }">
 	<c:choose>
-		<c:when test="${dbWidget.name == 'dataGroupWidget'}">
+		<c:when test="${dbWidget.name eq 'dataGroupWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column" style="font-size: 16px;">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
@@ -111,7 +111,7 @@
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'dataStatusWidget'}">
+		<c:when test="${dbWidget.name eq 'dataStatusWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column" style="font-size: 16px;">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
@@ -128,7 +128,7 @@
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'dataAdjustLogWidget'}">
+		<c:when test="${dbWidget.name eq 'dataAdjustLogWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
@@ -145,7 +145,7 @@
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'userStatusWidget'}">
+		<c:when test="${dbWidget.name eq 'userStatusWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column" style="font-size: 16px;">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
@@ -160,7 +160,7 @@
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'userAccessLogWidget'}">
+		<c:when test="${dbWidget.name eq 'userAccessLogWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
@@ -179,7 +179,7 @@
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'civilVoiceWidget'}">
+		<c:when test="${dbWidget.name eq 'civilVoiceWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
@@ -197,7 +197,7 @@
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'systemUsageWidget'}">
+		<c:when test="${dbWidget.name eq 'systemUsageWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
@@ -212,7 +212,7 @@
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'dbcpStatusWidget'}">
+		<c:when test="${dbWidget.name eq 'dbcpStatusWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
@@ -363,7 +363,7 @@
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'dbSessionWidget'}">
+		<c:when test="${dbWidget.name eq 'dbSessionWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
