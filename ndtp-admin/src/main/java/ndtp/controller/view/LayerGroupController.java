@@ -83,6 +83,10 @@ public class LayerGroupController {
 		Policy policy = policyService.getPolicy();
 		List<LayerGroup> layerGroupList = layerGroupService.getListLayerGroup();
 
+		if(layerGroup.getParent() == 0) {
+			layerGroup.setParentName(policy.getContentLayerGroupRoot());
+		}
+
 		model.addAttribute("policy", policy);
 		model.addAttribute("layerGroup", layerGroup);
 		model.addAttribute("layerGroupList", layerGroupList);

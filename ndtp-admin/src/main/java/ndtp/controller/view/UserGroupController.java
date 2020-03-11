@@ -53,7 +53,7 @@ public class UserGroupController implements AuthorizationController {
 
 	@Autowired
 	private ObjectMapper objectMapper;
-	
+
 	@Autowired
 	private CacheConfig cacheConfig;
 
@@ -109,6 +109,10 @@ public class UserGroupController implements AuthorizationController {
 		userGroup = userGroupService.getUserGroup(userGroup);
 		Policy policy = policyService.getPolicy();
 
+		if(userGroup.getParent() == 0) {
+			userGroup.setParentName(policy.getContentUserGroupRoot());
+		}
+
 		model.addAttribute("policy", policy);
 		model.addAttribute("userGroup", userGroup);
 
@@ -129,7 +133,7 @@ public class UserGroupController implements AuthorizationController {
 		userGroup.setUserGroupId(userGroupId);
 
 		userGroupService.deleteUserGroup(userGroup);
-		
+
 		CacheParams cacheParams = new CacheParams();
 		cacheParams.setCacheType(CacheType.BROADCAST);
 		cacheParams.setCacheName(CacheName.USER_GROUP);
