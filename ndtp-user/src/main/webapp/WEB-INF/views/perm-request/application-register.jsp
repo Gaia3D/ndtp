@@ -151,21 +151,23 @@
     function buildAcceptReq() {
         // let lon = parseFloat($("#longitude").val());
         // let lat = parseFloat($("#latitude").val());
-        let alt = parseFloat($("#altitude").val());
+        // let alt = parseFloat($("#altitude").val());
         let lon = 127.27372;
         let lat = 36.52384;
+        let alt = 0;
         let heading = 67;
 
-        var form = $('#acceptBuildUpload')[0];
+        let form = $('#acceptBuildUpload')[0];
         startLoading();
         // Create an FormData object
-        var data = new FormData(form);
-        data.append('longitude', lon);
-        data.append('latitude', lat);
-        data.append('altitude', alt);
-        data.append('heading', heading);
-        data.append('pitch', 0);
-        data.append('roll', 0);
+        let data = new FormData(form);
+        data.set('longitude', lon);
+        data.set('latitude', lat);
+        data.set('altitude', alt);
+        data.set('heading', heading);
+        data.set('pitch', 0);
+        data.set('roll', 0);
+        debugger;
         $.ajax({
             type: "POST",
             enctype: 'multipart/form-data',
