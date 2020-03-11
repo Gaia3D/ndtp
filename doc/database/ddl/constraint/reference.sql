@@ -17,7 +17,7 @@ alter table only data_smart_tiling_file_parse_log add constraint data_smart_tili
 --식별자 최대 글자수 제한으로 인해 기존의 (테이블명)_fk_(칼럼명)에서 칼럼명 일부(_id)가 잘려 생략되므로 식별자에서 잘리는 부분을 일부러 넣지 않았음
 
 alter table only data_info_origin add constraint data_info_origin_fk_data_id foreign key (data_id) references data_info(data_id);
-
+alter table only data_group add constraint data_group_fk_user_id foreign key (user_id) references user_info(user_id);
 alter table only data_info add constraint data_info_fk_user_id foreign key (user_id) references user_info(user_id);
 
 alter table only issue add constraint issue_fk_data_id foreign key (data_id) references data_info(data_id);
