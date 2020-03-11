@@ -56,10 +56,10 @@ public interface DataService {
 	
 	/**
 	 * 공유 유형별 데이터 통계
-	 * @param userId
+	 * @param dataInfo
 	 * @return
 	 */
-	List<DataInfo> getDataTotalCountBySharing(String userId);
+	List<DataInfo> getDataTotalCountBySharing(DataInfo dataInfo);
 	
 	/**
 	 * Data 정보 취득
