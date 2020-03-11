@@ -257,7 +257,7 @@ var SpatialAnalysis = function(magoInstance) {
 			if(!drawType) return false;
 			
 			var geographicCoord = result.clickCoordinate.geographicCoordinate;
-			if(!checkValidArea(geographicCoord, dataType, analysisType)) {
+			if(analysisType !== 'analysisRangeDome' && !checkValidArea(geographicCoord, dataType, analysisType)) {
 				alert('유효범위를 벗어났습니다.');
 				return false;
 			}
@@ -552,6 +552,10 @@ var SpatialAnalysis = function(magoInstance) {
 			cropShape = Mago3D.ManagerUtils.geographicToWkt(polygon ,'POLYGON');
 		} else {
 			cropShape = $('#analysisRasterHighLowPoints .cropShape').val();
+			if(!entityObject['analysisRasterHighLowPoints'] || !entityObject['analysisRasterHighLowPoints']['line']) {
+				alert("영역 그리기로 분석할 영역을 선택해주세요.");
+				return;
+			}
 			var entity = entities.getById(entityObject['analysisRasterHighLowPoints']['line']);
 			if(!entity) {
 				alert("영역 그리기로 분석할 영역을 선택해주세요.");
