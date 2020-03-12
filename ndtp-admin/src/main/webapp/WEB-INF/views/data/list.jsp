@@ -86,11 +86,11 @@
 									<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/>
 									<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/>
 								</div>
-								<!-- <div class="list-functions u-pull-right">
+								<div class="list-functions u-pull-right">
 									<div class="button-group">
 										<a href="#" onclick="uploadDataFile(); return false;" class="button">데이터 일괄 업로딩</a>
 									</div>
-								</div> -->
+								</div>
 							</div>
 							<table class="list-table scope-col" summary="데이터 리스트 트리">
 							<caption class="hiddenTag">데이터 목록</caption>
