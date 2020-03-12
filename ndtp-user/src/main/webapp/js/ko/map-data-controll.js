@@ -145,7 +145,7 @@ var MapDataControll = function(magoInstance) {
 		if (rotBtnHoldInterval) clearInterval(rotBtnHoldInterval);
 		var $this = $(this);
 		var type = $this.data('type');
-		var range = (type ==='prev') ?  $this.next() : $this.prev();
+		var range = $this.siblings('input[type="range"]');
 		var offset = (type ==='prev') ? -1 : 1;
 		var curVal = parseFloat(range.val());
 		range.val(curVal + offset).change();
@@ -155,7 +155,7 @@ var MapDataControll = function(magoInstance) {
 		var $this = $(this);
 		rotBtnHoldInterval = setInterval(function(){
 			var type = $this.data('type');
-			var range = (type ==='prev') ?  $this.next() : $this.prev();
+			var range = $this.siblings('input[type="range"]');
 			var offset = (type ==='prev') ? -1 : 1;
 			var curVal = parseFloat(range.val());
 			range.val(curVal + offset).change();
