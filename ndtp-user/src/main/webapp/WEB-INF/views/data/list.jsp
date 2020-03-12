@@ -141,17 +141,7 @@
 						<td class="col-number">${pagination.rowNumber - status.index }</td>
 						<td class="col-name ellipsis" style="min-width:100px;max-width:100px;">${dataInfo.dataGroupName }</td>
 						<td class="col-name ellipsis" style="min-width:160px;max-width:160px;">
-		<c:if test="${dataInfo.dataGroupTarget eq 'admin'}">
-							<a href="/data-adjust-log/modify?dataId=${dataInfo.dataId}">${dataInfo.dataName }</a>
-		</c:if>
-		<c:if test="${dataInfo.dataGroupTarget eq 'user'}">
-			<c:if test="${dataInfo.userId eq owner}">
 							<a href="/data/modify?dataId=${dataInfo.dataId}">${dataInfo.dataName }</a>
-			</c:if>
-			<c:if test="${dataInfo.userId ne owner}">
-							<a href="/data-adjust-log/modify?dataId=${dataInfo.dataId}">${dataInfo.dataName }</a>
-			</c:if>
-		</c:if>
 						</td>
 						<td class="col-type">
 		<c:if test="${dataInfo.userId eq owner}">

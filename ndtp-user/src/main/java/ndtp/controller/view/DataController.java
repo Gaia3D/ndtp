@@ -198,17 +198,17 @@ public class DataController {
 	@GetMapping(value = "/modify")
 	public String modify(HttpServletRequest request, @RequestParam("dataId") Long dataId, Model model) {
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-
 		DataInfo dataInfo = new DataInfo();
 		//dataInfo.setUserId(userSession.getUserId());
 		dataInfo.setDataId(dataId);
 
 		dataInfo = dataService.getData(dataInfo);
+/*
 		if(!userSession.getUserId().equals(dataInfo.getUserId())) {
 			// 자신이 등록한 데이터가 아니면 수정할 수 없음
 			return "redirect:/data-adjust-log/modify?dataId=" + dataInfo.getDataId();
 		}
-
+*/
 		model.addAttribute("dataInfo", dataInfo);
 
 		return "/data/modify";

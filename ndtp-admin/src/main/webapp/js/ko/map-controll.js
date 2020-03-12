@@ -407,12 +407,14 @@ function MapControll(viewer, option) {
     
     $('#mapCtrlZoomIn').click(function () {
         console.log("맵컨트롤 : 확대");
-        that._scene.camera.zoomIn(100);
+        var altitude = getCameraCurrentPositionAPI(MAGO3D_INSTANCE).alt;
+        that._scene.camera.zoomIn(altitude * 0.1);
     });
 
     $('#mapCtrlZoomOut').click(function () {
         console.log("맵컨트롤 : 축소");
-        that._scene.camera.zoomOut(100);
+        var altitude = getCameraCurrentPositionAPI(MAGO3D_INSTANCE).alt;
+        that._scene.camera.zoomOut(altitude * 0.1);
     });
 
     $('#distanceLayer button.focusA').click(function () {

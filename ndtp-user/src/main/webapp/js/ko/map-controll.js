@@ -495,12 +495,14 @@ function MapControll(viewer, option) {
     
     $('#mapCtrlZoomIn').click(function () {
         console.log("맵컨트롤 : 확대");
-        that._scene.camera.zoomIn(100);
+        var altitude = getCameraCurrentPositionAPI(MAGO3D_INSTANCE).alt;
+        that._scene.camera.zoomIn(altitude * 0.1);
     });
 
     $('#mapCtrlZoomOut').click(function () {
         console.log("맵컨트롤 : 축소");
-        that._scene.camera.zoomOut(100);
+        var altitude = getCameraCurrentPositionAPI(MAGO3D_INSTANCE).alt;
+        that._scene.camera.zoomOut(altitude * 0.1);
     });
 
     $('#distanceLayer button.focusA').click(function () {
@@ -632,11 +634,11 @@ var formatArea = function (_area) {
 
 $("#mapPolicy").click(function(){
 	$("#mapPolicy").toggleClass("on");
-	$(".labelLayer").toggle();
+	$("#mago3DSettingLabelLayer").toggle();
 });
 $(".layerClose").click(function(){
 	$("#mapPolicy").removeClass("on");
-	$(".labelLayer").hide();
+	$("#mago3DSettingLabelLayer").hide();
 });
 
 // 가이드 팝업 띄우기

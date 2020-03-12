@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="/externlib/css-toggle-switch/toggle-switch.css?cacheVersion=${contentCacheVersion}" />
     <style type="text/css">
     .ctrlWrap {
-	    z-index: 10000;
+	    z-index: 100;
 	}
     </style>
 </head>
@@ -42,10 +42,10 @@
 	<!-- 		<button type="button" class="mapPolicy" id="mapPolicy" title="지도 설정">지도 설정</button> -->
 		</div>
 		<div class="index">
-			<button type="button" class="magoSet" id="mapPolicy" title="Mago3D 설정">Mago3D</button>
+			<button type="button" class="magoSet on" id="mapPolicy" title="Mago3D 설정">Mago3D 설정</button>
 		</div>
 	</div>
-	<div id="mago3DSettingLabelLayer" class="labelLayer" style="display:none;">
+	<div id="mago3DSettingLabelLayer" class="labelLayer">
 	    <div class="layerHeader">
 	        <h3 class="ellipsis" style="max-width:260px;">Mago3D 설정</h3>
 	        <button type="button" class="layerClose" title="닫기">닫기</button>
@@ -88,7 +88,7 @@
 			</div>
 
 
-			<div id="dataControllWrap" style="display:none;">
+			<div id="dataControll">
 				<p class="layerDivTit"><span>test / 오전반1조_행복관_s</span></p>
 				<div class="layerDiv">
 					<h4 class="category">색상 변경</h4>
@@ -152,27 +152,11 @@
 					</ul>
 
 					<div>
-						<c:if test="${dataInfo.dataGroupTarget eq 'admin'}">
-							<button type="button" id="dcSavePosRotReqPop" class="btnTextF"
-									title="<spring:message code='data.transform.save.request'/>">
-									<spring:message code='data.transform.save.request'/>
-							</button>
-						</c:if>
-						<c:if test="${dataInfo.dataGroupTarget eq 'user'}">
-							<c:if test="${dataInfo.userId eq owner}">
-								<button type="button" id="dcSavePosRotPop" class="btnTextF"
-										title="<spring:message code='data.transform.save'/>">
-									<spring:message code='data.transform.save'/>
-								</button>
-							</c:if>
-							<c:if test="${dataInfo.userId ne owner}">
-								<button type="button" id="dcSavePosRotReqPop" class="btnTextF"
-										title="<spring:message code='data.transform.save.request'/>">
-										<spring:message code='data.transform.save.request'/>
-								</button>
-							</c:if>
-						</c:if>
-						<button type="button" id="dcShowAttr" class="btnTextF">데이터 정보 조회</button>
+						<button type="button" id="dcSavePosRotPop" class="btnTextF"
+								title="<spring:message code='data.transform.save'/>">
+							<spring:message code='data.transform.save'/>
+						</button>
+						<button type="button" id="dcShowAttrData" class="btnTextF">데이터 정보 조회</button>
 					</div>
 				</form:form>
 			</div>
@@ -180,10 +164,12 @@
 	</div>
     <div id="magoContainer" style="height: 100%;"></div>
     <button class="mapSelectButton" onclick="window.close();">닫기</button>
+    <%@ include file="/WEB-INF/views/data/data-dialog.jsp" %>
 </body>
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript" src="/externlib/handlebars-4.1.2/handlebars.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/handlebarsHelper.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>
 <script type="text/javascript" src="/externlib/cesium-geoserver-terrain-provider/GeoserverTerrainProvider.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript" src="/externlib/decodeTextAlternative/encoding-indexes.js?cacheVersion=${contentCacheVersion}"></script>
@@ -201,10 +187,6 @@
 <script type="text/javascript" src="/js/${lang}/map-data-controll.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript" src="/js/${lang}/map-init.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript">
-	$(document).ready(function() {
-		$("#magoTool").addClass("on");
-		$(".labelLayer").show();
-	});
 
 	//Cesium.Ion.defaultAccessToken = '';
 	//var viewer = new Cesium.Viewer('magoContainer');
@@ -380,7 +362,7 @@
 		//clearDataControl();
 		//$('#dcColor').hide();
 
-		var $dataControlWrap = $('#dataControllWrap');
+		var $dataControlWrap = $('#dataControll');
 		//$dataControlWrap.find('.layerDivTit').hide();
 		//var $header = $('#mago3DSettingLabelLayer .layerHeader h3');
 		var $header = $dataControlWrap.find('.layerDivTit span');
@@ -393,7 +375,6 @@
 			$header.attr('title', title);
 		}
 
-
 		$('#dcLongitude').val(dataInfo.longitude);
 		$('#dcLatitude').val(dataInfo.latitude);
 		$('#dcAltitude').val(dataInfo.altitude);
@@ -402,22 +383,9 @@
 		$('#dcHeading,#dcHeadingRange').val(dataInfo.heading);
 		$('#dcRoll,#dcRollRange').val(dataInfo.roll);
 
-		if(!$('#mapPolicy').hasClass('on')) {
-			$('#mapPolicy').trigger('click');
-		}
-
 		$dataControlWrap.show();
 
 	}
-
-	$("#magoTool").click(function(){
-		$("#magoTool").addClass("on");
-		$(".labelLayer").show();
-	});
-	$(".layerClose").click(function(){
-		$("#magoTool").removeClass("on");
-		$(".labelLayer").hide();
-	});
 
 	function validate() {
 		if ($("#dcLongitude").val() === "") {
@@ -438,53 +406,55 @@
 	}
 
 	// 위치/회전 저장 버튼 클릭
-	$("#dcSavePosRotPop").click(function(){
+	$("#dcSavePosRotPop").click(function(e){
 		if (validate() == false) {
 			return false;
 		}
-		var dataId = parseInt("${dataInfo.dataId}");
 		if(confirm(JS_MESSAGE["data.update.check"])) {
-			if(!dataId) {
-				alert('선택된 데이터가 없습니다.');
-				return false;
-			}
 			startLoading();
 			var formData = $('#dcRotLocForm').serialize();
 			$.ajax({
-				url: "/datas/" + dataId,
+				url: "/datas/${dataInfo.dataId}",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				data: formData,
 				success: function(msg){
 					if(msg.statusCode <= 200) {
 						alert(JS_MESSAGE["update"]);
+					} else if(msg.statusCode === 403) {
+						//data.smart.tiling
+						alert("변경 권한(Smart Tiling)이 존재하지 않습니다.");
+					} else if (msg.statusCode === 428) {
+						if(confirm(JS_MESSAGE[msg.errorCode])) {
+							$('input[name="dataId"]').val(dataId);
+							var formData = $('#dcRotLocForm').serialize();
+							$.ajax({
+								url: "/data-adjust-logs",
+								type: "POST",
+								headers: {"X-Requested-With": "XMLHttpRequest"},
+								data: formData,
+								success: function(msg){
+									if(msg.statusCode <= 200) {
+										alert("요청 하였습니다.");
+									} else {
+										alert(JS_MESSAGE[msg.errorCode]);
+										console.log("---- " + msg.message);
+									}
+									insertDataAdjustLogFlag = true;
+								},
+								error: function(request, status, error){
+							        alert(JS_MESSAGE["ajax.error.message"]);
+							        insertDataAdjustLogFlag = true;
+								},
+								always: function(msg) {
+									$('input[name="dataId"]').val("");
+								}
+							});
+						}
 					} else {
 						alert(JS_MESSAGE[msg.errorCode]);
 						console.log("---- " + msg.message);
 					}
-
-					/* 만일 부모창에 항목이 있으면 항목 업데이트 */
-					var $opnerLon = $(opener.document).find("#longitude");
-					var $opnerLat = $(opener.document).find("#latitude");
-					var $opnerAlt = $(opener.document).find("#altitude");
-
-					if ($opnerLat && $opnerLat && $opnerAlt) {
-						$opnerLat.val($("#dcLongitude").val());
-						$opnerLat.val($("#dcLatitude").val());
-						$opnerAlt.val($("#dcAltitude").val());
-					}
-
-					var $opnerHeading = $(opener.document).find("#heading");
-					var $opnerPitch = $(opener.document).find("#pitch");
-					var $opnerRoll = $(opener.document).find("#roll");
-
-					if ($opnerHeading && $opnerPitch && $opnerRoll) {
-						$opnerHeading.val($("#dcHeading").val());
-						$opnerPitch.val($("#dcPitch").val());
-						$opnerRoll.val($("#dcRoll").val());
-					}
-					window.close();
-
 					updateDataInfoFlag = true;
 				},
 				error:function(request, status, error){
@@ -498,6 +468,7 @@
 	});
 
 	// 위치/회전 저장 요청 버튼 클릭
+	/*
 	var insertDataAdjustLogFlag = true;
 	$("#dcSavePosRotReqPop").click(function(){
 		if (validate() == false) {
@@ -530,6 +501,48 @@
 			return;
 		}
 	});
+	*/
+	
+	var dataInfoDialog = $( "#dataInfoDialog" ).dialog({
+		autoOpen: false,
+		width: 500,
+		height: 720,
+		modal: true,
+		overflow : "auto",
+		resizable: false
+	});
 
+	//속성조회
+	$('#dcShowAttrData').click(function(e){
+		e.stopPropagation();
+		detailDataInfo("/datas/" + '${dataInfo.dataId}');
+	});
+	//데이터 상세 정보 조회
+	function detailDataInfo(url) {
+		dataInfoDialog.dialog( "open" );
+		$.ajax({
+			url: url,
+			type: "GET",
+			headers: {"X-Requested-With": "XMLHttpRequest"},
+			dataType: "json",
+			success: function(msg){
+				if(msg.statusCode <= 200) {
+					dataInfoDialog.dialog( "option", "title", msg.dataInfo.dataName + " 상세 정보");
+
+					var source = $("#templateDataInfo").html();
+				    var template = Handlebars.compile(source);
+				    var dataInfoHtml = template(msg.dataInfo);
+
+				    $("#dataInfoDialog").html("");
+	                $("#dataInfoDialog").append(dataInfoHtml);
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+				}
+			},
+			error:function(request,status,error){
+				alert(JS_MESSAGE["ajax.error.message"]);
+			}
+		});
+	}
 </script>
 </html>

@@ -42,6 +42,7 @@
 			</ul>
 		</div>
 		<form:form id="dataInfo" modelAttribute="dataInfo" method="post" onsubmit="return false;">
+		<input type="hidden" name="dataId" value="" />
 		<table class="input-table scope-row">
 			<col class="col-label l" />
 			<col class="col-input" />
@@ -239,6 +240,67 @@
 	}
 
 	// 수정
+	function updateDataInfo() {
+		if (validate() == false) {
+			return false;
+		}
+		if(confirm(JS_MESSAGE["data.update.check"])) {
+			startLoading();
+			var formData = $("#dataInfo").serialize();
+			$.ajax({
+				url: "/datas/${dataInfo.dataId}",
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+				data: formData,
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert(JS_MESSAGE["update"]);
+					} else if(msg.statusCode === 403) {
+						//data.smart.tiling
+						alert("변경 권한(Smart Tiling)이 존재하지 않습니다.");
+					} else if (msg.statusCode === 428) {
+						if(confirm(JS_MESSAGE[msg.errorCode])) {
+							$('input[name="dataId"]').val('${dataInfo.dataId}');
+							var formData = $("#dataInfo").serialize();
+							$.ajax({
+								url: "/data-adjust-logs",
+								type: "POST",
+								headers: {"X-Requested-With": "XMLHttpRequest"},
+								data: formData,
+								success: function(msg){
+									if(msg.statusCode <= 200) {
+										alert("요청 하였습니다.");
+									} else {
+										alert(JS_MESSAGE[msg.errorCode]);
+										console.log("---- " + msg.message);
+									}
+									insertDataAdjustLogFlag = true;
+								},
+								error: function(request, status, error){
+							        alert(JS_MESSAGE["ajax.error.message"]);
+							        insertDataAdjustLogFlag = true;
+								},
+								always: function(msg) {
+									$('input[name="dataId"]').val("");
+								}
+							});
+						}
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
+					updateDataInfoFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        updateDataInfoFlag = true;
+				}
+			}).always(stopLoading);
+		} else {
+			//alert('no');
+		}
+	}
+	/*
 	var updateDataInfoFlag = true;
 	function updateDataInfo() {
 		if (validate() == false) {
@@ -272,10 +334,21 @@
 			return;
 		}
 	}
-
+	*/
 	// 지도에서 찾기 -- common.js, openFindDataPoint
 	$( "#mapButtion" ).on( "click", function() {
-		openFindDataPoint("${dataInfo.dataId}", "MODIFY");
+		//openFindDataPoint("${dataInfo.dataId}", "MODIFY");
+		var url = "/map/find-point";
+		var width = 800;
+		var height = 700;
+
+		var popupX = (window.screen.width / 2) - (width / 2);
+		// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+		var popupY= (window.screen.height / 2) - (height / 2);
+
+	    var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height + ", top=" + popupY + ", left="+popupX
+	            + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
+	    //popWin.document.title = layerName;
 	});
 	
 </script>
