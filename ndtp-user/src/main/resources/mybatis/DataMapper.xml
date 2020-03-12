@@ -23,13 +23,13 @@
 					(
 						B.data_group_target = 'user'
 						AND A.user_id != #{userId}
-						AND (A.sharing = 'common' OR A.sharing = 'public')
+						AND (B.sharing = 'common' OR B.sharing = 'public')
 					)
 					OR
 					(
 						B.data_group_target = 'user'
 						AND A.user_id != #{userId}
-						AND A.sharing = 'group'
+						AND B.sharing = 'group'
 						AND C.user_group_id = #{userGroupId}
 					)
 				)
@@ -109,13 +109,13 @@
 					(
 						B.data_group_target = 'user'
 						AND A.user_id != #{userId}
-						AND (A.sharing = 'common' OR A.sharing = 'public')
+						AND (B.sharing = 'common' OR B.sharing = 'public')
 					)
 					OR
 					(
 						B.data_group_target = 'user'
 						AND A.user_id != #{userId}
-						AND A.sharing = 'group'
+						AND B.sharing = 'group'
 						AND C.user_group_id = #{userGroupId}
 					)
 				)
@@ -169,12 +169,34 @@
 	<!-- 공유 유형별 데이터 통계 -->
 	<select id="getDataTotalCountBySharing" parameterType="string" resultType="dataInfo">
 		/* getDataTotalCountBySharing */
-		SELECT DISTINCT sharing, COUNT(*) AS dataCount 
-		FROM data_info
-		<if test="userId != null and userId != ''">
-		WHERE user_id = #{userId}
+		SELECT DISTINCT A.sharing, COUNT(*) AS dataCount 
+		<if test="userId != null and userId != '' and userGroupId != null and userGroupId >= 0">
+		FROM data_info A, data_group B, user_info C
+			WHERE A.data_group_id = B.data_group_id
+				AND A.user_id = C.user_id
+				AND (
+						B.data_group_target = 'admin'
+					OR
+					(
+						B.data_group_target = 'user'
+						AND A.user_id = #{userId}
+					)
+					OR
+					(
+						B.data_group_target = 'user'
+						AND A.user_id != #{userId}
+						AND (B.sharing = 'common' OR B.sharing = 'public')
+					)
+					OR
+					(
+						B.data_group_target = 'user'
+						AND A.user_id != #{userId}
+						AND B.sharing = 'group'
+						AND C.user_group_id = #{userGroupId}
+					)
+				)
 		</if>
-		GROUP BY sharing
+		GROUP BY A.sharing
 	</select>
 	
 	<!-- Data 정보 -->

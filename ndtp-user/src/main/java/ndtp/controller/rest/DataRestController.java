@@ -55,21 +55,13 @@ public class DataRestController {
 	 * @param projectId
 	 * @return
 	 */
-	@GetMapping(value = "/{dataGroupId}/list")
+	@GetMapping(value = "/{dataGroupId:[0-9]+}/list")
 	public Map<String, Object> allList(HttpServletRequest request, @PathVariable Integer dataGroupId) {
 		log.info("@@@@@ list dataGroupId = {}", dataGroupId);
 		
 		Map<String, Object> result = new HashMap<>();
 		String errorCode = null;
 		String message = null;
-		
-		// TODO @Valid 로 구현해야 함
-		if(dataGroupId == null) {
-			result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-			result.put("errorCode", "input.invalid");
-			result.put("message", message);
-			return result;
-		}
 		
 		DataInfo dataInfo = new DataInfo();
 		//dataInfo.setUserId(userSession.getUserId());
@@ -146,20 +138,13 @@ public class DataRestController {
 	 * @param projectId
 	 * @return
 	 */
-	@GetMapping("/{dataId}")
+	@GetMapping("/{dataId:[0-9]+}")
 	public Map<String, Object> detail(HttpServletRequest request, @PathVariable Long dataId) {
 		log.info("@@@@@ dataId = {}", dataId);
 		
 		Map<String, Object> result = new HashMap<>();
 		String errorCode = null;
 		String message = null;
-		
-		if(dataId == null || dataId.longValue() <=0l) {
-			result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-			result.put("errorCode", "input.invalid");
-			result.put("message", message);
-			return result;
-		}
 		
 		DataInfo dataInfo = new DataInfo();
 		//dataInfo.setUserId(userSession.getUserId());
@@ -181,7 +166,7 @@ public class DataRestController {
 	 * @param bindingResult
 	 * @return
 	 */
-	@PostMapping("/{dataId}")
+	@PostMapping("/{dataId:[0-9]+}")
 	public Map<String, Object> update(HttpServletRequest request, @PathVariable Long dataId, @ModelAttribute DataInfo dataInfo) {
 		log.info("@@@@@ update dataInfo = {}, dataId = {}", dataInfo, dataId);
 		
@@ -190,14 +175,6 @@ public class DataRestController {
 		Map<String, Object> result = new HashMap<>();
 		String errorCode = null;
 		String message = null;
-		
-		// @Valid 로
-		if(dataId == null) {
-			result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-			result.put("errorCode", "input.invalid");
-			result.put("message", message);
-			return result;
-		}
 		
 		DataInfo preDataInfo = new DataInfo();
 		//dataInfo.setUserId(userSession.getUserId());
@@ -251,20 +228,13 @@ public class DataRestController {
 	 * @param dataId
 	 * @return
 	 */
-	@GetMapping("/attributes/{dataId}")
+	@GetMapping("/attributes/{dataId:[0-9]+}")
 	public Map<String, Object> detailAttribute(HttpServletRequest request, @PathVariable Long dataId) {
 		log.info("@@@@@ dataId = {}", dataId);
 		
 		Map<String, Object> result = new HashMap<>();
 		String errorCode = null;
 		String message = null;
-		
-		if(dataId == null || dataId.longValue() <=0l) {
-			result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-			result.put("errorCode", "input.invalid");
-			result.put("message", message);
-			return result;
-		}
 		
 		DataAttribute dataAttribute = dataAttributeService.getDataAttribute(dataId);
 		int statusCode = HttpStatus.OK.value();
@@ -281,20 +251,13 @@ public class DataRestController {
 	 * @param dataId
 	 * @return
 	 */
-	@GetMapping("/object/attributes/{dataId}")
+	@GetMapping("/object/attributes/{dataId:[0-9]+}")
 	public Map<String, Object> detailObjectAttribute(HttpServletRequest request, @PathVariable Long dataId) {
 		log.info("@@@@@ dataId = {}", dataId);
 		
 		Map<String, Object> result = new HashMap<>();
 		String errorCode = null;
 		String message = null;
-		
-		if(dataId == null || dataId.longValue() <=0l) {
-			result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-			result.put("errorCode", "input.invalid");
-			result.put("message", message);
-			return result;
-		}
 		
 		DataObjectAttribute dataObjectAttribute = dataObjectAttributeService.getDataObjectAttribute(dataId);
 		int statusCode = HttpStatus.OK.value();
@@ -325,11 +288,15 @@ public class DataRestController {
 			buffer.append("status=");
 			buffer.append(dataInfo.getStatus());
 		}
-		
 		if (dataInfo.getDataType() != null) {
 			buffer.append("&");
 			buffer.append("dataType=");
 			buffer.append(dataInfo.getDataType());
+		}
+		if (dataInfo.getDataGroupId() != null) {
+			buffer.append("&");
+			buffer.append("dataGroupId=");
+			buffer.append(dataInfo.getDataGroupId());
 		}
 		return buffer.toString();
 	}

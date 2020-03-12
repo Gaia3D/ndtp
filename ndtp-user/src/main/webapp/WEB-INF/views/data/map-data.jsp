@@ -5,12 +5,41 @@
 		<label for="searchDataName">데이터명</label>
 		<input type="text" id="searchDataName" name="searchDataName" placeholder=" 데이터명을 입력하여 주십시오. " size="30" />
 	</div>
-	<div class="form-group form-group-data">
+	<!-- <div class="form-group form-group-data">
 		<label for="searchDataStatus">상태</label>
 		<select id="searchDataStatus" name="searchDataStatus">
 			<option value="">전체</option>
 			<option value="use">사용중</option>
 			<option value="unused">사용중지</option>
+		</select>
+	</div> -->
+	<div class="form-group form-group-data">
+		<label for="searchDataGroup">데이터그룹</label>
+		<select id="searchDataGroup" name="searchDataGroup">
+			<option value="">전체</option>
+<c:forEach var="dataGroup" items="${dataGroupList}" varStatus="status">
+			<option value="${dataGroup.dataGroupId }">
+	<c:if test="${dataGroup.dataGroupTarget eq 'admin'}">
+				[공통]
+	</c:if>		
+	<c:if test="${dataGroup.dataGroupTarget ne 'admin'}">
+		<c:if test="${dataGroup.sharing eq 'commomn'}">
+				[공통]
+		</c:if>
+		<c:if test="${dataGroup.sharing eq 'public'}">
+				[공개]
+		</c:if>
+		<c:if test="${dataGroup.sharing eq 'private'}">
+				[비공개]
+		</c:if>
+		<c:if test="${dataGroup.sharing eq 'group'}">
+				[그룹공개]
+		</c:if>
+				[${dataGroup.userId }]
+	</c:if>		
+				${dataGroup.dataGroupName }
+			</option>
+</c:forEach>
 		</select>
 	</div>
 	<div class="form-group form-group-data">

@@ -151,9 +151,8 @@
 					                    	</div>
 					                    </td>
 					                    <td class="col-type">
-											<a href="/layer-group/modify?layerGroupId=${layerGroup.layerGroupId}" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;
-											<a href="/layer-group/delete?layerGroupId=${layerGroup.layerGroupId }" onclick="return deleteWarning();"
-														class="linkButton"><spring:message code='delete'/></a>
+											<a href="/layer-group/modify?layerGroupId=${layerGroup.layerGroupId}" class="image-button button-edit"><spring:message code='modified'/></a>&nbsp;&nbsp;
+					                    	<a href="/layer-group/delete?layerGroupId=${layerGroup.layerGroupId}" onclick="return deleteWarning();" class="image-button button-delete"><spring:message code='delete'/></a>
 					                    </td>
 					                    <td class="col-date">
 					                    	<fmt:parseDate value="${layerGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
@@ -248,7 +247,10 @@
 	            $(".ancestorFolder-" + ancestor).removeClass("fa-folder-open");
 	            $(".ancestorFolder-" + ancestor).addClass("fa-folder");
 	        } else {
-	            // 펼친 상태
+				// 펼친 상태
+	            $(".ancestor-" + ancestor).hide();
+	            $(".oneDepthParent-" + id).hide();
+
 	        	var clickClass = $("#oneDepthArrow-" + id).attr("class");
 	            if(clickClass.indexOf("right") >= 0) {
 	            	// 닫힘 상태라 펼침

@@ -239,7 +239,7 @@
 		resizable: false
 	});
 
-	// 상위 Layer Group 찾기
+	// 상위 User Group 찾기
 	$( "#userGroupButtion" ).on( "click", function() {
 		userGroupDialog.dialog( "open" );
 		userGroupDialog.dialog( "option", "title", "사용자 그룹 선택");

@@ -26,12 +26,16 @@
 	    FROM layer_group_tree
 	    ORDER BY path
 	</select>
-	
+
 	<!-- 레이어 그룹 정보 -->
 	<select id="getLayerGroup" parameterType="int" resultType="layerGroup">
 		/* getLayerGroup */
-		SELECT *
-		FROM layer_group
+		SELECT A.*,
+			CASE
+				WHEN parent > 0 THEN ( SELECT layer_group_name FROM layer_group WHERE layer_group_id = A.parent )
+				ELSE null
+			END AS parentName
+		FROM layer_group A
 		WHERE layer_group_id = #{layerGroupId}
 	</select>
 

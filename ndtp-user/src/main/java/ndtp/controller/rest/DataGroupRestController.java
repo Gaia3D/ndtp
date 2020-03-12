@@ -64,11 +64,13 @@ public class DataGroupRestController {
 		dataGroup.setOrderWord(SQLInjectSupport.replaceSqlInection(dataGroup.getOrderWord()));
 		
 		log.info("@@@@@ list dataGroup = {}", dataGroup);
-		
+		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		Map<String, Object> result = new HashMap<>();
 		String errorCode = null;
 		String message = null;
 		
+		dataGroup.setUserId(userSession.getUserId());
+		dataGroup.setUserGroupId(userSession.getUserGroupId());
 		List<DataGroup> dataGroupList = dataGroupService.getAllListDataGroup(dataGroup);
 		int statusCode = HttpStatus.OK.value();
 		
@@ -100,7 +102,8 @@ public class DataGroupRestController {
 		if(!StringUtils.isEmpty(dataGroup.getEndDate())) {
 			dataGroup.setEndDate(dataGroup.getEndDate().substring(0, 8) + DateUtils.END_TIME);
 		}
-		
+		dataGroup.setUserId(userSession.getUserId());
+		dataGroup.setUserGroupId(userSession.getUserGroupId());
 		long totalCount = dataGroupService.getDataGroupTotalCount(dataGroup);
 		
 		Pagination pagination = new Pagination(	request.getRequestURI(), 
@@ -169,21 +172,13 @@ public class DataGroupRestController {
 	 * @param dataGroup
 	 * @return
 	 */
-	@GetMapping("/{dataGroupId}")
+	@GetMapping("/{dataGroupId:[0-9]+}")
 	public Map<String, Object> detail(	HttpServletRequest request, @PathVariable Integer dataGroupId, DataGroup dataGroup ) {
 		log.info("@@@@@ detail dataGroup = {}, dataGroupId = {}", dataGroup, dataGroupId);
 		
 		Map<String, Object> result = new HashMap<>();
 		String errorCode = null;
 		String message = null;
-		
-		// TODO @Valid 로 구현해야 함
-		if(dataGroupId == null) {
-			result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-			result.put("errorCode", "input.invalid");
-			result.put("message", message);
-			return result;
-		}
 		
 //			dataGroup.setUserId(userSession.getUserId());
 //			dataGroup.setDataGroupId(dataGroupId);
@@ -253,7 +248,7 @@ public class DataGroupRestController {
 	 * @param bindingResult
 	 * @return
 	 */
-	@PostMapping("/{dataGroupId}")
+	@PostMapping("/{dataGroupId:[0-9]+}")
 	public Map<String, Object> update(HttpServletRequest request, @PathVariable Integer dataGroupId, @Valid @ModelAttribute DataGroup dataGroup, BindingResult bindingResult) {
 		log.info("@@@@@ update dataGroup = {}", dataGroup);
 		
@@ -262,13 +257,6 @@ public class DataGroupRestController {
 		String message = null;
 		
 		// @Valid 로 dataGroupKey를 걸어 뒀더니 수정화면에서는 수정 불가라서 hidden으로는 보내고 싶지 않고~
-		if(dataGroup.getDataGroupId() == null) {
-			result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-			result.put("errorCode", "input.invalid");
-			result.put("message", message);
-			return result;
-		}
-		
 		if(bindingResult.hasErrors()) {
 			message = bindingResult.getAllErrors().get(0).getDefaultMessage();
 			log.info("@@@@@ message = {}", message);
@@ -301,7 +289,7 @@ public class DataGroupRestController {
 	 * @param dataGroup
 	 * @return
 	 */
-	@PostMapping(value = "/view-order/{dataGroupId}")
+	@PostMapping(value = "/view-order/{dataGroupId:[0-9]+}")
 	public Map<String, Object> moveUserGroup(HttpServletRequest request, @PathVariable Integer dataGroupId, @ModelAttribute DataGroup dataGroup) {
 		log.info("@@ dataGroupId = {}, dataGroup = {}", dataGroupId, dataGroup);
 		

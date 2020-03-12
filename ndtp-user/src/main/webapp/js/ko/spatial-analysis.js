@@ -7,7 +7,30 @@ var SpatialAnalysis = function(magoInstance) {
 	var entities = viewer.entities;
 	var entityObject = {};
 	//wps 관련 스키마가 추가될때까지 하드코딩, 각자 환경에 맞는 이름으로..
-	var layerDEM = 'mago3d:sejong_dem';
+	var layerDEM = 'ndtp:sejong_dem';
+	var layerDSM = 'mago3d:dsm_busan';
+	var selectedLayer;
+	var wpsLayerInfo = {
+		'DEM' : [
+			{
+				layerName : 'mago3d:dem-sejong',
+				bbox : [127.19931049066805, 36.44941898280123, 127.32576852118987, 36.55053669535394],
+				zOrderDesc : 0
+			},
+			{
+				layerName : 'mago3d:dem-busan',
+				bbox : [128.77438057131027, 34.97492185956165, 128.99999225329736, 35.25002326361886],
+				zOrderDesc : 0
+			}
+		],
+		'DSM' : [
+			{
+				layerName : 'mago3d:dsm-busan',
+				bbox : [128.89494444444443, 35.08860597796337, 128.94109344142657, 35.16472222222223],
+				zOrderDesc : 0
+			}
+		]
+	}
 	var rasterProfileChart = null;
 	var domeIds = [];
 	
@@ -21,7 +44,7 @@ var SpatialAnalysis = function(magoInstance) {
 		var analysisType = parentDiv.attr('id');
 		removeByDivId(analysisType);
 		removeDataSource(analysisType);
-		
+		selectedLayer = undefined;
 		//특이 케이스 처리
 		switch(analysisType) {
 			case 'analysisRasterProfile' : {
@@ -40,6 +63,12 @@ var SpatialAnalysis = function(magoInstance) {
 				break;
 			}
 		}
+	});
+	
+	
+	//분석 자료 변경 시 입력 데이터 초기화
+	$('#spatialContent .dataType').change(function(){
+		$(this).parents('div.listContents').find('.reset').trigger('click');
 	});
 	
 	//지형 단면 분석 사용자 입력 선분 버텍스 위치 보기.
@@ -224,12 +253,12 @@ var SpatialAnalysis = function(magoInstance) {
 			
 			var analysisType = parentDiv.attr('id');
 			var drawType = selectedBtn.data('drawType');
-			
+			var dataType = parentDiv.find('.dataType').val();
 			if(!drawType) return false;
 			
 			var geographicCoord = result.clickCoordinate.geographicCoordinate;
-			if(!checkValidArea(geographicCoord)) {
-				alert('유효범위를 벗어났습니다. 현재 유효 범위는 세종시입니다.');
+			if(analysisType !== 'analysisRangeDome' && !checkValidArea(geographicCoord, dataType, analysisType)) {
+				alert('유효범위를 벗어났습니다.');
 				return false;
 			}
 			
@@ -309,22 +338,22 @@ var SpatialAnalysis = function(magoInstance) {
 	// 방사형 가시권 분석 - 분석실행
 	$('#analysisRadialLineOfSight .execute').click(function(e) {
 		var dataType = $('#analysisRadialLineOfSight .dataType').val();
-		if(dataType === 'DSM') {
+		/*if(dataType === 'DSM') {
 			notyetAlram();
 			return;
-		}
+		}*/
 		var observerOffset = $('#analysisRadialLineOfSight .observerOffset').val();
 	    var radius = $('#analysisRadialLineOfSight .radius').val();
 	    var sides = $('#analysisRadialLineOfSight .sides').val();
 		var observerPoint = $("#analysisRadialLineOfSight .observerPoint").val();
 
-	    if (observerPoint == "") {
+	    if (observerPoint == "" || !selectedLayer) {
 	        alert("관찰자 위치를 선택해주세요.");
 	        return;
 	    }
 	    startLoading();
 		
-		var xml = requestBodyRadialLineOfSight(layerDEM, observerPoint, observerOffset, radius, sides);
+		var xml = requestBodyRadialLineOfSight(selectedLayer, observerPoint, observerOffset, radius, sides);
 		
 		var resource = requestPostResource(xml);
 	    resource.then(function (res) {
@@ -363,25 +392,25 @@ var SpatialAnalysis = function(magoInstance) {
 	// 가시선 분석 - 실행
 	$('#analysisLinearLineOfSight .execute').click(function(e) {
 		var dataType = $('#analysisLinearLineOfSight .dataType').val();
-		if(dataType === 'DSM') {
+		/*if(dataType === 'DSM') {
 			notyetAlram();
 			return;
-		}
+		}*/
 		var observerOffset = $('#analysisLinearLineOfSight .observerOffset').val();
 	    var observerPoint = $('#analysisLinearLineOfSight .observerPoint').val();
 	    var targetPoint = $('#analysisLinearLineOfSight .targetPoint').val();
 
-	    if (observerPoint == "") {
+	    if (observerPoint == "" || !selectedLayer) {
 	        alert("관찰 위치를 선택해주세요.");
 	        return;
 	    }
 
-		if (targetPoint == "") {
+		if (targetPoint == "" || !selectedLayer) {
 			alert("대상 위치를 선택해주세요.");
 			return;
 		}
 		startLoading();
-		var xml = requestBodyLinearLineOfSight(layerDEM, observerOffset, observerPoint, targetPoint);
+		var xml = requestBodyLinearLineOfSight(selectedLayer, observerOffset, observerPoint, targetPoint);
 
 		var resource = requestPostResource(xml);
 		resource.then(function (res) {
@@ -416,21 +445,21 @@ var SpatialAnalysis = function(magoInstance) {
 	// 연직분석 - 실행
 	$('#analysisRasterProfile .execute').click(function(e) {
 		var dataType = $('#analysisRasterProfile .dataType').val();
-		if(dataType === 'DSM') {
+		/*if(dataType === 'DSM') {
 			notyetAlram();
 			return;
-		}
+		}*/
 		var inputCoverage = layerDEM;
 		var interval = $('#analysisRasterProfile .interval').val();
 		var userLine = $('#analysisRasterProfile .userLine').val();
 
-		if (userLine == "") {
+		if (userLine == "" || !selectedLayer) {
 			alert("사용자 입력 선분을 선택헤주세요.");
 			return;
 		}
 		startLoading();
 
-		var xml = requestBodyRasterProfile(inputCoverage, interval, userLine);
+		var xml = requestBodyRasterProfile(selectedLayer, interval, userLine);
 		var resource = requestPostResource(xml);
 		resource.then(function (res) {
 	        var promise = Cesium.GeoJsonDataSource.load(JSON.parse(res));
@@ -480,17 +509,19 @@ var SpatialAnalysis = function(magoInstance) {
 	
 	//지형 단면 분석 실행 결과 그래프 제거
 	$('#magoContainer .analysisGraphic .closeGraphic').click(function() {
-		rasterProfileChart.destroy();
+		if(rasterProfileChart) {
+			rasterProfileChart.destroy();
+		}
 		$('#magoContainer .analysisGraphic').hide();
 	});
 	
 	// 최고/최저 지점찾기 - 분석실행
 	$('#analysisRasterHighLowPoints .execute').click(function(e) {
 		var dataType = $('#analysisRasterHighLowPoints .dataType').val();
-		if(dataType === 'DSM') {
+		/*if(dataType === 'DSM') {
 			notyetAlram();
 			return;
-		}
+		}*/
 		var inputCoverage = layerDEM;
 		
 		var areaType = $('#analysisRasterHighLowPoints .areaType').val();
@@ -521,7 +552,16 @@ var SpatialAnalysis = function(magoInstance) {
 			cropShape = Mago3D.ManagerUtils.geographicToWkt(polygon ,'POLYGON');
 		} else {
 			cropShape = $('#analysisRasterHighLowPoints .cropShape').val();
+			if(!entityObject['analysisRasterHighLowPoints'] || !entityObject['analysisRasterHighLowPoints']['line']) {
+				alert("영역 그리기로 분석할 영역을 선택해주세요.");
+				return;
+			}
 			var entity = entities.getById(entityObject['analysisRasterHighLowPoints']['line']);
+			if(!entity) {
+				alert("영역 그리기로 분석할 영역을 선택해주세요.");
+				return;
+			}
+			
 			positions = entity.polygon.hierarchy.getValue().positions;
 		}
 		
@@ -533,8 +573,8 @@ var SpatialAnalysis = function(magoInstance) {
 			return;
 		}
 		startLoading();
-
-		var xml = requestBodyRasterHighLowPoints(inputCoverage, cropShape, valueType);
+		
+		var xml = requestBodyRasterHighLowPoints(selectedLayer, cropShape, valueType);
 
 		var resource = requestPostResource(xml);
 		resource.then(function (res) {
@@ -624,6 +664,10 @@ var SpatialAnalysis = function(magoInstance) {
 				var analysis = entityObject[analType];
 				if(analType !== id) {
 					removeByDivId(analType);
+					
+					if(selectedLayer && selectedLayer.analysisType != id) {
+						selectedLayer = undefined;
+					}
 				} else {
 					if(withPrev) {
 						if(analysis[type]) {
@@ -974,12 +1018,33 @@ var SpatialAnalysis = function(magoInstance) {
 		minMaxObserver.disconnect();
 	}
 	
-	function checkValidArea(geoGraphic) {
+	function checkValidArea(geoGraphic, dataType, analysisType) {
 		//여기도 하드코딩 일단함.
-		var validBound = [127.19931049066805, 36.44941898280123, 127.32576852118987, 36.55053669535394];
+		//var validBound = [127.19931049066805, 36.44941898280123, 127.32576852118987, 36.55053669535394];
+		
 		var lon = geoGraphic.longitude;
 		var lat = geoGraphic.latitude;
 		
-		return lon > validBound[0] && lon < validBound[2] && lat > validBound[1] && lat < validBound[3];
+		var valid = false;
+		
+		if(selectedLayer && analysisType !== 'analysisRadialLineOfSight') {
+			var bbox = selectedLayer.bbox;
+			valid = lon > bbox[0] && lon < bbox[2] && lat > bbox[1] && lat < bbox[3];
+		} else {
+			var layers = wpsLayerInfo[dataType];
+			for(var i=0,len=layers.length;i<len;i++) {
+				var layer = layers[i];
+				var bbox = layer.bbox;
+				
+				valid = lon > bbox[0] && lon < bbox[2] && lat > bbox[1] && lat < bbox[3];
+				if(valid) {
+					selectedLayer = layer;
+					selectedLayer.analysisType = analysisType;
+					break;
+				}
+			}
+		}
+
+		return valid
 	}
 }

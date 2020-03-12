@@ -114,16 +114,6 @@
 								</tr>
 								<tr>
 									<th class="col-label" scope="row">
-										<form:label path="metainfo">메타정보</form:label>
-										<span class="icon-glyph glyph-emark-dot color-warning"></span>
-									</th>
-									<td class="col-input">
-										<form:input path="metainfo" class="xl" />
-					 					<form:errors path="metainfo" cssClass="error" />
-									</td>
-								</tr>
-								<tr>
-									<th class="col-label" scope="row">
 						            	<form:label path="status">상태</form:label>
 						                <span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
@@ -133,6 +123,16 @@
 											<option value="use">사용중</option>
 											<option value="unused">사용중지</option>
 										</select>
+									</td>
+								</tr>
+								<tr>
+									<th class="col-label" scope="row">
+										<form:label path="metainfo">메타정보</form:label>
+										<span class="icon-glyph glyph-emark-dot color-warning"></span>
+									</th>
+									<td class="col-input">
+										<form:input path="metainfo" class="xl" />
+					 					<form:errors path="metainfo" cssClass="error" />
 									</td>
 								</tr>
 								<tr>

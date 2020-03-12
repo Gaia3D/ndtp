@@ -49,7 +49,7 @@ public class CivilVoiceCommentRestController {
 	 * @param pageNo
 	 * @return
 	 */
-	@GetMapping("/{civilVoiceId}")
+	@GetMapping("/{civilVoiceId:[0-9]+}")
 	public Map<String, Object> list(HttpServletRequest request, @PathVariable Long civilVoiceId, CivilVoiceComment civilVoiceComment, @RequestParam(defaultValue="1") String pageNo) {
 		civilVoiceComment.setSearchWord(SQLInjectSupport.replaceSqlInection(civilVoiceComment.getSearchWord()));
 		civilVoiceComment.setOrderWord(SQLInjectSupport.replaceSqlInection(civilVoiceComment.getOrderWord()));

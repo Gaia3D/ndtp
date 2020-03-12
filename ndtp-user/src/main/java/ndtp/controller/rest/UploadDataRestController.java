@@ -614,7 +614,7 @@ public class UploadDataRestController {
 	 * @param bindingResult
 	 * @return
 	 */
-	@PostMapping(value = "/{uploadDataId}")
+	@PostMapping(value = "/{uploadDataId:[0-9]+}")
 	@ResponseBody
 	public Map<String, Object> update(HttpServletRequest request, @PathVariable Long uploadDataId, @Valid UploadData uploadData, BindingResult bindingResult) {
 		log.info("@@ uploadData = {}", uploadData);
@@ -690,19 +690,12 @@ public class UploadDataRestController {
 	 * @param model
 	 * @return
 	 */
-	@DeleteMapping(value = "/{uploadDataId}")
+	@DeleteMapping(value = "/{uploadDataId:[0-9]+}")
 	public Map<String, Object> deleteDatas(HttpServletRequest request, @PathVariable Long uploadDataId) {
 		log.info("@@@@@@@ uploadDataId = {}", uploadDataId);
 		Map<String, Object> result = new HashMap<>();
 		String errorCode = null;
 		String message = null;
-		
-		if(uploadDataId == null) {
-			result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-			result.put("errorCode", "upload.data.id.empty");
-			result.put("message", message);
-            return result;
-		}
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		UploadData uploadData = new UploadData();

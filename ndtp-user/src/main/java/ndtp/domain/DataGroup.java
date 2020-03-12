@@ -46,8 +46,10 @@ public class DataGroup extends Search {
 	/****** validator ********/
 	private String methodMode;
 	
-		// 고유번호
+	// 고유번호
 	private Integer dataGroupId;
+	// 공유 그룹 확인용
+	private Integer userGroupId;
 	// 링크 활용 등을 위한 확장 컬럼
 	@Size(max = 60)
 	private String dataGroupKey;

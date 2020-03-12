@@ -271,7 +271,10 @@
 	            $(".ancestorFolder-" + ancestor).removeClass("fa-folder-open");
 	            $(".ancestorFolder-" + ancestor).addClass("fa-folder");
 	        } else {
-	            // 펼친 상태
+				// 펼친 상태
+	            $(".ancestor-" + ancestor).hide();
+	            $(".oneDepthParent-" + id).hide();
+
 	        	var clickClass = $("#oneDepthArrow-" + id).attr("class");
 	            if(clickClass.indexOf("right") >= 0) {
 	            	// 닫힘 상태라 펼침

@@ -61,7 +61,7 @@
 								<td class="col-input">
 									<form:hidden path="parent" />
 		 							<form:input path="parentName" cssClass="l" readonly="true" />
-									<input type="button" id="userGroupButton" value="상위 그룹 선택" />
+									<!-- <input type="button" id="userGroupButton" value="상위 그룹 선택" /> -->
 								</td>
 							</tr>
 							<tr>

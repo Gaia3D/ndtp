@@ -122,8 +122,10 @@ public class DataController {
 		Long publicDataCount = 0l;
 		Long privateDataCount = 0l;
 		Long groupDataCount = 0l;
+		dataInfo.setUserId(userSession.getUserId());
+		dataInfo.setUserGroupId(userSession.getUserGroupId());
 		// 그룹별 통계
-		List<DataInfo> groupDataCountList = dataService.getDataTotalCountBySharing(userSession.getUserId());
+		List<DataInfo> groupDataCountList = dataService.getDataTotalCountBySharing(dataInfo);
 		for(DataInfo statisticDataInfo : groupDataCountList) {
 			if(SharingType.COMMON == SharingType.valueOf(statisticDataInfo.getSharing().toUpperCase())) {
 				commonDataCount = statisticDataInfo.getDataCount();
@@ -165,6 +167,7 @@ public class DataController {
 		// 데이터 그룹
 		DataGroup dataGroup = new DataGroup();
 		dataGroup.setUserId(userSession.getUserId());
+		dataGroup.setUserGroupId(userSession.getUserGroupId());
 		List<DataGroup> dataGroupList = dataGroupService.getAllListDataGroup(dataGroup);
 
 		model.addAttribute(pagination);
@@ -218,7 +221,28 @@ public class DataController {
 	 */
 	private String getSearchParameters(PageType pageType, DataInfo dataInfo) {
 		StringBuffer buffer = new StringBuffer(dataInfo.getParameters());
-
+//		buffer.append("&");
+//		try {
+//			buffer.append("dataName=" + URLEncoder.encode(getDefaultValue(dataInfo.getDataName()), "UTF-8"));
+//		} catch(Exception e) {
+//			buffer.append("dataName=");
+//		}
+		
+		if (dataInfo.getStatus() != null) {
+			buffer.append("&");
+			buffer.append("status=");
+			buffer.append(dataInfo.getStatus());
+		}
+		if (dataInfo.getDataType() != null) {
+			buffer.append("&");
+			buffer.append("dataType=");
+			buffer.append(dataInfo.getDataType());
+		}
+		if (dataInfo.getDataGroupId() != null) {
+			buffer.append("&");
+			buffer.append("dataGroupId=");
+			buffer.append(dataInfo.getDataGroupId());
+		}
 		return buffer.toString();
 	}
 	

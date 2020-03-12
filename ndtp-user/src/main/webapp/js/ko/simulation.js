@@ -276,9 +276,13 @@ var Simulation = function(magoInstance) {
 			node.setRenderCondition(function(data){
 				var attributes = data.attributes; 
 				if(!simulatingEcho) {
-					attributes.isVisible = true;
-					data.isColorChanged = false;
+					if(data.simulating) {
+						data.simulating = false;
+						attributes.isVisible = true;
+						data.isColorChanged = false;
+					}
 				} else {
+					data.simulating = true;
 					var sliderValue = slider.getValue();
 					
 					var dataId = data.nodeId;
@@ -312,6 +316,11 @@ var Simulation = function(magoInstance) {
 		for(var i in nodes){
 			var node = nodes[i];
 			var data = node.data;
+			var projectFolderName = data.projectFolderName.toLowerCase();
+			
+			if(projectFolderName.indexOf('sejong') < 0) {
+				return;
+			}
 			
 			if(!cache[node.data.nodeId]) {
 				cache[node.data.nodeId] = true;
@@ -370,8 +379,13 @@ var Simulation = function(magoInstance) {
 			node.setRenderCondition(function(data){
 				var attributes = data.attributes; 
 				if(!simulatingSejong) {
-					data.isColorChanged = false;
+					if(data.simulating) {
+						data.simulating = false;
+						attributes.isVisible = true;
+						data.isColorChanged = false;
+					}
 				} else {
+					data.simulating = true;
 					var sliderValue = slider.getValue();
 					
 					var dataId =data.nodeId;

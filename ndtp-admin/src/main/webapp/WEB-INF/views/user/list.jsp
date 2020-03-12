@@ -91,6 +91,12 @@
 									<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/>
 								</div>
 								<div class="list-functions u-pull-right">
+									<div style="padding-bottom: 3px;" class="button-group">
+										<a href="#" onclick="updateUserStatus('LOCK'); return false;" class="button">
+											<spring:message code='user.group.user.lock'/></a>
+										<a href="#" onclick="updateUserStatus('UNLOCK'); return false;" class="button">
+											<spring:message code='user.group.user.lock.init'/></a>
+									</div>
 									<!-- <div style="padding-bottom: 3px;" class="button-group">
 										<a href="#" onclick="return false;" class="button">비밀번호 초기화</a>
 										<a href="#" onclick="return false;" class="button">사용자 잠금</a>
@@ -148,21 +154,44 @@
 											<a href="/user/detail?userId=${user.userId}&amp;pageNo=${pagination.pageNo }${pagination.searchParameters}" class="linkButton">${user.userName}</a>
 										</td>
 										<td class="col-type">
-											<c:if test="${user.status eq '0' }">사용중</c:if>
-											<c:if test="${user.status eq '1' }">사용중지</c:if>
-											<c:if test="${user.status eq '2' }">잠금</c:if>
-											<c:if test="${user.status eq '3' }">휴면</c:if>
-											<c:if test="${user.status eq '4' }">만료</c:if>
-											<c:if test="${user.status eq '5' }">삭제</c:if>
-											<c:if test="${user.status eq '6' }">임시비밀번호</c:if>
+											<c:choose>
+												<c:when test="${user.status eq '0'}">
+													<span class="icon-glyph glyph-on on" style="margin-right:3px;"></span>
+													<span class="icon-text"><spring:message code='user.group.in.use' /></span>
+												</c:when>
+												<c:when test="${user.status eq '1'}">
+													<span class="icon-glyph glyph-off off" style="margin-right:3px;"></span>
+													<span class="icon-text"><spring:message code='user.group.stop.use'/></span>
+												</c:when>
+												<c:when test="${user.status eq '2'}">
+													<span class="icon-glyph glyph-off off" style="margin-right:3px;"></span>
+													<span class="icon-text"><spring:message code='user.group.lock.password'/></span>
+												</c:when>
+												<c:when test="${user.status eq '3'}">
+													<span class="icon-glyph glyph-off off" style="margin-right:3px;"></span>
+													<span class="icon-text"><spring:message code='user.group.dormancy'/></span>
+												</c:when>
+												<c:when test="${user.status eq '4'}">
+													<span class="icon-glyph glyph-off off" style="margin-right:3px;"></span>
+													<span class="icon-text"><spring:message code='user.group.expires'/></span>
+												</c:when>
+												<c:when test="${user.status eq '5'}">
+													<span class="icon-glyph glyph-off off" style="margin-right:3px;"></span>
+													<span class="icon-text"><spring:message code='user.group.delete'/></span>
+												</c:when>
+												<c:when test="${user.status eq '6'}">
+													<span class="icon-glyph glyph-off off" style="margin-right:3px;"></span>
+													<span class="icon-text"><spring:message code='user.group.temporary.password'/></span>
+												</c:when>
+											</c:choose>
 										</td>
 										<td class="col-type">
 											<fmt:parseDate value="${user.lastSigninDate}" var="viewLastSigninDate" pattern="yyyy-MM-dd HH:mm:ss"/>
 											<fmt:formatDate value="${viewLastSigninDate}" pattern="yyyy-MM-dd HH:mm"/>
 										</td>
 					                    <td class="col-type">
-											<a href="/user/modify?userId=${user.userId}" class="linkButton"><spring:message code='modified'/></a>&nbsp;&nbsp;
-											<a href="/user/delete?userId=${user.userId}" onclick="return deleteWarning();" class="linkButton"><spring:message code='delete'/></a>
+											<a href="/user/modify?userId=${user.userId}" class="image-button button-edit"><spring:message code='modified'/></a>&nbsp;&nbsp;
+					                    	<a href="/user/delete?userId=${user.userId}" onclick="return deleteWarning();" class="image-button button-delete"><spring:message code='delete'/></a>
 					                    </td>
 										<td class="col-type">
 											<fmt:parseDate value="${user.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
@@ -243,57 +272,44 @@
 		});
 	}
 
-	function deleteUploadData(uploadDataId) {
-		deleteAllUploadData(uploadDataId);
-	}
-
-	// 삭제
-	var deleteUploadDataFlag = true;
-	function deleteAllUploadData(uploadDataId) {
-		var formData = null;
-		if(uploadDataId === undefined) {
-			if($("input:checkbox[name=uploadDataId]:checked").length == 0) {
-				alert(JS_MESSAGE["check.value.required"]);
-				return false;
-			} else {
-				var checkedValue = "";
-				$("input:checkbox[name=uploadDataId]:checked").each(function(index){
-					checkedValue += $(this).val() + ",";
-				});
-				$("#checkIds").val(checkedValue);
-			}
-			formData = "checkIds=" + $("#checkIds").val();
+	// 사용자 잠금, 사용자 잠금 해제
+	var updateUserStatusFlag = true;
+	function updateUserStatus(statusValue) {
+		if($("input:checkbox[name=userId]:checked").length == 0) {
+			alert(JS_MESSAGE["check.value.required"]);
+			return false;
 		} else {
-			formData = "checkIds=" + uploadDataId;
+			var checkedValue = "";
+			$("input:checkbox[name=userId]:checked").each(function(index){
+				checkedValue += $(this).val() + ",";
+			});
+			$("#checkIds").val(checkedValue);
 		}
 
-		if(confirm(JS_MESSAGE["delete.confirm"])) {
-			if(deleteUploadDataFlag) {
-				deleteUploadDataFlag = false;
-				$.ajax({
-					url: "/upload-data/delete",
-					type: "POST",
-					data: formData,
-					dataType: "json",
-					headers: {"X-Requested-With": "XMLHttpRequest"},
-					success: function(msg){
-						if(msg.statusCode <= 200) {
-							alert(JS_MESSAGE["delete"]);
-							location.reload();
-						} else {
-							alert(JS_MESSAGE[msg.errorCode]);
-						}
-						deleteDatasFlag = true;
-					},
-					error:function(request,status,error){
-				        alert(JS_MESSAGE["ajax.error.message"]);
-				        deleteDatasFlag = true;
+		if(updateUserStatusFlag) {
+			updateUserStatusFlag = false;
+			$.ajax({
+				url: "/users/status",
+				type: "POST",
+				data: {checkIds: checkedValue, statusValue: statusValue},
+				dataType: "json",
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert(JS_MESSAGE["update"]);
+						location.reload();
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
 					}
-				});
-			} else {
-				alert(JS_MESSAGE["button.dobule.click"]);
-				return;
-			}
+					updateUserStatusFlag = true;
+				},
+				error:function(request,status,error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        updateUserStatusFlag = true;
+				}
+			});
+		} else {
+			alert(JS_MESSAGE["button.dobule.click"]);
+			return;
 		}
 	}
 

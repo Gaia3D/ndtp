@@ -454,6 +454,7 @@ color: #287be4;
 	border: 1px solid #ccc;
 	font-size: 14px;
 	text-align: center;
+	cursor: default;
 }
 .dataGroupSummary > table tr td a {
 	border-bottom: 1px solid #000;

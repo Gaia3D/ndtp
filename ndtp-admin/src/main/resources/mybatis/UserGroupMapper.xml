@@ -31,7 +31,13 @@
 	<!-- 사용자 그룹 정보 취득 -->
 	<select id="getUserGroup" parameterType="int" resultType="userGroup">
 		/* getUserGroup */
-		SELECT * FROM user_group WHERE user_group_id = #{userGroupId}
+		SELECT A.*,
+			CASE
+				WHEN parent > 0 THEN ( SELECT user_group_name FROM user_group WHERE user_group_id = A.parent )
+				ELSE null
+			END AS parentName
+		FROM user_group A
+		WHERE user_group_id = #{userGroupId}
 	</select>
 
 	<!-- 사용자 그룹 정보 취득 -->

@@ -56,6 +56,7 @@ public class DataGroupController {
 		
 		DataGroup dataGroup = new DataGroup();
 		dataGroup.setUserId(userSession.getUserId());
+		// 자기것만 나와야 해서 dataGroupId가 필요 없음
 		List<DataGroup> dataGroupList = dataGroupService.getAllListDataGroup(dataGroup);
 		if(dataGroupList == null || dataGroupList.isEmpty()) {
 			String dataGroupPath = userSession.getUserId() + "/basic/";
@@ -90,6 +91,7 @@ public class DataGroupController {
 		
 		DataGroup dataGroup = new DataGroup();
 		dataGroup.setUserId(userSession.getUserId());
+		// 자기것만 나와야 해서 dataGroupId가 필요 없음
 		List<DataGroup> dataGroupList = dataGroupService.getAllListDataGroup(dataGroup);
 		if(dataGroupList == null || dataGroupList.isEmpty()) {
 			String dataGroupPath = userSession.getUserId() + "/basic/";

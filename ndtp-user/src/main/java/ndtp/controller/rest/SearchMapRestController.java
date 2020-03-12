@@ -66,15 +66,6 @@ public class SearchMapRestController {
 		String errorCode = null;
 		String message = null;
 		
-		// TODO 여기 들어 오지 않음. PathVariable 은 불칠전해서 이렇게 하고 싶음
-		if (sdoCode == null || "".equals(sdoCode)) {
-			log.info("@@@@@ message = {}", "sdo.code.invalid");
-			result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-			result.put("errorCode", "sdo.code.invalid");
-			result.put("message", message);
-            return result;
-		}
-
 		List<SkSgg> sggList = searchMapService.getListSggBySdoExceptGeom(sdoCode);
 		int statusCode = HttpStatus.OK.value();
 		
@@ -97,22 +88,6 @@ public class SearchMapRestController {
 		String errorCode = null;
 		String message = null;
 		
-		// TODO 여기 들어 오지 않음. PathVariable 은 불칠전해서 이렇게 하고 싶음
-		if (sdoCode == null || "".equals(sdoCode)) {
-			log.info("@@@@@ message = {}", "sdo.code.invalid");
-			result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-			result.put("errorCode", "sdo.code.invalid");
-			result.put("message", message);
-            return result;
-		}
-		if (sggCode == null || "".equals(sggCode)) {
-			log.info("@@@@@ message = {}", "sgg.code.invalid");
-			result.put("statusCode", HttpStatus.BAD_REQUEST.value());
-			result.put("errorCode", "sgg.code.invalid");
-			result.put("message", message);
-            return result;
-		}
-
 		SkEmd mapEmd = new SkEmd();
 		mapEmd.setSdoCode(sdoCode);
 		mapEmd.setSggCode(sggCode);

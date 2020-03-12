@@ -16,7 +16,6 @@ import ndtp.domain.DataSmartTilingFileParseLog;
 import ndtp.domain.DataStatus;
 import ndtp.domain.ServerTarget;
 import ndtp.domain.SharingType;
-import ndtp.parser.DataFileParser;
 import ndtp.parser.DataSmartTilingFileParser;
 import ndtp.parser.impl.DataSmartTilingFileJsonParser;
 import ndtp.persistence.DataSmartTilingMapper;
@@ -71,6 +70,7 @@ public class DataSmartTilingServiceImpl implements DataSmartTilingService {
 		String dataGroupTarget = ServerTarget.ADMIN.name().toLowerCase();
 		String sharing = SharingType.COMMON.name().toLowerCase();
 		String status = DataStatus.USE.name().toLowerCase();
+		
 		for(DataInfo dataInfo : dataInfoList) {
 			// TODO 계층 관련 코딩이 있어야 함
 			try {

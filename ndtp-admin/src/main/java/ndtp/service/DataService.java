@@ -119,4 +119,11 @@ public interface DataService {
 	 * @return
 	 */
 	int deleteDataByConverterJob(DataInfo dataInfo);
+	
+	/**
+	 * user data 삭제
+	 * @param userId
+	 * @return
+	 */
+	int deleteDataByUserId(String userId);
 }

@@ -57,7 +57,7 @@
 			</tr>
 			<tr>
 				<th class="col-label" scope="row">
-					데이터 그룹 Key(영문)
+					데이터 그룹 Key(영문,숫자,-,_)
 					<span class="icon-glyph glyph-emark-dot color-warning"></span>
 				</th>
 				<td class="col-input">
@@ -234,8 +234,7 @@
 						alert(JS_MESSAGE["update"]);
 						window.location.reload();
 					} else {
-						//alert(JS_MESSAGE[msg.errorCode]);
-						alert(msg.message);
+						alert(JS_MESSAGE[msg.errorCode]);
 						console.log("---- " + msg.message);
 					}
 					updatedataGroupFlag = true;
