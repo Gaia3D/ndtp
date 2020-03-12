@@ -205,13 +205,12 @@ function mapDataGroupList(pageNo, searchDataGroupName) {
 							var isVisible = true;
 							if (!$.isEmptyObject(projectsMap)) {
 								var projects = projectsMap[dataId];
-								if ($.isEmptyObject(projectsMap) || !projects) {
+								if ($.isEmptyObject(projects)) {
 									dataGroup.groupVisible = isVisible;
 									continue;
 								}
-								var groupVisible = projects.attributes.isVisible;
-								if (groupVisible !== undefined) {
-									isVisible = groupVisible;
+								if (projects.attributes.isVisible) {
+									isVisible = projects.attributes.isVisible;
 								}
 							}
 							dataGroup.groupVisible = isVisible;
