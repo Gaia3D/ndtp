@@ -995,91 +995,153 @@ var Simulation = function(magoInstance, viewer, $) {
 			destination : Cesium.Cartesian3.fromDegrees(127.2739454, 36.5268601, 600.0)
 		});
 	});
+    
+    var absStartTM = null;
+    
+    $('#iotsiminterval').click(function(){
+        console.log('start interval');
+        
+        var samplePosition = busSamplePosition;
+        // 개수 만큼 시간을 나눈다.
+        const day_start = moment(datepicker.getDate()); // 7 am
+        console.log(day_start)
+        const day_end   = moment(datepicker.getDate()).add(30, 'minutes'); // 10 pm
+        const durationTimeStep = parseInt((day_end.unix() - day_start.unix())/parseInt(samplePosition.length/3));
+        let startUnidxTIme = day_start.unix();
+        const arrInput = [];
+
+        for(var i = 0; i < samplePosition.length; i+=3) {
+            const time = moment(JSON.parse(JSON.stringify((startUnidxTIme += durationTimeStep))) * 1000);
+            const lon = samplePosition[i];
+            const lat = samplePosition[i+1];
+            const alt = samplePosition[i+2];
+            arrInput.push({
+                dateTime: time,
+                lon: lon,
+                lat: lat,
+                alt: alt
+            })
+        }
+        
+        let startTM = moment(JSON.parse(JSON.stringify(arrInput[0].dateTime)));
+        let endTM = moment(JSON.parse(JSON.stringify(arrInput[arrInput.length-1].dateTime)));
+        
+        // init absStartTM for second object.
+        if(absStartTM == null){
+        	absStartTM = startTM;
+        }
+        
+        var crinterval = setInterval(function() {
+            if(startTM.isBefore(endTM)) {
+                startTM.add(2000, 'milliseconds');
+                var jd = Cesium.JulianDate.fromDate(startTM.toDate());
+                MAGO3D_INSTANCE.getViewer().clock.currentTime = jd;
+                MAGO3D_INSTANCE.getMagoManager().sceneState.sunSystem.setDate(startTM.toDate());
+            } else {
+                console.log(arrInput[0].dateTime);
+                startTM = moment(JSON.parse(JSON.stringify(arrInput[0].dateTime)));
+                clearInterval(crinterval);
+            }
+        }, 30);
+    })
+    
+    var isInterval = true;
+    var interval = null;
 
 	$('#iotSimReq').click(function() {
 		const iotEnum = $('#iotList').val();
+		
+        let fileName = "";
+        let preDir = "";
+        let uri = "";
+        let scale = "";
+        let samplePosition = "";
+        let id = "";
+		
 		if(iotEnum === '1') {
-			const fileName = 'Mat_1.gltf';
-			const preDir = 'buses';
-			const uri = '/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir;
-			const scale = 0.01;
-
-			// 개수 만큼 시간을 나눈다.
-			const day_start = moment(datepicker.getDate()); // 7 am
-			const day_end   = moment(datepicker.getDate()).add(30, 'minutes'); // 10 pm
-			const durationTimeStep = parseInt((day_end.unix() - day_start.unix())/parseInt(busSamplePosition.length/3));
-			let startUnidxTIme = day_start.unix();
-			const arrInput = [];
-
-			for(var i = 0; i < busSamplePosition.length; i+=3) {
-				const time = moment(JSON.parse(JSON.stringify((startUnidxTIme += durationTimeStep))) * 1000);
-				const lon = busSamplePosition[i];
-				const lat = busSamplePosition[i+1];
-				const alt = busSamplePosition[i+2];
-				arrInput.push({
-					dateTime: time,
-					lon: lon,
-					lat: lat,
-					alt: alt
-				})
-			}
-			let startTM = moment(JSON.parse(JSON.stringify(arrInput[0].dateTime)));
-			const endTM = moment(JSON.parse(JSON.stringify(arrInput[arrInput.length-1].dateTime)));
-			// time_slots.map(m => m.format('YYYY-MM-DD HH:mm:SS'));
-			runIot(arrInput, uri, scale);
-			setInterval(function() {
-				if(startTM.isBefore(endTM)) {
-					startTM.add(2000, 'milliseconds');
-					var jd = Cesium.JulianDate.fromDate(startTM.toDate());
-					MAGO3D_INSTANCE.getViewer().clock.currentTime = jd;
-					MAGO3D_INSTANCE.getMagoManager().sceneState.sunSystem.setDate(startTM.toDate());
-				} else {
-					console.log(arrInput[0].dateTime);
-					startTM = moment(JSON.parse(JSON.stringify(arrInput[0].dateTime)));
-				}
-			}, 30);
+            fileName = 'Mat_1.gltf';
+            preDir = 'buses';
+            uri = 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir;
+            scale = 0.01;
+            samplePosition = busSamplePosition;
+            id = "bus";
 		} else if(iotEnum === '2') {
-
-			const fileName = 'Mat_1.gltf';
-			const preDir = 'buses';
-			const uri = 'http://172.30.1.7/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir;
-			const scale = 0.01;
-
-			// 개수 만큼 시간을 나눈다.
-			const day_start = moment(datepicker.getDate()); // 7 am
-			const day_end   = moment(datepicker.getDate()).add(30, 'minutes'); // 10 pm
-			const durationTimeStep = parseInt((day_end.unix() - day_start.unix())/parseInt(droneSamplePosition.length/3));
-			let startUnidxTIme = day_start.unix();
-			const arrInput = [];
-
-			for(var i = 0; i < droneSamplePosition.length; i+=3) {
-				const time = moment(JSON.parse(JSON.stringify((startUnidxTIme += durationTimeStep))) * 1000);
-				const lon = droneSamplePosition[i];
-				const lat = droneSamplePosition[i+1];
-				const alt = droneSamplePosition[i+2];
-				arrInput.push({
-					dateTime: time,
-					lon: lon,
-					lat: lat,
-					alt: alt
-				})
-			}
-			let startTM = moment(JSON.parse(JSON.stringify(arrInput[0].dateTime)));
-			const endTM = moment(JSON.parse(JSON.stringify(arrInput[arrInput.length-1].dateTime)));
-			// time_slots.map(m => m.format('YYYY-MM-DD HH:mm:SS'));
-			runIot(arrInput, uri, scale);
-			setInterval(function() {
-				if(startTM.isBefore(endTM)) {
-					startTM.add(2000, 'milliseconds');
-					var jd = Cesium.JulianDate.fromDate(startTM.toDate());
-					MAGO3D_INSTANCE.getViewer().clock.currentTime = jd;
-					MAGO3D_INSTANCE.getMagoManager().sceneState.sunSystem.setDate(startTM.toDate());
-				} else {
-					console.log(arrInput[0].dateTime);
-					startTM = moment(JSON.parse(JSON.stringify(arrInput[0].dateTime)));
-				}
-			}, 30);
+            fileName = 'drone.gltf';
+            preDir = 'buses';
+            uri = 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir;
+            scale = 0.01;
+            samplePosition = droneSamplePosition;
+            id = "drone";
 		}
+		
+        // 개수 만큼 시간을 나눈다.
+        const day_start = moment(datepicker.getDate()); // 7 am
+        const day_end   = moment(datepicker.getDate()).add(30, 'minutes'); // 10 pm
+        
+        const to_start = Cesium.JulianDate.fromDate(new Date());
+        const to_end = Cesium.JulianDate.addMinutes(to_start, 30, new Cesium.JulianDate());
+        
+        console.log(day_start, day_end)
+        console.log(to_start, to_end)
+        
+        const durationTimeStep = parseInt((day_end.unix() - day_start.unix())/parseInt(samplePosition.length/3));
+        let startUnidxTIme = day_start.unix();
+        const arrInput = [];
+
+        for(var i = 0; i < samplePosition.length; i+=3) {
+            const time = moment(JSON.parse(JSON.stringify((startUnidxTIme += durationTimeStep))) * 1000);
+            const lon = samplePosition[i];
+            const lat = samplePosition[i+1];
+            const alt = samplePosition[i+2];
+            arrInput.push({
+                dateTime: time,
+                lon: lon,
+                lat: lat,
+                alt: alt
+            })
+        }
+        
+        let startTM = moment(JSON.parse(JSON.stringify(arrInput[0].dateTime)));
+        let endTM = moment(JSON.parse(JSON.stringify(arrInput[arrInput.length-1].dateTime)));
+        
+        // draw path and scatter.
+//        MAGO3D_INSTANCE.getViewer().clock.stopTime = arrInput[arrInput.length - 1].dateTime;
+        runIot(id, arrInput, uri, scale);
+		
+        if(isInterval){
+            interval = setInterval(function(){
+            if(startTM.isBefore(endTM)){
+                startTM.add(2000, 'milliseconds');
+                var jd = Cesium.JulianDate.fromDate(startTM.toDate());
+                MAGO3D_INSTANCE.getViewer().clock.currentTime = jd;
+                MAGO3D_INSTANCE.getMagoManager().sceneState.sunSystem.setDate(startTM.toDate());
+            } else {
+                console.log(arrInput[0].dateTime);
+            }}, 30);
+            
+            
+            isInterval = false;
+        } else{
+            // endTM: IsAMomentObject
+            // viewer.clock.currentTime: JulianDate
+            clearInterval(interval);
+            
+            console.log(Cesium.JulianDate.toDate(viewer.clock.currentTime))
+            console.log(moment(Cesium.JulianDate.toDate(viewer.clock.currentTime)));
+            
+            endTM = endTM + moment(Cesium.JulianDate.toDate(viewer.clock.currentTime));
+            console.log(endTM);
+            
+            setInterval(function(){
+                if(startTM.isBefore(endTM)){
+                    startTM.add(2000, 'milliseconds');
+                    var jd = Cesium.JulianDate.fromDate(startTM.toDate());
+                    MAGO3D_INSTANCE.getViewer().clock.currentTime = jd;
+                    MAGO3D_INSTANCE.getMagoManager().sceneState.sunSystem.setDate(startTM.toDate());
+                } else{
+                    console.log('test');
+                }}, 30);
+        }
 	});
 
 
@@ -2404,7 +2466,7 @@ var Simulation = function(magoInstance, viewer, $) {
 			127.2852421125134,36.48083960258572,2,
 			127.2856504212428,36.48066411326436,2,
 			127.28578304702818,36.48080979054118,2];
-	function runIot(pos, modelPath, scale) {
+	function runIot(id, pos, modelPath, scale) {
 		var startTime = '';
 		var endTime = '';
 		function computeCirclularFlight() {
@@ -2415,12 +2477,6 @@ var Simulation = function(magoInstance, viewer, $) {
 				property.addSample(julDate, position);
 				_viewer.entities.add({
 					position : position,
-					point : {
-						pixelSize : 8,
-						color : Cesium.Color.TRANSPARENT,
-						outlineColor : Cesium.Color.YELLOW,
-						outlineWidth : 3
-					}
 				});
 				if(i === 0)
 					startTime = julDate;
@@ -2437,8 +2493,16 @@ var Simulation = function(magoInstance, viewer, $) {
 		_viewer.clock.currentTime = startTime;
 		_viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP; //Loop at the end
 		_viewer.clock.multiplier = 10;
+		
+        let et_scale = 0;
+        if(id == 'bus'){
+            et_scale = 0.05;
+        } else if(id == 'drone'){
+            et_scale = 10;
+        }
 
 		var entity = viewer.entities.add({
+			id : id,
 			availability : new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
 				start : startTime,
 				stop : endTime
@@ -2449,14 +2513,14 @@ var Simulation = function(magoInstance, viewer, $) {
 				uri : modelPath,
 				minimumPixelSize : 24,
 				maximumPixelSize : 24,
-				scale : scale
+				scale : et_scale
 			},
 			path : {
 				material : new Cesium.PolylineGlowMaterialProperty({
-					glowPower : 0.2,
+					glowPower : 0.1,
 					rgba : [23, 184, 190, 255]
 				}),
-				width : 10
+				width : 4
 			},
 		});
 		carEntitiy =  entity;
@@ -2475,20 +2539,30 @@ var Simulation = function(magoInstance, viewer, $) {
 		sceneViewEntity(carEntitiy._id);
 	});
 
+    var onTickListener = null;
+	
 	function sceneViewEntity(etityId){
-		viewer.clock.onTick.addEventListener(function(clock){
-			var trackedEntity = viewer.entities.getById(etityId);
+        onTickListener = viewer.clock.onTick.addEventListener(function(clock){
+            // clock.currentTime, viewer.endTime하고 비교
+            if(clock.currentTime < viewer.clock.stopTime){
+                console.log(clock.currentTime, viewer.clock.stopTime)
+                var trackedEntity = viewer.entities.getById(etityId);
 
-			var direction = trackedEntity.orientation.getValue(clock.currentTime);
-			var angle = Cesium.Quaternion.computeAngle(direction);
-			var pitch = -Cesium.Math.toRadians(10.0);
-			var range = Cesium.Cartesian3.magnitude(new Cesium.Cartesian3(30.0, 0.0, 10.0));
-			var offset = new Cesium.HeadingPitchRange(angle, pitch, range);
-			console.log(clock.currentTime);
-			viewer.camera.lookAt(trackedEntity.position.getValue(clock.currentTime), offset);
-		});
+                var direction = trackedEntity.orientation.getValue(clock.currentTime);
+                var angle = Cesium.Quaternion.computeAngle(direction);
+                var pitch = -Cesium.Math.toRadians(30.0);
+                var range = Cesium.Cartesian3.magnitude(new Cesium.Cartesian3(30.0, 0.0, 10.0));
+                var offset = new Cesium.HeadingPitchRange(angle, pitch, range);
+                
+                viewer.camera.lookAt(trackedEntity.position.getValue(clock.currentTime), offset);
+            } else{
+                console.log('stop this interval plz');
+                viewer.clock.onTick.removeEventListener(onTickListener());
+            }
+        });
 	};
 };
+
 const f4dDataGenMaster = {
 	avg_lon: 0,
 	avg_lat: 0,

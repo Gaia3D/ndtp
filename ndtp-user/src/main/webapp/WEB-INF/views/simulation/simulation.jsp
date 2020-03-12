@@ -353,11 +353,11 @@
 								<option value="1">자동차</option>
 								<option value="2">드론</option>
 							</select>
-							<div>
-								<%--								<button type="button" id="permView" title="인허가 시뮬레이션" class="btnTextF" style="">인허가 확인</button>--%>
-								<button type="button" id="iotSimReq" title="Iot시뮬레이션" class="btnTextF" style="">확인</button>
+						</div>
+						<div style = "margin:5px">
+							<button type="button" id="iotSimReq" title="Iot시뮬레이션" class="btnTextF" style="">등록</button>
 							<button type="button" id="iotSimTrack" title="Iot시뮬레이션" class="btnTextF" style="">트랙킹</button>
-							</div>
+				            <button type="button" id="iotsiminterval" title="Iot시뮬레이션" class="btnTextF" style="">실행</button>
 						</div>
 					</div>
 				</li>
