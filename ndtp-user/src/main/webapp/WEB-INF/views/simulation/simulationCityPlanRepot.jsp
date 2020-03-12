@@ -137,4 +137,5 @@
         border-right: 1px solid #ccc;
         border-bottom: 1px solid #ccc;
     }
+	@page { size: landscape; }
 </style>
