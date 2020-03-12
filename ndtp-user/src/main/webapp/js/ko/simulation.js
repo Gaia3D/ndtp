@@ -1452,7 +1452,8 @@ var Simulation = function(magoInstance, viewer, $) {
                 // 	genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 10, "7M6_871.gltf")
                 // }
 				else if (runAllocBuildStat === "obj_select_mode") {
-					let pickedFeature = viewer.scene.pick(event.position);
+					var scene = viewer.scene;
+					let pickedFeature = scene.pick(event.position);
 					if (!Cesium.defined(pickedFeature)) {
 						// nothing picked
 						if (headPitchRollDialog.dialog("isOpen")) {
@@ -1474,12 +1475,57 @@ var Simulation = function(magoInstance, viewer, $) {
 							headPitchRollDialog.dialog("close");
 							return;
 						}
+
 					} else if (!selectedEntity.name.includes("gltf")) {
 						headPitchRollDialog.dialog("close");
 						return;
 					}
-
 					headPitchRollDialog.dialog("open");
+
+					//select Entity Drag 기능
+					if (headPitchRollDialog.dialog("isOpen")) {
+
+						var dragging = false;
+						var handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
+						handler.setInputAction(
+							function (click) {
+								var pickedObject = scene.pick(click.position);
+								if (Cesium.defined(pickedObject) && (pickedObject.id === selectedEntity)){
+									dragging = true;
+									scene.screenSpaceCameraController.enableRotate = false;
+								};
+							},
+							Cesium.ScreenSpaceEventType.LEFT_DOWN
+						);
+
+						handler.setInputAction(
+							function (movement) {
+								if (dragging) {
+									var position = scene.camera.pickEllipsoid(movement.endPosition);
+									selectedEntity.position = position
+									let cartographic = Cesium.Cartographic.fromCartesian(position);
+									let lon = Cesium.Math.toDegrees(cartographic.longitude);
+									let lat = Cesium.Math.toDegrees(cartographic.latitude);
+									document.getElementById("selected_obj_longitude").innerText = lon;
+									document.getElementById("selected_obj_latitude").innerText = lat;
+									
+								}
+							},
+							Cesium.ScreenSpaceEventType.MOUSE_MOVE
+						);
+
+						handler.setInputAction(
+							function (click) {
+								if (dragging) {
+									dragging = false;
+									scene.screenSpaceCameraController.enableRotate = true;
+									selectedEntity.position = scene.camera.pickEllipsoid(click.position);
+								}
+							},
+							Cesium.ScreenSpaceEventType.LEFT_UP
+						);
+					}
+					
 				}
                 else if (runAllocBuildStat === "obj_lamp") {
 					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.4, "objLamp", "objLamp.gltf")
