@@ -57,6 +57,7 @@
 	    </li>
 	</ul>
 <div style="float:right; margin-top:12px;">
+	<button id="resultCityPlanDlgPrint" class="focusA" type="submit" title="프린트">프린트</button>
     <button id="resultCityPlanDlgReg" class="focusA" type="submit" title="적합" style="width: 200px;">적합</button>
     <button id="resultCityPlanDlgCle" class="focusC" type="button" title="부적합">부적합</button>
 </div>
@@ -65,7 +66,19 @@
 
 
 <script>
-
+	$("#resultCityPlanDlgPrint").click(() => {
+		window.print();
+		// debugger;
+		// var win = window.open("", "_blank" );
+		// self.focus();
+		//
+		// win.document.open();
+		// win.document.write($("#resultCityPlanDialog").html());
+		// win.document.close();
+		//
+		// win.print();
+		// win.close();
+	});
 
     $('#permRequestDialog ul.listDrop li > p').click(function() {
         var parentObj = $(this).parent();

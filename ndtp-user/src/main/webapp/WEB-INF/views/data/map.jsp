@@ -215,6 +215,7 @@
 		// headPitchRollDialog.on("dialogopen", function(event, ui) {
 		//
 		// });
+		// headPitchRollDialog.dialog('option', 'position', [1000,1500]);
 
 	});
 
@@ -232,19 +233,12 @@
 		height: 240,
 		modal: false,
 		overflow : "auto",
-		resizable: true/*,
-		oepn: function (event, ui) {
-			console.log("head open");
-			// let position = selectedEntity.position.getValue();
-			// let heading = Cesium.Math.toRadians(70);
-			// let pitch = 0;
-			// let roll = 0;
-			// let hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
-			// let orientation = Cesium.Transforms.headingPitchRollQuaternion(position, hpr);
-
-			console.log("headPitchRollDialog=", position);
-			// pickedFeature.id.orientation.setValue(orientation);
-		}*/
+		resizable: true,
+		position: {
+			my: "right-290 bottom-180",
+		}
+		// position: "top"
+		// position: [1000,500]
 	});
 
 	var permRequestDialog = $( "#permRequestDialog" ).dialog({

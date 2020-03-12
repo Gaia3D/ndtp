@@ -278,7 +278,6 @@
 						<label for="">라이브러리</label>
 						<select id="objectSelect" name="">
 							<option value="">선택안함</option>
-							<option value="">------------</option>
 							<option value="obj_select_mode">객체선택</option>
 							<option value="">------------</option>
 							<option value="obj_lamp">가로등</option>
