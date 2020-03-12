@@ -12,6 +12,9 @@
 <%@ include file="/WEB-INF/views/perm-request/agenda-view.jsp" %>
 <%--<%@ include file="/WEB-INF/views/perm-request/comment-register.jsp" %>--%>
 
+<%@ include file="/WEB-INF/views/modals/sun-analysis.jsp" %>
+<%@ include file="/WEB-INF/views/modals/head-pitch-roll.jsp" %>
+
 <%@ include file="/WEB-INF/views/construction-process/process-status-check.jsp" %>
 
 
@@ -194,6 +197,9 @@
 	var b=2;
 	var buildAcceptPermSeq;
 	var selectedObjectName;
+
+	var selectedEntity;
+	var rotationModel;
 	window['moment-range'].extendMoment(moment);
 	// 임시로...
 	$(document).ready(function() {
@@ -205,6 +211,40 @@
 		});
 		getUserInfo();
 
+
+		// headPitchRollDialog.on("dialogopen", function(event, ui) {
+		//
+		// });
+
+	});
+
+	var sunConditionDialog = $("#sunConditionDialog").dialog({
+		autoOpen: false,
+		width: 600,
+		height: 340,
+		modal: false,
+		overflow : "auto",
+		resizable: true
+	});
+	var headPitchRollDialog = $("#headPitchRollDialog").dialog({
+		autoOpen: false,
+		width: 220,
+		height: 240,
+		modal: false,
+		overflow : "auto",
+		resizable: true/*,
+		oepn: function (event, ui) {
+			console.log("head open");
+			// let position = selectedEntity.position.getValue();
+			// let heading = Cesium.Math.toRadians(70);
+			// let pitch = 0;
+			// let roll = 0;
+			// let hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
+			// let orientation = Cesium.Transforms.headingPitchRollQuaternion(position, hpr);
+
+			console.log("headPitchRollDialog=", position);
+			// pickedFeature.id.orientation.setValue(orientation);
+		}*/
 	});
 
 	var permRequestDialog = $( "#permRequestDialog" ).dialog({

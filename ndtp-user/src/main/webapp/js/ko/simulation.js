@@ -144,7 +144,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	};
 	setTimeout(()=> {
 		_viewer.camera.flyTo({
-			destination : Cesium.Cartesian3.fromDegrees(locationList["seoul"][0],  locationList["seoul"][1], 2000)
+			destination : Cesium.Cartesian3.fromDegrees(locationList["sejong"][0],  locationList["sejong"][1], 2000)
 		});
 	}, 1000);
 
@@ -1141,7 +1141,7 @@ var Simulation = function(magoInstance, viewer, $) {
     });
 	$("#objectSelect").change(value => {
 		runAllocBuildStat = value.target.value;
-		console.log(runAllocBuildStat);
+		// console.log(runAllocBuildStat);
 	});
 
     $('#run_work_state').bind('afterClick', function () {
@@ -1384,7 +1384,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				};
 				arrIotLonlat.drone.push(lonlat);
         	}
-			console.log('1. 폴리곤 : ', longitudeString, latitudeString);
+			// console.log('1. 폴리곤 : ', longitudeString, latitudeString);
 
             if (Cesium.defined(earthPosition)) {
                 var cartographic = Cesium.Cartographic.fromCartesian(earthPosition);
@@ -1418,6 +1418,36 @@ var Simulation = function(magoInstance, viewer, $) {
                 // else if (runAllocBuildStat === "autoBuild") {
                 // 	genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 10, "7M6_871.gltf")
                 // }
+				else if (runAllocBuildStat === "obj_select_mode") {
+					let pickedFeature = viewer.scene.pick(event.position);
+					if (!Cesium.defined(pickedFeature)) {
+						// nothing picked
+						if (headPitchRollDialog.dialog("isOpen")) {
+							headPitchRollDialog.dialog("close");
+						}
+						return;
+					}
+
+					if (selectedEntity !== pickedFeature.id) {
+						selectedEntity = pickedFeature.id;
+
+						if (selectedEntity.name.includes("gltf")){
+							let cartographic = Cesium.Cartographic.fromCartesian(selectedEntity.position.getValue());
+							let lon = Cesium.Math.toDegrees(cartographic.longitude);
+							let lat = Cesium.Math.toDegrees(cartographic.latitude);
+							document.getElementById("selected_obj_longitude").innerText = lon;
+							document.getElementById("selected_obj_latitude").innerText = lat;
+						} else {
+							headPitchRollDialog.dialog("close");
+							return;
+						}
+					} else if (!selectedEntity.name.includes("gltf")) {
+						headPitchRollDialog.dialog("close");
+						return;
+					}
+
+					headPitchRollDialog.dialog("open");
+				}
                 else if (runAllocBuildStat === "obj_lamp") {
 					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.4, "objLamp", "objLamp.gltf")
 				}
@@ -1726,20 +1756,37 @@ var Simulation = function(magoInstance, viewer, $) {
     function genBuild(lon, lat, alt, scale, preDir, fileName) {
     	const position = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
 		const modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
-	    // fromGltf 함수를 사용하여 key : value 값으로 요소를 지정
-		const name = '슬퍼하지마NONONO';
+
+		let heading = Cesium.Math.toRadians(0);
+		let pitch = 0;
+		let roll = 0;
+		let hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
+		let orientation = Cesium.Transforms.headingPitchRollQuaternion(position, hpr);
+
+		const entity = new Cesium.Entity({
+			name: fileName,
+			position: position,
+			orientation: orientation,
+			model: {
+				uri: 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir,
+				scale: scale,
+				show: true,
+			}
+		});
+		// entity.heading = 0;
+		// entity.pitch = 0;
+		// entity.roll = 0;
+
+		_viewer.entities.add(entity);
 
 	    // GLTF 모델 데이터 삽입
-		const _model = Cesium.Model.fromGltf({
+		/*const _model = Cesium.Model.fromGltf({
 	        url : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir,
 	        modelMatrix : modelMatrix,
 			scale : scale,
 			debugWireframe: false,
-			name : name,
 	        show: true
 	    });
-	    _model.areaVal = 714;
-	    _model.floorNum = 6;
 	    _cityPlanModels.push(_model);
 		const primiti_model = viewer.scene.primitives.add(_model);
 
@@ -1748,7 +1795,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	    	  calcFloorCoverage();
 	  		model._nodeCommands.forEach(function(data) {
 	  			data.show = false;
-	  		})
+	  		});
 	  		model.show = true;
 
 	  		for(var i = 0; i < model._nodeCommands.length; i++) {
@@ -1762,9 +1809,9 @@ var Simulation = function(magoInstance, viewer, $) {
 	    	}
 	    	}).otherwise(function(error){
 	    	  window.alert(error);
-    	});
+    	});*/
     }
-    
+
     // 부산공정관리 빌딩 생성
     function genConsProcBuild(lon, lat, alt, scale, fileName, fairRate) {
     	var position = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
@@ -1855,7 +1902,11 @@ var Simulation = function(magoInstance, viewer, $) {
 		overflow : "auto",
 		resizable: false
 	});
-	
+
+	$("#sun_condition").click(() => {
+		sunConditionDialog.dialog("open");
+	});
+
 	function simCityPlanDlgInit() {
 		if (pickedName === "") {
 			alert("지역을 먼저 선택해 주시기 바랍니다.");
@@ -2421,7 +2472,7 @@ const f4dDataGenMaster = {
 		arr = [];
 		arr_lon = [];
 		arr_lat = [];
-		debugger;
+
 		for(var i = 0; i < f4dSubObject.length; i++) {
 			var obj = f4dSubObject[i];
 			var imsiF4dSubObject = {

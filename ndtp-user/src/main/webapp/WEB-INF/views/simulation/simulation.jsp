@@ -80,6 +80,7 @@
 			        <div id="solayDatePicker" style="margin-top: -1px;"></div>
 				</li>
 				<li class="btns">
+					<button id="sun_condition" type="button" class="btnTextF" style="float:left;">일조 조건</button>
 					<button type="button" class="btnTextF execute" title="분석">분석</button>
 					<button type="button" class="btnText reset" title="취소">취소</button>
 				</li>
@@ -277,6 +278,9 @@
 						<label for="">라이브러리</label>
 						<select id="objectSelect" name="">
 							<option value="">선택안함</option>
+							<option value="">------------</option>
+							<option value="obj_select_mode">객체선택</option>
+							<option value="">------------</option>
 							<option value="obj_lamp">가로등</option>
 							<option value="obj_tree">나무</option>
 							<option value="obj_tree2">나무2</option>
@@ -331,7 +335,7 @@
 						</div>
 					</div>
 
-					<button type="button" id="testFly" class="btnTextF" style="margin-top:10px;display: none;">Fly Test</button>
+<%--					<button type="button" id="testFly" class="btnTextF" style="margin-top:10px; /*display: none;*/">Fly Test</button>--%>
 <%--					<button type="button" id="testingPicking" class="btnTextF" style="margin-top:10px;">testingPicking</button>--%>
 					<button type="button" id="testBuilding" class="btnTextF" style="margin-top:10px; display:none;">testBuilding</button>
 				</li>
@@ -525,7 +529,6 @@
 			// data: "",
 			// dataType: "json",
 			success: function(msg){
-				console.log("msg  =", msg);
 				// $("#testBuilding").attr('style', "display:none;");
 				if (msg === "admin" || msg === "supervisor" || msg === "admin2") {
 					$("#permRequest").attr('style', "display:none;");
