@@ -1297,6 +1297,15 @@ var Simulation = function(magoInstance, viewer, $) {
     });
 	$("#objectSelect").change(value => {
 		runAllocBuildStat = value.target.value;
+
+		if (multiPositions.length !== 0) {
+			multiPositions.map((object, idx) => {
+				multiGen(value.target.value, object);
+
+				viewer.entities.remove(object.entity);
+			});
+			multiPositions = [];
+		}
 		// console.log(runAllocBuildStat);
 	});
 
@@ -1577,26 +1586,27 @@ var Simulation = function(magoInstance, viewer, $) {
 				else if (runAllocBuildStat === "multi_select_mode") {
 					let pickPosition = _viewer.scene.pickPosition(event.position);
 
-					// let ellipsoid = _viewer.scene.globe.ellipsoid;
-					// let cartographic = ellipsoid.cartesianToCartographic(earthPosition);
-					// let longitudeString = Cesium.Math.toDegrees(cartographic.longitude);
-					// let latitudeString = Cesium.Math.toDegrees(cartographic.latitude);
-					// let lonlat = {
-					// 	lon: longitudeString,
-					// 	lat: latitudeString
-					// };
-					multiPositions.push(pickPosition);
+					let ellipsoid = _viewer.scene.globe.ellipsoid;
+					let cartographic = ellipsoid.cartesianToCartographic(pickPosition);
+					let longitudeString = Cesium.Math.toDegrees(cartographic.longitude);
+					let latitudeString = Cesium.Math.toDegrees(cartographic.latitude);
 
 					let entity = new Cesium.Entity({
-						position : pickPosition,//Cesium.Cartesian3.fromDegrees(longitudeString, latitudeString),
+						position : Cesium.Cartesian3.fromDegrees(longitudeString, latitudeString, 1),
 						point: new Cesium.PointGraphics({
-							show: true,
-							pixelSize: 10,
+							pixelSize: 12,
 							color: Cesium.Color.WHITE
 						})
 					});
-					debugger;
+
+					let object = {
+						lon: longitudeString,
+						lat: latitudeString,
+						entity: entity
+					};
 					_viewer.entities.add(entity);
+
+					multiPositions.push(object);
 				}
 				else if (runAllocBuildStat === "obj_select_mode") {
 					var scene = viewer.scene;
@@ -1982,6 +1992,57 @@ var Simulation = function(magoInstance, viewer, $) {
 
 	function genF4DFileConvert(url) {
 
+	}
+
+	function multiGen(selected_name, obj) {
+		if (selected_name === "obj_lamp") {
+			genBuild(obj.lon, obj.lat, 0, 0.4, "objLamp", "objLamp.gltf")
+		}
+		else if (selected_name === "obj_tree") {
+			genBuild(obj.lon, obj.lat, 0, 0.05, "tree", "tree.gltf")
+		}
+		else if (selected_name === "obj_tree2") {
+			genBuild(obj.lon, obj.lat, 0, 0.9, "Tree2", "Tree.gltf")
+		}
+		else if (selected_name === "obj_cone") {
+			genBuild(obj.lon, obj.lat, 0, 0.03, "TrafficCone", "TrafficCone.gltf")
+		}
+		else if (selected_name === "obj_bench") {
+			genBuild(obj.lon, obj.lat, 0, 0.1, "bench", "bank.gltf")
+		}
+		else if (selected_name === "obj_bus1") {
+			genBuild(obj.lon, obj.lat, 1, 0.05, "buses", "bus_1.gltf")
+		}
+		else if (selected_name === "obj_bus2") {
+			genBuild(obj.lon, obj.lat, 0, 0.03, "buses", "Mat_1.gltf")
+		}
+		else if (selected_name === "obj_car1") {
+			genBuild(obj.lon, obj.lat, 1, 0.05, "buses", "car_1.gltf")
+		}
+		else if (selected_name === "obj_car2") {
+			genBuild(obj.lon, obj.lat, 1, 0.05, "buses", "car2_2.gltf")
+		}
+		else if (selected_name === "obj_truck1") {
+			genBuild(obj.lon, obj.lat, 1, 0.05, "buses", "truck_1.gltf")
+		}
+		else if (selected_name === "obj_truck2") {
+			genBuild(obj.lon, obj.lat, 1, 0.05, "buses", "truck_2.gltf")
+		}
+		else if (selected_name === "maple_green") {
+			genBuild(obj.lon, obj.lat, 0, 1, "texture_maple", "maple_green.gltf")
+		}
+		else if (selected_name === "maple_light_green") {
+			genBuild(obj.lon, obj.lat, 0, 1, "texture_maple", "maple_light_green.gltf")
+		}
+		else if (selected_name === "maple_orange") {
+			genBuild(obj.lon, obj.lat, 0, 1, "texture_maple", "maple_orange.gltf")
+		}
+		else if (selected_name === "maple_red") {
+			genBuild(obj.lon, obj.lat, 0, 1, "texture_maple", "maple_red.gltf")
+		}
+		else if (selected_name === "maple_yellow") {
+			genBuild(obj.lon, obj.lat, 0, 1, "texture_maple", "maple_yellow.gltf")
+		}
 	}
     
     function genBuild(lon, lat, alt, scale, preDir, fileName) {
