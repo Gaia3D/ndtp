@@ -91,6 +91,7 @@
 					<label for="">경관 리스트</label>
 					<select id="camera_scene_list" name="searchDataStatus">
 						<option value="none">선택안함</option>
+						<option value=0>통경축 반영구간</option>
 					</select>
 					<button id="cameraLocaMove" type="button" class="btnText">이동</button>
 				</li>

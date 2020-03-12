@@ -45,6 +45,13 @@ var Simulation = function(magoInstance, viewer, $) {
     var _labels = [];   
     var _polygons = [];
     var _camera_scene = [];
+	_camera_scene.push({
+		position: new Cesium.Cartesian3(-3107317.633919009, 4083709.9416279183, 3775290.7025832837),
+		direction: new Cesium.Cartesian3(0.920898635332758, 0.3659976513346029, -0.13413210898147662),
+		up: new Cesium.Cartesian3(-0.22700219556100568, 0.783271367206152, 0.578753806488984),
+		right: new Cesium.Cartesian3(0.3168843742640951, -0.5025253073553211, 0.804395803578495)
+	});
+
     var _cityPlanModels = [];
     var _bsConstructProcessModels = [];
     let _sejongDataGroupList = [];
@@ -751,9 +758,9 @@ var Simulation = function(magoInstance, viewer, $) {
 		switch (val){
 			case "dType1":
 				allObject[pickedName].terrain.polygon.material.color=Cesium.Color.YELLOW.withAlpha(0.6);
-				$("#standardFloorAreaRatio").val(140).trigger("change");
+				$("#standardFloorAreaRatio").val(200).trigger("change");
 				$("#standardBuildingToLandRatio").val(50).trigger("change");
-				$("#standardFloorCount").val(25).trigger("change");
+				$("#standardFloorCount").val(40).trigger("change");
 				break;
 			case "dType2":
 				allObject[pickedName].terrain.polygon.material.color=Cesium.Color.ORANGERED.withAlpha(0.6);
@@ -771,7 +778,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				allObject[pickedName].terrain.polygon.material.color=Cesium.Color.YELLOWGREEN.withAlpha(0.6);
 				$("#standardFloorAreaRatio").val(50).trigger("change");
 				$("#standardBuildingToLandRatio").val(25).trigger("change");
-				$("#standardFloorCount").val(40).trigger("change");
+				$("#standardFloorCount").val(25).trigger("change");
 				break;
 			default:
 				console.log("아무것도 선택되지 않았습니다.");
@@ -1733,6 +1740,7 @@ var Simulation = function(magoInstance, viewer, $) {
     $('#cameraLocaMove').click(function() {
     	var index = $('#camera_scene_list').val();
     	var cameraObj = _camera_scene[index];
+
 		_viewer.camera.flyTo({
 		    destination : cameraObj.position,
 		    orientation : {
@@ -2460,7 +2468,7 @@ const f4dDataGenMaster = {
 	},
 	initIfc: (f4dObject, lon, lat, alt, head, pich, roll) => {
 		let mappingType = "origin";
-		debugger;
+
 		if(f4dObject.cons_type === 'CONSTPROCGEUMGANG') {
 			mappingType = "boundingboxcenter";
 		}
