@@ -127,10 +127,10 @@
     //     "buildingLandRatio_isGood": "적합",
     // };
     function setTmpVals() {
-        $("#std_floorAreaRatio").html("140.0%");
+        $("#std_floorAreaRatio").html("200.0%");
         $("#std_buildingLandRatio").html("50.0%");
-        $("#cur_floorAreaRatio").html("130.84%");
-        $("#cur_buildingLandRatio").html("16.36%");
+        $("#cur_floorAreaRatio").html("192.84%");
+        $("#cur_buildingLandRatio").html("26.36%");
         $("#floorAreaRatio_isGood").html("적합");
         $("#buildingLandRatio_isGood").html("적합");
     }

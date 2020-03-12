@@ -40,7 +40,7 @@
                         <li>
                             <div>
                                 <label for="">기준 용적율</label>
-                                <label id="" for="">140.0%</label>
+                                <label id="" for="">200.0%</label>
                                 <label for="">기준 건폐율</label>
                                 <label id="" for="">50.0%</label>
                             </div>
@@ -53,9 +53,9 @@
                         <li>
                             <div>
                                 <label for="">용적율</label>
-                                <label id="cur_floorAreaRatio" for="">130.84%</label>
+                                <label id="cur_floorAreaRatio" for="">192.84%</label>
                                 <label for="">건폐율</label>
-                                <label id="cur_buildingLandRatio" for="">16.36%</label>
+                                <label id="cur_buildingLandRatio" for="">26.36%</label>
                             </div>
                         </li>
                         <li>

@@ -751,9 +751,9 @@ var Simulation = function(magoInstance, viewer, $) {
 		switch (val){
 			case "dType1":
 				allObject[pickedName].terrain.polygon.material.color=Cesium.Color.YELLOW.withAlpha(0.6);
-				$("#standardFloorAreaRatio").val(140).trigger("change");
+				$("#standardFloorAreaRatio").val(200).trigger("change");
 				$("#standardBuildingToLandRatio").val(50).trigger("change");
-				$("#standardFloorCount").val(25).trigger("change");
+				$("#standardFloorCount").val(40).trigger("change");
 				break;
 			case "dType2":
 				allObject[pickedName].terrain.polygon.material.color=Cesium.Color.ORANGERED.withAlpha(0.6);
@@ -771,7 +771,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				allObject[pickedName].terrain.polygon.material.color=Cesium.Color.YELLOWGREEN.withAlpha(0.6);
 				$("#standardFloorAreaRatio").val(50).trigger("change");
 				$("#standardBuildingToLandRatio").val(25).trigger("change");
-				$("#standardFloorCount").val(40).trigger("change");
+				$("#standardFloorCount").val(25).trigger("change");
 				break;
 			default:
 				console.log("아무것도 선택되지 않았습니다.");
