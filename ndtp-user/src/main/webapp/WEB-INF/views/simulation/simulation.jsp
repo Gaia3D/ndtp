@@ -300,6 +300,7 @@
 					</div>
 				</li>
 				<li style="text-align: right;">
+					<button id="sejong_lod1_buildings" type="button" class="btnTextF" style="float:left;" >세종시 도시 표출</button>
 					<button id="result_build" type="button" class="btnTextF" >결과 산출</button>
 				</li>
 			</ul>
@@ -333,7 +334,6 @@
 							<button type="button" id="permCompleteView" title="인허가 시뮬레이션" class="btnTextF" style="width: 52%;">완료 인허가 확인</button>
 						</div>
 					</div>
-
 <%--					<button type="button" id="testFly" class="btnTextF" style="margin-top:10px; /*display: none;*/">Fly Test</button>--%>
 <%--					<button type="button" id="testingPicking" class="btnTextF" style="margin-top:10px;">testingPicking</button>--%>
 					<button type="button" id="testBuilding" class="btnTextF" style="margin-top:10px; display:none;">testBuilding</button>

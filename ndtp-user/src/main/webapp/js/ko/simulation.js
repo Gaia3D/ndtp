@@ -148,6 +148,56 @@ var Simulation = function(magoInstance, viewer, $) {
 		});
 	}, 1000);
 
+	$("#sejong_lod1_buildings").click(() => {
+		let fileName = "6-4.geojson";
+		let fileName2 = "2-4.geojson";
+		let obj = {
+			width : 5,
+			leadTime : 0,
+			trailTime : 100,
+			resolution : 5,
+			strokeWidth: 0,
+			stroke: Cesium.Color.BLUEVIOLET.withAlpha(0.0),
+			fill: Cesium.Color.BLUEVIOLET.withAlpha(0.9),
+		};
+		let url = "http://localhost/data/simulation-rest/drawGeojson?fileName=" + fileName;
+		let url2 = "http://localhost/data/simulation-rest/drawGeojson?fileName=" + fileName2;
+
+		Cesium.GeoJsonDataSource.load(url, obj).then(function(dataSource) {
+			let entitis = dataSource.entities._entities._array;
+
+			for(let index in entitis) {
+				let entitiyObj = entitis[index];
+				let registeredEntity = _viewer.entities.add(entitiyObj);
+				registeredEntity.name = "lod1_6-4";
+				let height = entitiyObj.properties.HEIGHT.getValue();
+				if (height === 0 || height === 0.0) {
+					height = 10;
+				}
+				registeredEntity.polygon.extrudedHeight = height;
+			}
+		}, function(err) {
+			console.log(err);
+		});
+		Cesium.GeoJsonDataSource.load(url2, obj).then(function(dataSource) {
+			let entitis = dataSource.entities._entities._array;
+
+			for(let index in entitis) {
+				let entitiyObj = entitis[index];
+				let registeredEntity = _viewer.entities.add(entitiyObj);
+				registeredEntity.name = "lod1_2-4";
+				let height = entitiyObj.properties.HEIGHT.getValue();
+
+				if (height === 0 || height === 0.0) {
+					height = 10;
+				}
+				registeredEntity.polygon.extrudedHeight = height;
+			}
+		}, function(err) {
+			console.log(err);
+		});
+	});
+
 	var observer;
 	var observerTarget = document.getElementById('simulationContent');
 	var observerConfig = { attributes: true};
