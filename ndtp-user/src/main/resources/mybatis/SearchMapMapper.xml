@@ -9,7 +9,9 @@
 		SELECT A.bjcd, SUBSTR(A.bjcd, 1, 2) AS sdo_code, A.name
 		FROM sk_sdo A, ( 
 			SELECT MIN(ogc_fid) AS ogc_fid, name 
-			FROM sk_sdo GROUP BY name
+			FROM sk_sdo 
+			WHERE enable_yn ='Y'
+			GROUP BY name
 		) B
 		WHERE A.ogc_fid = B.ogc_fid
 		ORDER BY A.name
@@ -24,7 +26,8 @@
 			FROM (
 				SELECT ogc_fid, SUBSTR(bjcd, 1, 5) as code, name 
 				FROM sk_sgg 
-				WHERE bjcd LIKE #{sdoCode} || '%'
+				WHERE enable_yn = 'Y'
+					AND bjcd LIKE #{sdoCode} || '%'
 			) A
 			GROUP BY A.code, A.name
 		) C
@@ -44,7 +47,8 @@
 			FROM (
 				SELECT ogc_fid, SUBSTR(bjcd, 6, 3) as code, name 
 				FROM sk_emd 
-				WHERE bjcd LIKE #{sdoCode} || #{sggCode} ||'%'
+				WHERE enable_yn = 'Y'
+					AND bjcd LIKE #{sdoCode} || #{sggCode} ||'%'
 			) A
 			GROUP BY A.code, A.name
 		) C
@@ -59,7 +63,8 @@
 		FROM (
 			SELECT wkb_geometry 
 			FROM sk_sdo 
-			WHERE bjcd = #{bjcd}
+			WHERE enable_yn = 'Y'
+				AND bjcd = #{bjcd}
 			ORDER BY bjcd LIMIT 1
 		) A
 	</select>
@@ -71,7 +76,8 @@
 		FROM (
 			SELECT wkb_geometry 
 			FROM sk_sgg 
-			WHERE bjcd = #{bjcd}
+			WHERE enable_yn = 'Y'
+				AND bjcd = #{bjcd}
 			ORDER BY bjcd LIMIT 1
 		) A
 	</select>
@@ -83,7 +89,8 @@
 		FROM (
 			SELECT wkb_geometry 
 			FROM sk_emd 
-			WHERE bjcd = #{bjcd}
+			WHERE enable_yn = 'Y'
+				AND bjcd = #{bjcd}
 			ORDER BY bjcd LIMIT 1
 		) A
 	</select>
@@ -95,7 +102,8 @@
 		FROM (
 			SELECT wkb_geometry 
 			FROM sk_sdo 
-			WHERE bjcd = #{bjcd}
+			WHERE enable_yn = 'Y'
+				AND bjcd = #{bjcd}
 			ORDER BY bjcd LIMIT 1
 		) A
 	</select>
@@ -107,7 +115,8 @@
 		FROM (
 			SELECT wkb_geometry 
 			FROM sk_sgg 
-			WHERE bjcd = #{bjcd}
+			WHERE enable_yn = 'Y'
+				AND bjcd = #{bjcd}
 			ORDER BY bjcd LIMIT 1
 		) A
 	</select>
@@ -119,7 +128,8 @@
 		FROM (
 			SELECT wkb_geometry 
 			FROM sk_emd 
-			WHERE bjcd = #{bjcd}
+			WHERE enable_yn = 'Y'
+				AND bjcd = #{bjcd}
 			ORDER BY bjcd LIMIT 1
 		) A
 	</select>
@@ -131,15 +141,18 @@
 		FROM (
 			SELECT name
 			FROM sk_sdo
-			WHERE name like '%' || #{searchValue} || '%'
+			WHERE enable_yn = 'Y'
+				AND name like '%' || #{searchValue} || '%'
 			UNION ALL
 			SELECT name
 			FROM sk_sgg 
-			WHERE name like '%' || #{searchValue} || '%'
+			WHERE enable_yn = 'Y'
+				AND name like '%' || #{searchValue} || '%'
 			UNION ALL
 			SELECT name
 			FROM sk_emd 
-			WHERE name like '%' || #{searchValue} || '%'
+			WHERE enable_yn = 'Y'
+				AND name like '%' || #{searchValue} || '%'
 		) A 		
 	</select>
 	
@@ -148,18 +161,21 @@
 		/* getListDistrict */
 		SELECT bjcd AS id, name, ST_X(ST_Centroid(wkb_geometry)) AS longitude, ST_Y(ST_Centroid(wkb_geometry)) AS latitude
 		FROM sk_sdo
-		WHERE name LIKE '%' || #{searchValue} || '%'
+		WHERE enable_yn = 'Y'
+			AND name LIKE '%' || #{searchValue} || '%'
 		UNION ALL
 		SELECT B.bjcd AS id, A.name||' ' || B.name, ST_X(ST_Centroid(B.wkb_geometry)) AS longitude, ST_Y(ST_Centroid(B.wkb_geometry)) AS latitude
 		FROM sk_sgg B
 		LEFT JOIN sk_sdo A on SUBSTR(A.bjcd,1,2) = SUBSTR(B.bjcd,1,2)
-		WHERE B.name LIKE '%' || #{searchValue} || '%'
+		WHERE B.enable_yn = 'Y'
+			AND B.name LIKE '%' || #{searchValue} || '%'
 		UNION ALL
 		SELECT C.bjcd AS id, A.name||' ' || B.name ||' '|| C.name as name, ST_X(ST_Centroid(C.wkb_geometry)) AS longitude, ST_Y(ST_Centroid(C.wkb_geometry)) AS latitude
 		FROM sk_emd C
 		LEFT JOIN sk_sdo A on SUBSTR(A.bjcd,1,2) = SUBSTR(C.bjcd,1,2)
 		LEFT JOIN sk_sgg B on SUBSTR(B.bjcd,1,5) = SUBSTR(C.bjcd,1,5)
-		where C.name like '%' || #{searchValue} || '%'
+		WHERE C.enable_yn = 'Y'
+			AND C.name like '%' || #{searchValue} || '%'
 		ORDER BY name
 		OFFSET #{offset} LIMIT #{limit}
 	</select>
