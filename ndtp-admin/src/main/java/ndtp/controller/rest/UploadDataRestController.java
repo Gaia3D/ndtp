@@ -75,6 +75,7 @@ public class UploadDataRestController {
 	 * @param model
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@PostMapping
 	public Map<String, Object> insert(MultipartHttpServletRequest request) throws Exception {
 		
