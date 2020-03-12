@@ -171,7 +171,7 @@
         $.ajax({
             type: "POST",
             enctype: 'multipart/form-data',
-            url: "http://localhost/data/simulation-rest/uploadBuildAccept",
+            url: "/data/simulation-rest/uploadBuildAccept",
             data: data,
             processData: false,
             contentType: false,

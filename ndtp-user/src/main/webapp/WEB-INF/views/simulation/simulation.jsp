@@ -192,7 +192,6 @@
 						<option value="location">경관 좌표 배치 모드</option>
 					</select>
 				</li>
-
 			</ul>
 		</div>
 	</li>
@@ -204,7 +203,6 @@
 					<div id="smulationToolbar">
 						<label for="">위치</label>
 						<select id="curLocation" name="curLocation">
-							<option value="seoul">서울시</option>
 							<option value="sejong">세종시</option>
 							<option value="pusan">부산시</option>
 						</select>
@@ -448,7 +446,7 @@
 
 	$("#testBuilding").click(()=> {
 		console.log("testBuilding");
-		let urlParam = "http://localhost/data/simulation-rest/cityPlanModelSelect";
+		let urlParam = "/data/simulation-rest/cityPlanModelSelect";
 		let lon = 126.92377563766438;
 		let lat = 37.5241752651257;
 		let height = 0.3;
