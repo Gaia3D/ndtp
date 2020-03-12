@@ -348,7 +348,7 @@
 					<div>
 						<label for="">종류</label>
 						<div style="display: flex; align-items: center; justify-content: space-between;">
-							<select id="iotList" name="iotDataStatus" style="width:210px; ">
+							<select id="iotList" name="iotDataStatus" style="width:150px; ">
 								<option value="">선택없음</option>
 								<option value="1">자동차</option>
 								<option value="2">드론</option>
