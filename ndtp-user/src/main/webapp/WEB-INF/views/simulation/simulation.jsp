@@ -91,6 +91,9 @@
 					<label for="">경관 리스트</label>
 					<select id="camera_scene_list" name="searchDataStatus">
 						<option value="none">선택안함</option>
+						<option value=0>통경축 반영구간</option>
+						<option value=1>에코델타 전망대</option>
+						<option value=2>에코델타 1층</option>
 					</select>
 					<button id="cameraLocaMove" type="button" class="btnText">이동</button>
 				</li>
@@ -276,7 +279,8 @@
 						<label for="">라이브러리</label>
 						<select id="objectSelect" name="">
 							<option value="">선택안함</option>
-							<option value="obj_select_mode">객체선택</option>
+							<option value="obj_select_mode">객체선택 모드</option>
+							<option value="multi_select_mode">다중선택 모드</option>
 							<option value="">------------</option>
 							<option value="obj_lamp">가로등</option>
 							<option value="obj_tree">나무</option>
@@ -347,7 +351,7 @@
 					<div>
 						<label for="">종류</label>
 						<div style="display: flex; align-items: center; justify-content: space-between;">
-							<select id="iotList" name="iotDataStatus" style="width:210px; ">
+							<select id="iotList" name="iotDataStatus" style="width:150px; ">
 								<option value="">선택없음</option>
 								<option value="1">자동차</option>
 								<option value="2">드론</option>

@@ -45,7 +45,26 @@ var Simulation = function(magoInstance, viewer, $) {
     var _labels = [];   
     var _polygons = [];
     var _camera_scene = [];
-    var _cityPlanModels = [];
+	_camera_scene.push({
+		position: new Cesium.Cartesian3(-3107317.633919009, 4083709.9416279183, 3775290.7025832837),
+		direction: new Cesium.Cartesian3(0.920898635332758, 0.3659976513346029, -0.13413210898147662),
+		up: new Cesium.Cartesian3(-0.22700219556100568, 0.783271367206152, 0.578753806488984),
+		right: new Cesium.Cartesian3(0.3168843742640951, -0.5025253073553211, 0.804395803578495)
+	});
+	_camera_scene.push({
+		position: new Cesium.Cartesian3(-3280627.778688929, 4062537.6806924795, 3650266.004010676),
+		direction: new Cesium.Cartesian3(0.5356198313576546, -0.6225088213202119, 0.5706085905723101),
+		up: new Cesium.Cartesian3(-0.3513729530836468, 0.45014645898935396, 0.8209172999155416),
+		right: new Cesium.Cartesian3(-0.7678856972868262, -0.6401960112636337, 0.02237460758222004)
+	});
+	_camera_scene.push({
+		position: new Cesium.Cartesian3(-3280626.779031388, 4062552.2818159657, 3650218.004230461),
+		direction: new Cesium.Cartesian3(0.398749006838372, -0.5183446964191867, 0.7565170224386978),
+		up: new Cesium.Cartesian3(-0.47659122165829726, 0.5876566876099041, 0.6538504606908275),
+		right: new Cesium.Cartesian3(-0.783492206077165, -0.6212715937506359, -0.012711011560142732)
+	});
+
+	var _cityPlanModels = [];
     var _bsConstructProcessModels = [];
     let _sejongDataGroupList = [];
 	const consBuildStepInfo = {};
@@ -65,6 +84,25 @@ var Simulation = function(magoInstance, viewer, $) {
 	const htmlBillboard = new HtmlBillboardCollection(viewer.scene);
 	var magoManager = magoInstance.getMagoManager();
 	var f4dController = magoInstance.getF4dController();
+	initDeltaBillboard();
+	function initDeltaBillboard() {
+
+		// const cart3 = new Cesium.Cartesian3(0,0,0);
+		const cart3 = Cesium.Cartesian3.fromDegrees(128.9219740546607, 35.13631787332174, 0.3);
+		const pinBuilder = new Cesium.PinBuilder();
+		const entitiyObj = new Cesium.Entity({
+			position: cart3,
+			billboard : {
+				image : pinBuilder.fromText('?', Cesium.Color.BLACK, 48).toDataURL(),
+				verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+				eyeOffset: new Cesium.Cartesian3(0, 3.0504106, 0),
+				translucencyByDistance : new Cesium.NearFarScalar(1.5e1, 1.0, 8.0e2, 0.0)
+			}
+		});
+		entitiyObj.type = 'delta';
+		viewer.entities.add(entitiyObj)
+	}
+
 	magoManager.on(Mago3D.MagoManager.EVENT_TYPE.F4DLOADEND, F4DLoadEnd);
 	function F4DLoadEnd(evt) {
 		const _projectsMap = MAGO3D_INSTANCE.getMagoManager().hierarchyManager.projectsMap;
@@ -157,9 +195,9 @@ var Simulation = function(magoInstance, viewer, $) {
 			resolution : 5,
 			strokeWidth: 0,
 			stroke: Cesium.Color.BLUEVIOLET.withAlpha(0.0),
-			fill: Cesium.Color.BLUEVIOLET.withAlpha(0.9),
+			fill: Cesium.Color.BLUEVIOLET.withAlpha(0.8),
 		};
-		let url = "http://localhost/data/simulation-rest/drawGeojson?fileName=" + fileName;
+		let url = "/data/simulation-rest/drawGeojson?fileName=" + fileName;
 
 		Cesium.GeoJsonDataSource.load(url, obj).then(function(dataSource) {
 			let entitis = dataSource.entities._entities._array;
@@ -751,9 +789,9 @@ var Simulation = function(magoInstance, viewer, $) {
 		switch (val){
 			case "dType1":
 				allObject[pickedName].terrain.polygon.material.color=Cesium.Color.YELLOW.withAlpha(0.6);
-				$("#standardFloorAreaRatio").val(140).trigger("change");
+				$("#standardFloorAreaRatio").val(200).trigger("change");
 				$("#standardBuildingToLandRatio").val(50).trigger("change");
-				$("#standardFloorCount").val(25).trigger("change");
+				$("#standardFloorCount").val(40).trigger("change");
 				break;
 			case "dType2":
 				allObject[pickedName].terrain.polygon.material.color=Cesium.Color.ORANGERED.withAlpha(0.6);
@@ -771,7 +809,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				allObject[pickedName].terrain.polygon.material.color=Cesium.Color.YELLOWGREEN.withAlpha(0.6);
 				$("#standardFloorAreaRatio").val(50).trigger("change");
 				$("#standardBuildingToLandRatio").val(25).trigger("change");
-				$("#standardFloorCount").val(40).trigger("change");
+				$("#standardFloorCount").val(25).trigger("change");
 				break;
 			default:
 				console.log("아무것도 선택되지 않았습니다.");
@@ -1520,8 +1558,33 @@ var Simulation = function(magoInstance, viewer, $) {
                 // else if (runAllocBuildStat === "autoBuild") {
                 // 	genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 10, "7M6_871.gltf")
                 // }
+				else if (runAllocBuildStat === "multi_select_mode") {
+					let pickPosition = _viewer.scene.pickPosition(event.position);
+
+					// let ellipsoid = _viewer.scene.globe.ellipsoid;
+					// let cartographic = ellipsoid.cartesianToCartographic(earthPosition);
+					// let longitudeString = Cesium.Math.toDegrees(cartographic.longitude);
+					// let latitudeString = Cesium.Math.toDegrees(cartographic.latitude);
+					// let lonlat = {
+					// 	lon: longitudeString,
+					// 	lat: latitudeString
+					// };
+					multiPositions.push(pickPosition);
+
+					let entity = new Cesium.Entity({
+						position : pickPosition,//Cesium.Cartesian3.fromDegrees(longitudeString, latitudeString),
+						point: new Cesium.PointGraphics({
+							show: true,
+							pixelSize: 10,
+							color: Cesium.Color.WHITE
+						})
+					});
+					debugger;
+					_viewer.entities.add(entity);
+				}
 				else if (runAllocBuildStat === "obj_select_mode") {
-					let pickedFeature = viewer.scene.pick(event.position);
+					var scene = viewer.scene;
+					let pickedFeature = scene.pick(event.position);
 					if (!Cesium.defined(pickedFeature)) {
 						// nothing picked
 						if (headPitchRollDialog.dialog("isOpen")) {
@@ -1543,12 +1606,57 @@ var Simulation = function(magoInstance, viewer, $) {
 							headPitchRollDialog.dialog("close");
 							return;
 						}
+
 					} else if (!selectedEntity.name.includes("gltf")) {
 						headPitchRollDialog.dialog("close");
 						return;
 					}
-
 					headPitchRollDialog.dialog("open");
+
+					//select Entity Drag 기능
+					if (headPitchRollDialog.dialog("isOpen")) {
+
+						var dragging = false;
+						var handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
+						handler.setInputAction(
+							function (click) {
+								var pickedObject = scene.pick(click.position);
+								if (Cesium.defined(pickedObject) && (pickedObject.id === selectedEntity)){
+									dragging = true;
+									scene.screenSpaceCameraController.enableRotate = false;
+								};
+							},
+							Cesium.ScreenSpaceEventType.LEFT_DOWN
+						);
+
+						handler.setInputAction(
+							function (movement) {
+								if (dragging) {
+									var position = scene.camera.pickEllipsoid(movement.endPosition);
+									selectedEntity.position = position
+									let cartographic = Cesium.Cartographic.fromCartesian(position);
+									let lon = Cesium.Math.toDegrees(cartographic.longitude);
+									let lat = Cesium.Math.toDegrees(cartographic.latitude);
+									document.getElementById("selected_obj_longitude").innerText = lon;
+									document.getElementById("selected_obj_latitude").innerText = lat;
+									
+								}
+							},
+							Cesium.ScreenSpaceEventType.MOUSE_MOVE
+						);
+
+						handler.setInputAction(
+							function (click) {
+								if (dragging) {
+									dragging = false;
+									scene.screenSpaceCameraController.enableRotate = true;
+									selectedEntity.position = scene.camera.pickEllipsoid(click.position);
+								}
+							},
+							Cesium.ScreenSpaceEventType.LEFT_UP
+						);
+					}
+					
 				}
                 else if (runAllocBuildStat === "obj_lamp") {
 					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.4, "objLamp", "objLamp.gltf")
@@ -1612,13 +1720,17 @@ var Simulation = function(magoInstance, viewer, $) {
 //                    _viewer._selectedEntity = pickedFeature.id.polygon;
                 } else {
 					var pickedFeature = viewer.scene.pick(event.position);
-
+					debugger;
 					if(pickedFeature) {
-						pickedName = pickedFeature.id.name;
-						allObject[pickedName].terrain = pickedFeature.id;
-						allObject[pickedName].plottage = getArea(allObject[pickedName].terrain.polygon._hierarchy._value.positions);
-						$("#selectDistrict").val(allObject[pickedName].terrain.name).trigger("change");
-						// $("#districtDisplay").val("enable").trigger("change");
+						if(pickedFeature.id.type === "delta") {
+
+						} else {
+							pickedName = pickedFeature.id.name;
+							allObject[pickedName].terrain = pickedFeature.id;
+							allObject[pickedName].plottage = getArea(allObject[pickedName].terrain.polygon._hierarchy._value.positions);
+							$("#selectDistrict").val(allObject[pickedName].terrain.name).trigger("change");
+							// $("#districtDisplay").val("enable").trigger("change");
+						}
 					} else {
 						pickedName = "";
 					}
@@ -1802,6 +1914,7 @@ var Simulation = function(magoInstance, viewer, $) {
     $('#cameraLocaMove').click(function() {
     	var index = $('#camera_scene_list').val();
     	var cameraObj = _camera_scene[index];
+
 		_viewer.camera.flyTo({
 		    destination : cameraObj.position,
 		    orientation : {
@@ -1870,7 +1983,7 @@ var Simulation = function(magoInstance, viewer, $) {
 			position: position,
 			orientation: orientation,
 			model: {
-				uri: 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir,
+				uri: '/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir,
 				scale: scale,
 				show: true,
 			}
@@ -1942,16 +2055,16 @@ var Simulation = function(magoInstance, viewer, $) {
     	    
     	}
 
-//    	var entitiyObj = new Cesium.Entity({
-//	    	position: position,
-//	        billboard : {
-//	            image : pinBuilder.fromText('?', Cesium.Color.BLACK, 48).toDataURL(),
-//	            verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-//	            eyeOffset: new Cesium.Cartesian3(0, 3.0504106, 0)
-//	        },
-//	        model : defaultModel,
-//	        show : false
-//	    });
+   	// var entitiyObj = new Cesium.Entity({
+	   //  	position: position,
+	   //      billboard : {
+	   //          image : pinBuilder.fromText('?', Cesium.Color.BLACK, 48).toDataURL(),
+	   //          verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+	   //          eyeOffset: new Cesium.Cartesian3(0, 3.0504106, 0)
+	   //      },
+	   //      model : defaultModel,
+	   //      show : false
+	   //  });
 
     	var entitiyObj = new Cesium.Entity({
 	    	position: position,
@@ -2561,7 +2674,7 @@ const f4dDataGenMaster = {
 	},
 	initIfc: (f4dObject, lon, lat, alt, head, pich, roll) => {
 		let mappingType = "origin";
-		debugger;
+
 		if(f4dObject.cons_type === 'CONSTPROCGEUMGANG') {
 			mappingType = "boundingboxcenter";
 		}

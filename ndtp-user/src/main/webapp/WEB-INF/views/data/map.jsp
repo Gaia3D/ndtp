@@ -200,6 +200,8 @@
 
 	var selectedEntity;
 	var rotationModel;
+
+	var multiPositions = [];
 	window['moment-range'].extendMoment(moment);
 	// 임시로...
 	$(document).ready(function() {
@@ -414,7 +416,7 @@
 			data: commentData,
 			dataType: "json",
 			success: function(commentList){
-				commentViewFunc2(commentListMAGO3D_INSTANCE);
+				commentViewFunc2(commentList);
 			},
 			error:function(request,status,error) {
 				console.log("err=", request, status, error);

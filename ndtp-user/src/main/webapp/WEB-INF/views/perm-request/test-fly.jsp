@@ -201,7 +201,6 @@
 
                 // 새로 선택된 모델 highlight
                 silhouetteGreen.selected = [model];
-
             }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
         }
 
