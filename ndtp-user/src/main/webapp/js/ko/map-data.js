@@ -130,6 +130,14 @@ function mapDataInfoList(pageNo, searchDataName, searchDataGroupId, searchDataTy
 									data.groupVisible = isVisible;
 									continue;
 								}
+								if(!projects.attributes) {
+									projects.attributes = {};
+									projects.attributes.objectType = "basicF4d";
+									if(data.tiling) {
+										projects.attributes.fromSmartTile = true;
+									}
+								}
+								 
 								var groupVisible = projects.attributes.isVisible;
 								if (groupVisible !== undefined) {
 									isVisible = groupVisible;
