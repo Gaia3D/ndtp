@@ -107,6 +107,7 @@
 					<span style="display: inline-block;padding: 3px 0;margin-right: 20px;">위치</span>
 					<select id="consBuildLoca" name="searchDataStatus">
 						<option value="">선택안함</option>
+						<option value="sa">세종 전체</option>
 						<option value="s">세종 행복도시</option>
 						<option value="p">부산 에코델타</option>
 						<option value="g">금강 보행교</option>
@@ -376,6 +377,7 @@
 						<label>위치</label>
 						<select id="consBuildLocaModal" name="cityTypeString">
 							<option value="">선택안함</option>
+							<option value="sa">세종 전체</option>
 							<option value="s">세종 행복도시</option>
 							<option value="p">부산 에코델타</option>
 							<option value="g">금강 보행교</option>
@@ -651,7 +653,6 @@
 			commentListViewer.append(timeSpan);
 		});
 	}
-
 
 	$("#forEvent").click(()=> {
 		getUserInfo();

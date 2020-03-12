@@ -332,10 +332,8 @@ public class SimuServiceImpl {
 
 		byte[] data = multipartFile.getBytes();
 		FileOutputStream fos = new FileOutputStream(SAVE_PATH + "/" + saveFileName);
-
 		fos.write(data);
 		fos.close();
-
 		return result;
 	}
 	
@@ -503,7 +501,6 @@ public class SimuServiceImpl {
 						.data_name(lliObj.getData_key())
 						.longitude(lliObj.getLongitude())
 						.latitude(lliObj.getLatitude())
-						.height(0.0f)
 						.heading(0.0f)
 						.pitch(0.0f)
 						.roll(0.0f)

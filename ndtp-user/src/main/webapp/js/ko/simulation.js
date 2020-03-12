@@ -2243,8 +2243,7 @@ var Simulation = function(magoInstance, viewer, $) {
 		127.268185563992,36.52498984302221,1,
 		127.26787876098984,36.525301485567915,1];
 
-	const droneSamplePosition =
-		[127.2856504212428,36.48066411326436,2,
+	const droneSamplePosition =	[127.2856504212428,36.48066411326436,2,
 			127.28578304702818,36.48080979054118,2,
 			127.28592662916796,36.48103489505022,4,
 			127.28617248357656,36.48125446340615,4,
@@ -2332,11 +2331,26 @@ var Simulation = function(magoInstance, viewer, $) {
 		// _viewer.zoomTo(_viewer.entities, new Cesium.HeadingPitchRange(0, Cesium.Math.toRadians(-90)));
 	}
 
+	$('#iotSimTrack').click(function() {
+		_viewer.trackedEntity = undefined;
+		// _viewer.trackedEntity = carEntitiy;
+		sceneViewEntity(carEntitiy._id);
+	});
+
+	function sceneViewEntity(etityId){
+		viewer.clock.onTick.addEventListener(function(clock){
+			var trackedEntity = viewer.entities.getById(etityId);
+
+			var direction = trackedEntity.orientation.getValue(clock.currentTime);
+			var angle = Cesium.Quaternion.computeAngle(direction);
+			var pitch = -Cesium.Math.toRadians(10.0);
+			var range = Cesium.Cartesian3.magnitude(new Cesium.Cartesian3(30.0, 0.0, 10.0));
+			var offset = new Cesium.HeadingPitchRange(angle, pitch, range);
+			console.log(clock.currentTime);
+			viewer.camera.lookAt(trackedEntity.position.getValue(clock.currentTime), offset);
+		});
+	};
 };
-$('#iotSimTrack').click(function() {
-	_viewer.trackedEntity = undefined;
-	_viewer.trackedEntity = carEntitiy;
-});
 const f4dDataGenMaster = {
 	avg_lon: 0,
 	avg_lat: 0,
@@ -2407,6 +2421,7 @@ const f4dDataGenMaster = {
 		arr = [];
 		arr_lon = [];
 		arr_lat = [];
+		debugger;
 		for(var i = 0; i < f4dSubObject.length; i++) {
 			var obj = f4dSubObject[i];
 			var imsiF4dSubObject = {

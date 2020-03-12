@@ -120,19 +120,29 @@ public class SimulationRestController {
 				f4dObj.setStep(obj.getConsType().getValue());
 				f4dObjList.add(f4dObj);
 			}
-		} else {
+		} else if(sfm.getSaveFileType() == FileType.CONSTPROCSEJONALL) {
 			var consBuildList = this.simServiceImpl.getConsBuildList(sfm)
 					.stream().filter(obj -> obj.getSaveFileName().equals("lonsLats.json"))
 					.collect(Collectors.toList());
-			for( var obj : consBuildList) {
+			for (var obj : consBuildList) {
 				var f4dObj = this.simServiceImpl.procF4DDataStrucreByPaths(obj.getSaveFilePath(), obj.getSaveFileName());
 				f4dObj.setCons_ratio(obj.getConsRatio());
 				f4dObj.setCons_type(FileType.CONSTPRO);
 				f4dObj.setStep(obj.getConsType().getValue());
 				f4dObjList.add(f4dObj);
 			}
-		}
-
+		} else {
+				var consBuildList = this.simServiceImpl.getConsBuildList(sfm)
+						.stream().filter(obj -> obj.getSaveFileName().equals("lonsLats.json"))
+						.collect(Collectors.toList());
+				for (var obj : consBuildList) {
+					var f4dObj = this.simServiceImpl.procF4DDataStrucreByPaths(obj.getSaveFilePath(), obj.getSaveFileName());
+					f4dObj.setCons_ratio(obj.getConsRatio());
+					f4dObj.setCons_type(FileType.CONSTPRO);
+					f4dObj.setStep(obj.getConsType().getValue());
+					f4dObjList.add(f4dObj);
+				}
+			}
 		return f4dObjList;
 	}
 	
