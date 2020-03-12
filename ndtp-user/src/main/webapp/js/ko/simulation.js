@@ -1509,7 +1509,7 @@ var Simulation = function(magoInstance, viewer, $) {
 							function (movement) {
 								if (dragging) {
 									var position = scene.camera.pickEllipsoid(movement.endPosition);
-									selectedEntity.position = position
+									selectedEntity.position = position;
 									let cartographic = Cesium.Cartographic.fromCartesian(position);
 									let lon = Cesium.Math.toDegrees(cartographic.longitude);
 									let lat = Cesium.Math.toDegrees(cartographic.latitude);
