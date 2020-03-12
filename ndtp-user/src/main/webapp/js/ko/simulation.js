@@ -1520,6 +1520,30 @@ var Simulation = function(magoInstance, viewer, $) {
                 // else if (runAllocBuildStat === "autoBuild") {
                 // 	genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 10, "7M6_871.gltf")
                 // }
+				else if (runAllocBuildStat === "multi_select_mode") {
+					let pickPosition = _viewer.scene.pickPosition(event.position);
+
+					// let ellipsoid = _viewer.scene.globe.ellipsoid;
+					// let cartographic = ellipsoid.cartesianToCartographic(earthPosition);
+					// let longitudeString = Cesium.Math.toDegrees(cartographic.longitude);
+					// let latitudeString = Cesium.Math.toDegrees(cartographic.latitude);
+					// let lonlat = {
+					// 	lon: longitudeString,
+					// 	lat: latitudeString
+					// };
+					multiPositions.push(pickPosition);
+
+					let entity = new Cesium.Entity({
+						position : pickPosition,//Cesium.Cartesian3.fromDegrees(longitudeString, latitudeString),
+						point: new Cesium.PointGraphics({
+							show: true,
+							pixelSize: 10,
+							color: Cesium.Color.WHITE
+						})
+					});
+					debugger;
+					_viewer.entities.add(entity);
+				}
 				else if (runAllocBuildStat === "obj_select_mode") {
 					var scene = viewer.scene;
 					let pickedFeature = scene.pick(event.position);

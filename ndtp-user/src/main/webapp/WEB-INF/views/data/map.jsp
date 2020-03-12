@@ -200,6 +200,8 @@
 
 	var selectedEntity;
 	var rotationModel;
+
+	var multiPositions = [];
 	window['moment-range'].extendMoment(moment);
 	// 임시로...
 	$(document).ready(function() {
