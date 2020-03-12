@@ -138,6 +138,11 @@
 				point : pointGraphic
 			});
 			
+			// TODO: 차후에는 데이터 영역으로 이동하도록 수정
+			if ('${referrer}' === 'data-group-input') {
+				altitude += 1;
+			}
+			
 			$(opener.document).find("#longitude").val(longitude);
 			$(opener.document).find("#latitude").val(latitude);
 			$(opener.document).find("#altitude").val(altitude);

@@ -87,6 +87,42 @@
 			ORDER BY bjcd LIMIT 1
 		) A
 	</select>
+
+	<!-- 선택한 시도의 BoundingBox를 구함 -->
+	<select id="getEnvelopSdo" parameterType="skSdo" resultType="string">
+		/* getCentroidSdo */
+		SELECT ST_AsText(ST_Envelope(A.wkb_geometry))
+		FROM (
+			SELECT wkb_geometry 
+			FROM sk_sdo 
+			WHERE bjcd = #{bjcd}
+			ORDER BY bjcd LIMIT 1
+		) A
+	</select>
+	
+	<!-- 선택한 시군구의 BoundingBox를 구함 -->
+	<select id="getEnvelopSgg" parameterType="skSgg" resultType="string">
+		/* getCentroidSgg */
+		SELECT ST_AsText(ST_Envelope(A.wkb_geometry))
+		FROM (
+			SELECT wkb_geometry 
+			FROM sk_sgg 
+			WHERE bjcd = #{bjcd}
+			ORDER BY bjcd LIMIT 1
+		) A
+	</select>
+	
+	<!-- 선택한 읍면동의 BoundingBox를 구함 -->
+	<select id="getEnvelopEmd" parameterType="skEmd" resultType="string">
+		/* getCentroidEmd */
+		SELECT ST_AsText(ST_Envelope(A.wkb_geometry))
+		FROM (
+			SELECT wkb_geometry 
+			FROM sk_emd 
+			WHERE bjcd = #{bjcd}
+			ORDER BY bjcd LIMIT 1
+		) A
+	</select>
 	
 	<!-- 행정구역 검색 총 건수 -->
 	<select id="getDistrictTotalCount" parameterType="district" resultType="long">

@@ -150,6 +150,65 @@ public class SearchMapRestController {
 	}
 
 	/**
+	 * 선택 한 위치의 BoundingBox를 구함
+	 * 
+	 * @param skEmd
+	 * @return
+	 */
+	@GetMapping("/envelope")
+	public Map<String, Object> getEnvelope(SkEmd skEmd) {
+		log.info("@@@@ skEmd = {}", skEmd);
+
+		Map<String, Object> result = new HashMap<>();
+		String errorCode = null;
+		String message = null;
+		
+		// TODO 여기 들어 오지 않음. PathVariable 은 불칠전해서 이렇게 하고 싶음
+		String bboxWkt = null;
+		if (skEmd.getLayerType() == 1) {
+			// 시도
+			SkSdo skSdo = new SkSdo();
+			skSdo.setName(skEmd.getName());
+			skSdo.setBjcd(skEmd.getBjcd());
+			bboxWkt = searchMapService.getEnvelopSdo(skSdo);
+			log.info("@@@@ sdo bbox {}", bboxWkt);
+		} else if (skEmd.getLayerType() == 2) {
+			// 시군구
+			SkSgg skSgg = new SkSgg();
+			skSgg.setName(skEmd.getName());
+			skSgg.setBjcd(skEmd.getBjcd());
+			bboxWkt = searchMapService.getEnvelopSgg(skSgg);
+			log.info("@@@@ sgg bbox {}", bboxWkt);
+		} else if (skEmd.getLayerType() == 3) {
+			// 읍면동
+			bboxWkt = searchMapService.getEnvelopEmd(skEmd);
+			log.info("@@@@ emd bbox {}", bboxWkt);
+		}
+		
+		bboxWkt = bboxWkt.replace("POLYGON((", "");
+		bboxWkt = bboxWkt.replace("))", "");
+		
+		String[] points = bboxWkt.split(",");
+		String[] minPoint = new String[2];
+		String[] maxPoint = new String[2];
+		
+		minPoint[0] = points[0].split(" ")[0];
+		minPoint[1] = points[0].split(" ")[1];
+		
+		maxPoint[0] = points[2].split(" ")[0];
+		maxPoint[1] = points[2].split(" ")[1];
+		
+		int statusCode = HttpStatus.OK.value();
+		
+		result.put("minPoint", minPoint);
+		result.put("maxPoint", maxPoint);
+		result.put("statusCode", statusCode);
+		result.put("errorCode", errorCode);
+		result.put("message", message);
+		return result;
+	}
+	
+	/**
 	 * 행정구역
 	 * @param district
 	 * @return

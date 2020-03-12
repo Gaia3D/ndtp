@@ -229,7 +229,8 @@ function changeEmd(_this, _sdoCode, _sggCode, _emdCode)
 $("#districtFlyButton").click(function () {
     var name = [sdoName, sggName, emdName].join(" ").trim();
     district.drawDistrict(name, sdoCode, sggCode, emdCode);
-    getCentroid(name, sdoCode, sggCode, emdCode);
+    //getCentroid(name, sdoCode, sggCode, emdCode);
+    getEnvelope(name, sdoCode, sggCode, emdCode);
 });
 
 $("#districtCancleButton").click(function () {
@@ -257,6 +258,52 @@ function getCentroid(name, sdoCode, sggCode, emdCode) {
                     altitude = 1500;
                 }
                 gotoFly(msg.longitude, msg.latitude, altitude, time);
+            } else {
+            	alert(JS_MESSAGE[msg.errorCode]);
+				console.log("---- " + msg.message);
+            }
+        },
+        error : function(request, status, error) {
+            //alert(JS_MESSAGE["ajax.error.message"]);
+            console.log("code : " + request.status + "\n message : " + request.responseText + "\n error : " + error);
+        }
+    });		
+}
+
+function getEnvelope(name, sdoCode, sggCode, emdCode) {
+    var layerType = districtMapType;
+    var bjcd = sdoCode.toString().padStart(2, '0') + sggCode.toString().padStart(3, '0') + emdCode.toString().padStart(3, '0') + '00';
+    var time = 3;
+
+    var info = "layerType=" + layerType + "&name=" + name  + "&bjcd=" + bjcd;
+    $.ajax({
+        url: "../searchmap/envelope",
+        type: "GET",
+        data: info,
+        dataType: "json",
+        success : function(msg) {
+        	if(msg.statusCode <= 200) {
+                
+                var pointArray = [];
+                var minX = msg.minPoint[0];
+                var minY = msg.minPoint[1];
+                var maxX = msg.maxPoint[0];
+                var maxY = msg.maxPoint[1];
+                
+                pointArray[0] = Mago3D.ManagerUtils.geographicCoordToWorldPoint(minX, minY, 0);
+                pointArray[1] = Mago3D.ManagerUtils.geographicCoordToWorldPoint(maxX, maxY, 0);
+                
+                MAGO3D_INSTANCE.getMagoManager().flyToBox(pointArray);
+                
+        		/*
+        		var altitude = 50000;
+                if(layerType === 2) {
+                    altitude = 15000;
+                } else if(layerType === 3) {
+                    altitude = 1500;
+                }
+                gotoFly(msg.longitude, msg.latitude, altitude, time);
+                */
             } else {
             	alert(JS_MESSAGE[msg.errorCode]);
 				console.log("---- " + msg.message);

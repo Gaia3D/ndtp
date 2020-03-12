@@ -351,7 +351,7 @@
 
 	// 지도에서 찾기
 	$( "#mapButtion" ).on( "click", function() {
-		var url = "/map/find-point";
+		var url = "/map/find-point?referrer=data-group-input";
 		var width = 800;
 		var height = 700;
 

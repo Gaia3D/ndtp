@@ -75,7 +75,8 @@ public class MapController {
      */
     @GetMapping(value = "/find-point")
     public String findPoint(HttpServletRequest request, Model model) {
-
+    	String referrer = request.getParameter("referrer");
+    	model.addAttribute("referrer", referrer);
         return "/map/find-point";
     }
     
