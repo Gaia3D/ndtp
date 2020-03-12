@@ -86,7 +86,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	var f4dController = magoInstance.getF4dController();
 	initDeltaBillboard();
 	function initDeltaBillboard() {
-		const cart3 = Cesium.Cartesian3.fromDegrees(128.9219740546607, 35.13631787332174, 3);
+		/*const cart3 = Cesium.Cartesian3.fromDegrees(128.9219740546607, 35.13631787332174, 3);
 		var ch = htmlBillboard.add();
 		ch.position = cart3;
 		ch.offsetLeft = -15;
@@ -108,7 +108,7 @@ var Simulation = function(magoInstance, viewer, $) {
 			"          transform='rotate(-90) translate(-20)' />\n" +
 			"</svg>" +
 			"<span class='tooltiptext'>공정률 &nbsp; : "+ ratio +"%</span>" +
-			"</div>";
+			"</div>";*/
 
 		// const cart3 = new Cesium.Cartesian3(0,0,0);
 /*		const cart3 = Cesium.Cartesian3.fromDegrees(128.9219740546607, 35.13631787332174, 0.3);
@@ -1109,14 +1109,14 @@ var Simulation = function(magoInstance, viewer, $) {
 		if(iotEnum === '1') {
             fileName = 'Mat_1.gltf';
             preDir = 'buses';
-            uri = 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir;
+            uri = '/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir;
             scale = 0.01;
             samplePosition = busSamplePosition;
             id = "bus";
 		} else if(iotEnum === '2') {
             fileName = 'drone.gltf';
             preDir = 'buses';
-            uri = 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir;
+            uri = '/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir;
             scale = 0.01;
             samplePosition = droneSamplePosition;
             id = "drone";
