@@ -161,7 +161,7 @@
 							<span style="color: blue;">${dataInfo.userId }</span>
 		</c:if>
 						</td>
-						<td class="col-name">${dataInfo.dataType }</td>
+						<td class="col-type">${dataInfo.dataType }</td>
 						<td class="col-type">
 		<c:if test="${dataInfo.sharing eq 'common'}">공통</c:if>
 		<c:if test="${dataInfo.sharing eq 'public'}">공개</c:if>
