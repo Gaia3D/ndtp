@@ -51,8 +51,20 @@ var Simulation = function(magoInstance, viewer, $) {
 		up: new Cesium.Cartesian3(-0.22700219556100568, 0.783271367206152, 0.578753806488984),
 		right: new Cesium.Cartesian3(0.3168843742640951, -0.5025253073553211, 0.804395803578495)
 	});
+	_camera_scene.push({
+		position: new Cesium.Cartesian3(-3280627.778688929, 4062537.6806924795, 3650266.004010676),
+		direction: new Cesium.Cartesian3(0.5356198313576546, -0.6225088213202119, 0.5706085905723101),
+		up: new Cesium.Cartesian3(-0.3513729530836468, 0.45014645898935396, 0.8209172999155416),
+		right: new Cesium.Cartesian3(-0.7678856972868262, -0.6401960112636337, 0.02237460758222004)
+	});
+	_camera_scene.push({
+		position: new Cesium.Cartesian3(-3280626.779031388, 4062552.2818159657, 3650218.004230461),
+		direction: new Cesium.Cartesian3(0.398749006838372, -0.5183446964191867, 0.7565170224386978),
+		up: new Cesium.Cartesian3(-0.47659122165829726, 0.5876566876099041, 0.6538504606908275),
+		right: new Cesium.Cartesian3(-0.783492206077165, -0.6212715937506359, -0.012711011560142732)
+	});
 
-    var _cityPlanModels = [];
+	var _cityPlanModels = [];
     var _bsConstructProcessModels = [];
     let _sejongDataGroupList = [];
 	const consBuildStepInfo = {};
@@ -72,6 +84,25 @@ var Simulation = function(magoInstance, viewer, $) {
 	const htmlBillboard = new HtmlBillboardCollection(viewer.scene);
 	var magoManager = magoInstance.getMagoManager();
 	var f4dController = magoInstance.getF4dController();
+	initDeltaBillboard();
+	function initDeltaBillboard() {
+
+		// const cart3 = new Cesium.Cartesian3(0,0,0);
+		const cart3 = Cesium.Cartesian3.fromDegrees(128.9219740546607, 35.13631787332174, 0.3);
+		const pinBuilder = new Cesium.PinBuilder();
+		const entitiyObj = new Cesium.Entity({
+			position: cart3,
+			billboard : {
+				image : pinBuilder.fromText('?', Cesium.Color.BLACK, 48).toDataURL(),
+				verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+				eyeOffset: new Cesium.Cartesian3(0, 3.0504106, 0),
+				translucencyByDistance : new Cesium.NearFarScalar(1.5e1, 1.0, 8.0e2, 0.0)
+			}
+		});
+		entitiyObj.type = 'delta';
+		viewer.entities.add(entitiyObj)
+	}
+
 	magoManager.on(Mago3D.MagoManager.EVENT_TYPE.F4DLOADEND, F4DLoadEnd);
 	function F4DLoadEnd(evt) {
 		const _projectsMap = MAGO3D_INSTANCE.getMagoManager().hierarchyManager.projectsMap;
@@ -1682,13 +1713,17 @@ var Simulation = function(magoInstance, viewer, $) {
 //                    _viewer._selectedEntity = pickedFeature.id.polygon;
                 } else {
 					var pickedFeature = viewer.scene.pick(event.position);
-
+					debugger;
 					if(pickedFeature) {
-						pickedName = pickedFeature.id.name;
-						allObject[pickedName].terrain = pickedFeature.id;
-						allObject[pickedName].plottage = getArea(allObject[pickedName].terrain.polygon._hierarchy._value.positions);
-						$("#selectDistrict").val(allObject[pickedName].terrain.name).trigger("change");
-						// $("#districtDisplay").val("enable").trigger("change");
+						if(pickedFeature.id.type === "delta") {
+
+						} else {
+							pickedName = pickedFeature.id.name;
+							allObject[pickedName].terrain = pickedFeature.id;
+							allObject[pickedName].plottage = getArea(allObject[pickedName].terrain.polygon._hierarchy._value.positions);
+							$("#selectDistrict").val(allObject[pickedName].terrain.name).trigger("change");
+							// $("#districtDisplay").val("enable").trigger("change");
+						}
 					} else {
 						pickedName = "";
 					}
@@ -2013,16 +2048,16 @@ var Simulation = function(magoInstance, viewer, $) {
     	    
     	}
 
-//    	var entitiyObj = new Cesium.Entity({
-//	    	position: position,
-//	        billboard : {
-//	            image : pinBuilder.fromText('?', Cesium.Color.BLACK, 48).toDataURL(),
-//	            verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-//	            eyeOffset: new Cesium.Cartesian3(0, 3.0504106, 0)
-//	        },
-//	        model : defaultModel,
-//	        show : false
-//	    });
+   	// var entitiyObj = new Cesium.Entity({
+	   //  	position: position,
+	   //      billboard : {
+	   //          image : pinBuilder.fromText('?', Cesium.Color.BLACK, 48).toDataURL(),
+	   //          verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+	   //          eyeOffset: new Cesium.Cartesian3(0, 3.0504106, 0)
+	   //      },
+	   //      model : defaultModel,
+	   //      show : false
+	   //  });
 
     	var entitiyObj = new Cesium.Entity({
 	    	position: position,
