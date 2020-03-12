@@ -138,13 +138,13 @@ var Simulation = function(magoInstance, viewer, $) {
     var stdFairRate = 0;
 
     var locationList = {
-    	"seoul": [126.9282132, 37.5201354],
 		"sejong": [127.2739454, 36.5268601],
 		"pusan": [129.0015885, 35.1645701],
 	};
-	setTimeout(()=> {
+
+	setTimeout(() => {
 		_viewer.camera.flyTo({
-			destination : Cesium.Cartesian3.fromDegrees(locationList["seoul"][0],  locationList["seoul"][1], 2000)
+			destination : Cesium.Cartesian3.fromDegrees(locationList["sejong"][0],  locationList["sejong"][1], 2000)
 		});
 	}, 1000);
 
@@ -309,7 +309,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				for (let procObj of procStepNum) {
 					consBuildSlider.consBuildDataReq(procObj, consTypeString);
 				}
-
+				changeLodButton
 				// 현재 INDEX 있는 값을 제거하고 다시 요청한다
 				consBuildSlider.consBuildDataReq(index, consTypeString);
 				if(consBuildBillboardStepInfo !== undefined) {
@@ -400,7 +400,9 @@ var Simulation = function(magoInstance, viewer, $) {
 				destination : Cesium.Cartesian3.fromDegrees(127.26701,  36.52569, 1000)
 			});*/
 		} else if (targetArea === 'p') {
-
+			whole_viewer.scene.camera.flyTo({
+				destination : Cesium.Cartesian3.fromDegrees(128.9219706156745,  35.13632619486047 , 1000)
+			});
 		} else if (targetArea === 'g') {
 			whole_viewer.scene.camera.flyTo({
 				destination : Cesium.Cartesian3.fromDegrees(127.2857722,  36.48363827, 1000)
@@ -428,7 +430,7 @@ var Simulation = function(magoInstance, viewer, $) {
         $.ajax({
             type: "POST",
             enctype: 'multipart/form-data',
-            url: "http://localhost/data/simulation-rest/cityPlanUpload",
+            url: "/data/simulation-rest/cityPlanUpload",
             data: data,
             processData: false,
             contentType: false,
@@ -625,7 +627,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				stroke: Cesium.Color.AQUA.withAlpha(0.0),
 				fill: Cesium.Color.AQUA.withAlpha(0.8),
 			};
-			let url = "http://localhost/data/simulation-rest/drawGeojson?fileName=" + fileName;
+			let url = "/data/simulation-rest/drawGeojson?fileName=" + fileName;
 
 			Cesium.GeoJsonDataSource.load(url, obj).then(function(dataSource) {
 				let entitis = dataSource.entities._entities._array;
@@ -679,7 +681,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				stroke: Cesium.Color.AQUA.withAlpha(0.0),
 				fill: Cesium.Color.AQUA.withAlpha(0.8),
 			};
-			let url = "http://localhost/data/simulation-rest/drawGeojson?fileName=" + fileName;
+			let url = "/data/simulation-rest/drawGeojson?fileName=" + fileName;
 
 			Cesium.GeoJsonDataSource.load(url, obj).then(function(dataSource) {
 				let entitis = dataSource.entities._entities._array;
@@ -802,7 +804,7 @@ var Simulation = function(magoInstance, viewer, $) {
 			stroke: Cesium.Color.BLUEVIOLET,
 			fill: Cesium.Color.BLUEVIOLET,
 		};
-		let url = "http://localhost/data/simulation-rest/drawGeojson?fileName=" + fileName;
+		let url = "/data/simulation-rest/drawGeojson?fileName=" + fileName;
 
 		Cesium.GeoJsonDataSource.load(url, obj).then(function(dataSource) {
 			let entitis = dataSource.entities._entities._array;
@@ -961,7 +963,7 @@ var Simulation = function(magoInstance, viewer, $) {
 		if(iotEnum === '1') {
 			const fileName = 'Mat_1.gltf';
 			const preDir = 'buses';
-			const uri = 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir;
+			const uri = '/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir;
 			const scale = 0.01;
 
 			// 개수 만큼 시간을 나눈다.
@@ -1002,7 +1004,7 @@ var Simulation = function(magoInstance, viewer, $) {
 
 			const fileName = 'Mat_1.gltf';
 			const preDir = 'buses';
-			const uri = 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir;
+			const uri = 'http://172.30.1.7/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir;
 			const scale = 0.01;
 
 			// 개수 만큼 시간을 나눈다.
@@ -1045,7 +1047,7 @@ var Simulation = function(magoInstance, viewer, $) {
 
 	
 	function sejeonjochiwonPoly() {
-		Cesium.GeoJsonDataSource.load('http://localhost/data/simulation-rest/select', {
+		Cesium.GeoJsonDataSource.load('/data/simulation-rest/select', {
 			width : 5,
 			leadTime : 0,
 			trailTime : 100,
@@ -1079,7 +1081,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	}
 	
 	function echdeltaLinString() {
-		Cesium.GeoJsonDataSource.load('http://localhost/data/simulation-rest/select', {
+		Cesium.GeoJsonDataSource.load('/data/simulation-rest/select', {
 			width : 5,
 			leadTime : 0,
 			trailTime : 100,
@@ -1731,7 +1733,7 @@ var Simulation = function(magoInstance, viewer, $) {
 
 	    // GLTF 모델 데이터 삽입
 		const _model = Cesium.Model.fromGltf({
-	        url : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir,
+	        url : '/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir,
 	        modelMatrix : modelMatrix,
 			scale : scale,
 			debugWireframe: false,
@@ -1773,7 +1775,7 @@ var Simulation = function(magoInstance, viewer, $) {
     	var pinBuilder = new Cesium.PinBuilder();
     	if(stdFairRate < fairRate) {
         	defaultModel = new Cesium.ModelGraphics({
-                uri : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName,
+                uri : '/data/simulation-rest/cityPlanModelSelect?FileName='+fileName,
                 scale : scale,
                 minimumPixelSize : 128,
                 maximumScale : 20000
@@ -1783,7 +1785,7 @@ var Simulation = function(magoInstance, viewer, $) {
     		var colorAlpha = Cesium.Color.fromAlpha(color, parseFloat(0.3));
     		var blend = Cesium.ColorBlendMode['MIX'];
         	defaultModel = new Cesium.ModelGraphics({
-                uri : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName,
+                uri : '/data/simulation-rest/cityPlanModelSelect?FileName='+fileName,
                 scale : scale,
                 minimumPixelSize : 128,
                 color : colorAlpha,
@@ -1962,7 +1964,7 @@ var Simulation = function(magoInstance, viewer, $) {
         $.ajax({
             type: "POST",
             enctype: 'multipart/form-data',
-            url: "http://localhost/data/simulation-rest/cityConstProcUpload",
+            url: "/data/simulation-rest/cityConstProcUpload",
             data: data,
             processData: false,
             contentType: false,
@@ -2376,6 +2378,7 @@ const f4dDataGenMaster = {
 	},
 	initIfc: (f4dObject, lon, lat, alt, head, pich, roll) => {
 		let mappingType = "origin";
+		debugger;
 		if(f4dObject.cons_type === 'CONSTPROCGEUMGANG') {
 			mappingType = "boundingboxcenter";
 		}

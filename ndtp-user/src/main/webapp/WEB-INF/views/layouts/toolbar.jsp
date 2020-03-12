@@ -24,7 +24,7 @@
 </div>
 <div id="mago3DSettingLabelLayer" class="labelLayer" style="display:none;">
     <div class="layerHeader">
-        <h3>Mago3D 설정</h3>
+        <h3>설정</h3>
         <button type="button" class="layerClose" title="닫기">닫기</button>
     </div>
     <div class="layerContents">

@@ -70,7 +70,7 @@
             stroke: Cesium.Color.BLUEVIOLET.withAlpha(0.5),
             fill: Cesium.Color.BLUEVIOLET.withAlpha(0.5),
         };
-        let url = "http://localhost/data/simulation-rest/drawGeojson?fileName=" + fileName;
+        let url = "/data/simulation-rest/drawGeojson?fileName=" + fileName;
 
         Cesium.GeoJsonDataSource.load(url, obj).then(function(dataSource) {
             let entitis = dataSource.entities._entities._array;

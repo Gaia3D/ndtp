@@ -211,13 +211,13 @@
     }
     function look2(){
         // let url = "https://sandcastle.cesium.com/SampleData/models/DracoCompressed/CesiumMilkTruck.gltf";
-        let url = "http://localhost/data/simulation-rest/cityPlanModelSelect";
+        let url = "/data/simulation-rest/cityPlanModelSelect";
         console.log("BASELINE url=", url);
         createModel(url, 1);
     }
     function look3(){
         // let url = "https://sandcastle.cesium.com/SampleData/models/DracoCompressed/CesiumMilkTruck.gltf";
-        let url = "http://localhost/data/simulation-rest/cityPlanModelSelect2";
+        let url = "/data/simulation-rest/cityPlanModelSelect2";
         console.log("13 url=", url);
         createModel(url, 1);
     }

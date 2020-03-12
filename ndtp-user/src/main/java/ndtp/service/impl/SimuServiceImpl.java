@@ -189,7 +189,8 @@ public class SimuServiceImpl {
 
 				// if you are have model file moved process target Path
 				if(saveFileName.contains(".ifc") || saveFileName.contains(".gml")
-						|| saveFileName.contains(".jpg") || saveFileName.contains(".png")
+						|| saveFileName.contains(".jpg")
+						|| saveFileName.contains(".JPG") || saveFileName.contains(".png")
 						|| saveFileName.contains(".3ds") || saveFileName.contains(".X")
 						|| saveFileName.contains(".obj") || saveFileName.contains(".mtl")
 						|| saveFileName.contains(".3DS") ) {
