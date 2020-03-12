@@ -989,8 +989,6 @@ var Simulation = function(magoInstance, viewer, $) {
 		});
 	});
     
-    var absStartTM = null;
-    
     $('#iotsiminterval').click(function(){
         console.log('start interval');
         
@@ -1040,6 +1038,9 @@ var Simulation = function(magoInstance, viewer, $) {
     
     var isInterval = true;
     var interval = null;
+    var absStartTM = null;
+    
+    var entityExistCheckObject = {};
 
 	$('#iotSimReq').click(function() {
 		const iotEnum = $('#iotList').val();
@@ -1074,9 +1075,6 @@ var Simulation = function(magoInstance, viewer, $) {
         const to_start = Cesium.JulianDate.fromDate(new Date());
         const to_end = Cesium.JulianDate.addMinutes(to_start, 30, new Cesium.JulianDate());
         
-        console.log(day_start, day_end)
-        console.log(to_start, to_end)
-        
         const durationTimeStep = parseInt((day_end.unix() - day_start.unix())/parseInt(samplePosition.length/3));
         let startUnidxTIme = day_start.unix();
         const arrInput = [];
@@ -1097,12 +1095,19 @@ var Simulation = function(magoInstance, viewer, $) {
         let startTM = moment(JSON.parse(JSON.stringify(arrInput[0].dateTime)));
         let endTM = moment(JSON.parse(JSON.stringify(arrInput[arrInput.length-1].dateTime)));
         
+        if(absStartTM == null){
+        	absStartTM = startTM;
+        }
+        
         // draw path and scatter.
 //        MAGO3D_INSTANCE.getViewer().clock.stopTime = arrInput[arrInput.length - 1].dateTime;
-        runIot(id, arrInput, uri, scale);
+        if(viewer.entities.getById(id) == undefined){
+        	runIot(id, arrInput, uri, scale);
+        }
 		
         if(isInterval){
             interval = setInterval(function(){
+            	console.log(startTM, endTM);
             if(startTM.isBefore(endTM)){
                 startTM.add(2000, 'milliseconds');
                 var jd = Cesium.JulianDate.fromDate(startTM.toDate());
@@ -1110,8 +1115,8 @@ var Simulation = function(magoInstance, viewer, $) {
                 MAGO3D_INSTANCE.getMagoManager().sceneState.sunSystem.setDate(startTM.toDate());
             } else {
                 console.log(arrInput[0].dateTime);
+                clearInterval(this);
             }}, 30);
-            
             
             isInterval = false;
         } else{
@@ -1122,6 +1127,7 @@ var Simulation = function(magoInstance, viewer, $) {
             console.log(Cesium.JulianDate.toDate(viewer.clock.currentTime))
             console.log(moment(Cesium.JulianDate.toDate(viewer.clock.currentTime)));
             
+            startTM = absStartTM;
             endTM = endTM + moment(Cesium.JulianDate.toDate(viewer.clock.currentTime));
             console.log(endTM);
             
@@ -1133,6 +1139,7 @@ var Simulation = function(magoInstance, viewer, $) {
                     MAGO3D_INSTANCE.getMagoManager().sceneState.sunSystem.setDate(startTM.toDate());
                 } else{
                     console.log('test');
+                    clearInterval(this);
                 }}, 30);
         }
 	});
@@ -2488,21 +2495,41 @@ var Simulation = function(magoInstance, viewer, $) {
     var onTickListener = null;
 	
 	function sceneViewEntity(etityId){
+		let flipAngle = -1;
+		let first_flip = 0;
+		
         onTickListener = viewer.clock.onTick.addEventListener(function(clock){
             // clock.currentTime, viewer.endTime하고 비교
             if(clock.currentTime < viewer.clock.stopTime){
                 console.log(clock.currentTime, viewer.clock.stopTime)
+                console.log(clock.currentTime.secondsOfDay, first_flip)
+                var entityId = entityId;
                 var trackedEntity = viewer.entities.getById(etityId);
 
                 var direction = trackedEntity.orientation.getValue(clock.currentTime);
-                var angle = Cesium.Quaternion.computeAngle(direction);
-                var pitch = -Cesium.Math.toRadians(30.0);
-                var range = Cesium.Cartesian3.magnitude(new Cesium.Cartesian3(30.0, 0.0, 10.0));
+                
+                if(first_flip == 400){
+                	flipAngle *= -1;
+                	console.log('flip_1!')
+                	first_flip += 1;
+                } else if(first_flip == 960){
+                	flipAngle *= -1;
+                	console.log('flip_2!')
+                	first_flip += 1;
+                } else{
+                	first_flip += 1;
+                }
+                
+                var angle = Cesium.Quaternion.computeAngle(direction) * flipAngle;
+                var pitch = -Cesium.Math.toRadians(50.0);
+                var range = Cesium.Cartesian3.magnitude(new Cesium.Cartesian3(80.0, 50.0, 60.0));
                 var offset = new Cesium.HeadingPitchRange(angle, pitch, range);
                 
                 viewer.camera.lookAt(trackedEntity.position.getValue(clock.currentTime), offset);
             } else{
                 console.log('stop this interval plz');
+                viewer.entities.removeById(entityId);
+                viewer.camera.zoomOut(100);
                 viewer.clock.onTick.removeEventListener(onTickListener());
             }
         });
