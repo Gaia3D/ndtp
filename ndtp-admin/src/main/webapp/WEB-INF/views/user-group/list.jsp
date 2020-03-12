@@ -154,7 +154,7 @@
 					                    </td>
 					                    <td class="col-type">
 											<a href="/user-group/modify?userGroupId=${userGroup.userGroupId}" class="image-button button-edit"><spring:message code='modified'/></a>&nbsp;&nbsp;
-					                    	<a href="/user-group/delete?userGroupId=${userGroup.userGroupId}" onclick="return deleteWarning();" class="image-button button-delete"><spring:message code='delete'/></a>
+					                    	<a href="/user-group/delete?userGroupId=${userGroup.userGroupId}" onclick="return deleteUserGroupWarning();" class="image-button button-delete"><spring:message code='delete'/></a>
 					                    </td>
 					                    <td class="col-date">
 					                    	<fmt:parseDate value="${userGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
@@ -284,6 +284,14 @@
 	            }
 	        }
 	    }
+	}
+
+	function deleteUserGroupWarning() {
+		if(confirm("삭제 하시겠습니까?\n그룹에 포함된 사용자도 함께 삭제됩니다.")) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 </script>
 </body>
