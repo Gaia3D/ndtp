@@ -99,6 +99,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				translucencyByDistance : new Cesium.NearFarScalar(1.5e1, 1.0, 8.0e2, 0.0)
 			}
 		});
+		entitiyObj.type = 'delta';
 		viewer.entities.add(entitiyObj)
 	}
 
@@ -1688,13 +1689,17 @@ var Simulation = function(magoInstance, viewer, $) {
 //                    _viewer._selectedEntity = pickedFeature.id.polygon;
                 } else {
 					var pickedFeature = viewer.scene.pick(event.position);
-
+					debugger;
 					if(pickedFeature) {
-						pickedName = pickedFeature.id.name;
-						allObject[pickedName].terrain = pickedFeature.id;
-						allObject[pickedName].plottage = getArea(allObject[pickedName].terrain.polygon._hierarchy._value.positions);
-						$("#selectDistrict").val(allObject[pickedName].terrain.name).trigger("change");
-						// $("#districtDisplay").val("enable").trigger("change");
+						if(pickedFeature.id.type === "delta") {
+
+						} else {
+							pickedName = pickedFeature.id.name;
+							allObject[pickedName].terrain = pickedFeature.id;
+							allObject[pickedName].plottage = getArea(allObject[pickedName].terrain.polygon._hierarchy._value.positions);
+							$("#selectDistrict").val(allObject[pickedName].terrain.name).trigger("change");
+							// $("#districtDisplay").val("enable").trigger("change");
+						}
 					} else {
 						pickedName = "";
 					}
