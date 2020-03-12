@@ -157,9 +157,9 @@ var Simulation = function(magoInstance, viewer, $) {
 			resolution : 5,
 			strokeWidth: 0,
 			stroke: Cesium.Color.BLUEVIOLET.withAlpha(0.0),
-			fill: Cesium.Color.BLUEVIOLET.withAlpha(0.9),
+			fill: Cesium.Color.BLUEVIOLET.withAlpha(0.8),
 		};
-		let url = "http://localhost/data/simulation-rest/drawGeojson?fileName=" + fileName;
+		let url = "/data/simulation-rest/drawGeojson?fileName=" + fileName;
 
 		Cesium.GeoJsonDataSource.load(url, obj).then(function(dataSource) {
 			let entitis = dataSource.entities._entities._array;
@@ -1801,7 +1801,7 @@ var Simulation = function(magoInstance, viewer, $) {
 			position: position,
 			orientation: orientation,
 			model: {
-				uri: 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir,
+				uri: '/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir,
 				scale: scale,
 				show: true,
 			}
