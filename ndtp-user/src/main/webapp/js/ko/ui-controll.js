@@ -119,11 +119,13 @@ $(function() {
         
         //시민참여 벗어날 시 지도 클리어.
         if(active !== 'civilVoiceContent') {
-        	civilVoice.clear();
-        	civilVoice.showContent('list');
-        	var cluster = civilVoice.cluster
-        	if(cluster && cluster.magoCluster) {
-        		civilVoice.cluster.stopRender();
+        	if(window.civilVoice) {
+        		civilVoice.clear();
+            	civilVoice.showContent('list');
+            	var cluster = civilVoice.cluster
+            	if(cluster && cluster.magoCluster) {
+            		civilVoice.cluster.stopRender();
+            	}
         	}
         }
         
