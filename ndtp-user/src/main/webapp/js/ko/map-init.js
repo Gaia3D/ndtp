@@ -17,6 +17,7 @@ function mapInit(magoInstance, baseLayers, policy) {
 	var dataSources = viewer.dataSources;
 	var geoserverDataUrl = policy.geoserverDataUrl;
 	var geoserverDataWorkspace = policy.geoserverDataWorkspace;
+
 	// 레이어 리스트를 맵 형태로 저장 
 	var layerMap = [];
 	// 레이어 리스트
@@ -30,7 +31,7 @@ function mapInit(magoInstance, baseLayers, policy) {
 	}
 	
 	// 레이어 리스트를 zindex 기준으로 오름 차순 정렬 
-	sortedLayer.sort(function(a, b) { 
+	sortedLayer.sort(function(a, b) {
 	    return a.zindex- b.zindex
 	});
 	

@@ -117,8 +117,8 @@
                             </select>
                         </li>
                         <li style="width:70%;">
-                            <label for="notSuitableReason" style="width:25%;">부적합 사유</label>
-                            <textarea id="notSuitableReason" name="notSuitableReason" class="radius" type="text" rows="4" placeholder="부적합 사유를 작성해 주시기 바랍니다." style="width:74%;">
+                            <label for="notSuitableReason" style="width:25%;">의견</label>
+                            <textarea id="notSuitableReason" name="notSuitableReason" class="radius" type="text" rows="4" placeholder="의견을 작성해 주시기 바랍니다." style="width:74%;">
                             </textarea>
                         </li>
                     </ul>

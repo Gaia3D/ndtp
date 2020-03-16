@@ -84,20 +84,25 @@ var Simulation = function(magoInstance, viewer, $) {
 	const htmlBillboard = new HtmlBillboardCollection(viewer.scene);
 	var magoManager = magoInstance.getMagoManager();
 	var f4dController = magoInstance.getF4dController();
-	initDeltaBillboard();
-	function initDeltaBillboard() {
-		/*const cart3 = Cesium.Cartesian3.fromDegrees(128.9219740546607, 35.13631787332174, 3);
+
+	initDeltaBillboard(128.9219740546607, 35.13631787332174, 3,0, 3, 30);
+	function initDeltaBillboard(lon, lat, alt, near, far, ratio) {
+		const cart3 = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
 		var ch = htmlBillboard.add();
 		ch.position = cart3;
 		ch.offsetLeft = -15;
 		ch.offsetTop = 3;
+		const condiParam = {
+			near: near,
+			far: far
+		};
+		ch.distanceDisplayCondition = condiParam;
 		ch.element.style.width = '30px';
 		ch.element.style.height = '30px';
 		ch.element.style.display = 'flex';
 		ch.element.style.alignItems = 'center';
 		ch.element.style.justifyContent = 'center';
 		const dataId = "delta";
-		const ratio = 30;
 		ch.element.innerHTML = "" +
 			"<div class='tooltip' onclick=consBuildBoardClick.click('"+dataId+"')><svg height='20' width='20' viewBox='0 0 20 20'>\n" +
 			"  <circle r='10' cx='10' cy='10' fill='white' />\n" +
@@ -108,22 +113,9 @@ var Simulation = function(magoInstance, viewer, $) {
 			"          transform='rotate(-90) translate(-20)' />\n" +
 			"</svg>" +
 			"<span class='tooltiptext'>공정률 &nbsp; : "+ ratio +"%</span>" +
-			"</div>";*/
+			"</div>";
 
-		// const cart3 = new Cesium.Cartesian3(0,0,0);
-/*		const cart3 = Cesium.Cartesian3.fromDegrees(128.9219740546607, 35.13631787332174, 0.3);
-		const pinBuilder = new Cesium.PinBuilder();
-		const entitiyObj = new Cesium.Entity({
-			position: cart3,
-			billboard : {
-				image : pinBuilder.fromText('?', Cesium.Color.BLACK, 48).toDataURL(),
-				verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-				eyeOffset: new Cesium.Cartesian3(0, 3.0504106, 0),
-				translucencyByDistance : new Cesium.NearFarScalar(1.5e1, 1.0, 8.0e2, 0.0)
-			}
-		});
-		entitiyObj.type = 'delta';
-		viewer.entities.add(entitiyObj)*/
+		return ch;
 	}
 
 	magoManager.on(Mago3D.MagoManager.EVENT_TYPE.F4DLOADEND, F4DLoadEnd);
@@ -143,8 +135,45 @@ var Simulation = function(magoInstance, viewer, $) {
 						effectType      : 'borningLight',
 						durationSeconds : 0.6
 					}));
-
 				}
+
+				node.setRenderCondition(function(data){
+					node.data.isColorChanged = true;
+					let colorRed = 0;
+					let colorGreen = 0;
+					let colorBlue = 0;
+					if (parseInt(rootNode.attributes.step) === 0) {
+						colorRed = 230/255;
+						colorGreen = 8/255;
+						colorBlue = 0;
+					} else if (parseInt(rootNode.attributes.step) === 1) {
+						colorRed = 255/255;
+						colorGreen = 100/255;
+						colorBlue = 28/255;
+					} else if (parseInt(rootNode.attributes.step) === 2) {
+						colorRed = 141/255;
+						colorGreen = 30/255;
+						colorBlue = 77/255;
+					} else if (parseInt(rootNode.attributes.step) === 3) {
+						colorRed = 125/255;
+						colorGreen = 44/255;
+						colorBlue = 121/255;
+					} else if (parseInt(rootNode.attributes.step) === 4) {
+						colorRed = 255/255;
+						colorGreen = 208/255;
+						colorBlue = 9/255;
+					} else if (parseInt(rootNode.attributes.step) === 5) {
+						colorRed = 0;
+						colorGreen = 208/255;
+						colorBlue = 182/255;
+					}
+
+					if(!node.data.aditionalColor) {
+						node.data.aditionalColor = new Mago3D.Color();
+						node.data.aditionalColor.setRGB(colorRed,colorGreen,colorBlue);
+					}
+				});
+
 			} else if(rootNode.attributes.consType === 'CONSTPROCGEUMGANG') {
 				magoManager.effectsManager.addEffect(dataId, new Mago3D.Effect({
 					effectType      : "zBounceSpring",
@@ -152,45 +181,22 @@ var Simulation = function(magoInstance, viewer, $) {
 				}));
 			}
 			if(node.data.attributes.ratio < 50 && rootNode.attributes.consType === 'CONSTPROCSEJON') {
-				let objPosition = Cesium.Cartesian3.fromDegrees(node.data.geographicCoord.longitude, node.data.geographicCoord.latitude, node.data.geographicCoord.altitude + 40);
-				var ch = htmlBillboard.add();
-				ch.position = objPosition;
-				ch.offsetLeft = -15;
-				ch.offsetTop = 3;
-				ch.element.style.width = '30px';
-				ch.element.style.height = '30px';
-				ch.element.style.display = 'flex';
-				ch.element.style.alignItems = 'center';
-				ch.element.style.justifyContent = 'center';
-				ch.element.innerHTML = "" +
-					"<div class='tooltip' onclick=consBuildBoardClick.click('"+dataId+"')><svg height='20' width='20' viewBox='0 0 20 20'>\n" +
-					"  <circle r='10' cx='10' cy='10' fill='white' />\n" +
-					"  <circle r='5' cx='10' cy='10' fill='transparent'\n" +
-					"          stroke='tomato'\n" +
-					"          stroke-width='10'\n" +
-					"          stroke-dasharray='calc(" + (node.data.attributes.ratio * 31.4 / 100) + ") 31.4'\n" +
-					"          transform='rotate(-90) translate(-20)' />\n" +
-					"</svg>" +
-					"<span class='tooltiptext'>공정률 &nbsp; : "+ node.data.attributes.ratio +"%</span>" +
-					"</div>";
-
-
-				
+				const lon = node.data.geographicCoord.longitude;
+				const lat = node.data.geographicCoord.latitude;
+				const alt = node.data.geographicCoord.altitude + 40;
+				const ch = initDeltaBillboard(lon, lat, alt,0, 400, node.data.attributes.ratio);
 				consBuildBillboardStepInfo.push([parseInt(rootNode.attributes.step), ch]);
 			}
 		}
 	}
 
     var runAllocBuildStat = "";
-
     var cityPlanTargetArea = 0; // 기준 면적
     var cityPlanStdFloorCov = 0; // 기준 용적률
     var floorCoverateRatio = 0; // 용적률
     var cityPlanStdBuildCov = 0; // 기준 건폐율
     var buildCoverateRatio = 0; // 건폐율
-    
     var stdFairRate = 0;
-
     var locationList = {
 		"sejong": [127.2739454, 36.5268601],
 		"pusan": [129.0015885, 35.1645701],
@@ -431,7 +437,7 @@ var Simulation = function(magoInstance, viewer, $) {
 		},
 		sliderSejongShow: function() {
 			$('#csRange, #constructionProcess').show();
-			// $('#csRange, #constructionProcess .profileInfo').show();
+			$('#csRange, #constructionProcess .profileInfo').show();
 			$('#saRange').hide();
 		},
 		consBuildDataReq: (step, cityType) => {

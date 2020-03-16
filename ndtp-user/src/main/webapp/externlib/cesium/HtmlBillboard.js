@@ -113,7 +113,7 @@ HtmlBillboard.prototype._updateView = function (scene, camera, occluder) {
     // Check visibility by distance
     if (this.distanceDisplayCondition) {
         var dist = Cesium.Cartesian3.distance(this._position, camera.positionWC);
-
+        console.log('dist, : ' , dist);
         if (dist < this.distanceDisplayCondition.near || dist > this.distanceDisplayCondition.far) {
             this._setVisible(false);
             return;
