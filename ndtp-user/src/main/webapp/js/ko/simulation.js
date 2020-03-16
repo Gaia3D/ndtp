@@ -86,9 +86,32 @@ var Simulation = function(magoInstance, viewer, $) {
 	var f4dController = magoInstance.getF4dController();
 	initDeltaBillboard();
 	function initDeltaBillboard() {
+		/*const cart3 = Cesium.Cartesian3.fromDegrees(128.9219740546607, 35.13631787332174, 3);
+		var ch = htmlBillboard.add();
+		ch.position = cart3;
+		ch.offsetLeft = -15;
+		ch.offsetTop = 3;
+		ch.element.style.width = '30px';
+		ch.element.style.height = '30px';
+		ch.element.style.display = 'flex';
+		ch.element.style.alignItems = 'center';
+		ch.element.style.justifyContent = 'center';
+		const dataId = "delta";
+		const ratio = 30;
+		ch.element.innerHTML = "" +
+			"<div class='tooltip' onclick=consBuildBoardClick.click('"+dataId+"')><svg height='20' width='20' viewBox='0 0 20 20'>\n" +
+			"  <circle r='10' cx='10' cy='10' fill='white' />\n" +
+			"  <circle r='5' cx='10' cy='10' fill='transparent'\n" +
+			"          stroke='tomato'\n" +
+			"          stroke-width='10'\n" +
+			"          stroke-dasharray='calc(" + (ratio * 31.4 / 100) + ") 31.4'\n" +
+			"          transform='rotate(-90) translate(-20)' />\n" +
+			"</svg>" +
+			"<span class='tooltiptext'>공정률 &nbsp; : "+ ratio +"%</span>" +
+			"</div>";*/
 
 		// const cart3 = new Cesium.Cartesian3(0,0,0);
-		const cart3 = Cesium.Cartesian3.fromDegrees(128.9219740546607, 35.13631787332174, 0.3);
+/*		const cart3 = Cesium.Cartesian3.fromDegrees(128.9219740546607, 35.13631787332174, 0.3);
 		const pinBuilder = new Cesium.PinBuilder();
 		const entitiyObj = new Cesium.Entity({
 			position: cart3,
@@ -100,7 +123,7 @@ var Simulation = function(magoInstance, viewer, $) {
 			}
 		});
 		entitiyObj.type = 'delta';
-		viewer.entities.add(entitiyObj)
+		viewer.entities.add(entitiyObj)*/
 	}
 
 	magoManager.on(Mago3D.MagoManager.EVENT_TYPE.F4DLOADEND, F4DLoadEnd);
@@ -130,13 +153,6 @@ var Simulation = function(magoInstance, viewer, $) {
 			}
 			if(node.data.attributes.ratio < 50 && rootNode.attributes.consType === 'CONSTPROCSEJON') {
 				let objPosition = Cesium.Cartesian3.fromDegrees(node.data.geographicCoord.longitude, node.data.geographicCoord.latitude, node.data.geographicCoord.altitude + 40);
-				let objPinBuilder = new Cesium.PinBuilder();
-				/*node.data.isColorChanged = true;
-				if(!node.data.aditionalColor) {
-					node.data.aditionalColor = new Mago3D.Color();
-					node.data.aditionalColor.setRGB(230/255,8/255,0);
-				}*/
-
 				var ch = htmlBillboard.add();
 				ch.position = objPosition;
 				ch.offsetLeft = -15;
@@ -1093,14 +1109,14 @@ var Simulation = function(magoInstance, viewer, $) {
 		if(iotEnum === '1') {
             fileName = 'Mat_1.gltf';
             preDir = 'buses';
-            uri = 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir;
+            uri = '/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir;
             scale = 0.01;
             samplePosition = busSamplePosition;
             id = "bus";
 		} else if(iotEnum === '2') {
             fileName = 'drone.gltf';
             preDir = 'buses';
-            uri = 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir;
+            uri = '/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir;
             scale = 0.01;
             samplePosition = droneSamplePosition;
             id = "drone";

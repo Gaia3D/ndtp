@@ -231,7 +231,7 @@
 	});
 	var headPitchRollDialog = $("#headPitchRollDialog").dialog({
 		autoOpen: false,
-		width: 220,
+		width: 290,
 		height: 240,
 		modal: false,
 		overflow : "auto",

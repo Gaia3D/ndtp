@@ -6,7 +6,7 @@
 <link href="/externlib/cesium/Widgets/widgets.css" rel="stylesheet" type="text/css" />
 
 <div id="headPitchRollDialog" title="객체 정보" class="basicTable" style="display: none;">
-    <div id="rotation_adjustment" style="">
+    <div id="rotation_adjustment" style="width: 240px;">
         <div style="font-weight: bold; margin-top: 3px;">🔸 위치 정보</div>
         <div>
             <div>
@@ -19,22 +19,19 @@
 
         <div style="font-weight: bold; margin-top: 10px;">🔸 회전 정보</div>
         <div>
-            <%--            <span>Heading: </span>--%>
-            <input type="range" min="-360.0" max="360.0" step="1" data-bind="value: heading, valueUpdate: 'input'"
-                style="width:70%; -webkit-appearance: slider-horizontal">
-            <input id="heading-val" type="text" size="5" data-bind="value: heading" style="width:20%; ">
+<%--            <span>Heading: </span>--%>
+            <input type="range" min="0.0" max="360.0" step="1" data-bind="value: heading, valueUpdate: 'input'" style="width:69%; -webkit-appearance: slider-horizontal">
+            <input type="text" size="5" data-bind="value: heading">
         </div>
         <div>
-            <%--            <span>Pitch: </span>--%>
-            <input type="range" min="-360.0" max="360.0" step="1" data-bind="value: pitch, valueUpdate: 'input'"
-                style="width:70%; -webkit-appearance: slider-horizontal">
-            <input id="pitch-val" type="text" size="5" data-bind="value: pitch" style="width:20%; ">
+<%--            <span>Pitch: </span>--%>
+            <input type="range" min="0.0" max="360.0" step="1" data-bind="value: pitch, valueUpdate: 'input'" style="width:69%; -webkit-appearance: slider-horizontal">
+            <input type="text" size="5" data-bind="value: pitch">
         </div>
         <div>
-            <%--            <span>Roll: </span>--%>
-            <input type="range" min="-360.0" max="360.0" step="1" data-bind="value: roll, valueUpdate: 'input'"
-                style="width:70%; -webkit-appearance: slider-horizontal">
-            <input id="roll-val" type="text" size="5" data-bind="value: roll" style="width:20%; ">
+<%--            <span>Roll: </span>--%>
+            <input type="range" min="0.0" max="360.0" step="1" data-bind="value: roll, valueUpdate: 'input'" style="width:69%; -webkit-appearance: slider-horizontal">
+            <input type="text" size="5" data-bind="value: roll">
         </div>
 
         <div style="font-weight: bold; margin-top: 10px;">🔸 자동 회전 조정</div>
