@@ -19,20 +19,28 @@
 
         <div style="font-weight: bold; margin-top: 10px;">🔸 회전 정보</div>
         <div>
-<%--            <span>Heading: </span>--%>
-            <input type="range" min="0.0" max="360.0" step="1" data-bind="value: heading, valueUpdate: 'input'" style="width:70%; -webkit-appearance: slider-horizontal">
-            <input type="text" size="5" data-bind="value: heading">
+            <%--            <span>Heading: </span>--%>
+            <input type="range" min="-360.0" max="360.0" step="1" data-bind="value: heading, valueUpdate: 'input'"
+                style="width:70%; -webkit-appearance: slider-horizontal">
+            <input id="heading-val" type="text" size="5" data-bind="value: heading" style="width:20%; ">
         </div>
         <div>
-<%--            <span>Pitch: </span>--%>
-            <input type="range" min="0.0" max="360.0" step="1" data-bind="value: pitch, valueUpdate: 'input'" style="width:70%; -webkit-appearance: slider-horizontal">
-            <input type="text" size="5" data-bind="value: pitch">
+            <%--            <span>Pitch: </span>--%>
+            <input type="range" min="-360.0" max="360.0" step="1" data-bind="value: pitch, valueUpdate: 'input'"
+                style="width:70%; -webkit-appearance: slider-horizontal">
+            <input id="pitch-val" type="text" size="5" data-bind="value: pitch" style="width:20%; ">
         </div>
         <div>
-<%--            <span>Roll: </span>--%>
-            <input type="range" min="0.0" max="360.0" step="1" data-bind="value: roll, valueUpdate: 'input'" style="width:70%; -webkit-appearance: slider-horizontal">
-            <input type="text" size="5" data-bind="value: roll">
+            <%--            <span>Roll: </span>--%>
+            <input type="range" min="-360.0" max="360.0" step="1" data-bind="value: roll, valueUpdate: 'input'"
+                style="width:70%; -webkit-appearance: slider-horizontal">
+            <input id="roll-val" type="text" size="5" data-bind="value: roll" style="width:20%; ">
         </div>
+
+        <div style="font-weight: bold; margin-top: 10px;">🔸 자동 회전 조정</div>
+        <button id="auto_heading" type="button" class="btnTextF">Heading</button>
+        <button id="auto_pitch" type="button" class="btnTextF">Pitch</button>
+        <button id="auto_roll" type="button" class="btnTextF">Roll</button>
     </div>
 </div>
 
@@ -65,7 +73,7 @@
     Cesium.knockout.getObservable(rotationModel, 'pitch').subscribe(
         function (newValue) {
             let pitch = Cesium.Math.toRadians(newValue);
-            let hpr = new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(rotationModel.heading),  pitch, Cesium.Math.toRadians(rotationModel.roll));
+            let hpr = new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(rotationModel.heading), pitch, Cesium.Math.toRadians(rotationModel.roll));
             let orientation = Cesium.Transforms.headingPitchRollQuaternion(selectedEntity.position.getValue(), hpr);
             selectedEntity.orientation.setValue(orientation);
         }
@@ -80,6 +88,82 @@
             selectedEntity.orientation.setValue(orientation);
         }
     );
+
+    var stop_heading = false;
+    $('#auto_heading').click(function () {
+
+        var rotation_val = rotationModel.heading;
+        console.log(stop_heading);
+        if (stop_heading) {
+            clearInterval(heading_run);
+            stop_heading = false;
+        }
+        else {
+            stop_heading = true;
+
+            heading_run = setInterval(function () {
+
+                if (rotation_val >= 360) {
+                    rotation_val = 0;
+                }
+                rotationModel.heading = rotation_val;
+                rotation_val++
+            }, 100);
+
+        }
+    });
+
+    var stop_pitch = false;
+    $('#auto_pitch').click(function () {
+        var rotation_val = rotationModel.pitch;
+
+        console.log(stop_pitch);
+
+        if (stop_pitch) {
+            clearInterval(pitch_run);
+            stop_pitch = false;
+        }
+        else {
+            stop_pitch = true;
+
+            pitch_run = setInterval(function () {
+
+                if (rotation_val >= 360) {
+                    rotation_val = 0;
+                }
+                rotationModel.pitch = rotation_val;
+                rotation_val++
+            }, 100);
+
+        }
+    });
+
+    var stop_roll = false;
+    $('#auto_roll').click(function () {
+        var rotation_val = rotationModel.roll;
+        console.log(stop_roll);
+        if (stop_roll) {
+            clearInterval(roll_run);
+            stop_roll = false;
+        }
+        else {
+            stop_roll = true;
+
+            roll_run = setInterval(function () {
+
+                if (rotation_val >= 360) {
+                    rotation_val = 0;
+                }
+                rotationModel.roll = rotation_val;
+                rotation_val++
+            }, 100);
+
+        }
+    });
+
+
+
+
 </script>
 
 <style>
@@ -107,11 +191,13 @@
         top: 5px;
         color: white;
     }
+
     #rotation_adjustment input {
         vertical-align: middle;
         padding-top: 2px;
         padding-bottom: 2px;
     }
+
     input[type=range] {
         -webkit-appearance: slider-horizontal;
         color: rgb(144, 144, 144);
@@ -120,6 +206,7 @@
         border: initial;
         margin: 2px;
     }
+
     input {
         -webkit-writing-mode: horizontal-tb !important;
         text-rendering: auto;
