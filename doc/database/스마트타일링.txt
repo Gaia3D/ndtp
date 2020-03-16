@@ -235,3 +235,13 @@ INSERT INTO data_group (
 	148, 0, 1, 1, 0, true, true,true, 0,
 	null, null, '{"isPhysical": false}'
 );
+
+
+4 sequence 재생성
+drop sequence if exists data_group_seq;
+drop sequence if exists data_info_seq;
+create sequence data_group_seq increment 1 minvalue 1 maxvalue 999999999999 start 211 cache 1;
+create sequence data_info_seq increment 1 minvalue 1 maxvalue 9999999999999999 start 21125 cache 1;
+
+
+commit;
