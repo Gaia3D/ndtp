@@ -36,7 +36,7 @@ function HtmlBillboard(collection) {
     this.element.style.left = '0';
 }
 
-Cesium.defineProperties(HtmlBillboard.prototype, {
+Object.defineProperties(HtmlBillboard.prototype, {
      /**
      * The Cesium.Cartesian3 position of the element.
      */

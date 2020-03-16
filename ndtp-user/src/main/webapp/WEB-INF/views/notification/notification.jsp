@@ -10,7 +10,6 @@
 
 <script src="/externlib/cesium/Cesium.js" type="text/javascript"></script>
 <link href="/externlib/cesium/Widgets/widgets.css" rel="stylesheet" type="text/css" />
-
 <script>
     Growl.settings.duration = 100000; // 100
     var permReqeustParam = {

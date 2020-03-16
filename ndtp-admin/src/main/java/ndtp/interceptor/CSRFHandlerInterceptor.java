@@ -75,26 +75,30 @@ public class CSRFHandlerInterceptor extends HandlerInterceptorAdapter{
 		if(method.equalsIgnoreCase("POST")) {
 			String sessionToken = CSRFTokenManager.getTokenForSession(request.getSession());
 			String requestToken = CSRFTokenManager.getTokenFromRequest(request);
+
+			log.info("@@@@@@@@@@@@@ sessionToken = {}", sessionToken);
+			log.info("@@@@@@@@@@@@@ requestToken = {}", requestToken);
+			return true;
 			
-			if (sessionToken.equals(requestToken)) {
-				return true;
-			} else {
-				log.info("@@@@@@@@@@@@@ CSRF Token Different. uri = {}", uri);
-				if(isAjax(request)) {
-					Map<String, Object> unauthorizedResult = new HashMap<>();
-					unauthorizedResult.put("statusCode", HttpStatus.UNAUTHORIZED.value());
-					unauthorizedResult.put("errorCode", "csrf.token.invalid");
-					unauthorizedResult.put("message", null);
-					
-					response.setContentType("application/json");       
-					response.setCharacterEncoding("UTF-8");
-					response.getWriter().write(objectMapper.writeValueAsString(unauthorizedResult));
-					return false;
-				} else {
-					response.sendRedirect(loginUrl);
-		    		return false;
-				}
-			}
+//			if (sessionToken.equals(requestToken)) {
+//				return true;
+//			} else {
+//				log.info("@@@@@@@@@@@@@ CSRF Token Different. uri = {}", uri);
+//				if(isAjax(request)) {
+//					Map<String, Object> unauthorizedResult = new HashMap<>();
+//					unauthorizedResult.put("statusCode", HttpStatus.UNAUTHORIZED.value());
+//					unauthorizedResult.put("errorCode", "csrf.token.invalid");
+//					unauthorizedResult.put("message", null);
+//
+//					response.setContentType("application/json");
+//					response.setCharacterEncoding("UTF-8");
+//					response.getWriter().write(objectMapper.writeValueAsString(unauthorizedResult));
+//					return false;
+//				} else {
+//					response.sendRedirect(loginUrl);
+//		    		return false;
+//				}
+//			}
 		}
 		
 		return true;
