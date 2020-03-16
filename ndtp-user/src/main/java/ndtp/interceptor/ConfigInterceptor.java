@@ -59,7 +59,7 @@ public class ConfigInterceptor extends HandlerInterceptorAdapter {
 					} else if( userGroupMenu.getDepth() == 2) {
 						break;
 					} else {
-						continue;
+						// pass
 					}
 				}
 			}
@@ -90,6 +90,7 @@ public class ConfigInterceptor extends HandlerInterceptorAdapter {
 			
 			request.setAttribute("cacheUserGroupMenuList", userGroupMenuList);
 			request.setAttribute("cacheUserGroupMenuListSize", userGroupMenuList.size());
+			request.setAttribute("contentCacheVersion", CacheManager.getPolicy().getContentCacheVersion());
     	}
     	
         return true;

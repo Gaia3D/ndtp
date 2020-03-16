@@ -34,7 +34,7 @@ public interface DataService {
 //	Long getDataObjectAttributeTotalCount(DataInfoObjectAttribute dataInfoObjectAttribute);
 	
 	/**
-	 * Data 전체 목록. 페이징 처리 안함
+	 * 데이터 그룹에 속하는 전체 데이터 목록
 	 * @param dataInfo
 	 * @return
 	 */
@@ -48,7 +48,7 @@ public interface DataService {
 	List<DataInfo> getListData(DataInfo dataInfo);
 	
 	/**
-	 * 데이터 그룹에 포함되는 모든 데이터를 취득
+	 * Smart Tiling용 데이터 그룹에 포함되는 모든 데이터를 취득
 	 * @param dataGroupId
 	 * @return
 	 */
@@ -56,10 +56,10 @@ public interface DataService {
 	
 	/**
 	 * 공유 유형별 데이터 통계
-	 * @param userId
+	 * @param dataInfo
 	 * @return
 	 */
-	List<DataInfo> getDataTotalCountBySharing(String userId);
+	List<DataInfo> getDataTotalCountBySharing(DataInfo dataInfo);
 	
 	/**
 	 * Data 정보 취득

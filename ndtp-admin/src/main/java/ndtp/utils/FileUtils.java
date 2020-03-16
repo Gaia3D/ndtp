@@ -2,6 +2,7 @@ package ndtp.utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
@@ -249,9 +250,12 @@ public class FileUtils {
 			fileInfo.setFileRealName(saveFileName);
 			fileInfo.setFileSize(String.valueOf(size));
 			fileInfo.setFilePath(sourceDirectory);
+		} catch(IOException e) {
+			log.info("@@@@@@@@@@@@ io exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+			fileInfo.setErrorCode("io.exception");
 		} catch(Exception e) {
-			e.printStackTrace();
-			fileInfo.setErrorCode("fileinfo.copy.exception");
+			log.info("@@@@@@@@@@@@ file copy exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+			fileInfo.setErrorCode("file.copy.exception");
 		}
 
 		return fileInfo;

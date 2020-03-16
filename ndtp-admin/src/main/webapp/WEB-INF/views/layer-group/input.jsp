@@ -8,12 +8,12 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<title>Layer 그룹 등록 | NDTP</title>
-	<link rel="stylesheet" href="/css/${lang}/font/font.css" />
-	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
-	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
-	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css">
-	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-    <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
+	<link rel="stylesheet" href="/css/${lang}/font/font.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css?cacheVersion=${contentCacheVersion}">
+	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css?cacheVersion=${contentCacheVersion}" />
+    <link rel="stylesheet" href="/css/${lang}/admin-style.css?cacheVersion=${contentCacheVersion}" />
 </head>
 <body>
 	<%@ include file="/WEB-INF/views/layouts/header.jsp" %>
@@ -29,7 +29,8 @@
 							<div class="content-desc u-pull-right"><span class="icon-glyph glyph-emark-dot color-warning"></span><spring:message code='check'/></div>
 						</div>
 						<form:form id="layerGroup" modelAttribute="layerGroup" method="post" onsubmit="return false;">
-							<table class="input-table scope-row">
+							<table class="input-table scope-row" summary="2D 레이어 그룹 등록 테이블">
+							<caption class="hiddenTag">2D 레이어 그룹 등록</caption>
 								<col class="col-label l" />
 								<col class="col-input" />
 								<tr>
@@ -55,7 +56,7 @@
 								</tr>
 								<tr>
 									<th class="col-label l" scope="row">
-										<span>사용여부</span>
+										<span>사용 여부</span>
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input radio-set">
@@ -90,11 +91,11 @@
 	<!-- Dialog -->
 	<%@ include file="/WEB-INF/views/layer-group/layer-group-dialog.jsp" %>
 
-<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
-<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-<script type="text/javascript" src="/js/${lang}/common.js"></script>
-<script type="text/javascript" src="/js/${lang}/message.js"></script>
-<script type="text/javascript" src="/js/navigation.js"></script>
+<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/common.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/message.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/navigation.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 	});
@@ -163,8 +164,12 @@
 		layerGroupDialog.dialog( "option", "title", "레이어 그룹 선택");
 	});
 
-	// 상위 Node
-	function confirmParent(parent, parentName) {
+	// 다이얼로그에서 선택
+	function confirmParent(parent, parentName, parentDepth) {
+		if(parentDepth >= 3) {
+			alert("레이어 그룹은 3Depth 이상 계층으로 입력할 수 없습니다.");
+			return;
+		}
 		$("#parent").val(parent);
 		$("#parentName").val(parentName);
 		layerGroupDialog.dialog( "close" );

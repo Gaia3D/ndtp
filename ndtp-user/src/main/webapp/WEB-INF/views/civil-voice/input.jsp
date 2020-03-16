@@ -9,20 +9,21 @@
 	<form:form id="civilVoiceForm" modelAttribute="civilVoice" method="post" onsubmit="return false;">
 		<ul class="commentNew">
 			<li>
-				<label for="">제목 <span style="color: red;">*</span></label>
-				<input type="text" name="title" style="width:94%;" maxlength="256">
+				<label for="civilVoiceTitle">제목 <span style="color: red;">*</span></label>
+				<input type="text" id="civilVoiceTitle" name="title" style="width:91%;" maxlength="256">
 				<!-- <p class="info"><span>256</span>자 / 256자 이내</p> -->
- 				<p class="info">256자 이내</p>
+ 				<p class="info" style="margin-right: 15px;">256자 이내</p>
 			</li>
 			<li>
-				<label for="">위치 <span style="color: red;">*</span></label>
-				<input type="text" name="longitude" style="width:30%;">
-				<input type="text" name="latitude" style="width:30%;">
+				<label for="civilVoiceLongitude">위치 <span style="color: red;">*</span></label>
+				<input type="text" id="civilVoiceLongitude" name="longitude" style="width:30%;">
+				<label for="civilVoiceLatitude" class="hiddenTag">위치(위도)</label>
+				<input type="text" id="civilVoiceLatitude" name="latitude" style="width:30%;">
 				<button type="button" id="civilVoiceLocation" onClick="civilVoice.getGeographicCoord();" class="basicA" title="위치지정">위치지정</button>
 			</li>
 			<li>
 				<label for="contents">내용 <span style="color: red;">*</span></label>
-				<textarea id="contents" name="contents" cols="47" rows="10"></textarea>
+				<textarea id="contents" name="contents" cols="47" rows="10" style="width:96%;"></textarea>
 			</li>
 			<li class="form-group button-group-center">
 				<button id="civilVoiceCreateButton" onClick="saveCivilVoice();" class="btnTextF" title="등록" style="width: 200px;">등록</button>

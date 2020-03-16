@@ -33,7 +33,8 @@ import lombok.ToString;
 public class DataGroup extends Search {
 	@Builder.Default
 	private List<DataInfoSimple> datas = new ArrayList<>();
-	
+//	private List<DataInfoSimple> datas;
+
 	/****** 화면 표시용 *******/
 	private String parentName;
 	// 부모 depth

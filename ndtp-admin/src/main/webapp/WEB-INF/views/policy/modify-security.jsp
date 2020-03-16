@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 	<div id="securityTab">
 		<form:form id="policySecurity" modelAttribute="policy" method="post" onsubmit="return false;">
-			<table class="input-table scope-row">
+			<table class="input-table scope-row" summary="환경설정 보안 테이블">
+			<caption class="hiddenTag">환경설정 보안</caption>
 				<col class="col-label l" />
 				<col class="col-input" />
 				<tr>
@@ -21,7 +22,7 @@
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
 					<td class="col-input">
-						<form:input path="securitySessionTimeout" maxlength="2" cssClass="s" />
+						<form:input path="securitySessionTimeout" maxlength="2" cssClass="s" onKeyPress="return numkeyCheck(event);" />
 						<span class="table-desc">분</span>
 						<form:errors path="securitySessionTimeout" cssClass="error" />
 					</td>

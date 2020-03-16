@@ -10,15 +10,15 @@
     <meta name="viewport" content="width=device-width">
     <meta name="robots" content="index,nofollow"/>
     <title>Layer 수정 | NDTP</title>
-    <link rel="stylesheet" href="/css/${lang}/font/font.css" />
-	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
-	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
-	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-    <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
-    <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
-<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="/externlib/ol45/ol.js"></script>
-    <script type="text/javascript" src="/js/${lang}/mapInit.js"></script>
+    <link rel="stylesheet" href="/css/${lang}/font/font.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css?cacheVersion=${contentCacheVersion}" />
+    <link rel="stylesheet" href="/css/${lang}/admin-style.css?cacheVersion=${contentCacheVersion}" />
+    <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>
+    <script type="text/javascript" src="/externlib/ol45/ol.js?cacheVersion=${contentCacheVersion}"></script>
+    <script type="text/javascript" src="/js/${lang}/map-view.js?cacheVersion=${contentCacheVersion}"></script>
  </head>
 <body>
     <div style="height: 100%;">
@@ -28,6 +28,6 @@
 <script type="text/javascript">
     var policy = JSON.parse('${policyJson}');
     var layer = JSON.parse('${layerJson}');
-    var mapInit = new MapInit(policy, layer, '${versionId}');
+    var mapViewer = new mapViewer(policy, layer, '${versionId}');
 </script>
 </html>

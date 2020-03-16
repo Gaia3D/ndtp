@@ -22,7 +22,10 @@ var IssueController = function(magoInstance) {
 	}
 	
 	this.clearIssue = function(){
-		this.magoInstance.getMagoManager().objMarkerManager.objectMarkerArray = [];
+		var mm = this.magoInstance.getMagoManager();
+		mm.objMarkerManager.setMarkerByCondition(function(om){
+			return !om.issueId;
+		});
 	}
 	
 	this.getCenterRadiusIssue = function() {

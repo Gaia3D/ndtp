@@ -66,6 +66,7 @@ var TREE_OBJECT = {
 					$("#viewOrder").val(item.viewOrder);
 					$("#url").val(item.url);
 					$("#urlAlias").val(item.urlAlias);
+					$("#aliasMenuId").val(item.aliasMenuId);
 					$("#htmlId").val(item.htmlId);
 					$("#htmlContentId").val(item.htmlContentId);
 					$("#image").val(item.image);
@@ -171,18 +172,14 @@ var TREE_OBJECT = {
 		document.menuForm.reset();
 		document.menuForm.writeMode.value = "append";
 		console.log("--------------- add = " + obj.item.ancestor);
-		if(obj.item.ancestor === "0") {
-			$("#menuTarget").val("1");
-		} else {
-			$("#menuTarget").val("0");
-		}
+		$("#menuTarget").val(obj.item.menuTarget);
 		
 		document.menuForm.ancestor.value = obj.item.ancestor;
 		document.menuForm.parent.value = obj.item.parent;
 		document.menuForm.depth.value = obj.item.depth;
 //		document.menuForm.viewOrder.value = obj.item.viewOrder;
 		$("[name=defaultYn]").removeAttr("checked");
-		$("[name=defaultYn]").filter("[value='Y']").prop("checked",true);
+		$("[name=defaultYn]").filter("[value='N']").prop("checked",true);
 		$("[name=useYn]").removeAttr("checked");
 		$("[name=useYn]").filter("[value='Y']").prop("checked",true);
 		$("[name=displayYn]").removeAttr("checked");
@@ -204,16 +201,13 @@ var TREE_OBJECT = {
 		document.menuForm.reset();
 		document.menuForm.writeMode.value = "child";
 		console.log("--------------- add child = " + obj.item.ancestor);
-		if(obj.item  .ancestor === "0") {
-			$("#menuTarget").val("1");
-		} else {
-			$("#menuTarget").val("0");
-		}
+		$("#menuTarget").val(obj.item.menuTarget);
+		
 		document.menuForm.ancestor.value = obj.item.ancestor;
 		document.menuForm.parent.value = obj.item.menuId;		
 		document.menuForm.depth.value = parseInt(obj.item.depth) + parseInt(1);		
 		$("[name=defaultYn]").removeAttr("checked");
-		$("[name=defaultYn]").filter("[value='Y']").prop("checked",true);
+		$("[name=defaultYn]").filter("[value='N']").prop("checked",true);
 		$("[name=useYn]").removeAttr("checked");
 		$("[name=useYn]").filter("[value='Y']").prop("checked",true);
 		$("[name=displayYn]").removeAttr("checked");
@@ -261,6 +255,7 @@ var TREE_OBJECT = {
 		$("#depth").val(obj.item.depth);
 		$("#url").val(obj.item.url);
 		$("#urlAlias").val(obj.item.urlAlias);
+		$("#aliasMenuId").val(obj.item.aliasMenuId);
 		$("#htmlId").val(obj.item.htmlId);
 		$("#htmlContentId").val(obj.item.htmlContentId);
 		$("#image").val(obj.item.image);

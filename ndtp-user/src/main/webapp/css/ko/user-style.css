@@ -14,14 +14,15 @@ button { cursor:pointer; font-family:'Malgun Gothic','돋움'; }
 /* ////////// LAYOUT ////////// */
 header {
 display: flex;
-min-width: 1420px;
+/* min-width: 1420px; */
 height: 50px;
 background-color: #287be4;
 }
 #wrap {
 position: relative;
-min-width: 1420px;
+/* min-width: 1420px; */
 height: calc(100% - 50px);
+min-height: 560px;
 }
 .map {
 height: 100%;
@@ -377,7 +378,12 @@ background-position: -85px -52px;
 background-position: -85px -102px;
 background-color: #fff600;
 }
-
+.ctrlWrap div > button.cameraLeft {
+background-position: -195px -100px;
+}
+.ctrlWrap div > button.cameraRight {
+background-position: -240px -100px;
+}
 .ctrlWrap div > input {
 width: 30px;
 /* margin-top: 3px; */
@@ -448,6 +454,7 @@ color: #287be4;
 	border: 1px solid #ccc;
 	font-size: 14px;
 	text-align: center;
+	cursor: default;
 }
 .dataGroupSummary > table tr td a {
 	border-bottom: 1px solid #000;
@@ -459,32 +466,60 @@ color: #287be4;
 	text-align: center;
 }
 
-/* /// 데이터 게시판 목록 /// */
+/* /// 데이터 게시판 목록 - 정연화 수정 /// */
 .tableList {
 position: relative;
 }
 .tableList > table {
 width: 100%;
+border: 1px solid #999;
 }
-.tableList > table thead th {
-padding: 5px;
-border: 1px solid #43444c;
+.tableList > table th {
+padding: 3px 5px;
+vertical-align: middle;
+background-color: #c7e0f2;
+border: 1px solid #999;
 }
-.tableList > table tbody tr:hover {
-cursor: pointer;
-background-color: #f9f9f9;
+.tableList > table th:not(:first-child),
+.tableList > table th:not(:last-child){
+border-left: 1px dotted #999;
+border-right: 1px dotted #999;
 }
-.tableList > table tbody tr.selected {
-background-color: #d6dcf2;
+.tableList > table th:first-child {
+border-left: 1px solid #999;
 }
-.tableList > table tr td {
-padding: 7px 5px;
-border: 1px solid #bcbdc7;
-font-size: 14px;
+.tableList > table th:last-child {
+border-right: 1px solid #999;
+}
+.tableList > table td {
+padding: 2px 5px;
+/* border: 1px solid #bcbdc7; */
+/* font-size: 14px; */
 text-align: center;
+background-color: #ecf7ff;
+vertical-align: middle;
 }
-.tableList > table tr td a {
-border-bottom: 1px solid #000;
+.tableList > table tr:nth-child(odd) td:first-child {
+border-bottom: 1px solid #999;
+}
+.tableList > table tr:nth-child(even) td:first-child {
+border-bottom: 1px solid #999;
+}
+.tableList > table tr:nth-child(odd) td:nth-child(2) {
+border: 1px dotted #999;
+border-top: none;
+}
+.tableList > table tr:nth-child(odd) td:nth-child(3) {
+border-right: 1px dotted #999;
+}
+.tableList > table tr:nth-child(odd) td:last-child {
+border-left: 1px dotted #999;
+border-right: 1px solid #999;
+}
+.tableList > table td > a {
+text-decoration: underline;
+font-size: 14px;
+font-weight: bold;
 }
 .tableList > table tr td.alignLeft {
 text-align: left;
@@ -686,7 +721,7 @@ padding: 7px;
 background-color: #f3f3f3;
 }
 .listSearch > input {
-width: 240px;
+width: 258px;
 padding: 10px;
 font-size: 1.1em;
 border: none;
@@ -730,17 +765,18 @@ padding: 0;
 font-size: 14px;
 padding: 0px 7px;
 cursor: pointer;
+line-height: 22px;
 }
 .pagination li * {
-vertical-align: middle;
+line-height: 22px;
 }
 .pagination li.on {
 font-weight: bold;
 text-decoration: underline;
 }
 .pagination .ico {
-width: 20px;
-height: 20px;
+width: 24px;
+height: 24px;
 padding: 0;
 text-indent: -999em;
 }
@@ -1471,7 +1507,9 @@ background:url(/images/ko/ico_layer.png) no-repeat 5px -248px;
 li.nodepth.on span {
 background:url(/images/ko/ico_layer.png) no-repeat 5px -198px;
 }
-
+.btnGroup {
+text-align:center;
+}
 button.textBtnSub {
 padding: 8px;
 border-radius: 3px;
@@ -1707,7 +1745,7 @@ text-overflow: ellipsis;
 .tab-divide li:not(.on):hover {
 color: #006bd2;
 }
-/* 
+/*
 ul.listDrop li.list-drop-button-none {
 	cursor: auto;
 }
@@ -1734,6 +1772,15 @@ ul.listDrop li.list-drop-button-none > p {
 	margin-bottom: 5px;
 	padding: 5px;
 	background-color: #f3f3f3;
+}
+.form-group-data {
+	margin: 0;
+	padding: 2px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+.form-group-data:first-of-type {
+	border-top: 1px solid #ccc;
 }
 .form-group > label {
     width: 20%;
@@ -1777,7 +1824,7 @@ ul.listDrop li.list-drop-button-none > p {
 
 .button-group-center {
 	background: #fff;
-	margin-bottom: 20px;
+	margin-bottom: 15px;
 	text-align: center;
 }
 .button-group-top-center {
@@ -1995,7 +2042,7 @@ display: block;
 background-color: #fff;
 }
 ul.listDefault li.on > ul li {
-cursor: pointer;
+/* cursor: pointer; */
 padding: 10px;
 border-bottom: 1px dotted #999;
 }
@@ -2017,25 +2064,46 @@ float: right;
 }
 
 /* 데이터 목록 / 범례 */
+/*
 .legendWrap {
 margin-bottom: 10px;
 text-align: center;
 border: 1px solid #ddd;
 padding: 10px;
 }
+.legendWrap legend {
+padding: 0 10px;
+}
 .legendWrap li {
 display: inline-flex;
-margin-right: 10px;
+margin-right: 5px;
 align-items: center;
 }
-.legendWrap li > * {
+*/
+.legendWrap {
+margin-bottom: 10px;
+border: 1px solid #ddd;
+}
+.legendWrap * {
 vertical-align: middle;
+}
+.legendWrap > dt {
+display: inline-block;
+width: 26px;
+padding: 4px 5px;
+background-color: #f3f3f3;
+font-weight: bold;
+border-right: 1px solid #ddd;
+}
+.legendWrap > dd {
+display: inline;
+margin-right: 5px;
 }
 span.legend {
 display: inline-block;
-width: 16px;
-height: 16px;
-line-height: 16px;
+width: 14px;
+height: 14px;
+line-height: 14px;
 padding: 4px;
 font-size: 13px;
 font-weight: bold;
@@ -2061,34 +2129,42 @@ background-color: darkturquoise
 .dataList {
 position: relative;
 margin-bottom: 5px;
-padding: 8px 10px;
+padding: 5px 0 0 0;
 border-radius: 5px;
-border-right: 2px solid #c7e0f2;
-border-bottom: 2px solid #c7e0f2;
-background-color: #ecf7ff;
+/* border-right: 2px solid #c7e0f2; */
+/* border-bottom: 2px solid #c7e0f2; */
+/* background-color: #ecf7ff; */
+background-color: #c7e0f2;
 }
-.dataList > li.group {
-margin-bottom: 3px;
-color: #777;
+.dataList > li.dataName {
+padding-bottom: 5px;
+font-size: 15px;
+/* cursor: pointer; */
 overflow:hidden;
 text-overflow:ellipsis;
 white-space:nowrap;
-}
-.dataList > li.dataName {
-margin-bottom: 7px;
-font-size: 15px;
-cursor: pointer;
-overflow:hidden;
-text-overflow:ellipsis;
-white-space:nowrap;	
 font-weight: bold;
+width: 75%;
+padding-left: 8px;
+}
+.dataList > li.dataName > .no {
+min-width: 30px;
+margin-right: 10px;
+/* font-weight: bold; */
+font-size: 13px;
+color: #000;
+vertical-align: middle;
+}
+.dataList > li.dataName > a {
+text-decoration: underline;
+vertical-align: middle;
 }
 .dataList > li.btn {
 position: absolute;
-bottom: 3px;
+top: 3px;
 right: 3px;
 }
-.dataList > li.btn > button {
+button.showHideButton {
 width: 30px;
 height: 30px;
 text-indent: -999em;
@@ -2097,11 +2173,23 @@ background-image: url(/images/ko/ico.png);
 background-repeat: no-repeat;
 background-color: transparent;
 }
-.dataList > li.btn > button.show {
+button.show {
 background-position: -97px -345px;
 }
-.dataList > li.btn > button.hide {
+button.hide {
 background-position: -147px -345px;
+}
+.dataList > .dataInfo {
+background-color: #ecf7ff;
+padding: 5px 5px 0 5px;
+min-height: 56px;
+}
+.dataList > li.group {
+margin-bottom: 3px;
+color: #777;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
 }
 .dataList > li.group > .no {
 min-width: 30px;
@@ -2118,7 +2206,7 @@ display: inline-flex;
 align-items: center;
 width: 100%;
 padding-bottom: 5px;
-border-bottom: 1px dotted #999;
+/* border-bottom: 1px dotted #999; */
 }
 .dataList li.group > span.tag {
 margin-right: 7px;
@@ -2133,9 +2221,53 @@ padding: 2px 6px;
 font-size: 11px;
 border: 1px solid #c7e0f2;
 background-color: #fff;
+margin-bottom: 3px;
+display: inline-block;
 }
 .dataList > .dataInfo > span.infoTag > span {
 display: inline-block;
 margin-right: 5px;
 color: #999;
+}
+
+span.infoTag {
+padding: 2px 6px;
+font-size: 13px;
+border: 1px solid #c7e0f2;
+background-color: #fff;
+margin-bottom: 3px;
+display: inline-block;
+max-width: 120px;
+}
+span.infoTag > span {
+display: inline-block;
+margin-right: 5px;
+color: #999;
+}
+
+.hiddenTag {
+overflow: hidden;
+border: 0;
+position: absolute;
+width: 1px;
+height: 1px;
+clip: rect(1px, 1px, 1px, 1px);
+clip-path: inset(50%);
+}
+
+.layerGroup {
+margin-top: -4px;
+padding: 2px 7px 2px;
+color: #fff;
+border-radius: 15px;
+border: none;
+background-color: #262b3f;
+float: right;
+width: 30px!important;
+text-align:center;
+}
+
+.totalCount {
+color: #287BE4;
+font-style: normal;
 }

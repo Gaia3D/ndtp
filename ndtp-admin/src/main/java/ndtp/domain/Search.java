@@ -126,13 +126,7 @@ public class Search {
 		buffer.append("&");
 		buffer.append("searchOption=" + getDefaultValue(this.searchOption));
 		buffer.append("&");
-		try {
-			buffer.append("searchValue=" + getDefaultValue(this.searchValue));
-			//buffer.append("searchValue=" + URLEncoder.encode(getDefaultValue(this.searchValue), "UTF-8"));
-		} catch(Exception e) {
-			e.printStackTrace();
-			buffer.append("searchValue=");
-		}
+		buffer.append("searchValue=" + getDefaultValue(this.searchValue));
 		buffer.append("&");
 		buffer.append("startDate=" + getDefaultValue(this.startDate));
 		buffer.append("&");

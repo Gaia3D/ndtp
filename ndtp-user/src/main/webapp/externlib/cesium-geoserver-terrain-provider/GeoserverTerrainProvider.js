@@ -874,7 +874,7 @@
         this.ready = false;
         this._readyPromise = Cesium.when.defer();
 
-        Cesium.defineProperties(this, {
+        Object.defineProperties(GeoserverTerrainProvider.prototype, {
             errorEvent: {
                 get: function() {
                     return errorEvent;
@@ -902,6 +902,7 @@
                 }
             }
         });
+        
         var promise = OGCHelper.parser(description);
         TerrainParser(promise, this);
     };
@@ -1115,7 +1116,7 @@
                     return retour;
                 }
 
-                Cesium.defineProperties(provider, {
+                Object.defineProperties(provider, {
                     tilingScheme: {
                         get: function() {
                             return resultat.tilingScheme;

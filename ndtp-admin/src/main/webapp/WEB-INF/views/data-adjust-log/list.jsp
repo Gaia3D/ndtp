@@ -8,11 +8,11 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<title>데이터 변경 요청 이력 | NDTP</title>
-	<link rel="stylesheet" href="/css/${lang}/font/font.css" />
-	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
-	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
-	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-    <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
+	<link rel="stylesheet" href="/css/${lang}/font/font.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css?cacheVersion=${contentCacheVersion}" />
+    <link rel="stylesheet" href="/css/${lang}/admin-style.css?cacheVersion=${contentCacheVersion}" />
 </head>
 <body>
 <%@ include file="/WEB-INF/views/layouts/header.jsp" %>
@@ -28,21 +28,24 @@
 							<form:form id="searchForm" modelAttribute="dataAdjustLog" method="get" action="/data-adjust-log/list" onsubmit="return searchCheck();">
 								<div class="input-group row">
 									<div class="input-set">
-										<label for="searchWord"><spring:message code='search.word'/></label>
-										<select id="searchWord" name="searchWord" class="select" style="height: 30px;">
+										<label for="searchWord" class="hiddenTag">검색조건</label>
+										<select id="searchWord" name="searchWord" class="select" title="검색조건" style="height: 30px;">
 											<option value=""><spring:message code='select'/></option>
 						          			<option value="data_name">데이터명</option>
 										</select>
-										<form:select path="searchOption" class="select" style="height: 30px;">
+										<label for="searchOption" class="hiddenTag">검색옵션</label>
+										<form:select path="searchOption" class="select" title="검색옵션" style="height: 30px;">
 											<form:option value="0"><spring:message code='search.same'/></form:option>
 											<form:option value="1"><spring:message code='search.include'/></form:option>
 										</form:select>
+										<label for="searchValue"><spring:message code='search.word'/></label>
 										<form:input path="searchValue" type="search" cssClass="m" cssStyle="float: right;" />
 									</div>
 									<div class="input-set">
 										<label for="startDate"><spring:message code='search.date'/></label>
 										<input type="text" class="s date" id="startDate" name="startDate" autocomplete="off" />
 										<span class="delimeter tilde">~</span>
+										<label for="endDate" class="hiddenTag">종료일</label>
 										<input type="text" class="s date" id="endDate" name="endDate" autocomplete="off" />
 									</div>
 									<div class="input-set">
@@ -52,12 +55,14 @@
 											<option value="data_name">데이터명</option>
 											<option value="insert_date"> <spring:message code='search.insert.date'/> </option>
 										</select>
-										<select id="orderValue" name="orderValue" class="select" style="height: 30px;">
+										<label for="orderValue" class="hiddenTag">정렬기준</label>
+										<select id="orderValue" name="orderValue" class="select" title="정렬기준" style="height: 30px;">
 					                		<option value=""> <spring:message code='search.basic'/> </option>
 						                	<option value="ASC"> <spring:message code='search.ascending'/> </option>
 											<option value="DESC"> <spring:message code='search.descending.order'/> </option>
 										</select>
-										<form:select path="listCounter" class="select" style="height: 30px;">
+										<label for="listCounter" class="hiddenTag">리스트건수</label>
+										<form:select path="listCounter" class="select" title="리스트건수" style="height: 30px;">
 					                		<form:option value="10"><spring:message code='search.ten.count'/></form:option>
 						                	<form:option value="50"><spring:message code='search.fifty.count'/></form:option>
 											<form:option value="100"><spring:message code='search.hundred.count'/></form:option>
@@ -72,37 +77,39 @@
 							<div class="list">
 								<form:form id="listForm" modelAttribute="dataInfo" method="post">
 									<input type="hidden" id="checkIds" name="checkIds" value="" />
+									<input type="hidden" id="status" name="status" value="" />
 								<div class="list-header row">
 									<div class="list-desc u-pull-left">
 										<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em><spring:message code='search.what.count'/>
 										<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/>
 									</div>
 								</div>
-								<table class="list-table scope-col">
+								<table class="list-table scope-col" summary="데이터 위치 변경 요청 이력 리스트 ">
+								<caption class="hiddenTag">데이터 위치 변경 요척 이력</caption>
 									<col class="col-checkbox" />
 									<col class="col-number" />
 									<col class="col-name" />
 									<col class="col-name" />
-									<col class="col-name" />
-									<col class="col-number" />
-									<col class="col-number" />
-									<col class="col-number" />
+									<col class="col-type" />
+									<col class="col-count" />
+									<col class="col-count" />
+									<col class="col-count" />
+									<col class="col-type" />
 									<col class="col-functions" />
-									<col class="col-functions" />
-									<col class="col-functions" />
+									<col class="col-date" />
 									<thead>
 										<tr>
-											<th scope="col" class="col-checkbox"><input type="checkbox" id="chkAll" name="chkAll" /></th>
+											<th scope="col" class="col-checkbox"><label for="chkAll" class="hiddenTag">전체선택 체크박스</label><input type="checkbox" id="chkAll" name="chkAll" /></th>
 											<th scope="col" class="col-number"><spring:message code='number'/></th>
 											<th scope="col" class="col-name">그룹명</th>
 											<th scope="col" class="col-name">데이터명</th>
-											<th scope="col" class="col-name">아이디</th>
-											<th scope="col" class="col-name">경도</th>
-											<th scope="col" class="col-name">위도</th>
-											<th scope="col" class="col-name">높이</th>
-											<th scope="col" class="col-name">상태</th>
-											<th scope="col" class="col-name">결재</th>
-											<th scope="col" class="col-date">등록일</th>
+											<th scope="col" class="col-type">요청자</th>
+											<th scope="col" class="col-count">변경 후 경도</th>
+											<th scope="col" class="col-count">변경 후 위도</th>
+											<th scope="col" class="col-count">높이</th>
+											<th scope="col" class="col-type">상태</th>
+											<th scope="col" class="col-functions">결재</th>
+											<th scope="col" class="col-date">요청일</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -116,54 +123,55 @@
 
 										<tr>
 											<td class="col-checkbox">
+												<label for="dataAdjustLogId_${dataAdjustLog.dataAdjustLogId}" class="hiddenTag">선택 체크박스</label>
 												<input type="checkbox" id="dataAdjustLogId_${dataAdjustLog.dataAdjustLogId}" name="dataAdjustLogId" value="${dataInfoAdjustLog.dataAdjustLogId}" />
 											</td>
 											<td class="col-number">${pagination.rowNumber - status.index }</td>
-											<td class="col-name">
+											<td class="col-name ellipsis" style="max-width:120px;">
 												<a href="#" class="view-group-detail" onclick="detailDataGroup('${dataAdjustLog.dataGroupId }'); return false;">${dataAdjustLog.dataGroupName }</a></td>
-											<td class="col-name">
+											<td class="col-name ellipsis" style="max-width:140px;">
 												<a href="#" class="view-group-detail" onclick="detailDataAdjustLog('${dataAdjustLog.dataName}'
 															, '${dataAdjustLog.beforeLatitude}', '${dataAdjustLog.latitude}', '${dataAdjustLog.beforeLongitude}', '${dataAdjustLog.longitude}'
 															, '${dataAdjustLog.beforeAltitude}', '${dataAdjustLog.altitude}', '${dataAdjustLog.beforeHeading}', '${dataAdjustLog.heading}'
-															, '${dataAdjustLog.beforePitch}', '${dataAdjustLog.pitch}', '${dataAdjustLog.beforeRoll}', '${dataAdjustLog.roll}'
-															); return false;">${dataAdjustLog.dataName }</a></td>
-											<td class="col-name">${dataAdjustLog.userId }</td>
-											<td class="col-toggle">${dataAdjustLog.longitude}</td>
-											<td class="col-toggle">${dataAdjustLog.latitude}</td>
-											<td class="col-toggle">${dataAdjustLog.altitude}</td>
-											<td class="col-toggle">
+															, '${dataAdjustLog.beforePitch}', '${dataAdjustLog.pitch}', '${dataAdjustLog.beforeRoll}', '${dataAdjustLog.roll}'); return false;">${dataAdjustLog.dataName }</a>
+												</td>
+											<td class="col-type">${dataAdjustLog.userId }</td>
+											<td class="col-count">${dataAdjustLog.longitude}</td>
+											<td class="col-count">${dataAdjustLog.latitude}</td>
+											<td class="col-count">${dataAdjustLog.altitude}</td>
+											<td class="col-type">
 												<span class="icon-glyph glyph-on on"></span>
-				<c:if test="${dataAdjustLog.status eq 'REQUEST'}">
+				<c:if test="${dataAdjustLog.status eq 'request'}">
 												<span class="icon-text">요청</span>
 				</c:if>
-				<c:if test="${dataAdjustLog.status eq 'APPROVAL'}">
+				<c:if test="${dataAdjustLog.status eq 'approval'}">
 												<span class="icon-text">승인</span>
 				</c:if>
-				<c:if test="${dataAdjustLog.status eq 'REJECT'}">
+				<c:if test="${dataAdjustLog.status eq 'reject'}">
 												<span class="icon-text">반려</span>
 				</c:if>
-				<c:if test="${dataAdjustLog.status eq 'ROLLBACK'}">
+				<c:if test="${dataAdjustLog.status eq 'rollback'}">
 												<span class="icon-text">원복</span>
 				</c:if>
 											</td>
 											<td class="col-functions">
 												<span class="button-group">
 				<c:if test="${dataAdjustLog.status eq 'request'}">
-												<a href="#" onclick="return warning('APPROVAL', '${dataAdjustLog.dataAdjustLogId}');" class="button" >
+												<a href="#" onclick="return warning('approval', '${dataAdjustLog.dataAdjustLogId}');" class="button" >
 													승인
 												</a>
-												<a href="#" onclick="return warning('REJECT', '${dataAdjustLog.dataAdjustLogId}');" class="button" >
+												<a href="#" onclick="return warning('reject', '${dataAdjustLog.dataAdjustLogId}');" class="button" >
 													반려
 												</a>
 				</c:if>
 				<c:if test="${dataAdjustLog.status eq 'complete'}">
-												<a href="#" onclick="return warning('ROLLBACK', '${dataAdjustLog.dataAdjustLogId}');" class="button" >
+												<a href="#" onclick="return warning('rollback', '${dataAdjustLog.dataAdjustLogId}');" class="button" >
 													원복
 												</a>
 				</c:if>
 														</span>
 											</td>
-											<td class="col-type">
+											<td class="col-date">
 												<fmt:parseDate value="${dataAdjustLog.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
 												<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
 											</td>
@@ -185,11 +193,11 @@
 <%@ include file="/WEB-INF/views/data/group-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data-adjust-log/data-adjust-log-dialog.jsp" %>
 
-<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
-<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-<script type="text/javascript" src="/js/${lang}/common.js"></script>
-<script type="text/javascript" src="/js/${lang}/message.js"></script>
-<script type="text/javascript" src="/js/navigation.js"></script>
+<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/common.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/message.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/navigation.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		var searchWord = "${dataAdjustLog.searchWord}";
@@ -197,17 +205,17 @@
 		var orderWord = "${dataAdjustLog.orderWord}";
 		var orderValue = "${dataAdjustLog.orderValue}";
 		var listCounter = "${dataAdjustLog.listCounter}";
-	
+
 		if(searchWord != "") $("#searchWord").val("${dataAdjustLog.searchWord}");
 		if(searchOption != "") $("#searchOption").val("${dataAdjustLog.searchOption}");
 		if(orderWord != "") $("#orderWord").val("${dataAdjustLog.orderWord}");
 		if(orderValue != "") $("#orderValue").val("${dataAdjustLog.orderValue}");
 		if(listCounter != "") $("#listCounter").val("${dataAdjustLog.listCounter}");
-	
+
 		initDatePicker();
 		initCalendar(new Array("startDate", "endDate"), new Array("${dataAdjustLog.startDate}", "${dataAdjustLog.endDate}"));
 	});
-	
+
 	//전체 선택
 	$("#chkAll").click(function() {
 		$(":checkbox[name=dataAdjustLogId]").prop("checked", this.checked);
@@ -316,10 +324,12 @@
 		if(confirm("계속 진행 하시겠습니까?")) {
 			if(warningFlag) {
 				warningFlag = false;
+				$('#status').val(status);
+				var formData = $("#listForm").serialize();
 				$.ajax({
 					url: "/data-adjust-logs/status/" + dataAdjustLogId,
 					type: "POST",
-					data: { status : status},
+					data: formData,
 					dataType: "json",
 					headers: {"X-Requested-With": "XMLHttpRequest"},
 					success: function(msg){

@@ -1,37 +1,69 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <script id="templateDataList" type="text/x-handlebars-template">
 	<div>
-		<span><spring:message code='all.d'/> <span>{{formatNumber pagination.totalCount}}</span> <spring:message code='search.what.count'/></span>
+		<span><spring:message code='all.d'/> <span class="totalCount">{{formatNumber pagination.totalCount}}</span> <spring:message code='search.what.count'/></span>
 		<span class="float-right">{{formatNumber pagination.pageNo}} / {{formatNumber pagination.lastPage}} <spring:message code='search.page'/></span>
+		<input type="hidden" name="pageNo" value="{{pagination.pageNo}}">
 	</div>
 	<div class="dataBtns"></div>
-
-		<div class="marT10 yScroll" style="height: calc(100% - 59px)">
-		
+		<div class="tableList marT10 yScroll" style="height: calc(100% - 43px)">
+			<table summary="데이터 리스트 테이블">
+			<caption class="hiddenTag">데이터 리스트</caption>
+				<colgroup>
+					<col class="col-width-12" />
+					<col class="col-width-12" />
+					<col />
+					<col class="col-width-12" />
+					<col class="col-width-12" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th rowspan="2">번호</th>
+						<th>공유 유형</th>
+						<th>데이터명</th>
+						<th>표시</th>
+						<th>이동</th>
+					</tr>
+				</thead>
+				<tbody>
 {{#greaterThan dataList.length 0}}
 	{{#each dataList}}
-		<ul class="dataList">
-			<li class="group">
-				<span class="no">{{subtract ../pagination.rowNumber @index}}</span>
+					<tr>
+						<td rowspan="2"><span class="no">{{subtract ../pagination.rowNumber @index}}</span></td>
+						<td>
 		{{#ifMatch sharing 'common'}}
-				<span class="legend co">C</span>	
+				<span class="legend co mar0">C</span>
 		{{/ifMatch}}
 		{{#ifMatch sharing 'public'}}
-				<span class="legend pu">O</span>
+				<span class="legend pu mar0">O</span>
 		{{/ifMatch}}
 		{{#ifMatch sharing 'private'}}
-				<span class="legend pr">P</span>
+				<span class="legend pr mar0">P</span>
 		{{/ifMatch}}
 		{{#ifMatch sharing 'group'}}
-				<span class="legend gr">G</span>
+				<span class="legend gr mar0">G</span>
 		{{/ifMatch}}
-				<span class="tag">그룹명</span>{{dataGroupName}}
-			</li>
-			<li class="dataName">
-				<a href="#" onclick="detailDataInfo('{{dataId}}'); return false;">{{dataName}}</a>
-			</li>
-			<li class="dataInfo">
-
+						</td>
+						<td class="alignLeft ellipsis" style="max-width:100px;"><a href="/datas/{{dataId}}" onclick="detailDataInfo(this.href); return false;">{{dataName}}</a></td>
+						<td>
+		{{#if groupVisible}}
+							<button type="button" title="표시" class="showHideButton show" data-group-id="{{dataGroupId}}" data-key="{{dataKey}}" data-tiling="{{tiling}}">표시</button>
+		{{else}}
+							<button type="button" title="표시" class="showHideButton hide" data-group-id="{{dataGroupId}}" data-key="{{dataKey}}" data-tiling="{{tiling}}">표시</button>
+		{{/if}}
+						</td>
+						<td>
+		{{#if tiling}}
+						<button type="button" title="바로가기" class="goto" style="margin: 0px; padding: 0px;"
+							onclick="gotoFly('{{longitude}}', '{{latitude}}', '{{altitude}}');">바로가기</button>
+		{{else}}
+						<button type="button" title="바로가기" class="goto" style="margin: 0px; padding: 0px;" 	onclick="flyTo('{{dataGroupId}}', '{{dataKey}}');">바로가기</button>
+		{{/if}}
+						</td>
+					</tr>
+					<tr>
+						<td class="alignLeft" colspan="4">
+							<span class="infoTag ellipsis"><span>그룹명: </span>{{dataGroupName}}</span>
 			{{#ifMatch dataGroupTarget 'admin'}}
 				<span class="infoTag" style="color:blue">관리자</span>
 			{{else}}
@@ -41,7 +73,7 @@
 				<span class="infoTag" style="color:blue">{{userId}}</span>
 				{{/ifMatch}}
 			{{/ifMatch}}
-				<span class="infoTag marR5"><span>상태:</span>
+				<span class="infoTag"><span>상태:</span>
 		{{#ifMatch status 'processing'}}
 						변환중
 		{{/ifMatch}}
@@ -55,26 +87,17 @@
 						삭제
 		{{/ifMatch}}
 				</span>
-
 		{{#greaterThan dataType.length 0}}
-				<span class="infoTag marR5"><span>타입:</span>{{dataType}}</span>
+				<span class="infoTag"><span>타입:</span>{{dataType}}</span>
 		{{/greaterThan}}
-
-			</li>
-			<li class="btn">
-				<button type="button" title="표시" class="showHideButton show" data-group-id="{{dataGroupId}}" data-key="{{dataKey}}">표시</button>
-		{{#if tiling}}
-						<button type="button" title="바로가기" class="goto" style="margin: 0px; padding: 0px;"
-							onclick="gotoFly('{{longitude}}', '{{latitude}}', '{{altitude}}');">바로가기</button>
-		{{else}}
-						<button type="button" title="바로가기" class="goto" style="margin: 0px; padding: 0px;" 	onclick="flyTo('{{dataGroupId}}', '{{dataKey}}');">바로가기</button>
-		{{/if}}
-			</li>
-		</ul>
+						</td>
+					</tr>
 	{{/each}}
 {{else}}
-			데이터가 존재하지 않습니다.
+			<tr><td colspan="5" style="height: 30px;">데이터가 존재하지 않습니다.</td></tr>
 {{/greaterThan}}
+				</tbody>
+			</table>
 		</div>
 
 {{#greaterThan pagination.totalCount 0}}

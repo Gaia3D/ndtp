@@ -17,7 +17,7 @@
 		<ul>
 			<li class="user"><span><%=userSession.getUserName()%> 님</span>
 				<!-- <button type="button" class="magoSet" id="magoHelp">API도움말</button> -->
-				<a href="#" title="API도움말" onclick="goMagoAPIGuide();return false;">API도움말</a>
+				<a href="/guide/help" title="API도움말" onclick="goMagoAPIGuide(this.href);return false;">API도움말</a>
 				<a href="/sign/signout" title="Sign out">Sign out</a></li>
 		</ul>
 

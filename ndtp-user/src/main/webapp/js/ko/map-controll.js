@@ -20,6 +20,95 @@ function MapControll(viewer, option) {
 	var activeShapePoints = [];
 	var activeShape;
 	var activeLabel;
+	
+	var ellipsoid = viewer.scene.globe.ellipsoid;
+	var flags = {
+			looking : false,
+			moveForward : false,
+			moveBackward : false,
+			moveUp : false,
+			moveDown : false,
+			moveLeft : false,
+			moveRight : false
+		};
+
+	function getFlagForKeyCode(keyCode) {
+		switch (keyCode) {
+		case 'W'.charCodeAt(0):
+			return 'moveForward';
+		case 'S'.charCodeAt(0):
+			return 'moveBackward';
+		case 'Q'.charCodeAt(0):
+			return 'moveUp';
+		case 'E'.charCodeAt(0):
+			return 'moveDown';
+		case 'D'.charCodeAt(0):
+			return 'moveRight';
+		case 'A'.charCodeAt(0):
+			return 'moveLeft';
+		default:
+			return undefined;
+		}
+	}
+	
+	var preventTags = ['INPUT','SELECT','TEXTAREA'];
+	document.addEventListener('keydown', function(e) {
+		var tagName = e.target.tagName;
+		if(preventTags.includes(tagName)){
+			return;
+		}
+		var flagName = getFlagForKeyCode(e.keyCode);
+		if (typeof flagName !== 'undefined') {
+			flags[flagName] = true;
+		}
+	}, false);
+
+	document.addEventListener('keyup', function(e) {
+		var flagName = getFlagForKeyCode(e.keyCode);
+		if (typeof flagName !== 'undefined') {
+			flags[flagName] = false;
+		}
+	}, false);
+
+	viewer.clock.onTick.addEventListener(function(clock) {
+		var camera = viewer.camera;
+
+		if (flags.looking) {
+			var width = canvas.clientWidth;
+			var height = canvas.clientHeight;
+
+			// Coordinate (0.0, 0.0) will be where the mouse was clicked.
+			var x = (mousePosition.x - startMousePosition.x) / width;
+			var y = -(mousePosition.y - startMousePosition.y) / height;
+
+			var lookFactor = 0.05;
+			camera.lookRight(x * lookFactor);
+			camera.lookUp(y * lookFactor);
+		}
+
+		// Change movement speed based on the distance of the camera to the surface of the ellipsoid.
+		var cameraHeight = ellipsoid.cartesianToCartographic(camera.position).height;
+		var moveRate = cameraHeight / 100.0;
+
+		if (flags.moveForward) {
+			camera.moveForward(moveRate);
+		}
+		if (flags.moveBackward) {
+			camera.moveBackward(moveRate);
+		}
+		if (flags.moveUp) {
+			camera.moveUp(moveRate);
+		}
+		if (flags.moveDown) {
+			camera.moveDown(moveRate);
+		}
+		if (flags.moveLeft) {
+			camera.moveLeft(moveRate);
+		}
+		if (flags.moveRight) {
+			camera.moveRight(moveRate);
+		}
+	});
 
 	/**
 	 * 나침반 동작
@@ -341,7 +430,6 @@ function MapControll(viewer, option) {
 		}
 	});
 
-
 	// 	면적 측정 버튼
 	$('#mapCtrlArea').click(function() {
 		$(this).toggleClass('on'); // 버튼 색 변경
@@ -409,12 +497,14 @@ function MapControll(viewer, option) {
     
     $('#mapCtrlZoomIn').click(function () {
         console.log("맵컨트롤 : 확대");
-        that._scene.camera.zoomIn(100);
+        var altitude = getCameraCurrentPositionAPI(MAGO3D_INSTANCE).alt;
+        that._scene.camera.zoomIn(altitude * 0.1);
     });
 
     $('#mapCtrlZoomOut').click(function () {
         console.log("맵컨트롤 : 축소");
-        that._scene.camera.zoomOut(100);
+        var altitude = getCameraCurrentPositionAPI(MAGO3D_INSTANCE).alt;
+        that._scene.camera.zoomOut(altitude * 0.1);
     });
 
     $('#distanceLayer button.focusA').click(function () {
@@ -425,6 +515,60 @@ function MapControll(viewer, option) {
     $('#areaLayer button.focusA').click(function () {
         that.clearMap();
         $('#mapCtrlArea').trigger('afterClick');
+    });
+    
+    
+    //카메라 좌우회전
+    //deprecated.
+    $('#mapCtrlCamRightRot, #mapCtrlCamLeftRot').click(function(e) {
+    	var id = e.target.id;
+    	var degree = (id === 'mapCtrlCamLeftRot') ? -180 : 180;
+    	var camera = that._viewer.camera;
+    	camera.cancelFlight();
+    	var curCamPos = camera.position;
+    	var curCartoPos = Cesium.Cartographic.fromCartesian(curCamPos);
+    	var maximumHeight = 300;
+    	if(curCartoPos.height > maximumHeight) curCartoPos.height = maximumHeight;
+    	
+    	var moveToPos = Cesium.Cartesian3.fromRadians(curCartoPos.longitude, curCartoPos.latitude, curCartoPos.height);
+    	
+    	camera.flyTo({
+    		destination: moveToPos,
+    		maximumHeight : maximumHeight,
+    		orientation: {
+    			heading: 0,
+    			pitch: 0,
+    			roll: 0
+    		},
+    		duration:1,
+    		easingFunction : Cesium.EasingFunction.LINEAR_NONE,
+    		complete : function() {
+    			camera.flyTo({
+    				destination: moveToPos,
+    				maximumHeight : maximumHeight,
+    				orientation: {
+    					heading: Cesium.Math.toRadians(degree),
+    					pitch: 0,
+    					roll: 0
+    				},
+    				duration:5,
+    				easingFunction : Cesium.EasingFunction.LINEAR_NONE,
+    				complete : function(){
+    					camera.flyTo({
+    						destination: moveToPos,
+    						maximumHeight : maximumHeight,
+    						orientation: {
+    							heading: Cesium.Math.toRadians(degree*2),
+    							pitch: 0,
+    							roll: 0
+    						},
+    						duration:5,
+    						easingFunction : Cesium.EasingFunction.LINEAR_NONE,
+    					})
+    				}
+    			});
+    		}
+    	});
     });
 
     function startDrawPolyLine() {
@@ -491,19 +635,16 @@ var formatArea = function (_area) {
 };
 
 $("#mapPolicy").click(function(){
-	$("#mapPolicy").addClass("on");
-	$(".labelLayer").show();
+	$("#mapPolicy").toggleClass("on");
+	$("#mago3DSettingLabelLayer").toggle();
 });
 $(".layerClose").click(function(){
 	$("#mapPolicy").removeClass("on");
-	$(".labelLayer").hide();
-
+	$("#mago3DSettingLabelLayer").hide();
 });
 
-//지도에서 찾기
-function goMagoAPIGuide() {
-	var url = "/guide/help";
-	//console.log("test");
+// 가이드 팝업 띄우기
+function goMagoAPIGuide(url) {
 	var width = 1200;
 	var height = 800;
 

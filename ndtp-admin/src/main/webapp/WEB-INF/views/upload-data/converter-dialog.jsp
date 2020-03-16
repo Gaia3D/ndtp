@@ -1,14 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <div class=dialogConverterJob title="F4D Converter Job 등록">
-	<form id="converterJobForm" name="converterJobForm" action="" method="post">
+	<form:form id="converterJobForm" name="converterJobForm" action="" method="post">
 		<input type="hidden" id="converterCheckIds" name="converterCheckIds" value="" />
-		<table class="inner-table scope-row">
+		<input type="hidden" id="dataType" name=dataType value="" />
+		<table class="inner-table scope-row" summary="F4D Converter Job 등록">
+		<caption class="hiddenTag">Job 등록</caption>
 			<col class="col-sub-label xl" />
 			<col class="col-data" />
 			<tbody>
 				<tr>
 					<th class="col-sub-label x">변환 템플릿</th>
 					<td class="col-input">
+						<label for="converterTemplate" class="hiddenTag">변환 템플릿</label>
 						<select id="converterTemplate" name="converterTemplate" class="select" style="height: 30px;">
 	                		<option value="basic"> 기본 </option>
 		                	<option value="building"> 빌딩 </option>
@@ -23,6 +26,7 @@
 					<th class="col-sub-label x">제목</th>
 					<td>
 						<div class="inner-data">
+							<label for="title" class="hiddenTag">타이틀</label>
 							<input type="text" id="title" name="title" class="l" />
 						</div>
 					</td>
@@ -30,6 +34,7 @@
 				<tr>
 					<th class="col-sub-label x">Original Unit</th>
 					<td>
+						<label for="usf" class="hiddenTag">usf</label>
 						<select id="usf" name="usf" class="select" style="height: 30px;">
 	                		<option value="1"> 기본(1m) </option>
 		                	<option value="0.1"> 10 cm </option>
@@ -42,6 +47,7 @@
 				<tr>
 					<th class="col-sub-label x">높이 방향</th>
 					<td>
+						<label for="yAxisUp" class="hiddenTag">yAxisUp</label>
 						<select id="yAxisUp" name="yAxisUp" class="select" style="height: 30px;">
 							<option value="N">Z축</option>
 							<option value="Y">Y축</option>
@@ -54,5 +60,5 @@
 		<div class="button-group">
 			<a href="#" onclick="saveConverterJob(); return false;" class="button" style="color: white">저장</a>
 		</div>
-	</form>
+	</form:form>
 </div>

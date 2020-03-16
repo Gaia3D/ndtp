@@ -101,12 +101,37 @@ Mago3D.MagoManager.prototype.addCluster = function(cluster) {
 }
 
 Mago3D.MagoManager.prototype.clearCluster = function() {
-	this.objMarkerManager.objectMarkerArray = [];
+	this.objMarkerManager.setMarkerByCondition(function(om){
+		return !om.tree;
+	});
 	this.cluster = undefined;
 }
 
 Mago3D.tempCredit = function(viewer) {
 	/*var creditDisplay = viewer.scene.frameState.creditDisplay;
 	var mago3d_credit = new Cesium.Credit('<a href="http://www.mago3d.com/" target="_blank"><img class="mago3d_logo" src="/images/logo_mago3d.png" title="Mago3D" alt="Mago3D" /></a>', true);
+
 	creditDisplay.addDefaultCredit(mago3d_credit);*/
+}
+
+/**
+ * 주어진 3차원 점을 포함하는 영역으로 이동
+ * 
+ * @param {Point3D} point 3차원 점
+ */
+Mago3D.MagoManager.prototype.flyToBox = function(pointsArray) {
+	var bbox = new Mago3D.BoundingBox();
+	bbox.init(pointsArray[0]);
+	bbox.addPoint(pointsArray[1]);
+
+	this.boundingSphere_Aux = new Mago3D.Sphere();
+	this.boundingSphere_Aux.radius = bbox.getRadiusAprox();
+	
+	if (this.isCesiumGlobe())
+	{
+		var bboxCenterPoint = bbox.getCenterPoint();
+		this.boundingSphere_Aux.center = Cesium.Cartesian3.clone({x:bboxCenterPoint.x,y:bboxCenterPoint.y,z:bboxCenterPoint.z});
+		var seconds = 3;
+		this.scene.camera.flyToBoundingSphere(this.boundingSphere_Aux, {duration:seconds});
+	}
 }

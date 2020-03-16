@@ -8,16 +8,16 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<title>데이터 업로드 | NDTP</title>
-	<link rel="stylesheet" href="/css/${lang}/font/font.css" />
-	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
-	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
-	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-    <link rel="stylesheet" href="/externlib/dropzone/dropzone.min.css">
-    <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
-    <script type="text/javascript" src="/externlib/dropzone/dropzone.min.js"></script>
+	<link rel="stylesheet" href="/css/${lang}/font/font.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css?cacheVersion=${contentCacheVersion}" />
+    <link rel="stylesheet" href="/externlib/dropzone/dropzone.min.css?cacheVersion=${contentCacheVersion}">
+    <link rel="stylesheet" href="/css/${lang}/admin-style.css?cacheVersion=${contentCacheVersion}" />
+    <script type="text/javascript" src="/externlib/dropzone/dropzone.min.js?cacheVersion=${contentCacheVersion}"></script>
 
-    <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
-	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
+	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>
     <style type="text/css">
         .dropzone .dz-preview.lp-preview {
             width: 150px;
@@ -85,7 +85,8 @@
 							<div class="content-desc u-pull-right"><span class="icon-glyph glyph-emark-dot color-warning"></span><spring:message code='check'/></div>
 						</div>
 						<form:form id="uploadData" modelAttribute="uploadData" method="post" onsubmit="return false;">
-						<table class="input-table scope-row">
+						<table class="input-table scope-row" summary="업로드 데이터 등록">
+						<caption class="hiddenTag">업로드 데이터 </caption>
 							<colgroup>
 			                    <col class="col-label l" style="width: 13%" >
 								<col class="col-input" style="width: 37%" >
@@ -136,7 +137,7 @@
 										<option value="las"> LAS(POINT CLOUD) </option>
 										<option value="3ds"> 3DS </option>
 										<option value="obj"> OBJ </option>
-		          						<option value="dae"> DAE(COLLADA) </option>
+		          						<option value="dae"> COLLADA(DAE) </option>
 									</select>
 								</td>
 							</tr>
@@ -147,7 +148,9 @@
 								</th>
 								<td colspan="3"  class="col-input">
 									<form:input path="longitude" cssClass="m" placeholder="longitude" />
+									<form:label path="latitude" class="hiddenTag">대표 위치 (위도) </form:label>
 									<form:input path="latitude" cssClass="m" placeholder="latitude" />
+									<form:label path="altitude" class="hiddenTag">대표 위치 (높이) </form:label>
 									<form:input path="altitude" cssClass="m" placeholder="altitude" />
 									<input type="button" id="mapButtion" value="지도" />
 									<form:errors path="longitude" cssClass="error" />
@@ -168,12 +171,14 @@
 						</form:form>
 						<div style="padding: 20px 20px 10px 10px; font-size: 18px;">파일 업로딩</div>
 						<div class="fileSection" style="font-size: 17px;">
-					    	<form id="my-dropzone" action="" class="dropzone hzScroll"></form>
+					    	<form id="my-dropzone" action="" class="dropzone hzScroll">
+					    		<label for="dropzoneFile" class="hiddenTag">dropzoneFile영역</label>
+					    	</form>
 					    </div>
 					    <div class="button-group" style="margin-top: 30px;">
 							<div class="center-buttons">
 								<button id="allFileUpload">업로드</button>
-								<button id="allFileClear">All Clear</button>
+								<button id="allFileClear">파일 초기화</button>
 								<a href="/upload-data/list" class="button">목록</a>
 							</div>
 						</div>
@@ -189,12 +194,12 @@
 	<%@ include file="/WEB-INF/views/upload-data/spinner-dialog.jsp" %>
 
 
-<script type="text/javascript" src="/js/${lang}/common.js"></script>
-<script type="text/javascript" src="/js/${lang}/message.js"></script>
-<script type="text/javascript" src="/js/navigation.js"></script>
+<script type="text/javascript" src="/js/${lang}/common.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/message.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/navigation.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-
+		$("input[type='file']").attr("id", "dropzoneFile");
 	});
 
 	var dataGroupDialog = $( ".dialog" ).dialog({
@@ -286,7 +291,7 @@
 			});
 
 			clearTask.addEventListener("click", function () {
-	            if (confirm("정말 전체 항목을 삭제하겠습니까?")) {
+	            if (confirm("[파일 업로딩]의 모든 파일을 삭제하겠습니까?")) {
 	            	// true 주면 업로드 중인 파일도 다 같이 삭제
 	            	myDropzone.removeAllFiles(true);
 	            }
@@ -320,6 +325,7 @@
 						    alert("업로딩을 완료 하였습니다.");
 						    uploadFileCount = 0;
 						    uploadFileResultCount = 0;
+						    myDropzone.removeAllFiles(true);
 						}
 	                } else {
 	                    alertMessage(response);
@@ -352,6 +358,9 @@
 			$("#altitude").focus();
 			return false;
 		}
+		if(!locationValidation($("#longitude").val(), $("#latitude").val(), $("#altitude").val())) {
+			return false;
+		}
 	}
 
 	function alertMessage(response) {
@@ -382,8 +391,15 @@
 	            alert("업로딩 데이터의 데이터 타입이 올바르지 않습니다.");
 	        } else if(response.errorCode === "db.exception") {
 	            alert("죄송 합니다. 서버 실행중에 오류가 발생 하였습니다. \n 로그를 확인하여 주십시오.");
+	        } else if(response.errorCode === "io.exception") {
+	            alert("입출력 처리 과정중 오류가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
+	        } else if(response.errorCode === "runtime.exception") {
+	            alert("프로그램 실행중 오류가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
+	        } else if(response.errorCode === "unknown.exception") {
+	            alert("서버 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
 	        } else {
-	        	alert(response.errorCode);
+	        	//alert(response.errorCode);
+	        	alert(JS_MESSAGE[response.errorCode]);
 	        }
 	        uploadFileResultCount++;
 		}

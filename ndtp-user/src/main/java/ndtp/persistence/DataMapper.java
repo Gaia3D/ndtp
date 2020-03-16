@@ -38,7 +38,7 @@ public interface DataMapper {
 //	Long getDataObjectAttributeTotalCount(DataInfoObjectAttribute dataInfoObjectAttribute);
 	
 	/**
-	 * Data 전체 목록
+	 * 데이터 그룹에 속하는 전체 데이터 목록
 	 * @param dataInfo
 	 * @return
 	 */
@@ -52,7 +52,7 @@ public interface DataMapper {
 	List<DataInfo> getListData(DataInfo dataInfo);
 	
 	/**
-	 * 데이터 그룹에 포함되는 모든 데이터를 취득
+	 * Smart Tiling용 데이터 그룹에 포함되는 모든 데이터를 취득
 	 * @param dataGroupId
 	 * @return
 	 */
@@ -60,10 +60,10 @@ public interface DataMapper {
 	
 	/**
 	 * 공유 유형별 데이터 통계
-	 * @param userId
+	 * @param dataInfo
 	 * @return
 	 */
-	List<DataInfo> getDataTotalCountBySharing(String userId);
+	List<DataInfo> getDataTotalCountBySharing(DataInfo dataInfo);
 	
 	/**
 	 * DataGroupId를 제외한 Data 목록

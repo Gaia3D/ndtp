@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,8 +16,8 @@ import ndtp.domain.DataSmartTilingFileParseLog;
 import ndtp.domain.DataStatus;
 import ndtp.domain.ServerTarget;
 import ndtp.domain.SharingType;
-import ndtp.parser.DataFileParser;
-import ndtp.parser.impl.DataFileJsonParser;
+import ndtp.parser.DataSmartTilingFileParser;
+import ndtp.parser.impl.DataSmartTilingFileJsonParser;
 import ndtp.persistence.DataSmartTilingMapper;
 import ndtp.service.DataGroupService;
 import ndtp.service.DataService;
@@ -50,8 +51,8 @@ public class DataSmartTilingServiceImpl implements DataSmartTilingService {
 		// 파일 이력을 저장
 		dataSmartTilingMapper.insertDataSmartTilingFileInfo(dataSmartTilingFileInfo);
 		
-		DataFileParser dataFileParser = new DataFileJsonParser();
-		Map<String, Object> map = dataFileParser.parse(dataGroupId, dataSmartTilingFileInfo);
+		DataSmartTilingFileParser dataSmartTilingFileParser = new DataSmartTilingFileJsonParser();
+		Map<String, Object> map = dataSmartTilingFileParser.parse(dataGroupId, dataSmartTilingFileInfo);
 		
 		DataGroup dataGroup = DataGroup.builder().dataGroupId(dataGroupId).build();
 		dataGroup = dataGroupService.getDataGroup(dataGroup);
@@ -69,6 +70,7 @@ public class DataSmartTilingServiceImpl implements DataSmartTilingService {
 		String dataGroupTarget = ServerTarget.ADMIN.name().toLowerCase();
 		String sharing = SharingType.COMMON.name().toLowerCase();
 		String status = DataStatus.USE.name().toLowerCase();
+		
 		for(DataInfo dataInfo : dataInfoList) {
 			// TODO 계층 관련 코딩이 있어야 함
 			try {
@@ -86,8 +88,20 @@ public class DataSmartTilingServiceImpl implements DataSmartTilingService {
 					dataService.updateData(dataInfo);
 					updateSuccessCount++;
 				}
+			} catch(DataAccessException e) {
+				log.info("@@@@@@@@@@@@ dataAccess exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+				dataSmartTilingFileParseLog.setIdentifierValue(dataSmartTilingFileInfo.getUserId());
+				dataSmartTilingFileParseLog.setErrorCode(e.getMessage());
+				dataSmartTilingMapper.insertDataSmartTilingFileParseLog(dataSmartTilingFileParseLog);
+				insertErrorCount++;
+			} catch(RuntimeException e) {
+				log.info("@@@@@@@@@@@@ runtime exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+				dataSmartTilingFileParseLog.setIdentifierValue(dataSmartTilingFileInfo.getUserId());
+				dataSmartTilingFileParseLog.setErrorCode(e.getMessage());
+				dataSmartTilingMapper.insertDataSmartTilingFileParseLog(dataSmartTilingFileParseLog);
+				insertErrorCount++;
 			} catch(Exception e) {
-				e.printStackTrace();
+				log.info("@@@@@@@@@@@@ exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
 				dataSmartTilingFileParseLog.setIdentifierValue(dataSmartTilingFileInfo.getUserId());
 				dataSmartTilingFileParseLog.setErrorCode(e.getMessage());
 				dataSmartTilingMapper.insertDataSmartTilingFileParseLog(dataSmartTilingFileParseLog);

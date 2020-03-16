@@ -839,7 +839,7 @@ height: 100%;
 overflow: hidden;
 }
 #popupWrap .popupSub {
-flex: 0 0 300px;
+flex: 0 0 305px;
 padding: 10px 0;
 overflow-y: hidden;
 background-color: #eee;
@@ -910,11 +910,19 @@ color: #fff;
 border: 1px solid #284ba4;
 background-color: #287be4;
 }
-.descript div > h4 {
+.descript div > h4  {
 margin: 10px 0;
 padding: 0 0 15px 0;
 font-size: 22px;
 font-weight: normal;
+border-bottom: 1px solid #ccc;
+}
+caption {
+margin: 10px 0;
+padding: 0 0 8px 0;
+font-size: 15px;
+font-weight: normal;
+text-align:left;
 border-bottom: 1px solid #ccc;
 }
 
@@ -942,8 +950,8 @@ background-position: 5px -108px;
 
 .popupBtn {
 position: absolute;
-top: 10px;
-right: 10px;
+top: 5px;
+right: 40px;
 font-size: 18px;
 padding: 8px 40px;
 color: #fff;
@@ -956,7 +964,7 @@ opacity: 0.7;
 }
 .popupGroup {
 overflow-y: auto;
-height: calc(100% - 80px)
+height: calc(100% - 10px)
 }
 .popupGroup > div {
 margin-bottom: 40px;
@@ -1104,6 +1112,7 @@ margin-left: 10px;
 display: inline-block;
 font-weight: bold;
 padding: 5px 10px;
+width: 160px;
 }
 .paramContainer label > input {
 padding: 5px;
@@ -1111,5 +1120,19 @@ margin-right: 10px;
 }
 .paramContainer  input {
 padding: 5px;
-margin-right: 10px;
+}
+
+ul.mainlist li:before{
+    content: "-";
+    display: inline-block;
+    vertical-align: middle;
+    padding: 0px 3px 4px 0px;
+}
+
+#api0 > h3  {
+margin: 10px 0;
+padding: 0 0 15px 0;
+font-size: 22px;
+font-weight: normal;
+border-bottom: 1px solid #ccc;
 }

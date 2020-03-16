@@ -8,14 +8,14 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<title>Sign In | NDTP</title>
-	<link rel="shortcut icon" href="/images/favicon.ico">
-	<link rel="stylesheet" href="/css/${lang}/font/font.css" />
-	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
-	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
-	<link rel="stylesheet" href="/css/${lang}/style.css" />
-	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
-	<script type="text/javascript" src="/js/${lang}/common.js"></script>
-	<script type="text/javascript" src="/js/${lang}/message.js"></script>
+	<link rel="shortcut icon" href="/images/favicon.ico?cacheVersion=${contentCacheVersion}">
+	<link rel="stylesheet" href="/css/${lang}/font/font.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/css/${lang}/style.css?cacheVersion=${contentCacheVersion}" />
+	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
+	<script type="text/javascript" src="/js/${lang}/common.js?cacheVersion=${contentCacheVersion}"></script>
+	<script type="text/javascript" src="/js/${lang}/message.js?cacheVersion=${contentCacheVersion}"></script>
 	<style type="text/css">
 		::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
 			color: white;
@@ -53,9 +53,9 @@
 							<input type="password" id="password" name="password" maxlength="32" title="비밀번호" placeholder="비밀번호" required="required" />
 							<input type="submit" value="Sign In" class="sign-submit" />
 						</form:form>					
-						<div class="sign-links" style="font-size: 16px;">
+						<!-- <div class="sign-links" style="font-size: 16px;">
 							Don't have an account? &nbsp;<a href="#" onclick="alert('관리자에게 문의하여 주십시오.'); return false;">Sign up</a>
-						</div>
+						</div> -->
 					</div>
 				</div>
 			</div>

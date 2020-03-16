@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 	<div id="passwordTab">
 		<form:form id="policyPassword" modelAttribute="policy" method="post" onsubmit="return false;">
-			<table class="input-table scope-row">
+			<table class="input-table scope-row" summary="환경설정 비밀번호 테이블">
+			<caption class="hiddenTag">환경설정 비밀번호</caption>
 				<col class="col-label l" />
 				<col class="col-input" />
 				<tr>
@@ -10,7 +11,7 @@
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
 					<td class="col-input">
-						<form:input path="passwordChangeTerm" maxlength="3" cssClass="s" />
+						<form:input path="passwordChangeTerm" maxlength="3" cssClass="s" onKeyPress="return numkeyCheck(event);" />
 						<span class="table-desc">일</span>
 						<form:errors path="passwordChangeTerm" cssClass="error" />
 					</td>
@@ -21,7 +22,7 @@
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
 					<td class="col-input">
-						<form:input path="passwordMinLength" maxlength="2" cssClass="s" />
+						<form:input path="passwordMinLength" maxlength="2" cssClass="s" onKeyPress="return numkeyCheck(event);" />
 						<span class="table-desc">자</span>
 						<form:errors path="passwordMinLength" cssClass="error" />
 					</td>
@@ -32,7 +33,7 @@
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
 					<td class="col-input">
-						<form:input path="passwordMaxLength" maxlength="2" cssClass="s" />
+						<form:input path="passwordMaxLength" maxlength="2" cssClass="s" onKeyPress="return numkeyCheck(event);" />
 						<span class="table-desc">자</span>
 						<form:errors path="passwordMaxLength" cssClass="error" />
 					</td>
@@ -43,7 +44,7 @@
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
 					<td class="col-input">
-						<form:input path="passwordEngUpperCount" maxlength="2" cssClass="s" />
+						<form:input path="passwordEngUpperCount" maxlength="2" cssClass="s" onKeyPress="return numkeyCheck(event);" />
 						<span class="table-desc">개</span>
 						<form:errors path="passwordEngUpperCount" cssClass="error" />
 					</td>
@@ -54,7 +55,7 @@
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
 					<td class="col-input">
-						<form:input path="passwordEngLowerCount" maxlength="2" cssClass="s" />
+						<form:input path="passwordEngLowerCount" maxlength="2" cssClass="s" onKeyPress="return numkeyCheck(event);" />
 						<span class="table-desc">개</span>
 						<form:errors path="passwordEngLowerCount" cssClass="error" />
 					</td>
@@ -65,7 +66,7 @@
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
 					<td class="col-input">
-						<form:input path="passwordNumberCount" maxlength="2" cssClass="s" />
+						<form:input path="passwordNumberCount" maxlength="2" cssClass="s" onKeyPress="return numkeyCheck(event);" />
 						<span class="table-desc">개</span>
 						<form:errors path="passwordNumberCount" cssClass="error" />
 					</td>
@@ -76,7 +77,7 @@
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
 					<td class="col-input">
-						<form:input path="passwordSpecialCharCount" maxlength="2" cssClass="s" />
+						<form:input path="passwordSpecialCharCount" maxlength="2" cssClass="s" onKeyPress="return numkeyCheck(event);" />
 						<span class="table-desc">개</span>
 						<form:errors path="passwordSpecialCharCount" cssClass="error" />
 					</td>
@@ -87,7 +88,7 @@
 						<span class="icon-glyph glyph-emark-dot color-warning"></span>
 					</th>
 					<td class="col-input">
-						<form:input path="passwordContinuousCharCount" maxlength="2" cssClass="s" />
+						<form:input path="passwordContinuousCharCount" maxlength="2" cssClass="s" onKeyPress="return numkeyCheck(event);" />
 						<span class="table-desc">개</span>
 						<form:errors path="passwordContinuousCharCount" cssClass="error" />
 					</td>

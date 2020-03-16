@@ -8,13 +8,13 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<title>대시보드 | NDTP</title>
-	<link rel="stylesheet" href="/css/${lang}/font/font.css" />
-	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
-	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
-	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-	<link rel="stylesheet" href="/externlib/jqplot/jquery.jqplot.min.css" />
-	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css">
-    <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
+	<link rel="stylesheet" href="/css/${lang}/font/font.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/jqplot/jquery.jqplot.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css?cacheVersion=${contentCacheVersion}">
+    <link rel="stylesheet" href="/css/${lang}/admin-style.css?cacheVersion=${contentCacheVersion}" />
     <style type="text/css">
         .jqplot-table-legend {
             width: 0%;
@@ -38,7 +38,7 @@
 					<div class="widget widget-low widget-otp-usage full column">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
-								<h3 class="widget-title"><spring:message code='main.data.status'/><span class="widget-desc">${yearMonthDay } (<spring:message code='main.today'/>)</span></h3>
+								<h3 class="widget-title"><spring:message code='main.converter.status'/><span class="widget-desc">${yearMonthDay } (<spring:message code='main.today'/>)</span></h3>
 							</div>
 						</div><!-- .widget-header -->
 						<div class="widget-content row">
@@ -51,9 +51,9 @@
 										</div>
 									</div>
 									<div>
-										<span class="banner-title"><spring:message code='main.data.new'/></span>
+										<span class="banner-title"><spring:message code='main.converter.new'/></span>
 										<span id="firstCountSpinner" class="banner-number"></span>
-										<span class="banner-unit"> ${issueTotalCount} <spring:message code='main.count'/> </span>
+										<span class="banner-unit"> ${converterTotalCount} <spring:message code='main.count'/> </span>
 									</div>
 								</div>
 							</div>
@@ -67,9 +67,9 @@
 										</div>
 									</div>
 									<div>
-										<span class="banner-title"><spring:message code='main.data.success'/></span>
+										<span class="banner-title"><spring:message code='main.converter.success'/></span>
 										<span id="secondeCountSpinner" class="banner-number"></span>
-										<span class="banner-unit"> 5 <spring:message code='main.count'/></span>
+										<span class="banner-unit"> ${converterSuccessCount} <spring:message code='main.count'/></span>
 									</div>
 								</div>
 							</div>
@@ -83,9 +83,9 @@
 										</div>
 									</div>
 									<div>
-										<span class="banner-title"><spring:message code='main.data.fail'/></span>
+										<span class="banner-title"><spring:message code='main.converter.fail'/></span>
 										<span id="thirdCountSpinner" class="banner-number"></span>
-										<span class="banner-unit"> 0 <spring:message code='main.count'/></span>
+										<span class="banner-unit"> ${converterFailCount} <spring:message code='main.count'/></span>
 									</div>
 								</div>
 							</div>
@@ -94,7 +94,7 @@
 
 <c:forEach var="dbWidget" items="${widgetList }">
 	<c:choose>
-		<c:when test="${dbWidget.name == 'dataGroupWidget'}">
+		<c:when test="${dbWidget.name eq 'dataGroupWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column" style="font-size: 16px;">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
@@ -111,7 +111,7 @@
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'dataInfoWidget'}">
+		<c:when test="${dbWidget.name eq 'dataStatusWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column" style="font-size: 16px;">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
@@ -123,33 +123,33 @@
 						</div>
 						<div id="${dbWidget.name}" class="widget-content row">
 							<div style="text-align: center; padding-top: 60px; padding-left: 150px;">
-					      		<div id="dataInfoSpinner" style="width: 150px; height: 70px;"></div>
+					      		<div id="dataStatusSpinner" style="width: 150px; height: 70px;"></div>
 					       	</div>
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'dataInfoLogListWidget'}">
+		<c:when test="${dbWidget.name eq 'dataAdjustLogWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
 								<h3 class="widget-title"><spring:message code='main.status.data.log'/><span class="widget-desc">${today } <spring:message code='config.widget.basic'/></span></h3>
 							</div>
 							<div class="widget-functions u-pull-right">
-								<a href="/data/list-data-log" title="<spring:message code='config.widget.data.info.log.more'/>"><span class="icon-glyph glyph-plus"></span></a>
+								<a href="/data-adjust-log/list" title="<spring:message code='config.widget.data.info.log.more'/>"><span class="icon-glyph glyph-plus"></span></a>
 							</div>
 						</div>
 						<div id="${dbWidget.name}" class="widget-content row">
 							<div style="text-align: center; padding-top: 60px; padding-left: 150px;">
-					       		<div id="dataInfoLogListSpinner" style="width: 150px; height: 70px;"></div>
+					       		<div id="dataAdjustLogSpinner" style="width: 150px; height: 70px;"></div>
 					       	</div>
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'userWidget'}">
+		<c:when test="${dbWidget.name eq 'userStatusWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column" style="font-size: 16px;">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
-								<h3 class="widget-title"><spring:message code='main.status.userstatus'/><span class="widget-desc">${today }<spring:message code='main.standard'/></span></h3>
+								<h3 class="widget-title"><spring:message code='main.status.userstatus'/><span class="widget-desc">${today } <spring:message code='main.standard'/></span></h3>
 							</div>
 							<div class="widget-functions u-pull-right">
 								<spring:message code='main.status.moreuserstatus' var="moreuserstatus"/>
@@ -160,7 +160,26 @@
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'civilVoiceWidget'}">
+		<c:when test="${dbWidget.name eq 'userAccessLogWidget'}">
+					<div id="${dbWidget.widgetId }" class="widget one-third column">
+						<div class="widget-header row">
+							<div class="widget-heading u-pull-left">
+								<h3 class="widget-title"><spring:message code='main.status.user.tracking'/><span class="widget-desc">${today } <spring:message code='main.standard'/></span></h3>
+							</div>
+							<div class="widget-functions u-pull-right">
+								<spring:message code='main.status.user.moretracking' var='moreTracking'/>
+								<%-- <a href="/access/list" title="${moreTracking}"><span class="icon-glyph glyph-plus"></span></a> --%>
+							</div>
+						</div>
+
+						<div id="${dbWidget.name}" class="widget-content row">
+							<div style="text-align: center; padding-top: 60px; padding-left: 150px;">
+			            		<div id="userAccessLogSpinner" style="width: 150px; height: 70px;"></div>
+			            	</div>
+						</div>
+					</div>
+		</c:when>
+		<c:when test="${dbWidget.name eq 'civilVoiceWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
@@ -168,7 +187,7 @@
 							</div>
 							<div class="widget-functions u-pull-right">
 								<spring:message code='main.status.civilvoice.moreexecution' var="moreExectuion"/>
-								<a href="/civil-voice/list" title="${moreExectuion}"><span class="icon-glyph glyph-plus"></span></a>
+								<a href="/civil-voice/list?orderWord=comment_count&orderValue=DESC" title="${moreExectuion}"><span class="icon-glyph glyph-plus"></span></a>
 							</div>
 						</div>
 						<div id="${dbWidget.name}" class="widget-content row">
@@ -178,30 +197,26 @@
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'accessLogWidget'}">
+		<c:when test="${dbWidget.name eq 'systemUsageWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
-								<h3 class="widget-title"><spring:message code='main.status.user.tracking'/><span class="widget-desc">${today } <spring:message code='main.standard'/></span></h3>
-							</div>
-							<div class="widget-functions u-pull-right">
-								<spring:message code='main.status.user.moretracking' var='moreTracking'/>
-								<a href="/access/list" title="${moreTracking}"><span class="icon-glyph glyph-plus"></span></a>
+								<h3 class="widget-title"><spring:message code='main.status.system.usage'/><span class="widget-desc">${today } <spring:message code='main.standard'/></span></h3>
 							</div>
 						</div>
 
 						<div id="${dbWidget.name}" class="widget-content row">
 							<div style="text-align: center; padding-top: 60px; padding-left: 150px;">
-			            		<div id="accessLogSpinner" style="width: 150px; height: 70px;"></div>
+			            		<div id="systemUsageSpinner" style="width: 150px; height: 70px;"></div>
 			            	</div>
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'dbcpWidget'}">
+		<c:when test="${dbWidget.name eq 'dbcpStatusWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
-								<h3 class="widget-title"><spring:message code='main.status.db.connection.pool'/><span class="widget-desc">${today }<spring:message code='main.standard'/></span></h3>
+								<h3 class="widget-title"><spring:message code='main.status.db.connection.pool'/><span class="widget-desc">${today } <spring:message code='main.standard'/></span></h3>
 							</div>
 						</div>
 
@@ -348,7 +363,7 @@
 						</div>
 					</div>
 		</c:when>
-		<c:when test="${dbWidget.name == 'dbSessionWidget'}">
+		<c:when test="${dbWidget.name eq 'dbSessionWidget'}">
 					<div id="${dbWidget.widgetId }" class="widget one-third column">
 						<div class="widget-header row">
 							<div class="widget-heading u-pull-left">
@@ -395,69 +410,75 @@
 
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
 
-<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
-<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>
 
-<script type="text/javascript" src="/externlib/jqplot/jquery.jqplot.min.js"></script>
-<script type="text/javascript" src="/externlib/jqplot/plugins/jqplot.barRenderer.min.js"></script>
-<script type="text/javascript" src="/externlib/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
-<script type="text/javascript" src="/externlib/jqplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
-<script type="text/javascript" src="/externlib/jqplot/plugins/jqplot.pieRenderer.min.js"></script>
-<script type="text/javascript" src="/externlib/jqplot/plugins/jqplot.pointLabels.min.js"></script>
+<script type="text/javascript" src="/externlib/jqplot/jquery.jqplot.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/jqplot/plugins/jqplot.barRenderer.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/jqplot/plugins/jqplot.categoryAxisRenderer.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/jqplot/plugins/jqplot.dateAxisRenderer.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/jqplot/plugins/jqplot.pieRenderer.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/jqplot/plugins/jqplot.pointLabels.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/jqplot/plugins/jqplot.donutRenderer.min.js?cacheVersion=${contentCacheVersion}"></script>
 
-<script type="text/javascript" src="/externlib/spinner/progressSpin.min.js"></script>
-<script type="text/javascript" src="/externlib/spinner/raphael.js"></script>
+<script type="text/javascript" src="/externlib/spinner/progressSpin.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/spinner/raphael.js?cacheVersion=${contentCacheVersion}"></script>
 
-<script type="text/javascript" src="/js/${lang}/common.js"></script>
-<script type="text/javascript" src="/js/${lang}/message.js"></script>
-<script type="text/javascript" src="/js/navigation.js"></script>
+<script type="text/javascript" src="/js/${lang}/common.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/message.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/navigation.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript">
 	var refreshTime = parseInt("${widgetInterval}") * 1000;
 
 	var isDataGroupDraw = "${isDataGroupDraw}";
-	var isDataInfoDraw = "${isDataInfoDraw}";
-	var isDataInfoLogListDraw = "${isDataInfoLogListDraw}";
-	var isIssueDraw = "${isIssueDraw}";
-	var isUserDraw = "${isUserDraw}";
+	var isDataStatusDraw = "${isDataStatusDraw}";
+	var isDataAdjustLogDraw = "${isDataAdjustLogDraw}";
+	var isUserStatusDraw = "${isUserStatusDraw}";
+	var isUserAccessLogDraw = "${isUserAccessLogDraw}";
 	var isCivilVoiceDraw = "${isCivilVoiceDraw}";
-	var isAccessLogDraw = "${isAccessLogDraw}";
-	var isDbcpDraw = "${isDbcpDraw}";
+	var isSystemUsageDraw = "${isSystemUsageDraw}";
+	var isDbcpStatusDraw = "${isDbcpStatusDraw}";
 	var isDbSessionDraw = "${isDbSessionDraw}";
+	var isIssueDraw = "${isIssueDraw}";
 
 	$(document).ready(function() {
 		if(isDataGroupDraw == "true") {
 			startSpinner("dataGroupSpinner");
 			dataGroupWidget();
 		}
-		if(isDataInfoDraw == "true") {
-			startSpinner("dataInfoSpinner");
-			dataInfoWidget();
+		if(isDataStatusDraw == "true") {
+			startSpinner("dataStatusSpinner");
+			dataStatusWidget();
 		}
-		if(isDataInfoLogListDraw == "true") {
-			startSpinner("dataInfoLogListSpinner");
-			dataInfoLogListWidget();
+		if(isDataAdjustLogDraw == "true") {
+			startSpinner("dataAdjustLogSpinner");
+			dataAdjustLogWidget();
 		}
-		if(isIssueDraw == "true") {
-			// TODO spinner
-			issueWidget();
+		if(isUserStatusDraw == "true") {
+			userStatusWidget(0, null);
 		}
-		if(isUserDraw == "true") {
-			userWidget(0, null);
+		if(isUserAccessLogDraw == "true") {
+			startSpinner("userAccessLogSpinner");
+		    setTimeout(callUserAccessLogWidget, 1000);
 		}
 		if(isCivilVoiceDraw == "true") {
 			startSpinner("civilVoiceSpinner");
 			civilVoiceWidget();
 		}
-		if(isAccessLogDraw == "true") {
-			startSpinner("accessLogSpinner");
-		    setTimeout(callAccessLogWidget, 1000);
+		if(isSystemUsageDraw == "true") {
+			startSpinner("systemUsageSpinner");
+		    setTimeout(callSystemUsageWidget, 1000);
 		}
-		if(isDbcpDraw == "true") {
-			setTimeout(callDbcpWidget, 2000);
+		if(isDbcpStatusDraw == "true") {
+			setTimeout(callDbcpStatusWidget, 2000);
 		}
 		if(isDbSessionDraw == "true") {
 			//startSpinner("dbSessionSpinner");
 		    setTimeout(dbSessionWidget, 3000);
+		}
+		if(isIssueDraw == "true") {
+			// TODO spinner
+			issueWidget();
 		}
 
 		var isActive = "${isActive}";
@@ -471,35 +492,41 @@
 		if(isDataGroupDraw == "true") {
 			dataGroupWidget();
 		}
-		if(isDataInfoDraw == "true") {
-			dataInfoWidget();
+		if(isDataStatusDraw == "true") {
+			dataStatusWidget();
 		}
-		if(isDataInfoLogListDraw == "true") {
-			dataInfoLogListWidget();
+		if(isDataAdjustLogDraw == "true") {
+			dataAdjustLogWidget();
+		}
+		if(isUserStatusDraw == "true") {
+			//userStatusWidget();
 		}
 		if(isIssueDraw == "true") {
 			issueWidget();
-		}
-		if(isUserDraw == "true") {
-			//userWidget();
 		}
 		// TODO You'll need to add the remaining widgets later
 	}
 
 	// DB Connection Pool 현황
-	function callDbcpWidget() {
-		//dbcpWidget();
-		//setInterval(ajaxDbcpWidget, refreshTime);
+	function callDbcpStatusWidget() {
+		dbcpStatusWidget();
+		setInterval(dbcpStatusWidget, refreshTime);
 	}
 
 	// 사용자 추적
-	function callAccessLogWidget() {
-		accessLogWidget();
-		setInterval(accessLogWidget, refreshTime);
+	function callUserAccessLogWidget() {
+		userAccessLogWidget();
+		setInterval(userAccessLogWidget, refreshTime);
+	}
+
+	// 시스템 사용량
+	function callSystemUsageWidget() {
+		systemUsageWidget();
+		setInterval(systemUsageWidget, refreshTime);
 	}
 
 	function dataGroupWidget() {
-		var url = "/main/ajax-data-group-widget";
+		var url = "/widgets/data-group-statistics";
 		var info = "";
 		$.ajax({
 			url: url,
@@ -508,22 +535,23 @@
 			dataType: "json",
 			headers: { "X-mago3D-Header" : "mago3D"},
 			success : function(msg) {
-				if(msg.result === "success") {
+				if(msg.statusCode <= 200) {
+					$("#dataGroupWidget").empty();
 					showDataGroup(msg.dataGroupWidgetList);
 				} else {
-					alert(JS_MESSAGE[msg.result]);
+					$("#dataGroupWidget").html(JS_MESSAGE[msg.errorCode]);
+					//alert(JS_MESSAGE[msg.errorCode]);
+					//console.log("---- " + msg.errorCode);
 				}
 			},
 			error : function(request, status, error) {
-				alert(JS_MESSAGE["ajax.error.message"]);
-				console.log("code : " + request.status + "\n message : " + request.responseText + "\n error : " + error);
+				$("#dataGroupWidget").html(JS_MESSAGE["ajax.error.message"]);
+				//alert(JS_MESSAGE["ajax.error.message"]);
 			}
 		});
 	}
 
 	function showDataGroup(dataGroupWidgetList) {
-
-		$("#dataGroupWidget").empty();
 		if(dataGroupWidgetList == null || dataGroupWidgetList.length == 0) {
 			return;
 		}
@@ -571,29 +599,30 @@
         });
 	}
 
-	function dataInfoWidget() {
+	function dataStatusWidget() {
 		$.ajax({
-			url : "/main/ajax-data-status-widget",
+			url : "/widgets/data-status-statistics",
 			type : "GET",
 			cache : false,
 			dataType : "json",
 			success : function(msg) {
-				if (msg.result == "success") {
-					showDataInfo(msg);
+				if(msg.statusCode <= 200) {
+					$("#dataStatusWidget").empty();
+					showDataStatus(msg.statistics);
 				} else {
-					alert(JS_MESSAGE[msg.result]);
+					$("#dataStatusWidget").html(JS_MESSAGE[msg.errorCode]);
+					//alert(JS_MESSAGE[msg.errorCode]);
+					//console.log("---- " + msg.errorCode);
 				}
 			},
 			error : function(request, status, error) {
-				alert(JS_MESSAGE["ajax.error.message"]);
+				$("#dataStatusWidget").html(JS_MESSAGE["ajax.error.message"]);
+				//alert(JS_MESSAGE["ajax.error.message"]);
 			}
 		});
 	}
 
-	function showDataInfo(jsonData) {
-
-		$("#dataInfoWidget").empty();
-
+	function showDataStatus(jsonData) {
 		var useTotalCount = parseInt(jsonData.useTotalCount);
 		var forbidTotalCount = parseInt(jsonData.forbidTotalCount);
 		var etcTotalCount = parseInt(jsonData.etcTotalCount);
@@ -609,7 +638,7 @@
 			yMax = Math.max(useTotalCount, forbidTotalCount, etcTotalCount) + (useTotalCount * 0.2);
 		}
 
-		var plot = $.jqplot("dataInfoWidget", [dataValues], {
+		var plot = $.jqplot("dataStatusWidget", [dataValues], {
         	//title : "data info status",
         	height: 205,
         	animate: !$.jqplot.use_excanvas,
@@ -660,54 +689,61 @@
         });
 	}
 
-	function dataInfoLogListWidget() {
+	function dataAdjustLogWidget() {
 		$.ajax({
-			url : "/main/ajax-data-info-log-widget",
+			url : "/widgets/data-adjust-log",
 			type : "GET",
 			cache : false,
 			dataType : "json",
 			success : function(msg) {
-				if (msg.result == "success") {
+				if(msg.statusCode <= 200) {
 					var dataAdjustLogList = msg.dataAdjustLogList;
 					var content = "";
 					content 	= "<table class=\"widget-table\">"
-								+	"<col class=\"col-left\" />"
-								+	"<col class=\"col-left\" />";
-								+	"<col class=\"col-left\" />";
+								+	"<col class=\"col-left\"/>"
+								+	"<col class=\"col-center\"/>"
+								+	"<col class=\"col-center\" />"
+								+	"<thead><tr>"
+								+	"	<td class=\"col-left\"><em>데이터 명</em></td>"
+								+	"	<td class=\"col-center\"><em>요청 현황</em></td>"
+								+ 	"	<td class=\"col-center\"><em>요청 일시</em></td>"
+								+	"</tr></thead>";
 					if(dataAdjustLogList == null || dataAdjustLogList.length == 0) {
 						content += 	"<tr>"
 								+	"	<td colspan=\"3\" class=\"col-none\">데이터 변경 요청 이력이 존재하지 않습니다.</td>"
 								+	"</tr>";
 					} else {
 						for(i=0; i<dataAdjustLogList.length; i++ ) {
-							var dataInfoAdjustLog = null;
-							dataInfoAdjustLog = dataAdjustLogList[i];
+							var dataAdjustLog = null;
+							dataAdjustLog = dataAdjustLogList[i];
 							var viewStatus = "";
-							if(dataInfoAdjustLog.status === "0") viewStatus = "<spring:message code='request'/>";
-							else if(dataInfoAdjustLog.status === "1") viewStatus = "<spring:message code='complete'/>";
-							else if(dataInfoAdjustLog.status === "2") viewStatus = "<spring:message code='reject'/>";
-							else if(dataInfoAdjustLog.status === "3") viewStatus = "<spring:message code='reset'/>";
+							if(dataAdjustLog.status === "request") viewStatus = "요청";
+							else if(dataAdjustLog.status === "approval") viewStatus = "승인";
+							else if(dataAdjustLog.status === "reject") viewStatus = "반려";
+							else if(dataAdjustLog.status === "rollback") viewStatus = "원복";
 
 							content = content
 								+ 	"<tr>"
-								+ 	"	<td class=\"col-left\">"
+								+ 	"	<td class=\"col-left ellipsis\" style=\"max-width:160px;\">"
 								+		"	<span class=\"index\"></span>"
-								+		"	<em>" + dataInfoAdjustLog.dataName + "</em>"
+								+		"	<em>" + dataAdjustLog.dataName + "</em>"
 								+		"</td>"
-								+ 		"<td class=\"col-left\">" + viewStatus + "</td>"
-								+ 		"<td class=\"col-left\">" + dataInfoAdjustLog.viewInsertDate + "</td>"
+								+ 		"<td class=\"col-center\" style=\"width:60px;\">" + viewStatus + "</td>"
+								+ 		"<td class=\"col-center\">" + dataAdjustLog.viewInsertDate + "</td>"
 								+ 	"</tr>";
 						}
 					}
-					$("#dataInfoLogListWidget").empty();
-					$("#dataInfoLogListWidget").html(content);
+					$("#dataAdjustLogWidget").empty();
+					$("#dataAdjustLogWidget").html(content);
 				} else {
-					alert(JS_MESSAGE[msg.result]);
+					$("#dataAdjustLogWidget").html(JS_MESSAGE[msg.errorCode]);
+					//alert(JS_MESSAGE[msg.errorCode]);
+					//console.log("---- " + msg.errorCode);
 				}
 			},
 			error : function(request, status, error) {
-				console.log("code : " + request.status + "\n message : " + request.responseText + "\n error : " + error);
-				alert(JS_MESSAGE["ajax.error.message"]);
+				$("#dataAdjustLogWidget").html(JS_MESSAGE["ajax.error.message"]);
+				//alert(JS_MESSAGE["ajax.error.message"]);
 			}
 		});
 	}
@@ -717,7 +753,7 @@
 	}
 
 	// 사용자 상태별 현황
-	function showUser(drawType, jsonData) {
+	function showUserStatus(drawType, jsonData) {
 		var activeUserTotalCount = null;
 		var fobidUserTotalCount = null;
 		var failUserTotalCount = null;
@@ -750,7 +786,7 @@
 			yMax = Math.max(activeUserTotalCount, fobidUserTotalCount, failUserTotalCount, sleepUserTotalCount, expireUserTotalCount, tempPasswordUserTotalCount) + (activeUserTotalCount * 0.2);
 		}
 
-        var plot = $.jqplot("userWidget", [userValues], {
+        var plot = $.jqplot("userStatusWidget", [userValues], {
         	//title : "사용자 상태별 현황",
         	height: 205,
         	animate: !$.jqplot.use_excanvas,
@@ -802,24 +838,76 @@
 	}
 
 	// 사용자 상태별 현황 정보 갱신
-	function userWidget() {
+	function userStatusWidget() {
 		$.ajax({
-			url : "/main/ajax-user-widget",
+			url : "/widgets/user-status-statistics",
 			type : "GET",
 			cache : false,
 			dataType : "json",
 			success : function(msg) {
-				if (msg.result == "user.session.empty") {
-					//alert("로그인 후 사용 가능한 서비스 입니다.");
-				} else if (msg.result == "db.exception") {
-					//alert("데이터 베이스 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
-				} else if (msg.result == "success") {
-					$("#userWidget").empty();
-					showUser(1, msg);
+				if(msg.statusCode <= 200) {
+					$("#userStatusWidget").empty();
+					showUserStatus(1, msg.statistics);
+				} else {
+					$("#userStatusWidget").html(JS_MESSAGE[msg.errorCode]);
+					//alert(JS_MESSAGE[msg.errorCode]);
+					//console.log("---- " + msg.errorCode);
 				}
 			},
 			error : function(request, status, error) {
-				//alert("잠시 후 이용해 주시기 바랍니다. 장시간 같은 현상이(사용자) 반복될 경우 관리자에게 문의하여 주십시오.");
+				$("#userStatusWidget").html(JS_MESSAGE["ajax.error.message"]);
+				//alert(JS_MESSAGE["ajax.error.message"]);
+			}
+		});
+	}
+
+	// 사용자 추적
+	function userAccessLogWidget() {
+		$.ajax({
+			url : "/widgets/user-access-log",
+			type : "GET",
+			cache : false,
+			dataType : "json",
+			success : function(msg) {
+				if(msg.statusCode <= 200) {
+					var userAccessLogList = msg.userAccessLogList;
+					var content = "";
+					content 	= "<table class=\"widget-table\">"
+								+	"<col class=\"col-left\" />"
+								+	"<col class=\"col-left\" />"
+								+	"<thead><tr>"
+								+	"	<td class=\"col-left\"><em>사용자 명</em></td>"
+								+	"	<td class=\"col-left\"><em>접근 URL</em></td>"
+								+	"</tr></thead>";
+					if(userAccessLogList == null || userAccessLogList.length == 0) {
+						content += 	"<tr>"
+								+	"	<td colspan=\"2\" class=\"col-none\"><spring:message code='main.status.no.user.tracking'/></td>"
+								+	"</tr>";
+					} else {
+						for(i=0; i<userAccessLogList.length; i++ ) {
+							var userAccessLog = null;
+							userAccessLog = userAccessLogList[i];
+							content = content
+								+ 	"<tr>"
+								+ 	"	<td class=\"col-left\">"
+								+		"	<span class=\"index\"></span>"
+								+		"	<em>" + userAccessLog.userName + "</em>"
+								+		"</td>"
+								+ 		"<td class=\"col-left\">" + userAccessLog.viewRequestUri + "</td>"
+								+ 	"</tr>";
+						}
+					}
+					$("#userAccessLogWidget").empty();
+					$("#userAccessLogWidget").html(content);
+				} else {
+					$("#userAccessLogWidget").html(JS_MESSAGE[msg.errorCode]);
+					//alert(JS_MESSAGE[msg.errorCode]);
+					//console.log("---- " + msg.errorCode);
+				}
+			},
+			error : function(request, status, error) {
+				$("#userAccessLogWidget").html(JS_MESSAGE["ajax.error.message"]);
+				//alert(JS_MESSAGE["ajax.error.message"]);
 			}
 		});
 	}
@@ -827,22 +915,23 @@
 	// 스케줄 실행 이력 갱신
 	function civilVoiceWidget() {
 		$.ajax({
-			url : "/main/ajax-civil-voice-widget",
+			url : "/widgets/civil-voice-status",
 			type : "GET",
 			cache : false,
 			dataType : "json",
 			success : function(msg) {
-				if (msg.result == "user.session.empty") {
-					//alert("로그인 후 사용 가능한 서비스 입니다.");
-				} else if (msg.result == "db.exception") {
-					//alert("데이터 베이스 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
-				} else if (msg.result == "success") {
+				if(msg.statusCode <= 200) {
 					var civilVoiceList = msg.civilVoiceList;
 					var content = "";
 					content 	= "<table class=\"widget-table\">"
-								+	"<col class=\"col-left\" />"
-								+	"<col class=\"col-center\" style=\"min-width:50px;\"/>"
-								+	"<col class=\"col-center\" style=\"width:140px;\"/>";
+								+	"<col class=\"col-left\"/>"
+								+	"<col class=\"col-center\"/>"
+								+	"<col class=\"col-center\"/>"
+								+	"<thead><tr>"
+								+	"	<td class=\"col-left\"><em>제목</em></td>"
+								+	"	<td class=\"col-center\"><em>동의 수</em></td>"
+								+ 	"	<td class=\"col-center\"><em>등록 일시</em></td>"
+								+	"</tr></thead>";
 					if(civilVoiceList == null || civilVoiceList.length == 0) {
 						content += 	"<tr>"
 								+	"	<td colspan=\"3\" class=\"col-none\"><spring:message code='main.status.no.civilvoice'/></td>"
@@ -851,108 +940,190 @@
 						for(i=0; i<civilVoiceList.length; i++ ) {
 							var civilVoice = null;
 							civilVoice = civilVoiceList[i];
-
-							var date = new Date(civilVoice.insertDate);
-							var insertDate = date.toLocaleString();
-
 							content = content
 								+ 	"<tr>"
-								+ 	"	<td class=\"col-left\">"  + civilVoice.title + "</td>"
-								+ 	"	<td class=\"col-center\">" + civilVoice.userId + "</td>"
-								+ 	"	<td class=\"col-center\">" + insertDate + "</td>"
+								+ 	"	<td class=\"col-left ellipsis\" style=\"max-width:160px;\">"
+								+	"		<span class=\"index\"></span>"
+								+ 	"		<em>" + civilVoice.title + "</em>"
+								+	"	</td>"
+								+ 	"	<td class=\"col-center\" style=\"width:70px;\">"
+								+	"		<span class='likes-icon' style='float: left;'>icon</span>"
+								+	"		<span style='font-weight:bold;'>" + formatNumber(civilVoice.commentCount) + "</span>"
+								+	"	</td>"
+								+ 	"	<td class=\"col-center\">" + civilVoice.viewInsertDate + "</td>"
 								+ 	"</tr>";
 						}
 					}
 					$("#civilVoiceWidget").empty();
 					$("#civilVoiceWidget").html(content);
+				} else {
+					$("#civilVoiceWidget").html(JS_MESSAGE[msg.errorCode]);
+					//alert(JS_MESSAGE[msg.errorCode]);
+					//console.log("---- " + msg.errorCode);
 				}
 			},
 			error : function(request, status, error) {
-				//alert("잠시 후 이용해 주시기 바랍니다. 장시간 같은 현상이 반복될 경우 관리자에게 문의하여 주십시오.");
+				$("#civilVoiceWidget").html(JS_MESSAGE["ajax.error.message"]);
+				//alert(JS_MESSAGE["ajax.error.message"]);
+			}
+		});
+	}
+
+	// 시스템 사용량
+	function systemUsageWidget() {
+		$.ajax({
+			url : "/widgets/system-usage-status",
+			type : "GET",
+			cache : false,
+			dataType : "json",
+			success : function(msg) {
+				if(msg.statusCode <= 200) {
+					var stat = msg.statistics;
+
+					// disk
+					var diskMax = stat.diskSpaceTotal;
+					var diskUsed = (diskMax - stat.diskSpaceFree);
+					var diskValue = diskUsed / diskMax * 100;
+
+					// memory
+					var memoryMax = stat.jvmMemoryMax[0]["value"];
+					var memoryUsed = stat.jvmMemoryUsed[0]["value"];
+					var memoryValue = memoryUsed / memoryMax * 100;
+
+					// cpu
+					var cpuMax = stat.systemCpuUsage[0]["value"];
+					if(!cpuMax) cpuMax = 1;
+					var cpuUsed = stat.processCpuUsage[0]["value"];
+					var cpuValue = cpuUsed / cpuMax * 100;
+
+					var res = {
+						disk: {
+							id: 'pie-chart1',
+							title: 'Disk',
+							value: Math.round(diskValue),
+							color: 'tomato'
+						},
+						memory: {
+							id: 'pie-chart2',
+							title: 'JVM Memory',
+							value: Math.round(memoryValue),
+							color: '#8b22ff'
+						},
+						cpu: {
+							id: 'pie-chart3',
+							title: 'CPU',
+							value: Math.round(cpuValue),
+							color: '#1cabf1'
+						}
+					}
+
+					$("#systemUsageWidget").empty();
+					$("#systemUsageWidget").html('<div class="gaugeGraph"></div>');
+
+					for(var property in res) {
+						showSystemUsageHtml(res[property]);
+						showSystemUsageGraph(res[property]);
+					}
+				} else {
+					$("#systemUsageWidget").html(JS_MESSAGE[msg.errorCode]);
+					//alert(JS_MESSAGE[msg.errorCode]);
+					//console.log("---- " + msg.errorCode);
+				}
+			},
+			error : function(request, status, error) {
+				$("#systemUsageWidget").html(JS_MESSAGE["ajax.error.message"]);
+				//alert(JS_MESSAGE["ajax.error.message"]);
 			}
 		});
 	}
 
 	// DB Connection Pool 현황
-	function dbcpWidget() {
+	function dbcpStatusWidget() {
 		$.ajax({
-			url : "/main/ajax-dbcp-widget",
+			url : "/widgets/dbcp-status",
 			type : "GET",
 			cache : false,
 			dataType : "json",
 			success : function(msg) {
-				if (msg.result == "user.session.empty") {
-					//alert("로그인 후 사용 가능한 서비스 입니다.");
-				} else if (msg.result == "db.exception") {
-					//alert("데이터 베이스 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
-				} else if (msg.result == "success") {
-					$("#userSessionCount").html(msg.userSessionCount);
-					$("#userUserSessionCount").html(msg.userUserSessionCount);
-					$("#initialSize").html(msg.initialSize);
-					$("#userInitialSize").html(msg.userInitialSize);
-					$("#maxTotal").html(msg.maxTotal);
-					$("#userMaxTotal").html(msg.userMaxTotal);
-					$("#maxIdle").html(msg.maxIdle);
-					$("#userMaxIdle").html(msg.userMaxIdle);
-					$("#numActive").html(msg.numActive);
-					$("#userNumActive").html(msg.userNumActive);
-					$("#minIdle").html(msg.minIdle + "," + msg.numIdle);
-					$("#userMinIdle").html(msg.userMinIdle + "," + msg.userNumIdle);
+				if(msg.statusCode <= 200) {
+					var dbcp = msg.dbcp;
+					$("#userSessionCount").html(dbcp.userSessionCount);
+					$("#userUserSessionCount").html(dbcp.userUserSessionCount);
+					$("#initialSize").html(dbcp.initialSize);
+					$("#userInitialSize").html(dbcp.userInitialSize);
+					$("#maxTotal").html(dbcp.maxTotal);
+					$("#userMaxTotal").html(dbcp.userMaxTotal);
+					$("#maxIdle").html(dbcp.maxIdle);
+					$("#userMaxIdle").html(dbcp.userMaxIdle);
+					$("#numActive").html(dbcp.numActive);
+					$("#userNumActive").html(dbcp.userNumActive);
+					$("#minIdle").html(dbcp.minIdle + "," + dbcp.numIdle);
+					$("#userMinIdle").html(dbcp.userMinIdle + "," + dbcp.userNumIdle);
+				} else {
+					$("#dbcpStatusWidget").html(JS_MESSAGE[msg.errorCode]);
+					//alert(JS_MESSAGE[msg.errorCode]);
+					//console.log("---- " + msg.errorCode);
 				}
 			},
 			error : function(request, status, error) {
-				//alert("잠시 후 이용해 주시기 바랍니다. 장시간 같은 현상이(DBCP) 반복될 경우 관리자에게 문의하여 주십시오.");
+				$("#dbcpStatusWidget").html(JS_MESSAGE["ajax.error.message"]);
+				//alert(JS_MESSAGE["ajax.error.message"]);
 			}
 		});
 	}
 
-	// 사용자 추적
-	function accessLogWidget() {
-		$.ajax({
-			url : "/main/ajax-access-log-widget",
-			type : "GET",
-			cache : false,
-			dataType : "json",
-			success : function(msg) {
-				if (msg.result == "user.session.empty") {
-					//alert("로그인 후 사용 가능한 서비스 입니다.");
-				} else if (msg.result == "db.exception") {
-					//alert("데이터 베이스 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
-				} else if (msg.result == "success") {
-					var accessLogList = msg.accessLogList;
-					var content = "";
-					content 	= "<table class=\"widget-table\">"
-								+	"<col class=\"col-left\" />"
-								+	"<col class=\"col-left\" />";
-					if(accessLogList == null || accessLogList.length == 0) {
-						content += 	"<tr>"
-								+	"	<td colspan=\"2\" class=\"col-none\"><spring:message code='main.status.no.user.tracking'/></td>"
-								+	"</tr>";
-					} else {
-						for(i=0; i<accessLogList.length; i++ ) {
-							var accessLog = null;
-							accessLog = accessLogList[i];
-							content = content
-								+ 	"<tr>"
-								+ 	"	<td class=\"col-left\">"
-								+		"	<span class=\"index\"></span>"
-								+		"	<em>" + accessLog.userName + "</em>"
-								+		"</td>"
-								+ 		"<td class=\"col-left\">" + accessLog.viewRequestUri + "</td>"
-								+ 	"</tr>";
-						}
-					}
-					$("#accessLogWidget").empty();
-					$("#accessLogWidget").html(content);
-				}
-			},
-			error : function(request, status, error) {
-				//alert("잠시 후 이용해 주시기 바랍니다. 장시간 같은 현상이(DBCP) 반복될 경우 관리자에게 문의하여 주십시오.");
-				$("#accessLogWidget").empty();
-				$("#accessLogWidget").html(content);
-			}
-		});
+	function showSystemUsageHtml(data) {
+		var content = "";
+		content += "<div id='"+ data.id +"' class='pie-chart'>";
+		content += "	<span class='center'>" + data.value + "%</span>";
+		content += "	<span class='title'>" + data.title + "</span>";
+		content += "</div>";
+		$('#systemUsageWidget div.gaugeGraph').append(content);
 	}
+
+	function showSystemUsageGraph(data) {
+		var usageValues = [[data.title, data.value], ['blank', (100-data.value)]];
+
+		$.jqplot(data.id, [usageValues], {
+      		seriesColors: [data.color, "#e0e0e0"],
+            grid: {
+                drawBorder: false,
+                drawGridlines: false,
+                background: "#ffffff",
+                shadow: false
+            },
+            seriesDefaults:{
+            	renderer:$.jqplot.DonutRenderer,
+          		rendererOptions:{
+		            sliceMargin: 0,
+		            startAngle: -90,
+		            diameter : 100,
+		            padding: 10
+          		}
+            },
+            legend: {
+                background: 'white',
+                textColor: 'black',
+                fontFamily: 'Times New Roman',
+                border: '1px solid black'
+            }
+      	});
+	}
+
+	function goMagoAPIGuide() {
+		var url = "/guide/help";
+		var width = 1200;
+		var height = 800;
+
+		// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+		var popupX = (window.screen.width / 2) - (width / 2);
+		var popupY = (window.screen.height / 2) - (height / 2);
+
+		var popWin = window.open(url, "", "toolbar=no, width=" + width + " ,height=" + height + ", top=" + popupY + ", left=" + popupX +
+				", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
+		return false;
+	}
+
 </script>
 </body>
 </html>

@@ -21,7 +21,6 @@ public interface APIController {
 //			
 //			aPILogService.insertAPILog(aPILog);
 //		} catch(Exception ex) {
-//			ex.printStackTrace();
 //			//log.error("@@@@@@@@ API 이력 저장 중 오류가 발생했지만... 무시");
 //		}
 //	}

@@ -1,9 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%-- data object attribute 등록 --%>
 <div class="uploadDataObjectAttributeDialog" title="Data Object Attribute">
-	<form id="dataObjectAttributeInfo" name="dataObjectAttributeInfo" action="/datas/object/attributes" method="post" enctype="multipart/form-data">
+	<form:form id="dataObjectAttributeInfo" name="dataObjectAttributeInfo" action="/datas/object/attributes" method="post" enctype="multipart/form-data">
 		<input type="hidden" id="objectAttributeFileDataId" name="objectAttributeFileDataId" value="" />
-		<table class="inner-table scope-row" style="width: 95%;">
+		<table class="inner-table scope-row" style="width: 95%;" summary="업로드 데이터 오브젝트 속성 다이얼로그">
+		<caption class="hiddenTag">업로드 데이터 오브젝트 속성 다이얼로그</caption>
 			<col class="col-sub-label xl" />
 			<col class="col-data" />
 			<tbody>
@@ -15,6 +16,7 @@
 					<th class="col-sub-label">업로딩 파일</th>
 					<td>
 						<div class="inner-data">
+							<label for="objectAttributeFileName" class="hiddenTag">오브젝트 속성 파일명</label>
 							<input type="file" id="objectAttributeFileName" name="objectAttributeFileName" class="col-data" />
 						</div>
 					</td>
@@ -24,13 +26,14 @@
 		<div class="button-group">
 			<input type="button" onclick="dataObjectAttributeFileUpload();" class="button" value="<spring:message code='data.file.save'/>"/>
 		</div>
-		<table class="inner-table scope-row" style="width: 95%;">
+		<table class="inner-table scope-row" style="width: 95%;" summary="데이터 오브젝트 속성 업로드 테이블">
+		<caption class="hiddenTag">데이터 오브젝트 속성 업로드</caption>
 			<col class="col-sub-label xl" />
 			<col class="col-data" />
 			<tbody id="dataObjectAttributeUploadLog">
 			</tbody>
 		</table>
-	</form>
+	</form:form>
 </div>
 
 <script id="templateDataObjectAttributeUploadLog" type="text/x-handlebars-template">

@@ -217,7 +217,7 @@ function changeLanguage(lang) {
 	if(updateFlag) {
 		updateFlag = false;
 		$.ajax({
-			url: "/sign/ajax-change-language.do?lang=" + lang,
+			url: "/sign/change-language?lang=" + lang,
 			type: "GET",
 			//data: info,
 			cache: false,
@@ -250,6 +250,23 @@ function isHangul(value) {
 	} else {
 		return false
 	}
+}
+
+// 경도 체크
+function isLongitude(value) {
+	var regexLongitude = /^[-+]?(180(\.0{0,6})?|((1[0-7]\d)|([1-9]?\d))(\.\d{0,8})?)$/;
+	return regexLongitude.test(value) ? true : false;
+}
+
+// 위도 체크
+function isLatitude(value) {
+	var regexLatitude = /^[-+]?([0-8]?\d(\.\d{0,6})?|90(\.0{0,8})?)$/;
+	return regexLatitude.test(value) ? true : false;
+}
+
+// 세자리 콤마
+function formatNumber(value) {
+	return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 function notyetAlram() {
@@ -300,3 +317,54 @@ function openFindDataPoint(dataId, referrer) {
     		+ ", left=" + popupX + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
     //popWin.document.title = layerName;
 };
+
+// 세슘 크레딧 이미지 alt추가(웹 접근성)
+function cesiumCreditAlt(){
+	var magoContiner = document.getElementsByClassName("cesium-credit-logoContainer")[0];
+	var creditImgTag = magoContiner.getElementsByTagName("img")[0];
+	creditImgTag.setAttribute( 'alt', 'cesium credit' );
+};
+
+//init policy
+function initPolicy(callback, dataId) {
+	if(!dataId) dataId = "";
+	$.ajax({
+		url: "/geopolicies/user?dataId="+dataId,
+		type: "GET",
+		headers: {"X-Requested-With": "XMLHttpRequest"},
+		dataType: "json",
+		success: function(msg){
+			if(msg.statusCode <= 200) {
+				callback(msg.geoPolicy, msg.baseLayers);
+			} else {
+				alert(JS_MESSAGE[msg.errorCode]);
+			}
+		},
+		error:function(request,status,error){
+			alert(JS_MESSAGE["ajax.error.message"]);
+		}
+	});
+}
+
+/**
+ * 경위도 유효 범위 체크 
+ * @param longitude
+ * @param latitude
+ * @param altitude
+ * @returns
+ */
+function locationValidation(longitude, latitude, altitude) {
+	var lon = Number(longitude);
+	var lat = Number(latitude);
+	var alt = Number(altitude);
+	if(isNaN(lon) || isNaN(lat) || isNaN(alt)) {
+		alert("숫자만 입력 가능합니다.");
+		return false;
+	}
+	if((-180 <= lon && lon <= 180) &&  (-90 <= lat && lat <= 90) && (0 <= alt && alt <= 300000)) {
+		return true;
+	} else {
+		alert("경도 유효범위 : -180 ~ 180\n위도 유효범위 : -90 ~ 90 \n높이 유효범위 : 300000 입니다.");
+		return false;
+	}
+}

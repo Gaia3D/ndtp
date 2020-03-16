@@ -3,6 +3,7 @@
 <div id="gnbWrap" style="z-index: 100;">
 	<!-- S: 통합검색 -->
 	<div class="totalSearch">
+		<label for="fullTextSearch" class="hiddenTag">통합검색</label>
 		<input type="text" id="fullTextSearch" name="fullTextSearch" placeholder="검색어를 입력하세요.">
 		<button type="button" id="fullTextSearchButton" title="검색" class="btnTotalSearch">검색</button>
 	</div>

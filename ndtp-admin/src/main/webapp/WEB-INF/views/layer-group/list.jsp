@@ -8,12 +8,12 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<title>Layer 그룹 | NDTP</title>
-	<link rel="stylesheet" href="/css/${lang}/font/font.css" />
-	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
-	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
-	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css">
-    <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
+	<link rel="stylesheet" href="/css/${lang}/font/font.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css?cacheVersion=${contentCacheVersion}">
+    <link rel="stylesheet" href="/css/${lang}/admin-style.css?cacheVersion=${contentCacheVersion}" />
 </head>
 <body>
 	<%@ include file="/WEB-INF/views/layouts/header.jsp" %>
@@ -38,7 +38,8 @@
 									</div>
 								</div>
 							</div>
-							<table class="list-table scope-col">
+							<table class="list-table scope-col" summary="2D 레이어 그룹 리스트">
+							<caption class="hiddenTag">2D 레이어 그룹</caption>
 								<col class="col-name" />
 								<col class="col-toggle" />
 								<col class="col-name" />
@@ -49,7 +50,7 @@
 								<thead>
 									<tr>
 										<th scope="col">그룹명</th>
-					                    <th scope="col">사용유무</th>
+					                    <th scope="col">사용 여부</th>
 					                    <th scope="col">등록자</th>
 					                    <th scope="col">레이어</th>
 					                    <th scope="col">순서</th>
@@ -111,7 +112,9 @@
         </c:if>
         <c:if test="${layerGroup.depth eq '2' }">
             <c:if test="${layerGroup.children == 0}">
-                        					<span style="padding-left: ${paddingLeftValue}; font-size: 1.5em; color: Tomato;"><i class="fa fa-file-alt" aria-hidden="true"></i></span>
+                        					<span style="padding-left: ${paddingLeftValue}; font-size: 1.5em; color: Mediumslateblue;">
+                        						<i class="fa fa-folder twoFolder" aria-hidden="true"></i>
+                        					</span>
             </c:if>
             <c:if test="${layerGroup.children > 0}">
 					                        <span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"
@@ -136,7 +139,7 @@
                         					미사용
         </c:if>
 					                    </td>
-					                    <td class="col-key">${layerGroup.userId }</td>
+					                    <td class="col-type">${layerGroup.userId }</td>
 					                    <td class="col-type"><a href="/layer/list?searchOption=0&searchWord=layer_group_name&searchValue=${layerGroup.layerGroupName}" class="linkButton">보기</a>
 					                    </td>
 					                    <td class="col-type">
@@ -148,9 +151,8 @@
 					                    	</div>
 					                    </td>
 					                    <td class="col-type">
-											<a href="/layer-group/modify?layerGroupId=${layerGroup.layerGroupId}" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;
-											<a href="/layer-group/delete?layerGroupId=${layerGroup.layerGroupId }" onclick="return deleteWarning();"
-														class="linkButton"><spring:message code='delete'/></a>
+											<a href="/layer-group/modify?layerGroupId=${layerGroup.layerGroupId}" class="image-button button-edit"><spring:message code='modified'/></a>&nbsp;&nbsp;
+					                    	<a href="/layer-group/delete?layerGroupId=${layerGroup.layerGroupId}" onclick="return deleteWarning();" class="image-button button-delete"><spring:message code='delete'/></a>
 					                    </td>
 					                    <td class="col-date">
 					                    	<fmt:parseDate value="${layerGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
@@ -188,11 +190,11 @@
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
 
-<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
-<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-<script type="text/javascript" src="/js/${lang}/common.js"></script>
-<script type="text/javascript" src="/js/${lang}/message.js"></script>
-<script type="text/javascript" src="/js/navigation.js"></script>
+<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/common.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/message.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/navigation.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript">
 	//펼치기
 	function openAll() {
@@ -229,31 +231,40 @@
 	}
 
 	// 화살표 클릭시
-	function childrenDisplayToggle(depth, layerGroupId, ancestor) {
+	function childrenDisplayToggle(depth, id, ancestor) {
 	    if(depth === "1") {
-	        console.log("--------- depth 1 = " + $(".oneDepthParent-" + layerGroupId).css("display"));
-	        if( $(".oneDepthParent-" + layerGroupId).css("display") === "none" ) {
+	        if( $(".oneDepthParent-" + id).css("display") === "none" ) {
 	            // 접힌 상태
-	            $(".oneDepthParent-" + layerGroupId).show();
+	            $(".oneDepthParent-" + id).show();
 
-	            $("#oneDepthArrow-" + layerGroupId).removeClass("fa-caret-right");
-	            $("#oneDepthArrow-" + layerGroupId).addClass("fa-caret-down");
-	            $("#oneDepthFolder-" + layerGroupId).removeClass("fa-folder");
-	            $("#oneDepthFolder-" + layerGroupId).addClass("fa-folder-open");
+	            $("#oneDepthArrow-" + id).removeClass("fa-caret-right");
+	            $("#oneDepthArrow-" + id).addClass("fa-caret-down");
+	            $("#oneDepthFolder-" + id).removeClass("fa-folder");
+	            $("#oneDepthFolder-" + id).addClass("fa-folder-open");
 
 	            $(".ancestorArrow-" + ancestor).removeClass("fa-caret-down");
 	            $(".ancestorArrow-" + ancestor).addClass("fa-caret-right");
 	            $(".ancestorFolder-" + ancestor).removeClass("fa-folder-open");
 	            $(".ancestorFolder-" + ancestor).addClass("fa-folder");
 	        } else {
-	            // 펼친 상태
+				// 펼친 상태
 	            $(".ancestor-" + ancestor).hide();
-	            $(".oneDepthParent-" + layerGroupId).hide();
+	            $(".oneDepthParent-" + id).hide();
 
-	            $("#oneDepthArrow-" + layerGroupId).removeClass("fa-caret-down");
-	            $("#oneDepthArrow-" + layerGroupId).addClass("fa-caret-right");
-	            $("#oneDepthFolder-" + layerGroupId).removeClass("fa-folder-open");
-	            $("#oneDepthFolder-" + layerGroupId).addClass("fa-folder");
+	        	var clickClass = $("#oneDepthArrow-" + id).attr("class");
+	            if(clickClass.indexOf("right") >= 0) {
+	            	// 닫힘 상태라 펼침
+	            	$("#oneDepthArrow-" + id).removeClass("fa-caret-right");
+	            	$("#oneDepthArrow-" + id).addClass("fa-caret-down");
+	            	$("#oneDepthFolder-" + id).removeClass("fa-folder");
+	            	$("#oneDepthFolder-" + id).addClass("fa-folder-open");
+	            } else {
+	            	// 펼침 상태라 닫힘
+	            	$("#oneDepthArrow-" + id).removeClass("fa-caret-down");
+	                $("#oneDepthArrow-" + id).addClass("fa-caret-right");
+	                $("#oneDepthFolder-" + id).removeClass("fa-folder-open");
+	                $("#oneDepthFolder-" + id).addClass("fa-folder");
+	            }
 
 	            $(".ancestorArrow-" + ancestor).removeClass("fa-caret-down");
 	            $(".ancestorArrow-" + ancestor).addClass("fa-caret-right");
@@ -261,22 +272,32 @@
 	            $(".ancestorFolder-" + ancestor).addClass("fa-folder");
 	        }
 	    } else if(depth === "2") {
-	        if( $(".twoDepthParent-" + layerGroupId).css("display") === "none" ) {
+	    	if( $(".twoDepthParent-" + id).css("display") === "none" ) {
 	            // 접힌 상태
-	            $(".twoDepthParent-" + layerGroupId).show();
+	            $(".twoDepthParent-" + id).show();
 
-	            $("#twoDepthArrow-" + layerGroupId).removeClass("fa-caret-right");
-	            $("#twoDepthArrow-" + layerGroupId).addClass("fa-caret-down");
-	            $("#twoDepthFolder-" + layerGroupId).removeClass("fa-folder");
-	            $("#twoDepthFolder-" + layerGroupId).addClass("fa-folder-open");
+	            $("#twoDepthArrow-" + id).removeClass("fa-caret-right");
+	            $("#twoDepthArrow-" + id).addClass("fa-caret-down");
+	            $("#twoDepthFolder-" + id).removeClass("fa-folder");
+	            $("#twoDepthFolder-" + id).addClass("fa-folder-open");
 	        } else {
 	            // 펼친 상태
-	            $(".twoDepthParent-" + layerGroupId).hide();
+	            $(".twoDepthParent-" + id).hide();
 
-	            $("#twoDepthArrow-" + layerGroupId).removeClass("fa-caret-down");
-	            $("#twoDepthArrow-" + layerGroupId).addClass("fa-caret-right");
-	            $("#twoDepthFolder-" + layerGroupId).removeClass("fa-folder-open");
-	            $("#twoDepthFolder-" + layerGroupId).addClass("fa-folder");
+	            var clickClass = $("#twoDepthArrow-" + id).attr("class");
+	            if(clickClass.indexOf("right") >= 0) {
+	            	// 닫힘 상태라 펼침
+	            	$("#twoDepthArrow-" + id).removeClass("fa-caret-right");
+	            	$("#twoDepthArrow-" + id).addClass("fa-caret-down");
+	            	$("#twoDepthFolder-" + id).removeClass("fa-folder");
+	            	$("#twoDepthFolder-" + id).addClass("fa-folder-open");
+	            } else {
+	            	// 펼침 상태라 닫힘
+	            	$("#twoDepthArrow-" + id).removeClass("fa-caret-down");
+	                $("#twoDepthArrow-" + id).addClass("fa-caret-right");
+	                $("#twoDepthFolder-" + id).removeClass("fa-folder-open");
+	                $("#twoDepthFolder-" + id).addClass("fa-folder");
+	            }
 	        }
 	    }
 	}

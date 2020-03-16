@@ -21,13 +21,15 @@ public class Ogr2OgrRunnable implements Runnable {
 	private String tableName;
 	// 새로 생성할건지, update 할건지, append 인지..... update가 upsert를 지원하는지 모르겠다.
 	private String updateOption;
+	private String environmentPath;
 	
-	public Ogr2OgrRunnable(String osType, String driver, String shapeFile, String tableName, String updateOption) {
+	public Ogr2OgrRunnable(String osType, String driver, String shapeFile, String tableName, String updateOption, String environmentPath) {
 		this.osType = osType;
 		this.driver = driver;
 		this.shapeFile = shapeFile;
 		this.tableName = tableName;
 		this.updateOption = updateOption;
+		this.environmentPath = environmentPath;
 	}
 	
 	@Override
@@ -49,9 +51,7 @@ public class Ogr2OgrRunnable implements Runnable {
 		
 		command.add("-f");
 		command.add("PostgreSQL");
-		//command.add("PG:\"host=localhost dbname=gis user=postgres password=postgres\"");
 		//command.add(this.driver);
-		log.info("============= driver = {}", this.driver);
 		command.add("PG:host=localhost dbname=ndtp user=test password=test");
 		
 		// shape file full path 파일 호가장자 까지
@@ -66,10 +66,11 @@ public class Ogr2OgrRunnable implements Runnable {
 		log.info(" >>>>>> command = {}", command.toString());
 		
 		try {
-			ProcessBuilderSupport.execute(command);
+			ProcessBuilderSupport.execute(command, environmentPath);
+		} catch(RuntimeException e) {
+			log.info("@@@ RuntimeException. message = {}", e.getMessage());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.info("@@@ Exception. message = {}", e.getMessage());
 		}
 	}
 }

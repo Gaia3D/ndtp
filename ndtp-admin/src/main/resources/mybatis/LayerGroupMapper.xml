@@ -27,6 +27,39 @@
 	    ORDER BY path
 	</select>
 
+	<!-- 레이어 그룹 정보 -->
+	<select id="getLayerGroup" parameterType="int" resultType="layerGroup">
+		/* getLayerGroup */
+		SELECT A.*,
+			CASE
+				WHEN parent > 0 THEN ( SELECT layer_group_name FROM layer_group WHERE layer_group_id = A.parent )
+				ELSE null
+			END AS parentName
+		FROM layer_group A
+		WHERE layer_group_id = #{layerGroupId}
+	</select>
+
+	<!-- 부모와 순서를 가지고 레이어 그룹 정보를 취득 -->
+	<select id="getLayerGroupByParentAndViewOrder" parameterType="layerGroup" resultType="layerGroup">
+		/* getLayerGroupByParentAndViewOrder */
+		SELECT *
+		FROM layer_group
+		WHERE parent = #{parent}
+		<if test="updateType == 'UP'.toString()">
+			<![CDATA[
+			AND view_order < #{viewOrder}
+			]]>
+		ORDER BY view_order DESC
+		</if>
+		<if test="updateType == 'DOWN'.toString()">
+			<![CDATA[
+			AND view_order > #{viewOrder}
+			]]>
+		ORDER BY view_order
+		</if>
+		LIMIT 1
+	</select>
+
 	<!-- 레이어 그룹 등록 -->
 	<insert id="insertLayerGroup" parameterType="layerGroup">
 		/* insertLayerGroup */
@@ -63,35 +96,6 @@
 			trim(#{description})
 		)
 	</insert>
-
-	<!-- 레이어 그룹 정보 -->
-	<select id="getLayerGroup" parameterType="int" resultType="layerGroup">
-		/* getLayerGroup */
-		SELECT *
-		FROM layer_group
-		WHERE layer_group_id = #{layerGroupId}
-	</select>
-
-	<!-- 부모와 순서를 가지고 레이어 그룹 정보를 취득 -->
-	<select id="getLayerGroupByParentAndViewOrder" parameterType="layerGroup" resultType="layerGroup">
-		/* getLayerGroupByParentAndViewOrder */
-		SELECT *
-		FROM layer_group
-		WHERE parent = #{parent}
-		<if test="updateType == 'UP'.toString()">
-			<![CDATA[
-			AND view_order < #{viewOrder}
-			]]>
-		ORDER BY view_order DESC
-		</if>
-		<if test="updateType == 'DOWN'.toString()">
-			<![CDATA[
-			AND view_order > #{viewOrder}
-			]]>
-		ORDER BY view_order
-		</if>
-		LIMIT 1
-	</select>
 
 	<!-- 레이어 그룹 순서 수정 -->
 	<update id="updateLayerGroupViewOrder" parameterType="layerGroup">

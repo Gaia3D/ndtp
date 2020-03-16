@@ -8,66 +8,13 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<title>업로딩 데이터 수정 | NDTP</title>
-	<link rel="stylesheet" href="/css/${lang}/font/font.css" />
-	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
-	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
-	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-    <link rel="stylesheet" href="/externlib/dropzone/dropzone.min.css">
-    <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
-    <script type="text/javascript" src="/externlib/dropzone/dropzone.min.js"></script>
-
-    <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
-	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-    <style type="text/css">
-        .dropzone .dz-preview.lp-preview {
-            width: 150px;
-        }
-        .dropzone.hzScroll {
-            min-width: 700px;
-            /*min-width: 1153px;*/
-			max-width: 1920px;
-            overflow: auto;
-            white-space: nowrap;
-            border: 1px solid #e5e5e5;
-        }
-
-        .loader-txt p {
-            font-size: 13px;
-            color: #666;
-        }
-
-        .loader-txt p small {
-            font-size: 11.5px;
-            color: #999;
-        }
-
-        .loader {
-            position: relative;
-            text-align: center;
-            margin: 15px auto 35px auto;
-            z-index: 9999;
-            display: block;
-            width: 80px;
-            height: 80px;
-            border: 10px solid rgba(0, 0, 0, 0.3);
-            border-radius: 50%;
-            border-top-color: #000;
-            animation: spin 1s ease-in-out infinite;
-            -webkit-animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to {
-                -webkit-transform: rotate(360deg);
-            }
-        }
-
-        @-webkit-keyframes spin {
-            to {
-                -webkit-transform: rotate(360deg);
-            }
-        }
-    </style>
+	<link rel="stylesheet" href="/css/${lang}/font/font.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css?cacheVersion=${contentCacheVersion}" />
+    <link rel="stylesheet" href="/css/${lang}/admin-style.css?cacheVersion=${contentCacheVersion}" />
+    <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
+	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>
 </head>
 
 <body>
@@ -86,7 +33,8 @@
 						</div>
 						<form:form id="uploadData" modelAttribute="uploadData" method="post" onsubmit="return false;">
 							<form:hidden path="uploadDataId" />
-							<table class="input-table scope-row">
+							<table class="input-table scope-row" summary="업로드 데이터 수정">
+							<caption class="hiddenTag">업로드 데이터 수정</caption>
 								<colgroup>
 									<col class="col-label l" style="width: 13%" >
 									<col class="col-input" style="width: 37%" >
@@ -137,7 +85,7 @@
 											<option value="las"> LAS(POINT CLOUD) </option>
 											<option value="3ds"> 3DS </option>
 											<option value="obj"> OBJ </option>
-							          		<option value="dae"> DAE(COLLADA) </option>
+							          		<option value="dae"> COLLADA(DAE) </option>
 										</select>
 									</td>
 								</tr>
@@ -244,8 +192,8 @@
 <!-- E: WRAP -->
 <%@ include file="/WEB-INF/views/upload-data/data-group-dialog.jsp" %>
 
-<script type="text/javascript" src="/js/${lang}/common.js"></script>
-<script type="text/javascript" src="/js/${lang}/message.js"></script>
+<script type="text/javascript" src="/js/${lang}/common.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/message.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("#sharing").val("${uploadData.sharing}");
@@ -294,6 +242,9 @@
 		if ($("#altitude").val() === "") {
 			alert("대표 위치(높이)를 입력하여 주십시오.");
 			$("#altitude").focus();
+			return false;
+		}
+		if(!locationValidation($("#longitude").val(), $("#latitude").val(), $("#altitude").val())) {
 			return false;
 		}
 	}

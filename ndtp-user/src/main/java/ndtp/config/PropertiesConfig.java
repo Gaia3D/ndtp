@@ -12,6 +12,11 @@ import lombok.Data;
 @ConfigurationProperties(prefix = "ndtp")
 public class PropertiesConfig {
 	
+	/**
+	 * 로컬 : local, 개발 : develop, 운영 : product
+	 */
+	private String profile;
+	
     /**
      * 로컬 환경은 WINDOW, 운영 환경은 LINUX 
      */
@@ -42,7 +47,6 @@ public class PropertiesConfig {
 	private String queueName;
 	private String exchange;
     
-    private String uploadDataDir;
     // F4D 파일이 변환되는 Root 경로 이자, mago3DJS 에서 요청되는 파일의 Root 경로. ServletConfig 에서 매핑
     private String dataServiceDir;
     // 관리자용
@@ -52,6 +56,7 @@ public class PropertiesConfig {
     private String userDataServiceDir;
     private String userDataServicePath;
     
+    private String dataUploadDir;
     private String dataAttributeDir;
     private String dataAttributeUploadDir;
     private String dataObjectAttributeUploadDir;
@@ -63,5 +68,6 @@ public class PropertiesConfig {
     private String serviceFileUploadDir;
     private String serviceF4dFailRootDir;
     private String serviceFileBuildingobjDir;
-
+    
+    private String guideDataServiceDir;
 }

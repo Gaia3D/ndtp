@@ -1,6 +1,8 @@
 package ndtp.parser.impl;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -8,18 +10,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.util.StringUtils;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ndtp.domain.DataFileInfo;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
-import ndtp.domain.DataSmartTilingFileInfo;
 import ndtp.parser.DataFileParser;
 
 public class DataFileJsonParser implements DataFileParser {
 
 	@Override
-	public Map<String, Object> parse(Integer dataGroupId, DataSmartTilingFileInfo fileInfo) {
+	public Map<String, Object> parse(Integer dataGroupId, DataFileInfo fileInfo) {
 		
 		int totalCount = 0;
 		int parseSuccessCount = 0;
@@ -29,26 +33,36 @@ public class DataFileJsonParser implements DataFileParser {
 		List<DataInfo> dataInfoList = new ArrayList<>();
 		try {
 			byte[] jsonData = Files.readAllBytes(Paths.get(fileInfo.getFilePath() + fileInfo.getFileRealName()));
-
+			String encodingData = new String(jsonData, StandardCharsets.UTF_8);
+			
 			ObjectMapper objectMapper = new ObjectMapper();
 			//read JSON like DOM Parser
-			JsonNode jsonNode = objectMapper.readTree(jsonData);
+			JsonNode jsonNode = objectMapper.readTree(encodingData);
 			
 //			String dataName = jsonNode.path("data_name").asText();
 //			String dataKey = jsonNode.path("data_key").asText();
 			String longitude = jsonNode.path("longitude").asText().trim();
 			String latitude = jsonNode.path("latitude").asText().trim();
 			String altitude = jsonNode.path("height").asText().trim();
-			String mappingType = jsonNode.path("mapping_type").asText();
+			String mappingType = jsonNode.path("mappingType").asText();
 			JsonNode metainfo = jsonNode.path("attributes");
-			JsonNode childrenNode = jsonNode.path("children");
+			JsonNode childrenNode = jsonNode.path("datas");
 			
 			dataGroup.setDataGroupId(dataGroupId);
 //			dataGroup.setDataGroupName(dataName);
 //			dataGroup.setDataGroupKey(dataKey);
-			if(longitude != null && !"".equals(longitude)) dataGroup.setLongitude(new BigDecimal(longitude));
-			if(latitude != null && !"".equals(latitude)) dataGroup.setLatitude(new BigDecimal(latitude));
-			if(altitude != null && !"".equals(altitude)) dataGroup.setAltitude(new BigDecimal(altitude));
+			if(!StringUtils.isEmpty(longitude)) {
+				longitude = longitude.replace("null", "");
+				if(!StringUtils.isEmpty(longitude)) dataGroup.setLongitude(new BigDecimal(longitude));
+			}
+			if(!StringUtils.isEmpty(latitude)) {
+				latitude = latitude.replace("null", "");
+				if(!StringUtils.isEmpty(latitude)) dataGroup.setLatitude(new BigDecimal(latitude));
+			}
+			if(!StringUtils.isEmpty(altitude)) {
+				altitude = altitude.replace("null", "");
+				if(!StringUtils.isEmpty(altitude)) dataGroup.setAltitude(new BigDecimal(altitude));
+			}
 			if(dataGroup.getLongitude() != null && dataGroup.getLatitude() != null) {
 				dataGroup.setLocation("POINT(" + dataGroup.getLongitude() + " " + dataGroup.getLatitude() + ")");
 			}
@@ -58,9 +72,8 @@ public class DataFileJsonParser implements DataFileParser {
 			if(childrenNode.isArray() && childrenNode.size() != 0) {
 				dataInfoList.addAll(parseChildren(null, 0, childrenNode));
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException("Data 일괄 등록 Json 파일 파싱 오류!");
+		} catch (IOException e) {
+			throw new RuntimeException("Data 일괄 등록 Json 파일 파싱 오류! message = " + e.getMessage());
 		}
 		
 		Map<String, Object> result = new HashMap<>();
@@ -85,30 +98,32 @@ public class DataFileJsonParser implements DataFileParser {
 		depth++;
 		int viewOrder = 1;
 		for(JsonNode jsonNode : childrenNode) {
-			String dataName = jsonNode.path("data_name").asText();
-			String dataKey = jsonNode.path("data_key").asText();
+			Long dataId = jsonNode.path("dataId").asLong();
+			String dataName = jsonNode.path("dataName").asText();
+			String dataKey = jsonNode.path("dataKey").asText();
 			String longitude = jsonNode.path("longitude").asText().trim();
 			String latitude = jsonNode.path("latitude").asText().trim();
-			String altitude = jsonNode.path("height").asText().trim();
+			String altitude = jsonNode.path("altitude").asText().trim();
 			String heading = jsonNode.path("heading").asText().trim();
 			String pitch = jsonNode.path("pitch").asText().trim();
 			String roll = jsonNode.path("roll").asText().trim();
-			String mappingType = jsonNode.path("mapping_type").asText();
+			String mappingType = jsonNode.path("mappingType").asText();
 			JsonNode metainfo = jsonNode.path("attributes");
 			JsonNode childrene = jsonNode.path("children");
 			
 			DataInfo dataInfo = new DataInfo();
+			dataInfo.setDataId(dataId);
 			dataInfo.setDataName(dataName);
 			dataInfo.setDataKey(dataKey);
-			if(longitude != null && !"".equals(longitude)) dataInfo.setLongitude(new BigDecimal(longitude));
-			if(latitude != null && !"".equals(latitude)) dataInfo.setLatitude(new BigDecimal(latitude));
-			if(altitude != null && !"".equals(altitude)) dataInfo.setAltitude(new BigDecimal(altitude));
+			if(!StringUtils.isEmpty(longitude)) dataInfo.setLongitude(new BigDecimal(longitude));
+			if(!StringUtils.isEmpty(latitude)) dataInfo.setLatitude(new BigDecimal(latitude));
+			if(!StringUtils.isEmpty(altitude)) dataInfo.setAltitude(new BigDecimal(altitude));
 			if(dataInfo.getLongitude() != null && dataInfo.getLatitude() != null) {
 				dataInfo.setLocation("POINT(" + dataInfo.getLongitude() + " " + dataInfo.getLatitude() + ")");
 			}
-			if(heading != null && !"".equals(heading)) dataInfo.setHeading(new BigDecimal(heading));
-			if(pitch != null && !"".equals(pitch)) dataInfo.setPitch(new BigDecimal(pitch));
-			if(roll != null && !"".equals(roll)) dataInfo.setRoll(new BigDecimal(roll));
+			if(!StringUtils.isEmpty(heading)) dataInfo.setHeading(new BigDecimal(heading));
+			if(!StringUtils.isEmpty(pitch)) dataInfo.setPitch(new BigDecimal(pitch));
+			if(!StringUtils.isEmpty(roll)) dataInfo.setRoll(new BigDecimal(roll));
 			
 			dataInfo.setMappingType(mappingType);
 			dataInfo.setMetainfo(metainfo.toString());

@@ -8,14 +8,14 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<title>데이터 그룹 | NDTP</title>
-	<link rel="shortcut icon" href="/images/favicon.ico">
-	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
-	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-	<link rel="stylesheet" href="/css/${lang}/user-style.css" />
-	<link rel="stylesheet" href="/css/${lang}/style.css" />
-	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css">
-	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
-	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+	<link rel="shortcut icon" href="/images/favicon.ico?cacheVersion=${contentCacheVersion}">
+	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/css/${lang}/user-style.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/css/${lang}/style.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css"/>
+	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
+	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>
 </head>
 <body>
 
@@ -119,7 +119,7 @@
         <c:set var="ancestorFolderClass" value="ancestorFolder-${dataGroup.ancestor }" />
     </c:if>
 					<tr class="${depthClass } ${depthParentClass} ${ancestorClass }" style="${depthStyleDisplay}">
-						<td class="col-key ellipsis" style="max-width: 400px; width: 50px; text-align: left;" nowrap="nowrap">
+						<td class="col-key ellipsis" style="max-width: 300px;">
     <c:if test="${dataGroup.depth eq 1 }">
     						<span style="padding-left: ${paddingLeftValue}; font-size: 1.6em;"
 	                        	onclick="childrenDisplayToggle('${dataGroup.depth}', '${dataGroup.dataGroupId}', '${dataGroup.ancestor}');">
@@ -139,13 +139,13 @@
     </c:if>
     <c:if test="${dataGroup.depth eq 3 }">
                     		<span style="padding-left: ${paddingLeftValue}; font-size: 1.5em; color: Tomato;">
-                    			<i id="threeDepthFolder-${dataGroup.dataGroupId }" class="fa fa-folder twoFolder ${ancestorFolderClass }" aria-hidden="true"></i>
+                    			<i id="threeDepthFolder-${dataGroup.dataGroupId }" class="fa fa-folder threeFolder ${ancestorFolderClass }" aria-hidden="true"></i>
                     		</span>
     </c:if>
 
                     					${dataGroup.dataGroupName }
 						</td>
-						<td class="col-key">${dataGroup.dataGroupKey }</td>
+						<td class="col-key ellipsis" style="max-width: 120px;">${dataGroup.dataGroupKey }</td>
 						<td class="col-type">${dataGroup.sharing }</td>
 	                    <td class="col-type">
     <c:if test="${dataGroup.available eq 'true' }">
@@ -201,10 +201,10 @@
 </div>
 <!-- E: WRAP -->
 
-<script type="text/javascript" src="/js/${lang}/common.js"></script>
-<script type="text/javascript" src="/js/${lang}/message.js"></script>
-<script type="text/javascript" src="/js/${lang}/map-controll.js"></script>
-<script type="text/javascript" src="/js/${lang}/ui-controll.js"></script>
+<script type="text/javascript" src="/js/${lang}/common.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/message.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/map-controll.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/ui-controll.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 	});

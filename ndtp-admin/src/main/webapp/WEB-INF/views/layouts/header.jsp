@@ -11,10 +11,8 @@
 			<aside class="site-aside-menu u-pull-right">
 				<ul>
 					<li>
-						<a href="#">
 							<span class="icon-glyph glyph-qmark-circle"></span>
-							<span class="icon-text"><spring:message code='help'/></span>
-						</a>
+							<a href="/guide/help" title="API도움말" onclick="goMagoAPIGuide(this.href);return false;">API도움말</a>
 					</li>
 					<li>
 <%

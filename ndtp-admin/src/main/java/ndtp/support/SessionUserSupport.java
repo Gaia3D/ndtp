@@ -4,14 +4,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpSession;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * 중복 사인인 방지를 위해 사용자의 아이디와 세션 아이디를 관리
  * @author jeongdae
  *
  */
-@Slf4j
 public class SessionUserSupport {
 	
 	public static ConcurrentHashMap<String, HttpSession> signinUsersMap = new ConcurrentHashMap<>();

@@ -37,7 +37,8 @@
 									</div>
 								</div>
 							</div>
-							<table class="list-table scope-col">
+							<table class="list-table scope-col" summary="사용자 그룹 리스트를 트리 형태로 조회 ">
+							<caption class="hiddenTag">사용자 그룹</caption>
 								<col class="col-name" />
 								<col class="col-id" />
 								<col class="col-toggle" />
@@ -48,10 +49,10 @@
 								<col class="col-date" />
 								<thead>
 									<tr>
-										<th scope="col">그룹명</th>
+										<th scope="col"><spring:message code='user.group.name'/></th>
 					                    <th scope="col">그룹Key</th>
-					                    <th scope="col">기본유무</th>
-					                    <th scope="col">사용유무</th>
+					                    <th scope="col">기본 여부</th>
+					                    <th scope="col">사용 여부</th>
 					                    <th scope="col">사용자</th>
 					                    <th scope="col">메뉴</th>
 					                    <th scope="col">Role</th>
@@ -152,8 +153,8 @@
 					                        <a href="/user-group/role?userGroupId=${userGroup.userGroupId}" class="linkButton">수정</a>
 					                    </td>
 					                    <td class="col-type">
-											<a href="/user-group/modify?userGroupId=${userGroup.userGroupId}" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;
-											<a href="/user-group/delete?userGroupId=${userGroup.userGroupId}" onclick="return deleteWarning();" class="linkButton"><spring:message code='delete'/></a>
+											<a href="/user-group/modify?userGroupId=${userGroup.userGroupId}" class="image-button button-edit"><spring:message code='modified'/></a>&nbsp;&nbsp;
+					                    	<a href="/user-group/delete?userGroupId=${userGroup.userGroupId}" onclick="return deleteUserGroupWarning();" class="image-button button-delete"><spring:message code='delete'/></a>
 					                    </td>
 					                    <td class="col-date">
 					                    	<fmt:parseDate value="${userGroup.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
@@ -214,31 +215,40 @@
 	}
 
 	// 화살표 클릭시
-	function childrenDisplayToggle(depth, userGroupId, ancestor) {
+	function childrenDisplayToggle(depth, id, ancestor) {
 	    if(depth === "1") {
-	        console.log("--------- depth 1 = " + $(".oneDepthParent-" + userGroupId).css("display"));
-	        if( $(".oneDepthParent-" + userGroupId).css("display") === "none" ) {
+	        if( $(".oneDepthParent-" + id).css("display") === "none" ) {
 	            // 접힌 상태
-	            $(".oneDepthParent-" + userGroupId).show();
+	            $(".oneDepthParent-" + id).show();
 
-	            $("#oneDepthArrow-" + userGroupId).removeClass("fa-caret-right");
-	            $("#oneDepthArrow-" + userGroupId).addClass("fa-caret-down");
-	            $("#oneDepthFolder-" + userGroupId).removeClass("fa-folder");
-	            $("#oneDepthFolder-" + userGroupId).addClass("fa-folder-open");
+	            $("#oneDepthArrow-" + id).removeClass("fa-caret-right");
+	            $("#oneDepthArrow-" + id).addClass("fa-caret-down");
+	            $("#oneDepthFolder-" + id).removeClass("fa-folder");
+	            $("#oneDepthFolder-" + id).addClass("fa-folder-open");
 
 	            $(".ancestorArrow-" + ancestor).removeClass("fa-caret-down");
 	            $(".ancestorArrow-" + ancestor).addClass("fa-caret-right");
 	            $(".ancestorFolder-" + ancestor).removeClass("fa-folder-open");
 	            $(".ancestorFolder-" + ancestor).addClass("fa-folder");
 	        } else {
-	            // 펼친 상태
+				// 펼친 상태
 	            $(".ancestor-" + ancestor).hide();
-	            $(".oneDepthParent-" + userGroupId).hide();
+	            $(".oneDepthParent-" + id).hide();
 
-	            $("#oneDepthArrow-" + userGroupId).removeClass("fa-caret-down");
-	            $("#oneDepthArrow-" + userGroupId).addClass("fa-caret-right");
-	            $("#oneDepthFolder-" + userGroupId).removeClass("fa-folder-open");
-	            $("#oneDepthFolder-" + userGroupId).addClass("fa-folder");
+	        	var clickClass = $("#oneDepthArrow-" + id).attr("class");
+	            if(clickClass.indexOf("right") >= 0) {
+	            	// 닫힘 상태라 펼침
+	            	$("#oneDepthArrow-" + id).removeClass("fa-caret-right");
+	            	$("#oneDepthArrow-" + id).addClass("fa-caret-down");
+	            	$("#oneDepthFolder-" + id).removeClass("fa-folder");
+	            	$("#oneDepthFolder-" + id).addClass("fa-folder-open");
+	            } else {
+	            	// 펼침 상태라 닫힘
+	            	$("#oneDepthArrow-" + id).removeClass("fa-caret-down");
+	                $("#oneDepthArrow-" + id).addClass("fa-caret-right");
+	                $("#oneDepthFolder-" + id).removeClass("fa-folder-open");
+	                $("#oneDepthFolder-" + id).addClass("fa-folder");
+	            }
 
 	            $(".ancestorArrow-" + ancestor).removeClass("fa-caret-down");
 	            $(".ancestorArrow-" + ancestor).addClass("fa-caret-right");
@@ -246,24 +256,42 @@
 	            $(".ancestorFolder-" + ancestor).addClass("fa-folder");
 	        }
 	    } else if(depth === "2") {
-	        if( $(".twoDepthParent-" + userGroupId).css("display") === "none" ) {
+	    	if( $(".twoDepthParent-" + id).css("display") === "none" ) {
 	            // 접힌 상태
-	            $(".twoDepthParent-" + userGroupId).show();
+	            $(".twoDepthParent-" + id).show();
 
-	            $("#twoDepthArrow-" + userGroupId).removeClass("fa-caret-right");
-	            $("#twoDepthArrow-" + userGroupId).addClass("fa-caret-down");
-	            $("#twoDepthFolder-" + userGroupId).removeClass("fa-folder");
-	            $("#twoDepthFolder-" + userGroupId).addClass("fa-folder-open");
+	            $("#twoDepthArrow-" + id).removeClass("fa-caret-right");
+	            $("#twoDepthArrow-" + id).addClass("fa-caret-down");
+	            $("#twoDepthFolder-" + id).removeClass("fa-folder");
+	            $("#twoDepthFolder-" + id).addClass("fa-folder-open");
 	        } else {
 	            // 펼친 상태
-	            $(".twoDepthParent-" + userGroupId).hide();
+	            $(".twoDepthParent-" + id).hide();
 
-	            $("#twoDepthArrow-" + userGroupId).removeClass("fa-caret-down");
-	            $("#twoDepthArrow-" + userGroupId).addClass("fa-caret-right");
-	            $("#twoDepthFolder-" + userGroupId).removeClass("fa-folder-open");
-	            $("#twoDepthFolder-" + userGroupId).addClass("fa-folder");
+	            var clickClass = $("#twoDepthArrow-" + id).attr("class");
+	            if(clickClass.indexOf("right") >= 0) {
+	            	// 닫힘 상태라 펼침
+	            	$("#twoDepthArrow-" + id).removeClass("fa-caret-right");
+	            	$("#twoDepthArrow-" + id).addClass("fa-caret-down");
+	            	$("#twoDepthFolder-" + id).removeClass("fa-folder");
+	            	$("#twoDepthFolder-" + id).addClass("fa-folder-open");
+	            } else {
+	            	// 펼침 상태라 닫힘
+	            	$("#twoDepthArrow-" + id).removeClass("fa-caret-down");
+	                $("#twoDepthArrow-" + id).addClass("fa-caret-right");
+	                $("#twoDepthFolder-" + id).removeClass("fa-folder-open");
+	                $("#twoDepthFolder-" + id).addClass("fa-folder");
+	            }
 	        }
 	    }
+	}
+
+	function deleteUserGroupWarning() {
+		if(confirm("삭제 하시겠습니까?\n그룹에 포함된 사용자도 함께 삭제됩니다.")) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 </script>
 </body>

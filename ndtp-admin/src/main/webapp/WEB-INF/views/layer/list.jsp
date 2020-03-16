@@ -8,12 +8,12 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<title>Layer 목록 | NDTP</title>
-	<link rel="stylesheet" href="/css/${lang}/font/font.css" />
-	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
-	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
-	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css">
-    <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
+	<link rel="stylesheet" href="/css/${lang}/font/font.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css?cacheVersion=${contentCacheVersion}">
+    <link rel="stylesheet" href="/css/${lang}/admin-style.css?cacheVersion=${contentCacheVersion}" />
 </head>
 <body>
 	<%@ include file="/WEB-INF/views/layouts/header.jsp" %>
@@ -29,23 +29,26 @@
 							<form:form id="layer" modelAttribute="layer" method="get" action="/layer/list" onsubmit="return searchCheck();">
 								<div class="input-group row">
 									<div class="input-set">
-										<label for="searchWord"><spring:message code='search.word'/></label>
-										<select id="searchWord" name="searchWord" class="select" style="height: 30px;">
+										<label for="searchWord" class="hiddenTag">검색유형</label>
+										<select id="searchWord" name="searchWord" class="select" title="검색유형" style="height: 30px;">
 											<option value=""><spring:message code='select'/></option>
 											<option value="layer_name">레이어 명</option>
 											<option value="layer_key">레이어 Key</option>
 											<option value="layer_group_name">레이어 그룹명</option>
 										</select>
-										<form:select path="searchOption" class="select" style="height: 30px;">
+										<label for="searchOption" class="hiddenTag">검색옵션</label>
+										<form:select path="searchOption" class="select" title="검색옵션" style="height: 30px;">
 											<form:option value="0"><spring:message code='search.same'/></form:option>
 											<form:option value="1"><spring:message code='search.include'/></form:option>
 										</form:select>
+										<label for="searchValue"><spring:message code='search.word'/></label>
 										<form:input path="searchValue" type="search" cssClass="m" cssStyle="float: right;" />
 									</div>
 									<div class="input-set">
 										<label for="startDate"><spring:message code='search.date'/></label>
 										<input type="text" class="s date" id="startDate" name="startDate" autocomplete="off" />
 										<span class="delimeter tilde">~</span>
+										<label for="endDate" class="hiddenTag">종료일</label>
 										<input type="text" class="s date" id="endDate" name="endDate" autocomplete="off" />
 									</div>
 									<div class="input-set">
@@ -57,12 +60,14 @@
 											<option value="layer_group_name">레이어 그룹명</option>
 											<option value="insert_date"> <spring:message code='search.insert.date'/> </option>
 										</select>
-										<select id="orderValue" name="orderValue" class="select" style="height: 30px;">
+										<label for="orderValue" class="hiddenTag">정렬기준</label>
+										<select id="orderValue" name="orderValue" class="select" title="정렬기준" style="height: 30px;">
 					                		<option value=""> <spring:message code='search.basic'/> </option>
 						                	<option value="ASC"> <spring:message code='search.ascending'/> </option>
 											<option value="DESC"> <spring:message code='search.descending.order'/> </option>
 										</select>
-										<form:select path="listCounter" class="select" style="height: 30px;">
+										<label for="listCounter" class="hiddenTag">리스트건수</label>
+										<form:select path="listCounter" class="select" title="리스트건수" style="height: 30px;">
 					                		<form:option value="10"><spring:message code='search.ten.count'/></form:option>
 						                	<form:option value="50"><spring:message code='search.fifty.count'/></form:option>
 											<form:option value="100"><spring:message code='search.hundred.count'/></form:option>
@@ -83,7 +88,8 @@
 									<spring:message code='search.page'/>
 								</div>
 							</div>
-							<table class="list-table scope-col">
+							<table class="list-table scope-col" summary="2D 레이어 목록 테이블">
+							<caption class="hiddenTag">2D 레이어 목록</caption>
 								<col class="col-name" />
 								<col class="col-id" />
 								<col class="col-toggle" />
@@ -96,9 +102,9 @@
 										<th scope="col">Layer 명</th>
 					                    <th scope="col">Layer Key</th>
 					                    <th scope="col">표시순서(Z-Index)</th>
-					                    <th scope="col">사용유무</th>
+					                    <th scope="col">사용 여부</th>
 					                    <th scope="col">지도</th>
-					                    <th scope="col">수정</th>
+					                    <th scope="col">편집</th>
 					                    <th scope="col">최종 수정일</th>
 									</tr>
 								</thead>
@@ -128,8 +134,8 @@
                         					<a href="#" onclick="viewLayer('${layer.layerId}', '${layer.layerName}'); return false;" class="linkButton">보기</a>
 					                    </td>
 					                    <td class="col-type">
-											<a href="/layer/modify?layerId=${layer.layerId}" onclick="" class="linkButton">수정</a>&nbsp;&nbsp;
-											<a href="#" onclick="deleteLayer('${layer.layerId}'); return false;" class="linkButton">삭제</a>
+											<a href="/layer/modify?layerId=${layer.layerId}" class="image-button button-edit"><spring:message code='modified'/></a>&nbsp;&nbsp;
+					                    	<a href="#" onclick="deleteLayer('${layer.layerId}'); return false;" class="image-button button-delete"><spring:message code='delete'/></a>
 					                    </td>
 					                    <td class="col-date">
 					                    	<fmt:parseDate value="${layer.updateDate}" var="viewUpdateDate" pattern="yyyy-MM-dd HH:mm:ss"/>
@@ -150,11 +156,11 @@
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
 
-<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
-<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-<script type="text/javascript" src="/js/${lang}/common.js"></script>
-<script type="text/javascript" src="/js/${lang}/message.js"></script>
-<script type="text/javascript" src="/js/navigation.js"></script>
+<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/common.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/message.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/navigation.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 	initDatePicker();

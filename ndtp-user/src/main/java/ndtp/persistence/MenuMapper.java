@@ -38,10 +38,10 @@ public interface MenuMapper {
 	
 	/**
 	 * 자식 메뉴 중에 순서가 최대인 메뉴를 검색
-	 * @param parent
+	 * @param menu
 	 * @return
 	 */
-	Menu getMaxViewOrderChildMenu(Integer parent);
+	Menu getMaxViewOrderChildMenu(Menu menu);
 	
 /**
 	 * 자식 메뉴 목록

@@ -1306,6 +1306,9 @@ html, body {
   min-width: 1420px; }
 	
 /* header */
+header {
+min-width: 1420px;
+}
 .site-header {
 	padding-top: 13px; }
 	
@@ -1319,6 +1322,10 @@ html, body {
 	padding: 24px 0 0 0; }
 	
 /* body */
+#wrap {
+min-width: 1420px;
+min-height: 700px;
+}
 .site-body {
 	padding: 14px 0 21px 0; }
 
@@ -2590,6 +2597,9 @@ width: 100%;
 height: 100%;
 padding: 5px 0px;
 }
+.tab li > a:hover {
+color: #fff;
+}
 .tab li:not(.on) > a:hover {
 color: #006bd2;
 }
@@ -2604,3 +2614,12 @@ float: left;
 	height: 30px; margin-bottom: 7px; border-color: #d5d5d5;
 }
 
+.hiddenTag {
+overflow: hidden;
+border: 0;
+position: absolute;
+width: 1px;
+height: 1px;
+clip: rect(1px, 1px, 1px, 1px);
+clip-path: inset(50%);
+}

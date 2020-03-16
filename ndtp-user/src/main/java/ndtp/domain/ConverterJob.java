@@ -29,6 +29,8 @@ public class ConverterJob extends Search {
 	 * F4D 변환 대상 업로딩 목록. uploadDataId 를 ,로 연결
 	 */
 	private String converterCheckIds;
+	// converter 변환시, 단일 파일의 경우 validataion 체크용
+	private String dataType;
 	
 	// job에 포함된 변환 파일 갯수
 	private Integer converterFileCount;

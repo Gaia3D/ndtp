@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <div id="layerGroupDialog" class="dialog">
-	<table class="list-table scope-col">
+	<table class="list-table scope-col" summary="2D 레이어 그룹 다이얼로그">
+	<caption class="hiddenTag">2D 레이어 그룹 다이얼로그</caption>
 		<col class="col-number" />
 			<col class="col-name" />
 			<col class="col-toggle" />
@@ -76,7 +77,7 @@
 				<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
 		    </td>
 		    <td class="col-toggle">
-		    	<a href="#" onclick="confirmParent('${layerGroup.layerGroupId}', '${layerGroup.layerGroupName}'); return false;">확인</a></td>
+		    	<a href="#" onclick="confirmParent('${layerGroup.layerGroupId}', '${layerGroup.layerGroupName}', '${layerGroup.depth}'); return false;">확인</a></td>
 		</tr>
 	</c:forEach>
 </c:if>

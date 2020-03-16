@@ -84,7 +84,9 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
     	}
     	
     	if(isMultipartURI) {
-    		accessLog.setParameters(getMultipartRequestParameters(request));
+    		// TODO url 매핑이 귀찮아서 임시로
+    		//accessLog.setParameters(getMultipartRequestParameters(request));
+    		accessLog.setParameters(getRequestParameters(request));
     	} else {
     		accessLog.setParameters(getRequestParameters(request));
     	}
@@ -112,7 +114,6 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 	 * @return
 	 */
     private String getRequestParameters(HttpServletRequest request) {
-		
     	// TODO 처리 해야 할 예외들이 너무 많음
     	if("GET".equals(request.getMethod())) {
     		return request.getQueryString();
@@ -147,7 +148,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 		
 		String requestParameters = buffer.toString();
 		// 1000자가 넘어가면 그건 검색조건이라고 보기 힘듬
-		if(requestParameters.length() > 1000) requestParameters = requestParameters.substring(0, 1000);
+		if(requestParameters.length() > 1000) requestParameters = requestParameters.substring(0, 998);
 		
 		return requestParameters;
 	}
@@ -172,7 +173,9 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
     	}
     	
 		String requestParameters = builder.toString();
-		
+		// 1000자가 넘어가면 그건 검색조건이라고 보기 힘듬
+		if(requestParameters.length() > 1000) requestParameters = requestParameters.substring(0, 998);
+				
 		return requestParameters;
 	}
 }

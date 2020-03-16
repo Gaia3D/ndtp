@@ -12,6 +12,11 @@ import lombok.Data;
 @ConfigurationProperties(prefix = "ndtp")
 public class PropertiesConfig {
 	
+	/**
+	 * 로컬 : local, 개발 : develop, 운영 : product
+	 */
+	private String profile;
+	
 	private String osType;
 	private boolean callRemoteEnable;
 	private String serverIp;
@@ -31,7 +36,7 @@ public class PropertiesConfig {
 	private String exchange;
 	
 	// User excel batch registration
-	private String uploadDataDir;
+	private String dataUploadDir;
 	
 	// F4D Converter.exe 가 있는 경로
 	private String converterDir;	

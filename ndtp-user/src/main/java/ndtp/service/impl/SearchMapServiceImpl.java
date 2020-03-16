@@ -79,6 +79,36 @@ public class SearchMapServiceImpl implements SearchMapService {
 	}
 	
 	/**
+	 * 선택한 시도의 BoundingBox를 구함
+	 * @param skSdo
+	 * @return
+	 */
+	@Override
+	public String getEnvelopSdo(SkSdo skSdo) {
+		return searchMapMapper.getEnvelopSdo(skSdo);
+	}
+
+	/**
+	 * 선택한 시군구 BoundingBox를 구함
+	 * @param skSgg
+	 * @return
+	 */
+	@Override
+	public String getEnvelopSgg(SkSgg skSgg) {
+		return searchMapMapper.getEnvelopSgg(skSgg);
+	}
+
+	/**
+	 * 선택한 읍면동 BoundingBox를 구함
+	 * @param skEmd
+	 * @return
+	 */
+	@Override
+	public String getEnvelopEmd(SkEmd skEmd) {
+		return searchMapMapper.getEnvelopEmd(skEmd);
+	}
+	
+	/**
 	 * 행정구역 검색 총 건수
 	 * @param district
 	 * @return
@@ -97,4 +127,5 @@ public class SearchMapServiceImpl implements SearchMapService {
 	public List<District> getListDistrict(District district) {
 		return searchMapMapper.getListDistrict(district);
 	}
+
 }

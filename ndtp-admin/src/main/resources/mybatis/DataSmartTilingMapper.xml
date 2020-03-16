@@ -18,13 +18,14 @@
 	
 	<!-- 파일 파싱 로그 저장 -->
 	<insert id="insertDataSmartTilingFileParseLog" parameterType="dataSmartTilingFileParseLog">
-		<selectKey keyProperty="file_parse_log_id" resultType="long" order="BEFORE">
+		/* insertDataSmartTilingFileParseLog */
+		<selectKey keyProperty="dataSmartTilingFileParseLogId" resultType="long" order="BEFORE">
 			SELECT NEXTVAL('data_smart_tiling_file_parse_log_seq');
 		</selectKey>
 		INSERT INTO data_smart_tiling_file_parse_log (
 			data_smart_tiling_file_parse_log_id	, data_smart_tiling_file_info_id, identifier_value, error_code, log_type, status
 		) VALUES (
-			#{dataMmartTilingFileParseLogId}, #{dataSmartTilingFileInfoId}, #{identifierValue}, #{errorCode}, #{logType}, #{status}
+			#{dataSmartTilingFileParseLogId}, #{dataSmartTilingFileInfoId}, #{identifierValue}, #{errorCode}, #{logType}, #{status}
 		)
 	</insert>
 	

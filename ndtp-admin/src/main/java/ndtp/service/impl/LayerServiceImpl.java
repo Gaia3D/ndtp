@@ -19,6 +19,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import lombok.extern.slf4j.Slf4j;
@@ -113,9 +114,13 @@ public class LayerServiceImpl implements LayerService {
 			ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 			log.info("-------- statusCode = {}, body = {}", response.getStatusCodeValue(), response.getBody());
 			geoserverLayerJson = response.getBody().toString();
-			
+		
+    	} catch(RestClientException e) {
+    		log.info("@@@ RestClientException. message = {}", e.getMessage());
+    	} catch(RuntimeException e) {
+    		log.info("@@@ RuntimeException. message = {}", e.getMessage());
 		} catch(Exception e) {
-			e.printStackTrace();
+			log.info("@@@ Exception. message = {}", e.getMessage());
 		}
     	
     	return geoserverLayerJson;
@@ -298,8 +303,8 @@ public class LayerServiceImpl implements LayerService {
         String layerTargetCoordinate = geoPolicy.getLayerTargetCoordinate();
 //		ShapeFileParser shapeFileParser = new ShapeFileParser();
 //		shapeFileParser.parse(shapeFileName);
-
-        Ogr2OgrExecute ogr2OgrExecute = new Ogr2OgrExecute(osType, driver, shapeFileName, shapeEncoding, layer.getLayerKey(), updateOption, layerSourceCoordinate, layerTargetCoordinate);
+        String enviromentPath = propertiesConfig.getOgr2ogrEnviromentPath();
+        Ogr2OgrExecute ogr2OgrExecute = new Ogr2OgrExecute(osType, driver, shapeFileName, shapeEncoding, layer.getLayerKey(), updateOption, layerSourceCoordinate, layerTargetCoordinate, enviromentPath);
         ogr2OgrExecute.insert();
     }
     
@@ -558,6 +563,14 @@ public class LayerServiceImpl implements LayerService {
 			httpStatus = response.getStatusCode();
 			log.info("-------- layerKey = {}, statusCode = {}, body = {}", layerKey, response.getStatusCodeValue(),
 					response.getBody());
+		} catch (RestClientException e) {
+			log.info("-------- RestClientException message = {}", e.getMessage());
+			String message = e.getMessage();
+			if (message.indexOf("404") >= 0) {
+				httpStatus = HttpStatus.NOT_FOUND;
+			} else {
+				httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			}
 		} catch (Exception e) {
 			log.info("-------- exception message = {}", e.getMessage());
 			String message = e.getMessage();
@@ -641,6 +654,14 @@ public class LayerServiceImpl implements LayerService {
             ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
             httpStatus = response.getStatusCode();
             log.info("-------- getLayerStyle styleName = {}, statusCode = {}, body = {}", layerKey, response.getStatusCodeValue(), response.getBody());
+        } catch (RestClientException e) {
+			log.info("-------- RestClientException message = {}", e.getMessage());
+			String message = e.getMessage();
+			if (message.indexOf("404") >= 0) {
+				httpStatus = HttpStatus.NOT_FOUND;
+			} else {
+				httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			}
         } catch(Exception e) {
             log.info("-------- exception message = {}", e.getMessage());
             String message = e.getMessage();
@@ -695,6 +716,16 @@ public class LayerServiceImpl implements LayerService {
 			layerStyleFileData = response.getBody().toString();
 			log.info("-------- getLayerStyle geometry type = {}, statusCode = {}, body = {}", geometryType,
 					response.getStatusCodeValue(), response.getBody());
+		} catch (RestClientException e) {
+			log.info("-------- RestClientException message = {}", e.getMessage());
+			String message = e.getMessage();
+			if (message.indexOf("404") >= 0) {
+				httpStatus = HttpStatus.NOT_FOUND;
+				layerStyleFileData = null;
+			} else {
+				httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+				layerStyleFileData = null;
+			}
 		} catch (Exception e) {
 			log.info("-------- exception message = {}", e.getMessage());
 			String message = e.getMessage();
@@ -752,6 +783,16 @@ public class LayerServiceImpl implements LayerService {
 			layerStyleFileData = response.getBody().toString();
 			log.info("-------- getLayerStyle styleName = {}, statusCode = {}, body = {}", layer.getLayerKey(),
 					response.getStatusCodeValue(), response.getBody());
+		} catch (RestClientException e) {
+			log.info("-------- RestClientException message = {}", e.getMessage());
+			String message = e.getMessage();
+			if (message.indexOf("404") >= 0) {
+				httpStatus = HttpStatus.NOT_FOUND;
+				layerStyleFileData = null;
+			} else {
+				httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+				layerStyleFileData = null;
+			}
 		} catch (Exception e) {
 			log.info("-------- exception message = {}", e.getMessage());
 			String message = e.getMessage();
@@ -837,6 +878,9 @@ public class LayerServiceImpl implements LayerService {
 			httpStatus = response.getStatusCode();
 			log.info("-------- geoserver layer delete. layerKey = {}, statusCode = {}, body = {}", layerKey,
 					response.getStatusCodeValue(), response.getBody());
+		} catch (RestClientException e) {
+			log.info("-------- RestClientException message = {}", e.getMessage());
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 		} catch (Exception e) {
 			log.info("-------- exception message = {}", e.getMessage());
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -867,6 +911,9 @@ public class LayerServiceImpl implements LayerService {
 			log.info("-------- url = {}", url);
 			ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.DELETE, entity, String.class);
 			httpStatus = response.getStatusCode();
+		} catch (RestClientException e) {
+			log.info("-------- RestClientException message = {}", e.getMessage());
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 		} catch (Exception e) {
 			log.info("-------- exception message = {}", e.getMessage());
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;

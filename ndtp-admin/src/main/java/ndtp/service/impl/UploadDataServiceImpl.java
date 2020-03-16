@@ -5,9 +5,11 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.DataType;
 import ndtp.domain.FileType;
 import ndtp.domain.UploadData;
@@ -19,6 +21,7 @@ import ndtp.service.UploadDataService;
  * @author Cheon JeongDae
  *
  */
+@Slf4j
 @Service
 public class UploadDataServiceImpl implements UploadDataService {
 
@@ -137,6 +140,8 @@ public class UploadDataServiceImpl implements UploadDataService {
 				fileName = deleteUploadDataFile.getFilePath() + deleteUploadDataFile.getFileRealName();
 			}
 			
+			// TODO 처리 불필요
+			fileName = fileName.replaceAll("&", "");
 			File file = new File(fileName);
 			if(file.exists()) {
 				file.delete();
@@ -162,8 +167,7 @@ public class UploadDataServiceImpl implements UploadDataService {
 					String extension = fileNameValues[fileNameValues.length - 1];
 					
 					// 원본이 gml 파일이고 데이터 타입을 citygml 혹은 indoorgml로 처음 등록과 다르게 변경하는 경우 
-					if (DataType.GML.getValue().equalsIgnoreCase(extension) && uploadData.getDataType() != uploadExt) {
-						
+					if (DataType.GML.getValue().equalsIgnoreCase(extension) && !uploadData.getDataType().equalsIgnoreCase(uploadExt)) {
 						String originalFileName = uploadDataFile.getFileRealName();
 						String updateFileName = originalFileName.replace(uploadExt, uploadData.getDataType());
 						
@@ -178,13 +182,15 @@ public class UploadDataServiceImpl implements UploadDataService {
 							// 파일 확장자를 변경.
 							uploadFile.renameTo(Paths.get(uploadDataFile.getFilePath(), updateFileName).toFile());
 						}
-						
 					}
-	
 				}
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch(DataAccessException e) {
+			log.info("@@ DataAccessException. message = {}", e.getMessage());
+		} catch(RuntimeException e) {
+			log.info("@@ RuntimeException. message = {}", e.getMessage());
+		} catch(Exception e) {
+			log.info("@@ Exception. message = {}", e.getMessage());
 		}
 		return result;
 	}

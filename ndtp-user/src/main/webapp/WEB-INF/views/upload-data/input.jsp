@@ -8,16 +8,16 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<title>업로딩 데이터 | NDTP</title>
-	<link rel="shortcut icon" href="/images/favicon.ico">
-	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
-	<link rel="stylesheet" href="/css/${lang}/user-style.css" />
-	<link rel="stylesheet" href="/css/${lang}/style.css" />
-	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css">
-	<link rel="stylesheet" href="/externlib/dropzone/dropzone.min.css">
-	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
-	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="/externlib/dropzone/dropzone.min.js"></script>
+	<link rel="shortcut icon" href="/images/favicon.ico?cacheVersion=${contentCacheVersion}">
+	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/css/${lang}/user-style.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/css/${lang}/style.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css?cacheVersion=${contentCacheVersion}">
+	<link rel="stylesheet" href="/externlib/dropzone/dropzone.min.css?cacheVersion=${contentCacheVersion}">
+	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
+	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>
+	<script type="text/javascript" src="/externlib/dropzone/dropzone.min.js?cacheVersion=${contentCacheVersion}"></script>
 	<style type="text/css">
         .dropzone .dz-preview.lp-preview {
             width: 150px;
@@ -107,8 +107,8 @@
 					<span class="icon-glyph glyph-emark-dot color-warning"></span>
 				</th>
 				<td class="col-input">
-					<form:input path="dataName" class="l" />
- 						<form:errors path="dataName" cssClass="error" />
+					<form:input path="dataName" class="l" maxlength="255" />
+ 					<form:errors path="dataName" cssClass="error" />
 				</td>
 				<th class="col-label" scope="row">
 					<form:label path="dataGroupName">데이터 그룹</form:label>
@@ -116,7 +116,7 @@
 				</th>
 				<td class="col-input">
 					<form:hidden path="dataGroupId" />
-						<form:input path="dataGroupName" cssClass="ml" readonly="true" />
+					<form:input path="dataGroupName" cssClass="ml" readonly="true" />
 					<input type="button" id="dataGroupButtion" value="데이터 그룹 선택" />
 				</td>
 			</tr>
@@ -145,7 +145,7 @@
 						<option value="las"> LAS(POINT CLOUD) </option>
 						<option value="3ds"> 3DS </option>
 						<option value="obj"> OBJ </option>
-		          		<option value="dae"> DAE(COLLADA) </option>
+		          		<option value="dae"> COLLADA(DAE) </option>
 					</select>
 				</td>
 			</tr>
@@ -169,7 +169,7 @@
 					<form:label path="description"><spring:message code='description'/></form:label>
 				</th>
 				<td colspan="3" class="col-input">
-					<form:input path="description" class="xl" />
+					<form:input path="description" class="xl" maxlength="255" />
  					<form:errors path="description" cssClass="error" />
 				</td>
 			</tr>
@@ -182,21 +182,21 @@
 	    <div class="button-group" style="margin-top: 30px;">
 			<div class="center-buttons">
 				<button id="allFileUpload">업로드</button>
-				<button id="allFileClear">All Clear</button>
+				<button id="allFileClear">파일 초기화</button>
 				<a href="/upload-data/list" class="button">목록</a>
 			</div>
 		</div>
-		
+
 	</div>
 </div>
 <!-- E: WRAP -->
 <%@ include file="/WEB-INF/views/upload-data/data-group-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/upload-data/spinner-dialog.jsp" %>
 
-<script type="text/javascript" src="/js/${lang}/common.js"></script>
-<script type="text/javascript" src="/js/${lang}/message.js"></script>
-<script type="text/javascript" src="/js/${lang}/map-controll.js"></script>
-<script type="text/javascript" src="/js/${lang}/ui-controll.js"></script>
+<script type="text/javascript" src="/js/${lang}/common.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/message.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/map-controll.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/ui-controll.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 	});
@@ -288,14 +288,14 @@
 	                return;
 	            }
 			});
-	
+
 			clearTask.addEventListener("click", function () {
-	            if (confirm("정말 전체 항목을 삭제하겠습니까?")) {
+	            if (confirm("[파일 업로딩]의 모든 파일을 삭제하겠습니까?")) {
 	            	// true 주면 업로드 중인 파일도 다 같이 삭제
 	            	myDropzone.removeAllFiles(true);
 	            }
 	        });
-			
+
 			this.on("sending", function(file, xhr, formData) {
 				formData.append("dataName", $("#dataName").val());
 				formData.append("dataGroupId", $("#dataGroupId").val());
@@ -318,15 +318,23 @@
 				if(file !== undefined && file.name !== undefined) {
 	                console.log("file name = " + file.name);
 	                fileUploadDialog.dialog( "close" );
-					if(response.errorCode === undefined || response.errorCode === null) {
-						uploadFileResultCount ++;
-						if(uploadFileCount === uploadFileResultCount) {
-						    alert("업로딩을 완료 하였습니다.");
-						    uploadFileCount = 0;
-						    uploadFileResultCount = 0;
-						}
+	                if(response.statusCode <= 200) {
+	                	if(response.errorCode === undefined || response.errorCode === null) {
+	                		uploadFileResultCount ++;
+							if(uploadFileCount === uploadFileResultCount) {
+							    alert("업로딩을 완료 하였습니다.");
+							    uploadFileCount = 0;
+							    uploadFileResultCount = 0;
+							    myDropzone.removeAllFiles(true);
+							}
+		                } else {
+		                	alertMessage(response);
+		                }
 	                } else {
-	                    alertMessage(response);
+                        alertMessage(response);
+	                	//alert(JS_MESSAGE[response.errorCode]);
+						//alert(response.message);
+						console.log("---- " + response.message);
 	                }
 	            } else {
 					console.log("------- success response = " + response);
@@ -354,6 +362,9 @@
 		if ($("#altitude").val() === "") {
 			alert("대표 위치(높이)를 입력하여 주십시오.");
 			$("#altitude").focus();
+			return false;
+		}
+		if(!locationValidation($("#longitude").val(), $("#latitude").val(), $("#altitude").val())) {
 			return false;
 		}
 	}
@@ -386,6 +397,12 @@
 	            alert("업로딩 데이터의 데이터 타입이 올바르지 않습니다.");
 	        } else if(response.errorCode === "db.exception") {
 	            alert("죄송 합니다. 서버 실행중에 오류가 발생 하였습니다. \n 로그를 확인하여 주십시오.");
+	        } else if(response.errorCode === "io.exception") {
+	            alert("입출력 처리 과정중 오류가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
+	        } else if(response.errorCode === "runtime.exception") {
+	            alert("프로그램 실행중 오류가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
+	        } else if(response.errorCode === "unknown.exception") {
+	            alert("서버 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
 	        } else {
 	        	alert(response.errorCode);
 	        }

@@ -1,8 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <div class=dialogConverterJob title="F4D Converter Job 등록">
-	<form id="converterJobForm" name="converterJobForm" action="" method="post">
+	<form:form id="converterJobForm" name="converterJobForm" action="" method="post">
 		<input type="hidden" id="converterCheckIds" name="converterCheckIds" value="" />
-		<table class="inner-table scope-row">
+		<input type="hidden" id="dataType" name=dataType value="" />
+		<table class="inner-table scope-row" summary="F4D Converter Job 등록" style="width: 99%;">
+		<caption class="hiddenTag">Job 등록</caption>
 			<col class="col-sub-label xl" />
 			<col class="col-data" />
 			<tbody>
@@ -54,5 +56,5 @@
 		<div class="button-group">
 			<a href="#" onclick="saveConverterJob(); return false;" class="button" style="color: white">저장</a>
 		</div>
-	</form>
+	</form:form>
 </div>

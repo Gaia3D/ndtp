@@ -29,7 +29,8 @@
 						</div>
 						<form:form id="userGroup" modelAttribute="userGroup" method="post" onsubmit="return false;">
 						<form:hidden path="userGroupId"/>
-						<table class="input-table scope-row">
+						<table class="input-table scope-row" summary="사용자 그룹 수정 테이블">
+						<caption class="hiddenTag">사용자 그룹 수정</caption>
 							<col class="col-label" />
 							<col class="col-input" />
 							<tr>
@@ -44,7 +45,7 @@
 							</tr>
 							<tr>
 								<th class="col-label" scope="row">
-									<form:label path="userGroupName">사용자 그룹 Key</form:label>
+									<form:label path="userGroupKey">사용자 그룹 Key</form:label>
 									<span class="icon-glyph glyph-emark-dot color-warning"></span>
 								</th>
 								<td class="col-input">
@@ -60,7 +61,7 @@
 								<td class="col-input">
 									<form:hidden path="parent" />
 		 							<form:input path="parentName" cssClass="l" readonly="true" />
-									<input type="button" id="userGroupButton" value="상위 그룹 선택" />
+									<!-- <input type="button" id="userGroupButton" value="상위 그룹 선택" /> -->
 								</td>
 							</tr>
 							<tr>

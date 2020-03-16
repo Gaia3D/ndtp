@@ -9,14 +9,14 @@
 	<meta name="viewport" content="width=device-width">
 	<title>데이터 수정 | NDTP</title>
 
-	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
-	<link rel="stylesheet" href="/css/${lang}/font/font.css" />
-	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
-	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
-	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-    <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
-    <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
-	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/css/${lang}/font/font.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css?cacheVersion=${contentCacheVersion}" />
+    <link rel="stylesheet" href="/css/${lang}/admin-style.css?cacheVersion=${contentCacheVersion}" />
+    <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
+	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>
 </head>
 <body>
 	<%@ include file="/WEB-INF/views/layouts/header.jsp" %>
@@ -33,7 +33,9 @@
 							<div class="content-desc u-pull-right"><span class="icon-glyph glyph-emark-dot color-warning"></span><spring:message code='check'/></div>
 						</div>
 						<form:form id="dataInfo" modelAttribute="dataInfo" method="post" onsubmit="return false;">
-							<table class="input-table scope-row">
+							<input type="hidden" name="dataId" value="" />
+							<table class="input-table scope-row" summary="데이터 정보 수정 테이블">
+							<caption class="hiddenTag">데이터 정보 수정</caption>
 								<colgroup>
 				                    <col class="col-label l">
 				                    <col class="col-input">
@@ -113,16 +115,6 @@
 								</tr>
 								<tr>
 									<th class="col-label" scope="row">
-										<form:label path="metainfo">메타정보</form:label>
-										<span class="icon-glyph glyph-emark-dot color-warning"></span>
-									</th>
-									<td class="col-input">
-										<form:input path="metainfo" class="xl" />
-					 					<form:errors path="metainfo" cssClass="error" />
-									</td>
-								</tr>
-								<tr>
-									<th class="col-label" scope="row">
 						            	<form:label path="status">상태</form:label>
 						                <span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
@@ -132,6 +124,16 @@
 											<option value="use">사용중</option>
 											<option value="unused">사용중지</option>
 										</select>
+									</td>
+								</tr>
+								<tr>
+									<th class="col-label" scope="row">
+										<form:label path="metainfo">메타정보</form:label>
+										<span class="icon-glyph glyph-emark-dot color-warning"></span>
+									</th>
+									<td class="col-input">
+										<form:input path="metainfo" class="xl" />
+					 					<form:errors path="metainfo" cssClass="error" />
 									</td>
 								</tr>
 								<tr>
@@ -198,10 +200,10 @@
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
 
-<script type="text/javascript" src="/js/${lang}/common.js"></script>
-<script type="text/javascript" src="/js/${lang}/message.js"></script>
-<script type="text/javascript" src="/js/${lang}/map-controll.js"></script>
-<script type="text/javascript" src="/js/${lang}/ui-controll.js"></script>
+<script type="text/javascript" src="/js/${lang}/common.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/message.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/map-controll.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/ui-controll.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("#mappingType").val("${dataInfo.mappingType}");
@@ -232,6 +234,67 @@
 	}
 
 	// 수정
+	function updateDataInfo() {
+		if (validate() == false) {
+			return false;
+		}
+		if(confirm(JS_MESSAGE["data.update.check"])) {
+			startLoading();
+			var formData = $("#dataInfo").serialize();
+			$.ajax({
+				url: "/datas/${dataInfo.dataId}",
+				type: "POST",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+				data: formData,
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						alert(JS_MESSAGE["update"]);
+					} else if(msg.statusCode === 403) {
+						//data.smart.tiling
+						alert("변경 권한(Smart Tiling)이 존재하지 않습니다.");
+					} else if (msg.statusCode === 428) {
+						if(confirm(JS_MESSAGE[msg.errorCode])) {
+							$('input[name="dataId"]').val('${dataInfo.dataId}');
+							var formData = $("#dataInfo").serialize();
+							$.ajax({
+								url: "/data-adjust-logs",
+								type: "POST",
+								headers: {"X-Requested-With": "XMLHttpRequest"},
+								data: formData,
+								success: function(msg){
+									if(msg.statusCode <= 200) {
+										alert("요청 하였습니다.");
+									} else {
+										alert(JS_MESSAGE[msg.errorCode]);
+										console.log("---- " + msg.message);
+									}
+									insertDataAdjustLogFlag = true;
+								},
+								error: function(request, status, error){
+							        alert(JS_MESSAGE["ajax.error.message"]);
+							        insertDataAdjustLogFlag = true;
+								},
+								always: function(msg) {
+									$('input[name="dataId"]').val("");
+								}
+							});
+						}
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
+					updateDataInfoFlag = true;
+				},
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+			        updateDataInfoFlag = true;
+				}
+			}).always(stopLoading);
+		} else {
+			//alert('no');
+		}
+	}
+	/*
 	var updateDataInfoFlag = true;
 	function updateDataInfo() {
 		if (validate() == false) {
@@ -265,10 +328,22 @@
 			return;
 		}
 	}
+	*/
 	
 	// 지도에서 찾기 -- common.js, openFindDataPoint
 	$( "#mapButtion" ).on( "click", function() {
-		openFindDataPoint("${dataInfo.dataId}", "MODIFY");
+		//openFindDataPoint("${dataInfo.dataId}", "MODIFY");
+		var url = "/map/find-point";
+		var width = 800;
+		var height = 700;
+
+		var popupX = (window.screen.width / 2) - (width / 2);
+		// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+		var popupY= (window.screen.height / 2) - (height / 2);
+
+	    var popWin = window.open(url, "","toolbar=no ,width=" + width + " ,height=" + height + ", top=" + popupY + ", left="+popupX
+	            + ", directories=no,status=yes,scrollbars=no,menubar=no,location=no");
+	    //popWin.document.title = layerName;
 	});
 
 </script>

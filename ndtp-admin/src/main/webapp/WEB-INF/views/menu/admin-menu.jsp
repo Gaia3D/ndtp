@@ -8,18 +8,18 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<title>관리자 메뉴 | NDTP</title>
-	<link rel="stylesheet" href="/css/${lang}/font/font.css" />
-	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
-	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
-	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css">
-    <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
-    <link type="text/css" rel="stylesheet" href="/externlib/${lang}/axisj/ui/arongi/font-awesome.min.css" />
-   	<link type="text/css" rel="stylesheet" href="../externlib/${lang}/axisj/ui/arongi/AXJ.min.css" />
-	<link type="text/css" rel="stylesheet" href="../externlib/${lang}/axisj/ui/arongi/AXButton.css" />
-	<link type="text/css" rel="stylesheet" href="../externlib/${lang}/axisj/ui/arongi/AXInput.css" />
-	<link type="text/css" rel="stylesheet" href="../externlib/${lang}/axisj/ui/arongi/AXSelect.css" />
-	<link type="text/css" rel="stylesheet" href="../externlib/${lang}/axisj/ui/arongi/AXTree.css" />
+	<link rel="stylesheet" href="/css/${lang}/font/font.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css?cacheVersion=${contentCacheVersion}">
+    <link rel="stylesheet" href="/css/${lang}/admin-style.css?cacheVersion=${contentCacheVersion}" />
+    <link type="text/css" rel="stylesheet" href="/externlib/${lang}/axisj/ui/arongi/font-awesome.min.css?cacheVersion=${contentCacheVersion}" />
+   	<link type="text/css" rel="stylesheet" href="../externlib/${lang}/axisj/ui/arongi/AXJ.min.css?cacheVersion=${contentCacheVersion}" />
+	<link type="text/css" rel="stylesheet" href="../externlib/${lang}/axisj/ui/arongi/AXButton.css?cacheVersion=${contentCacheVersion}" />
+	<link type="text/css" rel="stylesheet" href="../externlib/${lang}/axisj/ui/arongi/AXInput.css?cacheVersion=${contentCacheVersion}" />
+	<link type="text/css" rel="stylesheet" href="../externlib/${lang}/axisj/ui/arongi/AXSelect.css?cacheVersion=${contentCacheVersion}" />
+	<link type="text/css" rel="stylesheet" href="../externlib/${lang}/axisj/ui/arongi/AXTree.css?cacheVersion=${contentCacheVersion}" />
 
 </head>
 <body>
@@ -46,7 +46,7 @@
 							<div class="two-third column">
 								<div class="node">
 									<div id="tree_content_area" class="info">
-										<form id="menuForm" name="menuForm" method="post" onsubmit="return false;">
+										<form:form id="menuForm" name="menuForm" method="post" onsubmit="return false;">
 							    			<input type="hidden" id="writeMode" name="writeMode" value="" />
 											<input type="hidden" id="menuId" name="menuId" value="" />
 											<input type="hidden" id="ancestor" name="ancestor" value="" />
@@ -56,22 +56,23 @@
 											<input type="hidden" id="updateType" name="updateType" value="" />
 											<input type="hidden" id="menuTarget" name="menuTarget" value=""/>
 											<input type="hidden" id="menuType" name="menuType" value=""/>
-										<table class="input-table scope-row">
+										<table class="input-table scope-row" summary="관리자 메뉴 테이블">
+										<caption class="hiddenTag">관리자 메뉴</caption>
 											<col class="col-label" />
 											<col class="col-input" />
 											<tr>
 												<th class="col-label" scope="row">
-													<label for="menuTarget">메뉴 Target</label>
+													<label for="viewMenuTarget">메뉴 Target</label>
 													<span class="icon-glyph glyph-emark-dot color-warning"></span>
 												</th>
-												<td><input type="text" value="관리자 사이트" readOnly/></td>
+												<td><input type="text" id="viewMenuTarget" value="관리자 사이트" readOnly/></td>
 											</tr>
 											<tr>
 												<th class="col-label" scope="row">
-													<label for="menuType">메뉴 타입</label>
+													<label for="viewMenuType">메뉴 타입</label>
 													<span class="icon-glyph glyph-emark-dot color-warning"></span>
 												</th>
-												<td><input type="text" value="URL 기반" readOnly/></td>
+												<td><input type="text" id="viewMenuType" value="URL 기반" readOnly/></td>
 											</tr>
 											<tr>
 												<th class="col-label" scope="row">
@@ -136,9 +137,9 @@
 													<span class="icon-glyph glyph-emark-dot color-warning"></span>
 												</th>
 												<td>
-													<input type="radio" id="defaultY" name="defaultYn" value="Y" />
+													<input type="radio" id="defaultY" name="defaultYn" value="Y" class="marT10" />
 													<label for="defaultY">기본</label>
-													<input type="radio" id="defaultN" name="defaultYn" value="N" />
+													<input type="radio" id="defaultN" name="defaultYn" value="N" class="marT10" />
 													<label for="defaultN">선택</label>
 												</td>
 											</tr>
@@ -148,9 +149,9 @@
 													<span class="icon-glyph glyph-emark-dot color-warning"></span>
 												</th>
 												<td>
-													<input type="radio" id="useY" name="useYn" value="Y" />
+													<input type="radio" id="useY" name="useYn" value="Y" class="marT10" />
 													<label for="useY">사용</label>
-													<input type="radio" id="useN" name="useYn" value="N" />
+													<input type="radio" id="useN" name="useYn" value="N" class="marT10" />
 													<label for="useN">미사용</label>
 												</td>
 											</tr>
@@ -160,9 +161,9 @@
 													<span class="icon-glyph glyph-emark-dot color-warning"></span>
 												</th>
 												<td>
-													<input type="radio" id="displayY" name="displayYn" value="Y" />
+													<input type="radio" id="displayY" name="displayYn" value="Y" class="marT10" />
 													<label for="displayY">표시</label>
-													<input type="radio" id="displayN" name="displayYn" value="N" />
+													<input type="radio" id="displayN" name="displayYn" value="N" class="marT10" />
 													<label for="displayN">비표시</label>
 												</td>
 											</tr>
@@ -170,7 +171,7 @@
 												<th class="col-label" scope="row">
 													<label for="description">설명</label>
 												</th>
-												<td><input type="text" id="description" name="description"/></td>
+												<td><input type="text" id="description" name="description" size="80" /></td>
 											</tr>
 											<tr>
 												<td colspan="2">
@@ -183,7 +184,7 @@
 												</td>
 											</tr>
 										</table>
-										</form>
+										</form:form>
 									</div>
 
 								</div>
@@ -196,17 +197,17 @@
 	</div>
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
 
-<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
-<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-<script type="text/javascript" src="/js/${lang}/common.js"></script>
-<script type="text/javascript" src="/js/${lang}/message.js"></script>
-<script type="text/javascript" src="/js/navigation.js"></script>
-<script type="text/javascript" src="../externlib/${lang}/axisj/lib/AXJ.js"></script>
-<script type="text/javascript" src="../externlib/${lang}/axisj/lib/AXInput.js"></script>
-<script type="text/javascript" src="../externlib/${lang}/axisj/lib/AXModal.js"></script>
-<script type="text/javascript" src="../externlib/${lang}/axisj/lib/AXSelect.js"></script>
-<script type="text/javascript" src="../externlib/${lang}/axisj/lib/AXTree.js"></script>
-<script type="text/javascript" src="../js/${lang}/menuTree.js"></script>
+<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/common.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/message.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/navigation.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="../externlib/${lang}/axisj/lib/AXJ.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="../externlib/${lang}/axisj/lib/AXInput.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="../externlib/${lang}/axisj/lib/AXModal.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="../externlib/${lang}/axisj/lib/AXSelect.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="../externlib/${lang}/axisj/lib/AXTree.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="../js/${lang}/menuTree.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript">
 	var MENU_TREE_DATA = null;
 
@@ -217,18 +218,27 @@
 	// 메뉴 목록
 	function getMenuList() {
 		$.ajax({
-			url: "/menu/admin-tree",
+			url: "/menus/admin-tree",
 			type: "GET",
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 			dataType: "json",
 			success: function(msg){
-				MENU_TREE_DATA = msg;
-				TREE_OBJECT.pageStart.delay(0.1);
+				if(msg.statusCode <= 200) {
+					MENU_TREE_DATA = JSON.parse(msg.menuTree);
+					TREE_OBJECT.pageStart.delay(0.1);
+					// 웹접근성 때문에 a 태그에 value 값 넣어주고 hidden 처리
+					setTimeout(function(){
+						$("#AXTreeTarget > a").text("관리자 메뉴");
+						$("#AXTreeTarget > a").attr("class","hiddenTag");
+					},100);
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+					console.log("---- " + msg.message);
+				}
 			},
-	        error: function(request, status, error) {
-	        	// alert message, 세션이 없는 경우 로그인 페이지로 이동 - common.js
-	        	ajaxErrorHandler(request);
-	        }
+			error:function(request, status, error){
+		        alert(JS_MESSAGE["ajax.error.message"]);
+			}
 		});
 	}
 
@@ -297,19 +307,23 @@
 
 		var info = $("#menuForm").serialize();
 		$.ajax({
-			url: "/menu/",
+			url: "/menus",
 			type: "POST",
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 			data: info,
 			dataType: "json",
 			success: function(msg){
-				MENU_TREE.setTree(msg);
-				alert(JS_MESSAGE["insert"]);
+				if(msg.statusCode <= 200) {
+					MENU_TREE.setTree(JSON.parse(msg.menuTree));
+					alert(JS_MESSAGE["insert"]);
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+					console.log("---- " + msg.message);
+				}
 			},
-	        error: function(request, status, error) {
-	        	// alert message, 세션이 없는 경우 로그인 페이지로 이동 - common.js
-	        	ajaxErrorHandler(request);
-	        }
+			error:function(request, status, error){
+		        alert(JS_MESSAGE["ajax.error.message"]);
+			}
 		});
 	}
 
@@ -344,19 +358,23 @@
 
 		var info = $("#menuForm").serialize();
 		$.ajax({
-			url: "/menu/" + $("#menuId").val(),
+			url: "/menus/" + $("#menuId").val(),
 			type: "POST",
 			headers: {"X-Requested-With": "XMLHttpRequest"},
 			data: info,
 			dataType: "json",
-			success: function(msg) {
-				MENU_TREE.setTree(msg);
-				alert(JS_MESSAGE["update"]);
+			success: function(msg){
+				if(msg.statusCode <= 200) {
+					MENU_TREE.setTree(JSON.parse(msg.menuTree));
+					alert(JS_MESSAGE["update"]);
+				} else {
+					alert(JS_MESSAGE[msg.errorCode]);
+					console.log("---- " + msg.message);
+				}
 			},
-	        error: function(request, status, error) {
-	        	// alert message, 세션이 없는 경우 로그인 페이지로 이동 - common.js
-	        	ajaxErrorHandler(request);
-	        }
+			error:function(request, status, error){
+		        alert(JS_MESSAGE["ajax.error.message"]);
+			}
 		});
 	}
 
@@ -364,19 +382,24 @@
 	function deleteMenu() {
 		if(confirm("삭제하시겠습니까?")) {
 			$.ajax({
-				url: "/menu/admin/" + $("#menuId").val(),
+				url: "/menus/admin/" + $("#menuId").val(),
 				type: "DELETE",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				dataType: "json",
 				success: function(msg){
-					alert("삭제되었습니다.");
-					MENU_TREE.setTree(msg);
-					MENU_TREE.collapseAll();
+					if(msg.statusCode <= 200) {
+						alert("삭제되었습니다.");
+						MENU_TREE.setTree(JSON.parse(msg.menuTree));
+						MENU_TREE.collapseAll();
+						location.reload();
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
 				},
-		        error: function(request, status, error) {
-		        	// alert message, 세션이 없는 경우 로그인 페이지로 이동 - common.js
-		        	ajaxErrorHandler(request);
-		        }
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+				}
 			});
 		}
 	}
@@ -386,19 +409,23 @@
 		if(confirm("이동하시겠습니까?")) {
 			var info = $("#menuForm").serialize();
 			$.ajax({
-				url: "/menu/" + $("#menuId").val() + "/move",
+				url: "/menus/" + $("#menuId").val() + "/move",
 				type: "POST",
 				headers: {"X-Requested-With": "XMLHttpRequest"},
 				data: info,
 				dataType: "json",
 				success: function(msg){
-					MENU_TREE.setTree(msg);
-					//MENU_TREE.collapseAll();
+					if(msg.statusCode <= 200) {
+						MENU_TREE.setTree(JSON.parse(msg.menuTree));
+						//MENU_TREE.collapseAll();
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+						console.log("---- " + msg.message);
+					}
 				},
-		        error: function(request, status, error) {
-		        	// alert message, 세션이 없는 경우 로그인 페이지로 이동 - common.js
-		        	ajaxErrorHandler(request);
-		        }
+				error:function(request, status, error){
+			        alert(JS_MESSAGE["ajax.error.message"]);
+				}
 			});
 		}
 	}

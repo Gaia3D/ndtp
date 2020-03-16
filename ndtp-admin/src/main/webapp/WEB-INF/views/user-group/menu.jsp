@@ -142,6 +142,11 @@
 <script type="text/javascript" src="/js/navigation.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
+		$("#allYn").val(null);
+		$("#readYn").val(null);
+		$("#writeYn").val(null);
+		$("#updateYn").val(null);
+		$("#deleteYn").val(null);
 		var userGroupMenuJson = JSON.parse('${userGroupMenuJson}');
 		for(var i=0; i<userGroupMenuJson.length; i++) {
 			var userGroupMenu = userGroupMenuJson[i];

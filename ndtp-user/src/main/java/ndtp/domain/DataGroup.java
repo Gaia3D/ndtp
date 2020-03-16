@@ -3,6 +3,8 @@ package ndtp.domain;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import javax.validation.constraints.Size;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -44,13 +46,17 @@ public class DataGroup extends Search {
 	/****** validator ********/
 	private String methodMode;
 	
-		// 고유번호
+	// 고유번호
 	private Integer dataGroupId;
+	// 공유 그룹 확인용
+	private Integer userGroupId;
 	// 링크 활용 등을 위한 확장 컬럼
+	@Size(max = 60)
 	private String dataGroupKey;
 	// old 고유 식별번호
 	private String oldDataGroupKey;
 	// 그룹명
+	@Size(max = 100)
 	private String dataGroupName;
 	// 서비스 경로
 	private String dataGroupPath;
@@ -119,4 +125,5 @@ public class DataGroup extends Search {
 	// 등록일
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Timestamp insertDate;
+	
 }

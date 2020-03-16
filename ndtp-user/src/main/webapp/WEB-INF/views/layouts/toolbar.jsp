@@ -2,6 +2,8 @@
 <div class="ctrlWrap">
 	<div class="zoom">
 		<button type="button" id="mapCtrlReset" class="reset" title="초기화">초기화</button>
+		<!-- <button type="button" id="mapCtrlCamLeftRot"class="cameraLeft" title="카메라왼쪽회전">카메라왼쪽회전</button>
+		<button type="button" id="mapCtrlCamRightRot" class="cameraRight" title="카메라오른쪽회전">카메라오른쪽회전</button> -->
 		<button type="button" id="mapCtrlAll" class="zoomall" title="전체보기">전체보기</button>
 		<button type="button" id="mapCtrlZoomIn" class="zoomin" title="확대">확대</button>
 		<button type="button" id="mapCtrlZoomOut" class="zoomout" title="축소">축소</button>
@@ -12,7 +14,9 @@
 	<div class="rotate">
 		<button type="button" class="rotateReset on" id="rotateReset" title="방향초기화"></button>
 		<!-- <input type="text" placeholder="0" id="rotateInput"/>&deg; -->
+		<label for="rotateInput" class="hiddenTag">rotate</label>
 		<input type="text" id="rotateInput" placeholder="0" readonly>&deg;
+		<label for="pitchInput" class="hiddenTag">pitch</label>
         <input type="text" id="pitchInput" placeholder="-90" readonly>&deg;
 		<button type="button" class="rotateLeft" id="rotateLeft" title="왼쪽으로 회전">왼쪽으로 회전</button>
 		<button type="button" class="rotateRight" id="rotateRight" title="오른쪽으로 회전">오른쪽으로 회전</button>
@@ -104,13 +108,14 @@
 					<li>
 						<label for="dcColorPicker">색상</label>
 						<input type="color" id="dcColorPicker">
+						<label for="dcColorInput" class="hiddenTag">RGB색상표</label>
 						<input type="text" id="dcColorInput" value="#000000" size="6" readonly style="color: rgb(0, 0, 0);">
 						<button type="button" id="dcColorApply" class="btnTextF">적용</button>
 						<button type="button" id="dcColorCancle" class="btnText">되돌리기</button>
 					</li>
 				</ul>
 			</div>
-			<form id="dcRotLocForm" class="layerDiv marB0">
+			<form:form id="dcRotLocForm" class="layerDiv marB0">
 				<input type="hidden" name="dataId" value="" />
 				<h4 class="category">위치 변경</h4>
 				<ul class="layerDiv">
@@ -138,6 +143,7 @@
 						<label for="dcPitch">x(pitch)</label>
 						<input type="text" id="dcPitch" name="pitch" size="2" readonly>
 						<button type="button" class="dcRangeBtn rangePrev" data-type="prev" id="rcPitchPrev"></button>
+						<label for="dcPitchRange" class="hiddenTag">x(pitch) 슬라이드</label>
 						<input id="dcPitchRange" data-type="Pitch" style="width: 140px;" type="range" min="-360" max="360" step="1" value="1">
 						<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcPitchNext"></button>
 					</li>
@@ -146,6 +152,7 @@
 						<label for="dcRoll">y(roll)</label>
 						<input type="text" id="dcRoll" name="roll" size="2" readonly>
 						<button type="button" class="dcRangeBtn rangePrev" data-type="prev" id="rcRollPrev"></button>
+						<label for="dcRollRange" class="hiddenTag">y(roll) 슬라이드</label>
 						<input id="dcRollRange" data-type="Roll" style="width: 140px;" type="range" min="-360" max="360" step="1" value="1">
 						<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcRollNext"></button>
 					</li>
@@ -154,6 +161,7 @@
 						<label for="dcHeading">z(heading)</label>
 						<input type="text" id="dcHeading" name="heading" size="2" readonly>
 						<button type="button" class="dcRangeBtn rangePrev" data-type="prev" id="rcHeadingPrev"></button>
+						<label for="dcHeadingRange" class="hiddenTag">z(heading) 슬라이드</label>
 						<input id="dcHeadingRange" data-type="Heading" style="width: 140px;" type="range" min="-360" max="360" step="1" value="1">
 						<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcHeadingNext"></button>
 					</li>
@@ -166,7 +174,7 @@
 					<button type="button" id="issueButton" class="btnTextF">이슈 등록</button>
 					<button type="button" id="dcShowAttr" class="btnTextF">데이터 정보 조회</button>
 				</div>
-			</form>
+			</form:form>
 		</div>
 	</div>
 </div>

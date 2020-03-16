@@ -31,7 +31,13 @@
 	<!-- 사용자 그룹 정보 취득 -->
 	<select id="getUserGroup" parameterType="int" resultType="userGroup">
 		/* getUserGroup */
-		SELECT * FROM user_group WHERE user_group_id = #{userGroupId}
+		SELECT A.*,
+			CASE
+				WHEN parent > 0 THEN ( SELECT user_group_name FROM user_group WHERE user_group_id = A.parent )
+				ELSE null
+			END AS parentName
+		FROM user_group A
+		WHERE user_group_id = #{userGroupId}
 	</select>
 
 	<!-- 사용자 그룹 정보 취득 -->
@@ -145,7 +151,23 @@
 	    FROM menu_tree
 	    ORDER BY path
 	</select>
-
+	
+	<!-- 조상이 같은 사용자 그룹 아이디 목록 -->
+	<select id="getUserGroupIdByAncestor" parameterType="int" resultType="int">
+		/* getUserGroupIdByAncestor */
+		SELECT user_group_id
+		FROM user_group
+		WHERE ancestor = #{userGroupId}
+	</select>
+    
+    <!-- 부모가 같은 사용자 그룹 아이디 목록 -->
+	<select id="getUserGroupIdByParent" parameterType="int" resultType="int">
+		/* getUserGroupIdByParent */
+		SELECT user_group_id
+		FROM user_group
+		WHERE parent = #{userGroupId}
+	</select>
+    
 	<!-- 사용자 그룹별 Role 목록 -->
 	<select id="getListUserGroupRole" parameterType="userGroupRole" resultType="userGroupRole">
 		/* getListUserGroupRole */
@@ -279,6 +301,9 @@
             </if>
 			<if test="available != null">
             available = #{available},
+            </if>
+            <if test="description != null">
+            description = #{description},
             </if>
             user_group_name = #{userGroupName}
         WHERE user_group_id = #{userGroupId}

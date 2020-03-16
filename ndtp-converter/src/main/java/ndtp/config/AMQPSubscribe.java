@@ -1,5 +1,6 @@
 package ndtp.config;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -66,10 +67,15 @@ public class AMQPSubscribe {
 				
 				if(exitCode == 0) result = ConverterJobStatus.SUCCESS.name().toLowerCase();
 				else result = ConverterJobStatus.FAIL.name().toLowerCase();
+			} catch(InterruptedException e1) {
+				result = ConverterJobStatus.FAIL.name().toLowerCase();
+				log.info(" InterruptedException exception = {}", e1.getMessage());	
+			} catch(IOException e1) {
+				result = ConverterJobStatus.FAIL.name().toLowerCase();
+				log.info(" IOException exception = {}", e1.getMessage());
 			} catch (Exception e1) {
 				result = ConverterJobStatus.FAIL.name().toLowerCase();
-				log.info(" handleMessage exception = {}", e1.getMessage());
-				e1.printStackTrace();
+				log.info(" Exception exception = {}", e1.getMessage());
 			}
 			return result;
         })
@@ -113,7 +119,6 @@ public class AMQPSubscribe {
 			restTemplate.postForEntity(uri, converterJob, Map.class);
 		} catch (URISyntaxException e) {
 			log.info("데이터 converter 상태 변경 api 호출 실패 = {}", e.getMessage());
-			e.printStackTrace();
 		}
 	}
 	

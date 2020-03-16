@@ -229,6 +229,58 @@
 			#{status}, #{description}
 		)
 	</insert>
+	
+	<!-- Bulk 파일로 부터 데이터 등록(시퀀스를 사용하지 않고, 파일에 있는 dataId 사용) -->
+	<insert id="insertBulkData" parameterType="dataInfo">
+		/* insertBulkData */
+		INSERT INTO data_info(
+			data_id, data_group_id, converter_job_id, data_key, data_name, data_type, sharing, user_id, mapping_type,
+			<if test="location != null">
+			location,
+			</if>
+			altitude, heading, pitch, roll, children_ancestor, children_parent, children_depth, children_view_order,
+			<if test="metainfo != null and metainfo != ''">
+			metainfo,
+			</if>
+			status, description
+		) VALUES (
+			#{dataId}, #{dataGroupId}, #{converterJobId}, #{dataKey}, #{dataName}, #{dataType}, #{sharing}, #{userId}, #{mappingType},
+			<if test="location != null">
+			ST_GeomFromText(#{location}, 4326),
+			</if>
+			#{altitude}, COALESCE(#{heading}, 0), COALESCE(#{pitch}, 0), COALESCE(#{roll}, 0), #{childrenAncestor}, #{childrenParent}, #{childrenDepth}, #{childrenViewOrder},
+			<if test="metainfo != null and metainfo != ''">
+			TO_JSON(#{metainfo}::json),
+			</if>
+			#{status}, #{description}
+		)
+	</insert>
+	
+	<!-- 데이터 파일 정보 저장 -->
+	<insert id="insertDataFileInfo" parameterType="dataFileInfo" >
+		/* insertDataFileInfo */
+		<selectKey keyProperty="dataFileInfoId" resultType="long" order="BEFORE">
+    		SELECT NEXTVAL('data_file_info_seq')
+  		</selectKey>
+		INSERT INTO data_file_info (
+			data_file_info_id, data_group_id, user_id, file_name, file_real_name, file_path, file_size, file_ext
+		) VALUES (
+			#{dataFileInfoId}, #{dataGroupId}, #{userId}, #{fileName}, #{fileRealName}, #{filePath}, #{fileSize}, #{fileExt}
+		)
+	</insert>
+	
+	<!-- 데이터 파일 파싱 로그 저장 -->
+	<insert id="insertDataFileParseLog" parameterType="dataFileParseLog">
+		/* insertDataFileParseLog */
+		<selectKey keyProperty="dataFileParseLogId" resultType="long" order="BEFORE">
+			SELECT NEXTVAL('data_file_parse_log_seq');
+		</selectKey>
+		INSERT INTO data_file_parse_log (
+			data_file_parse_log_id	, data_file_info_id, identifier_value, error_code, log_type, status
+		) VALUES (
+			#{dataFileParseLogId}, #{dataFileInfoId}, #{identifierValue}, #{errorCode}, #{logType}, #{status}
+		)
+	</insert>
 
 	<!-- Data 수정 -->
 	<update id="updateData" parameterType="dataInfo">
@@ -292,6 +344,18 @@
 			AND user_id = #{userId}
 			</if>
 	</update>
+	
+	<!-- Data 파일 정보 수정 -->
+	<update id="updateDataFileInfo" parameterType="dataFileInfo">
+		/* updateDataFileInfo */
+		UPDATE data_file_info
+		SET total_count = #{totalCount},
+			parse_success_count = #{parseSuccessCount},
+			parse_error_count = #{parseErrorCount},
+			insert_success_count = #{insertSuccessCount},
+			insert_error_count = #{insertErrorCount}
+		WHERE data_file_info_id = #{dataFileInfoId}
+	</update>
 
 	<!-- Data 상태 수정 -->
 	<update id="updateDataStatus" parameterType="dataInfo">
@@ -339,5 +403,12 @@
 			<if test="dataId != null and dataId != ''">
 			AND data_id = #{dataId}
 			</if>
+	</delete>
+	
+	<delete id="deleteDataByUserId" parameterType="string">
+		/* deleteDataByProjectId */
+		DELETE
+		FROM data_info
+		WHERE user_id = #{value}
 	</delete>
 </mapper>

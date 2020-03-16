@@ -21,8 +21,9 @@ public class Ogr2OgrExecute {
     private String layerTargetCoordinate;
     private String exportPath;
     private String sql;
+    private String environmentPath;
 
-    public Ogr2OgrExecute(String osType, String driver, String shapeFile, String shapeEncoding, String tableName, String updateOption, String layerSourceCoordinate, String layerTargetCoordinate) {
+    public Ogr2OgrExecute(String osType, String driver, String shapeFile, String shapeEncoding, String tableName, String updateOption, String layerSourceCoordinate, String layerTargetCoordinate, String environmentPath) {
         this.osType = osType;
         this.driver = driver;
         this.shapeFile = shapeFile;
@@ -31,6 +32,7 @@ public class Ogr2OgrExecute {
         this.updateOption = updateOption;
         this.layerSourceCoordinate = layerSourceCoordinate;
         this.layerTargetCoordinate = layerTargetCoordinate;
+        this.environmentPath = environmentPath;
     }
 
     public Ogr2OgrExecute(String osType, String driver, String shapeEncoding, String exportPath, String sql, String layerSourceCoordinate, String layerTargetCoordinate) {
@@ -65,10 +67,8 @@ public class Ogr2OgrExecute {
 
         command.add("-f");
         command.add("PostgreSQL");
-        //command.add("PG:\"host=localhost dbname=gis user=postgres password=postgres\"");
         command.add(this.driver);
-        log.info("============= driver = {}", this.driver);
-
+        
         // shape file full path 파일 호가장자 까지
         command.add(this.shapeFile);
         command.add("-nlt");
@@ -79,8 +79,7 @@ public class Ogr2OgrExecute {
         command.add("-nln");
         command.add(this.tableName);
         log.info(" >>>>>> insert command = {}", command.toString());
-
-        ProcessBuilderSupport.execute(command);
+        ProcessBuilderSupport.execute(command, environmentPath);
     }
 
     public void export() throws Exception {
@@ -107,6 +106,6 @@ public class Ogr2OgrExecute {
 
         log.info(" >>>>>> export command = {}", command.toString());
 
-        ProcessBuilderSupport.execute(command);
+        ProcessBuilderSupport.execute(command, environmentPath);
     }
 }

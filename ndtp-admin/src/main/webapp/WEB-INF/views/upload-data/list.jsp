@@ -8,11 +8,11 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<title>업로딩 데이터 목록 | NDTP</title>
-	<link rel="stylesheet" href="/css/${lang}/font/font.css" />
-	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
-	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
-	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-    <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
+	<link rel="stylesheet" href="/css/${lang}/font/font.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css?cacheVersion=${contentCacheVersion}" />
+    <link rel="stylesheet" href="/css/${lang}/admin-style.css?cacheVersion=${contentCacheVersion}" />
 </head>
 <body>
 	<%@ include file="/WEB-INF/views/layouts/header.jsp" %>
@@ -28,22 +28,25 @@
 							<form:form id="searchForm" modelAttribute="uploadData" method="get" action="/upload-data/list" onsubmit="return searchCheck();">
 								<div class="input-group row">
 									<div class="input-set">
-										<label for="searchWord"><spring:message code='search.word'/></label>
-										<select id="searchWord" name="searchWord" class="selectBoxClass">
+										<label for="searchWord" class="hiddenTag">검색조건</label>
+										<select id="searchWord" name="searchWord" title="검색조건" class="selectBoxClass">
 											<option value=""><spring:message code='select'/></option>
 		          							<option value="data_name">데이터명</option>
 										</select>
-										<form:select path="searchOption" class="select" style="height: 30px;">
+										<label for="searchOption" class="hiddenTag">검색옵션</label>
+										<form:select path="searchOption" title="검색옵션" class="select" style="height: 30px;">
 											<form:option value="0"><spring:message code='search.same'/></form:option>
 											<form:option value="1"><spring:message code='search.include'/></form:option>
 										</form:select>
+										<label for="searchValue"><spring:message code='search.word'/></label>
 										<form:input path="searchValue" type="search" cssClass="m" cssStyle="float: right;" />
 									</div>
 									<div class="input-set">
 										<label for="startDate"><spring:message code='search.date'/></label>
-										<input type="text" id="startDate" name="startDate" class="s date" autocomplete="off" />
+										<input type="text" id="startDate" name="startDate" class="s date" title="시작일" autocomplete="off" />
 										<span class="delimeter tilde">~</span>
-										<input type="text" id="endDate" name="endDate" class="s date" autocomplete="off" />
+										<label for="endDate" class="hiddenTag">종료일</label>
+										<input type="text" id="endDate" name="endDate" class="s date" title="종료일" autocomplete="off" />
 									</div>
 									<div class="input-set">
 										<label for="orderWord"><spring:message code='search.order'/></label>
@@ -52,12 +55,14 @@
 											<option value="data_name">데이터명</option>
 											<option value="insert_date"> <spring:message code='search.insert.date'/> </option>
 										</select>
-										<select id="orderValue" name="orderValue" class="selectBoxClass">
+										<label for="orderValue" class="hiddenTag">정렬기준</label>
+										<select id="orderValue" name="orderValue" title="정렬기준" class="selectBoxClass">
 					                		<option value=""> <spring:message code='search.basic'/> </option>
 						                	<option value="ASC"> <spring:message code='search.ascending'/> </option>
 											<option value="DESC"> <spring:message code='search.descending.order'/> </option>
 										</select>
-										<form:select path="listCounter" class="select" style="height: 30px;">
+										<label for="listCounter" class="hiddenTag">리스트 건수</label>
+										<form:select path="listCounter" class="select" title="리스트건수" style="height: 30px;">
 					                		<form:option value="10"><spring:message code='search.ten.count'/></form:option>
 						                	<form:option value="50"><spring:message code='search.fifty.count'/></form:option>
 											<form:option value="100"><spring:message code='search.hundred.count'/></form:option>
@@ -79,11 +84,12 @@
 								</div>
 								<div class="list-functions u-pull-right">
 									<div style="padding-bottom: 3px;" class="button-group">
-										<a href="#" onclick="converterFiles(); return false;" class="button">F4D 일괄 변환</a>
+										<a href="#" onclick="converterFiles(); return false;" class="button" title="F4D 일괄 변환">F4D 일괄 변환</a>
 									</div>
 								</div>
 							</div>
-							<table class="list-table scope-col">
+							<table class="list-table scope-col" summary="업로드 목록 테이블">
+							<caption class="hiddenTag">업로드 목록</caption>
 								<col class="col-checkbox" />
 								<col class="col-number" />
 								<col class="col-name" />
@@ -97,7 +103,7 @@
 								<col class="col-functions" />
 								<thead>
 									<tr>
-										<th scope="col" class="col-checkbox"><input type="checkbox" id="chkAll" name="chkAll" /></th>
+										<th scope="col" class="col-checkbox"><label for="chkAll" class="hiddenTag">전체선택 체크박스</label><input type="checkbox" id="chkAll" name="chkAll" /></th>
 										<th scope="col" class="col-number"><spring:message code='number'/></th>
 										<th scope="col" class="col-name">그룹명</th>
 										<th scope="col" class="col-name">공유 유형</th>
@@ -121,6 +127,7 @@
 
 									<tr>
 										<td class="col-checkbox">
+											<label for="uploadDataId_${uploadData.uploadDataId}" class="hiddenTag">선택 체크박스</label>
 											<input type="checkbox" id="uploadDataId_${uploadData.uploadDataId}" name="uploadDataId" value="${uploadData.uploadDataId}" />
 										</td>
 										<td class="col-number">${pagination.rowNumber - status.index }</td>
@@ -154,7 +161,7 @@
 										<td class="col-count"><fmt:formatNumber value="${uploadData.converterCount}" type="number"/> 건</td>
 										<td class="col-functions">
 											<span class="button-group">
-												<a href="#" onclick="converterFile('${uploadData.uploadDataId}', '${uploadData.dataName}'); return false;"
+												<a href="#" onclick="converterFile('${uploadData.uploadDataId}', '${uploadData.dataName}', '${uploadData.dataType}'); return false;"
 												   class="button" style="text-decoration: none;">
 													F4D 변환
 												</a>
@@ -187,11 +194,11 @@
 	<%@ include file="/WEB-INF/views/layouts/footer.jsp" %>
 	<%@ include file="/WEB-INF/views/upload-data/converter-dialog.jsp" %>
 
-<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
-<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-<script type="text/javascript" src="/js/${lang}/common.js"></script>
-<script type="text/javascript" src="/js/${lang}/message.js"></script>
-<script type="text/javascript" src="/js/navigation.js"></script>
+<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/common.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/message.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/navigation.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		var searchWord = "${uploadData.searchWord}";
@@ -250,10 +257,17 @@
 	});
 
 	// F4D Converter Button Click
-	function converterFile(uploadDataId, dataName) {
+	function converterFile(uploadDataId, dataName, dataType) {
+		$("#dataType").val(dataType);
 		$("#converterCheckIds").val(uploadDataId + ",");
 		$("#title").val(dataName);
-
+		// 여기서 확장자가 las면 template 을 포인트 클라우트 클릭하게
+		if(dataType === "las") {
+			$("#converterTemplate").val("point-cloud");
+		} else {
+			$("#converterTemplate").val("basic");
+		}
+		
 		dialogConverterJob.dialog( "open" );
 	}
 
@@ -267,6 +281,7 @@
 			alert("파일을 선택해 주십시오.");
 			return;
 		}
+		$("#dataType").val("");
 		$("#converterCheckIds").val(checkedValue);
 
 		dialogConverterJob.dialog( "open" );
@@ -280,7 +295,16 @@
 			$("#title").focus();
 			return false;
 		}
-
+		
+		if($("#dataType").val() === "las") {
+			// 여기서 확장자가 las면 template 을 포인트 클라우트 클릭하게
+			if($("#converterTemplate").val() != "point-cloud") {
+				alert("LAS 데이터의 경우 변환 템플릿을 Point Cloud 로 선택하여 주십시오.");
+				$("#converterTemplate").focus();
+				return false;
+			}
+		}
+		
 		if(saveConverterJobFlag) {
 			saveConverterJobFlag = false;
 			var formData =$("#converterJobForm").serialize();
@@ -346,7 +370,7 @@
 			}
 		}
 	}
-	
+
 	$('#yAxisUp').change(function() {
 		var desc = $(this).siblings('span');
 		var value = $(this).val();

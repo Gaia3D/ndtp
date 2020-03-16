@@ -8,16 +8,16 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<title>데이터 변경 요청 이력 | NDTP</title>
-	<link rel="shortcut icon" href="/images/favicon.ico">
-	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
-	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
-	<link rel="stylesheet" href="/css/${lang}/user-style.css" />
-	<link rel="stylesheet" href="/css/${lang}/style.css" />
-	<link rel="stylesheet" href="/externlib/json-viewer/json-viewer.css" />
-	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
-	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="/externlib/json-viewer/json-viewer.js"></script>
+	<link rel="shortcut icon" href="/images/favicon.ico?cacheVersion=${contentCacheVersion}">
+	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/css/${lang}/user-style.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/css/${lang}/style.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/json-viewer/json-viewer.css?cacheVersion=${contentCacheVersion}" />
+	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
+	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>
+	<script type="text/javascript" src="/externlib/json-viewer/json-viewer.js?cacheVersion=${contentCacheVersion}"></script>
 </head>
 <body>
 <%@ include file="/WEB-INF/views/layouts/header.jsp" %>
@@ -87,17 +87,15 @@
 			</div>
 			</form:form>
 		</div>
-		
-		
+
+
 		<div class="list">
 			<form:form id="listForm" modelAttribute="dataInfo" method="post">
 			<input type="hidden" id="checkIds" name="checkIds" value="" />
 			<div class="list-header row">
 				<div class="list-desc u-pull-left">
-					<spring:message code='all.d'/> <em><fmt:formatNumber value="${pagination.totalCount}" type="number"/></em>
-					<spring:message code='search.what.count'/>,
-					<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> 
-					<spring:message code='search.page'/>
+					<spring:message code='all.d'/> <span class="totalCount"><fmt:formatNumber value="${pagination.totalCount}" type="number"/></span> <spring:message code='search.what.count'/>,
+					<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/>
 				</div>
 			</div>
 			<table class="list-table scope-col">
@@ -105,11 +103,11 @@
 				<col class="col-number" />
 				<col class="col-name" />
 				<col class="col-name" />
-				<col class="col-name" />
-				<col class="col-name" />
-				<col class="col-name" />
-				<col class="col-name" />
-				<col class="col-name" />
+				<col class="col-type" />
+				<col class="col-type" />
+				<col class="col-type" />
+				<col class="col-type" />
+				<col class="col-type" />
 				<col class="col-date" />
 				<thead>
 					<tr>
@@ -117,12 +115,12 @@
 						<th scope="col" class="col-number"><spring:message code='number'/></th>
 						<th scope="col" class="col-name">그룹명</th>
 						<th scope="col" class="col-name">데이터명</th>
-						<th scope="col" class="col-name">아이디</th>
-						<th scope="col" class="col-name">데이터타입</th>
-						<th scope="col" class="col-name">공개유형</th>
-						<th scope="col" class="col-name">매핑타입</th>
-						<th scope="col" class="col-name">변경유형</th>
-						<th scope="col" class="col-date">등록일</th>
+						<th scope="col" class="col-type">요청자</th>
+						<th scope="col" class="col-type">데이터타입</th>
+						<th scope="col" class="col-type">공개유형</th>
+						<th scope="col" class="col-type">매핑타입</th>
+						<th scope="col" class="col-type">변경유형</th>
+						<th scope="col" class="col-date">변경일</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -138,14 +136,14 @@
 							<input type="checkbox" id="dataInfoLogId_${dataInfoLog.dataLogId}" name="dataLogId" value="${dataInfoLog.dataLogId}" />
 						</td>
 						<td class="col-number">${pagination.rowNumber - status.index }</td>
-						<td class="col-name">${dataInfoLog.dataGroupName}</td>
-						<td class="col-name">${dataInfoLog.dataName}</td>
-						<td class="col-name">${dataInfoLog.userId}</td>
-						<td class="col-name">${dataInfoLog.dataType}</td>
-						<td class="col-name">${dataInfoLog.sharing}</td>
-						<td class="col-name">${dataInfoLog.mappingType}</td>
-						<td class="col-name">${dataInfoLog.changeType}</td>
-						<td class="col-type">
+						<td class="col-name ellipsis" style="min-width:100px;max-width:100px;">${dataInfoLog.dataGroupName}</td>
+						<td class="col-name ellipsis" style="min-width:160px;max-width:160px;">${dataInfoLog.dataName}</td>
+						<td class="col-type">${dataInfoLog.userId}</td>
+						<td class="col-type">${dataInfoLog.dataType}</td>
+						<td class="col-type">${dataInfoLog.sharing}</td>
+						<td class="col-type ellipsis" style="min-width:80px;max-width:80px;">${dataInfoLog.mappingType}</td>
+						<td class="col-type">${dataInfoLog.changeType}</td>
+						<td class="col-date">
 							<fmt:parseDate value="${dataInfoLog.insertDate}" var="viewInsertDate" pattern="yyyy-MM-dd HH:mm:ss"/>
 							<fmt:formatDate value="${viewInsertDate}" pattern="yyyy-MM-dd HH:mm"/>
 						</td>
@@ -161,10 +159,10 @@
 </div>
 <!-- E: WRAP -->
 
-<script type="text/javascript" src="/js/${lang}/common.js"></script>
-<script type="text/javascript" src="/js/${lang}/message.js"></script>
-<script type="text/javascript" src="/js/${lang}/map-controll.js"></script>
-<script type="text/javascript" src="/js/${lang}/ui-controll.js"></script>
+<script type="text/javascript" src="/js/${lang}/common.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/message.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/map-controll.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/ui-controll.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		var searchWord = "${dataInfoLog.searchWord}";
@@ -172,13 +170,13 @@
 		var orderWord = "${dataInfoLog.orderWord}";
 		var orderValue = "${dataInfoLog.orderValue}";
 		var listCounter = "${dataInfoLog.listCounter}";
-	
+
 		if(searchWord != "") $("#searchWord").val("${dataInfoLog.searchWord}");
 		if(searchOption != "") $("#searchOption").val("${dataInfoLog.searchOption}");
 		if(orderWord != "") $("#orderWord").val("${dataInfoLog.orderWord}");
 		if(orderValue != "") $("#orderValue").val("${dataInfoLog.orderValue}");
 		if(listCounter != "") $("#listCounter").val("${dataInfoLog.listCounter}");
-	
+
 		initDatePicker();
 		initCalendar(new Array("startDate", "endDate"), new Array("${dataInfoLog.startDate}", "${dataInfoLog.endDate}"));
 	});
@@ -206,12 +204,12 @@
 				return false;
 			}
 		}
-		
+
 		var searchValue = $('#searchValue').val();
 		if (searchValue) {
 			$('#searchValue').val(searchValue.trim());
 		}
-		
+
 		return true;
 	}
 </script>

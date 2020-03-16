@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <div id="dataGroupDialog" class="dialog">
-	<table class="list-table scope-col">
+	<table class="list-table scope-col" summary="데이터 그룹 다이얼로그">
+	<caption class="hiddenTag">데이터 그룹 다이얼로그</caption>
 		<col class="col-name" />
 		<col class="col-toggle" />
 		<col class="col-id" />

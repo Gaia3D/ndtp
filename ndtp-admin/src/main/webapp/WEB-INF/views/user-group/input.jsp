@@ -28,12 +28,13 @@
 							<div class="content-desc u-pull-right"><span class="icon-glyph glyph-emark-dot color-warning"></span><spring:message code='check'/></div>
 						</div>
 						<form:form id="userGroup" modelAttribute="userGroup" method="post" onsubmit="return false;">
-							<table class="input-table scope-row">
+							<table class="input-table scope-row" summary="사용자  그룹 등록 테이블">
+							<caption class="hiddenTag">사용자 그룹 등록</caption>
 								<col class="col-label" />
 								<col class="col-input" />
 								<tr>
 									<th class="col-label" scope="row">
-										<form:label path="userGroupName">사용자 그룹명</form:label>
+										<form:label path="userGroupName"><spring:message code='user.group.name'/></form:label>
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input">
@@ -238,7 +239,7 @@
 		resizable: false
 	});
 
-	// 상위 Layer Group 찾기
+	// 상위 User Group 찾기
 	$( "#userGroupButtion" ).on( "click", function() {
 		userGroupDialog.dialog( "open" );
 		userGroupDialog.dialog( "option", "title", "사용자 그룹 선택");

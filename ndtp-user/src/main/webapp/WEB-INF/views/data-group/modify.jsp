@@ -8,14 +8,14 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<title>데이터 그룹 수정 | NDTP</title>
-	<link rel="shortcut icon" href="/images/favicon.ico">
-	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
-	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
-	<link rel="stylesheet" href="/css/${lang}/user-style.css" />
-	<link rel="stylesheet" href="/css/${lang}/style.css" />
-	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
-	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+	<link rel="shortcut icon" href="/images/favicon.ico?cacheVersion=${contentCacheVersion}">
+	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css?cacheVersion=${contentCacheVersion}"/>
+	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css?cacheVersion=${contentCacheVersion}"/>
+	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/css/${lang}/user-style.css?cacheVersion=${contentCacheVersion}"/>
+	<link rel="stylesheet" href="/css/${lang}/style.css?cacheVersion=${contentCacheVersion}"/>
+	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
+	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>
 </head>
 <body>
 
@@ -51,13 +51,13 @@
 					<span class="icon-glyph glyph-emark-dot color-warning"></span>
 				</th>
 				<td class="col-input">
-					<form:input path="dataGroupName" cssClass="l" />
+					<form:input path="dataGroupName" cssClass="l" maxlength="100" />
 					<form:errors path="dataGroupName" cssClass="error" />
 				</td>
 			</tr>
 			<tr>
 				<th class="col-label" scope="row">
-					데이터 그룹 Key(영문)
+					데이터 그룹 Key(영문,숫자,-,_)
 					<span class="icon-glyph glyph-emark-dot color-warning"></span>
 				</th>
 				<td class="col-input">
@@ -182,10 +182,10 @@
 </div>
 <!-- E: WRAP -->
 
-<script type="text/javascript" src="/js/${lang}/common.js"></script>
-<script type="text/javascript" src="/js/${lang}/message.js"></script>
-<script type="text/javascript" src="/js/${lang}/map-controll.js"></script>
-<script type="text/javascript" src="/js/${lang}/ui-controll.js"></script>
+<script type="text/javascript" src="/js/${lang}/common.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/message.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/map-controll.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/ui-controll.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		var isBasic = "${dataGroup.basic}";
@@ -209,6 +209,9 @@
 				$("#duration").focus();
 				return false;
 			}
+		}
+		if(!locationValidation($("#longitude").val(), $("#latitude").val(), $("#altitude").val())) {
+			return false;
 		}
 	}
 	

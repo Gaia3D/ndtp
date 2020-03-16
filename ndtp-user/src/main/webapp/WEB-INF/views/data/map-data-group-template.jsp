@@ -2,16 +2,18 @@
 
 <script id="templateDataGroupList" type="text/x-handlebars-template">
 	<div>
-		<span><spring:message code='all.d'/> {{formatNumber pagination.totalCount}} <spring:message code='search.what.count'/></span>
+		<span><spring:message code='all.d'/> <span class="totalCount">{{formatNumber pagination.totalCount}}</span> <spring:message code='search.what.count'/></span>
 		<span class="float-right">{{formatNumber pagination.pageNo}} / {{formatNumber pagination.lastPage}} <spring:message code='search.page'/></span>
 	</div>
 	<div class="dataGroupSummary table-data-group-summary table-font-small yScroll" style="height:100%">
-		<table class="table-word-break">
+		<table class="table-word-break" summary="데이터 그룹 목록 테이블">
+		<caption class="hiddenTag"></caption>
 			<colgroup>
 				<col class="col-width-12" />
 				<col class="col-width-12" />
 				<col />
 				<col class="col-width-17" />
+				<col class="col-width-12" />
 				<col class="col-width-12" />
 			</colgroup>
 			<thead>
@@ -20,7 +22,8 @@
 					<th>공유 유형</th>
 					<th>그룹명</th>
 					<th>데이터 건수</th>
-					<th>보기</th>
+					<th>표시</th>
+					<th>이동</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -30,7 +33,7 @@
 					<td>{{subtract ../pagination.rowNumber @index}}</td>
 					<td>
 		{{#ifMatch sharing 'common'}}
-							<span class="legend co mar0">C</span>	
+							<span class="legend co mar0">C</span>
 		{{/ifMatch}}
 		{{#ifMatch sharing 'public'}}
 							<span class="legend pu mar0">O</span>
@@ -52,12 +55,17 @@
 								[<span style="color:blue">{{userId}}</span>]
 			{{/ifMatch}}
 		{{/ifMatch}}
-						<a href="#" onclick="detailDataGroup('{{dataGroupId}}'); return false;">
+						<a href="/data-groups/{{dataGroupId}}" onclick="detailDataGroup(this.href); return false;">
 							{{dataGroupName}}
 						</a>
 					</td>
+					<td>{{#formatNumber dataCount}}{{/formatNumber}}</td>
 					<td>
-						{{dataCount}}
+		{{#if groupVisible}}
+						<button type="button" title="표시" class="showHideButton show" data-group-id="{{dataGroupId}}">표시</button>
+		{{else}}
+						<button type="button" title="표시" class="showHideButton hide" data-group-id="{{dataGroupId}}">표시</button>
+		{{/if}}
 					</td>
 					<td>
 						<button type="button" title="바로가기" class="goto" onclick="flyToGroup('{{longitude}}', '{{latitude}}', '{{altitude}}', '2');">바로가기</button>
@@ -66,7 +74,7 @@
 	{{/each}}
 {{else}}
 				<tr>
-					<td colspan="5" class="center">데이터 그룹이 존재하지 않습니다.</td>
+					<td colspan="6" class="center">데이터 그룹이 존재하지 않습니다.</td>
 				</tr>
 {{/greaterThan}}
 			</tbody>

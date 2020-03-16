@@ -29,6 +29,7 @@ public class Pagination {
         this.searchParameters = searchParameters;
         this.totalCount = totalCount;
         this.pageNo = pageNo;
+        if(this.pageNo == 0l) this.pageNo = 1l;
         this.pageRows = 10l;
         this.pageListCount = 5l;
         init();

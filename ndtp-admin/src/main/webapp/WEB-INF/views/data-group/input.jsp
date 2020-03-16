@@ -8,11 +8,11 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<title>데이터 그룹 등록 | NDTP</title>
-	<link rel="stylesheet" href="/css/${lang}/font/font.css" />
-	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
-	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
-	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-    <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
+	<link rel="stylesheet" href="/css/${lang}/font/font.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css?cacheVersion=${contentCacheVersion}" />
+    <link rel="stylesheet" href="/css/${lang}/admin-style.css?cacheVersion=${contentCacheVersion}" />
 </head>
 <body>
 	<%@ include file="/WEB-INF/views/layouts/header.jsp" %>
@@ -28,7 +28,8 @@
 							<div class="content-desc u-pull-right"><span class="icon-glyph glyph-emark-dot color-warning"></span><spring:message code='check'/></div>
 						</div>
 						<form:form id="dataGroup" modelAttribute="dataGroup" method="post" onsubmit="return false;">
-							<table class="input-table scope-row">
+							<table class="input-table scope-row" summary="데이터  그룹 등록 테이블">
+							<caption class="hiddenTag">데이터 그룹 등록</caption>
 								<col class="col-label l" />
 								<col class="col-input" />
 								<tr>
@@ -43,7 +44,7 @@
 								</tr>
 								<tr>
 									<th class="col-label" scope="row">
-										<form:label path="dataGroupKey">데이터 그룹 Key(영문)</form:label>
+										<form:label path="dataGroupKey">데이터 그룹 Key(영문,숫자,-,_)</form:label>
 										<span class="icon-glyph glyph-emark-dot color-warning"></span>
 									</th>
 									<td class="col-input">
@@ -190,32 +191,39 @@
 
 	<%@ include file="/WEB-INF/views/data-group/parent-data-group-dialog.jsp" %>
 
-<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
-<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-<script type="text/javascript" src="/js/${lang}/common.js"></script>
-<script type="text/javascript" src="/js/${lang}/message.js"></script>
-<script type="text/javascript" src="/js/navigation.js"></script>
+<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/common.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/message.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/navigation.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 	});
 
 	// 입력값이 변경되면 중복체크, 영문+숫자
-	$("#dataGroupKey").on("keyup", function(event) {
+	/* $("#dataGroupKey").on("keyup", function(event) {
 		$("#duplication").val(null);
 		if (!(event.keyCode >=37 && event.keyCode<=40)) {
 			var inputValue = $(this).val();
 			$(this).val(inputValue.replace(/[^a-z0-9]/gi,''));
 		}
-	});
-
-	// 그룹Key 중복 확인
- 	$( "#duplicationButtion" ).on( "click", function() {
+	}); */
+	
+	// 데이터 그룹 중복 확인
+	$( "#duplicationButtion" ).on( "click", function() {
 		var dataGroupKey = $("#dataGroupKey").val();
 		if (dataGroupKey == "") {
 			alert("데이터 그룹키(한글불가)를 입력해 주세요.");
 			$("#dataGroupKey").focus();
 			return false;
 		}
+		
+		var regDataGroupKey = /^[a-zA-Z0-9-_]+$/;
+		if (!regDataGroupKey.test(document.getElementById("dataGroupKey").value)) {
+			alert("데이터 그룹키(한글불가)가 올바르지 않습니다.");
+			return false;
+		}
+		
 		var formData = "dataGroupKey=" + dataGroupKey;
 		$.ajax({
 			url: "/data-groups/duplication",
@@ -282,6 +290,9 @@
 				$("#duration").focus();
 				return false;
 			}
+		}
+		if(!locationValidation($("#longitude").val(), $("#latitude").val(), $("#altitude").val())) {
+			return false;
 		}
 	}
 

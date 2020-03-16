@@ -9,11 +9,11 @@
     <meta name="viewport" content="width=device-width">
     <meta name="robots" content="index,nofollow"/>
     <title>지도에서 찾기 | NDPT</title>
-    <link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
-	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-	<link rel="stylesheet" href="/externlib/kotSlider/range.css" />
-    <link rel="stylesheet" href="/css/${lang}/map-style.css" />
-    <link rel="stylesheet" href="/externlib/css-toggle-switch/toggle-switch.css" />
+    <link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/kotSlider/range.css?cacheVersion=${contentCacheVersion}" />
+    <link rel="stylesheet" href="/css/${lang}/map-style.css?cacheVersion=${contentCacheVersion}" />
+    <link rel="stylesheet" href="/externlib/css-toggle-switch/toggle-switch.css?cacheVersion=${contentCacheVersion}" />
     <style type="text/css">
     .ctrlWrap {
 	    z-index: 10000;
@@ -50,7 +50,7 @@
 	        <button type="button" class="layerClose" title="닫기">닫기</button>
 	    </div>
 	    <div class="layerContents">
-			
+
 			<div class="inline-toggle">
 				<h4 class="category">Origin</h4>
 				<div id="datainfoDisplay" class="switch-toggle switch-ios">
@@ -61,7 +61,7 @@
 					<a></a>
 				</div>
 			</div>
-			
+
 			<div class="inline-toggle">
 				<h4 class="category">Bounding Box</h4>
 				<div id="datainfoDisplay" class="switch-toggle switch-ios">
@@ -72,7 +72,7 @@
 					<a></a>
 				</div>
 			</div>
-	
+
 			<div class="inline-toggle marB20">
 				<h4 class="category">선택 및 이동</h4>
 				<div class="switch-toggle switch-ios" style="width: 60%;">
@@ -86,7 +86,7 @@
 				</div>
 			</div>
 
-	
+
 			<div id="dataControllWrap" style="display:none;">
 				<p class="layerDivTit"><span>test / 오전반1조_행복관_s</span></p>
 				<div class="layerDiv">
@@ -101,7 +101,7 @@
 						</li>
 					</ul>
 				</div>
-				<form id="dcRotLocForm" class="layerDiv marB0">
+				<form:form id="dcRotLocForm" class="layerDiv marB0">
 					<input type="hidden" name="dataId" value="${dataInfo.dataId}" />
 					<h4 class="category">위치 변경</h4>
 					<ul class="layerDiv">
@@ -122,7 +122,7 @@
 							<input type="text" id="dcAltitudeOffset" value="1" size="1">
 						</li>
 					</ul>
-	
+
 					<h4 class="category">회전 변경</h4>
 					<ul class="layerDiv">
 						<li>
@@ -132,7 +132,7 @@
 							<input id="dcPitchRange" data-type="Pitch" style="width: 140px;" type="range" min="-360" max="360" step="1" value="1">
 							<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcPitchNext"></button>
 						</li>
-	
+
 						<li>
 							<label for="dcRoll">y(roll)</label>
 							<input type="text" id="dcRoll" name="roll" size="2" readonly>
@@ -140,7 +140,7 @@
 							<input id="dcRollRange" data-type="Roll" style="width: 140px;" type="range" min="-360" max="360" step="1" value="1">
 							<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcRollNext"></button>
 						</li>
-	
+
 						<li>
 							<label for="dcHeading">z(heading)</label>
 							<input type="text" id="dcHeading" name="heading" size="2" readonly>
@@ -149,38 +149,39 @@
 							<button type="button" class="dcRangeBtn rangeNext" data-type="next" id="rcHeadingNext"></button>
 						</li>
 					</ul>
-	
+
 					<div>
-						<button type="button" id="dcSavePosRotPop" class="btnTextF" 
+						<button type="button" id="dcSavePosRotPop" class="btnTextF"
 								title="<spring:message code='data.transform.save'/>">
 							<spring:message code='data.transform.save'/>
 						</button>
 					</div>
-				</form>
+				</form:form>
 			</div>
 		</div>
 	</div>
     <div id="magoContainer" style="height: 100%;"></div>
     <button class="mapSelectButton" onclick="window.close();">닫기</button>
 </body>
-<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
-<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-<script type="text/javascript" src="/externlib/handlebars-4.1.2/handlebars.js"></script>
+<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/handlebars-4.1.2/handlebars.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>
-<script type="text/javascript" src="/externlib/cesium-geoserver-terrain-provider/GeoserverTerrainProvider.js"></script>
-<script type="text/javascript" src="/externlib/decodeTextAlternative/encoding-indexes.js"></script>
-<script type="text/javascript" src="/externlib/decodeTextAlternative/encoding.js"></script>
-<script type="text/javascript" src="/externlib/moment-2.22.2/moment-with-locales.min.js"></script>
-<script type="text/javascript" src="/js/mago3d.js"></script>
-<script type="text/javascript" src="/js/mago3d_lx.js"></script>
-<script type="text/javascript" src="/js/${lang}/common.js"></script>
-<script type="text/javascript" src="/js/${lang}/message.js"></script>
-<script type="text/javascript" src="/js/${lang}/map-controll.js"></script>
-<script type="text/javascript" src="/js/${lang}/ui-controll.js"></script>
-<script type="text/javascript" src="/js/${lang}/wps-request.js"></script>
-<script type="text/javascript" src="/js/${lang}/data-info.js"></script>
-<script type="text/javascript" src="/js/${lang}/user-policy.js"></script>
-<script type="text/javascript" src="/js/${lang}/map-data-controll.js"></script>
+<script type="text/javascript" src="/externlib/cesium-geoserver-terrain-provider/GeoserverTerrainProvider.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/decodeTextAlternative/encoding-indexes.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/decodeTextAlternative/encoding.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/moment-2.22.2/moment-with-locales.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/mago3d.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/mago3d_lx.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/common.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/message.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/map-controll.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/ui-controll.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/wps-request.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/data-info.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/user-policy.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/map-data-controll.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/map-init.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("#magoTool").addClass("on");
@@ -194,23 +195,23 @@
 	let dataGroupMap = new Map();
 	dataGroupMap.set(parseInt('${dataInfo.dataGroupId}'), '${dataInfo.dataGroupName}');
 	var NDTP = NDTP ||{
-		policy : ${geoPolicyJson},
-		dataGroup : dataGroupMap
-		//baseLayers : ${baseLayerJson},
-		//wmsProvider : {},
-		//districtProvider : {}
+		policy : {},
+		dataGroup : dataGroupMap,
+		baseLayers : {}
 	};
-	
-	var geoPolicyJson = null;
 	var viewer = null;
 	var entities = null;
 	
-	magoInit();
-	
+	initPolicy(function(policy, baseLayers){
+		NDTP.policy = policy;
+		NDTP.baseLayers = baseLayers;
+		magoInit();
+	},'${dataInfo.dataId}');
+
 	function magoInit() {
-		
-		geoPolicyJson = ${geoPolicyJson};
-		
+
+		var geoPolicyJson = NDTP.policy;
+
 		var cesiumViewerOption = {};
 		cesiumViewerOption.infoBox = false;
 		cesiumViewerOption.navigationHelpButton = false;
@@ -220,25 +221,26 @@
 		cesiumViewerOption.geocoder = false;
 		cesiumViewerOption.baseLayerPicker = false;
 		cesiumViewerOption.sceneModePicker = false;
-		
+
 		/**
 		 * @param {Stirng} containerId container div id. required.
 		 * @param {object} serverPolicy mage3d geopolicy. required.
 		 * @param {object} callback loadstart callback, loadend callback. option.
 		 * @param {object} options Cesium viewer parameter. option.
 		 * @param {Cesium.Viewer} legacyViewer 타 시스템과의 연동의 경우 view 객체가 생성되어서 넘어 오는 경우가 있음. option.
-		*/	
+		*/
 		MAGO3D_INSTANCE = new Mago3D.Mago3d('magoContainer', geoPolicyJson, {loadend : magoLoadEnd}, cesiumViewerOption);
 	}
-	
+
 	var beforePointId = null;
 	function magoLoadEnd(e) {
 		var magoInstance = e;
-		viewer = magoInstance.getViewer(); 
+		var geoPolicyJson = NDTP.policy;
+		viewer = magoInstance.getViewer();
 		entities = viewer.entities;
 		var magoManager = magoInstance.getMagoManager();
 		var f4dController = magoInstance.getF4dController();
-		
+
 		// TODO : 세슘 MAP 선택 UI 제거,엔진에서 처리로 변경 예정.
 		viewer.baseLayerPicker.destroy();
 		viewer.scene.globe.depthTestAgainstTerrain = true;
@@ -248,13 +250,13 @@
 
 		// mago3d logo 추가
 		Mago3D.tempCredit(viewer);
-		
+
 		//우측 상단 지도 컨트롤러
 		MapControll(viewer);
 		dataGroupList(magoInstance);
         // 환경 설정.
         UserPolicy(magoInstance);
-				
+
      	// 선택 및 이동 all 로 선택
 		changeObjectMoveAPI(magoInstance, "0");
 		$('#objectAllMove').prop("checked", true);
@@ -267,23 +269,24 @@
 	    	var dataInfo = result.result;
 	    	initData(dataInfo);
 	    });
-	
+
 	    // 기본 레이어 랜더링
-		setTimeout(function(){
-        	initLayer('${baseLayers}');
-        }, geoPolicyJson.initDuration * 1000);
-		
+// 		setTimeout(function(){
+// 			var ndtpMap = new mapInit(magoInstance, NDTP.baseLayers, geoPolicyJson);
+// 			ndtpMap.initLayer();
+//         }, geoPolicyJson.initDuration * 1000);
+
 		/* setTimeout(function(){
 			changeObjectMove();
         }, 5000); */
-		
+
 	}
-	/* 
+	/*
 	function changeObjectMove() {
 		// 선택 및 이동 all 로 선택
 		changeObjectMoveAPI(MAGO3D_INSTANCE, "0");
 	} */
-	
+
 	// 데이터 그룹 목록
 	function dataGroupList(magoInstance) {
 		$.ajax({
@@ -306,13 +309,13 @@
 			}
 		});
 	}
-	
+
 	// 데이터 정보 목록
 	function dataList(magoInstance, dataGroup) {
 		var dataInfoJson = ${dataInfoJson};
-		
+
 		var f4dController = MAGO3D_INSTANCE.getF4dController();
-		
+
 		var dataInfoList = new Array();
 
 		if (dataInfoJson && f4dController) {
@@ -330,7 +333,12 @@
 
 			// 로드되는 시점
 			magoInstance.getMagoManager().on(Mago3D.MagoManager.EVENT_TYPE.F4DLOADEND,function(e){
-				flyTo(magoInstance);
+				var tiling = "${dataInfo.tiling}";
+				if(tiling === "true") {
+					gotoFly(magoInstance);
+				} else {
+					flyTo(magoInstance);
+				}
 			});
 
 			// 화면에 표출할 준비가 된 시점
@@ -346,39 +354,19 @@
 			flyTo(magoInstance);
 		}, 500); */
 	}
-	
+
+	// smart tiling data flyTo
+	function gotoFly(magoInstance) {
+		gotoFlyAPI(magoInstance, "${dataInfo.longitude}", "${dataInfo.latitude}", "${dataInfo.altitude}", 3);
+	}
+
 	function flyTo(magoInstance) {
 		//  searchDataAPI
 		searchDataAPI(magoInstance, "${dataInfo.dataGroupId}", "${dataInfo.dataKey}");
 	}
-	
+
 	function remove(entityStored) {
 		entities.removeById(entityStored);
-	}
-	
-	function initLayer(baseLayers) {
-		if(!baseLayers) return;
-		var layerList = baseLayers.split(",");
-		var queryString = "enable_yn='Y'";
-	    var queryStrings = layerList.map(function(){ return queryString; }).join(';');	// map: ie9부터 지원
-		var provider = new Cesium.WebMapServiceImageryProvider({
-	        url : geoPolicyJson.geoserverDataUrl + "/wms",
-	        layers : layerList.join(","),
-	        parameters : {
-	            service : 'WMS'
-	            ,version : '1.1.1'
-	            ,request : 'GetMap'
-	            ,transparent : 'true'
-	            ,format : 'image/png'
-	            ,time : 'P2Y/PRESENT'
-	            ,maxZoom : 25
-	            ,maxNativeZoom : 23
-	            ,CQL_FILTER: queryStrings
-	        },
-	        enablePickFeatures : false
-	    });
-	    
-		viewer.imageryLayers.addImageryProvider(provider);
 	}
 
 	function initData(dataInfo) {
@@ -440,7 +428,7 @@
 			return false;
 		}
 	}
-	
+
 	// 위치/회전 저장 버튼 클릭
 	$("#dcSavePosRotPop").click(function(){
 		if (validate() == false) {
@@ -497,9 +485,9 @@
 				}
 			}).always(/* stopLoading */);
 		} else {
-			alert('no');
+			//alert('no');
 		}
 	});
-	
+
 </script>
 </html>

@@ -37,6 +37,7 @@ public class LayerGroupServiceImpl implements LayerGroupService {
 											.build();
 							group.setLayerList(layerService.getListLayer(layer));
 						});
+		
 //		List<Layer> layerList = new ArrayList<>();
 //		layerGroupList.stream()
 //						.forEach(group -> {

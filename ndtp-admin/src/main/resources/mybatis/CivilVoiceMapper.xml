@@ -30,11 +30,19 @@
 			CASE WHEN user_id = #{userId} THEN true ELSE false END as editable
         FROM civil_voice
 		<trim prefix="WHERE" prefixOverrides="AND">
-			<if test="title != null and title != '' ">
-			AND title LIKE #{title} || '%'
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
+			AND ${searchWord} = #{searchValue}
+			</if>
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
+			AND ${searchWord} LIKE '%' || #{searchValue} || '%'
 			</if>
 		</trim>
+		<if test="orderWord != null and orderWord != '' and orderValue != null and orderValue != ''">
+		ORDER BY ${orderWord} ${orderValue}, civil_voice_id DESC
+		</if>
+		<if test="orderWord == null or orderWord == ''">
 		ORDER BY civil_voice_id DESC
+		</if>
 		OFFSET #{offset} LIMIT #{limit}
 	</select>
 
@@ -62,8 +70,11 @@
         SELECT COUNT(civil_voice_id)
         FROM civil_voice
 		<trim prefix="WHERE" prefixOverrides="AND">
-			<if test="title != null and title != '' ">
-			AND title LIKE #{title} || '%'
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
+			AND ${searchWord} = #{searchValue}
+			</if>
+			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '1'.toString()">
+			AND ${searchWord} LIKE '%' || #{searchValue} || '%'
 			</if>
 		</trim>
 	</select>

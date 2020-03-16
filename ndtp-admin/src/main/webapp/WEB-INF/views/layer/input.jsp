@@ -8,14 +8,14 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<title>Layer 등록 | NDTP</title>
-	<link rel="stylesheet" href="/css/${lang}/font/font.css" />
-	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
-	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css" />
-    <link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css">
-	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-	<link rel="stylesheet" href="/externlib/dropzone/dropzone.min.css">
-    <link rel="stylesheet" href="/css/${lang}/admin-style.css" />
-    <script type="text/javascript" src="/externlib/dropzone/dropzone.min.js"></script>
+	<link rel="stylesheet" href="/css/${lang}/font/font.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/normalize/normalize.min.css?cacheVersion=${contentCacheVersion}" />
+    <link rel="stylesheet" href="/css/fontawesome-free-5.2.0-web/css/all.min.css?cacheVersion=${contentCacheVersion}">
+	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/dropzone/dropzone.min.css?cacheVersion=${contentCacheVersion}">
+    <link rel="stylesheet" href="/css/${lang}/admin-style.css?cacheVersion=${contentCacheVersion}" />
+    <script type="text/javascript" src="/externlib/dropzone/dropzone.min.js?cacheVersion=${contentCacheVersion}"></script>
     <style type="text/css">
         .dropzone .dz-preview.lp-preview {
             width: 150px;
@@ -87,7 +87,8 @@
 						</div>
 						<form:form id="layer" modelAttribute="layer" method="post" onsubmit="return false;">
 						<form:hidden path="layerInsertType" value="upload"/>
-						<table class="input-table scope-row">
+						<table class="input-table scope-row" summary="2D 레이어 등록 테이블">
+						<caption class="hiddenTag">2D 레이어 등록</caption>
 							<colgroup>
 			                    <col class="col-label l" style="width: 15%" >
 			                    <col class="col-input" style="width: 35%" >
@@ -128,6 +129,7 @@
 			                    </th>
 			                    <td class="col-input">
 			                        <form:input path="layerKey" cssClass="m" maxlength="100" />
+			                        <label for="layerKeySelect" class="hiddenTag">geoserver layerKey</label>
 			                        <select id="layerKeySelect" class="selectBoxClass" style="display:none;">
 										<option value="">선택</option>
 									</select>
@@ -140,7 +142,7 @@
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 			                    <td class="col-input">
-			                        <select name="serviceType" class="selectBoxClass">
+			                        <select id="serviceType" name="serviceType" class="selectBoxClass">
 										<option value="">선택</option>
 										<option value="wms">WMS</option>
 										<option value="wfs">WFS</option>
@@ -149,7 +151,7 @@
 									</select>
 			                    </td>
 			                    <th class="col-label" scope="row">
-			                        <label for="cacheAvailableTrue">Cache 사용 유무</label>
+			                        <label for="cacheAvailableTrue">Cache 사용 여부</label>
 			                    </th>
 			                    <td class="col-input radio-set">
 			                        <form:radiobutton id="cacheAvailableTrue"  path="cacheAvailable" value="true" label="사용" />
@@ -162,7 +164,7 @@
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 			                    <td class="col-input">
-			                        <select name="layerType" class="selectBoxClass">
+			                        <select id="layerType" name="layerType" class="selectBoxClass">
 										<option value="">선택</option>
 										<option value="vector">Vector</option>
 										<option value="raster">Raster</option>
@@ -173,21 +175,22 @@
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 								<td class="col-input">
-									<select name="geometryType" class="forRaster selectBoxClass" >
+									<select id="geometryType" name="geometryType" class="forRaster selectBoxClass" >
 										<option value="">선택</option>
 										<option value="Point">Point</option>
 										<option value="Line">Line</option>
 										<option value="Polygon">Polygon</option>
 									</select>
 								</td>
-			                    
+
 							</tr>
 							<tr>
 								<th class="col-label" scope="row">
-			                        <form:label path="geometryType">외곽선 색상</form:label>
+			                        <form:label path="layerLineColor">외곽선 색상</form:label>
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 								<td class="col-input">
+									<label for="lineColorValue" class="hiddenTag">외곽선 색상값</label>
 									<input id="lineColorValue" placeholder="RGB" class="forRaster" />
 									<input type="color" id="layerLineColor" name="layerLineColor" class="picker" alt="외곽선 색상" />
 								</td>
@@ -205,6 +208,7 @@
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 								<td class="col-input">
+									<label for="fillColorValue" class="hiddenTag">채우기 색상값</label>
 									<input id="fillColorValue" placeholder="RGB" class="forRaster forPolygon">
 									<input type="color" id="layerFillColor" name="layerFillColor" class="picker forPolygon" alt="채우기 색상">
 								</td>
@@ -214,9 +218,10 @@
 			                    </th>
 								<td class="col-input">
 									<form:input type="text"  path="layerAlphaStyle" class="slider" alt="투명도"/>
+									<label for="sliderRange" class="hiddenTag">투명도 값</label>
 									<input type="range" id="sliderRange" min="0" max="100" value="100" alt="투명도">
 								</td>
-			                    
+
 			                </tr>
 			                <tr>
 			                	<th class="col-label" scope="row">
@@ -244,7 +249,7 @@
 									<form:radiobutton id="defaultDisplayFlase" path="defaultDisplay" value="false" label="미사용" />
 			                    </td>
 			                	<th class="col-label" scope="row">
-			                        <label for="useY">사용유무</label>
+			                        <label for="useY">사용 여부</label>
 			                        <span class="icon-glyph glyph-emark-dot color-warning"></span>
 			                    </th>
 			                    <td class="col-input radio-set">
@@ -254,7 +259,7 @@
 			                </tr>
 			                <tr>
 			                	<th class="col-label" scope="row">
-			                        <label for="labelDisplayTrue">Label 표시 유무</label>
+			                        <label for="labelDisplayTrue">Label 표시 여부</label>
 			                    </th>
 			                    <td class="col-input radio-set">
 			                        <form:radiobutton id="labelDisplayTrue"  path="labelDisplay" value="true" label="표시" />
@@ -314,17 +319,19 @@
 			                </tr>
 						</table>
 						</form:form>
-						
+
 						<ul id="layerButtonArea">
 							<li id="uploadLayerButton" class="onArea">
 								<h4 style="margin-top: 30px; margin-bottom: 5px;">파일 업로딩</h4>
 						        <div class="fileSection" style="font-size: 17px;">
-						            <form id="my-dropzone" action="" class="dropzone hzScroll"></form>
+						            <form id="my-dropzone" action="" class="dropzone hzScroll">
+										<label for="dropzoneFile" class="hiddenTag">dropzoneFile영역</label>
+						            </form>
 						        </div>
 						        <div class="button-group">
 									<div class="center-buttons">
 										<input type="submit" id="allFileUpload" value="<spring:message code='save'/>"/>
-										<input type="submit" id="allFileClear" value="초기화" />
+										<input type="submit" id="allFileClear" value="파일 초기화" />
 										<a href="/layer/list" class="button">목록</a>
 									</div>
 								</div>
@@ -350,24 +357,24 @@
 	<!-- Dialog -->
 	<%@ include file="/WEB-INF/views/layer/layer-group-dialog.jsp" %>
 
-<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
-<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-<script type="text/javascript" src="/js/${lang}/common.js"></script>
-<script type="text/javascript" src="/js/${lang}/message.js"></script>
-<script type="text/javascript" src="/js/navigation.js"></script>
+<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/common.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/message.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/navigation.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$(".tabs").tabs();
 		showRange(100);
 		changeLayerType(null);
 		changeGeometryType(null);
-		
+
 		$("input[name='sharing']").filter("[value='public']").prop("checked", true);
 		$("input[name='defaultDisplay']").filter("[value='true']").prop("checked", true);
 		$("input[name='available']").filter("[value='true']").prop("checked", true);
         $("input[name='labelDisplay']").filter("[value='true']").prop("checked", true);
-        
-        // geoserver layerlist 가져올 동안 스피너 
+
+        // geoserver layerlist 가져올 동안 스피너
 		var layerLoadingDialog = $("#layerLoadingDialog").dialog({
 			autoOpen: false,
 			width: 250,
@@ -377,9 +384,10 @@
 		});
 		layerLoadingDialog.dialog("open");
         getGeoserverLayerList(layerLoadingDialog);
+        $("input[type='file']").attr("id", "dropzoneFile");
 	});
-	
-	// 레이어 탭 이벤트 
+
+	// 레이어 탭 이벤트
 	$("#layerTabControl ul li").click(function(){
 		var activeTab = $(this).find("a").attr("href");
 		$("#layerButtonArea li").removeClass("onArea");
@@ -405,7 +413,7 @@
 	$('[name=geometryType]').on('change', function() {
 		changeGeometryType($("[name=geometryType]").val());
 	});
-	
+
 	// wms일 경우에만 cache 설정 할 수 있도록 활성화
 	$("select[name=serviceType]").change(function(e){
 		var value = $(this).val();
@@ -526,7 +534,7 @@
 			alert("Layer key를 입력하여 주십시오.");
 			$("#layerKey").focus();
 			return false;
-		} 
+		}
 		if($("#layerInsertType").val() === 'geoserver' && !$("#layerKeySelect").val()) {
 			alert("Layer key를 선택하여 주십시오.");
 			$("#layerKeySelect").focus();
@@ -564,13 +572,21 @@
 
 	function alertMessage(response) {
 		if(uploadFileResultCount === 0) {
-			if(response.result === "upload.file.type.invalid") {
+			if(response.errorCode === "upload.file.type.invalid") {
 				alert("복수의 파일을 업로딩 할 경우 zip 파일은 사용할 수 없습니다.");
-			} else if(response.result === "layer.name.empty") {
+			} else if(response.errorCode === "layer.name.empty") {
 				alert("Layer 명이 유효하지 않습니다.");
-			} else if("db.exception") {
+			} else if(response.errorCode === "db.exception") {
 				alert("죄송 합니다. 서버 실행중에 오류가 발생 하였습니다. \n 로그를 확인하여 주십시오.");
-			}
+			} else if(response.errorCode === "io.exception") {
+	            alert("입출력 처리 과정중 오류가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
+	        } else if(response.errorCode === "runtime.exception") {
+	            alert("프로그램 실행중 오류가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
+	        } else if(response.errorCode === "unknown.exception") {
+	            alert("서버 장애가 발생하였습니다. 잠시 후 다시 이용하여 주시기 바랍니다.");
+	        } else {
+	        	alert(JS_MESSAGE[response.errorCode]);
+	        }
 			uploadFileResultCount++;
 		}
 		return;
@@ -638,7 +654,7 @@
 
             clearTask.addEventListener("click", function () {
                 // Using "_this" here, because "this" doesn't point to the dropzone anymore
-                if (confirm("정말 전체 항목을 삭제하겠습니까?")) {
+	            if (confirm("[파일 업로딩]의 모든 파일을 삭제하겠습니까?")) {
                     // true 주면 업로드 중인 파일도 다 같이 삭제
                     myDropzone.removeAllFiles(true);
                 }
@@ -691,11 +707,11 @@
 							alert(JS_MESSAGE["insert"]);
 						    uploadFileCount = 0;
 						    uploadFileResultCount = 0;
+		                    myDropzone.removeAllFiles(true);
 						}
 	                } else {
-	                	alert(JS_MESSAGE[response.errorCode]);
+	                	alertMessage(response);
 	                	myDropzone.removeAllFiles(true);
-						console.log("---- " + res.message);
 	                }
 	            } else {
 					console.log("------- success response = " + response);
@@ -715,7 +731,7 @@
             }); */
         }
     };
-    
+
 	var insertGeoserverLayerFlag = true;
 	function geoserverLayerSave() {
 	    if(insertGeoserverLayerFlag) {
@@ -753,7 +769,7 @@
 	        return;
 		}
 	}
-	
+
 	function getGeoserverLayerList(layerLoadingDialog) {
         $.ajax({
 			url: "/layer/list-geoserver",
@@ -766,7 +782,7 @@
 						geoserverLayerList = geoserverLayerList.layer;
 						for(var i=0; i< geoserverLayerList.length; i++) {
 							var name = geoserverLayerList[i].name;
-							$("#layerKeySelect").append("<option value="+name+">"+name+"</option>");	
+							$("#layerKeySelect").append("<option value="+name+">"+name+"</option>");
 						}
 					}
 					layerLoadingDialog.dialog("close");

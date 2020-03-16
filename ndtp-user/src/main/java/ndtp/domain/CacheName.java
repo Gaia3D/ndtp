@@ -5,10 +5,12 @@ package ndtp.domain;
  *
  */
 public enum CacheName {
+	GEO_POLICY,
 	//LICENSE, 
-	POLICY,
 	MENU,
-	USER_GROUP,
-	SMART_TILING_DATA;
+	POLICY,
+	ROLE,
+	SMART_TILING_DATA,
+	USER_GROUP;
 }
 

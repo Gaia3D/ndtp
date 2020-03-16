@@ -8,14 +8,14 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<title>업로딩 데이터 목록 | NDTP</title>
-	<link rel="shortcut icon" href="/images/favicon.ico">
-	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css" />
-	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css" />
-	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css" />
-	<link rel="stylesheet" href="/css/${lang}/user-style.css" />
-	<link rel="stylesheet" href="/css/${lang}/style.css" />
-	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
-	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+	<link rel="shortcut icon" href="/images/favicon.ico?cacheVersion=${contentCacheVersion}">
+	<link rel="stylesheet" href="/externlib/cesium/Widgets/widgets.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.min.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/images/${lang}/icon/glyph/glyphicon.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/css/${lang}/user-style.css?cacheVersion=${contentCacheVersion}" />
+	<link rel="stylesheet" href="/css/${lang}/style.css?cacheVersion=${contentCacheVersion}" />
+	<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
+	<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>
 </head>
 <body>
 
@@ -92,7 +92,7 @@
 				<input type="hidden" id="checkIds" name="checkIds" value="" />
 			<div class="list-header row">
 				<div class="list-desc u-pull-left">
-					<spring:message code='all'/> <span style="color: #287be4;"><fmt:formatNumber value="${pagination.totalCount}" type="number"/></span> <spring:message code='search.what.count'/>,
+					<spring:message code='all.d'/> <span class="totalCount"><fmt:formatNumber value="${pagination.totalCount}" type="number"/></span> <spring:message code='search.what.count'/>,
 					<fmt:formatNumber value="${pagination.pageNo}" type="number"/> / <fmt:formatNumber value="${pagination.lastPage }" type="number"/> <spring:message code='search.page'/>
 				</div>
 				<div class="list-functions u-pull-right">
@@ -142,7 +142,7 @@
 							<input type="checkbox" id="uploadDataId_${uploadData.uploadDataId}" name="uploadDataId" value="${uploadData.uploadDataId}" />
 						</td>
 						<td class="col-number">${pagination.rowNumber - status.index }</td>
-						<td class="col-name ellipsis" style="max-width:200px;">${uploadData.dataGroupName }</td>
+						<td class="col-name ellipsis" style="min-width:120px;max-width:120px;">${uploadData.dataGroupName }</td>
 						<td class="col-type">
 <c:if test="${uploadData.sharing eq 'common' }">
 							공통
@@ -158,7 +158,7 @@
 </c:if>
 						</td>
 						<td class="col-type">${uploadData.dataType }</td>
-						<td class="col-name">
+						<td class="col-name ellipsis" style="min-width:300px;max-width:300px;">
 							<a href="/upload-data/modify?uploadDataId=${uploadData.uploadDataId }">
 							${uploadData.dataName }
 							</a>
@@ -172,7 +172,7 @@
 						<td class="col-count"><fmt:formatNumber value="${uploadData.converterCount}" type="number"/> 건</td>
 						<td class="col-functions">
 							<span class="button-group">
-								<a href="#" onclick="converterFile('${uploadData.uploadDataId}', '${uploadData.dataName}'); return false;"
+								<a href="#" onclick="converterFile('${uploadData.uploadDataId}', '${uploadData.dataName}', '${uploadData.dataType}'); return false;"
 									class="button" style="text-decoration: none;">
 									F4D 변환
 								</a>
@@ -204,10 +204,10 @@
 
 <%@ include file="/WEB-INF/views/upload-data/converter-dialog.jsp" %>
 
-<script type="text/javascript" src="/js/${lang}/common.js"></script>
-<script type="text/javascript" src="/js/${lang}/message.js"></script>
-<script type="text/javascript" src="/js/${lang}/map-controll.js"></script>
-<script type="text/javascript" src="/js/${lang}/ui-controll.js"></script>
+<script type="text/javascript" src="/js/${lang}/common.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/message.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/map-controll.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/ui-controll.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		var searchWord = "${uploadData.searchWord}";
@@ -245,9 +245,16 @@
 	});
 
 	// F4D Converter Button Click
-	function converterFile(uploadDataId, dataName) {
+	function converterFile(uploadDataId, dataName, dataType) {
+		$("#dataType").val(dataType);
 		$("#converterCheckIds").val(uploadDataId + ",");
 		$("#title").val(dataName);
+		// 여기서 확장자가 las면 template 을 포인트 클라우트 클릭하게
+		if(dataType === "las") {
+			$("#converterTemplate").val("point-cloud");
+		} else {
+			$("#converterTemplate").val("basic");
+		}
 
 		dialogConverterJob.dialog( "open" );
 	}
@@ -262,6 +269,7 @@
 			alert("파일을 선택해 주십시오.");
 			return;
 		}
+		$("#dataType").val("");
 		$("#converterCheckIds").val(checkedValue);
 
 		dialogConverterJob.dialog( "open" );
@@ -274,6 +282,15 @@
 			alert("제목을 입력하여 주십시오.");
 			$("#title").focus();
 			return false;
+		}
+
+		if($("#dataType").val() === "las") {
+			// 여기서 확장자가 las면 template 을 포인트 클라우트 클릭하게
+			if($("#converterTemplate").val() != "point-cloud") {
+				alert("LAS 데이터의 경우 변환 템플릿을 Point Cloud 로 선택하여 주십시오.");
+				$("#converterTemplate").focus();
+				return false;
+			}
 		}
 
 		if(saveConverterJobFlag) {
@@ -341,7 +358,7 @@
 			}
 		}
 	}
-	
+
 	$('#yAxisUp').change(function() {
 		var desc = $(this).siblings('span');
 		var value = $(this).val();

@@ -186,10 +186,42 @@ values
 	(NEXTVAL('user_group_role_seq'), 1, 4),
 	(NEXTVAL('user_group_role_seq'), 1, 5),
 	(NEXTVAL('user_group_role_seq'), 1, 6),
+	(NEXTVAL('user_group_role_seq'), 1, 7),
 	(NEXTVAL('user_group_role_seq'), 2, 4),
 	(NEXTVAL('user_group_role_seq'), 2, 5),
 	(NEXTVAL('user_group_role_seq'), 2, 6);
 
+-- 메인 화면 위젯
+insert into widget(widget_id, name, view_order, user_id)
+values
+	(NEXTVAL('widget_seq'), 'dataGroupWidget', 1, 'admin' ),
+	(NEXTVAL('widget_seq'), 'dataStatusWidget', 2, 'admin' ),
+	(NEXTVAL('widget_seq'), 'dataAdjustLogWidget', 3, 'admin' ),
+	(NEXTVAL('widget_seq'), 'userStatusWidget', 4, 'admin' ),
+	(NEXTVAL('widget_seq'), 'systemUsageWidget', 5, 'admin' ),
+	(NEXTVAL('widget_seq'), 'civilVoiceWidget', 6, 'admin' ),
+	(NEXTVAL('widget_seq'), 'userAccessLogWidget', 7, 'admin' ),
+	(NEXTVAL('widget_seq'), 'dbcpStatusWidget', 8, 'admin' );
 
+
+-- 운영 정책
+insert into policy(	policy_id, password_exception_char)
+			values( 1, '<>&''"');
+
+-- 2D, 3D 운영 정책
+insert into geopolicy(	geopolicy_id)
+			values( 1 );
+
+-- Role
+insert into role(role_id, role_name, role_key, role_target, role_type, use_yn, default_yn)
+values
+    (1, '[관리자 전용] 관리자 페이지 SIGN IN 권한', 'ADMIN_SIGNIN', '1', '0', 'Y', 'Y'),
+    (2, '[관리자 전용] 관리자 페이지 사용자 관리 권한', 'ADMIN_USER_MANAGE', '1', '0', 'Y', 'Y'),
+    (3, '[관리자 전용] 관리자 페이지 Layer 관리 권한', 'ADMIN_LAYER_MANAGE', '1', '0', 'Y', 'Y'),
+
+	(4, '[사용자 전용] 사용자 페이지 SIGN IN 권한', 'USER_SIGNIN', '0', '0', 'Y', 'Y'),
+	(5, '[사용자 전용] 사용자 페이지 DATA 등록 권한', 'USER_DATA_CREATE', '0', '0', 'Y', 'Y'),
+	(6, '[사용자 전용] 사용자 페이지 DATA 조회 권한', 'USER_DATA_READ', '0', '0', 'Y', 'Y'),
+	(7, '[사용자 전용] 사용자 페이지 시민참여 관리 권한', 'USER_CIVIL_VOICE_MANAGE', '0', '0', 'Y', 'Y');
 
 commit;

@@ -14,7 +14,7 @@ public class URLSupport {
     public static final String[] LOG_EXCEPTION_URI = { "error", "access/list", "accesses" };
     
     // 파일 업로딩 URL
- 	public static final String[] MULTIPART_REQUEST_URI = { "/layers/" };
+ 	public static final String[] MULTIPART_REQUEST_URI = { "/upload-datas", "/layers/" };
  	
 //	public static final Pattern STATIC_RESOURCES = Pattern.compile("(^/js/.*)|(^/css/.*)|(^/images/.*)|(^/externlib/.*)|(/favicon.ico)");
 }

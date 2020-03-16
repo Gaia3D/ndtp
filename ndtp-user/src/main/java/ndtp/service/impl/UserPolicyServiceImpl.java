@@ -1,22 +1,15 @@
 package ndtp.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
+import ndtp.domain.CacheManager;
 import ndtp.domain.GeoPolicy;
-import ndtp.domain.Layer;
-import ndtp.domain.LayerGroup;
 import ndtp.domain.UserPolicy;
-import ndtp.persistence.LayerGroupMapper;
 import ndtp.persistence.UserPolicyMapper;
 import ndtp.service.GeoPolicyService;
-import ndtp.service.LayerService;
 import ndtp.service.UserPolicyService;
 
 
@@ -36,7 +29,7 @@ public class UserPolicyServiceImpl implements UserPolicyService {
     @Transactional(readOnly = true)
     public UserPolicy getUserPolicy(String userId) {
         UserPolicy userPolicy = userPolicyMapper.getUserPolicy(userId);
-        GeoPolicy geoPolicy = geoPolicyService.getGeoPolicy();
+        GeoPolicy geoPolicy = CacheManager.getGeoPolicy();
         if(userPolicy == null) {
         	userPolicy = UserPolicy.builder()
         				.initLongitude(geoPolicy.getInitLongitude())
