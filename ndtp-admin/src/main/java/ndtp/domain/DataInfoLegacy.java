@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import lombok.Data;
 
 @Data
-public class Children {
+public class DataInfoLegacy {
 	// 위도
 	private BigDecimal latitude;
 	// 경도

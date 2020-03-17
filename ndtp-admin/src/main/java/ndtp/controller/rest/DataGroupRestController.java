@@ -1,5 +1,6 @@
 package ndtp.controller.rest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,12 +22,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import lombok.extern.slf4j.Slf4j;
+import ndtp.domain.DataInfoLegacy;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfoSimple;
 import ndtp.domain.Key;
 import ndtp.domain.LocationUdateType;
+import ndtp.domain.DataInfoLegacyWrapper;
 import ndtp.domain.UserSession;
 import ndtp.service.DataGroupService;
 import ndtp.service.DataService;
@@ -216,12 +220,72 @@ public class DataGroupRestController {
 		List<DataInfoSimple> dataInfoList = dataService.getListAllDataByDataGroupId(dataGroupId);
 		dataGroup.setDatas(dataInfoList);
 		try {
-			String dataJson = objectMapper.writeValueAsString(dataGroup);
+			objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+			String dataJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(dataGroup);
 			
 			// 불필요한 코드
 			dataJson = dataJson.replaceAll("<", "&lt;");
 			dataJson = dataJson.replaceAll(">", "&gt;");
 			response.getWriter().write(dataJson);
+		} catch(JsonProcessingException e) {
+			log.info("@@@@@@@@@@@@ jsonProcessing exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+		} catch(RuntimeException e) {
+			log.info("@@@@@@@@@@@@ runtime exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+		} catch(Exception e) {
+			log.info("@@@@@@@@@@@@ exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+		}
+			
+		return null;
+	}
+	
+	/**
+	 * Smart Tiling Converter용 JSON 다운로드
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "/download/converter/{dataGroupId:[0-9]+}")
+	public String downloadSmartTilingConverter(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dataGroupId) {
+		log.info("@@ dataGroupId = {}", dataGroupId);
+		
+		response.setContentType("application/force-download");
+		response.setHeader("Content-Transfer-Encoding", "binary");
+		response.setHeader("Content-Disposition", "attachment; filename=\"converter_" + dataGroupId + ".json\"");
+		
+		DataGroup dataGroup = DataGroup.builder().dataGroupId(dataGroupId).build();
+		dataGroup = dataGroupService.getDataGroup(dataGroup);
+		
+		List<DataInfoSimple> dataInfoList = dataService.getListAllDataByDataGroupId(dataGroupId);
+		dataGroup.setDatas(dataInfoList);
+		
+		try {
+			
+			DataInfoLegacyWrapper tgt = new DataInfoLegacyWrapper();
+			List<DataInfoLegacy> childrens = new ArrayList<>();
+			
+			for (DataInfoSimple info : dataInfoList) {
+				DataInfoLegacy children = new DataInfoLegacy();
+				children.setLatitude(info.getLatitude());
+				children.setLongitude(info.getLongitude());
+				children.setDataId(info.getDataId());
+				children.setDataGroupId(info.getDataGroupId());
+				children.setData_key(info.getDataKey());
+				children.setData_name(info.getDataName());
+				children.setMapping_type(info.getMappingType());
+				children.setHeight(info.getAltitude());
+				children.setHeading(info.getHeading());
+				children.setPitch(info.getPitch());
+				children.setRoll(info.getRoll());
+				children.setAttributes(info.getMetainfo());
+				childrens.add(children);
+			}
+			tgt.setChildren(childrens);
+			objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+			String result = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(tgt);
+			
+			// 불필요한 코드
+			//dataJson = dataJson.replaceAll("<", "&lt;");
+			//dataJson = dataJson.replaceAll(">", "&gt;");
+			response.getWriter().write(result);
 		} catch(JsonProcessingException e) {
 			log.info("@@@@@@@@@@@@ jsonProcessing exception. message = {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
 		} catch(RuntimeException e) {

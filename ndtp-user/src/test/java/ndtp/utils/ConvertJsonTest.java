@@ -7,17 +7,25 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import ndtp.domain.Children;
 import ndtp.domain.DataInfo;
-import ndtp.domain.SourceJSON;
-import ndtp.domain.TargetJSON;
+import ndtp.domain.DataInfoLegacy;
+import ndtp.domain.DataInfoLegacyWrapper;
 
 @Slf4j
 class ConvertJsonTest {
+	
+	@Data
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	static class SourceJSON {
+		private List<DataInfo> datas;
+		private String dataGroupKey;
+	}
 	
 	@Test
 	void test() {
@@ -31,12 +39,12 @@ class ConvertJsonTest {
 				if (!file.isDirectory()) {
 					ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 					SourceJSON src = objectMapper.readValue(file, SourceJSON.class);
-					TargetJSON tgt = new TargetJSON();
-					List<Children> childrens = new ArrayList<>();
+					DataInfoLegacyWrapper tgt = new DataInfoLegacyWrapper();
+					List<DataInfoLegacy> childrens = new ArrayList<>();
 					
 					List<DataInfo> datas = src.getDatas();
 					for (DataInfo info : datas) {
-						Children children = new Children();
+						DataInfoLegacy children = new DataInfoLegacy();
 						children.setLatitude(info.getLatitude());
 						children.setLongitude(info.getLongitude());
 						children.setDataId(info.getDataId());

@@ -173,10 +173,11 @@
 													class="button" style="text-decoration:none;">아래로</a>
 					                    	</div>
 					                    </td>
-					                    <td class="col-functions">
+					                    <td class="col-functions block-element-wrapper">
 											<a href="#" onclick="uploadSmartTilingData('${dataGroup.dataGroupId }', '${dataGroup.dataGroupName }'); return false;">
-												메타 정보 수정</a>&nbsp;&nbsp;&nbsp;&nbsp;
-											<a href="/data-groups/download/${dataGroup.dataGroupId }">내보내기	</a>
+												메타 정보 수정</a>
+											<a href="/data-groups/download/${dataGroup.dataGroupId }">내보내기(일반용)</a>
+											<a href="/data-groups/download/converter/${dataGroup.dataGroupId }">내보내기(변환용)</a>
 	<%-- <c:if test="${dataGroup.tiling eq 'false' }">
 											미사용
 	</c:if> --%>
