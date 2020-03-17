@@ -1752,7 +1752,7 @@ var Simulation = function(magoInstance, viewer, $) {
 //                    _viewer._selectedEntity = pickedFeature.id.polygon;
                 } else {
 					var pickedFeature = viewer.scene.pick(event.position);
-					debugger;
+
 					if(pickedFeature) {
 						if(pickedFeature.id.type === "delta") {
 

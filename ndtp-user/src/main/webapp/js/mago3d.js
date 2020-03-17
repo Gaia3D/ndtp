@@ -26736,7 +26736,6 @@ MagoManager.prototype.managePickingProcess = function()
 
     MagoManager.prototype.managePickingProcessPassive = function(buildingFileName, nodeId)
     {
-        debugger;
         this.magoPolicy.objectMoveMode = CODE.moveMode.ALL;
         var gl = this.getGl();
 

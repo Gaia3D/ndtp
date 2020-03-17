@@ -357,7 +357,7 @@ var SpatialAnalysis = function(magoInstance) {
 		// var xml = requestBodyRadialLineOfSight(selectedLayer, observerPoint, observerOffset, radius, sides);
 
 		var resource = requestPostResource(xml);
-		debugger;
+
 	    resource.then(function (res) {
 	        var promise = Cesium.GeoJsonDataSource.load(JSON.parse(res));
 	        promise.then(function (ds) {
@@ -760,7 +760,6 @@ var SpatialAnalysis = function(magoInstance) {
 	}
 	
 	function requestPostResource(xml) {
-		debugger;
 		var resource = new Cesium.Resource.post({
 			url: WPS_URL,
 			headers: {

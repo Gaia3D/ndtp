@@ -150,10 +150,7 @@
         series1.columns.template.strokeOpacity = 1;
 
         series1.columns.template.events.on("hit", function(ev) {
-            b=ev.target;
-            debugger;
             var dataContextUID = ev.target.dataItem.dataContext.uid;
-            this
             MAGO3D_INSTANCE.getMagoManager().managePickingProcessPassive("F4D_"+dataContextUID, dataContextUID);
         }, this);
 
@@ -264,7 +261,7 @@
 <style>
     #chartdiv {
         width: 100%;
-        height: 500px;
+        height: 384px;
     }
 
     #processStatusCheckDialog ul.listDrop li ul li{

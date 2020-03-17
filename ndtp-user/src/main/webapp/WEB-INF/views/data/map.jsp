@@ -373,9 +373,14 @@
 
 	var processStatusCheckDialog = $( "#processStatusCheckDialog" ).dialog({
 		autoOpen: false,
-		width: 1100,
-		height: 720,
+		width: 400,
+		height: 500,
 		overflow : "auto",
+		position: {
+			my: "right top",
+			at:"right-5 top+105",
+			of:"body"
+		},
 		buttons: [
 			{
 				text: "확인",

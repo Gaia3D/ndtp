@@ -167,7 +167,7 @@
         data.set('heading', heading);
         data.set('pitch', 0);
         data.set('roll', 0);
-        debugger;
+
         $.ajax({
             type: "POST",
             enctype: 'multipart/form-data',
