@@ -159,83 +159,46 @@
 <%@ include file="/WEB-INF/views/issue/issue-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/simulation/simul-solar-dialog.jsp" %>
 
-<%--<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/externlib/json-viewer/json-viewer.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/externlib/handlebars-4.1.2/handlebars.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/js/${lang}/handlebarsHelper.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>--%>
-<%--<script type="text/javascript" src="/externlib/cesium-geoserver-terrain-provider/GeoserverTerrainProvider.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/externlib/geostats/geostats.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/externlib/chartjs/Chart.min.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/externlib/kotSlider/range.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/externlib/decodeTextAlternative/encoding-indexes.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/externlib/decodeTextAlternative/encoding.js?cacheVersion=${contentCacheVersion}"></script>--%>
-
-<%--<script type="text/javascript" src="/externlib/moment-2.22.2/moment-with-locales.min.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/externlib/moment-range/moment-range.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/externlib/tuidatepicker-4.0.3/tui-date-picker.min.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/js/mago3d.js"></script>--%>
-<%--<script type="text/javascript" src="/js/mago3d_lx.js"></script>--%>
-<%--<script type="text/javascript" src="/externlib/cesium/HtmlBillboard.js"></script>--%>
-<%--<script type="text/javascript" src="/externlib/cesium/HtmlBillboardCollection.js"></script>--%>
-<%--<script type="text/javascript" src="/js/${lang}/common.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/js/${lang}/message.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/js/${lang}/map-controll.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/js/${lang}/ui-controll.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/js/${lang}/spatial-analysis.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/js/${lang}/district-controll.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/js/${lang}/wps-request.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/js/${lang}/search.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/js/${lang}/data-info.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/js/${lang}/user-policy.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/js/${lang}/simulation.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/js/${lang}/layer.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/js/${lang}/map-data-controll.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/js/${lang}/civil-voice.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/js/${lang}/map-init.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/js/${lang}/issue-controller.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/js/${lang}/map-data.js?cacheVersion=${contentCacheVersion}"></script>--%>
-<%--<script type="text/javascript" src="/js/${lang}/map-data-group.js?cacheVersion=${contentCacheVersion}"></script>--%>
-
-<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js"></script>
-<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-<script type="text/javascript" src="/externlib/json-viewer/json-viewer.js"></script>
-<script type="text/javascript" src="/externlib/handlebars-4.1.2/handlebars.js"></script>
-<script type="text/javascript" src="/js/${lang}/handlebarsHelper.js"></script>
+<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/json-viewer/json-viewer.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/handlebars-4.1.2/handlebars.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/handlebarsHelper.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript" src="/externlib/cesium/Cesium.js"></script>
-<script type="text/javascript" src="/externlib/cesium-geoserver-terrain-provider/GeoserverTerrainProvider.js"></script>
-<script type="text/javascript" src="/externlib/geostats/geostats.js"></script>
-<script type="text/javascript" src="/externlib/chartjs/Chart.min.js"></script>
-<script type="text/javascript" src="/externlib/kotSlider/range.js"></script>
-<script type="text/javascript" src="/externlib/decodeTextAlternative/encoding-indexes.js"></script>
-<script type="text/javascript" src="/externlib/decodeTextAlternative/encoding.js"></script>
+<script type="text/javascript" src="/externlib/cesium-geoserver-terrain-provider/GeoserverTerrainProvider.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/geostats/geostats.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/chartjs/Chart.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/kotSlider/range.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/decodeTextAlternative/encoding-indexes.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/decodeTextAlternative/encoding.js?cacheVersion=${contentCacheVersion}"></script>
 
-<script type="text/javascript" src="/externlib/moment-2.22.2/moment-with-locales.min.js"></script>
-<script type="text/javascript" src="/externlib/moment-range/moment-range.js"></script>
-<script type="text/javascript" src="/externlib/tuidatepicker-4.0.3/tui-date-picker.min.js"></script>
-<script type="text/javascript" src="/js/mago3d.js"></script>
-<script type="text/javascript" src="/js/mago3d_lx.js"></script>
+<script type="text/javascript" src="/externlib/moment-2.22.2/moment-with-locales.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/moment-range/moment-range.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/externlib/tuidatepicker-4.0.3/tui-date-picker.min.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/mago3d.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/mago3d_lx.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript" src="/externlib/cesium/HtmlBillboard.js"></script>
 <script type="text/javascript" src="/externlib/cesium/HtmlBillboardCollection.js"></script>
-<script type="text/javascript" src="/js/${lang}/common.js"></script>
-<script type="text/javascript" src="/js/${lang}/message.js"></script>
-<script type="text/javascript" src="/js/${lang}/map-controll.js"></script>
-<script type="text/javascript" src="/js/${lang}/ui-controll.js"></script>
-<script type="text/javascript" src="/js/${lang}/spatial-analysis.js"></script>
-<script type="text/javascript" src="/js/${lang}/district-controll.js"></script>
-<script type="text/javascript" src="/js/${lang}/wps-request.js"></script>
-<script type="text/javascript" src="/js/${lang}/search.js"></script>
-<script type="text/javascript" src="/js/${lang}/data-info.js"></script>
-<script type="text/javascript" src="/js/${lang}/user-policy.js"></script>
-<script type="text/javascript" src="/js/${lang}/simulation.js"></script>
-<script type="text/javascript" src="/js/${lang}/layer.js"></script>
-<script type="text/javascript" src="/js/${lang}/map-data-controll.js"></script>
-<script type="text/javascript" src="/js/${lang}/civil-voice.js"></script>
-<script type="text/javascript" src="/js/${lang}/map-init.js"></script>
-<script type="text/javascript" src="/js/${lang}/issue-controller.js"></script>
-<script type="text/javascript" src="/js/${lang}/map-data.js"></script>
-<script type="text/javascript" src="/js/${lang}/map-data-group.js"></script>
+<script type="text/javascript" src="/js/${lang}/common.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/message.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/map-controll.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/ui-controll.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/spatial-analysis.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/district-controll.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/wps-request.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/search.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/data-info.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/user-policy.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/simulation.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/layer.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/map-data-controll.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/civil-voice.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/map-init.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/issue-controller.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/map-data.js?cacheVersion=${contentCacheVersion}"></script>
+<script type="text/javascript" src="/js/${lang}/map-data-group.js?cacheVersion=${contentCacheVersion}"></script>
+
+
 
 <script type="text/javascript">
 	var a=1;

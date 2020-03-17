@@ -3,6 +3,7 @@
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 
 <script src="/externlib/cesium/Cesium.js" type="text/javascript"></script>
+<script type="text/javascript" src="/externlib/cesium-geoserver-terrain-provider/GeoserverTerrainProvider.js?cacheVersion=${contentCacheVersion}"></script>
 <link href="/externlib/cesium/Widgets/widgets.css" rel="stylesheet" type="text/css" />
 
 <div id="headPitchRollDialog" title="객체 정보" class="basicTable" style="display: none;">
