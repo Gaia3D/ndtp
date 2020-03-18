@@ -2,9 +2,11 @@ package ndtp.domain;
 
 import java.math.BigDecimal;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class DataInfoLegacy {
 	// 위도
 	private BigDecimal latitude;
