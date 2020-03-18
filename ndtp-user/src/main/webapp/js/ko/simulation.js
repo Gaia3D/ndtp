@@ -727,8 +727,11 @@ var Simulation = function(magoInstance, viewer, $) {
 
 				for(let index in entitis) {
 					let entitiyObj = entitis[index];
+
 					let registeredEntity = _viewer.entities.add(entitiyObj);
 					registeredEntity.name = "sejong_apartmentComplex1";
+
+					registeredEntity.polygon.heightReference = 1;
 
 					Cesium.knockout.getObservable(viewModel, 'standardFloorCount').subscribe(
 						function(newValue) {
@@ -773,6 +776,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				strokeWidth: 0,
 				stroke: Cesium.Color.AQUA.withAlpha(0.0),
 				fill: Cesium.Color.AQUA.withAlpha(0.8),
+				clampToGround: true
 			};
 			let url = "/data/simulation-rest/drawGeojson?fileName=" + fileName;
 
@@ -783,6 +787,8 @@ var Simulation = function(magoInstance, viewer, $) {
 					let entitiyObj = entitis[index];
 					let registeredEntity = _viewer.entities.add(entitiyObj);
 					registeredEntity.name = "sejong_church1";
+
+					registeredEntity.polygon.extrudedHeightReference = 1;
 
 					Cesium.knockout.getObservable(viewModel, 'standardFloorCount').subscribe(
 						function(newValue) {
@@ -812,12 +818,14 @@ var Simulation = function(magoInstance, viewer, $) {
 		}
 		switch (val){
 			case "dType1":
+				allObject[pickedName].terrain.polygon.extrudedHeightReference = Cesium.HeightReference.CLAMP_TO_GROUND ;
 				allObject[pickedName].terrain.polygon.material.color=Cesium.Color.YELLOW.withAlpha(0.6);
 				$("#standardFloorAreaRatio").val(200).trigger("change");
 				$("#standardBuildingToLandRatio").val(50).trigger("change");
 				$("#standardFloorCount").val(40).trigger("change");
 				break;
 			case "dType2":
+				allObject[pickedName].terrain.polygon.heightReference = Cesium.HeightReference.CLAMP_TO_GROUND ;
 				allObject[pickedName].terrain.polygon.material.color=Cesium.Color.ORANGERED.withAlpha(0.6);
 				$("#standardFloorAreaRatio").val(120).trigger("change");
 				$("#standardBuildingToLandRatio").val(40).trigger("change");
@@ -1601,9 +1609,10 @@ var Simulation = function(magoInstance, viewer, $) {
 					let cartographic = ellipsoid.cartesianToCartographic(pickPosition);
 					let longitudeString = Cesium.Math.toDegrees(cartographic.longitude);
 					let latitudeString = Cesium.Math.toDegrees(cartographic.latitude);
+					let height = cartographic.height;
 
 					let entity = new Cesium.Entity({
-						position : Cesium.Cartesian3.fromDegrees(longitudeString, latitudeString, 1),
+						position : Cesium.Cartesian3.fromDegrees(longitudeString, latitudeString, height),
 						point: new Cesium.PointGraphics({
 							pixelSize: 12,
 							color: Cesium.Color.WHITE
@@ -1613,6 +1622,7 @@ var Simulation = function(magoInstance, viewer, $) {
 					let object = {
 						lon: longitudeString,
 						lat: latitudeString,
+						alt: height,
 						entity: entity
 					};
 					_viewer.entities.add(entity);
@@ -1652,7 +1662,6 @@ var Simulation = function(magoInstance, viewer, $) {
 
 					//select Entity Drag 기능
 					if (headPitchRollDialog.dialog("isOpen")) {
-
 						var dragging = false;
 						var handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
 						handler.setInputAction(
@@ -1674,6 +1683,8 @@ var Simulation = function(magoInstance, viewer, $) {
 									let cartographic = Cesium.Cartographic.fromCartesian(position);
 									let lon = Cesium.Math.toDegrees(cartographic.longitude);
 									let lat = Cesium.Math.toDegrees(cartographic.latitude);
+									let height = cartographic.height;
+									console.log(height);
 									document.getElementById("selected_obj_longitude").innerText = lon;
 									document.getElementById("selected_obj_latitude").innerText = lat;
 									
@@ -1696,52 +1707,52 @@ var Simulation = function(magoInstance, viewer, $) {
 					
 				}
                 else if (runAllocBuildStat === "obj_lamp") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.4, "objLamp", "objLamp.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 0.4, "objLamp", "objLamp.gltf")
 				}
                 else if (runAllocBuildStat === "obj_tree") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.05, "tree", "tree.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 0.05, "tree", "tree.gltf")
 				}
 				else if (runAllocBuildStat === "obj_tree2") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.9, "Tree2", "Tree.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 0.9, "Tree2", "Tree.gltf")
 				}
 				else if (runAllocBuildStat === "obj_cone") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.03, "TrafficCone", "TrafficCone.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 0.03, "TrafficCone", "TrafficCone.gltf")
 				}
 				else if (runAllocBuildStat === "obj_bench") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.1, "bench", "bank.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 0.1, "bench", "bank.gltf")
 				}
 				else if (runAllocBuildStat === "obj_bus1") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 1, 0.05, "buses", "bus_1.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height+1, 0.05, "buses", "bus_1.gltf")
 				}
 				else if (runAllocBuildStat === "obj_bus2") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 0.03, "buses", "Mat_1.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 0.03, "buses", "Mat_1.gltf")
 				}
 				else if (runAllocBuildStat === "obj_car1") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 1, 0.05, "buses", "car_1.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height+1, 0.05, "buses", "car_1.gltf")
 				}
 				else if (runAllocBuildStat === "obj_car2") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 1, 0.05, "buses", "car2_2.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height+1, 0.05, "buses", "car2_2.gltf")
 				}
 				else if (runAllocBuildStat === "obj_truck1") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 1, 0.05, "buses", "truck_1.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height+1, 0.05, "buses", "truck_1.gltf")
 				}
 				else if (runAllocBuildStat === "obj_truck2") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 1, 0.05, "buses", "truck_2.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height+1, 0.05, "buses", "truck_2.gltf")
 				}
 				else if (runAllocBuildStat === "maple_green") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 1, "texture_maple", "maple_green.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 1, "texture_maple", "maple_green.gltf")
 				}
 				else if (runAllocBuildStat === "maple_light_green") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 1, "texture_maple", "maple_light_green.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 1, "texture_maple", "maple_light_green.gltf")
 				}
 				else if (runAllocBuildStat === "maple_orange") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 1, "texture_maple", "maple_orange.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 1, "texture_maple", "maple_orange.gltf")
 				}
 				else if (runAllocBuildStat === "maple_red") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 1, "texture_maple", "maple_red.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 1, "texture_maple", "maple_red.gltf")
 				}
 				else if (runAllocBuildStat === "maple_yellow") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), 0, 1, "texture_maple", "maple_yellow.gltf")
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 1, "texture_maple", "maple_yellow.gltf")
 				}
 
 				else if(runAllocBuildStat === "imsiBuildSelect") {
@@ -2007,52 +2018,52 @@ var Simulation = function(magoInstance, viewer, $) {
 
 	function multiGen(selected_name, obj) {
 		if (selected_name === "obj_lamp") {
-			genBuild(obj.lon, obj.lat, 0, 0.4, "objLamp", "objLamp.gltf")
+			genBuild(obj.lon, obj.lat, obj.alt, 0.4, "objLamp", "objLamp.gltf")
 		}
 		else if (selected_name === "obj_tree") {
-			genBuild(obj.lon, obj.lat, 0, 0.05, "tree", "tree.gltf")
+			genBuild(obj.lon, obj.lat, obj.alt, 0.05, "tree", "tree.gltf")
 		}
 		else if (selected_name === "obj_tree2") {
-			genBuild(obj.lon, obj.lat, 0, 0.9, "Tree2", "Tree.gltf")
+			genBuild(obj.lon, obj.lat, obj.alt, 0.9, "Tree2", "Tree.gltf")
 		}
 		else if (selected_name === "obj_cone") {
-			genBuild(obj.lon, obj.lat, 0, 0.03, "TrafficCone", "TrafficCone.gltf")
+			genBuild(obj.lon, obj.lat, obj.alt, 0.03, "TrafficCone", "TrafficCone.gltf")
 		}
 		else if (selected_name === "obj_bench") {
-			genBuild(obj.lon, obj.lat, 0, 0.1, "bench", "bank.gltf")
+			genBuild(obj.lon, obj.lat, obj.alt, 0.1, "bench", "bank.gltf")
 		}
 		else if (selected_name === "obj_bus1") {
-			genBuild(obj.lon, obj.lat, 1, 0.05, "buses", "bus_1.gltf")
+			genBuild(obj.lon, obj.lat, obj.alt+1, 0.05, "buses", "bus_1.gltf")
 		}
 		else if (selected_name === "obj_bus2") {
-			genBuild(obj.lon, obj.lat, 0, 0.03, "buses", "Mat_1.gltf")
+			genBuild(obj.lon, obj.lat, obj.alt, 0.03, "buses", "Mat_1.gltf")
 		}
 		else if (selected_name === "obj_car1") {
-			genBuild(obj.lon, obj.lat, 1, 0.05, "buses", "car_1.gltf")
+			genBuild(obj.lon, obj.lat, obj.alt+1, 0.05, "buses", "car_1.gltf")
 		}
 		else if (selected_name === "obj_car2") {
-			genBuild(obj.lon, obj.lat, 1, 0.05, "buses", "car2_2.gltf")
+			genBuild(obj.lon, obj.lat, obj.alt+1, 0.05, "buses", "car2_2.gltf")
 		}
 		else if (selected_name === "obj_truck1") {
-			genBuild(obj.lon, obj.lat, 1, 0.05, "buses", "truck_1.gltf")
+			genBuild(obj.lon, obj.lat, obj.alt+1, 0.05, "buses", "truck_1.gltf")
 		}
 		else if (selected_name === "obj_truck2") {
-			genBuild(obj.lon, obj.lat, 1, 0.05, "buses", "truck_2.gltf")
+			genBuild(obj.lon, obj.lat, obj.alt+1, 0.05, "buses", "truck_2.gltf")
 		}
 		else if (selected_name === "maple_green") {
-			genBuild(obj.lon, obj.lat, 0, 1, "texture_maple", "maple_green.gltf")
+			genBuild(obj.lon, obj.lat, obj.alt, 1, "texture_maple", "maple_green.gltf")
 		}
 		else if (selected_name === "maple_light_green") {
-			genBuild(obj.lon, obj.lat, 0, 1, "texture_maple", "maple_light_green.gltf")
+			genBuild(obj.lon, obj.lat, obj.alt, 1, "texture_maple", "maple_light_green.gltf")
 		}
 		else if (selected_name === "maple_orange") {
-			genBuild(obj.lon, obj.lat, 0, 1, "texture_maple", "maple_orange.gltf")
+			genBuild(obj.lon, obj.lat, obj.alt, 1, "texture_maple", "maple_orange.gltf")
 		}
 		else if (selected_name === "maple_red") {
-			genBuild(obj.lon, obj.lat, 0, 1, "texture_maple", "maple_red.gltf")
+			genBuild(obj.lon, obj.lat, obj.alt, 1, "texture_maple", "maple_red.gltf")
 		}
 		else if (selected_name === "maple_yellow") {
-			genBuild(obj.lon, obj.lat, 0, 1, "texture_maple", "maple_yellow.gltf")
+			genBuild(obj.lon, obj.lat, obj.alt, 1, "texture_maple", "maple_yellow.gltf")
 		}
 	}
     
