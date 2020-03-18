@@ -63,6 +63,7 @@ var Simulation = function(magoInstance, viewer, $) {
 		up: new Cesium.Cartesian3(-0.47659122165829726, 0.5876566876099041, 0.6538504606908275),
 		right: new Cesium.Cartesian3(-0.783492206077165, -0.6212715937506359, -0.012711011560142732)
 	});
+	buildingMetaData = getBuildingMetaData();
 
 	var _cityPlanModels = [];
     var _bsConstructProcessModels = [];
@@ -1547,11 +1548,15 @@ var Simulation = function(magoInstance, viewer, $) {
                 var cartographic = ellipsoid.cartesianToCartographic(earthPosition);
                 var longitudeString = Cesium.Math.toDegrees(cartographic.longitude);
                 var latitudeString = Cesium.Math.toDegrees(cartographic.latitude);
+                var height = cartographic.height;
+
             	$('#monitorLon').text(longitudeString);
             	$('#monitorLat').text(latitudeString);
+            	$("#monitorHeight").text(height);
             	var lonlat = {
             		lon: longitudeString,
-					lat: latitudeString
+					lat: latitudeString,
+					height: height
 				};
 				arrIotLonlat.drone.push(lonlat);
         	}
@@ -2543,6 +2548,87 @@ var Simulation = function(magoInstance, viewer, $) {
 		console.log("processStatusCheck");
 		processStatusCheckDialog.dialog("open");
 	});
+
+	function getBuildingMetaData() {
+		let data = {
+			bottom: {
+				type1: {
+					material: "T30발포폴리스틸렌 / T0.08PE필름 / T90경량콘크리트(판넬히팅) / T27시멘트몰탈 / T6.0친환경 식물성수지바닥재(LG 지아소리잠)",
+					width: "150",
+					detailNo: "FL-01"
+				},
+				type2: {
+					material: "T30발포폴리스틸렌 / T0.08PE필름 / T90경량콘크리트(판넬히팅) / T27시멘트몰탈 / T8온돌마루",
+					width: "150",
+					detailNo: "FL-02"
+				},
+				type3: {
+					material: "액체방수1종 / 시멘트몰탈 / 석재타일",
+					width: "100",
+					detailNo: "FL-03"
+				},
+				type4: {
+					material: "T27시멘트몰탈 / T8온돌마루",
+					width: "35",
+					detailNo: "FL-04"
+				},
+				type5: {
+					material: "T30발포폴리스틸렌 / T0.08PE필름 / T90경량콘크리트(판넬히팅) / 액체방수1종 / T27~70시멘트몰탈 / T9.0자기질(논슬립)타일",
+					width: "200",
+					detailNo: "FL-05"
+				},
+				type6: {
+					material: "액체방수1종 / T50시멘트몰탈(쇠흙손마감)",
+					width: "50",
+					detailNo: "FL-06"
+				}
+			},
+			wall: {
+				type1: {
+					material: "시멘트 몰탈 위 친환경페인트 2회",
+					detailNo: "WL-01"
+				},
+				type2: {
+					material: "상부: 1.2m 이상 몰탈위 친환경페인트 2회 / 하부: 1.2m 이하 안전쿠션",
+					detailNo: "WL-02"
+				},
+				type3: {
+					material: "액체방수1종(반자높이까지) / 시멘트몰탈 / 도기질타일",
+					detailNo: "WL-03"
+				},
+				type4: {
+					material: "액체방수1종(H=1,200) / 시멘트몰탈 / 도기질타일",
+					detailNo: "WL-04"
+				},
+				type5: {
+					material: "액체방수1종(H=1,200) / 시멘트몰탈 / 친환경페인트 2회",
+					detailNo: "WL-05"
+				},
+				type6: {
+					material: "시멘트 몰탈 위 수성페인트 2회",
+					detailNo: "WL-06"
+				}
+			},
+			ceil: {
+				type1: {
+					material: "경량철골천장롤(M-BAR) / THK9.5석고보드 2겹 / 친환경페인트 2회",
+					height: "1층 2,300 / 2층 2,900",
+					detailNo: "CL-01"
+				},
+				type2: {
+					material: "경량철골천장롤(CLIP-BAR) / 열경화성수지천정재",
+					height: "2,300",
+					detailNo: "CL-02"
+				},
+				type3: {
+					material: "콘크리트면처리 위 수성페인트 2회",
+					height: "-",
+					detailNo: "CL-03"
+				}
+			}
+		};
+		return data;
+	}
 
 	const busSamplePosition = [
 		127.268185563992,36.52498984302221,1,

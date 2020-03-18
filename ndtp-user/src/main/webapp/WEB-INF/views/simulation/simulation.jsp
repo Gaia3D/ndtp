@@ -53,6 +53,8 @@
 					<label id="monitorLon" for="">OO</label>
 					<label for="">경도</label>
 					<label id="monitorLat" for="">OO</label>
+					<label for="">높이</label>
+					<label id="monitorHeight" for="">OO</label>
 				</li>
 				<li>
 					<label for="">위치 정보 모니터링</label>

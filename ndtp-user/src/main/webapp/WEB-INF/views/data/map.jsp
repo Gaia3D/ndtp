@@ -14,6 +14,8 @@
 
 <%@ include file="/WEB-INF/views/modals/sun-analysis.jsp" %>
 <%@ include file="/WEB-INF/views/modals/head-pitch-roll.jsp" %>
+<%@ include file="/WEB-INF/views/modals/show-blueprint.jsp" %>
+<%@ include file="/WEB-INF/views/modals/show-metadata.jsp" %>
 
 <%@ include file="/WEB-INF/views/construction-process/process-status-check.jsp" %>
 
@@ -210,6 +212,8 @@
 	var rotationModel;
 
 	var multiPositions = [];
+
+	var buildingMetaData = {};
 	// window['moment-range'].extendMoment(moment);
 	// 임시로...
 	$(document).ready(function() {
@@ -220,12 +224,80 @@
 		});
 		getUserInfo();
 
-
+		// metadataDialog.dialog("open");
+		// blueprintDialog.dialog("open");
 		// headPitchRollDialog.on("dialogopen", function(event, ui) {
 		//
 		// });
 		// headPitchRollDialog.dialog('option', 'position', [1000,1500]);
 
+	});
+
+	var metadataDialog = $("#metadataDialog").dialog({
+		autoOpen: false,
+		width: 364,
+		height: 370,
+		modal: false,
+		overflow : "auto",
+		resizable: false,
+		position: {
+			my: "right top",
+			at: "right-5 top+105",
+			of: "body"
+		},
+		open: function( event, ui ) {
+			MAGO3D_INSTANCE.getMagoManager().isShowingMetadata = true;
+		},
+		close: function( event, ui ) {
+			MAGO3D_INSTANCE.getMagoManager().isShowingMetadata = false;
+		},
+		buttons: [
+			{
+				text: "확인",
+				click: function() {
+					$( this ).dialog( "close" );
+				}
+			}, {
+				text: "최소화",
+				icon: "ui-icon-about",
+				click: function() {
+					$( '#metadataDialog' ).toggle('fold');
+				}
+			},
+		],
+	});
+	var blueprintDialog = $("#blueprintDialog").dialog({
+		autoOpen: false,
+		width: 364,
+		height: 375,
+		modal: false,
+		overflow : "auto",
+		resizable: true,
+		position: {
+			my: "right top",
+			at: "right-5 top+475",
+			of: "body"
+		},
+		open: function( event, ui ) {
+			MAGO3D_INSTANCE.getMagoManager().isShowingBlueprint = true;
+		},
+		close: function( event, ui ) {
+			MAGO3D_INSTANCE.getMagoManager().isShowingBlueprint = false;
+		},
+		buttons: [
+			{
+				text: "확인",
+				click: function() {
+					$( this ).dialog( "close" );
+				}
+			}, {
+				text: "최소화",
+				icon: "ui-icon-about",
+				click: function() {
+					$( '#blueprintDialog' ).toggle('fold');
+				}
+			},
+		],
 	});
 
 	var sunConditionDialog = $("#sunConditionDialog").dialog({
