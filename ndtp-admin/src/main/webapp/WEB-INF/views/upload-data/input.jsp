@@ -99,7 +99,7 @@
 									<span class="icon-glyph glyph-emark-dot color-warning"></span>
 								</th>
 								<td class="col-input">
-									<form:input path="dataName" class="l" />
+									<form:input path="dataName" class="l" maxlength="255" />
 			  						<form:errors path="dataName" cssClass="error" />
 								</td>
 								<th class="col-label" scope="row">
@@ -163,7 +163,7 @@
 									<form:label path="description"><spring:message code='description'/></form:label>
 								</th>
 								<td colspan="3" class="col-input">
-									<form:input path="description" class="xl" />
+									<form:input path="description" class="xl" maxlength="255" />
 			  						<form:errors path="description" cssClass="error" />
 								</td>
 							</tr>
@@ -343,23 +343,27 @@
 			$("#dataName").focus();
 			return false;
 		}
-		if ($("#longitude").val() === "") {
-			alert("대표 위치(경도)를 입력하여 주십시오.");
-			$("#longitude").focus();
-			return false;
-		}
-		if ($("#latitude").val() === "") {
-			alert("대표 위치(위도)를 입력하여 주십시오.");
-			$("#latitude").focus();
-			return false;
-		}
-		if ($("#altitude").val() === "") {
-			alert("대표 위치(높이)를 입력하여 주십시오.");
-			$("#altitude").focus();
-			return false;
-		}
-		if(!locationValidation($("#longitude").val(), $("#latitude").val(), $("#altitude").val())) {
-			return false;
+		
+		// citygml 인 경우 longitude, latitude를 입력하지 않음
+		if($("#dataType").val() !== "citygml") {
+			if ($("#longitude").val() === "") {
+				alert("대표 위치(경도)를 입력하여 주십시오.");
+				$("#longitude").focus();
+				return false;
+			}
+			if ($("#latitude").val() === "") {
+				alert("대표 위치(위도)를 입력하여 주십시오.");
+				$("#latitude").focus();
+				return false;
+			}
+			if ($("#altitude").val() === "") {
+				alert("대표 위치(높이)를 입력하여 주십시오.");
+				$("#altitude").focus();
+				return false;
+			}
+			if(!locationValidation($("#longitude").val(), $("#latitude").val(), $("#altitude").val())) {
+				return false;
+			}	
 		}
 	}
 

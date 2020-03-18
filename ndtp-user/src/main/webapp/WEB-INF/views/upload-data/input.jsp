@@ -152,7 +152,7 @@
 			<tr>
 				<th class="col-label" scope="row">
 					<form:label path="longitude">대표 위치 (경도/위도/높이) </form:label>
-					<span class="icon-glyph glyph-emark-dot color-warning"></span>
+					<!-- <span class="icon-glyph glyph-emark-dot color-warning"></span> -->
 				</th>
 				<td colspan="3"  class="col-input">
 					<form:input path="longitude" cssClass="m" placeholder="longitude" />
@@ -236,7 +236,7 @@
 	// dropzone 업로딩 결과(n개 파일을 올리면 n개 리턴이 옴)
 	var uploadFileResultCount = 0;
 	Dropzone.options.myDropzone = {
-		url: "/upload-datas",	
+		url: "/upload-datas",
 		//paramName: "file",
 		// Prevents Dropzone from uploading dropped files immediately
 		timeout: 3600000,
@@ -349,23 +349,27 @@
 			$("#dataName").focus();
 			return false;
 		}
-		if ($("#longitude").val() === "") {
-			alert("대표 위치(경도)를 입력하여 주십시오.");
-			$("#longitude").focus();
-			return false;
-		}
-		if ($("#latitude").val() === "") {
-			alert("대표 위치(위도)를 입력하여 주십시오.");
-			$("#latitude").focus();
-			return false;
-		}
-		if ($("#altitude").val() === "") {
-			alert("대표 위치(높이)를 입력하여 주십시오.");
-			$("#altitude").focus();
-			return false;
-		}
-		if(!locationValidation($("#longitude").val(), $("#latitude").val(), $("#altitude").val())) {
-			return false;
+		
+		// citygml 인 경우 longitude, latitude를 입력하지 않음
+		if($("#dataType").val() !== "citygml") {
+			if ($("#longitude").val() === "") {
+				alert("대표 위치(경도)를 입력하여 주십시오.");
+				$("#longitude").focus();
+				return false;
+			}
+			if ($("#latitude").val() === "") {
+				alert("대표 위치(위도)를 입력하여 주십시오.");
+				$("#latitude").focus();
+				return false;
+			}
+			if ($("#altitude").val() === "") {
+				alert("대표 위치(높이)를 입력하여 주십시오.");
+				$("#altitude").focus();
+				return false;
+			}
+			if(!locationValidation($("#longitude").val(), $("#latitude").val(), $("#altitude").val())) {
+				return false;
+			}	
 		}
 	}
 	

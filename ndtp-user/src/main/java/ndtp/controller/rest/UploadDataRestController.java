@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -287,16 +286,13 @@ public class UploadDataRestController {
 		uploadData.setSharing(request.getParameter("sharing"));
 		uploadData.setDataType(dataType);
 		uploadData.setUserId(userId);
-//			if(request.getParameter("latitude") != null && !"".equals(request.getParameter("latitude"))
-//					&& request.getParameter("longitude") != null && !"".equals(request.getParameter("longitude"))) {
-		uploadData.setLongitude(new BigDecimal(request.getParameter("longitude")) );
-		uploadData.setLatitude(new BigDecimal(request.getParameter("latitude")) );
-//			if(request.getParameter("altitude") == null || "".equals(request.getParameter("altitude"))) {
-//				uploadData.setAltitude(BigDecimal.valueOf(0l));
-//			} else uploadData.setAltitude(new BigDecimal(request.getParameter("altitude")) );
-		uploadData.setAltitude(new BigDecimal(request.getParameter("altitude")) );
-		uploadData.setLocation("POINT(" + request.getParameter("longitude") + " " + request.getParameter("latitude") + ")");
-//			}
+		// citygml 인 경우 converter 에서 자동 추출
+		if(	DataType.CITYGML != DataType.findBy(dataType)) {
+			uploadData.setLongitude(new BigDecimal(request.getParameter("longitude")) );
+			uploadData.setLatitude(new BigDecimal(request.getParameter("latitude")) );
+			uploadData.setAltitude(new BigDecimal(request.getParameter("altitude")) );
+			uploadData.setLocation("POINT(" + request.getParameter("longitude") + " " + request.getParameter("latitude") + ")");
+		}
 		
 		uploadData.setFileCount(uploadDataFileList.size());
 		uploadData.setConverterTargetCount(converterTargetCount);
@@ -615,7 +611,6 @@ public class UploadDataRestController {
 	 * @return
 	 */
 	@PostMapping(value = "/{uploadDataId:[0-9]+}")
-	@ResponseBody
 	public Map<String, Object> update(HttpServletRequest request, @PathVariable Long uploadDataId, @Valid UploadData uploadData, BindingResult bindingResult) {
 		log.info("@@ uploadData = {}", uploadData);
 		Map<String, Object> result = new HashMap<>();
@@ -717,7 +712,6 @@ public class UploadDataRestController {
 	 * @return
 	 */
 	private String dataValidate(MultipartHttpServletRequest request) {
-		
 		if(StringUtils.isEmpty(request.getParameter("dataName"))) {
 			return "data.name.empty";
 		}
@@ -733,19 +727,17 @@ public class UploadDataRestController {
 			return "data.type.empty";
 		}
 		
-		// TODO citygml, indoorgml 의 경우 위도, 경도, 높이를 포함하고 있어서 validation 체크를 하지 않음
-		// 지금은 converter 가 update를 해 주지 않아서 기본 체크 함
-//		if(!dataType.equals(DataType.CITYGML.getValue()) && !dataType.equals(DataType.INDOORGML.getValue())) {
-		if(StringUtils.isEmpty(request.getParameter("longitude"))) {
-			return "data.longitude.empty";
+		if(	DataType.CITYGML != DataType.findBy(dataType)) {
+			if(StringUtils.isEmpty(request.getParameter("longitude"))) {
+				return "data.longitude.empty";
+			}
+			if(StringUtils.isEmpty(request.getParameter("latitude"))) {
+				return "data.latitude.empty";
+			}
+			if(StringUtils.isEmpty(request.getParameter("altitude"))) {
+				return "data.altitude.empty";
+			}
 		}
-		if(StringUtils.isEmpty(request.getParameter("latitude"))) {
-			return "data.latitude.empty";
-		}
-		if(StringUtils.isEmpty(request.getParameter("altitude"))) {
-			return "data.altitude.empty";
-		}
-//		}
 		
 		Map<String, MultipartFile> fileMap = request.getFileMap();
 		if(fileMap.isEmpty()) {

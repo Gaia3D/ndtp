@@ -63,14 +63,17 @@ public class ConverterAPIController {
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "db.exception";
 			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			e.printStackTrace();
 		} catch(RuntimeException e) {
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "runtime.exception";
 			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			e.printStackTrace();
 		} catch(Exception e) {
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 			errorCode = "unknown.exception";
 			message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			e.printStackTrace();
 		}
 		
 		result.put("statusCode", statusCode);

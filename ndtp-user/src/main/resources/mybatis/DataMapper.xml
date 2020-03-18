@@ -264,10 +264,11 @@
 	<!-- converterJob 정보를 이용하여 data 정보 취득 -->
 	<select id="getDataByConverterJob" parameterType="dataInfo" resultType="dataInfo">
 		/* getDataByConverterJob */
-		SELECT data_id, data_group_id
-		FROM data_info 
-		WHERE user_id = #{userId}
-			AND converter_job_id = #{converterJobId}
+		SELECT A.data_id, A.data_key, A.data_group_id, A.data_type, B.data_group_key
+		FROM data_info A, data_group B 
+		WHERE A.user_id = #{userId}
+			AND A.data_group_id = B.data_group_id
+			AND A.converter_job_id = #{converterJobId}
 	</select>
 	
 	<!-- Data Attribute 정보 -->
@@ -375,6 +376,12 @@
 		/* updateDataStatus */
 		UPDATE data_info
 		SET status = #{status},
+			<if test="location != null">
+			location = ST_GeomFromText(#{location}, 4326),
+			</if>
+			<if test="altitude != null">
+			altitude = #{altitude},
+			</if>
 			update_date = NOW()
 		WHERE data_id = #{dataId}
 			<if test="userId != null and userId != ''">

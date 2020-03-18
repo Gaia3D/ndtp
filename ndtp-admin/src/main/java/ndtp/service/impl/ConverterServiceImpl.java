@@ -1,12 +1,21 @@
 package ndtp.service.impl;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.springframework.amqp.AmqpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import ndtp.config.PropertiesConfig;
@@ -17,6 +26,7 @@ import ndtp.domain.ConverterTemplate;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
 import ndtp.domain.DataStatus;
+import ndtp.domain.DataType;
 import ndtp.domain.LocationUdateType;
 import ndtp.domain.MethodType;
 import ndtp.domain.QueueMessage;
@@ -277,7 +287,7 @@ public class ConverterServiceImpl implements ConverterService {
 			dataInfo.setLatitude(latitude);
 			dataInfo.setLongitude(longitude);
 			dataInfo.setAltitude(altitude);
-			if(longitude != null && latitude != null) {
+			if(longitude != null && longitude.longValue() >0l && latitude != null && latitude.longValue() > 0l) {
 				dataInfo.setLocation("POINT(" + longitude + " " + latitude + ")");
 			}
 			dataInfo.setMetainfo(metainfo);
@@ -295,8 +305,10 @@ public class ConverterServiceImpl implements ConverterService {
 			dataInfo.setLatitude(latitude);
 			dataInfo.setLongitude(longitude);
 			dataInfo.setAltitude(altitude);
-			if(longitude != null && latitude != null) {
+			if(longitude != null && longitude.longValue() >0l && latitude != null && latitude.longValue() > 0l) {
 				dataInfo.setLocation("POINT(" + longitude + " " + latitude + ")");
+			} else {
+				dataInfo.setLocation(null);
 			}
 			dataInfo.setStatus(DataStatus.PROCESSING.name().toLowerCase());
 			dataService.updateData(dataInfo);
@@ -324,8 +336,10 @@ public class ConverterServiceImpl implements ConverterService {
 		}
 
 		if(LocationUdateType.AUTO == LocationUdateType.valueOf(dbDataGroup.getLocationUpdateType().toUpperCase())) {
-			dataGroup.setLocation("POINT(" + dataInfo.getLongitude() + " " + dataInfo.getLatitude() + ")");
-			dataGroup.setAltitude(dataInfo.getAltitude());
+			if(dataInfo.getLongitude() != null && dataInfo.getLongitude().longValue() >0l && dataInfo.getLatitude() != null && dataInfo.getLatitude().longValue() > 0l) {
+				dataGroup.setLocation("POINT(" + dataInfo.getLongitude() + " " + dataInfo.getLatitude() + ")");
+				dataGroup.setAltitude(dataInfo.getAltitude());
+			}
 		}
 		
 		dataGroupService.updateDataGroup(dataGroup);
@@ -345,10 +359,37 @@ public class ConverterServiceImpl implements ConverterService {
 		
 		List<DataInfo> dataInfoList = dataService.getDataByConverterJob(dataInfo);
 		if(ConverterJobStatus.SUCCESS == ConverterJobStatus.valueOf(converterJob.getStatus().toUpperCase())) {
+			String serviceDirectory = propertiesConfig.getAdminDataServiceDir();
 			// TODO 상태를 success 로 udpate 해야 함
 			for(DataInfo updateDataInfo : dataInfoList) {
-//				updateDataInfo.setUserId(converterJob.getUserId());
-				updateDataInfo.setStatus(DataStatus.USE.name().toLowerCase());
+				if(	DataType.CITYGML == DataType.findBy(updateDataInfo.getDataType())) {
+					// json 파일을 읽어서 longitude, latitude를 갱신, 없을 때 예외가 맞는 것일까?
+					try {
+						String targetDirectory = serviceDirectory + updateDataInfo.getDataGroupKey() + File.separator + DataInfo.F4D_PREFIX + updateDataInfo.getDataKey();
+						byte[] jsonData = Files.readAllBytes(Paths.get(targetDirectory + File.separator + "lonsLats.json"));
+						String encodingData = new String(jsonData, StandardCharsets.UTF_8);
+							
+						ObjectMapper objectMapper = new ObjectMapper();
+						//read JSON like DOM Parser
+						JsonNode jsonNode = objectMapper.readTree(encodingData);
+						
+						String dataKey = jsonNode.path("data_key").asText();
+						String longitude = jsonNode.path("longitude").asText().trim();
+						String latitude = jsonNode.path("latitude").asText().trim();
+						if(!StringUtils.isEmpty(longitude)) {
+							updateDataInfo.setLongitude(new BigDecimal(longitude) );
+							updateDataInfo.setLatitude(new BigDecimal(latitude) );
+							updateDataInfo.setLocation("POINT(" + longitude + " " + latitude + ")");
+						}
+						updateDataInfo.setAltitude(new BigDecimal(0));
+						updateDataInfo.setStatus(DataStatus.USE.name().toLowerCase());
+					} catch(IOException e) {
+						updateDataInfo.setStatus(DataStatus.UNUSED.name().toLowerCase());
+						e.printStackTrace();
+					}
+				} else {
+					updateDataInfo.setStatus(DataStatus.USE.name().toLowerCase());
+				}
 				dataService.updateDataStatus(updateDataInfo);
 			}
 		} else {
