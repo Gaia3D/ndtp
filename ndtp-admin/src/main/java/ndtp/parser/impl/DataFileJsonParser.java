@@ -45,7 +45,7 @@ public class DataFileJsonParser implements DataFileParser {
 			String latitude = jsonNode.path("latitude").asText().trim();
 			String altitude = jsonNode.path("height").asText().trim();
 			String mappingType = jsonNode.path("mappingType").asText();
-			JsonNode metainfo = jsonNode.path("attributes");
+			JsonNode metainfo = jsonNode.path("metainfo");
 			JsonNode childrenNode = jsonNode.path("datas");
 			
 			dataGroup.setDataGroupId(dataGroupId);
@@ -108,7 +108,7 @@ public class DataFileJsonParser implements DataFileParser {
 			String pitch = jsonNode.path("pitch").asText().trim();
 			String roll = jsonNode.path("roll").asText().trim();
 			String mappingType = jsonNode.path("mappingType").asText();
-			JsonNode metainfo = jsonNode.path("attributes");
+			JsonNode metainfo = jsonNode.path("metainfo");
 			JsonNode childrene = jsonNode.path("children");
 			
 			DataInfo dataInfo = new DataInfo();
