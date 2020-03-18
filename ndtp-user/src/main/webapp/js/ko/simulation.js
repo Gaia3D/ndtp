@@ -718,6 +718,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				strokeWidth: 0,
 				stroke: Cesium.Color.AQUA.withAlpha(0.0),
 				fill: Cesium.Color.AQUA.withAlpha(0.8),
+				clampToGround: true
 			};
 			let url = "/data/simulation-rest/drawGeojson?fileName=" + fileName;
 
@@ -839,14 +840,13 @@ var Simulation = function(magoInstance, viewer, $) {
 		}
 	});
 
-	// todo: more improve
 	$("#deleteDistrict").click(() => {
-		if (_viewer.scene.imageryLayers.length < 2) {
-			alert("아직 지역이 생성되지 않았습니다.");
-			return;
-		}
-		let imgLayer = _viewer.scene.imageryLayers.get(2);
-		_viewer.scene.imageryLayers.remove(imgLayer);
+		// let imgLayer = "";
+		_viewer.scene.imageryLayers._layers.forEach((obj, idx) => {
+			if (obj.imageryProvider.url.includes("mapgeoref.png")) {
+				_viewer.scene.imageryLayers.remove(obj);
+			}
+		});
 	});
 
 	$("#delete3dModel").click(()=> {
