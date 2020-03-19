@@ -4,6 +4,7 @@ const arrIotLonlat = {
 	drone: [],
 	car: []
 };
+
 const consBuildBoardClick = {
 	click: function constructProcessChat(objectName) {
 		console.log("clicked objectName=", objectName);
@@ -202,12 +203,13 @@ var Simulation = function(magoInstance, viewer, $) {
 		"sejong": [127.2739454, 36.5268601],
 		"pusan": [129.0015885, 35.1645701],
 	};
-
+/*
 	setTimeout(() => {
 		_viewer.camera.flyTo({
 			destination : Cesium.Cartesian3.fromDegrees(locationList["sejong"][0],  locationList["sejong"][1], 2000)
 		});
 	}, 1000);
+*/
 
 	$("#sejong_lod1_buildings").click(() => {
 		let fileName = "integrated_sejong.geojson";
@@ -731,10 +733,12 @@ var Simulation = function(magoInstance, viewer, $) {
 					let registeredEntity = _viewer.entities.add(entitiyObj);
 					registeredEntity.name = "sejong_apartmentComplex1";
 
-					registeredEntity.polygon.heightReference = 1;
+					registeredEntity.polygon.heightReference = 2;
+					// registeredEntity.polygon.extrudedHeightReference  = Cesium.HeightReference.RELATIVE_TO_GROUND;
 
 					Cesium.knockout.getObservable(viewModel, 'standardFloorCount').subscribe(
 						function(newValue) {
+							debugger;
 							registeredEntity.polygon.extrudedHeight = newValue;
 						}
 					);
@@ -818,30 +822,32 @@ var Simulation = function(magoInstance, viewer, $) {
 		}
 		switch (val){
 			case "dType1":
-				allObject[pickedName].terrain.polygon.extrudedHeightReference = Cesium.HeightReference.CLAMP_TO_GROUND ;
-				allObject[pickedName].terrain.polygon.material.color=Cesium.Color.YELLOW.withAlpha(0.6);
+				//allObject[pickedName].terrain.polygon.extrudedHeightReference = Cesium.HeightReference.CLAMP_TO_GROUND;
+					allObject[pickedName].terrain.polygon.material.color=Cesium.Color.YELLOW.withAlpha(0.6);
 				$("#standardFloorAreaRatio").val(200).trigger("change");
 				$("#standardBuildingToLandRatio").val(50).trigger("change");
 				$("#standardFloorCount").val(40).trigger("change");
 				break;
 			case "dType2":
-				allObject[pickedName].terrain.polygon.heightReference = Cesium.HeightReference.CLAMP_TO_GROUND ;
+				// allObject[pickedName].terrain.polygon.heightReference = Cesium.HeightReference.CLAMP_TO_GROUND ;
 				allObject[pickedName].terrain.polygon.material.color=Cesium.Color.ORANGERED.withAlpha(0.6);
 				$("#standardFloorAreaRatio").val(120).trigger("change");
 				$("#standardBuildingToLandRatio").val(40).trigger("change");
-				$("#standardFloorCount").val(15).trigger("change");
+				$("#standardFloorCount").val(15+60).trigger("change");
 				break;
 			case "dType3":
+				// allObject[pickedName].terrain.polygon.heightReference = Cesium.HeightReference.CLAMP_TO_GROUND ;
 				allObject[pickedName].terrain.polygon.material.color=Cesium.Color.MEDIUMTURQUOISE.withAlpha(0.6);
 				$("#standardFloorAreaRatio").val(80).trigger("change");
 				$("#standardBuildingToLandRatio").val(20).trigger("change");
-				$("#standardFloorCount").val(10).trigger("change");
+				$("#standardFloorCount").val(10+60).trigger("change");
 				break;
 			case "dType4":
+				// allObject[pickedName].terrain.polygon.heightReference = Cesium.HeightReference.CLAMP_TO_GROUND ;
 				allObject[pickedName].terrain.polygon.material.color=Cesium.Color.YELLOWGREEN.withAlpha(0.6);
 				$("#standardFloorAreaRatio").val(50).trigger("change");
 				$("#standardBuildingToLandRatio").val(25).trigger("change");
-				$("#standardFloorCount").val(25).trigger("change");
+				$("#standardFloorCount").val(25+60).trigger("change");
 				break;
 			default:
 				console.log("아무것도 선택되지 않았습니다.");
@@ -1240,8 +1246,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				stopLoading();
 		        _viewer.scene.camera.flyTo({
 		            destination : Cesium.Cartesian3.fromDegrees(127.297938703110319, 36.601598278028625, 600.0) // 세종 조치원
-//		            destination : new Cesium.Cartesian3(226572.677000000141561, 344541.028999999165535, 6000000.0) // 세종 조치원
-		            
+
 		        });
 			},4000);
 		}, function(err) {

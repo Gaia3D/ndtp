@@ -20436,12 +20436,18 @@ CesiumViewerInit.prototype.init = function()
 	this.geoserverProviderBuild();
 
 	this.options.shouldAnimate = false;
+
+    var extent = Cesium.Rectangle.fromDegrees(127.19931049066805,36.44941898280123,127.32576852118987,36.55053669535394);
+
+    Cesium.Camera.DEFAULT_VIEW_RECTANGLE = extent;
+    Cesium.Camera.DEFAULT_VIEW_FACTOR = 0;
+
 	this.viewer = new Cesium.Viewer(this.targetId, this.options);
 
 	this.postProcessDataProvider();
 	this.initMagoManager();
 	//this.setEventHandler();
-
+    this.policy.initCameraEnable = false;
 	if (this.policy.initCameraEnable) 
 	{ 
 		var destination;
