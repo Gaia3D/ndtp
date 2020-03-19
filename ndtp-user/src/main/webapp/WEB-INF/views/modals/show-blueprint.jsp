@@ -3,8 +3,9 @@
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 
 <!-- 건축인허가 신청 Modal -->
-<div id="blueprintDialog" title="설계 도면" class="basicTable" style="display: none;">
-    <img src="/images/blueprint.png" />
+<div id="blueprintDialog" title="설계 도면" class="basicTable" style="display: none; text-align: center;">
+    <div id="blueprintDesc" style="margin-top: 5px; font-size: 15px; font-weight: bold;"></div>
+    <img id="blueprintSrc" src="" />
 </div>
 
 

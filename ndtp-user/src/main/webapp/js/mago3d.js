@@ -82611,14 +82611,33 @@ Renderer.prototype.renderGeometryDepth = function(gl, renderType, visibleObjCont
 	    // 설계도
 	    if (!magoManager.isShowingBlueprint) {
             if (objId === "215522") {
-                console.log("blueprint open");
-                blueprintDialog.dialog("open");
+                let imgSrc = "/images/blueprint.png";
+                document.getElementById("blueprintSrc").setAttribute("src", imgSrc);
+                document.getElementById("blueprintDesc").style.marginBottom = "0px";
+                document.getElementById("blueprintDesc").innerText="";
+            } else {
+                let imgSrc = "/images/no_img.jpg";
+                document.getElementById("blueprintSrc").setAttribute("src", imgSrc);
+                document.getElementById("blueprintDesc").style.marginBottom = "20px";
+                document.getElementById("blueprintDesc").innerText="❗️ 설계도면이 등록되지 않았습니다.";
             }
+            blueprintDialog.dialog("open");
         } else {
-            if (objId !== "215522") {
-                console.log("blueprint close");
-                blueprintDialog.dialog("close");
+            if (objId === "215522") {
+                let imgSrc = "/images/blueprint.png";
+                document.getElementById("blueprintSrc").setAttribute("src", imgSrc);
+                document.getElementById("blueprintDesc").style.marginBottom = "0px";
+                document.getElementById("blueprintDesc").innerText="";
+            } else {
+                let imgSrc = "/images/no_img.jpg";
+                document.getElementById("blueprintSrc").setAttribute("src", imgSrc);
+                document.getElementById("blueprintDesc").style.marginBottom = "20px";
+                document.getElementById("blueprintDesc").innerText="❗️ 설계도면이 등록되지 않았습니다.";
             }
+            // if (objId !== "215522") {
+            //     console.log("blueprint close");
+            //     blueprintDialog.dialog("close");
+            // }
         }
 
 	    // 건축물 자재 정보
