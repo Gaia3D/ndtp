@@ -47,10 +47,10 @@ var Simulation = function(magoInstance, viewer, $) {
     var _polygons = [];
     var _camera_scene = [];
 	_camera_scene.push({
-		position: new Cesium.Cartesian3(-3107317.633919009, 4083709.9416279183, 3775290.7025832837),
-		direction: new Cesium.Cartesian3(0.920898635332758, 0.3659976513346029, -0.13413210898147662),
-		up: new Cesium.Cartesian3(-0.22700219556100568, 0.783271367206152, 0.578753806488984),
-		right: new Cesium.Cartesian3(0.3168843742640951, -0.5025253073553211, 0.804395803578495)
+		position: new Cesium.Cartesian3(-3107345.027821688, 4083739.5239106035, 3775320.287267596),
+		direction: new Cesium.Cartesian3(0.8466982690724006, 0.525809087065172, -0.08140543660893416),
+		up: new Cesium.Cartesian3(-0.38560682428610626, 0.7118195365554574, 0.5870437159547471),
+		right: new Cesium.Cartesian3(0.3666189005135779, -0.4656584062783194, 0.805451941737402)
 	});
 	_camera_scene.push({
 		position: new Cesium.Cartesian3(-3280627.778688929, 4062537.6806924795, 3650266.004010676),
@@ -139,7 +139,7 @@ var Simulation = function(magoInstance, viewer, $) {
 					}));
 				}
 
-				node.setRenderCondition(function(data){
+				/*node.setRenderCondition(function(data){
 					node.data.isColorChanged = true;
 					let colorRed = 0;
 					let colorGreen = 0;
@@ -174,7 +174,7 @@ var Simulation = function(magoInstance, viewer, $) {
 						node.data.aditionalColor = new Mago3D.Color();
 						node.data.aditionalColor.setRGB(colorRed,colorGreen,colorBlue);
 					}
-				});
+				});*/
 
 			} else if(rootNode.attributes.consType === 'CONSTPROCGEUMGANG') {
 				magoManager.effectsManager.addEffect(dataId, new Mago3D.Effect({
@@ -443,7 +443,7 @@ var Simulation = function(magoInstance, viewer, $) {
 		},
 		sliderSejongShow: function() {
 			$('#csRange, #constructionProcess').show();
-			$('#csRange, #constructionProcess .profileInfo').show();
+			// $('#csRange, #constructionProcess .profileInfo').show();
 			$('#saRange').hide();
 		},
 		consBuildDataReq: (step, cityType) => {
@@ -1364,7 +1364,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	var constructionProcessReset = function() {
 		simulating = false;
 		//레인지, 레전드 끄기
-		$('#csRange, #constructionProcess .profileInfo').hide();
+		// $('#csRange, #constructionProcess .profileInfo').hide();
 	}
 
     function createPoint(worldPosition) {
