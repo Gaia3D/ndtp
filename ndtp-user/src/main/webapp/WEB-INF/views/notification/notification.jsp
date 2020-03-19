@@ -12,7 +12,7 @@
 <script type="text/javascript" src="/externlib/cesium-geoserver-terrain-provider/GeoserverTerrainProvider.js?cacheVersion=${contentCacheVersion}"></script>
 <link href="/externlib/cesium/Widgets/widgets.css" rel="stylesheet" type="text/css" />
 <script>
-    Growl.settings.duration = 100000; // 100
+    Growl.settings.duration = 1000000; // 100
     var permReqeustParam = {
         isComplete: 'N'
     }
@@ -69,6 +69,7 @@
             resolution : 5,
             stroke: Cesium.Color.BLUEVIOLET.withAlpha(0.5),
             fill: Cesium.Color.BLUEVIOLET.withAlpha(0.5),
+            clampToGround: true
         };
         let url = "/data/simulation-rest/drawGeojson?fileName=" + fileName;
 
@@ -79,6 +80,9 @@
                 let entitiyObj = entitis[index];
                 let registeredEntity = _viewer.entities.add(entitiyObj);
                 registeredEntity.name = "specificField_6_4";
+
+                registeredEntity.polygon.extrudedHeightReference = 1;
+                registeredEntity.polygon.heightReference = 1;
             }
         }, function(err) {
             console.log(err);
@@ -100,7 +104,9 @@
                 buildAcceptPermSeq = msg.permSeq;
                 const longitude = msg.longitude;
                 const latitude = msg.latitude;
-                const altitude = msg.altitude;
+                // const altitude = msg.altitude;
+                console.log("altitude=", msg);
+                const altitude = 38;
                 const heading = msg.heading;
                 const pitch = msg.pitch;
                 const roll = msg.roll;
