@@ -81,7 +81,7 @@
                 let registeredEntity = _viewer.entities.add(entitiyObj);
                 registeredEntity.name = "specificField_6_4";
 
-                registeredEntity.polygon.extrudedHeightReference = 1;
+                // registeredEntity.polygon.extrudedHeightReference = 1;
                 registeredEntity.polygon.heightReference = 1;
             }
         }, function(err) {
