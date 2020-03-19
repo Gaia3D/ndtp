@@ -69,6 +69,7 @@
             resolution : 5,
             stroke: Cesium.Color.BLUEVIOLET.withAlpha(0.5),
             fill: Cesium.Color.BLUEVIOLET.withAlpha(0.5),
+            clampToGround: true
         };
         let url = "/data/simulation-rest/drawGeojson?fileName=" + fileName;
 

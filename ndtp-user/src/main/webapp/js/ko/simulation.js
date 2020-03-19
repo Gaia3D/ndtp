@@ -219,6 +219,7 @@ var Simulation = function(magoInstance, viewer, $) {
 			strokeWidth: 0,
 			stroke: Cesium.Color.BLUEVIOLET.withAlpha(0.0),
 			fill: Cesium.Color.BLUEVIOLET.withAlpha(0.8),
+			clampToGround: true
 		};
 		let url = "/data/simulation-rest/drawGeojson?fileName=" + fileName;
 
@@ -903,6 +904,7 @@ var Simulation = function(magoInstance, viewer, $) {
 			resolution : 5,
 			stroke: Cesium.Color.BLUEVIOLET,
 			fill: Cesium.Color.BLUEVIOLET,
+			clampToGround: true
 		};
 		let url = "/data/simulation-rest/drawGeojson?fileName=" + fileName;
 
@@ -1221,7 +1223,8 @@ var Simulation = function(magoInstance, viewer, $) {
 			leadTime : 0,
 			trailTime : 100,
 			resolution : 5,
-			fill: Cesium.Color.PINK
+			fill: Cesium.Color.PINK,
+			clampToGround: true
 		}).then(function(dataSource) {
 			var entitis = dataSource.entities._entities._array;
 			
@@ -1256,6 +1259,7 @@ var Simulation = function(magoInstance, viewer, $) {
 			trailTime : 100,
 			resolution : 5,
 		  fill: Cesium.Color.PINK,
+			clampToGround: true,
 	        material : new Cesium.PolylineGlowMaterialProperty({
 	            glowPower : 0.2,
 	            rgba : [23, 184, 190,255]
@@ -1678,13 +1682,22 @@ var Simulation = function(magoInstance, viewer, $) {
 						handler.setInputAction(
 							function (movement) {
 								if (dragging) {
-									var position = scene.camera.pickEllipsoid(movement.endPosition);
-									selectedEntity.position = position;
-									let cartographic = Cesium.Cartographic.fromCartesian(position);
+									// var position = scene.camera.pickEllipsoid(movement.endPosition);
+
+									let pickPosition = _viewer.scene.pickPosition(movement.endPosition);
+									let ellipsoid = _viewer.scene.globe.ellipsoid;
+
+
+									// selectedEntity.position = _viewer.scene.clampToHeight(position);
+									// let cartographic = Cesium.Cartographic.fromCartesian(selectedEntity.position);
+									selectedEntity.position = pickPosition;
+
+									// let cartographic = Cesium.Cartographic.fromCartesian(position);
+									let cartographic = ellipsoid.cartesianToCartographic(pickPosition);
 									let lon = Cesium.Math.toDegrees(cartographic.longitude);
 									let lat = Cesium.Math.toDegrees(cartographic.latitude);
 									let height = cartographic.height;
-									console.log(height);
+
 									document.getElementById("selected_obj_longitude").innerText = lon;
 									document.getElementById("selected_obj_latitude").innerText = lat;
 									
@@ -1698,7 +1711,12 @@ var Simulation = function(magoInstance, viewer, $) {
 								if (dragging) {
 									dragging = false;
 									scene.screenSpaceCameraController.enableRotate = true;
-									selectedEntity.position = scene.camera.pickEllipsoid(click.position);
+
+									let pickPosition = _viewer.scene.pickPosition(click.position);
+									let ellipsoid = _viewer.scene.globe.ellipsoid;
+									let cartographic = ellipsoid.cartesianToCartographic(pickPosition);
+									// selectedEntity.position = scene.camera.pickEllipsoid(click.position);
+									selectedEntity.position = pickPosition;
 								}
 							},
 							Cesium.ScreenSpaceEventType.LEFT_UP
@@ -2068,7 +2086,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	}
     
     function genBuild(lon, lat, alt, scale, preDir, fileName) {
-    	const position = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
+    	const position = Cesium.Cartesian3.fromDegrees(lon, lat);
 		const modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
 
 		let heading = Cesium.Math.toRadians(0);
@@ -2085,6 +2103,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				uri: '/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir,
 				scale: scale,
 				show: true,
+				heightReference : Cesium.HeightReference.CLAMP_TO_GROUND,
 			}
 		});
 		// entity.heading = 0;
