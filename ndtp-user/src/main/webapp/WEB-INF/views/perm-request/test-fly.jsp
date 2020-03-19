@@ -66,7 +66,7 @@
         <input type="button" class="cesium-button" value="btn3" onclick="look3();">
         <input type="button" class="cesium-button" value="용적률" onclick="look4();">
         <input type="button" class="cesium-button" value="sensor" onclick="look5();">
-        <input type="button" class="cesium-button" value="btn6" onclick="look6();">
+        <input type="button" class="cesium-button" value="트랙킹" onclick="look6();">
     </div>
     <div id="toolbar" style="display: none">
         <div>Model Height</div>
@@ -341,6 +341,54 @@
         viewer.scene.camera.flyTo({
             destination : Cesium.Cartesian3.fromDegrees(-123.0744619, 44.0503706, 300)
         });
+    }
+
+    function look6() {
+        let viewer = new Cesium.Viewer('cesiumContainer', {
+            terrainProvider : Cesium.createWorldTerrain()
+        });
+        let scene = viewer.scene;
+        let clock = viewer.clock;
+
+        let entity;
+        let positionProperty;
+        let dataSourcePromise = Cesium.CzmlDataSource.load('../SampleData/ClampToGround.czml');
+        viewer.dataSources.add(dataSourcePromise).then(function(dataSource) {
+            entity = dataSource.entities.getById('CesiumMilkTruck');
+            positionProperty = entity.position;
+        });
+
+        let tileset = scene.primitives.add(
+            new Cesium.Cesium3DTileset({
+                url: Cesium.IonResource.fromAssetId(40866)
+            })
+        );
+
+        viewer.camera.setView({
+            destination: new Cesium.Cartesian3(1216403.8845586285, -4736357.493351395, 4081299.715698949),
+            orientation: new Cesium.HeadingPitchRoll(4.2892217081808806, -0.4799070147502502, 6.279789177843313),
+            endTransform : Cesium.Matrix4.IDENTITY
+        });
+
+        if (scene.clampToHeightSupported) {
+            tileset.initialTilesLoaded.addEventListener(start);
+        } else {
+            window.alert('This browser does not support clampToHeight.');
+        }
+
+        function start() {
+            clock.shouldAnimate = true;
+            let objectsToExclude = [entity];
+            scene.postRender.addEventListener(function() {
+                let position = positionProperty.getValue(clock.currentTime);
+                entity.position = scene.clampToHeight(position, objectsToExclude);
+
+                let cartographic = Cesium.Cartographic.fromCartesian(position);
+                console.log(cartographic.height);
+            });
+        }
+
+
     }
 
 

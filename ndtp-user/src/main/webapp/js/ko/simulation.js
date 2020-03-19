@@ -230,6 +230,8 @@ var Simulation = function(magoInstance, viewer, $) {
 				let entitiyObj = entitis[index];
 				let registeredEntity = _viewer.entities.add(entitiyObj);
 				registeredEntity.name = "integrated_sejong";
+				registeredEntity.polygon.heightReference = 1;
+
 				let height = entitiyObj.properties.HEIGHT.getValue();
 				if (height === 0 || height === 0.0) {
 					height = 10;
@@ -728,11 +730,11 @@ var Simulation = function(magoInstance, viewer, $) {
 
 				for(let index in entitis) {
 					let entitiyObj = entitis[index];
-
 					let registeredEntity = _viewer.entities.add(entitiyObj);
 					registeredEntity.name = "sejong_apartmentComplex1";
 
-					registeredEntity.polygon.heightReference = 1;
+					registeredEntity.polygon.extrudedHeightReference = 2;
+					// registeredEntity.polygon.heightReference = 1;
 
 					Cesium.knockout.getObservable(viewModel, 'standardFloorCount').subscribe(
 						function(newValue) {
@@ -789,7 +791,8 @@ var Simulation = function(magoInstance, viewer, $) {
 					let registeredEntity = _viewer.entities.add(entitiyObj);
 					registeredEntity.name = "sejong_church1";
 
-					registeredEntity.polygon.extrudedHeightReference = 1;
+					// registeredEntity.polygon.extrudedHeightReference = 1;
+					registeredEntity.polygon.heightReference = 2;
 
 					Cesium.knockout.getObservable(viewModel, 'standardFloorCount').subscribe(
 						function(newValue) {
@@ -819,14 +822,14 @@ var Simulation = function(magoInstance, viewer, $) {
 		}
 		switch (val){
 			case "dType1":
-				allObject[pickedName].terrain.polygon.extrudedHeightReference = Cesium.HeightReference.CLAMP_TO_GROUND ;
+				// allObject[pickedName].terrain.polygon.extrudedHeightReference = Cesium.HeightReference.CLAMP_TO_GROUND ;
 				allObject[pickedName].terrain.polygon.material.color=Cesium.Color.YELLOW.withAlpha(0.6);
 				$("#standardFloorAreaRatio").val(200).trigger("change");
 				$("#standardBuildingToLandRatio").val(50).trigger("change");
 				$("#standardFloorCount").val(40).trigger("change");
 				break;
 			case "dType2":
-				allObject[pickedName].terrain.polygon.heightReference = Cesium.HeightReference.CLAMP_TO_GROUND ;
+				// allObject[pickedName].terrain.polygon.heightReference = Cesium.HeightReference.CLAMP_TO_GROUND ;
 				allObject[pickedName].terrain.polygon.material.color=Cesium.Color.ORANGERED.withAlpha(0.6);
 				$("#standardFloorAreaRatio").val(120).trigger("change");
 				$("#standardBuildingToLandRatio").val(40).trigger("change");
@@ -916,6 +919,8 @@ var Simulation = function(magoInstance, viewer, $) {
 				let entitiyObj = entitis[index];
 				let registeredEntity = _viewer.entities.add(entitiyObj);
 				registeredEntity.name = "아파트_" + index;
+				registeredEntity.polygon.heightReference = 1;
+				// registeredEntity.polygon.extrudedHeightReference = 1;
 				registeredEntity.polygon.extrudedHeight = parseInt(viewModel.buildingHeight);
 
 				let buildingFloorArea = parseFloat(getArea(registeredEntity.polygon._hierarchy._value.positions));	// 건축면적
@@ -1066,7 +1071,7 @@ var Simulation = function(magoInstance, viewer, $) {
         var samplePosition = busSamplePosition;
         // 개수 만큼 시간을 나눈다.
         const day_start = moment(datepicker.getDate()); // 7 am
-        console.log(day_start)
+        console.log(day_start);
         const day_end   = moment(datepicker.getDate()).add(30, 'minutes'); // 10 pm
         const durationTimeStep = parseInt((day_end.unix() - day_start.unix())/parseInt(samplePosition.length/3));
         let startUnidxTIme = day_start.unix();
@@ -1100,7 +1105,7 @@ var Simulation = function(magoInstance, viewer, $) {
                 MAGO3D_INSTANCE.getViewer().clock.currentTime = jd;
                 MAGO3D_INSTANCE.getMagoManager().sceneState.sunSystem.setDate(startTM.toDate());
             } else {
-                console.log(arrInput[0].dateTime);
+                // console.log(arrInput[0].dateTime);
                 startTM = moment(JSON.parse(JSON.stringify(arrInput[0].dateTime)));
                 clearInterval(crinterval);
             }
@@ -2708,29 +2713,29 @@ var Simulation = function(magoInstance, viewer, $) {
 		127.268185563992,36.52498984302221,1,
 		127.26787876098984,36.525301485567915,1];
 
-	const droneSamplePosition =	[127.2856504212428,36.48066411326436,2,
-			127.28578304702818,36.48080979054118,2,
-			127.28592662916796,36.48103489505022,4,
-			127.28617248357656,36.48125446340615,4,
-			127.28638765775678,36.48152561777509,6,
-			127.28641000252487,36.48164386125527,6,
-			127.28628911618449,36.481981325955395,6,
-			127.28580573784654,36.481965602851105,6,
-			127.28532255462311,36.481885781823884,6,
-			127.28513165322146,36.48166234771338,8,
-			127.28554530433529,36.48127130963175,8,
-			127.28605964844036,36.481483415184094,10,
-			127.28591970469876,36.482110309041346,26,
-			127.28481112026408,36.481724032641885,26,
-			127.28431385979691,36.48194272150995,26,
-			127.2837558833892,36.48202593951379,26,
-			127.28368326049522,36.48179209922455,26,
-			127.28412163666673,36.48143259180876,14,
-			127.28454406753546,36.481254649097195,6,
-			127.28489244391889,36.481060150041856,4,
-			127.2852421125134,36.48083960258572,2,
-			127.2856504212428,36.48066411326436,2,
-			127.28578304702818,36.48080979054118,2];
+	const droneSamplePosition =	[127.2856504212428,36.48066411326436,2+9,
+			127.28578304702818,36.48080979054118,2+9,
+			127.28592662916796,36.48103489505022,4+9,
+			127.28617248357656,36.48125446340615,4+9,
+			127.28638765775678,36.48152561777509,6+9,
+			127.28641000252487,36.48164386125527,6+9,
+			127.28628911618449,36.481981325955395,6+9,
+			127.28580573784654,36.481965602851105,6+9,
+			127.28532255462311,36.481885781823884,6+9,
+			127.28513165322146,36.48166234771338,8+9,
+			127.28554530433529,36.48127130963175,8+9,
+			127.28605964844036,36.481483415184094,10+9,
+			127.28591970469876,36.482110309041346,26+9,
+			127.28481112026408,36.481724032641885,26+9,
+			127.28431385979691,36.48194272150995,26+9,
+			127.2837558833892,36.48202593951379,26+9,
+			127.28368326049522,36.48179209922455,26+9,
+			127.28412163666673,36.48143259180876,14+9,
+			127.28454406753546,36.481254649097195,6+9,
+			127.28489244391889,36.481060150041856,4+9,
+			127.2852421125134,36.48083960258572,2+9,
+			127.2856504212428,36.48066411326436,2+9,
+			127.28578304702818,36.48080979054118,2+9];
 	function runIot(id, pos, modelPath, scale) {
 		var startTime = '';
 		var endTime = '';
@@ -2778,7 +2783,8 @@ var Simulation = function(magoInstance, viewer, $) {
 				uri : modelPath,
 				minimumPixelSize : 24,
 				maximumPixelSize : 24,
-				scale : et_scale
+				scale : et_scale,
+				heightReference : Cesium.HeightReference.CLAMP_TO_GROUND,
 			},
 			path : {
 				material : new Cesium.PolylineGlowMaterialProperty({
