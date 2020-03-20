@@ -20442,6 +20442,7 @@ CesiumViewerInit.prototype.init = function()
     Cesium.Camera.DEFAULT_VIEW_RECTANGLE = extent;
     Cesium.Camera.DEFAULT_VIEW_FACTOR = 0;
 
+    this.options.selectionIndicator = false;
 	this.viewer = new Cesium.Viewer(this.targetId, this.options);
 
 	this.postProcessDataProvider();
@@ -32694,6 +32695,7 @@ var ManagerFactory = function(viewer, containerId, serverPolicy, projectIdArray,
 			_options.imageryProvider = imageryProvider;
 			_options.baseLayerPicker = false;
 			_options.antialias = true;
+            _options.selectionIndicator = false;
 			if (viewer === null) { viewer = new Cesium.Viewer(containerId, _options); }
 		}
 		else 
@@ -32704,6 +32706,7 @@ var ManagerFactory = function(viewer, containerId, serverPolicy, projectIdArray,
 				DEFALUT_TERRAIN = "Cesium World Terrain";
 			}
 			_options.shouldAnimate = true;
+            _options.selectionIndicator = false;
 			
 			if (viewer === null) { viewer = new Cesium.Viewer(containerId, _options); }
 			// 기본 지도 설정
