@@ -214,6 +214,7 @@
 	var multiPositions = [];
 
 	var buildingMetaData = {};
+	var iotEntities = {};
 	// window['moment-range'].extendMoment(moment);
 	// 임시로...
 	$(document).ready(function() {

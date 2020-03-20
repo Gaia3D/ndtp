@@ -740,7 +740,6 @@ var Simulation = function(magoInstance, viewer, $) {
 
 					Cesium.knockout.getObservable(viewModel, 'standardFloorCount').subscribe(
 						function(newValue) {
-							debugger;
 							registeredEntity.polygon.extrudedHeight = newValue;
 						}
 					);
@@ -1071,12 +1070,29 @@ var Simulation = function(magoInstance, viewer, $) {
 	});
     
     $('#iotsiminterval').click(function(){
-        console.log('start interval');
+		const val = $('#iotList').val();
+		if (val === "") {
+			alert("종류를 먼저 선택해 주시기 바랍니다.");
+			return;
+		}
+		if (iotEntities[val].isRunning) {
+			alert(val+"는 이미 실행중입니다.");
+			return;
+		}
         
-        var samplePosition = busSamplePosition;
+        let samplePosition = ""; //busSamplePosition;
+		if (val === "bus") {
+			samplePosition = busSamplePosition;
+		} else if (val === "drone") {
+			samplePosition = droneSamplePosition;
+		} else {
+			alert("아직 지원되지 않음.");
+			return;
+		}
+
         // 개수 만큼 시간을 나눈다.
         const day_start = moment(datepicker.getDate()); // 7 am
-        console.log(day_start);
+        // console.log(day_start);
         const day_end   = moment(datepicker.getDate()).add(30, 'minutes'); // 10 pm
         const durationTimeStep = parseInt((day_end.unix() - day_start.unix())/parseInt(samplePosition.length/3));
         let startUnidxTIme = day_start.unix();
@@ -1103,19 +1119,23 @@ var Simulation = function(magoInstance, viewer, $) {
         	absStartTM = startTM;
         }
         
-        var crinterval = setInterval(function() {
+        let crinterval = setInterval(function() {
+			let param_id = $('#iotList').val();
             if(startTM.isBefore(endTM)) {
+				console.log("s", param_id);
+				iotEntities[param_id].isRunning = true;
                 startTM.add(2000, 'milliseconds');
                 var jd = Cesium.JulianDate.fromDate(startTM.toDate());
                 MAGO3D_INSTANCE.getViewer().clock.currentTime = jd;
                 MAGO3D_INSTANCE.getMagoManager().sceneState.sunSystem.setDate(startTM.toDate());
             } else {
-                // console.log(arrInput[0].dateTime);
-                startTM = moment(JSON.parse(JSON.stringify(arrInput[0].dateTime)));
+				console.log("e", param_id);
+				iotEntities[param_id].isRunning = false;
+                // startTM = moment(JSON.parse(JSON.stringify(arrInput[0].dateTime)));
                 clearInterval(crinterval);
             }
         }, 30);
-    })
+    });
     
     var isInterval = true;
     var interval = null;
@@ -1124,7 +1144,11 @@ var Simulation = function(magoInstance, viewer, $) {
     var entityExistCheckObject = {};
 
 	$('#iotSimReq').click(function() {
-		const iotEnum = $('#iotList').val();
+		const val = $('#iotList').val();
+		if (val === "") {
+			alert("종류를 먼저 선택해 주시기 바랍니다.");
+			return;
+		}
 		
         let fileName = "";
         let preDir = "";
@@ -1132,15 +1156,21 @@ var Simulation = function(magoInstance, viewer, $) {
         let scale = "";
         let samplePosition = "";
         let id = "";
+
+        if (iotEntities[val] !== undefined) {
+			alert(val+"는 이미 등록된 객체 입니다.");
+        	return;
+		}
 		
-		if(iotEnum === '1') {
+		if(val === 'bus') {
             fileName = 'Mat_1.gltf';
             preDir = 'buses';
             uri = '/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir;
             scale = 0.01;
             samplePosition = busSamplePosition;
             id = "bus";
-		} else if(iotEnum === '2') {
+
+		} else if(val === 'drone') {
             fileName = 'drone.gltf';
             preDir = 'buses';
             uri = '/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir;
@@ -1182,47 +1212,48 @@ var Simulation = function(magoInstance, viewer, $) {
         
         // draw path and scatter.
 //        MAGO3D_INSTANCE.getViewer().clock.stopTime = arrInput[arrInput.length - 1].dateTime;
-        if(viewer.entities.getById(id) == undefined){
+        if(viewer.entities.getById(id) === undefined){
         	runIot(id, arrInput, uri, scale);
         }
-		
-        if(isInterval){
-            interval = setInterval(function(){
-            	console.log(startTM, endTM);
-            if(startTM.isBefore(endTM)){
-                startTM.add(2000, 'milliseconds');
-                var jd = Cesium.JulianDate.fromDate(startTM.toDate());
-                MAGO3D_INSTANCE.getViewer().clock.currentTime = jd;
-                MAGO3D_INSTANCE.getMagoManager().sceneState.sunSystem.setDate(startTM.toDate());
-            } else {
-                console.log(arrInput[0].dateTime);
-                clearInterval(this);
-            }}, 30);
-            
-            isInterval = false;
-        } else{
-            // endTM: IsAMomentObject
-            // viewer.clock.currentTime: JulianDate
-            clearInterval(interval);
-            
-            console.log(Cesium.JulianDate.toDate(viewer.clock.currentTime))
-            console.log(moment(Cesium.JulianDate.toDate(viewer.clock.currentTime)));
-            
-            startTM = absStartTM;
-            endTM = endTM + moment(Cesium.JulianDate.toDate(viewer.clock.currentTime));
-            console.log(endTM);
-            
-            setInterval(function(){
-                if(startTM.isBefore(endTM)){
-                    startTM.add(2000, 'milliseconds');
-                    var jd = Cesium.JulianDate.fromDate(startTM.toDate());
-                    MAGO3D_INSTANCE.getViewer().clock.currentTime = jd;
-                    MAGO3D_INSTANCE.getMagoManager().sceneState.sunSystem.setDate(startTM.toDate());
-                } else{
-                    console.log('test');
-                    clearInterval(this);
-                }}, 30);
-        }
+
+		let iotInterval = setInterval(function(val){
+			let param_id = $('#iotList').val();
+			if(startTM.isBefore(endTM)){
+				console.log("s", param_id);
+				iotEntities[param_id].isRunning = true;
+				startTM.add(2000, 'milliseconds');
+				var jd = Cesium.JulianDate.fromDate(startTM.toDate());
+				MAGO3D_INSTANCE.getViewer().clock.currentTime = jd;
+				MAGO3D_INSTANCE.getMagoManager().sceneState.sunSystem.setDate(startTM.toDate());
+			} else {
+				console.log("e", param_id);
+				iotEntities[param_id].isRunning = false;
+				clearInterval(iotInterval);
+			}
+		}, 30);
+
+        // if(isInterval){
+        //     isInterval = false;
+        // }
+        // else{
+        //     // endTM: IsAMomentObject
+        //     // viewer.clock.currentTime: JulianDate
+        //     clearInterval(interval);
+        //
+        //     startTM = absStartTM;
+        //     endTM = endTM + moment(Cesium.JulianDate.toDate(viewer.clock.currentTime));
+        //
+        //     setInterval(function(){
+        //         if(startTM.isBefore(endTM)){
+        //             startTM.add(2000, 'milliseconds');
+        //             var jd = Cesium.JulianDate.fromDate(startTM.toDate());
+        //             MAGO3D_INSTANCE.getViewer().clock.currentTime = jd;
+        //             MAGO3D_INSTANCE.getMagoManager().sceneState.sunSystem.setDate(startTM.toDate());
+        //         } else{
+        //             // console.log('test');
+        //             clearInterval(this);
+        //         }}, 30);
+        // }
 	});
 
 
@@ -2740,7 +2771,9 @@ var Simulation = function(magoInstance, viewer, $) {
 			127.2852421125134,36.48083960258572,2+11,
 			127.2856504212428,36.48066411326436,2+11,
 			127.28578304702818,36.48080979054118,2+11];
+
 	function runIot(id, pos, modelPath, scale) {
+		console.log("runIot: ", id);
 		var startTime = '';
 		var endTime = '';
 		function computeCirclularFlight() {
@@ -2801,42 +2834,55 @@ var Simulation = function(magoInstance, viewer, $) {
 				width : 4
 			},
 		});
-		carEntitiy =  entity;
+		iotEntities[id] = entity;
 		entity.position.setInterpolationOptions({
 			interpolationDegree : 5,
 			interpolationAlgorithm : Cesium.LagrangePolynomialApproximation
 		});
-
-		// _viewer.trackedEntity = undefined;
 		// _viewer.zoomTo(_viewer.entities, new Cesium.HeadingPitchRange(0, Cesium.Math.toRadians(-90)));
 	}
 
 	$('#iotSimTrack').click(function() {
-		_viewer.trackedEntity = undefined;
-		// _viewer.trackedEntity = carEntitiy;
-		sceneViewEntity(carEntitiy._id);
+		const val = $('#iotList').val();
+		if (val === "") {
+			alert("종류를 먼저 선택해 주시기 바랍니다.");
+			return;
+		}
+		if (iotEntities[val] === undefined) {
+			alert("종류를 먼저 등록해 주시기 바랍니다.");
+			return;
+		}
+		if (iotEntities[val].isTracking) {
+			alert(val+"은 이미 트랙킹 중입니다.");
+			return;
+		}
+		if (!iotEntities[val].isRunning) {
+			alert(val+"을 먼저 실행시켜 주시기 바랍니다.");
+			return;
+		}
+
+		sceneViewEntity(val);
 	});
 
     var onTickListener = null;
 	
-	function sceneViewEntity(etityId){
-		let flipAngle = -1;
-		let first_flip = 0;
-		
+	function sceneViewEntity(param_id){
+		var first_flip = 0;
+
         onTickListener = viewer.clock.onTick.addEventListener(function(clock){
             // clock.currentTime, viewer.endTime하고 비교
             if(clock.currentTime < viewer.clock.stopTime){
-                console.log(clock.currentTime, viewer.clock.stopTime)
-                console.log(clock.currentTime.secondsOfDay, first_flip)
-                var entityId = entityId;
-                var trackedEntity = viewer.entities.getById(etityId);
+				var flipAngle = -1;
 
+				iotEntities[param_id].isTracking = true;
+                var trackedEntity = viewer.entities.getById(iotEntities[param_id]._id);
+                // console.log("trackedEntity=", iotEntities[param_id]._id);
                 var direction = trackedEntity.orientation.getValue(clock.currentTime);
                 
-                if(first_flip == 400){
+                if(first_flip === 400){
                 	flipAngle *= -1;
                 	first_flip += 1;
-                } else if(first_flip == 960){
+                } else if(first_flip === 960){
                 	flipAngle *= -1;
                 	first_flip += 1;
                 } else{
@@ -2846,15 +2892,17 @@ var Simulation = function(magoInstance, viewer, $) {
                 var angle = Cesium.Quaternion.computeAngle(direction) * flipAngle;
                 var pitch = -Cesium.Math.toRadians(70.0);
                 var range = Cesium.Cartesian3.magnitude(new Cesium.Cartesian3(80.0, 50.0, 60.0)) + 100;
-                debugger;
+                // debugger;
                 var offset = new Cesium.HeadingPitchRange(angle, pitch, range);
-                
+
+                // console.log("angle=", angle, " pitch=", pitch, " range=", range, " offset=", offset);
                 viewer.camera.lookAt(trackedEntity.position.getValue(clock.currentTime), offset);
             } else{
-                console.log('stop this interval plz');
-                viewer.entities.removeById(entityId);
-                viewer.camera.zoomOut(100);
+				iotEntities[param_id].isTracking = false;
+
+                // viewer.entities.removeById(iotEntities[param_id]._id);
                 viewer.clock.onTick.removeEventListener(onTickListener());
+				viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY);
             }
         });
 	};
