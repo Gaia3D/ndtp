@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import ndtp.domain.CacheManager;
 import ndtp.domain.Key;
 import ndtp.domain.Policy;
-import ndtp.domain.UploadData;
 import ndtp.domain.UserInfo;
 import ndtp.domain.UserSession;
 import ndtp.domain.UserStatus;
@@ -41,11 +40,9 @@ public class UserController {
 	 * @return
 	 */
 	@GetMapping(value = "/modify-password")
-	public String modifyPassword(HttpServletRequest request, UploadData uploadData, Model model) {
+	public String modifyPassword(HttpServletRequest request, Model model) {
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-		uploadData.setUserId(userSession.getUserId());
-		
 		Policy policy = CacheManager.getPolicy();
 		
 		model.addAttribute("policy", policy);

@@ -176,10 +176,7 @@ public class UserController implements AuthorizationController {
 	 * @return
 	 */
 	@GetMapping(value = "/modify-password")
-	public String modifyPassword(HttpServletRequest request, UploadData uploadData, Model model) {
-		
-		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
-		uploadData.setUserId(userSession.getUserId());
+	public String modifyPassword(HttpServletRequest request, Model model) {
 		
 		Policy policy = policyService.getPolicy();
 		
