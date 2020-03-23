@@ -23,5 +23,19 @@ public interface DataAttributeService {
 	 * @param dataAttributeFileInfo
 	 * @return
 	 */
-	DataAttributeFileInfo insertDataAttribute(Long dataId, DataAttributeFileInfo dataAttributeFileInfo);
+	DataAttributeFileInfo insertDataAttributeByFile(Long dataId, DataAttributeFileInfo dataAttributeFileInfo);
+	
+	/**
+	 * 데이터 속성 등록
+	 * @param dataAttribute
+	 * @return
+	 */
+	int insertDataAttribute(DataAttribute dataAttribute);
+	
+	/**
+	 * 데이터 속성 수정
+	 * @param dataAttribute
+	 * @return
+	 */
+	int updateDataAttribute(DataAttribute dataAttribute);
 }
