@@ -601,7 +601,7 @@ var Simulation = function(magoInstance, viewer, $) {
 
 	var viewModel = {
 		standardFloorCount: 0,
-		buildingHeight: 40,
+		buildingHeight: 20,
 		buildingAdjust: 0,
 	};
 	var allObject = {};
@@ -740,7 +740,7 @@ var Simulation = function(magoInstance, viewer, $) {
 
 					Cesium.knockout.getObservable(viewModel, 'standardFloorCount').subscribe(
 						function(newValue) {
-							registeredEntity.polygon.extrudedHeight = newValue;
+							registeredEntity.polygon.extrudedHeight = newValue * 4;
 						}
 					);
 					allObject[val].terrain = registeredEntity;
@@ -798,7 +798,7 @@ var Simulation = function(magoInstance, viewer, $) {
 
 					Cesium.knockout.getObservable(viewModel, 'standardFloorCount').subscribe(
 						function(newValue) {
-							registeredEntity.polygon.extrudedHeight = newValue;
+							registeredEntity.polygon.extrudedHeight = newValue * 4;
 						}
 					);
 					allObject[val].terrain = registeredEntity;
@@ -826,30 +826,30 @@ var Simulation = function(magoInstance, viewer, $) {
 			case "dType1":
 				// allObject[pickedName].terrain.polygon.extrudedHeightReference = Cesium.HeightReference.CLAMP_TO_GROUND ;
 				allObject[pickedName].terrain.polygon.material.color=Cesium.Color.YELLOW.withAlpha(0.6);
-				$("#standardFloorAreaRatio").val(200).trigger("change");
+				$("#standardFloorAreaRatio").val(180).trigger("change");
 				$("#standardBuildingToLandRatio").val(50).trigger("change");
-				$("#standardFloorCount").val(40).trigger("change");
+				$("#standardFloorCount").val(20).trigger("change");
 				break;
 			case "dType2":
 				// allObject[pickedName].terrain.polygon.heightReference = Cesium.HeightReference.CLAMP_TO_GROUND ;
 				allObject[pickedName].terrain.polygon.material.color=Cesium.Color.ORANGERED.withAlpha(0.6);
 				$("#standardFloorAreaRatio").val(120).trigger("change");
 				$("#standardBuildingToLandRatio").val(40).trigger("change");
-				$("#standardFloorCount").val(15+60).trigger("change");
+				$("#standardFloorCount").val(15).trigger("change");
 				break;
 			case "dType3":
 				// allObject[pickedName].terrain.polygon.heightReference = Cesium.HeightReference.CLAMP_TO_GROUND ;
 				allObject[pickedName].terrain.polygon.material.color=Cesium.Color.MEDIUMTURQUOISE.withAlpha(0.6);
 				$("#standardFloorAreaRatio").val(80).trigger("change");
 				$("#standardBuildingToLandRatio").val(20).trigger("change");
-				$("#standardFloorCount").val(10+60).trigger("change");
+				$("#standardFloorCount").val(10).trigger("change");
 				break;
 			case "dType4":
 				// allObject[pickedName].terrain.polygon.heightReference = Cesium.HeightReference.CLAMP_TO_GROUND ;
 				allObject[pickedName].terrain.polygon.material.color=Cesium.Color.YELLOWGREEN.withAlpha(0.6);
-				$("#standardFloorAreaRatio").val(50).trigger("change");
-				$("#standardBuildingToLandRatio").val(25).trigger("change");
-				$("#standardFloorCount").val(25+60).trigger("change");
+				$("#standardFloorAreaRatio").val(200).trigger("change");
+				$("#standardBuildingToLandRatio").val(40).trigger("change");
+				$("#standardFloorCount").val(25).trigger("change");
 				break;
 			default:
 				console.log("아무것도 선택되지 않았습니다.");
@@ -925,10 +925,10 @@ var Simulation = function(magoInstance, viewer, $) {
 				registeredEntity.name = "아파트_" + index;
 				registeredEntity.polygon.heightReference = 1;
 				// registeredEntity.polygon.extrudedHeightReference = 1;
-				registeredEntity.polygon.extrudedHeight = parseInt(viewModel.buildingHeight);
+				registeredEntity.polygon.extrudedHeight = parseInt(viewModel.buildingHeight) * 3;
 
 				let buildingFloorArea = parseFloat(getArea(registeredEntity.polygon._hierarchy._value.positions));	// 건축면적
-				let totalBuildingFloorArea = buildingFloorArea * registeredEntity.polygon.extrudedHeight;  // 건축면적 * 층수 = 연면적
+				let totalBuildingFloorArea = buildingFloorArea * registeredEntity.polygon.extrudedHeight / 6;  // 건축면적 * 층수 = 연면적
 				registeredEntity.buildingFloorArea = buildingFloorArea; // 건축면적
 				registeredEntity.totalBuildingFloorArea = totalBuildingFloorArea; // 연면적
 				sumFloorArea += buildingFloorArea;
@@ -941,46 +941,46 @@ var Simulation = function(magoInstance, viewer, $) {
 					Cesium.knockout.getObservable(viewModel, 'buildingHeight').subscribe(
 						function(newValue) {
 							// let curHeight = parseInt(registeredEntity.polygon.extrudedHeight.getValue());
-							let newVal = parseInt(newValue);
+							let newVal = parseInt(newValue) * 3;
 							let customizing = parseInt($("#inputCustomizing").val());
 
 							registeredEntity.polygon.extrudedHeight = newVal + customizing;
 
 							// 변경된 연면적 계산
-							registeredEntity.totalBuildingFloorArea = registeredEntity.buildingFloorArea * registeredEntity.polygon.extrudedHeight;
+							registeredEntity.totalBuildingFloorArea = registeredEntity.buildingFloorArea * registeredEntity.polygon.extrudedHeight / 6;
 							standardHeight = parseInt(newValue);
 						}
 					);
 					Cesium.knockout.getObservable(viewModel, 'buildingAdjust').subscribe(
 						function(newValue) {
-							let newVal = parseInt(newValue);
+							let newVal = parseInt(newValue) * 3;
 							registeredEntity.polygon.extrudedHeight = standardHeight + newVal;
 
 							// 변경된 연면적 계산
-							registeredEntity.totalBuildingFloorArea = registeredEntity.buildingFloorArea * registeredEntity.polygon.extrudedHeight;
+							registeredEntity.totalBuildingFloorArea = registeredEntity.buildingFloorArea * registeredEntity.polygon.extrudedHeight / 6;
 						}
 					);
 				} else {
 					Cesium.knockout.getObservable(viewModel, 'buildingHeight').subscribe(
 						function(newValue) {
 							// let curHeight = parseInt(registeredEntity.polygon.extrudedHeight.getValue());
-							let newVal = parseInt(newValue);
+							let newVal = parseInt(newValue) * 3;
 							let customizing = parseInt($("#inputCustomizing").val());
 
 							registeredEntity.polygon.extrudedHeight = newVal - customizing;
 
 							// 변경된 연면적 계산
-							registeredEntity.totalBuildingFloorArea = registeredEntity.buildingFloorArea * registeredEntity.polygon.extrudedHeight;
+							registeredEntity.totalBuildingFloorArea = registeredEntity.buildingFloorArea * registeredEntity.polygon.extrudedHeight / 6;
 							standardHeight = parseInt(newValue);
 						}
 					);
 					Cesium.knockout.getObservable(viewModel, 'buildingAdjust').subscribe(
 						function(newValue) {
-							let newVal = parseInt(newValue);
+							let newVal = parseInt(newValue) * 3;
 							registeredEntity.polygon.extrudedHeight = standardHeight - newVal;
 
 							// 변경된 연면적 계산
-							registeredEntity.totalBuildingFloorArea = registeredEntity.buildingFloorArea * registeredEntity.polygon.extrudedHeight;
+							registeredEntity.totalBuildingFloorArea = registeredEntity.buildingFloorArea * registeredEntity.polygon.extrudedHeight / 6;
 						}
 					);
 				}
