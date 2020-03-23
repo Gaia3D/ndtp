@@ -224,4 +224,15 @@ values
 	(6, '[사용자 전용] 사용자 페이지 DATA 조회 권한', 'USER_DATA_READ', '0', '0', 'Y', 'Y'),
 	(7, '[사용자 전용] 사용자 페이지 시민참여 관리 권한', 'USER_CIVIL_VOICE_MANAGE', '0', '0', 'Y', 'Y');
 
+	
+INSERT INTO data_group (
+  data_group_id, data_group_name, data_group_key, data_group_path, data_group_target, sharing, user_id, 
+	ancestor, parent, depth, view_order, children, basic, available,  
+	metainfo)
+values (
+  1, '기본', 'basic', 'infra/basic/', 'admin', 'public', 'admin',
+  1, 0, 1, 1, 0, true, true,
+  '{"isPhysical": false}'
+);	
+	
 commit;

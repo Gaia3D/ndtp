@@ -31,6 +31,8 @@ public class DataInfo extends Search implements Serializable {
 	
 	private static final long serialVersionUID = 6267402319518438249L;
 	
+	public static final String F4D_PREFIX = "F4D_";
+	
 	/******** 화면 오류 표시용 ********/
 	private String messageCode;
 	private String errorCode;

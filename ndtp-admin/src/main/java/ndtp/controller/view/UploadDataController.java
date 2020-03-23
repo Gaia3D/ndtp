@@ -1,5 +1,6 @@
 package ndtp.controller.view;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,23 +71,13 @@ public class UploadDataController {
 		DataGroup dataGroup = new DataGroup();
 		dataGroup.setUserId(userSession.getUserId());
 		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup(dataGroup);
-		if(dataGroupList == null || dataGroupList.isEmpty()) {
-			String dataGroupPath = "basic/";
-			
-			dataGroup.setDataGroupKey("basic");
-			dataGroup.setDataGroupName("기본");
-			dataGroup.setDataGroupPath(propertiesConfig.getAdminDataServicePath() + dataGroupPath);
-			dataGroup.setDataGroupTarget(ServerTarget.ADMIN.name().toLowerCase());
-			dataGroup.setSharing(SharingType.PUBLIC.name().toLowerCase());
-			dataGroup.setMetainfo("{\"isPhysical\": false}");
-			
-			FileUtils.makeDirectoryByPath(propertiesConfig.getAdminDataServiceDir(), dataGroupPath);
-			dataGroupService.insertBasicDataGroup(dataGroup);
-			
-			dataGroupList = dataGroupService.getListDataGroup(dataGroup);
-		}
-		
 		DataGroup basicDataGroup = dataGroupService.getBasicDataGroup();
+		
+		// basic 디렉토리를 실수로 지웠거나 만들지 않았는지 확인
+		File basicDirectory = new File(propertiesConfig.getAdminDataServiceDir() + "basic");
+		if(!basicDirectory.exists()) {
+			basicDirectory.mkdir();
+		}
 		
 		UploadData uploadData = UploadData.builder().
 											dataGroupId(basicDataGroup.getDataGroupId()).

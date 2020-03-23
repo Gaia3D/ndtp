@@ -7,6 +7,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class TargetJSON {
-	private List<Children> children; 
+public class DataInfoLegacyWrapper {
+	private List<DataInfoLegacy> children; 
 }

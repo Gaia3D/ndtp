@@ -134,7 +134,7 @@ public class DataRestController {
 	}
 	
 	/**
-	 * 데이터 그룹 정보
+	 * 데이터 정보
 	 * @param projectId
 	 * @return
 	 */

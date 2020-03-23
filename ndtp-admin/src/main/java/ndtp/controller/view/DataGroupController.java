@@ -54,23 +54,7 @@ public class DataGroupController {
 		
 		UserSession userSession = (UserSession)request.getSession().getAttribute(Key.USER_SESSION.name());
 		dataGroup.setUserId(userSession.getUserId());
-		
 		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup(dataGroup);
-		if(dataGroupList == null || dataGroupList.isEmpty()) {
-			String dataGroupPath = "basic/";
-			
-			dataGroup.setDataGroupKey("basic");
-			dataGroup.setDataGroupName("기본");
-			dataGroup.setDataGroupPath(propertiesConfig.getAdminDataServicePath() + dataGroupPath);
-			dataGroup.setDataGroupTarget(ServerTarget.ADMIN.name().toLowerCase());
-			dataGroup.setSharing(SharingType.PUBLIC.name().toLowerCase());
-			dataGroup.setMetainfo("{\"isPhysical\": false}");
-			
-			FileUtils.makeDirectoryByPath(propertiesConfig.getAdminDataServiceDir(), dataGroupPath);
-			dataGroupService.insertBasicDataGroup(dataGroup);
-			
-			dataGroupList = dataGroupService.getListDataGroup(dataGroup);
-		}
 		
 		model.addAttribute("dataGroupList", dataGroupList);
 
@@ -89,22 +73,7 @@ public class DataGroupController {
 		DataGroup dataGroup = new DataGroup();
 		dataGroup.setUserId(userSession.getUserId());
 		List<DataGroup> dataGroupList = dataGroupService.getListDataGroup(dataGroup);
-		if(dataGroupList == null || dataGroupList.isEmpty()) {
-			String dataGroupPath = "basic/";
-			
-			dataGroup.setDataGroupKey("basic");
-			dataGroup.setDataGroupName("기본");
-			dataGroup.setDataGroupPath(propertiesConfig.getAdminDataServicePath() + dataGroupPath);
-			dataGroup.setDataGroupTarget(ServerTarget.ADMIN.name().toLowerCase());
-			dataGroup.setSharing(SharingType.PUBLIC.name().toLowerCase());
-			dataGroup.setMetainfo("{\"isPhysical\": false}");
-			
-			FileUtils.makeDirectoryByPath(propertiesConfig.getAdminDataServiceDir(), dataGroupPath);
-			dataGroupService.insertBasicDataGroup(dataGroup);
-			
-			dataGroupList = dataGroupService.getListDataGroup(dataGroup);
-		}
-
+		
 		Policy policy = policyService.getPolicy();
 		dataGroup.setParentName(policy.getContentDataGroupRoot());
 		dataGroup.setParent(0);
