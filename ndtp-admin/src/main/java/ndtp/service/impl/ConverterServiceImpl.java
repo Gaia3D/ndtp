@@ -139,6 +139,7 @@ public class ConverterServiceImpl implements ConverterService {
 			// 2. converter job 을 등록
 			ConverterJob inConverterJob = new ConverterJob();
 			inConverterJob.setUploadDataId(Long.valueOf(uploadDataId));
+			inConverterJob.setDataGroupTarget(ServerTarget.ADMIN.name().toLowerCase());
 			inConverterJob.setUserId(userId);
 			inConverterJob.setTitle(title);
 			inConverterJob.setUsf(usf);
@@ -465,9 +466,9 @@ public class ConverterServiceImpl implements ConverterService {
 		try {
 			String targetDirectory = serviceDirectory + updateDataInfo.getDataGroupKey() + File.separator + DataInfo.F4D_PREFIX + updateDataInfo.getDataKey();
 			
-			File file = new File(targetDirectory + File.separator + "attribute.json");
+			File file = new File(targetDirectory + File.separator + "attributes.json");
 			if(file.exists()) {
-				byte[] jsonData = Files.readAllBytes(Paths.get(targetDirectory + File.separator + "attribute.json"));
+				byte[] jsonData = Files.readAllBytes(Paths.get(targetDirectory + File.separator + "attributes.json"));
 				attribute = new String(jsonData, StandardCharsets.UTF_8);
 			}
 		} catch(IOException e) {

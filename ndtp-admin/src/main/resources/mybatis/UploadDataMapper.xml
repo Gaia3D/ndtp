@@ -95,24 +95,24 @@
 	</select>
 	
 	<!-- 업로딩 파일 총 건수 -->
-	<select id="getUploadDataFileTotalCount" parameterType="uploadDataFile" resultType="long">
+	<!-- <select id="getUploadDataFileTotalCount" parameterType="uploadDataFile" resultType="long">
 		/* getUploadDataFileTotalCount */
 		SELECT COUNT(upload_data_file_id) 
 		FROM upload_data_file 
 		<if test="userId != null and userId != ''">
 		WHERE user_id =#{userId} 
 		</if>
-	</select>
+	</select> -->
 
 	<!-- 업로딩 파일 총 용량 -->
-	<select id="getUploadDataFileTotalSize" parameterType="uploadDataFile" resultType="long">
+	<!-- <select id="getUploadDataFileTotalSize" parameterType="uploadDataFile" resultType="long">
 		/* getUploadDataFileTotalSize */
 		SELECT SUM(TO_NUMBER(file_size, '99999999999999999999')) 
 		FROM upload_data_file 
 		<if test="userId != null and userId != ''">
 		WHERE user_id =#{userId} 
 		</if> 
-	</select>
+	</select> -->
 	
 	<!-- 업로딩한 파일 목록 -->
 	<select id="getListUploadDataFile" parameterType="uploadData" resultType="uploadDataFile">

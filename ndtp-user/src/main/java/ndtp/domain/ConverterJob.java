@@ -43,6 +43,8 @@ public class ConverterJob extends Search {
 	private Long converterJobId;
 	// 업로드 고유키
 	private Long uploadDataId;
+	// [중복] admin : 관리자용 데이터 그룹, user : 일반 사용자용 데이터 그룹
+	private String dataGroupTarget;
 	// 사용자 고유번호
 	private String userId;
 	// title

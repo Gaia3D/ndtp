@@ -8,9 +8,9 @@
 		/* getConverterJobTotalCount */
 		SELECT COUNT(converter_job_id) 
 		FROM converter_job
-		<trim prefix="WHERE" prefixOverrides="AND">
+		WHERE data_group_target = 'user'
 			<if test="userId != null and userId != ''">
-			user_id = #{userId}
+			AND user_id = #{userId}
 			</if>
 			<if test="status != null and status != ''">
 			AND status = #{status}
@@ -31,7 +31,6 @@
 			AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
-		</trim>
 	</select>
 	
 	<!-- converter job file 총 건수 -->
@@ -73,9 +72,9 @@
 		FROM (
 			SELECT A.*
 			FROM converter_job A
-			<trim prefix="WHERE" prefixOverrides="AND">
+			WHERE data_group_target = 'user'
 				<if test="userId != null and userId != ''">
-				user_id = #{userId}
+				AND user_id = #{userId}
 				</if>
 				<if test="status != null and status != ''">
 				AND A.status = #{status}
@@ -96,7 +95,6 @@
 				AND A.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
 				]]>
 				</if>
-			</trim>
 			<choose>
 			<when test="orderWord != null and orderWord != '' and orderValue != null and orderValue != ''">
 			ORDER BY A.${orderWord} ${orderValue}
@@ -158,13 +156,13 @@
     		SELECT NEXTVAL('converter_job_seq')
   		</selectKey>
 		INSERT INTO converter_job(
-			converter_job_id, upload_data_id, user_id, title, usf, converter_template, y_axis_up, file_count,
+			converter_job_id, upload_data_id, data_group_target, user_id, title, usf, converter_template, y_axis_up, file_count,
 			<if test="status != null and status != ''">
 			status, 
 			</if>
 			error_code
 		) VALUES (
-			#{converterJobId}, #{uploadDataId}, #{userId}, #{title}, #{usf}, #{converterTemplate}, #{yAxisUp}, #{fileCount},
+			#{converterJobId}, #{uploadDataId}, #{dataGroupTarget}, #{userId}, #{title}, #{usf}, #{converterTemplate}, #{yAxisUp}, #{fileCount},
 			<if test="status != null and status != ''">
 			#{status}, 
 			</if>

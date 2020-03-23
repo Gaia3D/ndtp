@@ -7,13 +7,15 @@
 	<select id="getUploadDataTotalCount" parameterType="uploadData" resultType="long">
 		/* getUploadDataTotalCount */
 		SELECT COUNT(upload_data_id) 
-		FROM upload_data
-		WHERE user_id = #{userId}
+		FROM upload_data A, data_group B
+		WHERE A.user_id = #{userId}
+			AND A.data_group_id = B.data_group_id
+			AND B.data_group_target = 'user'
 			<if test="sharing != null and sharing != ''">
-			AND sharing = #{sharing}
+			AND A.sharing = #{sharing}
 			</if>
 			<if test="dataType != null and dataType != ''">
-			AND data_type = #{dataType}
+			AND A.data_type = #{dataType}
 			</if>
 			<if test="searchWord != null and searchWord != '' and searchValue != null and searchValue != '' and searchOption == '0'.toString()">
 			AND ${searchWord} = #{searchValue}
@@ -23,12 +25,12 @@
 			</if>
 			<if test="startDate != null and startDate != ''">
 			<![CDATA[
-			AND insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
+			AND A.insert_date >= TO_TIMESTAMP(#{startDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
 			<if test="endDate != null and endDate != ''">
 			<![CDATA[
-			AND insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
+			AND A.insert_date <= TO_TIMESTAMP(#{endDate}, 'YYYYMMDDHH24MISSUS')
 			]]>
 			</if>
 	</select>
@@ -40,6 +42,7 @@
 		FROM upload_data A, data_group B
 		WHERE A.user_id = #{userId}
 			AND A.data_group_id = B.data_group_id
+			AND B.data_group_target = 'user'
 		<if test="dataGroupName != null and dataGroupName != ''">
 			AND B.data_group_name = #{dataGroupName}
 		</if>
@@ -89,24 +92,24 @@
 	</select>
 	
 	<!-- 업로딩 파일 총 건수 -->
-	<select id="getUploadDataFileTotalCount" parameterType="uploadDataFile" resultType="long">
+	<!-- <select id="getUploadDataFileTotalCount" parameterType="uploadDataFile" resultType="long">
 		/* getUploadDataFileTotalCount */
 		SELECT COUNT(upload_data_file_id) 
 		FROM upload_data_file 
 		<if test="userId != null and userId != ''">
 		WHERE user_id =#{userId} 
 		</if>
-	</select>
+	</select> -->
 
 	<!-- 업로딩 파일 총 용량 -->
-	<select id="getUploadDataFileTotalSize" parameterType="uploadDataFile" resultType="long">
+	<!-- <select id="getUploadDataFileTotalSize" parameterType="uploadDataFile" resultType="long">
 		/* getUploadDataFileTotalSize */
 		SELECT SUM(TO_NUMBER(file_size, '99999999999999999999')) 
 		FROM upload_data_file 
 		<if test="userId != null and userId != ''">
 		WHERE user_id =#{userId} 
 		</if> 
-	</select>
+	</select> -->
 	
 	<!-- 업로딩한 파일 목록 -->
 	<select id="getListUploadDataFile" parameterType="uploadData" resultType="uploadDataFile">
