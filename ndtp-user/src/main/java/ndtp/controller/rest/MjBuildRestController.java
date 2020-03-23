@@ -15,11 +15,11 @@ import ndtp.service.MjBuildService;
 
 @RestController
 @RequestMapping("/mj-build")
-public class MjBuildController {
+public class MjBuildRestController {
 	
 	private final MjBuildService mjBuildService;
 	
-	public MjBuildController(MjBuildService mjBuildService) {
+	public MjBuildRestController(MjBuildService mjBuildService) {
 		this.mjBuildService = mjBuildService;
 	}
 
