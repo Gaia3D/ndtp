@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ndtp.persistence.MjBuildMapper">
+
+	<select id="getDataInfo" parameterType="mjBuild" resultType="mjBuild" >
+		SELECT * FROM mj_build 
+		<if test="buildName != null and buildName != ''">
+			WHERE build_name = #{buildName}
+		</if>
+	</select>
+</mapper>
