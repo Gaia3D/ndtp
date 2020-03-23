@@ -383,6 +383,7 @@ public class ConverterServiceImpl implements ConverterService {
 							dataAttribute.setAttributes(attribute);
 							dataAttributeService.updateDataAttribute(dataAttribute);
 						}
+						updateDataInfo.setAttributeExist(Boolean.TRUE);
 					}
 				} else {
 					updateDataInfo.setStatus(DataStatus.USE.name().toLowerCase());
