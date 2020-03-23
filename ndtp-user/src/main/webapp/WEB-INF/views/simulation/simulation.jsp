@@ -225,6 +225,7 @@
 							<option value="">선택안함</option>
 							<option value="sejong_apartmentComplex1">세종시 아파트단지</option>
 							<option value="sejong_church1">세종시 교회</option>
+							<option value="ecodelta_district">에코델타 지역</option>
 						</select>
 <%--						<input id="objectName" type="text" placeholder="" />--%>
 
