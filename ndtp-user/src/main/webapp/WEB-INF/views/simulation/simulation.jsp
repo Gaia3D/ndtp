@@ -215,7 +215,9 @@
 						<select id="selectPiece" name="selectPiece">
 							<option value="">선택안함</option>
 							<option value="sejong6_4">6-4 생활권</option>
+							<option value="ecoDelta">에코델타시티</option>
 						</select>
+						<button type="button" id="deleteDistrict" class="btnText drawObserverPoint" style="margin-bottom: 5px;">필지 삭제</button>
 						<div class="line"></div>
 
 						<label for="">지역</label>
@@ -237,8 +239,7 @@
 
 						<div class="line" style="margin-top:5px;"></div>
 						<button type="button" id="create3dModel" class="btnText drawObserverPoint" style="">3D모형 생성</button>
-						<button type="button" id="delete3dModel" class="btnText drawObserverPoint" style="margin-bottom: 5px;">3D모형 삭제</button>
-						<button type="button" id="deleteDistrict" class="btnText drawObserverPoint" style="margin-bottom: 5px;">삭제</button>
+						<button type="button" id="delete3dModel" class="btnText drawObserverPoint" style="margin-bottom: 5px; margin-right: 95px;">3D모형 삭제</button>
 
 
 						<label for="">지역 전시</label>

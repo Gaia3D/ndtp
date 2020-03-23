@@ -201,7 +201,7 @@ var Simulation = function(magoInstance, viewer, $) {
     var stdFairRate = 0;
     var locationList = {
 		"sejong": [127.2739454, 36.5268601],
-		"pusan": [129.0015885, 35.1645701],
+		"pusan": [128.917388, 35.1434585],
 	};
 /*
 	setTimeout(() => {
@@ -676,17 +676,19 @@ var Simulation = function(magoInstance, viewer, $) {
 		let val = value.target.value;
 		switch (val) {
 			case "sejong6_4":
-				var layers = viewer.scene.imageryLayers;
+				let layers = viewer.scene.imageryLayers;
 
 				layers.addImageryProvider(new Cesium.SingleTileImageryProvider({
 					url : '/images/mapgeoref.png',
-					// rectangle : Cesium.Rectangle.fromDegrees(127.2603901, 36.5187878, 127.2875007, 36.5349324)
 					rectangle : Cesium.Rectangle.fromDegrees(127.26024, 36.5189, 127.288, 36.5349)
 				}));
-
-				// _viewer.scene.camera.flyTo({
-				// 	destination : Cesium.Cartesian3.fromDegrees(127.2739454, 36.5268601, 600.0)
-				// });
+				break;
+			case "ecoDelta":
+				let eco_layer = viewer.scene.imageryLayers;
+				eco_layer.addImageryProvider(new Cesium.SingleTileImageryProvider({
+					url : '/images/ecoDelta.png',
+					rectangle : Cesium.Rectangle.fromDegrees(127.26024, 36.5189, 127.288, 36.5349)
+				}));
 				break;
 			default:
 				console.log("val is empty or undefined");
@@ -857,12 +859,30 @@ var Simulation = function(magoInstance, viewer, $) {
 	});
 
 	$("#deleteDistrict").click(() => {
-		// let imgLayer = "";
-		_viewer.scene.imageryLayers._layers.forEach((obj, idx) => {
-			if (obj.imageryProvider.url.includes("mapgeoref.png")) {
-				_viewer.scene.imageryLayers.remove(obj);
-			}
-		});
+		let field = $("#selectPiece").val();
+		if (field === "") {
+			alert("필지를 먼저 선택해 주시기 바랍니다.");
+			return;
+		}
+		switch (field) {
+			case "sejong6_4":
+				_viewer.scene.imageryLayers._layers.forEach((obj, idx) => {
+					if (obj.imageryProvider.url.includes("mapgeoref.png")) {
+						_viewer.scene.imageryLayers.remove(obj);
+					}
+				});
+				break;
+			case "ecoDelta":
+				_viewer.scene.imageryLayers._layers.forEach((obj, idx) => {
+					if (obj.imageryProvider.url.includes("ecoDelta.png")) {
+						_viewer.scene.imageryLayers.remove(obj);
+					}
+				});
+				break;
+			default:
+				console.log("일치하는 필지가 없습니다.");
+		}
+
 	});
 
 	$("#delete3dModel").click(()=> {
