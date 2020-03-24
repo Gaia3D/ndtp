@@ -193,13 +193,38 @@ values
 
 	
 INSERT INTO data_group (
-  data_group_id, data_group_name, data_group_key, data_group_path, data_group_target, sharing, user_id, 
-	ancestor, parent, depth, view_order, children, basic, available,  
-	metainfo)
-values (
-  1, '기본', 'basic', 'infra/basic/', 'admin', 'public', 'admin',
-  1, 0, 1, 1, 0, true, true,
-  '{"isPhysical": false}'
-);	
+	data_group_id, data_group_key, data_group_name, data_group_path, data_group_target, sharing, user_id,
+	ancestor, parent, depth, view_order, children, basic, available, tiling, metainfo)
+values 
+	(1, 'basic', '기본', 'infra/basic/', 'admin', 'public', 'admin', 1, 0, 1, 1, 0, true, true, false, TO_JSON('{"isPhysical": false}'::json)),
+	
+	(2, 'busan-edc', '부산 EDC', 'infra/busan-edc/', 'admin', 'public', 'admin', 2, 0, 1, 2, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(3, 'busan-mj', '부산 명지1동 아파트', 'infra/busan-mj/', 'admin', 'public', 'admin', 3, 0, 1, 3, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(4, 'busan-sv', '부산 스마트빌리지', 'infra/busan-sv/','admin', 'public', 'admin', 4, 0, 1, 4, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(5, 'sejong-apartment', '세종시 공공주택', 'infra/sejong-apartment/', 'admin', 'public', 'admin', 5, 0, 1, 5, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(6, 'sejong-bus-sign', '세종시 버스정류장표지판', 'infra/sejong-bus-sign/', 'admin', 'public', 'admin', 6, 0, 1, 6, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(7, 'sejong-complex', '세종시 복합', 'infra/sejong-complex/', 'admin', 'public', 'admin', 7, 0, 1, 7, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(8, 'sejong-curture', '세종시 문화교육시설', 'infra/sejong-curture/', 'admin', 'public', 'admin', 8, 0, 1, 8, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(9, 'sejong-etc', '세종시 기타시설물', 'infra/sejong-etc/', 'admin', 'public', 'admin', 9, 0, 1, 9, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(10, 'sejong-industry', '세종시 산업시설', 'infra/sejong-industry/', 'admin', 'public', 'admin', 10, 0, 1, 10, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(11, 'sejong-jeonju', '세종시 전신주', 'infra/sejong-jeonju/', 'admin', 'public', 'admin', 11, 0, 1, 11, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(12, 'sejong-pedestrian-light', '세종시 보행자신호등', 'infra/sejong-pedestrian-light/', 'admin', 'public', 'admin', 12, 0, 1, 12, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(13, 'sejong-public', '세종시 공공기관', 'infra/sejong-public/', 'admin', 'public', 'admin', 13, 0, 1, 13, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(14, 'sejong-road-sign', '세종시 도로표지판', 'infra/sejong-road-sign/', 'admin', 'public', 'admin', 14, 0, 1, 14, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(15, 'sejong-safe-sign', '세종시 안전표시판', 'infra/sejong-safe-sign/', 'admin', 'public', 'admin', 15, 0, 1, 15, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(16, 'sejong-service', '세종시 서비스시설', 'infra/sejong-service/', 'admin', 'public', 'admin', 16, 0, 1, 16, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(17, 'sejong-street-lamp', '세종시 가로등', 'infra/sejong-street-lamp/', 'admin', 'public', 'admin', 17, 0, 1, 17, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(18, 'sejong-taxi-sign', '세종시 택시정류장표시판', 'infra/sejong-taxi-sign/', 'admin', 'public', 'admin', 18, 0, 1, 18, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(19, 'sejong-traffic-light', '세종시 교통신호등', 'infra/sejong-traffic-light/', 'admin', 'public', 'admin', 19, 0, 1, 19, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(20, 'sejong-tree', '세종시 식생(나무)', 'infra/sejong-tree/', 'admin', 'public', 'admin', 20, 0, 1, 20, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(21, 'busan-general-house', '부산시 일반주택', 'infra/busan-general-house/', 'admin', 'public', 'admin', 21, 0, 1, 21, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(22, 'busan-apartment', '부산시 공동주택', 'infra/busan-apartment/', 'admin', 'public', 'admin', 22, 0, 1, 22, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(23, 'busan-public', '부산시 공공기관', 'infra/busan-public/', 'admin', 'public', 'admin', 23, 0, 1, 23, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(24, 'busan-industry', '부산시 산업시설', 'infra/busan-industry/', 'admin', 'public', 'admin', 24, 0, 1, 24, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(25, 'busan-curture', '부산시 문화교육시설', 'infra/busan-curture/', 'admin', 'public', 'admin', 25, 0, 1, 25, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(26, 'busan-welfare', '부산시 의료복지시설', 'infra/busan-welfare/', 'admin', 'public', 'admin', 26, 0, 1, 26, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(27, 'busan-service', '부산시 서비스시설', 'infra/busan-service/', 'admin', 'public', 'admin', 27, 0, 1, 27, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json)),
+	(28, 'busan-etc', '부산시 기타시설', 'infra/busan-etc/', 'admin', 'public', 'admin', 28, 0, 1, 28, 0, false, true, true, TO_JSON('{"isPhysical": false}'::json))
+	;
 	
 commit;
