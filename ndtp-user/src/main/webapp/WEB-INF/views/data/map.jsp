@@ -472,7 +472,7 @@
 			});
 		}
 	}
-	
+
 	// 데이터 Object 속성 다이얼 로그
 	var dataObjectAttributeDialog = $( "#dataObjectAttributeDialog" ).dialog({
 		autoOpen: false,
@@ -539,6 +539,7 @@
 
 				    $("#dataGroupDialog").html("");
 	                $("#dataGroupDialog").append(dataGroupHtml);
+
 				} else {
 					alert(JS_MESSAGE[msg.errorCode]);
 				}
