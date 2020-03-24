@@ -4,3 +4,4 @@ bulk upload 시 해야 할 사항
 data_count
 data_type
 속성 존재 유무
+그룹 좌표 update
