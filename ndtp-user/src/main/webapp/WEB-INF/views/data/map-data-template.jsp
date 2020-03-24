@@ -45,7 +45,7 @@
 		{{/ifMatch}}
 						</td>
 						<td class="alignLeft ellipsis" style="max-width:100px;">
-							<span onclick="detailDataGroup('/datas/{{dataId}}');" class="link">{{dataName}}</span>
+							<span onclick="detailDataInfo('/datas/{{dataId}}');" class="link">{{dataName}}</span>
 <%--
 							<a href="/datas/{{dataId}}" onclick="detailDataInfo(this.href); return false;">{{dataName}}</a>
 --%>
