@@ -390,23 +390,27 @@ var Simulation = function(magoInstance, viewer, $) {
 			});
 
 			$('#rangeInput').on('change', function(data) {
-				
+
 				_sejongDataGroupList = [];
-				var index = parseInt($('#rangeInput').val());
+				const index = parseInt($('#rangeInput').val());
 				// var consTypeString = $('input[name="cpProtoArea"]:checked').val();
 				var consTypeString = $('#consBuildLoca').val();
 
 				let procStepNum = [];
+				debugger;
 				// dic를 탐색하여 현재 값 -1 의 자료들을 찾아 없으면 요청한다.
 				for( let i = 0 ; i < index; i++) {
 					if(consBuildStepInfo[i] === undefined) {
 						procStepNum.push(i);
 					}
+					if($('#consBuildLoca').val() === 'b' && echoDataMap[i].length === 0) {
+						reqThisStep(i);
+					}
 				}
 				for (let procObj of procStepNum) {
 					consBuildSlider.consBuildDataReq(procObj, consTypeString);
 				}
-				changeLodButton
+
 				// 현재 INDEX 있는 값을 제거하고 다시 요청한다
 				consBuildSlider.consBuildDataReq(index, consTypeString);
 				if(consBuildBillboardStepInfo !== undefined) {
@@ -417,6 +421,13 @@ var Simulation = function(magoInstance, viewer, $) {
 							consBuildBillboardStepInfo.splice(obj_index, 1)
 						}
 					}
+				}
+				if($('#consBuildLoca').val() === 'b') {
+					echoDataMap[index].forEach((val) => {
+						viewer.scene.primitives.remove(val);
+					});
+					echoDataMap[index] = [];
+					reqThisStep(index);
 				}
 
 				//  현재 값 이후에 있는 데이터 들은 모두 제거한다.
@@ -439,6 +450,15 @@ var Simulation = function(magoInstance, viewer, $) {
 						}
 					}
 				}
+				if($('#consBuildLoca').val() === 'b') {
+					for(var i = index+1; i  < 6; i++) {
+						debugger;
+						echoDataMap[i].forEach((val) => {
+							viewer.scene.primitives.remove(val);
+						});
+						echoDataMap[i] = [];
+					}
+				}
 			})
 		},
 		sliderSejongShow: function() {
@@ -457,7 +477,7 @@ var Simulation = function(magoInstance, viewer, $) {
 				data: reqParam,
 				dataType: "json",
 				success: function (msg_list) {
-					
+
 					if(msg_list.length === 0)
 						return;
 					consBuildStepInfo[step] = msg_list;
@@ -474,7 +494,7 @@ var Simulation = function(magoInstance, viewer, $) {
 			var f4dController = MAGO3D_INSTANCE.getF4dController();
 			f4dController.deleteF4dGroup(msg.data_key);
 			_sejongDataGroupList.push(msg.data_key);
-			
+
 			const f4dObject = f4dDataGenMaster.initGml(msg);
 			f4dController.addF4dGroup(f4dObject);
 			const lon = f4dDataGenMaster.avg_lon;
@@ -487,7 +507,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	$('#constructionProcess .execute').click(function() {
 		//var targetArea = $('input[name="cpProtoArea"]:checked').val();
 		var targetArea = $('#consBuildLoca').val();
-		
+
 		// Typer s -> Sejong, p -> busan, g -> gumgang....
 		consBuildSlider.sliderSejongShow();
 		consBuildSlider.targetArea = targetArea;
@@ -504,14 +524,23 @@ var Simulation = function(magoInstance, viewer, $) {
 			whole_viewer.scene.camera.flyTo({
 				destination : Cesium.Cartesian3.fromDegrees(127.2857722,  36.48363827, 1000)
 			});
+		} else if(targetArea === 'b') {
+			_viewer.camera.flyTo({
+				destination : new Cesium.Cartesian3(-3280477.6459669196, 4063234.453090485, 3649702.017245765),
+				orientation : {
+					direction : new Cesium.Cartesian3(0.44536001985376544, -0.8394424695493105, 0.3114334488021617),
+					up : new Cesium.Cartesian3(-0.3132810324897797, 0.179746854059374, 0.93249453785955),
+					right : new Cesium.Cartesian3(-0.8387547003731134, -0.5128619782872512, -0.18292934108364378)
+				}
+			});
 		}
 	});
-	
+
 	//건설공정 취소
 	$('#constructionProcess .reset').click(function(){
 		constructionProcessReset();
 	});
-	
+
 	//경관 분석 위치지정
 	$('#solarAnalysis .drawObserverPoint').click(function(){
 		notyetAlram();
@@ -522,7 +551,7 @@ var Simulation = function(magoInstance, viewer, $) {
         // Get form
         var form = $('#file_upload')[0];
         startLoading();
-	    // Create an FormData object 
+	    // Create an FormData object
         var data = new FormData(form);
         $.ajax({
             type: "POST",
@@ -547,7 +576,7 @@ var Simulation = function(magoInstance, viewer, $) {
             }
         });
 	});
-	
+
 	//건물 높이에 대해서 확정을 하는 로직, 용적률과 연관
 	//고도에 대한 불확실성
 	$('#set_height_building').click(function(e) {
@@ -561,17 +590,17 @@ var Simulation = function(magoInstance, viewer, $) {
 				_polygons[i].extrudedHeight = floorSize;
 				_polygons[i].floorNum = floorNum;
 				break;
-			} 
+			}
 		}
 		calcFloorCoverage();
 		selectBuildDialog.dialog( "close" );
 		heightBuildingInput = 0;
 	})
-	
+
 	// 용적률 계산
 	function calcFloorCoverage() {
 		// 각층 바닥 면접의 합
-		// 각층 * 바닥 면접 
+		// 각층 * 바닥 면접
 		var floorCoverSum = 0;
 		for(var i = 0; i < _polygons.length; i++) {
 			if(_polygons[i].floorNum === undefined) {
@@ -580,7 +609,7 @@ var Simulation = function(magoInstance, viewer, $) {
 			var areaVal = _polygons[i].areaVal * _polygons[i].floorNum;
 			floorCoverSum += areaVal;
 		}
-		
+
 		for(var i = 0; i < _cityPlanModels.length; i++) {
 			if(_cityPlanModels[i].floorNum === undefined) {
 				continue;
@@ -588,11 +617,11 @@ var Simulation = function(magoInstance, viewer, $) {
 			var areaVal = _cityPlanModels[i].areaVal * _cityPlanModels[i].floorNum;
 			floorCoverSum += areaVal;
 		}
-		
+
 		floorCoverateRatio = parseInt(floorCoverSum / cityPlanTargetArea * 100);
 		$('#floorCoverateRatio').text('용적율 : ' + floorCoverateRatio + '%');
 	}
-	
+
 	// 가시화
 	$('#run_cityplan').click(function() {
         startLoading();
@@ -2339,44 +2368,97 @@ var Simulation = function(magoInstance, viewer, $) {
 				heightReference : Cesium.HeightReference.CLAMP_TO_GROUND,
 			}
 		});
-		// entity.heading = 0;
-		// entity.pitch = 0;
-		// entity.roll = 0;
-
 		_viewer.entities.add(entity);
-
-	    // GLTF 모델 데이터 삽입
-		/*const _model = Cesium.Model.fromGltf({
-	        url : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir,
-	        modelMatrix : modelMatrix,
-			scale : scale,
-			debugWireframe: false,
-	        show: true
-	    });
-	    _cityPlanModels.push(_model);
-		const primiti_model = viewer.scene.primitives.add(_model);
-
-	    Cesium.when(primiti_model.readyPromise).then(function(model) {
-	    	  clacArea();
-	    	  calcFloorCoverage();
-	  		model._nodeCommands.forEach(function(data) {
-	  			data.show = false;
-	  		});
-	  		model.show = true;
-
-	  		for(var i = 0; i < model._nodeCommands.length; i++) {
-	  			var timedata = 100 * i;
-	  			function showAnimationModel(i) {
-		  			setTimeout(function() {
-			  			model._nodeCommands[i].show = true;
-			    	}, timedata);
-	  			}
-	  			showAnimationModel(i);
-	    	}
-	    	}).otherwise(function(error){
-	    	  window.alert(error);
-    	});*/
     }
+	function genBuild2(lon, lat, alt, scale, preDir, preDir2, fileName) {
+		const position = Cesium.Cartesian3.fromDegrees(lon, lat);
+		const modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
+
+		let heading = Cesium.Math.toRadians(0);
+		let pitch = 0;
+		let roll = 0;
+		let hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
+		let orientation = Cesium.Transforms.headingPitchRollQuaternion(position, hpr);
+
+		const entity = new Cesium.Entity({
+			name: fileName,
+			position: position,
+			orientation: orientation,
+			model: {
+				uri: '/data/simulation-rest/cityPlanModelSelect2?FileName='+fileName+'&preDir='+preDir+'&preDir2='+preDir2,
+				scale: scale,
+				show: true,
+				heightReference : Cesium.HeightReference.CLAMP_TO_GROUND,
+			}
+		});
+		_viewer.entities.add(entity);
+	}
+
+
+
+    function reqThisStep(stepInfo) {
+    	debugger;
+		echoMap[stepInfo].forEach((val, index) => {
+			const dataKeyNum = parseInt(val.data_key.replace('sb',''));
+			const latitude = val.latitude;
+			const longitude = val.longitude;
+			makeEchoGltf(stepInfo, dataKeyNum, longitude, latitude);
+		});
+	}
+
+	function pad(n, width) {
+		n = n + '';
+		return n.length >= width ? n : new Array(width - n.length + 1).join('0') + n;
+	}
+
+	function makeEchoGltf(stepInfo, index, lon, lat) {
+		var position = Cesium.Cartesian3.fromDegrees(lon, lat, 10);
+		var heading = 190;
+		var pitch = 0;
+		var roll = 0;
+		var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
+		var orientation = Cesium.Transforms.headingPitchRollQuaternion(position, hpr);
+		var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
+
+
+		// Get the transform from local heading-pitch-roll at cartographic (0.0, 0.0) to Earth's fixed frame.
+		var transform = Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr);
+
+		const result = Cesium.Matrix4.fromTranslationQuaternionRotationScale(position, orientation, new Cesium.Cartesian3(1.0, 1.0, 1.0));
+
+		const _model = Cesium.Model.fromGltf({
+			// url : '/sample/independent/'+index+'/'+index + '.gltf',
+			uri : '/data/simulation-rest/cityPlanModelSelect?FileName='+index + '.gltf'+'&preDir='+'/independent/'+index+'/',
+			modelMatrix : transform,
+			scale : 1,                     // double size
+			allowPicking : true,            // not pickable
+			debugShowBoundingVolume : false, // default
+			debugWireframe : false,
+			show: false
+		});
+
+		const primiti_model = viewer.scene.primitives.add(_model);
+		echoDataMap[stepInfo].push(primiti_model);
+
+		Cesium.when(primiti_model.readyPromise).then(function(model) {
+			model._nodeCommands.forEach(function(data) {
+				data.show = false;
+			});
+			model.show = true;
+
+			for(var i = model._nodeCommands.length-1; i > 0; i--) {
+				var timedata = 600 * i;
+				function showAnimationModel(i) {
+					setTimeout(function() {
+						model._nodeCommands[i].show = true;
+					}, timedata);
+				}
+				showAnimationModel(i);
+			}
+		}).otherwise(function(error){
+			window.alert(error);
+		});
+	}
 
     // 부산공정관리 빌딩 생성
     function genConsProcBuild(lon, lat, alt, scale, fileName, fairRate) {
@@ -2427,7 +2509,7 @@ var Simulation = function(magoInstance, viewer, $) {
     	_bsConstructProcessModels.push(entitiyObj);
     	
 	    var entity = viewer.entities.add(_bsConstructProcessModels[_bsConstructProcessModels.length-1]);
-	    
+
     }
 
 	function genAcceptBuild(lon, lat, alt) {
@@ -2441,8 +2523,8 @@ var Simulation = function(magoInstance, viewer, $) {
 	    }
     	});
 	}
-    
-	
+
+
 	// 다이얼로그 객체
     var selectBuildDialog = $( "#selectBuildDialog" ).dialog({
 		autoOpen: false,
@@ -3270,4 +3352,305 @@ const f4dJsonStudySample = {
 			}
 		];
 	},
+};
+const echoMap = {
+	0: [
+		{
+			"data_key" : "sb01",
+			"latitude" : 35.13026982105904,
+			"longitude" : 128.9163133346260
+		},
+		{
+			"data_key" : "sb02",
+			"latitude" : 35.13035742241333,
+			"longitude" : 128.9161467970436
+		},
+		{
+			"data_key" : "sb03",
+			"latitude" : 35.13043174466338,
+			"longitude" : 128.9160074667110
+		},
+		{
+			"data_key" : "sb04",
+			"latitude" : 35.13053050954674,
+			"longitude" : 128.9158500389435
+		},
+		{
+			"data_key" : "sb05",
+			"latitude" : 35.13061324248561,
+			"longitude" : 128.9157142833403
+		},
+		{
+			"data_key" : "sb06",
+			"latitude" : 35.13071139552686,
+			"longitude" : 128.9155609599223
+		},
+		{
+			"data_key" : "sb07",
+			"latitude" : 35.13092425077360,
+			"longitude" : 128.9152847798363
+		},
+		{
+			"data_key" : "sb08",
+			"latitude" : 35.13124012289845,
+			"longitude" : 128.9149212079446
+		}],
+	1: [
+		{
+			"data_key" : "sb09",
+			"latitude" : 35.13141740798423,
+			"longitude" : 128.9147473010943
+		},
+		{
+			"data_key" : "sb10",
+			"latitude" : 35.13170027086051,
+			"longitude" : 128.9145079967593
+		},
+		{
+			"data_key" : "sb11",
+			"latitude" : 35.13193875540220,
+			"longitude" : 128.9143049646578
+		},
+		{
+			"data_key" : "sb12",
+			"latitude" : 35.13219641456389,
+			"longitude" : 128.9141489077717
+		},
+		{
+			"data_key" : "sb13",
+			"latitude" : 35.13060683588561,
+			"longitude" : 128.9163589556103
+		},
+		{
+			"data_key" : "sb14",
+			"latitude" : 35.13074109340387,
+			"longitude" : 128.9161541267254
+		},
+		{
+			"data_key" : "sb15",
+			"latitude" : 35.13089205797498,
+			"longitude" : 128.9159180331054
+		},
+		{
+			"data_key" : "sb16",
+			"latitude" : 35.13113670251165,
+			"longitude" : 128.9155738092515
+		},
+		{
+			"data_key" : "sb17",
+			"latitude" : 35.13143360644020,
+			"longitude" : 128.9150974140871
+		},
+		{
+			"data_key" : "sb18",
+			"latitude" : 35.13171160803455,
+			"longitude" : 128.9149849273771
+		}
+	],
+	2: [
+		{
+			"data_key" : "sb19",
+			"latitude" : 35.13202620624143,
+			"longitude" : 128.9147303951823
+		},
+		{
+			"data_key" : "sb20",
+			"latitude" : 35.13236136173811,
+			"longitude" : 128.9145009109985
+		},
+		{
+			"data_key" : "sb21",
+			"latitude" : 35.13083975566982,
+			"longitude" : 128.9165358467814
+		},
+		{
+			"data_key" : "sb22",
+			"latitude" : 35.13095857709884,
+			"longitude" : 128.9163499566779
+		},
+		{
+			"data_key" : "sb23",
+			"latitude" : 35.13107284757886,
+			"longitude" : 128.9162641349695
+		},
+		{
+			"data_key" : "sb24",
+			"latitude" : 35.13116480147675,
+			"longitude" : 128.9160626879404
+		},
+		{
+			"data_key" : "sb25",
+			"latitude" : 35.13128171397265,
+			"longitude" : 128.9161847527635
+		}
+	],
+	3: [
+		{
+			"data_key" : "sb26",
+			"latitude" : 35.13130623855388,
+			"longitude" : 128.9158703285125
+		},
+		{
+			"data_key" : "sb27",
+			"latitude" : 35.13142085755051,
+			"longitude" : 128.9159957833025
+		},
+		{
+			"data_key" : "sb28",
+			"latitude" : 35.13141587877360,
+			"longitude" : 128.9157466985689
+		},
+		{
+			"data_key" : "sb29",
+			"latitude" : 35.13152761676176,
+			"longitude" : 128.9158775910596
+		},
+		{
+			"data_key" : "sb30",
+			"latitude" : 35.13181714690928,
+			"longitude" : 128.9153571663814
+		},
+		{
+			"data_key" : "sb31",
+			"latitude" : 35.13192977177472,
+			"longitude" : 128.9155086528812
+		},
+		{
+			"data_key" : "sb32",
+			"latitude" : 35.13195865772924,
+			"longitude" : 128.9152066485029
+		},
+		{
+			"data_key" : "sb33",
+			"latitude" : 35.13205794794832,
+			"longitude" : 128.9153901440123
+		},
+		{
+			"data_key" : "sb34",
+			"latitude" : 35.13207446796380,
+			"longitude" : 128.9150371646864
+		},
+		{
+			"data_key" : "sb35",
+			"latitude" : 35.13214163360215,
+			"longitude" : 128.9151727735909
+		}
+	],
+	4: [
+		{
+			"data_key" : "sb36",
+			"latitude" : 35.13221598449595,
+			"longitude" : 128.9152721515572
+		},
+		{
+			"data_key" : "sb37",
+			"latitude" : 35.13222509182214,
+			"longitude" : 128.9149265887492
+		},
+		{
+			"data_key" : "sb38",
+			"latitude" : 35.13228774232662,
+			"longitude" : 128.9150628056429
+		},
+		{
+			"data_key" : "sb39",
+			"latitude" : 35.13236092644796,
+			"longitude" : 128.9151655932735
+		},
+		{
+			"data_key" : "sb40",
+			"latitude" : 35.13238807046682,
+			"longitude" : 128.9148196559370
+		},
+		{
+			"data_key" : "sb41",
+			"latitude" : 35.13244307366330,
+			"longitude" : 128.9149351620546
+		},
+		{
+			"data_key" : "sb42",
+			"latitude" : 35.13249900332853,
+			"longitude" : 128.9150678332470
+		},
+		{
+			"data_key" : "sb43",
+			"latitude" : 35.13253463820011,
+			"longitude" : 128.9147186124030
+		},
+		{
+			"data_key" : "sb44",
+			"latitude" : 35.13260421795850,
+			"longitude" : 128.9148405444687
+		},
+		{
+			"data_key" : "sb45",
+			"latitude" : 35.13265684737527,
+			"longitude" : 128.9149662991902
+		},
+		{
+			"data_key" : "sb46",
+			"latitude" : 35.13208794412891,
+			"longitude" : 128.9156684737560
+		},
+		{
+			"data_key" : "sb47",
+			"latitude" : 35.13219096207454,
+			"longitude" : 128.9155810832647
+		},
+		{
+			"data_key" : "sb48",
+			"latitude" : 35.13228425786261,
+			"longitude" : 128.9155058714388
+		},
+		{
+			"data_key" : "sb49",
+			"latitude" : 35.13240539278929,
+			"longitude" : 128.9154112486151
+		}
+	],
+	5: [
+		{
+			"data_key" : "sb50",
+			"latitude" : 35.13249796485838,
+			"longitude" : 128.9153497429887
+		},
+		{
+			"data_key" : "sb51",
+			"latitude" : 35.13262218372061,
+			"longitude" : 128.9152805534596
+		},
+		{
+			"data_key" : "sb52",
+			"latitude" : 35.13273696883505,
+			"longitude" : 128.9151988532290
+		},
+		{
+			"data_key" : "sb53",
+			"latitude" : 35.13284806910172,
+			"longitude" : 128.9151431554280
+		},
+		{
+			"data_key" : "sb54",
+			"latitude" : 35.13287050615121,
+			"longitude" : 128.9149590208348
+		},
+		{
+			"data_key" : "sb55",
+			"latitude" : 35.13282567346569,
+			"longitude" : 128.9147929291409
+		},
+		{
+			"data_key" : "sb56",
+			"latitude" : 35.13275874763379,
+			"longitude" : 128.9146367448022
+		}
+	]
+};
+const echoDataMap = {
+	0: [],
+	1: [],
+	2: [],
+	3: [],
+	4: [],
+	5: [],
 };
