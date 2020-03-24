@@ -403,7 +403,7 @@ public class ConverterServiceImpl implements ConverterService {
 
 				DataGroup dataGroup = new DataGroup();
 				dataGroup.setUserId(converterJob.getUserId());
-				dataGroup.setDataGroupId(dataInfo.getDataGroupId());
+				dataGroup.setDataGroupId(deleteDataInfo.getDataGroupId());
 				dataGroup = dataGroupService.getDataGroup(dataGroup);
 
 				DataGroup updateDataGroup = new DataGroup();
