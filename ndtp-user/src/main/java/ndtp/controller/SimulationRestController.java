@@ -198,13 +198,11 @@ public class SimulationRestController {
 
 	@RequestMapping(value = "/cityPlanModelSelect2", method = RequestMethod.GET)
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public Object cityPlanModelSelect2(String FileName) {
-//    	String resultFullPath = "C:\\data\\Apartment_Building_26_obj\\Apartment_Building_26_obj.gltf";
-		String resultFullPath = "C:\\data\\Apartment_Building_26_obj\\" + FileName;
+	public Object cityPlanModelSelect2(String FileName, String preDir, String preDir2) {
+		String resultFullPath = "C:\\data\\mago3d\\building_obj\\" + preDir + "\\" + preDir2 + "\\" + FileName;
 		String os = System.getProperty("os.name").toLowerCase();
 		if (os.contains("mac")) {
-//			resultFullPath = "/Users/junho/data/mago3d/building_obj/Apartment_Building_26_obj.gltf";
-			resultFullPath = "/Users/junho/data/mago3d/building_obj/CesiumMilkTruck.gltf";
+			resultFullPath = "/Users/junho/data/mago3d/building_obj/" + preDir + "/" + preDir2 + "/" + FileName;
 		}
 		File fi = new File(resultFullPath.trim());
 		try {

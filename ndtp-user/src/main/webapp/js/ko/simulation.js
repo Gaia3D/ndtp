@@ -2339,44 +2339,31 @@ var Simulation = function(magoInstance, viewer, $) {
 				heightReference : Cesium.HeightReference.CLAMP_TO_GROUND,
 			}
 		});
-		// entity.heading = 0;
-		// entity.pitch = 0;
-		// entity.roll = 0;
-
 		_viewer.entities.add(entity);
-
-	    // GLTF 모델 데이터 삽입
-		/*const _model = Cesium.Model.fromGltf({
-	        url : 'http://localhost/data/simulation-rest/cityPlanModelSelect?FileName='+fileName+'&preDir='+preDir,
-	        modelMatrix : modelMatrix,
-			scale : scale,
-			debugWireframe: false,
-	        show: true
-	    });
-	    _cityPlanModels.push(_model);
-		const primiti_model = viewer.scene.primitives.add(_model);
-
-	    Cesium.when(primiti_model.readyPromise).then(function(model) {
-	    	  clacArea();
-	    	  calcFloorCoverage();
-	  		model._nodeCommands.forEach(function(data) {
-	  			data.show = false;
-	  		});
-	  		model.show = true;
-
-	  		for(var i = 0; i < model._nodeCommands.length; i++) {
-	  			var timedata = 100 * i;
-	  			function showAnimationModel(i) {
-		  			setTimeout(function() {
-			  			model._nodeCommands[i].show = true;
-			    	}, timedata);
-	  			}
-	  			showAnimationModel(i);
-	    	}
-	    	}).otherwise(function(error){
-	    	  window.alert(error);
-    	});*/
     }
+	function genBuild2(lon, lat, alt, scale, preDir, preDir2, fileName) {
+		const position = Cesium.Cartesian3.fromDegrees(lon, lat);
+		const modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
+
+		let heading = Cesium.Math.toRadians(0);
+		let pitch = 0;
+		let roll = 0;
+		let hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
+		let orientation = Cesium.Transforms.headingPitchRollQuaternion(position, hpr);
+
+		const entity = new Cesium.Entity({
+			name: fileName,
+			position: position,
+			orientation: orientation,
+			model: {
+				uri: '/data/simulation-rest2/cityPlanModelSelect2?FileName='+fileName+'&preDir='+preDir+'&preDir2='+preDir2,
+				scale: scale,
+				show: true,
+				heightReference : Cesium.HeightReference.CLAMP_TO_GROUND,
+			}
+		});
+		_viewer.entities.add(entity);
+	}
 
     // 부산공정관리 빌딩 생성
     function genConsProcBuild(lon, lat, alt, scale, fileName, fairRate) {
