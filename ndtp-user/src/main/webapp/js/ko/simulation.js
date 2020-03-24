@@ -2400,9 +2400,14 @@ var Simulation = function(magoInstance, viewer, $) {
 
 		const result = Cesium.Matrix4.fromTranslationQuaternionRotationScale(position, orientation, new Cesium.Cartesian3(1.0, 1.0, 1.0));
 
+		let fileName = index+".gltf";
+		let preDir = "independent";
+		let preDir2 = index.toString();
+
 		const _model = Cesium.Model.fromGltf({
 			// url : '/sample/independent/'+index+'/'+index + '.gltf',
-			uri : '/data/simulation-rest/cityPlanModelSelect?FileName='+index + '.gltf'+'&preDir='+'/independent/'+index+'/',
+			// uri : '/data/simulation-rest/cityPlanModelSelect?FileName='+index + '.gltf'+'&preDir='+'/independent/'+index+'/',
+			url: '/data/simulation-rest/cityPlanModelSelect2?FileName='+fileName+'&preDir='+preDir+'&preDir2='+preDir2,
 			modelMatrix : transform,
 			scale : 1,                     // double size
 			allowPicking : true,            // not pickable
@@ -2432,30 +2437,6 @@ var Simulation = function(magoInstance, viewer, $) {
 		}).otherwise(function(error){
 			window.alert(error);
 		});
-		_viewer.entities.add(entity);
-    }
-	function genBuild2(lon, lat, alt, scale, preDir, preDir2, fileName) {
-		const position = Cesium.Cartesian3.fromDegrees(lon, lat);
-		const modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
-
-		let heading = Cesium.Math.toRadians(0);
-		let pitch = 0;
-		let roll = 0;
-		let hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
-		let orientation = Cesium.Transforms.headingPitchRollQuaternion(position, hpr);
-
-		const entity = new Cesium.Entity({
-			name: fileName,
-			position: position,
-			orientation: orientation,
-			model: {
-				uri: '/data/simulation-rest2/cityPlanModelSelect2?FileName='+fileName+'&preDir='+preDir+'&preDir2='+preDir2,
-				scale: scale,
-				show: true,
-				heightReference : Cesium.HeightReference.CLAMP_TO_GROUND,
-			}
-		});
-		_viewer.entities.add(entity);
 	}
 
     // 부산공정관리 빌딩 생성
