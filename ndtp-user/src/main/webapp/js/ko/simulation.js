@@ -2346,7 +2346,7 @@ var Simulation = function(magoInstance, viewer, $) {
 			genBuild(obj.lon, obj.lat, obj.alt, 1, "texture_maple", "maple_yellow.gltf")
 		}
 	}
-    
+
     function genBuild(lon, lat, alt, scale, preDir, fileName) {
     	const position = Cesium.Cartesian3.fromDegrees(lon, lat);
 		const modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
@@ -2370,32 +2370,6 @@ var Simulation = function(magoInstance, viewer, $) {
 		});
 		_viewer.entities.add(entity);
     }
-	function genBuild2(lon, lat, alt, scale, preDir, preDir2, fileName) {
-		const position = Cesium.Cartesian3.fromDegrees(lon, lat);
-		const modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
-
-		let heading = Cesium.Math.toRadians(0);
-		let pitch = 0;
-		let roll = 0;
-		let hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
-		let orientation = Cesium.Transforms.headingPitchRollQuaternion(position, hpr);
-
-		const entity = new Cesium.Entity({
-			name: fileName,
-			position: position,
-			orientation: orientation,
-			model: {
-				uri: '/data/simulation-rest/cityPlanModelSelect2?FileName='+fileName+'&preDir='+preDir+'&preDir2='+preDir2,
-				scale: scale,
-				show: true,
-				heightReference : Cesium.HeightReference.CLAMP_TO_GROUND,
-			}
-		});
-		_viewer.entities.add(entity);
-	}
-
-
-
     function reqThisStep(stepInfo) {
     	debugger;
 		echoMap[stepInfo].forEach((val, index) => {
@@ -2458,6 +2432,30 @@ var Simulation = function(magoInstance, viewer, $) {
 		}).otherwise(function(error){
 			window.alert(error);
 		});
+		_viewer.entities.add(entity);
+    }
+	function genBuild2(lon, lat, alt, scale, preDir, preDir2, fileName) {
+		const position = Cesium.Cartesian3.fromDegrees(lon, lat);
+		const modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
+
+		let heading = Cesium.Math.toRadians(0);
+		let pitch = 0;
+		let roll = 0;
+		let hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
+		let orientation = Cesium.Transforms.headingPitchRollQuaternion(position, hpr);
+
+		const entity = new Cesium.Entity({
+			name: fileName,
+			position: position,
+			orientation: orientation,
+			model: {
+				uri: '/data/simulation-rest2/cityPlanModelSelect2?FileName='+fileName+'&preDir='+preDir+'&preDir2='+preDir2,
+				scale: scale,
+				show: true,
+				heightReference : Cesium.HeightReference.CLAMP_TO_GROUND,
+			}
+		});
+		_viewer.entities.add(entity);
 	}
 
     // 부산공정관리 빌딩 생성
