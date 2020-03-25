@@ -2034,6 +2034,12 @@ var Simulation = function(magoInstance, viewer, $) {
 				else if (runAllocBuildStat === "maple_yellow") {
 					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 1, "texture_maple", "maple_yellow.gltf")
 				}
+				else if (runAllocBuildStat === "building1") {
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 0.05, "building1", "building1.gltf")
+				}
+				else if (runAllocBuildStat === "building2") {
+					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 0.05, "building2", "building2.gltf")
+				}
 
 				else if(runAllocBuildStat === "imsiBuildSelect") {
                 	// 새로운 모델 선택
