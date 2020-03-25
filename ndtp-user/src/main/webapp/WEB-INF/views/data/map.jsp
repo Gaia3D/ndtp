@@ -421,7 +421,7 @@
 
 	// 데이터 속성
 	function detailDataAttribute(dataId, dataGroupKey, dataKey, dataName) {
-		if(	dataGroupKey !== "busanmj" ) {
+		if(	dataGroupKey !== "busan-mj" ) {
 			dataAttributeDialog.dialog( "open" );
 			$("#dataNameForAttribute").html(dataName);
 			$.ajax({

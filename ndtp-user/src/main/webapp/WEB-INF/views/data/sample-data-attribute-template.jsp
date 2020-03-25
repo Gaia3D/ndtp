@@ -15,6 +15,10 @@
 			<td class="col-data">{{bprpSe}}</td>
 		</tr>
 		<tr>
+			<th class="col-label" scope="row" style="text-align: center; min-width: 100px;">건물명</th>
+			<td class="col-data">{{건물명}}</td>
+		</tr>	
+		<tr>
 			<th class="col-label" scope="row" style="text-align: center; min-width: 100px;">건물 명칭</th>
 			<td class="col-data">{{buldNm}}</td>
 		</tr>
@@ -65,6 +69,6 @@
 		<tr>
 			<th class="col-label" scope="row" style="text-align: center; min-width: 100px;">용도</th>
 			<td class="col-data">{{용도}}</td>
-		</tr>	
+		</tr>
 	</table>
 </script>
