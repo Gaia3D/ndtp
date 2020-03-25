@@ -18,6 +18,10 @@
             <label style="margin-bottom: 5px;" >건축물 마감 자재: </label>
             <div id="material"></div>
         </li>
+        <li>
+            <label >내화구조 조례 적합 여부: </label>
+            <div id="innerStructureIsGood" style="font-weight: bold; display: inline-block; margin-left: 10px;"></div>
+        </li>
     </ul>
 
 </div>
@@ -36,7 +40,7 @@
 
 <style>
     #metadataDialog .layerDiv label {
-        width: 110px;
+        width: 150px;
         font-size: 15px;
     }
 
