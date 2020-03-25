@@ -45,7 +45,7 @@
                             <input id="district_unit_plan" type="file" name="district_unit_plan"  multiple>
                         </li>
                         <li>
-                            <button id="regMapButtion" class="btnTextF" type="button" title="지도보기">건축물 지도보기</button>
+<%--                            <button id="regMapButtion" class="btnTextF" type="button" title="지도보기">건축물 지도보기</button>--%>
                         </li>
                         <li>
                             <div>
@@ -56,9 +56,9 @@
                             </div>
                         </li>
                         <li>
-                            <input id="longitude" name="longitude" class="m" placeholder="longitude" type="text" value="" style="width: 140px;">
-                            <input id="latitude" name="latitude" class="m" placeholder="latitude" type="text" value="" style="width: 140px;">
-                            <input id="altitude" name="altitude" class="m" placeholder="altitude" type="text" value="" style="width: 140px;">
+                            <input id="longitude" name="longitude" class="m" placeholder="longitude" type="text" value="127.27372" style="width: 140px;">
+                            <input id="latitude" name="latitude" class="m" placeholder="latitude" type="text" value="36.52384" style="width: 140px;">
+                            <input id="altitude" name="altitude" class="m" placeholder="altitude" type="text" value="44.998" style="width: 140px;">
                         </li>
                         <li>
                             <div>
@@ -127,10 +127,10 @@
     //     "buildingLandRatio_isGood": "적합",
     // };
     function setTmpVals() {
-        $("#std_floorAreaRatio").html("200.0%");
-        $("#std_buildingLandRatio").html("50.0%");
-        $("#cur_floorAreaRatio").html("192.84%");
-        $("#cur_buildingLandRatio").html("26.36%");
+        $("#std_floorAreaRatio").html("180.0%");
+        $("#std_buildingLandRatio").html("40.0%");
+        $("#cur_floorAreaRatio").html("163.56%");
+        $("#cur_buildingLandRatio").html("24.83%");
         $("#floorAreaRatio_isGood").html("적합");
         $("#buildingLandRatio_isGood").html("적합");
     }
@@ -204,6 +204,7 @@
     // lonInput.oninput = lonInput.oncut = lonInput.oncopy = lonInput.onpaste = function() {
     //     console.log("changed");
     // };
+    setTmpVals();
 
     $( "#regMapButtion" ).on( "click", function() {
         if (locTracking === ""){

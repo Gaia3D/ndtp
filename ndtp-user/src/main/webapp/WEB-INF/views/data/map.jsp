@@ -16,6 +16,7 @@
 <%@ include file="/WEB-INF/views/modals/head-pitch-roll.jsp" %>
 <%@ include file="/WEB-INF/views/modals/show-blueprint.jsp" %>
 <%@ include file="/WEB-INF/views/modals/show-metadata.jsp" %>
+<%@ include file="/WEB-INF/views/modals/show-addrsearch.jsp" %>
 
 <%@ include file="/WEB-INF/views/construction-process/process-status-check.jsp" %>
 
@@ -232,6 +233,35 @@
 		// });
 		// headPitchRollDialog.dialog('option', 'position', [1000,1500]);
 
+	});
+
+	var addrSearchDialog = $("#addrSearchDialog").dialog({
+		autoOpen: false,
+		width: 500,
+		height: 350,
+		modal: false,
+		overflow : "auto",
+		resizable: true,
+		position: {
+			my: "right top",
+			at: "right-5 top+105",
+			of: "body"
+		},
+		open: function( event, ui ) {
+			let val = document.getElementById("addrSearch").value;
+			document.getElementById("addressLoc").innerText = val;
+		},
+		close: function( event, ui ) {
+
+		},
+		buttons: [
+			{
+				text: "확인",
+				click: function() {
+					$( this ).dialog( "close" );
+				}
+			}
+		],
 	});
 
 	var metadataDialog = $("#metadataDialog").dialog({

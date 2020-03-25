@@ -319,6 +319,11 @@
 		<p id="forEvent">건축인 허가 신청<span class="collapse-icon">icon</span></p>
 		<div class="listContents" id="">
 			<ul class="analysisGroup">
+				<li id="addrSearchLi">
+					<label for="addrSearch" style="width:50px;">주소: </label>
+					<input id="addrSearch" type="text" style="width: 190px;" />
+					<button type="button" id="addrSearchBtn" title="인허가 시뮬레이션" class="btnTextF" style="float: right; margin-top: 5px;">검색</button>
+				</li>
 				<li>
 					<div>
 						<label for="">처리 목록</label>
@@ -423,6 +428,22 @@
 	</div>
 </div>
 <script>
+	$("#addrSearchBtn").click(() => {
+		let val = document.getElementById("addrSearch").value;
+		if (val === "" ) {
+			alert("주소를 먼저 입력해 주시기 바랍니다.");
+			return;
+		}
+		const fileName = "6-4_field.geojson";
+		createSpecificField(fileName);
+
+		whole_viewer.scene.camera.flyTo({
+			destination : Cesium.Cartesian3.fromDegrees(127.27372, 36.52424, 150)
+		});
+
+		addrSearchDialog.dialog("open");
+	});
+
 	$("#comment").on('click', function() {
 		if (buildAcceptPermSeq === undefined || buildAcceptPermSeq === "") {
 			alert("목록을 먼저 선택해 주시기 바랍니다.");
@@ -488,6 +509,11 @@
 
 
 	$("#permRequest").on('click', function() {
+		let val = document.getElementById("addrSearch").value;
+		if (val === "" ) {
+			alert("주소를 먼저 입력해 주시기 바랍니다.");
+			return;
+		}
 		permRequestDialog.dialog( "open" );
 	});
 
@@ -540,9 +566,11 @@
 				// $("#testBuilding").attr('style', "display:none;");
 				if (msg === "admin" || msg === "supervisor" || msg === "admin2") {
 					$("#permRequest").attr('style', "display:none;");
+					$("#addrSearchLi").attr('style', "display:none;");
 					// $("#testBuilding").trigger("click");
 				} else {
 					$("#permView").attr('style', "display:none;");
+					$("#addrSearchLi").attr('style', "display:block;");
 				}
 			},
 			error:function(request,status,error) {
