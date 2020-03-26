@@ -82610,128 +82610,43 @@ Renderer.prototype.renderGeometryDepth = function(gl, renderType, visibleObjCont
 	{
 
         let objId = this.magoManager.objectSelected.objectId;
+        let buildingFileName = this.magoManager.buildingSelected.buildingFileName;
 
-	    // 설계도
-	    if (!magoManager.isShowingBlueprint) {
-            if (objId === "215522") {
-                let imgSrc = "/images/blueprint.png";
-                document.getElementById("blueprintSrc").setAttribute("src", imgSrc);
-                document.getElementById("blueprintDesc").style.marginBottom = "0px";
-                document.getElementById("blueprintDesc").innerText="";
+        if (buildingFileName === "F4D_KSJ_100") {
+            // 설계도
+            if (!magoManager.isShowingBlueprint) {
+                if (objId === "215522") {
+                    let imgSrc = "/images/blueprint.png";
+                    document.getElementById("blueprintSrc").setAttribute("src", imgSrc);
+                    document.getElementById("blueprintDesc").style.marginBottom = "0px";
+                    document.getElementById("blueprintDesc").innerText="";
+                } else {
+                    let imgSrc = "/images/no_img.jpg";
+                    document.getElementById("blueprintSrc").setAttribute("src", imgSrc);
+                    document.getElementById("blueprintDesc").style.marginBottom = "20px";
+                    document.getElementById("blueprintDesc").innerText="❗️ 설계도면이 등록되지 않았습니다.";
+                }
+                blueprintDialog.dialog("open");
             } else {
-                let imgSrc = "/images/no_img.jpg";
-                document.getElementById("blueprintSrc").setAttribute("src", imgSrc);
-                document.getElementById("blueprintDesc").style.marginBottom = "20px";
-                document.getElementById("blueprintDesc").innerText="❗️ 설계도면이 등록되지 않았습니다.";
-            }
-            blueprintDialog.dialog("open");
-        } else {
-            if (objId === "215522") {
-                let imgSrc = "/images/blueprint.png";
-                document.getElementById("blueprintSrc").setAttribute("src", imgSrc);
-                document.getElementById("blueprintDesc").style.marginBottom = "0px";
-                document.getElementById("blueprintDesc").innerText="";
-            } else {
-                let imgSrc = "/images/no_img.jpg";
-                document.getElementById("blueprintSrc").setAttribute("src", imgSrc);
-                document.getElementById("blueprintDesc").style.marginBottom = "20px";
-                document.getElementById("blueprintDesc").innerText="❗️ 설계도면이 등록되지 않았습니다.";
-            }
-            // if (objId !== "215522") {
-            //     console.log("blueprint close");
-            //     blueprintDialog.dialog("close");
-            // }
-        }
-
-	    // 건축물 자재 정보
-        if (!magoManager.isShowingMetadata) {
-            document.getElementById("materialID").innerText = objId;
-            // 지붕
-            if (objId==="233011" || objId==="232519"){
-                document.getElementById("detailNo").innerText = buildingMetaData.ceil.type1.detailNo;
-                document.getElementById("material").innerText = buildingMetaData.ceil.type1.material;
-                document.getElementById("innerStructureIsGood").innerText = "적합";
-                document.getElementById("innerStructureIsGood").style.color = "blue";
-            } else if (objId==="299702" || objId==="299692" || objId==="299712" || objId==="299682" || objId==="285918" || objId==="285902" ||
-                objId==="285890" || objId==="607586" || objId==="285827") {
-                document.getElementById("detailNo").innerText = buildingMetaData.ceil.type2.detailNo;
-                document.getElementById("material").innerText = buildingMetaData.ceil.type2.material;
-                document.getElementById("innerStructureIsGood").innerText = "부적합";
-                document.getElementById("innerStructureIsGood").style.color = "red";
-            } else if (objId==="299952") {
-                document.getElementById("detailNo").innerText = buildingMetaData.ceil.type3.detailNo;
-                document.getElementById("material").innerText = buildingMetaData.ceil.type3.material;
-                document.getElementById("innerStructureIsGood").innerText = "적합";
-                document.getElementById("innerStructureIsGood").style.color = "blue";
-            }
-            // 벽
-            if (objId==="215570" || objId==="215558" || objId==="347724" || objId==="347462" || objId==="215565") {
-                document.getElementById("detailNo").innerText = buildingMetaData.wall.type1.detailNo;
-                document.getElementById("material").innerText = buildingMetaData.wall.type1.material;
-                document.getElementById("innerStructureIsGood").innerText = "부적합";
-                document.getElementById("innerStructureIsGood").style.color = "red";
-            } else if (objId==="230012" || objId==="227091" || objId==="227045" || objId==="220807" || objId==="215595") {
-                document.getElementById("detailNo").innerText = buildingMetaData.wall.type2.detailNo;
-                document.getElementById("material").innerText = buildingMetaData.wall.type2.material;
-                document.getElementById("innerStructureIsGood").innerText = "적합";
-                document.getElementById("innerStructureIsGood").style.color = "blue";
-            } else if (objId==="337754" || objId==="227080") {
-                document.getElementById("detailNo").innerText = buildingMetaData.wall.type3.detailNo;
-                document.getElementById("material").innerText = buildingMetaData.wall.type3.material;
-                document.getElementById("innerStructureIsGood").innerText = "적합";
-                document.getElementById("innerStructureIsGood").style.color = "blue";
-            } else if (objId==="227041" || objId==="219452") {
-                document.getElementById("detailNo").innerText = buildingMetaData.wall.type4.detailNo;
-                document.getElementById("material").innerText = buildingMetaData.wall.type4.material;
-                document.getElementById("innerStructureIsGood").innerText = "적합";
-                document.getElementById("innerStructureIsGood").style.color = "blue";
-            } else if (objId==="215591" || objId==="227040") {
-                document.getElementById("detailNo").innerText = buildingMetaData.wall.type5.detailNo;
-                document.getElementById("material").innerText = buildingMetaData.wall.type5.material;
-                document.getElementById("innerStructureIsGood").innerText = "적합";
-                document.getElementById("innerStructureIsGood").style.color = "blue";
-            } else if (objId==="348265" || objId==="215552" || objId==="395995") {
-                document.getElementById("detailNo").innerText = buildingMetaData.wall.type6.detailNo;
-                document.getElementById("material").innerText = buildingMetaData.wall.type6.material;
-                document.getElementById("innerStructureIsGood").innerText = "적합";
-                document.getElementById("innerStructureIsGood").style.color = "blue";
-            }
-            // 바닥
-            if (objId==="556817" || objId==="555834") {
-                document.getElementById("detailNo").innerText = buildingMetaData.bottom.type1.detailNo;
-                document.getElementById("material").innerText = buildingMetaData.bottom.type1.material;
-                document.getElementById("innerStructureIsGood").innerText = "부적합";
-                document.getElementById("innerStructureIsGood").style.color = "red";
-            } else if (objId==="556709") {
-                document.getElementById("detailNo").innerText = buildingMetaData.bottom.type2.detailNo;
-                document.getElementById("material").innerText = buildingMetaData.bottom.type2.material;
-                document.getElementById("innerStructureIsGood").innerText = "적합";
-                document.getElementById("innerStructureIsGood").style.color = "blue";
-            } else if (objId==="215538") {
-                document.getElementById("detailNo").innerText = buildingMetaData.bottom.type3.detailNo;
-                document.getElementById("material").innerText = buildingMetaData.bottom.type3.material;
-                document.getElementById("innerStructureIsGood").innerText = "적합";
-                document.getElementById("innerStructureIsGood").style.color = "blue";
-            } else if (objId==="554688") {
-                document.getElementById("detailNo").innerText = buildingMetaData.bottom.type4.detailNo;
-                document.getElementById("material").innerText = buildingMetaData.bottom.type4.material;
-                document.getElementById("innerStructureIsGood").innerText = "적합";
-                document.getElementById("innerStructureIsGood").style.color = "blue";
-            } else if (objId==="215522") {
-                document.getElementById("detailNo").innerText = buildingMetaData.bottom.type5.detailNo;
-                document.getElementById("material").innerText = buildingMetaData.bottom.type5.material;
-                document.getElementById("innerStructureIsGood").innerText = "적합";
-                document.getElementById("innerStructureIsGood").style.color = "blue";
-            } else if (objId==="618599") {
-                document.getElementById("detailNo").innerText = buildingMetaData.bottom.type6.detailNo;
-                document.getElementById("material").innerText = buildingMetaData.bottom.type6.material;
-                document.getElementById("innerStructureIsGood").innerText = "적합";
-                document.getElementById("innerStructureIsGood").style.color = "blue";
+                if (objId === "215522") {
+                    let imgSrc = "/images/blueprint.png";
+                    document.getElementById("blueprintSrc").setAttribute("src", imgSrc);
+                    document.getElementById("blueprintDesc").style.marginBottom = "0px";
+                    document.getElementById("blueprintDesc").innerText="";
+                } else {
+                    let imgSrc = "/images/no_img.jpg";
+                    document.getElementById("blueprintSrc").setAttribute("src", imgSrc);
+                    document.getElementById("blueprintDesc").style.marginBottom = "20px";
+                    document.getElementById("blueprintDesc").innerText="❗️ 설계도면이 등록되지 않았습니다.";
+                }
+                // if (objId !== "215522") {
+                //     console.log("blueprint close");
+                //     blueprintDialog.dialog("close");
+                // }
             }
 
-            metadataDialog.dialog("open");
-        } else {
-            if (this.magoManager.preSelectedObj.objectId !== this.magoManager.objectSelected.objectId) {
+            // 건축물 자재 정보
+            if (!magoManager.isShowingMetadata) {
                 document.getElementById("materialID").innerText = objId;
                 // 지붕
                 if (objId==="233011" || objId==="232519"){
@@ -82740,7 +82655,7 @@ Renderer.prototype.renderGeometryDepth = function(gl, renderType, visibleObjCont
                     document.getElementById("innerStructureIsGood").innerText = "적합";
                     document.getElementById("innerStructureIsGood").style.color = "blue";
                 } else if (objId==="299702" || objId==="299692" || objId==="299712" || objId==="299682" || objId==="285918" || objId==="285902" ||
-                            objId==="285890" || objId==="607586" || objId==="285827") {
+                    objId==="285890" || objId==="607586" || objId==="285827") {
                     document.getElementById("detailNo").innerText = buildingMetaData.ceil.type2.detailNo;
                     document.getElementById("material").innerText = buildingMetaData.ceil.type2.material;
                     document.getElementById("innerStructureIsGood").innerText = "부적합";
@@ -82777,7 +82692,7 @@ Renderer.prototype.renderGeometryDepth = function(gl, renderType, visibleObjCont
                     document.getElementById("material").innerText = buildingMetaData.wall.type5.material;
                     document.getElementById("innerStructureIsGood").innerText = "적합";
                     document.getElementById("innerStructureIsGood").style.color = "blue";
-                } else if (objId==="348265" || objId==="215552") {
+                } else if (objId==="348265" || objId==="215552" || objId==="395995") {
                     document.getElementById("detailNo").innerText = buildingMetaData.wall.type6.detailNo;
                     document.getElementById("material").innerText = buildingMetaData.wall.type6.material;
                     document.getElementById("innerStructureIsGood").innerText = "적합";
@@ -82816,9 +82731,97 @@ Renderer.prototype.renderGeometryDepth = function(gl, renderType, visibleObjCont
                     document.getElementById("innerStructureIsGood").style.color = "blue";
                 }
 
+                metadataDialog.dialog("open");
+            } else {
+                if (this.magoManager.preSelectedObj.objectId !== this.magoManager.objectSelected.objectId) {
+                    document.getElementById("materialID").innerText = objId;
+                    // 지붕
+                    if (objId==="233011" || objId==="232519"){
+                        document.getElementById("detailNo").innerText = buildingMetaData.ceil.type1.detailNo;
+                        document.getElementById("material").innerText = buildingMetaData.ceil.type1.material;
+                        document.getElementById("innerStructureIsGood").innerText = "적합";
+                        document.getElementById("innerStructureIsGood").style.color = "blue";
+                    } else if (objId==="299702" || objId==="299692" || objId==="299712" || objId==="299682" || objId==="285918" || objId==="285902" ||
+                        objId==="285890" || objId==="607586" || objId==="285827") {
+                        document.getElementById("detailNo").innerText = buildingMetaData.ceil.type2.detailNo;
+                        document.getElementById("material").innerText = buildingMetaData.ceil.type2.material;
+                        document.getElementById("innerStructureIsGood").innerText = "부적합";
+                        document.getElementById("innerStructureIsGood").style.color = "red";
+                    } else if (objId==="299952") {
+                        document.getElementById("detailNo").innerText = buildingMetaData.ceil.type3.detailNo;
+                        document.getElementById("material").innerText = buildingMetaData.ceil.type3.material;
+                        document.getElementById("innerStructureIsGood").innerText = "적합";
+                        document.getElementById("innerStructureIsGood").style.color = "blue";
+                    }
+                    // 벽
+                    if (objId==="215570" || objId==="215558" || objId==="347724" || objId==="347462" || objId==="215565") {
+                        document.getElementById("detailNo").innerText = buildingMetaData.wall.type1.detailNo;
+                        document.getElementById("material").innerText = buildingMetaData.wall.type1.material;
+                        document.getElementById("innerStructureIsGood").innerText = "부적합";
+                        document.getElementById("innerStructureIsGood").style.color = "red";
+                    } else if (objId==="230012" || objId==="227091" || objId==="227045" || objId==="220807" || objId==="215595") {
+                        document.getElementById("detailNo").innerText = buildingMetaData.wall.type2.detailNo;
+                        document.getElementById("material").innerText = buildingMetaData.wall.type2.material;
+                        document.getElementById("innerStructureIsGood").innerText = "적합";
+                        document.getElementById("innerStructureIsGood").style.color = "blue";
+                    } else if (objId==="337754" || objId==="227080") {
+                        document.getElementById("detailNo").innerText = buildingMetaData.wall.type3.detailNo;
+                        document.getElementById("material").innerText = buildingMetaData.wall.type3.material;
+                        document.getElementById("innerStructureIsGood").innerText = "적합";
+                        document.getElementById("innerStructureIsGood").style.color = "blue";
+                    } else if (objId==="227041" || objId==="219452") {
+                        document.getElementById("detailNo").innerText = buildingMetaData.wall.type4.detailNo;
+                        document.getElementById("material").innerText = buildingMetaData.wall.type4.material;
+                        document.getElementById("innerStructureIsGood").innerText = "적합";
+                        document.getElementById("innerStructureIsGood").style.color = "blue";
+                    } else if (objId==="215591" || objId==="227040") {
+                        document.getElementById("detailNo").innerText = buildingMetaData.wall.type5.detailNo;
+                        document.getElementById("material").innerText = buildingMetaData.wall.type5.material;
+                        document.getElementById("innerStructureIsGood").innerText = "적합";
+                        document.getElementById("innerStructureIsGood").style.color = "blue";
+                    } else if (objId==="348265" || objId==="215552") {
+                        document.getElementById("detailNo").innerText = buildingMetaData.wall.type6.detailNo;
+                        document.getElementById("material").innerText = buildingMetaData.wall.type6.material;
+                        document.getElementById("innerStructureIsGood").innerText = "적합";
+                        document.getElementById("innerStructureIsGood").style.color = "blue";
+                    }
+                    // 바닥
+                    if (objId==="556817" || objId==="555834") {
+                        document.getElementById("detailNo").innerText = buildingMetaData.bottom.type1.detailNo;
+                        document.getElementById("material").innerText = buildingMetaData.bottom.type1.material;
+                        document.getElementById("innerStructureIsGood").innerText = "부적합";
+                        document.getElementById("innerStructureIsGood").style.color = "red";
+                    } else if (objId==="556709") {
+                        document.getElementById("detailNo").innerText = buildingMetaData.bottom.type2.detailNo;
+                        document.getElementById("material").innerText = buildingMetaData.bottom.type2.material;
+                        document.getElementById("innerStructureIsGood").innerText = "적합";
+                        document.getElementById("innerStructureIsGood").style.color = "blue";
+                    } else if (objId==="215538") {
+                        document.getElementById("detailNo").innerText = buildingMetaData.bottom.type3.detailNo;
+                        document.getElementById("material").innerText = buildingMetaData.bottom.type3.material;
+                        document.getElementById("innerStructureIsGood").innerText = "적합";
+                        document.getElementById("innerStructureIsGood").style.color = "blue";
+                    } else if (objId==="554688") {
+                        document.getElementById("detailNo").innerText = buildingMetaData.bottom.type4.detailNo;
+                        document.getElementById("material").innerText = buildingMetaData.bottom.type4.material;
+                        document.getElementById("innerStructureIsGood").innerText = "적합";
+                        document.getElementById("innerStructureIsGood").style.color = "blue";
+                    } else if (objId==="215522") {
+                        document.getElementById("detailNo").innerText = buildingMetaData.bottom.type5.detailNo;
+                        document.getElementById("material").innerText = buildingMetaData.bottom.type5.material;
+                        document.getElementById("innerStructureIsGood").innerText = "적합";
+                        document.getElementById("innerStructureIsGood").style.color = "blue";
+                    } else if (objId==="618599") {
+                        document.getElementById("detailNo").innerText = buildingMetaData.bottom.type6.detailNo;
+                        document.getElementById("material").innerText = buildingMetaData.bottom.type6.material;
+                        document.getElementById("innerStructureIsGood").innerText = "적합";
+                        document.getElementById("innerStructureIsGood").style.color = "blue";
+                    }
+
+                }
             }
+            this.magoManager.preSelectedObj = this.magoManager.objectSelected;
         }
-        this.magoManager.preSelectedObj = this.magoManager.objectSelected;
 
 
 		var node = magoManager.nodeSelected;
