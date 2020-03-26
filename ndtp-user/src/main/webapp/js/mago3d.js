@@ -20602,9 +20602,7 @@ CesiumViewerInit.prototype.geoserverTerrainProviderBuild = function()
 	terrainParam.styleName = terrainStyleName;
 	terrainParam.maxLevel = 13;
 
-  //this.options.terrainProvider = new Cesium.GeoserverTerrainProvider(terrainParam);
-  
-  
+	this.options.terrainProvider = new Cesium.GeoserverTerrainProvider(terrainParam);
 };
 
 CesiumViewerInit.prototype.postProcessDataProvider = function() 
@@ -20641,13 +20639,7 @@ CesiumViewerInit.prototype.postProcessDataProvider = function()
 
 	if (!this.options.terrainProvider) 
 	{
-
-
-    this.viewer.terrainProvider = new Cesium.CesiumTerrainProvider({
-        url: Cesium.IonResource.fromAssetId(85012)
-    });
-
-		/*if (this.policy.initDefaultTerrain !== null && this.policy.initDefaultTerrain !== "") 
+		if (this.policy.initDefaultTerrain !== null && this.policy.initDefaultTerrain !== "")
 		{
 			this.DEFALUT_TERRAIN = this.policy.initDefaultTerrain;
 		}
@@ -20664,7 +20656,7 @@ CesiumViewerInit.prototype.postProcessDataProvider = function()
 				break;
 			}
 		}
-		if (terrainProvider) { this.viewer.baseLayerPicker.viewModel.selectedTerrain = terrainProvider; }*/
+		if (terrainProvider) { this.viewer.baseLayerPicker.viewModel.selectedTerrain = terrainProvider; }
 	}
 };
 
