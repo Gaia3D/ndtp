@@ -159,6 +159,7 @@
 <%@ include file="/WEB-INF/views/data/map-data-group-template.jsp" %>
 <%@ include file="/WEB-INF/views/data/data-attribute-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/data/data-object-attribute-dialog.jsp" %>
+<%@ include file="/WEB-INF/views/data/sample-data-attribute-template.jsp" %>
 <%@ include file="/WEB-INF/views/issue/issue-dialog.jsp" %>
 <%@ include file="/WEB-INF/views/simulation/simul-solar-dialog.jsp" %>
 
@@ -592,7 +593,7 @@
 		// TODO : 세슘 MAP 선택 UI 제거,엔진에서 처리로 변경 예정.
 		viewer.baseLayerPicker.destroy();
 		viewer.scene.globe.depthTestAgainstTerrain = true;
-		viewer.scene.screenSpaceCameraController.minimumZoomDistance = 10;
+		//viewer.scene.screenSpaceCameraController.minimumZoomDistance = 10;
 
 		magoManager.on(Mago3D.MagoManager.EVENT_TYPE.MOUSEMOVE, function(result) {
 			//console.info(result);
@@ -775,35 +776,67 @@
 		modal: true,
 		resizable: false
 	});
+	// 부산 데이터 속성용 다이얼 로그
+	var sampleDataAttributeDialog = $( "#sampleDataAttributeDialog" ).dialog({
+		autoOpen: false,
+		width: 500,
+		height: 600,
+		modal: true,
+		resizable: false
+	});
 
 	// 데이터 속성
-	function detailDataAttribute(dataId, dataName) {
-		//jQuery('#id').css("display", "block");
-		dataAttributeDialog.dialog( "open" );
-		$("#dataNameForAttribute").html(dataName);
-
-		$.ajax({
-			url: "/datas/attributes/" + dataId,
-			type: "GET",
-			headers: {"X-Requested-With": "XMLHttpRequest"},
-			dataType: "json",
-			success: function(msg){
-				if(msg.statusCode <= 200) {
-					if(msg.dataAttribute !== null) {
-						//$("#dataAttributeForOrigin").html(msg.dataAttribute.attributes);
-						$("#dataAttributeViewer").html("");
-						var jsonViewer = new JSONViewer();
-						document.querySelector("#dataAttributeViewer").appendChild(jsonViewer.getContainer());
-						jsonViewer.showJSON(JSON.parse(msg.dataAttribute.attributes), -1, -1);
+	function detailDataAttribute(dataId, dataGroupKey, dataKey, dataName) {
+		if(	dataGroupKey !== "busan-mj" ) {
+			dataAttributeDialog.dialog( "open" );
+			$("#dataNameForAttribute").html(dataName);
+			$.ajax({
+				url: "/datas/attributes/" + dataId,
+				type: "GET",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+				dataType: "json",
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						if(msg.dataAttribute !== null) {
+							//$("#dataAttributeForOrigin").html(msg.dataAttribute.attributes);
+							$("#dataAttributeViewer").html("");
+							var jsonViewer = new JSONViewer();
+							document.querySelector("#dataAttributeViewer").appendChild(jsonViewer.getContainer());
+							jsonViewer.showJSON(JSON.parse(msg.dataAttribute.attributes), -1, -1);
+						}
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
 					}
-				} else {
-					alert(JS_MESSAGE[msg.errorCode]);
+				},
+				error:function(request,status,error){
+					alert(JS_MESSAGE["ajax.error.message"]);
 				}
-			},
-			error:function(request,status,error){
-				alert(JS_MESSAGE["ajax.error.message"]);
-			}
-		});
+			});
+		} else {
+			sampleDataAttributeDialog.dialog( "open" );
+			$.ajax({
+				url: "/attribute-repository/" + dataKey,
+				type: "GET",
+				headers: {"X-Requested-With": "XMLHttpRequest"},
+				dataType: "json",
+				success: function(msg){
+					if(msg.statusCode <= 200) {
+						if(msg.attributeRepository !== null) {
+							var source = $("#templateSampleDataAttribute").html();
+						    var template = Handlebars.compile(source);
+						    var html = template(msg.attributeRepository);
+						    $("#sampleDataAttributeDialog").html("");
+			                $("#sampleDataAttributeDialog").append(html);
+						}
+					} else {
+						alert(JS_MESSAGE[msg.errorCode]);
+					}
+				},
+				error:function(request,status,error){
+					alert(JS_MESSAGE["ajax.error.message"]);
+				}
+			});
+		}
 	}
 
 	// 데이터 Object 속성 다이얼 로그
@@ -872,6 +905,7 @@
 
 				    $("#dataGroupDialog").html("");
 	                $("#dataGroupDialog").append(dataGroupHtml);
+
 				} else {
 					alert(JS_MESSAGE[msg.errorCode]);
 				}

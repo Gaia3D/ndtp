@@ -1,7 +1,6 @@
 package ndtp.service;
 
 import ndtp.domain.DataAttribute;
-import ndtp.domain.DataAttributeFileInfo;
 
 /**
  * 데이터 파일 속성 관리
@@ -17,4 +16,17 @@ public interface DataAttributeService {
 	 */
 	DataAttribute getDataAttribute(Long dataId);
 	
+	/**
+	 * 데이터 속성 등록
+	 * @param dataAttribute
+	 * @return
+	 */
+	int insertDataAttribute(DataAttribute dataAttribute);
+	
+	/**
+	 * 데이터 속성 수정
+	 * @param dataAttribute
+	 * @return
+	 */
+	int updateDataAttribute(DataAttribute dataAttribute);
 }

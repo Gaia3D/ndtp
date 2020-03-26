@@ -4,7 +4,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,7 +49,7 @@ public class DataAttributeServiceImpl implements DataAttributeService {
 	 * @return
 	 */
 	@Transactional
-	public DataAttributeFileInfo insertDataAttribute(Long dataId, DataAttributeFileInfo dataAttributeFileInfo) {
+	public DataAttributeFileInfo insertDataAttributeByFile(Long dataId, DataAttributeFileInfo dataAttributeFileInfo) {
 		
 		// 파일 이력을 저장
 		dataAttributeMapper.insertDataAttributeFileInfo(dataAttributeFileInfo);
@@ -107,5 +106,25 @@ public class DataAttributeServiceImpl implements DataAttributeService {
 		dataService.updateData(dataInfo);
 		
 		return dataAttributeFileInfo;
+	}
+	
+	/**
+	 * 데이터 속성 등록
+	 * @param dataAttribute
+	 * @return
+	 */
+	@Transactional
+	public int insertDataAttribute(DataAttribute dataAttribute) {
+		return dataAttributeMapper.insertDataAttribute(dataAttribute);
+	}
+	
+	/**
+	 * 데이터 속성 수정
+	 * @param dataAttribute
+	 * @return
+	 */
+	@Transactional
+	public int updateDataAttribute(DataAttribute dataAttribute) {
+		return dataAttributeMapper.updateDataAttribute(dataAttribute);
 	}
 }

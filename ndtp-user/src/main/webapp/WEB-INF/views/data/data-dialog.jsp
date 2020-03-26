@@ -75,7 +75,7 @@
 			<th class="col-label" scope="row">속성 존재 유무</th>
 			<td id="attributeExist" class="col-data">
 {{#if attributeExist}}
-				<a href="#" onclick="detailDataAttribute('{{dataId }}', '{{dataName}}'); return false;">보기</a>
+				<a href="#" onclick="detailDataAttribute('{{dataId }}', '{{dataGroupKey}}', '{{dataKey}}', '{{dataName}}'); return false;">보기</a>	
 {{else}}
 				미등록
 {{/if}}

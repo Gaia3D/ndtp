@@ -2,7 +2,7 @@ var MapDataControll = function(magoInstance) {
 
 	var magoManager = magoInstance.getMagoManager();
 	var $dataControlWrap = $('#dataControllWrap');
-	var $header = $dataControlWrap.find('.layerDivTit span');
+	var $header = $dataControlWrap.find('.layerDivTit');
 	var projectId;
 	var dataKey;
 	var dataId;

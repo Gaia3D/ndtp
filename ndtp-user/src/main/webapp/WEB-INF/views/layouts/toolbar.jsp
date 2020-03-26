@@ -101,7 +101,7 @@
 		</div>
 
 		<div id="dataControllWrap" style="display:none;">
-			<p class="layerDivTit"><span>test / 오전반1조_행복관_s</span></p>
+			<div class="layerDivTit"></div>
 			<div class="layerDiv">
 				<h4 class="category">색상 변경</h4>
 				<ul>

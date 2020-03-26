@@ -527,6 +527,7 @@ text-align: left;
 .tableList > table tr td.center {
 text-align: center;
 }
+
 button.goto {
 width: 30px;
 height: 30px;
@@ -1608,11 +1609,10 @@ padding: 7px;
 color: #fff;
 border-radius: 5px;
 background-color: #444a61;
-}
-.layerDivTit > span {
-color: #fff;
 font-size: 16px;
 font-weight: bold;
+overflow:hidden;
+text-overflow: ellipsis;
 }
 .layerDiv label {
 display: inline-block;
@@ -2270,4 +2270,10 @@ text-align:center;
 .totalCount {
 color: #287BE4;
 font-style: normal;
+}
+span.link {
+cursor: pointer;
+text-decoration: underline;
+font-size: 14px;
+font-weight: bold;
 }

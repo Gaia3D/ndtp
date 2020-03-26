@@ -28,4 +28,24 @@ public class DataAttributeServiceImpl implements DataAttributeService {
 	public DataAttribute getDataAttribute(Long dataId) {
 		return dataAttributeMapper.getDataAttribute(dataId);
 	}
+	
+	/**
+	 * 데이터 속성 등록
+	 * @param dataAttribute
+	 * @return
+	 */
+	@Transactional
+	public int insertDataAttribute(DataAttribute dataAttribute) {
+		return dataAttributeMapper.insertDataAttribute(dataAttribute);
+	}
+	
+	/**
+	 * 데이터 속성 수정
+	 * @param dataAttribute
+	 * @return
+	 */
+	@Transactional
+	public int updateDataAttribute(DataAttribute dataAttribute) {
+		return dataAttributeMapper.updateDataAttribute(dataAttribute);
+	}
 }

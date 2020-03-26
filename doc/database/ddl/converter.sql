@@ -6,6 +6,7 @@ drop table if exists converter_job_file cascade;
 create table converter_job(
 	converter_job_id				bigint,
 	upload_data_id					bigint,
+	data_group_target				varchar(5)							default 'user',
 	user_id							varchar(32),
 	title							varchar(256)						not null,
 	converter_template				varchar(30)							default 'basic',
@@ -29,6 +30,7 @@ create table converter_job(
 comment on table converter_job is '파일 변환 job';
 comment on column converter_job.converter_job_id is '고유번호';
 comment on column converter_job.upload_data_id is '업로드 데이터 고유번호';
+comment on column converter_job.data_group_target is '[중복] admin : 관리자용 데이터 그룹, user : 일반 사용자용 데이터 그룹';
 comment on column converter_job.title is '제목';
 comment on column converter_job.user_id is '사용자 아이디';
 comment on column converter_job.converter_template is '변환 유형. basic : 기본, building : 빌딩, extra-big-building : 초대형 빌딩, point-cloud : point cloud 데이터';

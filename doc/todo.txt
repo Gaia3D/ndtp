@@ -1,3 +1,7 @@
 
-1. 속성 파일 업로딩 json 한글 깨짐 수정
-2. objectIdex
+bulk upload 시 해야 할 사항
+
+data_count
+data_type
+속성 존재 유무
+그룹 좌표 update

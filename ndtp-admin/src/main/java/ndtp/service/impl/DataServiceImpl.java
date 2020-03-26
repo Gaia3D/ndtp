@@ -1,5 +1,6 @@
 package ndtp.service.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -179,13 +180,23 @@ public class DataServiceImpl implements DataService {
 		dataFileParseLog.setDataFileInfoId(dataFileInfo.getDataFileInfoId());
 		dataFileParseLog.setLogType(DataFileParseLog.DB);
 		
+		BigDecimal firstLongitude = BigDecimal.ZERO;
+		BigDecimal firstLatitude = BigDecimal.ZERO;
+		BigDecimal firstAltitude = BigDecimal.ZERO;
 		int insertSuccessCount = 0;
 		int updateSuccessCount = 0;
 		int insertErrorCount = 0;
 		String dataGroupTarget = ServerTarget.ADMIN.name().toLowerCase();
 		String sharing = SharingType.COMMON.name().toLowerCase();
 		String status = DataStatus.USE.name().toLowerCase();
+		int count = 0;
 		for(DataInfo dataInfo : dataInfoList) {
+			if(count == 0) {
+				// 데이터 그룹의 위치
+				firstLongitude = dataInfo.getLongitude();
+				firstLatitude = dataInfo.getLatitude();
+				firstAltitude = dataInfo.getAltitude();
+			}
 			// TODO 계층 관련 코딩이 있어야 함
 			try {
 				dataInfo.setDataGroupId(dataGroupId);
@@ -221,7 +232,7 @@ public class DataServiceImpl implements DataService {
 				dataMapper.insertDataFileParseLog(dataFileParseLog);
 				insertErrorCount++;
 			}
-			
+			count++;
 		}
 		
 		dataFileInfo.setTotalCount((Integer) map.get("totalCount"));
@@ -234,11 +245,20 @@ public class DataServiceImpl implements DataService {
 		dataMapper.updateDataFileInfo(dataFileInfo);
 		
 		// data group update
+		String dataGroupLocation = null;
+		if(dataGroup.getLongitude() == null || dataGroup.getLongitude().longValue() <= 0) {
+			dataGroupLocation = "POINT(" + firstLongitude + " " + firstLatitude + ")";
+		}
+		
 		int dataCount = dataGroup.getDataCount() + insertSuccessCount;
 		dataGroup = DataGroup.builder()
 				.dataGroupId(dataGroupId)
 				.dataCount(dataCount)
 				.build();
+		if(dataGroupLocation != null) {
+			dataGroup.setLocation(dataGroupLocation);
+			dataGroup.setAltitude(firstAltitude);
+		}
 		dataGroupService.updateDataGroup(dataGroup);
 		
 		return dataFileInfo;

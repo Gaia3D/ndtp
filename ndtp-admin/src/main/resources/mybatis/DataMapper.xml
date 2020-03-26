@@ -369,6 +369,12 @@
 			<if test="altitude != null">
 			altitude = #{altitude},
 			</if>
+			<if test="attributeExist != null">
+			attribute_exist = #{attributeExist},
+			</if>
+			<if test="objectAttributeExist != null">
+			object_attribute_exist = #{objectAttributeExist},
+			</if>
 			update_date = NOW()
 		WHERE data_id = #{dataId}
 			<if test="userId != null and userId != ''">

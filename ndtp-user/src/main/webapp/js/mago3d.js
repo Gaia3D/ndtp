@@ -20602,7 +20602,9 @@ CesiumViewerInit.prototype.geoserverTerrainProviderBuild = function()
 	terrainParam.styleName = terrainStyleName;
 	terrainParam.maxLevel = 13;
 
-	this.options.terrainProvider = new Cesium.GeoserverTerrainProvider(terrainParam);
+  //this.options.terrainProvider = new Cesium.GeoserverTerrainProvider(terrainParam);
+  
+  
 };
 
 CesiumViewerInit.prototype.postProcessDataProvider = function() 
@@ -20639,7 +20641,13 @@ CesiumViewerInit.prototype.postProcessDataProvider = function()
 
 	if (!this.options.terrainProvider) 
 	{
-		if (this.policy.initDefaultTerrain !== null && this.policy.initDefaultTerrain !== "") 
+
+
+    this.viewer.terrainProvider = new Cesium.CesiumTerrainProvider({
+        url: Cesium.IonResource.fromAssetId(85012)
+    });
+
+		/*if (this.policy.initDefaultTerrain !== null && this.policy.initDefaultTerrain !== "") 
 		{
 			this.DEFALUT_TERRAIN = this.policy.initDefaultTerrain;
 		}
@@ -20656,7 +20664,7 @@ CesiumViewerInit.prototype.postProcessDataProvider = function()
 				break;
 			}
 		}
-		if (terrainProvider) { this.viewer.baseLayerPicker.viewModel.selectedTerrain = terrainProvider; }
+		if (terrainProvider) { this.viewer.baseLayerPicker.viewModel.selectedTerrain = terrainProvider; }*/
 	}
 };
 
@@ -36563,7 +36571,7 @@ SmartTile.prototype.parseSmartTileF4d = function(dataArrayBuffer, magoManager)
 			"isPhysical" : true,
 			"objectType" : "basicF4d"
 		};
-		if (projectFolderName.indexOf('Vegetation') > 0) 
+		if (projectFolderName.indexOf('-tree') > 0) 
 		{
 			attributes.isReference = true;
 			
@@ -36696,7 +36704,7 @@ SmartTile.prototype.parseSmartTileF4d = function(dataArrayBuffer, magoManager)
 		
 			lodBuilding.texture.imageBinaryData = lodBuildingTextureData;
 			lodBuilding.texture.fileLoadState = CODE.fileLoadState.LOADING_FINISHED;
-
+			
 			node.data.geographicCoord = geoCoord;
 			data.rotationsDegree = eulerAngDeg; 
 			data.dataId = dataId;

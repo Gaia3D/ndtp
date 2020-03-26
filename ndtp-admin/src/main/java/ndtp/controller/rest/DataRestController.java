@@ -290,7 +290,7 @@ public class DataRestController {
 		dataAttributeFileInfo.setUserId(userSession.getUserId());
 		dataAttributeFileInfo.setDataId(dataId);
 		
-		dataAttributeFileInfo = dataAttributeService.insertDataAttribute(dataId, dataAttributeFileInfo);
+		dataAttributeFileInfo = dataAttributeService.insertDataAttributeByFile(dataId, dataAttributeFileInfo);
 		
 		result.put("totalCount", dataAttributeFileInfo.getTotalCount());
 		result.put("parseSuccessCount", dataAttributeFileInfo.getParseSuccessCount());

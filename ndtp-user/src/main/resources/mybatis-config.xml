@@ -54,6 +54,8 @@
 		<typeAlias type="ndtp.domain.CityPlanResult" alias="cityPlanResult"/>
 		<typeAlias type="ndtp.domain.CommentManage" alias="commentManage"/>
 		<typeAlias type="ndtp.domain.ConsDataInfo" alias="consDataInfo"/>
+
+		<typeAlias type="ndtp.domain.AttributeRepository" alias="attributeRepository"/>
     </typeAliases>
 
 </configuration>

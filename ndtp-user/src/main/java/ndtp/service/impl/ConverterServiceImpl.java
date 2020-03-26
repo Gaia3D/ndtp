@@ -23,6 +23,7 @@ import ndtp.domain.ConverterJob;
 import ndtp.domain.ConverterJobFile;
 import ndtp.domain.ConverterJobStatus;
 import ndtp.domain.ConverterTemplate;
+import ndtp.domain.DataAttribute;
 import ndtp.domain.DataGroup;
 import ndtp.domain.DataInfo;
 import ndtp.domain.DataStatus;
@@ -36,6 +37,7 @@ import ndtp.domain.UploadDataFile;
 import ndtp.persistence.ConverterMapper;
 import ndtp.service.AMQPPublishService;
 import ndtp.service.ConverterService;
+import ndtp.service.DataAttributeService;
 import ndtp.service.DataGroupService;
 import ndtp.service.DataService;
 import ndtp.service.UploadDataService;
@@ -53,6 +55,8 @@ public class ConverterServiceImpl implements ConverterService {
 	@Autowired
 	private AMQPPublishService aMQPPublishService;
 
+	@Autowired
+	private DataAttributeService dataAttributeService;
 	@Autowired
 	private DataService dataService;
 
@@ -135,6 +139,7 @@ public class ConverterServiceImpl implements ConverterService {
 			// 2. converter job 을 등록
 			ConverterJob inConverterJob = new ConverterJob();
 			inConverterJob.setUploadDataId(Long.valueOf(uploadDataId));
+			inConverterJob.setDataGroupTarget(ServerTarget.USER.name().toLowerCase());
 			inConverterJob.setUserId(userId);
 			inConverterJob.setTitle(title);
 			inConverterJob.setUsf(usf);
@@ -363,28 +368,21 @@ public class ConverterServiceImpl implements ConverterService {
 			for(DataInfo updateDataInfo : dataInfoList) {
 				if(	DataType.CITYGML == DataType.findBy(updateDataInfo.getDataType())) {
 					// json 파일을 읽어서 longitude, latitude를 갱신, 없을 때 예외가 맞는 것일까?
-					try {
-						String targetDirectory = serviceDirectory + updateDataInfo.getDataGroupKey() + File.separator + DataInfo.F4D_PREFIX + updateDataInfo.getDataKey();
-						byte[] jsonData = Files.readAllBytes(Paths.get(targetDirectory + File.separator + "lonsLats.json"));
-						String encodingData = new String(jsonData, StandardCharsets.UTF_8);
-							
-						ObjectMapper objectMapper = new ObjectMapper();
-						//read JSON like DOM Parser
-						JsonNode jsonNode = objectMapper.readTree(encodingData);
-						
-						String dataKey = jsonNode.path("data_key").asText();
-						String longitude = jsonNode.path("longitude").asText().trim();
-						String latitude = jsonNode.path("latitude").asText().trim();
-						if(!StringUtils.isEmpty(longitude)) {
-							updateDataInfo.setLongitude(new BigDecimal(longitude) );
-							updateDataInfo.setLatitude(new BigDecimal(latitude) );
-							updateDataInfo.setLocation("POINT(" + longitude + " " + latitude + ")");
+					getCityGmlLocation(serviceDirectory, updateDataInfo);
+					// json 파일을 읽어서 속성 정보를 update
+					String attribute = getCityGmlAttribute(serviceDirectory, updateDataInfo);
+					if(attribute != null) {
+						DataAttribute dataAttribute = dataAttributeService.getDataAttribute(updateDataInfo.getDataId());
+						if(dataAttribute == null) {
+							dataAttribute = new DataAttribute();
+							dataAttribute.setDataId(updateDataInfo.getDataId());
+							dataAttribute.setAttributes(attribute);
+							dataAttributeService.insertDataAttribute(dataAttribute);
+						} else {
+							dataAttribute.setAttributes(attribute);
+							dataAttributeService.updateDataAttribute(dataAttribute);
 						}
-						updateDataInfo.setAltitude(new BigDecimal(0));
-						updateDataInfo.setStatus(DataStatus.USE.name().toLowerCase());
-					} catch(IOException e) {
-						updateDataInfo.setStatus(DataStatus.UNUSED.name().toLowerCase());
-						e.printStackTrace();
+						updateDataInfo.setAttributeExist(Boolean.TRUE);
 					}
 				} else {
 					updateDataInfo.setStatus(DataStatus.USE.name().toLowerCase());
@@ -405,7 +403,7 @@ public class ConverterServiceImpl implements ConverterService {
 
 				DataGroup dataGroup = new DataGroup();
 				dataGroup.setUserId(converterJob.getUserId());
-				dataGroup.setDataGroupId(dataInfo.getDataGroupId());
+				dataGroup.setDataGroupId(deleteDataInfo.getDataGroupId());
 				dataGroup = dataGroupService.getDataGroup(dataGroup);
 
 				DataGroup updateDataGroup = new DataGroup();
@@ -417,5 +415,67 @@ public class ConverterServiceImpl implements ConverterService {
 		}
 
 		return converterMapper.updateConverterJob(converterJob);
+	}
+	
+	/**
+	 * json 으로 부터 경, 위도 정보를 읽어 들임
+	 * @param serviceDirectory
+	 * @param updateDataInfo
+	 * @return
+	 */
+	private DataInfo getCityGmlLocation(String serviceDirectory, DataInfo updateDataInfo) {
+		try {
+			String targetDirectory = serviceDirectory + updateDataInfo.getDataGroupKey() + File.separator + DataInfo.F4D_PREFIX + updateDataInfo.getDataKey();
+			
+			File file = new File(targetDirectory + File.separator + "lonsLats.json");
+			if(file.exists()) {
+				byte[] jsonData = Files.readAllBytes(Paths.get(targetDirectory + File.separator + "lonsLats.json"));
+				String encodingData = new String(jsonData, StandardCharsets.UTF_8);
+					
+				ObjectMapper objectMapper = new ObjectMapper();
+				//read JSON like DOM Parser
+				JsonNode jsonNode = objectMapper.readTree(encodingData);
+				
+				String dataKey = jsonNode.path("data_key").asText();
+				String longitude = jsonNode.path("longitude").asText().trim();
+				String latitude = jsonNode.path("latitude").asText().trim();
+				if(!StringUtils.isEmpty(longitude)) {
+					updateDataInfo.setLongitude(new BigDecimal(longitude) );
+					updateDataInfo.setLatitude(new BigDecimal(latitude) );
+					updateDataInfo.setLocation("POINT(" + longitude + " " + latitude + ")");
+				}
+			}
+			
+			updateDataInfo.setAltitude(new BigDecimal(0));
+			updateDataInfo.setStatus(DataStatus.USE.name().toLowerCase());
+		} catch(IOException e) {
+			updateDataInfo.setStatus(DataStatus.UNUSED.name().toLowerCase());
+			e.printStackTrace();
+		}
+		
+		return updateDataInfo;
+	}
+	
+	/**
+	 * citygml 속성 정보를 추출
+	 * @param serviceDirectory
+	 * @param updateDataInfo
+	 * @return
+	 */
+	private String getCityGmlAttribute(String serviceDirectory, DataInfo updateDataInfo) {
+		String attribute = null;
+		try {
+			String targetDirectory = serviceDirectory + updateDataInfo.getDataGroupKey() + File.separator + DataInfo.F4D_PREFIX + updateDataInfo.getDataKey();
+			
+			File file = new File(targetDirectory + File.separator + "attributes.json");
+			if(file.exists()) {
+				byte[] jsonData = Files.readAllBytes(Paths.get(targetDirectory + File.separator + "attributes.json"));
+				attribute = new String(jsonData, StandardCharsets.UTF_8);
+			}
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		return attribute;
 	}
 }

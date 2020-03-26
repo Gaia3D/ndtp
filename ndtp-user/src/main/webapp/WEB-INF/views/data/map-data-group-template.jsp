@@ -55,9 +55,12 @@
 								[<span style="color:blue">{{userId}}</span>]
 			{{/ifMatch}}
 		{{/ifMatch}}
+						<span onclick="detailDataGroup('/data-groups/{{dataGroupId}}');" class="link">{{dataGroupName}}</span>
+<%--
 						<a href="/data-groups/{{dataGroupId}}" onclick="detailDataGroup(this.href); return false;">
 							{{dataGroupName}}
 						</a>
+--%>
 					</td>
 					<td>{{#formatNumber dataCount}}{{/formatNumber}}</td>
 					<td>
