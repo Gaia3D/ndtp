@@ -214,6 +214,24 @@ public class SimulationRestController {
 		}
 		return null;
 	}
+	@RequestMapping(value = "/cityPlanModelSelect3", method = RequestMethod.GET)
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	public Object cityPlanModelSelect3(String FileName, String preDir) {
+		String resultFullPath = "C:\\data\\mago3d\\building_obj\\" + preDir + "\\" + FileName;
+		String os = System.getProperty("os.name").toLowerCase();
+		if (os.contains("mac")) {
+			resultFullPath = "/Users/junho/data/mago3d/building_obj/" + preDir + "/" + FileName;
+		}
+		File fi = new File(resultFullPath.trim());
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			InputStream targetStream = new FileInputStream(fi);
+			return mapper.readValue(targetStream, Object.class);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	@RequestMapping(value = "/getAccepBuildF4dJsonFile", method = RequestMethod.GET)
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)

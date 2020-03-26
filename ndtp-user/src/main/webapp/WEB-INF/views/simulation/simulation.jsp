@@ -303,8 +303,9 @@
 							<option value="maple_orange">나무(orange)</option>
 							<option value="maple_red">나무(red)</option>
 							<option value="maple_yellow">나무(yellow)</option>
-							<option value="building1">빌딩1</option>
-							<option value="building2">빌딩2</option>
+							<option value="test123">가로등</option>
+<%--							<option value="building1">빌딩1</option>--%>
+<%--							<option value="building2">빌딩2</option>--%>
 						</select>
 					</div>
 				</li>
