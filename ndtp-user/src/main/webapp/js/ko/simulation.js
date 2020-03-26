@@ -2034,12 +2034,15 @@ var Simulation = function(magoInstance, viewer, $) {
 				else if (runAllocBuildStat === "maple_yellow") {
 					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 1, "texture_maple", "maple_yellow.gltf")
 				}
-				else if (runAllocBuildStat === "building1") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 0.05, "building1", "building1.gltf")
+				else if (runAllocBuildStat === "test123") {
+					genBuild3(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 1, "test123", "test.gltf")
 				}
-				else if (runAllocBuildStat === "building2") {
-					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 0.05, "building2", "building2.gltf")
-				}
+				// else if (runAllocBuildStat === "building1") {
+				// 	genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 0.05, "building1", "building1.gltf")
+				// }
+				// else if (runAllocBuildStat === "building2") {
+				// 	genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 0.05, "building2", "building2.gltf")
+				// }
 
 				else if(runAllocBuildStat === "imsiBuildSelect") {
                 	// 새로운 모델 선택
@@ -2376,6 +2379,30 @@ var Simulation = function(magoInstance, viewer, $) {
 		});
 		_viewer.entities.add(entity);
     }
+	function genBuild3(lon, lat, alt, scale, preDir, fileName) {
+		const position = Cesium.Cartesian3.fromDegrees(lon, lat);
+		const modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
+
+		let heading = Cesium.Math.toRadians(0);
+		let pitch = 0;
+		let roll = 0;
+		let hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
+		let orientation = Cesium.Transforms.headingPitchRollQuaternion(position, hpr);
+
+		const entity = new Cesium.Entity({
+			name: fileName,
+			position: position,
+			orientation: orientation,
+			model: {
+				// uri: '/data/simulation-rest/cityPlanModelSelect2?FileName='+fileName+'&preDir='+preDir,
+				uri: '/data/simulation-rest/cityPlanModelSelect3?FileName='+fileName+'&preDir='+preDir,
+				scale: scale,
+				show: true,
+				heightReference : Cesium.HeightReference.CLAMP_TO_GROUND,
+			}
+		});
+		_viewer.entities.add(entity);
+	}
     function reqThisStep(stepInfo) {
     	debugger;
 		echoMap[stepInfo].forEach((val, index) => {
