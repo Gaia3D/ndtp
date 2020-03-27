@@ -2034,15 +2034,26 @@ var Simulation = function(magoInstance, viewer, $) {
 				else if (runAllocBuildStat === "maple_yellow") {
 					genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 1, "texture_maple", "maple_yellow.gltf")
 				}
+
 				else if (runAllocBuildStat === "test123") {
 					genBuild3(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 1, "test123", "test.gltf")
 				}
-				// else if (runAllocBuildStat === "building1") {
-				// 	genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 0.05, "building1", "building1.gltf")
-				// }
-				// else if (runAllocBuildStat === "building2") {
-				// 	genBuild(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 0.05, "building2", "building2.gltf")
-				// }
+				else if (runAllocBuildStat === "obj_stool") {
+					genBuild3(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 2, "stool", "Stool.gltf")
+				}
+				else if (runAllocBuildStat === "building1") {
+					genBuild3(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 0.5, "building1", "building1.gltf")
+				}
+				else if (runAllocBuildStat === "building2") {
+					genBuild3(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 0.5, "building2", "building2.gltf")
+				}
+				else if (runAllocBuildStat === "building3") {
+					genBuild3(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude), cartographic.height, 10, "building3", "building3.gltf")
+				}
+
+
+
+
 
 				else if(runAllocBuildStat === "imsiBuildSelect") {
                 	// 새로운 모델 선택
