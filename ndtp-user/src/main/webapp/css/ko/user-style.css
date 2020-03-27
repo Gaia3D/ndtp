@@ -436,16 +436,19 @@ color: #287be4;
 	position: relative;
 }
 .dataGroupSummary > table {
-	width: 100%;
+	width: calc(100% - 1px);
 }
-.dataGroupSummary > table thead th {
-	padding: 5px;
+.dataGroupSummary > table th {
 	border: 1px solid #ccc;
+	padding: 3px 0;
+	cursor: default;
 }
+/*
 .dataGroupSummary > table tbody tr:hover {
 	cursor: pointer;
 	background-color: #f9f9f9;
 }
+*/
 .dataGroupSummary > table tbody tr.selected {
 	background-color: #d6dcf2;
 }
@@ -456,6 +459,9 @@ color: #287be4;
 	text-align: center;
 	cursor: default;
 }
+.dataGroupSummary > table tr:nth-child(4n+0) td {
+	padding: 0;
+}
 .dataGroupSummary > table tr td a {
 	border-bottom: 1px solid #000;
 }
@@ -464,6 +470,14 @@ color: #287be4;
 }
 .dataGroupSummary > table tr td.center {
 	text-align: center;
+}
+.dataGroupSummary > table tr.space-top,
+.dataGroupSummary > table tr td.space-top {
+  border-top: 3px solid #ccc;
+}
+.dataGroupSummary > table tr.space-bottom,
+.dataGroupSummary > table tr td.space-bottom {
+  border-bottom: 3px solid #ccc;
 }
 
 /* /// 데이터 게시판 목록 - 정연화 수정 /// */
@@ -1693,7 +1707,7 @@ text-overflow: ellipsis;
 
 /* 정연화 추가 */
 .table-data-group-summary {
-	margin: 10px 0;
+	margin-top: 10px;
 }
 .table-data-group-summary th {
 	background-color: #f3f3f3;
@@ -1764,6 +1778,12 @@ ul.listDrop li.list-drop-button-none > p {
 }
 .col-width-19 {
 	width: 19%;
+}
+.col-width-22 {
+	width: 22%;
+}
+.col-width-27 {
+	width: 27%;
 }
 .col-width-28 {
 	width: 28%;

@@ -8,7 +8,7 @@
 	<div class="dataBtns"></div>
 		<div class="tableList marT10 yScroll" style="height: calc(100% - 43px)">
 			<table summary="데이터 리스트 테이블">
-			<caption class="hiddenTag">데이터 리스트</caption>
+			<caption class="hiddenTag">데이터 목록</caption>
 				<colgroup>
 					<col class="col-width-12" />
 					<col class="col-width-12" />
@@ -18,7 +18,7 @@
 				</colgroup>
 				<thead>
 					<tr>
-						<th rowspan="2">번호</th>
+						<th>번호</th>
 						<th>공유 유형</th>
 						<th>데이터명</th>
 						<th>표시</th>
