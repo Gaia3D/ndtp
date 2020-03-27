@@ -89,7 +89,7 @@
 
 
 			<div id="dataControll">
-				<p class="layerDivTit"><span>test / 오전반1조_행복관_s</span></p>
+				<p class="layerDivTit"></p>
 				<div class="layerDiv">
 					<h4 class="category">색상 변경</h4>
 					<ul>
@@ -202,7 +202,7 @@
 
 	var viewer = null;
 	var entities = null;
-	
+
 	initPolicy(function(policy, baseLayers){
 		NDTP.policy = policy;
 		NDTP.baseLayers = baseLayers;
@@ -365,7 +365,7 @@
 		var $dataControlWrap = $('#dataControll');
 		//$dataControlWrap.find('.layerDivTit').hide();
 		//var $header = $('#mago3DSettingLabelLayer .layerHeader h3');
-		var $header = $dataControlWrap.find('.layerDivTit span');
+		var $header = $dataControlWrap.find('.layerDivTit');
 
 		var groupId = dataInfo.dataGroupId;
 
@@ -502,7 +502,7 @@
 		}
 	});
 	*/
-	
+
 	var dataInfoDialog = $( "#dataInfoDialog" ).dialog({
 		autoOpen: false,
 		width: 500,
