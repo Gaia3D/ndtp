@@ -1625,8 +1625,7 @@ border-radius: 5px;
 background-color: #444a61;
 font-size: 16px;
 font-weight: bold;
-overflow:hidden;
-text-overflow: ellipsis;
+word-wrap: break-word;
 }
 .layerDiv label {
 display: inline-block;
