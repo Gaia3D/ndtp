@@ -77,6 +77,13 @@ class AttributeInsertSqlTest {
 			if(conn != null) conn.close();
 		}
 		
+		if(dataId == 0l) {
+			log.info(" ******************** error ********************* ");
+			log.info(" --- dataKey = {}, dataId = {}", dataKey, dataId);
+			log.info(" --- dataKey = {}, dataId = {}", dataKey, dataId);
+			log.info(" ******************** error ********************* ");
+		}
+		
 		return dataId;
 	}
 }
