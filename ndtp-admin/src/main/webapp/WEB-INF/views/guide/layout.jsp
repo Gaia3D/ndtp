@@ -161,7 +161,7 @@ function magoLoadEnd2(e) {
 	var viewer = magoInstance.getViewer();
 	var magoManager = magoInstance.getMagoManager();
 	var f4dController = magoInstance.getF4dController();
-	viewer.baseLayerPicker.destroy();
+	if(viewer.baseLayerPicker) viewer.baseLayerPicker.destroy();
 	viewer.scene.globe.depthTestAgainstTerrain = true;
 	
 	magoManager.magoPolicy.imagePath = '/sample/images';
