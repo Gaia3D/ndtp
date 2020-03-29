@@ -136,6 +136,11 @@
 			$('#dataServicePath').focus();
 			return false;
 		}
+		if(!$('#terrainValue').val()) {
+			alert('Terrain 값을 입력해주세요.');
+			$('#terrainValue').focus();
+			return false;
+		}
 		return true;
 	}
 
@@ -204,17 +209,7 @@
 			}
 		}
 		// TerrainProvider 사용 할 경우
-		if($('[name=geoserverTerrainproviderEnable]:checked').val() == "true") {
-			if(!$('#geoserverTerrainproviderUrl').val()) {
-				alert('TerrainProvider 요청 URL을 입력해주세요.');
-				$('#geoserverTerrainproviderUrl').focus();
-				return false;
-			}
-			if(!$('#geoserverTerrainproviderLayerName').val()) {
-				alert('TerrainProvider 레이어 명을 입력해주세요.');
-				$('#geoserverTerrainproviderLayerName').focus();
-				return false;
-			}
+		if($('[name=terrainType]:checked').val() == "geoserver") {
 			if(!$('#geoserverTerrainproviderStyleName').val()) {
 				alert('TerrainProvider 스타일 명을 입력해주세요.');
 				$('#geoserverTerrainproviderStyleName').focus();

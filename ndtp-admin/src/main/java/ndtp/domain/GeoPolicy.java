@@ -35,6 +35,10 @@ public class GeoPolicy {
 	private String basicGlobe;
 	// ceisum ion token
 	private String cesiumIonToken;
+	// Terrain 유형. geoserver, cesium-default, cesium-ion-default, cesium-ion-cdn : 우리 dem 을 업로딩, cesium-customer : cesium docker provier
+	private String terrainType;
+	// url 또는 cesium ion code 값
+	private String terrainValue;
 	
 	// F4D converter file 정보 취득 api url
 	private String dataApiUrl;
@@ -73,10 +77,6 @@ public class GeoPolicy {
 	// geoserver 레이어 포맷형식
 	private String geoserverImageproviderParametersFormat;
 
-	// geoserver terrainprovider 사용 유무. 기본 false
-	private Boolean geoserverTerrainproviderEnable;
-	// geoserver terrainprovider 요청 URL
-	private String geoserverTerrainproviderUrl;
 	// geoserver terrainprovider 로 사용할 레이어명
 	private String geoserverTerrainproviderLayerName;
 	// geoserver terrainprovider 에 사용할 스타일명
