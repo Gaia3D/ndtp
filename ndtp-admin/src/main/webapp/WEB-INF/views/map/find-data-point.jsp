@@ -161,6 +161,7 @@
 		</div>
 	</div>
     <div id="magoContainer" style="height: 100%;"></div>
+    <canvas id="objectLabel"></canvas>
     <button class="mapSelectButton" onclick="window.close();">닫기</button>
 </body>
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>

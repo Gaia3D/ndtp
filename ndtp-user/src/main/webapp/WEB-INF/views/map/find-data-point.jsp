@@ -163,6 +163,7 @@
 		</div>
 	</div>
     <div id="magoContainer" style="height: 100%;"></div>
+    <canvas id="objectLabel"></canvas>
     <button class="mapSelectButton" onclick="window.close();">닫기</button>
     <%@ include file="/WEB-INF/views/data/data-dialog.jsp" %>
 </body>

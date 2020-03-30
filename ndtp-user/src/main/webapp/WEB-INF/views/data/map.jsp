@@ -29,14 +29,6 @@
 		.ctrlWrap {
 			z-index:100;
 		}
-		#objectLabel {
-		    background-color: transparent;
-		    position: absolute;
-		    left: 0px;
-		    top: 0px;
-		    /* z-index: 10; */
-		    pointer-events: none;
-	   	}
 		/*
 		.ctrlWrap div.zoom button, .ctrlWrap div.rotate button  {
 			width:47px;
