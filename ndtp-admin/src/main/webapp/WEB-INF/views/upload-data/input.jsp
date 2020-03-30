@@ -314,21 +314,28 @@
 				alert("최대 업로드 파일 수는 500개 입니다.");
 				return;
 			});
-
+			
 			this.on("success", function(file, response) {
 				if(file !== undefined && file.name !== undefined) {
 	                console.log("file name = " + file.name);
 	                fileUploadDialog.dialog( "close" );
-					if(response.errorCode === undefined || response.errorCode === null) {
-						uploadFileResultCount ++;
-						if(uploadFileCount === uploadFileResultCount) {
-						    alert("업로딩을 완료 하였습니다.");
-						    uploadFileCount = 0;
-						    uploadFileResultCount = 0;
-						    myDropzone.removeAllFiles(true);
-						}
+	                if(response.statusCode <= 200) {
+	                	if(response.errorCode === undefined || response.errorCode === null) {
+	                		uploadFileResultCount ++;
+							if(uploadFileCount === uploadFileResultCount) {
+							    alert("업로딩을 완료 하였습니다.");
+							    uploadFileCount = 0;
+							    uploadFileResultCount = 0;
+							    myDropzone.removeAllFiles(true);
+							}
+		                } else {
+		                	alertMessage(response);
+		                }
 	                } else {
-	                    alertMessage(response);
+                        alertMessage(response);
+	                	//alert(JS_MESSAGE[response.errorCode]);
+						//alert(response.message);
+						console.log("---- " + response.message);
 	                }
 	            } else {
 					console.log("------- success response = " + response);
