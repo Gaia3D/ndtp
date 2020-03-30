@@ -2296,3 +2296,11 @@ text-decoration: underline;
 font-size: 14px;
 font-weight: bold;
 }
+#objectLabel {
+background-color: transparent;
+position: absolute;
+left: 0px;
+top: 0px;
+/* z-index: 10; */
+pointer-events: none;
+}
