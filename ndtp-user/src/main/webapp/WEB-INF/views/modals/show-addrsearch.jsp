@@ -13,6 +13,8 @@
         <li>
             <label for="">대상 면적</label>
             <label id="" for="">734.13㎡</label>
+            <label>용도</label>
+            <label>일반주거</label>
         </li>
         <li>
             <div>

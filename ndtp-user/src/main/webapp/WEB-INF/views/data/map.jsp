@@ -239,7 +239,6 @@
 	var addrSearchDialog = $("#addrSearchDialog").dialog({
 		autoOpen: false,
 		width: 500,
-		height: 350,
 		modal: false,
 		overflow : "auto",
 		resizable: true,

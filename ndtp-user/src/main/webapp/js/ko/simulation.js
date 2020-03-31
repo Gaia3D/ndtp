@@ -2419,7 +2419,7 @@ var Simulation = function(magoInstance, viewer, $) {
 	}
 
 	function makeEchoGltf(stepInfo, index, lon, lat) {
-		var position = Cesium.Cartesian3.fromDegrees(lon, lat, 10);
+		var position = Cesium.Cartesian3.fromDegrees(lon, lat, 33);
 		var heading = 190;
 		var pitch = 0;
 		var roll = 0;
@@ -3241,6 +3241,9 @@ const f4dDataGenMaster = {
 		arr = [];
 		for(var i = 0; i < f4dSubObject.length; i++) {
 			var obj = f4dSubObject[i];
+			if(obj.data_key === 'KSJ_100'){
+				alt = 50;
+			}
 			var imsiF4dSubObject = {
 				"attributes": {
 					"isPhysical": true,
@@ -3269,6 +3272,9 @@ const f4dDataGenMaster = {
 
 		for(var i = 0; i < f4dSubObject.length; i++) {
 			var obj = f4dSubObject[i];
+			if(obj.data_key === 'M_DTL') {
+				obj.height = 32;
+			}
 			var imsiF4dSubObject = {
 				"attributes": {
 					"isPhysical": true,

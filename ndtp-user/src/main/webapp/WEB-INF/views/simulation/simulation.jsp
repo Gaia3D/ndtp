@@ -397,7 +397,8 @@
 							<option value="">선택안함</option>
 							<option value="sa">세종 전체</option>
 							<option value="s">세종 행복도시</option>
-							<option value="p">부산 에코델타</option>
+							<option value="p">델타루</option>
+							<option value="b">56빌리지</option>
 							<option value="g">금강 보행교</option>
 						</select>
 					</div>
