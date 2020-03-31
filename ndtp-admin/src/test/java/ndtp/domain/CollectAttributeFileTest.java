@@ -11,29 +11,33 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 class CollectAttributeFileTest {
 
-	String inputDirectory = "C:\\data\\mago3d\\f4d\\service\\admin\\basic\\";
+	String inputDirectory = "C:\\data\\lx";
 	String outDirectory = "C:\\data\\mago3d\\smart-tiling-attribute";
 	
 	@Test
 	void test() throws Exception {
-		File targetFile = new File(inputDirectory);
-		if(!targetFile.isDirectory()) {
+		File rootDirectory = new File(inputDirectory);
+		if(!rootDirectory.isDirectory()) {
 			throw new Exception("입력 디렉토리 오류");
 		}
 		
-		File[] fileList = targetFile.listFiles();
-		for(File file : fileList) {
-			log.info("--- file name = {}", file.getName());
-			if(file.isDirectory() && file.getName().indexOf("F4D_")>=0) {
-				log.info("**** target file name = {}", file.getName());
-				moveAttribute(file);
+		File[] groups = rootDirectory.listFiles();
+		for(File groupFile : groups) {
+			File[] fileList = groupFile.listFiles();
+			String groupName = groupFile.getName();
+			for(File file : fileList) {
+				log.info("--- file name = {}", file.getName());
+				if(file.isDirectory() && file.getName().indexOf("F4D_")>=0) {
+					log.info("**** target file name = {}", file.getName());
+					moveAttribute(groupName, file);
+				}
 			}
 		}
 	}
 	
-	private void moveAttribute(File file) throws IOException {
+	private void moveAttribute(String groupName, File file) throws IOException {
 		String directoryName = file.getName();
-		String subPath = file.getName() + File.separator;
+		String subPath = File.separator + groupName + File.separator + file.getName() + File.separator;
 		
 		File[] childFileList = file.listFiles();
 		for(File childFile : childFileList) {

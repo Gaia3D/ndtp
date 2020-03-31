@@ -7,68 +7,67 @@
 	</div>
 	<div class="dataGroupSummary table-data-group-summary table-font-small yScroll" style="height:100%">
 		<table class="table-word-break" summary="데이터 그룹 목록 테이블">
-		<caption class="hiddenTag"></caption>
+		<caption class="hiddenTag">데이터 그룹 목록</caption>
 			<colgroup>
 				<col class="col-width-12" />
-				<col class="col-width-12" />
+				<col class="col-width-22" />
 				<col />
-				<col class="col-width-17" />
-				<col class="col-width-12" />
-				<col class="col-width-12" />
+				<col class="col-width-27" />
+				<col class="col-width-27" />
 			</colgroup>
-			<thead>
-				<tr>
-					<th>번호</th>
-					<th>공유 유형</th>
-					<th>그룹명</th>
-					<th>데이터 건수</th>
-					<th>표시</th>
-					<th>이동</th>
-				</tr>
-			</thead>
 			<tbody>
 {{#greaterThan dataGroupList.length 0}}
 	{{#each dataGroupList}}
+				<tr class="space-top">
+					<th>번호</th>
+					<th>공유 유형</th>
+					<th colspan="3">그룹명</th>
+				</tr>
 				<tr>
-					<td>{{subtract ../pagination.rowNumber @index}}</td>
+					<td rowspan="3" class="space-bottom">{{subtract ../pagination.rowNumber @index}}</td>
 					<td>
-		{{#ifMatch sharing 'common'}}
-							<span class="legend co mar0">C</span>
-		{{/ifMatch}}
-		{{#ifMatch sharing 'public'}}
-							<span class="legend pu mar0">O</span>
-		{{/ifMatch}}
-		{{#ifMatch sharing 'private'}}
-							<span class="legend pr mar0">P</span>
-		{{/ifMatch}}
-		{{#ifMatch sharing 'group'}}
-							<span class="legend gr mar0">G</span>
-		{{/ifMatch}}
+					{{#ifMatch sharing 'common'}}
+						<span class="legend co mar0">C</span>
+					{{/ifMatch}}
+					{{#ifMatch sharing 'public'}}
+						<span class="legend pu mar0">O</span>
+					{{/ifMatch}}
+					{{#ifMatch sharing 'private'}}
+						<span class="legend pr mar0">P</span>
+					{{/ifMatch}}
+					{{#ifMatch sharing 'group'}}
+						<span class="legend gr mar0">G</span>
+					{{/ifMatch}}
 					</td>
-					<td class="ellipsis alignLeft" style="max-width:100px;">
-		{{#ifMatch dataGroupTarget 'admin'}}
+					<td colspan="3" class="ellipsis alignLeft" style="max-width:200px;">
+					{{#ifMatch dataGroupTarget 'admin'}}
 							[<span style="color:blue">관리자</span>]
-		{{else}}
-			{{#ifMatch userId ../owner}}
-								<%-- [<span>{{userId}}</span>] --%>
-			{{else}}
-								[<span style="color:blue">{{userId}}</span>]
-			{{/ifMatch}}
-		{{/ifMatch}}
+					{{else}}
+						{{#ifMatch userId ../owner}}
+							<%-- [<span>{{userId}}</span>] --%>
+						{{else}}
+							[<span style="color:blue">{{userId}}</span>]
+						{{/ifMatch}}
+					{{/ifMatch}}
 						<span onclick="detailDataGroup('/data-groups/{{dataGroupId}}');" class="link">{{dataGroupName}}</span>
-<%--
-						<a href="/data-groups/{{dataGroupId}}" onclick="detailDataGroup(this.href); return false;">
+						<%-- <a href="/data-groups/{{dataGroupId}}" onclick="detailDataGroup(this.href); return false;">
 							{{dataGroupName}}
-						</a>
---%>
+						</a> --%>
 					</td>
-					<td>{{#formatNumber dataCount}}{{/formatNumber}}</td>
+				</tr>
+				<tr>
+					<th colspan="2">데이터 건수</th>
+					<th>표시</th>
+					<th>이동</th>
+				</tr>
+				<tr class="space-bottom">
+					<td colspan="2">{{#formatNumber dataCount}}{{/formatNumber}}</td>
 					<td>
-		{{#if groupVisible}}
+					{{#if groupVisible}}
 						<button type="button" title="표시" class="showHideButton show" data-group-id="{{dataGroupId}}">표시</button>
-		{{else}}
+					{{else}}
 						<button type="button" title="표시" class="showHideButton hide" data-group-id="{{dataGroupId}}">표시</button>
-		{{/if}}
+					{{/if}}
 					</td>
 					<td>
 						<button type="button" title="바로가기" class="goto" onclick="flyToGroup('{{longitude}}', '{{latitude}}', '{{altitude}}', '2');">바로가기</button>

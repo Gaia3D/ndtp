@@ -2623,3 +2623,12 @@ height: 1px;
 clip: rect(1px, 1px, 1px, 1px);
 clip-path: inset(50%);
 }
+/* 마고 라벨 렌더 캔버스 */
+#objectLabel {
+background-color: transparent;
+position: absolute;
+left: 0px;
+top: 0px;
+/* z-index: 10; */
+pointer-events: none;
+}

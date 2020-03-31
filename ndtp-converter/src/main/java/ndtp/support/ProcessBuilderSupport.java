@@ -19,29 +19,40 @@ public class ProcessBuilderSupport {
 		ProcessBuilder processBuilder = new ProcessBuilder(command);
 		processBuilder.inheritIO();
 		Process process = processBuilder.start();
-//		try(	InputStream inputStream = process.getInputStream();
+		int exitCode = process.waitFor();
+		
+		log.info("@@@@@@@ exitCode = {}", exitCode);
+		log.info("--------------- end ----------------");
+		
+		return exitCode;
+	}
+	
+//	public static int execute(List<String> command) throws Exception {
+//		log.info("@@@@@@@ command = {}", command);
+//		log.info("--------------- start ----------------");
+//		
+//		int exitCode = 0;
+//		
+//		ProcessBuilder processBuilder = new ProcessBuilder(command);
+//		processBuilder.redirectErrorStream(true);
+//		Process process = processBuilder.start();
+//		try (	InputStream inputStream = process.getInputStream();
 //				InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-//				BufferedReader bufferedReader = new BufferedReader(inputStreamReader) ) {
+//				BufferedReader bufferedReader = new BufferedReader(inputStreamReader);) {
 //			
 //			String readLine = null;
 //			while((readLine = bufferedReader.readLine()) != null) {
 //				log.info(readLine);
 //			}
 //			
-//			process.waitFor();
-//			log.info("--------------- end ----------------");
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//			throw new RuntimeException(e.getMessage());
+//			exitCode = process.waitFor();
 //		} catch (Exception e) {
+//			exitCode = 999999;
 //			e.printStackTrace();
-//			throw new RuntimeException(e.getMessage());
 //		}
-		
-		int exitCode = process.waitFor();
-		log.info("@@@@@@@ exitCode = {}", exitCode);
-		log.info("--------------- end ----------------");
-		
-		return exitCode;
-	}
+//		
+//		log.info("@@@@@@@ exitCode = {}", exitCode);
+//		log.info("--------------- end ----------------");
+//		return exitCode;
+//	}
 }

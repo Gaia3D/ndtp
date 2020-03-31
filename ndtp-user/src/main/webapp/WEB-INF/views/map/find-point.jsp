@@ -45,6 +45,7 @@
 	<button class="mapSelectButton" onclick="window.close();">닫기</button>
     <div id="magoContainer" style="height: 699px;">
 	</div>
+	<canvas id="objectLabel"></canvas>
 </body>
 <script type="text/javascript" src="/externlib/jquery-3.3.1/jquery.min.js?cacheVersion=${contentCacheVersion}"></script>
 <script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js?cacheVersion=${contentCacheVersion}"></script>
@@ -107,7 +108,7 @@
 		var f4dController = magoInstance.getF4dController();
 		
 		// TODO : 세슘 MAP 선택 UI 제거,엔진에서 처리로 변경 예정.
-		viewer.baseLayerPicker.destroy();
+		if(viewer.baseLayerPicker) viewer.baseLayerPicker.destroy();
 		
 		// mago3d logo 추가
 		Mago3D.tempCredit(viewer);

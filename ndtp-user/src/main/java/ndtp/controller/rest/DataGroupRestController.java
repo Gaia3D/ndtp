@@ -40,8 +40,8 @@ import ndtp.utils.DateUtils;
 @RestController
 @RequestMapping("/data-groups")
 public class DataGroupRestController {
-	
-	private static final long PAGE_ROWS = 5l;
+
+	private static final long PAGE_ROWS = 4l;
 	private static final long PAGE_LIST_COUNT = 5l;
 	
 	@Autowired

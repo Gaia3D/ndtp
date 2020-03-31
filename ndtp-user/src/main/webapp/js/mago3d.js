@@ -14437,6 +14437,188 @@ var Mago3D = (function()
 {
 'use strict';
 
+/**
+ * color 처리 관련 도메인
+ * @class ColorAPI
+ */
+var ColorAPI = {};
+
+ColorAPI.changeColor = function(api, magoManager) 
+{
+	var projectId = api.getProjectId();
+	var dataKey = api.getDataKey();
+	var objectIds = api.getObjectIds();
+	var property = api.getProperty();
+	var propertyKey = null;
+	var propertyValue = null;
+	if (property !== null && property !== "") 
+	{
+		var properties = property.split("=");
+		propertyKey = properties[0];
+		propertyValue = properties[1];
+	}
+	var colorString = api.getColor();
+	if (colorString === undefined || colorString === 0)
+	{ return; }
+	
+	var color = api.getColor().split(",");
+	var colorsValueCount = color.length;
+	var alpha = 255.0;
+	if (colorsValueCount === 4)
+	{
+		alpha = color[3]/255;
+	}
+	
+	var rgbaColor = [ color[0]/255, color[1]/255, color[2]/255, alpha ] ;
+	
+	var isExistObjectIds = false;
+	if (objectIds !== null && objectIds.length !== 0) 
+	{
+		isExistObjectIds = true;
+	}
+	
+	var changeHistorys = [];
+	if (isExistObjectIds) 
+	{
+		for (var i=0, objectCount = objectIds.length; i<objectCount; i++) 
+		{
+			var changeHistory = new ChangeHistory();
+			changeHistory.setProjectId(projectId);
+			changeHistory.setDataKey(dataKey);
+			changeHistory.setObjectId(objectIds[i]);
+			changeHistory.setProperty(property);
+			changeHistory.setPropertyKey(propertyKey);
+			changeHistory.setPropertyValue(propertyValue);
+			//changeHistory.setRgbColor(rgbColor);
+			changeHistory.setColor(rgbaColor);
+			
+			changeHistorys.push(changeHistory);
+		}
+	}
+	else 
+	{
+		var changeHistory = new ChangeHistory();
+		changeHistory.setProjectId(projectId);
+		changeHistory.setDataKey(dataKey);
+		changeHistory.setObjectId(null);
+		changeHistory.setProperty(property);
+		changeHistory.setPropertyKey(propertyKey);
+		changeHistory.setPropertyValue(propertyValue);
+		//changeHistory.setRgbColor(rgbColor);
+		changeHistory.setColor(rgbaColor);
+		changeHistorys.push(changeHistory);
+	}
+
+	var changeHistory;
+	var historiesCount = changeHistorys.length;
+	for (var i=0; i<historiesCount; i++)
+	{
+		changeHistory = changeHistorys[i];
+		MagoConfig.saveColorHistory(projectId, dataKey, changeHistory.getObjectId(), changeHistory);
+	}
+};
+'use strict';
+
+/**
+ * Draw 관련 API를 담당하는 클래스
+ * 원래는 이렇게 만들려고 한게 아니지만, legacy 파일이랑 이름, function 등이 중복되서 이렇게 만들었음
+ * @class DrawAPI
+ */
+var DrawAPI = {};
+
+DrawAPI.drawAppendData = function(api, magoManager) 
+{
+	magoManager.getObjectIndexFile(api.getProjectId(), api.getProjectDataFolder());
+};
+
+DrawAPI.drawInsertIssueImage = function(api, magoManager) 
+{
+	// pin 을 표시
+	if (magoManager.objMarkerSC === undefined || api.getDrawType() === 0) 
+	{
+		magoManager.objMarkerSC = new ObjectMarker();
+		magoManager.objMarkerSC.geoLocationData.geographicCoord = new GeographicCoord();
+		ManagerUtils.calculateGeoLocationData(parseFloat(api.getLongitude()), parseFloat(api.getLatitude()), parseFloat(api.getElevation()), 
+			undefined, undefined, undefined, magoManager.objMarkerSC.geoLocationData, magoManager);
+	}
+	
+	var objMarker = magoManager.objMarkerManager.newObjectMarker({
+		imageFilePath : 'defaultRed',
+		sizeX         : 64,
+		sizeY         : 64
+	});
+	
+	magoManager.objMarkerSC.issue_id = api.getIssueId();
+	magoManager.objMarkerSC.issue_type = api.getIssueType();
+	magoManager.objMarkerSC.geoLocationData.geographicCoord.setLonLatAlt(parseFloat(api.getLongitude()), parseFloat(api.getLatitude()), parseFloat(api.getElevation()));
+	
+	objMarker.copyFrom(magoManager.objMarkerSC);
+	magoManager.objMarkerSC = undefined;
+};
+'use strict';
+
+/**
+ * 변환 행렬 API
+ * @class LocationAndRotationAPI
+ */
+var LocationAndRotationAPI = {};
+
+LocationAndRotationAPI.changeLocationAndRotation = function(api, magoManager) 
+{
+//	var buildingId = api.getDataKey();
+//	var buildingType = "structure";
+//	var building = this.getNeoBuildingByTypeId(buildingType, buildingId);
+
+	var changeHistory = new ChangeHistory();
+	changeHistory.setProjectId(api.getProjectId());
+	changeHistory.setDataKey(api.getDataKey());
+	changeHistory.setLatitude(parseFloat(api.getLatitude()));
+	changeHistory.setLongitude(parseFloat(api.getLongitude()));
+	changeHistory.setElevation(parseFloat(api.getElevation()));
+	changeHistory.setHeading(parseFloat(api.getHeading()));
+	changeHistory.setPitch(parseFloat(api.getPitch()));
+	changeHistory.setRoll(parseFloat(api.getRoll()));
+	
+	var lat = api.getLatitude();
+	var lon = api.getLongitude();
+	var elevation = api.getElevation();
+	var heading = api.getHeading();
+	var pitch = api.getPitch();
+	var roll = api.getRoll();
+
+
+	magoManager.changeLocationAndRotation(	api.getProjectId(),
+		api.getDataKey(),
+		lat,
+		lon,
+		elevation,
+		heading,
+		pitch,
+		roll,
+		api.getAnimationOption()
+	);
+	
+	// MagoConfig에 저장......?
+};
+'use strict';
+
+/**
+ * lod 처리 관련 도메인
+ * @class LodAPI
+ */
+var LodAPI = {};
+
+LodAPI.changeLod = function(api, magoManager) 
+{
+	if (api.getLod0DistInMeters() !== null && api.getLod0DistInMeters() !== "") { magoManager.magoPolicy.setLod0DistInMeters(api.getLod0DistInMeters()); }
+	if (api.getLod1DistInMeters() !== null && api.getLod1DistInMeters() !== "") { magoManager.magoPolicy.setLod1DistInMeters(api.getLod1DistInMeters()); }
+	if (api.getLod2DistInMeters() !== null && api.getLod2DistInMeters() !== "") { magoManager.magoPolicy.setLod2DistInMeters(api.getLod2DistInMeters()); }
+	if (api.getLod3DistInMeters() !== null && api.getLod3DistInMeters() !== "") { magoManager.magoPolicy.setLod3DistInMeters(api.getLod3DistInMeters()); }
+	if (api.getLod4DistInMeters() !== null && api.getLod4DistInMeters() !== "") { magoManager.magoPolicy.setLod4DistInMeters(api.getLod4DistInMeters()); }
+	if (api.getLod5DistInMeters() !== null && api.getLod5DistInMeters() !== "") { magoManager.magoPolicy.setLod5DistInMeters(api.getLod5DistInMeters()); }
+};
+'use strict';
+
 var Emitter = function () 
 {
 	this._events = {};
@@ -14987,2116 +15169,6 @@ ViewerInit.prototype.setEventHandler = function()
 {
 	return abstract();
 };
-'use strict';
-
-/**
- * color 처리 관련 도메인
- * @class ColorAPI
- */
-var ColorAPI = {};
-
-ColorAPI.changeColor = function(api, magoManager) 
-{
-	var projectId = api.getProjectId();
-	var dataKey = api.getDataKey();
-	var objectIds = api.getObjectIds();
-	var property = api.getProperty();
-	var propertyKey = null;
-	var propertyValue = null;
-	if (property !== null && property !== "") 
-	{
-		var properties = property.split("=");
-		propertyKey = properties[0];
-		propertyValue = properties[1];
-	}
-	var colorString = api.getColor();
-	if (colorString === undefined || colorString === 0)
-	{ return; }
-	
-	var color = api.getColor().split(",");
-	var colorsValueCount = color.length;
-	var alpha = 255.0;
-	if (colorsValueCount === 4)
-	{
-		alpha = color[3]/255;
-	}
-	
-	var rgbaColor = [ color[0]/255, color[1]/255, color[2]/255, alpha ] ;
-	
-	var isExistObjectIds = false;
-	if (objectIds !== null && objectIds.length !== 0) 
-	{
-		isExistObjectIds = true;
-	}
-	
-	var changeHistorys = [];
-	if (isExistObjectIds) 
-	{
-		for (var i=0, objectCount = objectIds.length; i<objectCount; i++) 
-		{
-			var changeHistory = new ChangeHistory();
-			changeHistory.setProjectId(projectId);
-			changeHistory.setDataKey(dataKey);
-			changeHistory.setObjectId(objectIds[i]);
-			changeHistory.setProperty(property);
-			changeHistory.setPropertyKey(propertyKey);
-			changeHistory.setPropertyValue(propertyValue);
-			//changeHistory.setRgbColor(rgbColor);
-			changeHistory.setColor(rgbaColor);
-			
-			changeHistorys.push(changeHistory);
-		}
-	}
-	else 
-	{
-		var changeHistory = new ChangeHistory();
-		changeHistory.setProjectId(projectId);
-		changeHistory.setDataKey(dataKey);
-		changeHistory.setObjectId(null);
-		changeHistory.setProperty(property);
-		changeHistory.setPropertyKey(propertyKey);
-		changeHistory.setPropertyValue(propertyValue);
-		//changeHistory.setRgbColor(rgbColor);
-		changeHistory.setColor(rgbaColor);
-		changeHistorys.push(changeHistory);
-	}
-
-	var changeHistory;
-	var historiesCount = changeHistorys.length;
-	for (var i=0; i<historiesCount; i++)
-	{
-		changeHistory = changeHistorys[i];
-		MagoConfig.saveColorHistory(projectId, dataKey, changeHistory.getObjectId(), changeHistory);
-	}
-};
-'use strict';
-
-/**
- * Draw 관련 API를 담당하는 클래스
- * 원래는 이렇게 만들려고 한게 아니지만, legacy 파일이랑 이름, function 등이 중복되서 이렇게 만들었음
- * @class DrawAPI
- */
-var DrawAPI = {};
-
-DrawAPI.drawAppendData = function(api, magoManager) 
-{
-	magoManager.getObjectIndexFile(api.getProjectId(), api.getProjectDataFolder());
-};
-
-DrawAPI.drawInsertIssueImage = function(api, magoManager) 
-{
-	// pin 을 표시
-	if (magoManager.objMarkerSC === undefined || api.getDrawType() === 0) 
-	{
-		magoManager.objMarkerSC = new ObjectMarker();
-		magoManager.objMarkerSC.geoLocationData.geographicCoord = new GeographicCoord();
-		ManagerUtils.calculateGeoLocationData(parseFloat(api.getLongitude()), parseFloat(api.getLatitude()), parseFloat(api.getElevation()), 
-			undefined, undefined, undefined, magoManager.objMarkerSC.geoLocationData, magoManager);
-	}
-	
-	var objMarker = magoManager.objMarkerManager.newObjectMarker({
-		imageFilePath : 'defaultRed',
-		sizeX         : 64,
-		sizeY         : 64
-	});
-	
-	magoManager.objMarkerSC.issue_id = api.getIssueId();
-	magoManager.objMarkerSC.issue_type = api.getIssueType();
-	magoManager.objMarkerSC.geoLocationData.geographicCoord.setLonLatAlt(parseFloat(api.getLongitude()), parseFloat(api.getLatitude()), parseFloat(api.getElevation()));
-	
-	objMarker.copyFrom(magoManager.objMarkerSC);
-	magoManager.objMarkerSC = undefined;
-};
-'use strict';
-
-/**
- * 변환 행렬 API
- * @class LocationAndRotationAPI
- */
-var LocationAndRotationAPI = {};
-
-LocationAndRotationAPI.changeLocationAndRotation = function(api, magoManager) 
-{
-//	var buildingId = api.getDataKey();
-//	var buildingType = "structure";
-//	var building = this.getNeoBuildingByTypeId(buildingType, buildingId);
-
-	var changeHistory = new ChangeHistory();
-	changeHistory.setProjectId(api.getProjectId());
-	changeHistory.setDataKey(api.getDataKey());
-	changeHistory.setLatitude(parseFloat(api.getLatitude()));
-	changeHistory.setLongitude(parseFloat(api.getLongitude()));
-	changeHistory.setElevation(parseFloat(api.getElevation()));
-	changeHistory.setHeading(parseFloat(api.getHeading()));
-	changeHistory.setPitch(parseFloat(api.getPitch()));
-	changeHistory.setRoll(parseFloat(api.getRoll()));
-	
-	var lat = api.getLatitude();
-	var lon = api.getLongitude();
-	var elevation = api.getElevation();
-	var heading = api.getHeading();
-	var pitch = api.getPitch();
-	var roll = api.getRoll();
-
-
-	magoManager.changeLocationAndRotation(	api.getProjectId(),
-		api.getDataKey(),
-		lat,
-		lon,
-		elevation,
-		heading,
-		pitch,
-		roll,
-		api.getAnimationOption()
-	);
-	
-	// MagoConfig에 저장......?
-};
-'use strict';
-
-/**
- * lod 처리 관련 도메인
- * @class LodAPI
- */
-var LodAPI = {};
-
-LodAPI.changeLod = function(api, magoManager) 
-{
-	if (api.getLod0DistInMeters() !== null && api.getLod0DistInMeters() !== "") { magoManager.magoPolicy.setLod0DistInMeters(api.getLod0DistInMeters()); }
-	if (api.getLod1DistInMeters() !== null && api.getLod1DistInMeters() !== "") { magoManager.magoPolicy.setLod1DistInMeters(api.getLod1DistInMeters()); }
-	if (api.getLod2DistInMeters() !== null && api.getLod2DistInMeters() !== "") { magoManager.magoPolicy.setLod2DistInMeters(api.getLod2DistInMeters()); }
-	if (api.getLod3DistInMeters() !== null && api.getLod3DistInMeters() !== "") { magoManager.magoPolicy.setLod3DistInMeters(api.getLod3DistInMeters()); }
-	if (api.getLod4DistInMeters() !== null && api.getLod4DistInMeters() !== "") { magoManager.magoPolicy.setLod4DistInMeters(api.getLod4DistInMeters()); }
-	if (api.getLod5DistInMeters() !== null && api.getLod5DistInMeters() !== "") { magoManager.magoPolicy.setLod5DistInMeters(api.getLod5DistInMeters()); }
-};
-'use strict';
-
-/**
- * mago3djs API
- * 
- * @alias API
- * @class API
- * 
- * @param {any} apiName api이름
- */
-function API(apiName)
-{
-	if (!(this instanceof API)) 
-	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
-	}
-
-	// mago3d 활성화/비활성화 여부
-	this.magoEnable = true;
-	// return
-	this.returnable = false;
-
-	// api 이름
-	this.apiName = apiName;
-	
-	// project id
-	this.projectId = null;
-	this.projectDataFolder = null;
-	// objectIds
-	this.objectIds = null;
-	// data_key
-	this.dataKey = null;
-	// issueId
-	this.issueId = null;
-	// issueType
-	this.issueType = null;
-	// drawType 이미지를 그리는 유형 0 : DB, 1 : 이슈등록
-	this.drawType = 0;
-
-	// 위도
-	this.latitude = 0;
-	// 경도
-	this.longitude = 0;
-	// 높이
-	this.elevation = 0;
-	// heading
-	this.heading = 0;
-	// pitch
-	this.pitch = 0;
-	// roll
-	this.roll = 0;
-	// duration
-	this.duration = 0;
-
-	// 속성
-	this.property = null;
-	// 색깔
-	this.color = 0;
-	// structs = MSP, outfitting = MOP
-	this.blockType = null;
-	// outfitting 표시/비표시
-	this.showOutFitting = false;
-	// label 표시/비표시
-	this.showLabelInfo = true;
-	// origin 표시/비표시
-	this.showOrigin = false;
-	// boundingBox 표시/비표시
-	this.showBoundingBox = false;
-	// 그림자 표시/비표시
-	this.showShadow = false;
-	// frustum culling 가시 거리(M단위)
-	this.frustumFarDistance = 0;
-	// move mode 
-	this.objectMoveMode = CODE.moveMode.NONE;
-	// 이슈 등록 표시
-	this.issueInsertEnable = false;
-	// object 정보 표시
-	this.objectInfoViewEnable = false;
-	// 이슈 목록 표시
-	this.nearGeoIssueListEnable = false;
-	// occlusion culling
-	this.occlusionCullingEnable = false;
-	//
-	this.insertIssueState = 0;
-	
-	// LOD1
-	this.lod0DistInMeters = null;
-	this.lod1DistInMeters = null;
-	this.lod2DistInMeters = null;
-	this.lod3DistInMeters = null;
-	this.lod4DistInMeters = null;
-	this.lod5DistInMeters = null;
-	
-	// Lighting
-	this.ambientReflectionCoef = null;
-	this.diffuseReflectionCoef = null;
-	this.specularReflectionCoef = null;
-	this.ambientColor = null;
-	this.specularColor = null;
-	
-	this.ssaoRadius = null;
-	//
-	this.FPVMode = false;
-
-	// input x, y, z
-	this.inputPoint = null;
-	// result x, y, z
-	this.resultPoint = null;
-	
-	// General magoMode.
-	this.magoMode = CODE.magoMode.NORMAL;
-
-	//position unit
-	this.unit = CODE.units.DEGREE;
-
-	//for staticModel instantiate
-	this.instantiateObj = null;
-
-	//for staticModel add
-	this.staticModelAttributeObj = null;
-
-	//animation option. 
-	this.animationOption = null;
-
-	/**
-	 * @type {trackOption}
-	 */
-	this.trackOption = null;
-
-	/**
-	 * @type {nodeAttribute}
-	 */
-	this.nodeAttribute = null;
-};
-
-API.prototype.getMagoEnable = function() 
-{
-	return this.magoEnable;
-};
-API.prototype.setMagoEnable = function(magoEnable) 
-{
-	this.magoEnable = magoEnable;
-};
-
-API.prototype.getReturnable = function()
-{
-	return this.returnable;
-};
-API.prototype.setReturnable = function(returnable)
-{
-	this.returnable = returnable;
-};
-
-API.prototype.getAPIName = function() 
-{
-	return this.apiName;
-};
-
-API.prototype.getProjectId = function() 
-{
-	return this.projectId;
-};
-API.prototype.setProjectId = function(projectId) 
-{
-	this.projectId = projectId;
-};
-
-API.prototype.getProjectDataFolder = function() 
-{
-	return this.projectDataFolder;
-};
-API.prototype.setProjectDataFolder = function(projectDataFolder) 
-{
-	this.projectDataFolder = projectDataFolder;
-};
-
-API.prototype.getObjectIds = function() 
-{
-	return this.objectIds;
-};
-API.prototype.setObjectIds = function(objectIds) 
-{
-	this.objectIds = objectIds;
-};
-
-API.prototype.getIssueId = function() 
-{
-	return this.issueId;
-};
-API.prototype.setIssueId = function(issueId) 
-{
-	this.issueId = issueId;
-};
-API.prototype.getIssueType = function() 
-{
-	return this.issueType;
-};
-API.prototype.setIssueType = function(issueType) 
-{
-	this.issueId = issueType;
-};
-
-API.prototype.getDataKey = function() 
-{
-	return this.dataKey;
-};
-API.prototype.setDataKey = function(dataKey) 
-{
-	this.dataKey = dataKey;
-};
-
-API.prototype.getLatitude = function() 
-{
-	return this.latitude;
-};
-API.prototype.setLatitude = function(latitude) 
-{
-	this.latitude = latitude;
-};
-
-API.prototype.getLongitude = function() 
-{
-	return this.longitude;
-};
-API.prototype.setLongitude = function(longitude) 
-{
-	this.longitude = longitude;
-};
-
-API.prototype.getElevation = function() 
-{
-	return this.elevation;
-};
-API.prototype.setElevation = function(elevation) 
-{
-	this.elevation = elevation;
-};
-
-API.prototype.getHeading = function() 
-{
-	return this.heading;
-};
-API.prototype.setHeading = function(heading) 
-{
-	this.heading = heading;
-};
-
-API.prototype.getPitch = function() 
-{
-	return this.pitch;
-};
-API.prototype.setPitch = function(pitch) 
-{
-	this.pitch = pitch;
-};
-
-API.prototype.getRoll = function() 
-{
-	return this.roll;
-};
-API.prototype.setRoll = function(roll) 
-{
-	this.roll = roll;
-};
-
-API.prototype.getProperty = function() 
-{
-	return this.property;
-};
-API.prototype.setProperty = function(property) 
-{
-	this.property = property;
-};
-
-API.prototype.getColor = function() 
-{
-	return this.color;
-};
-API.prototype.setColor = function(color) 
-{
-	this.color = color;
-};
-
-API.prototype.getBlockType = function() 
-{
-	return this.blockType;
-};
-API.prototype.setBlockType = function(blockType) 
-{
-	this.blockType = blockType;
-};
-
-API.prototype.getShowOutFitting = function() 
-{
-	return this.showOutFitting;
-};
-API.prototype.setShowOutFitting = function(showOutFitting) 
-{
-	this.showOutFitting = showOutFitting;
-};
-
-
-API.prototype.getShowLabelInfo = function() 
-{
-	return this.showLabelInfo;
-};
-API.prototype.setShowLabelInfo = function(showLabelInfo) 
-{
-	this.showLabelInfo = showLabelInfo;
-};
-
-API.prototype.getShowOrigin = function()
-{
-	return this.showOrigin;
-};
-API.prototype.setShowOrigin = function(showOrigin)
-{
-	this.showOrigin = showOrigin;
-};
-
-API.prototype.getShowBoundingBox = function() 
-{
-	return this.showBoundingBox;
-};
-API.prototype.setShowBoundingBox = function(showBoundingBox) 
-{
-	this.showBoundingBox = showBoundingBox;
-};
-
-API.prototype.getShowShadow = function() 
-{
-	return this.showShadow;
-};
-API.prototype.setShowShadow = function(showShadow) 
-{
-	this.showShadow = showShadow;
-};
-
-API.prototype.getFrustumFarDistance = function() 
-{
-	return this.frustumFarDistance;
-};
-API.prototype.setFrustumFarDistance = function(frustumFarDistance) 
-{
-	this.frustumFarDistance = frustumFarDistance;
-};
-
-API.prototype.getObjectMoveMode = function() 
-{
-	return this.objectMoveMode;
-};
-API.prototype.setObjectMoveMode = function(objectMoveMode) 
-{
-	this.objectMoveMode = objectMoveMode;
-};
-
-API.prototype.getIssueInsertEnable = function() 
-{
-	return this.issueInsertEnable;
-};
-API.prototype.setIssueInsertEnable = function(issueInsertEnable) 
-{
-	this.issueInsertEnable = issueInsertEnable;
-};
-API.prototype.getObjectInfoViewEnable = function() 
-{
-	return this.objectInfoViewEnable;
-};
-API.prototype.setObjectInfoViewEnable = function(objectInfoViewEnable) 
-{
-	this.objectInfoViewEnable = objectInfoViewEnable;
-};
-API.prototype.getOcclusionCullingEnable = function() 
-{
-	return this.occlusionCullingEnable;
-};
-API.prototype.setOcclusionCullingEnable = function(occlusionCullingEnable) 
-{
-	this.occlusionCullingEnable = occlusionCullingEnable;
-};
-API.prototype.getNearGeoIssueListEnable = function() 
-{
-	return this.nearGeoIssueListEnable;
-};
-API.prototype.setNearGeoIssueListEnable = function(nearGeoIssueListEnable) 
-{
-	this.nearGeoIssueListEnable = nearGeoIssueListEnable;
-};
-
-API.prototype.getInsertIssueState = function() 
-{
-	return this.insertIssueState;
-};
-API.prototype.setInsertIssueState = function(insertIssueState) 
-{
-	this.insertIssueState = insertIssueState;
-};
-
-API.prototype.getDrawType = function() 
-{
-	return this.drawType;
-};
-API.prototype.setDrawType = function(drawType) 
-{
-	this.drawType = drawType;
-};
-
-API.prototype.getLod0DistInMeters = function() 
-{
-	return this.lod0DistInMeters;
-};
-API.prototype.setLod0DistInMeters = function(lod0DistInMeters) 
-{
-	this.lod0DistInMeters = lod0DistInMeters;
-};
-API.prototype.getLod1DistInMeters = function() 
-{
-	return this.lod1DistInMeters;
-};
-API.prototype.setLod1DistInMeters = function(lod1DistInMeters) 
-{
-	this.lod1DistInMeters = lod1DistInMeters;
-};
-API.prototype.getLod2DistInMeters = function() 
-{
-	return this.lod2DistInMeters;
-};
-API.prototype.setLod2DistInMeters = function(lod2DistInMeters) 
-{
-	this.lod2DistInMeters = lod2DistInMeters;
-};
-API.prototype.getLod3DistInMeters = function() 
-{
-	return this.lod3DistInMeters;
-};
-API.prototype.setLod3DistInMeters = function(lod3DistInMeters) 
-{
-	this.lod3DistInMeters = lod3DistInMeters;
-};
-API.prototype.getLod4DistInMeters = function() 
-{
-	return this.lod4DistInMeters;
-};
-API.prototype.setLod4DistInMeters = function(lod4DistInMeters) 
-{
-	this.lod4DistInMeters = lod4DistInMeters;
-};
-API.prototype.getLod5DistInMeters = function() 
-{
-	return this.lod5DistInMeters;
-};
-API.prototype.setLod5DistInMeters = function(lod5DistInMeters) 
-{
-	this.lod5DistInMeters = lod5DistInMeters;
-};
-
-API.prototype.getAmbientReflectionCoef = function() 
-{
-	return this.ambientReflectionCoef;
-};
-API.prototype.setAmbientReflectionCoef = function(ambientReflectionCoef) 
-{
-	this.ambientReflectionCoef = ambientReflectionCoef;
-};
-API.prototype.getDiffuseReflectionCoef = function() 
-{
-	return this.diffuseReflectionCoef;
-};
-API.prototype.setDiffuseReflectionCoef = function(diffuseReflectionCoef) 
-{
-	this.diffuseReflectionCoef = diffuseReflectionCoef;
-};
-API.prototype.getSpecularReflectionCoef = function() 
-{
-	return this.specularReflectionCoef;
-};
-API.prototype.setSpecularReflectionCoef = function(specularReflectionCoef) 
-{
-	this.specularReflectionCoef = specularReflectionCoef;
-};
-API.prototype.getAmbientColor = function() 
-{
-	return this.ambientColor;
-};
-API.prototype.setAmbientColor = function(ambientColor) 
-{
-	this.ambientColor = ambientColor;
-};
-API.prototype.getSpecularColor = function() 
-{
-	return this.specularColor;
-};
-API.prototype.setSpecularColor = function(specularColor) 
-{
-	this.specularColor = specularColor;
-};
-API.prototype.getSsaoRadius = function() 
-{
-	return this.ssaoRadius;
-};
-API.prototype.setSsaoRadius = function(ssaoRadius) 
-{
-	this.ssaoRadius = ssaoRadius;
-};
-API.prototype.getFPVMode = function()
-{
-	return this.FPVMode;
-};
-API.prototype.setFPVMode = function(value)
-{
-	this.FPVMode = value;
-};
-API.prototype.getMagoMode = function()
-{
-	return this.magoMode;
-};
-API.prototype.setMagoMode = function(value)
-{
-	this.magoMode = value;
-};
-API.prototype.getDuration = function()
-{
-	return this.duration;
-};
-API.prototype.setDuration = function(duration)
-{
-	this.duration = duration;
-};
-
-API.prototype.getInputPoint = function()
-{
-	return this.inputPoint;
-};
-API.prototype.setInputPoint = function(inputPoint)
-{
-	this.inputPoint = inputPoint;
-};
-
-API.prototype.getResultPoint = function()
-{
-	return this.resultPoint;
-};
-API.prototype.setResultPoint = function(resultPoint)
-{
-	this.resultPoint = resultPoint;
-};
-
-API.prototype.getUnit = function()
-{
-	return this.unit;
-};
-API.prototype.setUnit = function(unit)
-{
-	if (unit !== undefined)
-	{
-		if (isNaN(unit) || unit > CODE.units.RADIAN)
-		{
-			throw new Error('unit parameter needs CODE.units');
-		}
-		this.unit = unit;
-	}
-};
-
-API.prototype.getInstantiateObj = function()
-{
-	return this.instantiateObj;
-};
-API.prototype.setInstantiateObj = function(instantiateObj)
-{
-	this.instantiateObj = instantiateObj;
-};
-
-API.prototype.getStaticModelAttributeObj = function()
-{
-	return this.staticModelAttributeObj;
-};
-API.prototype.setStaticModelAttributeObj = function(staticModelAttributeObj)
-{
-	this.staticModelAttributeObj = staticModelAttributeObj;
-};
-
-API.prototype.getAnimationOption = function()
-{
-	return this.animationOption;
-};
-API.prototype.setAnimationOption = function(animationOption)
-{
-	this.animationOption = animationOption;
-};
-
-API.prototype.getTrackOption = function()
-{
-	return this.trackOption;
-};
-API.prototype.setTrackOption = function(trackOption)
-{
-	this.trackOption = trackOption;
-};
-
-API.prototype.getNodeAttribute = function()
-{
-	return this.nodeAttribute;
-};
-API.prototype.setNodeAttribute = function(nodeAttribute)
-{
-	this.nodeAttribute = nodeAttribute;
-};
-
-'use strict';
-
-/**
- * 사용자가 변경한 moving, color, rotation 등 이력 정보를 위한 domain
- * @class Policy
- */
-var ChangeHistory = function() 
-{
-	if (!(this instanceof ChangeHistory)) 
-	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
-	}
-
-	this.moveHistory = false;
-	this.colorHistory = false;
-	this.rotationHistory = false;
-	
-	// move mode. ALL : 0 , OBJECT : 1, NONE : 2
-	this.objectMoveMode = null;
-	
-	// project id
-	this.projectId = null;
-	// project data folder
-	this.projectDataFolder = null;
-	// data_key
-	this.dataKey = null;	
-	// objectId
-	this.objectId = null;
-	// objectIndexOrder
-	this.objectIndexOrder = 0;
-	
-	// referenceObject aditional movement.
-	this.refObjectAditionalMove;
-	this.refObjectAditionalMoveRelToBuilding;
-	
-	// 위도
-	this.latitude = 0.0;
-	// 경도
-	this.longitude = 0.0;
-	// 높이
-	this.elevation = 0.0;
-	// heading
-	this.heading = 0.0;
-	// pitch
-	this.pitch = 0.0;
-	// roll
-	this.roll = 0.0;
-	// duration
-	this.duration = 0;
-	// 색깔
-	this.color = 0;
-	// color rgb
-	this.rgbColor = [];
-	// 속성
-	this.property = null;
-	this.propertyKey = null;
-	this.propertyValue = null;
-};
-
-ChangeHistory.prototype.getReferenceObjectAditionalMovement = function() 
-{
-	if (this.refObjectAditionalMove === undefined)
-	{ this.refObjectAditionalMove = new Point3D(); }
-	
-	return this.refObjectAditionalMove;
-};
-
-ChangeHistory.prototype.getReferenceObjectAditionalMovementRelToBuilding = function() 
-{
-	if (this.refObjectAditionalMoveRelToBuilding === undefined)
-	{ this.refObjectAditionalMoveRelToBuilding = new Point3D(); }
-	
-	return this.refObjectAditionalMoveRelToBuilding;
-};
-
-ChangeHistory.prototype.getProjectId = function() 
-{
-	return this.projectId;
-};
-ChangeHistory.prototype.setProjectId = function(projectId) 
-{
-	this.projectId = projectId;
-};
-
-ChangeHistory.prototype.getProjectDataFolder = function() 
-{
-	return this.projectDataFolder;
-};
-ChangeHistory.prototype.setProjectDataFolder = function(projectDataFolder) 
-{
-	this.projectDataFolder = projectDataFolder;
-};
-
-ChangeHistory.prototype.getDataKey = function() 
-{
-	return this.dataKey;
-};
-ChangeHistory.prototype.setDataKey = function(dataKey) 
-{
-	this.dataKey = dataKey;
-};
-
-ChangeHistory.prototype.getObjectId = function() 
-{
-	return this.objectId;
-};
-ChangeHistory.prototype.setObjectId = function(objectId) 
-{
-	this.objectId = objectId;
-};
-
-ChangeHistory.prototype.getObjectIndexOrder = function() 
-{
-	return this.objectIndexOrder;
-};
-ChangeHistory.prototype.setObjectIndexOrder = function(objectIndexOrder) 
-{
-	this.objectIndexOrder = objectIndexOrder;
-};
-
-ChangeHistory.prototype.getLatitude = function() 
-{
-	return this.latitude;
-};
-ChangeHistory.prototype.setLatitude = function(latitude) 
-{
-	this.latitude = latitude;
-};
-
-ChangeHistory.prototype.getLongitude = function() 
-{
-	return this.longitude;
-};
-ChangeHistory.prototype.setLongitude = function(longitude) 
-{
-	this.longitude = longitude;
-};
-
-ChangeHistory.prototype.getElevation = function() 
-{
-	return this.elevation;
-};
-ChangeHistory.prototype.setElevation = function(elevation) 
-{
-	this.elevation = elevation;
-};
-
-ChangeHistory.prototype.getHeading = function() 
-{
-	return this.heading;
-};
-ChangeHistory.prototype.setHeading = function(heading) 
-{
-	this.heading = heading;
-};
-
-ChangeHistory.prototype.getPitch = function() 
-{
-	return this.pitch;
-};
-ChangeHistory.prototype.setPitch = function(pitch) 
-{
-	this.pitch = pitch;
-};
-
-ChangeHistory.prototype.getRoll = function() 
-{
-	return this.roll;
-};
-ChangeHistory.prototype.setRoll = function(roll) 
-{
-	this.roll = roll;
-};
-
-ChangeHistory.prototype.getColor = function() 
-{
-	return this.color;
-};
-ChangeHistory.prototype.setColor = function(color) 
-{
-	this.color = color;
-};
-ChangeHistory.prototype.getRgbColor = function() 
-{
-	return this.rgbColor;
-};
-ChangeHistory.prototype.setRgbColor = function(rgbColor) 
-{
-	this.rgbColor = rgbColor;
-};
-
-ChangeHistory.prototype.getProperty = function() 
-{
-	return this.property;
-};
-ChangeHistory.prototype.setProperty = function(property) 
-{
-	this.property = property;
-};
-ChangeHistory.prototype.getPropertyKey = function() 
-{
-	return this.propertyKey;
-};
-ChangeHistory.prototype.setPropertyKey = function(propertyKey) 
-{
-	this.propertyKey = propertyKey;
-};
-ChangeHistory.prototype.getPropertyValue = function() 
-{
-	return this.propertyValue;
-};
-ChangeHistory.prototype.setPropertyValue = function(propertyValue) 
-{
-	this.propertyValue = propertyValue;
-};
-
-ChangeHistory.prototype.getDuration = function()
-{
-	return this.duration;
-};
-ChangeHistory.prototype.setDuration = function(duration)
-{
-	this.duration = duration;
-};
-
-ChangeHistory.prototype.getObjectMoveMode = function() 
-{
-	return this.objectMoveMode;
-};
-ChangeHistory.prototype.setObjectMoveMode = function(objectMoveMode) 
-{
-	this.objectMoveMode = objectMoveMode;
-};
-"use strict";
-
-var CODE = {};
-
-// magoManager가 다 로딩 되지 않은 상태에서 화면으로 부터 호출 되는 것을 막기 위해
-CODE.magoManagerState = {
-	"INIT"   	: 0,
-	"STARTED"	: 1,
-	"READY"   : 2
-};
-
-//0 = no started to load. 1 = started loading. 2 = finished loading. 3 = parse started. 4 = parse finished.
-CODE.fileLoadState = {
-	"READY"            : 0,
-	"LOADING_STARTED"  : 1,
-	"LOADING_FINISHED" : 2,
-	"PARSE_STARTED"    : 3,
-	"PARSE_FINISHED"   : 4,
-	"IN_QUEUE"         : 5,
-	"IN_PARSE_QUEUE"   : 6,
-	"BINDING_STARTED"  : 7,
-	"BINDING_FINISHED" : 8,
-	"LOAD_FAILED"      : 9
-};
-
-CODE.moveMode = {
-	"ALL"              : "0",
-	"OBJECT"           : "1",
-	"GEOGRAPHICPOINTS" : "2",
-	"NONE"             : "3"
-};
-
-CODE.magoMode = {
-	"NORMAL"  : 0,
-	"DRAWING" : 1
-};
-
-CODE.magoCurrentProcess = {
-	"Unknown"                    : 0,
-	"DepthRendering"             : 1,
-	"ColorRendering"             : 2,
-	"ColorCodeRendering"         : 3,
-	"DepthShadowRendering"       : 4,
-	"SilhouetteDepthRendering"   : 5,
-	"StencilSilhouetteRendering" : 6
-};
-
-CODE.modelerMode = {
-	"INACTIVE"                 : 0,
-	"DRAWING_POLYLINE"         : 1,
-	"DRAWING_PLANEGRID"        : 2,
-	"DRAWING_GEOGRAPHICPOINTS" : 3,
-	"DRAWING_EXCAVATIONPOINTS" : 4,
-	"DRAWING_TUNNELPOINTS"     : 5,
-	"DRAWING_BSPLINE"          : 6,
-	"DRAWING_BASICFACTORY"     : 7,
-	"DRAWING_STATICGEOMETRY"   : 8,
-	"DRAWING_PIPE"             : 9,
-	"DRAWING_SPHERE"           : 10,
-	"DRAWING_BOX"              : 11,
-	"DRAWING_CUTTINGPLANE"     : 12,
-	"DRAWING_CLIPPINGBOX"      : 13,
-	"DRAWING_CONCENTRICTUBES"  : 14,
-	"DRAWING_TUBE"             : 15,
-	"DRAWING_FREECONTOURWALL"  : 16,
-	"DRAWING_CYLYNDER"         : 17
-};
-
-CODE.boxFace = {
-	"UNKNOWN" : 0,
-	"LEFT"    : 1,
-	"RIGHT"   : 2,
-	"FRONT"   : 3,
-	"REAR"    : 4,
-	"TOP"     : 5,
-	"BOTTOM"  : 6
-};
-
-CODE.modelerDrawingState = {
-	"NO_STARTED" : 0,
-	"STARTED"    : 1
-};
-
-CODE.modelerDrawingElement = {
-	"NOTHING"          : 0,
-	"POINTS"           : 1,
-	"LINES"            : 2,
-	"POLYLINES"        : 3,
-	"GEOGRAPHICPOINTS" : 4,
-};
-
-CODE.units = {
-	"METRE"  : 0,
-	"DEGREE" : 1,
-	"RADIAN" : 2
-};
-
-
-CODE.trackMode = {
-	"TRACKING" : 0,
-	"DRIVER"   : 1
-};
-
-CODE.imageryType = {
-	"UNKNOWN"      : 0,
-	"CRS84"        : 1,
-	"WEB_MERCATOR" : 2
-};
-
-CODE.animationType = {
-	"UNKNOWN"         : 0,
-	"REALTIME_POINTS" : 1,
-	"PATH"            : 2
-};
-
-CODE.relativePosition2D = {
-	"UNKNOWN"    : 0,
-	"LEFT"       : 1,
-	"RIGHT"      : 2,
-	"COINCIDENT" : 3
-};
-
-CODE.PROJECT_ID_PREFIX = "projectId_";
-CODE.PROJECT_DATA_FOLDER_PREFIX = "projectDataFolder_";
-
-'use strict';
-
-/**
- * 상수 설정
- * @class Constant
- */
-var Constant = {};
-
-Constant.CESIUM = "cesium";
-Constant.WORLDWIND = "worldwind";
-Constant.MAGOWORLD = "magoworld";
-Constant.OBJECT_INDEX_FILE = "/objectIndexFile.ihe";
-Constant.TILE_INDEX_FILE = "/smartTile_f4d_indexFile.sii";
-Constant.CACHE_VERSION = "?cache_version=";
-Constant.SIMPLE_BUILDING_TEXTURE3x3_BMP = "/SimpleBuildingTexture3x3.bmp";
-Constant.RESULT_XDO2F4D = "/Result_xdo2f4d/Images/";
-Constant.RESULT_XDO2F4D_TERRAINTILES = "/Result_xdo2f4d/F4D_TerrainTiles/";
-Constant.RESULT_XDO2F4D_TERRAINTILEFILE_TXT = "/Result_xdo2f4d/f4dTerranTileFile.txt";
-
-Constant.INTERSECTION_OUTSIDE = 0;
-Constant.INTERSECTION_INTERSECT= 1;
-Constant.INTERSECTION_INSIDE = 2;
-Constant.INTERSECTION_POINT_A = 3;
-Constant.INTERSECTION_POINT_B = 4;
-
-'use strict';
-
-/**
- * mago3D 전체 환경 설정을 관리
- * @class MagoConfig
- */
-var MagoConfig = {};
-
-MagoConfig.setContainerId = function(containerId) 
-{
-	this.containerId = containerId;
-};
-
-MagoConfig.getContainerId = function() 
-{
-	return this.containerId;
-};
-
-MagoConfig.getPolicy = function() 
-{
-	return this.serverPolicy;
-};
-
-MagoConfig.getGeoserver = function() 
-{
-	return this.geoserver;
-};
-
-MagoConfig.getData = function(key) 
-{
-	return this.dataObject[key];
-};
-
-MagoConfig.isDataExist = function(key) 
-{
-	return this.dataObject.hasOwnProperty(key);
-};
-
-MagoConfig.deleteData = function(key) 
-{
-	return delete this.dataObject[key];
-};
-
-/**
- * data 를 map에 저장
- * @param key map에 저장될 key
- * @param value map에 저장될 value
- */
-MagoConfig.setData = function(key, value) 
-{
-	if (!this.isDataExist(key)) 
-	{
-		this.dataObject[key] = value;
-	}
-};
-
-/**
- * F4D Converter 실행 결과물이 저장된 project data folder 명을 획득
- * @param projectDataFolder data folder
- */
-MagoConfig.getProjectDataFolder = function(projectDataFolder) 
-{
-	var key = CODE.PROJECT_DATA_FOLDER_PREFIX + projectDataFolder;
-	return this.dataObject[key];
-};
-
-/**
- * project map에 data folder명의 존재 유무를 검사
- * @param projectDataFolder
- */
-MagoConfig.isProjectDataFolderExist = function(projectDataFolder) 
-{
-	var key = CODE.PROJECT_DATA_FOLDER_PREFIX + projectDataFolder;
-	return this.dataObject.hasOwnProperty(key);
-};
-
-/**
- * project data folder명을 map에서 삭제
- * @param projectDataFolder
- */
-MagoConfig.deleteProjectDataFolder = function(projectDataFolder) 
-{
-	var key = CODE.PROJECT_DATA_FOLDER_PREFIX + projectDataFolder;
-	return delete this.dataObject[key];
-};
-
-/**
- * project data folder명을 Object에서 삭제
- * @param projectDataFolder Object에 저장될 key
- * @param value Object에 저장될 value
- */
-MagoConfig.setProjectDataFolder = function(projectDataFolder, value) 
-{
-	var key = CODE.PROJECT_DATA_FOLDER_PREFIX + projectDataFolder;
-	if (!this.isProjectDataFolderExist(key))
-	{
-		this.dataObject[key] = value;
-	}
-};
-
-/**
- * 환경설정 초기화
- * @param serverPolicy mago3d policy(json)
- * @param projectIdArray data 정보를 map 저장할 key name
- * @param projectDataArray data 정보(json)
- */
-MagoConfig.init = function(serverPolicy, projectIdArray, projectDataArray) 
-{
-	if (!serverPolicy || !serverPolicy instanceof Object) 
-	{
-		throw new Error('geopolicy is required object.');
-	}
-	this.dataObject = {};
-	
-	this.selectHistoryObject = {};
-	this.movingHistoryObject = {};
-	this.colorHistoryObject = {};
-	this.locationAndRotationHistoryObject = {};
-
-	this.serverPolicy = serverPolicy;
-	this.twoDimension = false;
-	if (!this.serverPolicy.basicGlobe) { this.serverPolicy.basicGlobe = Constant.CESIUM; }
-
-	this.serverPolicy.online = true;
-
-	if (this.serverPolicy.geoserverEnable) 
-	{
-		this.geoserver = new GeoServer();
-
-		var info = {
-			"wmsVersion"    : this.serverPolicy.geoserverWmsVersion,
-			"dataUrl"       : this.serverPolicy.geoserverDataUrl,
-			"dataWorkspace" : this.serverPolicy.geoserverDataWorkspace,
-			"dataStore"     : this.serverPolicy.geoserverDataStore,
-			"user"          : this.serverPolicy.geoserverUser,
-			"password"      : this.serverPolicy.geoserverPassword
-		};
-		this.geoserver.setServerInfo(info);
-	}
-
-
-	if (projectIdArray && projectIdArray.length > 0) 
-	{
-		for (var i=0; i<projectIdArray.length; i++) 
-		{
-			if (!this.isDataExist(CODE.PROJECT_ID_PREFIX + projectIdArray[i])) 
-			{
-				this.setData(CODE.PROJECT_ID_PREFIX + projectIdArray[i], projectDataArray[i]);
-				this.setProjectDataFolder(CODE.PROJECT_DATA_FOLDER_PREFIX + projectDataArray[i].data_key, projectDataArray[i].data_key);
-			}
-		}
-	}
-};
-
-/**
- * 모든 데이터를 삭제함
- */
-MagoConfig.clearAllData = function() 
-{
-	this.dataObject = {};
-};
-
-/**
- * 모든 선택 히스토리 삭제
- */
-MagoConfig.clearSelectHistory = function() 
-{
-	this.selectHistoryObject = {};
-};
-
-/**
- * 모든 object 선택 내용 이력을 취득
- */
-MagoConfig.getAllSelectHistory = function()
-{
-	return this.selectHistoryObject;
-};
-
-/**
- * project 별 해당 키에 해당하는 모든 object 선택 내용 이력을 취득
- */
-MagoConfig.getSelectHistoryObjects = function(projectId, dataKey)
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.selectHistoryObject[projectId];
-	if (projectIdObject === undefined) { return undefined; }
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	return dataKeyObject;
-};
-
-/**
- * object 선택 내용 이력을 취득
- */
-MagoConfig.getSelectHistoryObject = function(projectId, dataKey, objectIndexOrder)
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.selectHistoryObject[projectId];
-	if (projectIdObject === undefined) { return undefined; }
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	if (dataKeyObject === undefined) { return undefined; }
-	// objectIndexOrder 를 저장
-	return dataKeyObject[objectIndexOrder];
-};
-
-/**
- * object 선택 내용을 저장
- */
-MagoConfig.saveSelectHistory = function(projectId, dataKey, objectIndexOrder, changeHistory) 
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.selectHistoryObject.get(projectId);
-	if (projectIdObject === undefined)
-	{
-		projectIdObject = {};
-		this.selectHistoryObject[projectId] = projectIdObject;
-	}
-	
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	if (dataKeyObject === undefined)
-	{
-		dataKeyObject = {};
-		projectIdObject[dataKey] = dataKeyObject;
-	}
-	
-	// objectIndexOrder 를 저장
-	dataKeyObject[objectIndexOrder] = changeHistory;
-};
-
-/**
- * object 선택 내용을 삭제
- */
-MagoConfig.deleteSelectHistoryObject = function(projectId, dataKey, objectIndexOrder)
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.selectHistoryObject[projectId];
-	if (projectIdObject === undefined) { return undefined; }
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	if (dataKeyObject === undefined) { return undefined; }
-	// objectIndexOrder 를 저장
-	return delete dataKeyObject[objectIndexOrder];
-};
-
-/**
- * 모든 이동 히스토리 삭제
- */
-MagoConfig.clearMovingHistory = function() 
-{
-	this.movingHistoryObject = {};
-};
-
-/**
- * 모든 object 선택 내용 이력을 취득
- */
-MagoConfig.getAllMovingHistory = function()
-{
-	return this.movingHistoryObject;
-};
-
-/**
- * project별 입력키 값과 일치하는 object 이동 내용 이력을 취득
- */
-MagoConfig.getMovingHistoryObjects = function(projectId, dataKey)
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.movingHistoryObject[projectId];
-	if (projectIdObject === undefined) { return undefined; }
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	return dataKeyObject;
-};
-
-/**
- * object 이동 내용 이력을 취득
- */
-MagoConfig.getMovingHistoryObject = function(projectId, dataKey, objectIndexOrder)
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.movingHistoryObject[projectId];
-	if (projectIdObject === undefined) { return undefined; }
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	if (dataKeyObject === undefined) { return undefined; }
-	// objectIndexOrder 를 저장
-	return dataKeyObject[objectIndexOrder];
-};
-
-/**
- * object 이동 내용을 저장
- */
-MagoConfig.saveMovingHistory = function(projectId, dataKey, objectIndexOrder, changeHistory) 
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.movingHistoryObject[projectId];
-	if (projectIdObject === undefined)
-	{
-		projectIdObject = {};
-		this.movingHistoryObject[projectId] = projectIdObject;
-	}
-	
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	if (dataKeyObject === undefined)
-	{
-		dataKeyObject = {};
-		projectIdObject[dataKey] = dataKeyObject;
-	}
-	
-	// objectIndexOrder 를 저장
-	dataKeyObject[objectIndexOrder] = changeHistory;
-};
-
-/**
- * object 이동 내용을 삭제
- */
-MagoConfig.deleteMovingHistoryObject = function(projectId, dataKey, objectIndexOrder)
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.movingHistoryObject[projectId];
-	if (projectIdObject === undefined) { return undefined; }
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	if (dataKeyObject === undefined) { return undefined; }
-	// objectIndexOrder 를 저장
-	return delete dataKeyObject[objectIndexOrder];
-};
-
-/**
- * 모든 색깔 변경 이력을 획득
- */
-MagoConfig.getAllColorHistory = function() 
-{
-	return this.colorHistoryObject;
-};
-
-/**
- * 모든 색깔변경 히스토리 삭제
- */
-MagoConfig.clearColorHistory = function() 
-{
-	this.colorHistoryObject = {};
-};
-
-/**
- * project별 키에 해당하는 모든 색깔 변경 이력을 획득
- */
-MagoConfig.getColorHistorys = function(projectId, dataKey)
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.colorHistoryObject[projectId];
-	if (projectIdObject === undefined) { return undefined; }
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	return dataKeyObject;
-};
-
-/**
- * 색깝 변경 이력을 획득
- */
-MagoConfig.getColorHistory = function(projectId, dataKey, objectId)
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.colorHistoryObject[projectId];
-	if (projectIdObject === undefined) { return undefined; }
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	if (dataKeyObject === undefined) { return undefined; }
-	// objectId 를 저장
-	return dataKeyObject[objectId];
-};
-
-/**
- * 색깝 변경 내용을 저장
- */
-MagoConfig.saveColorHistory = function(projectId, dataKey, objectId, changeHistory) 
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.colorHistoryObject[projectId];
-	if (projectIdObject === undefined)
-	{
-		projectIdObject = {};
-		this.colorHistoryObject[projectId] = projectIdObject;
-	}
-	
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	if (dataKeyObject === undefined)
-	{
-		dataKeyObject = {};
-		projectIdObject[dataKey] = dataKeyObject;
-	}
-
-	if (objectId === null || objectId === "") 
-	{
-		dataKeyObject[dataKey] = changeHistory;
-	}
-	else 
-	{
-		dataKeyObject[objectId] = changeHistory;
-	}
-};
-
-/**
- * 색깔 변경 이력을 삭제
- */
-MagoConfig.deleteColorHistory = function(projectId, dataKey, objectId)
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.colorHistoryObject[projectId];
-	if (projectIdObject === undefined) { return undefined; }
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	if (dataKeyObject === undefined) { return undefined; }
-	// objectIndexOrder 를 저장
-	return delete dataKeyObject[objectId];
-};
-
-/**
- * 모든 색깔변경 히스토리 삭제
- */
-MagoConfig.clearColorHistory = function() 
-{
-	this.colorHistoryObject = {};
-};
-
-/**
- * 모든 location and rotation 변경 이력을 획득
- */
-MagoConfig.getAllLocationAndRotationHistory = function() 
-{
-	return this.locationAndRotationHistoryObject;
-};
-
-/**
- * 프로젝트별 해당 키 값을 갖는 모든 location and rotation 이력을 획득
- */
-MagoConfig.getLocationAndRotationHistorys = function(projectId, dataKey)
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.locationAndRotationHistoryObject[projectId];
-	if (projectIdObject === undefined) { return undefined; }
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	return dataKeyObject;
-};
-
-/**
- * location and rotation 이력을 획득
- */
-MagoConfig.getLocationAndRotationHistory = function(projectId, dataKey)
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.locationAndRotationHistoryObject[projectId];
-	if (projectIdObject === undefined) { return undefined; }
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	
-	return dataKeyObject;
-};
-
-/**
- * location and rotation 내용을 저장
- */
-MagoConfig.saveLocationAndRotationHistory = function(projectId, dataKey, changeHistory) 
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.locationAndRotationHistoryObject[projectId];
-	if (projectIdObject === undefined)
-	{
-		projectIdObject = {};
-		this.locationAndRotationHistoryObject[projectId] = projectIdObject;
-	}
-	
-	// dataKey 별 Object을 검사
-	var dataKeyObject = projectIdObject[dataKey];
-	if (dataKeyObject === undefined)
-	{
-		dataKeyObject = {};
-	}
-
-	dataKeyObject[dataKey] = changeHistory;
-};
-
-/**
- * location and rotation 이력을 삭제
- */
-MagoConfig.deleteLocationAndRotationHistory = function(projectId, dataKey)
-{
-	// projectId 별 Object을 검사
-	var projectIdObject = this.locationAndRotationHistoryObject[projectId];
-	if (projectIdObject === undefined) { return undefined; }
-	// dataKey 별 Object을 검사
-	var dataKeyObject = delete projectIdObject[dataKey];
-};
-
-/**
- * 모든 location and rotation 히스토리 삭제
- */
-MagoConfig.clearLocationAndRotationHistory = function() 
-{
-	this.locationAndRotationHistoryObject = {};
-};
-	
-/**
- * TODO 이건 나중에 활요. 사용하지 않음
- * check 되지 않은 데이터들을 삭제함
- * @param keyObject 비교할 맵
- */
-/*MagoConfig.clearUnSelectedData = function(keyObject)
-{
-	for (var key of this.dataObject.keys())
-	{
-		if (!keyObject.hasxxxxx(key))
-		{
-			// data folder path가 존재하면....
-			if (key.indexOf(CODE.PROJECT_DATA_FOLDER_PREFIX) >= 0) 
-			{
-				// 지우는 처리가 있어야 함
-			}
-			this.dataObject.delete(key);
-		}
-	}
-};*/
-
-MagoConfig.setTwoDimension = function(twoDimension) 
-{
-	this.twoDimension = twoDimension;
-};
-MagoConfig.isTwoDimension = function()
-{
-	return this.twoDimension;
-};
-'use strict';
-
-/**
- * Policy
- * @class Policy
- */
-var Policy = function() 
-{
-	if (!(this instanceof Policy)) 
-	{
-		throw new Error(Messages.CONSTRUCT_ERROR);
-	}
-
-	// mago3d 활성화/비활성화 여부
-	this.magoEnable = true;
-
-	// outfitting 표시 여부
-	this.showOutFitting = false;
-	// label 표시/비표시
-	this.showLabelInfo = false;
-	// boundingBox 표시/비표시
-	this.showBoundingBox = false;
-	// 그림자 표시/비표시
-	this.showShadow = false;
-	// squared far frustum 거리
-	this.frustumFarSquaredDistance = 5000000;
-	// far frustum
-	this.frustumFarDistance = 20000;
-
-	// highlighting
-	this.highLightedBuildings = [];
-	// color
-	this.colorBuildings = [];
-	// color
-	this.color = [];
-	// show/hide
-	this.hideBuildings = [];
-	// move mode
-	this.objectMoveMode = CODE.moveMode.NONE;
-	// 이슈 등록 표시
-	this.issueInsertEnable = false;
-	// object 정보 표시
-	this.objectInfoViewEnable = false;
-	// 이슈 목록 표시
-	this.nearGeoIssueListEnable = false;
-	// occlusion culling
-	this.occlusionCullingEnable = false;
-	// origin axis XYZ
-	this.showOrigin = false;
-	// mago generalMode
-	this.magoMode = CODE.magoMode.NORMAL;
-	
-	// 이미지 경로
-	this.imagePath = "";
-	
-	// provisional.
-	this.colorChangedObjectId;
-	
-	// LOD1
-	this.lod0DistInMeters = 15;
-	this.lod1DistInMeters = 50;
-	this.lod2DistInMeters = 90;
-	this.lod3DistInMeters = 200;
-	this.lod4DistInMeters = 1000;
-	this.lod5DistInMeters = 50000;
-	
-	// Lighting
-	this.ambientReflectionCoef = 0.45; // 0.2.
-	this.diffuseReflectionCoef = 0.75; // 1.0
-	this.specularReflectionCoef = 0.6; // 0.7
-	this.ambientColor = null;
-	this.specularColor = new Float32Array([0.6, 0.6, 0.6]);
-	
-	this.ssaoRadius = 0.15;
-	
-	var policy = MagoConfig.getPolicy();
-	// PointsCloud.
-	this.pointsCloudSettings = {};
-	if (defined(policy)) 
-	{
-		this.pointsCloudSettings.maxPartitionsLod0 = defaultValueCheckLength(policy.maxPartitionsLod0, 4);
-		this.pointsCloudSettings.maxPartitionsLod1 = defaultValueCheckLength(policy.maxPartitionsLod1, 2);
-		this.pointsCloudSettings.maxPartitionsLod2orLess = defaultValueCheckLength(policy.maxPartitionsLod2OrLess, 1);
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam0m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist0m, 10.0);
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam100m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist100m, 120.0);
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam200m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist200m, 240.0);
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam400m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist400m, 480.0);
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam800m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist800m, 960.0);
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam1600m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist1600m, 1920.0);
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCamMoreThan1600m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDistOver1600m, 3840.0);
-		this.pointsCloudSettings.maxPointSize = defaultValueCheckLength(policy.maxPointSizeForPc, 40.0);
-		this.pointsCloudSettings.minPointSize = defaultValueCheckLength(policy.minPointSizeForPc, 3.0);
-		this.pointsCloudSettings.pendentPointSize = defaultValueCheckLength(policy.pendentPointSizeForPc, 60.0);
-		this.pointsCloudSettings.minHeightRainbow = defaultValueCheckLength(policy.minHeight_rainbow_loc, 0.0);
-		this.pointsCloudSettings.maxHeightRainbow = defaultValueCheckLength(policy.maxHeight_rainbow_loc, 100.0);
-	}
-	else 
-	{
-		this.pointsCloudSettings.maxPartitionsLod0 = 4;
-		this.pointsCloudSettings.maxPartitionsLod1 = 2;
-		this.pointsCloudSettings.maxPartitionsLod2orLess = 1;
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam0m = 1.0/10.0;
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam100m = 1.0/120.0;
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam200m = 1.0/240.0;
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam400m = 1.0/480.0;
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam800m = 1.0/960.0;
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam1600m = 1.0/1920.0;
-		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCamMoreThan1600m = 1.0/3840.0;
-		this.pointsCloudSettings.maxPointSize = 40.0;
-		this.pointsCloudSettings.minPointSize = 3.0;
-		this.pointsCloudSettings.pendentPointSize = 60.0;
-		this.pointsCloudSettings.minHeightRainbow = 0.0;
-		this.pointsCloudSettings.maxHeightRainbow = 100.0;
-	}
-};
-
-Policy.prototype.getPointsCloudSettings = function() 
-{
-	return this.pointsCloudSettings;
-};
-
-Policy.prototype.getShowOrigin = function() 
-{
-	return this.showOrigin;
-};
-Policy.prototype.setShowOrigin = function(showOrigin) 
-{
-	this.showOrigin = showOrigin;
-};
-
-Policy.prototype.getMagoEnable = function() 
-{
-	return this.magoEnable;
-};
-Policy.prototype.setMagoEnable = function(magoEnable) 
-{
-	this.magoEnable = magoEnable;
-};
-
-Policy.prototype.getShowOutFitting = function() 
-{
-	return this.showOutFitting;
-};
-Policy.prototype.setShowOutFitting = function(showOutFitting) 
-{
-	this.showOutFitting = showOutFitting;
-};
-Policy.prototype.getShowLabelInfo = function() 
-{
-	return this.showLabelInfo;
-};
-Policy.prototype.setShowLabelInfo = function(showLabelInfo) 
-{
-	this.showLabelInfo = showLabelInfo;
-};
-Policy.prototype.getShowBoundingBox = function() 
-{
-	return this.showBoundingBox;
-};
-Policy.prototype.setShowBoundingBox = function(showBoundingBox) 
-{
-	this.showBoundingBox = showBoundingBox;
-};
-
-Policy.prototype.getShowShadow = function() 
-{
-	return this.showShadow;
-};
-Policy.prototype.setShowShadow = function(showShadow) 
-{
-	this.showShadow = showShadow;
-};
-
-Policy.prototype.getFrustumFarSquaredDistance = function() 
-{
-	return this.frustumFarSquaredDistance;
-};
-Policy.prototype.setFrustumFarSquaredDistance = function(frustumFarSquaredDistance) 
-{
-	this.frustumFarSquaredDistance = frustumFarSquaredDistance;
-};
-
-Policy.prototype.getFrustumFarDistance = function() 
-{
-	return this.frustumFarDistance;
-};
-Policy.prototype.setFrustumFarDistance = function(frustumFarDistance) 
-{
-	this.frustumFarDistance = frustumFarDistance;
-};
-
-Policy.prototype.getHighLightedBuildings = function() 
-{
-	return this.highLightedBuildings;
-};
-Policy.prototype.setHighLightedBuildings = function(highLightedBuildings) 
-{
-	this.highLightedBuildings = highLightedBuildings;
-};
-
-Policy.prototype.getColorBuildings = function() 
-{
-	return this.colorBuildings;
-};
-Policy.prototype.setColorBuildings = function(colorBuildings) 
-{
-	this.colorBuildings = colorBuildings;
-};
-
-Policy.prototype.getColor = function() 
-{
-	return this.color;
-};
-Policy.prototype.setColor = function(color) 
-{
-	this.color = color;
-};
-
-Policy.prototype.getHideBuildings = function() 
-{
-	return this.hideBuildings;
-};
-Policy.prototype.setHideBuildings = function(hideBuildings) 
-{
-	this.hideBuildings = hideBuildings;
-};
-
-Policy.prototype.getObjectMoveMode = function() 
-{
-	return this.objectMoveMode;
-};
-Policy.prototype.setObjectMoveMode = function(objectMoveMode) 
-{
-	this.objectMoveMode = objectMoveMode;
-};
-
-Policy.prototype.getMagoMode = function() 
-{
-	return this.magoMode;
-};
-Policy.prototype.setMagoMode = function(magoMode) 
-{
-	this.magoMode = magoMode;
-};
-
-Policy.prototype.getIssueInsertEnable = function() 
-{
-	return this.issueInsertEnable;
-};
-Policy.prototype.setIssueInsertEnable = function(issueInsertEnable) 
-{
-	this.issueInsertEnable = issueInsertEnable;
-};
-Policy.prototype.getObjectInfoViewEnable = function() 
-{
-	return this.objectInfoViewEnable;
-};
-Policy.prototype.setObjectInfoViewEnable = function(objectInfoViewEnable) 
-{
-	this.objectInfoViewEnable = objectInfoViewEnable;
-};
-Policy.prototype.getOcclusionCullingEnable = function() 
-{
-	return this.occlusionCullingEnable;
-};
-Policy.prototype.setOcclusionCullingEnable = function(occlusionCullingEnable) 
-{
-	this.occlusionCullingEnable = occlusionCullingEnable;
-};
-Policy.prototype.getNearGeoIssueListEnable = function() 
-{
-	return this.nearGeoIssueListEnable;
-};
-Policy.prototype.setNearGeoIssueListEnable = function(nearGeoIssueListEnable) 
-{
-	this.nearGeoIssueListEnable = nearGeoIssueListEnable;
-};
-
-Policy.prototype.getImagePath = function() 
-{
-	return this.imagePath;
-};
-Policy.prototype.setImagePath = function(imagePath) 
-{
-	this.imagePath = imagePath;
-};
-
-Policy.prototype.getLod = function(distInMeters) 
-{
-	var lod = -1;
-	if (distInMeters < this.lod0DistInMeters)
-	{ lod = 0; }
-	else if (distInMeters < this.lod1DistInMeters)
-	{ lod = 1; }
-	else if (distInMeters < this.lod2DistInMeters)
-	{ lod = 2; }
-	else if (distInMeters < this.lod3DistInMeters)
-	{ lod = 3; }
-	else if (distInMeters < this.lod4DistInMeters)
-	{ lod = 4; }
-	else 
-	{ lod = 5; }
-	
-	return lod;	
-};
-Policy.prototype.getLod0DistInMeters = function() 
-{
-	return this.lod0DistInMeters;
-};
-Policy.prototype.setLod0DistInMeters = function(lod0DistInMeters) 
-{
-	this.lod0DistInMeters = lod0DistInMeters;
-};
-Policy.prototype.getLod1DistInMeters = function() 
-{
-	return this.lod1DistInMeters;
-};
-Policy.prototype.setLod1DistInMeters = function(lod1DistInMeters) 
-{
-	this.lod1DistInMeters = lod1DistInMeters;
-};
-Policy.prototype.getLod2DistInMeters = function() 
-{
-	return this.lod2DistInMeters;
-};
-Policy.prototype.setLod2DistInMeters = function(lod2DistInMeters) 
-{
-	this.lod2DistInMeters = lod2DistInMeters;
-};
-Policy.prototype.getLod3DistInMeters = function() 
-{
-	return this.lod3DistInMeters;
-};
-Policy.prototype.setLod3DistInMeters = function(lod3DistInMeters) 
-{
-	this.lod3DistInMeters = lod3DistInMeters;
-};
-Policy.prototype.getLod4DistInMeters = function() 
-{
-	return this.lod4DistInMeters;
-};
-Policy.prototype.setLod4DistInMeters = function(lod4DistInMeters) 
-{
-	this.lod4DistInMeters = lod4DistInMeters;
-};
-Policy.prototype.getLod5DistInMeters = function() 
-{
-	return this.lod5DistInMeters;
-};
-Policy.prototype.setLod5DistInMeters = function(lod5DistInMeters) 
-{
-	this.lod5DistInMeters = lod5DistInMeters;
-};
-Policy.prototype.getAmbientReflectionCoef = function() 
-{
-	return this.ambientReflectionCoef;
-};
-Policy.prototype.setAmbientReflectionCoef = function(ambientReflectionCoef) 
-{
-	this.ambientReflectionCoef = ambientReflectionCoef;
-};
-Policy.prototype.getDiffuseReflectionCoef = function() 
-{
-	return this.diffuseReflectionCoef;
-};
-Policy.prototype.setDiffuseReflectionCoef = function(diffuseReflectionCoef) 
-{
-	this.diffuseReflectionCoef = diffuseReflectionCoef;
-};
-Policy.prototype.getSpecularReflectionCoef = function() 
-{
-	return this.specularReflectionCoef;
-};
-Policy.prototype.setSpecularReflectionCoef = function(specularReflectionCoef) 
-{
-	this.specularReflectionCoef = specularReflectionCoef;
-};
-Policy.prototype.getAmbientColor = function() 
-{
-	return this.ambientColor;
-};
-Policy.prototype.setAmbientColor = function(ambientColor) 
-{
-	this.ambientColor = ambientColor;
-};
-Policy.prototype.getSpecularColor = function() 
-{
-	return this.specularColor;
-};
-Policy.prototype.setSpecularColor = function(specularColor) 
-{
-	this.specularColor = specularColor;
-};
-Policy.prototype.getSsaoRadius = function() 
-{
-	return this.ssaoRadius;
-};
-Policy.prototype.setSsaoRadius = function(ssaoRadius) 
-{
-	this.ssaoRadius = ssaoRadius;
-};
-
 'use strict';
 
 /**
@@ -18691,6 +16763,9 @@ var Camera = function()
 	this.rightNormal = new Point3D();
 	this.bottomNormal = new Point3D();
 	this.topNormal = new Point3D();
+	
+	// movement.
+	this.lastMovement; // class Movement.
 
 	/**
 	 *  track target node;
@@ -18748,24 +16823,145 @@ Camera.prototype.translate = function(translationVec)
 };
 
 /**
+ * Does the movent.
+ * @param {Movement} movement
+ */
+Camera.prototype.doInertialMovement = function(magoManager)
+{
+	// Inertial movement is decided in "MagoWorld.prototype.mouseup".
+	if (this.lastMovement === undefined)
+	{ return false; }
+
+	if (this.lastMovement.movementType === CODE.movementType.NO_MOVEMENT)
+	{ return false; }
+
+	var movement = this.lastMovement;
+	var deltaTime = movement.deltaTime;
+	var magoWorld = magoManager.magoWorld;
+	
+	var movType = movement.movementType;
+	if (movType === CODE.movementType.TRANSLATION) // TRANSLATION.************************************
+	{
+		var linearVelocity = movement.currLinearVelocity;
+		var dir = movement.translationDir;
+		var dist = linearVelocity * deltaTime;
+		
+		if (Math.abs(dist) < 1E-4)
+		{ movement.movementType = CODE.movementType.NO_MOVEMENT; }
+		
+		this.position.add(-dir.x*dist, -dir.y*dist, -dir.z*dist);
+		
+		magoWorld.updateModelViewMatrixByCamera(this);
+		movement.currLinearVelocity *= 0.9;
+		if (Math.abs(movement.currLinearVelocity) < 1E-4)
+		{ movement.movementType = CODE.movementType.NO_MOVEMENT; }
+	}
+	else if (movType === CODE.movementType.ROTATION) // ROTATION.************************************
+	{
+		var angVelocity = movement.currAngularVelocity;
+		movement.angRad = angVelocity * deltaTime;
+		
+		if (Math.abs(movement.angRad) < 1E-11)
+		{ movement.movementType = CODE.movementType.NO_MOVEMENT; }
+		
+		var angRad = movement.angRad;
+		var rotAxis = movement.rotationAxis;
+		
+		// check if there are rotationPoint.
+		var rotPoint = movement.rotationPoint;
+		if (rotPoint)
+		{
+			// camera is rotating respect a point of the scene.
+			var rotMat = new Matrix4();
+			rotMat.rotationAxisAngRad(angRad, rotAxis.x, rotAxis.y, rotAxis.z);
+
+			var translationVec_1 = new Point3D(-rotPoint.x, -rotPoint.y, -rotPoint.z);
+			var translationVec_2 = new Point3D(rotPoint.x, rotPoint.y, rotPoint.z);
+			
+			this.translate(translationVec_1);
+			this.transformByMatrix4(rotMat);
+			this.translate(translationVec_2);
+		}
+		else
+		{
+			// camera is rotating around the world origin.
+			var rotMat = new Matrix4();
+			rotMat.rotationAxisAngRad(-angRad, rotAxis.x, rotAxis.y, rotAxis.z);
+			this.transformByMatrix4(rotMat);
+		}
+		
+		magoWorld.updateModelViewMatrixByCamera(this);
+		movement.currAngularVelocity *= 0.9;
+		if (Math.abs(movement.currAngularVelocity) < 1E-11)
+		{ movement.movementType = CODE.movementType.NO_MOVEMENT; }
+	}
+	else if (movType === CODE.movementType.ROTATION_ZX) // ROTATION_ZX.************************************
+	{
+		var angVelocity = movement.currAngularVelocity;
+		movement.angRad = angVelocity * deltaTime;
+		
+		var angRad = movement.angRad;
+		var rotAxis = movement.rotationAxis;
+		
+		// check if there are rotationPoint.
+		var rotPoint = movement.rotationPoint;
+		if (rotPoint)
+		{
+			var pivotPointNormal;
+			pivotPointNormal = Globe.normalAtCartesianPointWgs84(rotPoint.x, rotPoint.y, rotPoint.z, pivotPointNormal);
+			var xAxis = this.getCameraRight();
+			
+			var zRotAngRad = movement.zAngVelocity * deltaTime;
+			var xRotAngRad = movement.xAngVelocity * deltaTime;
+			
+			if (Math.abs(zRotAngRad) < 1E-11 && Math.abs(xRotAngRad) < 1E-11)
+			{ movement.movementType = CODE.movementType.NO_MOVEMENT; }
+			
+			var quatZRot = glMatrix.quat.create();
+			quatZRot = glMatrix.quat.setAxisAngle(quatZRot, pivotPointNormal, zRotAngRad);
+			
+			var quatXRot = glMatrix.quat.create();
+			quatXRot = glMatrix.quat.setAxisAngle(quatXRot, [xAxis.x, xAxis.y, xAxis.z], xRotAngRad);
+			
+			var quatTotalRot = glMatrix.quat.create();
+			quatTotalRot = glMatrix.quat.multiply(quatTotalRot, quatZRot, quatXRot);
+			
+			var rotMat = new Matrix4();
+			rotMat._floatArrays = glMatrix.mat4.fromQuat(rotMat._floatArrays, quatTotalRot);
+		
+
+			var translationVec_1 = new Point3D(-rotPoint.x, -rotPoint.y, -rotPoint.z);
+			var translationVec_2 = new Point3D(rotPoint.x, rotPoint.y, rotPoint.z);
+			
+			this.translate(translationVec_1);
+			this.transformByMatrix4(rotMat);
+			this.translate(translationVec_2);
+		}
+		else
+		{
+			// camera is rotating around the world origin.
+			var rotMat = new Matrix4();
+			rotMat.rotationAxisAngRad(-angRad, rotAxis.x, rotAxis.y, rotAxis.z);
+			this.transformByMatrix4(rotMat);
+		}
+		
+		magoWorld.updateModelViewMatrixByCamera(this);
+		movement.zAngVelocity *= 0.9;
+		movement.xAngVelocity *= 0.9;
+		if (Math.abs(movement.zAngVelocity) < 1E-11 && Math.abs(movement.xAngVelocity) < 1E-11)
+		{ movement.movementType = CODE.movementType.NO_MOVEMENT; }
+	}
+	
+	return true;
+};
+
+/**
  * Transfrom posion, direction and up of the camera
  * @param {Matrix4} mat
  */
 Camera.prototype.transformByMatrix4 = function(mat)
 {
 	// transform position, direction and up.
-	/*
-	this.position = this.transformPoint3DByMatrix4(this.position, mat);
-	
-	if (this.rotMat === undefined)
-	{ this.rotMat = mat3.create(); }
-	
-	this.rotMat = mat3.fromMat4(this.rotMat, mat);
-
-	this.direction = this.rotatePoint3DByMatrix3(this.direction, this.rotMat);
-	this.up = this.rotatePoint3DByMatrix3(this.up, this.rotMat);
-	*/
-	// Calculate with our matrix4.
 	this.position = mat.transformPoint3D(this.position, this.position);
 	this.direction = mat.rotatePoint3D(this.direction, this.direction);
 	this.up = mat.rotatePoint3D(this.up, this.up);
@@ -18812,38 +17008,6 @@ Camera.prototype.getCameraRight = function()
 	
 	this.right = this.direction.crossProduct(this.up, this.right);
 	return this.right;
-};
-
-/**
- * Transforms the vector "point" by given matrix4
- * @param {point3D} point
- * @param {Matrix4} mat
- * @returns {point3D} point 
- */
-Camera.prototype.transformPoint3DByMatrix4 = function(point, mat)
-{
-	var pos = glMatrix.vec3.clone([point.x, point.y, point.z]);
-	var tPos = glMatrix.vec3.create();
-	tPos = glMatrix.vec3.transformMat4(tPos, pos, mat);
-	point.set(tPos[0], tPos[1], tPos[2]);
-	
-	return point;
-};
-
-/**
- * Transforms the vector "point" by given matrix4
- * @param {point3D} point
- * @param {Matrix4} mat
- * @returns {point3D} point 
- */
-Camera.prototype.rotatePoint3DByMatrix3 = function(point, mat)
-{
-	var pos = glMatrix.vec3.clone([point.x, point.y, point.z]);
-	var tPos = glMatrix.vec3.create();
-	tPos = glMatrix.vec3.transformMat3(tPos, pos, mat);
-	point.set(tPos[0], tPos[1], tPos[2]);
-	
-	return point;
 };
 
 /**
@@ -20426,6 +18590,13 @@ var CesiumViewerInit = function(containerId, serverPolicy, options, legacyViewer
 CesiumViewerInit.prototype = Object.create(ViewerInit.prototype);
 CesiumViewerInit.prototype.constructor = CesiumViewerInit;
 
+CesiumViewerInit.TERRAINTYPE = {
+	GEOSERVER          : 'geoserver',
+	CESIUM_DEFAULT     : 'cesium-default',
+	CESIUM_ION_DEFAULT : 'cesium-ion-default',
+	CESIUM_ION_CDN     : 'cesium-ion-cdn',
+	CESIUM_CUSTOMER    : 'cesium-customer'
+};
 CesiumViewerInit.prototype.init = function() 
 {
 	this.setCanvasEventHandler();
@@ -20433,22 +18604,60 @@ CesiumViewerInit.prototype.init = function()
 	this.options.animation = this.options.animation || false;
 	this.options.timeline = this.options.timeline || false;
 
+	//GEOSERVER BASE LAYER, GEOSERVER TERRAIN SET
 	this.geoserverProviderBuild();
 
-	this.options.shouldAnimate = false;
-
-    var extent = Cesium.Rectangle.fromDegrees(127.19931049066805,36.44941898280123,127.32576852118987,36.55053669535394);
-
-    Cesium.Camera.DEFAULT_VIEW_RECTANGLE = extent;
-    Cesium.Camera.DEFAULT_VIEW_FACTOR = 0;
-
     this.options.selectionIndicator = false;
+
+	//PSD, 빼야함.
+	if (this.policy.cesiumIonToken && this.policy.cesiumIonToken.length > 0) 
+	{
+		Cesium.Ion.defaultAccessToken = this.policy.cesiumIonToken;
+	}
+	var terrainType = this.policy.terrainType;
+	var terrainValue = this.policy.terrainValue;
+	this.options.terrainProvider = new Cesium.EllipsoidTerrainProvider();
+	switch (terrainType) 
+	{
+	case CesiumViewerInit.TERRAINTYPE.CESIUM_ION_DEFAULT :{
+		if (this.policy.cesiumIonToken && this.policy.cesiumIonToken.length > 0) 
+		{
+			this.options.terrainProvider = new Cesium.CesiumTerrainProvider({
+				url: Cesium.IonResource.fromAssetId(1)
+			});
+		}
+		break;
+	}
+	case CesiumViewerInit.TERRAINTYPE.CESIUM_ION_CDN :{
+		if (this.policy.cesiumIonToken || this.policy.cesiumIonToken.length > 0) 
+		{
+			this.options.terrainProvider = new Cesium.CesiumTerrainProvider({
+				url: Cesium.IonResource.fromAssetId(parseInt(terrainValue))
+			});
+		}
+		break;
+	}
+	case CesiumViewerInit.TERRAINTYPE.CESIUM_CUSTOMER :{
+		this.options.terrainProvider = new Cesium.CesiumTerrainProvider({
+			url: terrainValue
+		});
+		break;
+	}
+	}
+	if (!this.options.imageryProvider) 
+	{
+		this.options.imageryProvider = new Cesium.ArcGisMapServerImageryProvider({
+			url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
+		});
+	}
+	
+	this.options.shouldAnimate = false;
 	this.viewer = new Cesium.Viewer(this.targetId, this.options);
 
 	this.postProcessDataProvider();
 	this.initMagoManager();
 	//this.setEventHandler();
-    this.policy.initCameraEnable = false;
+
 	if (this.policy.initCameraEnable) 
 	{ 
 		var destination;
@@ -20491,6 +18700,7 @@ CesiumViewerInit.prototype.geoserverProviderBuild = function()
 	var policy = this.policy;
 	var online = policy.online;
 	var geoserverEnable = policy.geoserverEnable;
+	var terrainType = policy.terrainType;
 
 	if (!online && !geoserverEnable) 
 	{
@@ -20498,22 +18708,16 @@ CesiumViewerInit.prototype.geoserverProviderBuild = function()
 	}
 
 	//geoserver 이용시 false로 변경. 현재는 안 쓸 경우 true로 해야함.
-	this.options.baseLayerPicker = true;
+	
 
 	if (geoserverEnable && policy.geoserverImageproviderEnable) 
 	{
 		this.geoserverImageProviderBuild();
 	}
 
-	if (geoserverEnable && policy.geoserverTerrainproviderEnable) 
+	if (geoserverEnable && terrainType === CesiumViewerInit.TERRAINTYPE.GEOSERVER) 
 	{
 		this.geoserverTerrainProviderBuild();
-	}
-
-	if (policy.cesiumIonToken !== null && policy.cesiumIonToken !== "") 
-	{
-		Cesium.Ion.defaultAccessToken = policy.cesiumIonToken;
-		this.DEFALUT_TERRAIN = "Cesium World Terrain";
 	}
 };
 
@@ -20587,7 +18791,8 @@ CesiumViewerInit.prototype.geoserverTerrainProviderBuild = function()
 	var terrainParam = {
 		service: 'WMTS'
 	};
-	var terrainUrl = policy.geoserverTerrainproviderUrl;
+
+	var terrainUrl = policy.terrainValue;
     
 	if (!terrainUrl) 
 	{
@@ -20622,24 +18827,34 @@ CesiumViewerInit.prototype.postProcessDataProvider = function()
 	if (!this.options.imageryProvider) 
 	{
 		var imageryProvider = null;
-		var imageryProviderViewModels = this.viewer.baseLayerPicker.viewModel.imageryProviderViewModels;
-		for (var i in imageryProviderViewModels) 
+		if (this.viewer.baseLayerPicker) 
 		{
-			if (!imageryProviderViewModels.hasOwnProperty(i))	{ continue; }
-
-			var provider = imageryProviderViewModels[i];
-			if (provider.name === this.DEFALUT_IMAGE)
+			var imageryProviderViewModels = this.viewer.baseLayerPicker.viewModel.imageryProviderViewModels;
+			for (var i in imageryProviderViewModels) 
 			{
-				imageryProvider = provider;
-				break;
-			}
-		}
-		if (imageryProvider) { this.viewer.baseLayerPicker.viewModel.selectedImagery = imageryProvider; }
-	}
+				if (!imageryProviderViewModels.hasOwnProperty(i))	{ continue; }
 
+				var provider = imageryProviderViewModels[i];
+				if (provider.name === this.DEFALUT_IMAGE)
+				{
+					imageryProvider = provider;
+					break;
+				}
+			}
+			if (imageryProvider) { this.viewer.baseLayerPicker.viewModel.selectedImagery = imageryProvider; }
+		}
+		else 
+		{
+			this.viewer.imageryLayers.removeAll();
+			this.viewer.imageryLayers.addImageryProvider(new Cesium.ArcGisMapServerImageryProvider({
+				url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
+			}), 0);
+		}
+	}
+	//삭제예정. 깔끔하게 삭제하는 법 생각좀하고..
 	if (!this.options.terrainProvider) 
 	{
-		if (this.policy.initDefaultTerrain !== null && this.policy.initDefaultTerrain !== "")
+		if (this.policy.initDefaultTerrain !== null && this.policy.initDefaultTerrain !== "") 
 		{
 			this.DEFALUT_TERRAIN = this.policy.initDefaultTerrain;
 		}
@@ -22062,7 +20277,7 @@ FrustumVolumeControl.prototype.calculateBoundingFrustums = function(camera)
 	var frustumVolumeObject;
 	for (var key in this.frustumVolumensMap)
 	{
-		if (Object.prototype.hasOwnProperty.call(this.frustumVolumensMap, key)) 
+		if (Object.prototype.hasOwnProperty.call(this.frustumVolumensMap, key))
 		{
 			frustumVolumeObject = this.frustumVolumensMap[key];
 			if (frustumVolumeObject.intersectedTilesArray.length > 0)
@@ -22072,46 +20287,6 @@ FrustumVolumeControl.prototype.calculateBoundingFrustums = function(camera)
 		}
 	}
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 'use strict';
 
@@ -26173,19 +24348,25 @@ MagoManager.prototype.upDateSceneStateMatrices = function(sceneState)
 		// determine frustum near & far.***
 		var camHeight = camera.getCameraElevation();
 		var eqRadius = Globe.equatorialRadius();
-		frustum0.far[0] = (eqRadius + camHeight);
-		//frustum0.far[0] = 30000000.0;
-		if (camHeight > eqRadius*1.2)
-		{ frustum0.near[0] = 0.1 + camHeight; }
+		frustum0.far[0] = (eqRadius + camHeight*10);
+
+		//if (camHeight > eqRadius*1.2)
+		if (camHeight > 1000000)
+		{ frustum0.near[0] = 0.1 + camHeight/1000000; }
 		else
 		{ frustum0.near[0] = 0.1 + camHeight / 10000000; }
+	
+		// Test values.****************************
+		frustum0.near[0] = 0.1 + camHeight*0.9; // delete.!!!
+		//frustum0.far[0] = (camHeight+eqRadius)*10000;
+		// End test.-------------------------------
 		
 		ManagerUtils.calculateSplited3fv([camPos.x, camPos.y, camPos.z], sceneState.encodedCamPosHigh, sceneState.encodedCamPosLow);
 		
 		// projection.***
 		// consider near as zero provisionally.***
-		//sceneState.projectionMatrix._floatArrays = glMatrix.mat4.perspective(sceneState.projectionMatrix._floatArrays, frustum0.fovyRad[0], frustum0.aspectRatio[0], frustum0.near[0], frustum0.far[0]);
-		sceneState.projectionMatrix._floatArrays = glMatrix.mat4.perspective(sceneState.projectionMatrix._floatArrays, frustum0.fovyRad[0], frustum0.aspectRatio[0], 0.0, frustum0.far[0]);
+		sceneState.projectionMatrix._floatArrays = glMatrix.mat4.perspective(sceneState.projectionMatrix._floatArrays, frustum0.fovyRad[0], frustum0.aspectRatio[0], frustum0.near[0], frustum0.far[0]);
+		//sceneState.projectionMatrix._floatArrays = glMatrix.mat4.perspective(sceneState.projectionMatrix._floatArrays, frustum0.fovyRad[0], frustum0.aspectRatio[0], 0.0, frustum0.far[0]);
 		
 		// modelView.***
 		//sceneState.modelViewMatrix._floatArrays; 
@@ -26195,6 +24376,7 @@ MagoManager.prototype.upDateSceneStateMatrices = function(sceneState)
 		sceneState.normalMatrix4._floatArrays = glMatrix.mat4.transpose(sceneState.normalMatrix4._floatArrays, sceneState.modelViewMatrixInv._floatArrays);
 		
 		// modelViewRelToEye.***
+		///sceneState.modelViewRelToEyeMatrix._floatArrays = glMatrix.mat4.transpose(sceneState.modelViewRelToEyeMatrix._floatArrays, sceneState.modelViewMatrix._floatArrays);
 		sceneState.modelViewRelToEyeMatrix._floatArrays = glMatrix.mat4.copy(sceneState.modelViewRelToEyeMatrix._floatArrays, sceneState.modelViewMatrix._floatArrays);
 		sceneState.modelViewRelToEyeMatrix._floatArrays[12] = 0;
 		sceneState.modelViewRelToEyeMatrix._floatArrays[13] = 0;
@@ -26204,6 +24386,9 @@ MagoManager.prototype.upDateSceneStateMatrices = function(sceneState)
 		
 		// modelViewProjection.***
 		sceneState.modelViewProjMatrix._floatArrays = glMatrix.mat4.multiply(sceneState.modelViewProjMatrix._floatArrays, sceneState.projectionMatrix._floatArrays, sceneState.modelViewMatrix._floatArrays);
+		
+		// modelViewProjectionRelToEye.***
+		//sceneState.modelViewProjRelToEyeMatrix._floatArrays = glMatrix.mat4.multiply(sceneState.modelViewProjRelToEyeMatrix._floatArrays, sceneState.projectionMatrix._floatArrays, sceneState.modelViewRelToEyeMatrix._floatArrays);
 
 		// modelViewProjectionRelToEye.***
 		sceneState.modelViewProjRelToEyeMatrix.copyFromMatrix4(sceneState.modelViewProjMatrix);
@@ -26211,6 +24396,7 @@ MagoManager.prototype.upDateSceneStateMatrices = function(sceneState)
 		sceneState.modelViewProjRelToEyeMatrix._floatArrays[13] = 0;
 		sceneState.modelViewProjRelToEyeMatrix._floatArrays[14] = 0;
 		sceneState.modelViewProjRelToEyeMatrix._floatArrays[15] = 1;
+		
 		
 		frustum0.tangentOfHalfFovy[0] = Math.tan(frustum0.fovyRad[0]/2);
 		
@@ -26352,6 +24538,8 @@ MagoManager.prototype.upDateCamera = function(resultCamera)
 	else/* if (this.configInformation.basicGlobe === Constant.MAGOWORLD)*/
 	{
 		var camera = this.sceneState.camera;
+		
+		camera.doInertialMovement(this);
 		
 		var frustumIdx = 0;
 		var camera = this.sceneState.camera;
@@ -26524,6 +24712,7 @@ MagoManager.prototype.managePickingProcess = function()
 			gl.clearColor(1, 1, 1, 1); // white background.***
 			gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // clear buffer.***
 			this.selectionManager.clearCandidates();
+			gl.clearColor(0, 0, 0, 1); // return to black background.***
 		}
 		
 		this.renderer.renderGeometryColorCoding(this.visibleObjControlerNodes);
@@ -27244,6 +25433,9 @@ MagoManager.prototype.startRender = function(isLastFrustum, frustumIdx, numFrust
 		
 		// reset stadistics data.
 		this.sceneState.resetStadistics();
+		
+		// clear canvas.
+		this.clearCanvas2D();
 	}
 	
 	var cameraPosition = this.sceneState.camera.position;
@@ -32695,7 +30887,6 @@ var ManagerFactory = function(viewer, containerId, serverPolicy, projectIdArray,
 			_options.imageryProvider = imageryProvider;
 			_options.baseLayerPicker = false;
 			_options.antialias = true;
-            _options.selectionIndicator = false;
 			if (viewer === null) { viewer = new Cesium.Viewer(containerId, _options); }
 		}
 		else 
@@ -32706,7 +30897,6 @@ var ManagerFactory = function(viewer, containerId, serverPolicy, projectIdArray,
 				DEFALUT_TERRAIN = "Cesium World Terrain";
 			}
 			_options.shouldAnimate = true;
-            _options.selectionIndicator = false;
 			
 			if (viewer === null) { viewer = new Cesium.Viewer(containerId, _options); }
 			// 기본 지도 설정
@@ -32755,7 +30945,7 @@ var ManagerFactory = function(viewer, containerId, serverPolicy, projectIdArray,
 		
 		magoManager = new MagoManager();
 		var sceneState = magoManager.sceneState;
-		sceneState.textureFlipYAxis = true;
+		sceneState.textureFlipYAxis = false;
 		sceneState.gl = gl;
 		sceneState.drawingBufferWidth[0] = canvas.clientWidth;
 		sceneState.drawingBufferHeight[0] = canvas.clientHeight;
@@ -33778,7 +31968,7 @@ var MouseAction = function()
 	 * @type {Point3D}
 	 * @default (0,0,0)
 	 */
-	this.strWorldPoint2;
+	//this.strWorldPoint2;
 	
 	/**
 	 * Transformation matrix of start click point location.
@@ -33969,6 +32159,56 @@ MouseAction.prototype.getStartWorldPoint = function()
 
 
 
+'use strict';
+
+/**
+ * Movement class for camera.
+ * @class Movement
+ */
+var Movement = function(options) 
+{
+	if (!(this instanceof Movement)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+
+	this.movementType = CODE.movementType.NO_MOVEMENT; // it can be translation, rotation or no movement.
+	this.deltaTime;
+	
+	this.currLinearVelocity;
+	this.translationDir;
+	
+	this.currAngularVelocity;
+	this.rotationAxis;
+	this.xAngVelocity;
+	this.zAngVelocity;
+	//this.angRad;
+	//this.xRotAngRad;
+	//this.zRotAngRad;
+	
+	this.rotationPoint;
+	
+	if (options)
+	{
+		if (options.movementType !== undefined)
+		{ this.movementType = options.movementType; }
+		
+		if (options.linearVelocity !== undefined)
+		{ this.currLinearVelocity = options.linearVelocity; }
+		
+		if (options.translationDir !== undefined)
+		{ this.translationDir = options.translationDirection; }
+		
+		if (options.angularVelocity !== undefined)
+		{ this.currAngularVelocity = options.angularVelocity; }
+		
+		if (options.rotationAxis !== undefined)
+		{ this.rotationAxis = options.rotationAxis; }
+	
+		if (options.rotationPoint !== undefined)
+		{ this.rotationPoint = options.rotationPoint; }
+	}
+};
 'use strict';
 
 /**
@@ -36696,7 +34936,7 @@ SmartTile.prototype.parseSmartTileF4d = function(dataArrayBuffer, magoManager)
 		
 			lodBuilding.texture.imageBinaryData = lodBuildingTextureData;
 			lodBuilding.texture.fileLoadState = CODE.fileLoadState.LOADING_FINISHED;
-			
+
 			node.data.geographicCoord = geoCoord;
 			data.rotationsDegree = eulerAngDeg; 
 			data.dataId = dataId;
@@ -41328,6 +39568,1941 @@ VisibleObjectsController.prototype.putNodeByLod = function(node, lod)
 'use strict';
 
 /**
+ * mago3djs API
+ * 
+ * @alias API
+ * @class API
+ * 
+ * @param {any} apiName api이름
+ */
+function API(apiName)
+{
+	if (!(this instanceof API)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+
+	// mago3d 활성화/비활성화 여부
+	this.magoEnable = true;
+	// return
+	this.returnable = false;
+
+	// api 이름
+	this.apiName = apiName;
+	
+	// project id
+	this.projectId = null;
+	this.projectDataFolder = null;
+	// objectIds
+	this.objectIds = null;
+	// data_key
+	this.dataKey = null;
+	// issueId
+	this.issueId = null;
+	// issueType
+	this.issueType = null;
+	// drawType 이미지를 그리는 유형 0 : DB, 1 : 이슈등록
+	this.drawType = 0;
+
+	// 위도
+	this.latitude = 0;
+	// 경도
+	this.longitude = 0;
+	// 높이
+	this.elevation = 0;
+	// heading
+	this.heading = 0;
+	// pitch
+	this.pitch = 0;
+	// roll
+	this.roll = 0;
+	// duration
+	this.duration = 0;
+
+	// 속성
+	this.property = null;
+	// 색깔
+	this.color = 0;
+	// structs = MSP, outfitting = MOP
+	this.blockType = null;
+	// outfitting 표시/비표시
+	this.showOutFitting = false;
+	// label 표시/비표시
+	this.showLabelInfo = true;
+	// origin 표시/비표시
+	this.showOrigin = false;
+	// boundingBox 표시/비표시
+	this.showBoundingBox = false;
+	// 그림자 표시/비표시
+	this.showShadow = false;
+	// frustum culling 가시 거리(M단위)
+	this.frustumFarDistance = 0;
+	// move mode 
+	this.objectMoveMode = CODE.moveMode.NONE;
+	// 이슈 등록 표시
+	this.issueInsertEnable = false;
+	// object 정보 표시
+	this.objectInfoViewEnable = false;
+	// 이슈 목록 표시
+	this.nearGeoIssueListEnable = false;
+	// occlusion culling
+	this.occlusionCullingEnable = false;
+	//
+	this.insertIssueState = 0;
+	
+	// LOD1
+	this.lod0DistInMeters = null;
+	this.lod1DistInMeters = null;
+	this.lod2DistInMeters = null;
+	this.lod3DistInMeters = null;
+	this.lod4DistInMeters = null;
+	this.lod5DistInMeters = null;
+	
+	// Lighting
+	this.ambientReflectionCoef = null;
+	this.diffuseReflectionCoef = null;
+	this.specularReflectionCoef = null;
+	this.ambientColor = null;
+	this.specularColor = null;
+	
+	this.ssaoRadius = null;
+	//
+	this.FPVMode = false;
+
+	// input x, y, z
+	this.inputPoint = null;
+	// result x, y, z
+	this.resultPoint = null;
+	
+	// General magoMode.
+	this.magoMode = CODE.magoMode.NORMAL;
+
+	//position unit
+	this.unit = CODE.units.DEGREE;
+
+	//for staticModel instantiate
+	this.instantiateObj = null;
+
+	//for staticModel add
+	this.staticModelAttributeObj = null;
+
+	//animation option. 
+	this.animationOption = null;
+
+	/**
+	 * @type {trackOption}
+	 */
+	this.trackOption = null;
+
+	/**
+	 * @type {nodeAttribute}
+	 */
+	this.nodeAttribute = null;
+};
+
+API.prototype.getMagoEnable = function() 
+{
+	return this.magoEnable;
+};
+API.prototype.setMagoEnable = function(magoEnable) 
+{
+	this.magoEnable = magoEnable;
+};
+
+API.prototype.getReturnable = function()
+{
+	return this.returnable;
+};
+API.prototype.setReturnable = function(returnable)
+{
+	this.returnable = returnable;
+};
+
+API.prototype.getAPIName = function() 
+{
+	return this.apiName;
+};
+
+API.prototype.getProjectId = function() 
+{
+	return this.projectId;
+};
+API.prototype.setProjectId = function(projectId) 
+{
+	this.projectId = projectId;
+};
+
+API.prototype.getProjectDataFolder = function() 
+{
+	return this.projectDataFolder;
+};
+API.prototype.setProjectDataFolder = function(projectDataFolder) 
+{
+	this.projectDataFolder = projectDataFolder;
+};
+
+API.prototype.getObjectIds = function() 
+{
+	return this.objectIds;
+};
+API.prototype.setObjectIds = function(objectIds) 
+{
+	this.objectIds = objectIds;
+};
+
+API.prototype.getIssueId = function() 
+{
+	return this.issueId;
+};
+API.prototype.setIssueId = function(issueId) 
+{
+	this.issueId = issueId;
+};
+API.prototype.getIssueType = function() 
+{
+	return this.issueType;
+};
+API.prototype.setIssueType = function(issueType) 
+{
+	this.issueId = issueType;
+};
+
+API.prototype.getDataKey = function() 
+{
+	return this.dataKey;
+};
+API.prototype.setDataKey = function(dataKey) 
+{
+	this.dataKey = dataKey;
+};
+
+API.prototype.getLatitude = function() 
+{
+	return this.latitude;
+};
+API.prototype.setLatitude = function(latitude) 
+{
+	this.latitude = latitude;
+};
+
+API.prototype.getLongitude = function() 
+{
+	return this.longitude;
+};
+API.prototype.setLongitude = function(longitude) 
+{
+	this.longitude = longitude;
+};
+
+API.prototype.getElevation = function() 
+{
+	return this.elevation;
+};
+API.prototype.setElevation = function(elevation) 
+{
+	this.elevation = elevation;
+};
+
+API.prototype.getHeading = function() 
+{
+	return this.heading;
+};
+API.prototype.setHeading = function(heading) 
+{
+	this.heading = heading;
+};
+
+API.prototype.getPitch = function() 
+{
+	return this.pitch;
+};
+API.prototype.setPitch = function(pitch) 
+{
+	this.pitch = pitch;
+};
+
+API.prototype.getRoll = function() 
+{
+	return this.roll;
+};
+API.prototype.setRoll = function(roll) 
+{
+	this.roll = roll;
+};
+
+API.prototype.getProperty = function() 
+{
+	return this.property;
+};
+API.prototype.setProperty = function(property) 
+{
+	this.property = property;
+};
+
+API.prototype.getColor = function() 
+{
+	return this.color;
+};
+API.prototype.setColor = function(color) 
+{
+	this.color = color;
+};
+
+API.prototype.getBlockType = function() 
+{
+	return this.blockType;
+};
+API.prototype.setBlockType = function(blockType) 
+{
+	this.blockType = blockType;
+};
+
+API.prototype.getShowOutFitting = function() 
+{
+	return this.showOutFitting;
+};
+API.prototype.setShowOutFitting = function(showOutFitting) 
+{
+	this.showOutFitting = showOutFitting;
+};
+
+
+API.prototype.getShowLabelInfo = function() 
+{
+	return this.showLabelInfo;
+};
+API.prototype.setShowLabelInfo = function(showLabelInfo) 
+{
+	this.showLabelInfo = showLabelInfo;
+};
+
+API.prototype.getShowOrigin = function()
+{
+	return this.showOrigin;
+};
+API.prototype.setShowOrigin = function(showOrigin)
+{
+	this.showOrigin = showOrigin;
+};
+
+API.prototype.getShowBoundingBox = function() 
+{
+	return this.showBoundingBox;
+};
+API.prototype.setShowBoundingBox = function(showBoundingBox) 
+{
+	this.showBoundingBox = showBoundingBox;
+};
+
+API.prototype.getShowShadow = function() 
+{
+	return this.showShadow;
+};
+API.prototype.setShowShadow = function(showShadow) 
+{
+	this.showShadow = showShadow;
+};
+
+API.prototype.getFrustumFarDistance = function() 
+{
+	return this.frustumFarDistance;
+};
+API.prototype.setFrustumFarDistance = function(frustumFarDistance) 
+{
+	this.frustumFarDistance = frustumFarDistance;
+};
+
+API.prototype.getObjectMoveMode = function() 
+{
+	return this.objectMoveMode;
+};
+API.prototype.setObjectMoveMode = function(objectMoveMode) 
+{
+	this.objectMoveMode = objectMoveMode;
+};
+
+API.prototype.getIssueInsertEnable = function() 
+{
+	return this.issueInsertEnable;
+};
+API.prototype.setIssueInsertEnable = function(issueInsertEnable) 
+{
+	this.issueInsertEnable = issueInsertEnable;
+};
+API.prototype.getObjectInfoViewEnable = function() 
+{
+	return this.objectInfoViewEnable;
+};
+API.prototype.setObjectInfoViewEnable = function(objectInfoViewEnable) 
+{
+	this.objectInfoViewEnable = objectInfoViewEnable;
+};
+API.prototype.getOcclusionCullingEnable = function() 
+{
+	return this.occlusionCullingEnable;
+};
+API.prototype.setOcclusionCullingEnable = function(occlusionCullingEnable) 
+{
+	this.occlusionCullingEnable = occlusionCullingEnable;
+};
+API.prototype.getNearGeoIssueListEnable = function() 
+{
+	return this.nearGeoIssueListEnable;
+};
+API.prototype.setNearGeoIssueListEnable = function(nearGeoIssueListEnable) 
+{
+	this.nearGeoIssueListEnable = nearGeoIssueListEnable;
+};
+
+API.prototype.getInsertIssueState = function() 
+{
+	return this.insertIssueState;
+};
+API.prototype.setInsertIssueState = function(insertIssueState) 
+{
+	this.insertIssueState = insertIssueState;
+};
+
+API.prototype.getDrawType = function() 
+{
+	return this.drawType;
+};
+API.prototype.setDrawType = function(drawType) 
+{
+	this.drawType = drawType;
+};
+
+API.prototype.getLod0DistInMeters = function() 
+{
+	return this.lod0DistInMeters;
+};
+API.prototype.setLod0DistInMeters = function(lod0DistInMeters) 
+{
+	this.lod0DistInMeters = lod0DistInMeters;
+};
+API.prototype.getLod1DistInMeters = function() 
+{
+	return this.lod1DistInMeters;
+};
+API.prototype.setLod1DistInMeters = function(lod1DistInMeters) 
+{
+	this.lod1DistInMeters = lod1DistInMeters;
+};
+API.prototype.getLod2DistInMeters = function() 
+{
+	return this.lod2DistInMeters;
+};
+API.prototype.setLod2DistInMeters = function(lod2DistInMeters) 
+{
+	this.lod2DistInMeters = lod2DistInMeters;
+};
+API.prototype.getLod3DistInMeters = function() 
+{
+	return this.lod3DistInMeters;
+};
+API.prototype.setLod3DistInMeters = function(lod3DistInMeters) 
+{
+	this.lod3DistInMeters = lod3DistInMeters;
+};
+API.prototype.getLod4DistInMeters = function() 
+{
+	return this.lod4DistInMeters;
+};
+API.prototype.setLod4DistInMeters = function(lod4DistInMeters) 
+{
+	this.lod4DistInMeters = lod4DistInMeters;
+};
+API.prototype.getLod5DistInMeters = function() 
+{
+	return this.lod5DistInMeters;
+};
+API.prototype.setLod5DistInMeters = function(lod5DistInMeters) 
+{
+	this.lod5DistInMeters = lod5DistInMeters;
+};
+
+API.prototype.getAmbientReflectionCoef = function() 
+{
+	return this.ambientReflectionCoef;
+};
+API.prototype.setAmbientReflectionCoef = function(ambientReflectionCoef) 
+{
+	this.ambientReflectionCoef = ambientReflectionCoef;
+};
+API.prototype.getDiffuseReflectionCoef = function() 
+{
+	return this.diffuseReflectionCoef;
+};
+API.prototype.setDiffuseReflectionCoef = function(diffuseReflectionCoef) 
+{
+	this.diffuseReflectionCoef = diffuseReflectionCoef;
+};
+API.prototype.getSpecularReflectionCoef = function() 
+{
+	return this.specularReflectionCoef;
+};
+API.prototype.setSpecularReflectionCoef = function(specularReflectionCoef) 
+{
+	this.specularReflectionCoef = specularReflectionCoef;
+};
+API.prototype.getAmbientColor = function() 
+{
+	return this.ambientColor;
+};
+API.prototype.setAmbientColor = function(ambientColor) 
+{
+	this.ambientColor = ambientColor;
+};
+API.prototype.getSpecularColor = function() 
+{
+	return this.specularColor;
+};
+API.prototype.setSpecularColor = function(specularColor) 
+{
+	this.specularColor = specularColor;
+};
+API.prototype.getSsaoRadius = function() 
+{
+	return this.ssaoRadius;
+};
+API.prototype.setSsaoRadius = function(ssaoRadius) 
+{
+	this.ssaoRadius = ssaoRadius;
+};
+API.prototype.getFPVMode = function()
+{
+	return this.FPVMode;
+};
+API.prototype.setFPVMode = function(value)
+{
+	this.FPVMode = value;
+};
+API.prototype.getMagoMode = function()
+{
+	return this.magoMode;
+};
+API.prototype.setMagoMode = function(value)
+{
+	this.magoMode = value;
+};
+API.prototype.getDuration = function()
+{
+	return this.duration;
+};
+API.prototype.setDuration = function(duration)
+{
+	this.duration = duration;
+};
+
+API.prototype.getInputPoint = function()
+{
+	return this.inputPoint;
+};
+API.prototype.setInputPoint = function(inputPoint)
+{
+	this.inputPoint = inputPoint;
+};
+
+API.prototype.getResultPoint = function()
+{
+	return this.resultPoint;
+};
+API.prototype.setResultPoint = function(resultPoint)
+{
+	this.resultPoint = resultPoint;
+};
+
+API.prototype.getUnit = function()
+{
+	return this.unit;
+};
+API.prototype.setUnit = function(unit)
+{
+	if (unit !== undefined)
+	{
+		if (isNaN(unit) || unit > CODE.units.RADIAN)
+		{
+			throw new Error('unit parameter needs CODE.units');
+		}
+		this.unit = unit;
+	}
+};
+
+API.prototype.getInstantiateObj = function()
+{
+	return this.instantiateObj;
+};
+API.prototype.setInstantiateObj = function(instantiateObj)
+{
+	this.instantiateObj = instantiateObj;
+};
+
+API.prototype.getStaticModelAttributeObj = function()
+{
+	return this.staticModelAttributeObj;
+};
+API.prototype.setStaticModelAttributeObj = function(staticModelAttributeObj)
+{
+	this.staticModelAttributeObj = staticModelAttributeObj;
+};
+
+API.prototype.getAnimationOption = function()
+{
+	return this.animationOption;
+};
+API.prototype.setAnimationOption = function(animationOption)
+{
+	this.animationOption = animationOption;
+};
+
+API.prototype.getTrackOption = function()
+{
+	return this.trackOption;
+};
+API.prototype.setTrackOption = function(trackOption)
+{
+	this.trackOption = trackOption;
+};
+
+API.prototype.getNodeAttribute = function()
+{
+	return this.nodeAttribute;
+};
+API.prototype.setNodeAttribute = function(nodeAttribute)
+{
+	this.nodeAttribute = nodeAttribute;
+};
+
+'use strict';
+
+/**
+ * 사용자가 변경한 moving, color, rotation 등 이력 정보를 위한 domain
+ * @class Policy
+ */
+var ChangeHistory = function() 
+{
+	if (!(this instanceof ChangeHistory)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+
+	this.moveHistory = false;
+	this.colorHistory = false;
+	this.rotationHistory = false;
+	
+	// move mode. ALL : 0 , OBJECT : 1, NONE : 2
+	this.objectMoveMode = null;
+	
+	// project id
+	this.projectId = null;
+	// project data folder
+	this.projectDataFolder = null;
+	// data_key
+	this.dataKey = null;	
+	// objectId
+	this.objectId = null;
+	// objectIndexOrder
+	this.objectIndexOrder = 0;
+	
+	// referenceObject aditional movement.
+	this.refObjectAditionalMove;
+	this.refObjectAditionalMoveRelToBuilding;
+	
+	// 위도
+	this.latitude = 0.0;
+	// 경도
+	this.longitude = 0.0;
+	// 높이
+	this.elevation = 0.0;
+	// heading
+	this.heading = 0.0;
+	// pitch
+	this.pitch = 0.0;
+	// roll
+	this.roll = 0.0;
+	// duration
+	this.duration = 0;
+	// 색깔
+	this.color = 0;
+	// color rgb
+	this.rgbColor = [];
+	// 속성
+	this.property = null;
+	this.propertyKey = null;
+	this.propertyValue = null;
+};
+
+ChangeHistory.prototype.getReferenceObjectAditionalMovement = function() 
+{
+	if (this.refObjectAditionalMove === undefined)
+	{ this.refObjectAditionalMove = new Point3D(); }
+	
+	return this.refObjectAditionalMove;
+};
+
+ChangeHistory.prototype.getReferenceObjectAditionalMovementRelToBuilding = function() 
+{
+	if (this.refObjectAditionalMoveRelToBuilding === undefined)
+	{ this.refObjectAditionalMoveRelToBuilding = new Point3D(); }
+	
+	return this.refObjectAditionalMoveRelToBuilding;
+};
+
+ChangeHistory.prototype.getProjectId = function() 
+{
+	return this.projectId;
+};
+ChangeHistory.prototype.setProjectId = function(projectId) 
+{
+	this.projectId = projectId;
+};
+
+ChangeHistory.prototype.getProjectDataFolder = function() 
+{
+	return this.projectDataFolder;
+};
+ChangeHistory.prototype.setProjectDataFolder = function(projectDataFolder) 
+{
+	this.projectDataFolder = projectDataFolder;
+};
+
+ChangeHistory.prototype.getDataKey = function() 
+{
+	return this.dataKey;
+};
+ChangeHistory.prototype.setDataKey = function(dataKey) 
+{
+	this.dataKey = dataKey;
+};
+
+ChangeHistory.prototype.getObjectId = function() 
+{
+	return this.objectId;
+};
+ChangeHistory.prototype.setObjectId = function(objectId) 
+{
+	this.objectId = objectId;
+};
+
+ChangeHistory.prototype.getObjectIndexOrder = function() 
+{
+	return this.objectIndexOrder;
+};
+ChangeHistory.prototype.setObjectIndexOrder = function(objectIndexOrder) 
+{
+	this.objectIndexOrder = objectIndexOrder;
+};
+
+ChangeHistory.prototype.getLatitude = function() 
+{
+	return this.latitude;
+};
+ChangeHistory.prototype.setLatitude = function(latitude) 
+{
+	this.latitude = latitude;
+};
+
+ChangeHistory.prototype.getLongitude = function() 
+{
+	return this.longitude;
+};
+ChangeHistory.prototype.setLongitude = function(longitude) 
+{
+	this.longitude = longitude;
+};
+
+ChangeHistory.prototype.getElevation = function() 
+{
+	return this.elevation;
+};
+ChangeHistory.prototype.setElevation = function(elevation) 
+{
+	this.elevation = elevation;
+};
+
+ChangeHistory.prototype.getHeading = function() 
+{
+	return this.heading;
+};
+ChangeHistory.prototype.setHeading = function(heading) 
+{
+	this.heading = heading;
+};
+
+ChangeHistory.prototype.getPitch = function() 
+{
+	return this.pitch;
+};
+ChangeHistory.prototype.setPitch = function(pitch) 
+{
+	this.pitch = pitch;
+};
+
+ChangeHistory.prototype.getRoll = function() 
+{
+	return this.roll;
+};
+ChangeHistory.prototype.setRoll = function(roll) 
+{
+	this.roll = roll;
+};
+
+ChangeHistory.prototype.getColor = function() 
+{
+	return this.color;
+};
+ChangeHistory.prototype.setColor = function(color) 
+{
+	this.color = color;
+};
+ChangeHistory.prototype.getRgbColor = function() 
+{
+	return this.rgbColor;
+};
+ChangeHistory.prototype.setRgbColor = function(rgbColor) 
+{
+	this.rgbColor = rgbColor;
+};
+
+ChangeHistory.prototype.getProperty = function() 
+{
+	return this.property;
+};
+ChangeHistory.prototype.setProperty = function(property) 
+{
+	this.property = property;
+};
+ChangeHistory.prototype.getPropertyKey = function() 
+{
+	return this.propertyKey;
+};
+ChangeHistory.prototype.setPropertyKey = function(propertyKey) 
+{
+	this.propertyKey = propertyKey;
+};
+ChangeHistory.prototype.getPropertyValue = function() 
+{
+	return this.propertyValue;
+};
+ChangeHistory.prototype.setPropertyValue = function(propertyValue) 
+{
+	this.propertyValue = propertyValue;
+};
+
+ChangeHistory.prototype.getDuration = function()
+{
+	return this.duration;
+};
+ChangeHistory.prototype.setDuration = function(duration)
+{
+	this.duration = duration;
+};
+
+ChangeHistory.prototype.getObjectMoveMode = function() 
+{
+	return this.objectMoveMode;
+};
+ChangeHistory.prototype.setObjectMoveMode = function(objectMoveMode) 
+{
+	this.objectMoveMode = objectMoveMode;
+};
+"use strict";
+
+var CODE = {};
+
+// magoManager가 다 로딩 되지 않은 상태에서 화면으로 부터 호출 되는 것을 막기 위해
+CODE.magoManagerState = {
+	"INIT"   	: 0,
+	"STARTED"	: 1,
+	"READY"   : 2
+};
+
+//0 = no started to load. 1 = started loading. 2 = finished loading. 3 = parse started. 4 = parse finished.
+CODE.fileLoadState = {
+	"READY"            : 0,
+	"LOADING_STARTED"  : 1,
+	"LOADING_FINISHED" : 2,
+	"PARSE_STARTED"    : 3,
+	"PARSE_FINISHED"   : 4,
+	"IN_QUEUE"         : 5,
+	"IN_PARSE_QUEUE"   : 6,
+	"BINDING_STARTED"  : 7,
+	"BINDING_FINISHED" : 8,
+	"LOAD_FAILED"      : 9
+};
+
+CODE.moveMode = {
+	"ALL"              : "0",
+	"OBJECT"           : "1",
+	"GEOGRAPHICPOINTS" : "2",
+	"NONE"             : "3"
+};
+
+CODE.magoMode = {
+	"NORMAL"  : 0,
+	"DRAWING" : 1
+};
+
+CODE.magoCurrentProcess = {
+	"Unknown"                    : 0,
+	"DepthRendering"             : 1,
+	"ColorRendering"             : 2,
+	"ColorCodeRendering"         : 3,
+	"DepthShadowRendering"       : 4,
+	"SilhouetteDepthRendering"   : 5,
+	"StencilSilhouetteRendering" : 6
+};
+
+CODE.modelerMode = {
+	"INACTIVE"                 : 0,
+	"DRAWING_POLYLINE"         : 1,
+	"DRAWING_PLANEGRID"        : 2,
+	"DRAWING_GEOGRAPHICPOINTS" : 3,
+	"DRAWING_EXCAVATIONPOINTS" : 4,
+	"DRAWING_TUNNELPOINTS"     : 5,
+	"DRAWING_BSPLINE"          : 6,
+	"DRAWING_BASICFACTORY"     : 7,
+	"DRAWING_STATICGEOMETRY"   : 8,
+	"DRAWING_PIPE"             : 9,
+	"DRAWING_SPHERE"           : 10,
+	"DRAWING_BOX"              : 11,
+	"DRAWING_CUTTINGPLANE"     : 12,
+	"DRAWING_CLIPPINGBOX"      : 13,
+	"DRAWING_CONCENTRICTUBES"  : 14,
+	"DRAWING_TUBE"             : 15,
+	"DRAWING_FREECONTOURWALL"  : 16,
+	"DRAWING_CYLYNDER"         : 17
+};
+
+CODE.boxFace = {
+	"UNKNOWN" : 0,
+	"LEFT"    : 1,
+	"RIGHT"   : 2,
+	"FRONT"   : 3,
+	"REAR"    : 4,
+	"TOP"     : 5,
+	"BOTTOM"  : 6
+};
+
+CODE.modelerDrawingState = {
+	"NO_STARTED" : 0,
+	"STARTED"    : 1
+};
+
+CODE.modelerDrawingElement = {
+	"NOTHING"          : 0,
+	"POINTS"           : 1,
+	"LINES"            : 2,
+	"POLYLINES"        : 3,
+	"GEOGRAPHICPOINTS" : 4,
+};
+
+CODE.units = {
+	"METRE"  : 0,
+	"DEGREE" : 1,
+	"RADIAN" : 2
+};
+
+
+CODE.trackMode = {
+	"TRACKING" : 0,
+	"DRIVER"   : 1
+};
+
+CODE.movementType = {
+	"NO_MOVEMENT" : 0,
+	"TRANSLATION" : 1,
+	"ROTATION"    : 2,
+	"ROTATION_ZX" : 3
+};
+
+CODE.imageryType = {
+	"UNKNOWN"      : 0,
+	"CRS84"        : 1,
+	"WEB_MERCATOR" : 2
+};
+
+CODE.animationType = {
+	"UNKNOWN"         : 0,
+	"REALTIME_POINTS" : 1,
+	"PATH"            : 2
+};
+
+CODE.relativePosition2D = {
+	"UNKNOWN"    : 0,
+	"LEFT"       : 1,
+	"RIGHT"      : 2,
+	"COINCIDENT" : 3
+};
+
+CODE.PROJECT_ID_PREFIX = "projectId_";
+CODE.PROJECT_DATA_FOLDER_PREFIX = "projectDataFolder_";
+
+'use strict';
+
+/**
+ * 상수 설정
+ * @class Constant
+ */
+var Constant = {};
+
+Constant.CESIUM = "cesium";
+Constant.WORLDWIND = "worldwind";
+Constant.MAGOWORLD = "magoworld";
+Constant.OBJECT_INDEX_FILE = "/objectIndexFile.ihe";
+Constant.TILE_INDEX_FILE = "/smartTile_f4d_indexFile.sii";
+Constant.CACHE_VERSION = "?cache_version=";
+Constant.SIMPLE_BUILDING_TEXTURE3x3_BMP = "/SimpleBuildingTexture3x3.bmp";
+Constant.RESULT_XDO2F4D = "/Result_xdo2f4d/Images/";
+Constant.RESULT_XDO2F4D_TERRAINTILES = "/Result_xdo2f4d/F4D_TerrainTiles/";
+Constant.RESULT_XDO2F4D_TERRAINTILEFILE_TXT = "/Result_xdo2f4d/f4dTerranTileFile.txt";
+
+Constant.INTERSECTION_OUTSIDE = 0;
+Constant.INTERSECTION_INTERSECT= 1;
+Constant.INTERSECTION_INSIDE = 2;
+Constant.INTERSECTION_POINT_A = 3;
+Constant.INTERSECTION_POINT_B = 4;
+
+'use strict';
+
+/**
+ * mago3D 전체 환경 설정을 관리
+ * @class MagoConfig
+ */
+var MagoConfig = {};
+
+MagoConfig.setContainerId = function(containerId) 
+{
+	this.containerId = containerId;
+};
+
+MagoConfig.getContainerId = function() 
+{
+	return this.containerId;
+};
+
+MagoConfig.getPolicy = function() 
+{
+	return this.serverPolicy;
+};
+
+MagoConfig.getGeoserver = function() 
+{
+	return this.geoserver;
+};
+
+MagoConfig.getData = function(key) 
+{
+	return this.dataObject[key];
+};
+
+MagoConfig.isDataExist = function(key) 
+{
+	return this.dataObject.hasOwnProperty(key);
+};
+
+MagoConfig.deleteData = function(key) 
+{
+	return delete this.dataObject[key];
+};
+
+/**
+ * data 를 map에 저장
+ * @param key map에 저장될 key
+ * @param value map에 저장될 value
+ */
+MagoConfig.setData = function(key, value) 
+{
+	if (!this.isDataExist(key)) 
+	{
+		this.dataObject[key] = value;
+	}
+};
+
+/**
+ * F4D Converter 실행 결과물이 저장된 project data folder 명을 획득
+ * @param projectDataFolder data folder
+ */
+MagoConfig.getProjectDataFolder = function(projectDataFolder) 
+{
+	var key = CODE.PROJECT_DATA_FOLDER_PREFIX + projectDataFolder;
+	return this.dataObject[key];
+};
+
+/**
+ * project map에 data folder명의 존재 유무를 검사
+ * @param projectDataFolder
+ */
+MagoConfig.isProjectDataFolderExist = function(projectDataFolder) 
+{
+	var key = CODE.PROJECT_DATA_FOLDER_PREFIX + projectDataFolder;
+	return this.dataObject.hasOwnProperty(key);
+};
+
+/**
+ * project data folder명을 map에서 삭제
+ * @param projectDataFolder
+ */
+MagoConfig.deleteProjectDataFolder = function(projectDataFolder) 
+{
+	var key = CODE.PROJECT_DATA_FOLDER_PREFIX + projectDataFolder;
+	return delete this.dataObject[key];
+};
+
+/**
+ * project data folder명을 Object에서 삭제
+ * @param projectDataFolder Object에 저장될 key
+ * @param value Object에 저장될 value
+ */
+MagoConfig.setProjectDataFolder = function(projectDataFolder, value) 
+{
+	var key = CODE.PROJECT_DATA_FOLDER_PREFIX + projectDataFolder;
+	if (!this.isProjectDataFolderExist(key))
+	{
+		this.dataObject[key] = value;
+	}
+};
+
+/**
+ * 환경설정 초기화
+ * @param serverPolicy mago3d policy(json)
+ * @param projectIdArray data 정보를 map 저장할 key name
+ * @param projectDataArray data 정보(json)
+ */
+MagoConfig.init = function(serverPolicy, projectIdArray, projectDataArray) 
+{
+	if (!serverPolicy || !serverPolicy instanceof Object) 
+	{
+		throw new Error('geopolicy is required object.');
+	}
+	this.dataObject = {};
+	
+	this.selectHistoryObject = {};
+	this.movingHistoryObject = {};
+	this.colorHistoryObject = {};
+	this.locationAndRotationHistoryObject = {};
+
+	this.serverPolicy = serverPolicy;
+	this.twoDimension = false;
+	if (!this.serverPolicy.basicGlobe) { this.serverPolicy.basicGlobe = Constant.CESIUM; }
+
+	this.serverPolicy.online = true;
+
+	if (this.serverPolicy.geoserverEnable) 
+	{
+		this.geoserver = new GeoServer();
+
+		var info = {
+			"wmsVersion"    : this.serverPolicy.geoserverWmsVersion,
+			"dataUrl"       : this.serverPolicy.geoserverDataUrl,
+			"dataWorkspace" : this.serverPolicy.geoserverDataWorkspace,
+			"dataStore"     : this.serverPolicy.geoserverDataStore,
+			"user"          : this.serverPolicy.geoserverUser,
+			"password"      : this.serverPolicy.geoserverPassword
+		};
+		this.geoserver.setServerInfo(info);
+	}
+
+
+	if (projectIdArray && projectIdArray.length > 0) 
+	{
+		for (var i=0; i<projectIdArray.length; i++) 
+		{
+			if (!this.isDataExist(CODE.PROJECT_ID_PREFIX + projectIdArray[i])) 
+			{
+				this.setData(CODE.PROJECT_ID_PREFIX + projectIdArray[i], projectDataArray[i]);
+				this.setProjectDataFolder(CODE.PROJECT_DATA_FOLDER_PREFIX + projectDataArray[i].data_key, projectDataArray[i].data_key);
+			}
+		}
+	}
+};
+
+/**
+ * 모든 데이터를 삭제함
+ */
+MagoConfig.clearAllData = function() 
+{
+	this.dataObject = {};
+};
+
+/**
+ * 모든 선택 히스토리 삭제
+ */
+MagoConfig.clearSelectHistory = function() 
+{
+	this.selectHistoryObject = {};
+};
+
+/**
+ * 모든 object 선택 내용 이력을 취득
+ */
+MagoConfig.getAllSelectHistory = function()
+{
+	return this.selectHistoryObject;
+};
+
+/**
+ * project 별 해당 키에 해당하는 모든 object 선택 내용 이력을 취득
+ */
+MagoConfig.getSelectHistoryObjects = function(projectId, dataKey)
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.selectHistoryObject[projectId];
+	if (projectIdObject === undefined) { return undefined; }
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	return dataKeyObject;
+};
+
+/**
+ * object 선택 내용 이력을 취득
+ */
+MagoConfig.getSelectHistoryObject = function(projectId, dataKey, objectIndexOrder)
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.selectHistoryObject[projectId];
+	if (projectIdObject === undefined) { return undefined; }
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	if (dataKeyObject === undefined) { return undefined; }
+	// objectIndexOrder 를 저장
+	return dataKeyObject[objectIndexOrder];
+};
+
+/**
+ * object 선택 내용을 저장
+ */
+MagoConfig.saveSelectHistory = function(projectId, dataKey, objectIndexOrder, changeHistory) 
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.selectHistoryObject.get(projectId);
+	if (projectIdObject === undefined)
+	{
+		projectIdObject = {};
+		this.selectHistoryObject[projectId] = projectIdObject;
+	}
+	
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	if (dataKeyObject === undefined)
+	{
+		dataKeyObject = {};
+		projectIdObject[dataKey] = dataKeyObject;
+	}
+	
+	// objectIndexOrder 를 저장
+	dataKeyObject[objectIndexOrder] = changeHistory;
+};
+
+/**
+ * object 선택 내용을 삭제
+ */
+MagoConfig.deleteSelectHistoryObject = function(projectId, dataKey, objectIndexOrder)
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.selectHistoryObject[projectId];
+	if (projectIdObject === undefined) { return undefined; }
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	if (dataKeyObject === undefined) { return undefined; }
+	// objectIndexOrder 를 저장
+	return delete dataKeyObject[objectIndexOrder];
+};
+
+/**
+ * 모든 이동 히스토리 삭제
+ */
+MagoConfig.clearMovingHistory = function() 
+{
+	this.movingHistoryObject = {};
+};
+
+/**
+ * 모든 object 선택 내용 이력을 취득
+ */
+MagoConfig.getAllMovingHistory = function()
+{
+	return this.movingHistoryObject;
+};
+
+/**
+ * project별 입력키 값과 일치하는 object 이동 내용 이력을 취득
+ */
+MagoConfig.getMovingHistoryObjects = function(projectId, dataKey)
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.movingHistoryObject[projectId];
+	if (projectIdObject === undefined) { return undefined; }
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	return dataKeyObject;
+};
+
+/**
+ * object 이동 내용 이력을 취득
+ */
+MagoConfig.getMovingHistoryObject = function(projectId, dataKey, objectIndexOrder)
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.movingHistoryObject[projectId];
+	if (projectIdObject === undefined) { return undefined; }
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	if (dataKeyObject === undefined) { return undefined; }
+	// objectIndexOrder 를 저장
+	return dataKeyObject[objectIndexOrder];
+};
+
+/**
+ * object 이동 내용을 저장
+ */
+MagoConfig.saveMovingHistory = function(projectId, dataKey, objectIndexOrder, changeHistory) 
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.movingHistoryObject[projectId];
+	if (projectIdObject === undefined)
+	{
+		projectIdObject = {};
+		this.movingHistoryObject[projectId] = projectIdObject;
+	}
+	
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	if (dataKeyObject === undefined)
+	{
+		dataKeyObject = {};
+		projectIdObject[dataKey] = dataKeyObject;
+	}
+	
+	// objectIndexOrder 를 저장
+	dataKeyObject[objectIndexOrder] = changeHistory;
+};
+
+/**
+ * object 이동 내용을 삭제
+ */
+MagoConfig.deleteMovingHistoryObject = function(projectId, dataKey, objectIndexOrder)
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.movingHistoryObject[projectId];
+	if (projectIdObject === undefined) { return undefined; }
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	if (dataKeyObject === undefined) { return undefined; }
+	// objectIndexOrder 를 저장
+	return delete dataKeyObject[objectIndexOrder];
+};
+
+/**
+ * 모든 색깔 변경 이력을 획득
+ */
+MagoConfig.getAllColorHistory = function() 
+{
+	return this.colorHistoryObject;
+};
+
+/**
+ * 모든 색깔변경 히스토리 삭제
+ */
+MagoConfig.clearColorHistory = function() 
+{
+	this.colorHistoryObject = {};
+};
+
+/**
+ * project별 키에 해당하는 모든 색깔 변경 이력을 획득
+ */
+MagoConfig.getColorHistorys = function(projectId, dataKey)
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.colorHistoryObject[projectId];
+	if (projectIdObject === undefined) { return undefined; }
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	return dataKeyObject;
+};
+
+/**
+ * 색깝 변경 이력을 획득
+ */
+MagoConfig.getColorHistory = function(projectId, dataKey, objectId)
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.colorHistoryObject[projectId];
+	if (projectIdObject === undefined) { return undefined; }
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	if (dataKeyObject === undefined) { return undefined; }
+	// objectId 를 저장
+	return dataKeyObject[objectId];
+};
+
+/**
+ * 색깝 변경 내용을 저장
+ */
+MagoConfig.saveColorHistory = function(projectId, dataKey, objectId, changeHistory) 
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.colorHistoryObject[projectId];
+	if (projectIdObject === undefined)
+	{
+		projectIdObject = {};
+		this.colorHistoryObject[projectId] = projectIdObject;
+	}
+	
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	if (dataKeyObject === undefined)
+	{
+		dataKeyObject = {};
+		projectIdObject[dataKey] = dataKeyObject;
+	}
+
+	if (objectId === null || objectId === "") 
+	{
+		dataKeyObject[dataKey] = changeHistory;
+	}
+	else 
+	{
+		dataKeyObject[objectId] = changeHistory;
+	}
+};
+
+/**
+ * 색깔 변경 이력을 삭제
+ */
+MagoConfig.deleteColorHistory = function(projectId, dataKey, objectId)
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.colorHistoryObject[projectId];
+	if (projectIdObject === undefined) { return undefined; }
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	if (dataKeyObject === undefined) { return undefined; }
+	// objectIndexOrder 를 저장
+	return delete dataKeyObject[objectId];
+};
+
+/**
+ * 모든 색깔변경 히스토리 삭제
+ */
+MagoConfig.clearColorHistory = function() 
+{
+	this.colorHistoryObject = {};
+};
+
+/**
+ * 모든 location and rotation 변경 이력을 획득
+ */
+MagoConfig.getAllLocationAndRotationHistory = function() 
+{
+	return this.locationAndRotationHistoryObject;
+};
+
+/**
+ * 프로젝트별 해당 키 값을 갖는 모든 location and rotation 이력을 획득
+ */
+MagoConfig.getLocationAndRotationHistorys = function(projectId, dataKey)
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.locationAndRotationHistoryObject[projectId];
+	if (projectIdObject === undefined) { return undefined; }
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	return dataKeyObject;
+};
+
+/**
+ * location and rotation 이력을 획득
+ */
+MagoConfig.getLocationAndRotationHistory = function(projectId, dataKey)
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.locationAndRotationHistoryObject[projectId];
+	if (projectIdObject === undefined) { return undefined; }
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	
+	return dataKeyObject;
+};
+
+/**
+ * location and rotation 내용을 저장
+ */
+MagoConfig.saveLocationAndRotationHistory = function(projectId, dataKey, changeHistory) 
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.locationAndRotationHistoryObject[projectId];
+	if (projectIdObject === undefined)
+	{
+		projectIdObject = {};
+		this.locationAndRotationHistoryObject[projectId] = projectIdObject;
+	}
+	
+	// dataKey 별 Object을 검사
+	var dataKeyObject = projectIdObject[dataKey];
+	if (dataKeyObject === undefined)
+	{
+		dataKeyObject = {};
+	}
+
+	dataKeyObject[dataKey] = changeHistory;
+};
+
+/**
+ * location and rotation 이력을 삭제
+ */
+MagoConfig.deleteLocationAndRotationHistory = function(projectId, dataKey)
+{
+	// projectId 별 Object을 검사
+	var projectIdObject = this.locationAndRotationHistoryObject[projectId];
+	if (projectIdObject === undefined) { return undefined; }
+	// dataKey 별 Object을 검사
+	var dataKeyObject = delete projectIdObject[dataKey];
+};
+
+/**
+ * 모든 location and rotation 히스토리 삭제
+ */
+MagoConfig.clearLocationAndRotationHistory = function() 
+{
+	this.locationAndRotationHistoryObject = {};
+};
+	
+/**
+ * TODO 이건 나중에 활요. 사용하지 않음
+ * check 되지 않은 데이터들을 삭제함
+ * @param keyObject 비교할 맵
+ */
+/*MagoConfig.clearUnSelectedData = function(keyObject)
+{
+	for (var key of this.dataObject.keys())
+	{
+		if (!keyObject.hasxxxxx(key))
+		{
+			// data folder path가 존재하면....
+			if (key.indexOf(CODE.PROJECT_DATA_FOLDER_PREFIX) >= 0) 
+			{
+				// 지우는 처리가 있어야 함
+			}
+			this.dataObject.delete(key);
+		}
+	}
+};*/
+
+MagoConfig.setTwoDimension = function(twoDimension) 
+{
+	this.twoDimension = twoDimension;
+};
+MagoConfig.isTwoDimension = function()
+{
+	return this.twoDimension;
+};
+'use strict';
+
+/**
+ * Policy
+ * @class Policy
+ */
+var Policy = function() 
+{
+	if (!(this instanceof Policy)) 
+	{
+		throw new Error(Messages.CONSTRUCT_ERROR);
+	}
+
+	// mago3d 활성화/비활성화 여부
+	this.magoEnable = true;
+
+	// outfitting 표시 여부
+	this.showOutFitting = false;
+	// label 표시/비표시
+	this.showLabelInfo = false;
+	// boundingBox 표시/비표시
+	this.showBoundingBox = false;
+	// 그림자 표시/비표시
+	this.showShadow = false;
+	// squared far frustum 거리
+	this.frustumFarSquaredDistance = 5000000;
+	// far frustum
+	this.frustumFarDistance = 20000;
+
+	// highlighting
+	this.highLightedBuildings = [];
+	// color
+	this.colorBuildings = [];
+	// color
+	this.color = [];
+	// show/hide
+	this.hideBuildings = [];
+	// move mode
+	this.objectMoveMode = CODE.moveMode.NONE;
+	// 이슈 등록 표시
+	this.issueInsertEnable = false;
+	// object 정보 표시
+	this.objectInfoViewEnable = false;
+	// 이슈 목록 표시
+	this.nearGeoIssueListEnable = false;
+	// occlusion culling
+	this.occlusionCullingEnable = false;
+	// origin axis XYZ
+	this.showOrigin = false;
+	// mago generalMode
+	this.magoMode = CODE.magoMode.NORMAL;
+	
+	// 이미지 경로
+	this.imagePath = "";
+	
+	// provisional.
+	this.colorChangedObjectId;
+	
+	// LOD1
+	this.lod0DistInMeters = 15;
+	this.lod1DistInMeters = 50;
+	this.lod2DistInMeters = 90;
+	this.lod3DistInMeters = 200;
+	this.lod4DistInMeters = 1000;
+	this.lod5DistInMeters = 50000;
+	
+	// Lighting
+	this.ambientReflectionCoef = 0.45; // 0.2.
+	this.diffuseReflectionCoef = 0.75; // 1.0
+	this.specularReflectionCoef = 0.6; // 0.7
+	this.ambientColor = null;
+	this.specularColor = new Float32Array([0.6, 0.6, 0.6]);
+	
+	this.ssaoRadius = 0.15;
+	
+	var policy = MagoConfig.getPolicy();
+	// PointsCloud.
+	this.pointsCloudSettings = {};
+	if (defined(policy)) 
+	{
+		this.pointsCloudSettings.maxPartitionsLod0 = defaultValueCheckLength(policy.maxPartitionsLod0, 4);
+		this.pointsCloudSettings.maxPartitionsLod1 = defaultValueCheckLength(policy.maxPartitionsLod1, 2);
+		this.pointsCloudSettings.maxPartitionsLod2orLess = defaultValueCheckLength(policy.maxPartitionsLod2OrLess, 1);
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam0m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist0m, 10.0);
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam100m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist100m, 120.0);
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam200m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist200m, 240.0);
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam400m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist400m, 480.0);
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam800m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist800m, 960.0);
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam1600m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDist1600m, 1920.0);
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCamMoreThan1600m = 1.0/defaultValueCheckLength(policy.maxRatioPointsDistOver1600m, 3840.0);
+		this.pointsCloudSettings.maxPointSize = defaultValueCheckLength(policy.maxPointSizeForPc, 40.0);
+		this.pointsCloudSettings.minPointSize = defaultValueCheckLength(policy.minPointSizeForPc, 3.0);
+		this.pointsCloudSettings.pendentPointSize = defaultValueCheckLength(policy.pendentPointSizeForPc, 60.0);
+		this.pointsCloudSettings.minHeightRainbow = defaultValueCheckLength(policy.minHeight_rainbow_loc, 0.0);
+		this.pointsCloudSettings.maxHeightRainbow = defaultValueCheckLength(policy.maxHeight_rainbow_loc, 100.0);
+	}
+	else 
+	{
+		this.pointsCloudSettings.maxPartitionsLod0 = 4;
+		this.pointsCloudSettings.maxPartitionsLod1 = 2;
+		this.pointsCloudSettings.maxPartitionsLod2orLess = 1;
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam0m = 1.0/10.0;
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam100m = 1.0/120.0;
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam200m = 1.0/240.0;
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam400m = 1.0/480.0;
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam800m = 1.0/960.0;
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCam1600m = 1.0/1920.0;
+		this.pointsCloudSettings.MaxPerUnitPointsRenderDistToCamMoreThan1600m = 1.0/3840.0;
+		this.pointsCloudSettings.maxPointSize = 40.0;
+		this.pointsCloudSettings.minPointSize = 3.0;
+		this.pointsCloudSettings.pendentPointSize = 60.0;
+		this.pointsCloudSettings.minHeightRainbow = 0.0;
+		this.pointsCloudSettings.maxHeightRainbow = 100.0;
+	}
+};
+
+Policy.prototype.getPointsCloudSettings = function() 
+{
+	return this.pointsCloudSettings;
+};
+
+Policy.prototype.getShowOrigin = function() 
+{
+	return this.showOrigin;
+};
+Policy.prototype.setShowOrigin = function(showOrigin) 
+{
+	this.showOrigin = showOrigin;
+};
+
+Policy.prototype.getMagoEnable = function() 
+{
+	return this.magoEnable;
+};
+Policy.prototype.setMagoEnable = function(magoEnable) 
+{
+	this.magoEnable = magoEnable;
+};
+
+Policy.prototype.getShowOutFitting = function() 
+{
+	return this.showOutFitting;
+};
+Policy.prototype.setShowOutFitting = function(showOutFitting) 
+{
+	this.showOutFitting = showOutFitting;
+};
+Policy.prototype.getShowLabelInfo = function() 
+{
+	return this.showLabelInfo;
+};
+Policy.prototype.setShowLabelInfo = function(showLabelInfo) 
+{
+	this.showLabelInfo = showLabelInfo;
+};
+Policy.prototype.getShowBoundingBox = function() 
+{
+	return this.showBoundingBox;
+};
+Policy.prototype.setShowBoundingBox = function(showBoundingBox) 
+{
+	this.showBoundingBox = showBoundingBox;
+};
+
+Policy.prototype.getShowShadow = function() 
+{
+	return this.showShadow;
+};
+Policy.prototype.setShowShadow = function(showShadow) 
+{
+	this.showShadow = showShadow;
+};
+
+Policy.prototype.getFrustumFarSquaredDistance = function() 
+{
+	return this.frustumFarSquaredDistance;
+};
+Policy.prototype.setFrustumFarSquaredDistance = function(frustumFarSquaredDistance) 
+{
+	this.frustumFarSquaredDistance = frustumFarSquaredDistance;
+};
+
+Policy.prototype.getFrustumFarDistance = function() 
+{
+	return this.frustumFarDistance;
+};
+Policy.prototype.setFrustumFarDistance = function(frustumFarDistance) 
+{
+	this.frustumFarDistance = frustumFarDistance;
+};
+
+Policy.prototype.getHighLightedBuildings = function() 
+{
+	return this.highLightedBuildings;
+};
+Policy.prototype.setHighLightedBuildings = function(highLightedBuildings) 
+{
+	this.highLightedBuildings = highLightedBuildings;
+};
+
+Policy.prototype.getColorBuildings = function() 
+{
+	return this.colorBuildings;
+};
+Policy.prototype.setColorBuildings = function(colorBuildings) 
+{
+	this.colorBuildings = colorBuildings;
+};
+
+Policy.prototype.getColor = function() 
+{
+	return this.color;
+};
+Policy.prototype.setColor = function(color) 
+{
+	this.color = color;
+};
+
+Policy.prototype.getHideBuildings = function() 
+{
+	return this.hideBuildings;
+};
+Policy.prototype.setHideBuildings = function(hideBuildings) 
+{
+	this.hideBuildings = hideBuildings;
+};
+
+Policy.prototype.getObjectMoveMode = function() 
+{
+	return this.objectMoveMode;
+};
+Policy.prototype.setObjectMoveMode = function(objectMoveMode) 
+{
+	this.objectMoveMode = objectMoveMode;
+};
+
+Policy.prototype.getMagoMode = function() 
+{
+	return this.magoMode;
+};
+Policy.prototype.setMagoMode = function(magoMode) 
+{
+	this.magoMode = magoMode;
+};
+
+Policy.prototype.getIssueInsertEnable = function() 
+{
+	return this.issueInsertEnable;
+};
+Policy.prototype.setIssueInsertEnable = function(issueInsertEnable) 
+{
+	this.issueInsertEnable = issueInsertEnable;
+};
+Policy.prototype.getObjectInfoViewEnable = function() 
+{
+	return this.objectInfoViewEnable;
+};
+Policy.prototype.setObjectInfoViewEnable = function(objectInfoViewEnable) 
+{
+	this.objectInfoViewEnable = objectInfoViewEnable;
+};
+Policy.prototype.getOcclusionCullingEnable = function() 
+{
+	return this.occlusionCullingEnable;
+};
+Policy.prototype.setOcclusionCullingEnable = function(occlusionCullingEnable) 
+{
+	this.occlusionCullingEnable = occlusionCullingEnable;
+};
+Policy.prototype.getNearGeoIssueListEnable = function() 
+{
+	return this.nearGeoIssueListEnable;
+};
+Policy.prototype.setNearGeoIssueListEnable = function(nearGeoIssueListEnable) 
+{
+	this.nearGeoIssueListEnable = nearGeoIssueListEnable;
+};
+
+Policy.prototype.getImagePath = function() 
+{
+	return this.imagePath;
+};
+Policy.prototype.setImagePath = function(imagePath) 
+{
+	this.imagePath = imagePath;
+};
+
+Policy.prototype.getLod = function(distInMeters) 
+{
+	var lod = -1;
+	if (distInMeters < this.lod0DistInMeters)
+	{ lod = 0; }
+	else if (distInMeters < this.lod1DistInMeters)
+	{ lod = 1; }
+	else if (distInMeters < this.lod2DistInMeters)
+	{ lod = 2; }
+	else if (distInMeters < this.lod3DistInMeters)
+	{ lod = 3; }
+	else if (distInMeters < this.lod4DistInMeters)
+	{ lod = 4; }
+	else 
+	{ lod = 5; }
+	
+	return lod;	
+};
+Policy.prototype.getLod0DistInMeters = function() 
+{
+	return this.lod0DistInMeters;
+};
+Policy.prototype.setLod0DistInMeters = function(lod0DistInMeters) 
+{
+	this.lod0DistInMeters = lod0DistInMeters;
+};
+Policy.prototype.getLod1DistInMeters = function() 
+{
+	return this.lod1DistInMeters;
+};
+Policy.prototype.setLod1DistInMeters = function(lod1DistInMeters) 
+{
+	this.lod1DistInMeters = lod1DistInMeters;
+};
+Policy.prototype.getLod2DistInMeters = function() 
+{
+	return this.lod2DistInMeters;
+};
+Policy.prototype.setLod2DistInMeters = function(lod2DistInMeters) 
+{
+	this.lod2DistInMeters = lod2DistInMeters;
+};
+Policy.prototype.getLod3DistInMeters = function() 
+{
+	return this.lod3DistInMeters;
+};
+Policy.prototype.setLod3DistInMeters = function(lod3DistInMeters) 
+{
+	this.lod3DistInMeters = lod3DistInMeters;
+};
+Policy.prototype.getLod4DistInMeters = function() 
+{
+	return this.lod4DistInMeters;
+};
+Policy.prototype.setLod4DistInMeters = function(lod4DistInMeters) 
+{
+	this.lod4DistInMeters = lod4DistInMeters;
+};
+Policy.prototype.getLod5DistInMeters = function() 
+{
+	return this.lod5DistInMeters;
+};
+Policy.prototype.setLod5DistInMeters = function(lod5DistInMeters) 
+{
+	this.lod5DistInMeters = lod5DistInMeters;
+};
+Policy.prototype.getAmbientReflectionCoef = function() 
+{
+	return this.ambientReflectionCoef;
+};
+Policy.prototype.setAmbientReflectionCoef = function(ambientReflectionCoef) 
+{
+	this.ambientReflectionCoef = ambientReflectionCoef;
+};
+Policy.prototype.getDiffuseReflectionCoef = function() 
+{
+	return this.diffuseReflectionCoef;
+};
+Policy.prototype.setDiffuseReflectionCoef = function(diffuseReflectionCoef) 
+{
+	this.diffuseReflectionCoef = diffuseReflectionCoef;
+};
+Policy.prototype.getSpecularReflectionCoef = function() 
+{
+	return this.specularReflectionCoef;
+};
+Policy.prototype.setSpecularReflectionCoef = function(specularReflectionCoef) 
+{
+	this.specularReflectionCoef = specularReflectionCoef;
+};
+Policy.prototype.getAmbientColor = function() 
+{
+	return this.ambientColor;
+};
+Policy.prototype.setAmbientColor = function(ambientColor) 
+{
+	this.ambientColor = ambientColor;
+};
+Policy.prototype.getSpecularColor = function() 
+{
+	return this.specularColor;
+};
+Policy.prototype.setSpecularColor = function(specularColor) 
+{
+	this.specularColor = specularColor;
+};
+Policy.prototype.getSsaoRadius = function() 
+{
+	return this.ssaoRadius;
+};
+Policy.prototype.setSsaoRadius = function(ssaoRadius) 
+{
+	this.ssaoRadius = ssaoRadius;
+};
+
+'use strict';
+
+/**
  * @alias Effect
  * @class Effect
  */
@@ -43794,11 +43969,13 @@ Lego.prototype.render = function(magoManager, renderType, renderTexture, shader,
 		
 		if (renderTexture && vbo_vicky.vboBufferTCoord !== undefined)
 		{
+			gl.uniform1i(shader.textureFlipYAxis_loc, false);
 			// Provisionally flip tex coords here.
-			if (magoManager.isCesiumGlobe())
+			/*if (magoManager.isCesiumGlobe())
 			{ gl.uniform1i(shader.textureFlipYAxis_loc, false); }//.ppp
 			else
 			{ gl.uniform1i(shader.textureFlipYAxis_loc, true); }//.ppp
+			*/
 			//---------------------------------------------------------------------------
 			
 			shader.disableVertexAttribArray(shader.color4_loc); 
@@ -46557,9 +46734,6 @@ NeoBuilding.prototype.prepareSkin = function(magoManager)
 						var filePath_inServer = geometryDataPath + "/" + projectFolderName + "/" + buildingFolderName + "/" + textureFileName;
 						var gl = magoManager.sceneState.gl;
 						var flip_y_texCoords = true;
-						if (magoManager.configInformation.geo_view_library === Constant.MAGOWORLD)
-						{ flip_y_texCoords = false; }
-						
 						magoManager.readerWriter.readLegoSimpleBuildingTexture(gl, filePath_inServer, lodBuilding.texture, magoManager, flip_y_texCoords); 
 					}
 				}
@@ -46573,9 +46747,6 @@ NeoBuilding.prototype.prepareSkin = function(magoManager)
 					var filePath_inServer = geometryDataPath + "/" + projectFolderName + "/" + buildingFolderName + "/" + textureFileName;
 					var gl = magoManager.sceneState.gl;
 					var flip_y_texCoords = true;
-					if (magoManager.configInformation.geo_view_library === Constant.MAGOWORLD)
-					{ flip_y_texCoords = false; }
-					
 					magoManager.readerWriter.readLegoSimpleBuildingTexture(gl, filePath_inServer, lodBuilding.texture, magoManager, flip_y_texCoords); 
 				}
 			}
@@ -46594,96 +46765,6 @@ NeoBuilding.prototype.prepareSkin = function(magoManager)
 	
 	return true;
 };
-
-/**
- * 어떤 일을 하고 있습니까?
- */
-NeoBuilding.prototype.prepareSkin__original = function(magoManager) 
-{
-	var headerVersion = this.getHeaderVersion();
-	if (headerVersion === undefined)
-	{ return false; }
-	
-	if (headerVersion[0] !== "0")
-	{ return false; }
-
-	// Must respect the lodLoading order: must load the lowerLod if is not loaded.
-	var lodToLoad;
-	lodToLoad = this.getLowerSkinLodToLoad(this.currentLod);
-	var lodBuildingData = this.getLodBuildingData(lodToLoad);
-	if (lodBuildingData === undefined)
-	{ return false; }
-
-	if (lodBuildingData.isModelRef)
-	{ return false; }
-
-	var projectFolderName = this.projectFolderName;
-	var buildingFolderName = this.buildingFileName;
-	var geometryDataPath = magoManager.readerWriter.geometryDataPath;
-	
-	var textureFileName = lodBuildingData.textureFileName;
-	var lodString = lodBuildingData.geometryFileName;
-	
-
-	
-	// check if exist the lodMesh in lodMeshMap.
-	var lowLodMesh = this.getOrNewLodMesh(lodString);
-	lowLodMesh.owner = this;
-	lowLodMesh.textureName = textureFileName;
-	
-
-	
-	if (lowLodMesh.fileLoadState === -1)
-	{
-		// if a lodObject has "fileLoadState" = -1 means that there are no file in server.
-		return false;
-	}
-	
-	if (lowLodMesh.fileLoadState === CODE.fileLoadState.READY) 
-	{
-		if (magoManager.readerWriter.skinLegos_requested < 5)
-		{
-			var lodMeshFilePath = geometryDataPath + "/" + projectFolderName + "/" + buildingFolderName + "/" + lodString;
-			magoManager.readerWriter.getLegoArraybuffer(lodMeshFilePath, lowLodMesh, magoManager);
-			if (lowLodMesh.vbo_vicks_container.vboCacheKeysArray === undefined)
-			{ lowLodMesh.vbo_vicks_container.vboCacheKeysArray = []; }
-		}
-	}
-	else if (lowLodMesh.fileLoadState === CODE.fileLoadState.LOADING_FINISHED) 
-	{
-		////magoManager.parseQueue.putSkinLegosToParse(lowLodMesh);
-		////magoManager.readerWriter.skinLegos_requested ++;
-		
-		lowLodMesh.parseArrayBuffer(lowLodMesh.dataArrayBuffer, magoManager);
-	}
-	
-	else if (lowLodMesh.vbo_vicks_container.vboCacheKeysArray[0] && lowLodMesh.vbo_vicks_container.vboCacheKeysArray[0].vboBufferTCoord)
-	{
-		// this is the new version.
-		if (lowLodMesh.texture === undefined)
-		{
-			lowLodMesh.texture = new Texture();
-			var filePath_inServer = geometryDataPath + "/" + projectFolderName + "/" + buildingFolderName + "/" + textureFileName;
-			var gl = magoManager.sceneState.gl;
-			var flip_y_texCoords = true;
-			if (!magoManager.isCesiumGlobe())
-			{ flip_y_texCoords = false; }
-			
-			magoManager.readerWriter.readLegoSimpleBuildingTexture(gl, filePath_inServer, lowLodMesh.texture, magoManager, flip_y_texCoords); 
-		}
-		else if (lowLodMesh.texture.fileLoadState === CODE.fileLoadState.LOADING_FINISHED && lowLodMesh.texture.texId === undefined)
-		{
-			// then make the image to bind into gpu.
-			var gl = magoManager.sceneState.gl;
-			TexturesManager.newWebGlTextureByEmbeddedImage(gl, lowLodMesh.texture.imageBinaryData, lowLodMesh.texture);
-			magoManager.readerWriter.skinLegos_requested ++;
-		}
-	}
-	
-	
-	return true;
-};
-
 /**
  * 어떤 일을 하고 있습니까?
  */
@@ -46751,7 +46832,6 @@ NeoBuilding.prototype.render = function(magoManager, shader, renderType, refMatr
 		}
 		else
 		{
-			// This building is octree divided type data.
 			var octreesRenderedCount = this.renderDetailed(magoManager, shader, renderType, refMatrixIdxKey, flipYTexCoord);
 			
 			if (this.currentVisibleOctreesControler === undefined)
@@ -47523,26 +47603,28 @@ NeoReference.prototype.solveReferenceColorOrTexture = function(magoManager, neoB
 	else if (neoBuilding.isColorChanged)
 	{
 		gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.
-		if (referenceObjectIsSelected) 
-		{
-			gl.uniform4fv(shader.oneColor4_loc, [255.0/255.0, 0/255.0, 0/255.0, 255.0/255.0]);
-		}
-		else
-		{
-			gl.uniform4fv(shader.oneColor4_loc, [neoBuilding.aditionalColor.r, neoBuilding.aditionalColor.g, neoBuilding.aditionalColor.b, neoBuilding.aditionalColor.a] );
-		}
+		//if (referenceObjectIsSelected) 
+		//{
+		//	gl.uniform4fv(shader.oneColor4_loc, [255.0/255.0, 0/255.0, 0/255.0, 255.0/255.0]);
+		//}
+		//else
+		//{
+		//	gl.uniform4fv(shader.oneColor4_loc, [neoBuilding.aditionalColor.r, neoBuilding.aditionalColor.g, neoBuilding.aditionalColor.b, neoBuilding.aditionalColor.a] );
+		//}
+		gl.uniform4fv(shader.oneColor4_loc, [neoBuilding.aditionalColor.r, neoBuilding.aditionalColor.g, neoBuilding.aditionalColor.b, neoBuilding.aditionalColor.a] );
 	}
 	else if (this.aditionalColor)
 	{
 		gl.uniform1i(shader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.
-		if (referenceObjectIsSelected) 
-		{
-			gl.uniform4fv(shader.oneColor4_loc, [255.0/255.0, 0/255.0, 0/255.0, 255.0/255.0]);
-		}
-		else
-		{
-			gl.uniform4fv(shader.oneColor4_loc, [this.aditionalColor.r, this.aditionalColor.g, this.aditionalColor.b, this.aditionalColor.a] );
-		}
+		//if (referenceObjectIsSelected) 
+		//{
+		//	gl.uniform4fv(shader.oneColor4_loc, [255.0/255.0, 0/255.0, 0/255.0, 255.0/255.0]);
+		//}
+		//else
+		//{
+		//	gl.uniform4fv(shader.oneColor4_loc, [this.aditionalColor.r, this.aditionalColor.g, this.aditionalColor.b, this.aditionalColor.a] );
+		//}
+		gl.uniform4fv(shader.oneColor4_loc, [this.aditionalColor.r, this.aditionalColor.g, this.aditionalColor.b, this.aditionalColor.a] );
 	}
 	else
 	{
@@ -49594,14 +49676,7 @@ Node.prototype.renderContent = function(magoManager, shader, renderType, refMatr
 	if (data.attributes.flipYTexCoords !== undefined)
 	{ flipYTexCoord = data.attributes.flipYTexCoords; }
 
-	if (!magoManager.isCesiumGlobe())
-	{ 
-		flipYTexCoord = true; 
-	}
-
 	gl.uniform1i(shader.textureFlipYAxis_loc, flipYTexCoord);
-	
-	
 	
 	// Check the geoLocationDatasCount & check if is a ghost-trail-render (trail as ghost).
 	var currRenderingFase = magoManager.renderingFase;
@@ -51070,9 +51145,7 @@ Octree.prototype.prepareSkinData = function(magoManager)
 		else 
 		{
 			var flip_y_texCoords = true;
-			if (!magoManager.isCesiumGlobe())
-			{ flip_y_texCoords = false; }
-		
+
 			// This is the version 001.
 			if (neoBuilding.simpleBuilding3x3Texture === undefined)
 			{
@@ -53549,7 +53622,7 @@ ProcessQueue.prototype.putNodeToDeleteModelReferences = function(node, aValue)
 ProcessQueue.prototype.eraseNodeToDeleteModelReferences = function(node)
 {
 	// this erases the node from the "nodesToDeleteModelReferencesMap".
-	if (node.data === undefined || node.data.neoBuilding === undefined)
+	if (!node || node.data === undefined || node.data.neoBuilding === undefined)
 	{ return; }
 	
 	var key = node.data.neoBuilding.buildingId;
@@ -53774,7 +53847,7 @@ ProcessQueue.prototype.manageDeleteQueue = function(magoManager)
 			{ continue; }
 		
 			neoBuilding = node.data.neoBuilding;
-			this.eraseNodeToDeleteModelReferences(neoBuilding);
+			this.eraseNodeToDeleteModelReferences(node);
 			if (neoBuilding === undefined)
 			{ continue; }
 
@@ -55438,7 +55511,7 @@ ReaderWriter.loadImage = function(gl, filePath_inServer, texture)
 		{
 			var textureAux = _gl.createTexture();
 			_gl.bindTexture(_gl.TEXTURE_2D, textureAux);
-			_gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+			//_gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 			_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_WRAP_S, _gl.CLAMP_TO_EDGE);
 			_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_WRAP_T, _gl.CLAMP_TO_EDGE);
 			_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_MIN_FILTER, filter);
@@ -56057,6 +56130,11 @@ TinTerrain.prototype.prepareTinTerrain = function(magoManager, tinTerrainManager
 		// 1rst, try to erase from procesQueue_deleting if exist.
 		magoManager.processQueue.eraseTinTerrainToDelete(this);
 		
+		if (this.depth === 0)
+		{
+			this.fileLoadState = CODE.fileLoadState.LOAD_FAILED;
+		}
+		
 		// Prepare this tinTerrain.
 		if (this.fileLoadState === CODE.fileLoadState.READY)
 		{
@@ -56183,9 +56261,6 @@ TinTerrain.prototype.render = function(currentShader, magoManager, bDepth, rende
 				//	gl.uniform1i(currentShader.colorType_loc, 0); // 0= oneColor, 1= attribColor, 2= texture.
 				//	gl.uniform4fv(currentShader.oneColor4_loc, [0.8, 0.3, 0.1, 1.0]);
 					
-				//if (this.depth === 15)
-				//{ var hola = 0; }
-				//}
 			}
 			// End test.--------------------------------------------------------------------------------------
 			
@@ -56262,6 +56337,8 @@ TinTerrain.prototype.render = function(currentShader, magoManager, bDepth, rende
 					{
 						gl.drawElements(gl.LINE_LOOP, 3, gl.UNSIGNED_SHORT, i*3); // Fill.
 					}
+					
+					this.drawTerrainName(magoManager);
 				}
 			}
 			// End test.--------------------------------------------------------------------------------------
@@ -56310,6 +56387,35 @@ TinTerrain.prototype.render = function(currentShader, magoManager, bDepth, rende
 	}
 	
 	return true;
+};
+
+/**
+ * Draw terrain names on scene.
+ */
+TinTerrain.prototype.drawTerrainName = function(magoManager) 
+{
+	var canvas = magoManager.getObjectLabel();
+	var ctx = canvas.getContext("2d");
+
+	var gl = magoManager.getGl();
+	var screenCoord;
+	
+	// Calculate the middle geoLocation.
+	var midGeoCoord = this.geographicExtent.getMidPoint();
+	var pointWC = ManagerUtils.geographicCoordToWorldPoint(midGeoCoord.longitude, midGeoCoord.latitude, midGeoCoord.altitude, undefined);
+	screenCoord = ManagerUtils.calculateWorldPositionToScreenCoord(gl, pointWC.x, pointWC.y, pointWC.z, screenCoord, magoManager);
+	
+	if (screenCoord.x >= 0 && screenCoord.y >= 0)
+	{
+		ctx.font = "13px Arial";
+		var pathName = this.getPathName();
+		ctx.strokeText(pathName, screenCoord.x, screenCoord.y);
+		ctx.fillText(pathName, screenCoord.x, screenCoord.y);
+		
+		magoManager.canvasDirty = true;
+	}
+	
+	ctx.restore(); 
 };
 
 TinTerrain.prototype.extractLowestTinTerrains = function(resultLowestTilesArray)
@@ -56515,7 +56621,8 @@ TinTerrain.prototype.calculateCenterPosition = function()
 {
 	// Note: The centerPosition is Float64Array type.
 	// The centerPosition of tiles are calculate with "altitude" = 0;.
-	// Note: if the earth is made in only 1 tile, then this calculations is no correct.
+	// Note: if the earth is made in only 1 tile, then this calculations is bad.
+
 	var altitude = 0.0;
 	var resultGeographicCoord;
 	resultGeographicCoord = this.geographicExtent.getMidPoint(resultGeographicCoord);
@@ -56530,6 +56637,7 @@ TinTerrain.prototype.calculateCenterPosition = function()
 	this.centerX = new Float64Array([resultCartesian[0]]);
 	this.centerY = new Float64Array([resultCartesian[1]]);
 	this.centerZ = new Float64Array([resultCartesian[2]]);
+	
 };
 
 TinTerrain.prototype.getMidLatitudeRadWebMercator = function()
@@ -56660,7 +56768,34 @@ TinTerrain.prototype.makeMeshVirtually = function(lonSegments, latSegments, alti
 		}
 	}
 	
+	
+	
 	this.cartesiansArray = Globe.geographicRadianArrayToFloat32ArrayWgs84(lonArray, latArray, altArray, this.cartesiansArray);
+	
+	/*
+	// test code.**************************************
+	var cartesianAux = [];
+	var radToDegFactor = 180.0/Math.PI;
+	var coordsCount = lonArray.length;
+	for (var i=0; i<coordsCount; i++)
+	{
+		var lonDeg = lonArray[i] * radToDegFactor;
+		var latDeg = latArray[i] * radToDegFactor;
+		var alt = altArray[i];
+		
+		var posWC = ManagerUtils.geographicCoordToWorldPoint(lonDeg, latDeg, alt, undefined);
+		cartesianAux.push(posWC.x);
+		cartesianAux.push(posWC.y);
+		cartesianAux.push(posWC.z);
+	}
+	
+	for (var i=0; i<coordsCount; i++)
+	{
+		if (Math.abs(cartesianAux[i] - this.cartesiansArray[i]) > 10.0)
+		{ var hola = 0; }
+	}
+	// end test code.----------------------------------
+	*/
 	
 	// Make normals using the cartesians.***
 	this.normalsArray = new Int8Array(vertexCount*3);
@@ -56678,8 +56813,30 @@ TinTerrain.prototype.makeMeshVirtually = function(lonSegments, latSegments, alti
 	// finally make indicesArray.
 	var numCols = lonSegments + 1;
 	var numRows = latSegments + 1;
-
-	this.indices = GeometryUtils.getIndicesTrianglesRegularNet(numCols, numRows, undefined);
+	var options = {
+		bCalculateBorderIndices: true
+	};
+	var resultObject = GeometryUtils.getIndicesTrianglesRegularNet(numCols, numRows, undefined, undefined, undefined, undefined, undefined, options);
+	this.indices = resultObject.indicesArray;
+	this.southIndices = resultObject.southIndicesArray;
+	this.eastIndices = resultObject.eastIndicesArray;
+	this.northIndices = resultObject.northIndicesArray;
+	this.westIndices = resultObject.westIndicesArray;
+	
+	this.westVertexCount = this.westIndices.length;
+	this.southVertexCount = this.southIndices.length;
+	this.eastVertexCount = this.eastIndices.length;
+	this.northVertexCount = this.northIndices.length;
+	
+	// make skirtMesh data.
+	var options = {
+		skirtDepth          : 50000,
+		texCorrectionFactor : texCorrectionFactor
+	};
+	var skirtResultObject = TinTerrain.getSkirtTrianglesStrip(lonArray, latArray, altArray, this.texCoordsArray, this.southIndices, this.eastIndices, this.northIndices, this.westIndices, options);
+	this.skirtCartesiansArray = skirtResultObject.skirtCartesiansArray;
+	this.skirtTexCoordsArray = skirtResultObject.skirtTexCoordsArray;
+	
 	this.calculateCenterPosition();
 };
 
@@ -56772,8 +56929,21 @@ TinTerrain.prototype.makeMeshVirtuallyCRS84 = function(lonSegments, latSegments,
 	// finally make indicesArray.
 	var numCols = lonSegments + 1;
 	var numRows = latSegments + 1;
-
-	this.indices = GeometryUtils.getIndicesTrianglesRegularNet(numCols, numRows, undefined);
+	var options = {
+		bCalculateBorderIndices: true
+	};
+	var resultObject = GeometryUtils.getIndicesTrianglesRegularNet(numCols, numRows, undefined, undefined, undefined, undefined, undefined, options);
+	this.indices = resultObject.indicesArray;
+	this.southIndices = resultObject.southIndicesArray;
+	this.eastIndices = resultObject.eastIndicesArray;
+	this.northIndices = resultObject.northIndicesArray;
+	this.westIndices = resultObject.westIndicesArray;
+	
+	this.westVertexCount = this.westIndices.length;
+	this.southVertexCount = this.southIndices.length;
+	this.eastVertexCount = this.eastIndices.length;
+	this.northVertexCount = this.northIndices.length;
+	
 	this.calculateCenterPosition();
 };
 
@@ -56791,9 +56961,9 @@ TinTerrain.prototype.makeVbo = function(vboMemManager)
 	var coordsCount = this.cartesiansArray.length/3;
 	for (var i=0; i<coordsCount; i++)
 	{
-		this.cartesiansArray[i*3] -= this.centerX;
-		this.cartesiansArray[i*3+1] -= this.centerY;
-		this.cartesiansArray[i*3+2] -= this.centerZ;
+		this.cartesiansArray[i*3] -= this.centerX[0];
+		this.cartesiansArray[i*3+1] -= this.centerY[0];
+		this.cartesiansArray[i*3+2] -= this.centerZ[0];
 	}
 	
 	if (this.terrainPositionHIGH === undefined)
@@ -56833,9 +57003,9 @@ TinTerrain.prototype.makeVbo = function(vboMemManager)
 	var skirtCartasiansCount = this.skirtCartesiansArray.length;
 	for (var i=0; i<skirtCartasiansCount; i++)
 	{
-		this.skirtCartesiansArray[i*3] -= this.centerX;
-		this.skirtCartesiansArray[i*3+1] -= this.centerY;
-		this.skirtCartesiansArray[i*3+2] -= this.centerZ;
+		this.skirtCartesiansArray[i*3] -= this.centerX[0];
+		this.skirtCartesiansArray[i*3+1] -= this.centerY[0];
+		this.skirtCartesiansArray[i*3+2] -= this.centerZ[0];
 	}
 
 	
@@ -56849,6 +57019,120 @@ TinTerrain.prototype.makeVbo = function(vboMemManager)
 	{
 		vboKeySkirt.setDataArrayTexCoord(new Float32Array(this.skirtTexCoordsArray), vboMemManager);
 	}
+};
+
+TinTerrain.getSkirtTrianglesStrip = function(lonArray, latArray, altArray, texCoordsArray, southIndices, eastIndices, northIndices, westIndices, options)
+{
+	// Given "lonArray", "latArray" & "altArray", this function makes skirtCartesiansArray & skirtTexCoordsArray.***
+	// Note: skirtMesh is trianglesStrip, so, there are no indices.***
+	var skirtDepth = 5000.0;
+	var texCorrectionFactor = 1.0;
+	if (options)
+	{
+		if (options.skirtDepth !== undefined)
+		{ skirtDepth = options.skirtDepth; }
+	
+		if (options.texCorrectionFactor !== undefined)
+		{ texCorrectionFactor = options.texCorrectionFactor; }
+	}
+	
+	// Texture correction in borders & make skirt data.***
+	var skirtLonArray = [];
+	var skirtLatArray = [];
+	var skirtAltArray = [];
+	var skirtTexCoordsArray = [];
+	
+	var westVertexCount = westIndices.length;
+	for (var j=0; j<westVertexCount; j++)
+	{
+		var idx = westIndices[j];
+		texCoordsArray[idx*2] += texCorrectionFactor/2;
+		
+		skirtLonArray.push(lonArray[idx]);
+		skirtLatArray.push(latArray[idx]);
+		skirtAltArray.push(altArray[idx]);
+		
+		skirtLonArray.push(lonArray[idx]);
+		skirtLatArray.push(latArray[idx]);
+		skirtAltArray.push(altArray[idx]-skirtDepth);
+		
+		// insert texCoords 2 times for the triangles strip.
+		skirtTexCoordsArray.push(texCoordsArray[idx*2]);   // s.
+		skirtTexCoordsArray.push(texCoordsArray[idx*2+1]); // t.
+		skirtTexCoordsArray.push(texCoordsArray[idx*2]);   // s.
+		skirtTexCoordsArray.push(texCoordsArray[idx*2+1]); // t.
+	}
+	
+	var southVertexCount = southIndices.length;
+	for (var j=0; j<southVertexCount; j++)
+	{
+		var idx = southIndices[j];
+		texCoordsArray[idx*2+1] = (texCorrectionFactor);
+		
+		skirtLonArray.push(lonArray[idx]);
+		skirtLatArray.push(latArray[idx]);
+		skirtAltArray.push(altArray[idx]);
+		
+		skirtLonArray.push(lonArray[idx]);
+		skirtLatArray.push(latArray[idx]);
+		skirtAltArray.push(altArray[idx]-skirtDepth);
+		
+		// insert texCoords 2 times for the triangles strip.
+		skirtTexCoordsArray.push(texCoordsArray[idx*2]);   // s.
+		skirtTexCoordsArray.push(texCoordsArray[idx*2+1]); // t.
+		skirtTexCoordsArray.push(texCoordsArray[idx*2]);   // s.
+		skirtTexCoordsArray.push(texCoordsArray[idx*2+1]); // t.
+	}
+	
+	var eastVertexCount = eastIndices.length;
+	for (var j=0; j<eastVertexCount; j++)
+	{
+		var idx = eastIndices[j];
+		texCoordsArray[idx*2] -= texCorrectionFactor/2;
+		
+		skirtLonArray.push(lonArray[idx]);
+		skirtLatArray.push(latArray[idx]);
+		skirtAltArray.push(altArray[idx]);
+		
+		skirtLonArray.push(lonArray[idx]);
+		skirtLatArray.push(latArray[idx]);
+		skirtAltArray.push(altArray[idx]-skirtDepth);
+		
+		// insert texCoords 2 times for the triangles strip.
+		skirtTexCoordsArray.push(texCoordsArray[idx*2]);   // s.
+		skirtTexCoordsArray.push(texCoordsArray[idx*2+1]); // t.
+		skirtTexCoordsArray.push(texCoordsArray[idx*2]);   // s.
+		skirtTexCoordsArray.push(texCoordsArray[idx*2+1]); // t.
+	}
+	var northVertexCount = northIndices.length;
+	for (var j=0; j<northVertexCount; j++)
+	{
+		var idx = northIndices[j];
+		texCoordsArray[idx*2+1] = (1-texCorrectionFactor);
+		
+		skirtLonArray.push(lonArray[idx]);
+		skirtLatArray.push(latArray[idx]);
+		skirtAltArray.push(altArray[idx]);
+		
+		skirtLonArray.push(lonArray[idx]);
+		skirtLatArray.push(latArray[idx]);
+		skirtAltArray.push(altArray[idx]-skirtDepth);
+		
+		// insert texCoords 2 times for the triangles strip.
+		skirtTexCoordsArray.push(texCoordsArray[idx*2]);   // s.
+		skirtTexCoordsArray.push(texCoordsArray[idx*2+1]); // t.
+		skirtTexCoordsArray.push(texCoordsArray[idx*2]);   // s.
+		skirtTexCoordsArray.push(texCoordsArray[idx*2+1]); // t.
+	}
+	
+	var skirtCartesiansArray = Globe.geographicRadianArrayToFloat32ArrayWgs84(skirtLonArray, skirtLatArray, skirtAltArray, undefined);
+	
+	var resultObject = {
+		skirtCartesiansArray : skirtCartesiansArray,
+		skirtTexCoordsArray  : skirtTexCoordsArray
+	};
+	
+	return resultObject;
 };
 
 TinTerrain.prototype.decodeData = function(imageryType)
@@ -56887,6 +57171,12 @@ TinTerrain.prototype.decodeData = function(imageryType)
 	
 	var exageration = 5.0;
 	
+	if (this.depth === 0)
+	{ var hola = 0; }
+
+	if (this.depth === 1)
+	{ var hola = 0; }
+	
 	if (imageryType === undefined)
 	{ imageryType = CODE.imageryType.CRS84; }
 	
@@ -56922,7 +57212,7 @@ TinTerrain.prototype.decodeData = function(imageryType)
 			latArray[i] = minLat + vValues[i]*latRangeDivShortMax;
 			altArray[i] = minHeight + hValues[i]*heightRangeDivShortMax;
 			
-			altArray[i] *= exageration;
+			//altArray[i] *= exageration;
 			
 			var currLon = lonArray[i];
 			var currLat = latArray[i];
@@ -56940,7 +57230,7 @@ TinTerrain.prototype.decodeData = function(imageryType)
 			this.texCoordsArray[i*2] = s;
 			this.texCoordsArray[i*2+1] = t;
 		}
-		
+		/*
 		// Texture correction in borders & make skirt data.***
 		var skirtDepth = 5000.0;
 		var skirtLonArray = [];
@@ -57026,6 +57316,7 @@ TinTerrain.prototype.decodeData = function(imageryType)
 			this.skirtTexCoordsArray.push(this.texCoordsArray[idx*2]);   // s.
 			this.skirtTexCoordsArray.push(this.texCoordsArray[idx*2+1]); // t.
 		}
+		*/
 	}
 	else
 	{
@@ -57043,7 +57334,15 @@ TinTerrain.prototype.decodeData = function(imageryType)
 	}
 	
 	this.cartesiansArray = Globe.geographicRadianArrayToFloat32ArrayWgs84(lonArray, latArray, altArray, this.cartesiansArray);
-	this.skirtCartesiansArray = Globe.geographicRadianArrayToFloat32ArrayWgs84(skirtLonArray, skirtLatArray, skirtAltArray, this.skirtCartesiansArray);
+	
+	var options = {
+		skirtDepth          : 50000,
+		texCorrectionFactor : texCorrectionFactor
+	};
+	var skirtResultObject = TinTerrain.getSkirtTrianglesStrip(lonArray, latArray, altArray, this.texCoordsArray, this.southIndices, this.eastIndices, this.northIndices, this.westIndices, options);
+	this.skirtCartesiansArray = skirtResultObject.skirtCartesiansArray;
+	this.skirtTexCoordsArray = skirtResultObject.skirtTexCoordsArray;
+	//this.skirtCartesiansArray = Globe.geographicRadianArrayToFloat32ArrayWgs84(skirtLonArray, skirtLatArray, skirtAltArray, this.skirtCartesiansArray);
 	
 	// free memory.
 	this.uValues = undefined;
@@ -57238,7 +57537,7 @@ var TinTerrainManager = function()
 	}
 	
 	//this.maxDepth = 18;
-	this.maxDepth = 15;
+	this.maxDepth = 12;
 	this.currentVisibles_terrName_geoCoords_map = {}; // current visible terrains map[terrainPathName, geographicCoords].
 	this.currentTerrainsMap = {}; // current terrains (that was created) map[terrainPathName, tinTerrain].
 	
@@ -57415,6 +57714,7 @@ TinTerrainManager.prototype.makeDistanceLimitByDepth = function()
 	this.distLimitByDepth[19] = 800; 
 	this.distLimitByDepth[20] = 500; 
 
+	//this.distLimitByDepth[0] = 5; 
 };
 
 TinTerrainManager.prototype.doFrustumCulling = function(frustum, camPos, magoManager, maxDepth)
@@ -62058,21 +62358,15 @@ MagoWorld.updateMouseStartClick = function(mouseX, mouseY, magoManager)
 	}
 	
 
-	//if (!magoManager.isCesiumGlobe())
-
-	if (!depthDetected)
+	if (!depthDetected && magoManager.scene !== undefined)
 	{
-		var camera = magoManager.scene.frameState.camera;
 		var scene = magoManager.scene;
+		var camera = scene.frameState.camera;
 		var ray = camera.getPickRay(new Cesium.Cartesian2(mouseX, mouseY));
 		var pointWC = scene.globe.pick(ray, scene);
 		mouseAction.strWorldPoint = pointWC;
 		return;
 	}
-	
-	//if (magoManager.configInformation.geo_view_library === Constant.MAGOWORLD)
-
-	//{ currentFrustumNear = 0.0; }
 	
 	// determine world position of the X,Y.
 	mouseAction.strLinealDepth = currentLinearDepth;
@@ -62095,12 +62389,14 @@ MagoWorld.updateMouseStartClick = function(mouseX, mouseY, magoManager)
 	mouseAction.strModelViewMatrixInv._floatArrays = glMatrix.mat4.copy(mouseAction.strModelViewMatrixInv._floatArrays, modelViewMatrixInv._floatArrays);
 
 	// save the sphere pick.
+	/*
 	if (magoManager.globe !== undefined)
 	{
 		var camRay;
 		camRay = ManagerUtils.getRayWorldSpace(gl, mouseX, mouseY, camRay, magoManager); // rayWorldSpace.
 		mouseAction.strWorldPoint2 = magoManager.globe.intersectionLineWgs84(camRay, mouseAction.strWorldPoint2);
 	}
+	*/
 };
 
 /**
@@ -62135,41 +62431,48 @@ MagoWorld.prototype.mouseup = function(event)
 	var magoManager = this.magoManager;
 	magoManager.bPicking = false;
 	magoManager.isCameraMoving = false;
+	var sceneState = magoManager.sceneState;
+	var mouseAction = sceneState.mouseAction;
 	
 	// Check time to check if is a "click".***
-	if (this.magoManager.sceneState.mouseButton === 0)
+	if (sceneState.mouseButton === 0)
 	{
 		var date = new Date();
 		var currTime = date.getTime();
-		var mouseAction = magoManager.sceneState.mouseAction;
 		var durationTime = currTime - mouseAction.strTime;
 		if (durationTime < 200)
 		{
-			// Check if mouse moved.***
-			var mouseAction = this.magoManager.sceneState.mouseAction;
-
 			// now, calculate the angle and the rotationAxis.
 			var xMoved = event.clientX - mouseAction.strX;
-			if (Math.abs(xMoved) > 2)
-			{ 
-				magoManager.sceneState.mouseButton = -1;
-				return; 
-			}
-			
 			var yMoved = event.clientY - mouseAction.strY;
-			if (Math.abs(yMoved) > 2)
-			{ 
-				magoManager.sceneState.mouseButton = -1;
-				return; 
+
+			if (Math.abs(xMoved) < 3 && Math.abs(yMoved) < 3)
+			{
+				// Considere as "click".***
+				magoManager.bPicking = true;
+				magoManager.managePickingProcess();
 			}
-			
-			// Considere as "click".***
-			magoManager.bPicking = true;
-			magoManager.managePickingProcess();
 		}
 	}
 	
-	magoManager.sceneState.mouseButton = -1;
+	sceneState.mouseButton = -1;
+	
+	// Check if there are camera inertial movement.
+	var currTime = new Date().getTime();
+	var strTime = mouseAction.strTime;
+	var deltaTime = currTime - strTime;
+	var camera = sceneState.camera;
+	if (deltaTime > 1E-3 && deltaTime < 200)
+	{
+		// apply inertial movement.
+		camera.lastMovement.deltaTime = deltaTime;	
+	}
+	else 
+	{
+		camera.lastMovement.movementType = CODE.movementType.NO_MOVEMENT;
+	}
+
+			
 };
 
 /**
@@ -62267,6 +62570,16 @@ MagoWorld.prototype.mousemove = function(event)
 {
 	var magoManager = this.magoManager;
 	var mouseAction = magoManager.sceneState.mouseAction;
+	
+	var camera = this.magoManager.sceneState.camera;
+		
+	if (camera.lastMovement === undefined)
+	{ camera.lastMovement = new Movement(); }
+
+	var currTime = magoManager.getCurrentTime();
+	var strTime = mouseAction.strTime;
+	var deltaTime = currTime - strTime;
+	
 	if (magoManager.sceneState.mouseButton === 0)
 	{
 		// left button pressed.
@@ -62287,9 +62600,7 @@ MagoWorld.prototype.mousemove = function(event)
 		var strCamera = mouseAction.strCamera; // camera of onMouseDown.
 		var strWorldPoint = mouseAction.strWorldPoint;
 		var strEarthRadius = strWorldPoint.getModul();
-		var camera = magoManager.sceneState.camera;
-		
-		
+
 		// now, calculate the angle and the rotationAxis.
 		var strCamCoordPoint = mouseAction.strCamCoordPoint;
 		
@@ -62327,13 +62638,25 @@ MagoWorld.prototype.mousemove = function(event)
 			var moveVectorWC = mv_inv.rotatePoint3D(moveVectorCC, undefined);
 
 			var moveVecModul = moveVectorWC.getModul();
-			if (moveVecModul > 100.0)// there are error.
+			if (moveVecModul > 100.0 || moveVecModul < 1E-5)// there are error.
 			{ return; }
 			
 			camera.copyPosDirUpFrom(strCamera);
 			camera.position.add(-moveVectorWC.x, -moveVectorWC.y, -moveVectorWC.z);
 			
 			this.updateModelViewMatrixByCamera(camera);
+			
+			// Register the movement of the camera for the case : exist inertial movement.
+			// calculate angular velocity.
+			var moveDir = new Point3D();
+			moveDir.copyFrom(moveVectorWC);
+			moveDir.unitary();
+			
+			var linearVelocity = (moveVecModul/deltaTime)*0.25;
+			
+			camera.lastMovement.movementType = CODE.movementType.TRANSLATION;
+			camera.lastMovement.currLinearVelocity = linearVelocity;
+			camera.lastMovement.translationDir = moveDir;
 		}
 		else
 		{
@@ -62363,7 +62686,8 @@ MagoWorld.prototype.mousemove = function(event)
 			this.pointSC2.unitary(); // rayWorldSpace.
 			camRay = new Line();
 			var testScale = 0.0001;
-			camRay.setPointAndDir(strCamera.position.x*testScale, strCamera.position.y*testScale, strCamera.position.z*testScale,       this.pointSC2.x, this.pointSC2.y, this.pointSC2.z);// original.
+			var strCamPos = strCamera.position;
+			camRay.setPointAndDir(strCamPos.x*testScale, strCamPos.y*testScale, strCamPos.z*testScale,       this.pointSC2.x, this.pointSC2.y, this.pointSC2.z);// original.
 
 			var nowWorldPoint;
 			nowWorldPoint = this.magoManager.globe.intersectionLineWgs84(camRay, nowWorldPoint, strEarthRadius*testScale);
@@ -62386,23 +62710,29 @@ MagoWorld.prototype.mousemove = function(event)
 			
 			// recalculate position and direction of the camera.
 			camera.copyPosDirUpFrom(strCamera);
-		
+			
 			var rotMat = new Matrix4();
 			rotMat.rotationAxisAngRad(-angRad, rotAxis.x, rotAxis.y, rotAxis.z);
 			camera.transformByMatrix4(rotMat);
 
 			this.updateModelViewMatrixByCamera(camera);
+			
+			// Register the movement of the camera for the case : exist inertial movement.
+			// calculate angular velocity.
+			var angRadVelocity = (angRad/deltaTime)*0.25;
+			
+			camera.lastMovement.movementType = CODE.movementType.ROTATION;
+			camera.lastMovement.currAngularVelocity = angRadVelocity;
+			camera.lastMovement.rotationAxis = rotAxis;
+			camera.lastMovement.rotationPoint = undefined;
+
 		}
 	}
 	else if (this.magoManager.sceneState.mouseButton === 1)
 	{
 		// middle button pressed.
 		var strCamera = mouseAction.strCamera;
-		var camera = this.magoManager.sceneState.camera;
 		camera.copyPosDirUpFrom(strCamera);
-		var camPos = camera.position;
-		var camDir = camera.direction;
-		var camUp = camera.up;
 		
 		// 1rst, determine the point of rotation.
 		var rotPoint = mouseAction.strWorldPoint;
@@ -62413,7 +62743,7 @@ MagoWorld.prototype.mousemove = function(event)
 		{ this.magoManager.globe = new Globe(); }
 		
 		var pivotPointNormal;
-		pivotPointNormal = this.magoManager.globe.normalAtCartesianPointWgs84(rotPoint.x, rotPoint.y, rotPoint.z, pivotPointNormal);
+		pivotPointNormal = Globe.normalAtCartesianPointWgs84(rotPoint.x, rotPoint.y, rotPoint.z, pivotPointNormal);
 		
 		var xAxis = camera.getCameraRight();
 		
@@ -62429,18 +62759,26 @@ MagoWorld.prototype.mousemove = function(event)
 		if (zRotAngRad === 0 && xRotAngRad === 0)
 		{ return; }
 		
-		if (this.rotMatX === undefined)
-		{ this.rotMatX = new Matrix4(); }
-		
-		if (this.rotMatZ === undefined)
-		{ this.rotMatZ = new Matrix4(); }
-		
 		if (this.rotMat === undefined)
 		{ this.rotMat = new Matrix4(); }
 	
-		this.rotMatX.rotationAxisAngRad(-xRotAngRad, xAxis.x, xAxis.y, xAxis.z);
-		this.rotMatZ.rotationAxisAngRad(-zRotAngRad, pivotPointNormal[0], pivotPointNormal[1], pivotPointNormal[2]);
-		this.rotMat = this.rotMatX.getMultipliedByMatrix(this.rotMatZ, this.rotMat);
+		// calculate the rotationAxis & angRad.
+		var quatZRot = glMatrix.quat.create();
+		quatZRot = glMatrix.quat.setAxisAngle(quatZRot, pivotPointNormal, -zRotAngRad);
+		
+		var quatXRot = glMatrix.quat.create();
+		quatXRot = glMatrix.quat.setAxisAngle(quatXRot, [xAxis.x, xAxis.y, xAxis.z], -xRotAngRad);
+		
+		var quatTotalRot = glMatrix.quat.create();
+		quatTotalRot = glMatrix.quat.multiply(quatTotalRot, quatZRot, quatXRot);
+		
+		this.rotMat._floatArrays = glMatrix.mat4.fromQuat(this.rotMat._floatArrays, quatTotalRot);
+		
+		// Alternative calculating by matrices.***************************************************************************************
+		//this.rotMatX.rotationAxisAngRad(-xRotAngRad, xAxis.x, xAxis.y, xAxis.z);
+		//this.rotMatZ.rotationAxisAngRad(-zRotAngRad, pivotPointNormal[0], pivotPointNormal[1], pivotPointNormal[2]);
+		//this.rotMat = this.rotMatX.getMultipliedByMatrix(this.rotMatZ, this.rotMat);
+		//----------------------------------------------------------------------------------------------------------------------------
 		
 		var translationVec_1 = new Point3D(-rotPoint.x, -rotPoint.y, -rotPoint.z);
 		var translationVec_2 = new Point3D(rotPoint.x, rotPoint.y, rotPoint.z);
@@ -62450,6 +62788,16 @@ MagoWorld.prototype.mousemove = function(event)
 		camera.translate(translationVec_2);
 		
 		this.updateModelViewMatrixByCamera(camera);
+		
+		// Register the movement of the camera for the case : exist inertial movement.
+		// calculate angular velocity.
+		var angRadVelocity = (angRad/deltaTime)*0.3;
+		
+		camera.lastMovement.movementType = CODE.movementType.ROTATION_ZX;
+		camera.lastMovement.rotationPoint = rotPoint;
+		camera.lastMovement.xAngVelocity = (-xRotAngRad/deltaTime)*0.3;
+		camera.lastMovement.zAngVelocity = (-zRotAngRad/deltaTime)*0.3;
+		
 	}
 };
 
@@ -79311,7 +79659,8 @@ Ellipsoid.prototype.makeMesh = function(options)
 	var numCols = this.lonSegments + 1;
 	var numRows = this.latSegments + 1;
 
-	this.indices = GeometryUtils.getIndicesTrianglesRegularNet(numCols, numRows, undefined, options);
+	var resultObject = GeometryUtils.getIndicesTrianglesRegularNet(numCols, numRows, undefined, undefined, undefined, undefined, undefined, options);
+	this.indices = resultObject.indicesArray;
 };
 
 
@@ -86544,7 +86893,7 @@ void main()\n\
 		vec3 normal = vNormal;\n\
 		float angRad = acos(dot(camDir, normal));\n\
 		float angDeg = angRad*180.0/PI;\n\
-\n\
+		/*\n\
 		if(angDeg > 130.0)\n\
 			textureColor = vec4(1.0, 0.0, 0.0, 1.0);\n\
 		else if(angDeg > 120.0)\n\
@@ -86555,6 +86904,7 @@ void main()\n\
 			textureColor = vec4(1.0, 1.0, 0.0, 1.0);\n\
 		else if(angDeg > 90.0)\n\
 			textureColor = vec4(1.0, 0.0, 1.0, 1.0);\n\
+			*/\n\
 			\n\
 		//textureColor = vec4(vNormal, 1.0);\n\
 		\n\
@@ -91961,7 +92311,7 @@ GeometryUtils.getPrevIdx = function(currIdx, pointsCount)
  * @param {Object} options 
  * @Return {Uint16Array} resultIndicesArray
  */
-GeometryUtils.getIndicesTrianglesRegularNet = function(numCols, numRows, resultIndicesArray, options)
+GeometryUtils.getIndicesTrianglesRegularNet = function(numCols, numRows, resultIndicesArray, resultSouthIndices, resultEastIndices, resultNorthIndices, resultWestIndices, options)
 {
 	// given a regular net this function returns triangles vertices indices of the net.
 	var verticesCount = numCols * numRows;
@@ -91972,6 +92322,9 @@ GeometryUtils.getIndicesTrianglesRegularNet = function(numCols, numRows, resultI
 	var idx_1, idx_2, idx_3;
 	var idxCounter = 0;
 	
+	var resultObject = {};
+	
+	// bLoopColumns : if want object like a cilinder or sphere where the 1rstCol touch with the last col.
 	var bLoopColumns = false; // Default.***
 	var bTrianglesSenseCCW = true;
 	if (options !== undefined)
@@ -92024,6 +92377,67 @@ GeometryUtils.getIndicesTrianglesRegularNet = function(numCols, numRows, resultI
 		}
 	}
 	
+	resultObject.indicesArray = resultIndicesArray;
+	
+	var bCalculateBorderIndices = false;
+	if (options)
+	{
+		if (options.bCalculateBorderIndices !== undefined && options.bCalculateBorderIndices === true)
+		{ bCalculateBorderIndices = true; }
+	}
+	
+	// Border indices.***
+	if (bCalculateBorderIndices)
+	{
+		// South.
+		if (!resultSouthIndices)
+		{ resultSouthIndices = new Uint16Array(numCols); }
+		
+		for (var col=0; col<numCols; col++)
+		{
+			var idx = VertexMatrix.getIndexOfArray(numCols, numRows, col, 0);
+			resultSouthIndices[col] = idx;
+		}
+		
+		resultObject.southIndicesArray = resultSouthIndices;
+		
+		// East.
+		if (!resultEastIndices)
+		{ resultEastIndices = new Uint16Array(numRows); }
+		
+		for (var row = 0; row<numRows; row++)
+		{
+			var idx = VertexMatrix.getIndexOfArray(numCols, numRows, numCols-1, row);
+			resultEastIndices[row] = idx;
+		}
+		
+		resultObject.eastIndicesArray = resultEastIndices;
+		
+		// North.
+		if (!resultNorthIndices)
+		{ resultNorthIndices = new Uint16Array(numCols); }
+		
+		for (var col=numCols-1; col>=0; col--)
+		{
+			var idx = VertexMatrix.getIndexOfArray(numCols, numRows, col, numRows-1);
+			resultNorthIndices[col] = idx;
+		}
+		
+		resultObject.northIndicesArray = resultNorthIndices;
+		
+		// West.
+		if (!resultWestIndices)
+		{ resultWestIndices = new Uint16Array(numRows); }
+		
+		for (var row = numRows-1; row>=0; row--)
+		{
+			var idx = VertexMatrix.getIndexOfArray(numCols, numRows, 0, row);
+			resultWestIndices[row] = idx;
+		}
+		
+		resultObject.westIndicesArray = resultWestIndices;
+	}
+	
 	if (bLoopColumns)
 	{
 		var firstCol = 0;
@@ -92066,7 +92480,7 @@ GeometryUtils.getIndicesTrianglesRegularNet = function(numCols, numRows, resultI
 		}
 	}
 	
-	return resultIndicesArray;
+	return resultObject;
 };
 
 
@@ -92282,10 +92696,9 @@ ManagerUtils.pointToGeographicCoord = function(point, resultGeographicCoord)
  * @param {number} latitude latitude.
  * @param {number} altitude altitude.
  * @param {Point3D|undefined} resultWorldPoint Optional. result worldCoord. if undefined, create Point3D instance.
- * @param {MagoManager} magoManager worldwind mode removed, this args is not need. 
  * @returns {Point3D} world coordinate object.
  */
-ManagerUtils.geographicCoordToWorldPoint = function(longitude, latitude, altitude, resultWorldPoint, magoManager) 
+ManagerUtils.geographicCoordToWorldPoint = function(longitude, latitude, altitude, resultWorldPoint) 
 {
 	if (resultWorldPoint === undefined)
 	{ resultWorldPoint = new Point3D(); }
@@ -94958,6 +95371,7 @@ Promise.prototype.finally = Promise.prototype.finally || {
 	_mago3d['Matrix4'] = Matrix4;
 	_mago3d['Message'] = Message;
 	_mago3d['MouseAction'] = MouseAction;
+	_mago3d['Movement'] = Movement;
 	_mago3d['ObjectMarker'] = ObjectMarker;
 	_mago3d['ObjectMarkerManager'] = ObjectMarkerManager;
 	_mago3d['OcclusionCullingOctree'] = OcclusionCullingOctree;
