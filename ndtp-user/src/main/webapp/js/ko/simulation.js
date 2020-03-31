@@ -1,5 +1,6 @@
 
 const consBuildBillboard = [];
+const aaaa = [];
 const arrIotLonlat = {
 	drone: [],
 	car: []
