@@ -14,6 +14,8 @@
 		/* updateGeoPolicy */
 		UPDATE geopolicy
 		SET cesium_ion_token = #{cesiumIonToken},
+			terrain_type = #{terrainType},
+			terrain_value = #{terrainValue},
 			data_api_url = #{dataApiUrl},
 			data_service_path = #{dataServicePath},
 			data_change_request_decision = #{dataChangeRequestDecision}
@@ -76,29 +78,12 @@
 			geoserver_imageprovider_parameters_width = #{geoserverImageproviderParametersWidth},
 			geoserver_imageprovider_parameters_height = #{geoserverImageproviderParametersHeight},
 			geoserver_imageprovider_parameters_format = #{geoserverImageproviderParametersFormat},
-			geoserver_terrainprovider_enable = #{geoserverTerrainproviderEnable},
-			geoserver_terrainprovider_url = #{geoserverTerrainproviderUrl},
 			geoserver_terrainprovider_layer_name = #{geoserverTerrainproviderLayerName},
 			geoserver_terrainprovider_style_name = #{geoserverTerrainproviderStyleName},
 			geoserver_terrainprovider_parameters_width = #{geoserverTerrainproviderParametersWidth},
 			geoserver_terrainprovider_parameters_height = #{geoserverTerrainproviderParametersHeight},
 			geoserver_terrainprovider_parameters_format = #{geoserverTerrainproviderParametersFormat},
 			geoserver_wms_version = #{geoserverWmsVersion}
-		WHERE geopolicy_id = #{geoPolicyId}
-	</update>
-
-	<!-- CallBack Function 수정 -->
-	<update id="updateGeoPolicyGeoCallBack" parameterType="geoPolicy">
-		/* updateGeoPolicyGeoCallBack */
-		UPDATE geopolicy
-		SET geo_callback_enable = #{geoCallbackEnable},
-			geo_callback_apiresult = #{geoCallbackApiresult},
-			geo_callback_dataInfo = #{geoCallbackDataInfo},
-			geo_callback_moveddata = #{geoCallbackMoveddata},
-			geo_callback_selectedobject = #{geoCallbackSelectedobject},
-			geo_callback_insertissue = #{geoCallbackInsertissue},
-			geo_callback_listissue = #{geoCallback_listissue},
-			geo_callback_clickposition = #{geoCallbackClickposition}
 		WHERE geopolicy_id = #{geoPolicyId}
 	</update>
 

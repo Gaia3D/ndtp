@@ -11,15 +11,13 @@
 				<col class="col-number" />
 				<col class="col-number" />
 		    </colgroup>
-		    <thead>
-				<tr>
+		    <tbody>
+		    	<tr>
 					<th scope="col" class="col-number">공통</th>
 					<th scope="col" class="col-number">공개</th>
 					<th scope="col" class="col-number">비공개</th>
 					<th scope="col" class="col-number">그룹</th>
 		        </tr>
-		    </thead>
-		    <tbody>
 		    	<tr>
 		        	<td class="col-number"><fmt:formatNumber value="${commonDataCount}" type="number" /></td>
 		        	<td class="col-number"><fmt:formatNumber value="${publicDataCount}" type="number" /></td>
@@ -44,5 +42,5 @@
 		<dd><span class="legend pr">P</span>비공개</dd>
 		<dd><span class="legend gr">G</span>그룹공개</dd>
 	</dl>
-	<div id="dataGroupListArea" style="height:calc(100% - 350px)"></div>
+	<div id="dataGroupListArea" style="height:calc(100% - 335px)"></div>
 </div>

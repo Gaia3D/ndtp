@@ -89,7 +89,7 @@
 
 
 			<div id="dataControll">
-				<p class="layerDivTit"><span>test / 오전반1조_행복관_s</span></p>
+				<p class="layerDivTit"></p>
 				<div class="layerDiv">
 					<h4 class="category">색상 변경</h4>
 					<ul>
@@ -163,6 +163,7 @@
 		</div>
 	</div>
     <div id="magoContainer" style="height: 100%;"></div>
+    <canvas id="objectLabel"></canvas>
     <button class="mapSelectButton" onclick="window.close();">닫기</button>
     <%@ include file="/WEB-INF/views/data/data-dialog.jsp" %>
 </body>
@@ -202,7 +203,7 @@
 
 	var viewer = null;
 	var entities = null;
-	
+
 	initPolicy(function(policy, baseLayers){
 		NDTP.policy = policy;
 		NDTP.baseLayers = baseLayers;
@@ -241,7 +242,7 @@
 		var f4dController = magoInstance.getF4dController();
 
 		// TODO : 세슘 MAP 선택 UI 제거,엔진에서 처리로 변경 예정.
-		viewer.baseLayerPicker.destroy();
+		if(viewer.baseLayerPicker) viewer.baseLayerPicker.destroy();
 		viewer.scene.globe.depthTestAgainstTerrain = true;
 		/* magoManager.on(Mago3D.MagoManager.EVENT_TYPE.CLICK, function(result) {
 			console.info(result);
@@ -365,7 +366,7 @@
 		var $dataControlWrap = $('#dataControll');
 		//$dataControlWrap.find('.layerDivTit').hide();
 		//var $header = $('#mago3DSettingLabelLayer .layerHeader h3');
-		var $header = $dataControlWrap.find('.layerDivTit span');
+		var $header = $dataControlWrap.find('.layerDivTit');
 
 		var groupId = dataInfo.dataGroupId;
 
@@ -502,7 +503,7 @@
 		}
 	});
 	*/
-	
+
 	var dataInfoDialog = $( "#dataInfoDialog" ).dialog({
 		autoOpen: false,
 		width: 500,

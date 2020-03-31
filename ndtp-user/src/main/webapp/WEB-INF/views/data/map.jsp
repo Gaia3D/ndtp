@@ -48,14 +48,6 @@
 		.ctrlWrap {
 			z-index:100;
 		}
-		#objectLabel {
-		    background-color: transparent;
-		    position: absolute;
-		    left: 0px;
-		    top: 0px;
-		    /* z-index: 10; */
-		    pointer-events: none;
-	   	}
 		/*
 		.ctrlWrap div.zoom button, .ctrlWrap div.rotate button  {
 			width:47px;
@@ -590,7 +582,7 @@
 		var f4dController = magoInstance.getF4dController();
 
 		// TODO : 세슘 MAP 선택 UI 제거,엔진에서 처리로 변경 예정.
-		viewer.baseLayerPicker.destroy();
+		if(viewer.baseLayerPicker) viewer.baseLayerPicker.destroy();
 		viewer.scene.globe.depthTestAgainstTerrain = true;
 		//viewer.scene.screenSpaceCameraController.minimumZoomDistance = 10;
 

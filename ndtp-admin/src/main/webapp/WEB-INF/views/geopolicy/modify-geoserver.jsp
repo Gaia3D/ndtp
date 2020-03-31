@@ -143,26 +143,6 @@
 				</tr>
 				<tr>
 					<th class="col-label l" scope="row">
-						<form:label path="geoserverTerrainproviderEnable">TerrainProvider 사용유무</form:label>
-						<span class="icon-glyph glyph-emark-dot color-warning"></span>
-					</th>
-					<td class="col-input radio-set">
-						<form:radiobutton label="${use }" path="geoserverTerrainproviderEnable" value="true" />
-						<form:radiobutton label="${notuse }(기본값)" path="geoserverTerrainproviderEnable" value="false" />
-						<form:errors path="geoserverTerrainproviderEnable" cssClass="error" />
-					</td>
-				</tr>
-				<tr>
-					<th class="col-label l" scope="row">
-						<form:label path="geoserverTerrainproviderUrl">TerrainProvider 요청 URL</form:label>
-					</th>
-					<td class="col-input">
-						<form:input path="geoserverTerrainproviderUrl" maxlength="256" cssClass="l" />
-						<form:errors path="geoserverTerrainproviderUrl" cssClass="error" />
-					</td>
-				</tr>
-				<tr>
-					<th class="col-label l" scope="row">
 						<form:label path="geoserverTerrainproviderLayerName">TerrainProvider 레이어 명</form:label>
 					</th>
 					<td class="col-input">

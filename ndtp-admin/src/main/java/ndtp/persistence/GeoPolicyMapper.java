@@ -31,11 +31,4 @@ public interface GeoPolicyMapper {
 	 * @return
 	 */
 	int updateGeoPolicyGeoServer(GeoPolicy geoPolicy);
-	
-	/**
-	 * CallBack Function 수정
-	 * @param geoPolicy
-	 * @return
-	 */
-	int updateGeoPolicyGeoCallBack(GeoPolicy geoPolicy);
 }

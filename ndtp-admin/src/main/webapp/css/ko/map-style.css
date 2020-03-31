@@ -1577,3 +1577,12 @@ text-overflow: ellipsis;
 	width: 90px;
 	padding: 0 0 5px 5px;
 }
+/* 마고 라벨 렌더 캔버스 */
+#objectLabel {
+background-color: transparent;
+position: absolute;
+left: 0px;
+top: 0px;
+/* z-index: 10; */
+pointer-events: none;
+}
