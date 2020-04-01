@@ -18605,54 +18605,8 @@ CesiumViewerInit.prototype.init = function()
 	this.options.timeline = this.options.timeline || false;
 
 	//GEOSERVER BASE LAYER, GEOSERVER TERRAIN SET
-	this.geoserverProviderBuild();
+	this.providerBuild();
 
-	//PSD, 빼야함.
-	if (this.policy.cesiumIonToken && this.policy.cesiumIonToken.length > 0) 
-	{
-		Cesium.Ion.defaultAccessToken = this.policy.cesiumIonToken;
-	}
-	var terrainType = this.policy.terrainType;
-	var terrainValue = this.policy.terrainValue;
-	if (terrainType !== CesiumViewerInit.TERRAINTYPE.GEOSERVER && !this.options.terrainProvider) 
-	{
-		this.options.terrainProvider = new Cesium.EllipsoidTerrainProvider();
-		switch (terrainType) 
-		{
-		case CesiumViewerInit.TERRAINTYPE.CESIUM_ION_DEFAULT :{
-			if (this.policy.cesiumIonToken && this.policy.cesiumIonToken.length > 0) 
-			{
-				this.options.terrainProvider = new Cesium.CesiumTerrainProvider({
-					url: Cesium.IonResource.fromAssetId(1)
-				});
-			}
-			break;
-		}
-		case CesiumViewerInit.TERRAINTYPE.CESIUM_ION_CDN :{
-			if (this.policy.cesiumIonToken || this.policy.cesiumIonToken.length > 0) 
-			{
-				this.options.terrainProvider = new Cesium.CesiumTerrainProvider({
-					url: Cesium.IonResource.fromAssetId(parseInt(terrainValue))
-				});
-			}
-			break;
-		}
-		case CesiumViewerInit.TERRAINTYPE.CESIUM_CUSTOMER :{
-			this.options.terrainProvider = new Cesium.CesiumTerrainProvider({
-				url: terrainValue
-			});
-			break;
-		}
-		}
-	}
-	
-	if (!this.options.imageryProvider) 
-	{
-		this.options.imageryProvider = new Cesium.ArcGisMapServerImageryProvider({
-			url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
-		});
-	}
-	
 	this.options.shouldAnimate = false;
 	this.viewer = new Cesium.Viewer(this.targetId, this.options);
 
@@ -18697,7 +18651,7 @@ CesiumViewerInit.prototype.setCanvasEventHandler = function()
 	}, false);
 };
 
-CesiumViewerInit.prototype.geoserverProviderBuild = function() 
+CesiumViewerInit.prototype.providerBuild = function() 
 {
 	var policy = this.policy;
 	var online = policy.online;
@@ -18720,6 +18674,52 @@ CesiumViewerInit.prototype.geoserverProviderBuild = function()
 	if (geoserverEnable && terrainType === CesiumViewerInit.TERRAINTYPE.GEOSERVER) 
 	{
 		this.geoserverTerrainProviderBuild();
+	}
+
+	
+	if (policy.cesiumIonToken && policy.cesiumIonToken.length > 0) 
+	{
+		Cesium.Ion.defaultAccessToken = policy.cesiumIonToken;
+	}
+	var terrainType = policy.terrainType;
+	var terrainValue = policy.terrainValue;
+	if (terrainType !== CesiumViewerInit.TERRAINTYPE.GEOSERVER && !this.options.terrainProvider) 
+	{
+		this.options.terrainProvider = new Cesium.EllipsoidTerrainProvider();
+		switch (terrainType) 
+		{
+		case CesiumViewerInit.TERRAINTYPE.CESIUM_ION_DEFAULT :{
+			if (policy.cesiumIonToken && policy.cesiumIonToken.length > 0) 
+			{
+				this.options.terrainProvider = new Cesium.CesiumTerrainProvider({
+					url: Cesium.createWorldTerrain()
+				});
+			}
+			break;
+		}
+		case CesiumViewerInit.TERRAINTYPE.CESIUM_ION_CDN :{
+			if (policy.cesiumIonToken || policy.cesiumIonToken.length > 0) 
+			{
+				this.options.terrainProvider = new Cesium.CesiumTerrainProvider({
+					url: Cesium.IonResource.fromAssetId(parseInt(terrainValue))
+				});
+			}
+			break;
+		}
+		case CesiumViewerInit.TERRAINTYPE.CESIUM_CUSTOMER :{
+			this.options.terrainProvider = new Cesium.CesiumTerrainProvider({
+				url: terrainValue
+			});
+			break;
+		}
+		}
+	}
+	
+	if (!this.options.imageryProvider) 
+	{
+		this.options.imageryProvider = new Cesium.ArcGisMapServerImageryProvider({
+			url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
+		});
 	}
 };
 
@@ -18756,7 +18756,7 @@ CesiumViewerInit.prototype.geoserverImageProviderBuild = function()
 	// Cesium.WebMapServiceImageryProvider.DefaultParameters
 	var version = (geoserver && geoserver.getWmsVersion()) ?  geoserver.getWmsVersion() : "1.1.1";
 	var style = policy.geoserverImageproviderStyleName ? policy.geoserverImageproviderStyleName : '';
-	var format = policy.geoserverImageproviderParametersFormat ? policy.geoserverImageproviderStyleName : 'image/jpeg';
+	var format = policy.geoserverImageproviderParametersFormat ? policy.geoserverImageproviderParametersFormat : 'image/jpeg';
 	var tileWidth = policy.geoserverImageproviderParametersWidth ? policy.geoserverImageproviderParametersWidth : 256;
 	var tileHeight = policy.geoserverImageproviderParametersHeight ? policy.geoserverImageproviderParametersHeight : 256;
 
