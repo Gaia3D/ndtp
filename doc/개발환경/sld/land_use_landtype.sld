@@ -6,14 +6,14 @@
       <se:Name>land_use</se:Name>
       <se:FeatureTypeStyle>
         <se:Rule>
-          <se:Name>°¡½º°ø±Þ¼³ºñ</se:Name>
+          <se:Name>ê°€ìŠ¤ê³µê¸‰ì„¤ë¹„</se:Name>
           <se:Description>
-            <se:Title>°¡½º°ø±Þ¼³ºñ</se:Title>
+            <se:Title>ê°€ìŠ¤ê³µê¸‰ì„¤ë¹„</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>°¡½º°ø±Þ¼³ºñ</ogc:Literal>
+              <ogc:Literal>ê°€ìŠ¤ê³µê¸‰ì„¤ë¹„</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -29,14 +29,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>°íµîÇÐ±³</se:Name>
+          <se:Name>ê³ ë“±í•™êµ</se:Name>
           <se:Description>
-            <se:Title>°íµîÇÐ±³</se:Title>
+            <se:Title>ê³ ë“±í•™êµ</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>°íµîÇÐ±³</ogc:Literal>
+              <ogc:Literal>ê³ ë“±í•™êµ</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -52,14 +52,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>°ø°ø°øÁö</se:Name>
+          <se:Name>ê³µê³µê³µì§€</se:Name>
           <se:Description>
-            <se:Title>°ø°ø°øÁö</se:Title>
+            <se:Title>ê³µê³µê³µì§€</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>°ø°ø°øÁö</ogc:Literal>
+              <ogc:Literal>ê³µê³µê³µì§€</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -75,14 +75,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>°ø°øº¸À°½Ã¼³</se:Name>
+          <se:Name>ê³µê³µë³´ìœ¡ì‹œì„¤</se:Name>
           <se:Description>
-            <se:Title>°ø°øº¸À°½Ã¼³</se:Title>
+            <se:Title>ê³µê³µë³´ìœ¡ì‹œì„¤</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>°ø°øº¸À°½Ã¼³</ogc:Literal>
+              <ogc:Literal>ê³µê³µë³´ìœ¡ì‹œì„¤</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -98,14 +98,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>°ø°øÃ»»ç</se:Name>
+          <se:Name>ê³µê³µì²­ì‚¬</se:Name>
           <se:Description>
-            <se:Title>°ø°øÃ»»ç</se:Title>
+            <se:Title>ê³µê³µì²­ì‚¬</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>°ø°øÃ»»ç</ogc:Literal>
+              <ogc:Literal>ê³µê³µì²­ì‚¬</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -121,14 +121,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>°øµ¿ÁÖÅÃ</se:Name>
+          <se:Name>ê³µë™ì£¼íƒ</se:Name>
           <se:Description>
-            <se:Title>°øµ¿ÁÖÅÃ</se:Title>
+            <se:Title>ê³µë™ì£¼íƒ</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>°øµ¿ÁÖÅÃ</ogc:Literal>
+              <ogc:Literal>ê³µë™ì£¼íƒ</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -144,14 +144,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>°ø¿ø</se:Name>
+          <se:Name>ê³µì›</se:Name>
           <se:Description>
-            <se:Title>°ø¿ø</se:Title>
+            <se:Title>ê³µì›</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>°ø¿ø</ogc:Literal>
+              <ogc:Literal>ê³µì›</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -167,14 +167,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>°ø¿ø±âÅ¸</se:Name>
+          <se:Name>ê³µì›ê¸°íƒ€</se:Name>
           <se:Description>
-            <se:Title>°ø¿ø±âÅ¸</se:Title>
+            <se:Title>ê³µì›ê¸°íƒ€</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>°ø¿ø±âÅ¸</ogc:Literal>
+              <ogc:Literal>ê³µì›ê¸°íƒ€</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -190,14 +190,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>°ü±¤ÈÞ¾ç¿ëÁö</se:Name>
+          <se:Name>ê´€ê´‘íœ´ì–‘ìš©ì§€</se:Name>
           <se:Description>
-            <se:Title>°ü±¤ÈÞ¾ç¿ëÁö</se:Title>
+            <se:Title>ê´€ê´‘íœ´ì–‘ìš©ì§€</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>°ü±¤ÈÞ¾ç¿ëÁö</ogc:Literal>
+              <ogc:Literal>ê´€ê´‘íœ´ì–‘ìš©ì§€</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -213,14 +213,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>±¤Àå</se:Name>
+          <se:Name>ê´‘ìž¥</se:Name>
           <se:Description>
-            <se:Title>±¤Àå</se:Title>
+            <se:Title>ê´‘ìž¥</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>±¤Àå</ogc:Literal>
+              <ogc:Literal>ê´‘ìž¥</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -236,14 +236,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>±Ù¸°»ýÈ°½Ã¼³¿ëÁö</se:Name>
+          <se:Name>ê·¼ë¦°ìƒí™œì‹œì„¤ìš©ì§€</se:Name>
           <se:Description>
-            <se:Title>±Ù¸°»ýÈ°½Ã¼³¿ëÁö</se:Title>
+            <se:Title>ê·¼ë¦°ìƒí™œì‹œì„¤ìš©ì§€</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>±Ù¸°»ýÈ°½Ã¼³¿ëÁö</ogc:Literal>
+              <ogc:Literal>ê·¼ë¦°ìƒí™œì‹œì„¤ìš©ì§€</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -259,14 +259,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>³ìÁö</se:Name>
+          <se:Name>ë…¹ì§€</se:Name>
           <se:Description>
-            <se:Title>³ìÁö</se:Title>
+            <se:Title>ë…¹ì§€</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>³ìÁö</ogc:Literal>
+              <ogc:Literal>ë…¹ì§€</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -282,14 +282,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>³ó¼ö»ê¹°µµ¸Å½ÃÀå</se:Name>
+          <se:Name>ë†ìˆ˜ì‚°ë¬¼ë„ë§¤ì‹œìž¥</se:Name>
           <se:Description>
-            <se:Title>³ó¼ö»ê¹°µµ¸Å½ÃÀå</se:Title>
+            <se:Title>ë†ìˆ˜ì‚°ë¬¼ë„ë§¤ì‹œìž¥</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>³ó¼ö»ê¹°µµ¸Å½ÃÀå</ogc:Literal>
+              <ogc:Literal>ë†ìˆ˜ì‚°ë¬¼ë„ë§¤ì‹œìž¥</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -305,14 +305,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>³ó¾÷°ü·Ã½Ã¼³</se:Name>
+          <se:Name>ë†ì—…ê´€ë ¨ì‹œì„¤</se:Name>
           <se:Description>
-            <se:Title>³ó¾÷°ü·Ã½Ã¼³</se:Title>
+            <se:Title>ë†ì—…ê´€ë ¨ì‹œì„¤</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>³ó¾÷°ü·Ã½Ã¼³</ogc:Literal>
+              <ogc:Literal>ë†ì—…ê´€ë ¨ì‹œì„¤</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -328,14 +328,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>´Üµ¶ÁÖÅÃ</se:Name>
+          <se:Name>ë‹¨ë…ì£¼íƒ</se:Name>
           <se:Description>
-            <se:Title>´Üµ¶ÁÖÅÃ</se:Title>
+            <se:Title>ë‹¨ë…ì£¼íƒ</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>´Üµ¶ÁÖÅÃ</ogc:Literal>
+              <ogc:Literal>ë‹¨ë…ì£¼íƒ</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -351,14 +351,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>´ëÇÐ</se:Name>
+          <se:Name>ëŒ€í•™</se:Name>
           <se:Description>
-            <se:Title>´ëÇÐ</se:Title>
+            <se:Title>ëŒ€í•™</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>´ëÇÐ</ogc:Literal>
+              <ogc:Literal>ëŒ€í•™</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -374,14 +374,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>µµ¼­°ü</se:Name>
+          <se:Name>ë„ì„œê´€</se:Name>
           <se:Description>
-            <se:Title>µµ¼­°ü</se:Title>
+            <se:Title>ë„ì„œê´€</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>µµ¼­°ü</ogc:Literal>
+              <ogc:Literal>ë„ì„œê´€</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -397,14 +397,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>µµ½ÃÇü»ýÈ°ÁÖÅÃ¿ëÁö</se:Name>
+          <se:Name>ë„ì‹œí˜•ìƒí™œì£¼íƒìš©ì§€</se:Name>
           <se:Description>
-            <se:Title>µµ½ÃÇü»ýÈ°ÁÖÅÃ¿ëÁö</se:Title>
+            <se:Title>ë„ì‹œí˜•ìƒí™œì£¼íƒìš©ì§€</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>µµ½ÃÇü»ýÈ°ÁÖÅÃ¿ëÁö</ogc:Literal>
+              <ogc:Literal>ë„ì‹œí˜•ìƒí™œì£¼íƒìš©ì§€</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -420,14 +420,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>¹¦Áö°ø¿ø</se:Name>
+          <se:Name>ë¬˜ì§€ê³µì›</se:Name>
           <se:Description>
-            <se:Title>¹¦Áö°ø¿ø</se:Title>
+            <se:Title>ë¬˜ì§€ê³µì›</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>¹¦Áö°ø¿ø</ogc:Literal>
+              <ogc:Literal>ë¬˜ì§€ê³µì›</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -443,14 +443,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>µµ·Î</se:Name>
+          <se:Name>ë„ë¡œ</se:Name>
           <se:Description>
-            <se:Title>µµ·Î</se:Title>
+            <se:Title>ë„ë¡œ</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>µµ·Î</ogc:Literal>
+              <ogc:Literal>ë„ë¡œ</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -466,14 +466,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>¹®È­°ø¿ø</se:Name>
+          <se:Name>ë¬¸í™”ê³µì›</se:Name>
           <se:Description>
-            <se:Title>¹®È­°ø¿ø</se:Title>
+            <se:Title>ë¬¸í™”ê³µì›</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>¹®È­°ø¿ø</ogc:Literal>
+              <ogc:Literal>ë¬¸í™”ê³µì›</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -489,14 +489,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>¹®È­½Ã¼³</se:Name>
+          <se:Name>ë¬¸í™”ì‹œì„¤</se:Name>
           <se:Description>
-            <se:Title>¹®È­½Ã¼³</se:Title>
+            <se:Title>ë¬¸í™”ì‹œì„¤</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>¹®È­½Ã¼³</ogc:Literal>
+              <ogc:Literal>ë¬¸í™”ì‹œì„¤</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -512,14 +512,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>¹æ¼ÛÅë½Å½Ã¼³</se:Name>
+          <se:Name>ë°©ì†¡í†µì‹ ì‹œì„¤</se:Name>
           <se:Description>
-            <se:Title>¹æ¼ÛÅë½Å½Ã¼³</se:Title>
+            <se:Title>ë°©ì†¡í†µì‹ ì‹œì„¤</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>¹æ¼ÛÅë½Å½Ã¼³</ogc:Literal>
+              <ogc:Literal>ë°©ì†¡í†µì‹ ì‹œì„¤</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -535,14 +535,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>¹è¼ö½Ã¼³</se:Name>
+          <se:Name>ë°°ìˆ˜ì‹œì„¤</se:Name>
           <se:Description>
-            <se:Title>¹è¼ö½Ã¼³</se:Title>
+            <se:Title>ë°°ìˆ˜ì‹œì„¤</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>¹è¼ö½Ã¼³</ogc:Literal>
+              <ogc:Literal>ë°°ìˆ˜ì‹œì„¤</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -558,14 +558,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>º¯Àü½Ã¼³</se:Name>
+          <se:Name>ë³€ì „ì‹œì„¤</se:Name>
           <se:Description>
-            <se:Title>º¯Àü½Ã¼³</se:Title>
+            <se:Title>ë³€ì „ì‹œì„¤</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>º¯Àü½Ã¼³</ogc:Literal>
+              <ogc:Literal>ë³€ì „ì‹œì„¤</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -581,14 +581,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>º¸ÇàÀÚÀü¿ëµµ·Î</se:Name>
+          <se:Name>ë³´í–‰ìžì „ìš©ë„ë¡œ</se:Name>
           <se:Description>
-            <se:Title>º¸ÇàÀÚÀü¿ëµµ·Î</se:Title>
+            <se:Title>ë³´í–‰ìžì „ìš©ë„ë¡œ</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>º¸ÇàÀÚÀü¿ëµµ·Î</ogc:Literal>
+              <ogc:Literal>ë³´í–‰ìžì „ìš©ë„ë¡œ</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -604,14 +604,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>º¹ÇÕ¿ëÁö</se:Name>
+          <se:Name>ë³µí•©ìš©ì§€</se:Name>
           <se:Description>
-            <se:Title>º¹ÇÕ¿ëÁö</se:Title>
+            <se:Title>ë³µí•©ìš©ì§€</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>º¹ÇÕ¿ëÁö</ogc:Literal>
+              <ogc:Literal>ë³µí•©ìš©ì§€</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -627,14 +627,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>º¹ÇÕÈ¯½Â¼¾ÅÍ</se:Name>
+          <se:Name>ë³µí•©í™˜ìŠ¹ì„¼í„°</se:Name>
           <se:Description>
-            <se:Title>º¹ÇÕÈ¯½Â¼¾ÅÍ</se:Title>
+            <se:Title>ë³µí•©í™˜ìŠ¹ì„¼í„°</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>º¹ÇÕÈ¯½Â¼¾ÅÍ</ogc:Literal>
+              <ogc:Literal>ë³µí•©í™˜ìŠ¹ì„¼í„°</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -650,14 +650,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>»çÈ¸º¹Áö½Ã¼³</se:Name>
+          <se:Name>ì‚¬íšŒë³µì§€ì‹œì„¤</se:Name>
           <se:Description>
-            <se:Title>»çÈ¸º¹Áö½Ã¼³</se:Title>
+            <se:Title>ì‚¬íšŒë³µì§€ì‹œì„¤</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>»çÈ¸º¹Áö½Ã¼³</ogc:Literal>
+              <ogc:Literal>ì‚¬íšŒë³µì§€ì‹œì„¤</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -673,14 +673,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>»ê¾÷¿ëÁö</se:Name>
+          <se:Name>ì‚°ì—…ìš©ì§€</se:Name>
           <se:Description>
-            <se:Title>»ê¾÷¿ëÁö</se:Title>
+            <se:Title>ì‚°ì—…ìš©ì§€</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>»ê¾÷¿ëÁö</ogc:Literal>
+              <ogc:Literal>ì‚°ì—…ìš©ì§€</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -696,14 +696,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>»ó¾÷¾÷¹«¿ëÁö</se:Name>
+          <se:Name>ìƒì—…ì—…ë¬´ìš©ì§€</se:Name>
           <se:Description>
-            <se:Title>»ó¾÷¾÷¹«¿ëÁö</se:Title>
+            <se:Title>ìƒì—…ì—…ë¬´ìš©ì§€</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>»ó¾÷¾÷¹«¿ëÁö</ogc:Literal>
+              <ogc:Literal>ìƒì—…ì—…ë¬´ìš©ì§€</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -719,14 +719,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>¾×È­¼®À¯°¡½ºÃæÀü¼Ò</se:Name>
+          <se:Name>ì•¡í™”ì„ìœ ê°€ìŠ¤ì¶©ì „ì†Œ</se:Name>
           <se:Description>
-            <se:Title>¾×È­¼®À¯°¡½ºÃæÀü¼Ò</se:Title>
+            <se:Title>ì•¡í™”ì„ìœ ê°€ìŠ¤ì¶©ì „ì†Œ</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>¾×È­¼®À¯°¡½ºÃæÀü¼Ò</ogc:Literal>
+              <ogc:Literal>ì•¡í™”ì„ìœ ê°€ìŠ¤ì¶©ì „ì†Œ</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -742,14 +742,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>¿ª»ç°ø¿ø</se:Name>
+          <se:Name>ì—­ì‚¬ê³µì›</se:Name>
           <se:Description>
-            <se:Title>¿ª»ç°ø¿ø</se:Title>
+            <se:Title>ì—­ì‚¬ê³µì›</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>¿ª»ç°ø¿ø</ogc:Literal>
+              <ogc:Literal>ì—­ì‚¬ê³µì›</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -765,14 +765,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>¿¬±¸½Ã¼³</se:Name>
+          <se:Name>ì—°êµ¬ì‹œì„¤</se:Name>
           <se:Description>
-            <se:Title>¿¬±¸½Ã¼³</se:Title>
+            <se:Title>ì—°êµ¬ì‹œì„¤</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>¿¬±¸½Ã¼³</ogc:Literal>
+              <ogc:Literal>ì—°êµ¬ì‹œì„¤</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -788,14 +788,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>¿À¼öÁß°èÆßÇÁÀå</se:Name>
+          <se:Name>ì˜¤ìˆ˜ì¤‘ê³„íŽŒí”„ìž¥</se:Name>
           <se:Description>
-            <se:Title>¿À¼öÁß°èÆßÇÁÀå</se:Title>
+            <se:Title>ì˜¤ìˆ˜ì¤‘ê³„íŽŒí”„ìž¥</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>¿À¼öÁß°èÆßÇÁÀå</ogc:Literal>
+              <ogc:Literal>ì˜¤ìˆ˜ì¤‘ê³„íŽŒí”„ìž¥</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -811,14 +811,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>¿îµ¿Àå</se:Name>
+          <se:Name>ìš´ë™ìž¥</se:Name>
           <se:Description>
-            <se:Title>¿îµ¿Àå</se:Title>
+            <se:Title>ìš´ë™ìž¥</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>¿îµ¿Àå</ogc:Literal>
+              <ogc:Literal>ìš´ë™ìž¥</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -834,14 +834,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>À¯º¸Áö</se:Name>
+          <se:Name>ìœ ë³´ì§€</se:Name>
           <se:Description>
-            <se:Title>À¯º¸Áö</se:Title>
+            <se:Title>ìœ ë³´ì§€</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>À¯º¸Áö</ogc:Literal>
+              <ogc:Literal>ìœ ë³´ì§€</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -857,14 +857,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>À¯Ä¡¿ø</se:Name>
+          <se:Name>ìœ ì¹˜ì›</se:Name>
           <se:Description>
-            <se:Title>À¯Ä¡¿ø</se:Title>
+            <se:Title>ìœ ì¹˜ì›</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>À¯Ä¡¿ø</ogc:Literal>
+              <ogc:Literal>ìœ ì¹˜ì›</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -880,14 +880,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>ÀÚµ¿Â÷±âÅ¸</se:Name>
+          <se:Name>ìžë™ì°¨ê¸°íƒ€</se:Name>
           <se:Description>
-            <se:Title>ÀÚµ¿Â÷±âÅ¸</se:Title>
+            <se:Title>ìžë™ì°¨ê¸°íƒ€</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>ÀÚµ¿Â÷±âÅ¸</ogc:Literal>
+              <ogc:Literal>ìžë™ì°¨ê¸°íƒ€</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -903,14 +903,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>Àú·ù½Ã¼³</se:Name>
+          <se:Name>ì €ë¥˜ì‹œì„¤</se:Name>
           <se:Description>
-            <se:Title>Àú·ù½Ã¼³</se:Title>
+            <se:Title>ì €ë¥˜ì‹œì„¤</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>Àú·ù½Ã¼³</ogc:Literal>
+              <ogc:Literal>ì €ë¥˜ì‹œì„¤</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -926,14 +926,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>Àü±â°ø±Þ¼³ºñ</se:Name>
+          <se:Name>ì „ê¸°ê³µê¸‰ì„¤ë¹„</se:Name>
           <se:Description>
-            <se:Title>Àü±â°ø±Þ¼³ºñ</se:Title>
+            <se:Title>ì „ê¸°ê³µê¸‰ì„¤ë¹„</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>Àü±â°ø±Þ¼³ºñ</ogc:Literal>
+              <ogc:Literal>ì „ê¸°ê³µê¸‰ì„¤ë¹„</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -949,14 +949,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>Á¤ºÎÃâ¿¬¿¬±¸±â°ü</se:Name>
+          <se:Name>ì •ë¶€ì¶œì—°ì—°êµ¬ê¸°ê´€</se:Name>
           <se:Description>
-            <se:Title>Á¤ºÎÃâ¿¬¿¬±¸±â°ü</se:Title>
+            <se:Title>ì •ë¶€ì¶œì—°ì—°êµ¬ê¸°ê´€</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>Á¤ºÎÃâ¿¬¿¬±¸±â°ü</ogc:Literal>
+              <ogc:Literal>ì •ë¶€ì¶œì—°ì—°êµ¬ê¸°ê´€</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -972,14 +972,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>Á¾±³½Ã¼³¿ëÁö</se:Name>
+          <se:Name>ì¢…êµì‹œì„¤ìš©ì§€</se:Name>
           <se:Description>
-            <se:Title>Á¾±³½Ã¼³¿ëÁö</se:Title>
+            <se:Title>ì¢…êµì‹œì„¤ìš©ì§€</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>Á¾±³½Ã¼³¿ëÁö</ogc:Literal>
+              <ogc:Literal>ì¢…êµì‹œì„¤ìš©ì§€</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -995,14 +995,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>Á¾ÇÕÀÇ·á½Ã¼³</se:Name>
+          <se:Name>ì¢…í•©ì˜ë£Œì‹œì„¤</se:Name>
           <se:Description>
-            <se:Title>Á¾ÇÕÀÇ·á½Ã¼³</se:Title>
+            <se:Title>ì¢…í•©ì˜ë£Œì‹œì„¤</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>Á¾ÇÕÀÇ·á½Ã¼³</ogc:Literal>
+              <ogc:Literal>ì¢…í•©ì˜ë£Œì‹œì„¤</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -1018,14 +1018,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>ÁÖ»óº¹ÇÕ</se:Name>
+          <se:Name>ì£¼ìƒë³µí•©</se:Name>
           <se:Description>
-            <se:Title>ÁÖ»óº¹ÇÕ</se:Title>
+            <se:Title>ì£¼ìƒë³µí•©</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>ÁÖ»óº¹ÇÕ</ogc:Literal>
+              <ogc:Literal>ì£¼ìƒë³µí•©</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -1041,14 +1041,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>ÁÖÀ¯¼Ò¿ëÁö</se:Name>
+          <se:Name>ì£¼ìœ ì†Œìš©ì§€</se:Name>
           <se:Description>
-            <se:Title>ÁÖÀ¯¼Ò¿ëÁö</se:Title>
+            <se:Title>ì£¼ìœ ì†Œìš©ì§€</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>ÁÖÀ¯¼Ò¿ëÁö</ogc:Literal>
+              <ogc:Literal>ì£¼ìœ ì†Œìš©ì§€</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -1064,14 +1064,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>ÁÖÂ÷Àå</se:Name>
+          <se:Name>ì£¼ì°¨ìž¥</se:Name>
           <se:Description>
-            <se:Title>ÁÖÂ÷Àå</se:Title>
+            <se:Title>ì£¼ì°¨ìž¥</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>ÁÖÂ÷Àå</ogc:Literal>
+              <ogc:Literal>ì£¼ì°¨ìž¥</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -1087,14 +1087,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>Áß¾ÓÇàÁ¤±â°ü</se:Name>
+          <se:Name>ì¤‘ì•™í–‰ì •ê¸°ê´€</se:Name>
           <se:Description>
-            <se:Title>Áß¾ÓÇàÁ¤±â°ü</se:Title>
+            <se:Title>ì¤‘ì•™í–‰ì •ê¸°ê´€</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>Áß¾ÓÇàÁ¤±â°ü</ogc:Literal>
+              <ogc:Literal>ì¤‘ì•™í–‰ì •ê¸°ê´€</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -1110,14 +1110,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>ÁßÇÐ±³</se:Name>
+          <se:Name>ì¤‘í•™êµ</se:Name>
           <se:Description>
-            <se:Title>ÁßÇÐ±³</se:Title>
+            <se:Title>ì¤‘í•™êµ</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>ÁßÇÐ±³</ogc:Literal>
+              <ogc:Literal>ì¤‘í•™êµ</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -1133,14 +1133,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>Ã»¼Ò³â¼ö·Ã½Ã¼³</se:Name>
+          <se:Name>ì²­ì†Œë…„ìˆ˜ë ¨ì‹œì„¤</se:Name>
           <se:Description>
-            <se:Title>Ã»¼Ò³â¼ö·Ã½Ã¼³</se:Title>
+            <se:Title>ì²­ì†Œë…„ìˆ˜ë ¨ì‹œì„¤</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>Ã»¼Ò³â¼ö·Ã½Ã¼³</ogc:Literal>
+              <ogc:Literal>ì²­ì†Œë…„ìˆ˜ë ¨ì‹œì„¤</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -1156,14 +1156,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>Ã¼À°½Ã¼³</se:Name>
+          <se:Name>ì²´ìœ¡ì‹œì„¤</se:Name>
           <se:Description>
-            <se:Title>Ã¼À°½Ã¼³</se:Title>
+            <se:Title>ì²´ìœ¡ì‹œì„¤</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>Ã¼À°½Ã¼³</ogc:Literal>
+              <ogc:Literal>ì²´ìœ¡ì‹œì„¤</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -1179,14 +1179,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>ÃÊµîÇÐ±³</se:Name>
+          <se:Name>ì´ˆë“±í•™êµ</se:Name>
           <se:Description>
-            <se:Title>ÃÊµîÇÐ±³</se:Title>
+            <se:Title>ì´ˆë“±í•™êµ</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>ÃÊµîÇÐ±³</ogc:Literal>
+              <ogc:Literal>ì´ˆë“±í•™êµ</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -1202,14 +1202,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>Æó±â¹°Ã³¸®½Ã¼³</se:Name>
+          <se:Name>íê¸°ë¬¼ì²˜ë¦¬ì‹œì„¤</se:Name>
           <se:Description>
-            <se:Title>Æó±â¹°Ã³¸®½Ã¼³</se:Title>
+            <se:Title>íê¸°ë¬¼ì²˜ë¦¬ì‹œì„¤</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>Æó±â¹°Ã³¸®½Ã¼³</ogc:Literal>
+              <ogc:Literal>íê¸°ë¬¼ì²˜ë¦¬ì‹œì„¤</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -1225,14 +1225,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>ÇÏ¼öÁ¾¸»Ã³¸®½Ã¼³</se:Name>
+          <se:Name>í•˜ìˆ˜ì¢…ë§ì²˜ë¦¬ì‹œì„¤</se:Name>
           <se:Description>
-            <se:Title>ÇÏ¼öÁ¾¸»Ã³¸®½Ã¼³</se:Title>
+            <se:Title>í•˜ìˆ˜ì¢…ë§ì²˜ë¦¬ì‹œì„¤</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>ÇÏ¼öÁ¾¸»Ã³¸®½Ã¼³</ogc:Literal>
+              <ogc:Literal>í•˜ìˆ˜ì¢…ë§ì²˜ë¦¬ì‹œì„¤</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -1248,14 +1248,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>ÇÏÃµ</se:Name>
+          <se:Name>í•˜ì²œ</se:Name>
           <se:Description>
-            <se:Title>ÇÏÃµ</se:Title>
+            <se:Title>í•˜ì²œ</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>ÇÏÃµ</ogc:Literal>
+              <ogc:Literal>í•˜ì²œ</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -1271,14 +1271,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>ÇÐ±³</se:Name>
+          <se:Name>í•™êµ</se:Name>
           <se:Description>
-            <se:Title>ÇÐ±³</se:Title>
+            <se:Title>í•™êµ</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>ÇÐ±³</ogc:Literal>
+              <ogc:Literal>í•™êµ</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -1295,14 +1295,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>ÇÐ±³±âÅ¸</se:Name>
+          <se:Name>í•™êµê¸°íƒ€</se:Name>
           <se:Description>
-            <se:Title>ÇÐ±³±âÅ¸</se:Title>
+            <se:Title>í•™êµê¸°íƒ€</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>ÇÐ±³±âÅ¸</ogc:Literal>
+              <ogc:Literal>í•™êµê¸°íƒ€</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>
@@ -1318,14 +1318,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>È¯°æ±âÃÊ½Ã¼³±âÅ¸</se:Name>
+          <se:Name>í™˜ê²½ê¸°ì´ˆì‹œì„¤ê¸°íƒ€</se:Name>
           <se:Description>
-            <se:Title>È¯°æ±âÃÊ½Ã¼³±âÅ¸</se:Title>
+            <se:Title>í™˜ê²½ê¸°ì´ˆì‹œì„¤ê¸°íƒ€</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
-              <ogc:Literal>È¯°æ±âÃÊ½Ã¼³±âÅ¸</ogc:Literal>
+              <ogc:Literal>í™˜ê²½ê¸°ì´ˆì‹œì„¤ê¸°íƒ€</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <se:PolygonSymbolizer>

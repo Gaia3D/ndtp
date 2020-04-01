@@ -28,7 +28,7 @@
               <ogc:PropertyName>jibun</ogc:PropertyName>
             </sld:Label>
             <sld:Font>
-              <sld:CssParameter name="font-family">∏º¿∫ ∞ÌµÒ</sld:CssParameter>
+              <sld:CssParameter name="font-family">ÎßëÏùÄ Í≥†Îîï</sld:CssParameter>
               <sld:CssParameter name="font-size">12.0</sld:CssParameter>
               <sld:CssParameter name="font-style">normal</sld:CssParameter>
               <sld:CssParameter name="font-weight">bold</sld:CssParameter>
