@@ -12,7 +12,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>가스공급설비</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -35,7 +35,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>고등학교</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -58,7 +58,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>공공공지</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -81,7 +81,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>공공보육시설</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -104,7 +104,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>공공청사</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -127,7 +127,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>공동주택</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -150,7 +150,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>공원</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -173,7 +173,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>공원기타</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -196,7 +196,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>관광휴양용지</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -219,7 +219,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>광장</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -242,7 +242,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>근린생활시설용지</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -265,7 +265,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>녹지</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -288,7 +288,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>농수산물도매시장</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -311,7 +311,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>농업관련시설</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -334,7 +334,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>단독주택</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -357,7 +357,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>대학</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -380,7 +380,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>도서관</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -403,7 +403,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>도시형생활주택용지</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -426,7 +426,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>묘지공원</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -449,7 +449,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>도로</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -472,7 +472,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>문화공원</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -495,7 +495,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>문화시설</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -518,7 +518,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>방송통신시설</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -541,7 +541,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>배수시설</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -564,7 +564,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>변전시설</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -587,7 +587,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>보행자전용도로</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -610,7 +610,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>복합용지</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -633,7 +633,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>복합환승센터</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -656,7 +656,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>사회복지시설</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -679,7 +679,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>산업용지</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -702,7 +702,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>상업업무용지</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -725,7 +725,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>액화석유가스충전소</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -748,7 +748,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>역사공원</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -771,7 +771,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>연구시설</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -794,7 +794,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>오수중계펌프장</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -817,7 +817,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>운동장</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -840,7 +840,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>유보지</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -863,7 +863,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>유치원</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -886,7 +886,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>자동차기타</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -909,7 +909,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>저류시설</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -932,7 +932,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>전기공급설비</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -955,7 +955,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>정부출연연구기관</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -978,7 +978,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>종교시설용지</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -1001,7 +1001,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>종합의료시설</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -1024,7 +1024,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>주상복합</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -1047,7 +1047,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>주유소용지</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -1070,7 +1070,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>주차장</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -1093,7 +1093,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>중앙행정기관</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -1116,7 +1116,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>중학교</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -1139,7 +1139,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>청소년수련시설</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -1162,7 +1162,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>체육시설</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -1185,7 +1185,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>초등학교</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -1208,7 +1208,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>폐기물처리시설</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -1231,7 +1231,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>하수종말처리시설</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -1254,7 +1254,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>하천</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -1277,7 +1277,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>학교</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -1301,7 +1301,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>학교기타</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -1324,7 +1324,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
               <ogc:Literal>환경기초시설기타</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -1343,16 +1343,16 @@
         <se:Rule>
           <se:Name></se:Name>
           <se:Description>
-            <se:Title>BLOCKTYPE is ''</se:Title>
+            <se:Title>blocktype is ''</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:Or>
               <ogc:PropertyIsEqualTo>
-                <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+                <ogc:PropertyName>blocktype</ogc:PropertyName>
                 <ogc:Literal></ogc:Literal>
               </ogc:PropertyIsEqualTo>
               <ogc:PropertyIsNull>
-                <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+                <ogc:PropertyName>blocktype</ogc:PropertyName>
               </ogc:PropertyIsNull>
             </ogc:Or>
           </ogc:Filter>
@@ -1371,7 +1371,7 @@
 		<se:Rule>
           <se:TextSymbolizer>
             <se:Label>
-              <ogc:PropertyName>BLOCKTYPE</ogc:PropertyName>
+              <ogc:PropertyName>blocktype</ogc:PropertyName>
             </se:Label>
             <se:Font>
               <se:SvgParameter name="font-family">Gulim</se:SvgParameter>
