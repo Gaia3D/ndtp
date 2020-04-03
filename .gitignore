@@ -4,3 +4,11 @@
 # Ignore Gradle build output directory
 build
 /.settings/
+
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
