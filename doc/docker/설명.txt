@@ -1,0 +1,10 @@
+실행 하는 방법은
+
+docker build -t [생성할 이미지명] : [태크명] [DockerFile의 위치]
+예) d:\docker\Dockerfile
+
+
+# 베이스 이미지 설정
+FROM centos:centos7
+
+docker build -t mago3djs:1.0 d:\docker\
