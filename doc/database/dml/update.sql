@@ -20,26 +20,29 @@ update data_info set data_type ='citygml' where data_group_id = 7;--sejong-compl
 update data_info set data_type ='citygml' where data_group_id = 8;--sejong-curture -> sejong-service
 update data_info set data_type ='citygml' where data_group_id = 9;--sejong-etc -> sejong-etc
 update data_info set data_type ='citygml' where data_group_id = 10;--sejong-industry -> sejong-special
-update data_info set data_type ='citygml' where data_group_id = 11;--sejong-jeonju -> sejong-street-lamp
-update data_info set data_type ='citygml' where data_group_id = 12;--sejong-pedestrian-light -> sejong-traffic-light
-update data_info set data_type ='citygml' where data_group_id = 13;--sejong-public -> sejong-road-sign
-update data_info set data_type ='citygml' where data_group_id = 14;--sejong-road-sign -> sejong-bus-sign
-update data_info set data_type ='citygml' where data_group_id = 15;--sejong-safe-sign -> sejong-pedestrian-light
-update data_info set data_type ='citygml' where data_group_id = 16;--sejong-service -> sejong-safe-sign
-update data_info set data_type ='citygml' where data_group_id = 17;--sejong-street-lamp -> sejong-jeonju
-update data_info set data_type ='citygml' where data_group_id = 18;--sejong-taxi-sign -> sejong-taxi-sign
-update data_info set data_type ='citygml' where data_group_id = 19;--sejong-traffic-light -> sejong-tree
-update data_info set data_type ='3ds'     where data_group_id = 20;--sejong-tree -> busan-mj
-update data_info set data_type ='citygml' where data_group_id = 21;--busan-general-house -> busan-edc
-update data_info set data_type ='citygml' where data_group_id = 22;--busan-apartment -> busan-sv
-update data_info set data_type ='citygml' where data_group_id = 23;--busan-public -> busan-general-house
-update data_info set data_type ='citygml' where data_group_id = 24;--busan-industry -> busan-apartment
-update data_info set data_type ='citygml' where data_group_id = 25;--busan-curture -> busan-public
-update data_info set data_type ='citygml' where data_group_id = 26;--busan-welfare -> busan-industry
-update data_info set data_type ='citygml' where data_group_id = 27;--busan-service -> busan-curture
-update data_info set data_type ='citygml' where data_group_id = 28;--busan-etc -> busan-welfare
-update data_info set data_type ='citygml' where data_group_id = 29;--busan-service
-update data_info set data_type ='citygml' where data_group_id = 30;--busan-etc
+update data_info set data_type ='citygml' where data_group_id = 11;--sejong-bridge
+update data_info set data_type ='citygml' where data_group_id = 12;--sejong-tunnel
+update data_info set data_type ='citygml' where data_group_id = 13;--sejong-jeonju -> sejong-street-lamp
+update data_info set data_type ='citygml' where data_group_id = 14;--sejong-pedestrian-light -> sejong-traffic-light
+update data_info set data_type ='citygml' where data_group_id = 15;--sejong-public -> sejong-road-sign
+update data_info set data_type ='citygml' where data_group_id = 16;--sejong-road-sign -> sejong-bus-sign
+update data_info set data_type ='citygml' where data_group_id = 17;--sejong-safe-sign -> sejong-pedestrian-light
+update data_info set data_type ='citygml' where data_group_id = 18;--sejong-service -> sejong-safe-sign
+update data_info set data_type ='citygml' where data_group_id = 19;--sejong-overpass
+update data_info set data_type ='citygml' where data_group_id = 20;--sejong-street-lamp -> sejong-jeonju
+update data_info set data_type ='citygml' where data_group_id = 21;--sejong-taxi-sign -> sejong-taxi-sign
+update data_info set data_type ='citygml' where data_group_id = 22;--sejong-traffic-light -> sejong-tree
+update data_info set data_type ='3ds'     where data_group_id = 23;--sejong-tree -> busan-mj
+update data_info set data_type ='citygml' where data_group_id = 24;--busan-general-house -> busan-edc
+update data_info set data_type ='citygml' where data_group_id = 25;--busan-apartment -> busan-sv
+update data_info set data_type ='citygml' where data_group_id = 26;--busan-public -> busan-general-house
+update data_info set data_type ='citygml' where data_group_id = 27;--busan-industry -> busan-apartment
+update data_info set data_type ='citygml' where data_group_id = 28;--busan-curture -> busan-public
+update data_info set data_type ='citygml' where data_group_id = 29;--busan-welfare -> busan-industry
+update data_info set data_type ='citygml' where data_group_id = 30;--busan-service -> busan-curture
+update data_info set data_type ='citygml' where data_group_id = 31;--busan-etc -> busan-welfare
+update data_info set data_type ='citygml' where data_group_id = 32;--busan-service
+update data_info set data_type ='citygml' where data_group_id = 33;--busan-etc
 
 -- 3 그룹 기본 좌표 확인
 update data_group set location = ST_GeomFromText('POINT(127.310642 36.482598)', 4326), altitude = 200 where data_group_id = 2;
