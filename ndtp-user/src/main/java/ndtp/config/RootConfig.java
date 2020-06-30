@@ -27,7 +27,7 @@ import ndtp.security.Crypt;
 @Slf4j
 @MapperScan(basePackages="ndtp.persistence")
 @Configuration
-@ComponentScan(	basePackages = {"ndtp.service, ndtp.persistence"},
+@ComponentScan(	basePackages = {"ndtp.service", "ndtp.persistence"},
               includeFilters = {	@Filter(type = FilterType.ANNOTATION, value = Component.class),
                                   	@Filter(type = FilterType.ANNOTATION, value = Service.class),
                                   	@Filter(type = FilterType.ANNOTATION, value = Repository.class) },
