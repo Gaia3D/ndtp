@@ -41,7 +41,7 @@ import ndtp.interceptor.SecurityInterceptor;
 @Slf4j
 @EnableWebMvc
 @Configuration
-@ComponentScan(basePackages = { "ndtp.config, ndtp.controller.view, ndtp.restcontroller.rest, ndtp.interceptor, ndtp.validator" }, includeFilters = {
+@ComponentScan(basePackages = { "ndtp.config", "ndtp.controller.view", "ndtp.controller.rest", "ndtp.interceptor", "ndtp.validation" }, includeFilters = {
 		@Filter(type = FilterType.ANNOTATION, value = Component.class),
 		@Filter(type = FilterType.ANNOTATION, value = Controller.class),
 		@Filter(type = FilterType.ANNOTATION, value = RestController.class)})
