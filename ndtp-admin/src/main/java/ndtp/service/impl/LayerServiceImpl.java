@@ -285,8 +285,10 @@ public class LayerServiceImpl implements LayerService {
     public void insertOgr2Ogr(Layer layer, boolean isLayerFileInfoExist, String shapeFileName, String shapeEncoding) throws Exception {
         String osType = propertiesConfig.getOsType().toUpperCase();
         String dbName = Crypt.decrypt(url);
+        String ogr2ogrPort = propertiesConfig.getOgr2ogrPort();
+        String ogr2ogrHost = propertiesConfig.getOgr2ogrHost();
         dbName = dbName.substring(dbName.lastIndexOf("/") + 1);
-        String driver = "PG:host=localhost dbname=" + dbName + " user=" + Crypt.decrypt(username) + " password=" + Crypt.decrypt(password);
+        String driver = "PG:host=" + ogr2ogrHost + " port=" + ogr2ogrPort + " dbname=" + dbName + " user=" + Crypt.decrypt(username) + " password=" + Crypt.decrypt(password);
         //Layer dbLayer = layerMapper.getLayer(layer.getLayerId());
 
         String updateOption = null;
@@ -304,6 +306,7 @@ public class LayerServiceImpl implements LayerService {
 //		ShapeFileParser shapeFileParser = new ShapeFileParser();
 //		shapeFileParser.parse(shapeFileName);
         String enviromentPath = propertiesConfig.getOgr2ogrEnviromentPath();
+        
         Ogr2OgrExecute ogr2OgrExecute = new Ogr2OgrExecute(osType, driver, shapeFileName, shapeEncoding, layer.getLayerKey(), updateOption, layerSourceCoordinate, layerTargetCoordinate, enviromentPath);
         ogr2OgrExecute.insert();
     }

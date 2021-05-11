@@ -1,0 +1,43 @@
+version: '3'
+
+volumes:
+  ndtp-geoserver-data:
+
+
+services:
+  
+  db:
+    container_name: ndtp-db
+    restart: always
+    image: gaia3d/postgres:ndtp
+#    build:
+#      context: ./doc/docker/postgres
+#      dockerfile: Dockerfile
+    volumes:
+      - ./doc/database:/database:ro
+      - ./init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh:ro
+    ports:
+      - 15432:5432
+      - 18080:8080
+
+  geoserver:
+    container_name: ndtp-geoserver
+    restart: always
+    image: gaia3d/geoserver:ndtp
+#    build:
+#      context: ./doc/docker/geoserver
+#      dockerfile: Dockerfile
+    volumes:
+      - ndtp-geoserver-data:/geoserver-data
+    network_mode: "service:db"
+
+  rabbitmq:
+    container_name: ndtp-rabbitmq
+    restart: always
+    image: gaia3d/rabbitmq:ndtp
+#    build:
+#      context: ./doc/docker/rabbitmq
+#      dockerfile: Dockerfile
+    ports:
+      - 5672:5672
+      - 15672:15672
