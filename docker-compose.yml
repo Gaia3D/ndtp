@@ -16,9 +16,10 @@ services:
     volumes:
       - ./doc/database:/database:ro
       - ./init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh:ro
+      # district
+      - ./restore_district.sh:/docker-entrypoint-initdb.d/zestore-dist.sh:ro
     ports:
       - 15432:5432
-      - 18080:8080
 
   geoserver:
     container_name: ndtp-geoserver
@@ -28,8 +29,9 @@ services:
 #      context: ./doc/docker/geoserver
 #      dockerfile: Dockerfile
     volumes:
-      - ndtp-geoserver-data:/geoserver-data
-    network_mode: "service:db"
+      - /D/geoserver-data:/geoserver-data
+    ports:
+      - 18080:8080
 
   rabbitmq:
     container_name: ndtp-rabbitmq

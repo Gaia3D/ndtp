@@ -24,7 +24,7 @@ configurations {
 
 repositories {
 	maven {
-        url "http://download.osgeo.org/webdav/geotools/"
+        url "https://repo.osgeo.org/repository/release/"
     }
     maven {
         url "https://repo.boundlessgeo.com/main"

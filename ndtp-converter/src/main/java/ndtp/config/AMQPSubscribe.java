@@ -40,23 +40,23 @@ public class AMQPSubscribe {
 		CompletableFuture.supplyAsync( () -> {
 			List<String> command = new ArrayList<>();
 			command.add(propertiesConfig.getConverterDir());
-			command.add("#inputFolder");
+			command.add("-inputFolder");
 			command.add(queueMessage.getInputFolder());
-			command.add("#outputFolder");
+			command.add("-outputFolder");
 			command.add(queueMessage.getOutputFolder());
-			command.add("#meshType");
+			command.add("-meshType");
 			command.add(queueMessage.getMeshType());
 			if (!StringUtils.isEmpty(queueMessage.getSkinLevel())) {
-				command.add("#skinLevel");
+				command.add("-skinLevel");
 				command.add(queueMessage.getSkinLevel());
 			}
-			command.add("#log");
+			command.add("-log");
 			command.add(queueMessage.getLogPath());
-			command.add("#indexing");
+			command.add("-indexing");
 			command.add(queueMessage.getIndexing());
-			command.add("#usf");
+			command.add("-usf");
 			command.add(queueMessage.getUsf().toString());
-			command.add("#isYAxisUp");
+			command.add("-isYAxisUp");
 			command.add(queueMessage.getIsYAxisUp());
 			
 			log.info(" >>>>>> command = {}", command.toString());
